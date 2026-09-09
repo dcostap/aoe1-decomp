@@ -4,7 +4,11 @@
 
 Read `decomp_notes/array_integration_checkpoint.md` for the newer complete protected build.
 It replaces the earlier build-blocker list and the 28-record diagnostic comparison below.
-The first protected comparison records 46 changed owners. Integration review remains open.
+The first protected comparison records 46 changed owners. The refreshed comparison against `111b67e52` records 43.
+The independent path repair then removes the path module from that change list.
+All 31 path emissions agree under main and protected headers. Its whole-function recovery remains separate.
+The refreshed protected closure passes all 2,543 matching targets across 90 modules.
+Integration review remains open for the other changed owners.
 The static-object caller repair is integrated in `e3c43d2ff`.
 
 ## Resumed work: 2026-09-09

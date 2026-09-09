@@ -1,5 +1,42 @@
 # Array integration checkpoint
 
+## Current review: refreshed proposal and path recovery
+
+`review/array-current-20260909` now uses `build/array-caller-worktree`.
+Merge `66bd650bf` carries main `111b67e52` into that isolated proposal.
+Commit `155c3c38f` adds the binary-supported radius repair there.
+The earlier proposal branches remain preserved. No shared-header approval follows from these commits.
+
+The refreshed first audit compiles all 90 modules and passes all 2,543 matching targets.
+It finds 43 changed descriptions against current main, before the independent path repair.
+The completed bestGroup and play repairs remain intact.
+
+The path review corrects an earlier comparison error: the original reads the member ID before the world pointer.
+The public subscript restores that order.
+Natural master reloads and cached radii restore the original bounds operations and eight ordered conversions.
+The path module then emits identical descriptions under main and protected headers.
+Read `../logic_reviews/0046B6E0.md` for this partial source review, not a whole-function approval.
+
+The path module no longer blocks shared-header integration.
+The final comparison covers 3,586 emissions and leaves 42 changed descriptions for review.
+These include helper and reference-only changes. They are not 42 newly changed game bodies.
+The shared header remains isolated.
+
+Final main validation compiles 225 modules and passes all 4,885 matching targets.
+Only `findTilePath` changes among 6,953 emitted descriptions against `111b67e52`.
+The test suite passes 415 tests and 31 subtests. No registry status changes.
+
+Current reports:
+
+- `build/path-radius-final-closure/report.json`
+- `build/path-radius-final-owner-changes.json`
+- `build/array-caller-worktree/build/protected-path-reviewed-closure/report.json`
+- `build/protected-path-reviewed-owner-changes.json`
+
+Event `a6e144b3a0b24eaf6089db60744b744ef47507f2b29cf513b95512d3db0a10b2` preserves this review and both complete audits.
+Verification covers three new states, two events, 13 new objects, and 41 referenced objects.
+The isolated base remains reachable through `review/array-current-20260909`; it is not merged into main.
+
 ## Behavior
 
 The protected proposal now compiles all 90 affected modules.
@@ -12,7 +49,7 @@ The comparison includes helper emissions and reference-only changes, not just ch
 The following findings describe the preserved proposal:
 
 - `bestGroup` needs an explicit first result. Its completed review now approves that repair as accepted drift.
-- `findTilePath` changes memory-read order and three x87 operand-load sequences.
+- `findTilePath` changed memory-read order and three x87 operand-load sequences. The current path review resolves this objection.
 - The play-buffer repair changes two other tactical owners. Their completed delta review now permits this independent integration.
 
 Do not approve these changes from equal call counts or matching neighbors alone.
@@ -56,8 +93,8 @@ Swapping operands leaves 10 differences and does not restore call order.
 Explicit scalar variants restore the call order but have 388 positional differences.
 Normal loops, PDB names, and a const traversal pointer do not remove that difference.
 
-A path-element reference produces no changed owner descriptions against the preceding protected path state.
-It does not repair the changed read order. The preferred source omits this ineffective reference.
+A historical path-element reference produces no changed descriptions against the preceding protected path state.
+The original already supports the public subscript's read order. The preferred source omits this ineffective reference.
 
 Reports and preserved states:
 
@@ -99,7 +136,7 @@ Continue with the protected proposal, not the public-field diagnostic.
 Review all changed owners before merging the shared header.
 Preserve the complete matching candidate whenever a target changes another owner.
 
-## Clean review branches
+## Original clean review branches
 
 These commits preserve source proposals. They are not merged into main:
 
@@ -110,6 +147,7 @@ These commits preserve source proposals. They are not merged into main:
 | `review/array-diagnostic-20260909` | `b75bbf3c3` | `build/array-resume-worktree` |
 
 The three worktrees remain locked. Their source inputs remain available on named branches.
+The caller worktree now uses the current-review branch listed above; its original branch remains preserved.
 Older locked worktrees remain untouched.
 
 Evidence event `9890b814b9b1451fb6f9b0322dafb6757c057b5277c953f16acd58b22cabd47d` preserves the later module runs and review artifacts.

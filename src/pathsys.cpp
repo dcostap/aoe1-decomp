@@ -284,7 +284,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     RGE_Static_Object* target;
     RGE_Static_Object* other;
     RGE_Moving_Object* curObj;
-    RGE_Master_Static_Object* master;
     Path* path;
     unsigned char facetByte;
     unsigned char facetLow;
@@ -329,7 +328,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->currentTerrainException2 = obj->currentTerrainException2;
     this->currentUnobstructiblePlayerID = unobPlayerID;
     this->currentUnobstructibleGroupID = unobGroupID;
-    this->currentUnobstructibles.numberValue = 0;
+    this->currentUnobstructibles.zeroNumber();
 
     if (MapPathsDisplay != 0) {
         map = this->mapValue;
@@ -382,23 +381,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     }
 
     curObj = this->currentObject;
-    if (curObj->continueCounter >= 10 && curObj->pathingGroupMembers.numberValue > 0) {
+    if (curObj->continueCounter >= 10 && curObj->pathingGroupMembers.number() > 0) {
         i = 0;
-        while (i < curObj->pathingGroupMembers.numberValue) {
-            if (curObj->pathingGroupMembers.maximumSizeValue - 1 < i) {
-                int* newValue = (int*)::operator new(i * 4 + 4);
-                if (newValue != 0) {
-                    int j = 0;
-                    while (j < curObj->pathingGroupMembers.maximumSizeValue && j < i + 1) {
-                        newValue[j] = curObj->pathingGroupMembers.value[j];
-                        ++j;
-                    }
-                    ::operator delete(curObj->pathingGroupMembers.value);
-                    curObj->pathingGroupMembers.value = newValue;
-                    curObj->pathingGroupMembers.maximumSizeValue = i + 1;
-                }
-            }
-            other = this->worldValue->object(curObj->pathingGroupMembers.value[i]);
+        while (i < curObj->pathingGroupMembers.number()) {
+            other = this->worldValue->object(curObj->pathingGroupMembers[i]);
             if (other != 0 && other->id != this->currentObject->id) {
                 unsigned char canShare = other->waitingToMove();
                 float cap = other->getSpeed();
@@ -415,15 +401,14 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     }
 
     curObj = this->currentObject;
-    master = curObj->master_obj;
-    this->minInitialPosition.x = (int)((curObj->world_x - master->radius_x) * DAT_00570e60);
+    this->minInitialPosition.x = (int)((curObj->world_x - curObj->master_obj->radius_x) * DAT_00570e60);
     if (this->minInitialPosition.x < 0) this->minInitialPosition.x = 0;
-    this->minInitialPosition.y = (int)((curObj->world_y - master->radius_y) * DAT_00570e60);
+    this->minInitialPosition.y = (int)((curObj->world_y - curObj->master_obj->radius_y) * DAT_00570e60);
     if (this->minInitialPosition.y < 0) this->minInitialPosition.y = 0;
-    this->maxInitialPosition.x = (int)((master->radius_x + curObj->world_x) * DAT_00570e60);
+    this->maxInitialPosition.x = (int)((curObj->master_obj->radius_x + curObj->world_x) * DAT_00570e60);
     tmp = this->xSizeValue * 4;
     if (this->maxInitialPosition.x > tmp) this->maxInitialPosition.x = tmp;
-    this->maxInitialPosition.y = (int)((master->radius_y + curObj->world_y) * DAT_00570e60);
+    this->maxInitialPosition.y = (int)((curObj->master_obj->radius_y + curObj->world_y) * DAT_00570e60);
     tmp = this->ySizeValue * 4;
     if (this->maxInitialPosition.y > tmp) this->maxInitialPosition.y = tmp;
 
@@ -454,16 +439,20 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     if ((float)step <= tolerance) MGP_goalTolerance = (int)(tolerance * DAT_00570e58);
     else MGP_goalTolerance = step << 4;
 
-    fx = (this->currentXOffset - DAT_00570e68) - master->radius_x;
+    float xRadius = this->currentObject->master_obj->radius_x;
+    float yRadius = this->currentObject->master_obj->radius_y;
+    fx = (this->currentXOffset - DAT_00570e68) - xRadius;
     xDeltaLeft = (int)(fx - DAT_00570e6c) - 100;
-    xDeltaRight = (int)((master->radius_x + this->currentXOffset) - DAT_00570e70) - 100;
-    xDeltaLeft4 = -400 - (int)(fx * DAT_00570e74);
-    xDeltaRight4 = -400 - (int)((master->radius_x + this->currentXOffset - DAT_00570e68) * DAT_00570e74);
-    fy = (this->currentYOffset - DAT_00570e68) - master->radius_y;
+    xRadius += this->currentXOffset;
+    xDeltaRight = (int)(xRadius - DAT_00570e70) - 100;
+    fy = (this->currentYOffset - DAT_00570e68) - yRadius;
     yDeltaUp = (int)(fy - DAT_00570e6c) - 100;
-    yDeltaDown = (int)((master->radius_y + this->currentYOffset) - DAT_00570e70) - 100;
+    yRadius += this->currentYOffset;
+    yDeltaDown = (int)(yRadius - DAT_00570e70) - 100;
+    xDeltaLeft4 = -400 - (int)(fx * DAT_00570e74);
+    xDeltaRight4 = -400 - (int)((xRadius - DAT_00570e68) * DAT_00570e74);
     yDeltaUp4 = -400 - (int)(fy * DAT_00570e74);
-    yDeltaDown4 = -400 - (int)((master->radius_y + this->currentYOffset - DAT_00570e68) * DAT_00570e74);
+    yDeltaDown4 = -400 - (int)((yRadius - DAT_00570e68) * DAT_00570e74);
 
     iterations = 0;
     tmp = goalX - startX;
@@ -500,7 +489,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                     path->killPath();
                 curObj = this->currentObject;
                 i = 0;
-                while (i < curObj->pathingGroupMembers.numberValue) {
+                while (i < curObj->pathingGroupMembers.number()) {
                     other = this->worldValue->object(curObj->pathingGroupMembers[i]);
                     if (other != 0 && other->id != this->currentObject->id &&
                         other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
@@ -513,7 +502,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
             curObj = this->currentObject;
             i = 0;
-            while (i < curObj->pathingGroupMembers.numberValue) {
+            while (i < curObj->pathingGroupMembers.number()) {
                 other = this->worldValue->object(curObj->pathingGroupMembers[i]);
                 if (other != 0 && other->id != this->currentObject->id &&
                     other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
@@ -863,7 +852,7 @@ obstruction_done:
                     path->killPath();
                     curObj = this->currentObject;
                     i = 0;
-                    while (i < curObj->pathingGroupMembers.numberValue) {
+                    while (i < curObj->pathingGroupMembers.number()) {
                         other = this->worldValue->object(curObj->pathingGroupMembers[i]);
                         if (other != 0 && other->id != this->currentObject->id &&
                             other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
@@ -876,7 +865,7 @@ obstruction_done:
                 if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
                 curObj = this->currentObject;
                 i = 0;
-                while (i < curObj->pathingGroupMembers.numberValue) {
+                while (i < curObj->pathingGroupMembers.number()) {
                     other = this->worldValue->object(curObj->pathingGroupMembers[i]);
                     if (other != 0 && other->id != this->currentObject->id &&
                         other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
@@ -933,7 +922,7 @@ path_exhausted:
                     path->killPath();
         curObj = this->currentObject;
         i = 0;
-        while (i < curObj->pathingGroupMembers.numberValue) {
+        while (i < curObj->pathingGroupMembers.number()) {
             other = this->worldValue->object(curObj->pathingGroupMembers[i]);
             if (other != 0 && other->id != this->currentObject->id &&
                 other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
@@ -945,7 +934,7 @@ path_exhausted:
         if (costOut != 0) *costOut = (float)this->MGP_bestTraversedPath.total;
         curObj = this->currentObject;
         i = 0;
-        while (i < curObj->pathingGroupMembers.numberValue) {
+        while (i < curObj->pathingGroupMembers.number()) {
             other = this->worldValue->object(curObj->pathingGroupMembers[i]);
             if (other != 0 && other->id != this->currentObject->id &&
                 other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
@@ -1340,7 +1329,7 @@ int PathingSystem::copyPath(int step)
 
 void PathingSystem::copyUnobstructibles(ManagedArray<int>& out)
 {
-    int i = this->currentUnobstructibles.numberValue;
+    int i = this->currentUnobstructibles.number();
     if (i >= 0) {
         do {
             out.add(this->currentUnobstructibles[i]);

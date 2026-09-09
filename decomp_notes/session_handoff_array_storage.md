@@ -5,13 +5,22 @@
 Read `decomp_notes/array_integration_checkpoint.md` first.
 Commit `e3c43d2ff` integrates the static-object caller repair.
 All four remaining caller modules now compile with protected fields.
-The first full protected audit compiles 90 modules and passes 2,542 of 2,544 matching targets.
-The original play-buffer repair subsequently restores one target.
+The refreshed protected proposal compiles 90 modules and passes all 2,543 matching targets.
+It uses `review/array-current-20260909` in the locked `build/array-caller-worktree`.
+The earlier review branches remain preserved.
 Main now includes the explicit-ID `bestGroup` repair as approved accepted drift.
 Its complete behavior review is `logic_reviews/005004C0.md`; do not resume byte matching for it.
 The independent play-buffer repair and fill-loop getter order also pass their integration review.
 Read `logic_reviews/004F4760.md` for the two neighboring delta reviews.
+The independent path repair restores master reloads, cached radii, and the original eight-conversion order.
+Main and protected headers then produce identical descriptions for all 31 path-module emissions.
+Read `logic_reviews/0046B6E0.md` for the partial source review. It does not approve the whole function.
+The earlier path read-order objection compared against main rather than the original executable; do not repeat it.
 The shared proposal remains separate from main. Its changed-owner review is not complete.
+
+Continue with the remaining information and tactical owners, including `004D9240`, `004DC750`, and `004F57C0`.
+Review both tactical priority queries and the separate movement proposal.
+Keep command conversion and Tech work deferred until the shared-header decision.
 
 ## Preceding checkpoint: 2026-09-09
 
