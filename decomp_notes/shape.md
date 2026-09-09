@@ -293,3 +293,34 @@ Report: `build/audits/reviewer_sa_7b3e8dd5_r1/report.json`.
 Compiler input fingerprint:
 `45e75c531d973965f8492123280fda17ec80c658297146761faa2cfe71222b75`.
 Correction finding: `7504384a058d76781b49453041ede31d0c1756a8f93627af993127d8c719459e`.
+
+## corpus-03-shape scratch review (2026-09-09)
+
+The assigned scratch review inspected all 13 VAs below with original assembly,
+PDB ownership, call targets, frames, boundaries, and the merged `Shape.cpp`.
+The source, registry, and generated inventory were restored after each probe.
+
+| VA | Symbol | Baseline strict differences |
+| --- | --- | ---: |
+| `004B8B50` | `TShape` | 561 |
+| `004B9140` | `shape_check` | 501 |
+| `004B9440` | `shape_draw` | 850 |
+| `004B9AF0` | `shape_draw_clipped` | 769 |
+| `004B9E20` | `shape_color_trans_clipped` | 796 |
+| `004BA1C0` | `shape_shadow_clipped` | 821 |
+| `004BA550` | `shape_mirror` | 509 |
+| `004BAC00` | `shape_mirror_clipped` | 503 |
+| `004BAF20` | `shape_mirror_color_trans_clipped` | 745 |
+| `004BB280` | `shape_mirror_shadow_clipped` | 773 |
+| `004BB5E0` | `shape_dither` | 241 |
+| `004BB770` | `shape_dithered_unclipped` | 394 |
+| `004BB910` | `shape_dithered_clipped` | 1248 |
+
+No exact match or accepted-drift result is supported for these scratch owners.
+The only new source probe changed `shape_dither` coordinate expression order.
+It worsened the result from 241 to 276 differences and was restored.
+The durable probe state and event remain under `decomp_notes/experiments/`.
+
+The main blockers are VC5 local-home and register allocation, clipped-bound
+order, and row/RLE state topology. Next work should start from saved states,
+then audit behavior and closure before any compiler-context probe.
