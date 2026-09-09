@@ -77,3 +77,19 @@ not prove source ownership or a build route.
 
 `validate_candidate_tu.py` compiled the complete direct source.
 Its report had 29 byte matches, four mismatches, and no generated entry.
+
+## Follow-up target results
+
+The retained natural source probes reduce the four target results without
+changing their boundaries, ABIs, call sets, or external memory effects:
+
+| VA | Function | Current differing bytes |
+|---|---|---:|
+| `0050C730` | `tech_cost` | 15 |
+| `0050CA9E` | `check_tech_cost` | 16 |
+| `0050CC25` | `start_research` | 8 |
+| `0050CE68` | `check_for_new_tech` | 14 |
+
+Each result retains the original size and frame. No target is exact. The
+remaining differences are private stack displacement coloring. The complete
+stack-overlap review remains unresolved and blocks unconditional accepted drift.

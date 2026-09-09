@@ -326,8 +326,8 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1,
                                   short& attr2, short& cost2, short& attr3,
                                   short& cost3)
 {
-    Tech_Tree* tech;
     short total;
+    Tech_Tree* tech;
     unsigned char can_use_carry;
 
     tech = this->base_tech->tech_tree + tech_id;
@@ -410,11 +410,8 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1,
 unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id,
                                                   short* missing_attribute)
 {
-    int i;
-    int attribute;
     Tech_Tree* tech;
     float carry;
-    float cost;
     unsigned char has_carry;
 
     tech = this->base_tech->tech_tree + tech_id;
@@ -427,10 +424,12 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id,
         has_carry = 1;
     }
     if (this->tech_player_tree[tech_id].state == 1) {
+        int i;
         for (i = 0; i < 3; i++) {
+            int attribute;
             attribute = tech->attribute[i];
             if (attribute >= 0 && tech->attribute_used[i] != 0) {
-                cost = (float)(int)tech->attribute_cost[i];
+                float cost = (float)(int)tech->attribute_cost[i];
                 if (has_carry && attribute == 3) {
                     carry = carry - cost;
                     if (carry < 0.0f) {
@@ -465,13 +464,13 @@ unsigned char TRIBE_Player_Tech::start_research(short tech_id,
                                                 short* missing_attribute)
 {
     Tech_Tree* tech;
-    int i;
     float cost;
     int attribute;
 
     tech = this->base_tech->tech_tree + tech_id;
     if (this->check_tech_cost(tech_id, missing_attribute)) {
         if (charge) {
+            int i;
             for (i = 0; i < 3; i++) {
                 attribute = tech->attribute[i];
                 if (attribute >= 0 && tech->attribute_used[i] != 0) {
@@ -524,11 +523,9 @@ unsigned char TRIBE_Player_Tech::cancel_research(short tech_id,
 unsigned char TRIBE_Player_Tech::check_for_new_tech()
 {
     Tech_Tree* tech;
-    short i;
     short j;
-    unsigned char prereq_done;
-    short prereq_count;
     short active_count;
+    unsigned char prereq_done;
     unsigned char changed;
 
     active_count = 0;
@@ -536,33 +533,37 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
     do {
         // The executable clears changed and never sets it.
         changed = 0;
-        for (i = 0; i < this->tech_player_tree_num; i++) {
-            if (this->tech_player_tree[i].state < 2 &&
-                this->tech_player_tree[i].state > -1) {
-                active_count++;
-                prereq_done = 0;
-                prereq_count = 0;
-                for (j = 0; j < 4; j++) {
-                    if (tech[i].pre_reqs[j] >= 0) {
-                        prereq_count++;
-                        if (this->tech_player_tree[tech[i].pre_reqs[j]].state == 3) {
-                            prereq_done++;
+        {
+            short i;
+            for (i = 0; i < this->tech_player_tree_num; i++) {
+                if (this->tech_player_tree[i].state < 2 &&
+                    this->tech_player_tree[i].state > -1) {
+                    active_count++;
+                    prereq_done = 0;
+                    short prereq_count;
+                    prereq_count = 0;
+                    for (j = 0; j < 4; j++) {
+                        if (tech[i].pre_reqs[j] >= 0) {
+                            prereq_count++;
+                            if (this->tech_player_tree[tech[i].pre_reqs[j]].state == 3) {
+                                prereq_done++;
+                            }
                         }
                     }
-                }
-                if (prereq_done >= tech[i].pre_reqs_required) {
-                    if ((float)(int)tech[i].research <=
-                        this->tech_player_tree[i].research_done) {
-                        do_tech(i);
-                        active_count--;
-                    } else if (this->tech_player_tree[i].state < 1) {
-                        this->tech_player_tree[i].state = 1;
+                    if (prereq_done >= tech[i].pre_reqs_required) {
+                        if ((float)(int)tech[i].research <=
+                            this->tech_player_tree[i].research_done) {
+                            do_tech(i);
+                            active_count--;
+                        } else if (this->tech_player_tree[i].state < 1) {
+                            this->tech_player_tree[i].state = 1;
+                        }
+                    } else if (this->tech_player_tree[i].state > 0) {
+                        this->tech_player_tree[i].state = 0;
                     }
-                } else if (this->tech_player_tree[i].state > 0) {
-                    this->tech_player_tree[i].state = 0;
+                } else if (this->tech_player_tree[i].state == 2) {
+                    active_count++;
                 }
-            } else if (this->tech_player_tree[i].state == 2) {
-                active_count++;
             }
         }
     } while (changed);

@@ -136,7 +136,8 @@ Retain none of these binding changes merely for a lower byte count.
 
 ## Integration
 
-Approve only the double-literal repair. Do not approve the four private-storage differences as accepted drift.
+Retain the double-literal repair and the later natural scope improvements.
+Do not approve the four private-storage differences as accepted drift.
 Keep the simplest scalar source. Do not add fake records, local aliases, or extra declarations to force stack positions.
 The final module audit retains all 29 existing matching functions. All four authoritative target checks remain nonexact.
 All four functions remain open. Natural local types and scopes, or independent caller and alias evidence, remain useful approaches.
@@ -149,3 +150,25 @@ The constructor's float 7.03 stays at pool offset zero. The progress function's 
 Both unchanged functions retain the same four-byte reads and values.
 Their whole-pool reference descriptions therefore change without changing their actual constant operands.
 The proof also retains every mutable string's name, offset, contents, and section properties.
+
+## Follow-up source probes
+
+Fresh direct checks retain ordinary source scopes that reduce local displacement
+drift without changing behavior or ABI:
+
+| Function | Retained source shape | Current differing bytes |
+|---|---|---:|
+| `0050C730` | `total`, `tech`, and `can_use_carry` declaration order | 15 |
+| `0050CA9E` | lexical `i`, `attribute`, and `cost` scopes | 16 |
+| `0050CC25` | `i` scoped inside the charged path | 8 |
+| `0050CE68` | outer-loop `i` and per-entry `prereq_count` scopes | 14 |
+
+Each target keeps its original size, frame, call set, control-flow shape,
+operand widths, and external memory operations. Closure checks report no exact
+owner regressions. The remaining differences are private local displacement
+coloring. The stack-overlap objection still prevents unconditional accepted
+drift approval.
+
+A 120-order declaration lab for `0050CE68` with these scopes produced only two
+code groups. Its best group remains 14 bytes. The four target checks were
+rebuilt after the follow-up probes on 2026-09-09.
