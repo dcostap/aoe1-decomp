@@ -115,3 +115,6 @@ completed `accepted_drift` results. Their ledgers record the semantic proof.
 - The full `act_obj` audit in `build/worker-00406860-tu-audit/report.txt`
   passes 73 matching results and reports one grouped mismatch for this scratch
   target. No source or registry change is retained. Keep the target scratch.
+- The live status query now reports only `00406860` as scratch among the
+  normal `act_obj` source owners. The earlier scratch list records an older
+  closure state.
