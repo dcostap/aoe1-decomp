@@ -41,3 +41,25 @@ The grouped candidate check for the module passes all three registered owners:
 the controller declaration and forward declarations. The source includes
 the canonical record and generator owners. It uses no wrapper, raw address,
 manual vtable, or compiler-only alias.
+
+## 2026-09-09 corpus-19-rmm-cntr worker audit
+
+The worker rechecked all three scratch owners in `src/rmm_cntr.cpp`. Final
+results are `00482270` `MISMATCH` with 714 differing bytes, `004826E0`
+`MISMATCH` with 262 differing bytes, and `004828B0` `MISMATCH` with 369
+differing bytes. All owners, boundaries, relocations, frames, and direct call
+sets pass their applicable checks.
+
+The worker tested one fresh natural source form for each target. Initializing
+the land collision cursor at declaration worsened `00482270` to 970 bytes.
+Declaring the terrain loop index before the area local was a 262-byte codegen
+duplicate. Reversing stone radius assignments worsened `004828B0` to 370 bytes;
+reversing predator assignments was a 369-byte duplicate. All source changes
+were restored.
+
+The complete one-job audit is under
+`build/agents/corpus-19-rmm-cntr/final-tu-audit/report.txt`. Registered exact
+owners `004821A0`, `00482260`, and `004828A0` remain exact. No exact or
+accepted-drift proposal is supported. The remaining blockers are compiler
+register coloring, switch-tail lowering, stack-home scheduling, and the valid
+VC5 helper-name alias.
