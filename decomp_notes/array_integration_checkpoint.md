@@ -1,6 +1,68 @@
 # Array integration checkpoint
 
-## Current review: information source repairs
+## Current review: tactical priority repairs
+
+Main commit `51ad896e3` integrates the two public-array priority queries and the natural public add in `taskResearch`.
+The warship query repairs two executable-proved defects: duplicate soldier counting and growth retry before an empty membership search.
+Read `logic_reviews/004F7590.md` and `logic_reviews/004F7870.md` for the limited source approvals.
+Both priority queries remain scratch. Their complete emitted-code review remains open.
+
+The complete `004FB710 taskResearch` proof checks all 147 instructions in its 448-byte body.
+Only four bytes change. They exchange two call-owned stack homes and two independent reloads.
+Read `logic_reviews/004FB710.md` for the completed accepted-drift decision.
+Do not tune those remaining bytes. Protected output still reports `MATCH` and `0.0000%`.
+The limited idle-civilian register changes and boat-group getter restoration also pass review.
+They do not approve the other differences in those scratch functions.
+
+The protected `evaluateOpenTasks` proposal remains isolated.
+Original read-only getters resolve the local virtual-table reload concern for the inspected tables.
+The command player/coordinate fault order remains open. No complete behavior defect is proved there.
+The coordinate-local probe adds unsupported floating-point operations and is rejected.
+The separate getter-local probe remains preserved but is not retained; its broader loop changes lack review.
+Read `logic_reviews/004F57C0.md` before another probe.
+
+Validation:
+
+- Main: 225 modules compile; all 4,884 matching targets pass.
+- Main comparison: six changed descriptions among 6,953 emissions, all in the tactical module.
+- Protected: 90 modules compile; all 2,542 matching targets pass.
+- Protected comparison: 41 changed descriptions among 3,586 emissions.
+- Tests: 415 tests and 31 subtests pass.
+- Both registry validations, line-ending checks, and diff checks pass.
+- Registry: 4,884 matching, 289 accepted drift, 16 verified logic, and 237 scratch functions.
+- Scratch size remains 308,138 bytes.
+
+The extra description in the 41-item comparison is the fully reviewed `taskResearch` difference, not a new behavior objection.
+The list includes helpers, reference-only changes, and reviewed differences. It is not a count of newly changed game bodies.
+Only `004F57C0` and the small `004F81A0` register delta change from the preceding protected audit.
+
+Current reports:
+
+- `build/priority-final-main-closure/report.json`
+- `build/priority-final-main-owner-changes.json`
+- `build/array-caller-worktree/build/protected-priority-reviewed-closure/report.json`
+- `build/protected-priority-reviewed-owner-changes.json`
+- `build/protected-priority-incremental-changes.json`
+- `build/task-research-home-proof.json`
+- `build/priority-recovery-proof.json`
+- `build/tactical-getter-evidence.json`
+
+Source-review event: `670652f57461e567b82e9bafb94c5c67fd0618b6605a586ce3a77bb20fa04aae`.
+Final protected event: `84dddc575ce3c749cae4bb83a220f21674e33c4ee66efe11a9ff2d61924bb275`.
+Together they preserve both complete audits, static proofs, changed descriptions, and rejected probes.
+The source-review verification covers nine states, four events, 32 new objects, and 92 referenced objects.
+The final verification covers one state, one event, two new objects, and 62 referenced objects.
+All tested bases remain reachable through named branches.
+
+Protected commit `7f3bd8794` retains only the direct-member open-task probe.
+Merge `976edf3ce` carries the main repair and review records into the locked current-review worktree.
+The shared header remains isolated. No game code ran; no subagent, network access, or push was used.
+
+Next, finish open-task read order and both priority queries' complete emitted-code reviews.
+Then finish `checkDefend`, the remaining helpers and callers, and the separate movement review.
+Do not reopen completed bestGroup, play, or taskResearch byte matching without new substantive evidence.
+
+## Previous review: information source repairs
 
 The independent information patch replaces the manual farm-ID search with `contains` in `004D9240`.
 It also restores the 14 ordered strategic-number calls and additions in `004DC750`.

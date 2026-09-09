@@ -3,6 +3,29 @@
 ## Latest integration checkpoint
 
 Read `decomp_notes/array_integration_checkpoint.md` first.
+Main commit `51ad896e3` adds the public priority queries and the natural public add in `taskResearch`.
+The warship query now counts qualifying duplicate soldiers and evaluates a growth-capable subscript before empty membership searches.
+Both priority queries remain scratch; their limited source repairs do not establish whole-function or shared-header approval.
+The complete `taskResearch` review accepts its four-byte stack-home change. Do not tune those bytes.
+Read `logic_reviews/004F7870.md`, `logic_reviews/004FB710.md`, and `logic_reviews/004F57C0.md`.
+
+Current validation passes 4,884 main matching targets across 225 modules and 2,542 protected targets across 90 modules.
+The test suite passes 415 tests and 31 subtests.
+Registry totals are 4,884 matching, 289 accepted drift, 16 verified logic, and 237 scratch functions.
+The protected comparison has 41 changed descriptions, including the already-reviewed research difference.
+Its count increased by that completed review, not by a new behavior objection.
+
+The protected open-task proposal resolves the local virtual-table reload question for the inspected original tables.
+Its command player/coordinate fault order remains open. The coordinate-float probe is rejected and preserved.
+Keep the direct-member proposal isolated. Main's accepted-drift open-task body remains unchanged.
+Next, complete that review and both priority queries' emitted-code reviews, then the remaining helpers and movement review.
+The current comparison is `build/protected-priority-reviewed-owner-changes.json`.
+Source-review event: `670652f57461e567b82e9bafb94c5c67fd0618b6605a586ce3a77bb20fa04aae`.
+Final protected event: `84dddc575ce3c749cae4bb83a220f21674e33c4ee66efe11a9ff2d61924bb275`.
+Keep command conversion and Tech work deferred until the shared-header decision.
+
+## Preceding information and path checkpoint
+
 Commit `e3c43d2ff` integrates the static-object caller repair.
 All four remaining caller modules now compile with protected fields.
 The refreshed protected proposal compiles 90 modules and passes all 2,543 matching targets.
