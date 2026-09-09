@@ -394,6 +394,7 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
     unsigned long uVar5;
+    CHECKSUMARRAY* scanEntry = &this->Check[1];
     int NumPlayers;
     int NumDiff;
     long lVar6;
@@ -424,7 +425,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             mycs2 = this->Check[firstIndex].cs2;
             mycs3 = this->Check[firstIndex].cs3;
             uVar5 = this->Check[firstIndex].WTime;
-            mycs4 = this->Check[firstIndex].cs4;
+            mycs4 = this->Check[firstIndex + 2].PlayerNo;
             mycs5 = this->Check[firstIndex].cs5;
             lVar6 = this->Check[firstIndex].cs1;
             myRandom = this->Check[firstIndex].Random;
@@ -443,15 +444,14 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
 
     unsigned int i = 1;
     do {
-        CHECKSUMARRAY& entry = this->Check[i];
-        if (entry.PlayerNo != playerNo && commTurn == entry.WTurn) {
-            if (uVar5 == entry.WTime &&
-                lVar6 == entry.cs1 &&
-                mycs2 == entry.cs2 &&
-                mycs3 == entry.cs3 &&
-                mycs4 == entry.cs4 &&
-                mycs5 == entry.cs5 &&
-                myRandom == entry.Random) {
+        if (scanEntry->PlayerNo != playerNo && commTurn == scanEntry->WTurn) {
+            if (uVar5 == scanEntry->WTime &&
+                lVar6 == scanEntry->cs1 &&
+                mycs2 == scanEntry->cs2 &&
+                mycs3 == scanEntry->cs3 &&
+                mycs4 == scanEntry->cs4 &&
+                mycs5 == scanEntry->cs5 &&
+                myRandom == scanEntry->Random) {
                 ++NumSame;
                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
                        i, uVar5, lVar6, mycs2,
@@ -464,6 +464,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             }
         }
         ++i;
+        ++scanEntry;
     } while (i <= 0x36);
 
     int player = 1;

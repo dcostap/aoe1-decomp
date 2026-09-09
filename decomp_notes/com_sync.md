@@ -19,10 +19,24 @@ use indexed `CHECKSUMARRAY&` records. Their exact emitted bytes remain proved,
 so no exact row was demoted.
 
 `00433AD0 IsPlayerOutOfSync` remains scratch. The current natural source uses
-indexed `CHECKSUMARRAY&` records and role-based local names. Its current result
-is a 590-byte positional mismatch against the 610-byte original, with a 0x24
-frame versus 0x28, eight aligned calls, zero relocation target mismatches, and
+indexed `CHECKSUMARRAY` fields, a typed second-scan pointer, and role-based local names. Its current result
+is a 561-byte positional mismatch against the 610-byte original, with a 0x28
+frame, eight aligned calls, zero relocation target mismatches, and
 zero boundary escapes. It needs a separate matching pass.
+
+## `corpus-42-com-sync` target pass
+
+`00433AD0 IsPlayerOutOfSync` now uses a typed `CHECKSUMARRAY*` for its second
+scan. Original assembly at `00433B4D` reads `Check[index + 2].PlayerNo`.
+The source preserves that cross-record read instead of the prior `cs4` read.
+
+The retained state reports `MISMATCH`, 561 differing bytes, 588 rebuilt bytes,
+and a 0x28 frame. The target is 610 bytes with 214 instructions.
+The rebuild has 206 instructions. The owner, boundary, relocation, and 8/8
+ordered call checks pass.
+
+The final focused audit is `build/audits/corpus-42-com-sync-final/report.json`.
+All 11 other com_sync owners remain exact. This target is the only mismatch.
 
 The source uses the canonical `TCommunications_Handler` declaration from
 `include/com_hand.h`. It has no context-selection macro, handler substitute,
@@ -47,5 +61,5 @@ registration edit.
 
 The focused grouped audit compiled all 12 module rows. The 11 registered rows
 remain exact. The scratch row remains an unregistered grouped mismatch with the
-same 590-byte difference. Its owner symbol, direct call targets, and boundary
+same 561-byte difference. Its owner symbol, direct call targets, and boundary
 remain valid.
