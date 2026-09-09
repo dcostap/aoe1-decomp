@@ -73,3 +73,20 @@ source line 136. The central access agent must add the evidence-backed
 with a wrapper, raw offset, or unrelated global state. No `basegame.h` change
 was made here. Representative registered-owner checks remain blocked by this
 relation.
+
+## Corpus-51 pass: `corpus-51-dlg-help`
+
+- The current canonical source compiles without the old protected-access
+  blocker. A clean baseline reports `MISMATCH`, 435 differing bytes, 839
+  rebuilt bytes versus 849 original bytes, 27 calls, and frame `0xC`.
+- A natural y-geometry naming probe used separate `dialog_y`, `top_candidate`,
+  and `parent_bottom` locals. It worsened the result to 436 bytes and was
+  restored. A reversed first-guard operand probe emitted the same 435-byte
+  result and was also restored.
+- The complete `dlg_help` audit with `--jobs 1` keeps all five matching
+  neighbors exact. `setup_help` remains scratch with two direct relocation
+  target mismatches.
+- The original geometry still proves width before xPosition, a reused
+  `[esp+24h]` home for final `dialog_x`, and a reused `[esp+28h]` home for
+  y intermediates. Final y remains in `ECX`. No unsupported stack or register
+  steering is retained.
