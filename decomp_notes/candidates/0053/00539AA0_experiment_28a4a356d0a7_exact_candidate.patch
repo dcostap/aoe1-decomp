@@ -1,0 +1,105 @@
+# Experiment 28a4a356d0a75d504cf8ed811fc762143c68f3ce9b84db3caaecb76ea7e7cca2
+# Base d181c62b2dba2dfef5d969a5b2e01a0e9a73176f
+diff --git a/src/view.cpp b/src/view.cpp
+index 6b1cdceaa..21be622f0 100644
+--- a/src/view.cpp
++++ b/src/view.cpp
+@@ -24,7 +24,6 @@
+ #include "../include/sprite.h"
+ #include "../include/visible.h"
+ #include "../include/view.h"
+-#include "../include/asm_draw.h"
+ #include "../include/world.h"
+ 
+ class Tile_FogEdge_Table {
+@@ -1836,6 +1835,21 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
+ 
+ extern const char s_C__msdev_work_age1_x1_view_cpp[];
+ extern char s_view__view_function_terrain[];
++extern "C" void __cdecl _ASMSet_Surface_Info(void* offsets, void* heads,
++                                              void* tails, long min_span,
++                                              long min_line, long max_span,
++                                              long max_line);
++extern "C" void __cdecl _ASMSet_Color_Xform(void* mask);
++extern "C" void __cdecl _ASMSet_Xlate_Table(void* table);
++extern "C" void __cdecl _ASMDraw_Sprite(long base, long x, long y,
++                                         long width, long height,
++                                         long data_offsets, long outline_offset,
++                                         long flags);
++extern "C" void __cdecl _ASMSet_Shadowing(long a, long b, long c, long d);
++extern "C" void __cdecl ASMSet_Shadowing(unsigned long mask1,
++                                          unsigned long value1,
++                                          unsigned long mask2,
++                                          unsigned long value2);
+ 
+ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
+     RGE_Tile* tile;
+@@ -2359,20 +2373,20 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
+                  node = node->NextOnLevel) {
+                 if (node->Node_Type == 0) {
+                     clip = this->Terrain_Clip_Mask;
+-                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
++                    _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
+                         clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
+                         clip->Max_Span_Px, clip->Max_Line);
+-                    ASMSet_Color_Xform(node->Xform_Mask);
+-                    ASMSet_Xlate_Table(node->Color_Table);
++                    _ASMSet_Color_Xform((void*)node->Xform_Mask);
++                    _ASMSet_Xlate_Table(node->Color_Table);
+                     shape = node->Shape;
+-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
++                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                         shape->Width, shape->Height, shape->Shape_Data_Offsets,
+                         shape->Shape_Outline_Offset, node->Draw_Flag & 0xFE);
+                     clip = this->Terrain_Fog_Clip_Mask;
+-                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
++                    _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
+                         clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
+                         clip->Max_Span_Px, clip->Max_Line);
+-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
++                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                         shape->Width, shape->Height, shape->Shape_Data_Offsets,
+                         shape->Shape_Outline_Offset, node->Draw_Flag | 1);
+                 }
+@@ -2568,7 +2582,7 @@ future_match:
+     this->render_rect.top -= rect.top;
+     this->render_rect.right -= rect.left;
+     this->render_rect.bottom -= rect.top;
+-    ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
++    _ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
+         this->Master_Clip_Mask->Line_Tail_Ptrs, this->Master_Clip_Mask->Min_Span_Px,
+         this->Master_Clip_Mask->Min_Line, this->Master_Clip_Mask->Max_Span_Px,
+         this->Master_Clip_Mask->Max_Line);
+@@ -2584,26 +2598,26 @@ future_match:
+                     shadow_flags = node->Draw_Flag & 0xFFC;
+                     if (shadow_flags != 0) {
+                         if ((shadow_flags & 4) == 4) {
+-                            ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
++                            _ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
+                         }
+                         if ((shadow_flags & 8) == 8) {
+                             shadow_value = shadow_flags >> 4;
+-                            ASMSet_Shadowing(0xFF00FF00,
++                            _ASMSet_Shadowing(0xFF00FF00,
+                                 (shadow_value << 16) | shadow_value,
+                                 0x00FF00FF, shadow_value << 8);
+                         }
+                         shadowing = 1;
+                     }
+-                    ASMSet_Color_Xform(node->Xform_Mask);
+-                    ASMSet_Xlate_Table(node->Color_Table);
++                    _ASMSet_Color_Xform((void*)node->Xform_Mask);
++                    _ASMSet_Xlate_Table(node->Color_Table);
+                     shape = node->Shape;
+-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
++                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                                     shape->Width, shape->Height,
+                                     shape->Shape_Data_Offsets,
+                                     shape->Shape_Outline_Offset,
+                                     node->Draw_Flag & 3);
+                     if (shadowing) {
+-                        ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
++                        _ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
+                     }
+                 } else {
+                     this->Draw_GDI_Object(node, this->render_area);

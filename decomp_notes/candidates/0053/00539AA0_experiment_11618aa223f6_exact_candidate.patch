@@ -1,0 +1,189 @@
+# Experiment 11618aa223f696ea7d729d3b55c86a6eedfb4113a8bf5bbb04595ea5931e4e42
+# Base d181c62b2dba2dfef5d969a5b2e01a0e9a73176f
+diff --git a/src/view.cpp b/src/view.cpp
+index 6b1cdceaa..b0a50cd18 100644
+--- a/src/view.cpp
++++ b/src/view.cpp
+@@ -24,7 +24,6 @@
+ #include "../include/sprite.h"
+ #include "../include/visible.h"
+ #include "../include/view.h"
+-#include "../include/asm_draw.h"
+ #include "../include/world.h"
+ 
+ class Tile_FogEdge_Table {
+@@ -348,7 +347,7 @@ void RGE_View::Init_Tile_Edge_Tables()
+ }
+ 
+ 
+-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
++extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+ 
+ 
+ void RGE_View::update_display_selected_objects(void) {
+@@ -388,7 +387,7 @@ next_entry:
+ }
+ 
+ 
+-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
++extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+ 
+ 
+ void RGE_View::display_object_selection(int param_1, int param_2, int param_3, int param_4)
+@@ -511,8 +510,8 @@ void RGE_View::calc_draw_vars() {
+         this->max_col_num = (short)(this->pnl_wid / (int)this->tile_wid);
+         this->center_scr_row_offset = 0;
+         this->max_row_num = (short)(this->pnl_hgt / (int)this->tile_hgt);
+-        this->center_scr_col = (short)this->render_rect.left - this->tile_half_wid + (short)(this->pnl_wid / 2);
+-        this->center_scr_row = (short)this->render_rect.top - this->tile_half_hgt + (short)(this->pnl_hgt / 2);
++        this->center_scr_col = (this->render_rect.left - this->tile_half_wid) + (short)(this->pnl_wid / 2);
++        this->center_scr_row = (this->render_rect.top - this->tile_half_hgt) + (short)(this->pnl_hgt / 2);
+     } else {
+         this->max_row_num = 0;
+         this->max_col_num = 0;
+@@ -1836,6 +1835,14 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
+ 
+ extern const char s_C__msdev_work_age1_x1_view_cpp[];
+ extern char s_view__view_function_terrain[];
++extern "C" void __cdecl _ASMSet_Surface_Info(void* offsets, void* heads, void* tails,
++                                              long min_span, long min_line,
++                                              long max_span, long max_line);
++extern "C" void __cdecl _ASMSet_Color_Xform(void* mask);
++extern "C" void __cdecl _ASMSet_Xlate_Table(void* table);
++extern "C" void __cdecl _ASMDraw_Sprite(long base, long x, long y, long width, long height,
++                                         long data_offsets, long outline_offset, long flags);
++extern "C" void __cdecl _ASMSet_Shadowing(long a, long b, long c, long d);
+ 
+ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
+     RGE_Tile* tile;
+@@ -2261,7 +2268,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
+         reset_all_cyclic = 0;
+         if (this->extra_sprites != 0) {
+             unsigned long now = debug_timeGetTime(
+-                const_cast<char*>(s_C__msdev_work_age1_x1_view_cpp), 0xE3E);
++                s_C__msdev_work_age1_x1_view_cpp, 0xE3E);
+             sprite = this->extra_sprites;
+             while (sprite != 0) {
+                 remove_sprite = 0;
+@@ -2359,20 +2366,20 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
+                  node = node->NextOnLevel) {
+                 if (node->Node_Type == 0) {
+                     clip = this->Terrain_Clip_Mask;
+-                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
++                    _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
+                         clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
+                         clip->Max_Span_Px, clip->Max_Line);
+-                    ASMSet_Color_Xform(node->Xform_Mask);
+-                    ASMSet_Xlate_Table(node->Color_Table);
++                    _ASMSet_Color_Xform((void*)node->Xform_Mask);
++                    _ASMSet_Xlate_Table(node->Color_Table);
+                     shape = node->Shape;
+-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
++                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                         shape->Width, shape->Height, shape->Shape_Data_Offsets,
+                         shape->Shape_Outline_Offset, node->Draw_Flag & 0xFE);
+                     clip = this->Terrain_Fog_Clip_Mask;
+-                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
++                    _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
+                         clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
+                         clip->Max_Span_Px, clip->Max_Line);
+-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
++                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                         shape->Width, shape->Height, shape->Shape_Data_Offsets,
+                         shape->Shape_Outline_Offset, node->Draw_Flag | 1);
+                 }
+@@ -2386,7 +2393,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
+     if (rge_base_game->prog_mode == 4 && this->have_focus != 0 &&
+         MouseSystem->get_game_enable() != 0) {
+         unsigned long now = debug_timeGetTime(
+-            const_cast<char*>(s_C__msdev_work_age1_x1_view_cpp), 0xF11);
++            s_C__msdev_work_age1_x1_view_cpp, 0xF11);
+         if (this->Get_Cursor_Position(pt, -rect.left, -rect.top) != 0) {
+             int touched = 0;
+             if (this->pick_touched_object(this->futur_objs, pt.x, pt.y, 10, 0x28, touched) == 1) {
+@@ -2568,7 +2575,7 @@ future_match:
+     this->render_rect.top -= rect.top;
+     this->render_rect.right -= rect.left;
+     this->render_rect.bottom -= rect.top;
+-    ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
++    _ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
+         this->Master_Clip_Mask->Line_Tail_Ptrs, this->Master_Clip_Mask->Min_Span_Px,
+         this->Master_Clip_Mask->Min_Line, this->Master_Clip_Mask->Max_Span_Px,
+         this->Master_Clip_Mask->Max_Line);
+@@ -2584,26 +2591,26 @@ future_match:
+                     shadow_flags = node->Draw_Flag & 0xFFC;
+                     if (shadow_flags != 0) {
+                         if ((shadow_flags & 4) == 4) {
+-                            ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
++                            _ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
+                         }
+                         if ((shadow_flags & 8) == 8) {
+                             shadow_value = shadow_flags >> 4;
+-                            ASMSet_Shadowing(0xFF00FF00,
++                            _ASMSet_Shadowing(0xFF00FF00,
+                                 (shadow_value << 16) | shadow_value,
+                                 0x00FF00FF, shadow_value << 8);
+                         }
+                         shadowing = 1;
+                     }
+-                    ASMSet_Color_Xform(node->Xform_Mask);
+-                    ASMSet_Xlate_Table(node->Color_Table);
++                    _ASMSet_Color_Xform((void*)node->Xform_Mask);
++                    _ASMSet_Xlate_Table(node->Color_Table);
+                     shape = node->Shape;
+-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
++                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                                     shape->Width, shape->Height,
+                                     shape->Shape_Data_Offsets,
+                                     shape->Shape_Outline_Offset,
+                                     node->Draw_Flag & 3);
+                     if (shadowing) {
+-                        ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
++                        _ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
+                     }
+                 } else {
+                     this->Draw_GDI_Object(node, this->render_area);
+@@ -2864,7 +2871,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
+     terrain_draw = 1;
+     result = 0;
+     overlay_available = 0;
+-    border_info = tile->border_type | (tile->border_shape << 4);
++    border_info = tile->border_type;
+     border_type = border_info & 0x0F;
+ 
+     if (border_type != 0) {
+@@ -3002,21 +3009,21 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, unsign
+ 
+     if ((fog_flag & 0x10) == 0x10) {
+         fog_next_shape = 1;
+-        ASMSet_Shadowing(0x00ff00ff, 0x28002800, 0xff00ff00, 0x00280028);
++        _ASMSet_Shadowing(0x00ff00ff, 0x28002800, 0xff00ff00, 0x00280028);
+         shape->shape_draw(this->cur_render_area, draw_x, draw_y, frame, 0, 0);
+-        ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
++        _ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
+         fog_next_shape = 0;
+         return;
+     }
+ 
+     if ((fog_flag & 0x20) == 0x20) {
+-        ASMSet_Shadowing(0x00ff00ff, 0x56005600, 0xff00ff00, 0x00560056);
++        _ASMSet_Shadowing(0x00ff00ff, 0x56005600, 0xff00ff00, 0x00560056);
+     }
+ 
+     if ((fog_flag & 0x80) == 0x80) {
+         int c = fog_flag & 0x0f;
+         int value = (((c << 16) + c) << 12) + 0x04000400;
+-        ASMSet_Shadowing(0x00ff00ff, value, 0xff00ff00, value);
++        _ASMSet_Shadowing(0x00ff00ff, value, 0xff00ff00, value);
+     }
+ 
+     int one = 1;
+@@ -3042,7 +3049,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, unsign
+     }
+ 
+     this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
+-    ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
++    _ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
+     fog_next_shape = zero;
+ }
+ 
