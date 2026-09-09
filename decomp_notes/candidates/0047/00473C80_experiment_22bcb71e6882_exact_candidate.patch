@@ -1,0 +1,13 @@
+# Experiment 22bcb71e6882b631bf0b7de685c81d5c760d91813612cdcd4262d00760f1680f
+# Base b18bcbfa99d6ba29452bbaf6114c4b6a9c380cbb
+diff --git a/src/pnl_dlg.cpp b/src/pnl_dlg.cpp
+index 60130ed36..29cd87bd5 100644
+--- a/src/pnl_dlg.cpp
++++ b/src/pnl_dlg.cpp
+@@ -1,5 +1,6 @@
+ 
+ #include "../include/pnl_dlg.h"
++#include "../include/pnl_sld.h"
+ 
+ TDialogPanel::TDialogPanel(char* name)
+     : TEasy_Panel(name)
