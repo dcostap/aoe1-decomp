@@ -71,6 +71,11 @@ dimension types, function-scope dimensions, and a shared format local did not
 improve the target. A 192-variant VC5 lab also swept 32 ambient declaration
 counts. It produced only two code groups, all with the same 923-byte result.
 
+Follow-up probes tested inline geometry, declaration order, mutable adjusted
+dimensions, register qualifiers, and source-local ordering. They did not reach
+the original frame. The popup donor at `0051D4F0` shows the same natural `0x11c`
+frame drift.
+
 The final audit used `python tools/audit_translation_unit_functions.py --group
 tpnl_tim --jobs 1`. Its validation fingerprint is
 `ac089509b0e56be8c8c44147e622ec06af3cdb979b37bafd13ca3d272ccd309b`. All ten
