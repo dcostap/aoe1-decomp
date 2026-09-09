@@ -6,19 +6,19 @@ This file indexes the active recovery work and known deferred work.
 It does not replace the function registry or claim to enumerate every scratch function.
 Update each task when its decision, evidence, or integration state changes.
 
-Baseline: main `154792474`, including the current corpus integrations.
+Baseline: main `044149b59`, including the completed corpus worker integrations.
 The protected proposal is on `review/array-current-20260909`, last checked here at `d7d1df629`.
 Its locked worktree is `build/array-caller-worktree`.
-Fifteen isolated corpus workers are active. Protected-array tasks remain unassigned.
+No isolated corpus worker is active. Protected-array tasks remain unassigned.
 
 Last validated results:
 
 - Main: the last complete audit compiled 225 modules and passed 4,884 matching targets.
-- Recent focused audits also validated the new exact visible and credits functions.
+- Recent focused audits found no regression in each changed translation unit.
 - Protected proposal: 90 modules compile; 2,542 matching targets pass.
 - Tests: 415 tests and 31 subtests pass.
-- Registry: 4,889 matching, 290 accepted drift, 16 verified logic, and 231 scratch functions.
-- Scratch source covers 306,689 bytes.
+- Registry: 4,889 matching, 291 accepted drift, 16 verified logic, and 230 scratch functions.
+- Scratch source covers 305,625 bytes.
 
 Read [the checkpoint](decomp_notes/array_integration_checkpoint.md) and [the handoff](decomp_notes/session_handoff_array_storage.md) for history.
 The original executable is the behavior oracle. Main-source differences alone do not prove defects.
@@ -214,6 +214,9 @@ Each task needs a complete decision, preserved inputs, and affected-owner valida
   Passing function checks does not prove complete game behavior.
 - [x] Establish worker models, thinking levels, concurrency limits, and compiler-job limits before launching agents.
   Corpus workers use `openai-codex-secondary/gpt-5.6-luna`, `xhigh`, 15 slots, isolated worktrees, and `--jobs 1`.
+- [x] Complete and integrate the final isolated corpus worker wave.
+  The wave retained supported repairs in `rmm_elev`, `tpnl_tml`, and `map`.
+  It preserved the remaining target evidence without unsupported registry promotions.
 
 ## Completed work: do not put back in the matching queue
 
