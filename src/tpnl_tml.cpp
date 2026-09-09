@@ -1040,6 +1040,7 @@ void Time_Line_Panel::draw_civilization_names()
 void Time_Line_Panel::draw_timeline()
 {
     unsigned char event;
+    float pop_total;
     float temp_pop_num;
     float time_slice;
     long next_pop_total;
@@ -1079,7 +1080,7 @@ void Time_Line_Panel::draw_timeline()
         do {
             if (local_28 >= this->num_entries_page) break;
 
-            temp_pop_num = 0.0f;
+            pop_total = 0.0f;
             error_correction_time_slice_thickness = 0;
             player_index = 0;
             if (static_cast<int>(rge_base_game->world->player_num) - 1 > 0) {
@@ -1093,19 +1094,20 @@ void Time_Line_Panel::draw_timeline()
                             static_cast<long>(next_pop_total), event) != 0) {
                         error_correction_time_slice_thickness = 1;
                     }
-                    temp_pop_num = time_slice + temp_pop_num;
+                    pop_total = time_slice + pop_total;
                     player_index++;
                 } while (player_index <
                          static_cast<int>(rge_base_game->world->player_num) - 1);
             }
 
-            if (temp_pop_num == 0.0f) return;
+            if (pop_total == 0.0f) return;
 
-            long drop_rate = static_cast<long>(this->time_slice_drop_rate);
-            long scaled_drop = static_cast<long>(
-                static_cast<float>(error_correction_drop_time_slice_rate) *
-                this->time_slice_drop_rate);
-            long error_correction = scaled_drop + (1 - error_correction_drop_time_slice_rate) * drop_rate - time_slice_cntr;
+            long error_correction =
+                static_cast<long>(static_cast<float>(error_correction_drop_time_slice_rate) *
+                                  this->time_slice_drop_rate) +
+                (1 - error_correction_drop_time_slice_rate) *
+                    static_cast<long>(this->time_slice_drop_rate) -
+                time_slice_cntr;
             if ((this->drop_flag == 0) || (error_correction_time_slice_thickness != 0) ||
                 (pop_sample_cntr < error_correction) ||
                 (error_correction_drop_time_slice_rate - 1 >= this->total_slices_to_drop)) {
@@ -1113,7 +1115,7 @@ void Time_Line_Panel::draw_timeline()
                 local_28++;
 
                 if (next_pop_total == this->num_entries_page - 1) {
-                    float_remainder = temp_pop_num;
+                    float_remainder = pop_total;
                 } else {
                     float_remainder = 0.0f;
                     player_index = 0;
@@ -1134,7 +1136,7 @@ void Time_Line_Panel::draw_timeline()
 
                 if ((local_38 == this->pop_reading_rate - 1) || (next_pop_total == 0)) {
                     this->add_pop_total_special_event(next_pop_total,
-                        static_cast<long>(temp_pop_num), this->X_line_pos, 1);
+                        static_cast<long>(pop_total), this->X_line_pos, 1);
                     local_38 = 0;
                 } else {
                     local_38++;
@@ -1188,7 +1190,7 @@ void Time_Line_Panel::draw_timeline()
                                         0, next_pop_total));
                                 Y_line_total = this->Y_line_max_length;
                                 time_slice = static_cast<float>(temp_color);
-                                temp_pop_num = (time_slice / temp_pop_num) *
+                                temp_pop_num = (time_slice / pop_total) *
                                                 static_cast<float>(Y_line_total);
                                 temp_color = static_cast<long>(temp_pop_num);
                                 if ((time_slice >= 1.0f) && (temp_color < 1)) temp_color = 1;
@@ -1253,7 +1255,7 @@ void Time_Line_Panel::draw_timeline()
             } else {
                 error_correction_drop_time_slice_rate++;
                 pop_sample_cntr = 0;
-                if (error_correction > drop_rate) time_slice_cntr++;
+                if (error_correction > static_cast<long>(this->time_slice_drop_rate)) time_slice_cntr++;
             }
             next_pop_total++;
         } while (next_pop_total < this->num_history_entries);
