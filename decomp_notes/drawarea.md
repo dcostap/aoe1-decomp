@@ -29,6 +29,18 @@ The header no longer adds `_pad_end[3]`.
 `build/header_size_probe.cpp` compiled with the pinned VC5 flags. Its
 `sizeof(TDrawArea) == 0x100` assertion passed.
 
+## Worker pass: corpus-02-drawarea
+
+Fresh canonical-TU checks for all six assigned scratch functions remain
+`MISMATCH`: `DrawShadowBox` 68 bytes, `Paint` 291, `DrawLine` 103, `Clear`
+113, `Copy` 718, and `take_snapshot` 326. No source or registry change is
+retained. The translation-unit audit reports all 50 exact validation targets
+as `MATCH`.
+
+The closest target is `DrawShadowBox`. Its isolated old-context source reaches
+an exact 271-byte variant, but the natural reunified TU remains 272 bytes with
+one boundary byte after the original. Do not integrate the isolated source.
+
 The paired grouped checks ran after this header repair. The Color check passed
 all six exact owners and its generated destructor. Its two accepted-drift
 owners remained mismatches of 437 and 10 bytes. The report is
