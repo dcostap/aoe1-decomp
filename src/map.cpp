@@ -1937,6 +1937,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
                 } else if (object->master_obj->check_placement(
                                object->owner, object->world_x, object->world_y,
                                0, 0, 1, 1, 1, 0, 0)) {
+                    object = list->node;
                     if (remove_now != 0) {
                         if (object != 0)
                             delete object;
