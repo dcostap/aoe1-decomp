@@ -1,6 +1,47 @@
 # Array integration checkpoint
 
-## Current review: refreshed proposal and path recovery
+## Current review: information source repairs
+
+The independent information patch replaces the manual farm-ID search with `contains` in `004D9240`.
+It also restores the 14 ordered strategic-number calls and additions in `004DC750`.
+The score proof checks all 85 original operations, including call identities and pointer reads.
+Read `logic_reviews/004D9240.md` and `logic_reviews/004DC750.md` for these limited source approvals.
+Both functions remain scratch. Neither receives whole-function approval.
+
+Main and protected headers now emit identical descriptions for both owners.
+The information module still has four other differences: `checkDefend` and three helper descriptions.
+Those differences remain outside this approval.
+
+Main validation compiles 225 modules and passes all 4,885 matching targets.
+Only these two owners change among 6,953 emissions against main `fd84d86f5`.
+The protected audit compiles 90 modules and passes all 2,543 matching targets.
+Its comparison with repaired main leaves 40 changed descriptions among 3,586 emissions.
+These include helpers and reference-only changes, not 40 newly changed game bodies.
+The test suite passes 415 tests and 31 subtests. The registry stays unchanged.
+
+Current reports:
+
+- `build/info-final-main-closure/report.json`
+- `build/info-final-main-owner-changes.json`
+- `build/array-caller-worktree/build/protected-info-reviewed-closure/report.json`
+- `build/protected-info-reviewed-owner-changes.json`
+- `build/info-score-trace-proof.json`
+
+Event `72b8278081243d6ace7ef0b1a1ea9018390fdeeb7efb167d4ebe0ee3bf67e383` preserves the complete validation archive.
+Verification covers three states, two events, 13 new objects, and 92 referenced objects.
+Both tested bases remain reachable through named branches.
+Registry validation, line endings, and both worktree diff checks pass.
+
+Continue with `004F57C0` and the two tactical priority queries.
+For `004F57C0`, check virtual-table reloads and the player/coordinate read order against the original.
+Original `004F58FA..004F5912` reads both coordinates before the main-module player field.
+That observation is a review lead, not proof that the proposal has a behavior defect.
+For the priority queries, check empty membership searches, growth failures, receiver reloads, and duplicate-count behavior.
+Also finish the remaining information helpers and the separate movement review.
+Do not integrate the shared header before these reviews pass.
+Do not reopen completed bestGroup or play matching without new substantive evidence.
+
+## Previous review: refreshed proposal and path recovery
 
 `review/array-current-20260909` now uses `build/array-caller-worktree`.
 Merge `66bd650bf` carries main `111b67e52` into that isolated proposal.

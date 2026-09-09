@@ -1044,12 +1044,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 if (obj->object_state != 2) goto next;
                 if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
                 objectId = obj->id;
-                k = 0;
-                while (k < this->farmsTaskedThisUpdate.numberValue) {
-                    if (k >= this->farmsTaskedThisUpdate.maximumSizeValue) break;
-                    if (this->farmsTaskedThisUpdate.value[k] == objectId) goto next;
-                    ++k;
-                }
+                if (this->farmsTaskedThisUpdate.contains(objectId) == 1) goto next;
             }
             if (resType == 1 && this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
             if ((resType == 3 || resType == 2) && this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 3) goto next;
@@ -2855,20 +2850,20 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     }
                     int rating =
                             this->md->tacticalAI.strategicNumber(0x59)
-                            * *(int*)((char*)this->importantObjectMemory + i + 0x10)
-                        + this->md->tacticalAI.strategicNumber(0x90) * boatSign
-                        + this->md->tacticalAI.strategicNumber(0x7B) * rangeSign
-                        + this->md->tacticalAI.strategicNumber(0x7A) * specialRating2
-                        + this->md->tacticalAI.strategicNumber(0x50) * bestAttackValue
-                        + this->md->tacticalAI.strategicNumber(0x53) * numberNonBoatTargets
-                        + this->md->tacticalAI.strategicNumber(0x4D) * unitIsPriest
-                        + this->md->tacticalAI.strategicNumber(0x6F) * typeMatchC
-                        + this->md->tacticalAI.strategicNumber(0x5A) * timeToKill
-                        + this->md->tacticalAI.strategicNumber(0x4E) * distanceRating
-                        + this->md->tacticalAI.strategicNumber(0x4F) * hpRating
-                        + this->md->tacticalAI.strategicNumber(0x52) * siegeWeapon
-                        + this->md->tacticalAI.strategicNumber(0x6E) * typeMatchB
-                        + this->md->tacticalAI.strategicNumber(0x6D) * typeMatchA;
+                            * *(int*)((char*)this->importantObjectMemory + i + 0x10);
+                    rating += this->md->tacticalAI.strategicNumber(0x90) * boatSign;
+                    rating += this->md->tacticalAI.strategicNumber(0x7B) * rangeSign;
+                    rating += this->md->tacticalAI.strategicNumber(0x7A) * specialRating2;
+                    rating += this->md->tacticalAI.strategicNumber(0x50) * bestAttackValue;
+                    rating += this->md->tacticalAI.strategicNumber(0x53) * numberNonBoatTargets;
+                    rating += this->md->tacticalAI.strategicNumber(0x4D) * unitIsPriest;
+                    rating += this->md->tacticalAI.strategicNumber(0x6F) * typeMatchC;
+                    rating += this->md->tacticalAI.strategicNumber(0x5A) * timeToKill;
+                    rating += this->md->tacticalAI.strategicNumber(0x4E) * distanceRating;
+                    rating += this->md->tacticalAI.strategicNumber(0x4F) * hpRating;
+                    rating += this->md->tacticalAI.strategicNumber(0x52) * siegeWeapon;
+                    rating += this->md->tacticalAI.strategicNumber(0x6E) * typeMatchB;
+                    rating += this->md->tacticalAI.strategicNumber(0x6D) * typeMatchA;
                     if ((bestObject > boatWeapon && boatWeapon != -1.0f) ||
                         bestObject == -1.0f) {
                         rating = 1;

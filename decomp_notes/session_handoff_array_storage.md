@@ -18,7 +18,12 @@ Read `logic_reviews/0046B6E0.md` for the partial source review. It does not appr
 The earlier path read-order objection compared against main rather than the original executable; do not repeat it.
 The shared proposal remains separate from main. Its changed-owner review is not complete.
 
-Continue with the remaining information and tactical owners, including `004D9240`, `004DC750`, and `004F57C0`.
+The information review adds the public farm-ID search and ordered attack-score additions.
+Read `logic_reviews/004D9240.md` and `logic_reviews/004DC750.md` for their limited approvals.
+Both functions remain scratch, but their complete emissions now agree under main and protected headers.
+The latest protected comparison leaves 40 changed descriptions, including helpers and reference-only changes.
+The fresh main and protected audits pass 4,885 and 2,543 matching targets respectively.
+Continue with the remaining information helpers and tactical owners, especially `004F57C0`.
 Review both tactical priority queries and the separate movement proposal.
 Keep command conversion and Tech work deferred until the shared-header decision.
 
