@@ -53,3 +53,28 @@ The generated deleting destructor at `00436910` also matches.
 
 The two former exact wrapper bodies at `004376D0` and `00438060` are now
 scratch. The canonical provider surface changed their code generation.
+
+## Worker review: corpus-05-diam-map
+
+The natural source is `src/diam_map.cpp`. Its function registry is
+`config/functions/src/diam_map.cpp.json`. No source or registry status changed
+in this review.
+
+The assigned scratch targets remain unresolved:
+
+- `00436C30 set_world`: 148 differing bytes in 1081. The x87 quotient spill
+  can change map rounding, so accepted drift is not proved.
+- `00437760 draw_tile`: 1009 differing bytes in 1145. Width, signedness, and
+  scan-loop CFG differences remain broad.
+- `00437EC0 draw_visible_object`: 336 differing bytes in a 392-byte rebuild
+  versus 397 original bytes. VC5 merges one of two original virtual calls.
+- `004381D0 draw_clipped_horz_line`: 40 differing bytes in 123. The opening
+  register-map conflict is high severity.
+- `00438250 draw_view_rect`: 670 differing bytes in a 741-byte rebuild versus
+  732 original bytes. The rebuild crosses the original boundary by 9 bytes.
+
+Fresh target checks are under `build/agents/corpus-05-diam-map/`. The final
+one-job audit compiled 29 normal functions and reported 22 matches, 4 grouped
+mismatches, 2 accepted-drift observations, and 1 boundary problem. No exact
+claim, accepted-drift proposal, registry update, or neighboring source change
+is retained.
