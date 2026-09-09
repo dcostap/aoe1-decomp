@@ -65,7 +65,9 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
     this->widthValue = param_1->map_width;
     this->heightValue = param_1->map_height;
     this->numberTilesExploredValue = 0;
-    this->numberTotalTilesValue = this->widthValue * this->heightValue;
+    int totalTiles = this->widthValue;
+    totalTiles *= this->heightValue;
+    this->numberTotalTilesValue = totalTiles;
     if ((this->widthValue <= 0) || (this->heightValue <= 0)) {
         this->visible_map = 0;
         this->map_offsets = 0;
@@ -104,7 +106,8 @@ RGE_Visible_Map::RGE_Visible_Map(int file, RGE_Game_World* world) {
     }
     rge_read(file, &player_id, 2);
 
-    this->numberTotalTilesValue = this->heightValue * this->widthValue;
+    this->numberTotalTilesValue = this->widthValue;
+    this->numberTotalTilesValue *= this->heightValue;
     this->player = world->players[(short)player_id];
 
     if ((this->widthValue <= 0) || (this->heightValue <= 0)) {
@@ -355,6 +358,8 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
     if (radius > 0x10) {
         radius = 0x10;
     }
+
+    tile = 0;
 
     if (Square != 0) {
         Tbl = SquareLOS[radius];

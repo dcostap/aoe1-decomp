@@ -1,0 +1,27 @@
+# Experiment 3b6f8f79784c646b03bceff2acb7c06c44095f1e519c69bda1e20f7f743511fa
+# Base d181c62b2dba2dfef5d969a5b2e01a0e9a73176f
+diff --git a/src/visible.cpp b/src/visible.cpp
+index 07e0096f6..9dc5fe4ec 100644
+--- a/src/visible.cpp
++++ b/src/visible.cpp
+@@ -65,7 +65,9 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
+     this->widthValue = param_1->map_width;
+     this->heightValue = param_1->map_height;
+     this->numberTilesExploredValue = 0;
+-    this->numberTotalTilesValue = this->widthValue * this->heightValue;
++    int totalTiles = this->widthValue;
++    totalTiles *= this->heightValue;
++    this->numberTotalTilesValue = totalTiles;
+     if ((this->widthValue <= 0) || (this->heightValue <= 0)) {
+         this->visible_map = 0;
+         this->map_offsets = 0;
+@@ -104,7 +106,8 @@ RGE_Visible_Map::RGE_Visible_Map(int file, RGE_Game_World* world) {
+     }
+     rge_read(file, &player_id, 2);
+ 
+-    this->numberTotalTilesValue = this->heightValue * this->widthValue;
++    this->numberTotalTilesValue = this->widthValue;
++    this->numberTotalTilesValue *= this->heightValue;
+     this->player = world->players[(short)player_id];
+ 
+     if ((this->widthValue <= 0) || (this->heightValue <= 0)) {

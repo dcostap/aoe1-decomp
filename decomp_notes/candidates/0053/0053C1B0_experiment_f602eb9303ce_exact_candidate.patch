@@ -1,0 +1,17 @@
+# Experiment f602eb9303ce6e69f0e2d694ecf8a0110d99c9149e86ca971fafe7bb92b73d7e
+# Base d181c62b2dba2dfef5d969a5b2e01a0e9a73176f
+diff --git a/src/visible.cpp b/src/visible.cpp
+index 07e0096f6..46421e9b2 100644
+--- a/src/visible.cpp
++++ b/src/visible.cpp
+@@ -65,7 +65,9 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
+     this->widthValue = param_1->map_width;
+     this->heightValue = param_1->map_height;
+     this->numberTilesExploredValue = 0;
+-    this->numberTotalTilesValue = this->widthValue * this->heightValue;
++    int totalTiles = this->widthValue;
++    totalTiles *= this->heightValue;
++    this->numberTotalTilesValue = totalTiles;
+     if ((this->widthValue <= 0) || (this->heightValue <= 0)) {
+         this->visible_map = 0;
+         this->map_offsets = 0;
