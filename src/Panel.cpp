@@ -1131,7 +1131,7 @@ long TPanel::handle_idle(void) {
     return 0;
 }
 
-long TPanel::handle_size(long wid, long hgt)
+long TPanel::handle_size(long win_wid, long win_hgt)
 {
     long left;
     long top;
@@ -1144,13 +1144,13 @@ long TPanel::handle_size(long wid, long hgt)
         left = this->parent_panel->render_rect.left;
         top = this->parent_panel->render_rect.top;
         bottom = this->parent_panel->render_rect.bottom;
-        wid = right - left + 1;
-        hgt = bottom - top + 1;
+        win_wid = right - left + 1;
+        win_hgt = bottom - top + 1;
     } else {
         left = 0;
         top = 0;
-        right = wid - 1;
-        bottom = hgt - 1;
+        right = win_wid - 1;
+        bottom = win_hgt - 1;
     }
 
     if (this->position_mode == PositionFixed) {
@@ -1208,16 +1208,16 @@ long TPanel::handle_size(long wid, long hgt)
             long real_w = right - left + 1;
             long real_h = bottom - top + 1;
             long xoff;
-            if (real_w == wid) {
+            if (real_w == win_wid) {
                 xoff = 0;
             } else {
-                xoff = wid / 2 - real_w / 2;
+                xoff = win_wid / 2 - real_w / 2;
             }
             right = real_w + xoff - 1;
-            if (real_h == hgt) {
+            if (real_h == win_hgt) {
                 top = 0;
             } else {
-                top = hgt / 2 - real_h / 2;
+                top = win_hgt / 2 - real_h / 2;
             }
             bottom = real_h + top - 1;
             left = xoff;
@@ -1230,7 +1230,7 @@ long TPanel::handle_size(long wid, long hgt)
     do {
         for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
             TPanel* child = node->panel;
-            long r = child->handle_size(wid, hgt);
+            long r = child->handle_size(win_wid, win_hgt);
             if (r != 0) {
                 return r;
             }
