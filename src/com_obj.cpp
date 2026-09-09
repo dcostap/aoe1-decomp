@@ -186,6 +186,10 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
 
 unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* attacker)
 {
+    float c;
+    float s;
+    float rangeDistance;
+
     if (target == 0) {
         return 0;
     }
@@ -196,15 +200,15 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
     if (missile_id >= 0) {
         float radius_y = combat_master->radius_y;
         float radius_x = combat_master->radius_x;
-        float rangeDistance = (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
+        rangeDistance = (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
             combat_master->weapon_range -
             DAT_0056f4ac;
         float angle1 = this->angle;
         float angle2 = this->angle;
-        float c = (float)cos(angle1);
+        c = (float)cos(angle1);
         RGE_Player* owner = this->owner;
         RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
-        float s = (float)sin(angle2);
+        s = (float)sin(angle2);
 
         RGE_Missile_Object* missile = (RGE_Missile_Object*)entry->make_new_obj(owner,
             this->world_x + c * combat_master->weapon_offset_y -
@@ -231,20 +235,24 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
 
 unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Object* attacker)
 {
+    float c;
+    float s;
+    float rangeDistance;
+
     RGE_Master_Combat_Object* combat_master =
         static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     short missile_id = combat_master->missile_id;
     if (missile_id >= 0) {
         float radius_y = this->master_obj->radius_y;
         float radius_x = this->master_obj->radius_x;
-        float rangeDistance = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
+        rangeDistance = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
             combat_master->weapon_range + 6.0f;
         float angle1 = this->angle;
         float angle2 = this->angle;
-        float c = (float)cos(angle1);
+        c = (float)cos(angle1);
         RGE_Player* owner = this->owner;
         RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
-        float s = (float)sin(angle2);
+        s = (float)sin(angle2);
 
         RGE_Missile_Object* missile = (RGE_Missile_Object*)entry->make_new_obj(owner,
             this->world_x + c * combat_master->weapon_offset_y -
