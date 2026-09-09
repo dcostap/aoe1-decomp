@@ -1,6 +1,15 @@
 # Session handoff: array recovery and table storage
 
-## Latest checkpoint: 2026-09-09
+## Latest integration checkpoint
+
+Read `decomp_notes/array_integration_checkpoint.md` first.
+Commit `e3c43d2ff` integrates the static-object caller repair.
+All four remaining caller modules now compile with protected fields.
+The first full protected audit compiles 90 modules and passes 2,542 of 2,544 matching targets.
+The original play-buffer repair subsequently restores one target; `bestGroup` still requires review.
+The shared proposal remains separate from main. Its changed-owner review is not complete.
+
+## Preceding checkpoint: 2026-09-09
 
 Commit `172ea2295` integrates two independent public-array caller repairs:
 

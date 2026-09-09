@@ -1,0 +1,105 @@
+# Experiment 2d35e0616f7d93774788a601c004ec93d20c0818dc753df8747620e923c3f19c
+# Base b3dfb97c03ab40b60cc46c4340d051624e290863
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 3ee3eb044..d75a4c2c9 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -4884,66 +4884,52 @@ ContinueLoop:
+ }
+ 
+ 
+-void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
+-                                              unsigned long param_2)
++void TribeTacticalAIModule::playTaskSoldiers(unsigned long startTime,
++                                              unsigned long availableTime)
+ {
+-    int* target;
+     int countUnplayedSoldiers;
+-    ObjectMemory* targetObj;
+-    int* numberPlayUnits;
++    ObjectMemory* target;
++    int numberPlayUnits;
+     int playCommander;
+     int playToRun;
+     int unplayedSoldiers[50];
+-    // objectToAttackWithPlay receives element one; the binary reserves the
+-    // leading output word and the full 0xCC play-unit stack window.
+-    int playUnits[51];
++    int playUnits[50];
+     int i;
+ 
+-    ManagedArray<int>& soldiers = this->soldiers;
+-
+     if (this->sn[0xa2] != 0) {
+         countUnplayedSoldiers = 0;
+         i = 0;
+-        if (soldiers.numberValue > 0) {
+-            numberPlayUnits = unplayedSoldiers + 1;
++        if (this->soldiers.number() > 0) {
+             do {
+                 TacticalAIGroup* group =
+-                    this->groupUnitIsIn(soldiers[i]);
++                    this->groupUnitIsIn(this->soldiers[i]);
+                 if ((group == 0) || (group->type() != 100)) {
+-                    soldiers[i];
++                    unplayedSoldiers[countUnplayedSoldiers] = this->soldiers[i];
+                     countUnplayedSoldiers++;
+-                    *numberPlayUnits = soldiers.value[i];
+-                    numberPlayUnits++;
+                 }
+                 i++;
+-            } while (i < soldiers.numberValue);
++            } while (i < this->soldiers.number());
+         }
+ 
+         if (countUnplayedSoldiers != 0) {
+-            unplayedSoldiers[0] = -1;
+-            playCommander = 0;
+             playToRun = -1;
+-            targetObj = this->md->informationAI.objectToAttackWithPlay(
+-                this->playersToAttack[0], unplayedSoldiers + 1,
+-                countUnplayedSoldiers, unplayedSoldiers[0], playUnits + 1,
+-                playCommander, playToRun);
+-            if (targetObj != 0) {
+-                RGE_Static_Object* playObj = this->md->object(playToRun);
++            numberPlayUnits = 0;
++            playCommander = -1;
++            target = this->md->informationAI.objectToAttackWithPlay(
++                this->playersToAttack[0], unplayedSoldiers,
++                countUnplayedSoldiers, playToRun, playUnits,
++                numberPlayUnits, playCommander);
++            if (target != 0) {
++                RGE_Static_Object* playObj = this->md->object(playCommander);
+                 if (playObj != 0) {
+                     TacticalAIGroup* group = this->createGroup(1);
+                     if (group != 0) {
+                         group->setType(100);
+-                        group->setDesiredNumberUnits(playCommander);
+-                        int n = 0;
+-                        if (playCommander > 0) {
+-                            target = playUnits + 1;
+-                            do {
+-                                group->addUnit(*target, this->md);
+-                                n++;
+-                                target++;
+-                            } while (n < playCommander);
++                        group->setDesiredNumberUnits(numberPlayUnits);
++                        for (i = 0; i < numberPlayUnits; i++) {
++                            group->addUnit(playUnits[i], this->md);
+                         }
+-                        group->setSpecificCommander(playToRun, this->md);
++                        group->setSpecificCommander(playCommander, this->md);
+                         group->setLocation(playObj->world_x, playObj->world_y,
+                                            playObj->world_z);
+                         group->setGatherLocation(playObj->world_x,
+@@ -4952,8 +4938,8 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
+                         group->setRetreatLocation(playObj->world_x,
+                                                   playObj->world_y,
+                                                   playObj->world_z);
+-                        group->setTarget(targetObj->id);
+-                        group->playNumberValue = unplayedSoldiers[0];
++                        group->setTarget(target->id);
++                        group->playNumberValue = playToRun;
+                         group->setAction(2);
+                         group->setInUse(1);
+                         group->task(this, this->md, 2, 1, 1);

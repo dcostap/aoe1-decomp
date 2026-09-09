@@ -1,0 +1,624 @@
+# Complete worktree candidate
+# Base b3dfb97c03ab40b60cc46c4340d051624e290863
+# Integration remains blocked.
+diff --git a/src/stat_obj.cpp b/src/stat_obj.cpp
+index 445a88f9a..3b55c9592 100644
+--- a/src/stat_obj.cpp
++++ b/src/stat_obj.cpp
+@@ -1339,22 +1339,13 @@ uchar RGE_Static_Object::update()
+         this->player_object_node = this->owner->addObject(this, 1, this->dopple_flag);
+         return 0;
+     }
+-    if (this->groupMembers.numberValue > 0) {
+-        int i = 0;
+-        if (i < this->groupMembers.numberValue) {
+-            while (i < this->groupMembers.numberValue) {
+-                int id = this->groupMembers[i];
+-                RGE_Static_Object* obj = this->owner->world->object(id);
+-                if (obj == 0 || obj->object_state > 2) {
+-                    int n = this->groupMembers.maximumSizeValue; int k = 0;
+-                    while (k < n && this->groupMembers.value[k] != id) { k++; }
+-                    if (k < n) {
+-                        if (k < n - 1) { do { int* p = this->groupMembers.value; k++; p[k-1] = p[k]; } while (k < this->groupMembers.maximumSizeValue - 1); }
+-                        int gn = this->groupMembers.numberValue - 1; this->groupMembers.numberValue = gn; if (gn < 0) this->groupMembers.numberValue = 0;
+-                    }
+-                    i--;
+-                }
+-                i++;
++    if (this->groupMembers.number() > 0) {
++        for (int i = 0; i < this->groupMembers.number(); i++) {
++            int id = this->groupMembers[i];
++            RGE_Static_Object* obj = this->owner->world->object(id);
++            if (obj == 0 || obj->object_state > 2) {
++                this->groupMembers.remove(id);
++                i--;
+             }
+         }
+     }
+@@ -1624,23 +1615,23 @@ void RGE_Static_Object::save(int file)
+     rge_write(saved_file, &this->groupCommanderValue, 4);
+     rge_write(saved_file, &this->groupRangeValue, 4);
+ 
+-    file = this->groupMembers.numberValue;
++    file = this->groupMembers.number();
+     rge_write(saved_file, &file, 4);
+     i = 0;
+-    if (this->groupMembers.numberValue > 0) do {
++    if (this->groupMembers.number() > 0) do {
+         file = this->groupMembers[i];
+         rge_write(saved_file, &file, 4);
+         ++i;
+-    } while (i < this->groupMembers.numberValue);
++    } while (i < this->groupMembers.number());
+ 
+-    file = this->pathingGroupMembers.numberValue;
++    file = this->pathingGroupMembers.number();
+     rge_write(saved_file, &file, 4);
+     int k = 0;
+-    if (this->pathingGroupMembers.numberValue > 0) do {
++    if (this->pathingGroupMembers.number() > 0) do {
+         file = this->pathingGroupMembers[k];
+         rge_write(saved_file, &file, 4);
+         ++k;
+-    } while (k < this->pathingGroupMembers.numberValue);
++    } while (k < this->pathingGroupMembers.number());
+ 
+     this->sprite_list->save(saved_file);
+ }
+@@ -2223,10 +2214,10 @@ void RGE_Static_Object::set_object_state(unsigned char state)
+         if (state == 3 &&
+             this->groupCommanderValue == this->id &&
+             this->unitAIValue != 0 &&
+-            this->groupMembers.numberValue > 1) {
++            this->groupMembers.number() > 1) {
+             int i = 0;
+             int newCommander = -1;
+-            if (this->groupMembers.numberValue > 0) {
++            if (this->groupMembers.number() > 0) {
+                 do {
+                     if (this->groupMembers[i] != this->id) {
+                         RGE_Static_Object* object =
+@@ -2244,7 +2235,7 @@ void RGE_Static_Object::set_object_state(unsigned char state)
+                         }
+                     }
+                     ++i;
+-                } while (i < this->groupMembers.numberValue);
++                } while (i < this->groupMembers.number());
+             }
+         }
+ 
+@@ -3177,30 +3168,30 @@ extern "C" double __cdecl floor(double);
+ extern "C" double __cdecl ceil(double);
+ 
+ 
+-void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int gradient, int useRadius)
++void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, int usePercentCoverage, int useLOS)
+ {
+-    int minYTile;
+     int minXTile;
+-    int maxYTile;
++    int minYTile;
+     int maxXTile;
++    int maxYTile;
+     float objectMaxY;
+     float objectMinY;
+     float objectMaxX;
+     float objectMinX;
+ 
+-    if (useRadius == 0) {
+-        minYTile = (int)floor(this->world_x - this->master_obj->radius_x);
+-        maxYTile = (int)ceil(this->master_obj->radius_x + this->world_x);
+-        minXTile = (int)floor(this->world_y - this->master_obj->radius_y);
+-        maxXTile = (int)ceil(this->master_obj->radius_y + this->world_y);
++    if (useLOS == 0) {
++        minXTile = (int)floor(this->world_x - this->master_obj->radius_x);
++        maxXTile = (int)ceil(this->master_obj->radius_x + this->world_x);
++        minYTile = (int)floor(this->world_y - this->master_obj->radius_y);
++        maxYTile = (int)ceil(this->master_obj->radius_y + this->world_y);
+     } else {
+-        minYTile = (int)floor(this->world_x - this->master_obj->radius_x - this->master_obj->los);
+-        maxYTile = (int)ceil(this->master_obj->radius_x + this->master_obj->los + this->world_x);
+-        minXTile = (int)floor(this->world_y - this->master_obj->radius_y - this->master_obj->los);
+-        maxXTile = (int)ceil(this->master_obj->radius_y + this->master_obj->los + this->world_y);
++        minXTile = (int)floor(this->world_x - this->master_obj->radius_x - this->master_obj->los);
++        maxXTile = (int)ceil(this->master_obj->radius_x + this->master_obj->los + this->world_x);
++        minYTile = (int)floor(this->world_y - this->master_obj->radius_y - this->master_obj->los);
++        maxYTile = (int)ceil(this->master_obj->radius_y + this->master_obj->los + this->world_y);
+     }
+ 
+-    if (useRadius == 0) {
++    if (useLOS == 0) {
+         objectMinX = this->world_x - this->master_obj->radius_x;
+         objectMaxX = this->master_obj->radius_x + this->world_x;
+         objectMinY = this->world_y - this->master_obj->radius_y;
+@@ -3212,28 +3203,28 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int grad
+         objectMaxY = this->master_obj->radius_y + this->master_obj->los + this->world_y;
+     }
+ 
+-    for (int x = minXTile; x < maxXTile; x++) {
+-        for (int y = minYTile; y < maxYTile; y++) {
+-            if (gradient) {
+-                float left = (float)y;
+-                if (objectMinX > (float)y) left = objectMinX;
+-                float right = (float)(y + 1);
++    for (int y = minYTile; y < maxYTile; y++) {
++        for (int x = minXTile; x < maxXTile; x++) {
++            if (usePercentCoverage) {
++                float left = (float)x;
++                if (objectMinX > (float)x) left = objectMinX;
++                float right = (float)(x + 1);
+                 if (objectMaxX < right) right = objectMaxX;
+-                float top = (float)x;
+-                if (objectMinY > (float)x) top = objectMinY;
+-                float bottom = (float)(x + 1);
++                float top = (float)y;
++                if (objectMinY > (float)y) top = objectMinY;
++                float bottom = (float)(y + 1);
+                 if (objectMaxY < bottom) bottom = objectMaxY;
+                 int value = (int)((right - left) * (bottom - top) * 255.0f);
+-                if (mode == 1) {
+-                    map->incrementValue(y, x, value);
++                if (increment == 1) {
++                    iMap->incrementValue(x, y, value);
+                 } else {
+-                    map->decrementValue(y, x, value);
++                    iMap->decrementValue(x, y, value);
+                 }
+             } else {
+-                if (mode == 1) {
+-                    map->incrementValue(y, x, 255);
++                if (increment == 1) {
++                    iMap->incrementValue(x, y, 255);
+                 } else {
+-                    map->decrementValue(y, x, 255);
++                    iMap->decrementValue(x, y, 255);
+                 }
+             }
+         }
+@@ -3452,28 +3443,12 @@ int RGE_Static_Object::isGroupCommander(void) {
+ 
+ 
+ 
+-int RGE_Static_Object::inGroup() { return this->groupMembers.numberValue > 0; }
++int RGE_Static_Object::inGroup() { return this->groupMembers.number() > 0; }
+ 
+ 
+ 
+ int RGE_Static_Object::unitIsInGroup(int value) {
+-    int count = this->groupMembers.numberValue;
+-    int index = 0;
+-
+-    if (count > 0) {
+-        for (; index < count; index++) {
+-            if (index >= this->groupMembers.maximumSizeValue) {
+-                goto not_found_shared;
+-            }
+-            if (this->groupMembers.value[index] == value) {
+-                return 1;
+-            }
+-        }
+-    }
+-    return 0;
+-
+-not_found_shared:
+-    return 0;
++    return this->groupMembers.contains(value);
+ }
+ 
+ 
+@@ -3485,7 +3460,7 @@ int RGE_Static_Object::createGroup(int* list, int count, int commander, float ra
+         return 0;
+     }
+ 
+-    groupMembers.numberValue = 0;
++    groupMembers.zeroNumber();
+ 
+     if (count > 0) {
+         int* current = list;
+@@ -3493,37 +3468,9 @@ int RGE_Static_Object::createGroup(int* list, int count, int commander, float ra
+         do {
+             int id = *current;
+             if (id >= 0) {
+-                int number = groupMembers.numberValue;
+-                int i = 0;
+-                while (i < number) {
+-                    if (i >= groupMembers.maximumSizeValue) {
+-                        break;
+-                    }
+-                    if (groupMembers.value[i] == id) {
+-                        goto next;
+-                    }
+-                    i++;
+-                }
+-
+-                if (number > groupMembers.maximumSizeValue - 1) {
+-                    int newMaximum = number + 1;
+-                    int* newValue = new int[newMaximum];
+-                    if (newValue != 0) {
+-                        i = 0;
+-                        for (; i < groupMembers.maximumSizeValue && i < newMaximum; i++) {
+-                            newValue[i] = groupMembers.value[i];
+-                        }
+-                        delete[] groupMembers.value;
+-                        groupMembers.value = newValue;
+-                        groupMembers.maximumSizeValue = newMaximum;
+-                    }
+-                }
+-
+-                groupMembers.value[groupMembers.numberValue] = id;
+-                groupMembers.numberValue = groupMembers.numberValue + 1;
++                groupMembers.add(id);
+             }
+ 
+-        next:
+             current = current + 1;
+             remaining = remaining - 1;
+         } while (remaining != 0);
+@@ -3564,42 +3511,11 @@ int RGE_Static_Object::commanderCreateGroup(int* list, int count, int param3, fl
+ 
+ int RGE_Static_Object::addToGroup(int groupIndex, float unused)
+ {
+-    if (this->groupMembers.numberValue >= 25) {
++    if (this->groupMembers.number() >= 25) {
+         return 0;
+     }
+ 
+-    {
+-        ManagedArray<int>& members = this->groupMembers;
+-        int count = members.numberValue;
+-        int i = 0;
+-        while (i < count) {
+-            if (i >= members.maximumSizeValue) {
+-                break;
+-            }
+-            if (members.value[i] == groupIndex) {
+-                goto done;
+-            }
+-            i++;
+-        }
+-
+-        if (count > members.maximumSizeValue - 1) {
+-            int newMax = count + 1;
+-            int* newArray = new int[newMax];
+-            if (newArray != 0) {
+-                for (i = 0; i < members.maximumSizeValue && i < newMax; i++) {
+-                    newArray[i] = members.value[i];
+-                }
+-                delete[] members.value;
+-                members.value = newArray;
+-                members.maximumSizeValue = newMax;
+-            }
+-        }
+-
+-        members.value[members.numberValue] = groupIndex;
+-        members.numberValue++;
+-    }
+-
+-done:
++    this->groupMembers.add(groupIndex);
+     return 1;
+ }
+ 
+@@ -3615,12 +3531,12 @@ int RGE_Static_Object::commanderAddToGroup(int id, float range)
+         return 0;
+     }
+ 
+-    if (group.numberValue >= 25) {
++    if (group.number() >= 25) {
+         return 0;
+     }
+ 
+     int i = 0;
+-    if (group.numberValue > 0) {
++    if (group.number() > 0) {
+         do {
+             int member = group[i];
+             temp[i] = member;
+@@ -3632,7 +3548,7 @@ int RGE_Static_Object::commanderAddToGroup(int id, float range)
+                 }
+             }
+             ++i;
+-        } while (i < group.numberValue);
++        } while (i < group.number());
+     }
+ 
+     temp[i] = id;
+@@ -3646,40 +3562,8 @@ int RGE_Static_Object::commanderAddToGroup(int id, float range)
+ 
+ 
+ int RGE_Static_Object::removeFromGroup(int param_1) {
+-    int count = groupMembers.maximumSizeValue;
+-    int index = 0;
+-    int result;
+-
+-    if (count > 0) {
+-        int* ptr = groupMembers.value;
+-        while (1) {
+-            if (*ptr == param_1) break;
+-            ++index;
+-            ++ptr;
+-            if (index < count) continue;
+-            break;
+-        }
+-    }
+-    if (index >= count) {
+-        result = 0;
+-        goto final;
+-    }
+-
+-    if (index < groupMembers.maximumSizeValue - 1) {
+-        while (index < groupMembers.maximumSizeValue - 1) {
+-            groupMembers.value[index] = groupMembers.value[index + 1];
+-            ++index;
+-        }
+-    }
+-
+-    --groupMembers.numberValue;
+-    if (groupMembers.numberValue < 0) {
+-        groupMembers.numberValue = 0;
+-    }
+-    result = 1;
+-
+-final:
+-    if (groupMembers.numberValue <= 0) {
++    int result = groupMembers.remove(param_1);
++    if (groupMembers.number() <= 0) {
+         groupCommanderValue = -1;
+     }
+     return result;
+@@ -3695,66 +3579,15 @@ int RGE_Static_Object::commanderRemoveFromGroup(int id)
+     }
+ 
+     int i = 0;
+-    if (this->groupMembers.numberValue > 0) {
++    if (this->groupMembers.number() > 0) {
+         do {
+-            if (i > this->groupMembers.maximumSizeValue - 1) {
+-                int newMax = i + 1;
+-                int* newValue = new int[newMax];
+-                if (newValue != 0) {
+-                    int j = 0;
+-                    if (this->groupMembers.maximumSizeValue > 0) {
+-                        do {
+-                            if (j < newMax) {
+-                                ++j;
+-                                newValue[j - 1] = this->groupMembers.value[j - 1];
+-                            } else {
+-                                break;
+-                            }
+-                        } while (j < this->groupMembers.maximumSizeValue);
+-                    }
+-                    delete[] this->groupMembers.value;
+-                    this->groupMembers.value = newValue;
+-                    this->groupMembers.maximumSizeValue = newMax;
+-                }
+-            }
+-
+-            RGE_Static_Object* object = this->owner->world->object(this->groupMembers.value[i]);
++            RGE_Static_Object* object = this->owner->world->object(this->groupMembers[i]);
+             if (object != 0 && object->id != this->id) {
+-                int max = object->groupMembers.maximumSizeValue;
+-                int j = 0;
+-                if (max > 0) {
+-                    int* p = object->groupMembers.value;
+-                    while (1) {
+-                        if (*p == id) {
+-                            break;
+-                        }
+-                        ++j;
+-                        ++p;
+-                        if (j < max) {
+-                            continue;
+-                        }
+-                        break;
+-                    }
+-                }
+-
+-                if (j < max) {
+-                    if (j < max - 1) {
+-                        do {
+-                            object->groupMembers.value[j] = object->groupMembers.value[j + 1];
+-                            ++j;
+-                        } while (j < object->groupMembers.maximumSizeValue - 1);
+-                    }
+-
+-                    int newCount = object->groupMembers.numberValue - 1;
+-                    object->groupMembers.numberValue = newCount;
+-                    if (newCount < 0) {
+-                        object->groupMembers.numberValue = 0;
+-                    }
+-                }
++                object->groupMembers.remove(id);
+             }
+ 
+             ++i;
+-        } while (i < this->groupMembers.numberValue);
++        } while (i < this->groupMembers.number());
+     }
+ 
+     this->removeFromGroup(id);
+@@ -3764,7 +3597,7 @@ int RGE_Static_Object::commanderRemoveFromGroup(int id)
+ 
+ 
+ int RGE_Static_Object::destroyGroup() {
+-    groupMembers.numberValue = 0;
++    groupMembers.zeroNumber();
+     groupCommanderValue = -1;
+     return 1;
+ }
+@@ -3773,7 +3606,7 @@ int RGE_Static_Object::destroyGroup() {
+ int RGE_Static_Object::commanderDestroyGroup()
+ {
+     int i = 0;
+-    if (this->groupMembers.numberValue > 0) {
++    if (this->groupMembers.number() > 0) {
+         do {
+             RGE_Static_Object* object =
+                 this->owner->world->object(this->groupMembers[i]);
+@@ -3781,7 +3614,7 @@ int RGE_Static_Object::commanderDestroyGroup()
+                 object->destroyGroup();
+             }
+             ++i;
+-        } while (i < this->groupMembers.numberValue);
++        } while (i < this->groupMembers.number());
+     }
+     this->destroyGroup();
+     return 1;
+@@ -3792,44 +3625,7 @@ int RGE_Static_Object::commanderDestroyGroup()
+ 
+ void RGE_Static_Object::addToPathingGroup(int groupIndex)
+ {
+-    int i = 0;
+-    int count = this->pathingGroupMembers.numberValue;
+-    if (count > 0) {
+-        int max = this->pathingGroupMembers.maximumSizeValue;
+-        while (1) {
+-            if (i >= max)
+-                break;
+-            if (this->pathingGroupMembers.value[i] == groupIndex)
+-                return;
+-            i++;
+-            if (i < count)
+-                continue;
+-            break;
+-        }
+-    }
+-
+-    if (count > this->pathingGroupMembers.maximumSizeValue - 1) {
+-        int newMax = count + 1;
+-        int* newMembers = new int[newMax];
+-        if (newMembers != 0) {
+-            int max = this->pathingGroupMembers.maximumSizeValue;
+-            int j = 0;
+-            if (max > 0) {
+-                for (; j < max; j++) {
+-                    if (j >= newMax)
+-                        break;
+-                    newMembers[j] = this->pathingGroupMembers.value[j];
+-                    max = this->pathingGroupMembers.maximumSizeValue;
+-                }
+-            }
+-            delete[] this->pathingGroupMembers.value;
+-            this->pathingGroupMembers.value = newMembers;
+-            this->pathingGroupMembers.maximumSizeValue = newMax;
+-        }
+-    }
+-
+-    this->pathingGroupMembers.value[this->pathingGroupMembers.numberValue] = groupIndex;
+-    this->pathingGroupMembers.numberValue++;
++    this->pathingGroupMembers.add(groupIndex);
+ }
+ 
+ 
+@@ -3837,7 +3633,7 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
+ 
+ void RGE_Static_Object::removeAllFromPathingGroup(void) {
+     if (owner->computerPlayer() == 1) {
+-        pathingGroupMembers.numberValue = 0;
++        pathingGroupMembers.zeroNumber();
+     }
+ }
+ 
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 3ee3eb044..d75a4c2c9 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -4884,66 +4884,52 @@ ContinueLoop:
+ }
+ 
+ 
+-void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
+-                                              unsigned long param_2)
++void TribeTacticalAIModule::playTaskSoldiers(unsigned long startTime,
++                                              unsigned long availableTime)
+ {
+-    int* target;
+     int countUnplayedSoldiers;
+-    ObjectMemory* targetObj;
+-    int* numberPlayUnits;
++    ObjectMemory* target;
++    int numberPlayUnits;
+     int playCommander;
+     int playToRun;
+     int unplayedSoldiers[50];
+-    // objectToAttackWithPlay receives element one; the binary reserves the
+-    // leading output word and the full 0xCC play-unit stack window.
+-    int playUnits[51];
++    int playUnits[50];
+     int i;
+ 
+-    ManagedArray<int>& soldiers = this->soldiers;
+-
+     if (this->sn[0xa2] != 0) {
+         countUnplayedSoldiers = 0;
+         i = 0;
+-        if (soldiers.numberValue > 0) {
+-            numberPlayUnits = unplayedSoldiers + 1;
++        if (this->soldiers.number() > 0) {
+             do {
+                 TacticalAIGroup* group =
+-                    this->groupUnitIsIn(soldiers[i]);
++                    this->groupUnitIsIn(this->soldiers[i]);
+                 if ((group == 0) || (group->type() != 100)) {
+-                    soldiers[i];
++                    unplayedSoldiers[countUnplayedSoldiers] = this->soldiers[i];
+                     countUnplayedSoldiers++;
+-                    *numberPlayUnits = soldiers.value[i];
+-                    numberPlayUnits++;
+                 }
+                 i++;
+-            } while (i < soldiers.numberValue);
++            } while (i < this->soldiers.number());
+         }
+ 
+         if (countUnplayedSoldiers != 0) {
+-            unplayedSoldiers[0] = -1;
+-            playCommander = 0;
+             playToRun = -1;
+-            targetObj = this->md->informationAI.objectToAttackWithPlay(
+-                this->playersToAttack[0], unplayedSoldiers + 1,
+-                countUnplayedSoldiers, unplayedSoldiers[0], playUnits + 1,
+-                playCommander, playToRun);
+-            if (targetObj != 0) {
+-                RGE_Static_Object* playObj = this->md->object(playToRun);
++            numberPlayUnits = 0;
++            playCommander = -1;
++            target = this->md->informationAI.objectToAttackWithPlay(
++                this->playersToAttack[0], unplayedSoldiers,
++                countUnplayedSoldiers, playToRun, playUnits,
++                numberPlayUnits, playCommander);
++            if (target != 0) {
++                RGE_Static_Object* playObj = this->md->object(playCommander);
+                 if (playObj != 0) {
+                     TacticalAIGroup* group = this->createGroup(1);
+                     if (group != 0) {
+                         group->setType(100);
+-                        group->setDesiredNumberUnits(playCommander);
+-                        int n = 0;
+-                        if (playCommander > 0) {
+-                            target = playUnits + 1;
+-                            do {
+-                                group->addUnit(*target, this->md);
+-                                n++;
+-                                target++;
+-                            } while (n < playCommander);
++                        group->setDesiredNumberUnits(numberPlayUnits);
++                        for (i = 0; i < numberPlayUnits; i++) {
++                            group->addUnit(playUnits[i], this->md);
+                         }
+-                        group->setSpecificCommander(playToRun, this->md);
++                        group->setSpecificCommander(playCommander, this->md);
+                         group->setLocation(playObj->world_x, playObj->world_y,
+                                            playObj->world_z);
+                         group->setGatherLocation(playObj->world_x,
+@@ -4952,8 +4938,8 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
+                         group->setRetreatLocation(playObj->world_x,
+                                                   playObj->world_y,
+                                                   playObj->world_z);
+-                        group->setTarget(targetObj->id);
+-                        group->playNumberValue = unplayedSoldiers[0];
++                        group->setTarget(target->id);
++                        group->playNumberValue = playToRun;
+                         group->setAction(2);
+                         group->setInUse(1);
+                         group->task(this, this->md, 2, 1, 1);

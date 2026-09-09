@@ -1,0 +1,752 @@
+# Experiment 0215c1eb5ab3b719656c081918ab6511f624766e3be0347f0b7d12b78b204ab0
+# Base 09528c39a8284d40e07ffa68732a642c71025cdf
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..44c4d545b 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -30,11 +30,11 @@ public:
+         this->maximumSizeValue = 0;
+     }
+ 
+-    T& operator[](int index)
++    T& operator[](int v)
+     {
+-        if (index > this->maximumSizeValue - 1)
+-            this->resize(index + 1);
+-        return this->value[index];
++        if (v > this->maximumSizeValue - 1)
++            this->resize(v + 1);
++        return this->value[v];
+     }
+ 
+     int enlarge(int amount)
+@@ -51,7 +51,7 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& r);
+ 
+     int position(T& item)
+     {
+@@ -63,29 +63,28 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
+-
+-    int remove(T item)
++    int add(T r)
+     {
+-        int i = 0;
+-        int maximum = this->maximumSizeValue;
+-
+-        for (; i < maximum; i++) {
+-            if (this->value[i] == item)
+-                break;
+-        }
+-
+-        if (i >= maximum)
++        if (this->contains(r) == 1)
+             return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = r;
++        this->numberValue++;
++        return 1;
++    }
+ 
+-        maximum--;
+-        if (i < maximum) {
+-            do {
+-                this->value[i] = this->value[i + 1];
+-                i++;
+-            } while (i < this->maximumSizeValue - 1);
+-        }
+-
++    int remove(T r)
++    {
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && this->value[i] != r;
++             i++)
++            ;
++        if (i >= this->maximumSizeValue)
++            return 0;
++        for (; i < this->maximumSizeValue - 1; i++)
++            this->value[i] = this->value[i + 1];
+         this->numberValue--;
+         if (this->numberValue < 0)
+             this->numberValue = 0;
+@@ -134,29 +133,26 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
+-    int resize(int new_size)
++protected:
++    int resize(int s)
+     {
+-        T* new_value = new T[new_size];
++        T* new_value = new T[s];
+         if (new_value == 0)
+             return 0;
+ 
+         int i;
+         for (i = 0;
+-             i < this->maximumSizeValue && i < new_size;
++             i < this->maximumSizeValue && i < s;
+              i++) {
+             new_value[i] = this->value[i];
+         }
+ 
+         delete[] this->value;
+         this->value = new_value;
+-        this->maximumSizeValue = new_size;
++        this->maximumSizeValue = s;
+         return 1;
+     }
+ 
+-public:
+     T* value;
+     int numberValue;
+     int desiredNumberValue;
+@@ -164,52 +160,16 @@ public:
+ };
+ 
+ template <class T>
+-int ManagedArray<T>::contains(const T& item)
++int ManagedArray<T>::contains(const T& r)
+ {
+     int i;
+-    T wanted;
+-    T current;
+-
+     for (i = 0; i < this->numberValue; i++) {
+         if (i >= this->maximumSizeValue)
+             return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
++        if (this->value[i] == r)
+             return 1;
+     }
+     return 0;
+ }
+ 
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/taiuaimd.cpp b/src/taiuaimd.cpp
+index d7bb66bb4..3d917b4da 100644
+--- a/src/taiuaimd.cpp
++++ b/src/taiuaimd.cpp
+@@ -51,35 +51,7 @@ int TribeHuntedAnimalUnitAIModule::processNotify(NotifyEvent* evt, unsigned long
+ 
+         int caller = evt->caller;
+ 
+-    // Search for existing caller
+-    int i = 0;
+-    while (i < this->attackingUnitsValue.numberValue &&
+-           i < this->attackingUnitsValue.maximumSizeValue) {
+-        if (this->attackingUnitsValue.value[i] == caller)
+-            goto done;
+-        i++;
+-    }
+-
+-    // Grow array if count >= capacity
+-    if (this->attackingUnitsValue.numberValue >
+-        this->attackingUnitsValue.maximumSizeValue - 1) {
+-        int new_cap = this->attackingUnitsValue.numberValue + 1;
+-        int* new_arr = new int[new_cap];
+-        if (new_arr) {
+-            int j;
+-            for (j = 0;
+-                 j < this->attackingUnitsValue.maximumSizeValue && j < new_cap;
+-                 j++)
+-                new_arr[j] = this->attackingUnitsValue.value[j];
+-            delete[] this->attackingUnitsValue.value;
+-            this->attackingUnitsValue.value = new_arr;
+-            this->attackingUnitsValue.maximumSizeValue = new_cap;
+-        }
+-    }
+-
+-        // Add caller to end of list
+-        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-        this->attackingUnitsValue.numberValue++;
++        this->attackingUnitsValue.add(caller);
+ 
+         goto done;
+     }
+@@ -221,40 +193,7 @@ int TribeElephantUnitAIModule::processNotify(NotifyEvent* event, unsigned long p
+         }
+         {
+             int caller = event->caller;
+-            int count = this->attackingUnitsValue.numberValue;
+-            int i = 0;
+-            if (count > 0) {
+-                goto loop_check;
+-                do {
+-                    if (i >= this->attackingUnitsValue.maximumSizeValue)
+-                        goto after_loop;
+-                    if (this->attackingUnitsValue.value[i] == caller)
+-                        goto found;
+-                    i++;
+-loop_check:;
+-                } while (i < count);
+-after_loop:;
+-            }
+-
+-            if (count >= this->attackingUnitsValue.maximumSizeValue) {
+-                int newCapacity = count + 1;
+-                int* newArray = (int*)::operator new(newCapacity * 4);
+-                if (newArray != 0) {
+-                    int j = 0;
+-                    if (count > 0) {
+-                        while (j < newCapacity && j < count) {
+-                            newArray[j] = this->attackingUnitsValue.value[j];
+-                            j++;
+-                        }
+-                    }
+-                    ::operator delete(this->attackingUnitsValue.value);
+-                    this->attackingUnitsValue.value = newArray;
+-                    this->attackingUnitsValue.maximumSizeValue = newCapacity;
+-                }
+-            }
+-            this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-            this->attackingUnitsValue.numberValue++;
+-found:
++            this->attackingUnitsValue.add(caller);
+             this->objectValue->setUnderAttack(1);
+             int val = this->closestAttacker(0);
+             this->attackObject(val, 0);
+@@ -501,58 +440,16 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
+     dx = target->world_x - this->objectValue->world_x;
+     dy = target->world_y - this->objectValue->world_y;
+ 
+-    if (this->attackingUnitsValue.numberValue > 0) {
+-        int i = 0;
+-        while (i < this->attackingUnitsValue.numberValue) {
+-                if (i > this->attackingUnitsValue.maximumSizeValue - 1) {
+-                    int newCount = i + 1;
+-                    int* n = new int[newCount];
+-                    if (n) {
+-                        int j = 0;
+-                        if (this->attackingUnitsValue.maximumSizeValue > 0) {
+-                            do {
+-                                if (j < newCount) {
+-                                    ++j;
+-                                    n[j-1] = this->attackingUnitsValue.value[j-1];
+-                                } else {
+-                                    break;
+-                                }
+-                            } while (j < this->attackingUnitsValue.maximumSizeValue);
+-                        }
+-                        delete[] this->attackingUnitsValue.value;
+-                        this->attackingUnitsValue.value = n;
+-                        this->attackingUnitsValue.maximumSizeValue = newCount;
+-                    }
+-                }
+-                if (this->attackingUnitsValue.value[i] != this->currentTargetValue) {
+-                    if (i > this->attackingUnitsValue.maximumSizeValue - 1) {
+-                        int newCount = i + 1;
+-                        int* n = new int[newCount];
+-                        if (n) {
+-                            int j = 0;
+-                            if (this->attackingUnitsValue.maximumSizeValue > 0) {
+-                                do {
+-                                    if (j < newCount) {
+-                                        ++j;
+-                                        n[j-1] = this->attackingUnitsValue.value[j-1];
+-                                    } else {
+-                                        break;
+-                                    }
+-                                } while (j < this->attackingUnitsValue.maximumSizeValue);
+-                            }
+-                            delete[] this->attackingUnitsValue.value;
+-                            this->attackingUnitsValue.value = n;
+-                            this->attackingUnitsValue.maximumSizeValue = newCount;
+-                        }
+-                    }
+-                    RGE_Static_Object* obj2 = this->objectValue->owner->world->object(
+-                        this->attackingUnitsValue.value[i]);
+-                    if (obj2) {
+-                        dx += obj2->world_x - this->objectValue->world_x;
+-                        dy += obj2->world_y - this->objectValue->world_y;
+-                    }
++    if (this->attackingUnitsValue.number() > 0) {
++        for (int i = 0; i < this->attackingUnitsValue.number(); i++) {
++            if (this->attackingUnitsValue[i] != this->currentTargetValue) {
++                RGE_Static_Object* obj2 = this->objectValue->owner->world->object(
++                    this->attackingUnitsValue[i]);
++                if (obj2) {
++                    dx += obj2->world_x - this->objectValue->world_x;
++                    dy += obj2->world_y - this->objectValue->world_y;
+                 }
+-            ++i;
++            }
+         }
+     }
+ 
+@@ -680,59 +577,20 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
+                     this->objectValue->id, this->objectValue->id, 0x201,
+                     event->caller, 0, 0);
+             }
+-        } else if (this->attackingUnitsValue.numberValue == 0) {
++        } else if (this->attackingUnitsValue.number() == 0) {
+             this->objectValue->owner->notify(
+                 this->objectValue->id, this->objectValue->id, 0x201,
+                 event->caller, 0, 0);
+         }
+ 
+-        int count = this->attackingUnitsValue.numberValue;
+-        int i = 0;
+-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-            if (this->attackingUnitsValue.value[i] == event->caller) {
+-                goto found_attacker;
+-            }
+-        }
+-
+-        if (this->objectValue->owner->computerPlayer() == 0 &&
++        if (this->attackingUnitsValue.contains(event->caller) == 0 &&
++            this->objectValue->owner->computerPlayer() == 0 &&
+             this->currentTargetValue != event->caller) {
+             this->askForHelp(event->caller);
+         }
+ 
+-found_attacker:
+-        i = 0;
+         int caller = event->caller;
+-        count = this->attackingUnitsValue.numberValue;
+-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-            if (this->attackingUnitsValue.value[i] == caller) {
+-                goto already_attacking;
+-            }
+-        }
+-
+-        if (this->attackingUnitsValue.numberValue >
+-            this->attackingUnitsValue.maximumSizeValue - 1) {
+-            int newMaximum = this->attackingUnitsValue.numberValue + 1;
+-            int* newValue = (int*)operator new(newMaximum * 4);
+-            if (newValue != 0) {
+-                i = 0;
+-                if (this->attackingUnitsValue.maximumSizeValue > 0) {
+-                    do {
+-                        if (i >= newMaximum) {
+-                            break;
+-                        }
+-                        ++i;
+-                        newValue[i - 1] = this->attackingUnitsValue.value[i - 1];
+-                    } while (i < this->attackingUnitsValue.maximumSizeValue);
+-                }
+-                operator delete(this->attackingUnitsValue.value);
+-                this->attackingUnitsValue.value = newValue;
+-                this->attackingUnitsValue.maximumSizeValue = newMaximum;
+-            }
+-        }
+-        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-        ++this->attackingUnitsValue.numberValue;
+-
+-already_attacking:
++        this->attackingUnitsValue.add(caller);
+         this->objectValue->setUnderAttack(1);
+         float speed = this->objectValue->getSpeed();
+         int state = this->objectValue->actionState();
+@@ -1557,50 +1415,19 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
+         return 4;
+     }
+ 
+-    if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
++    if (this->attackingUnitsValue.number() == 0 || this->objectValue->owner->computerPlayer() == 1) {
+         RGE_Static_Object* obj = this->objectValue;
+         obj->owner->notify(obj->id, obj->id, 0x201, event->caller, 0, 0);
+     }
+ 
+-    int count = this->attackingUnitsValue.numberValue;
+-    int i = 0;
+-    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-        if (this->attackingUnitsValue.value[i] == event->caller) {
+-            goto skip_help;
+-        }
+-    }
+-    if (this->objectValue->owner->computerPlayer() == 0 &&
++    if (this->attackingUnitsValue.contains(event->caller) == 0 &&
++        this->objectValue->owner->computerPlayer() == 0 &&
+         this->currentTargetValue != event->caller) {
+         this->askForHelp(event->caller);
+     }
+ 
+-skip_help:
+-    i = 0;
+     int caller = event->caller;
+-    count = this->attackingUnitsValue.numberValue;
+-    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-        if (this->attackingUnitsValue.value[i] == caller) {
+-            goto after_add;
+-        }
+-    }
+-
+-    if (this->attackingUnitsValue.numberValue >
+-        this->attackingUnitsValue.maximumSizeValue - 1) {
+-        int newMax = this->attackingUnitsValue.numberValue + 1;
+-        int* newList = (int*)operator new(newMax * 4);
+-        if (newList != 0) {
+-            for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i) {
+-                newList[i] = this->attackingUnitsValue.value[i];
+-            }
+-            operator delete(this->attackingUnitsValue.value);
+-            this->attackingUnitsValue.value = newList;
+-            this->attackingUnitsValue.maximumSizeValue = newMax;
+-        }
+-    }
+-    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-    this->attackingUnitsValue.numberValue++;
+-
+-after_add:
++    this->attackingUnitsValue.add(caller);
+     this->objectValue->setUnderAttack(1);
+     if (this->objectValue->owner->computerPlayer() == 0 &&
+         this->currentOrderValue != -1) {
+@@ -1692,46 +1519,20 @@ int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* event, ulong para
+         return 4;
+     }
+ 
+-    if (this->attackingUnitsValue.numberValue == 0 ||
++    if (this->attackingUnitsValue.number() == 0 ||
+         this->objectValue->owner->computerPlayer() == 1) {
+         RGE_Static_Object* o = this->objectValue;
+         o->owner->notify(o->id, o->id, 0x201, event->caller, 0, 0);
+     }
+ 
+-    int count = this->attackingUnitsValue.numberValue;
+-    int i = 0;
+-    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-        if (this->attackingUnitsValue.value[i] == event->caller) goto found_for_help;
+-    }
+-    if (this->objectValue->owner->computerPlayer() == 0 &&
++    if (this->attackingUnitsValue.contains(event->caller) == 0 &&
++        this->objectValue->owner->computerPlayer() == 0 &&
+         this->currentTargetValue != event->caller) {
+         this->askForHelp(event->caller);
+     }
+ 
+-found_for_help:
+-    i = 0;
+     int caller = event->caller;
+-    count = this->attackingUnitsValue.numberValue;
+-    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-        if (this->attackingUnitsValue.value[i] == caller) goto already_in_list;
+-    }
+-
+-    if (this->attackingUnitsValue.numberValue >
+-        this->attackingUnitsValue.maximumSizeValue - 1) {
+-        int newMax = this->attackingUnitsValue.numberValue + 1;
+-        int* newList = (int*)operator new(newMax * 4);
+-        if (newList != 0) {
+-            for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i)
+-                newList[i] = this->attackingUnitsValue.value[i];
+-            operator delete(this->attackingUnitsValue.value);
+-            this->attackingUnitsValue.value = newList;
+-            this->attackingUnitsValue.maximumSizeValue = newMax;
+-        }
+-    }
+-    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-    this->attackingUnitsValue.numberValue++;
+-
+-already_in_list:
++    this->attackingUnitsValue.add(caller);
+     this->objectValue->setUnderAttack(1);
+     if (this->currentOrderValue != -1) {
+         return 2;
+@@ -1832,45 +1633,19 @@ int TribeFishingShipUnitAIModule::processNotify(NotifyEvent* ev, ulong flags)
+         return 4;
+     }
+ 
+-    if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
++    if (this->attackingUnitsValue.number() == 0 || this->objectValue->owner->computerPlayer() == 1) {
+         RGE_Static_Object* obj = this->objectValue;
+         obj->owner->notify(obj->id, obj->id, 0x201, ev->caller, 0, 0);
+     }
+ 
+-    int count = this->attackingUnitsValue.numberValue;
+-    int i = 0;
+-    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-        if (this->attackingUnitsValue.value[i] == ev->caller) goto skip_help;
+-    }
+-    if (this->objectValue->owner->computerPlayer() == 0 &&
++    if (this->attackingUnitsValue.contains(ev->caller) == 0 &&
++        this->objectValue->owner->computerPlayer() == 0 &&
+         this->currentTargetValue != ev->caller) {
+         this->askForHelp(ev->caller);
+     }
+ 
+-skip_help:
+-    i = 0;
+     int caller = ev->caller;
+-    count = this->attackingUnitsValue.numberValue;
+-    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-        if (this->attackingUnitsValue.value[i] == caller) goto after_add;
+-    }
+-
+-    if (this->attackingUnitsValue.numberValue >
+-        this->attackingUnitsValue.maximumSizeValue - 1) {
+-        int newMax = this->attackingUnitsValue.numberValue + 1;
+-        int* newList = (int*)operator new(newMax * 4);
+-        if (newList != 0) {
+-            for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i)
+-                newList[i] = this->attackingUnitsValue.value[i];
+-            operator delete(this->attackingUnitsValue.value);
+-            this->attackingUnitsValue.value = newList;
+-            this->attackingUnitsValue.maximumSizeValue = newMax;
+-        }
+-    }
+-    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-    this->attackingUnitsValue.numberValue++;
+-
+-after_add:
++    this->attackingUnitsValue.add(caller);
+     this->objectValue->setUnderAttack(1);
+     if (this->objectValue->owner->computerPlayer() == 0 &&
+         this->currentOrderValue != -1) {
+@@ -2073,61 +1848,19 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2)
+                         this->currentTargetZValue, this->desiredTargetDistanceValue,
+                         0, 1, this->currentOrderPriorityValue);
+ 
+-                    if (this->attackingUnitsValue.numberValue > 0) {
+-            i = 0;
+-            while (i < this->attackingUnitsValue.numberValue) {
+-                if (i > this->attackingUnitsValue.maximumSizeValue - 1) {
+-                    int newCount = i + 1;
+-                    int* newValues = new int[newCount];
+-                    if (newValues != 0) {
+-                        int j = 0;
+-                        if (this->attackingUnitsValue.maximumSizeValue > 0) {
+-                            do {
+-                                if (j < newCount) {
+-                                    ++j;
+-                                    newValues[j - 1] = this->attackingUnitsValue.value[j - 1];
+-                                } else {
+-                                    break;
++                    if (this->attackingUnitsValue.number() > 0) {
++                        for (i = 0; i < this->attackingUnitsValue.number(); i++) {
++                            if (this->attackingUnitsValue[i] != this->currentTargetValue) {
++                                RGE_Static_Object* object =
++                                    this->objectValue->owner->world->object(
++                                        this->attackingUnitsValue[i]);
++                                if (object != 0) {
++                                    xDiff += object->world_x - this->objectValue->world_x;
++                                    yDiff += object->world_y - this->objectValue->world_y;
+                                 }
+-                            } while (j < this->attackingUnitsValue.maximumSizeValue);
+-                        }
+-                        delete[] this->attackingUnitsValue.value;
+-                        this->attackingUnitsValue.value = newValues;
+-                        this->attackingUnitsValue.maximumSizeValue = newCount;
+-                    }
+-                }
+-                if (this->attackingUnitsValue.value[i] != this->currentTargetValue) {
+-                    if (i > this->attackingUnitsValue.maximumSizeValue - 1) {
+-                        int newCount = i + 1;
+-                        int* newValues = new int[newCount];
+-                        if (newValues != 0) {
+-                            int j = 0;
+-                            if (this->attackingUnitsValue.maximumSizeValue > 0) {
+-                                do {
+-                                    if (j < newCount) {
+-                                        ++j;
+-                                        newValues[j - 1] = this->attackingUnitsValue.value[j - 1];
+-                                    } else {
+-                                        break;
+-                                    }
+-                                } while (j < this->attackingUnitsValue.maximumSizeValue);
+                             }
+-                            delete[] this->attackingUnitsValue.value;
+-                            this->attackingUnitsValue.value = newValues;
+-                            this->attackingUnitsValue.maximumSizeValue = newCount;
+                         }
+                     }
+-                    RGE_Static_Object* object =
+-                        this->objectValue->owner->world->object(
+-                            this->attackingUnitsValue.value[i]);
+-                    if (object != 0) {
+-                        xDiff += object->world_x - this->objectValue->world_x;
+-                        yDiff += object->world_y - this->objectValue->world_y;
+-                    }
+-                }
+-                ++i;
+-            }
+-                    }
+ 
+                     distance = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
+                     if (this->intelligentEvasiveMoveTo(
+@@ -2393,28 +2126,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
+ 
+     case 600: {
+         int id = event->caller;
+-        int i = 0;
+-        while (i < this->attackingUnitsValue.numberValue &&
+-               i < this->attackingUnitsValue.maximumSizeValue) {
+-            if (this->attackingUnitsValue.value[i] == id) goto already;
+-            ++i;
+-        }
+-
+-        if (this->attackingUnitsValue.numberValue >
+-            this->attackingUnitsValue.maximumSizeValue - 1) {
+-            int newCount = this->attackingUnitsValue.numberValue + 1;
+-            int* p = (int*)operator new(newCount * 4);
+-            if (p != 0) {
+-                for (int j = 0; j < this->attackingUnitsValue.maximumSizeValue && j < newCount; ++j)
+-                    p[j] = this->attackingUnitsValue.value[j];
+-                operator delete(this->attackingUnitsValue.value);
+-                this->attackingUnitsValue.value = p;
+-                this->attackingUnitsValue.maximumSizeValue = newCount;
+-            }
+-        }
+-        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = id;
+-        ++this->attackingUnitsValue.numberValue;
+-already:
++        this->attackingUnitsValue.add(id);
+         this->objectValue->setUnderAttack(1);
+         return 2;
+     }
+@@ -2777,38 +2489,19 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
+             return 4;
+         }
+ 
+-        if (this->attackingUnitsValue.numberValue == 0 ||
++        if (this->attackingUnitsValue.number() == 0 ||
+             this->objectValue->owner->computerPlayer() == 1) {
+             RGE_Static_Object* obj = this->objectValue;
+             obj->owner->notify(obj->id, obj->id, 0x201, event->caller, 0, 0);
+         }
+ 
+-        ManagedArray<int>* array = &this->attackingUnitsValue;
+-        int count = array->numberValue;
+-        int i = 0;
+-        for (; i < count && i < array->maximumSizeValue; ++i) {
+-            if (array->value[i] == event->caller) goto found_for_help;
+-        }
+-        if (this->objectValue->owner->computerPlayer() == 0 &&
++        if (this->attackingUnitsValue.contains(event->caller) == 0 &&
++            this->objectValue->owner->computerPlayer() == 0 &&
+             this->currentTargetValue != event->caller) {
+             this->askForHelp(event->caller);
+         }
+ 
+-found_for_help:
+-        i = 0;
+-        int caller = event->caller;
+-        count = array->numberValue;
+-        for (; i < count && i < array->maximumSizeValue; ++i) {
+-            if (array->value[i] == caller) goto already_in_list;
+-        }
+-
+-        if (array->numberValue > array->maximumSizeValue - 1) {
+-            array->resize(array->numberValue + 1);
+-        }
+-        array->value[array->numberValue] = caller;
+-        array->numberValue++;
+-
+-already_in_list:
++        this->attackingUnitsValue.add(event->caller);
+         this->objectValue->setUnderAttack(1);
+         return 2;
+     }
+@@ -2819,63 +2512,15 @@ already_in_list:
+     case 0x64:
+     {
+         int caller = event->caller;
+-        int count = this->attackingUnitsValue.numberValue;
+-        int i = 0;
+-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-            if (this->attackingUnitsValue.value[i] == caller) goto changed_258;
+-        }
+-
+-        if (this->attackingUnitsValue.numberValue >
+-            this->attackingUnitsValue.maximumSizeValue - 1) {
+-            int newMax = this->attackingUnitsValue.numberValue + 1;
+-            int* newList = (int*)operator new(newMax * 4);
+-            if (newList != 0) {
+-                for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i)
+-                    newList[i] = this->attackingUnitsValue.value[i];
+-                operator delete(this->attackingUnitsValue.value);
+-                this->attackingUnitsValue.value = newList;
+-                this->attackingUnitsValue.maximumSizeValue = newMax;
+-            }
+-        }
+-        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+-        this->attackingUnitsValue.numberValue++;
+-
+-changed_258:
++        this->attackingUnitsValue.add(caller);
+         this->objectValue->setUnderAttack(1);
+         return 2;
+     }
+ 
+     case 0xc7:
+     {
+-        int count = this->attackingUnitsValue.numberValue;
+-        int i = 0;
+-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+-            if (this->attackingUnitsValue.value[i] == event->caller) goto found_2bb;
+-        }
+-        return 2;
+-
+-found_2bb:
+-        ManagedArray<int>* array = &this->attackingUnitsValue;
+-        int max = array->maximumSizeValue;
+-        int caller = event->caller;
+-        i = 0;
+-        if (max > 0) {
+-            while (i < max) {
+-                if (array->value[i] == caller)
+-                    break;
+-                ++i;
+-            }
+-        }
+-        if (i < max) {
+-            if (i < max - 1) {
+-                do {
+-                    array->value[i] = array->value[i + 1];
+-                    ++i;
+-                } while (i < this->attackingUnitsValue.maximumSizeValue - 1);
+-            }
+-            array->numberValue--;
+-            if (array->numberValue < 0)
+-                array->numberValue = 0;
++        if (this->attackingUnitsValue.contains(event->caller) == 1) {
++            this->attackingUnitsValue.remove(event->caller);
+         }
+         return 2;
+     }

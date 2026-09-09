@@ -1,0 +1,3704 @@
+# Experiment 3d4db29b6545754a4140fd84e8e5cae3a892e21ac9edaa8a37fda02e802217e0
+# Base 09528c39a8284d40e07ffa68732a642c71025cdf
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..44c4d545b 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -30,11 +30,11 @@ public:
+         this->maximumSizeValue = 0;
+     }
+ 
+-    T& operator[](int index)
++    T& operator[](int v)
+     {
+-        if (index > this->maximumSizeValue - 1)
+-            this->resize(index + 1);
+-        return this->value[index];
++        if (v > this->maximumSizeValue - 1)
++            this->resize(v + 1);
++        return this->value[v];
+     }
+ 
+     int enlarge(int amount)
+@@ -51,7 +51,7 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& r);
+ 
+     int position(T& item)
+     {
+@@ -63,29 +63,28 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
+-
+-    int remove(T item)
++    int add(T r)
+     {
+-        int i = 0;
+-        int maximum = this->maximumSizeValue;
+-
+-        for (; i < maximum; i++) {
+-            if (this->value[i] == item)
+-                break;
+-        }
+-
+-        if (i >= maximum)
++        if (this->contains(r) == 1)
+             return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = r;
++        this->numberValue++;
++        return 1;
++    }
+ 
+-        maximum--;
+-        if (i < maximum) {
+-            do {
+-                this->value[i] = this->value[i + 1];
+-                i++;
+-            } while (i < this->maximumSizeValue - 1);
+-        }
+-
++    int remove(T r)
++    {
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && this->value[i] != r;
++             i++)
++            ;
++        if (i >= this->maximumSizeValue)
++            return 0;
++        for (; i < this->maximumSizeValue - 1; i++)
++            this->value[i] = this->value[i + 1];
+         this->numberValue--;
+         if (this->numberValue < 0)
+             this->numberValue = 0;
+@@ -134,29 +133,26 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
+-    int resize(int new_size)
++protected:
++    int resize(int s)
+     {
+-        T* new_value = new T[new_size];
++        T* new_value = new T[s];
+         if (new_value == 0)
+             return 0;
+ 
+         int i;
+         for (i = 0;
+-             i < this->maximumSizeValue && i < new_size;
++             i < this->maximumSizeValue && i < s;
+              i++) {
+             new_value[i] = this->value[i];
+         }
+ 
+         delete[] this->value;
+         this->value = new_value;
+-        this->maximumSizeValue = new_size;
++        this->maximumSizeValue = s;
+         return 1;
+     }
+ 
+-public:
+     T* value;
+     int numberValue;
+     int desiredNumberValue;
+@@ -164,52 +160,16 @@ public:
+ };
+ 
+ template <class T>
+-int ManagedArray<T>::contains(const T& item)
++int ManagedArray<T>::contains(const T& r)
+ {
+     int i;
+-    T wanted;
+-    T current;
+-
+     for (i = 0; i < this->numberValue; i++) {
+         if (i >= this->maximumSizeValue)
+             return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
++        if (this->value[i] == r)
+             return 1;
+     }
+     return 0;
+ }
+ 
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 3ee3eb044..593749b3c 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -2012,36 +2012,6 @@ char* TribeTacticalAIModule::updateAreaName()
+ 
+ 
+ 
+-// These three insertions call the allocation functions directly.
+-// The shared add method emits resize.
+-static inline int addTacticalPlayer(ManagedArray<int>& array, int valueToAdd)
+-{
+-    int i;
+-    int* newValue;
+-    int newSize;
+-
+-    for (i = 0; i < array.numberValue; i++) {
+-        if (i >= array.maximumSizeValue) break;
+-        if (array.value[i] == valueToAdd) return 0;
+-    }
+-    if (array.numberValue > array.maximumSizeValue - 1) {
+-        newSize = array.numberValue + 1;
+-        newValue = (int*)::operator new(newSize * sizeof(int));
+-        if (newValue != 0) {
+-            for (i = 0; i < array.maximumSizeValue; i++) {
+-                if (i >= newSize) break;
+-                newValue[i] = array.value[i];
+-            }
+-            ::operator delete(array.value);
+-            array.value = newValue;
+-            array.maximumSizeValue = newSize;
+-        }
+-    }
+-    array.value[array.numberValue] = valueToAdd;
+-    array.numberValue = array.numberValue + 1;
+-    return 1;
+-}
+-
+ int TribeTacticalAIModule::update(int)
+ {
+     if ((unsigned int)(this->md->player->world->world_time -
+@@ -2098,7 +2068,7 @@ int TribeTacticalAIModule::update(int)
+ 
+     // This period array method preserves the md reread below.
+     this->unitsTaskedThisUpdate.zeroNumber();
+-    this->md->informationAI.farmsTaskedThisUpdate.numberValue = 0;
++    this->md->informationAI.farmsTaskedThisUpdate.zeroNumber();
+ 
+     if ((unsigned int)this->md->player->world->world_time / 1000U >=
+         (unsigned int)this->sn[0x68]) {
+@@ -2110,14 +2080,14 @@ int TribeTacticalAIModule::update(int)
+     int mostLikedPlayer = this->md->diplomacyAI.mostLiked(
+         this->sn[0x7C], this->sn[0x80]);
+ 
+-    this->playersToAttack.numberValue = 0;
+-    addTacticalPlayer(this->playersToAttack, mostHatedPlayer);
++    this->playersToAttack.zeroNumber();
++    this->playersToAttack.add(mostHatedPlayer);
+ 
+     this->playersToDefend.zeroNumber();
+-    addTacticalPlayer(this->playersToDefend, this->md->player->id);
++    this->playersToDefend.add(this->md->player->id);
+ 
+     if (mostHatedPlayer != mostLikedPlayer) {
+-        addTacticalPlayer(this->playersToDefend, mostLikedPlayer);
++        this->playersToDefend.add(mostLikedPlayer);
+     }
+ 
+ diplomacy:
+@@ -2157,7 +2127,7 @@ diplomacy:
+     }
+ 
+     this->doSomething();
+-    this->unitsTaskedThisUpdate.numberValue = 0;
++    this->unitsTaskedThisUpdate.zeroNumber();
+     return 1;
+ }
+ 
+@@ -2171,271 +2141,80 @@ void __cdecl operator delete(void* ptr);
+ int TribeTacticalAIModule::save(int file)
+ {
+     int tempInt;
+-
+-    {
+     int i;
+-    tempInt = this->civilians.numberValue;
++
++    tempInt = this->civilians.number();
+     rge_write(file, &tempInt, 4);
+-    i = 0;
+-    if (this->civilians.numberValue > 0) {
+-        ManagedArray<int>& arr = this->civilians;
+-        do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
+-            rge_write(file, &tempInt, 4);
+-            i++;
+-        } while (i < this->civilians.numberValue);
+-    }
++    for (i = 0; i < this->civilians.number(); i++) {
++        tempInt = this->civilians[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int i;
+-    tempInt = this->civilianExplorers.numberValue;
++    tempInt = this->civilianExplorers.number();
+     rge_write(file, &tempInt, 4);
+-    i = 0;
+-    if (this->civilianExplorers.numberValue > 0) {
+-        ManagedArray<int>& arr = this->civilianExplorers;
+-        do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
+-            rge_write(file, &tempInt, 4);
+-            i++;
+-        } while (i < this->civilianExplorers.numberValue);
+-    }
++    for (i = 0; i < this->civilianExplorers.number(); i++) {
++        tempInt = this->civilianExplorers[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+     rge_write(file, &this->numberGatherersValue, 4);
+     rge_write(file, &this->desiredNumberGatherersValue, 4);
+     rge_write(file, this->gatherers, 0x4B0);
+ 
+-    {
+-    int i;
+-    tempInt = this->soldiers.numberValue;
++    tempInt = this->soldiers.number();
+     rge_write(file, &tempInt, 4);
+-    i = 0;
+-    if (this->soldiers.numberValue > 0) {
+-        ManagedArray<int>& arr = this->soldiers;
+-        do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
+-            rge_write(file, &tempInt, 4);
+-            i++;
+-        } while (i < this->soldiers.numberValue);
+-    }
++    for (i = 0; i < this->soldiers.number(); i++) {
++        tempInt = this->soldiers[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int i;
+-    tempInt = this->ungroupedSoldiers.numberValue;
++    tempInt = this->ungroupedSoldiers.number();
+     rge_write(file, &tempInt, 4);
+-    i = 0;
+-    if (this->ungroupedSoldiers.numberValue > 0) {
+-        ManagedArray<int>& arr = this->ungroupedSoldiers;
+-        do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
+-            rge_write(file, &tempInt, 4);
+-            i++;
+-        } while (i < this->ungroupedSoldiers.numberValue);
+-    }
++    for (i = 0; i < this->ungroupedSoldiers.number(); i++) {
++        tempInt = this->ungroupedSoldiers[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->boats.numberValue;
++    tempInt = this->boats.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->boats.numberValue > 0) {
+-        do {
+-            if (k > this->boats.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->boats.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->boats.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->boats.value);
+-                    this->boats.value = newValue;
+-                    this->boats.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->boats.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->boats.numberValue);
+-    }
++    for (i = 0; i < this->boats.number(); i++) {
++        tempInt = this->boats[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->warBoats.numberValue;
++    tempInt = this->warBoats.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->warBoats.numberValue > 0) {
+-        do {
+-            if (k > this->warBoats.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->warBoats.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->warBoats.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->warBoats.value);
+-                    this->warBoats.value = newValue;
+-                    this->warBoats.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->warBoats.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->warBoats.numberValue);
+-    }
++    for (i = 0; i < this->warBoats.number(); i++) {
++        tempInt = this->warBoats[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->fishingBoats.numberValue;
++    tempInt = this->fishingBoats.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->fishingBoats.numberValue > 0) {
+-        do {
+-            if (k > this->fishingBoats.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->fishingBoats.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->fishingBoats.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->fishingBoats.value);
+-                    this->fishingBoats.value = newValue;
+-                    this->fishingBoats.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->fishingBoats.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->fishingBoats.numberValue);
+-    }
++    for (i = 0; i < this->fishingBoats.number(); i++) {
++        tempInt = this->fishingBoats[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->tradeBoats.numberValue;
++    tempInt = this->tradeBoats.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->tradeBoats.numberValue > 0) {
+-        do {
+-            if (k > this->tradeBoats.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->tradeBoats.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->tradeBoats.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->tradeBoats.value);
+-                    this->tradeBoats.value = newValue;
+-                    this->tradeBoats.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->tradeBoats.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->tradeBoats.numberValue);
+-    }
++    for (i = 0; i < this->tradeBoats.number(); i++) {
++        tempInt = this->tradeBoats[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->transportBoats.numberValue;
++    tempInt = this->transportBoats.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->transportBoats.numberValue > 0) {
+-        do {
+-            if (k > this->transportBoats.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->transportBoats.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->transportBoats.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->transportBoats.value);
+-                    this->transportBoats.value = newValue;
+-                    this->transportBoats.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->transportBoats.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->transportBoats.numberValue);
+-    }
++    for (i = 0; i < this->transportBoats.number(); i++) {
++        tempInt = this->transportBoats[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->artifacts.numberValue;
++    tempInt = this->artifacts.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->artifacts.numberValue > 0) {
+-        do {
+-            if (k > this->artifacts.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->artifacts.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->artifacts.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->artifacts.value);
+-                    this->artifacts.value = newValue;
+-                    this->artifacts.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->artifacts.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->artifacts.numberValue);
+-    }
++    for (i = 0; i < this->artifacts.number(); i++) {
++        tempInt = this->artifacts[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+     int* writePtr;
+@@ -2454,128 +2233,32 @@ int TribeTacticalAIModule::save(int file)
+     }
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->playersToAttack.numberValue;
++    tempInt = this->playersToAttack.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->playersToAttack.numberValue > 0) {
+-        do {
+-            if (k > this->playersToAttack.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->playersToAttack.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->playersToAttack.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->playersToAttack.value);
+-                    this->playersToAttack.value = newValue;
+-                    this->playersToAttack.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->playersToAttack.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->playersToAttack.numberValue);
+-    }
++    for (i = 0; i < this->playersToAttack.number(); i++) {
++        tempInt = this->playersToAttack[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->playersToDefend.numberValue;
++    tempInt = this->playersToDefend.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->playersToDefend.numberValue > 0) {
+-        do {
+-            if (k > this->playersToDefend.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->playersToDefend.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->playersToDefend.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->playersToDefend.value);
+-                    this->playersToDefend.value = newValue;
+-                    this->playersToDefend.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->playersToDefend.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->playersToDefend.numberValue);
+-    }
++    for (i = 0; i < this->playersToDefend.number(); i++) {
++        tempInt = this->playersToDefend[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->workingArea.numberValue;
++    tempInt = this->workingArea.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->workingArea.numberValue > 0) {
+-        do {
+-            if (k > this->workingArea.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->workingArea.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->workingArea.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->workingArea.value);
+-                    this->workingArea.value = newValue;
+-                    this->workingArea.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->workingArea.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->workingArea.numberValue);
+-    }
++    for (i = 0; i < this->workingArea.number(); i++) {
++        tempInt = this->workingArea[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+-    {
+-    int k;
+-    tempInt = this->unitsTaskedThisUpdate.numberValue;
++    tempInt = this->unitsTaskedThisUpdate.number();
+     rge_write(file, &tempInt, 4);
+-    k = 0;
+-    if (this->unitsTaskedThisUpdate.numberValue > 0) {
+-        do {
+-            if (k > this->unitsTaskedThisUpdate.maximumSizeValue - 1) {
+-                int newMax;
+-                int* newValue;
+-                int j;
+-                newMax = k + 1;
+-                newValue = (int*)operator new(k * 4 + 4);
+-                if (newValue != 0) {
+-                    j = 0;
+-                    for (; j < this->unitsTaskedThisUpdate.maximumSizeValue && j < newMax; j++) {
+-                        int* oldValue = this->unitsTaskedThisUpdate.value;
+-                        newValue[j] = oldValue[j];
+-                    }
+-                    operator delete(this->unitsTaskedThisUpdate.value);
+-                    this->unitsTaskedThisUpdate.value = newValue;
+-                    this->unitsTaskedThisUpdate.maximumSizeValue = newMax;
+-                }
+-            }
+-            tempInt = this->unitsTaskedThisUpdate.value[k];
+-            rge_write(file, &tempInt, 4);
+-            k++;
+-        } while (k < this->unitsTaskedThisUpdate.numberValue);
+-    }
++    for (i = 0; i < this->unitsTaskedThisUpdate.number(); i++) {
++        tempInt = this->unitsTaskedThisUpdate[i];
++        rge_write(file, &tempInt, 4);
+     }
+ 
+     writePtr = this->actualGathererDistribution;
+@@ -2705,7 +2388,7 @@ int TribeTacticalAIModule::doSomething()
+                 break;
+ 
+             case 1:
+-                if (this->civilians.numberValue > 0) {
++                if (this->civilians.number() > 0) {
+                     if (this->firstNeededResourceUpdateDone == 0) {
+                         this->firstNeededResourceUpdateDone = 1;
+                         this->updateNeededResources();
+@@ -2722,33 +2405,33 @@ int TribeTacticalAIModule::doSomething()
+                 break;
+ 
+             case 3:
+-                if (this->boats.numberValue > 0) {
++                if (this->boats.number() > 0) {
+                     this->setupBoatGroups();
+                 }
+                 break;
+ 
+             case 4:
+-                if (this->boats.numberValue > 0) {
++                if (this->boats.number() > 0) {
+                     this->fillBoatGroups();
+                 }
+                 break;
+ 
+             case 5:
+-                if (this->boats.numberValue > 0) {
++                if (this->boats.number() > 0) {
+                     this->taskBoats();
+                 }
+                 break;
+ 
+             case 6:
+-                if (this->boats.numberValue > 0 || this->soldiers.numberValue > 0) {
++                if (this->boats.number() > 0 || this->soldiers.number() > 0) {
+                     this->fillSoldierGroups();
+                 }
+                 break;
+ 
+             case 7:
+-                if (this->boats.numberValue > 0 ||
+-                    this->soldiers.numberValue > 0 ||
+-                    this->artifacts.numberValue > 0) {
++                if (this->boats.number() > 0 ||
++                    this->soldiers.number() > 0 ||
++                    this->artifacts.number() > 0) {
+                     this->taskIdleSoldiers(startTime, availableTime);
+                     if (this->nextIdleSoldierGroupToTaskValue != -1) {
+                         incUpdateArea = 0;
+@@ -2757,9 +2440,9 @@ int TribeTacticalAIModule::doSomething()
+                 break;
+ 
+             case 8:
+-                if (this->boats.numberValue > 0 ||
+-                    this->soldiers.numberValue > 0 ||
+-                    this->artifacts.numberValue > 0) {
++                if (this->boats.number() > 0 ||
++                    this->soldiers.number() > 0 ||
++                    this->artifacts.number() > 0) {
+                     this->taskActiveSoldiers(startTime, availableTime);
+                     if (this->nextActiveSoldierGroupToTaskValue != -1) {
+                         incUpdateArea = 0;
+@@ -2768,7 +2451,7 @@ int TribeTacticalAIModule::doSomething()
+                 break;
+ 
+             case 9:
+-                if (this->soldiers.numberValue > 0) {
++                if (this->soldiers.number() > 0) {
+                     this->playTaskSoldiers(startTime, availableTime);
+                 }
+                 break;
+@@ -3128,83 +2811,46 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+         if (obj->master_obj->object_group == 0x14) {
+             id = obj->id;
+             list = &this->transportBoats;
+-            if (list->contains(id) != 1) {
+-                (*list)[list->numberValue] = id;
+-                list->numberValue++;
+-            }
++            list->add(id);
+         }
+ 
+         if (obj->master_obj->object_group == 0x16) {
+             id = obj->id;
+             list = &this->warBoats;
+-            if (list->contains(id) != 1) {
+-                (*list)[list->numberValue] = id;
+-                list->numberValue++;
+-            }
++            list->add(id);
+         }
+ 
+         if (obj->master_obj->object_group == 0x15) {
+             id = obj->id;
+             list = &this->fishingBoats;
+-            if (list->contains(id) == 1)
+-                return;
+-            (*list)[list->numberValue] = id;
+-            list->numberValue++;
++            list->add(id);
+         }
+     }
+ }
+ 
+ 
+ 
+-void TribeTacticalAIModule::removeObject(int objectId)
++void TribeTacticalAIModule::removeObject(int id)
+ {
+-    this->removeFromTaskLists(objectId);
+-
+-    if (this->civilians.contains(objectId)) {
+-        this->civilians.remove(objectId);
+-    } else if (this->soldiers.contains(objectId)) {
+-        this->soldiers.remove(objectId);
+-    } else {
+-        if (this->boats.contains(objectId)) {
+-            this->boats.remove(objectId);
+-
+-            if (this->warBoats.contains(objectId)) {
+-                int removeIndex = 0;
+-                int maximum = this->warBoats.maximumSizeValue;
+-                for (; removeIndex < maximum; removeIndex++) {
+-                    if (this->warBoats.value[removeIndex] == objectId)
+-                        break;
+-                }
+-                if (removeIndex < maximum) {
+-                    maximum--;
+-                    if (removeIndex < maximum) {
+-                        do {
+-                            this->warBoats.value[removeIndex] =
+-                                this->warBoats.value[removeIndex + 1];
+-                            removeIndex++;
+-                        } while (removeIndex <
+-                                 this->warBoats.maximumSizeValue - 1);
+-                    }
+-                    this->warBoats.numberValue--;
+-                    if (this->warBoats.numberValue < 0)
+-                        this->warBoats.numberValue = 0;
+-                }
+-                this->removeFromGroup(objectId);
+-                return;
+-            }
+-            if (this->fishingBoats.contains(objectId))
+-                this->fishingBoats.remove(objectId);
+-            else if (this->tradeBoats.contains(objectId))
+-                this->tradeBoats.remove(objectId);
+-            else if (this->transportBoats.contains(objectId))
+-                this->transportBoats.remove(objectId);
+-        } else {
+-            if (this->artifacts.contains(objectId))
+-                this->artifacts.remove(objectId);
+-        }
+-    }
+-
+-    this->removeFromGroup(objectId);
++    this->removeFromTaskLists(id);
++    if (this->civilians.contains(id)) {
++        this->civilians.remove(id);
++    } else if (this->soldiers.contains(id)) {
++        this->soldiers.remove(id);
++    } else if (this->boats.contains(id)) {
++        this->boats.remove(id);
++        if (this->warBoats.contains(id))
++            this->warBoats.remove(id);
++        else if (this->fishingBoats.contains(id))
++            this->fishingBoats.remove(id);
++        else if (this->tradeBoats.contains(id))
++            this->tradeBoats.remove(id);
++        else if (this->transportBoats.contains(id))
++            this->transportBoats.remove(id);
++    } else if (this->artifacts.contains(id)) {
++        this->artifacts.remove(id);
++    }
++    this->removeFromGroup(id);
+ }
+ 
+ 
+@@ -3222,43 +2868,43 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
+     list = &this->playersToAttack;
+     numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
+ 
+-    if (this->civilians.numberValue >= 3) {
++    if (this->civilians.number() >= 3) {
+     list = &this->civilians;
+     if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
+         zero = 0;
+-        this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
++        this->civilianExplorers.setDesiredNumber((int)ceil((float)((double)this->sn[0] * this->civilians.number()) * 0.01f));
+         desired = this->numberSoldierExplorers();
+-        if (desired + this->civilianExplorers.desiredNumberValue > this->sn[18]) {
+-            this->civilianExplorers.desiredNumberValue = this->sn[18] - desired;
++        if (desired + this->civilianExplorers.desiredNumber() > this->sn[18]) {
++            this->civilianExplorers.setDesiredNumber(this->sn[18] - desired);
+         }
+-        if (this->sn[3] != -1 && this->civilianExplorers.desiredNumberValue > this->sn[3]) {
+-            this->civilianExplorers.desiredNumberValue = this->sn[3];
++        if (this->sn[3] != -1 && this->civilianExplorers.desiredNumber() > this->sn[3]) {
++            this->civilianExplorers.setDesiredNumber(this->sn[3]);
+         }
+     }
+     else {
+         zero = 0;
+-        this->civilianExplorers.desiredNumberValue = zero;
++        this->civilianExplorers.setDesiredNumber(zero);
+     }
+ 
+     if (percentExplored >= this->sn[32] && numberItems > this->sn[145]) {
+         desired = this->sn[35];
+-        if (this->civilianExplorers.desiredNumberValue > desired) {
+-            this->civilianExplorers.desiredNumberValue = desired;
++        if (this->civilianExplorers.desiredNumber() > desired) {
++            this->civilianExplorers.setDesiredNumber(desired);
+         }
+     }
+     else if (percentExplored >= this->sn[179]) {
+-        desired = this->civilianExplorers.desiredNumberValue / 2;
++        desired = this->civilianExplorers.desiredNumber() / 2;
+         if (desired <= zero) {
+             desired = zero;
+         }
+-        this->civilianExplorers.desiredNumberValue = desired;
++        this->civilianExplorers.setDesiredNumber(desired);
+     }
+ 
+     if (this->zoomingToNextAge == 1) {
+-        this->civilianExplorers.desiredNumberValue = zero;
++        this->civilianExplorers.setDesiredNumber(zero);
+     }
+ 
+-    gatherers = this->civilians.numberValue - this->civilianExplorers.desiredNumberValue;
++    gatherers = this->civilians.number() - this->civilianExplorers.desiredNumber();
+     this->desiredNumberGatherersValue = gatherers;
+     if (this->sn[5] != -1 && gatherers > this->sn[5]) {
+         this->desiredNumberGatherersValue = this->sn[5];
+@@ -3266,7 +2912,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
+     }
+     else {
+         desired = 1;
+-        if (this->civilians.numberValue == 1) {
++        if (this->civilians.number() == 1) {
+             this->desiredNumberGatherersValue = 0;
+         }
+         else {
+@@ -3283,7 +2929,7 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
+             if (desired == -1 || gatherers <= desired)
+                 goto low_count_done;
+         }
+-        this->civilianExplorers.desiredNumberValue = desired;
++        this->civilianExplorers.setDesiredNumber(desired);
+ low_count_done:
+         ;
+     }
+@@ -3303,7 +2949,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
+     RGE_Static_Object* obj;
+     int civilian;
+ 
+-    if (this->civilians.numberValue <= 0) {
++    if (this->civilians.number() <= 0) {
+         this->nextCivilianToTaskValue = -1;
+         return 0;
+     }
+@@ -3311,7 +2957,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
+     j = 0;
+     if (this->nextCivilianToTaskValue == -1) {
+         // Create new civilian explorers up to the desired number.
+-        if (this->civilianExplorers.numberValue < this->civilianExplorers.desiredNumberValue) {
++        if (this->civilianExplorers.number() < this->civilianExplorers.desiredNumber()) {
+             do {
+                 obj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+                 if (obj != 0) {
+@@ -3342,10 +2988,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long pa
+                             }
+                             if (obj != 0 && obj->attribute_amount_held == 0.0f) {
+                                 int id = obj->id;
+-                                for (i = 0; i < this->civilianExplorers.numberValue &&
+-                                             i < this->civilianExplorers.maximumSizeValue; i++) {
+-                                    if (this->civilianExplorers.value[i] == id) goto next_resource;
+-                                }
++                                if (this->civilianExplorers.contains(id) == 1) goto next_resource;
+                                 tasked = id;
+                                 taskedCount = id;
+                                 this->removeGatherer(id);
+@@ -3356,39 +2999,22 @@ next_resource:
+                 }
+                 if (tasked == -1) goto skip_append;
+ append_explorer:
+-                {
+-                    int explorerCount = this->civilianExplorers.numberValue;
+-                    int scan = 0;
+-                    if (explorerCount > 0) {
+-                        do {
+-                            if (this->civilianExplorers.maximumSizeValue <= scan)
+-                                break;
+-                            if (this->civilianExplorers.value[scan] == tasked)
+-                                goto skip_append;
+-                            scan = scan + 1;
+-                        } while (scan < explorerCount);
+-                    }
+-                    if (this->civilianExplorers.maximumSizeValue - 1 <
+-                        explorerCount)
+-                        this->civilianExplorers.resize(explorerCount + 1);
+-                    this->civilianExplorers.value[explorerCount] = tasked;
+-                    this->civilianExplorers.numberValue = explorerCount + 1;
+-                }
+-            } while (this->civilianExplorers.numberValue <
+-                     this->civilianExplorers.desiredNumberValue);
++                if (this->civilianExplorers.add(tasked) == 0) goto skip_append;
++            } while (this->civilianExplorers.number() <
++                     this->civilianExplorers.desiredNumber());
+         }
+ skip_append:
+         // Remove excess explorers (the oldest first).
+-        if (this->civilianExplorers.numberValue > this->civilianExplorers.desiredNumberValue) {
++        if (this->civilianExplorers.number() > this->civilianExplorers.desiredNumber()) {
+             int id;
+-            if (this->civilianExplorers.numberValue <= 0)
++            if (this->civilianExplorers.number() <= 0)
+                 goto excess_explorers_done;
+ remove_excess_explorer:
+             id = this->civilianExplorers[0];
+             this->civilianExplorers.remove(id);
+             this->stopUnit(id, 100);
+-            if (this->civilianExplorers.numberValue >
+-                this->civilianExplorers.desiredNumberValue)
++            if (this->civilianExplorers.number() >
++                this->civilianExplorers.desiredNumber())
+                 goto remove_excess_explorer;
+         }
+ excess_explorers_done:
+@@ -3408,19 +3034,17 @@ excess_explorers_done:
+                      this->numberGatherersValue < this->desiredNumberGatherersValue);
+         }
+         ManagedArray<int>* civilianList = &this->civilians;
+-        if (civilianList->maximumSizeValue - 1 < 0)
+-            civilianList->resize(1);
+-        this->nextCivilianToTaskValue = civilianList->value[0];
++        this->nextCivilianToTaskValue = (*civilianList)[0];
+         if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0D8A) - param_1 >= param_2) {
+             return 0;
+         }
+     }
+ 
+     // Refresh phase: find the civilian to task this tick and task the rest.
+-    for (i = 0; i < this->civilians.numberValue; i++) {
++    for (i = 0; i < this->civilians.number(); i++) {
+         if (this->nextCivilianToTaskValue == this->civilians[i]) break;
+     }
+-    if (i >= this->civilians.numberValue) goto no_more;
++    if (i >= this->civilians.number()) goto no_more;
+ 
+     taskedCount = i + 1;
+     newExplorer = taskedCount * 4;
+@@ -3428,10 +3052,7 @@ excess_explorers_done:
+         j = j + 1;
+         civilian = this->civilians[i];
+         // Already an explorer?
+-        for (k = 0; k < this->civilianExplorers.numberValue &&
+-                     k < this->civilianExplorers.maximumSizeValue; k++) {
+-            if (this->civilianExplorers.value[k] == civilian) goto is_explorer;
+-        }
++        if (this->civilianExplorers.contains(civilian) == 1) goto is_explorer;
+         if (this->highLevelTaskGatherer(this->civilians[i], param_1) == 0) {
+             this->addGatherer(this->civilians[i]);
+             i = i + 1;
+@@ -3444,7 +3065,7 @@ task_done:
+         i = i + 1;
+         taskedCount = taskedCount + 1;
+         newExplorer = newExplorer + 4;
+-        if (i >= this->civilians.numberValue) goto no_more;
++        if (i >= this->civilians.number()) goto no_more;
+         this->nextCivilianToTaskValue = this->civilians[i];
+         if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0DC6) - param_1 >= param_2) {
+             if (i > 0) {
+@@ -3454,7 +3075,7 @@ task_done:
+         }
+ loop_cond:
+         ;
+-    } while (i < this->civilians.numberValue);
++    } while (i < this->civilians.number());
+     goto no_more;
+ 
+ no_more:
+@@ -3806,24 +3427,12 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
+                             goto inactive_post_setup;
+ active_target_selection:
+                             int* players;
+-                            int* newPlayers;
+                             if (this->md->strategyAI.currentVictoryCondition() == 0) {
+                                 int capture;
+                                 capture = this->itemToCapture();
+                                 mem = this->md->informationAI.objectMemory(capture);
+                                 if (mem == 0) {
+-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                        newPlayers = (int*)::operator new(4);
+-                                        if (newPlayers != 0) {
+-                                            int i;
+-                                            i = 0;
+-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+-                                                newPlayers[i] = this->playersToAttack.value[i];
+-                                                i++;
+-                                            }
+-                                            goto inactive_resize_commit;
+-                                        }
+-                                    }
++                                    players = &this->playersToAttack[0];
+                                     goto inactive_object_to_attack;
+                                 }
+                             } else if (this->md->strategyAI.currentVictoryCondition() == 4) {
+@@ -3831,37 +3440,11 @@ active_target_selection:
+                                 bring = this->itemToBringToArea();
+                                 mem = this->md->informationAI.objectMemory(bring);
+                                 if (mem == 0) {
+-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                        newPlayers = (int*)::operator new(4);
+-                                        if (newPlayers != 0) {
+-                                            int i;
+-                                            i = 0;
+-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+-                                                newPlayers[i] = this->playersToAttack.value[i];
+-                                                i++;
+-                                            }
+-                                            goto inactive_resize_commit;
+-                                        }
+-                                    }
++                                    players = &this->playersToAttack[0];
+                                     goto inactive_object_to_attack;
+                                 }
+                             } else {
+-                                if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                    int* newPlayers;
+-                                    newPlayers = (int*)::operator new(4);
+-                                    if (newPlayers != 0) {
+-                                        int i;
+-                                        i = 0;
+-                                        while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+-                                            newPlayers[i] = this->playersToAttack.value[i];
+-                                            i++;
+-                                        }
+-                                        ::operator delete(this->playersToAttack.value);
+-                                        this->playersToAttack.value = newPlayers;
+-                                        this->playersToAttack.maximumSizeValue = 1;
+-                                    }
+-                                }
+-                                players = this->playersToAttack.value;
++                                players = &this->playersToAttack[0];
+                                 mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, param_1);
+                                 if (this->attackStateValue.active == 1) {
+                                     this->nextActiveSoldierGroupToTaskValue = cur->id();
+@@ -3870,12 +3453,7 @@ active_target_selection:
+                                 goto active_target_selected_common;
+                             }
+                             goto active_target_selected_common;
+-inactive_resize_commit:
+-                            ::operator delete(this->playersToAttack.value);
+-                            this->playersToAttack.value = newPlayers;
+-                            this->playersToAttack.maximumSizeValue = 1;
+ inactive_object_to_attack:
+-                            players = this->playersToAttack.value;
+                             mem = this->md->informationAI.objectToAttack(*players, 1, 1,
+                                                                          cur->commander(),
+                                                                          attackAsAttack);
+@@ -3885,7 +3463,6 @@ inactive_object_to_attack:
+                 } else {
+                     int attackEnabled;
+                     int* players;
+-                    int* newPlayers;
+                     unsigned long lastAttackTime;
+                     unsigned long elapsed;
+ 
+@@ -3912,18 +3489,7 @@ inactive_object_to_attack:
+                                 capture = this->itemToCapture();
+                                 mem = this->md->informationAI.objectMemory(capture);
+                                 if (mem == 0) {
+-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                        newPlayers = (int*)::operator new(4);
+-                                        if (newPlayers != 0) {
+-                                            int i;
+-                                            i = 0;
+-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+-                                                newPlayers[i] = this->playersToAttack.value[i];
+-                                                i++;
+-                                            }
+-                                            goto active_resize_commit;
+-                                        }
+-                                    }
++                                    players = &this->playersToAttack[0];
+                                     goto active_object_to_attack;
+                                 }
+                             } else if (this->md->strategyAI.currentVictoryCondition() == 4) {
+@@ -3931,37 +3497,11 @@ inactive_object_to_attack:
+                                 bring = this->itemToBringToArea();
+                                 mem = this->md->informationAI.objectMemory(bring);
+                                 if (mem == 0) {
+-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                        newPlayers = (int*)::operator new(4);
+-                                        if (newPlayers != 0) {
+-                                            int i;
+-                                            i = 0;
+-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+-                                                newPlayers[i] = this->playersToAttack.value[i];
+-                                                i++;
+-                                            }
+-                                            goto active_resize_commit;
+-                                        }
+-                                    }
++                                    players = &this->playersToAttack[0];
+                                     goto active_object_to_attack;
+                                 }
+                             } else {
+-                                if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                    int* generalPlayers;
+-                                    generalPlayers = (int*)::operator new(4);
+-                                    if (generalPlayers != 0) {
+-                                        int i;
+-                                        i = 0;
+-                                        while (i < this->playersToAttack.maximumSizeValue && i < 1) {
+-                                            generalPlayers[i] = this->playersToAttack.value[i];
+-                                            i++;
+-                                        }
+-                                        ::operator delete(this->playersToAttack.value);
+-                                        this->playersToAttack.value = generalPlayers;
+-                                        this->playersToAttack.maximumSizeValue = 1;
+-                                    }
+-                                }
+-                                players = this->playersToAttack.value;
++                                players = &this->playersToAttack[0];
+                                 mem = this->md->informationAI.objectToAttackByGroup(
+                                     *players, cur, this->attackStateValue, param_1);
+                                 if (this->attackStateValue.active == 1) {
+@@ -3971,12 +3511,7 @@ inactive_object_to_attack:
+                                 goto active_target_selected_common;
+                             }
+                             goto active_target_selected_common;
+-active_resize_commit:
+-                            ::operator delete(this->playersToAttack.value);
+-                            this->playersToAttack.value = newPlayers;
+-                            this->playersToAttack.maximumSizeValue = 1;
+ active_object_to_attack:
+-                            players = this->playersToAttack.value;
+                             mem = this->md->informationAI.objectToAttack(*players, 1, 1,
+                                                                          cur->commander(),
+                                                                          attackAsAttack);
+@@ -4418,22 +3953,7 @@ reset_action10:
+                     int* players;
+ 
+                     commanderObj3 = this->md->object(cur->commander());
+-                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                        int* newPlayers;
+-                        newPlayers = (int*)::operator new(4);
+-                        if (newPlayers != 0) {
+-                            int k;
+-                            k = 0;
+-                            while (k < this->playersToAttack.maximumSizeValue && k < 1) {
+-                                newPlayers[k] = this->playersToAttack.value[k];
+-                                k++;
+-                            }
+-                            ::operator delete(this->playersToAttack.value);
+-                            this->playersToAttack.value = newPlayers;
+-                            this->playersToAttack.maximumSizeValue = 1;
+-                        }
+-                    }
+-                    players = this->playersToAttack.value;
++                    players = &this->playersToAttack[0];
+                     mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, param_1);
+                     if (this->attackStateValue.active == 1) {
+                         this->nextActiveSoldierGroupToTaskValue = cur->id();
+@@ -4563,22 +4083,7 @@ action7_done:
+                                 this->attackStateValue.active = 0;
+                                 goto ContinueLoop;
+                             }
+-                            if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-                                int* newPlayers;
+-                                newPlayers = (int*)::operator new(4);
+-                                if (newPlayers != 0) {
+-                                    int k;
+-                                    k = 0;
+-                                    while (k < this->playersToAttack.maximumSizeValue && k < 1) {
+-                                        newPlayers[k] = this->playersToAttack.value[k];
+-                                        k++;
+-                                    }
+-                                    ::operator delete(this->playersToAttack.value);
+-                                    this->playersToAttack.value = newPlayers;
+-                                    this->playersToAttack.maximumSizeValue = 1;
+-                                }
+-                            }
+-                            players2 = this->playersToAttack.value;
++                            players2 = &this->playersToAttack[0];
+                             replacement = this->md->informationAI.objectToAttackByGroup(
+                                 *players2, cur, this->attackStateValue, param_1);
+                             if (this->attackStateValue.active == 1) {
+@@ -4904,19 +4409,16 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
+     if (this->sn[0xa2] != 0) {
+         countUnplayedSoldiers = 0;
+         i = 0;
+-        if (soldiers.numberValue > 0) {
++        if (soldiers.number() > 0) {
+             numberPlayUnits = unplayedSoldiers + 1;
+             do {
+                 TacticalAIGroup* group =
+                     this->groupUnitIsIn(soldiers[i]);
+                 if ((group == 0) || (group->type() != 100)) {
+-                    soldiers[i];
+-                    countUnplayedSoldiers++;
+-                    *numberPlayUnits = soldiers.value[i];
+-                    numberPlayUnits++;
++                    unplayedSoldiers[++countUnplayedSoldiers] = soldiers[i];
+                 }
+                 i++;
+-            } while (i < soldiers.numberValue);
++            } while (i < soldiers.number());
+         }
+ 
+         if (countUnplayedSoldiers != 0) {
+@@ -5371,7 +4873,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+     int i;
+ 
+     i = 0;
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         ManagedArray<int>* civilians = &this->civilians;
+         do {
+             RGE_Static_Object* object =
+@@ -5415,11 +4917,11 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+             }
+         next_civilian:
+             i++;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+ 
+     i = 0;
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         do {
+             RGE_Static_Object* object =
+                 this->md->player->world->object(this->civilians[i]);
+@@ -5427,11 +4929,11 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+                 this->removeObject(this->civilians[i]);
+             }
+             i++;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+ 
+     i = 0;
+-    if (this->soldiers.numberValue > 0) {
++    if (this->soldiers.number() > 0) {
+         do {
+             RGE_Static_Object* object =
+                 this->md->player->world->object(this->soldiers[i]);
+@@ -5439,11 +4941,11 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+                 this->removeObject(this->soldiers[i]);
+             }
+             i++;
+-        } while (i < this->soldiers.numberValue);
++        } while (i < this->soldiers.number());
+     }
+ 
+     i = 0;
+-    if (this->boats.numberValue > 0) {
++    if (this->boats.number() > 0) {
+         do {
+             RGE_Static_Object* object =
+                 this->md->player->world->object(this->boats[i]);
+@@ -5451,7 +4953,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+                 this->removeObject(this->boats[i]);
+             }
+             i++;
+-        } while (i < this->boats.numberValue);
++        } while (i < this->boats.number());
+     }
+ 
+     TacticalAIGroup* group = this->groups.next;
+@@ -5545,11 +5047,11 @@ after_granary:
+ }
+ 
+ int TribeTacticalAIModule::numberCivilians() const {
+-    return this->civilians.numberValue;
++    return this->civilians.number();
+ }
+ 
+ int TribeTacticalAIModule::numberCivilianExplorers() const {
+-    return this->civilianExplorers.numberValue;
++    return this->civilianExplorers.number();
+ }
+ 
+ int TribeTacticalAIModule::numberGatherers() const {
+@@ -5557,7 +5059,7 @@ int TribeTacticalAIModule::numberGatherers() const {
+ }
+ 
+ int TribeTacticalAIModule::desiredNumberCivilianExplorers() const {
+-    return this->civilianExplorers.desiredNumberValue;
++    return this->civilianExplorers.desiredNumber();
+ }
+ 
+ int TribeTacticalAIModule::desiredNumberGatherers() const {
+@@ -5565,7 +5067,7 @@ int TribeTacticalAIModule::desiredNumberGatherers() const {
+ }
+ 
+ int TribeTacticalAIModule::numberSoldiers() const {
+-    return this->soldiers.numberValue;
++    return this->soldiers.number();
+ }
+ 
+ // The body calls TribeTacticalAIModule::numberUnitsInGroups(0x66).
+@@ -5576,7 +5078,7 @@ int TribeTacticalAIModule::numberSoldierExplorers()
+ }
+ 
+ int TribeTacticalAIModule::numberBoats() const {
+-    return this->boats.numberValue;
++    return this->boats.number();
+ }
+ 
+ 
+@@ -5686,21 +5188,10 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
+     }
+ 
+     if (targetObj->owner->id != 0) {
+-        int i = 0;
+-        int explorerCount;
+         int difficulty;
+-        if (0 < this->civilians.numberValue) {
+-            do {
+-                if (this->civilians.maximumSizeValue <= i) break;
+-                if (this->civilians.value[i] == callerID) {
+-                    explorerCount = this->civilianExplorers.numberValue;
+-                    i = 0;
+-                    if (explorerCount < 1) goto notify_difficulty;
+-                    goto notify_explorer_scan;
+-                }
+-                i = i + 1;
+-            } while (i < this->civilians.numberValue);
+-        }
++        if (this->civilians.contains(callerID) == 1 &&
++            this->civilianExplorers.contains(callerID) == 0)
++            goto notify_difficulty;
+         goto notify_generic_unit;
+ 
+ notify_generic_unit:
+@@ -5717,15 +5208,6 @@ notify_generic_unit:
+         }
+         goto notify_after_owner;
+ 
+-notify_explorer_scan:
+-        do {
+-            if (this->civilianExplorers.maximumSizeValue <= i) break;
+-            if (this->civilianExplorers.value[i] == callerID)
+-                goto notify_generic_unit;
+-            i = i + 1;
+-        } while (i < explorerCount);
+-        goto notify_difficulty;
+-
+ notify_difficulty:
+         difficulty = this->md->player->world->difficultyLevel();
+         if (difficulty == 3) {
+@@ -5839,29 +5321,14 @@ notify_after_owner:
+             this->sn[0xE1] == 1 &&
+             this->md->player->world->world_time / 1000 < (ulong)this->sn[0x68]) {
+             int i = 0;
+-            if (0 < this->civilians.numberValue) {
++            if (0 < this->civilians.number()) {
+                 do {
+                     int civilian = this->civilians[i];
+-                    int j = 0;
+-                    int found = 0;
+-                    if (0 < this->workingArea.numberValue) {
+-                        do {
+-                            if (this->workingArea.maximumSizeValue <= j) break;
+-                            if (this->workingArea.value[j] == civilian) {
+-                                found = 1;
+-                                break;
+-                            }
+-                            j = j + 1;
+-                        } while (j < this->workingArea.numberValue);
+-                    }
+-                    if (found == 0) {
+-                        this->workingArea[this->workingArea.numberValue] = civilian;
+-                        this->workingArea.numberValue++;
+-                    }
++                    this->workingArea.add(civilian);
+                     i = i + 1;
+-                } while (i < this->civilians.numberValue);
++                } while (i < this->civilians.number());
+             }
+-            numberToRespond = this->civilians.numberValue;
++            numberToRespond = this->civilians.number();
+         }
+         coopY = (int)townCenter->world_y;
+         coopX = (int)townCenter->world_x;
+@@ -5889,7 +5356,7 @@ notify_after_owner:
+ 
+     param_2 = 0;
+     param_3 = 0;
+-    if (0 < this->workingArea.numberValue) {
++    if (0 < this->workingArea.number()) {
+         while (param_2 < numberToRespond &&
+                (param_3 < 2 ||
+                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1A54) - entryTime < 0xB)) {
+@@ -5982,7 +5449,7 @@ notify_relic:
+     if (numberToRespond > 3) numberToRespond = 3;
+     repCount = 0;
+     i = 0;
+-    if (this->workingArea.numberValue < 1) return;
++    if (this->workingArea.number() < 1) return;
+     do {
+         if (numberToRespond <= repCount) return;
+         RGE_Static_Object* object =
+@@ -5996,7 +5463,7 @@ notify_relic:
+             }
+         }
+         i = i + 1;
+-        if (this->workingArea.numberValue <= i) return;
++        if (this->workingArea.number() <= i) return;
+     } while (1);
+ }
+ 
+@@ -6008,8 +5475,8 @@ int TribeTacticalAIModule::numberIdleSoldiers()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& soldiers = this->soldiers;
+ 
+-    workingArea.numberValue = 0;
+-    if (soldiers.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (soldiers.number() > 0) {
+         do {
+             RGE_Static_Object* obj =
+                 this->md->aiPlayer->world->object(soldiers[i]);
+@@ -6020,7 +5487,7 @@ int TribeTacticalAIModule::numberIdleSoldiers()
+                 }
+             }
+             i++;
+-        } while (i < soldiers.numberValue);
++        } while (i < soldiers.number());
+     }
+     return count;
+ }
+@@ -6028,346 +5495,110 @@ int TribeTacticalAIModule::numberIdleSoldiers()
+ 
+ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
+ {
+-    TribeTacticalAIModule* self = this;
+-    ManagedArray<int>& workingArea = self->workingArea;
+     int rNum = 0;
+-
+     if (reset == 1)
+-        workingArea.numberValue = 0;
+-
+-    reset = 0;
+-    if (0 < self->soldiers.numberValue) {
+-        ManagedArray<int>& soldiers = self->soldiers;
+-        do {
+-            if (reset > soldiers.maximumSizeValue - 1)
+-                soldiers.resize(reset + 1);
+-
+-            RGE_Static_Object* object =
+-                self->md->aiPlayer->world->object(soldiers.value[reset]);
+-            if ((object != 0) && (object->unitAI() != 0)) {
+-                if (reset > soldiers.maximumSizeValue - 1)
+-                    soldiers.resize(reset + 1);
+-
+-                int taskedNumber = self->unitsTaskedThisUpdate.numberValue;
+-                int taskedIndex = 0;
+-                if (0 < taskedNumber) {
+-                    for (;
+-                         taskedIndex < taskedNumber &&
+-                         taskedIndex < self->unitsTaskedThisUpdate.maximumSizeValue;
+-                         taskedIndex++) {
+-                        if (self->unitsTaskedThisUpdate.value[taskedIndex] ==
+-                            soldiers.value[reset])
+-                            goto nextSoldier;
+-                    }
+-                }
++        this->workingArea.zeroNumber();
+ 
+-                int value;
+-                int number;
+-                if (priority < 0) {
+-                    if (object->unitAI()->currentAction() != -1) {
+-                        if (object->unitAI()->currentOrderPriority() >= threshold)
+-                            goto nextSoldier;
+-                    }
+-
+-                    if (reset > soldiers.maximumSizeValue - 1)
+-                        soldiers.resize(reset + 1);
+-                    number = workingArea.numberValue;
+-                    value = soldiers.value[reset];
+-                    int index = 0;
+-                    if (0 < number) {
+-                        for (;
+-                             index < number &&
+-                             index < workingArea.maximumSizeValue;
+-                             index++) {
+-                            if (workingArea.value[index] == value)
+-                                goto countedSoldier;
+-                        }
+-                    }
+-                    goto appendWorking;
+-                }
+-                else if (priority > 0) {
+-                    if (object->unitAI()->currentAction() != -1) {
+-                        if (object->unitAI()->currentOrderPriority() > threshold) {
+-                            if (reset > soldiers.maximumSizeValue - 1)
+-                                soldiers.resize(reset + 1);
+-                            number = workingArea.numberValue;
+-                            value = soldiers.value[reset];
+-                            int index = 0;
+-                            if (0 < number) {
+-                                for (;
+-                                     index < number &&
+-                                     index < workingArea.maximumSizeValue;
+-                                     index++) {
+-                                    if (workingArea.value[index] == value)
+-                                        goto countedSoldier;
+-                                }
+-                            }
+-                            goto appendWorking;
+-                        }
+-                    }
+-                    goto nextSoldier;
+-                }
+-                else {
+-                    if (object->unitAI()->currentAction() != -1) {
+-                        if (object->unitAI()->currentOrderPriority() == threshold) {
+-                            if (reset > soldiers.maximumSizeValue - 1) {
+-                                int* newValue = (int*)::operator new(reset * 4 + 4);
+-                                if (newValue != 0) {
+-                                    int copyIndex = 0;
+-                                    if (0 < soldiers.maximumSizeValue) {
+-                                        do {
+-                                            if (reset + 1 <= copyIndex)
+-                                                break;
+-                                            newValue[copyIndex] = soldiers.value[copyIndex];
+-                                            copyIndex = copyIndex + 1;
+-                                        } while (copyIndex < soldiers.maximumSizeValue);
+-                                    }
+-                                    ::operator delete(soldiers.value);
+-                                    soldiers.value = newValue;
+-                                    soldiers.maximumSizeValue = reset + 1;
+-                                }
+-                            }
++    for (int i = 0; i < this->soldiers.number(); i++) {
++        RGE_Static_Object* object =
++            this->md->aiPlayer->world->object(this->soldiers[i]);
++        if (object == 0 || object->unitAI() == 0)
++            continue;
++        if (this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 1)
++            continue;
+ 
+-                            int value = soldiers.value[reset];
+-                            if (workingArea.contains(value) != 1) {
+-                                int number = workingArea.numberValue;
+-                                if (number > workingArea.maximumSizeValue - 1)
+-                                    workingArea.resize(number + 1);
+-                                workingArea.value[workingArea.numberValue] = value;
+-                                workingArea.numberValue = workingArea.numberValue + 1;
+-                            }
+-                            rNum = rNum + 1;
+-                        }
+-                    }
+-                    goto nextSoldier;
+-                }
+-appendWorking:
+-                if (number > workingArea.maximumSizeValue - 1)
+-                    workingArea.resize(number + 1);
+-                workingArea.value[workingArea.numberValue] = value;
+-                workingArea.numberValue = workingArea.numberValue + 1;
+-countedSoldier:
+-                rNum = rNum + 1;
++        if (priority < 0) {
++            if (object->unitAI()->currentAction() == -1 ||
++                object->unitAI()->currentOrderPriority() < threshold) {
++                this->workingArea.add(this->soldiers[i]);
++                rNum++;
++            }
++        } else if (priority > 0) {
++            if (object->unitAI()->currentAction() != -1 &&
++                object->unitAI()->currentOrderPriority() > threshold) {
++                this->workingArea.add(this->soldiers[i]);
++                rNum++;
+             }
+-nextSoldier:
+-            reset = reset + 1;
+-        } while (reset < soldiers.numberValue);
++        } else {
++            if (object->unitAI()->currentAction() != -1 &&
++                object->unitAI()->currentOrderPriority() == threshold) {
++                this->workingArea.add(this->soldiers[i]);
++                rNum++;
++            }
++        }
+     }
+     return rNum;
+ }
+ 
+ 
+-int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
++int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag)
+ {
+-    ManagedArray<int>* warships;
+-    ManagedArray<int>* result;
+-    short objectGroup;
+-    RGE_Static_Object* object;
+-    UnitAIModule* ai;
+-    int value;
+-    int index;
+-    int scan;
+-    TribeTacticalAIModule* tactical;
+-    TribeTacticalAIModule* tactical2;
+-    int count;
++    int count = 0;
+     int i;
+-    int local_c;
+-    int local_8;
+-    TribeTacticalAIModule* local_4;
+-
+-    i = 0;
+-    local_c = 0;
+-    local_4 = this;
+-    this->workingArea.numberValue = 0;
++    RGE_Static_Object* object;
++    this->workingArea.zeroNumber();
+ 
+-    if (this->warBoats.numberValue > 0) {
+-        warships = &this->warBoats;
+-        do {
+-            object = this->md->aiPlayer->world->object((*warships)[local_c]);
+-            if (object != 0 && object->unitAI() != 0) {
+-                value = 0;
+-                if (this->unitsTaskedThisUpdate.numberValue > 0) {
+-                    do {
+-                        if (this->unitsTaskedThisUpdate.maximumSizeValue <= value)
+-                            break;
+-                        if (this->unitsTaskedThisUpdate[value] ==
+-                            (*warships)[local_c])
+-                            goto next_warboat;
+-                        ++value;
+-                    } while (value < this->unitsTaskedThisUpdate.numberValue);
+-                }
+-
+-                if (compare < 0) {
+-                    ai = object->unitAI();
+-                    value = ai->currentAction();
+-                    if (value != -1) {
+-                        ai = object->unitAI();
+-                        value = ai->currentOrderPriority();
+-                        if (value >= priority)
+-                            goto next_warboat;
+-                    }
+-                    result = &this->workingArea;
+-                    local_8 = (*warships)[local_c];
+-                    value = result->contains(local_8);
+-                    if (value != 1) {
+-                        (*result)[result->numberValue] = local_8;
+-                        result->numberValue++;
+-                    }
+-                    ++i;
+-                } else {
+-                    if (compare > 0) {
+-                    ai = object->unitAI();
+-                    value = ai->currentAction();
+-                    if (value != -1) {
+-                        ai = object->unitAI();
+-                        value = ai->currentOrderPriority();
+-                        if (value <= priority)
+-                            goto next_warboat;
+-                        result = &this->workingArea;
+-                        local_8 = (*warships)[local_c];
+-                        value = result->contains(local_8);
+-                        if (value != 1) {
+-                            (*result)[result->numberValue] = local_8;
+-                            result->numberValue++;
+-                        }
+-                        ++i;
+-                    }
+-                    } else {
+-                    ai = object->unitAI();
+-                    value = ai->currentAction();
+-                    if (value != -1) {
+-                        ai = object->unitAI();
+-                        value = ai->currentOrderPriority();
+-                        if (value != priority)
+-                            goto next_warboat;
+-                        result = &this->workingArea;
+-                        local_8 = (*warships)[local_c];
+-                        value = result->contains(local_8);
+-                        if (value != 1) {
+-                            (*result)[result->numberValue] = local_8;
+-                            result->numberValue++;
+-                        }
+-                        ++i;
+-                    }
+-                    }
++    for (i = 0; i < this->warBoats.number(); i++) {
++        object = this->md->aiPlayer->world->object(this->warBoats[i]);
++        if (object != 0 && object->unitAI() != 0 &&
++            this->unitsTaskedThisUpdate.contains(this->warBoats[i]) == 0) {
++            if (flag < 0) {
++                if (object->unitAI()->currentAction() == -1 ||
++                    object->unitAI()->currentOrderPriority() < priority) {
++                    this->workingArea.add(this->warBoats[i]);
++                    count++;
+                 }
+-            }
+-next_warboat:
+-            ++local_c;
+-        } while (local_c < this->warBoats.numberValue);
+-    }
+-
+-    local_c = 0;
+-    if (this->soldiers.numberValue > 0) {
+-        warships = &this->soldiers;
+-        tactical2 = this;
+-        do {
+-            object = tactical2->md->aiPlayer->world->object((*warships)[local_c]);
+-            if (object != 0 && object->unitAI() != 0) {
+-                value = tactical2->unitsTaskedThisUpdate.numberValue;
+-                index = 0;
+-                tactical = tactical2;
+-                if (value > 0) {
+-                    do {
+-                        if (tactical->unitsTaskedThisUpdate.maximumSizeValue <= index)
+-                            break;
+-                        tactical = local_4;
+-                        if (tactical2->unitsTaskedThisUpdate[index] == (*warships)[local_c])
+-                            goto next_soldier;
+-                        ++index;
+-                        tactical = local_4;
+-                    } while (index < value);
+-                }
+-
+-                objectGroup = object->master_obj->object_group;
+-                if (objectGroup == 0x12 || objectGroup == 0x0D) {
+-                    if (compare < 0) {
+-                        ai = object->unitAI();
+-                        value = ai->currentAction();
+-                        if (value != -1) {
+-                            ai = object->unitAI();
+-                            value = ai->currentOrderPriority();
+-                            if (value >= priority)
+-                                goto next_soldier;
+-                        }
+-                        value = tactical2->workingArea.numberValue;
+-                        scan = 0;
+-                        local_8 = (*warships)[local_c];
+-                        if (value > 0) {
+-                            do {
+-                                if (scan >= tactical2->workingArea.maximumSizeValue)
+-                                    break;
+-                                if (tactical2->workingArea.value[scan] == local_8)
+-                                    goto next_soldier;
+-                                ++scan;
+-                            } while (scan < value);
+-                        }
+-                        goto append_soldier;
+-                    } else {
+-                        if (compare > 0) {
+-                        ai = object->unitAI();
+-                        value = ai->currentAction();
+-                        if (value != -1) {
+-                            ai = object->unitAI();
+-                            value = ai->currentOrderPriority();
+-                            if (value > priority) {
+-                                value = tactical2->workingArea.numberValue;
+-                                scan = 0;
+-                                local_8 = (*warships)[local_c];
+-                                if (value > 0) {
+-                                    do {
+-                                        if (scan >= tactical2->workingArea.maximumSizeValue)
+-                                            break;
+-                                        if (tactical2->workingArea.value[scan] == local_8)
+-                                            goto next_soldier;
+-                                        ++scan;
+-                                    } while (scan < value);
+-                                }
+-                                goto append_soldier;
+-                            }
+-                        }
+-                    } else {
+-                        ai = object->unitAI();
+-                        value = ai->currentAction();
+-                        if (value != -1) {
+-                            ai = object->unitAI();
+-                            value = ai->currentOrderPriority();
+-                            if (value != priority)
+-                                goto next_soldier;
+-
+-                            result = &tactical2->workingArea;
+-                            local_8 = (*warships)[local_c];
+-                            value = result->contains(local_8);
+-                            if (value != 1) {
+-                                (*result)[result->numberValue] = local_8;
+-                                result->numberValue++;
+-                            }
+-                            ++i;
+-                            goto soldier_done;
+-                        }
+-                    }
++            } else if (flag > 0) {
++                if (object->unitAI()->currentAction() != -1 &&
++                    object->unitAI()->currentOrderPriority() > priority) {
++                    this->workingArea.add(this->warBoats[i]);
++                    count++;
+                 }
++            } else {
++                if (object->unitAI()->currentAction() != -1 &&
++                    object->unitAI()->currentOrderPriority() == priority) {
++                    this->workingArea.add(this->warBoats[i]);
++                    count++;
+                 }
+-                goto soldier_done;
+-append_soldier:
+-                tactical2->workingArea[tactical2->workingArea.numberValue] = local_8;
+-                tactical2->workingArea.numberValue++;
+-                ++i;
+-soldier_done:
+-                ;
+             }
+-next_soldier:
+-            ++local_c;
+-        } while (local_c < tactical2->soldiers.numberValue);
++        }
+     }
+ 
+-    return i;
++    for (i = 0; i < this->soldiers.number(); i++) {
++        object = this->md->aiPlayer->world->object(this->soldiers[i]);
++        if (object != 0 && object->unitAI() != 0 &&
++            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0) {
++            short objectGroup = object->master_obj->object_group;
++            if (objectGroup == 0x12 || objectGroup == 0x0D) {
++                if (flag < 0) {
++                    if (object->unitAI()->currentAction() == -1 ||
++                        object->unitAI()->currentOrderPriority() < priority) {
++                        this->workingArea.add(this->soldiers[i]);
++                        count++;
++                    }
++                } else if (flag > 0) {
++                    if (object->unitAI()->currentAction() != -1 &&
++                        object->unitAI()->currentOrderPriority() > priority) {
++                        this->workingArea.add(this->soldiers[i]);
++                        count++;
++                    }
++                } else {
++                    if (object->unitAI()->currentAction() != -1 &&
++                        object->unitAI()->currentOrderPriority() == priority) {
++                        this->workingArea.add(this->soldiers[i]);
++                        count++;
++                    }
++                }
++            }
++        }
++    }
++    return count;
+ }
+ 
+ 
+ int TribeTacticalAIModule::idleSoldier()
+ {
+-    for (int i = 0; i < soldiers.numberValue; i++) {
++    for (int i = 0; i < soldiers.number(); i++) {
+         RGE_Static_Object* obj = md->player->world->object(soldiers[i]);
+         if (obj != 0 && obj->unitAI() != 0) {
+             if (obj->unitAI()->currentAction() == -1)
+@@ -6385,7 +5616,7 @@ int TribeTacticalAIModule::idleCivilian(int mode)
+     RGE_Static_Object* secondObject;
+     int i = 0;
+     ManagedArray<int>& tasked = this->unitsTaskedThisUpdate;
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         ManagedArray<int>* civilians = &this->civilians;
+         do {
+             if (tasked.contains((*civilians)[i]) != 0)
+@@ -6404,11 +5635,11 @@ int TribeTacticalAIModule::idleCivilian(int mode)
+             }
+ first_next:
+             i++;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+ 
+     i = 0;
+-    if (this->civilians.numberValue <= 0)
++    if (this->civilians.number() <= 0)
+         return -1;
+ 
+     {
+@@ -6436,7 +5667,7 @@ second_loop:
+             }
+ second_next:
+             i++;
+-            if (i < this->civilians.numberValue)
++            if (i < this->civilians.number())
+                 goto second_loop;
+     }
+     return -1;
+@@ -6454,7 +5685,7 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
+     bestUnitID = -1;
+     bestUnitDistance = 0;
+     i = 0;
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         ManagedArray<int>* civilians = &this->civilians;
+         do {
+             if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
+@@ -6472,11 +5703,11 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
+             }
+ first_next:
+             ++i;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+ 
+     i = 0;
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         ManagedArray<int>* civilians = &this->civilians;
+         do {
+             if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
+@@ -6512,7 +5743,7 @@ first_next:
+             }
+ second_next:
+             ++i;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+     return bestUnitID;
+ }
+@@ -6528,7 +5759,7 @@ int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, in
+     bestUnitID = -1;
+     bestUnitDistance = 0;
+     i = 0;
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         do {
+             if (this->unitsTaskedThisUpdate.contains(this->civilians[i]) != 0)
+                 goto next;
+@@ -6553,7 +5784,7 @@ int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, in
+             }
+ next:
+             ++i;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+     return bestUnitID;
+ }
+@@ -6565,7 +5796,7 @@ int TribeTacticalAIModule::unit(int player, int currentAction, int currentTarget
+     int i = 0;
+     ManagedArray<int>* resultArray;
+ 
+-    while (i < this->civilians.numberValue) {
++    while (i < this->civilians.number()) {
+         RGE_Static_Object* object = this->md->aiPlayer->world->object(this->civilians[i]);
+         if (object == 0 && object->unitAI() == 0) {
+             if (player != -1) {
+@@ -6590,7 +5821,7 @@ next_civilian:
+     }
+ 
+     i = 0;
+-    while (i < this->soldiers.numberValue) {
++    while (i < this->soldiers.number()) {
+         RGE_Static_Object* object = this->md->aiPlayer->world->object(this->soldiers[i]);
+         if (object == 0 && object->unitAI() == 0) {
+             if (player != -1) {
+@@ -6612,7 +5843,7 @@ next_soldier:
+     }
+ 
+     i = 0;
+-    while (i < this->boats.numberValue) {
++    while (i < this->boats.number()) {
+         RGE_Static_Object* object = this->md->aiPlayer->world->object(this->boats[i]);
+         if (object == 0 && object->unitAI() == 0) {
+             if (player != -1) {
+@@ -6635,9 +5866,7 @@ next_boat:
+     return -1;
+ 
+ found_civilian:
+-    if (i > resultArray->maximumSizeValue - 1)
+-        resultArray->resize(i + 1);
+-    return resultArray->value[i];
++    return (*resultArray)[i];
+ 
+ }
+ 
+@@ -6772,14 +6001,12 @@ void TribeTacticalAIModule::updateGathererDistribution()
+                 g[3]=o->unitAI()->currentTarget();
+                 if (gAction==0x261 && o->master_obj->id==0x103 && gSTT) {
+                     int gameID=o->id;
+-                    for (i=0;i<this->unitsTaskedThisUpdate.numberValue && i<this->unitsTaskedThisUpdate.maximumSizeValue;i++)
+-                        if (this->unitsTaskedThisUpdate.value[i]==gameID) break;
+-                    if (i==this->unitsTaskedThisUpdate.numberValue || i==this->unitsTaskedThisUpdate.maximumSizeValue) { g[0]=0; }
++                    if (this->unitsTaskedThisUpdate.contains(gameID) == 0) { g[0]=0; }
+                 }
+                 if (gSTT>=0 && gSTT<=3) {
+                     if (gAction==0x261 || gAction==0x265) ++actualGathererDistribution[gSTT];
+                     else {
+-                        for (i=0;i<this->unitsTaskedThisUpdate.numberValue && i<this->unitsTaskedThisUpdate.maximumSizeValue;i++) if (this->unitsTaskedThisUpdate.value[i]==g[-1]) { ++actualGathererDistribution[gSTT]; break; }
++                        if (this->unitsTaskedThisUpdate.contains(g[-1]) == 1) ++actualGathererDistribution[gSTT];
+                     }
+                 }
+             }
+@@ -7004,7 +6231,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, ulong startTime)
+         return 1;
+ 
+     if (this->isFarmer(gathererObj) == 1) {
+-        numNonFarmers = this->civilians.numberValue;
++        numNonFarmers = this->civilians.number();
+         numNonFarmers -= this->numberFarmers();
+         if (this->md->resourceAI.resource(0) < 1000 && numNonFarmers > 3)
+             return 1;
+@@ -7109,33 +6336,7 @@ int TribeTacticalAIModule::taskPlay(int param_1, int* param_2, int param_3,
+         } while (waypointCount != 0);
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == param_1)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(param_1);
+     md->player->sendPlayCommand(param_1, param_2, param_3, param_4, param_5);
+     return 1;
+ }
+@@ -7170,38 +6371,8 @@ int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem
+     }
+     item->setInProgress(1);
+     item->setBuilt(0);
+-    int count = this->civilianExplorers.maximumSizeValue;
+-    int i = 0;
+-    if (count > 0) {
+-        while (i < count) { if (this->civilianExplorers.value[i] == id) break; i++; }
+-    }
+-    if (i < count) {
+-        if (i < count - 1) {
+-            do { this->civilianExplorers.value[i] = this->civilianExplorers.value[i+1]; i++; } while (i < this->civilianExplorers.maximumSizeValue - 1);
+-        }
+-        this->civilianExplorers.numberValue--;
+-        if (this->civilianExplorers.numberValue < 0) this->civilianExplorers.numberValue = 0;
+-    }
+-    count = this->unitsTaskedThisUpdate.numberValue;
+-    for (i = 0; i < count; i++) {
+-        if (i >= this->unitsTaskedThisUpdate.maximumSizeValue)
+-            break;
+-        if (this->unitsTaskedThisUpdate.value[i] == id)
+-            goto have;
+-    }
+-    if (count > this->unitsTaskedThisUpdate.maximumSizeValue - 1) {
+-        int newMax = count + 1;
+-        int* p = (int*)::operator new(newMax * 4);
+-        if (p != 0) {
+-            for (i = 0; i < this->unitsTaskedThisUpdate.maximumSizeValue && i < newMax; i++)
+-                p[i] = this->unitsTaskedThisUpdate.value[i];
+-            ::operator delete(this->unitsTaskedThisUpdate.value);
+-            this->unitsTaskedThisUpdate.value = p; this->unitsTaskedThisUpdate.maximumSizeValue = newMax;
+-        }
+-    }
+-    this->unitsTaskedThisUpdate.value[this->unitsTaskedThisUpdate.numberValue] = id;
+-    this->unitsTaskedThisUpdate.numberValue++;
+-have:
++    this->civilianExplorers.remove(id);
++    this->unitsTaskedThisUpdate.add(id);
+     if (con->typeID() == 0x114) this->wonderInProgressValue = 1;
+     this->md->aiPlayer->buildObject(id, con->typeID(), con->x(), con->y(), item->uniqueID());
+     if (con != 0) delete con;
+@@ -7232,32 +6403,7 @@ int TribeTacticalAIModule::taskBuilder(int id, RGE_Static_Object* builder)
+         }
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == id)
+-            goto found;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newMax = arr.numberValue + 1;
+-        int* newValues = new int[newMax];
+-        if (newValues != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newMax; j++) {
+-                newValues[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newValues;
+-            arr.maximumSizeValue = newMax;
+-        }
+-    }
+-    arr.value[arr.numberValue] = id;
+-    arr.numberValue++;
+-
+-found:
++    this->unitsTaskedThisUpdate.add(id);
+     float distance = builderObj->distance_to_object(obj);
+     int priority = this->calculatePriority(distance);
+     RGE_Player* player = this->md->player;
+@@ -7280,33 +6426,7 @@ int TribeTacticalAIModule::taskRepairer(int id, RGE_Static_Object* repairer)
+         return 0;
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == id)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = id;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(id);
+     float distance = repairer->distance_to_object(object);
+     int priority = this->calculatePriority(distance);
+     RGE_Player* player = this->md->player;
+@@ -7447,41 +6567,14 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
+     }
+ 
+ tail:
+-    {
+-        int bound = this->civilianExplorers.maximumSizeValue;
+-        int j;
+-        for (j = 0; j < bound; j++) {
+-            if (this->civilianExplorers.value[j] == p1) break;
+-        }
+-        if (j < bound) {
+-            if (j < bound - 1) {
+-                do {
+-                    this->civilianExplorers.value[j] = this->civilianExplorers.value[j + 1];
+-                    j++;
+-                } while (j < this->civilianExplorers.maximumSizeValue - 1);
+-            }
+-            int n = this->civilianExplorers.numberValue - 1;
+-            this->civilianExplorers.numberValue = n;
+-            if (n < 0) this->civilianExplorers.numberValue = 0;
+-        }
+-    }
++    this->civilianExplorers.remove(p1);
+ 
+     UnitData* ag = this->addGatherer(p1);
+     if (ag == 0) return 0;
+ 
+     this->actualGathererDistribution[resourceType] = this->actualGathererDistribution[resourceType] + 1;
+ 
+-    {
+-        int j;
+-        for (j = 0; j < this->unitsTaskedThisUpdate.numberValue &&
+-                     j < this->unitsTaskedThisUpdate.maximumSizeValue; j++) {
+-            if (this->unitsTaskedThisUpdate.value[j] == p1) goto units_tasked;
+-        }
+-        this->unitsTaskedThisUpdate[this->unitsTaskedThisUpdate.numberValue] = p1;
+-        this->unitsTaskedThisUpdate.numberValue++;
+-    }
+-
+-units_tasked:
++    this->unitsTaskedThisUpdate.add(p1);
+     ag->data1 = resourceType;
+     int amount = this->requiredGatherAmount(resourceType);
+     if (p3 == 1) {
+@@ -7513,14 +6606,7 @@ units_tasked:
+     if (rObjObj->master_obj->id == 0x32) {
+         ManagedArray<int>& farms = this->md->informationAI.farmsTaskedThisUpdate;
+         int fid = rObjObj->id;
+-        int fj;
+-        for (fj = 0; fj < farms.numberValue; fj++) {
+-            if (fj >= farms.maximumSizeValue)
+-                break;
+-            if (farms.value[fj] == fid) return 1;
+-        }
+-        farms[farms.numberValue] = fid;
+-        farms.numberValue++;
++        farms.add(fid);
+     }
+     return 1;
+ }
+@@ -7528,34 +6614,7 @@ units_tasked:
+ 
+ int TribeTacticalAIModule::taskExplorer(int param_1, int param_2)
+ {
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == param_1)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(param_1);
+     if (param_2 == 1) {
+         XYPoint targetPoint;
+         if (unexploredArea(param_1, targetPoint) == 1) {
+@@ -7576,50 +6635,14 @@ dispatch:
+ int TribeTacticalAIModule::taskExplorer(int param_1, float param_2,
+                                         float param_3)
+ {
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == param_1)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-dispatch:
+-    {
+-        ManagedArray<int>& civiliansArray = civilians;
+-        int count = civiliansArray.numberValue;
+-        int j;
+-        for (j = 0; j < count; j++) {
+-            if (j >= civiliansArray.maximumSizeValue)
+-                break;
+-            if (civiliansArray.value[j] == param_1) {
+-                XYPoint targetPoint;
+-                if (unexploredArea(param_1, targetPoint) == 1) {
+-                    return taskExplorer(param_1, (float)targetPoint.x,
+-                                        (float)targetPoint.y, 1);
+-                }
+-                return taskExplorer(param_1, param_2, param_3, 1);
+-            }
++    this->unitsTaskedThisUpdate.add(param_1);
++    if (civilians.contains(param_1) == 1) {
++        XYPoint targetPoint;
++        if (unexploredArea(param_1, targetPoint) == 1) {
++            return taskExplorer(param_1, (float)targetPoint.x,
++                                (float)targetPoint.y, 1);
+         }
++        return taskExplorer(param_1, param_2, param_3, 1);
+     }
+ 
+     return taskExplorer(param_1, param_2, param_3, 0);
+@@ -7628,70 +6651,11 @@ dispatch:
+ 
+ int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
+ {
+-    int i = 0;
+-    int count = this->unitsTaskedThisUpdate.numberValue;
+-    for (; i < count; i++) {
+-        if (i >= this->unitsTaskedThisUpdate.maximumSizeValue) break;
+-        if (this->unitsTaskedThisUpdate.value[i] == unit) goto tasked_done;
+-    }
+-    if (count > this->unitsTaskedThisUpdate.maximumSizeValue - 1) {
+-        int newMax = count + 1;
+-        int* nv = (int*)::operator new(newMax * 4);
+-        if (nv != 0) {
+-            i = 0;
+-            if (this->unitsTaskedThisUpdate.maximumSizeValue > 0) {
+-                while (1) {
+-                    if (i >= newMax) break;
+-                    nv[i] = this->unitsTaskedThisUpdate.value[i];
+-                    i++;
+-                    if (i >= this->unitsTaskedThisUpdate.maximumSizeValue) break;
+-                }
+-            }
+-            ::operator delete(this->unitsTaskedThisUpdate.value);
+-            this->unitsTaskedThisUpdate.value = nv;
+-            this->unitsTaskedThisUpdate.maximumSizeValue = newMax;
+-        }
+-    }
+-    this->unitsTaskedThisUpdate.value[this->unitsTaskedThisUpdate.numberValue] = unit;
+-    this->unitsTaskedThisUpdate.numberValue++;
+-
+-tasked_done:
++    this->unitsTaskedThisUpdate.add(unit);
+     if (flag == 1) {
+-        i = 0;
+-        for (; i < this->civilianExplorers.numberValue; i++) {
+-            if (i >= this->civilianExplorers.maximumSizeValue) break;
+-            if (this->civilianExplorers.value[i] == unit) goto haveExplorer;
+-        }
+-        {
+-            ManagedArray<int>& civiliansArray = this->civilianExplorers;
+-            i = 0;
+-            count = civiliansArray.numberValue;
+-            for (; i < count; i++) {
+-            if (i >= civiliansArray.maximumSizeValue) break;
+-                if (civiliansArray.value[i] == unit) goto haveExplorer;
+-            }
+-            if (count > civiliansArray.maximumSizeValue - 1) {
+-                int newMax = count + 1;
+-                int* nv = (int*)::operator new(newMax * 4);
+-                if (nv != 0) {
+-                    i = 0;
+-                    if (civiliansArray.maximumSizeValue > 0) {
+-                        while (1) {
+-                            if (i >= newMax) break;
+-                            nv[i] = civiliansArray.value[i];
+-                            i++;
+-                            if (i >= civiliansArray.maximumSizeValue) break;
+-                        }
+-                    }
+-                    ::operator delete(civiliansArray.value);
+-                    civiliansArray.value = nv;
+-                    civiliansArray.maximumSizeValue = newMax;
+-                }
+-            }
+-            civiliansArray.value[civiliansArray.numberValue] = unit;
+-            civiliansArray.numberValue++;
++        if (this->civilianExplorers.contains(unit) == 0) {
++            this->civilianExplorers.add(unit);
+         }
+-haveExplorer:
+         this->removeGatherer(unit);
+     }
+     RGE_Player* player = this->md->player;
+@@ -7703,31 +6667,7 @@ haveExplorer:
+ 
+ 
+ int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) {
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue) break;
+-        if (arr.value[i] == param_1) goto done;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-done:
++    this->unitsTaskedThisUpdate.add(param_1);
+     {
+         RGE_Player* player = md->player;
+         player->sendUnitAIOrder(player->id, param_1, 0x2C8, param_2, -1,
+@@ -7739,34 +6679,7 @@ done:
+ 
+ int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4)
+ {
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == param_1)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newVals = new int[newSize];
+-        if (newVals != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newVals[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newVals;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(param_1);
+     // Mission dispatch through the typed player order surface.
+     {
+         RGE_Player* player = this->md->player;
+@@ -7797,31 +6710,7 @@ int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
+         return 0;
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue) break;
+-        if (arr.value[i] == param_1) goto done;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = (int*)::operator new(newSize * 4);
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            ::operator delete(arr.value);
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-done:
++    this->unitsTaskedThisUpdate.add(param_1);
+     {
+         RGE_Player* player = md->player;
+         player->sendUnitAIOrder((int)player->id, param_1, 0x2C1, -1, -1,
+@@ -7858,33 +6747,7 @@ int TribeTacticalAIModule::taskWaterTrader(int playerID, int targetID)
+         return 0;
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == playerID)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = playerID;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(playerID);
+     this->md->aiPlayer->taskResourceGatherer(playerID, targetID,
+                                              (int)targetObj->owner->id,
+                                              targetObj->world_x, targetObj->world_y);
+@@ -7907,33 +6770,7 @@ int TribeTacticalAIModule::taskWaterFisher(int playerID, int targetID, float x,
+         return 0;
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == playerID)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = playerID;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(playerID);
+     this->md->aiPlayer->taskResourceGatherer(playerID, targetID, 0, x, y);
+     return 1;
+ }
+@@ -8000,31 +6837,7 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
+         this->moveUnit(attackerID, x, y, priority);
+     }
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == attackerID)
+-            return 1;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = attackerID;
+-    arr.numberValue++;
++    this->unitsTaskedThisUpdate.add(attackerID);
+     return 1;
+ }
+ 
+@@ -8045,7 +6858,6 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
+ {
+     int objectID = 0;
+     RGE_Static_Object* trainBuilding;
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+ 
+     if (item == 0) {
+         this->logCommonHistory("Invalid taskTrain item, returning FALSE.");
+@@ -8066,30 +6878,7 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
+     item->setBuilt(0);
+ 
+     objectID = trainBuilding->id;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == objectID)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            for (i = 0; i < arr.maximumSizeValue && i < newSize; i++)
+-                newArray[i] = arr.value[i];
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = objectID;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(objectID);
+     this->md->aiPlayer->trainUnit(item->typeID(), trainBuilding->id,
+                                   item->uniqueID());
+     return 1;
+@@ -8098,7 +6887,6 @@ dispatch:
+ 
+ int TribeTacticalAIModule::taskResearch(BuildItem* item)
+ {
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+     int objectID;
+     RGE_Static_Object* object;
+     if (item == 0) {
+@@ -8122,31 +6910,7 @@ int TribeTacticalAIModule::taskResearch(BuildItem* item)
+ 
+     objectID = object->id;
+ 
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == objectID)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            for (i = 0; i < arr.maximumSizeValue && i < newSize; i++) {
+-                newArray[i] = arr.value[i];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = objectID;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(objectID);
+     this->md->aiPlayer->research(item->typeID(), object->id, item->uniqueID());
+     return 1;
+ }
+@@ -8154,37 +6918,12 @@ dispatch:
+ 
+ int TribeTacticalAIModule::taskToEnter(int param_1, int param_2)
+ {
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+     int i;
+ 
+     if (param_1 == -1)
+         return 0;
+ 
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == param_1)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = param_1;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(param_1);
+     {
+         RGE_Player* player = md->player;
+         player->sendUnitAIOrder(
+@@ -8222,33 +6961,7 @@ int TribeTacticalAIModule::taskTransporter(int playerID, float x, float y)
+     float distance = object->distance_to_position(x, y, 1.0f);
+     int priority = this->calculatePriority(distance);
+ 
+-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
+-    int i;
+-    for (i = 0; i < arr.numberValue; i++) {
+-        if (i >= arr.maximumSizeValue)
+-            break;
+-        if (arr.value[i] == playerID)
+-            goto dispatch;
+-    }
+-
+-    if (arr.numberValue > arr.maximumSizeValue - 1) {
+-        int newSize = arr.numberValue + 1;
+-        int* newArray = new int[newSize];
+-        if (newArray != 0) {
+-            int j;
+-            for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
+-                newArray[j] = arr.value[j];
+-            }
+-            delete[] arr.value;
+-            arr.value = newArray;
+-            arr.maximumSizeValue = newSize;
+-        }
+-    }
+-
+-    arr.value[arr.numberValue] = playerID;
+-    arr.numberValue++;
+-
+-dispatch:
++    this->unitsTaskedThisUpdate.add(playerID);
+     RGE_Player* player = this->md->player;
+     player->sendUnitAIOrder((int)player->id, playerID, 0x2CA, -1,
+                             (int)player->id, x, y, 1.0f, 1.0f,
+@@ -8259,28 +6972,7 @@ dispatch:
+ 
+ 
+ void TribeTacticalAIModule::removeFromTaskLists(int key) {
+-    int i = 0;
+-    int count = this->civilianExplorers.maximumSizeValue;
+-
+-    for (; i < count; ++i) {
+-        if (this->civilianExplorers.value[i] == key) break;
+-    }
+-
+-    if (i < count) {
+-        count--;
+-        if (i < count) {
+-            do {
+-                int* values = this->civilianExplorers.value;
+-                i++;
+-                values[i - 1] = values[i];
+-            } while (i < this->civilianExplorers.maximumSizeValue - 1);
+-        }
+-
+-        this->civilianExplorers.numberValue--;
+-        if (this->civilianExplorers.numberValue < 0) {
+-            this->civilianExplorers.numberValue = 0;
+-        }
+-    }
++    this->civilianExplorers.remove(key);
+ 
+     this->removeGatherer(key);
+ 
+@@ -8304,24 +6996,6 @@ end:
+     return;
+ }
+ 
+-static inline int appendUniqueGroupID(ManagedArray<int>& array, int item)
+-{
+-    int i;
+-    for (i = 0; i < array.numberValue; ++i) {
+-        if (i >= array.maximumSizeValue)
+-            break;
+-        if (array.value[i] == item)
+-            return 0;
+-    }
+-    if (array.numberValue > array.maximumSizeValue - 1) {
+-        int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-        (array.*resize)(array.numberValue + 1);
+-    }
+-    array.value[array.numberValue] = item;
+-    ++array.numberValue;
+-    return 1;
+-}
+-
+ int TribeTacticalAIModule::calculatePriority(float value) {
+     int priority;
+ 
+@@ -8350,7 +7024,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
+     sentinel = &this->groups;
+     while (group != sentinel && group != 0) {
+         if (group->numberUnits() == 0) {
+-            appendUniqueGroupID(groupsToRemove, group->id());
++            groupsToRemove.add(group->id());
+         }
+         group = group->next;
+     }
+@@ -8364,14 +7038,14 @@ void TribeTacticalAIModule::setupSoldierGroups()
+         group = this->groups.next;
+         while (group != sentinel && group != 0) {
+             if (group->type() == 100) {
+-                appendUniqueGroupID(groupsToRemove, group->id());
++                groupsToRemove.add(group->id());
+             }
+             group = group->next;
+         }
+     }
+ 
+     numAGroups = 0;
+-    while (numAGroups < groupsToRemove.numberValue) {
++    while (numAGroups < groupsToRemove.number()) {
+         this->removeGroup(groupsToRemove[numAGroups]);
+         ++numAGroups;
+     }
+@@ -8387,7 +7061,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
+     this->numberGroups(109, -1);
+     this->numberUngroupedArtifacts();
+ 
+-    while (this->workingArea.numberValue > 0) {
++    while (this->workingArea.number() > 0) {
+         int object_id = this->workingArea[numAGroups];
+         RGE_Static_Object* object = this->md->object(object_id);
+         if (object == 0) {
+@@ -8419,13 +7093,13 @@ void TribeTacticalAIModule::setupSoldierGroups()
+     numPotentialDGroups = 0;
+     numAGroups = 0;
+     if (this->sn[0x28] == 0) {
+-        numPotentialAGroups = (int)ceil((double)this->soldiers.numberValue /
++        numPotentialAGroups = (int)ceil((double)this->soldiers.number() /
+                                         (double)this->sn[0x10]);
+         if (numPotentialAGroups > this->sn[0x24]) {
+             numPotentialAGroups = this->sn[0x24];
+         }
+         int artifactUnits = numPotentialAGroups * this->sn[0x10];
+-        remainder = this->soldiers.numberValue - artifactUnits;
++        remainder = this->soldiers.number() - artifactUnits;
+         if (remainder <= 0) {
+             goto balance_groups;
+         }
+@@ -8434,7 +7108,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
+         if (numPotentialDGroups > this->sn[0x26]) {
+             numPotentialDGroups = this->sn[0x26];
+         }
+-        remainder = this->soldiers.numberValue -
++        remainder = this->soldiers.number() -
+                     numPotentialDGroups * this->sn[0x19] - artifactUnits;
+         if (remainder <= 0) {
+             goto balance_groups;
+@@ -8447,7 +7121,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
+     }
+     else {
+         int maxArtifact = this->sn[0x24];
+-        remainder = this->soldiers.numberValue;
++        remainder = this->soldiers.number();
+         numPotentialAGroups = remainder;
+         if (remainder >= maxArtifact) {
+             numPotentialAGroups = maxArtifact;
+@@ -8602,7 +7276,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                     if (ungrouped == 0) {
+                         this->numberExtraGroupedSoldiers();
+                     }
+-                    if (this->workingArea.numberValue == 0) {
++                    if (this->workingArea.number() == 0) {
+                         return;
+                     }
+                     int commander = this->selectBestCommander(this->workingArea);
+@@ -8639,7 +7313,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                             int missing = desired - number;
+                             if (ungrouped <= missing) {
+                                 int i = 0;
+-                                if (this->workingArea.numberValue > 0) {
++                                if (this->workingArea.number() > 0) {
+                                     do {
+                                         RGE_Static_Object* object =
+                                             this->md->object(this->workingArea[i]);
+@@ -8648,7 +7322,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                             bestGroup->addUnit(this->workingArea[i], this->md);
+                                         }
+                                         ++i;
+-                                    } while (i < this->workingArea.numberValue);
++                                    } while (i < this->workingArea.number());
+                                 }
+                             }
+ 
+@@ -8660,7 +7334,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                     int i = 0;
+                                     float bestDistance = -1.0f;
+                                     int bestUnitID = -1;
+-                                    if (this->workingArea.numberValue > 0) {
++                                    if (this->workingArea.number() > 0) {
+                                         do {
+                                             RGE_Static_Object* object =
+                                                 this->md->object(this->workingArea[i]);
+@@ -8676,39 +7350,14 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                                 }
+                                             }
+                                             ++i;
+-                                        } while (i < this->workingArea.numberValue);
++                                        } while (i < this->workingArea.number());
+                                     }
+                                     if (bestUnitID == -1) {
+                                         break;
+                                     }
+                                     bestGroup->addUnit(bestUnitID, this->md);
+ 
+-                                    int max = this->workingArea.maximumSizeValue;
+-                                    int removeIndex = 0;
+-                                    if (max > 0) {
+-                                        int* value = this->workingArea.value;
+-                                        do {
+-                                            if (*value == bestUnitID) {
+-                                                break;
+-                                            }
+-                                            ++removeIndex;
+-                                            ++value;
+-                                        } while (removeIndex < max);
+-                                    }
+-                                    if (removeIndex < max) {
+-                                        if (removeIndex < max - 1) {
+-                                            do {
+-                                                ++removeIndex;
+-                                                this->workingArea.value[removeIndex - 1] =
+-                                                    this->workingArea.value[removeIndex];
+-                                            } while (removeIndex < max - 1);
+-                                        }
+-                                        int count = this->workingArea.numberValue - 1;
+-                                        this->workingArea.numberValue = count;
+-                                        if (count < 0) {
+-                                            this->workingArea.numberValue = 0;
+-                                        }
+-                                    }
++                                    this->workingArea.remove(bestUnitID);
+ 
+                                     desiredAgain = bestGroup->desiredNumberUnits();
+                                     numberAgain = bestGroup->numberUnits();
+@@ -8731,7 +7380,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                         int i = 0;
+                                         float bestDistance = -1.0f;
+                                         int bestUnitID = -1;
+-                                        if (this->workingArea.numberValue > 0) {
++                                        if (this->workingArea.number() > 0) {
+                                             do {
+                                                 RGE_Static_Object* object =
+                                                     this->md->object(this->workingArea[i]);
+@@ -8747,7 +7396,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                                     }
+                                                 }
+                                                 ++i;
+-                                            } while (i < this->workingArea.numberValue);
++                                            } while (i < this->workingArea.number());
+                                         }
+                                         if (bestUnitID == -1) {
+                                             break;
+@@ -8755,38 +7404,13 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                         this->removeFromGroup(bestUnitID);
+                                         bestGroup->addUnit(bestUnitID, this->md);
+ 
+-                                        int max = this->workingArea.maximumSizeValue;
+-                                        int removeIndex = 0;
+-                                        if (max > 0) {
+-                                            int* value = this->workingArea.value;
+-                                            do {
+-                                                if (*value == bestUnitID) {
+-                                                    break;
+-                                                }
+-                                                ++removeIndex;
+-                                                ++value;
+-                                            } while (removeIndex < max);
+-                                        }
+-                                        if (removeIndex < max) {
+-                                            if (removeIndex < max - 1) {
+-                                                do {
+-                                                    ++removeIndex;
+-                                                    this->workingArea.value[removeIndex - 1] =
+-                                                        this->workingArea.value[removeIndex];
+-                                                } while (removeIndex < max - 1);
+-                                            }
+-                                            int count = this->workingArea.numberValue - 1;
+-                                            this->workingArea.numberValue = count;
+-                                            if (count < 0) {
+-                                                this->workingArea.numberValue = 0;
+-                                            }
+-                                        }
++                                        this->workingArea.remove(bestUnitID);
+                                     } while (bestGroup->numberUnits() < bestGroup->desiredNumberUnits());
+                                     }
+                                 }
+                                 else {
+                                     int i = 0;
+-                                    if (this->workingArea.numberValue > 0) {
++                                    if (this->workingArea.number() > 0) {
+                                         do {
+                                             RGE_Static_Object* object =
+                                                 this->md->object(this->workingArea[i]);
+@@ -8796,7 +7420,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                                                 bestGroup->addUnit(this->workingArea[i], this->md);
+                                             }
+                                             ++i;
+-                                        } while (i < this->workingArea.numberValue);
++                                        } while (i < this->workingArea.number());
+                                     }
+                                 }
+                             }
+@@ -8809,7 +7433,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+         } while (bestUnit <= 0x66);
+     }
+ 
+-    if (this->numberUngroupedSoldiers() != 0 && this->workingArea.numberValue > 0) {
++    if (this->numberUngroupedSoldiers() != 0 && this->workingArea.number() > 0) {
+         TacticalAIGroup* group;
+         int i = 0;
+         do {
+@@ -8904,7 +7528,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
+                 bestGroup->addUnit(unit, this->md);
+             }
+             ++i;
+-        } while (i < this->workingArea.numberValue);
++        } while (i < this->workingArea.number());
+     }
+ }
+ 
+@@ -8916,15 +7540,15 @@ int TribeTacticalAIModule::numberUngroupedSoldiers()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& soldiers = this->soldiers;
+ 
+-    workingArea.numberValue = 0;
+-    if (soldiers.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (soldiers.number() > 0) {
+         do {
+             if (this->groupUnitIsIn(soldiers[i]) == 0) {
+                 workingArea.add(soldiers[i]);
+                 rNum++;
+             }
+             i++;
+-        } while (i < soldiers.numberValue);
++        } while (i < soldiers.number());
+     }
+     return rNum;
+ }
+@@ -8936,7 +7560,7 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers()
+     ManagedArray<int>& workingArea = this->workingArea;
+     TacticalAIGroup* group;
+ 
+-    workingArea.numberValue = 0;
++    workingArea.zeroNumber();
+     group = this->groups.next;
+     while (group != &this->groups) {
+         if (group == 0)
+@@ -8979,15 +7603,15 @@ int TribeTacticalAIModule::numberUngroupedArtifacts()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& artifacts = this->artifacts;
+ 
+-    workingArea.numberValue = 0;
+-    if (artifacts.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (artifacts.number() > 0) {
+         do {
+             if (this->groupUnitIsIn(artifacts[i]) == 0) {
+                 workingArea.add(artifacts[i]);
+                 rNum++;
+             }
+             i++;
+-        } while (i < artifacts.numberValue);
++        } while (i < artifacts.number());
+     }
+     return rNum;
+ }
+@@ -9080,13 +7704,13 @@ void TribeTacticalAIModule::setupBoatGroups()
+             continue;
+         }
+         if (group->numberUnits() == 0) {
+-            appendUniqueGroupID(groupsToRemove, group->id());
++            groupsToRemove.add(group->id());
+         }
+         group = group->next;
+     }
+ 
+     numEGroups = 0;
+-    while (numEGroups < groupsToRemove.numberValue) {
++    while (numEGroups < groupsToRemove.number()) {
+         this->removeGroup(groupsToRemove[numEGroups]);
+         ++numEGroups;
+     }
+@@ -9099,7 +7723,7 @@ void TribeTacticalAIModule::setupBoatGroups()
+     this->numberGroups(0x6a, -1);
+ 
+     this->numberUngroupedFishingBoats();
+-    while (this->workingArea.numberValue > 0) {
++    while (this->workingArea.number() > 0) {
+         int object_id = this->workingArea[numEGroups];
+         RGE_Static_Object* object = this->md->object(object_id);
+         if (object == 0) {
+@@ -9122,7 +7746,7 @@ void TribeTacticalAIModule::setupBoatGroups()
+     }
+ 
+     this->numberUngroupedTradeBoats();
+-    while (this->workingArea.numberValue > 0) {
++    while (this->workingArea.number() > 0) {
+         int object_id = this->workingArea[numEGroups];
+         RGE_Static_Object* object = this->md->object(object_id);
+         if (object == 0) {
+@@ -9145,7 +7769,7 @@ void TribeTacticalAIModule::setupBoatGroups()
+     }
+ 
+     this->numberUngroupedTransportBoats();
+-    while (this->workingArea.numberValue > 0) {
++    while (this->workingArea.number() > 0) {
+         int object_id = this->workingArea[numEGroups];
+         RGE_Static_Object* object = this->md->object(object_id);
+         if (object == 0) {
+@@ -9177,14 +7801,14 @@ void TribeTacticalAIModule::setupBoatGroups()
+     numDGroups = 0;
+     if (this->sn[0x28] == 0) {
+         numPotentialEGroups = (int)ceil(
+-            (double)this->warBoats.numberValue / (double)this->sn[0x3b]);
++            (double)this->warBoats.number() / (double)this->sn[0x3b]);
+         if (numPotentialEGroups > this->sn[0x3a]) numPotentialEGroups = this->sn[0x3a];
+         int product = numPotentialEGroups * this->sn[0x3b];
+-        remaining = this->warBoats.numberValue - product;
++        remaining = this->warBoats.number() - product;
+         if (remaining > 0) {
+             numEGroups = (int)ceil((double)remaining / (double)this->sn[0x44]);
+             if (numEGroups > this->sn[0x43]) numEGroups = this->sn[0x43];
+-            remaining = this->warBoats.numberValue -
++            remaining = this->warBoats.number() -
+                         product - numEGroups * this->sn[0x44];
+             if (remaining > 0) {
+                 numDGroups = (int)ceil((double)remaining / (double)this->sn[0x3e]);
+@@ -9194,12 +7818,12 @@ void TribeTacticalAIModule::setupBoatGroups()
+     }
+     else {
+         int maxPotentialEGroups = this->sn[0x3a];
+-        int warBoatCount = this->warBoats.numberValue;
++        int warBoatCount = this->warBoats.number();
+         numPotentialEGroups =
+             warBoatCount < maxPotentialEGroups
+                 ? warBoatCount
+                 : maxPotentialEGroups;
+-        remaining = this->warBoats.numberValue - numPotentialEGroups;
++        remaining = this->warBoats.number() - numPotentialEGroups;
+         if (remaining > 0) {
+             numEGroups = remaining < this->sn[0x43] ? remaining : this->sn[0x43];
+             remaining -= numEGroups;
+@@ -9331,7 +7955,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                     if (ungrouped == 0) {
+                         this->numberExtraGroupedWarBoats();
+                     }
+-                    if (this->workingArea.numberValue == 0) {
++                    if (this->workingArea.number() == 0) {
+                         return;
+                     }
+                     int commander = this->selectBestCommander(this->workingArea);
+@@ -9367,11 +7991,11 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                         int missing = desiredForFill - numberForFill;
+                         if (missing >= ungrouped) {
+                             int i = 0;
+-                            if (this->workingArea.numberValue > 0) {
++                            if (this->workingArea.number() > 0) {
+                                 do {
+                                     boatGroup->addUnit(this->workingArea[i], this->md);
+                                     ++i;
+-                                } while (i < this->workingArea.numberValue);
++                                } while (i < this->workingArea.number());
+                             }
+                         }
+                         else {
+@@ -9381,7 +8005,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                                 int i = 0;
+                                 float bestDistance = -1.0f;
+                                 int bestUnitID = -1;
+-                                if (this->workingArea.numberValue > 0) {
++                                if (this->workingArea.number() > 0) {
+                                     do {
+                                         RGE_Static_Object* object = this->md->object(this->workingArea[i]);
+                                         if (object != 0) {
+@@ -9395,36 +8019,12 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                                             }
+                                         }
+                                         ++i;
+-                                    } while (i < this->workingArea.numberValue);
++                                    } while (i < this->workingArea.number());
+                                 }
+                                 if (bestUnitID != -1) {
+                                     boatGroup->addUnit(bestUnitID, this->md);
+ 
+-                                    int max = this->workingArea.maximumSizeValue;
+-                                    int removeIndex = 0;
+-                                    if (max > 0) {
+-                                        int* value = this->workingArea.value;
+-                                        do {
+-                                            if (*value == bestUnitID) {
+-                                                break;
+-                                            }
+-                                            ++removeIndex;
+-                                            ++value;
+-                                        } while (removeIndex < max);
+-                                    }
+-                                    if (removeIndex < max) {
+-                                        if (removeIndex < max - 1) {
+-                                            do {
+-                                                ++removeIndex;
+-                                                this->workingArea.value[removeIndex - 1] = this->workingArea.value[removeIndex];
+-                                            } while (removeIndex < max - 1);
+-                                        }
+-                                        int count = this->workingArea.numberValue - 1;
+-                                        this->workingArea.numberValue = count;
+-                                        if (count < 0) {
+-                                            this->workingArea.numberValue = 0;
+-                                        }
+-                                    }
++                                    this->workingArea.remove(bestUnitID);
+ 
+                                     desiredAgain = boatGroup->desiredNumberUnits();
+                                     numberAgain = boatGroup->numberUnits();
+@@ -9444,12 +8044,12 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                             int missingExtra = desiredExtra - numberExtra;
+                             if (missingExtra >= extra) {
+                                 int i = 0;
+-                                if (this->workingArea.numberValue > 0) {
++                                if (this->workingArea.number() > 0) {
+                                     do {
+                                         this->removeFromGroup(this->workingArea[i]);
+                                         boatGroup->addUnit(this->workingArea[i], this->md);
+                                         ++i;
+-                                    } while (i < this->workingArea.numberValue);
++                                    } while (i < this->workingArea.number());
+                                 }
+                             }
+                             else {
+@@ -9460,7 +8060,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                                         int i = 0;
+                                         float bestDistance = -1.0f;
+                                         int bestUnitID = -1;
+-                                        if (this->workingArea.numberValue > 0) {
++                                        if (this->workingArea.number() > 0) {
+                                             do {
+                                                 RGE_Static_Object* object = this->md->object(this->workingArea[i]);
+                                                 if (object != 0) {
+@@ -9474,7 +8074,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                                                     }
+                                                 }
+                                                 ++i;
+-                                            } while (i < this->workingArea.numberValue);
++                                            } while (i < this->workingArea.number());
+                                         }
+                                         if (bestUnitID == -1) {
+                                             break;
+@@ -9494,7 +8094,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
+         } while (bestUnit <= 0x6A);
+     }
+ 
+-    if (this->numberUngroupedWarBoats() != 0 && this->workingArea.numberValue > 0) {
++    if (this->numberUngroupedWarBoats() != 0 && this->workingArea.number() > 0) {
+         TacticalAIGroup* bestGroup;
+         int i = 0;
+         do {
+@@ -9569,7 +8169,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
+                 bestGroup->addUnit(this->workingArea[i], this->md);
+             }
+             ++i;
+-        } while (i < this->workingArea.numberValue);
++        } while (i < this->workingArea.number());
+     }
+ }
+ 
+@@ -9581,15 +8181,15 @@ int TribeTacticalAIModule::numberUngroupedWarBoats()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& boats = this->boats;
+ 
+-    workingArea.numberValue = 0;
+-    if (boats.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (boats.number() > 0) {
+         do {
+             if (this->groupUnitIsIn(boats[i]) == 0) {
+                 workingArea.add(boats[i]);
+                 rNum++;
+             }
+             i++;
+-        } while (i < boats.numberValue);
++        } while (i < boats.number());
+     }
+     return rNum;
+ }
+@@ -9604,7 +8204,7 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats()
+     int numberUnitsValue;
+     TacticalAIGroup* group;
+ 
+-    workingArea.numberValue = result;
++    workingArea.zeroNumber();
+     group = this->groups.next;
+     while (group != &this->groups) {
+         if (group == 0)
+@@ -9647,15 +8247,15 @@ int TribeTacticalAIModule::numberUngroupedFishingBoats()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& fishingBoats = this->fishingBoats;
+ 
+-    workingArea.numberValue = 0;
+-    if (fishingBoats.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (fishingBoats.number() > 0) {
+         do {
+             if (this->groupUnitIsIn(fishingBoats[i]) == 0) {
+                 workingArea.add(fishingBoats[i]);
+                 rNum++;
+             }
+             i++;
+-        } while (i < fishingBoats.numberValue);
++        } while (i < fishingBoats.number());
+     }
+     return rNum;
+ }
+@@ -9668,15 +8268,15 @@ int TribeTacticalAIModule::numberUngroupedTradeBoats()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& tradeBoats = this->tradeBoats;
+ 
+-    workingArea.numberValue = 0;
+-    if (tradeBoats.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (tradeBoats.number() > 0) {
+         do {
+             if (this->groupUnitIsIn(tradeBoats[i]) == 0) {
+                 workingArea.add(tradeBoats[i]);
+                 rNum++;
+             }
+             i++;
+-        } while (i < tradeBoats.numberValue);
++        } while (i < tradeBoats.number());
+     }
+     return rNum;
+ }
+@@ -9689,15 +8289,15 @@ int TribeTacticalAIModule::numberUngroupedTransportBoats()
+     ManagedArray<int>& workingArea = this->workingArea;
+     ManagedArray<int>& transportBoats = this->transportBoats;
+ 
+-    workingArea.numberValue = 0;
+-    if (transportBoats.numberValue > 0) {
++    workingArea.zeroNumber();
++    if (transportBoats.number() > 0) {
+         do {
+             if (this->groupUnitIsIn(transportBoats[i]) == 0) {
+                 workingArea.add(transportBoats[i]);
+                 rNum++;
+             }
+             i++;
+-        } while (i < transportBoats.numberValue);
++        } while (i < transportBoats.number());
+     }
+     return rNum;
+ }
+@@ -10113,32 +8713,7 @@ void __cdecl operator delete(void* ptr);
+ 
+ int TribeTacticalAIModule::numberItemsToAttack()
+ {
+-    int* newValue;
+-    int i;
+-    int max;
+-
+-    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
+-        newValue = new int[1];
+-        if (newValue != 0) {
+-            max = this->playersToAttack.maximumSizeValue;
+-            i = 0;
+-            if (0 < max) {
+-                do {
+-                    if (i < 1) {
+-                        i = i + 1;
+-                        newValue[i - 1] = this->playersToAttack.value[i - 1];
+-                    }
+-                    else {
+-                        break;
+-                    }
+-                } while (i < this->playersToAttack.maximumSizeValue);
+-            }
+-            delete this->playersToAttack.value;
+-            this->playersToAttack.value = newValue;
+-            this->playersToAttack.maximumSizeValue = 1;
+-        }
+-    }
+-    return this->md->informationAI.numberGameIDsOwnedBy(-1, *this->playersToAttack.value);
++    return this->md->informationAI.numberGameIDsOwnedBy(-1, this->playersToAttack[0]);
+ }
+ 
+ int TribeTacticalAIModule::itemToCapture(void) {
+@@ -10344,7 +8919,7 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
+     }
+ 
+     i = 0;
+-    if (this->ungroupedSoldiers.numberValue > 0) {
++    if (this->ungroupedSoldiers.number() > 0) {
+         XYPoint minpt;
+         XYPoint maxpt;
+         do {
+@@ -10369,7 +8944,7 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
+                 map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
+             }
+             i++;
+-        } while (i < this->ungroupedSoldiers.numberValue);
++        } while (i < this->ungroupedSoldiers.number());
+     }
+ }
+ 
+@@ -10430,18 +9005,9 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& a)
+     int bestScore = -1;
+     int bestUnit = -1;
+     int i = 0;
+-    if (a.numberValue > 0) {
++    if (a.number() > 0) {
+     do {
+-        if (i > a.maximumSizeValue - 1) {
+-            int newMax = i + 1;
+-            int* n = (int*)operator new(newMax * 4);
+-            if (n) {
+-                int j = 0;
+-                while (j < a.maximumSizeValue && j < newMax) { n[j] = a.value[j]; ++j; }
+-                operator delete(a.value); a.value = n; a.maximumSizeValue = newMax;
+-            }
+-        }
+-        int id = a.value[i];
++        int id = a[i];
+         RGE_Static_Object* obj = this->md->object(id);
+         if (obj != 0) {
+             if (obj->master_obj->id != 0x7d) {
+@@ -10453,29 +9019,19 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& a)
+                 }
+                 if (this->sn[0x4b] == 1 || this->sn[0x4b] == 3) {
+                     if (bestScore == -1 || score < bestScore) {
+-                        if (i > a.maximumSizeValue - 1) {
+-                            int newMax = i + 1;
+-                            int* n = (int*)operator new(newMax * 4);
+-                            if (n) { int j = 0; while (j < a.maximumSizeValue && j < newMax) { n[j] = a.value[j]; ++j; } operator delete(a.value); a.value = n; a.maximumSizeValue = newMax; }
+-                        }
+-                        bestUnit = a.value[i];
++                        bestUnit = a[i];
+                         bestScore = score;
+                     }
+                 } else {
+                     if (bestScore == -1 || score > bestScore) {
+-                        if (i > a.maximumSizeValue - 1) {
+-                            int newMax = i + 1;
+-                            int* n = (int*)operator new(newMax * 4);
+-                            if (n) { int j = 0; while (j < a.maximumSizeValue && j < newMax) { n[j] = a.value[j]; ++j; } operator delete(a.value); a.value = n; a.maximumSizeValue = newMax; }
+-                        }
+-                        bestUnit = a.value[i];
++                        bestUnit = a[i];
+                         bestScore = score;
+                     }
+                 }
+             }
+         }
+         ++i;
+-    } while (i < a.numberValue);
++    } while (i < a.number());
+     }
+     return bestUnit;
+ }
+@@ -10494,13 +9050,7 @@ int TribeTacticalAIModule::dealWithGAIAAttacker(
+         return 0;
+ 
+     int targetID = target->id;
+-    int i;
+-    for (i = 0; i < this->civilianExplorers.numberValue; i++) {
+-        if (i >= this->civilianExplorers.maximumSizeValue)
+-            break;
+-        if (this->civilianExplorers.value[i] == targetID)
+-            return 0;
+-    }
++    if (this->civilianExplorers.contains(targetID) == 1) return 0;
+ 
+     count = 0;
+     vPosition.x = (int)target->world_x;
+@@ -10914,7 +9464,7 @@ int TribeTacticalAIModule::numberFarmers()
+     i = 0;
+     rVal = 0;
+ 
+-    if (this->civilians.numberValue > 0) {
++    if (this->civilians.number() > 0) {
+         do {
+             RGE_Static_Object* obj = this->md->object(this->civilians[i]);
+             if ((obj != 0) && (obj->unitAI() != 0) &&
+@@ -10926,7 +9476,7 @@ int TribeTacticalAIModule::numberFarmers()
+             }
+         next:
+             i = i + 1;
+-        } while (i < this->civilians.numberValue);
++        } while (i < this->civilians.number());
+     }
+     return rVal;
+ }
+@@ -10983,7 +9533,7 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID)
+     unitsToInsert =
+         this->md->informationAI.numberUnitsWithinXTiles(
+             playerID, (int)object->world_x, (int)object->world_y, 20) -
+-        this->soldiers.numberValue;
++        this->soldiers.number();
+     if (unitsToInsert <= 0)
+         return;
+     if (unitsToInsert > 5)
+@@ -10998,7 +9548,7 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID)
+         switch (insertedUnit) {
+         case 0:
+             if (this->md->resourceAI.resource(2) >= 150 &&
+-                this->civilians.numberValue > 2) {
++                this->civilians.number() > 2) {
+                 this->md->buildAI.insert(0x4F, 1, 0);
+                 unitsToInsert -= 2;
+             }
+@@ -11428,12 +9978,8 @@ void TribeTacticalAIModule::taskElephantGatherers(
+                     UnitData* gatherer = this->gatherers;
+                     do {
+                         RGE_Static_Object* object;
+-                        for (int j = 0; j < alreadyTasked.numberValue; j++) {
+-                            if (j >= alreadyTasked.maximumSizeValue)
+-                                break;
+-                            if (alreadyTasked.value[j] == gatherer->id)
+-                                goto nextGatherer;
+-                        }
++                        if (alreadyTasked.contains(gatherer->id) == 1)
++                            goto nextGatherer;
+ 
+                         object = this->md->object(gatherer->id);
+                         if (object != 0 && object->unitAI() != 0 &&
+@@ -11459,33 +10005,7 @@ nextGatherer:
+                     bestValueID, targetID, 0,
+                     targetObject->world_x, targetObject->world_y);
+ 
+-                for (int j = 0; j < alreadyTasked.numberValue; j++) {
+-                    if (j >= alreadyTasked.maximumSizeValue)
+-                        break;
+-                    if (alreadyTasked.value[j] == bestValueID)
+-                        goto afterAdd;
+-                }
+-
+-                if (alreadyTasked.numberValue >
+-                    alreadyTasked.maximumSizeValue - 1) {
+-                    int newSize = alreadyTasked.numberValue + 1;
+-                    int* newValue = new int[newSize];
+-                    if (newValue != 0) {
+-                        for (int k = 0;
+-                             k < alreadyTasked.maximumSizeValue && k < newSize;
+-                             k++) {
+-                            newValue[k] = alreadyTasked.value[k];
+-                        }
+-                        operator delete(alreadyTasked.value);
+-                        alreadyTasked.value = newValue;
+-                        alreadyTasked.maximumSizeValue = newSize;
+-                    }
+-                }
+-
+-                alreadyTasked.value[alreadyTasked.numberValue] = bestValueID;
+-                alreadyTasked.numberValue++;
+-
+-afterAdd:
++                alreadyTasked.add(bestValueID);
+                 count++;
+         }
+     }
+@@ -11500,7 +10020,7 @@ void TribeTacticalAIModule::checkTradeBoats()
+     int i;
+     i = 0;
+ 
+-    if (this->tradeBoats.numberValue > 0) {
++    if (this->tradeBoats.number() > 0) {
+         do {
+             RGE_Static_Object* object =
+                 this->md->object(this->tradeBoats[i]);
+@@ -11527,7 +10047,7 @@ trade_attribute:
+ 
+ next_boat:
+             ++i;
+-        } while (i < this->tradeBoats.numberValue);
++        } while (i < this->tradeBoats.number());
+     }
+ }
+ 
+@@ -11651,8 +10171,8 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
+ 
+         entryCount = 0;
+         count = 0;
+-        if (this->soldiers.numberValue > 0) {
+-            while (count < this->soldiers.numberValue && entryCount < 6) {
++        if (this->soldiers.number() > 0) {
++            while (count < this->soldiers.number() && entryCount < 6) {
+                 if (count > 1 &&
+                     debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3447) -
+                             entryTime > 10)

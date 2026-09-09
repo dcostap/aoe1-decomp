@@ -1,0 +1,10 @@
+{
+  "base": "b3dfb97c03ab40b60cc46c4340d051624e290863",
+  "patch": "decomp_notes\\candidates\\004F\\004F4760_complete_natural_play_buffers_main_header.patch",
+  "patch_sha256": "fe7832381e4cb17898573d65128d1175cc0ab9a6334c38e4f4afa51bd1157585",
+  "files": {
+    "src/stat_obj.cpp": "85c4311ca47b7a12723c271bb7ed2b6880d64e606af49c9865120e486c595200",
+    "src/taitacmd.cpp": "75cd5cb9d77569ee9da84ef605fe20343c3709fff189508361b41a30b0da641b"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

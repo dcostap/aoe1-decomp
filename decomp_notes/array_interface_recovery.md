@@ -1,5 +1,12 @@
 # Array interface recovery
 
+## Current integration review
+
+Read `decomp_notes/array_integration_checkpoint.md` for the newer complete protected build.
+It replaces the earlier build-blocker list and the 28-record diagnostic comparison below.
+The first protected comparison records 46 changed owners. Integration review remains open.
+The static-object caller repair is integrated in `e3c43d2ff`.
+
 ## Resumed work: 2026-09-09
 
 Read `decomp_notes/session_handoff_array_storage.md` for current worktrees and validation records.
