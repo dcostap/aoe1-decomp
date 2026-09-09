@@ -1119,8 +1119,8 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
         scr_x = 0;
         scr_y = 0;
         info = Picked_Objects;
-        int i = 0;
-        while (i < target_count) {
+        x = 0;
+        while (x < target_count) {
             if (info->object_id >= 0) {
                 RGE_Static_Object* object =
                 this->world->objectsValue[info->object_id];
@@ -1153,7 +1153,7 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
                     }
                 }
             }
-            ++i;
+            ++x;
             ++info;
         }
         if (found_last && picked_obj == 0) {
