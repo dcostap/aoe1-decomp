@@ -128,3 +128,31 @@ calls, no relocations, matching owner, matching CFG, and no boundary escape.
 The single-job grouped audit is in
 `build/worker_wrap_alpha_354/audit_final_static/report.txt`. All 19 prior exact
 validation targets remain matching, and no exact neighbor changed.
+
+## Current scratch baseline: 2026-09-09
+
+Fresh target checks rebuilt the natural `src/Dib.cpp` owner without source
+changes. All five assigned scratch owners remain mismatches, with successful
+closure checks and no exact-neighbor regressions:
+
+- `00438820 DibBlt`: 264 differing bytes; 632 original, 614 rebuilt bytes.
+- `00438AA0 TransDibBlt`: 919 differing bytes; 977 original, 942 rebuilt bytes.
+- `004390A0 TileDibBlt`: 1073 differing bytes; 1265 original, 1259 rebuilt bytes.
+- `004395A0 DibCheckTrans`: 197 differing bytes; 345 original and rebuilt bytes.
+- `0043A660 DibMapToPalette`: 761 differing bytes; 1017 original and rebuilt bytes.
+
+The recorded run IDs are `904fe9e443634576a84551642f38911f` for `DibBlt`,
+`bfc61cbcc407483d8d7a97027caf21c6` for `TransDibBlt`,
+`b54a16da39bc42e49b46eb1538c266a9` for `TileDibBlt`,
+`fb9b558d780a4446bbed7c5b3a2d829f` for `DibCheckTrans`, and
+`ac57aa7b1d39413b9fb6d1f6e265fe77` for `DibMapToPalette`.
+
+The checks preserve the matching owners and source boundaries. No exact or
+accepted-drift proposal is supported. The remaining gaps are the documented
+VC5 register, stack-home, loop, and control-flow differences. New source
+evidence is required before another metric-only probe.
+
+The 004395A0 loop-shape Variant Lab finding is preserved under state
+`4f2275cb3b2a5ba7becacb911356a30946577f22b2753f911f5b06f3368f79ae` and event
+`56d44e2caf243c9abb143f2c2bd78256b6db4925727434dfac7faabaf4c285a7`. It used
+16 natural loop combinations with one emitted group and no exact result.
