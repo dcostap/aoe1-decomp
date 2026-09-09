@@ -1,0 +1,19 @@
+{
+  "base": "09528c39a8284d40e07ffa68732a642c71025cdf",
+  "patch": "decomp_notes\\candidates\\0045\\0045DB90_complete_complete_protected_movement_tail.patch",
+  "patch_sha256": "60df7945bee9b2c7cd9bcc688bd5a89be765c7eae1668a1f3393c2bb05d6689c",
+  "files": {
+    "include/utmarray.h": "afab6a98b09338cbd7aac4bf74e29e043956b077b20995c8162ce4e33bbf88a0",
+    "src/Command.cpp": "10a36011e3c1749b04e573034468458879afa3da2f9f1dd27a4cc2eaff4afbf0",
+    "src/aimdmod.cpp": "a8ba13d97472733b5dfa531bcb3135b83d0493eb04b9b4b7fbc9c757752527a1",
+    "src/aiuaimod.cpp": "a312ec7f7fd8acbaa134b6cfd6034cf11def953803b41ab11a1fe36fa0757038",
+    "src/move_obj.cpp": "3dbc2f32b6c77d60a47aee22ee4729415f752fb9805a0a88d96be009be676ef8",
+    "src/pathsys.cpp": "7ca62b5840f3f53eb04427e66729d1476f893e4cbc619bf679880c480ea7c122",
+    "src/taiinfmd.cpp": "e4f8e24936fb42d1e70fe66064cc01e9ac8f75959a66278bc4e3f67061cd26ed",
+    "src/taimdmd.cpp": "144884583db8c72a52e021e454c01e2ca1018bbca11f34ef04b1d1895ea120da",
+    "src/taistrmd.cpp": "82575fa5eafaa9d516ffa9e44a17737cb892662dd9cd5b9f4c82563aa820b259",
+    "src/taitacmd.cpp": "d6339bddf714f470d749e7452c87433be84cf7983fc375817d74a5f6d2568599",
+    "src/taiuaimd.cpp": "c933ef591d48aa5e023968e3b0099bbbfcbf46c6aa920504fac883eb8b190f41"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

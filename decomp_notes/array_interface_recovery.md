@@ -1,5 +1,23 @@
 # Array interface recovery
 
+## Resumed work: 2026-09-09
+
+Read `decomp_notes/session_handoff_array_storage.md` for current worktrees and validation records.
+Two independent decision-module caller repairs were integrated in `172ea2295`.
+The shared protected-array proposal remains isolated.
+
+An out-of-class `contains` definition restores the exact 52-byte obstruction body without changing the method body.
+The protected state is `a542e3dc18564e25d976c82c858929ee2f0dcd4cb1ded994c228ef7d9279e4ff`.
+A diagnostic public-field build passes all 2544 matching targets across 90 modules.
+All five earlier matching regressions disappear in that diagnostic state.
+This result does not support public storage or approve the other changed owners.
+The current-main comparison reports 28 changed owner records among 3584 emissions.
+
+Eight movement count resets now use `zeroNumber()` in the protected proposal.
+The reset-only control preserves all 103 movement owners.
+Review found two existing `doMove` control-flow defects, recorded in its function note.
+A separate repair remains isolated. Four other caller modules still need protected-access recovery.
+
 ## Scope
 
 Base: `767991a0b6ca728d3f009431454ad822926d4945`.

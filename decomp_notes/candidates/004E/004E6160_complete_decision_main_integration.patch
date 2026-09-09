@@ -1,0 +1,82 @@
+# Complete worktree candidate
+# Base 09528c39a8284d40e07ffa68732a642c71025cdf
+# Integration remains blocked.
+diff --git a/src/aimdmod.cpp b/src/aimdmod.cpp
+index 35c5acd89..fcc19fc92 100644
+--- a/src/aimdmod.cpp
++++ b/src/aimdmod.cpp
+@@ -180,7 +180,7 @@ RGE_Static_Object* MainDecisionAIModule::object(
+     int attribute_amount)
+ {
+     int i = 0;
+-    for (; i < this->objects.numberValue; ++i) {
++    for (; i < this->objects.number(); ++i) {
+         RGE_Static_Object* object =
+             this->player->world->object(this->objects[i]);
+         if (object != 0 && object->unitAI() != 0) {
+diff --git a/src/taimdmd.cpp b/src/taimdmd.cpp
+index 9528a7227..26037a437 100644
+--- a/src/taimdmd.cpp
++++ b/src/taimdmd.cpp
+@@ -695,49 +695,21 @@ int TribeMainDecisionAIModule::isMoveable(int id)
+     return 1;
+ }
+ 
+-// The source keeps the natural bounded ManagedArray copy loop.
+ void TribeMainDecisionAIModule::updateBuildAIWithObjects()
+ {
+-    int* newList;
+-    int j;
+-    RGE_Static_Object* object;
+-    int i;
+-
+-    i = 0;
+-    if (this->objects.numberValue > 0) {
+-        do {
+-            if (i > this->objects.maximumSizeValue - 1) {
+-                int limit = i + 1;
+-                newList = new int[limit];
+-                if (newList != 0) {
+-                    j = 0;
+-                    if (this->objects.maximumSizeValue > 0) {
+-                        while (j < this->objects.maximumSizeValue && j < limit) {
+-                            newList[j] = this->objects.value[j];
+-                            ++j;
+-                        }
+-                    }
+-                    delete[] this->objects.value;
+-                    this->objects.value = newList;
+-                    this->objects.maximumSizeValue = limit;
+-                }
++    for (int i = 0; i < this->objects.number(); ++i) {
++        RGE_Static_Object* object = this->object(this->objects[i]);
++        if (object != 0) {
++            this->buildAI.addItem(object, 0);
++            if (object->master_obj->id == 0x6d) {
++                this->constructionAI.setReferencePoint(
++                    this->player->world->map->map_width,
++                    this->player->world->map->map_height,
++                    object->world_x,
++                    object->world_y,
++                    object->world_z);
+             }
+-
+-            object = this->object(this->objects.value[i]);
+-            if (object != 0) {
+-                this->buildAI.addItem(object, 0);
+-                if (object->master_obj->id == 0x6d) {
+-                    this->constructionAI.setReferencePoint(
+-                        this->player->world->map->map_width,
+-                        this->player->world->map->map_height,
+-                        object->world_x,
+-                        object->world_y,
+-                        object->world_z);
+-                }
+-            }
+-
+-            ++i;
+-        } while (i < this->objects.numberValue);
++        }
+     }
+ }
+ 

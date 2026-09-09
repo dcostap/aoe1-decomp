@@ -1,6 +1,49 @@
 # Session handoff: array recovery and table storage
 
-## Main result
+## Latest checkpoint: 2026-09-09
+
+Commit `172ea2295` integrates two independent public-array caller repairs:
+
+- `0040D780` uses `number()` in `src/aimdmod.cpp`: exact, 578 bytes.
+- `004E6160` uses a normal indexed loop in `src/taimdmd.cpp`: exact, 236 bytes.
+
+Both pass with the unchanged main header and the protected proposal.
+Integration preserved all 49 emitted owners and all 74 non-debug COFF sections.
+The module checks passed 38 matching targets. Tests passed 415 tests and 31 subtests.
+Event `9ae739ac6819283b1a4eb3b9cc507a4e0e04e2b736df90c22d1f28594a7cf75a` preserves the validation archive.
+
+Moving only the `contains` definition outside its class restores exact obstruction code.
+The method body, protected fields, and writable tables stay unchanged.
+This removes the earlier obstruction stack-overlap defect for that exact state.
+Run `0feeba966daac25c20f289eb9b24bd7f6640eda0b5673d6fa38e8aecf44d18aa` records the 52-byte match.
+
+A separate public-field diagnostic compiled all 90 modules and passed all 2544 matching targets.
+It removes all five previous matching regressions. Public storage remains unsupported and must not be integrated.
+Comparison with current main covers 3584 emitted owners; 28 owner records change.
+Scratch, accepted-drift, and helper changes still need review.
+
+The preferred protected proposal is in locked `build/array-caller-worktree`.
+It now includes eight `zeroNumber()` calls in `doMove` and a separate movement control-flow repair.
+The reset-only control preserves all 103 movement owners.
+The control-flow proposal changes only `doMove`; no matching neighbor regresses.
+It remains a mismatch and has not been integrated.
+Read `decomp_notes/functions/0045/0045DB90.md` for the two proved source defects and remaining review.
+
+Latest complete patch:
+`decomp_notes/candidates/0045/0045DB90_complete_complete_protected_movement_tail.patch`.
+State: `b708385f93ff68dc6d0ca513aa9604ef26b6d10c00b2e290c2f611004f27ed4d`.
+
+Four protected-access caller modules remain: `stat_obj`, `taiinfmd`, `taitacmd`, and `taiuaimd`.
+The protected proposal still needs a successful complete build and full changed-owner review.
+The locked `build/array-resume-worktree` retains diagnostic public storage. Do not mistake it for the protected proposal.
+Both new worktrees retain base `09528c39a` and the committed writable-table repair.
+Older locked worktrees and their evidence remain untouched.
+
+No shared array header or movement proposal was integrated. No registry status changed.
+No game executable was run. No subagents, network services, or pushes were used.
+Command and Tech work remains deferred.
+
+## Earlier storage checkpoint
 
 Commit `129e0f6a0` restores writable obstruction tables.
 It changes only two game source files, two test files, and the storage review note.

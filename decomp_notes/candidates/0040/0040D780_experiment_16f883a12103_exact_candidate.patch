@@ -1,0 +1,15 @@
+# Experiment 16f883a1210397a2d88e02df31e83e7291fb90a88db4950caedb9d1982a9a386
+# Base 09528c39a8284d40e07ffa68732a642c71025cdf
+diff --git a/src/aimdmod.cpp b/src/aimdmod.cpp
+index 35c5acd89..fcc19fc92 100644
+--- a/src/aimdmod.cpp
++++ b/src/aimdmod.cpp
+@@ -180,7 +180,7 @@ RGE_Static_Object* MainDecisionAIModule::object(
+     int attribute_amount)
+ {
+     int i = 0;
+-    for (; i < this->objects.numberValue; ++i) {
++    for (; i < this->objects.number(); ++i) {
+         RGE_Static_Object* object =
+             this->player->world->object(this->objects[i]);
+         if (object != 0 && object->unitAI() != 0) {

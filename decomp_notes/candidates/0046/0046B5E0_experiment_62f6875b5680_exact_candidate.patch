@@ -1,0 +1,273 @@
+# Experiment 62f6875b5680de26d652ba58d751b0e5bac089a9172155bc8887dc1ef601c7d0
+# Base 09528c39a8284d40e07ffa68732a642c71025cdf
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..44c4d545b 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -30,11 +30,11 @@ public:
+         this->maximumSizeValue = 0;
+     }
+ 
+-    T& operator[](int index)
++    T& operator[](int v)
+     {
+-        if (index > this->maximumSizeValue - 1)
+-            this->resize(index + 1);
+-        return this->value[index];
++        if (v > this->maximumSizeValue - 1)
++            this->resize(v + 1);
++        return this->value[v];
+     }
+ 
+     int enlarge(int amount)
+@@ -51,7 +51,7 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& r);
+ 
+     int position(T& item)
+     {
+@@ -63,29 +63,28 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
+-
+-    int remove(T item)
++    int add(T r)
+     {
+-        int i = 0;
+-        int maximum = this->maximumSizeValue;
+-
+-        for (; i < maximum; i++) {
+-            if (this->value[i] == item)
+-                break;
+-        }
+-
+-        if (i >= maximum)
++        if (this->contains(r) == 1)
+             return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = r;
++        this->numberValue++;
++        return 1;
++    }
+ 
+-        maximum--;
+-        if (i < maximum) {
+-            do {
+-                this->value[i] = this->value[i + 1];
+-                i++;
+-            } while (i < this->maximumSizeValue - 1);
+-        }
+-
++    int remove(T r)
++    {
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && this->value[i] != r;
++             i++)
++            ;
++        if (i >= this->maximumSizeValue)
++            return 0;
++        for (; i < this->maximumSizeValue - 1; i++)
++            this->value[i] = this->value[i + 1];
+         this->numberValue--;
+         if (this->numberValue < 0)
+             this->numberValue = 0;
+@@ -134,29 +133,26 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
+-    int resize(int new_size)
++protected:
++    int resize(int s)
+     {
+-        T* new_value = new T[new_size];
++        T* new_value = new T[s];
+         if (new_value == 0)
+             return 0;
+ 
+         int i;
+         for (i = 0;
+-             i < this->maximumSizeValue && i < new_size;
++             i < this->maximumSizeValue && i < s;
+              i++) {
+             new_value[i] = this->value[i];
+         }
+ 
+         delete[] this->value;
+         this->value = new_value;
+-        this->maximumSizeValue = new_size;
++        this->maximumSizeValue = s;
+         return 1;
+     }
+ 
+-public:
+     T* value;
+     int numberValue;
+     int desiredNumberValue;
+@@ -164,52 +160,16 @@ public:
+ };
+ 
+ template <class T>
+-int ManagedArray<T>::contains(const T& item)
++int ManagedArray<T>::contains(const T& r)
+ {
+     int i;
+-    T wanted;
+-    T current;
+-
+     for (i = 0; i < this->numberValue; i++) {
+         if (i >= this->maximumSizeValue)
+             return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
++        if (this->value[i] == r)
+             return 1;
+     }
+     return 0;
+ }
+ 
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/pathsys.cpp b/src/pathsys.cpp
+index e8621d13e..4d6d58b5c 100644
+--- a/src/pathsys.cpp
++++ b/src/pathsys.cpp
+@@ -329,7 +329,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
+     this->currentTerrainException2 = obj->currentTerrainException2;
+     this->currentUnobstructiblePlayerID = unobPlayerID;
+     this->currentUnobstructibleGroupID = unobGroupID;
+-    this->currentUnobstructibles.numberValue = 0;
++    this->currentUnobstructibles.zeroNumber();
+ 
+     if (MapPathsDisplay != 0) {
+         map = this->mapValue;
+@@ -382,23 +382,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
+     }
+ 
+     curObj = this->currentObject;
+-    if (curObj->continueCounter >= 10 && curObj->pathingGroupMembers.numberValue > 0) {
++    if (curObj->continueCounter >= 10 && curObj->pathingGroupMembers.number() > 0) {
+         i = 0;
+-        while (i < curObj->pathingGroupMembers.numberValue) {
+-            if (curObj->pathingGroupMembers.maximumSizeValue - 1 < i) {
+-                int* newValue = (int*)::operator new(i * 4 + 4);
+-                if (newValue != 0) {
+-                    int j = 0;
+-                    while (j < curObj->pathingGroupMembers.maximumSizeValue && j < i + 1) {
+-                        newValue[j] = curObj->pathingGroupMembers.value[j];
+-                        ++j;
+-                    }
+-                    ::operator delete(curObj->pathingGroupMembers.value);
+-                    curObj->pathingGroupMembers.value = newValue;
+-                    curObj->pathingGroupMembers.maximumSizeValue = i + 1;
+-                }
+-            }
+-            other = this->worldValue->object(curObj->pathingGroupMembers.value[i]);
++        while (i < curObj->pathingGroupMembers.number()) {
++            other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+             if (other != 0 && other->id != this->currentObject->id) {
+                 unsigned char canShare = other->waitingToMove();
+                 float cap = other->getSpeed();
+@@ -500,7 +487,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
+                     path->killPath();
+                 curObj = this->currentObject;
+                 i = 0;
+-                while (i < curObj->pathingGroupMembers.numberValue) {
++                while (i < curObj->pathingGroupMembers.number()) {
+                     other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                     if (other != 0 && other->id != this->currentObject->id &&
+                         other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+@@ -513,7 +500,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
+             if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
+             curObj = this->currentObject;
+             i = 0;
+-            while (i < curObj->pathingGroupMembers.numberValue) {
++            while (i < curObj->pathingGroupMembers.number()) {
+                 other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                 if (other != 0 && other->id != this->currentObject->id &&
+                     other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+@@ -863,7 +850,7 @@ obstruction_done:
+                     path->killPath();
+                     curObj = this->currentObject;
+                     i = 0;
+-                    while (i < curObj->pathingGroupMembers.numberValue) {
++                    while (i < curObj->pathingGroupMembers.number()) {
+                         other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                         if (other != 0 && other->id != this->currentObject->id &&
+                             other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+@@ -876,7 +863,7 @@ obstruction_done:
+                 if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
+                 curObj = this->currentObject;
+                 i = 0;
+-                while (i < curObj->pathingGroupMembers.numberValue) {
++                while (i < curObj->pathingGroupMembers.number()) {
+                     other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                     if (other != 0 && other->id != this->currentObject->id &&
+                         other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+@@ -933,7 +920,7 @@ path_exhausted:
+                     path->killPath();
+         curObj = this->currentObject;
+         i = 0;
+-        while (i < curObj->pathingGroupMembers.numberValue) {
++        while (i < curObj->pathingGroupMembers.number()) {
+             other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+             if (other != 0 && other->id != this->currentObject->id &&
+                 other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+@@ -945,7 +932,7 @@ path_exhausted:
+         if (costOut != 0) *costOut = (float)this->MGP_bestTraversedPath.total;
+         curObj = this->currentObject;
+         i = 0;
+-        while (i < curObj->pathingGroupMembers.numberValue) {
++        while (i < curObj->pathingGroupMembers.number()) {
+             other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+             if (other != 0 && other->id != this->currentObject->id &&
+                 other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+@@ -1340,7 +1327,7 @@ int PathingSystem::copyPath(int step)
+ 
+ void PathingSystem::copyUnobstructibles(ManagedArray<int>& out)
+ {
+-    int i = this->currentUnobstructibles.numberValue;
++    int i = this->currentUnobstructibles.number();
+     if (i >= 0) {
+         do {
+             out.add(this->currentUnobstructibles[i]);
