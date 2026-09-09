@@ -553,9 +553,9 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                                         (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
                                         --rVal;
                                     }
-                                    if (rVal <= 0)
-                                        break;
                                 }
+                                if (rVal <= 0)
+                                    break;
                             }
                         }
                     }
