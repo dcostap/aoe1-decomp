@@ -473,6 +473,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
             this->target_x, this->target_y, this->target_z);
         if (rangeDistance < this->min_range) {
             rangeState = 0;
+            goto range_too_close;
         } else {
             RGE_Master_Static_Object* master = this->obj->master_obj;
             float radius = sqrt(master->radius_x * master->radius_x +
@@ -480,9 +481,9 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
             float max_distance = radius + this->range - DAT_0056e0cc;
             if (rangeDistance > max_distance) {
                 rangeState = 2;
+                goto range_too_far;
             } else {
-                rangeState = 1;
-                return this->obj->can_attack() != 0;
+                goto range_ready;
             }
         }
     } else {
@@ -507,7 +508,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
         if (this->target_obj->world_x == this->target_x &&
             this->target_obj->world_y == this->target_y &&
             this->target_obj->world_z == this->target_z) {
-            rangeState = 1;
+            goto range_ready;
         } else {
             float x_change = this->target_obj->world_x - this->target_x;
             z_change = this->target_obj->world_z - this->target_z;
@@ -515,7 +516,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
             if ((x_change >= -0.5f && x_change <= 0.5f) &&
                 (y_change >= -0.5f && y_change <= 0.5f) &&
                 (z_change >= -0.5f && z_change <= 0.5f)) {
-                rangeState = 1;
+                goto range_ready;
             } else {
                 rangeDistance =
                     this->obj->distance_to_object(this->target_obj);
@@ -525,18 +526,21 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
                 float max_distance = radius + this->range - DAT_0056e0cc;
                 if (rangeDistance < this->min_range) {
                     rangeState = 0;
+                    goto range_too_close;
                 } else if (rangeDistance <= max_distance) {
                     this->target_x = this->target_obj->world_x;
                     this->target_y = this->target_obj->world_y;
                     this->target_z = this->target_obj->world_z;
-                    rangeState = 1;
+                    goto range_ready;
                 } else {
                     rangeState = 2;
+                    goto range_too_far;
                 }
             }
         }
     }
 
+range_too_close:
     if (rangeState == 0) {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FE, 0, 0, 0);
@@ -555,6 +559,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
         return 0;
     }
 
+range_too_far:
     if (rangeState == 2) {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
@@ -575,6 +580,7 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
         return 0;
     }
 
+range_ready:
     rangeState = 1;
     return this->obj->can_attack() != 0;
 }
