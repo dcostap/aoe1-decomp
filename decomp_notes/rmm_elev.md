@@ -75,3 +75,17 @@ The final translation-unit audit at
 `build/agents/corpus-21-rmm-elev/audit-final/report.txt` keeps five exact
 neighbors and three accepted-drift rows unchanged. It reports no relocation
 or boundary regressions.
+
+## Latest worker validation: corpus-73-rmm-elev-base
+
+The final `rmm_elev` audit is `build/corpus73-rmm-elev-final/report.txt`.
+It compiled all ten owners with `--jobs 1`. Five rows are exact, three rows
+remain existing accepted drift, and two rows remain scratch. The target
+`00484D00` is `MISMATCH`: 1273 original bytes, 1270 rebuilt bytes, 790
+differences, matching `0x988` frame, and zero boundary or relocation-target
+errors. All 23 direct calls align in order.
+
+The target source keeps the canonical typed map and stack owners. It applies
+the PDB-supported unsigned-char `done` local, the named float `in_zone` cost
+home, and a scoped full-width base-elevation local. These source forms emit
+the same natural 790-byte basin. No registry status change is proposed.

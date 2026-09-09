@@ -342,9 +342,9 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
     long clump_size;
     long chance;
     float local_chance;
-    long max_x;
     long max_y;
-    float stack_cost;
+    long max_x;
+    float in_zone;
     Map_Stack local_stack;
     Map_Stack stack[99];
 
@@ -376,7 +376,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
         long i = 0;
         while (i < line.clumps) {
             Map_Stack* node = this->pop_stack(local_stack, y, x,
-                stack_cost);
+                in_zone);
             if (node == 0) {
                 break;
             }
@@ -417,7 +417,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
             do {
                 if (chance < line.elevation_size) {
                     Map_Stack* node = this->pop_stack(*stack_ptr, y, x,
-                        stack_cost);
+                        in_zone);
                     if (node != 0) {
                         done = 0;
                         uchar* mark = &this->search_map_rows[x][y];
@@ -425,14 +425,15 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0x171) * 100)
                             / 0x7FFF;
                         if (*mark <= random_value) {
+                            long base_elevation = line.base_elevation;
                             RGE_Tile* tile = &this->map_row_offset[x][y];
                             raw_ok = this->check_elevation(
                                 (uchar)line.elevation, y, x, line.spacing,
                                 (uchar)line.base_terrain_type,
-                                (uchar)line.base_elevation);
+                                (uchar)base_elevation);
 
                             if (tile->height
-                                == line.base_elevation
+                                == base_elevation
                                 && raw_ok > 0) {
                                 local_chance = this->fig_chance(
                                     (uchar)raw_ok, y, x);
@@ -440,7 +441,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
 
                                 if (y > 0) {
                                     if (tile[-1].height
-                                        == line.base_elevation) {
+                                        == base_elevation) {
                                         clump_size = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x17D) * 100) / 0x7FFF;
@@ -451,7 +452,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (y < max_x) {
                                     if (tile[1].height
-                                        == line.base_elevation) {
+                                        == base_elevation) {
                                         clump_size = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x17F) * 100) / 0x7FFF;
@@ -462,7 +463,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (x > 0) {
                                     if (tile[-this->map_width].height
-                                        == line.base_elevation) {
+                                        == base_elevation) {
                                         clump_size = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x181) * 100) / 0x7FFF;
@@ -473,7 +474,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (x < max_y) {
                                     if (tile[this->map_width].height
-                                        == line.base_elevation) {
+                                        == base_elevation) {
                                         clump_size = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x183) * 100) / 0x7FFF;
