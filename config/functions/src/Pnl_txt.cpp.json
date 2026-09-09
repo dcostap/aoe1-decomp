@@ -15,7 +15,7 @@
     "0047C4D0": {"status": "matching", "symbol": "?set_scrollbar@TTextPanel@@QAEXPAVTScrollBarPanel@@H@Z"},
     "0047C520": {"status": "matching", "symbol": "?char_type@TTextPanel@@QAE?AW4CharType@1@PAE@Z"},
     "0047C560": {"status": "matching", "symbol": "?set_text@TTextPanel@@UAEXPAD@Z"},
-    "0047C640": {"status": "scratch", "symbol": "?word_wrap_append@TTextPanel@@QAEHPAD@Z"},
+    "0047C640": {"status": "accepted_drift", "symbol": "?word_wrap_append@TTextPanel@@QAEHPAD@Z"},
     "0047CA70": {"status": "matching", "symbol": "?set_text@TTextPanel@@UAEXJ@Z"},
     "0047CAB0": {"status": "matching", "symbol": "?set_text@TTextPanel@@UAEXPAPADF@Z"},
     "0047CB10": {"status": "matching", "symbol": "?set_font@TTextPanel@@QAEXPAXJJ@Z"},
