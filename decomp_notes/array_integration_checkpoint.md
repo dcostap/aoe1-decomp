@@ -37,7 +37,9 @@ Names alone do not repair its remaining byte differences.
 
 The preferred `bestGroup` probe uses a normal loop and an immutable per-iteration ID.
 It states the original getter order without compiler controls.
-Its changed stack use remains unapproved. Do not call it accepted drift.
+Its changed stack use causes a demonstrated return-value difference for a stack-overlapping point.
+Read `../logic_reviews/005004C0.md` for the completed rejection and input scope.
+This is a behavior rejection, not a requirement for exact bytes.
 
 ## Bytes
 

@@ -153,6 +153,9 @@ A buildable function must have one symbol and one module flag profile.
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 modules or headers. Edit only that natural owner.
 
+Exact matching and accepted drift have equal value. Choose by source and behavior
+evidence, not by a preference for zero byte differences.
+
 Treat accepted drift as a completed recovery result. It is the preferred result
 when canonical source has a reviewed, behavior-equal code-generation difference.
 Do not spend time chasing its remaining bytes only to improve a metric. Revisit
