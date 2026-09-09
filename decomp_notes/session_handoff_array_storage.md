@@ -9,6 +9,8 @@ The first full protected audit compiles 90 modules and passes 2,542 of 2,544 mat
 The original play-buffer repair subsequently restores one target.
 Main now includes the explicit-ID `bestGroup` repair as approved accepted drift.
 Its complete behavior review is `logic_reviews/005004C0.md`; do not resume byte matching for it.
+The independent play-buffer repair and fill-loop getter order also pass their integration review.
+Read `logic_reviews/004F4760.md` for the two neighboring delta reviews.
 The shared proposal remains separate from main. Its changed-owner review is not complete.
 
 ## Preceding checkpoint: 2026-09-09

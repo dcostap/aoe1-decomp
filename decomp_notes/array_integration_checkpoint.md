@@ -13,7 +13,7 @@ The following findings describe the preserved proposal:
 
 - `bestGroup` needs an explicit first result. Its completed review now approves that repair as accepted drift.
 - `findTilePath` changes memory-read order and three x87 operand-load sequences.
-- The isolated play-buffer repair changes two other tactical owners with main headers.
+- The play-buffer repair changes two other tactical owners. Their completed delta review now permits this independent integration.
 
 Do not approve these changes from equal call counts or matching neighbors alone.
 Register changes before calls can affect saved stack values. Review stack-overlapping inputs before approval.
@@ -28,9 +28,10 @@ Read `static_array_interface.md` for that separate approval.
 The protected proposal also recovers public operations in `taiinfmd`, `taitacmd`, and `taiuaimd`.
 The shared header and these remaining callers are not approved for main integration.
 
-The play-buffer repair restores two `int[50]` arrays and separate PDB-supported output scalars.
+The approved play-buffer repair restores two `int[50]` arrays and separate PDB-supported output scalars.
 It removes the shifted buffers and 51-element array.
 Read `functions/004F/004F4760.md` for original addresses and complete candidate references.
+Read `../logic_reviews/004F4760.md` for both neighboring reviews and their limited approval scope.
 
 The soldier query now uses the PDB names `priority`, `flag`, `zeroWorkingArea`, `i`, and `count`.
 Names alone do not repair its remaining byte differences.
@@ -75,7 +76,8 @@ The later play-buffer state `c56ed7fb52ba6769a8a46ce58db8455ed5edcdba1e828bbbc87
 It refreshes the existing desired count before reading the current count.
 The target remains exact and all 183 matching targets pass.
 Two scratch owners still change. The fill loop changes nonvolatile registers before later calls.
-The idle query changes registers in one search loop. These changes remain unapproved.
+The idle query changes registers in one search loop. These changes were unapproved at that checkpoint.
+The current delta review approves them against main; unrelated scratch-function differences remain open.
 
 Complete source snapshots:
 

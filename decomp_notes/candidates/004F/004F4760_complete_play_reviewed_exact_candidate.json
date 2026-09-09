@@ -1,0 +1,9 @@
+{
+  "base": "34eac5a57492232437b3599716712f6ac1eeab09",
+  "patch": "decomp_notes\\candidates\\004F\\004F4760_complete_play_reviewed_exact_candidate.patch",
+  "patch_sha256": "6ca92b58172a0bf4665514878d523a1e69317cb87961120a1cf1c9c540517c84",
+  "files": {
+    "src/taitacmd.cpp": "44b65a623283e8c12b0a239b314685da4b9a2517e45d49d54fb42049054288ed"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}
