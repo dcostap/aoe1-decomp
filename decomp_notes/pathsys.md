@@ -36,3 +36,17 @@ helper layout does not reproduce the old direct initializer boundaries. This
 is an accepted structural change, not a handwritten owner.
 
 The large search and passability bodies need future exact work.
+
+## Current obstruction worker checkpoint
+
+Worker `corpus-85-path-obstruction` rechecked the unchanged canonical source
+after the writable obstruction-table repair. `0046B620 incrementObstruction`
+reports `MISMATCH`, 76 differing bytes, 84 rebuilt bytes, and 29 instructions.
+The owner, boundary, frame, call set, and two relocations match. The audit is
+`build/audits/workers/corpus-85-path-obstruction/pathsys/report.txt`.
+
+The preserved target candidate reaches `MATCH` only with the separate
+protected out-of-class `ManagedArray::resize` header context. The worker did
+not change `ManagedArray` or shared headers. A source-only lab tested 168
+variants and found no exact form. The direct two-dimensional source remains
+the compiler-facing owner.
