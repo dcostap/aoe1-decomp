@@ -6,18 +6,19 @@ This file indexes the active recovery work and known deferred work.
 It does not replace the function registry or claim to enumerate every scratch function.
 Update each task when its decision, evidence, or integration state changes.
 
-Baseline: main `8433b76ca`, including source repair `51ad896e3`.
+Baseline: main `154792474`, including the current corpus integrations.
 The protected proposal is on `review/array-current-20260909`, last checked here at `d7d1df629`.
 Its locked worktree is `build/array-caller-worktree`.
-No task below has an assigned worker yet.
+Fifteen isolated corpus workers are active. Protected-array tasks remain unassigned.
 
 Last validated results:
 
-- Main: 225 modules compile; 4,884 matching targets pass.
+- Main: the last complete audit compiled 225 modules and passed 4,884 matching targets.
+- Recent focused audits also validated the new exact visible and credits functions.
 - Protected proposal: 90 modules compile; 2,542 matching targets pass.
 - Tests: 415 tests and 31 subtests pass.
-- Registry: 4,884 matching, 289 accepted drift, 16 verified logic, and 237 scratch functions.
-- Scratch source covers 308,138 bytes.
+- Registry: 4,889 matching, 290 accepted drift, 16 verified logic, and 231 scratch functions.
+- Scratch source covers 306,689 bytes.
 
 Read [the checkpoint](decomp_notes/array_integration_checkpoint.md) and [the handoff](decomp_notes/session_handoff_array_storage.md) for history.
 The original executable is the behavior oracle. Main-source differences alone do not prove defects.
@@ -203,16 +204,16 @@ Each task needs a complete decision, preserved inputs, and affected-owner valida
 
 ## D. Project-wide follow-up
 
-- [ ] Refresh the broader scratch backlog from the registry before assigning unrelated modules.
-  The 237 scratch functions are not all listed individually here.
+- [x] Refresh the broader scratch backlog from the registry before assigning unrelated modules.
+  The 231 scratch functions are not all listed individually here.
 - [ ] Resolve the recorded accepted-drift evidence gap at `00405850`.
   First identify the missing evidence; do not assume byte matching is required.
 - [ ] Continue linked-reference identity work.
   The earlier audit retained 5,276 unknowns. Refresh that count before planning or reporting progress.
 - [ ] Continue gameplay and storage coverage review under the static-only execution constraint.
   Passing function checks does not prove complete game behavior.
-- [ ] Establish worker/reviewer models, thinking levels, concurrency limits, and compiler-job limits before launching agents.
-  No delegation configuration has been selected yet.
+- [x] Establish worker models, thinking levels, concurrency limits, and compiler-job limits before launching agents.
+  Corpus workers use `openai-codex-secondary/gpt-5.6-luna`, `xhigh`, 15 slots, isolated worktrees, and `--jobs 1`.
 
 ## Completed work: do not put back in the matching queue
 
