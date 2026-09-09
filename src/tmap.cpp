@@ -6,6 +6,7 @@
 #include "../include/stat_obj.h"
 #include "../include/tworld.h"
 #include "../include/world_info.h"
+#include <float.h>
 #include <stdlib.h>
 
 typedef unsigned char uchar;

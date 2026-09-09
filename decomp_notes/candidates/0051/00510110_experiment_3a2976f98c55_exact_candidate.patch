@@ -1,0 +1,14 @@
+# Experiment 3a2976f98c55520cf9c4b717fc9e0487e0b5c3f15f3e27234a726feeb60e1177
+# Base d181c62b2dba2dfef5d969a5b2e01a0e9a73176f
+diff --git a/src/tmap.cpp b/src/tmap.cpp
+index 5d713116a..8e4527ed2 100644
+--- a/src/tmap.cpp
++++ b/src/tmap.cpp
+@@ -6,6 +6,7 @@
+ #include "../include/stat_obj.h"
+ #include "../include/tworld.h"
+ #include "../include/world_info.h"
++#include <float.h>
+ #include <stdlib.h>
+ 
+ typedef unsigned char uchar;

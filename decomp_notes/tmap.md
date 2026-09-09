@@ -40,3 +40,18 @@ The original instruction uses `0x9B40`. The natural body remains unchanged.
 `TRIBE_Map` is a Tmap-owned class. `TRIBE_World` remains the external owner of
 `check_destructables`. The source casts `game_world` to that proven derived
 receiver for the direct call. No TWorld header changed.
+
+## Worker validation: corpus-11-tmap
+
+- Adding the installed VC5 `<float.h>` header to `src/tmap.cpp` changes no
+  runtime statement and makes `00510110 make_new_cliff` exact. The target is
+  399/399 bytes with matching owner, boundary, relocations, frame, CFG, and
+  six calls.
+- State `3a2976f98c55520cf9c4b717fc9e0487e0b5c3f15f3e27234a726feeb60e1177`
+  and candidate patch
+  `decomp_notes/candidates/0051/00510110_experiment_3a2976f98c55_exact_candidate.patch`
+  preserve this result. Closure event
+  `5cc937c91332ffcff9fe85ca11a9481b6740008099653ee47c41e484ba516bc8`
+  reports no exact-owner regression.
+- The header has no direct period-source proof. The candidate needs root review
+  before registry promotion. The other four assigned owners remain scratch.
