@@ -88,3 +88,19 @@ The full 13-owner direct candidate reports nine exact matches. Observed rows
 are `0053B730` (9 bytes), `0053B7E0` (284 bytes), `0053B9A0` (371 bytes), and
 `0053C050` (308 bytes). Their relocation mismatches are zero. Boundary escapes
 are zero, two, one, and zero respectively.
+
+## 2026-09-09 corpus-24-vis-unit final audit
+
+The serial `vis_unit` audit compiled all 13 normal owners with `--jobs 1`.
+It reports 10 matching results, two boundary problems, and one
+accepted-drift result. The two scratch targets remain nonexact:
+
+- `0053B7E0` `Update_Unit_Info`: 450 rebuilt bytes versus 445 original bytes;
+  284 strict differences; two boundary escapes; zero relocation mismatches.
+- `0053B9A0` `GetVisibleUnits`: 407 rebuilt bytes versus 387 original bytes;
+  364 strict differences; one boundary escape; zero relocation mismatches.
+
+The natural source remains unchanged. Targeted strict donor searches found no
+source-supported recovery for either target's distinctive register schedule.
+The earlier exact `GetVisibleUnits` candidate used forbidden inline assembly
+and remains only as experiment evidence.
