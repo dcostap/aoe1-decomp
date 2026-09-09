@@ -143,7 +143,10 @@ unsigned char RGE_Action_Enter::update()
 
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
-        goto invalid_target;
+        this->set_state(1);
+        this->set_target_obj(0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x269, 0, 0);
+        return 4;
     }
 
     if (this->target2ID != -1 &&
