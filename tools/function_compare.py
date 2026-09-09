@@ -136,6 +136,16 @@ def compare_object_function(
         "result": "MATCH" if exact else "MISMATCH",
         "diff_bytes": metrics["diff_bytes"],
         "diff_percent": metrics["diff_percent"],
+        "edit_diff_bytes": metrics.get("edit_diff_bytes", metrics["diff_bytes"]),
+        "edit_diff_percent": metrics.get("edit_diff_percent", metrics["diff_percent"]),
+        "edit_insert_bytes": metrics.get("edit_insert_bytes", 0),
+        "edit_delete_bytes": metrics.get("edit_delete_bytes", 0),
+        "edit_replace_bytes": metrics.get("edit_replace_bytes", metrics["diff_bytes"]),
+        "edit_equal_bytes": metrics.get("edit_equal_bytes", 0),
+        "resync_similarity_percent": metrics.get(
+            "resync_similarity_percent", 100.0 - float(metrics["diff_percent"])
+        ),
+        "likely_shifted_alignment": metrics.get("likely_shifted_alignment", False),
         "original_size": len(original),
         "rebuilt_size": len(rebuilt),
         "boundary_escape_offsets": extent["boundary_escape_offsets"],
