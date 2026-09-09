@@ -180,7 +180,7 @@ RGE_Static_Object* MainDecisionAIModule::object(
     int attribute_amount)
 {
     int i = 0;
-    for (; i < this->objects.numberValue; ++i) {
+    for (; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
         if (object != 0 && object->unitAI() != 0) {

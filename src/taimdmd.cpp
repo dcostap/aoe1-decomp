@@ -695,49 +695,21 @@ int TribeMainDecisionAIModule::isMoveable(int id)
     return 1;
 }
 
-// The source keeps the natural bounded ManagedArray copy loop.
 void TribeMainDecisionAIModule::updateBuildAIWithObjects()
 {
-    int* newList;
-    int j;
-    RGE_Static_Object* object;
-    int i;
-
-    i = 0;
-    if (this->objects.numberValue > 0) {
-        do {
-            if (i > this->objects.maximumSizeValue - 1) {
-                int limit = i + 1;
-                newList = new int[limit];
-                if (newList != 0) {
-                    j = 0;
-                    if (this->objects.maximumSizeValue > 0) {
-                        while (j < this->objects.maximumSizeValue && j < limit) {
-                            newList[j] = this->objects.value[j];
-                            ++j;
-                        }
-                    }
-                    delete[] this->objects.value;
-                    this->objects.value = newList;
-                    this->objects.maximumSizeValue = limit;
-                }
+    for (int i = 0; i < this->objects.number(); ++i) {
+        RGE_Static_Object* object = this->object(this->objects[i]);
+        if (object != 0) {
+            this->buildAI.addItem(object, 0);
+            if (object->master_obj->id == 0x6d) {
+                this->constructionAI.setReferencePoint(
+                    this->player->world->map->map_width,
+                    this->player->world->map->map_height,
+                    object->world_x,
+                    object->world_y,
+                    object->world_z);
             }
-
-            object = this->object(this->objects.value[i]);
-            if (object != 0) {
-                this->buildAI.addItem(object, 0);
-                if (object->master_obj->id == 0x6d) {
-                    this->constructionAI.setReferencePoint(
-                        this->player->world->map->map_width,
-                        this->player->world->map->map_height,
-                        object->world_x,
-                        object->world_y,
-                        object->world_z);
-                }
-            }
-
-            ++i;
-        } while (i < this->objects.numberValue);
+        }
     }
 }
 
