@@ -133,3 +133,12 @@ The candidate summary reports one exact match, four scratch mismatches, and zero
 comparison errors.
 
 This self-contained Land chain is the integrated direct module baseline.
+
+## Worker update: corpus-22-rmm-land
+
+The final clean-source audit is in
+`build/agents/corpus-22-rmm-land/final/report.txt`.
+`004852D0` remains a `236`-byte mismatch with one aligned `__ftol`.
+`00485520` remains a `1149`-byte mismatch with all `21` direct calls aligned.
+The two matching owners remain exact. No source, registry, or status change was
+retained. See the two function notes for state IDs and rejected probes.
