@@ -63,7 +63,8 @@ The following owners are `scratch`:
 - `00406430` `work`: 34 differing bytes.
 - `00406470` `work2`: 924 differing bytes, one relocation mismatch, and two
   boundary escapes.
-- `00406860` `get_command_master`: 191 differing bytes.
+- `00406860` `get_command_master`: 143 differing bytes (221-byte original,
+  217-byte rebuild).
 - `00406940` `set_task`: one differing byte.
 - `00406990` `setTaskByTaskID`: one differing byte.
 - `00406A70` `update`: 110 differing bytes.
@@ -102,3 +103,15 @@ completed `accepted_drift` results. Their ledgers record the semantic proof.
   identity with the assembly; they are not PDB facts.
 - The current natural body uses `RGE_Task_List::get_target_task`. The historical
   `RGE_Master_Command` probe was diagnostic only and was rolled back.
+
+## 2026-09-09 worker corpus-29-act-obj validation
+
+- Fresh state `e77cbda0cc922615ccf1589f942d88245071d879ee6c9411496074ae8f0c4f50`
+  and run event `498453ea972ac95ee3067824e670e72377285fc5e408cd43a5b47464c141ad6c`
+  reproduce `00406860` as `MISMATCH`: 221 original bytes, 217 rebuilt bytes,
+  and 143 strict differences. The target has matching owner, no frame,
+  matching saved registers, two aligned indirect calls, zero relocation
+  mismatches, and no boundary escapes.
+- The full `act_obj` audit in `build/worker-00406860-tu-audit/report.txt`
+  passes 73 matching results and reports one grouped mismatch for this scratch
+  target. No source or registry change is retained. Keep the target scratch.
