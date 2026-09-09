@@ -6007,342 +6007,107 @@ int TribeTacticalAIModule::numberIdleSoldiers()
 }
 
 
-int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
+int TribeTacticalAIModule::numberSoldiersWithPriority(int priority, int flag, int zeroWorkingArea)
 {
-    TribeTacticalAIModule* self = this;
-    ManagedArray<int>& workingArea = self->workingArea;
-    int rNum = 0;
+    int count = 0;
+    int i;
+    if (zeroWorkingArea == 1)
+        this->workingArea.zeroNumber();
 
-    if (reset == 1)
-        workingArea.numberValue = 0;
+    for (i = 0; i < this->soldiers.number(); i++) {
+        RGE_Static_Object* object =
+            this->md->aiPlayer->world->object(this->soldiers[i]);
+        if (object == 0 || object->unitAI() == 0)
+            continue;
+        if (this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 1)
+            continue;
 
-    reset = 0;
-    if (0 < self->soldiers.numberValue) {
-        ManagedArray<int>& soldiers = self->soldiers;
-        do {
-            if (reset > soldiers.maximumSizeValue - 1)
-                soldiers.resize(reset + 1);
-
-            RGE_Static_Object* object =
-                self->md->aiPlayer->world->object(soldiers.value[reset]);
-            if ((object != 0) && (object->unitAI() != 0)) {
-                if (reset > soldiers.maximumSizeValue - 1)
-                    soldiers.resize(reset + 1);
-
-                int taskedNumber = self->unitsTaskedThisUpdate.numberValue;
-                int taskedIndex = 0;
-                if (0 < taskedNumber) {
-                    for (;
-                         taskedIndex < taskedNumber &&
-                         taskedIndex < self->unitsTaskedThisUpdate.maximumSizeValue;
-                         taskedIndex++) {
-                        if (self->unitsTaskedThisUpdate.value[taskedIndex] ==
-                            soldiers.value[reset])
-                            goto nextSoldier;
-                    }
-                }
-
-                int value;
-                int number;
-                if (priority < 0) {
-                    if (object->unitAI()->currentAction() != -1) {
-                        if (object->unitAI()->currentOrderPriority() >= threshold)
-                            goto nextSoldier;
-                    }
-
-                    if (reset > soldiers.maximumSizeValue - 1)
-                        soldiers.resize(reset + 1);
-                    number = workingArea.numberValue;
-                    value = soldiers.value[reset];
-                    int index = 0;
-                    if (0 < number) {
-                        for (;
-                             index < number &&
-                             index < workingArea.maximumSizeValue;
-                             index++) {
-                            if (workingArea.value[index] == value)
-                                goto countedSoldier;
-                        }
-                    }
-                    goto appendWorking;
-                }
-                else if (priority > 0) {
-                    if (object->unitAI()->currentAction() != -1) {
-                        if (object->unitAI()->currentOrderPriority() > threshold) {
-                            if (reset > soldiers.maximumSizeValue - 1)
-                                soldiers.resize(reset + 1);
-                            number = workingArea.numberValue;
-                            value = soldiers.value[reset];
-                            int index = 0;
-                            if (0 < number) {
-                                for (;
-                                     index < number &&
-                                     index < workingArea.maximumSizeValue;
-                                     index++) {
-                                    if (workingArea.value[index] == value)
-                                        goto countedSoldier;
-                                }
-                            }
-                            goto appendWorking;
-                        }
-                    }
-                    goto nextSoldier;
-                }
-                else {
-                    if (object->unitAI()->currentAction() != -1) {
-                        if (object->unitAI()->currentOrderPriority() == threshold) {
-                            if (reset > soldiers.maximumSizeValue - 1) {
-                                int* newValue = (int*)::operator new(reset * 4 + 4);
-                                if (newValue != 0) {
-                                    int copyIndex = 0;
-                                    if (0 < soldiers.maximumSizeValue) {
-                                        do {
-                                            if (reset + 1 <= copyIndex)
-                                                break;
-                                            newValue[copyIndex] = soldiers.value[copyIndex];
-                                            copyIndex = copyIndex + 1;
-                                        } while (copyIndex < soldiers.maximumSizeValue);
-                                    }
-                                    ::operator delete(soldiers.value);
-                                    soldiers.value = newValue;
-                                    soldiers.maximumSizeValue = reset + 1;
-                                }
-                            }
-
-                            int value = soldiers.value[reset];
-                            if (workingArea.contains(value) != 1) {
-                                int number = workingArea.numberValue;
-                                if (number > workingArea.maximumSizeValue - 1)
-                                    workingArea.resize(number + 1);
-                                workingArea.value[workingArea.numberValue] = value;
-                                workingArea.numberValue = workingArea.numberValue + 1;
-                            }
-                            rNum = rNum + 1;
-                        }
-                    }
-                    goto nextSoldier;
-                }
-appendWorking:
-                if (number > workingArea.maximumSizeValue - 1)
-                    workingArea.resize(number + 1);
-                workingArea.value[workingArea.numberValue] = value;
-                workingArea.numberValue = workingArea.numberValue + 1;
-countedSoldier:
-                rNum = rNum + 1;
+        if (flag < 0) {
+            if (object->unitAI()->currentAction() == -1 ||
+                object->unitAI()->currentOrderPriority() < priority) {
+                this->workingArea.add(this->soldiers[i]);
+                count++;
             }
-nextSoldier:
-            reset = reset + 1;
-        } while (reset < soldiers.numberValue);
+        } else if (flag > 0) {
+            if (object->unitAI()->currentAction() != -1 &&
+                object->unitAI()->currentOrderPriority() > priority) {
+                this->workingArea.add(this->soldiers[i]);
+                count++;
+            }
+        } else {
+            if (object->unitAI()->currentAction() != -1 &&
+                object->unitAI()->currentOrderPriority() == priority) {
+                this->workingArea.add(this->soldiers[i]);
+                count++;
+            }
+        }
     }
-    return rNum;
+    return count;
 }
 
 
-int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
+int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag)
 {
-    ManagedArray<int>* warships;
-    ManagedArray<int>* result;
-    short objectGroup;
-    RGE_Static_Object* object;
-    UnitAIModule* ai;
-    int value;
-    int index;
-    int scan;
-    TribeTacticalAIModule* tactical;
-    TribeTacticalAIModule* tactical2;
-    int count;
+    int count = 0;
     int i;
-    int local_c;
-    int local_8;
-    TribeTacticalAIModule* local_4;
+    RGE_Static_Object* object;
+    this->workingArea.zeroNumber();
 
-    i = 0;
-    local_c = 0;
-    local_4 = this;
-    this->workingArea.numberValue = 0;
-
-    if (this->warBoats.numberValue > 0) {
-        warships = &this->warBoats;
-        do {
-            object = this->md->aiPlayer->world->object((*warships)[local_c]);
-            if (object != 0 && object->unitAI() != 0) {
-                value = 0;
-                if (this->unitsTaskedThisUpdate.numberValue > 0) {
-                    do {
-                        if (this->unitsTaskedThisUpdate.maximumSizeValue <= value)
-                            break;
-                        if (this->unitsTaskedThisUpdate[value] ==
-                            (*warships)[local_c])
-                            goto next_warboat;
-                        ++value;
-                    } while (value < this->unitsTaskedThisUpdate.numberValue);
+    for (i = 0; i < this->warBoats.number(); i++) {
+        object = this->md->aiPlayer->world->object(this->warBoats[i]);
+        if (object != 0 && object->unitAI() != 0 &&
+            this->unitsTaskedThisUpdate.contains(this->warBoats[i]) == 0) {
+            if (flag < 0) {
+                if (object->unitAI()->currentAction() == -1 ||
+                    object->unitAI()->currentOrderPriority() < priority) {
+                    this->workingArea.add(this->warBoats[i]);
+                    count++;
                 }
+            } else if (flag > 0) {
+                if (object->unitAI()->currentAction() != -1 &&
+                    object->unitAI()->currentOrderPriority() > priority) {
+                    this->workingArea.add(this->warBoats[i]);
+                    count++;
+                }
+            } else {
+                if (object->unitAI()->currentAction() != -1 &&
+                    object->unitAI()->currentOrderPriority() == priority) {
+                    this->workingArea.add(this->warBoats[i]);
+                    count++;
+                }
+            }
+        }
+    }
 
-                if (compare < 0) {
-                    ai = object->unitAI();
-                    value = ai->currentAction();
-                    if (value != -1) {
-                        ai = object->unitAI();
-                        value = ai->currentOrderPriority();
-                        if (value >= priority)
-                            goto next_warboat;
+    for (i = 0; i < this->soldiers.number(); i++) {
+        object = this->md->aiPlayer->world->object(this->soldiers[i]);
+        if (object != 0 && object->unitAI() != 0 &&
+            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0) {
+            short objectGroup = object->master_obj->object_group;
+            if (objectGroup == 0x12 || objectGroup == 0x0D) {
+                if (flag < 0) {
+                    if (object->unitAI()->currentAction() == -1 ||
+                        object->unitAI()->currentOrderPriority() < priority) {
+                        this->workingArea.add(this->soldiers[i]);
+                        count++;
                     }
-                    result = &this->workingArea;
-                    local_8 = (*warships)[local_c];
-                    value = result->contains(local_8);
-                    if (value != 1) {
-                        (*result)[result->numberValue] = local_8;
-                        result->numberValue++;
+                } else if (flag > 0) {
+                    if (object->unitAI()->currentAction() != -1 &&
+                        object->unitAI()->currentOrderPriority() > priority) {
+                        this->workingArea.add(this->soldiers[i]);
+                        count++;
                     }
-                    ++i;
                 } else {
-                    if (compare > 0) {
-                    ai = object->unitAI();
-                    value = ai->currentAction();
-                    if (value != -1) {
-                        ai = object->unitAI();
-                        value = ai->currentOrderPriority();
-                        if (value <= priority)
-                            goto next_warboat;
-                        result = &this->workingArea;
-                        local_8 = (*warships)[local_c];
-                        value = result->contains(local_8);
-                        if (value != 1) {
-                            (*result)[result->numberValue] = local_8;
-                            result->numberValue++;
-                        }
-                        ++i;
-                    }
-                    } else {
-                    ai = object->unitAI();
-                    value = ai->currentAction();
-                    if (value != -1) {
-                        ai = object->unitAI();
-                        value = ai->currentOrderPriority();
-                        if (value != priority)
-                            goto next_warboat;
-                        result = &this->workingArea;
-                        local_8 = (*warships)[local_c];
-                        value = result->contains(local_8);
-                        if (value != 1) {
-                            (*result)[result->numberValue] = local_8;
-                            result->numberValue++;
-                        }
-                        ++i;
-                    }
+                    if (object->unitAI()->currentAction() != -1 &&
+                        object->unitAI()->currentOrderPriority() == priority) {
+                        this->workingArea.add(this->soldiers[i]);
+                        count++;
                     }
                 }
             }
-next_warboat:
-            ++local_c;
-        } while (local_c < this->warBoats.numberValue);
+        }
     }
-
-    local_c = 0;
-    if (this->soldiers.numberValue > 0) {
-        warships = &this->soldiers;
-        tactical2 = this;
-        do {
-            object = tactical2->md->aiPlayer->world->object((*warships)[local_c]);
-            if (object != 0 && object->unitAI() != 0) {
-                value = tactical2->unitsTaskedThisUpdate.numberValue;
-                index = 0;
-                tactical = tactical2;
-                if (value > 0) {
-                    do {
-                        if (tactical->unitsTaskedThisUpdate.maximumSizeValue <= index)
-                            break;
-                        tactical = local_4;
-                        if (tactical2->unitsTaskedThisUpdate[index] == (*warships)[local_c])
-                            goto next_soldier;
-                        ++index;
-                        tactical = local_4;
-                    } while (index < value);
-                }
-
-                objectGroup = object->master_obj->object_group;
-                if (objectGroup == 0x12 || objectGroup == 0x0D) {
-                    if (compare < 0) {
-                        ai = object->unitAI();
-                        value = ai->currentAction();
-                        if (value != -1) {
-                            ai = object->unitAI();
-                            value = ai->currentOrderPriority();
-                            if (value >= priority)
-                                goto next_soldier;
-                        }
-                        value = tactical2->workingArea.numberValue;
-                        scan = 0;
-                        local_8 = (*warships)[local_c];
-                        if (value > 0) {
-                            do {
-                                if (scan >= tactical2->workingArea.maximumSizeValue)
-                                    break;
-                                if (tactical2->workingArea.value[scan] == local_8)
-                                    goto next_soldier;
-                                ++scan;
-                            } while (scan < value);
-                        }
-                        goto append_soldier;
-                    } else {
-                        if (compare > 0) {
-                        ai = object->unitAI();
-                        value = ai->currentAction();
-                        if (value != -1) {
-                            ai = object->unitAI();
-                            value = ai->currentOrderPriority();
-                            if (value > priority) {
-                                value = tactical2->workingArea.numberValue;
-                                scan = 0;
-                                local_8 = (*warships)[local_c];
-                                if (value > 0) {
-                                    do {
-                                        if (scan >= tactical2->workingArea.maximumSizeValue)
-                                            break;
-                                        if (tactical2->workingArea.value[scan] == local_8)
-                                            goto next_soldier;
-                                        ++scan;
-                                    } while (scan < value);
-                                }
-                                goto append_soldier;
-                            }
-                        }
-                    } else {
-                        ai = object->unitAI();
-                        value = ai->currentAction();
-                        if (value != -1) {
-                            ai = object->unitAI();
-                            value = ai->currentOrderPriority();
-                            if (value != priority)
-                                goto next_soldier;
-
-                            result = &tactical2->workingArea;
-                            local_8 = (*warships)[local_c];
-                            value = result->contains(local_8);
-                            if (value != 1) {
-                                (*result)[result->numberValue] = local_8;
-                                result->numberValue++;
-                            }
-                            ++i;
-                            goto soldier_done;
-                        }
-                    }
-                }
-                }
-                goto soldier_done;
-append_soldier:
-                tactical2->workingArea[tactical2->workingArea.numberValue] = local_8;
-                tactical2->workingArea.numberValue++;
-                ++i;
-soldier_done:
-                ;
-            }
-next_soldier:
-            ++local_c;
-        } while (local_c < tactical2->soldiers.numberValue);
-    }
-
-    return i;
+    return count;
 }
 
 
@@ -8079,7 +7844,6 @@ dispatch:
 
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
     int objectID;
     RGE_Static_Object* object;
     if (item == 0) {
@@ -8103,31 +7867,7 @@ int TribeTacticalAIModule::taskResearch(BuildItem* item)
 
     objectID = object->id;
 
-    int i;
-    for (i = 0; i < arr.numberValue; i++) {
-        if (i >= arr.maximumSizeValue)
-            break;
-        if (arr.value[i] == objectID)
-            goto dispatch;
-    }
-
-    if (arr.numberValue > arr.maximumSizeValue - 1) {
-        int newSize = arr.numberValue + 1;
-        int* newArray = new int[newSize];
-        if (newArray != 0) {
-            for (i = 0; i < arr.maximumSizeValue && i < newSize; i++) {
-                newArray[i] = arr.value[i];
-            }
-            delete[] arr.value;
-            arr.value = newArray;
-            arr.maximumSizeValue = newSize;
-        }
-    }
-
-    arr.value[arr.numberValue] = objectID;
-    arr.numberValue++;
-
-dispatch:
+    this->unitsTaskedThisUpdate.add(objectID);
     this->md->aiPlayer->research(item->typeID(), object->id, item->uniqueID());
     return 1;
 }

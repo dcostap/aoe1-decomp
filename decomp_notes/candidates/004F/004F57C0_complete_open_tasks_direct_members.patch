@@ -1,0 +1,49 @@
+# Complete worktree candidate
+# Base a1a6d970f7ea742cbc2a9a72dcf9df56bd026bc6
+# Integration remains blocked.
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 528d3bccb..830903f8e 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -4858,16 +4858,13 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+ 
+     i = 0;
+     if (this->civilians.number() > 0) {
+-        ManagedArray<int>* civilians = &this->civilians;
+         do {
+             RGE_Static_Object* object =
+-                this->md->player->world->object((*civilians)[i]);
++                this->md->player->world->object(this->civilians[i]);
+             if (object != 0) {
+                 UnitAIModule* unitAI = object->unitAI();
+                 if (unitAI != 0) {
+-                    ManagedArray<int>* unitsTasked =
+-                        &this->unitsTaskedThisUpdate;
+-                    if (unitsTasked->contains((*civilians)[i]))
++                    if (this->unitsTaskedThisUpdate.contains(this->civilians[i]))
+                         goto next_civilian;
+ 
+                     if (object->getSpeed() == 0.0 &&
+@@ -4880,11 +4877,9 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+                                                             dropsite->world_x,
+                                                             dropsite->world_y);
+ 
+-                            int civilianID = (*civilians)[i];
+-                            ManagedArray<int>* unitsTasked = &this->unitsTaskedThisUpdate;
+-                            unitsTasked->add(civilianID);
++                            this->unitsTaskedThisUpdate.add(this->civilians[i]);
+                         } else {
+-                            this->stopUnit((*civilians)[i], 100);
++                            this->stopUnit(this->civilians[i], 100);
+                         }
+                     } else {
+                         if (object->unitAI()->currentOrder() == 700) {
+@@ -4893,7 +4888,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
+                                 this->md->object(target);
+                             if (targetObject == 0 ||
+                                 targetObject->object_state > 2) {
+-                                this->stopUnit((*civilians)[i], 100);
++                                this->stopUnit(this->civilians[i], 100);
+                             }
+                         }
+                     }
