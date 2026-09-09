@@ -149,8 +149,6 @@ unsigned char TRIBE_Panel_Object::get_mode() {
 
 void TRIBE_Panel_Object::draw()
 {
-    short cur_val;
-    short orig_val;
     float dx;
     short work_type;
     TRIBE_Building_Object* bldg_obj;
@@ -162,6 +160,8 @@ void TRIBE_Panel_Object::draw()
     char name[100];
     char str[100];
     char work_name[100];
+    short cur_val;
+    short orig_val;
 
     if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         this->need_redraw = 0;
@@ -525,14 +525,15 @@ void TRIBE_Panel_Object::draw()
 
                     if (this->game_obj->master_obj->id == 0x32) {
                         RGE_Action* action = bldg_obj->actions->get_action();
-                        if (action != 0)
+                        if (action != 0) {
                             this->draw_item(
                                 row, 2, ValueTypeNumber,
                                 (int)(action->timer +
                                       this->game_obj->attribute_amount_held -
                                       DAT_00576D84),
                                 0);
-                        ++row;
+                            ++row;
+                        }
                     }
                 }
             }
