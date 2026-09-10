@@ -1650,15 +1650,16 @@ skipCurrentTarget:
                             }
                             int group = target->master_obj->object_group;
                             if (numberNonCurrentTargets == -1 ||
-                                ((currentTargetIsBuilding != 0 || group != 3) &&
-                                 (numberNonCurrentTargets == -1 ||
-                                  ((currentTargetIsBuilding == 1 && group != 3) ||
-                                   (float)score >
-                                       (float)numberMovingTargets)))) {
-                                numberNonCurrentTargets =
-                                    VisibleUnitList[i][j].object_id;
-                                currentTargetIsBuilding = (group == 3);
-                                numberMovingTargets = score;
+                                (currentTargetIsBuilding != 0 || group != 3)) {
+                                if (numberNonCurrentTargets == -1 ||
+                                    ((currentTargetIsBuilding == 1 && group != 3) ||
+                                     (float)score >
+                                         (float)numberMovingTargets)) {
+                                    numberNonCurrentTargets =
+                                        VisibleUnitList[i][j].object_id;
+                                    currentTargetIsBuilding = (group == 3);
+                                    numberMovingTargets = score;
+                                }
                             }
                         }
                     }
