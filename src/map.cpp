@@ -1627,8 +1627,8 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
     float frame_rate;
     float pause_between_loops;
     FILE* infile;
+    int border_count;
     long resource_id;
-    long local_28;
     char name[13];
     char pict_name[13];
 
@@ -1641,13 +1641,13 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
         fscanf(infile, "%hd", &this->num_borders);
         short remaining = this->num_borders - 1;
         if (remaining >= 0) {
-            resource_id = (int)remaining + 1;
+            border_count = (int)remaining + 1;
             do {
                 short border_num;
                 short shape_index = 0;
                 if (fscanf(infile,
                     "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd",
-                    &border_num, name + 4, pict_name + 4, &local_28,
+                    &border_num, name + 4, pict_name + 4, &resource_id,
                     &local_46, &is_animated, &animation_frames, &hi_color,
                     &med_color, &tile_flag, &underlay_terrain, &frame_rate,
                     &pause_between_loops, &border_style, &random, &local_48) != -1 &&
@@ -1676,7 +1676,7 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
                     convert_us(name);
                     strcpy(border->name, name);
                     strcpy(border->pict_name, pict_name);
-                    border->resource_id = local_28;
+                    border->resource_id = resource_id;
                     border->loaded = 1;
                     border->is_animated = (unsigned char)tile_flag;
                     border->animation_frames = underlay_terrain;
@@ -1696,7 +1696,7 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
                     border->underlay_terrain = random;
                     border->border_style = local_48;
                 }
-            } while (--resource_id != 0);
+            } while (--border_count != 0);
         }
     }
     fclose(infile);
