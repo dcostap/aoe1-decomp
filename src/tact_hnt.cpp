@@ -387,7 +387,13 @@ state_default:
         } else {
             switch (this->sub_actions->update()) {
             case 3:
+                this->timer = -3.0f;
+                this->obj->stop_moving();
+                return 0;
             case 4:
+                this->timer = -3.0f;
+                this->obj->stop_moving();
+                return 0;
             case 5:
                 this->timer = -3.0f;
                 this->obj->stop_moving();
