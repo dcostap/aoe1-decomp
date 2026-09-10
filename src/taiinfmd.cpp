@@ -829,15 +829,10 @@ int TribeInformationAIModule::closestUnexploredTile(
                     uchar visibleValue = vMap->get_visible(cPoint.x, cPoint.y);
                     if (visibleValue == 0x0f)
                         goto skipTile;
-                    if (civilianObj == 1) {
-                        if (explored != 0xff)
-                            goto skipTile;
-                    } else if (civilianObj == 0) {
-                        if (explored != 0xff && explored != 2)
-                            goto skipTile;
-                    } else {
+                    if (civilianObj == 1 && explored != 0xff)
                         goto skipTile;
-                    }
+                    if (civilianObj == 0 && explored != 0xff && explored != 2)
+                        goto skipTile;
                     {
                         if (obj->passableTile((float)cPoint.x,
                                               (float)cPoint.y, 1) != 0 &&
@@ -859,11 +854,11 @@ int TribeInformationAIModule::closestUnexploredTile(
                                 QuadrantLog* quadrant = this->quadrantLog[0];
                                 for (quadrantX = 0; quadrantX < 4; ++quadrantX) {
                                     for (quadrantY = 0; quadrantY < 4; ++quadrantY) {
-                                        int score = quadrant->numberExploredTiles +
-                                            debug_rand(
-                                                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                                0x420) % 100 +
-                                            quadrant->numberAttacksOnUs * 5 * 5;
+                                        int score = quadrant->numberExploredTiles;
+                                        score += debug_rand(
+                                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                            0x420) % 100;
+                                        score += quadrant->numberAttacksOnUs * 5 * 5;
                                         if (bestScore == -1 || score < bestScore) {
                                             bestScore = score;
                                     bestX = this->mapXSizeValue * quadrantX / 4;
