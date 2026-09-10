@@ -1,0 +1,16 @@
+# Experiment 84d13bd2a4afaf7cbc672fa560ce580c8c732563608dd129873557166673d700
+# Base dff5f9965ecc979e3adab9b70c03cadc8cd7ead9
+diff --git a/src/tmap.cpp b/src/tmap.cpp
+index 8e4527ed2..abe958c7f 100644
+--- a/src/tmap.cpp
++++ b/src/tmap.cpp
+@@ -189,7 +189,8 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
+     short row_end;
+     short col;
+ 
+-    tile = this->map_row_offset[y] + x;
++    int x_word = *(int*)(void*)&x;
++    tile = this->map_row_offset[y] + (short)x_word;
+     old_border = tile->terrain_type;
+     tile->terrain_type = terrain;
+ 
