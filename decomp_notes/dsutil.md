@@ -116,3 +116,12 @@ and one accepted-drift observation. The three assigned scratch functions remain
 nonexact: `004481E0` diff 96, `00448250` diff 160, and `00448BA0` diff 1029.
 All three keep their owner symbols and boundaries. Existing matching neighbors
 remain exact in the grouped audit.
+
+## Target correction `00448BA0`
+
+The normal first-segment stop fill at original `00448EEB-00448F15` uses the
+branchless value `((wBitsPerSample != 8) - 1) & 0x80`. It fills zero for all
+non-8-bit widths. The explicit 8/16 split belongs to the silence-chunk path at
+`00448CFB-00448D34`. State
+`131f0fb217e5bc5e96abd06d0ebb3ae98acc95a30e3c014cfc30e159bfb07786` restores
+this source fact and reports 664 differences versus 820 in its parent.
