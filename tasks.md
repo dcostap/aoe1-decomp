@@ -29,6 +29,9 @@ Accepted drift and matching are equally complete recovery results.
 - Keep unapproved source isolated from main.
 - Pin each assignment to a commit, source owner, proposal, and evidence set.
 - Inspect preserved candidates before another probe.
+- Use Variant Lab for broad natural-source searches. Test hundreds of variants when the supported search space permits.
+- Combine declaration order, scope, expression, branch, loop, cast, temporary, and argument-preparation choices.
+- Rank variants by bytes, edit distance, control flow, calls, relocations, boundary, and closure effects.
 - Review allocation failures, aliases, widths, reloads, calls, memory effects, floating-point operations, and relevant fault order.
 - Keep ordinary caller-owned stack objects and supported overlap in scope.
 - Exclude invented pointers into future callee-owned storage unless executable evidence demonstrates actual use.
