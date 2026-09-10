@@ -1405,8 +1405,10 @@ void TDrawArea::Clear(tagRECT* rect, int color)
 
             dest.left = rect->left;
             dest.top = rect->top;
-            dest.right = rect->right + 1;
-            dest.bottom = rect->bottom + 1;
+            dest.right = rect->right;
+            ++dest.right;
+            dest.bottom = rect->bottom;
+            ++dest.bottom;
             surface->Blt(&dest, 0, 0, 0x1000400, &ddbltfx);
         }
     }
