@@ -1134,12 +1134,18 @@ int RGE_Moving_Object::doMove() {
                 }
                 return 0;
             }
-            this->closestDistanceToWaypoint = 100000.0f;
+            this->rangeStatusValue = 2;
+            return 1;
         }
     }
 
+    this->speed = 0.0f;
     this->rangeStatusValue = 2;
-    return 1;
+    if (this->numberUserDefinedWaypointsValue > 1) {
+        this->continueCounter += 5;
+        return 1;
+    }
+    return 0;
 }
 
 
@@ -1259,6 +1265,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
                            (float)floor((double)this->world_y) - DAT_00570b80,
                            this->world_z);
         }
+    }
 
         if (this->targetIDValue != -1) {
             RGE_Game_World* world = this->owner->world;
@@ -1428,11 +1435,9 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
             }
             return 0;
         }
-    }
 
     float oldZ = this->world_z;
     float destinationZ;
-    Path* path = &this->pathValue;
     Waypoint* waypoint = path->currentWaypoint();
     if (waypoint == 0) {
         float dx = x - newX;
