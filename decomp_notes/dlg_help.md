@@ -134,3 +134,19 @@ one-job audit is under
 `build/audits/sa-579ca768-r1-dlg-help-final/report.txt`; all five neighboring
 owners remain exact. Keep `setup_help` as `scratch`. No source change, exact
 candidate, or accepted-drift proposal is retained.
+
+## Assignment pass: `sa-f7ecb170-r1`
+
+The fresh baseline and final recorded check remain `MISMATCH`, with 435
+different bytes, 839 rebuilt bytes versus 849 original, 27 calls, frame `0xC`,
+and two direct target mismatches. The original calls `width` then `xPosition`;
+the natural source emits `xPosition` then `width`. Positive PDB geometry offsets
+remain reused parameter homes. Runtime tests were not permitted.
+
+A 48-variant natural Variant Lab sweep tested line-count width, geometry guard
+operand order, a named width local, clamp form, y initialization, and parent
+height expression. It produced six emitted groups, 40 frame/call-set eligible
+variants, and no exact result. The natural source is unchanged. The one-job
+audit is `build/audits/sa-f7ecb170-r1-dlg-help-final/report.txt`; five neighbors
+remain exact and `setup_help` remains the only relocation problem. Preserve the
+lab state and event. No exact or accepted-drift proposal is made.
