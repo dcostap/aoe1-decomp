@@ -1784,7 +1784,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         }
         unsigned int next = done->ExecuteOnTurn -
                             this->PlayerOptions.CommandTurnIncrement;
-        if (next < this->LastTurnAck[player])
+        if (next <= this->LastTurnAck[player])
             next = this->LastTurnAck[player];
         this->LastTurnAck[player] = next;
         return 1;
@@ -1823,7 +1823,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         return 1;
     }
     case 0x50:
-        L->Log("P#%d Requested pause", player);
+        L->Log("P#%d Requested pause");
         this->LocalPauseGame(player);
         this->Sync->LogChecksums(0, 0, 0, 0, 0, 0, 0, 0, 0);
         return 1;
