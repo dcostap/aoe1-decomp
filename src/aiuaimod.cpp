@@ -1425,7 +1425,6 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     int numberObjectsInRange;
     int closestEnemyDistance;
     float enemyDistance;
-    float distance;
     int currentTarget;
     int baseDamage;
 
@@ -1497,7 +1496,8 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     (i != 3 ||
                      this->canAttackUnitAtNeutrality(
                          target->master_obj->object_group) != 0)) {
-                    distance = this->objectValue->distance_to_object(target);
+                    float distance =
+                        this->objectValue->distance_to_object(target);
                     if (this->objectValue->minimumWeaponRange() <= distance &&
                         modifier >= VisibleUnitList[i][j].distance) {
                         if (target->id != this->currentTargetValue) {
@@ -1563,7 +1563,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                 if (hitPoints > DAT_0056ebc8) {
                     numberMovingTargets /= hitPoints;
                 }
-                distance = target->distance_to_object(this->objectValue);
+                float distance = target->distance_to_object(this->objectValue);
                 if (numberDamagingUnits < 2) {
                     if (distance != DAT_0056ebc8) {
                         numberMovingTargets /= distance;
