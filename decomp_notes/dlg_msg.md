@@ -17,3 +17,9 @@ compiler generated and also matches in the grouped audit.
 The direct grouped check matches six normal owners and the generated deleting
 destructor. Main setup is a broad unresolved body with correct ownership,
 boundary, relocations, and 14 aligned calls. Neither source body was changed.
+
+The `sa-2ea26202-r1` worker ran a fresh standalone check and a corrected
+256-variant source lab. The lab compiled all variants, found 24 code groups,
+and found no exact result. The best eligible group stayed at the natural
+indexed source form and the 311-byte checker mismatch. The final one-job audit
+is `build/sa-2ea26202-r1-final-audit/report.txt`; no neighbor regressed.
