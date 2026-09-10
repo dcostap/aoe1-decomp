@@ -1291,9 +1291,8 @@ void TribeMPSetupScreen::cancelScreen(int timed_out) {
 long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
 {
     char message[256];
-    int player_ready;
-    unsigned long scenario_checksum;
-    unsigned long user6, user2, user7, user3, user1, user4;
+    int ready;
+    unsigned long user1, user2, user3, user4, user5, user6, user7;
 
     if (rge_base_game->singlePlayerGame()) {
         return 1;
@@ -1342,48 +1341,48 @@ long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
                     player = i + 1;
                     int humanity = comm->GetPlayerHumanity(player);
                     if (comm->WhoAmI() != player && humanity == 2) {
-                        comm->GetClientReadiness(player, &player_ready,
-                                                 &user3, &user6, &user7,
-                                                 &user1, &user4,
-                                                 &scenario_checksum, &user2);
-                        if (user3 != 0 && user3 != static_cast<TRIBE_Game*>(rge_base_game)->civilization(i)) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, user3);
+                        comm->GetClientReadiness(player, &ready,
+                                                 &user1, &user2, &user3,
+                                                 &user4, &user5, &user6,
+                                                 &user7);
+                        if (user1 != 0 && user1 != static_cast<TRIBE_Game*>(rge_base_game)->civilization(i)) {
+                            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, user1);
                             changed = 1;
                         }
-                        if (user6 != 0) {
-                            int sp = user6 - 1;
+                        if (user2 != 0) {
+                            int sp = user2 - 1;
                             if (sp != static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(i)) {
                                 static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, sp);
                                 changed = 1;
                             }
                         }
-                        if (user7 != 0) {
-                            if (user7 == 1) {
+                        if (user3 != 0) {
+                            if (user3 == 1) {
                                 if (rge_base_game->playerHasCD(i) == 1) {
                                     rge_base_game->setPlayerHasCD(i, 0);
                                     changed = 1;
                                 }
-                            } else if (user7 == 2) {
+                            } else if (user3 == 2) {
                                 if (rge_base_game->playerHasCD(i) == 0) {
                                     rge_base_game->setPlayerHasCD(i, 1);
                                     changed = 1;
                                 }
                             }
                         }
-                        if (user1 != 0 && user1 != static_cast<TRIBE_Game*>(rge_base_game)->playerColor(i)) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, user1);
+                        if (user4 != 0 && user4 != static_cast<TRIBE_Game*>(rge_base_game)->playerColor(i)) {
+                            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, user4);
                             changed = 1;
                         }
-                        if (user4 != 0 && user4 != rge_base_game->playerTeam(i)) {
-                            rge_base_game->setPlayerTeam(i, user4);
+                        if (user5 != 0 && user5 != rge_base_game->playerTeam(i)) {
+                            rge_base_game->setPlayerTeam(i, user5);
                             changed = 1;
                         }
-                        if (scenario_checksum != 0) {
-                            *checksum = scenario_checksum;
+                        if (user6 != 0) {
+                            *checksum = user6;
                         }
-                        if (user2 != 0) {
+                        if (user7 != 0) {
                             rge_base_game->setPlayerVersion(
-                                i, static_cast<unsigned char>(user2));
+                                i, static_cast<unsigned char>(user7));
                             changed = 1;
                         }
                     } else if (humanity != 2 && humanity != 4) {
