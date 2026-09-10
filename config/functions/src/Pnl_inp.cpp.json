@@ -20,7 +20,7 @@
     "004779A0": {"status": "matching", "symbol": "?get_input_buffer@TInputPanel@@QAEPADXZ"},
     "004779B0": {"status": "matching", "symbol": "?append_character@TInputPanel@@IAEHJ@Z"},
     "004779D0": {"status": "matching", "symbol": "?insert_character@TInputPanel@@IAEHJ@Z"},
-    "00477AF0": {"status": "accepted_drift", "symbol": "?delete_character@TInputPanel@@IAEHXZ"},
+    "00477AF0": {"status": "matching", "symbol": "?delete_character@TInputPanel@@IAEHXZ"},
     "00477C90": {"status": "matching", "symbol": "?backspace_character@TInputPanel@@IAEHXZ"},
     "00477CB0": {"status": "matching", "symbol": "?paste@TInputPanel@@IAEHXZ"},
     "00477E90": {"status": "matching", "symbol": "?reformat@TInputPanel@@IAEXXZ"},
