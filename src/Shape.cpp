@@ -1678,9 +1678,10 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                                     src += xpos - x + count - 1;
                                     if ((unsigned char)copy_count > 0) {
                                         copy_count &= 0xff;
-                                        do {
+                                        while (copy_count != 0) {
                                             *--dst = *src++;
-                                        } while (--copy_count != 0);
+                                            --copy_count;
+                                        }
                                     }
                                     src += clip_left - xpos;
                                 } else {
@@ -1690,9 +1691,10 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                                     src += count - copy_count;
                                     if ((unsigned char)copy_count > 0) {
                                         copy_count &= 0xff;
-                                        do {
+                                        while (copy_count != 0) {
                                             *--dst = *src++;
-                                        } while (--copy_count != 0);
+                                            --copy_count;
+                                        }
                                     }
                                 }
                             } else {
@@ -1746,17 +1748,19 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                             state = 1;
                             if ((unsigned char)visible > 0) {
                                 visible &= 0xff;
-                                do {
+                                while (visible != 0) {
                                     *--dst = *src++;
-                                } while (--visible != 0);
+                                    --visible;
+                                }
                             }
                             src += count - (xpos - clip_left + count);
                         } else {
                             unsigned int copy_count = count;
                             if (command != 0) {
-                                do {
+                                while (copy_count != 0) {
                                     *--dst = *src++;
-                                } while (--copy_count != 0);
+                                    --copy_count;
+                                }
                             }
                         }
                     }
