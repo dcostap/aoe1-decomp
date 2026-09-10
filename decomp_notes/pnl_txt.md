@@ -59,6 +59,17 @@ private registers and equivalent list-loop lowering. Both paths read the same
 links and write the same node, links, count, redraw state, and return values.
 No call, allocation, free, memory access, or fault order moves.
 
+The follow-up probe preserved this reconstruction as the clean source. It
+tested branch order, local scope, initialization order, pointer aliases, and
+loop forms. None matched the target or passed the size, frame, and call gates.
+The exact same-TU `0047E110` loop donor supports the indexed traversal form,
+but it does not prove a matching source form for this function.
+
+The target source and the nearby `0047D9E0` evidence are unchanged after the
+probe. The clean target check remains `MISMATCH` with 184 positional bytes and
+538 rebuilt bytes versus 541. The probe produced no exact candidate and no
+closure regression.
+
 The direct all-owner comparison in `build/audits/Pnl_txt_direct_all.json`
 reported 56 `MATCH` results and these nine known observations. It used the
 compiled module object and explicit decorated symbols for the nine
