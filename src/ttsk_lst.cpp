@@ -16,7 +16,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1,
                                             float param_3, float param_4,
                                             float param_5) {
     short sVar2;
-    int sVar7, sVar5;
+    int sVar5, sVar7;
     int iVar8;
 
     sVar2 = param_1->attribute_type_held;
