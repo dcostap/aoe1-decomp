@@ -24,14 +24,22 @@ checks before exact promotion.
 
 ## Remaining reviewed status
 
-- `0045D150`, `00460940`, and `00460F40` remain accepted drift.
-- `0045C700`, `0045C790`, `0045D3D0`, `0045D6C0`, `0045DB90`, and
+- `0045D150`, `00460940`, and `00460F40` are accepted drift.
+- `0045D3D0 teleport` now has a reviewed exact result.
+- `0045C700`, `0045C790`, `0045D6C0`, `0045DB90`, and
   `0045E970` remain scratch.
 - `00460210`, `004608D0`, `00460900`, and `00460B20` also remain scratch.
 - All other normal owners retain matching status.
 
 The wave20 full audit found `00460940 userDefinedWaypoint` exact in the
 natural source. The other reviewed results did not change.
+
+The user-guided review first proved the 15-byte drift in `0045D3D0 teleport` behavior-equal.
+Further source experiments recovered a simpler exact loop: `for (short i = 0; i < count; ++i)`.
+VC5 converts this increasing index into the original private countdown.
+The explicit inner positive guard and separate integer countdown are no longer needed.
+Natural-module validation reports `MATCH`, `0.0000%`, and no exact-neighbor regression.
+The function note records the full review and preserved experiment chain.
 
 ## Structural audit
 

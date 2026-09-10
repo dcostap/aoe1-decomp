@@ -510,8 +510,8 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                 float tx;
                 float ty;
                 float tz;
-                // The original adds trail_remainder to distance
-                // at 0045D458, then adds it again in the count <= 0 branch at
+                // The original adds the remainder at 0045D458.
+                // It adds the remainder again at 0045D55A for a nonpositive count.
                 dx = x - this->world_x;
                 dy = y - this->world_y;
                 dz = z - this->world_z;
@@ -529,19 +529,16 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                     tx = this->world_x;
                     ty = this->world_y;
                     tz = this->world_z;
-                    if (0 < count) {
-                        int loop_count = count;
-                        do {
-                            RGE_Static_Object* trail =
-                                trail_master->make_new_obj(
-                                    this->owner, tx, ty, tz);
-                            if (trail->master_obj->id > 30) {
-                                trail->new_angle(this->angle);
-                            }
-                            tx += dx;
-                            ty += dy;
-                            tz += dz;
-                        } while (--loop_count != 0);
+                    for (short i = 0; i < count; ++i) {
+                        RGE_Static_Object* trail =
+                            trail_master->make_new_obj(
+                                this->owner, tx, ty, tz);
+                        if (trail->master_obj->id > 30) {
+                            trail->new_angle(this->angle);
+                        }
+                        tx += dx;
+                        ty += dy;
+                        tz += dz;
                     }
 
                     this->trail_remainder =

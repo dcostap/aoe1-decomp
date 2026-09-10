@@ -429,6 +429,10 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - A reverse scan can need an explicit negative guard before its walker LEA.
 - A bounded list count can need `--bound; while(true)` with an equality break.
 - `for(i != bound - 1)` can become a countdown instead.
+- A zero-based signed-short index can compile to a 32-bit private countdown.
+- The equivalent int index can retain an extra entry test in the same context.
+- Check the terminal index value before changing its width. A short index must not overflow.
+- Exact evidence: `0045D3D0`; see its function note for the source and validation.
 - A count increment followed by `break` can force final reload from its home.
 - Direct return can keep EAX live and skip that reload.
 - Reuse one loop local across scans when assembly reuses one home.

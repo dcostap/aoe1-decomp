@@ -1,0 +1,38 @@
+# Experiment eecc0ec29110072ad733278343736bf601b2bd84d17ab1c9024e1784a55a4b9f
+# Base 70f87ecd4157d0d3a1b8008924f0d53678f283c3
+diff --git a/config/functions/src/move_obj.cpp.json b/config/functions/src/move_obj.cpp.json
+index 446c119bc..7ef809e23 100644
+--- a/config/functions/src/move_obj.cpp.json
++++ b/config/functions/src/move_obj.cpp.json
+@@ -21,7 +21,7 @@
+     "0045D150": {"status": "accepted_drift", "symbol": "?angle_to_object@RGE_Moving_Object@@QAEMPAVRGE_Static_Object@@MM@Z"},
+     "0045D1F0": {"status": "matching", "symbol": "?turn_towards@RGE_Moving_Object@@UAEEPAVRGE_Static_Object@@MM@Z"},
+     "0045D360": {"status": "matching", "symbol": "?set_angle@RGE_Moving_Object@@QAEXXZ"},
+-    "0045D3D0": {"status": "scratch", "symbol": "?teleport@RGE_Moving_Object@@UAEMMMM@Z"},
++    "0045D3D0": {"status": "accepted_drift", "symbol": "?teleport@RGE_Moving_Object@@UAEMMMM@Z"},
+     "0045D5C0": {"status": "matching", "symbol": "?set_velocity@RGE_Moving_Object@@QAEXMMM@Z"},
+     "0045D5F0": {"status": "matching", "symbol": "?new_angle@RGE_Moving_Object@@UAEXM@Z"},
+     "0045D610": {"status": "matching", "symbol": "?getPath@RGE_Moving_Object@@QBEABVPath@@XZ"},
+diff --git a/src/move_obj.cpp b/src/move_obj.cpp
+index 5fad6b1fc..2d6fa21f2 100644
+--- a/src/move_obj.cpp
++++ b/src/move_obj.cpp
+@@ -530,8 +530,7 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
+                     ty = this->world_y;
+                     tz = this->world_z;
+                     if (0 < count) {
+-                        int loop_count = count;
+-                        do {
++                        for (short i = 0; i < count; ++i) {
+                             RGE_Static_Object* trail =
+                                 trail_master->make_new_obj(
+                                     this->owner, tx, ty, tz);
+@@ -541,7 +540,7 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
+                             tx += dx;
+                             ty += dy;
+                             tz += dz;
+-                        } while (--loop_count != 0);
++                        }
+                     }
+ 
+                     this->trail_remainder =
