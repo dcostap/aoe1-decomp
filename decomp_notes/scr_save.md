@@ -21,8 +21,10 @@ scenario-editor save path uses the typed `TRIBE_Screen_Sed` provider and its
 `need_to_save_flag` field. It does not use raw offsets or child-pointer casts.
 
 The action body uses separate path, text, and existence values. It does not
-use the former `+4` stack-buffer overlays. It remains scratch because the
-natural source differs by 1730 bytes and three relocation sites.
+use unsupported stack-buffer overlays. It remains scratch because the natural
+source differs by 665 bytes. The fresh check reports 71 aligned calls, a
+matching owner, zero target-count gaps, and zero boundary or relocation-target
+mismatches.
 
 The destructor uses typed `delete` for its child controls. This is natural
 ownership, but it differs from the shipped `TPanel::delete_panel` sequence.
@@ -37,3 +39,8 @@ The grouped candidate compiled all five normal bodies and the generated
 vector deleting destructor. The constructor, `fillList`, and scenario-editor
 save helper match exactly. The destructor and action remain scratch. There are
 zero comparison errors.
+
+The fresh action behavior audit is recorded in
+`decomp_notes/functions/004A/004A7850.md`. Its remaining code-generation
+blocker is the second-extension Cancel Dialog load order. Do not force that
+order without proof of equal invalid-state fault behavior.
