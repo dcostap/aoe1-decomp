@@ -1028,13 +1028,14 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
             }
 
             this->get_mouse_info(wParam, lParam, point, ctrl_key, shift_key);
-            target = this;
             if (panel_system.mouseOwner() != 0) {
                 target = panel_system.mouseOwner();
             } else if (panel_system.keyboardOwner() != 0) {
                 target = panel_system.keyboardOwner();
             } else if (panel_system.modalPanel() != 0) {
                 target = panel_system.modalPanel();
+            } else {
+                target = this;
             }
 
             switch (msg) {
