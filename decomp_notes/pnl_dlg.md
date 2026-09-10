@@ -26,3 +26,14 @@ ordered calls aligned. Natural `00473C80` remains `MISMATCH`, 214 bytes,
 made `00473C80` exact in state
 `3b4674109d639855ad0e177ca40142629135951b5e111e62041509e4fddbbaab`, but it
 is compiler-context evidence only and is not retained in source.
+
+Resume 29 tested a 117-variant source-shape and header-context family for
+`00473D60`. Nineteen variants matched exactly, but all used an unused
+`pnl_drop.h`, `dlg_help.h`, or `Pnl_scbr.h` context. A complete `pnl_drop.h`
+candidate made both setup overloads exact with no closure regression. Its
+patch is preserved at
+`decomp_notes/candidates/0047/00473D60_experiment_261c12fa1b83_exact_candidate.patch`,
+but it is rejected because no source or PDB evidence supports the include.
+The clean natural source remains unchanged. The final target is `MISMATCH` at
+196 differing bytes and 209/211 bytes. The one-job closure keeps three owners
+exact and reports only the two setup owners as nonmatching.
