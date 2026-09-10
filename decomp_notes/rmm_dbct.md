@@ -57,3 +57,13 @@ alias. These variants emitted the same configured-TU body. Moving terrain-count
 publication before area calculation produced a 449-byte non-invariant body.
 The retained direct typed source preserves area calculation before publication.
 The original body has no allocation or explicit failure call.
+
+## Worker pass: rmm_dbct
+
+The unchanged `00483A20` source passed a fresh one-job closure check and final
+target validation. It remains a natural typed reconstruction with the proven
+land expansion, field publication, distance and relation phases, and ordered
+calls. The target PDB's one-based `long[8]` homes remain unsafe source bounds
+without a proven land-count limit. Completed `00483600` land-start and
+`00484160` terrain-module evidence was preserved. No shared header or global
+defect was found. Further probes need new source or compiler-context evidence.
