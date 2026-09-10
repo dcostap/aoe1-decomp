@@ -2843,19 +2843,21 @@ int RGE_View::get_tile_mask_num(int col, int row, int map_width,
 
 int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                         short x, short y, short map_x, short map_y,
-                        unsigned char draw_attribute, int draw1, int draw2)
+                        unsigned char visible, int draw1, int draw2)
 {
-    unsigned char draw_border = tile->draw_attribute;
+    unsigned char draw_attribute;
     int terrain_offset;
-    int overlay_available;
+    int draw_border;
     int terrain_draw;
     unsigned char border_info;
-    int border_type;
+    unsigned char border_type;
     int left_index;
     int right_index;
     int bottom_index;
     int retval;
     int result = 0;
+
+    draw_attribute = tile->draw_attribute;
 
     if ((short)terrain_type >= this->map->num_terrain ||
         ((terrain_offset = (int)terrain_type * (int)sizeof(RGE_Tile_Set)),
@@ -2865,7 +2867,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
 
     terrain_draw = 1;
     result = 0;
-    overlay_available = 0;
+    draw_border = 0;
     border_info = tile->border_type | (tile->border_shape << 4);
     border_type = border_info & 0x0F;
 
@@ -2877,7 +2879,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                     border_type, tile->tile_type,
                     (unsigned char)(border_info >> 4), map_x, map_y);
                 if (picture != -1) {
-                    overlay_available = 1;
+                    draw_border = 1;
                     terrain_draw = border->draw_tile;
                 }
             } else {
@@ -2886,21 +2888,21 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                         (unsigned char)(border_info >> 4), map_x, map_y,
                         left_index, bottom_index,
                         right_index, retval) != 0) {
-                    overlay_available = 1;
+                    draw_border = 1;
                     terrain_draw = 1;
                 }
             }
         }
     }
 
-    if (View_Grid_Mode > 0 && (draw_border & 0xDF) == 0 &&
+    if (View_Grid_Mode > 0 && (draw_attribute & 0xDF) == 0 &&
         ((((int)map_x / View_Grid_Mode) +
           ((int)map_y / View_Grid_Mode)) & 1) == 1) {
-        draw_border |= 0x20;
+        draw_attribute |= 0x20;
     }
 
     if (view_debug_ObstructionMap != 0) {
-        overlay_available = 0;
+        draw_border = 0;
     }
 
     if (terrain_draw != 0) {
@@ -2914,12 +2916,12 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                 return 1;
             }
             this->draw_terrain_shape(
-                x, y, shape, picture, draw_attribute,
-                draw_border, draw1, draw2);
+                x, y, shape, picture, visible,
+                draw_attribute, draw1, draw2);
             result = 1;
         }
 
-        if (overlay_available == 0) {
+        if (draw_border == 0) {
             if (map_x > 0) {
                 RGE_Tile* left = this->map->map_row_offset[map_y] + map_x - 1;
                 left->draw_attribute |= 0x40;
@@ -2931,7 +2933,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
         }
     }
 
-    if (overlay_available == 0) {
+    if (draw_border == 0) {
         goto done;
     }
 
@@ -2957,26 +2959,26 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                 }
                 if (left_index != -1) {
                     this->draw_terrain_shape(
-                        x, y, shape, left_index, draw_attribute,
-                        draw_border, draw1, draw2);
+                        x, y, shape, left_index, visible,
+                        draw_attribute, draw1, draw2);
                 }
                 if (right_index != -1) {
                     this->draw_terrain_shape(
-                        x, y, shape, right_index, draw_attribute,
-                        draw_border, draw1, draw2);
+                        x, y, shape, right_index, visible,
+                        draw_attribute, draw1, draw2);
                 }
                 if (bottom_index != -1) {
                     this->draw_terrain_shape(
-                        x, y, shape, bottom_index, draw_attribute,
-                        draw_border, draw1, draw2);
+                        x, y, shape, bottom_index, visible,
+                        draw_attribute, draw1, draw2);
                 }
                 if (retval == -1) {
                     goto mark_neighbors;
                 }
             }
             this->draw_terrain_shape(
-                x, y, shape, retval, draw_attribute,
-                draw_border, draw1, draw2);
+                x, y, shape, retval, visible,
+                draw_attribute, draw1, draw2);
         }
     }
 
