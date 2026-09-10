@@ -1582,14 +1582,17 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, shor
     int maxMemory = this->maxImportantObjectMemory;
     int empty = -1;
     int i = 0;
-    ObjectMemory* p = this->importantObjectMemory;
-    while (i < maxMemory) {
-        if (p->id == id) {
-            goto duplicate;
+    ObjectMemory* p;
+    if (maxMemory > 0) {
+        p = this->importantObjectMemory;
+        while (i < maxMemory) {
+            if (p->id == id) {
+                goto duplicate;
+            }
+            if (p->id == -1 && empty == -1) empty = i;
+            ++i;
+            ++p;
         }
-        if (p->id == -1 && empty == -1) empty = i;
-        ++i;
-        ++p;
     }
 
     if (obj) {
