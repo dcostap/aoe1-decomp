@@ -389,10 +389,10 @@ unsigned char TRIBE_Action_Trade::update()
                     if (this->pick_up_x < 0.0 || this->pick_up_y < 0.0) {
                         take_amount = DAT_00575360;
                     } else {
-                        float dx = this->pick_up_x - this->target_obj2->world_x;
-                        float dy = this->pick_up_y - this->target_obj2->world_y;
-                        take_amount = dx * dx;
-                        take_amount += dy * dy;
+                        float dx;
+                        dx = this->pick_up_x - this->target_obj2->world_x;
+                        take_amount = this->pick_up_y - this->target_obj2->world_y;
+                        take_amount = dx * dx + take_amount * take_amount;
                         take_amount *= DAT_00575358;
                         take_amount *= DAT_0057535c;
                     }
