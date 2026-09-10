@@ -2429,7 +2429,6 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
     float baseDistance;
     int facet;
     XYZPoint point;
-    int pointZ;
 
     if (forceFlag == 0 && this->currentActionValue != -1) {
         return 0;
@@ -2453,8 +2452,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
 
     point.x = (int)x;
     point.y = (int)y;
-    pointZ = (int)this->objectValue->world_z;
-    point.z = pointZ;
+    point.z = (int)this->objectValue->world_z;
 
     if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
         facet = -1;
@@ -2524,7 +2522,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
     if (this->objectValue->moveTo(
             (float)point.x - DAT_0056ebe4,
             (float)point.y - DAT_0056ebe4,
-            z, 0.5f, pointZ) == 1) {
+            z, 0.5f, forceFlag) == 1) {
         this->setCurrentAction(0x262);
         this->setCurrentTarget(-1, x, y, z);
         return 1;
