@@ -59,3 +59,12 @@ The aliases add redundant source without a demonstrated correctness or simplicit
 All five states and their referenced evidence survive in `decomp_notes/experiments/`.
 No game source, header, registry, or compiler flag changed.
 The worker confirmed the linked-worktree guard fix through direct runs in its assigned worktree.
+
+## Worker sa-510f5e48 AddLine_Align pass
+
+The natural source stayed unchanged. Two Variant Lab runs tested 432 and 864
+natural combinations. Both found zero exact variants and no changed owners.
+The final target remains 339 bytes versus 337, with 184 differences, five
+aligned calls, and a two-byte boundary escape. The one-job spanlist audit is
+`build/sa-510f5e48-spanlist-final/report.txt`. `take_snapshot` and the 23 exact
+owners remain unchanged.
