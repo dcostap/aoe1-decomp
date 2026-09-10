@@ -96,3 +96,20 @@ from the oracle, with no supported source repair.
 The exact-state closure changed object fingerprints in ten owners, but the
 complete one-job audit kept all exact neighbors exact and all existing scratch
 metrics unchanged. See `build/agents/sa-8ce508eb/final_audit/report.txt`.
+
+## Selected-color recovery: user-437EC0
+
+The later `00437EC0` investigation reduces the positional difference from 336 bytes to six.
+Separate int selected-color locals and map-cell-load-first initialization recover the original register assignments and both drawing call sites.
+The retained source also removes redundant short casts and restores the PDB parameter name.
+
+The result remains `MISMATCH`: 397 bytes, 135 instructions, and four aligned calls.
+Two reversed mask loads remain. No exact or accepted-drift claim is made.
+The registry stays unchanged.
+
+The final one-job module check retains 22 matches, four grouped mismatches, two accepted drifts, and one boundary problem.
+There are no exact regressions. All 26 other registered owners retain equal bytes and recursive local-reference graphs.
+Nine owners have compiler-local relocation-label changes only.
+
+The function note records the complete static behavior review, final state, and eight archived lab families containing 1,856 cases.
+No shared header changed. Linked-image storage and runtime checks remain separate work.

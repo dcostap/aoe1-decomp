@@ -763,17 +763,17 @@ void RGE_Diamond_Map::draw_objects() {
   this->render_area->Unlock("diam_map::draw_objects");
 }
 
-void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
+void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj,
                                           unsigned char color1,
                                           unsigned char color2) {
-  if (object->tile == 0)
+  if (game_obj->tile == 0)
     return;
 
   short col;
   short row;
   RGE_Player *player;
-  col = (short)object->world_x;
-  row = (short)object->world_y;
+  col = (short)game_obj->world_x;
+  row = (short)game_obj->world_y;
   player = this->player;
   unsigned char visibility;
   if (player->visible != 0) {
@@ -781,8 +781,8 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
     if (map->map_visible_flag != 0 && map->fog_flag == 0) {
       visibility = 0x0F;
     } else {
+      unsigned long mask = unified_map_offsets[row][col];
       visibility = 0;
-      unsigned long mask = unified_map_offsets[(short)row][(short)col];
       if ((player->mutualExploredMask & mask) != 0)
         visibility = 0x80;
       if ((player->mutualVisibleMask & mask) != 0)
@@ -797,43 +797,48 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
   }
 
   if (visibility != 0x0F &&
-      (visibility != 0x80 || object->master_obj->fog_flag == 0))
+      (visibility != 0x80 || game_obj->master_obj->fog_flag == 0))
     return;
 
   int level;
-  if (object->type == 0x19) {
+  int draw_color1;
+  int draw_color2;
+  if (game_obj->type == 0x19) {
     if (visibility == 0x0F)
       return;
 
     RGE_Doppleganger_Object *dopple =
-        static_cast<RGE_Doppleganger_Object *>(object);
-    if (player->mutualAlly[object->owner->id] == 1 &&
-        (this->cur_player_bit & dopple->CantSeeBits) == 0) {
+        static_cast<RGE_Doppleganger_Object *>(game_obj);
+    if (player->mutualAlly[game_obj->owner->id] == 1 &&
+        (dopple->CantSeeBits & this->cur_player_bit) == 0) {
       level = dopple->map_draw_level;
-      color1 = dopple->map_color;
-      color2 = color1;
+      draw_color1 = dopple->map_color;
+      draw_color2 = draw_color1;
     } else {
       level = 0;
-      color1 = 0xFF;
-      color2 = 0xFF;
+      draw_color1 = 0xFF;
+      draw_color2 = 0xFF;
     }
   } else {
-    level = object->master_obj->map_draw_level;
+    level = game_obj->master_obj->map_draw_level;
     if (level == 3)
-      color1 = object->master_obj->map_color;
+      draw_color1 = game_obj->master_obj->map_color;
+    else
+      draw_color1 = color1;
+    draw_color2 = color2;
   }
 
   switch (level) {
   case 0:
     return;
   case 2:
-    this->draw_object(col, (short)row, color1, 2, object);
+    this->draw_object(col, row, draw_color1, 2, game_obj);
     return;
   case 1:
-    this->draw_object(col, (short)row, color2, 1, object);
+    this->draw_object(col, row, draw_color2, 1, game_obj);
     break;
   case 3:
-    this->draw_object(col, row, color1, 2, object);
+    this->draw_object(col, row, draw_color1, 2, game_obj);
     break;
   default:
     return;
