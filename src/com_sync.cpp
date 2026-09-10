@@ -406,17 +406,17 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     int foundMine;
     unsigned int myRandom;
 
-    uVar5 = 0;
-    NumPlayers = 0;
     NumDiff = 0;
-    lVar6 = 0;
-    mycs4 = 0;
-    mycs5 = 0;
-    mycs2 = 0;
-    mycs3 = 0;
     NumSame = 0;
     foundMine = 0;
+    uVar5 = 0;
+    mycs2 = 0;
+    mycs3 = 0;
+    mycs4 = 0;
+    mycs5 = 0;
+    lVar6 = 0;
     myRandom = 0;
+    NumPlayers = 0;
 
     unsigned int firstIndex = 1;
     for (; firstIndex <= 0x36; ++firstIndex) {
