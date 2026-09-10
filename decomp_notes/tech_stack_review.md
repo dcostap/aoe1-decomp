@@ -122,9 +122,12 @@ With a mapped original tech record and an unmapped changed address, the rebuild 
 The original pointer remains intact at EBP-12. Give it unused attributes and valid remaining outputs to avoid that fault.
 This is a static instruction counterexample, not an executed test.
 
-The counterexample rejects an unconditional stack-permutation proof.
-The other three functions also need explicit alias analysis or proved caller restrictions before approval.
-The original draft approval relied on the disjointness condition. Event `c2db7184ed40c0ca530e6189ab8d2b8373bbe81d9d27b5464cc5658fa5e5de79` preserves that rejected draft.
+The counterexample rejects an unconditional stack-permutation proof for an
+invented pointer into future callee-owned storage. The original draft approval
+relied only on disjointness. Event
+`c2db7184ed40c0ca530e6189ab8d2b8373bbe81d9d27b5464cc5658fa5e5de79` preserves
+that rejected draft. The follow-up caller review below supplies the missing
+evidence for the real direct call sites.
 
 The separate declaration-order lab tested all 24 orders of the four `start_research` locals.
 All compile. They produce two 334-byte outputs, each with 22 differences. None matches.
@@ -137,10 +140,12 @@ Retain none of these binding changes merely for a lower byte count.
 ## Integration
 
 Retain the double-literal repair and the later natural scope improvements.
-Do not approve the four private-storage differences as accepted drift.
+The caller review approves the private-storage differences in `0050C730` and
+`0050CA9E` as accepted drift. `0050CC25` and `0050CE68` remain open.
 Keep the simplest scalar source. Do not add fake records, local aliases, or extra declarations to force stack positions.
-The final module audit retains all 29 existing matching functions. All four authoritative target checks remain nonexact.
-All four functions remain open. Natural local types and scopes, or independent caller and alias evidence, remain useful approaches.
+The final module audit retains all 29 existing matching functions. The four
+authoritative target checks remain nonexact, with two accepted-drift results
+and two open results.
 
 The final closure compares all 33 defined Tech bodies against the baseline.
 Only the two comparison opcodes change, from D8 to DC. All other instruction bytes remain unchanged.
@@ -150,6 +155,39 @@ The constructor's float 7.03 stays at pool offset zero. The progress function's 
 Both unchanged functions retain the same four-byte reads and values.
 Their whole-pool reference descriptions therefore change without changing their actual constant operands.
 The proof also retains every mutable string's name, offset, contents, and section properties.
+
+## Follow-up caller and storage review
+
+The direct target references provide complete static caller coverage for the two
+target functions. `tech_cost` is called at `0049A2F4`, `00512C19`, `00513110`,
+and `0051460D`. Its six output addresses are distinct caller-owned locals or
+forwarded caller objects. At each call, those addresses are above the target's
+new private frame. The caller-owned addresses remain disjoint from the frame
+under either local-slot permutation.
+
+`check_tech_cost` is called at `0050C78E`, `0050CC4E`, and `00513D70`. The
+first call passes null. The second passes the `first_in_stack` input-area
+address through `start_research`. The third forwards the `command_research`
+local through `TRIBE_Player::check_tech_cost`. Each nonnull address remains
+above the target private frame. No direct caller constructs a pointer into
+future callee-owned storage.
+
+The review covers caller-owned aliases. The original write order and all
+external memory operations remain unchanged. Project policy excludes the old
+counterexample without executable evidence of actual use. The two target
+results are therefore accepted drift. Their completed ledgers are
+`logic_reviews/0050C730.md` and `logic_reviews/0050CA9E.md`.
+
+`DAT_005766d8` remains a separate linked-storage limit for
+`check_for_new_tech`. The original global dump proves an eight-byte read-only
+double at `005766D8`, with eight zero bytes and one reference at `0050D054`.
+The canonical header declares `double DAT_005766d8`; `src/game_globals.cpp`
+defines it as `double DAT_005766d8 = 0.0`. The Tech object has one external
+COFF relocation for that symbol, at `.text+0x1816`. A full executable link
+map was not built in this function-only check, so linked address and section
+placement remain unproved. This does not block the two target ledgers because
+neither target references `DAT_005766d8`. `0050CC25` and `0050CE68` remain
+open.
 
 ## Follow-up source probes
 
@@ -166,8 +204,8 @@ drift without changing behavior or ABI:
 Each target keeps its original size, frame, call set, control-flow shape,
 operand widths, and external memory operations. Closure checks report no exact
 owner regressions. The remaining differences are private local displacement
-coloring. The stack-overlap objection still prevents unconditional accepted
-drift approval.
+coloring. The caller review resolves the first two targets. The stack-overlap
+and linked-storage questions remain open for the latter two targets.
 
 A 120-order declaration lab for `0050CE68` with these scopes produced only two
 code groups. Its best group remains 14 bytes. The four target checks were

@@ -3,8 +3,10 @@
 ## Current review
 
 The latest review repairs two comparison-literal types and checks all instructions in the four remaining functions.
-See `decomp_notes/tech_stack_review.md` for the conditional stack proof and the unresolved stack-overlap requirement.
-The four nonexact functions remain open; the private-stack mapping alone does not approve accepted drift.
+See `decomp_notes/tech_stack_review.md` for the stack proof and the caller-alias review.
+`0050C730` and `0050CA9E` are completed accepted-drift results after the
+caller-alias review in their function ledgers. `0050CC25` and `0050CE68`
+remain open because their follow-up review is not complete.
 
 Original public symbols and section contributions now establish all 33 entry identities.
 See `decomp_notes/tech_public_identity_review.md` for the evidence, compiler results, and remaining limits.
@@ -83,13 +85,14 @@ Its report had 29 byte matches, four mismatches, and no generated entry.
 The retained natural source probes reduce the four target results without
 changing their boundaries, ABIs, call sets, or external memory effects:
 
-| VA | Function | Current differing bytes |
-|---|---|---:|
-| `0050C730` | `tech_cost` | 15 |
-| `0050CA9E` | `check_tech_cost` | 16 |
-| `0050CC25` | `start_research` | 8 |
-| `0050CE68` | `check_for_new_tech` | 14 |
+| VA | Function | Current differing bytes | Status |
+|---|---|---:|---|
+| `0050C730` | `tech_cost` | 15 | accepted drift |
+| `0050CA9E` | `check_tech_cost` | 16 | accepted drift |
+| `0050CC25` | `start_research` | 8 | open |
+| `0050CE68` | `check_for_new_tech` | 14 | open |
 
 Each result retains the original size and frame. No target is exact. The
-remaining differences are private stack displacement coloring. The complete
-stack-overlap review remains unresolved and blocks unconditional accepted drift.
+remaining differences are private stack displacement coloring. The caller-alias
+review completes the accepted-drift decisions for the first two rows. The
+stack-overlap and linked-storage review remains open for the latter two rows.

@@ -66,11 +66,11 @@
       "symbol": "?research@TRIBE_Player_Tech@@QAEEFM@Z"
     },
     "0050C730": {
-      "status": "scratch",
+      "status": "accepted_drift",
       "symbol": "?tech_cost@TRIBE_Player_Tech@@QAEXFAAF00000@Z"
     },
     "0050CA9E": {
-      "status": "scratch",
+      "status": "accepted_drift",
       "symbol": "?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z"
     },
     "0050CC25": {
