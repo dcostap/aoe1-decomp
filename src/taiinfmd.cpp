@@ -3626,9 +3626,8 @@ int TribeInformationAIModule::findGatherPosition(
     min.y = centerPoint.x - desiredDistance - maximumDistanceVariation;
     minExclude.x = centerPoint.y - desiredDistance - maximumDistanceVariation;
     mapBound(min);
-    clearDistance = desiredDistance + maximumDistanceVariation;
-    minClear.x = centerPoint.y + clearDistance;
-    max.y = centerPoint.x + clearDistance;
+    minClear.x = centerPoint.y + maximumDistanceVariation + desiredDistance;
+    max.y = centerPoint.x + maximumDistanceVariation + desiredDistance;
     mapBound(max);
     minExclude.y = centerPoint.x - desiredDistance + maximumDistanceVariation;
     maxExclude.x = centerPoint.y + maximumDistanceVariation - desiredDistance;
