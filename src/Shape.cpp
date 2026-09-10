@@ -272,7 +272,8 @@ byte TShape::shape_check(long x, long y, long frame)
             if (px < minx)
                 return 0;
             command = *p++;
-            switch (command & 0xf) {
+            unsigned char selector = command & 0xf;
+            switch (selector) {
             case 0:
             case 4:
             case 8:
