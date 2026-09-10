@@ -10,7 +10,7 @@
     "00436930": {"status": "matching", "symbol": "??1RGE_Diamond_Map@@UAE@XZ"},
     "004369C0": {"status": "matching", "symbol": "?setup@RGE_Diamond_Map@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJEH0@Z"},
     "00436A10": {"status": "accepted_drift", "symbol": "?set_bitmap@RGE_Diamond_Map@@QAEHPADJ@Z"},
-    "00436C30": {"status": "scratch", "symbol": "?set_world@RGE_Diamond_Map@@QAEXPAVRGE_Game_World@@@Z"},
+    "00436C30": {"status": "matching", "symbol": "?set_world@RGE_Diamond_Map@@QAEXPAVRGE_Game_World@@@Z"},
     "00437070": {"status": "matching", "symbol": "?set_player@RGE_Diamond_Map@@QAEXPAVRGE_Player@@@Z"},
     "00437090": {"status": "matching", "symbol": "?set_redraw@RGE_Diamond_Map@@UAEXW4RedrawMode@TPanel@@@Z"},
     "004370C0": {"status": "matching", "symbol": "?delete_surfaces@RGE_Diamond_Map@@QAEXXZ"},

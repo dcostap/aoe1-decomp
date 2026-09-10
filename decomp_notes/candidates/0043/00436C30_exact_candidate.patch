@@ -1,0 +1,27 @@
+# Exact candidate for RGE_Diamond_Map::set_world (00436C30)
+# State 75061a0f9b7a2968767b994b6122d244e387fd6b5634033c981b9f0778356f41
+# Base dff5f9965ecc979e3adab9b70c03cadc8cd7ead9
+# Authoritative check: MATCH, 0.0000%, 1081/1081 bytes, exact owner/boundary/frame, 7/7 calls.
+diff --git a/src/diam_map.cpp b/src/diam_map.cpp
+index 645c6b43d..b9578548b 100644
+--- a/src/diam_map.cpp
++++ b/src/diam_map.cpp
+@@ -203,7 +203,7 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
+         }
+ 
+         col_step = (float)row_len_tiles / (float)line_len;
+-        float draw_step = 1.0f / ((float)row_len_tiles / (float)line_len);
++        float draw_step = 1.0f / col_step;
+         draw_wid = (short)draw_step;
+         if ((float)draw_wid != draw_step) {
+           ++draw_wid;
+@@ -217,7 +217,8 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
+         this->map_tile_rows[row].draw_step = draw_step;
+         this->map_tile_rows[row].num_tiles =
+             (short)((float)line_len / draw_step);
+-        this->map_tile_rows[row].ratio = draw_step / (float)line_len;
++        this->map_tile_rows[row].ratio =
++            (float)line_len / (float)row_len_tiles;
+         this->map_tile_rows[row].col_extra =
+             this->map_tile_rows[row].ratio < 1.0f ? col_step * 0.5f : 0.0f;
+*** End Patch

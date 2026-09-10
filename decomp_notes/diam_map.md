@@ -78,3 +78,21 @@ one-job audit compiled 29 normal functions and reported 22 matches, 4 grouped
 mismatches, 2 accepted-drift observations, and 1 boundary problem. No exact
 claim, accepted-drift proposal, registry update, or neighboring source change
 is retained.
+
+## Worker pass: sa-8ce508eb
+
+`00436C30 set_world` now has an exact natural source candidate. The key source
+interaction is `draw_step = 1.0f / col_step` plus direct
+`ratio = line_len / row_len_tiles`. This preserves the two distinct original
+x87 calculations and reproduces all 1081 bytes. The exact candidate patch is
+`decomp_notes/candidates/0043/00436C30_experiment_75061a0f9b7a_exact_candidate.patch`.
+The canonical handoff copy is
+`decomp_notes/candidates/0043/00436C30_exact_candidate.patch`.
+
+`004381D0 draw_clipped_horz_line` remains scratch. A 16-variant natural sweep
+did not change its 40-byte mismatch. The opening register map remains reversed
+from the oracle, with no supported source repair.
+
+The exact-state closure changed object fingerprints in ten owners, but the
+complete one-job audit kept all exact neighbors exact and all existing scratch
+metrics unchanged. See `build/agents/sa-8ce508eb/final_audit/report.txt`.
