@@ -1869,7 +1869,7 @@ byte TShape::shape_mirror_color_trans_clipped(
             state = 0;
             do {
                 command = *src++;
-                if (command & 1) {
+                if ((command & 1) == 1) {
                     clip_y0 = command >> 1;
                     if (clip_y0 == 0) {
                         clip_y0 = *src++;
