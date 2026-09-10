@@ -24,8 +24,10 @@ These direct owners report `MATCH` and `0.0000%`:
 `00482B70`, `00483600`, and `00483A20` remain scratch. Their direct source
 uses typed records and explicit field access.
 
-`00484160` remains matching. Current grouped validation reports `MATCH` and
-`0.0000%`.
+`00484160` remains scratch. Fresh configured-`gx` validation reports a 448-byte
+body with 16 differing bytes, a `0x0C` frame, 137 instructions, and one aligned
+`__ftol` call. The raw edit cost is 14. The only strict mismatch is the initial
+width/height/grown-percent multiplication order at `+0x1E`.
 
 `00484320` remains accepted_drift. A typed
 `RGE_Land_Point_Info_Line` cursor has a 10-byte register and address
@@ -48,3 +50,10 @@ typed record cursor and removes its final ten-byte difference.
 
 Reopen `00484160` only with evidence that proves its full-width load order and
 fault behavior.
+
+Worker `sa-b6a39359-r1` tested map-pointer declaration initialization, counter
+initialization, area/count order, scalar field locals, and a typed land aggregate
+alias. These variants emitted the same configured-TU body. Moving terrain-count
+publication before area calculation produced a 449-byte non-invariant body.
+The retained direct typed source preserves area calculation before publication.
+The original body has no allocation or explicit failure call.
