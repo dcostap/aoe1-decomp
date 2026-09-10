@@ -104,3 +104,25 @@ The final serial audit is `build/audit_luna-41-t-c-obj-final/report.txt`.
 It compiles all 39 normal owners. It reports 36 matching results, two
 accepted-drift observations, and one boundary problem for `004CBEF0`.
 No exact owner regressed. The global-zero probe produced no output change.
+
+## Continuation: luna-41-t-c-obj aggressive search
+
+The target baseline was recorded as state
+`3ed1efcd5a4e5a14a911f1788a413dfdb4efff56e30cf406c928d355655a06ef`.
+Two Variant Lab families tested 256 and 384 natural source combinations.
+They covered endpoint update spelling, `__ftol` conversion declaration order,
+first-call guard form, direct and temporary secondary coordinates, third-call
+expressions, and loop decrement spelling. All builds used two workers.
+
+Both families produced only the existing 705-byte target basin. The best
+result stayed at 143 differing bytes versus 701 original bytes, with frame
+`0x48`, six aligned calls, and no exact-owner regression. The alternate
+conversion order produced 163 differences and lost early x87 blocks.
+Persistent coordinate locals did not change the late `lea` lowering.
+
+The 384-variant state is
+`5d9c8e35f4edfe6a9ffddf88527d2c98aac941af8b6d41d0c2a24d67bbd19c71`.
+Its final natural-source run is
+`7f2779529503823ad87828a0665805c31cc5512fc4b5f8a2191af04ca66ea51f`.
+The complete t_c_obj closure remained 36 matching owners and two
+accepted-drift observations. No source or registry change was retained.
