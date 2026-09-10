@@ -1063,11 +1063,12 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
             return 0;
         }
 
-        target = this;
         if (panel_system.keyboardOwner() != 0) {
             target = panel_system.keyboardOwner();
         } else if (panel_system.modalPanel() != 0) {
             target = panel_system.modalPanel();
+        } else {
+            target = this;
         }
 
         if (msg != 0x100 && msg != 0x104) {
