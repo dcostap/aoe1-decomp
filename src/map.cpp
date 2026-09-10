@@ -1666,10 +1666,12 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
                         p = row_start + 12;
                     }
 
+                    RGE_Sound* loaded_sound;
                     if (med_color >= 0)
-                        border->sound = sounds[med_color];
+                        loaded_sound = sounds[med_color];
                     else
-                        border->sound = 0;
+                        loaded_sound = 0;
+                    border->sound = loaded_sound;
                     border->map_low_color = (unsigned char)hi_color;
                     border->map_med_color = (unsigned char)is_animated;
                     border->map_hi_color = (unsigned char)animation_frames;
