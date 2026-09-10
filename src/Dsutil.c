@@ -1142,9 +1142,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
     if (dwLen1 == 0 || ds_stream_stop_requested != 0) {
         if (dwLen1 != 0 && ds_stream_stop_requested != 0) {
             if (_wiWave && lpWrite1) {
-                memset(lpWrite1,
-                       ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
-                       dwLen1);
+                if (_wiWave->wBitsPerSample == 8) {
+                    memset(lpWrite1, 0x80, dwLen1);
+                } else if (_wiWave->wBitsPerSample == 16) {
+                    memset(lpWrite1, 0, dwLen1);
+                }
             }
         }
     } else {
