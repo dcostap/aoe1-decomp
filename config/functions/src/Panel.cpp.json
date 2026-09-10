@@ -68,7 +68,7 @@
     "00465320": {"status": "matching", "symbol": "?draw_setup@TPanel@@UAEXH@Z"},
     "00465370": {"status": "matching", "symbol": "?draw_finish@TPanel@@UAEXXZ"},
     "004653A0": {"status": "matching", "symbol": "?paint@TPanel@@UAEXXZ"},
-    "004653E0": {"status": "scratch", "symbol": "?wnd_proc@TPanel@@UAEJPAXIIJ@Z"},
+    "004653E0": {"status": "matching", "symbol": "?wnd_proc@TPanel@@UAEJPAXIIJ@Z"},
     "00465780": {"status": "matching", "symbol": "?handle_idle@TPanel@@UAEJXZ"},
     "00465820": {"status": "scratch", "symbol": "?handle_size@TPanel@@UAEJJJ@Z"},
     "00465A70": {"status": "accepted_drift", "symbol": "?handle_paint@TPanel@@UAEJXZ"},
