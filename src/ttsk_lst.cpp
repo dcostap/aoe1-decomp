@@ -168,8 +168,8 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1,
                     }
                 }
             }
-            return 0;
         }
+        return 0;
     }
 
     return RGE_Task_List::get_target_task(param_1, param_2, param_3,
