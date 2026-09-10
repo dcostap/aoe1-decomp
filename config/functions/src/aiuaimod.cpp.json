@@ -117,7 +117,7 @@
     "00419C70": {"status": "matching", "symbol": "?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z"},
     "00419ED0": {"status": "matching", "symbol": "?addToNotifyQueue@UnitAIModule@@IAEHPAUNotifyEvent@@@Z"},
     "00419F00": {"status": "matching", "symbol": "?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z"},
-    "0041A020": {"status": "accepted_drift", "symbol": "?purgeNotifyQueue@UnitAIModule@@QAEXK@Z"},
+    "0041A020": {"status": "matching", "symbol": "?purgeNotifyQueue@UnitAIModule@@QAEXK@Z"},
     "0041A0D0": {"status": "matching", "symbol": "?lookupObject@UnitAIModule@@IAEPAVRGE_Static_Object@@H@Z"},
     "0041A100": {"status": "matching", "symbol": "?logDebug@UnitAIModule@@UAAXPADZZ"}
   }
