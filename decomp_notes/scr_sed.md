@@ -99,3 +99,12 @@ with 60 differing bytes and no relocation or boundary mismatch. `004AD630
 command_outline` remains accepted drift with 53 differing bytes, the original
 size, and no relocation or boundary mismatch. Its difference is the known
 byte-extension and register schedule basin.
+
+## Worker update: luna-34-scr-sed
+
+`004A9CC0 set_scenario_mode` now uses named indexed diplomacy accesses and a
+one-element named options loop. The final target check reports `2598` rebuilt
+bytes, a `0xC` frame, `122` differing bytes, `157/157` aligned calls, and no
+boundary escape. The complete 47-owner closure keeps all 40 exact neighbors.
+The target remains scratch. Root review is required for the natural source and
+the possible accepted-drift proposal.

@@ -19,7 +19,7 @@
     "004A9320": {"status": "matching", "symbol": "?SetupListOfTerrain@TRIBE_Screen_Sed@@IAEHPAVTListPanel@@@Z"},
     "004A93C0": {"status": "matching", "symbol": "?create_list@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTListPanel@@PAPAVTScrollBarPanel@@@Z"},
     "004A94A0": {"status": "matching", "symbol": "??1TRIBE_Screen_Sed@@UAE@XZ"},
-    "004A9CC0": {"status": "scratch", "symbol": "?set_scenario_mode@TRIBE_Screen_Sed@@QAEXW4ScenarioMode@1@@Z"},
+    "004A9CC0": {"status": "accepted_drift", "symbol": "?set_scenario_mode@TRIBE_Screen_Sed@@QAEXW4ScenarioMode@1@@Z"},
     "004AA730": {"status": "accepted_drift", "symbol": "?set_paint_object_mode@TRIBE_Screen_Sed@@IAEXXZ"},
     "004AA7A0": {"status": "matching", "symbol": "?set_map_type@TRIBE_Screen_Sed@@IAEXW4MapType@1@H@Z"},
     "004AA8F0": {"status": "matching", "symbol": "?set_mp_victory_type@TRIBE_Screen_Sed@@IAEXW4VictoryType@1@H@Z"},

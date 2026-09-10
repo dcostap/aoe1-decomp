@@ -850,7 +850,6 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
     int cur_mode;
     int mode = 0;
     int active = 0;
-    TButtonPanel** ppv;
     int i;
 
     this->valid_save_spot_flag = 0;
@@ -1087,10 +1086,9 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                 i = 0;
                 lVar5 = this->player_number_list->get_line();
                 if (lVar5 >= 0) {
-                    ppv = this->Diplomacy_AlliedVictory;
                     do {
                         this->Diplomacy_player_text[i]->set_active(active);
-                        TButtonPanel* p = ppv[0];
+                        TButtonPanel* p = this->Diplomacy_AlliedVictory[i];
                         if (i != this->player_num - 1) {
                             p->set_active(0);
                             this->Diplomacy_friend_box[i][0]->set_active(active);
@@ -1098,7 +1096,6 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                             p = this->Diplomacy_friend_box[i][2];
                         }
                         p->set_active(active);
-                        ppv++;
                         i++;
                         lVar5 = this->player_number_list->get_line();
                     } while (i <= lVar5);
@@ -1129,8 +1126,12 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                     this->options_player_list->setCurrentLineNumber(0);
                 }
             }
-            this->options_label[0]->set_active(active);
-            this->options_button[0]->set_active(active);
+            i = 0;
+            do {
+                this->options_label[i]->set_active(active);
+                this->options_button[i]->set_active(active);
+                i++;
+            } while (i < 1);
             this->options_player_list->set_active(active);
             if (active) {
                 this->options_player_list->set_line(this->player_num - 1);
