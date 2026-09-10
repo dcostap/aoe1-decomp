@@ -475,9 +475,10 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
             rangeState = 0;
             goto range_too_close;
         } else {
-            RGE_Master_Static_Object* master = this->obj->master_obj;
-            float radius = sqrt(master->radius_x * master->radius_x +
-                                master->radius_y * master->radius_y);
+            float radius = sqrt(this->obj->master_obj->radius_x *
+                                this->obj->master_obj->radius_x +
+                                this->obj->master_obj->radius_y *
+                                this->obj->master_obj->radius_y);
             float max_distance = radius + this->range - DAT_0056e0cc;
             if (rangeDistance > max_distance) {
                 rangeState = 2;
@@ -513,16 +514,17 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState)
             float x_change = this->target_obj->world_x - this->target_x;
             z_change = this->target_obj->world_z - this->target_z;
             y_change = this->target_obj->world_y - this->target_y;
-            if ((x_change >= -0.5f && x_change <= 0.5f) &&
-                (y_change >= -0.5f && y_change <= 0.5f) &&
-                (z_change >= -0.5f && z_change <= 0.5f)) {
+            if ((x_change <= 0.5f && x_change >= -0.5f) &&
+                (y_change <= 0.5f && y_change >= -0.5f) &&
+                (z_change <= 0.5f && z_change >= -0.5f)) {
                 goto range_ready;
             } else {
                 rangeDistance =
                     this->obj->distance_to_object(this->target_obj);
-                RGE_Master_Static_Object* master = this->obj->master_obj;
-                float radius = sqrt(master->radius_x * master->radius_x +
-                                    master->radius_y * master->radius_y);
+                float radius = sqrt(this->obj->master_obj->radius_x *
+                                    this->obj->master_obj->radius_x +
+                                    this->obj->master_obj->radius_y *
+                                    this->obj->master_obj->radius_y);
                 float max_distance = radius + this->range - DAT_0056e0cc;
                 if (rangeDistance < this->min_range) {
                     rangeState = 0;
