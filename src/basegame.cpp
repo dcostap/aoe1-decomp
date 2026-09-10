@@ -2863,7 +2863,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         if (mouse_down != 0) {
             color_log(0x4C, 0x5F, 4);
             color_log(0x24, 0x5F, 3);
-            return static_cast<LRESULT>(panel_result);
+            return static_cast<LRESULT>(wparam);
         }
         goto panel_result_return;
         }
@@ -3066,7 +3066,7 @@ music_done_message:
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(panel_result);
+    return static_cast<LRESULT>(wparam);
     }
 
     default:
@@ -3075,7 +3075,7 @@ music_done_message:
 
  panel_result_return:
     color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(panel_result);
+    return static_cast<LRESULT>(wparam);
 
 panel_return:
     if (mouse_down == 0)
