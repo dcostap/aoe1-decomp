@@ -3360,8 +3360,8 @@ int TCommunications_Handler::SendStoredMessages()
     }
 
     now = debug_timeGetTime(com_hand_source_path, 0xE02);
-    if (!(static_cast<float>(lastResendBytes) / (now - lastResendTime) <=
-          DAT_0056f210)) {
+    if (static_cast<float>(lastResendBytes) / (now - lastResendTime) >
+        DAT_0056f210) {
         return 0;
     }
 
