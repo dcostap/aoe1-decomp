@@ -1162,6 +1162,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     int i;
     int found;
     int numberFacets;
+    int passable;
 
     alreadyMoving = 1;
 
@@ -1194,7 +1195,11 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
     }
 
-    numberFacets = this->sprite != 0 ? this->sprite->facet_num : 8;
+    if (this->sprite != 0) {
+        numberFacets = this->sprite->facet_num;
+    } else {
+        numberFacets = 8;
+    }
 
     if (alreadyMoving == 1) {
         dX = x - this->world_x;
@@ -1239,8 +1244,11 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     newX = this->world_x + this->velocity_x;
     newY = this->world_y + distanceToCover;
 
-    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48 &&
-        pathSystem.passable(this, newX, newY, 1) == 0) {
+    passable = 1;
+    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48) {
+        passable = pathSystem.passable(this, newX, newY, 1);
+    }
+    if (passable == 0) {
         if (this->collisionAvoidanceDistance == DAT_00570b48) {
             if (this->speed <= DAT_00570b48) {
                 this->speed = 0.0f;
@@ -1412,8 +1420,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         newX = this->world_x + this->velocity_x;
         newY = this->world_y + distanceToCover;
 
-        if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48 &&
-            pathSystem.passable(this, newX, newY, 1) == 0) {
+        if (pathSystem.passable(this, newX, newY, 1) == 0) {
             if (this->owner->computerPlayer() == 1) {
                 return 4;
             }
@@ -1439,7 +1446,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     if (waypoint == 0) {
         float dx = x - newX;
         float dy = y - newY;
-        curDistance = (float)sqrt(dy * dy + dx * dx);
+        curDistance = (float)sqrt(dx * dx + dy * dy);
         destinationZ = this->world_z + this->velocity_z;
     } else {
         float dx = path->currentWaypoint()->x - this->world_x;
