@@ -2,7 +2,9 @@
 
 Base: `ef479e9e7`. Review the four remaining Tech functions against their complete original instruction ranges.
 No game was run. This review does not change the exact-match rules.
-The stack proof is conditional. The overlap objection below prevents accepted-drift approval.
+The stack proof is conditional. The overlap objection below is a generic
+malformed-input counterexample. The complete direct-caller review below tests
+whether it applies to the assigned call sites.
 
 ## Behavior
 
@@ -141,11 +143,13 @@ Retain none of these binding changes merely for a lower byte count.
 
 Retain the double-literal repair and the later natural scope improvements.
 The caller review approves the private-storage differences in `0050C730` and
-`0050CA9E` as accepted drift. `0050CC25` and `0050CE68` remain open.
+`0050CA9E` as accepted drift. The assigned caller and storage review below
+supports accepted drift for `0050CC25` and `0050CE68`.
 Keep the simplest scalar source. Do not add fake records, local aliases, or extra declarations to force stack positions.
 The final module audit retains all 29 existing matching functions. The four
-authoritative target checks remain nonexact, with two accepted-drift results
-and two open results.
+authoritative target checks remain nonexact. Existing config records two
+accepted-drift results; the assigned CC25 and CE68 proposals await the
+orchestrator's status decision.
 
 The final closure compares all 33 defined Tech bodies against the baseline.
 Only the two comparison opcodes change, from D8 to DC. All other instruction bytes remain unchanged.
@@ -178,16 +182,19 @@ counterexample without executable evidence of actual use. The two target
 results are therefore accepted drift. Their completed ledgers are
 `logic_reviews/0050C730.md` and `logic_reviews/0050CA9E.md`.
 
-`DAT_005766d8` remains a separate linked-storage limit for
-`check_for_new_tech`. The original global dump proves an eight-byte read-only
-double at `005766D8`, with eight zero bytes and one reference at `0050D054`.
-The canonical header declares `double DAT_005766d8`; `src/game_globals.cpp`
-defines it as `double DAT_005766d8 = 0.0`. The Tech object has one external
-COFF relocation for that symbol, at `.text+0x1816`. A full executable link
-map was not built in this function-only check, so linked address and section
-placement remain unproved. This does not block the two target ledgers because
-neither target references `DAT_005766d8`. `0050CC25` and `0050CE68` remain
-open.
+`DAT_005766d8` is a separate linked-storage check for `check_for_new_tech`.
+The original global dump proves an eight-byte read-only double at `005766D8`,
+with eight zero bytes and one reference at `0050D054`. The canonical header
+declares `double DAT_005766d8`; `src/game_globals.cpp` defines it as
+`double DAT_005766d8 = 0.0`. The Tech object has one external COFF relocation
+for that symbol, at `.text+0x1816` in the original object view and function
+offset 494 in the fresh object. The fresh full link map resolves the symbol
+from `game_globals.obj` at `005FA038`. PE inspection places it in the rebuilt
+`.data` zero-fill tail, proving the linked initial value is zero. This storage
+proof supports the `0050CE68` accepted-drift proposal. The rebuilt section is
+writable `.data`, unlike the original read-only `.rdata`; the complete
+reference scan finds no executable write or second reference. This is a
+separate global-storage section issue, not a private stack-slot effect.
 
 ## Follow-up source probes
 
@@ -204,9 +211,42 @@ drift without changing behavior or ABI:
 Each target keeps its original size, frame, call set, control-flow shape,
 operand widths, and external memory operations. Closure checks report no exact
 owner regressions. The remaining differences are private local displacement
-coloring. The caller review resolves the first two targets. The stack-overlap
-and linked-storage questions remain open for the latter two targets.
+coloring. The caller review resolves the first two targets. The assigned
+caller and storage review below resolves the direct-call and linked-storage
+questions for the latter two targets.
 
 A 120-order declaration lab for `0050CE68` with these scopes produced only two
 code groups. Its best group remains 14 bytes. The four target checks were
 rebuilt after the follow-up probes on 2026-09-09.
+
+## Final assigned caller and storage review
+
+`0050CC25` has exactly two direct call sites: `004D23D9` from
+`TRIBE_Action_Make_Tech::first_in_stack` and `00513D8F` from
+`TRIBE_Player::pay_tech_cost`. The first passes a caller-owned output slot at
+`ESP+4`; the second passes null. Both destinations are above the future
+`0x18`-byte callee frame. No direct caller passes a pointer into that frame.
+
+`0050CE68` has exactly six direct call sites: `0050C4EE`, `0050C554`,
+`0050C5D4`, `0050C644`, `00512887`, and `0052C355`. The method has no pointer
+argument or output. It passes only its receiver and a short value to
+`do_tech`; no local address escapes. The complete slot mappings are private
+permutations within the unchanged frame. Therefore the original and rebuilt
+methods preserve calls, arguments, memory effects, faults, fault order,
+returns, and cleanup at all direct call sites. The eight CC25 bytes and 14
+CE68 bytes are accepted-drift proposals, not exact-match debt. Do not force
+exact local stack spelling.
+
+The original `DAT_005766D8` record is a read-only eight-byte zero double. Its
+only executable reference is the `fcomp` at `0050D054`. The fresh Tech object
+has one external COFF relocation for `?DAT_005766d8@@3NA` at function offset
+494. The fresh full link map resolves the symbol from `game_globals.obj` at
+`005FA038`, and PE inspection places that address in rebuilt `.data` zero-fill
+tail. The linked value is therefore zero. The generic linked-reference audit
+reports this nonmatching code window as unknown; the map and PE inspection
+are the direct linked-storage evidence.
+
+The caller and storage findings are recorded in experiment events
+`4d3ef49dc278511225a396a8d220b0c7a221a7fee8553b98b07cfd8e0926335c` and
+`0c2736f249bb1f93b78769a4c10905ba689456b20a316d8a389d986f8fcec7da`.
+The orchestrator owns final status changes.

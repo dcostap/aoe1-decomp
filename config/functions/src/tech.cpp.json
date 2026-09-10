@@ -74,7 +74,7 @@
       "symbol": "?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z"
     },
     "0050CC25": {
-      "status": "scratch",
+      "status": "accepted_drift",
       "symbol": "?start_research@TRIBE_Player_Tech@@QAEEFEPAF@Z"
     },
     "0050CD73": {
@@ -82,7 +82,7 @@
       "symbol": "?cancel_research@TRIBE_Player_Tech@@QAEEFE@Z"
     },
     "0050CE68": {
-      "status": "scratch",
+      "status": "accepted_drift",
       "symbol": "?check_for_new_tech@TRIBE_Player_Tech@@QAEEXZ"
     },
     "0050D07A": {
