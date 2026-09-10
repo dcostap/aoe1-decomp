@@ -517,9 +517,9 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
             int xOffset = i - this->xReferencePointValue;
 
             do {
-                if (rowsMap[j - this->yReferencePointValue][xOffset] + newValueLevel >=
+                if (this->rowValue[j - this->yReferencePointValue][xOffset] + newValueLevel >=
                         valueLevel) {
-                    if (rowsMap[j - this->yReferencePointValue][xOffset] >= valueLevel) {
+                    if (this->rowValue[j - this->yReferencePointValue][xOffset] >= valueLevel) {
                         int neighborX = i;
                         int neighborY = j;
 
