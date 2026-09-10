@@ -32,6 +32,7 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - An ignored argument does not make a smaller frame safe. API output writes can cross the frame boundary.
 - Repeated identical output identifies one compiler basin. Change hypothesis class.
 - A worse metric can still reveal the controlling source feature.
+- Follow recovered instruction patterns even when the total byte difference increases.
 
 ## Scope, declarations, and liveness
 
@@ -392,6 +393,8 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 
 ## Loops, scans, and induction
 
+- Test loop form and index type together before tuning instruction order.
+- One failed index type does not reject the other supported types.
 - Choose loop form from the original CFG, not decompiler syntax.
 - `for`, `while`, and `do/while` alter rotation, tests, and register coloring.
 - Put initialization and updates where assembly shows their effects.
