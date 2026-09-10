@@ -1534,7 +1534,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
             int x = (int)target->world_x;
             int y = (int)target->world_y;
             unsigned char visible = this->visibleStatus(
-                this->objectValue->owner->visible, y, x);
+                this->objectValue->owner->visible, x, y);
             if (currentTargetIsWall != 0) {
                 if (visible != 0x0F) {
                     goto skipCurrentTarget;
@@ -1564,13 +1564,13 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     numberMovingTargets /= hitPoints;
                 }
                 distance = target->distance_to_object(this->objectValue);
-                if (distance > DAT_0056ebc8) {
-                    if (numberDamagingUnits < 2) {
+                if (numberDamagingUnits < 2) {
+                    if (distance != DAT_0056ebc8) {
                         numberMovingTargets /= distance;
-                    } else {
-                        numberMovingTargets /=
-                            (float)numberDamagingUnits * distance * DAT_0056ebdc;
                     }
+                } else if (distance != DAT_0056ebc8) {
+                    numberMovingTargets /=
+                        (float)numberDamagingUnits * distance * DAT_0056ebdc;
                 }
                 if (target->master_obj->object_group != 3) {
                     ++numberDamagingUnits;
