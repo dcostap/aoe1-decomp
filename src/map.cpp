@@ -1893,7 +1893,6 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
     RGE_Object_Node* next_list;
     short result;
     short object_type;
-    RGE_Static_Object* object;
 
     result = -1;
     this->get_terrain(col, row);
@@ -1903,7 +1902,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
         if (list == 0)
             return result;
 
-        object = list->node;
+        RGE_Static_Object* object = list->node;
         next_list = list->next;
         object_id = object->master_obj->id;
 
@@ -1919,9 +1918,10 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
                 object_type = this->terrain_types[old_terrain].num_obj_type;
                 result = object_id;
                 if (object_type >= 0) {
+                    short* object_types =
+                        this->terrain_types[old_terrain].obj_types;
                     do {
-                        if (this->terrain_types[old_terrain].obj_types[object_type] ==
-                            object_id)
+                        if (object_types[object_type] == object_id)
                             break;
                         --object_type;
                     } while (object_type >= 0);
