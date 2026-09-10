@@ -53,7 +53,7 @@
     "00415120": {"status": "matching", "symbol": "?importantWhenDead@UnitAIModule@@UAEHH@Z"},
     "00415150": {"status": "matching", "symbol": "?retryableOrder@UnitAIModule@@UAEHH@Z"},
     "00415160": {"status": "matching", "symbol": "?actionRequiresLiveTarget@UnitAIModule@@UAEHH@Z"},
-    "004151B0": {"status": "scratch", "symbol": "?bestUnitToAttack@UnitAIModule@@UAEHHHPAM@Z"},
+    "004151B0": {"status": "matching", "symbol": "?bestUnitToAttack@UnitAIModule@@UAEHHHPAM@Z"},
     "00415A10": {"status": "matching", "symbol": "?mostDangerousEnemy@UnitAIModule@@UAEHPAM@Z"},
     "00415AD0": {"status": "matching", "symbol": "?weakestEnemy@UnitAIModule@@UAEHPAM@Z"},
     "00415B50": {"status": "matching", "symbol": "?closestAttacker@UnitAIModule@@UAEHPAM@Z"},
