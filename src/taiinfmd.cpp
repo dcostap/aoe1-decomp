@@ -3602,21 +3602,21 @@ int TribeInformationAIModule::findGatherPosition(
     int maximumDistanceVariation, RGE_Static_Object* testUnit,
     XYPoint& rPoint)
 {
-    int bestPointValue;
-    int j;
-    int i;
     int clearDistance;
-    int blocked;
-    int y;
-    int x;
-    XYPoint maxClear;
-    XYPoint max;
-    XYPoint minClear;
     XYPoint min;
-    XYPoint minExclude;
     XYPoint maxExclude;
-    XYPoint cPosition;
+    int x;
+    XYPoint minExclude;
+    XYPoint max;
+    int bestPointValue;
+    int y;
     XYPoint lineCollisionPoint;
+    int i;
+    XYPoint maxClear;
+    XYPoint minClear;
+    XYPoint cPosition;
+    int j;
+    int blocked;
 
     if (maximumDistanceVariation >= desiredDistance) return 0;
     min.y = centerPoint.x - desiredDistance - maximumDistanceVariation;
@@ -3654,8 +3654,8 @@ int TribeInformationAIModule::findGatherPosition(
                         }
                         if (blocked != 1) {
                             int val = 0x80;
-                            cPosition.y = j;
-                            lineCollisionPoint.x = i;
+                            cPosition.x = j;
+                            cPosition.y = i;
                             if (testUnit->canLinePath(cPosition, centerPoint,
                                                       (float)desiredDistance,
                                                       lineCollisionPoint, 1) == 0) val = 0x40;
