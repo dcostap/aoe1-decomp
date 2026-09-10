@@ -167,3 +167,23 @@ Final audit `build/luna12-drawarea-final-audit/report.txt` compiled 62 normal
 owners, kept all 50 exact validation targets, and found no matching-neighbor
 code change. Runtime malformed-input, API-fault, signed-overflow, and full
 gameplay tests remain unperformed.
+
+## Worker pass: luna-12-drawarea, take_snapshot follow-up
+
+The target remains natural scratch. A fresh check reports 533 rebuilt bytes
+versus 540 original, 326 strict differences, matching `0x87C` frame, 14
+ordered calls, matching owner, and retry CFG counts of 1/2 jumps and 2/1
+returns. The original width, height, palette, file, buffer, lock, row-copy,
+unlock, close, and free effects remain represented in source.
+
+The controlled Variant Lab state is
+`23f61a65dd327d3d1d024aa3bb1d50819afa9e75b57975b9319782634e77f6f7`, with
+parent `066fe7d869069383b27b8186d20a08bc7fbb08538ff1561b3d47e49a77ae04e9`.
+Eight natural header and retry forms compiled with two workers. No variant
+passed size, frame, and call-set gates. The canonical group stayed 533 bytes;
+the changed forms emitted 534 or 536 bytes. No source change remains.
+
+The one-job audit `build/luna12-drawarea-final-audit-004463B0/report.txt`
+compiled 62 normal owners and kept all 50 exact validation targets. No
+matching-neighbor regression came from this pass. Runtime malformed-input,
+API-fault, signed-overflow, and full-gameplay tests remain unperformed.
