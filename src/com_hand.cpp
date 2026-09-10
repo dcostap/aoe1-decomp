@@ -3436,7 +3436,7 @@ int TCommunications_Handler::SendStoredMessages()
     player = 1;
 
     do {
-        if (dest[0] != 0 && this->IsPlayerHuman(player) != 0 &&
+        if (dest[0] > 0 && this->IsPlayerHuman(player) != 0 &&
             dco[0] != 0 && player != this->Me) {
             if (dest[0] != 0) {
                 --dest[0];
