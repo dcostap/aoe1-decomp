@@ -57,8 +57,8 @@ TShape::TShape(char* filename, long resource_file_id)
             lseek(fd, 0, 0);
             read(fd, this->FShape, sz);
             close(fd);
-            this->shape_info = (Shape_Info*)(this->FShape + 1);
             this->load_type = 1;
+            this->shape_info = (Shape_Info*)(this->FShape + 1);
             this->load_size = sz;
         }
 
