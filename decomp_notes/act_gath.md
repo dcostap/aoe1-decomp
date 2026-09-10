@@ -97,3 +97,11 @@ proven +0xE4 field. These casts do not create raw offset overlays.
 | 00403D90 | `RGE_Action_Gather::work(RGE_Static_Object*, float, float, float)` | accepted_drift |
 
 No compiler or candidate validation ran in this source-module pass.
+
+## Latest validation: sa-61ce79f1-r1
+
+The final one-job audit is in
+`build/sa-61ce79f1-r1-act_gath-audit/report.txt`. It reports eight matching
+anchors, two accepted-drift observations, and mismatches at 00403110 and
+00403590. The update body remains 819 bytes different with a 0xC frame and
+52 of 53 calls. No source or registry change was retained.
