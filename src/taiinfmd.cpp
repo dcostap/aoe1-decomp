@@ -3055,10 +3055,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         float damage = this->damageInflictedPerSecond(group, oTDObject);
         float killTimeRatio = oTDObject->hp / damage;
         float killTime = this->timeToBeKilled(group, oTDObject);
-        if (damage == DAT_00575580) {
-            continue;
-        }
-        if (killTime == DAT_00575580) {
+        if (killTimeRatio == DAT_00575580 || killTime == DAT_00575580) {
             continue;
         }
         killTimeRatio = killTime / killTimeRatio;
@@ -3140,7 +3137,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         score += nonWallFactor + currentTargetFactor + attackAttemptFactor +
             sameZoneFactor + randomFactor;
 
-        if (stateRef.bestTargetID != -1 && score <= stateRef.bestTargetValue) {
+        if (stateRef.bestTargetID != -1 &&
+            !(stateRef.bestTargetValue < score)) {
             continue;
         }
 
