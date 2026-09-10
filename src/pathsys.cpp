@@ -370,8 +370,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->checkTerrainOnFirstPass = checkTerrain;
     this->currentObjectInObMap = obj->removeFromObstructionMap(this->aiPS);
 
-    fx = (float)floor((double)obj->world_x) - DAT_00570e64;
     fy = (float)floor((double)obj->world_y) - DAT_00570e64;
+    fx = (float)floor((double)obj->world_x) - DAT_00570e64;
     if (this->passable(obj, fx, fy, 1) == 0) {
         this->currentXOffset = obj->world_x - (float)floor((double)obj->world_x);
         this->currentYOffset = obj->world_y - (float)floor((double)obj->world_y);
