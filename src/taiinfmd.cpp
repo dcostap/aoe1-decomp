@@ -1961,7 +1961,6 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     char buildingName[0x100];
     RGE_Static_Object* townCenter;
     RGE_Static_Object* builderObject;
-    RGE_Static_Object* coordinateObject;
     RGE_Static_Object* placementObject;
 
     placementObject = this->md->object(-1, -1, 4, -1, -1,
@@ -2001,6 +2000,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         placementCenter.x = centerY;
         placementCenter.y = maxClearX;
     } else {
+        RGE_Static_Object* coordinateObject;
         if (townCenter != 0)
             coordinateObject = townCenter;
         else if (builderObject != 0)
@@ -2100,7 +2100,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             }
         }
 
-        if (item == 0 && state.active == 0)
+        if (state.active == 0)
             this->setupInfluenceMap(placement, x, placementCenter, min, max);
 
         if (state.active == 0) {
