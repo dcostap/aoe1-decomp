@@ -106,3 +106,31 @@ geometry lab produced five groups, no exact result, and no invariant-eligible
 lead. The header was restored. The one-job final audit reports five exact
 neighbors and no closure regression. Keep `setup_help` as `scratch`; further
 work needs new direct-call or reused-home evidence.
+
+## Assignment pass: `sa-579ca768-r1`
+
+The fresh static review confirms the complete natural body. It initializes all
+four child pointers, copies the parent name, stores the page id, loads font 11,
+calls setup, creates the text list, computes placement, creates optional More
+Help and required OK controls, and sets current child and tab order. Setup
+failure returns at `0043ED27`. Child allocation failures are not checked before
+later dereferences, matching the original fault surface. No executable runtime
+test was allowed.
+
+The reviewed call and data identities are stable. Setup uses slot `+0x12C`,
+text uses `+0x100`, buttons use `+0xE8`, and tab order uses `+0xC8`. More Help
+uses language resource `0x243D`; OK uses `0xFA1`. The TTextPanel `bot_line`
+field is at `+0xFE`. The original direct geometry calls at `0043EAD5` and
+`0043EADE` are width then xPosition. The natural source emits xPosition then
+width. Both accessors are reviewed `const long` direct symbols and read their
+proven panel fields. PDB `dialog_x` and `panel_height` homes overlap parameter
+homes, so they remain reused-home evidence only.
+
+State `25d8556628a60784e92ec9b5998dd2e7d43bd55e657842866c3e1942ac8ebc62`
+and event `685d9e96f64d1ede8402d1994eca92024d485606428ce47d44258f7fc0952518`
+report `MISMATCH`, 435 differing bytes, 839 rebuilt versus 849 original,
+27 calls, frame `0xC`, and two direct relocation target mismatches. The final
+one-job audit is under
+`build/audits/sa-579ca768-r1-dlg-help-final/report.txt`; all five neighboring
+owners remain exact. Keep `setup_help` as `scratch`. No source change, exact
+candidate, or accepted-drift proposal is retained.
