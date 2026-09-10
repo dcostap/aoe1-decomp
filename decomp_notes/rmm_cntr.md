@@ -150,3 +150,32 @@ Exact owners `004821A0`, `00482260`, and `004828A0` remain exact. Scratch
 owners remain `00482270` at 714 differences, `004826E0` at 262 differences,
 and `004828B0` at 369 differences. The saved-`this`, stack-home, register
 schedule, and helper-name differences remain open.
+
+## 2026-09-10 sa-7a356fb1 object-module pointer-offset reassessment
+
+The worker rechecked `004828B0` with no living source change. Static evidence
+still supports six object records, the land-point copy, and one allocation. The
+source preserves field values, copy strides, null behavior, call order, and
+fault order. Runtime tests were not run because game execution is forbidden.
+
+The period decompiler uses the terrain subobject as the generator copy anchor.
+The target passes the same address as canonical `&info`. The terrain-subobject
+cast is not safe ownership for the complete `RGE_Object_Info` object.
+
+The pointer-offset Variant Lab family tested that cast and a named aggregate
+pointer. It compiled 120 variants with two workers. It produced 96 variants at
+691 bytes and 24 at 694 bytes. No variant passed size, frame, and call-set
+gates. The terrain-anchor group stayed at 691 bytes but lost one exact loop
+block. Neither source form was retained.
+
+The clean target remains `MISMATCH` with 369 differences and 691 rebuilt bytes
+versus 695 original bytes. The owner, boundary, frame, and three-call checks
+remain valid. The first mismatch is `+0x1F`, where VC5 saves `this` before the
+callee-save pushes. The final audit is
+`build/agents/sa-7a356fb1-final-tu-audit/report.txt`.
+
+Exact owners `004821A0`, `00482260`, and `004828A0` remain exact. Scratch owners
+remain `00482270` at 714 differences, `004826E0` at 262 differences, and
+`004828B0` at 369 differences. The random-map module evidence remains
+unchanged. The saved-`this`, stack-home, register schedule, and helper-name
+differences need toolchain or wider-context evidence.
