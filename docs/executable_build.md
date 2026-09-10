@@ -34,6 +34,13 @@ This matches the working installation's path-specific Windows compatibility sett
 The launcher does not change registry settings or the installed game.
 Directly launching the copied EXE can omit this compatibility setting.
 
+The launcher forwards command-line arguments. The known runtime configuration
+uses `NOSTARTUP GAMECD`:
+
+```sh
+build/runtime/installed_beta/rebuilt/Launch.cmd NOSTARTUP GAMECD
+```
+
 The control copy is `build/runtime/installed_beta/original/Launch.cmd`.
 Both prepared EXEs passed the constructor startup check with game error code zero.
 The debugger stopped at that check. This does not prove menu or gameplay correctness.
