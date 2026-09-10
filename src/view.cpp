@@ -3655,7 +3655,8 @@ int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_le
 
 
 short RGE_View::get_tile_picture(unsigned char param_1, unsigned char param_2, short param_3, short param_4) {
-    RGE_Tile_Set* ts = &this->map->terrain_types[param_1];
+    RGE_Map* map = this->map;
+    RGE_Tile_Set* ts = &map->terrain_types[param_1];
     if (ts->shape == 0) return -1;
 
     RGE_TOB_Picts* tile = &ts->tiles[param_2];

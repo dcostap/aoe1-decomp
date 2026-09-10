@@ -1,0 +1,16 @@
+# Experiment 9dfd2500d5596f697e699366dc691f9d9e955d96784c280a17aadafe0796e503
+# Base e00d545a0967783da6b9dd9004e6df0ba4c22e48
+diff --git a/src/view.cpp b/src/view.cpp
+index 8bdc70b5d..458acd720 100644
+--- a/src/view.cpp
++++ b/src/view.cpp
+@@ -3653,7 +3653,8 @@ int RGE_View::pick_touched_object(DClipInfo_List* list, int x, int y, int min_le
+ 
+ 
+ short RGE_View::get_tile_picture(unsigned char param_1, unsigned char param_2, short param_3, short param_4) {
+-    RGE_Tile_Set* ts = &this->map->terrain_types[param_1];
++    RGE_Map* map = this->map;
++    RGE_Tile_Set* ts = &map->terrain_types[param_1];
+     if (ts->shape == 0) return -1;
+ 
+     RGE_TOB_Picts* tile = &ts->tiles[param_2];
