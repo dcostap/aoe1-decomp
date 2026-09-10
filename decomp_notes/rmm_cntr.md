@@ -108,3 +108,25 @@ The final one-job module audit is under
 `00482270`, `004826E0`, and `004828B0` remain mismatches at 714, 262, and
 369 differing bytes. The `00482270` land cursor and allocation evidence was
 not changed. No exact or accepted-drift proposal is supported.
+
+## 2026-09-10 sa-113cf173 object-module reassessment
+
+The worker rechecked `004828B0` without changing the natural source. Static
+evidence still supports six object records, the land-point copy, and the
+generator allocation. The source keeps the canonical record owners, values,
+strides, null path, call order, and fault order. Runtime tests were not run.
+
+The corrected two-worker Variant Lab family tested 72 natural combinations of
+local widths, alias declaration placement, equivalent loop forms, and direct
+or aliased allocation arguments. It produced two groups at 691 and 694 bytes.
+No exact or invariant-eligible variant was found. A first template run omitted
+one deer initializer by mistake; its output is preserved as rejected input.
+
+The clean target remains `MISMATCH`, with 369 differing bytes and 691 rebuilt
+bytes versus 695 original bytes. The final one-job audit is under
+`build/agents/sa-113cf173-final-tu-audit-clean/report.txt`. Exact owners
+`004821A0`, `00482260`, and `004828A0` remain exact. Scratch owners
+`00482270`, `004826E0`, and `004828B0` remain at 714, 262, and 369
+differences. No source change, exact match, or accepted-drift proposal is
+retained. The saved-`this`, stack-home, and compiler-helper differences remain
+open.
