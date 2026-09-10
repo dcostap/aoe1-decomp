@@ -348,7 +348,7 @@ void RGE_Flic_Player::delta_flc()
                 ++scan;
                 found = 1;
             } else if (top == 3) {
-                int skip = -(int)(short)code;
+                int skip = (short)-code;
                 cur_y += skip;
                 this->save_buffer += this->drawarea_width * skip;
                 this->window_buffer = this->save_buffer;
