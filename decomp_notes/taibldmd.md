@@ -71,16 +71,18 @@ calls, predicates, cleanup, memory effects, or return behavior.
 ## Current scratch and accepted-drift notes
 
 `004D3D60 initialize` remains a natural semantic reconstruction in
-`src/taibldmd.cpp`. The current fresh check is `MISMATCH`: 592 differing bytes
-(33.2584%), rebuilt effective size 1778 versus the original 1780, frame `0x9C`
-on both sides, 532 instructions on both sides, 92.29% shape similarity, 65.04%
-exact-block coverage, and 61/61 ordered calls with owner parity. The current
-source uses the `/GX` EH path, the proven `0xB0` BuildItem layout, and the
-natural H47/H48 loop-scope reconstruction. Its remaining difference is broad
-scalar register and frame-home allocation, a tool-loop basin difference, and a
-two-byte effective-size gap. The source keeps the proved resource lifetime,
-field offsets, call order, and fault order. It does not use codegen-only
-steering. The current TU closure has no exact-neighbor regressions.
+`src/taibldmd.cpp`. The current retained check is `MISMATCH`: 594 differing
+bytes, rebuilt effective size 1782 versus the original 1780, frame `0x9C` on
+both sides, 534 versus 532 instructions, 91.95% shape similarity, 64.47%
+exact-block coverage, and 61/61 ordered calls with owner parity. The source
+uses the `/GX` EH path, the proven `0xB0` BuildItem layout, and the natural
+H47/H48 loop scopes plus a per-iteration null guard in the resource scan.
+The guard is required by the original `004D4327` null test before each
+`buildCategory` call. The remaining difference is broad scalar register and
+frame-home allocation, tool-loop basin, and boundary size. The source keeps
+the proved resource lifetime, field offsets, call order, and fault order. It
+does not use codegen-only steering. The current TU closure has no
+exact-neighbor regressions.
 
 `004D4540 nextBuildableItem` is now `accepted_drift`, not scratch. Its natural
 source uses `/GX`, a 0xF4 EH frame, 115 ordered calls, 98.37% exact blocks,
