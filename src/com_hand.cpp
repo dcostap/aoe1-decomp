@@ -1648,8 +1648,8 @@ second_player_found:
             if (dropcount > 8) {
                 rge_base_game->get_string(0x4BC, msg_str, 100);
                 sprintf(this->TBuff, msg_str, header->Serialno,
-                        static_cast<int>(header->Command),
-                        static_cast<int>(header->Command));
+                        static_cast<int>(static_cast<signed char>(header->Command)),
+                        static_cast<int>(static_cast<signed char>(header->Command)));
                 L->Log(this->TBuff);
                 dropcount = 0;
                 return 1;
