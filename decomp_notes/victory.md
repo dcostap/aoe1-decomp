@@ -136,3 +136,10 @@ scratch owners are `00531750`, `005327A0`, and `00532880`.
 
 The wave20 full audit reports 121 differing bytes for `005327A0
 handle_explore`. That row is scratch and is no longer registered as exact.
+
+## Accepted-drift update for 00531750
+
+The complete review in `logic_reviews/00531750.md` accepts the typed natural
+constructor as `accepted_drift`. The registry now records this result. The
+earlier scratch wording above is historical. The current scratch owners are
+`005327A0` and `00532880`; the module has eight accepted-drift owners.

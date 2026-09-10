@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "00531750": {"status": "scratch", "symbol": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z"},
+    "00531750": {"status": "accepted_drift", "symbol": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z"},
     "00531AF0": {"status": "matching", "symbol": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z"},
     "00531B20": {"status": "matching", "symbol": "??1RGE_Victory_Conditions@@QAE@XZ"},
     "00531B70": {"status": "matching", "symbol": "?save@RGE_Victory_Conditions@@UAEXH@Z"},
