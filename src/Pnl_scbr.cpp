@@ -426,8 +426,8 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
         } else {
             delta = y;
             delta -= this->item_y;
-            if (delta > 0) {
-                if ((this->tab_y == this->tab_min_y) &&
+            if (this->tab_min_y == this->tab_y) {
+                if ((delta > 0) &&
                     (y < this->tab_mouse_y + this->tab_y)) {
                     delta = 0;
                 }
