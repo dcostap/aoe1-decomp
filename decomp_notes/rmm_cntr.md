@@ -63,3 +63,22 @@ owners `004821A0`, `00482260`, and `004828A0` remain exact. No exact or
 accepted-drift proposal is supported. The remaining blockers are compiler
 register coloring, switch-tail lowering, stack-home scheduling, and the valid
 VC5 helper-name alias.
+
+## 2026-09-10 sa-7ab71ac7 allocation review
+
+The worker rechecked `00482270` and `004826E0` in the natural `src/rmm_cntr.cpp`
+owner. Both targets preserve typed generator allocation, parent-list
+ownership, constructor identity, copied parameters, null guards, EH cleanup,
+and original boundaries. The land target has eight ordered calls and remains
+`MISMATCH` with 714 differing bytes and 1090 rebuilt bytes. The terrain target
+has two ordered calls and remains `MISMATCH` with 262 differing bytes and 412
+rebuilt bytes.
+
+An explicit typed allocation-result local with an explicit null return was
+tested for each target. Each target emitted the same result as its baseline.
+The full TU closure exposed a two-byte mismatch in exact `004828A0`; restoring
+the natural `new` form restored that function to `MATCH`. The rejected states
+and final clean states are recorded in the target notes and experiment store.
+The final one-job audit is under
+`build/agents/sa-7ab71ac7-final-tu-audit/report.txt`. The completed `004828B0`
+review remains unchanged. No exact or accepted-drift proposal is supported.
