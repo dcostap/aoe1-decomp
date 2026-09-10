@@ -2502,8 +2502,8 @@ int TRIBE_Game::load_game(char* file_name)
 
     if (this->prog_mode == 4 || this->prog_mode == 6 ||
         this->prog_mode == 5) {
-        this->world->del_game_info();
         this->prog_mode = 0;
+        this->world->del_game_info();
         this->game_screen = 0;
         panel_system.destroyPanel("Game Screen");
     }
@@ -2597,7 +2597,7 @@ int TRIBE_Game::load_game(char* file_name)
                 fprintf(debug_file, "world_time=%u\n", this->world->world_time);
                 fprintf(debug_file, "old_world_time=%u\n",
                         this->world->old_world_time);
-                fprintf(debug_file, "game_speed %6.2f\n",
+                fprintf(debug_file, "game_speed=%6.2f\n",
                         this->world->game_speed);
 
                 for (i = 0; i < this->world->player_num; ++i) {
@@ -2611,33 +2611,36 @@ int TRIBE_Game::load_game(char* file_name)
                             p->attributes[50]);
                     action_checksum = 0;
                     num2 = 0;
+                    num1 = 0;
+                    temp_position_checksum = 0.0f;
+                    num3 = p->sleeping_objects->number_of_objects +
+                        p->doppleganger_objects->number_of_objects + p->id;
+                    long action_total = 0;
                     fprintf(debug_file, "  num_sleep_obj=%d\n",
                             p->sleeping_objects->number_of_objects);
                     fprintf(debug_file, "  num_dopple_obj=%d\n",
                             p->doppleganger_objects->number_of_objects);
 
-                    num1 = 0;
-                    temp_position_checksum = 0.0f;
-                    num3 = p->sleeping_objects->number_of_objects +
-                        p->doppleganger_objects->number_of_objects + p->id;
-                    for (num4 = 0; num4 < p->attribute_num; ++num4) {
-                        num1 += static_cast<int>(p->attributes[num4]);
+                    for (int attribute_index = 0;
+                         attribute_index < p->attribute_num;
+                         ++attribute_index) {
+                        num1 += static_cast<int>(p->attributes[attribute_index]);
                         fprintf(debug_file, "  p#%d attr[%d]=%12.8f\n",
-                                p->id, num4, p->attributes[num4]);
+                                p->id, attribute_index,
+                                p->attributes[attribute_index]);
                     }
                     list = p->objects->list;
                     while (list != 0) {
                         RGE_Static_Object* object = list->node;
                         int attribute_value =
                             static_cast<int>(object->attribute_amount_held);
-                        num1 += object->object_state + attribute_value;
-                        ++num2;
-                        num3 += object->master_obj->id + num2 +
-                            object->object_state + attribute_value;
                         temp_position_checksum += object->world_x;
+                        action_checksum += object->master_obj->id +
+                            object->object_state + attribute_value;
+                        ++num2;
                         temp_position_checksum += object->world_y;
                         temp_position_checksum += object->world_z;
-                        action_checksum += object->get_action_checksum();
+                        action_total += object->get_action_checksum();
                         RGE_Static_Object* target = object->get_target_obj();
                         char target_name[50];
                         if (target != 0) {
@@ -2719,14 +2722,13 @@ int TRIBE_Game::load_game(char* file_name)
                         RGE_Static_Object* object = list->node;
                         int attribute_value =
                             static_cast<int>(object->attribute_amount_held);
-                        num1 += object->object_state + attribute_value;
-                        ++num2;
-                        num3 += object->master_obj->id + num2 +
-                            object->object_state + attribute_value;
                         temp_position_checksum += object->world_x;
+                        action_checksum += object->master_obj->id +
+                            object->object_state + attribute_value;
+                        ++num2;
                         temp_position_checksum += object->world_y;
                         temp_position_checksum += object->world_z;
-                        action_checksum += object->get_action_checksum();
+                        action_total += object->get_action_checksum();
                         RGE_Doppleganger_Object* dopple =
                             static_cast<RGE_Doppleganger_Object*>(object);
                         RGE_Static_Object* target = object->get_target_obj();
@@ -2842,11 +2844,11 @@ int TRIBE_Game::load_game(char* file_name)
                     checksum = (((num3 * 0x100 + num2) * 0x100 +
                                  action_checksum) * 0x100) + num1;
                     total_action_checksum += checksum;
-                    total_checksum += action_checksum;
+                    total_checksum += action_total;
                     fprintf(debug_file,
                             "  p#%d checksum=%d, 1=%d, 2=%d, 3=%d, 4=%d, act=%d\n",
                             p->id, checksum, num1, action_checksum, num2,
-                            num3, action_checksum);
+                            num3, action_total);
                 }
 
                 fprintf(debug_file, "total checksum=%d, act=%d\n",
