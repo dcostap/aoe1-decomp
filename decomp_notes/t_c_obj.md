@@ -97,3 +97,10 @@ owner regression. `004CBD40 higher_check_for_cliff` is `MATCH`.
 
 The current target check reports 705 rebuilt bytes, 143 differences, first
 mismatch `+0x17F`, and two boundary escapes. The target remains unresolved.
+
+## Continuation: luna-41-t-c-obj
+
+The final serial audit is `build/audit_luna-41-t-c-obj-final/report.txt`.
+It compiles all 39 normal owners. It reports 36 matching results, two
+accepted-drift observations, and one boundary problem for `004CBEF0`.
+No exact owner regressed. The global-zero probe produced no output change.
