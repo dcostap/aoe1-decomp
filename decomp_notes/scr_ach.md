@@ -121,3 +121,14 @@ The mode-3 source now names the ID 16 and ID 15 results before adding them.
 This preserves the original call and fault order. The direct commutative form
 was two bytes closer but emitted ID 15 first. The 31-byte result is proposed
 for accepted-drift review. The constructor remains untouched by this probe.
+
+## Worker update: sa-429cf5f5-r1
+
+- The fresh one-job baseline for `0048D530` remains `MISMATCH` at 2740 bytes,
+  exact size 3222, frame `0x1D4`, 69 aligned calls, and zero boundary escapes.
+- A declaration-order probe followed the PDB-scoped order for `tabList`,
+  `info_file`, `str`, `temptxt`, and `color`. It emitted byte-identical output.
+- A parameter-store probe moved `end_game_flag` before the temporary tail clear.
+  It remained behavior-equivalent but worsened the result to 2775 bytes.
+  Both probes were restored. Set-mode accepted drift and the seven exact
+  neighbors were not changed.
