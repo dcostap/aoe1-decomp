@@ -1,0 +1,24 @@
+# Experiment 5508f91c4a537e9b2228a24e3c45c111702d1b343e51df452742ee027bd5b2cd
+# Base 3456db26ed1950ebdb28dd040ee22943734bdb8f
+diff --git a/src/aiuaimod.cpp b/src/aiuaimod.cpp
+index 01fb2568b..8dd6e17d7 100644
+--- a/src/aiuaimod.cpp
++++ b/src/aiuaimod.cpp
+@@ -4243,7 +4243,7 @@ void UnitAIModule::purgeNotifyQueue(unsigned long time)
+     int i = 0;
+     int count = this->notifyQueueSizeValue;
+     if (count > 0) {
+-        for (;;) {
++        for (; i < count; ++i) {
+             NotifyEvent* event = &this->notifyQueueValue[i];
+             if (event->mType == 0x1FA) {
+                 int action = event->p1;
+@@ -4265,8 +4265,6 @@ void UnitAIModule::purgeNotifyQueue(unsigned long time)
+                     }
+                 }
+             }
+-            i++;
+-            if (i >= count) break;
+         }
+     }
+     this->notifyQueueSizeValue = 0;

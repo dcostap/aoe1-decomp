@@ -4243,7 +4243,7 @@ void UnitAIModule::purgeNotifyQueue(unsigned long time)
     int i = 0;
     int count = this->notifyQueueSizeValue;
     if (count > 0) {
-        for (;;) {
+        for (; i < count; ++i) {
             NotifyEvent* event = &this->notifyQueueValue[i];
             if (event->mType == 0x1FA) {
                 int action = event->p1;
@@ -4265,8 +4265,6 @@ void UnitAIModule::purgeNotifyQueue(unsigned long time)
                     }
                 }
             }
-            i++;
-            if (i >= count) break;
         }
     }
     this->notifyQueueSizeValue = 0;
