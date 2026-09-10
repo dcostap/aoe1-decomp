@@ -90,3 +90,19 @@ relation.
   `[esp+24h]` home for final `dialog_x`, and a reused `[esp+28h]` home for
   y intermediates. Final y remains in `ECX`. No unsupported stack or register
   steering is retained.
+
+## Worker pass: `sa-33caa0a4-r1`
+
+The fresh baseline remains `MISMATCH`, with 435 differing bytes and 839 rebuilt
+bytes versus 849 original. It has the correct owner, boundary, frame, saved
+registers, and 27-call count. The rebuilt direct targets at the first geometry
+guard remain `xPosition` then `width`; the original uses `width` then
+`xPosition`. The More Help call, string ownership, setup-failure edge, and
+typed `bot_line` access remain behavior-supported.
+
+A temporary `panel.h` declaration-order probe and a reverse-sum source probe
+both reproduced the 435-byte baseline. A 20-variant local initialization and
+geometry lab produced five groups, no exact result, and no invariant-eligible
+lead. The header was restored. The one-job final audit reports five exact
+neighbors and no closure regression. Keep `setup_help` as `scratch`; further
+work needs new direct-call or reused-home evidence.
