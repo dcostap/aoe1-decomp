@@ -3618,18 +3618,18 @@ int TribeInformationAIModule::findGatherPosition(
     int j;
     int blocked;
 
-    if (maximumDistanceVariation >= desiredDistance) return 0;
-    min.y = centerPoint.x - desiredDistance - maximumDistanceVariation;
-    minExclude.x = centerPoint.y - desiredDistance - maximumDistanceVariation;
+    if (maximumDistanceVariation >= landTroops) return 0;
+    min.y = centerPoint.x - landTroops - maximumDistanceVariation;
+    minExclude.x = centerPoint.y - landTroops - maximumDistanceVariation;
     mapBound(min);
-    minClear.x = centerPoint.y + maximumDistanceVariation + desiredDistance;
-    max.y = centerPoint.x + maximumDistanceVariation + desiredDistance;
+    minClear.x = centerPoint.y + maximumDistanceVariation + landTroops;
+    max.y = centerPoint.x + maximumDistanceVariation + landTroops;
     mapBound(max);
-    minExclude.y = centerPoint.x - desiredDistance + maximumDistanceVariation;
-    maxExclude.x = centerPoint.y + maximumDistanceVariation - desiredDistance;
+    minExclude.y = centerPoint.x - landTroops + maximumDistanceVariation;
+    maxExclude.x = centerPoint.y + maximumDistanceVariation - landTroops;
     mapBound(minExclude);
-    maxExclude.y = centerPoint.x - maximumDistanceVariation + desiredDistance;
-    cPosition.x = centerPoint.y + desiredDistance - maximumDistanceVariation;
+    maxExclude.y = centerPoint.x - maximumDistanceVariation + landTroops;
+    cPosition.x = centerPoint.y + landTroops - maximumDistanceVariation;
     mapBound(maxExclude);
     setupInfluenceMap(0, -1, centerPoint, min, max);
     bestPointValue = -1;
