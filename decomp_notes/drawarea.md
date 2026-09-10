@@ -147,3 +147,23 @@ The reverse path clears the direction flag before returning.
 
 The assembly preserves the original nested register saves and argument-slot reuse.
 No normal C++ body or matching status changed in this assembly step.
+
+## Worker pass: luna-12-drawarea
+
+Fresh checks at assignment base `16d5a4044` report current natural results:
+`Copy` 718 differing bytes, `DrawLine` 103, `take_snapshot` 326, `Clear`
+113, `DrawShadowBox` 68, and `Paint` 291. Owners and ordered call sets match.
+`DrawShadowBox` and `Paint` still escape their original boundaries by one and
+two bytes. The snapshot retry tail and Paint CFG each retain two edge-shape
+differences.
+
+The worker tested source-order declaration context for `SetShadowTable`, the
+reduced color declaration surface from the old local exact lead, and the
+direct drawing declaration context. These states emitted baseline or worse
+bytes. All shared-header and source edits were restored. No registry status,
+ordinary source body, or shared layout change is proposed.
+
+Final audit `build/luna12-drawarea-final-audit/report.txt` compiled 62 normal
+owners, kept all 50 exact validation targets, and found no matching-neighbor
+code change. Runtime malformed-input, API-fault, signed-overflow, and full
+gameplay tests remain unperformed.
