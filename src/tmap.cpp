@@ -1098,10 +1098,12 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
 
                             if (place) {
                                 if (this->water(terrain)) {
-                                    if (this->do_terrain_brush_check(x, y))
+                                    if (this->do_terrain_brush_check(x, y)) {
                                         this->set_terrain(this->game_world,
                                                           (short)x, (short)y,
                                                           terrain, 0, 0);
+                                        change_flag = 1;
+                                    }
                                 } else {
                                     if (upper_left)
                                         this->set_terrain(this->game_world,
@@ -1135,8 +1137,8 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                                         this->set_terrain(this->game_world,
                                             (short)(x - 1), (short)y, terrain,
                                             0, 0);
+                                    change_flag = 1;
                                 }
-                                change_flag = 1;
                             }
                         }
                         ++x;
