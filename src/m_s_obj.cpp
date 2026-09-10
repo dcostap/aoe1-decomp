@@ -336,7 +336,7 @@ int RGE_Master_Static_Object::setup(
     master_type = 10;
     id = object_id;
 
-    fscanf(fp, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd %f %f %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %d %d %d %hd %hd %hd %hd %hd %f %f %f", object_name, &string_id, &string_id2, &object_group, &sprite_id,
+    fscanf(fp, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd %f %f %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %d %d %d %hd %hd %hd %hd %hd %f %f %f", object_name + 4, &string_id, &string_id2, &object_group, &sprite_id,
            &death_sprite_id, &undead_sprite_id, &undead_flag_value, &hp, &los, &obj_max_value, &radius_x,
            &radius_y, &radius_z, &death_spawn_obj_id, &sort_number_value, &can_be_built_on_value,
            &button_pict, &hide_in_scenario_editor_value, &portrait_pict, &available_value, &tile_req1,
@@ -429,9 +429,9 @@ int RGE_Master_Static_Object::setup(
     copy_id = id;
     if (object_group == 11) recyclable = 1;
 
-    if (strlen(object_name) > 0) {
+    if (static_cast<short>(strlen(object_name + 4)) > 0) {
         name = 0;
-        getstring(&name, object_name);
+        getstring(&name, object_name + 4);
     }
     return 1;
 }
