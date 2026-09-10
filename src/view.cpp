@@ -1027,9 +1027,11 @@ void RGE_View::update()
     float row_offset;
     p = this->player;
     if (p && (p->view_x != this->last_view_x || p->view_y != this->last_view_y)) {
-        this->center_map_col = (short)(int)p->view_x;
-        this->center_map_row = (short)(int)p->view_y;
-        row_offset = p->view_y - this->center_map_row;
+        sVar6 = (short)(int)p->view_x;
+        this->center_map_col = sVar6;
+        sVar7 = (short)(int)p->view_y;
+        this->center_map_row = sVar7;
+        row_offset = p->view_y - (float)sVar7;
         sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2);
         sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2);
         this->last_view_x = p->view_x;
@@ -1045,7 +1047,7 @@ void RGE_View::update()
         sVar8 = (short)(int)((row_offset * DAT_005776b4 *
                               (float)this->tile_hgt) -
                              ((p->view_x - (float)this->center_map_col) * DAT_005776b4 *
-                              (float)this->tile_hgt));
+                             (float)this->tile_hgt));
         sVar9 -= sVar7;
         sVar10 -= sVar8 + this->tile_half_hgt;
         this->center_scr_col = sVar9;
