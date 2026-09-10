@@ -1030,17 +1030,17 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
         minX = xMin >> 2;
         maxX = xMax >> 2;
 
-        if ((int)maxX >= this->mapValue->map_width ||
-            (int)maxY >= this->mapValue->map_height)
+        if ((int)(uchar)maxX >= this->mapValue->map_width ||
+            (int)(uchar)maxY >= this->mapValue->map_height)
             return 0;
 
-        if (minY <= maxY) {
+        if ((uchar)minY <= (uchar)maxY) {
             uchar row = (uchar)minY;
             do {
                 uchar col = (uchar)minX;
-                if (col <= maxX) {
+                if (col <= (uchar)maxX) {
                     RGE_Tile* tile =
-                        &this->mapValue->map_row_offset[row][minX];
+                        &this->mapValue->map_row_offset[row][(uchar)minX];
                     do {
                         local_14 = col;
                         if (this->initialTile.x != local_14 ||
@@ -1063,10 +1063,10 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                         }
                         tile++;
                         ++col;
-                    } while (col <= maxX);
+                    } while (col <= (uchar)maxX);
                 }
                 ++row;
-            } while (row <= maxY);
+            } while (row <= (uchar)maxY);
         }
     }
 
