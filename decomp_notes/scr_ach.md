@@ -108,3 +108,16 @@ differences. The generated deleting destructor also matches. The constructor
 remains scratch with 2830 differing bytes. The destructor remains scratch with
 435 differing bytes and two boundary escapes. `set_mode` remains scratch with
 2970 differing bytes.
+
+## Worker update: luna-01-scr-ach
+
+The final grouped audit is at
+`build/audits/luna-01-scr-ach-final2/report.txt`. It compiled all eight owners
+with one job. Six matching owners remain exact. The constructor is `MISMATCH`
+with 2740 bytes. `set_mode` is `MISMATCH` with 31 bytes. No exact owner
+regressed, and both scratch owners keep matching boundaries.
+
+The mode-3 source now names the ID 16 and ID 15 results before adding them.
+This preserves the original call and fault order. The direct commutative form
+was two bytes closer but emitted ID 15 first. The 31-byte result is proposed
+for accepted-drift review. The constructor remains untouched by this probe.

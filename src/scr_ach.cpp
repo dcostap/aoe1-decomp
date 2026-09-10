@@ -606,8 +606,11 @@ void TribeAchievementsScreen::set_mode(long mode)
                 itoa(player->victory_conditions->get_attribute_id(14), temptxt, 10);
                 this->statistics[player_index][4]->set_text(temptxt);
 
-                itoa(player->victory_conditions->get_victory_points_id(15) +
-                     player->victory_conditions->get_victory_points_id(16), temptxt, 10);
+                long victory_points_16 =
+                    player->victory_conditions->get_victory_points_id(16);
+                long victory_points_15 =
+                    player->victory_conditions->get_victory_points_id(15);
+                itoa(victory_points_16 + victory_points_15, temptxt, 10);
                 this->statistics[player_index][5]->set_text(temptxt);
                 itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
                 this->statistics[player_index][6]->set_text(temptxt);
