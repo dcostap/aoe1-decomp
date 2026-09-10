@@ -82,3 +82,29 @@ and final clean states are recorded in the target notes and experiment store.
 The final one-job audit is under
 `build/agents/sa-7ab71ac7-final-tu-audit/report.txt`. The completed `004828B0`
 review remains unchanged. No exact or accepted-drift proposal is supported.
+
+## 2026-09-10 sa-a2367e49 terrain-module review
+
+The worker rechecked `004826E0` with owner `sa-a2367e49`. The clean source
+remains unchanged. Its final result is `MISMATCH`, 262 differing bytes, 412
+rebuilt bytes versus 414 original bytes, no frame, four saved registers, and
+two ordered direct calls. The owner, boundary, relocation, ABI, and call
+target checks pass. The first structural divergence is the switch table;
+VC5 also tail-merges the second terrain-size arithmetic and hoists radius 12
+into the hot-spot loop register.
+
+Two natural Variant Lab families compiled with the pinned `gx` recipe and
+two workers. The hot-loop family tested five forms. The switch family tested
+four forms. No variant met the original size, frame, and call-set gates. The
+size-before-fields form produced a 440-byte body and an extra tail. The
+typed pointer, cached-count, do-while, record-reference, and direct-condition
+forms did not improve the clean result. The reports are under
+`build/variant_lab/004826E0_add_terrain_module/20260910_205100/` and
+`20260910_205306/`.
+
+The final one-job module audit is under
+`build/agents/sa-a2367e49/final-tu-audit/report.txt`. Exact owners
+`004821A0`, `00482260`, and `004828A0` remain exact. Scratch owners
+`00482270`, `004826E0`, and `004828B0` remain mismatches at 714, 262, and
+369 differing bytes. The `00482270` land cursor and allocation evidence was
+not changed. No exact or accepted-drift proposal is supported.
