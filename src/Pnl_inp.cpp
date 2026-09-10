@@ -156,7 +156,8 @@ long TInputPanel::char_action(long ch, short count)
     return 1;
 }
 
-long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
+long TInputPanel::key_down_action(long key, short count, int alt_key,
+                                   int ctrl_key, int shift_key)
 {
     short len;
     short col;
@@ -222,7 +223,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
 
     case 0x24:
         if (this->num_lines < 1) return 1;
-        if (param4 != 0) {
+        if (ctrl_key != 0) {
             if (this->cur_col == 0 && this->cur_line == 0) break;
             this->cur_col = 0;
             this->cur_line = 0;
@@ -238,7 +239,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
 
     case 0x23:
         if (this->num_lines < 1) return 1;
-        if (param4 != 0) {
+        if (ctrl_key != 0) {
             if (this->cur_line == this->num_lines - 1) {
                 len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
                 if (this->cur_col == len) break;
@@ -288,8 +289,8 @@ page_update:
         return 1;
 
     case 0x2D:
-        if (param5 != 0) goto paste_action;
-        if (param4 != 0) return 1;
+        if (shift_key != 0) goto paste_action;
+        if (ctrl_key != 0) return 1;
         this->insert_mode = (this->insert_mode == 0);
         return 1;
 
@@ -312,7 +313,7 @@ page_update:
         return 1;
 
     case 0x56:
-        if (param4 == 0) return 0;
+        if (ctrl_key == 0) return 0;
 paste_action:
         this->paste();
         return 1;
