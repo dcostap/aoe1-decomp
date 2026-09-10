@@ -1077,57 +1077,61 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
     }
 }
 
-void TTextPanel::calc_line_pos(void* dc, short line, short current,
-                               RECT* rect, long* out)
+void TTextPanel::calc_line_pos(void* dc, short draw_row, short text_line,
+                               RECT* line_rect, long* cursor_x_offset)
 {
-    char* text = this->get_text((long)current);
+    long x;
+    long y;
+    long row_size;
     long col_offset;
+    long line_width;
     SIZE text_size;
     char temp_text2[256];
-    short byte_len;
+    short text_len;
+    char* text = this->get_text(text_line);
 
-    if (text != 0) {
+    if (text) {
         if (this->cur_col == 0) {
             col_offset = 0;
         } else {
-            short text_len = _mbslen((const unsigned char*)text);
+            text_len = (short)_mbslen((const unsigned char*)text);
             if (this->cur_col > text_len) {
-                byte_len = (short)strlen(text);
-                GetTextExtentPoint32A(dc, text, byte_len, &text_size);
+                text_len = (short)strlen(text);
+                GetTextExtentPoint32A(dc, text, text_len, &text_size);
             } else {
-                memset(temp_text2, 0, 0x100);
+                memset(temp_text2, 0, sizeof(temp_text2));
                 _mbsncpy((unsigned char*)temp_text2,
-                          (const unsigned char*)text,
-                          (unsigned int)this->cur_col);
-                byte_len = (short)strlen(temp_text2);
-                GetTextExtentPoint32A(dc, text, byte_len, &text_size);
+                         (const unsigned char*)text, this->cur_col);
+                text_len = (short)strlen(temp_text2);
+                GetTextExtentPoint32A(dc, text, text_len, &text_size);
             }
             col_offset = text_size.cx;
         }
 
-        // This call is present in the original line-measurement path even
-        // though the following byte-length expression supplies the count.
+        // The original makes this call before measuring the complete line.
         _mbslen((const unsigned char*)text);
-        byte_len = (short)strlen(text);
-        GetTextExtentPoint32A(dc, text, byte_len, &text_size);
+        text_len = (short)strlen(text);
+        GetTextExtentPoint32A(dc, text, text_len, &text_size);
+        line_width = text_size.cx;
     } else {
         col_offset = 0;
-        text_size.cx = 0;
+        line_width = 0;
     }
 
-    Alignment horizontal = this->horz_align;
-    if (horizontal != AlignCenter && horizontal != AlignWordwrap) {
+    if (this->horz_align != AlignCenter && this->horz_align != AlignWordwrap) {
         col_offset += 5;
     }
 
-    long x;
-    switch (horizontal) {
+    switch (this->horz_align) {
+    default:
+        x = this->pnl_x + this->pnl_wid / 2 - line_width / 2;
+        break;
     case AlignLeft:
         x = this->pnl_x + this->border_size;
         break;
     case AlignRight:
         x = this->pnl_x + this->pnl_wid - this->border_size
-            - text_size.cx - 7;
+            - line_width - 7;
         break;
     case AlignHorizontalScroll:
         x = this->pnl_x + this->border_size;
@@ -1135,40 +1139,35 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
             x += this->pnl_wid - col_offset - 2;
         }
         break;
-    default:
-        x = this->pnl_x + this->pnl_wid / 2 - text_size.cx / 2;
-        break;
     }
 
-    long row_size = this->spacer_size;
-    if (row_size == 0) {
+    if (this->spacer_size == 0) {
         row_size = this->text_hgt;
     } else {
-        row_size = this->text_hgt + row_size * 2 - 1;
+        row_size = this->text_hgt + 2 * this->spacer_size - 1;
     }
 
-    long y;
     switch (this->vert_align) {
+    default:
+        y = draw_row * row_size - (this->num_lines * row_size) / 2
+            + this->pnl_y + this->pnl_hgt / 2;
+        break;
     case AlignTop:
-        y = line * row_size + this->pnl_y + this->border_size
+        y = draw_row * row_size + this->pnl_y + this->border_size
             + this->spacer_size;
         break;
     case AlignBottom:
-        y = this->pnl_y - (this->num_lines - line) * row_size;
-        y += this->pnl_hgt - this->border_size - this->spacer_size - 1;
-        break;
-    default:
-        y = line * row_size - (this->num_lines * row_size) / 2
-            + this->pnl_y + this->pnl_hgt / 2;
+        y = this->pnl_y - (this->num_lines - draw_row) * row_size
+            + this->pnl_hgt - this->border_size - this->spacer_size - 1;
         break;
     }
 
-    rect->left = x;
-    rect->top = y;
-    rect->right = x - 1 + text_size.cx;
-    rect->bottom = y + this->text_hgt;
-    if (out != 0) {
-        *out = col_offset;
+    line_rect->left = x;
+    line_rect->top = y;
+    line_rect->right = x - 1 + line_width;
+    line_rect->bottom = y + this->text_hgt;
+    if (cursor_x_offset != 0) {
+        *cursor_x_offset = col_offset;
     }
 }
 
