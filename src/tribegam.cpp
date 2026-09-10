@@ -380,6 +380,7 @@ int TRIBE_Game::setup()
             p = _mbsninc(p, 1);
         }
         p = _mbsninc(p, 1);
+        new_string_dll_name[0] = 0;
         while (!_ismbcspace(static_cast<unsigned char>(*p)) && *p) {
             _mbsncat(reinterpret_cast<unsigned char*>(new_string_dll_name), p, 1);
             p = _mbsninc(p, 1);
