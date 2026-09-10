@@ -3063,6 +3063,7 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     if (result == 1) {
         if (order->orderType == 0x2C2) {
             this->currentOrderValue = -1;
+            this->currentOrderPriorityValue = -1;
         } else {
             if (order->orderType == 0x2D9) {
                 this->currentOrderValue = 700;
@@ -3073,8 +3074,8 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
             } else {
                 this->currentOrderValue = order->orderType;
             }
+            this->currentOrderPriorityValue = order->priority;
         }
-        this->currentOrderPriorityValue = order->priority;
     }
 
     if (param_2 >= 0 && param_2 < this->orderQueueSizeValue &&
