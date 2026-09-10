@@ -3136,7 +3136,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             sameZoneFactor + randomFactor;
 
         if (stateRef.bestTargetID != -1 &&
-            !(stateRef.bestTargetValue < score)) {
+            score <= stateRef.bestTargetValue) {
             continue;
         }
 
