@@ -130,3 +130,23 @@ bytes versus 695 original bytes. The final one-job audit is under
 differences. No source change, exact match, or accepted-drift proposal is
 retained. The saved-`this`, stack-home, and compiler-helper differences remain
 open.
+
+## 2026-09-10 sa-c9a6ba24 object-module reassessment
+
+The worker rechecked `004828B0` with no living source change. Static evidence
+still supports six object records, the land-point copy, and one allocation.
+The source preserves field values, 0x34-byte and 0x10-byte copy strides, the
+null guard, call order, and fault order. Runtime tests were not run.
+
+The worker ran a 72-variant pointer-alias family and a three-variant
+literal/named/field-derived constant family. The pointer family produced
+691- and 694-byte groups. The constant family produced one 691-byte group.
+No variant was exact or invariant-eligible. The clean target remains
+`MISMATCH` with 369 differences and 691 rebuilt bytes versus 695 original
+bytes. No exact or accepted-drift proposal is supported.
+
+The one-job audit is `build/agents/sa-c9a6ba24-final-tu-audit/report.txt`.
+Exact owners `004821A0`, `00482260`, and `004828A0` remain exact. Scratch
+owners remain `00482270` at 714 differences, `004826E0` at 262 differences,
+and `004828B0` at 369 differences. The saved-`this`, stack-home, register
+schedule, and helper-name differences remain open.
