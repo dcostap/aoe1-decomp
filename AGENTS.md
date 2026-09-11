@@ -1,28 +1,19 @@
 # Repository-wide agent contract
 
+Pi runs shell commands through Bash. Use forward slashes in Bash command paths.
+Unquoted Windows backslashes can become escapes.
+
 This file contains universal rules. Keep role-specific procedures in workflow documents.
 ## Understand your role
 
 The assigning prompt or assigned task(s) define your role and instructions. If not sure, ask the user or the agent that spawned you.
 
-There are extra reusable documents that contain specific instructions. Read the documents if clearly related to your role:
-- For performing function matching, read `agent_roles\matching_worker.md`.
-- If you are an orchestrator or perform semantic review, read `agent_roles\orchestrator.md`.
-- If you talk directly to the user, read `agent_roles\root_orchestrator.md`.
-- For hierarchical orchestration, the root orchestrator assigns one worktree to each orchestrator.
-- For the registry schema and command catalogue, read `docs\project_reference.md`.
-
-The existing matching workflow remains the default.
-When the user or assignment selects "matching with reviewers", read `docs/matching_with_reviewers.md`.
-Carry `Workflow: matching with reviewers` into all related agent assignments.
-For that variation's independent reviewer role, read `agent_roles/matching_reviewer.md`.
-The variation delegates technical review; it does not weaken the universal correctness rules below.
+There are extra reusable documents that contain specific instructions. Read the documents if clearly related to your role. They are in `agent_roles`.
 
 ## Universal correctness rules
 
 - The project is function-first and evidence-first.
 - The original executable is the behavior oracle.
-- Do not run original or rebuilt game executables. Use static executable evidence and compiler checks.
 - PDB, Ghidra, generated inventories, and comments are reference evidence.
 - Use the repo-local original files under
   `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
@@ -31,41 +22,6 @@ The variation delegates technical review; it does not weaken the universal corre
   target or translation-unit response file when one exists.
 - Exactness requires positional byte equality.
 - Exactness also requires the original boundary, provable owning symbol, and known direct call or tail-jump symbol identity.
-- Never infer exactness from folder placement, old metrics, or relocation masking.
-- Validate standalone exact claims with `tools\check_function.py`.
-- Validate grouped claims with the candidate or configured module checks.
-- Require `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and direct targets.
-- A valid exact result says `Result: MATCH` and `0.0000%`.
-
-Use judgment. These rules are guardrails, not substitutes for evidence or
-common sense. Seek exact output, but do not keep source that strong evidence
-proves wrong only because it matches. Prefer correct behavior, canonical
-ownership, supported types, and natural source over an incidental compiler
-context match.
-
-A supported repair can change a current exact function. Audit the complete
-affected closure. If each changed function has equal behavior, ABI, calls,
-memory effects, exceptions, faults, and fault order, record it as accepted
-drift. Explain the cause and evidence. Do not add unsupported compensating
-source to recover a metric.
-
-Preserve every exact candidate that changes or regresses another owner. Store
-the complete matching source patch under
-`decomp_notes/candidates/<VA-prefix>/<VA>_exact_candidate.patch`. Record the
-exact target result, all affected owners, the closure results, and the tested
-main commit. Do this even when closure review rejects the candidate. Do not
-rely on a worker worktree, temporary file, or ignored build artifact.
-
-Do not assume that an exact candidate caused a closure defect. The candidate
-can reveal wrong source or compiler context in another function. Investigate
-all affected owners. Repair other natural functions, declarations, or headers
-when evidence supports the repair. Validate every changed owner and the full
-closure before integration.
-
-Before work, inspect preserved candidates for the target and its dependencies.
-Treat their regressions as repair leads. Continue with new evidence-backed
-probes in the affected owners instead of repeating or immediately rejecting
-the candidate.
 
 Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
@@ -88,12 +44,6 @@ This permission does not extend to ordinary game functions or other assembly reg
 Retain recovered drawing assembly and its probes for future source recovery.
 Do not link duplicate drawing exports or split the engine's shared mutable state.
 Binary preservation is not complete source recovery or proof of gameplay correctness.
-
-Recover the simplest binary-supported, period-plausible source first. Reconstruct
-what the original developers probably wrote.
-
-Establish canonical ownership before codegen tuning. Model proven fields, arrays,
-bases, widths, offsets, vptrs, lifetimes, API structs, and virtual slots.
 
 Decompiler output describes effects. It is not a source template. Do not retain
 raw cursor arithmetic, fake helpers, fake volatility, manual vtables, redundant
@@ -120,9 +70,6 @@ The corpus buckets are:
 - `asm_special`: named handwritten assembly;
 - `asm_region`: assembly, codelet, or data-dispatch neighborhoods.
 
-Do not create ordinary function sources for non-normal entries. Their reviewed,
-self-documented manifests live under `config\`.
-
 Repository source roles are:
 
 - `inventory\`: generated reference material; do not edit it;
@@ -139,9 +86,6 @@ The source tree uses final, original-like modules:
 - one normal `.c` or `.cpp` file owns all handwritten functions in source order;
 - normal headers own shared declarations;
 - one registry file under `config/functions/` owns each natural source file;
-- function notes store facts, tested approaches, and useful next steps;
-- function and module note paths are deterministic;
-- function notes do not store status or source ownership; and
 - wrapper files, function fragments, and context-selection macros are forbidden.
 
 `unresolved` means source exists, but one compiler recipe cannot be proved.
@@ -156,45 +100,12 @@ modules or headers. Edit only that natural owner.
 Exact matching and accepted drift have equal value. Choose by source and behavior
 evidence, not by a preference for zero byte differences.
 
-Review caller-visible behavior, valid aliases, and relevant faults. Do not require
-equivalence for invented pointers into future callee-owned stack storage unless
-executable evidence shows actual use. Ordinary caller-owned stack objects and
-supported overlapping inputs remain in scope. Different private stack layouts
-alone do not block accepted drift.
-
-Treat accepted drift as a completed recovery result. It is the preferred result
-when canonical source has a reviewed, behavior-equal code-generation difference.
-Do not spend time chasing its remaining bytes only to improve a metric. Revisit
-it only when new behavior, ownership, type, period-source, or simplification
-evidence justifies review.
-
-Write accepted-drift notes as completed reviews, not unresolved matching debt.
-Record the difference and semantic proof. State that no further matching work is
-required without new evidence. The registry records the current reviewed result.
-
-## Shared-worktree conduct
-
-Preserve unrelated changes. Never clean, reset, normalize, or overwrite another
-participant's work.
-
-Only the assigned integrator commits shared-worktree progress. Other workers do
-not stage or commit unless their assignment explicitly permits it. The
-integrator stages reviewed paths and makes small logical commits.
-
-Send untracked cleanup files and directories to the Windows Recycle Bin. Do not
-use permanent filesystem deletion for cleanup. Tracked deletions stay recoverable
-through Git.
-
-Do not make broad shared-header changes for a local experiment. Report every
-shared file that you change.
+## Repo conduct
 
 Keep compiler outputs and experiments under `build\`. Do not write generated
 artifacts into tracked source directories.
 
 Do not change existing line endings without a functional reason.
-
-Pi runs shell commands through Bash. Use forward slashes in Bash command paths.
-Unquoted Windows backslashes can become escapes.
 
 Markdown files define policy and workflow, not command syntax. Before you use a
 repository tool, run its `--help`. Treat that output as the command reference.
@@ -207,9 +118,6 @@ for file content searches. Do not recursively enumerate the repository with
 
 Separate facts from hypotheses. State the source of each important conclusion.
 Do not call generated metadata a behavior oracle.
-
-Exact matching source is strong codegen evidence. A narrow exact local stub does
-not automatically define canonical shared ABI.
 
 Record durable target conclusions in the target source or its assigned ledger.
 Do not rely on ignored session files as the only record.

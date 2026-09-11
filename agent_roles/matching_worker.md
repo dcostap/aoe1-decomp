@@ -202,6 +202,9 @@ Function notes use:
 decomp_notes/functions/<VA-prefix>/<VA>.md
 ```
 
+Use deterministic module-note paths. Keep status and source ownership in the
+registry, not function notes.
+
 Preserve the note's existing line-ending style. Do not append LF lines to a
 CRLF file or CRLF lines to an LF file.
 

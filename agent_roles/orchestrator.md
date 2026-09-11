@@ -329,8 +329,10 @@ the complete semantic review proves equality. Reject unexplained or unsafe
 changes, not the loss of an incidental metric by itself.
 
 Treat an approved accepted drift as complete. Remove it from matching work.
-Do not request more byte-tuning without new source or behavior evidence. Ensure
-its function note records completion and does not describe it as open debt.
+Do not request more byte-tuning without new source or behavior evidence.
+Record the reviewed difference and semantic proof in its function note.
+State that recovery is complete and no further matching work is required without new evidence.
+The registry records the current reviewed result.
 
 Reject wrappers, fake ABI, raw addresses, dummy declarations, fake volatility,
 and other compiler-steering forms.
