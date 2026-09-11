@@ -722,32 +722,29 @@ void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* cmd) {
 
 
 
-unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* order)
-{
-    unsigned int n = (unsigned char)order->unit_num;
-    RGE_Obj_Info* last_units;
-    RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(order + 1);
-    RGE_Command_Order* last_order =
+unsigned char RGE_Command::duplicate_check_command_order(
+    RGE_Command_Order* param1) {
+    int n = param1->unit_num;
+    RGE_Command_Order* last =
         reinterpret_cast<RGE_Command_Order*>(this->last_order);
-    unsigned int last_n = (unsigned char)last_order->unit_num;
-    last_units = reinterpret_cast<RGE_Obj_Info*>(last_order + 1);
+    RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(param1) + sizeof(*param1));
+    RGE_Obj_Info* last_units = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(last) + sizeof(*last));
 
-    if (n == last_n) {
-
-        if ((short)(int)last_order->location_x == (short)(int)order->location_x) {
-            int order_y = (int)order->location_y;
-            if ((short)last_order->location_y == (short)order_y) {
-                if (last_order->target.id == order->target.id) {
-                    for (int i = 0; i < (int)n; i++) {
-                        if (units[i].id != last_units[i].id)
-                            goto fail;
-                    }
-                    return 1;
+    if (n == last->unit_num) {
+        if ((short)param1->location_x == (short)last->location_x &&
+            (short)param1->location_y == (short)last->location_y &&
+            last->target.id == param1->target.id) {
+            for (int i = 0; i < n; i++) {
+                if (units[i].id != last_units[i].id) {
+                    return 0;
                 }
             }
+            return 1;
         }
     }
-fail:
+
     return 0;
 }
 
