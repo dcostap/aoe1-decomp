@@ -462,12 +462,18 @@ def candidate_check(args):
     if not args.attempt:
         raise ValueError("Candidate check needs at least one complete attempt")
     results = []
-    for supplied in args.attempt:
-        attempt_path = supplied.resolve()
-        meta, attempt, patch = candidate_integration_patch(root, attempt_path)
-        workspace = scratch(root) / "check"
-        git(root, "worktree", "add", "--detach", "--force", str(workspace), meta["main_base"])
-        try:
+    workspaces = {}
+    try:
+        for supplied in args.attempt:
+            attempt_path = supplied.resolve()
+            meta, attempt, patch = candidate_integration_patch(root, attempt_path)
+            workspace = workspaces.get(meta["main_base"])
+            if workspace is None:
+                workspace = scratch(root) / "check"
+                git(root, "worktree", "add", "--detach", "--force", str(workspace), meta["main_base"])
+                workspaces[meta["main_base"]] = workspace
+            git(workspace, "reset", "--hard", meta["main_base"])
+            git(workspace, "clean", "-fdx")
             if patch:
                 git(workspace, "apply", "--whitespace=nowarn", "-", data=patch)
             result = run([sys.executable, str(workspace / "tools" / "check_function.py"),
@@ -476,7 +482,8 @@ def candidate_check(args):
             text = (result.stdout + result.stderr).decode("utf-8", "replace")
             print(f"=== {reference(root, attempt_path)} ===\n{text}", end="" if text.endswith("\n") else "\n")
             results.append(result.returncode)
-        finally:
+    finally:
+        for workspace in workspaces.values():
             git(root, "worktree", "remove", "--force", str(workspace))
     return 0 if all(code in (0, 1) for code in results) else 1
 
