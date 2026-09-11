@@ -442,6 +442,45 @@ def attempt_source_patch(repo, attempt_path):
     return meta, files, attempt, data
 
 
+def candidate_integration_patch(repo, attempt_path):
+    meta, files, attempt, source_patch = attempt_source_patch(repo, attempt_path)
+    stage = scratch(repo) / "candidate"
+    init_workspace(stage, files, meta["created"])
+    if source_patch:
+        git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=source_patch)
+    names = [raw.decode() for raw in filter(None, git(stage, "diff", "--cached", "--name-only", "-z", "HEAD").split(b"\0"))]
+    tree = read_tree(stage, "HEAD")
+    replacements = {name: inside(stage, name).read_bytes() if inside(stage, name).is_file() else None
+                    for name in names}
+    patch, _ = index_diff(repo, meta["main_base"], replacements,
+                          {name: row[0] for name, row in tree.items()})
+    return meta, attempt, patch
+
+
+def candidate_check(args):
+    root = args.repo.resolve()
+    if not args.attempt:
+        raise ValueError("Candidate check needs at least one complete attempt")
+    results = []
+    for supplied in args.attempt:
+        attempt_path = supplied.resolve()
+        meta, attempt, patch = candidate_integration_patch(root, attempt_path)
+        workspace = scratch(root) / "check"
+        git(root, "worktree", "add", "--detach", "--force", str(workspace), meta["main_base"])
+        try:
+            if patch:
+                git(workspace, "apply", "--whitespace=nowarn", "-", data=patch)
+            result = run([sys.executable, str(workspace / "tools" / "check_function.py"),
+                          "--va", meta["va"], "--rebuild", "--refresh-original", "--no-history", "--call-map"],
+                         cwd=workspace, check=False)
+            text = (result.stdout + result.stderr).decode("utf-8", "replace")
+            print(f"=== {reference(root, attempt_path)} ===\n{text}", end="" if text.endswith("\n") else "\n")
+            results.append(result.returncode)
+        finally:
+            git(root, "worktree", "remove", "--force", str(workspace))
+    return 0 if all(code in (0, 1) for code in results) else 1
+
+
 def review(args):
     root = args.repo.resolve()
     destination = args.destination.resolve()
@@ -648,6 +687,10 @@ def parser():
     rev.add_argument("--store", type=Path, help="Archive root; default: main/logic_matching")
     rev.add_argument("--wave-name", help="Unique review wave name; default: UTC date and time")
     rev.set_defaults(func=review)
+    check = sub.add_parser("candidate-check", help="Run exact checks for archived candidates in isolated worktrees")
+    check.add_argument("--attempt", type=Path, action="append", required=True,
+                       help="Complete reconstruction or review attempt; repeat as needed")
+    check.set_defaults(func=candidate_check)
     col = sub.add_parser("collect", help="Preserve and verify a complete or interrupted worker result")
     col.add_argument("--wave", type=Path, required=True)
     col.add_argument("--workspace", type=Path, required=True)

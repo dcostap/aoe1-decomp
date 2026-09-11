@@ -75,6 +75,15 @@ Do not inspect or summarize each result.
 Do not write wave launch notes, comparison reports, candidate reports, or review ledgers.
 The archive paths, payloads, and Git milestone commits are the record.
 
+Run the mechanical exactness check for every completed reconstruction delivery:
+
+```text
+python tools/behavior_recovery.py candidate-check --attempt ATTEMPT_DIR
+```
+
+The command uses an isolated worktree. It never swaps main source.
+Do not use byte output to select the review parent.
+
 ## First review
 
 After all reconstruction deliveries arrive, prepare one fresh reviewer workspace with all complete attempts:

@@ -151,6 +151,18 @@ def test_collect_roundtrip_binary_deletion_message_and_history(repo, tmp_path):
     assert br.git(restored, "write-tree").decode().strip() == meta["final_tree"]
 
 
+def test_candidate_integration_patch_applies_to_main_base_without_source_swap(repo, tmp_path):
+    wave, worker = prepare(repo, tmp_path)
+    deliver(worker, SOURCE.replace(b"x + 1", b"x + 2"))
+    attempt = collect(repo, wave, worker)
+    meta, _, patch = br.candidate_integration_patch(repo, attempt)
+    assert meta["main_base"] == br.git(repo, "rev-parse", "HEAD").decode().strip()
+    br.git(repo, "apply", "--check", "-", data=patch)
+    br.git(repo, "apply", "-", data=patch)
+    assert b"x + 2" in (repo / "src/sample.cpp").read_bytes()
+    br.git(repo, "apply", "-R", "-", data=patch)
+
+
 def test_collection_refuses_missing_delivery_dirty_and_overwrite(repo, tmp_path):
     wave, worker = prepare(repo, tmp_path)
     with pytest.raises(ValueError, match="delivery commit"):
