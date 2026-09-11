@@ -6,19 +6,26 @@ This file indexes the active recovery work and known deferred work.
 It does not replace the function registry or claim to enumerate every scratch function.
 Update each task when its decision, evidence, or integration state changes.
 
-Baseline: main `044149b59`, including the completed corpus worker integrations.
+Task reconciliation baseline: main `f995319b9`.
 The protected proposal is on `review/array-current-20260909`, last checked here at `d7d1df629`.
 Its locked worktree is `build/array-caller-worktree`.
-No isolated corpus worker is active. Protected-array tasks remain unassigned.
+The protected-array proposal is parked. Do not assign or integrate it without an explicit restart decision.
 
-Last validated results:
+Final reviewed registry for this reconciliation pass:
+
+- 4,898 matching, 298 accepted drift, 16 verified logic, and 214 scratch functions.
+- Scratch source covers 289,952 bytes.
+
+The command-order repair accounts for the one new accepted-drift result.
+The full 225-module audit passes all 4,898 matching targets. All 415 tests and 31 subtests pass.
+No game executable was run. Linked-reference totals were not refreshed.
+
+Historical validation checkpoint; do not reuse these results for changed inputs:
 
 - Main: the last complete audit compiled 225 modules and passed 4,884 matching targets.
 - Recent focused audits found no regression in each changed translation unit.
 - Protected proposal: 90 modules compile; 2,542 matching targets pass.
 - Tests: 415 tests and 31 subtests pass.
-- Registry: 4,889 matching, 291 accepted drift, 16 verified logic, and 230 scratch functions.
-- Scratch source covers 305,625 bytes.
 
 Read [the checkpoint](decomp_notes/array_integration_checkpoint.md) and [the handoff](decomp_notes/session_handoff_array_storage.md) for history.
 The original executable is the behavior oracle. Main-source differences alone do not prove defects.
@@ -29,9 +36,8 @@ Accepted drift and matching are equally complete recovery results.
 - Keep unapproved source isolated from main.
 - Pin each assignment to a commit, source owner, proposal, and evidence set.
 - Inspect preserved candidates before another probe.
-- Use Variant Lab for broad natural-source searches. Test hundreds of variants when the supported search space permits.
-- Combine declaration order, scope, expression, branch, loop, cast, temporary, and argument-preparation choices.
-- Rank variants by bytes, edit distance, control flow, calls, relocations, boundary, and closure effects.
+- This reconciliation pass investigates the named behavior and reference questions. It does not launch broad matching searches.
+- Keep byte results separate from behavior, source, and integration decisions.
 - Review allocation failures, aliases, widths, reloads, calls, memory effects, floating-point operations, and relevant fault order.
 - Keep ordinary caller-owned stack objects and supported overlap in scope.
 - Exclude invented pointers into future callee-owned storage unless executable evidence demonstrates actual use.
@@ -45,7 +51,16 @@ A task ends with a committed decision: approve, reject with evidence, or state a
 Record the tested inputs, changed files, validation, and next action in its ledger or function notes.
 A local match or passing compilation alone does not complete semantic review.
 
-## A. Protected-array integration
+## A. Protected-array integration: parked
+
+**Decision:** Keep the unapproved proposal isolated on `review/array-current-20260909` at `d7d1df629`.
+Preserve its locked worktree, earlier branches, candidate patches, and immutable evidence.
+This decision neither approves nor rejects its remaining source changes.
+
+**Restart condition:** Select an integration owner and current main base. Refresh the complete affected-owner comparison first.
+Then classify every delta and complete A1-A6, or select a smaller independently validated repair.
+The historical 41-description list below is not a current comparison or a count of confirmed defects.
+This parked proposal does not block planning the behavior-first workflow.
 
 ### A1. Review `004F57C0 evaluateOpenTasks`
 
@@ -93,24 +108,25 @@ The earlier resource-membership and attack-score repairs do not approve them.
 Coordinate shared-helper decisions with A5. Do not independently edit the same shared header from several worktrees.
 
 **Evidence:** [Array checkpoint](decomp_notes/array_integration_checkpoint.md), [array interface recovery](decomp_notes/array_interface_recovery.md).
-Use the current changed-description report listed below.
+Use the refreshed changed-description report when this proposal restarts.
 
 **Done when:** Each description has an owner, evidence, and an explicit approval or remaining objection.
 
-### A4. Review and integrate movement repair
+### A4. Movement-tail source repairs: integrated
 
-- [ ] `0045DB90 doMove`
+- [x] Integrate the two identified `0045DB90 doMove` success/failure-tail repairs.
 
-**State:** A separate preserved proposal repairs two proved defects. Integration remains pending.
-Reset-only evidence does not approve the control-flow repair or the whole function.
+**State:** Main commit `70f87ecd4` integrates both behavior repairs. Current main retains them.
+The late success path no longer resets closest distance. The failure path clears speed and restores the conditional continuation result.
+The whole function remains scratch. This does not approve its complete behavior or the shared-header proposal.
 
-**Next:** Review the complete movement proposal and its affected closure against the executable.
-Separate approved reset operations from the remaining control-flow decision.
+**Next:** Do not reapply the old complete patch. Review any remaining protected-header movement delta under A5.
+Carry the remaining whole-function behavior review into the behavior-first backlog.
 
 **Evidence:** [Function notes](decomp_notes/functions/0045/0045DB90.md).
 Complete proposal: `decomp_notes/candidates/0045/0045DB90_complete_complete_protected_movement_tail.patch` and its JSON record.
 
-**Done when:** The complete proposed delta has a recorded decision and validation supports integration or rejection.
+**Completed scope:** The two source defects only. The full preserved worktree patch remains outside this approval.
 
 ### A5. Classify and review every remaining shared-header difference
 
@@ -118,7 +134,7 @@ Complete proposal: `decomp_notes/candidates/0045/0045DB90_complete_complete_prot
 - [ ] Assign the unreviewed descriptions to disjoint source-owner tasks.
 - [ ] Finish helper ownership, symbol identity, reference-only changes, and remaining caller reviews.
 
-**State:** The current comparison contains 41 changed descriptions across 3,586 emissions.
+**State:** The historical comparison contains 41 changed descriptions across 3,586 emissions.
 They are not 41 new defects or 41 unreviewed game functions.
 The added `taskResearch` description is already covered by a complete review.
 Limited neighboring approvals do not automatically approve their full shared-header deltas.
@@ -155,17 +171,18 @@ Also read [play and neighbor reviews](logic_reviews/004F4760.md) and [priority a
 
 - [ ] Complete A1–A5 or explicitly exclude unapproved repairs from a smaller validated proposal.
 - [ ] Rebase or merge onto the selected main commit without changing approved behavior.
-- [ ] Repeat the 90-module affected-header audit and complete emitted-description comparison.
+- [ ] Run the complete current affected-header audit and emitted-description comparison. The historical audit covered 90 modules.
 - [ ] Review every new delta and validate identities, boundaries, calls, and references.
 - [ ] Integrate only the approved source and registry decisions. Preserve the rejected remainder.
 
-**State:** Blocked by incomplete owner review, not by matching-target failures.
+**State:** Parked with incomplete owner review, not rejected because of matching-target failures.
 The protected header must remain isolated until this gate passes.
 
 ## B. Integrated partial recoveries: separate whole-function work
 
 These repairs are already on main. They are not waiting for source integration.
 Their complete original-executable differences remain separate recovery tasks.
+Carry B1-B3 into the behavior-first backlog. They are not prerequisites for changing the workflow.
 
 | Task | Function | Next action and evidence |
 | --- | --- | --- |
@@ -180,43 +197,47 @@ Their complete original-executable differences remain separate recovery tasks.
 Their repaired emissions already agree under main and protected headers.
 These whole-function tasks do not block A6 merely because the functions remain scratch.
 
-## C. Deferred investigations
+## C. Focused decisions and remaining behavior review
 
-These tasks are pending, not assigned. Their earlier order was serial deferral until the shared-header decision.
-They can run independently in isolated worktrees if source ownership and integration dependencies are explicit.
+C1 and C3-C6 have completed decisions. C2 remains in the behavior-first backlog.
+None requires reopening the parked shared-header proposal.
 
 | Task | Function | Next action and evidence |
 | --- | --- | --- |
-| C1 | `00435110 duplicate_check_command_order` | Resolve Y conversion and relevant fault order. Apply the current stack-input scope to historical objections. [Review](logic_reviews/00435110.md), [notes](decomp_notes/command_order_repair.md). |
+| C1 | `00435110 duplicate_check_command_order` | Completed incoming-Y repair and accepted-drift review. The old counterexample uses excluded future callee storage. [Review](logic_reviews/00435110.md), [notes](decomp_notes/command_order_repair.md). |
 | C2 | `004180C0 processNotify` | Classify and review the 12 remaining differences after the public-interface repair. [Array interface notes](decomp_notes/array_interface_recovery.md). |
-| C3 | `0050C730 tech_cost` | Finish natural scalar-storage and arithmetic review. |
-| C4 | `0050CA9E check_tech_cost` | Finish natural scalar-storage and behavior review. |
-| C5 | `0050CC25 start_research` | Finish source recovery and complete behavior review. |
-| C6 | `0050CE68 check_for_new_tech` | Finish source recovery and complete behavior review. |
+| C3 | `0050C730 tech_cost` | Completed accepted drift in `7468e9bce`. [Review](logic_reviews/0050C730.md). |
+| C4 | `0050CA9E check_tech_cost` | Completed accepted drift in `7468e9bce`. [Review](logic_reviews/0050CA9E.md). |
+| C5 | `0050CC25 start_research` | Completed accepted drift in `cac586f9a`. [Review](logic_reviews/0050CC25.md). |
+| C6 | `0050CE68 check_for_new_tech` | Completed accepted drift in `cac586f9a`. [Review](logic_reviews/0050CE68.md). |
 
-- [ ] C1 complete decision.
+- [x] C1 complete decision.
 - [ ] C2 complete decision.
-- [ ] C3 complete decision.
-- [ ] C4 complete decision.
-- [ ] C5 complete decision.
-- [ ] C6 complete decision.
+- [x] C3 complete decision.
+- [x] C4 complete decision.
+- [x] C5 complete decision.
+- [x] C6 complete decision.
 
 Tech evidence: [stack review](decomp_notes/tech_stack_review.md) and the four VA-specific notes under `decomp_notes/functions/0050/`.
 Keep the integrated double literals. Do not repeat rejected stack permutations without new evidence.
-Each task needs a complete decision, preserved inputs, and affected-owner validation before integration.
+Do not resume C3-C6 for private stack-slot matching. Their current registry entries record completed accepted drift.
+Carry C2 into the behavior-first backlog; it does not block the workflow transition.
 
 ## D. Project-wide follow-up
 
 - [x] Refresh the broader scratch backlog from the registry before assigning unrelated modules.
-  The 231 scratch functions are not all listed individually here.
-- [ ] Resolve the recorded accepted-drift evidence gap at `00405850`.
-  First identify the missing evidence; do not assume byte matching is required.
+  The 214 remaining scratch functions are not all listed individually here.
+- [x] Resolve the recorded accepted-drift reference-evidence gap at `00405850`.
+  Original PDB publics now prove the `findPath` and `doMove` call identities.
+  Fresh checks retain only the approved two-byte register drift, with zero unknown direct targets.
+  Ten storage-reference entries remain separate. [Review](logic_reviews/00405850.md).
 - [ ] Continue linked-reference identity work.
   The earlier audit retained 5,276 unknowns. Refresh that count before planning or reporting progress.
 - [ ] Continue gameplay and storage coverage review under the static-only execution constraint.
   Passing function checks does not prove complete game behavior.
 - [x] Establish worker models, thinking levels, concurrency limits, and compiler-job limits before launching agents.
-  Corpus workers use `openai-codex-secondary/gpt-5.6-luna`, `xhigh`, 15 slots, isolated worktrees, and `--jobs 1`.
+  Historical corpus settings were `openai-codex-secondary/gpt-5.6-luna`, `xhigh`, 15 slots, and `--jobs 1`.
+  These historical settings do not authorize a new agent launch or select the behavior-first workflow settings.
 - [x] Complete and integrate the final isolated corpus worker wave.
   The wave retained supported repairs in `rmm_elev`, `tpnl_tml`, and `map`.
   It preserved the remaining target evidence without unsupported registry promotions.
@@ -244,15 +265,33 @@ The live protected source is committed on its separate branch, not integrated in
 Do not remove preserved branches or worktrees as part of task assignment.
 Some convenient reports are unpacked under ignored `build/` paths; those paths alone are not durable records.
 
-Current source-review event:
+Parked array source-review event:
 `670652f57461e567b82e9bafb94c5c67fd0618b6605a586ce3a77bb20fa04aae`.
 
-Current protected-audit event:
+Parked array audit event:
 `84dddc575ce3c749cae4bb83a220f21674e33c4ee66efe11a9ff2d61924bb275`.
 
 Their JSON files under `decomp_notes/experiments/events/` map artifact names to committed content objects.
 Use those records if an unpacked report is missing. Read `docs/experiments.md` before using preservation tools.
 Earlier information and path archive records are linked from the checkpoint and their review ledgers.
+
+The reconciliation validation archive is preserved by event
+`14e24ac9f1ebda413fdeaa2533be21f1caedcd5d1a71afd2b0f8704463e5b8b8`.
+It contains the full 225-module audit, compiled objects, test log, static comparison, and original public dump.
+Final review event `19c7f517a7dbd9879532e249bf34c7b6a531eb75971b07d2ef76572199aafc5c` preserves both final ledgers.
+The verified command state is `673d56d6a6c1ce94968a924eaca4aa9affad47bed97d22cf69cfd236c5309430`.
+These records do not approve the parked array proposal or refresh the full linked-reference audit.
+
+Integrated commits:
+
+- `9b685c8f2`: preserved review inputs, failed proof drafts, corrections, and final validation.
+- `a0a7da2fd`: restored incoming-first Y conversion.
+- `cc6ad7259`: recorded the completed command accepted-drift decision.
+- `4b5fcc50e`: supplied the two independently proved original movement call identities.
+
+Main received these commits by fast-forward. Both target compiler-input fingerprints match the reviewed worktree.
+The main validation fingerprint also matches the full audit. No compiler-facing input changed during integration.
+Registry, line-ending, and diff checks pass on main. Only the task and parked-proposal notes changed afterward.
 
 ## Keep this list current
 

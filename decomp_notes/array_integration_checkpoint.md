@@ -1,5 +1,23 @@
 # Array integration checkpoint
 
+## Parked proposal: 2026-09-11
+
+The user authorized pending-task reconciliation before the behavior-first workflow transition.
+Root parks the unapproved shared-array remainder at `review/array-current-20260909`, commit `d7d1df629`.
+Keep `build/array-caller-worktree` locked and preserve all earlier branches, candidates, and immutable records.
+This is an integration deferral, not approval or rejection of the remaining changes.
+
+Main `f995319b9` already contains the two `doMove` tail repairs through commit `70f87ecd4`.
+The older statements below that call those repairs isolated are historical.
+Whole-function movement review and any remaining protected-header delta are separate tasks.
+The four Tech functions also have completed accepted-drift decisions; do not put them back into matching work.
+
+Restart requires a selected integration owner, a current main base, and a fresh complete affected-owner comparison.
+The old 41-description count does not describe current main or 41 confirmed defects.
+Review every new delta before integration. Existing approvals apply only to their recorded inputs and scope.
+The parked proposal does not block planning the behavior-first workflow.
+See `../tasks.md` for the corrected task decisions and the separate behavior-review backlog.
+
 ## Current review: tactical priority repairs
 
 Main commit `51ad896e3` integrates the two public-array priority queries and the natural public add in `taskResearch`.
