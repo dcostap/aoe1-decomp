@@ -115,6 +115,14 @@ def test_prepare_locates_unambiguous_definition_without_orchestrator_source_revi
     assert br.load_json(wave / "wave.json")["removal"]["start_line"] == 2
 
 
+def test_locator_uses_decompiler_parameter_count_for_overloads():
+    source = (b"int sample(int x)\n{\n    return x;\n}\n"
+              b"int sample(int x, int y)\n{\n    return x + y;\n}\n")
+    packet = b"=== GhidraDecompilerExcerpt ===\nint Type::sample(int x, int y) {\n"
+    assert br.decompiler_parameter_count(packet, "sample") == 2
+    assert br.locate_function_range(source, "sample", 2) == (5, 8)
+
+
 def test_source_comes_from_base_not_dirty_main(repo, tmp_path):
     (repo / "include/sample.h").write_bytes(b"uncommitted declaration\n")
     _, worker = prepare(repo, tmp_path)

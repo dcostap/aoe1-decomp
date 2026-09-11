@@ -225,7 +225,29 @@ def blank_function(data, start, end, va, name):
     return b"".join(lines[:start - 1]) + marker + b"".join(lines[end:]), sha(selected)
 
 
-def locate_function_range(data, name):
+def decompiler_parameter_count(packet, name):
+    match = re.search(rb"=== GhidraDecompilerExcerpt ===.*?\b" + re.escape(name.encode()) + rb"\s*\(", packet, re.S)
+    if not match:
+        return None
+    start = match.end() - 1
+    depth = 0
+    commas = 0
+    content = 0
+    for byte in packet[start + 1:]:
+        if byte == ord("("):
+            depth += 1
+        elif byte == ord(")"):
+            if depth == 0:
+                return commas + 1 if content else 0
+            depth -= 1
+        elif byte == ord(",") and depth == 0:
+            commas += 1
+        elif not chr(byte).isspace():
+            content = 1
+    return None
+
+
+def locate_function_range(data, name, expected_parameters=None):
     def erase(match):
         return bytes(10 if byte == 10 else 13 if byte == 13 else 32 for byte in match.group())
     masked = TOKEN.sub(erase, data)
@@ -262,6 +284,29 @@ def locate_function_range(data, name):
         except ValueError:
             continue
         candidates.append((start, end))
+    if len(candidates) > 1 and expected_parameters is not None:
+        filtered = []
+        for start, end in candidates:
+            line_start = data.rfind(b"\n", 0, data.find(name.encode(), 0))
+            selected = b"\n".join(data.splitlines()[start - 1:end])
+            opening = selected.find(b"(")
+            depth = 0
+            commas = 0
+            content = 0
+            for byte in selected[opening + 1:]:
+                if byte == ord("("):
+                    depth += 1
+                elif byte == ord(")"):
+                    if depth == 0:
+                        if (commas + 1 if content else 0) == expected_parameters:
+                            filtered.append((start, end))
+                        break
+                    depth -= 1
+                elif byte == ord(",") and depth == 0:
+                    commas += 1
+                elif not chr(byte).isspace():
+                    content = 1
+        candidates = filtered
     if len(candidates) != 1:
         raise ValueError(f"Automatic definition lookup found {len(candidates)} candidates for {name}; supply an explicit range")
     return candidates[0]
@@ -385,7 +430,8 @@ def prepare(args):
     if (args.start_line is None) != (args.end_line is None):
         raise ValueError("Supply both target line values or neither")
     if args.start_line is None:
-        args.start_line, args.end_line = locate_function_range(files[target["source"]], target["name"])
+        args.start_line, args.end_line = locate_function_range(
+            files[target["source"]], target["name"], decompiler_parameter_count(files[target["packet"]], target["name"]))
     files[target["source"]], removed_hash = blank_function(
         files[target["source"]], args.start_line, args.end_line, va, target["name"])
     removal = dict(start_line=args.start_line, end_line=args.end_line, sha256=removed_hash)
