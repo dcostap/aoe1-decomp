@@ -1,5 +1,15 @@
 # Remaining matching claims
 
+## Reference-gap closure: 2026-09-11
+
+The `00405850` direct-target gap recorded below is now resolved.
+Original PDB publics independently prove the complete `findPath` and `doMove` symbols.
+The original REL32 calls reach those same entries.
+The two reviewed identity records introduce no aliases or source changes.
+Fresh target checks leave only the completed two-byte register drift, with zero unknown direct targets.
+See `../logic_reviews/00405850.md` for input hashes, exact call addresses, preserved evidence, and remaining storage limits.
+The historical linked-reference totals below are not refreshed by this focused review.
+
 Base: `ef479e9e7`. All executable inspection is static. No game is run.
 
 ## Original target identities

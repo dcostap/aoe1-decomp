@@ -7,6 +7,8 @@
     "C:/Program Files (x86)/DevStudio/VC/lib/OLDNAMES.LIB": "56190b253c7c5f127569cd1dc037e27600f42e4952f558e7ab1966cbb98cb1d6"
   },
   "targets": {
+    "0045D6C0": {"symbol": "?findPath@RGE_Moving_Object@@QAE?AW4PathResult@1@XZ", "aliases": []},
+    "0045DB90": {"symbol": "?doMove@RGE_Moving_Object@@QAEHXZ", "aliases": []},
     "0054B700": {"symbol": "__ftol", "aliases": []},
     "0054B9A0": {"symbol": "_strstr", "aliases": []},
     "0054B990": {"symbol": "__unlink", "aliases": ["_unlink"]},
