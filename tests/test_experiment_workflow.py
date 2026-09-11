@@ -36,8 +36,9 @@ class ExperimentWorkflowTests(unittest.TestCase):
             self.assertIn(required, workflow)
 
     def test_reviewer_variation_is_opt_in_and_discoverable(self):
+        self.assertIn("agent_roles", self.text("AGENTS.md"))
         for path in (
-            "AGENTS.md", "README.md", "docs/project_reference.md",
+            "README.md", "docs/project_reference.md",
             "docs/experiments.md", "agent_roles/matching_worker.md",
             "agent_roles/orchestrator.md", "agent_roles/root_orchestrator.md",
         ):

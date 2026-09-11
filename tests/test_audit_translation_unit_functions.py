@@ -52,6 +52,30 @@ def test_accepted_drift_mismatch_stays_closed() -> None:
     assert action == "hold_accepted_drift"
 
 
+def test_new_verified_logic_does_not_enter_byte_matching_work() -> None:
+    for result in ("MATCH", "MISMATCH"):
+        category, action, _ = classify(
+            status("new_verified_logic"), comparison(result), False, False, []
+        )
+        assert category == "new_verified_logic_observed"
+        assert action == "hold_new_verified_logic"
+
+
+def test_new_verified_logic_still_reports_structural_errors() -> None:
+    for compared, expected in (
+        (comparison(relocations=1), "repair_relocation_targets"),
+        (comparison(owner="unverified"), "investigate_ownership"),
+        (comparison("NOT_EMITTED"), "repair_missing_symbol"),
+    ):
+        _, action, _ = classify(status("new_verified_logic"), compared, False, False, [])
+        assert action == expected
+
+
+def test_new_verified_logic_does_not_require_original_body_size() -> None:
+    _, action, _ = classify(status("new_verified_logic"), comparison(boundaries=1), False, False, [])
+    assert action == "hold_new_verified_logic"
+
+
 def test_zero_byte_owner_failure_becomes_ownership_task() -> None:
     category, action, _ = classify(
         status("matching"), comparison(difference=0, owner="unverified"), False, False, []

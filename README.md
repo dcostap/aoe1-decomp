@@ -11,8 +11,9 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
 - `logic_reviews/` contains semantic-review ledgers at `logic_reviews/<VA>.md`.
+- `logic_matching/` preserves behavior-recovery waves, attempts, and candidates.
 - `runtime/` contains the local complete game runtime. It is ignored except for its README.
-- `agent_roles/` contains the root orchestrator, orchestrator, matching worker, and matching reviewer role definitions.
+- `agent_roles/` contains matching and behavior-recovery role definitions.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
 It does not store status or source ownership.
@@ -29,6 +30,7 @@ Use one of these values:
 - `accepted_drift`: Semantic review proves the canonical source behavior is
   equal. This is a completed result, not matching debt.
 - `verified_logic`: A semantic review approved the source.
+- `new_verified_logic`: The behavior-recovery workflow completed and reviewed the source. The old `verified_logic` set stays separate.
 - `scratch`: The natural source still needs matching work.
 - `unresolved`: Source exists, but no build route is proved.
 
@@ -50,6 +52,15 @@ In that mode, the worker investigates, an independent reviewer checks the stoppe
 The orchestrator does not prepare every technical question or repeat valid reviewer analysis.
 See `docs/matching_with_reviewers.md` and `agent_roles/matching_reviewer.md` for the launch contract and procedures.
 Both workflows require `docs/experiments.md` and the same correctness standards.
+
+## Behavior recovery
+
+This separate, opt-in workflow gives each worker a fresh repository and one target function.
+Workers reconstruct a blank target or review a supplied candidate without old matching notes or history.
+One orchestrator preserves attempts, selects candidates, reviews behavior, and integrates results.
+See `agent_roles/behavior_recovery_orchestrator.md` for the workflow and tool use.
+Copy `agent_roles/behavior_recovery_worker.md` into each prepared workspace as its root `AGENTS.md`.
+Run `python tools/behavior_recovery.py --help` for preparation and collection commands.
 
 ## Common commands
 

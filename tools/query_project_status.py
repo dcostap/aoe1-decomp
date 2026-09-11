@@ -15,6 +15,7 @@ from status_core import (
     packet_path_for_row,
     sort_status_rows,
     status_counts,
+    SOURCE_BUCKETS,
 )
 from target_session import (
     classify_next_stage,
@@ -57,9 +58,10 @@ def parse_args() -> argparse.Namespace:
     source.add_argument("--matching", action="store_true", help="Only matching functions")
     source.add_argument("--accepted-drift", action="store_true", help="Only accepted-drift functions")
     source.add_argument("--verified-logic", action="store_true", help="Only verified-logic functions")
+    source.add_argument("--new-verified-logic", action="store_true", help="Only functions completed through behavior recovery")
     source.add_argument("--unresolved", action="store_true", help="Only source-owned functions without a proved build route")
     source.add_argument("--conflict", action="store_true", help="Only conflict functions")
-    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "unresolved", "unclaimed", "conflict"], help="Only this source bucket")
+    source.add_argument("--source-bucket", choices=SOURCE_BUCKETS, help="Only this source bucket")
 
     remaining = parser.add_mutually_exclusive_group()
     remaining.add_argument("--remaining", action="store_true", help="Only remaining work (scratch/unresolved/unclaimed/conflict)")
@@ -169,6 +171,8 @@ def source_bucket_from_args(args: argparse.Namespace) -> str | None:
         return "accepted_drift"
     if args.verified_logic:
         return "verified_logic"
+    if args.new_verified_logic:
+        return "new_verified_logic"
     if args.unresolved:
         return "unresolved"
     if args.conflict:
@@ -316,6 +320,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         f"matching={counts['matching']} "
         f"accepted_drift={counts['accepted_drift']} "
         f"verified_logic={counts['verified_logic']} "
+        f"new_verified_logic={counts['new_verified_logic']} "
         f"scratch={counts['scratch']} "
         f"unresolved={counts['unresolved']} "
         f"unclaimed={counts['unclaimed']} "
@@ -327,7 +332,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
             for row in rows
             if row.get("source_bucket") == bucket
         )
-        for bucket in ("matching", "accepted_drift", "verified_logic", "scratch", "unresolved", "unclaimed", "conflict")
+        for bucket in SOURCE_BUCKETS
     }
     print(
         "source_bytes: "

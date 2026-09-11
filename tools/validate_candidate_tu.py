@@ -26,7 +26,7 @@ from function_compare import compile_source, compare_object_function
 
 
 _INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"]+)"(?:\s*//.*)?\s*$')
-_SOURCE_BANKS = {"matching", "accepted_drift", "verified_logic", "scratch"}
+_SOURCE_BANKS = {"matching", "accepted_drift", "verified_logic", "new_verified_logic", "scratch"}
 _INLINE_ASM = re.compile(r"\b(?:__asm|_asm)\b")
 _FAKE_VIRTUAL_SLOT = re.compile(
     r"\bvirtual\b[^;{]*(?:\bvf[0-9A-Fa-f]{2,}\b|\bvpad[0-9A-Fa-f]{2,}\b)"

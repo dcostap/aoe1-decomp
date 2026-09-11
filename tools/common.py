@@ -351,6 +351,7 @@ _FUNCTION_STATUSES = {
     "matching",
     "accepted_drift",
     "verified_logic",
+    "new_verified_logic",
     "scratch",
     "unresolved",
 }

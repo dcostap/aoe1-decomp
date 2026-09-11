@@ -33,6 +33,7 @@ SOURCE_BUCKETS = [
     "matching",
     "accepted_drift",
     "verified_logic",
+    "new_verified_logic",
     "scratch",
     "unresolved",
     "unclaimed",
@@ -231,8 +232,8 @@ def enrich_status_rows(
 
         if include_source_notes:
             notes = default_header_notes()
-            if row.get("source_bucket") == "verified_logic" and row.get("has_logic_review") != "yes":
-                missing_ledger = "verified_logic source has no logic-review ledger"
+            if row.get("source_bucket") in {"verified_logic", "new_verified_logic"} and row.get("has_logic_review") != "yes":
+                missing_ledger = f"{row['source_bucket']} source has no logic-review ledger"
                 notes["BLOCKER"] = (
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
                 )

@@ -16,6 +16,8 @@ Role definitions live under `agent_roles/`:
 - `orchestrator.md` defines one-worktree matching worker management and review.
 - `matching_worker.md` defines matching work for one natural translation unit.
 - `matching_reviewer.md` defines independent technical review in the optional reviewer variation.
+- `behavior_recovery_orchestrator.md` defines independent reconstruction waves and integration.
+- `behavior_recovery_worker.md` becomes each behavior workspace's root `AGENTS.md`.
 
 The existing matching workflow remains the default.
 Select `Workflow: matching with reviewers` to use `docs/matching_with_reviewers.md`.
@@ -70,7 +72,7 @@ A buildable source file has this form:
 
 ### Function fields
 
-- `status` is `matching`, `accepted_drift`, `verified_logic`, `scratch`, or `unresolved`.
+- `status` is `matching`, `accepted_drift`, `verified_logic`, `new_verified_logic`, `scratch`, or `unresolved`.
 - `symbol` is the decorated object symbol for a configured build.
 - `emission_source` selects a configured natural C/C++ module for a header-owned function.
   The header keeps source ownership. The selected module supplies its existing compiler profile and emitted object.
@@ -83,6 +85,10 @@ drift back into matching work only because bytes differ.
 
 A function without a proved build route has no `symbol` field.
 Source, symbol, and compiler profile do not depend on matching status.
+
+`new_verified_logic` records completed behavior recovery under the behavior-recovery workflow.
+It requires a semantic review ledger and does not claim exact bytes.
+The existing `verified_logic` set remains separate and unchanged.
 
 ### Compiler profiles
 
@@ -101,6 +107,7 @@ The response files contain compiler arguments only.
 
 ## Daily commands
 
+- `behavior_recovery.py` prepares behavior workspaces and preserves attempts and integration candidates.
 - `query_project_status.py` queries status, paths, notes, and history.
 - `target_session.py` manages function notebooks and translation-unit reservations.
 - `experiment_history.py` preserves durable experiment branches and reproduces their compiler inputs.

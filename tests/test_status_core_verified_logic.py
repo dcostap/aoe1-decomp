@@ -15,6 +15,8 @@ import common  # noqa: E402
 
 
 class VerifiedLogicStatusTests(unittest.TestCase):
+    status = "verified_logic"
+
     def test_preferred_source_path_finds_verified_logic(self) -> None:
         record = {"va": "00400000", "name": "demo"}
         with tempfile.TemporaryDirectory() as temporary:
@@ -24,7 +26,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
             entry = {
                 "module": {"name": "demo", "source": "src/demo.cpp"},
-                "status": "verified_logic",
+                "status": self.status,
             }
             with patch.object(common, "REPO_ROOT", root), patch.object(
                 common, "function_entry_for_va", return_value=entry
@@ -67,7 +69,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                     "function_entry_for_va",
                     return_value={
                         "module": {"name": "demo", "source": "src/demo.cpp"},
-                        "status": "verified_logic",
+                        "status": self.status,
                     },
                 ),
             ):
@@ -76,7 +78,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                     include_diff_metrics=False,
                 )
 
-        self.assertEqual(rows[0]["source_bucket"], "verified_logic")
+        self.assertEqual(rows[0]["source_bucket"], self.status)
         self.assertEqual(rows[0]["is_remaining"], "no")
         self.assertEqual(Path(rows[0]["logic_review_path"]), Path("logic_reviews/00400000.md"))
         self.assertEqual(rows[0]["has_logic_review"], "yes")
@@ -112,7 +114,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                     "function_entry_for_va",
                     return_value={
                         "module": {"name": "demo", "source": "src/demo.cpp"},
-                        "status": "verified_logic",
+                        "status": self.status,
                     },
                 ),
             ):
@@ -121,10 +123,18 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                     include_diff_metrics=False,
                 )
 
-        self.assertEqual(rows[0]["source_bucket"], "verified_logic")
+        self.assertEqual(rows[0]["source_bucket"], self.status)
         self.assertEqual(rows[0]["has_logic_review"], "no")
         self.assertEqual(rows[0]["has_blocker"], "yes")
         self.assertIn("no logic-review ledger", rows[0]["source_blocker"])
+
+
+class NewVerifiedLogicStatusTests(VerifiedLogicStatusTests):
+    status = "new_verified_logic"
+
+    def test_registry_accepts_new_status(self) -> None:
+        self.assertIn(self.status, common._FUNCTION_STATUSES)
+        self.assertIn("verified_logic", common._FUNCTION_STATUSES)
 
 
 if __name__ == "__main__":
