@@ -62,7 +62,7 @@
     "0041F830": {"status": "matching", "symbol": "?stop_sound_system@RGE_Base_Game@@MAEXXZ"},
     "0041F920": {"status": "matching", "symbol": "?restart_sound_system@RGE_Base_Game@@MAEHXZ"},
     "0041F9B0": {"status": "matching", "symbol": "?stop_music_system@RGE_Base_Game@@MAEXXZ"},
-    "0041F9F0": {"status": "scratch", "symbol": "?restart_music_system@RGE_Base_Game@@MAEHXZ"},
+    "0041F9F0": {"status": "new_verified_logic", "symbol": "?restart_music_system@RGE_Base_Game@@MAEHXZ", "behavior_review": "logic_matching/0041F9F0/review-01/attempt-01"},
     "0041FA90": {"status": "matching", "symbol": "?shutdown_music_system@RGE_Base_Game@@UAEXXZ"},
     "0041FAF0": {"status": "matching", "symbol": "?make_font@RGE_Base_Game@@IAEPAXPAXJH@Z"},
     "0041FBC0": {"status": "matching", "symbol": "?make_font@RGE_Base_Game@@IAEPAXPAXPADHHH@Z"},

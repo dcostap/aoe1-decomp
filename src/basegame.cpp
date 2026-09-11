@@ -2251,30 +2251,31 @@ void RGE_Base_Game::stop_music_system(void) {
 
 int RGE_Base_Game::restart_music_system()
 {
-    if (this->music_system == 0)
+    TMusic_System* music_system = this->music_system;
+    if (music_system == 0)
         return 1;
 
-    if (this->save_music_track_from != 0 &&
-        this->save_music_track_from == this->save_music_track_to) {
-        this->music_system->play_track(this->save_music_track_from,
-                                       this->save_music_loop,
-                                       this->save_music_pos);
-        return 1;
-    }
+    int track_from = this->save_music_track_from;
+    if (track_from != 0) {
+        if (track_from == this->save_music_track_to) {
+            music_system->play_track(track_from, this->save_music_loop,
+                                     this->save_music_pos);
+            return 1;
+        }
 
-    if (this->save_music_track_from != 0 && this->save_music_track_to != 0) {
-        this->music_system->play_tracks(this->save_music_track_from,
-                                        this->save_music_track_to,
-                                        this->save_music_loop,
-                                        this->save_music_cur_track,
-                                        this->save_music_pos);
-        return 1;
+        if (track_from != 0 && this->save_music_track_to != 0) {
+            music_system->play_tracks(track_from, this->save_music_track_to,
+                                      this->save_music_loop,
+                                      this->save_music_cur_track,
+                                      this->save_music_pos);
+            return 1;
+        }
     }
 
     if (this->save_music_file[0] != 0)
-        this->music_system->play_file(this->save_music_file,
-                                      this->save_music_loop,
-                                      this->save_music_pos);
+        music_system->play_file(this->save_music_file, this->save_music_loop,
+                                this->save_music_pos);
+
     return 1;
 }
 
