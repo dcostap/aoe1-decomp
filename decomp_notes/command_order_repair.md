@@ -1,5 +1,17 @@
 # Command conversion-order repair
 
+## Current decision: 2026-09-11
+
+The incoming-int candidate passes complete static review under the current supported stack-input scope.
+Its fresh compiled bytes equal the preserved candidate bytes.
+The old counterexample below depends on an invented pointer into future callee-owned storage.
+Current policy excludes that case without executable evidence of actual use.
+Ordinary caller-owned objects and their aliases remain covered.
+
+Root approves the natural incoming-Y repair as accepted drift.
+See `logic_reviews/00435110.md` for all 64 instructions, helper behavior, fault order, and closure evidence.
+The following rejection records the historical scope. It does not request another matching pass.
+
 ## Behavior
 
 The original `00435110` converts incoming Y before saved Y.

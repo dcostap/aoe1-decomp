@@ -735,7 +735,8 @@ unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* orde
     if (n == last_n) {
 
         if ((short)(int)last_order->location_x == (short)(int)order->location_x) {
-            if ((short)(int)last_order->location_y == (short)(int)order->location_y) {
+            int order_y = (int)order->location_y;
+            if ((short)last_order->location_y == (short)order_y) {
                 if (last_order->target.id == order->target.id) {
                     for (int i = 0; i < (int)n; i++) {
                         if (units[i].id != last_units[i].id)
