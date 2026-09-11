@@ -68,7 +68,7 @@ def parse_args() -> argparse.Namespace:
     remaining.add_argument("--done", action="store_true", help="Only non-remaining functions")
 
     logic_review = parser.add_mutually_exclusive_group()
-    logic_review.add_argument("--logic-review", action="store_true", help="Only functions with a logic-review ledger")
+    logic_review.add_argument("--logic-review", action="store_true", help="Only functions with a valid semantic review record")
     logic_review.add_argument(
         "--logic-review-in-progress",
         action="store_true",

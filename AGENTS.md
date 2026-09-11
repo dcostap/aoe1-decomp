@@ -78,7 +78,8 @@ Repository source roles are:
 - natural `src\*.c` and `src\*.cpp` modules: compiler-facing handwritten owners;
 - `config\functions\`: source, status, build recipe, and symbol registry;
 - `decomp_notes\`: durable function and module notes;
-- `logic_reviews\`: versioned semantic-review ledgers;
+- `logic_reviews\`: versioned semantic-review ledgers for the older workflows;
+- `logic_matching\`: generated behavior-recovery payloads and reviewer commit records;
 - `LESSONS.md`: reusable VC5 matching knowledge.
 
 The source tree uses final, original-like modules:
@@ -119,7 +120,7 @@ for file content searches. Do not recursively enumerate the repository with
 Separate facts from hypotheses. State the source of each important conclusion.
 Do not call generated metadata a behavior oracle.
 
-Record durable target conclusions in the target source or its assigned ledger.
+Record durable target conclusions in the target source, assigned ledger, or behavior-recovery commit record.
 Do not rely on ignored session files as the only record.
 
 Add a reusable lesson only after a non-obvious pattern is supported by exact or

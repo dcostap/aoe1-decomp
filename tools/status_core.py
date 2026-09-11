@@ -215,6 +215,29 @@ def _source_path_for_row(row: dict[str, str]) -> Path | None:
     return REPO_ROOT / raw_paths[0]
 
 
+def behavior_review_path(entry: dict[str, object] | None, va: str) -> Path | None:
+    if entry is None:
+        return None
+    raw = str(entry.get("behavior_review") or "").replace("\\", "/")
+    if not raw or raw.startswith("/") or ":" in raw or ".." in Path(raw).parts:
+        return None
+    path = REPO_ROOT / raw
+    if not path.resolve().is_relative_to(REPO_ROOT.resolve()):
+        return None
+    metadata = path / "attempt.json"
+    commits = path / "commits.patch"
+    try:
+        record = json.loads(metadata.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return None
+    expected_root = (REPO_ROOT / "logic_matching" / va.upper()).resolve()
+    if (record.get("state") == "complete" and record.get("mode") == "review"
+            and record.get("verdict") == "PERFECT" and commits.is_file()
+            and path.resolve().is_relative_to(expected_root)):
+        return path
+    return None
+
+
 def enrich_status_rows(
     rows: list[dict[str, str]],
     *,
@@ -233,7 +256,7 @@ def enrich_status_rows(
         if include_source_notes:
             notes = default_header_notes()
             if row.get("source_bucket") in {"verified_logic", "new_verified_logic"} and row.get("has_logic_review") != "yes":
-                missing_ledger = f"{row['source_bucket']} source has no logic-review ledger"
+                missing_ledger = f"{row['source_bucket']} source has no valid review record"
                 notes["BLOCKER"] = (
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
                 )
@@ -418,6 +441,8 @@ def build_status_rows(
             for path in present_paths
         )
         logic_review_path = logic_review_ledgers.get(str(record["va"]).upper())
+        if source_bucket == "new_verified_logic":
+            logic_review_path = behavior_review_path(module_entry, record_va)
 
         parent_fragment = parent_owned_fragments.get(int(record["va"], 16))
         parent_va_text = f"{parent_fragment[0]:08X}" if parent_fragment else ""
@@ -462,7 +487,11 @@ def build_status_rows(
             "compiler_flags": flags_path,
             "function_note_path": function_note_path,
             "module_note_path": module_note_path,
-            "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
+            "logic_review_path": (
+                str(logic_review_path.relative_to(REPO_ROOT)).replace("\\", "/")
+                if logic_review_path is not None and logic_review_path.is_relative_to(REPO_ROOT)
+                else ""
+            ),
             "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,
             "corpus_reason": corpus_reason,

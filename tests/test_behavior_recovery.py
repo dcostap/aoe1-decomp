@@ -67,8 +67,7 @@ def repo(tmp_path):
 
 def prepare(repo, tmp_path, **kwargs):
     values = dict(repo=repo, destination=tmp_path / "worker", base="HEAD", va=VA,
-                  mode="reconstruct", start_line=2, end_line=6, candidate=None,
-                  store=tmp_path / "store", wave_name="wave-test")
+                  start_line=2, end_line=6, store=tmp_path / "store", wave_name="wave-test")
     values.update(kwargs)
     args = argparse.Namespace(**values)
     with patch.object(br, "preflight", return_value={"compiler_files": {}}):
@@ -77,15 +76,15 @@ def prepare(repo, tmp_path, **kwargs):
 
 
 def deliver(workspace, source=SOURCE, **extra):
-    br.write_files(workspace, {"src/sample.cpp": source,
-                              "report.md": b"# Result\nFixture only. No behavior claim.\n", **extra})
+    br.write_files(workspace, {"src/sample.cpp": source, **extra})
     br.git(workspace, "add", "--all")
-    br.git(workspace, "commit", "-m", "Deliver fixture", "-m", "Extended reasoning survives collection.")
+    br.git(workspace, "commit", "-m", "Deliver fixture", "-m", "Extended reasoning survives collection.\n\nCompile: passed.")
+    br.write_files(workspace, {"build/manifests/build_sample.json": b'{"returncode": 0}\n'})
 
 
 def collect(repo, wave, workspace, **kwargs):
     values = dict(repo=repo, wave=wave, workspace=workspace, attempt="attempt-01",
-                  agent_id="test", model="test/fixture", thinking="off", incomplete=False, evidence=[])
+                  agent_id="test", model="test/fixture", thinking="off", incomplete=False)
     values.update(kwargs)
     return br.collect(argparse.Namespace(**values))
 
@@ -110,6 +109,12 @@ def test_prepare_blinds_before_git_and_preserves_other_source(repo, tmp_path):
     assert br.git(worker, "rev-parse", "HEAD").decode().strip() == meta["prepared_commit"]
 
 
+def test_prepare_locates_unambiguous_definition_without_orchestrator_source_review(repo, tmp_path):
+    wave, worker = prepare(repo, tmp_path, start_line=None, end_line=None)
+    assert b"BEHAVIOR_RECOVERY_UNIMPLEMENTED_00400000" in (worker / "src/sample.cpp").read_bytes()
+    assert br.load_json(wave / "wave.json")["removal"]["start_line"] == 2
+
+
 def test_source_comes_from_base_not_dirty_main(repo, tmp_path):
     (repo / "include/sample.h").write_bytes(b"uncommitted declaration\n")
     _, worker = prepare(repo, tmp_path)
@@ -127,31 +132,30 @@ def test_second_workspace_reproduces_baseline_without_history(repo, tmp_path):
     assert br.git(destination, "rev-list", "--count", "HEAD").strip() == b"1"
 
 
-def test_collect_roundtrip_binary_deletion_report_and_history(repo, tmp_path):
+def test_collect_roundtrip_binary_deletion_message_and_history(repo, tmp_path):
     wave, worker = prepare(repo, tmp_path)
     deliver(worker, SOURCE.replace(b"x + 1", b"x + 2"), **{"src/data.inc": b"\x00\xff\x01"})
     (worker / "include/sample.h").unlink()
     br.git(worker, "add", "--all")
     br.git(worker, "commit", "-m", "Remove fixture header")
-    (worker / "build").mkdir()
-    (worker / "build/compile.json").write_bytes(b'{"returncode": 0}\n')
-    attempt = collect(repo, wave, worker, evidence=["build/compile.json"])
+    (worker / "build").mkdir(exist_ok=True)
+    attempt = collect(repo, wave, worker)
     meta = br.load_json(attempt / "attempt.json")
     assert meta["state"] == "complete"
     assert b"Extended reasoning survives" in (attempt / "commits.patch").read_bytes()
     assert b"GIT binary patch" in (attempt / "changes.patch").read_bytes()
-    assert (attempt / "evidence/build/compile.json").read_bytes() == b'{"returncode": 0}\n'
+    assert (attempt / "evidence/build/manifests/build_sample.json").read_bytes() == b'{"returncode": 0}\n'
     restored = tmp_path / "restored"
     br.workspace(argparse.Namespace(repo=repo, wave=wave, destination=restored))
     br.git(restored, "apply", "--index", "--whitespace=nowarn", "-", data=(attempt / "changes.patch").read_bytes())
     assert br.git(restored, "write-tree").decode().strip() == meta["final_tree"]
 
 
-def test_collection_refuses_dirty_missing_report_and_overwrite(repo, tmp_path):
+def test_collection_refuses_missing_delivery_dirty_and_overwrite(repo, tmp_path):
     wave, worker = prepare(repo, tmp_path)
-    with pytest.raises(ValueError, match="report.md"):
+    with pytest.raises(ValueError, match="delivery commit"):
         collect(repo, wave, worker)
-    (worker / "report.md").write_bytes(b"not committed")
+    (worker / "scratch.txt").write_bytes(b"not committed")
     with pytest.raises(ValueError, match="dirty"):
         collect(repo, wave, worker)
     deliver(worker)
@@ -172,7 +176,7 @@ def test_interrupted_collection_preserves_committed_dirty_and_untracked(repo, tm
         assert archive.read("probe.txt") == b"untracked input"
 
 
-def test_candidate_uses_main_base_and_review_keeps_supporting_changes(repo, tmp_path):
+def test_review_receives_all_payloads_and_perfect_result_builds_integration_patch(repo, tmp_path):
     wave, worker = prepare(repo, tmp_path)
     source = SOURCE.replace(b"x + 1", b"x + 2")
     registry = "config/functions/src/sample.cpp.json"
@@ -180,28 +184,27 @@ def test_candidate_uses_main_base_and_review_keeps_supporting_changes(repo, tmp_
     module["functions"][VA]["symbol"] = "?sample@@YAHJ@Z"
     deliver(worker, source, **{"include/sample.h": b"int sample(int value);\n", registry: br.json_bytes(module)})
     attempt = collect(repo, wave, worker)
-    report = tmp_path / "selection.md"
-    report.write_bytes(b"Test candidate. Not a behavior approval.\n")
     before = br.git(repo, "status", "--porcelain")
-    br.candidate(argparse.Namespace(repo=repo, attempt=attempt, name="candidate-01",
-                                   path=["src/sample.cpp", "include/sample.h", registry], report=report))
-    candidate = wave.parent / "candidate-01"
-    assert b"UNIMPLEMENTED" not in (candidate / "changes.patch").read_bytes()
-    assert br.git(repo, "status", "--porcelain") == before
-    review_wave, reviewer = prepare(repo, tmp_path, mode="review", start_line=None, end_line=None,
-                                   candidate=candidate, destination=tmp_path / "reviewer", wave_name="wave-review")
+    args = argparse.Namespace(repo=repo, attempt=[attempt], destination=tmp_path / "reviewer",
+                              store=tmp_path / "store", wave_name="review-test")
+    with patch.object(br, "preflight", return_value={"compiler_files": {}}):
+        review_wave = br.review(args)
+    reviewer = args.destination
+    assert b"UNIMPLEMENTED" in (reviewer / "src/sample.cpp").read_bytes()
+    assert (reviewer / "deliverables/delivery-01/source.patch").is_file()
+    br.git(reviewer, "apply", "--index", "--whitespace=nowarn", "deliverables/delivery-01/source.patch")
     assert (reviewer / "src/sample.cpp").read_bytes() == source
     assert (reviewer / "include/sample.h").read_bytes() == b"int sample(int value);\n"
-    assert br.load_json(reviewer / "assignment.json")["target"]["symbol"] == "?sample@@YAHJ@Z"
-    assert not (reviewer / "report.md").exists()
+    br.git(reviewer, "commit", "-m", "Approve fixture", "-m",
+           "Checked the supplied evidence. Compile passed.\n\nBehavior-Recovery-Choice: delivery-01\nBehavior-Recovery-Verdict: PERFECT")
+    br.write_files(reviewer, {"build/manifests/build_sample.json": b'{"returncode": 0}\n'})
     assert br.load_json(review_wave / "wave.json")["mode"] == "review"
-    # An unchanged review is useful and has a report-only patch.
-    br.write_files(reviewer, {"report.md": b"Checked the fixture. No source changes.\n"})
-    br.git(reviewer, "add", "report.md")
-    br.git(reviewer, "commit", "-m", "Unchanged review")
     reviewed = collect(repo, review_wave, reviewer)
-    result = (reviewed / "changes.patch").read_bytes()
-    assert b"report.md" in result and b"src/sample.cpp" not in result
+    review_meta = br.load_json(reviewed / "attempt.json")
+    assert review_meta["verdict"] == "PERFECT"
+    assert review_meta["choice"] == "delivery-01"
+    assert b"UNIMPLEMENTED" not in (reviewed / "integration.patch").read_bytes()
+    assert br.git(repo, "status", "--porcelain") == before
 
 
 def test_bad_archive_hash_stops_restore(repo, tmp_path):
@@ -282,7 +285,8 @@ def test_wrong_original_alias_is_rejected(repo, tmp_path):
 ])
 def test_preflight_rejects_wrong_compile_outcome(tmp_path, blank, mode, returncode, output, expected):
     body = b"#error BEHAVIOR_RECOVERY_UNIMPLEMENTED_00400000\n" if blank else SOURCE
-    br.write_files(tmp_path, {"src/sample.cpp": body, "assignment.json": br.json_bytes({"mode": mode})})
+    br.write_files(tmp_path, {"src/sample.cpp": body,
+                              "assignment.json": br.json_bytes({"blank_target": mode == "reconstruct"})})
     fake = SimpleNamespace(returncode=returncode, stdout=output, stderr=b"")
     with patch.object(br, "run", return_value=fake), pytest.raises(ValueError, match=expected):
         br.preflight(tmp_path, {"va": VA, "source": "src/sample.cpp"})
@@ -297,7 +301,7 @@ def test_preflight_records_expected_failure_or_success(tmp_path, blank):
     build = {"build_inputs": {"compiler": {"path": str(compiler)}},
              "command": ["fixture"], "returncode": code, "stdout": output.decode(), "stderr": ""}
     br.write_files(tmp_path, {"src/sample.cpp": b"#error " + output if blank else SOURCE,
-                              "assignment.json": br.json_bytes({"mode": "reconstruct" if blank else "review"}),
+                              "assignment.json": br.json_bytes({"blank_target": blank}),
                               "build/manifests/build_sample.json": br.json_bytes(build)})
     with patch.object(br, "run", return_value=SimpleNamespace(returncode=code, stdout=output, stderr=b"")):
         result = br.preflight(tmp_path, {"va": VA, "source": "src/sample.cpp"})

@@ -50,9 +50,23 @@ class VerifiedLogicStatusTests(unittest.TestCase):
             source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
-            ledger = root / "logic_reviews" / "00400000.md"
-            ledger.parent.mkdir(parents=True)
-            ledger.write_text("# Review\n", encoding="utf-8")
+            entry_record = {
+                "module": {"name": "demo", "source": "src/demo.cpp"},
+                "status": self.status,
+            }
+            if self.status == "new_verified_logic":
+                review = root / "logic_matching" / "00400000" / "review-test" / "attempt-01"
+                review.mkdir(parents=True)
+                (review / "attempt.json").write_text(
+                    '{"state":"complete","mode":"review","verdict":"PERFECT"}\n', encoding="utf-8")
+                (review / "commits.patch").write_text("review commit\n", encoding="utf-8")
+                entry_record["behavior_review"] = "logic_matching/00400000/review-test/attempt-01"
+                expected_review = Path(entry_record["behavior_review"])
+            else:
+                ledger = root / "logic_reviews" / "00400000.md"
+                ledger.parent.mkdir(parents=True)
+                ledger.write_text("# Review\n", encoding="utf-8")
+                expected_review = Path("logic_reviews/00400000.md")
 
             with (
                 patch.object(status_core, "REPO_ROOT", root),
@@ -67,10 +81,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(
                     status_core,
                     "function_entry_for_va",
-                    return_value={
-                        "module": {"name": "demo", "source": "src/demo.cpp"},
-                        "status": self.status,
-                    },
+                    return_value=entry_record,
                 ),
             ):
                 rows = status_core.build_status_rows(
@@ -80,7 +91,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
 
         self.assertEqual(rows[0]["source_bucket"], self.status)
         self.assertEqual(rows[0]["is_remaining"], "no")
-        self.assertEqual(Path(rows[0]["logic_review_path"]), Path("logic_reviews/00400000.md"))
+        self.assertEqual(Path(rows[0]["logic_review_path"]), expected_review)
         self.assertEqual(rows[0]["has_logic_review"], "yes")
 
     def test_verified_logic_without_ledger_is_flagged(self) -> None:
@@ -126,7 +137,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
         self.assertEqual(rows[0]["source_bucket"], self.status)
         self.assertEqual(rows[0]["has_logic_review"], "no")
         self.assertEqual(rows[0]["has_blocker"], "yes")
-        self.assertIn("no logic-review ledger", rows[0]["source_blocker"])
+        self.assertIn("no valid review record", rows[0]["source_blocker"])
 
 
 class NewVerifiedLogicStatusTests(VerifiedLogicStatusTests):

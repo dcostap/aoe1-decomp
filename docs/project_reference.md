@@ -87,7 +87,8 @@ A function without a proved build route has no `symbol` field.
 Source, symbol, and compiler profile do not depend on matching status.
 
 `new_verified_logic` records completed behavior recovery under the behavior-recovery workflow.
-It requires a semantic review ledger and does not claim exact bytes.
+It requires an archived `PERFECT` review delivery and does not claim exact bytes.
+Its registry entry uses `behavior_review` to name that attempt directory.
 The existing `verified_logic` set remains separate and unchanged.
 
 ### Compiler profiles
@@ -107,7 +108,7 @@ The response files contain compiler arguments only.
 
 ## Daily commands
 
-- `behavior_recovery.py` prepares behavior workspaces and preserves attempts and integration candidates.
+- `behavior_recovery.py` prepares reconstruction and review workspaces and preserves their deliveries.
 - `query_project_status.py` queries status, paths, notes, and history.
 - `target_session.py` manages function notebooks and translation-unit reservations.
 - `experiment_history.py` preserves durable experiment branches and reproduces their compiler inputs.

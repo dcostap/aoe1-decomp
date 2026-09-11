@@ -32,6 +32,7 @@ CONFIG_FILES = {
 }
 CONTEXT_FILES = {"agents.md", "agents.override.md", "claude.md"}
 SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".inl", ".inc"}
+COMPILER_PREFIXES = ("src/", "include/", "third_party/", "config/", "tools/")
 ORIGINAL_ROOT = "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/"
 THINKING = ("off", "minimal", "low", "medium", "high", "xhigh", "max")
 TOKEN = re.compile(rb'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\r\n]*|/\*.*?\*/', re.S)
@@ -224,6 +225,48 @@ def blank_function(data, start, end, va, name):
     return b"".join(lines[:start - 1]) + marker + b"".join(lines[end:]), sha(selected)
 
 
+def locate_function_range(data, name):
+    def erase(match):
+        return bytes(10 if byte == 10 else 13 if byte == 13 else 32 for byte in match.group())
+    masked = TOKEN.sub(erase, data)
+    candidates = []
+    pattern = re.compile(rb"(?<![\w])" + re.escape(name.encode()) + rb"\s*\(")
+    for match in pattern.finditer(masked):
+        opening = masked.find(b"{", match.end())
+        semicolon = masked.find(b";", match.end())
+        if opening < 0 or (semicolon >= 0 and semicolon < opening):
+            continue
+        depth = 0
+        closing = None
+        for index in range(opening, len(masked)):
+            if masked[index] == ord("{"):
+                depth += 1
+            elif masked[index] == ord("}"):
+                depth -= 1
+                if depth == 0:
+                    closing = index
+                    break
+        if closing is None:
+            continue
+        start = data.count(b"\n", 0, data.rfind(b"\n", 0, match.start()) + 1) + 1
+        end = data.count(b"\n", 0, closing) + 1
+        lines = data.splitlines()
+        while start > 1 and lines[start - 2].lstrip().startswith(b"//"):
+            start -= 1
+        if start > 1 and lines[start - 2].rstrip().endswith(b"*/"):
+            start -= 1
+            while start > 1 and b"/*" not in lines[start - 1]:
+                start -= 1
+        try:
+            blank_function(data, start, end, "00000000", name)
+        except ValueError:
+            continue
+        candidates.append((start, end))
+    if len(candidates) != 1:
+        raise ValueError(f"Automatic definition lookup found {len(candidates)} candidates for {name}; supply an explicit range")
+    return candidates[0]
+
+
 def export_input(root, base, va):
     tree = read_tree(root, base)
     binaries = json.loads(git(root, "show", f"{base}:config/binaries.json"))
@@ -307,11 +350,11 @@ def preflight(workspace, target):
     marker = f"BEHAVIOR_RECOVERY_UNIMPLEMENTED_{target['va']}"
     source = (workspace / target["source"]).read_bytes()
     output = (result.stdout + result.stderr).decode("utf-8", "replace")
-    if load_json(workspace / "assignment.json")["mode"] == "reconstruct":
+    if load_json(workspace / "assignment.json")["blank_target"]:
         if marker.encode() not in source or not result.returncode or marker not in output:
             raise ValueError(f"Blank-target compile must stop at its explicit marker:\n{output}")
     elif result.returncode:
-        raise ValueError(f"Review input does not compile:\n{output}")
+        raise ValueError(f"Prepared input does not compile:\n{output}")
     logs = list((workspace / "build/manifests").glob("build_*.json"))
     if len(logs) != 1:
         raise ValueError("Expected one fresh compiler-input manifest")
@@ -339,53 +382,23 @@ def prepare(args):
     if wave.exists():
         raise ValueError(f"Wave already exists: {wave}")
     files, target = export_input(root, base, va)
-    parent = None
-    if args.mode == "reconstruct":
-        if args.start_line is None or args.end_line is None or args.candidate:
-            raise ValueError("Reconstruction needs --start-line and --end-line, without --candidate")
-        files[target["source"]], removed_hash = blank_function(
-            files[target["source"]], args.start_line, args.end_line, va, target["name"])
-        removal = dict(start_line=args.start_line, end_line=args.end_line, sha256=removed_hash)
-    else:
-        if not args.candidate or args.start_line is not None or args.end_line is not None:
-            raise ValueError("Review needs --candidate, without a removal range")
-        candidate = load_json(args.candidate / "candidate.json")
-        patch = (args.candidate / "changes.patch").read_bytes()
-        if candidate["main_base"] != base or candidate["va"] != va or sha(patch) != candidate["patch_sha256"]:
-            raise ValueError("Candidate target, base, or patch hash does not match")
-        stage = scratch(root)
-        index = stage / "index"
-        env = git_env(index)
-        git(root, "read-tree", base, env=env)
-        if patch:
-            git(root, "apply", "--cached", "--whitespace=nowarn", "-", data=patch, env=env)
-        changed = git(root, "diff", "--cached", "--no-renames", "--name-only", "-z", base, env=env).split(b"\0")
-        candidate_tree = read_tree(root, git(root, "write-tree", env=env).decode().strip())
-        for raw in filter(None, changed):
-            name = relative(raw.decode())
-            if name not in files and not name.startswith(("src/", "include/", "third_party/")):
-                raise ValueError(f"Candidate changes a file outside the worker input: {name}")
-            if name in candidate_tree and candidate_tree[name][0] not in {"100644", "100755"}:
-                raise ValueError(f"Candidate contains a non-regular input: {name}")
-            result = run(["git", "show", f":{name}"], cwd=root, env=env, check=False)
-            if result.returncode:
-                files.pop(name, None)
-            else:
-                files[name] = result.stdout
-        target = target_from_files(files, va)
-        parent = reference(root, args.candidate)
-        removal = None
-    assignment = dict(mode=args.mode, target=target,
-                      compile_command=["python", "tools/build_function.py", "--va", va, "--force"],
-                      report="report.md")
+    if (args.start_line is None) != (args.end_line is None):
+        raise ValueError("Supply both target line values or neither")
+    if args.start_line is None:
+        args.start_line, args.end_line = locate_function_range(files[target["source"]], target["name"])
+    files[target["source"]], removed_hash = blank_function(
+        files[target["source"]], args.start_line, args.end_line, va, target["name"])
+    removal = dict(start_line=args.start_line, end_line=args.end_line, sha256=removed_hash)
+    assignment = dict(mode="reconstruct", blank_target=True, target=target,
+                      compile_command=["python", "tools/build_function.py", "--va", va, "--force"])
     files["assignment.json"] = json_bytes(assignment)
     commit = init_workspace(destination, files, date.isoformat())
     prerequisites = preflight(destination, target)
     payload = input_zip(files)
-    meta = dict(schema=1, va=va, main_base=base, mode=args.mode, target=target,
+    meta = dict(schema=2, va=va, main_base=base, mode="reconstruct", target=target,
                 created=date.isoformat(), prepared_commit=commit,
                 prepared_tree=git(destination, "rev-parse", "HEAD^{tree}").decode().strip(),
-                parent_candidate=parent, removal=removal, input_sha256=sha(payload),
+                parent_attempts=[], removal=removal, input_sha256=sha(payload),
                 files={n: sha(d) for n, d in files.items()}, prerequisites=prerequisites)
     wave.mkdir(parents=True, exist_ok=False)
     (wave / "input.zip").write_bytes(payload)
@@ -404,6 +417,86 @@ def workspace(args):
         if sha(Path(name).read_bytes()) != expected:
             raise ValueError(f"Pinned compiler file changed: {name}")
     print(f"Workspace: {args.destination}\nBaseline: {commit}")
+
+
+def attempt_source_patch(repo, attempt_path):
+    attempt_path = attempt_path.resolve()
+    wave = attempt_path.parent
+    meta, files = load_input(wave)
+    attempt = load_json(attempt_path / "attempt.json")
+    patch = (attempt_path / "changes.patch").read_bytes()
+    if attempt["state"] != "complete" or sha(patch) != attempt["files"]["changes.patch"]:
+        raise ValueError(f"Review input is incomplete or corrupt: {attempt_path}")
+    recorded = attempt_path / "source.patch"
+    if recorded.is_file():
+        data = recorded.read_bytes()
+        if sha(data) != attempt["files"].get("source.patch"):
+            raise ValueError(f"Review source patch hash does not match: {attempt_path}")
+        return meta, files, attempt, data
+    stage = scratch(repo) / "source"
+    init_workspace(stage, files, meta["created"])
+    if patch:
+        git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=patch)
+    data = git(stage, "diff", "--cached", "--binary", "--full-index", "--no-ext-diff",
+               "--no-renames", "HEAD", "--", *COMPILER_PREFIXES)
+    return meta, files, attempt, data
+
+
+def review(args):
+    root = args.repo.resolve()
+    destination = args.destination.resolve()
+    check_destination(root, destination)
+    if not args.attempt:
+        raise ValueError("Review needs at least one complete attempt")
+    loaded = [attempt_source_patch(root, path) for path in args.attempt]
+    first_meta, first_files, _, _ = loaded[0]
+    core = {name: data for name, data in first_files.items()
+            if name != "assignment.json" and not name.startswith("deliverables/")}
+    for meta, files, _, _ in loaded[1:]:
+        other = {name: data for name, data in files.items()
+                 if name != "assignment.json" and not name.startswith("deliverables/")}
+        if meta["va"] != first_meta["va"] or meta["main_base"] != first_meta["main_base"] or other != core:
+            raise ValueError("All review deliveries must use the same blank target and main base")
+    marker = f"BEHAVIOR_RECOVERY_UNIMPLEMENTED_{first_meta['va']}".encode()
+    if marker not in core[first_meta["target"]["source"]]:
+        raise ValueError("Review must start from the blank target")
+    core["AGENTS.md"] = (ROOT / WORKER_ROLE).read_bytes()
+    deliveries = []
+    for number, (path, (meta, _, attempt, source_patch)) in enumerate(zip(args.attempt, loaded), 1):
+        label = f"delivery-{number:02}"
+        prefix = f"deliverables/{label}/"
+        origin = reference(root, path.resolve())
+        payload = {
+            "attempt.json": (path / "attempt.json").read_bytes(),
+            "source.patch": source_patch,
+            "commits.patch": (path / "commits.patch").read_bytes(),
+        }
+        for name, data in payload.items():
+            core[prefix + name] = data
+        deliveries.append(dict(name=label, origin=origin, source_patch_sha256=sha(source_patch),
+                               final_commit=attempt["final_commit"]))
+    assignment = dict(mode="review", blank_target=True, target=first_meta["target"], deliveries=deliveries,
+                      compile_command=["python", "tools/build_function.py", "--va", first_meta["va"], "--force"])
+    core["assignment.json"] = json_bytes(assignment)
+    date = datetime.now(timezone.utc).replace(microsecond=0)
+    wave_name = safe_name(args.wave_name or date.strftime("review-%Y%m%d-%H%M%SZ"))
+    wave = (args.store or root / "logic_matching") / first_meta["va"] / wave_name
+    if wave.exists():
+        raise ValueError(f"Wave already exists: {wave}")
+    commit = init_workspace(destination, core, date.isoformat())
+    prerequisites = preflight(destination, first_meta["target"])
+    payload = input_zip(core)
+    review_meta = dict(schema=2, va=first_meta["va"], main_base=first_meta["main_base"], mode="review",
+                       target=first_meta["target"], created=date.isoformat(), prepared_commit=commit,
+                       prepared_tree=git(destination, "rev-parse", "HEAD^{tree}").decode().strip(),
+                       parent_attempts=[item["origin"] for item in deliveries], deliveries=deliveries,
+                       removal=first_meta.get("removal"), input_sha256=sha(payload),
+                       files={name: sha(data) for name, data in core.items()}, prerequisites=prerequisites)
+    wave.mkdir(parents=True, exist_ok=False)
+    (wave / "input.zip").write_bytes(payload)
+    (wave / "wave.json").write_bytes(json_bytes(review_meta))
+    print(f"Wave: {wave}\nWorkspace: {destination}\nBaseline: {commit}")
+    return wave
 
 
 def index_diff(root, base, replacements, modes=None):
@@ -452,7 +545,11 @@ def collect(args):
     dirty = git(root, "status", "--porcelain=v1", "--untracked-files=all").strip()
     if dirty and not args.incomplete:
         raise ValueError("Worker repository is dirty; commit delivery or use --incomplete")
+    if head == base and not args.incomplete:
+        raise ValueError("Completed delivery needs at least one worker delivery commit")
     committed = git(root, "diff", "--binary", "--full-index", "--no-ext-diff", "--no-renames", base, head)
+    source_patch = git(root, "diff", "--binary", "--full-index", "--no-ext-diff", "--no-renames",
+                       base, head, "--", *COMPILER_PREFIXES)
     stage = scratch(args.repo.resolve())
     env = git_env(stage / "index")
     git(root, "read-tree", base, env=env)
@@ -464,31 +561,61 @@ def collect(args):
     for name, (mode, kind, oid) in tree.items():
         if mode not in {"100644", "100755"}:
             raise ValueError(f"Delivery contains a non-regular file: {name}")
-    report = git(root, "show", f"{head}:report.md") if "report.md" in tree else b""
-    if not report.strip() and not args.incomplete:
-        raise ValueError("Completed delivery needs a committed report.md")
+    message = git(root, "log", "-1", "--format=%B", head).decode("utf-8", "replace").strip()
+    if not message and not args.incomplete:
+        raise ValueError("Completed delivery needs a final commit message")
+    assignment = json.loads(files["assignment.json"])
+    verdict = ""
+    choice = ""
+    if meta["mode"] == "review" and not args.incomplete:
+        verdict_rows = re.findall(r"^Behavior-Recovery-Verdict:\s*(PERFECT|REVISED)\s*$", message, re.M)
+        choice_rows = re.findall(r"^Behavior-Recovery-Choice:\s*([A-Za-z0-9_.-]+)\s*$", message, re.M)
+        if len(verdict_rows) != 1 or len(choice_rows) != 1:
+            raise ValueError("Review commit needs exactly one choice and one PERFECT or REVISED verdict trailer")
+        verdict, choice = verdict_rows[0], choice_rows[0]
+        deliveries = {item["name"]: item for item in assignment.get("deliveries", [])}
+        if choice not in deliveries:
+            raise ValueError(f"Review selected an unknown delivery: {choice}")
+        selected = inside(root, f"deliverables/{choice}/source.patch").read_bytes()
+        same = source_patch == selected
+        if verdict == "PERFECT" and not same:
+            raise ValueError("PERFECT review changed compiler-facing source")
+        if verdict == "REVISED" and same:
+            raise ValueError("REVISED review did not change compiler-facing source")
     series = git(root, "format-patch", "--stdout", "--binary", "--full-index", "--no-signature", f"{base}..{head}")
     output = args.wave / safe_name(args.attempt)
     if output.exists():
         raise ValueError(f"Attempt already exists: {output}")
-    collected = {"changes.patch": committed, "commits.patch": series, "report.md": report}
+    collected = {"changes.patch": committed, "source.patch": source_patch, "commits.patch": series}
+    manifests = sorted((root / "build/manifests").glob("build_*.json")) if (root / "build/manifests").is_dir() else []
+    successful_manifest = False
+    for path in manifests:
+        data = path.read_bytes()
+        try:
+            successful_manifest |= int(json.loads(data).get("returncode", 1)) == 0
+        except (TypeError, ValueError, json.JSONDecodeError):
+            pass
+        collected[f"evidence/{path.relative_to(root).as_posix()}"] = data
+    if not args.incomplete and not successful_manifest:
+        raise ValueError("Completed delivery needs a successful natural-translation-unit compiler manifest")
     if args.incomplete and dirty:
         collected["dirty.patch"], collected["untracked.zip"] = dirty_snapshot(root, head)
-    for name in args.evidence:
-        path = inside(root, name)
-        if not path.is_file():
-            raise ValueError(f"Evidence file is missing: {path}")
-        collected[f"evidence/{relative(name)}"] = path.read_bytes()
     if head != git(root, "rev-parse", "HEAD").decode().strip() or dirty != git(root, "status", "--porcelain=v1", "--untracked-files=all").strip():
         raise ValueError("Worker inputs changed during collection")
     if args.incomplete and dirty and dirty_snapshot(root, head) != (collected["dirty.patch"], collected["untracked.zip"]):
         raise ValueError("Uncommitted content changed during collection")
-    for name in args.evidence:
-        if inside(root, name).read_bytes() != collected[f"evidence/{relative(name)}"]:
-            raise ValueError(f"Evidence changed during collection: {name}")
-    attempt = dict(schema=1, agent_id=args.agent_id, model=args.model, thinking=args.thinking,
+    if meta["mode"] == "review" and not args.incomplete:
+        changed_names = [raw.decode() for raw in filter(None, git(root, "diff", "--name-only", "-z", base, head,
+                                                                  "--", *COMPILER_PREFIXES).split(b"\0"))]
+        replacements = {name: inside(root, name).read_bytes() if inside(root, name).is_file() else None
+                        for name in changed_names}
+        integration, _ = index_diff(args.repo.resolve(), meta["main_base"], replacements,
+                                    {name: row[0] for name, row in tree.items()})
+        collected["integration.patch"] = integration
+    attempt = dict(schema=2, mode=meta["mode"], agent_id=args.agent_id, model=args.model, thinking=args.thinking,
                    final_commit=head, final_tree=git(root, "rev-parse", f"{head}^{{tree}}").decode().strip(),
                    state="incomplete" if args.incomplete else "complete", dirty=bool(dirty),
+                   choice=choice, verdict=verdict,
                    files={name: sha(data) for name, data in collected.items()})
     collected["attempt.json"] = json_bytes(attempt)
     output.mkdir(parents=True, exist_ok=False)
@@ -497,60 +624,15 @@ def collect(args):
     return output
 
 
-def candidate(args):
-    wave = args.attempt.parent
-    meta, files = load_input(wave)
-    attempt = load_json(args.attempt / "attempt.json")
-    if attempt["state"] != "complete":
-        raise ValueError("An incomplete attempt cannot become an integration candidate")
-    patch = (args.attempt / "changes.patch").read_bytes()
-    if sha(patch) != attempt["files"]["changes.patch"]:
-        raise ValueError("Attempt patch hash does not match")
-    root = args.repo.resolve()
-    stage = scratch(root) / "restore"
-    init_workspace(stage, files, meta["created"])
-    if patch:
-        git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=patch)
-    stage_tree = git(stage, "write-tree").decode().strip()
-    if stage_tree != attempt["final_tree"]:
-        raise ValueError("Attempt does not reconstruct its recorded tree")
-    paths = [relative(p) for p in args.path]
-    for name in paths:
-        if not name.startswith(("src/", "include/", "third_party/", "config/", "tools/")):
-            raise ValueError(f"Select only reviewed compiler source or supporting inputs: {name}")
-    replacements = {name: inside(stage, name).read_bytes() if inside(stage, name).is_file() else None for name in paths}
-    result, tree = index_diff(root, meta["main_base"], replacements,
-                             {name: row[0] for name, row in read_tree(stage, stage_tree).items()})
-    destination = wave.parent / safe_name(args.name)
-    if destination.exists():
-        raise ValueError(f"Candidate already exists: {destination}")
-    omitted = [name.decode() for name in filter(None, git(stage, "diff", "--cached", "--name-only", "-z", "HEAD").split(b"\0"))
-               if name.decode().startswith(("src/", "include/", "third_party/", "config/", "tools/")) and name.decode() not in paths]
-    parents = [args.attempt, *getattr(args, "parent", [])]
-    selected = dict(schema=1, va=meta["va"], main_base=meta["main_base"],
-                    parents=[reference(root, p) for p in parents], paths=paths, omitted_supporting_paths=omitted,
-                    tree=tree, patch_sha256=sha(result))
-    report = args.report.read_bytes()
-    if not report.strip():
-        raise ValueError("Candidate selection needs a report")
-    destination.mkdir(parents=True, exist_ok=False)
-    write_files(destination, {"candidate.json": json_bytes(selected), "changes.patch": result, "report.md": report})
-    print(f"Candidate: {destination}")
-    if omitted:
-        print("Not selected; review dependencies: " + ", ".join(omitted))
-
-
 def parser():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--repo", type=Path, default=ROOT, help="Main repository; source always comes from a committed base")
     sub = p.add_subparsers(dest="command", required=True)
-    prep = sub.add_parser("prepare", help="Export one wave and its first fresh workspace")
+    prep = sub.add_parser("prepare", help="Export one blank reconstruction wave and its first workspace")
     prep.add_argument("--va", required=True)
-    prep.add_argument("--mode", choices=("reconstruct", "review"), required=True)
     prep.add_argument("--base", default="HEAD")
-    prep.add_argument("--start-line", type=int, help="First line of the reviewed complete definition, including its comments")
-    prep.add_argument("--end-line", type=int, help="Last line of the complete definition")
-    prep.add_argument("--candidate", type=Path, help="Archived candidate directory for review")
+    prep.add_argument("--start-line", type=int, help="Fallback first definition line when automatic lookup is ambiguous")
+    prep.add_argument("--end-line", type=int, help="Fallback last definition line when automatic lookup is ambiguous")
     prep.add_argument("--destination", type=Path, required=True)
     prep.add_argument("--store", type=Path, help="Archive root; default: main/logic_matching (use build/ for tests)")
     prep.add_argument("--wave-name", help="Unique wave name; default: UTC date and time")
@@ -559,6 +641,13 @@ def parser():
     ws.add_argument("--wave", type=Path, required=True)
     ws.add_argument("--destination", type=Path, required=True)
     ws.set_defaults(func=workspace)
+    rev = sub.add_parser("review", help="Prepare one blank reviewer workspace with required deliveries")
+    rev.add_argument("--attempt", type=Path, action="append", required=True,
+                     help="Complete reconstruction or review attempt; repeat for the first review")
+    rev.add_argument("--destination", type=Path, required=True)
+    rev.add_argument("--store", type=Path, help="Archive root; default: main/logic_matching")
+    rev.add_argument("--wave-name", help="Unique review wave name; default: UTC date and time")
+    rev.set_defaults(func=review)
     col = sub.add_parser("collect", help="Preserve and verify a complete or interrupted worker result")
     col.add_argument("--wave", type=Path, required=True)
     col.add_argument("--workspace", type=Path, required=True)
@@ -567,15 +656,7 @@ def parser():
     col.add_argument("--model", required=True, help="Exact provider/model ID used for this attempt")
     col.add_argument("--thinking", choices=THINKING, required=True)
     col.add_argument("--incomplete", action="store_true", help="Preserve interrupted work without claiming clean delivery")
-    col.add_argument("--evidence", action="append", default=[], help="Workspace-relative validation file to preserve; repeat as needed")
     col.set_defaults(func=collect)
-    cand = sub.add_parser("candidate", help="Export selected attempt files as a patch against the recorded main base")
-    cand.add_argument("--attempt", type=Path, required=True)
-    cand.add_argument("--name", required=True, help="Unique candidate directory name")
-    cand.add_argument("--path", action="append", required=True, help="Reviewed supporting or target file; repeat for every required file")
-    cand.add_argument("--report", type=Path, required=True, help="Selection report, including unresolved questions")
-    cand.add_argument("--parent", type=Path, action="append", default=[], help="Additional contributing attempt or candidate; repeat as needed")
-    cand.set_defaults(func=candidate)
     return p
 
 

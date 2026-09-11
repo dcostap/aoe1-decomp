@@ -10,8 +10,8 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 - `config/flags/` contains the six canonical VC5 compiler profiles.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
-- `logic_reviews/` contains semantic-review ledgers at `logic_reviews/<VA>.md`.
-- `logic_matching/` preserves behavior-recovery waves, attempts, and candidates.
+- `logic_reviews/` contains semantic-review ledgers from the older workflows.
+- `logic_matching/` preserves behavior-recovery waves, reviews, patches, and commit messages.
 - `runtime/` contains the local complete game runtime. It is ignored except for its README.
 - `agent_roles/` contains matching and behavior-recovery role definitions.
 
@@ -56,8 +56,10 @@ Both workflows require `docs/experiments.md` and the same correctness standards.
 ## Behavior recovery
 
 This separate, opt-in workflow gives each worker a fresh repository and one target function.
-Workers reconstruct a blank target or review a supplied candidate without old matching notes or history.
-One orchestrator preserves attempts, selects candidates, reviews behavior, and integrates results.
+Workers reconstruct a blank target without old matching notes or history.
+A fresh reviewer receives all raw deliveries, selects one, and repairs it when necessary.
+Fresh reviewers repeat until one accepts the prior delivery without source changes.
+The orchestrator only routes, preserves, and integrates approved work.
 See `agent_roles/behavior_recovery_orchestrator.md` for the workflow and tool use.
 Copy `agent_roles/behavior_recovery_worker.md` into each prepared workspace as its root `AGENTS.md`.
 Run `python tools/behavior_recovery.py --help` for preparation and collection commands.
