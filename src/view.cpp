@@ -3715,9 +3715,9 @@ short RGE_View::get_tile_picture(unsigned char param_1, unsigned char param_2, s
         unsigned char rows = (unsigned char)ts->rows;
         unsigned char cols = (unsigned char)ts->cols;
         if (rows > 1 || cols > 1) {
-            unsigned char row = rows > 0 ? (unsigned char)(param_4 % rows) : 0;
-            unsigned char col = cols > 0 ? (unsigned char)(param_3 % cols) : 0;
-            result = (unsigned short)row * (unsigned short)cols + (unsigned short)col;
+            param_1 = rows > 0 ? (unsigned char)(param_4 % rows) : 0;
+            param_2 = cols > 0 ? (unsigned char)(param_3 % cols) : 0;
+            result = (unsigned short)param_1 * (unsigned short)cols + (unsigned short)param_2;
         }
     }
 
