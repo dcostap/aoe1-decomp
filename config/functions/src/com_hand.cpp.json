@@ -122,7 +122,7 @@
     "0042DEE0": {"status": "matching", "symbol": "?SetServiceGUID@TCommunications_Handler@@QAEXU_GUID@@@Z"},
     "0042DF10": {"status": "matching", "symbol": "?SetSessionGUID@TCommunications_Handler@@QAEXU_GUID@@@Z"},
     "0042DF40": {"status": "matching", "symbol": "?UpdatePlayers@TCommunications_Handler@@QAEXXZ"},
-    "0042DF90": {"status": "scratch", "symbol": "?UpdatePlayer@TCommunications_Handler@@QAEXIH@Z"},
+    "0042DF90": {"status": "new_verified_logic", "symbol": "?UpdatePlayer@TCommunications_Handler@@QAEXIH@Z", "behavior_review": "logic_matching/0042DF90/review-01/attempt-01"},
     "0042E380": {"status": "matching", "symbol": "?SetMyReadiness@TCommunications_Handler@@QAEHHKKKKKKK@Z"},
     "0042E500": {"status": "matching", "symbol": "?GetClientReadiness@TCommunications_Handler@@QAEHIPAHPAK111111@Z"},
     "0042E580": {"status": "matching", "symbol": "?IsPlayerReady@TCommunications_Handler@@QAEHI@Z"},

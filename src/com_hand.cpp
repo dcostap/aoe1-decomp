@@ -5737,41 +5737,53 @@ void TCommunications_Handler::UpdatePlayers() {
 
 void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 {
-    unsigned int dcoID = this->PlayerOptions.dcoID[player];
+    unsigned long dcoID = this->PlayerOptions.dcoID[player];
 
     switch (this->PlayerOptions.Humanity[player]) {
     case ME_ABSENT:
         L->Log("P#%d ABSENT", player);
         this->PlayerOptions.dcoID[player] = 0;
         this->PlayerOptions.PlayerReady[player] = 0;
-        goto update;
+        if (do_update)
+            this->NotifyWindow(COMM_UPDATE_PLAYERS);
+        return;
+
+    case ME_CLOSED:
+        L->Log("P#%d CLOSED", player);
+        this->PlayerOptions.dcoID[player] = 0;
+        this->PlayerOptions.PlayerReady[player] = 1;
+        if (do_update)
+            this->NotifyWindow(COMM_UPDATE_PLAYERS);
+        return;
+
+    case ME_HUMAN:
+        L->Log("P#%d HUMAN", player);
+        break;
 
     case ME_ELIMINATED:
         L->Log("P#%d ELIMINATED", player);
         this->PlayerOptions.dcoID[player] = 0;
         this->PlayerOptions.PlayerReady[player] = 0;
-        goto update;
-
-    case ME_HUMAN:
-        L->Log("P#%d HUMAN", player);
-        goto get_name_log;
+        if (do_update)
+            this->NotifyWindow(COMM_UPDATE_PLAYERS);
+        return;
 
     case ME_COMPUTER:
         L->Log("P#%d COMPUTER", player);
-        goto closed_cleanup;
+        this->PlayerOptions.dcoID[player] = 0;
+        this->PlayerOptions.PlayerReady[player] = 1;
+        if (do_update)
+            this->NotifyWindow(COMM_UPDATE_PLAYERS);
+        return;
 
     case ME_CYBORG:
         L->Log("P#%d CYBORG", player);
-        goto get_name_log;
+        break;
 
     case ME_VIEWONLY:
         this->PlayerOptions.PlayerReady[player] = 1;
         L->Log("P#%d VIEWONLY", player);
         break;
-
-    case ME_CLOSED:
-        L->Log("P#%d CLOSED", player);
-        goto closed_cleanup;
 
     default:
         strcpy(this->FriendlyName[player].Text, "Error");
@@ -5780,82 +5792,53 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
         return;
     }
 
-get_name_log:
-    if (dcoID != 0) {
-        IDirectPlay3* dp = direct_play_interface;
-        void* lpData = 0;
-        unsigned long size;
-        size = 0;
-        dp->GetPlayerName(dcoID, 0, &size);
-        lpData = calloc(size, 1);
+    if (dcoID == 0) {
+        L->Log("P#%d Not Defined (updateplayers).", player);
+        return;
+    }
 
-        dp = direct_play_interface;
-        long result = dp->GetPlayerName(dcoID, lpData, &size);
-        this->Err->ShowReturn(result, "Get PName Info");
+    unsigned long size = 0;
+    direct_play_interface->GetPlayerName(dcoID, 0, &size);
+    void* data = calloc(size, 1);
+    long result = direct_play_interface->GetPlayerName(dcoID, data, &size);
+    this->Err->ShowReturn(result, "Get PName Info");
 
-        if (result <= static_cast<long>(0x8877001E)) {
-            if (result != static_cast<long>(0x8877001E) &&
-                result != static_cast<long>(0x80070057)) {
-                goto unknown_result;
-            }
-            goto fatal_result;
-        } else if (result == static_cast<long>(0x88770082)) {
-            goto fatal_result;
-        } else if (result == static_cast<long>(0x88770096)) {
-            L->Log("INVALID PLAYER %d.  Removing.", dcoID);
-            if (this->PlayerOptions.ProgramState == 3) {
-                this->PlayerOptions.Humanity[player] = ME_HUMAN;
-                if (this->IsPlayerHuman(player)) {
-                    MSGFORMAT_MISSING_PLAYER m;
-                    L->Log("INVALID PLAYER");
-                    L->Log("TX Missing Player report for player=%d ", dcoID);
-                    m.Command = '?';
-                    m.PlayerID = dcoID;
-                    L->Log("  >TX MP #%d (%d)", dcoID, 8);
-                    this->FastSend(0, &m, 8, 0, 0);
-                }
-            }
-            goto release_data;
-        } else if (result == 0) {
-            strcpy(this->FriendlyName[player].Text,
-                   static_cast<DPNAME*>(lpData)->lpszShortNameA);
-            strcpy(this->FormalName[player].Text,
-                   static_cast<DPNAME*>(lpData)->lpszLongNameA);
-            this->PlayerOptions.Humanity[player] = ME_HUMAN;
-            goto release_data;
-        } else {
-            goto unknown_result;
-        }
-
-unknown_result:
-        L->Log("Unknown fail on updateplayers");
-        this->PlayerOptions.Humanity[player] = ME_ABSENT;
-        this->PlayerOptions.dcoID[player] = 0;
-        goto release_data;
-
-fatal_result:
+    if (result == 0) {
+        DPNAME* name = static_cast<DPNAME*>(data);
+        strcpy(this->FriendlyName[player].Text, name->lpszShortNameA);
+        strcpy(this->FormalName[player].Text, name->lpszLongNameA);
+        this->PlayerOptions.Humanity[player] = ME_HUMAN;
+    } else if (result == DPERR_BUFFERTOOSMALL ||
+               result == DPERR_INVALIDPARAM ||
+               result == DPERR_INVALIDOBJECT) {
         L->Log("Fatal error player info %ld", result);
         strcpy(this->FriendlyName[player].Text, "Error!");
         this->PlayerOptions.Humanity[player] = ME_ABSENT;
-        goto release_data;
-
-release_data:
-        free(lpData);
-        goto update;
+    } else if (result == DPERR_INVALIDPLAYER) {
+        L->Log("INVALID PLAYER %d.  Removing.", dcoID);
+        if (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
+            this->PlayerOptions.Humanity[player] = ME_HUMAN;
+            if (this->IsPlayerHuman(player)) {
+                MSGFORMAT_MISSING_PLAYER missing;
+                L->Log("INVALID PLAYER");
+                L->Log("TX Missing Player report for player=%d ", dcoID);
+                missing.PlayerID = dcoID;
+                missing.Command = '?';
+                L->Log("  >TX MP #%d (%d)", do_update,
+                       sizeof(MSGFORMAT_MISSING_PLAYER));
+                this->FastSend(0, &missing, sizeof(MSGFORMAT_MISSING_PLAYER),
+                               0, 0);
+            }
+        }
+    } else {
+        L->Log("Unknown fail on updateplayers");
+        this->PlayerOptions.Humanity[player] = ME_ABSENT;
+        this->PlayerOptions.dcoID[player] = 0;
     }
 
-no_dcoid:
-    L->Log("P#%d Not Defined (updateplayers).", player);
-    return;
-
-closed_cleanup:
-    this->PlayerOptions.dcoID[player] = 0;
-    this->PlayerOptions.PlayerReady[player] = 1;
-
-update:
-    if (do_update != 0) {
+    free(data);
+    if (do_update)
         this->NotifyWindow(COMM_UPDATE_PLAYERS);
-    }
 }
 
 
