@@ -1108,37 +1108,38 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     return retval;
 }
 
-unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int random_seed_in) {
+unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info,
+                                            int random_seed_in)
+{
     unsigned char retval;
+    int i;
 
     world_update_counter = 0;
     this->del_game_info();
-
-    curr_player = 0;
+    this->curr_player = 0;
 
     if (random_seed_in == 0) {
-        random_seed_in = commands->com_hand->GetRandomSeed();
+        random_seed_in = this->commands->com_hand->GetRandomSeed();
     }
+    this->random_seed = random_seed_in;
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5d5,
+                this->random_seed);
 
-    random_seed = random_seed_in;
-    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5D5, random_seed_in);
-
-    this->map->new_map(info.map_width, info.map_height);
+    this->map->new_map((long)info.map_width, (long)info.map_height);
     this->map->clear_map((unsigned char)info.map_info->base_terrain, 1);
 
-    player_num = info.player_num + 1;
-    players = (RGE_Player**)calloc(4, player_num);
-
+    this->player_num = info.player_num + 1;
+    this->players = (RGE_Player**)calloc(4, (int)this->player_num);
     this->setup_gaia();
     this->setup_players(info);
 
-    world_time = 0;
-    old_world_time = 0;
-    world_time_delta = 0;
-    old_time = 0;
-    game_speed = 1.0f;
-    temp_pause = 0;
-    world_time_delta_seconds = 0.0f;
+    this->world_time = 0;
+    this->old_world_time = 0;
+    this->world_time_delta = 0;
+    this->old_time = 0;
+    this->game_speed = 1.0f;
+    this->temp_pause = 0;
+    this->world_time_delta_seconds = 0;
 
     if (info.scenario != 0) {
         retval = this->load_scenario(info.scenario, info);
@@ -1149,9 +1150,8 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int random_see
     }
 
     if (retval != 0) {
-        int i;
-        for (i = 0; i < (int)player_num; i++) {
-            players[i]->set_map_visible();
+        for (i = 0; i < this->player_num; i++) {
+            this->players[i]->set_map_visible();
         }
     }
 
