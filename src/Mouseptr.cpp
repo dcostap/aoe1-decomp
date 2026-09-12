@@ -7,72 +7,66 @@ extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 TMousePointer::TMousePointer(int mode)
 {
-    RECT* save_rect_ptr = &this->save_rect;
+    this->custom_draw = 0;
+    this->render_area = 0;
+    this->save_area = 0;
+    this->primary_area = 0;
+    this->Cursor_Shape = 0;
+    this->Max_CX = 0;
+    this->Max_CY = 0;
+    this->cWidth = 0;
+    this->cHeight = 0;
+    this->gWidth = 0;
+    this->gHeight = 0;
+    this->mouse_x = 0;
+    this->mouse_y = 0;
+    this->facet = 0;
+    this->game_facet = 0;
+    this->next_facet = 0;
+    this->last_facet = 0;
+    this->d_top = 0;
+    this->d_left = 0;
+    this->d_bottom = 0;
+    this->d_right = 0;
+    this->g_top = 0;
+    this->g_left = 0;
+    this->g_bottom = 0;
+    this->g_right = 0;
 
-    save_rect_ptr->top = 0;
-    save_rect_ptr->right = 0;
-    save_rect_ptr->left = 0;
-    save_rect_ptr->bottom = 0;
+    this->save_rect.left = 0;
+    this->save_rect.top = 0;
+    this->save_rect.right = 0;
+    this->save_rect.bottom = 0;
+    this->mouse_rect = this->save_rect;
+    this->cursor_rect = this->save_rect;
+    this->new_save_rect = this->save_rect;
+    this->restore_rect = this->save_rect;
 
-    mouse_rect = *save_rect_ptr;
-    custom_draw = 0;
-    render_area = 0;
-    save_area = 0;
-    primary_area = 0;
-    Cursor_Shape = 0;
-    Max_CX = 0;
-    Max_CY = 0;
-    cWidth = 0;
-    cHeight = 0;
-    gWidth = 0;
-    gHeight = 0;
-    mouse_x = 0;
-    mouse_y = 0;
-    cursor_rect = *save_rect_ptr;
-    facet = 0;
-    game_facet = 0;
-    next_facet = 0;
-    last_facet = 0;
-    new_save_rect.left = save_rect_ptr->left;
-    new_save_rect.top = save_rect_ptr->top;
-    new_save_rect.right = save_rect_ptr->right;
-    new_save_rect.bottom = save_rect_ptr->bottom;
-    d_top = 0;
-    d_left = 0;
-    d_bottom = 0;
-    d_right = 0;
-    g_top = 0;
-    g_left = 0;
-    g_bottom = 0;
-    g_right = 0;
-    active = 0;
-    drawn = 0;
-    restore_rect = *save_rect_ptr;
-    restore_rect.left = 0;
-    Shutdown = 0;
-    Setup = 0;
-    save_x = -32767;
-    save_y = -32767;
-    Mouse_Mode = mode;
-    restoreSurface = 0;
-    renderSurface = 0;
-    GameMode = 0;
-    GameEnabled = 0;
-    MouseOnScreen = 0;
-    Num_Cursors = 0;
-    Max_Cursors = 0;
-    cursor_file_id = -1;
-    cursor_file[0] = 0;
+    this->active = 0;
+    this->drawn = 0;
+    this->Shutdown = 0;
+    this->Setup = 0;
+    this->save_x = -32767;
+    this->save_y = -32767;
+    this->Mouse_Mode = mode;
+    this->restoreSurface = 0;
+    this->renderSurface = 0;
+    this->GameMode = 0;
+    this->GameEnabled = 0;
+    this->MouseOnScreen = 0;
+    this->Num_Cursors = 0;
+    this->Max_Cursors = 0;
+    this->cursor_file_id = -1;
+    this->cursor_file[0] = 0;
 
-    for (int i = 0; i < 16; ++i) {
-        cursors[i] = 0;
+    for (int i = 0; i < 16; i++) {
+        this->cursors[i] = 0;
     }
 
-    LastDrawTime = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 100);
-    LastDrawTime -= 36;
-    save_area_valid = 0;
-    LastddError = 0;
+    this->LastDrawTime = debug_timeGetTime(
+        "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 100) - 36;
+    this->save_area_valid = 0;
+    this->LastddError = 0;
 }
 
 TMousePointer::~TMousePointer()

@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "0045AE50": {"status": "scratch", "symbol": "??0TMousePointer@@QAE@H@Z"},
+    "0045AE50": {"status": "matching", "symbol": "??0TMousePointer@@QAE@H@Z", "behavior_review": "logic_matching/0045AE50/review-01/attempt-01"},
     "0045B000": {"status": "matching", "symbol": "??1TMousePointer@@QAE@XZ"},
     "0045B040": {"status": "matching", "symbol": "?Shutdown_Mouse@TMousePointer@@QAEHXZ"},
     "0045B0A0": {"status": "matching", "symbol": "?Restore_Mouse@TMousePointer@@QAEHPAVTDrawArea@@@Z"},
