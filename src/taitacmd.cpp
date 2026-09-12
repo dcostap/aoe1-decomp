@@ -10816,18 +10816,11 @@ void TribeTacticalAIModule::checkForCoopTributeDemand()
     RGE_Player* player;
     int cur;
     int count;
-    int* need;
 
-    int tributeInterval = this->sn[0xBA];
-    int tributeAmount = this->sn[0xBB];
-    int foodMin = this->sn[0xBE];
-    int woodMin = this->sn[0xBF];
-    int stoneMin = this->sn[0xC0];
-    int goldMin = this->sn[0xC1];
-    if (tributeInterval == -1) return;
+    if (this->sn[0xBA] == -1) return;
     world = static_cast<TRIBE_World*>(this->md->player->world);
     cur = world->world_time;
-    if ((cur - this->lastCoopTributeDemandTime) / 1000 < tributeInterval) return;
+    if ((int)(cur - this->lastCoopTributeDemandTime) / 1000 < this->sn[0xBA]) return;
     this->lastCoopTributeDemandTime = cur;
 
     world = static_cast<TRIBE_World*>(this->md->player->world);
@@ -10860,46 +10853,36 @@ void TribeTacticalAIModule::checkForCoopTributeDemand()
 
     if (world->controllingComputerPlayer != (uchar)this->md->player->id) return;
 
-    tempRand = tributeAmount;
-    i = 0;
-    need = this->neededResourceValue;
-    do {
+    tempRand = this->sn[0xBB];
+    for (i = 0; i < 4; i++) {
         if (tempRand <= 0) return;
-        if (*need == 0 && this->md->resourceAI.resource(0) >= foodMin) goto next;
-        if (*need == 1 && this->md->resourceAI.resource(1) >= woodMin) goto next;
-        if (*need == 3 && this->md->resourceAI.resource(3) >= goldMin) goto next;
-        if (*need == 2 && this->md->resourceAI.resource(2) >= stoneMin) goto next;
-        if (need[4] < 0) {
-            j = 1;
-            if (world->player_num > 1) {
-                if (tempRand > 0) {
-                    do {
-                    player = world->players[j];
-                    if (player->id != this->md->player->id && player->computerPlayer() != 0) {
-                        if (this->md->player->isAlly(j) != 0) {
-                            if (player->isAlly((int)this->md->player->id) != 0) {
-                                short myid = this->md->player->id;
-                                if ((myid < player->id && player->id != (short)world->controllingComputerPlayer) || myid == (short)world->controllingComputerPlayer) {
-                                    int res = *need;
-                                    amountDemandable = (int)player->attributes[res];
-                                    if (amountDemandable > 50) {
-                                        if (amountDemandable > tempRand) amountDemandable = tempRand;
-                                        tempRand -= amountDemandable;
-                                        player->sendAICommand(myid, 1, res, amountDemandable, 0);
-                                    }
+        if (this->neededResourceValue[i] == 0 && this->md->resourceAI.resource(0) >= this->sn[0xBE]) continue;
+        if (this->neededResourceValue[i] == 1 && this->md->resourceAI.resource(1) >= this->sn[0xBF]) continue;
+        if (this->neededResourceValue[i] == 3 && this->md->resourceAI.resource(3) >= this->sn[0xC1]) continue;
+        if (this->neededResourceValue[i] == 2 && this->md->resourceAI.resource(2) >= this->sn[0xC0]) continue;
+        if (this->neededResourceValue[i + 4] < 0) {
+            for (j = 1; j < world->player_num; j++) {
+                if (tempRand <= 0) break;
+                player = world->players[j];
+                if (player->id != this->md->player->id && player->computerPlayer() != 0) {
+                    if (this->md->player->isAlly(j) != 0) {
+                        if (player->isAlly((int)this->md->player->id) != 0) {
+                            short myid = this->md->player->id;
+                            if ((myid < player->id && player->id != (short)world->controllingComputerPlayer) || myid == (short)world->controllingComputerPlayer) {
+                                int res = this->neededResourceValue[i];
+                                amountDemandable = (int)player->attributes[res];
+                                if (amountDemandable > 50) {
+                                    if (amountDemandable > tempRand) amountDemandable = tempRand;
+                                    tempRand -= amountDemandable;
+                                    player->sendAICommand(myid, 1, res, amountDemandable, 0);
                                 }
                             }
                         }
                     }
-                        j++;
-                    } while (j < world->player_num);
                 }
             }
         }
-next:
-        need++;
-        i++;
-    } while (i < 4);
+    }
 }
 
 
