@@ -26,98 +26,92 @@ TMessageDialog::~TMessageDialog()
 }
 
 long TMessageDialog::setup(TPanel* parent, char* panel_file, long panel_id,
-                           long x, long hgt_in, unsigned char type, char* message,
-                           long button_width, long button_height)
+                            long x, long y, unsigned char type, char* message,
+                            long button_width, long button_height)
 {
-    long button_num;
-    long index;
-    long y;
-    long space;
-    TButtonPanel* hotkey_button;
+    int button_count;
+    long button_gap;
+    long button_x;
+    int i;
 
-    button[0] = button[1] = button[2] = 0;
-    TDrawArea* draw_area = parent->renderArea();
-    if (TDialogPanel::setup(draw_area, parent, x, hgt_in, panel_file, panel_id, 1) == 0) {
+    button[0] = 0;
+    button[1] = 0;
+    button[2] = 0;
+
+    if (!TDialogPanel::setup(parent->renderArea(), parent, x, y, panel_file,
+                             panel_id, 1))
         return 0;
-    }
 
     dlg_type = type;
-    if (create_text(this, &text, message, 3, 3,
-                    pnl_wid - 3, pnl_hgt - button_height - 6,
-                    0x0B, 1, 1, 1) == 0) {
+    if (!create_text(this, &text, message, 3, 3, pnl_wid - 3,
+                     pnl_hgt - button_height - 6, 0x0B, 1, 1, 1))
         return 0;
-    }
 
     switch (dlg_type) {
     case 0:
-        button_num = 1;
-        break;
-    case 4:
-        button_num = 3;
+        button_count = 1;
         break;
     case 1:
     case 2:
     case 3:
-        button_num = 2;
+        button_count = 2;
+        break;
+    case 4:
+        button_count = 3;
         break;
     default:
         return 0;
     }
 
-    space = pnl_wid - button_num * button_width;
-    if (space < 1) {
-        space = 0;
-    } else {
-        space /= button_num + 1;
-    }
+    button_gap = pnl_wid - button_count * button_width;
+    if (button_gap < 1)
+        button_gap = 0;
+    else
+        button_gap /= button_count + 1;
 
-    y = pnl_hgt - button_height - 7;
-    {
-        TButtonPanel** next_button = button;
-        for (index = 0; index < button_num; ++index) {
-            if (create_button(this, next_button + index, s_592A40, s_592A40,
-                              space + index * (space + button_width), y,
-                              button_width, button_height,
-                              0x0B, 0, 0) == 0) {
-                return 0;
-            }
-        }
+    long button_y = pnl_hgt - button_height - 7;
+    button_x = button_gap;
+    for (i = 0; i < button_count; ++i) {
+        if (!create_button(this, &button[i], s_592A40, s_592A40,
+                           button_x, button_y, button_width, button_height,
+                           0x0B, 0, 0))
+            return 0;
+        button_x += button_gap + button_width;
     }
 
     switch (dlg_type) {
     case 0:
-        button[0]->set_text(0, 0xFA1);
-        goto set_tab_order;
+        button[0]->set_text(0, 0x0FA1);
+        break;
     case 1:
-        button[0]->set_text(0, 0xFA1);
-        button[1]->set_text(0, 0xFA2);
-        hotkey_button = button[1];
-        goto set_hotkey;
+        button[0]->set_text(0, 0x0FA1);
+        button[1]->set_text(0, 0x0FA2);
+        button[1]->hotkey = 0x1B;
+        button[1]->hotkey_shift = 0;
+        break;
     case 2:
-        button[0]->set_text(0, 0xFA3);
-        button[1]->set_text(0, 0xFA4);
-        hotkey_button = button[1];
-        goto set_hotkey;
-    case 4:
-        button[0]->set_text(0, 0xFA3);
-        button[1]->set_text(0, 0xFA4);
-        button[2]->set_text(0, 0xFA2);
-        hotkey_button = button[2];
-        goto set_hotkey;
+        button[0]->set_text(0, 0x0FA3);
+        button[1]->set_text(0, 0x0FA4);
+        button[1]->hotkey = 0x1B;
+        button[1]->hotkey_shift = 0;
+        break;
     case 3:
-        button[0]->set_text(0, 0xFA5);
-        button[1]->set_text(0, 0xFA7);
-        hotkey_button = button[1];
-        goto set_hotkey;
-    default:
-        goto set_tab_order;
+        button[0]->set_text(0, 0x0FA5);
+        button[1]->set_text(0, 0x0FA7);
+        button[1]->hotkey = 0x1B;
+        button[1]->hotkey_shift = 0;
+        break;
+    case 4:
+        button[0]->set_text(0, 0x0FA3);
+        button[1]->set_text(0, 0x0FA4);
+        button[2]->set_text(0, 0x0FA2);
+        button[2]->hotkey = 0x1B;
+        button[2]->hotkey_shift = 0;
+        break;
     }
 
-set_hotkey:
-    hotkey_button->hotkey = 0x1B;
-    hotkey_button->hotkey_shift = 0;
-set_tab_order:
-    set_tab_order((TPanel**)button, button_num);
+    set_tab_order(reinterpret_cast<TPanel**>(button),
+                  static_cast<short>(button_count));
     set_curr_child(button[0]);
     return 1;
 }
