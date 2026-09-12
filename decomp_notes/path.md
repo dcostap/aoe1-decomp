@@ -44,10 +44,18 @@ zero masked byte differences and zero relocation-target differences. Keep the
 existing source-bank classifications until their grouped symbol ownership is
 reviewed.
 
-`0046AAE0` remains the reviewed accepted-drift source, but its merged candidate
-has 108 differing bytes in a 122-byte comparison. The old isolated 9-byte
-pre-loop drift is not a current grouped exact result. The audit classifies this
-as `accepted_drift_observed`; do not register it as an exact owner.
+The historical merged candidate recorded 108 differing bytes for `0046AAE0`,
+while the isolated target check recorded nine pre-loop bytes. A fresh direct
+check with the current `src/Path.cpp` and `config/flags/gx.rsp` reports nine
+differing bytes in 122. A one-job closure over all 30 owners repeats that
+result. The 108-byte value is stale for the current inputs.
+
+The current nine-byte drift is limited to pre-loop load encodings. The original
+loads `this->pathValue`, the parameter home, and `other.pathValue` in that
+order. The rebuild loads the parameter home first. This changes fault order for
+malformed or inaccessible objects. The loop x87 read order, returns, frame,
+saved registers, owner, and CFG remain equal. No safe source repair was found;
+see `decomp_notes/functions/0046/0046AAE0.md`.
 
 `0046A8E0` retains its reviewed custom response-file context. Its natural source
 uses the two source-array indices required by the original copy loops.
@@ -58,9 +66,10 @@ uses the two source-array indices required by the original copy loops.
 subtracts the previous waypoint's x value. The executable's x87 instruction
 sequence proves this behavior. The source marks it as an `ORIGINAL BUG`.
 
-`Path::operator==` keeps the reviewed equivalent source. Its remaining drift is
-limited to the pre-loop register setup. The loop body and return paths remain
-behavior-equivalent.
+`Path::operator==` keeps the simple direct typed source. Its remaining drift is
+limited to pre-loop load order and encoding. The loop body and return paths
+remain byte-equal. The pre-loop fault-order difference blocks a complete
+accepted-drift proof.
 
 The migration preserves the reviewed bodies and behavior. It accepts temporary
 exactness regressions caused by the complete natural source module. Compile and
