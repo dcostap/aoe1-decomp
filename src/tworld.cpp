@@ -172,9 +172,6 @@ void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
 
 void TRIBE_World::scenario_init(RGE_Game_World* param_1) {
     T_Scenario* s = new T_Scenario(param_1);
-    if (s == 0) {
-        s = 0;
-    }
     this->scenario = s;
 }
 
