@@ -52,7 +52,7 @@
     "0047DD10": {"status": "matching", "symbol": "?append_line@TTextPanel@@QAEHJJ@Z"},
     "0047DD30": {"status": "matching", "symbol": "?append_line@TTextPanel@@QAEHJJJ@Z"},
     "0047DD50": {"status": "matching", "symbol": "?insert_line@TTextPanel@@QAEHJPADJ@Z"},
-    "0047DD70": {"status": "accepted_drift", "symbol": "?insert_line@TTextPanel@@QAEHJPAD0J@Z"},
+    "0047DD70": {"status": "scratch", "symbol": "?insert_line@TTextPanel@@QAEHJPAD0J@Z"},
     "0047DF90": {"status": "matching", "symbol": "?insert_line@TTextPanel@@QAEHJJJ@Z"},
     "0047DFE0": {"status": "matching", "symbol": "?insert_line@TTextPanel@@QAEHJJJJ@Z"},
     "0047E050": {"status": "matching", "symbol": "?change_line@TTextPanel@@QAEHJPAD0J@Z"},

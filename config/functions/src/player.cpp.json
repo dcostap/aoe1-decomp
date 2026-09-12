@@ -45,7 +45,7 @@
     "0046FF00": {"status": "matching", "symbol": "?load_info@RGE_Player@@QAEXH@Z"},
     "0046FF40": {"status": "matching", "symbol": "?get_checksum@RGE_Player@@QAEJXZ"},
     "0046FF60": {"status": "matching", "symbol": "?get_checksums@RGE_Player@@QAEEAAJ00@Z"},
-    "0046FF90": {"status": "accepted_drift", "symbol": "?create_checksum@RGE_Player@@QAEJXZ"},
+    "0046FF90": {"status": "scratch", "symbol": "?create_checksum@RGE_Player@@QAEJXZ"},
     "004700B0": {"status": "matching", "symbol": "?new_attribute_num@RGE_Player@@QAEXFM@Z"},
     "004700D0": {"status": "matching", "symbol": "?add_attribute_num@RGE_Player@@UAEXFME@Z"},
     "00470100": {"status": "matching", "symbol": "?make_available@RGE_Player@@QAEXFE@Z"},

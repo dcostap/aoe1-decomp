@@ -11,7 +11,7 @@
     "004427A0": {"status": "matching", "symbol": "?CheckAvailModes@TDrawSystem@@QAEXH@Z"},
     "00442860": {"status": "matching", "symbol": "?CheckAvailModesCallback@TDrawSystem@@SGJPAU_DDSURFACEDESC@@PAX@Z"},
     "004429C0": {"status": "matching", "symbol": "?IsModeAvail@TDrawSystem@@QAEHJJH@Z"},
-    "00442A90": {"status": "accepted_drift", "symbol": "?Init@TDrawSystem@@QAEHPAX00EEJJK@Z"},
+    "00442A90": {"status": "scratch", "symbol": "?Init@TDrawSystem@@QAEHPAX00EEJJK@Z"},
     "00442DC0": {"status": "matching", "symbol": "?SetDisplaySize@TDrawSystem@@QAEHJJH@Z"},
     "00442EF0": {"status": "matching", "symbol": "?ClearPrimarySurface@TDrawSystem@@QAEXXZ"},
     "00442F30": {"status": "matching", "symbol": "?CheckSurfaces@TDrawSystem@@QAEEXZ"},

@@ -79,7 +79,7 @@
     "00515DF0": {"status": "matching", "symbol": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z"},
     "00515E00": {"status": "matching", "symbol": "?intelligentBuildListAndRulesSelection@TRIBE_Player@@QAEXPAD0HHH@Z"},
     "00517B90": {"status": "matching", "symbol": "?setupEgyptian@TRIBE_Player@@QAEXPAHHHH@Z"},
-    "00517CD0": {"status": "accepted_drift", "symbol": "?setupGreek@TRIBE_Player@@QAEXPAHHHH@Z"},
+    "00517CD0": {"status": "scratch", "symbol": "?setupGreek@TRIBE_Player@@QAEXPAHHHH@Z"},
     "00517E10": {"status": "matching", "symbol": "?setupBabylonian@TRIBE_Player@@QAEXPAHHHH@Z"},
     "00517F30": {"status": "new_verified_logic", "symbol": "?setupAssyrian@TRIBE_Player@@QAEXPAHHHH@Z", "behavior_review": "logic_matching/00517F30/review-01/attempt-01"},
     "00518090": {"status": "accepted_drift", "symbol": "?setupMinoan@TRIBE_Player@@QAEXPAHHHH@Z"},
