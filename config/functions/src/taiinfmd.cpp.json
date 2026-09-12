@@ -52,7 +52,7 @@
     "004DB290": {"status": "scratch", "symbol": "?influencePlaceStructure@TribeInformationAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@HHMPADHHHHAAUPlacementState@@K@Z"},
     "004DC1B0": {"status": "matching", "symbol": "?addObject@TribeInformationAIModule@@QAEXPAVRGE_Static_Object@@@Z"},
     "004DC3A0": {"status": "matching", "symbol": "?removeObject@TribeInformationAIModule@@QAEXH@Z"},
-    "004DC490": {"status": "scratch", "symbol": "?objectToAttackWithPlay@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAHHAAH011@Z"},
+    "004DC490": {"status": "new_verified_logic", "symbol": "?objectToAttackWithPlay@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAHHAAH011@Z", "behavior_review": "logic_matching/004DC490/review-01/attempt-01"},
     "004DC750": {"status": "scratch", "symbol": "?objectToAttack@TribeInformationAIModule@@QAEPAUObjectMemory@@HHHHAAH@Z"},
     "004DCF10": {"status": "scratch", "symbol": "?objectToAttackByGroup@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAVTacticalAIGroup@@AAUAttackState@@K@Z"},
     "004DDD40": {"status": "scratch", "symbol": "?objectToAttackByGroup2@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAHH@Z"},

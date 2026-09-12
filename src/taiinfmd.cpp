@@ -2550,14 +2550,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     int group, int* unitIds, int count, int& playNumber,
     int* outputUnits, int& outputCount, int& outputUnit)
 {
-    AIPlay* play;
-    int targetNumber;
-    int worldNumber;
-    RGE_Game_World* world;
-    AIPlayBook* playbook;
-
     if (count == 0) {
-        return (ObjectMemory*)count;
+        return 0;
     }
 
     ObjectMemory* target = this->objectToAttackByGroup2(group, unitIds, count);
@@ -2565,98 +2559,89 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
         return 0;
     }
 
-    targetNumber = 0;
-            world = this->md->player->world;
-    playbook = world->playbook;
+    RGE_Game_World* world = this->md->player->world;
+    AIPlayBook* playbook = world->playbook;
     playNumber = -1;
 
-    for (; targetNumber < playbook->numberPlaysValue; ++targetNumber) {
-            play = playbook->play(targetNumber);
-            if (play == 0) {
-                continue;
-            }
-            if (play->humanPlay() == 1) {
-                continue;
-            }
-
+    int playIndex = 0;
+    while (playIndex < playbook->numberPlaysValue) {
+        AIPlay* play = playbook->play(playIndex);
+        if (play != 0 && play->humanPlay() != 1) {
             AIPlayStatus playStatus;
-            playStatus.playNumberValue = targetNumber;
+            playStatus.playNumberValue = playIndex;
             play->fillGroups(&playStatus, unitIds, count, world);
-            if (playStatus.deviationValue > 0) {
-                continue;
-            }
 
-            bool invalid = false;
-            worldNumber = 0;
-            do {
-                if (invalid) {
-                    break;
-                }
-                int phase = 0;
-                do {
-                    if (invalid) {
+            if (playStatus.deviationValue == 0) {
+                int invalid = 0;
+                int phaseIndex = 0;
+                while (phaseIndex < 10) {
+                    if (invalid != 0) {
                         break;
                     }
-                    AIPlayPhaseCommand* command =
-                        play->phase(worldNumber)->command(phase);
-                    if (command->type() == 1) {
-                        int x = (int)target->x + command->value1();
-                        int y = (int)target->y + command->value2();
-                        if (x < 0 || y < 0 ||
-                            x >= this->mapXSizeValue ||
-                            y >= this->mapYSizeValue) {
-                            invalid = true;
+
+                    int commandIndex = 0;
+                    while (commandIndex < 5) {
+                        if (invalid != 0) {
+                            break;
                         }
-                        if (this->inRangeOfUnits(group, x, y, 0) == 1) {
-                            invalid = true;
+
+                        AIPlayPhaseCommand* command =
+                            play->phase(phaseIndex)->command(commandIndex);
+                        if (command->type() == 1) {
+                            int x = command->value1() + target->x;
+                            int y = command->value2() + target->y;
+
+                            if (x < 0 || y < 0 ||
+                                x >= this->mapXSizeValue ||
+                                y >= this->mapYSizeValue) {
+                                invalid = 1;
+                            }
+                            if (this->inRangeOfUnits(group, x, y, 0) == 1) {
+                                invalid = 1;
+                            }
                         }
+                        ++commandIndex;
                     }
-                    ++phase;
-                } while (phase < 5);
-                ++worldNumber;
-            } while (worldNumber < 10);
-
-            if (!invalid) {
-                int variation;
-                int randomValue;
-                int strategicValue;
-                int score;
-                variation = this->calculatePlayVariation(targetNumber);
-                score = 100 - (int)play->deathPercentageValue + variation;
-                randomValue =
-                    debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xd49) % 0x32;
-                strategicValue = 0;
-
-                switch (play->typeValue) {
-                case 1:
-                    strategicValue =
-                        this->md->tacticalAI.strategicNumber(0xbd);
-                    break;
-                case 2:
-                    strategicValue =
-                        this->md->tacticalAI.strategicNumber(0xc6);
-                    break;
-                case 3:
-                    strategicValue =
-                        this->md->tacticalAI.strategicNumber(0xc7);
-                    break;
+                    ++phaseIndex;
                 }
 
-                score = score * 2 + strategicValue + randomValue;
-                if (playNumber == -1 || score > 0) {
-                    playNumber = targetNumber;
-                    playStatus.copyUnits(outputUnits, outputCount);
-                    randomValue =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xd6a);
-                    outputUnit = outputUnits[randomValue % outputCount];
+                if (invalid == 0) {
+                    int variation = this->calculatePlayVariation(playIndex);
+                    int randomValue =
+                        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                   0xD49) % 50;
+                    int rating = 0;
+                    int playType = play->typeValue;
+                    if (playType == 1) {
+                        rating = this->md->tacticalAI.strategicNumber(0xBD);
+                    } else if (playType == 2) {
+                        rating = this->md->tacticalAI.strategicNumber(0xC6);
+                    } else if (playType == 3) {
+                        rating = this->md->tacticalAI.strategicNumber(0xC7);
+                    }
+
+                    rating += (100 - play->deathPercentageValue + variation) * 2;
+                    rating += randomValue;
+                    if (playNumber == -1 || rating > 0) {
+                        playNumber = playIndex;
+                        playStatus.copyUnits(outputUnits, outputCount);
+                        randomValue = debug_rand(
+                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                            0xD6A);
+                        outputUnit = outputUnits[randomValue % outputCount];
+                    }
                 }
             }
+        }
+
+        ++playIndex;
     }
 
     if (playNumber == -1) {
         return 0;
     }
-    ++this->playHistory[playNumber];
+
+    this->playHistory[playNumber]++;
     return target;
 }
 
