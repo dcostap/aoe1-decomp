@@ -232,9 +232,9 @@ void TPicture::Init(BITMAPINFO256* info, unsigned char* bits,
     TRANSINFO* trans) {
     int height;
 
-    this->Bits = bits;
     this->Dib = &info->bmiHeader;
     this->BitmapInfo = info;
+    this->Bits = bits;
     this->TransInfo = trans;
     this->OwnMemory = 0;
     this->Width = info->bmiHeader.biWidth;

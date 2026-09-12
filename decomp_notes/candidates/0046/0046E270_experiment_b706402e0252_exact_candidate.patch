@@ -1,0 +1,17 @@
+# Experiment b706402e0252c33d6572a205800359ff7d431ded09758b098d34538c8639f3ef
+# Base ea9150b51124a8d0e96dda90f82b644a6ed5e540
+diff --git a/src/Picture.cpp b/src/Picture.cpp
+index 10e80c7c4..eae467386 100644
+--- a/src/Picture.cpp
++++ b/src/Picture.cpp
+@@ -232,9 +232,9 @@ void TPicture::Init(BITMAPINFO256* info, unsigned char* bits,
+     TRANSINFO* trans) {
+     int height;
+ 
+-    this->Bits = bits;
+     this->Dib = &info->bmiHeader;
+     this->BitmapInfo = info;
++    this->Bits = bits;
+     this->TransInfo = trans;
+     this->OwnMemory = 0;
+     this->Width = info->bmiHeader.biWidth;
