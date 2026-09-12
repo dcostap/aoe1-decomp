@@ -3537,79 +3537,90 @@ ret2:
 
 
 
-int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2, int min_level, int max_level, int player_id, unsigned char select_level, int flag)
+int RGE_View::pick_multi_objects(int x1, int y1, int x2, int y2,
+                                 int min_level, int max_level, int owner_id,
+                                 unsigned char select_level, int unused)
 {
     int num_picked = 0;
-    int z;
-    if (x2 < this->render_rect.left || x1 > this->render_rect.right ||
-        y2 < this->render_rect.top || y1 > this->render_rect.bottom)
+
+    if (x2 < this->render_rect.left ||
+        x1 > this->render_rect.right ||
+        y2 < this->render_rect.top ||
+        y1 > this->render_rect.bottom ||
+        min_level > 0x28 || max_level < 0) {
         return 0;
-    if (min_level > 40 || max_level < 0)
-        return 0;
-    if (min_level < 0) min_level = 0;
-    if (max_level > 40) max_level = 40;
+    }
+
+    if (min_level < 0) {
+        min_level = 0;
+    }
+    if (max_level > 0x28) {
+        max_level = 0x28;
+    }
 
     x1 -= this->render_rect.left;
     x2 -= this->render_rect.left;
     y1 -= this->render_rect.top;
     y2 -= this->render_rect.top;
 
-    z = max_level;
-    if (z >= min_level) {
+    RGE_Pick_Obj_Info* output = Picked_Objects;
+    for (int level = max_level; level >= min_level; --level) {
+        DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[level];
+        if (node == 0) {
+            continue;
+        }
+
         do {
-            DClipInfo_Node* node = this->prior_objs->Draw_Level_Head[z];
-            if (node != 0) {
-                RGE_Pick_Obj_Info* out = &Picked_Objects[num_picked];
-                do {
-                    int ok = 0;
-                    if (node->Node_Type == 0) {
-                        int object_id = node->Object_ID;
-                        if (object_id >= 0) {
-                            if (x1 <= (int)node->x2 && x2 >= (int)node->x1 &&
-                                y1 <= (int)node->y2 && y2 >= (int)node->y1) {
-                                RGE_Static_Object* obj = this->world->objectsValue[object_id];
-                                if (player_id == -1 || obj->owner->id == player_id) {
-                                    if (obj->object_state == 2 && obj->master_obj->select_level >= select_level) {
-                                        ok = 1;
-                                    }
-                                }
-                            }
-                        }
+            int found = 0;
+            int object_id;
+            if (node->Node_Type == 0) {
+                object_id = node->Object_ID;
+                if (object_id >= 0 &&
+                    x1 <= node->x2 && node->x1 <= x2 &&
+                    y1 <= node->y2 && node->y1 <= y2) {
+                    RGE_Static_Object* object =
+                        this->world->objectsValue[object_id];
+                    if ((owner_id == -1 || object->owner->id == owner_id) &&
+                        object->object_state == 2 &&
+                        object->master_obj->select_level >= select_level) {
+                        found = 1;
                     }
-                    if (ok != 0) {
-                        int add = 1;
-                        if (out > &Picked_Objects[0]) {
-                            int i = 0;
-                            RGE_Pick_Obj_Info* p = Picked_Objects;
-                            do {
-                                if (p->object_id == node->Object_ID) {
-                                    add = 0;
-                                    if ((short)ok < Picked_Objects[i].confidence) {
-                                        Picked_Objects[i].confidence = (short)ok;
-                                    }
-                                    break;
-                                }
-                                i++;
-                                ++p;
-                            } while (i < num_picked);
-                        }
-                        if (add) {
-                            out->object_id = node->Object_ID;
-                            out->confidence = (short)ok;
-                            out->draw_level = (short)ok;
-                            out->draw_x = node->Draw_X;
-                            out->draw_y = node->Draw_Y;
-                            num_picked++;
-                            ++out;
-                        }
-                        if (out >= &Picked_Objects[64]) return 0x40;
-                    }
-                    node = node->NextOnLevel;
-                } while (node != 0);
+                }
             }
-            z--;
-        } while (z >= min_level);
+
+            if (found != 0) {
+                int add_it = 1;
+                if (num_picked > 0) {
+                    for (int i = 0; i < num_picked; ++i) {
+                        if (Picked_Objects[i].object_id == object_id) {
+                            add_it = 0;
+                            if (Picked_Objects[i].confidence > found) {
+                                Picked_Objects[i].confidence = (short)found;
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                if (add_it != 0) {
+                    output->object_id = object_id;
+                    output->confidence = (short)found;
+                    output->draw_level = (short)found;
+                    output->draw_x = (short)node->Draw_X;
+                    output->draw_y = (short)node->Draw_Y;
+                    ++num_picked;
+                    ++output;
+                }
+
+                if (output >= &Picked_Objects[64]) {
+                    return 0x40;
+                }
+            }
+
+            node = node->NextOnLevel;
+        } while (node != 0);
     }
+
     return num_picked;
 }
 
