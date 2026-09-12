@@ -72,3 +72,16 @@ The rebuilt EH state becomes one before the list-head load. The original state
 becomes one after that load and its comparison. A fault at the load destroys
 `tempLots` only in the rebuild. Final state `87d6b9f662f1` remains a 72-byte
 mismatch. The source is unchanged, and the result is blocked.
+
+## Final repair review: `sa-36fcb085`
+
+The final clean source keeps the same 72-byte mismatch. It retains the correct
+boundary, owner, frame, 62 calls, and control-flow shape.
+
+Six additional typed-source probes tested cursor scope, PDB-local loop names,
+declaration placement, register hints, cursor reuse, and a const sentinel.
+All six emitted the same 72-byte mismatch. The final clean state is
+`4fdf31e40a32`, and its one-job closure audit passed.
+
+The registry status remains unchanged for orchestrator review. The EH-order
+defect remains open.
