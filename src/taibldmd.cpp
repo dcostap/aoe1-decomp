@@ -1002,25 +1002,24 @@ int TribeBuildAIModule::allBuilt(int param_1, int param_2)
     return 1;
 }
 
-int TribeBuildAIModule::readyToResearch(int param_1, int param_2)
+int TribeBuildAIModule::readyToResearch(int id, int ageResearch)
 {
-    unsigned char state;
-    if (param_2 == 1) {
-        int id = *(int volatile*)&param_1;
+    unsigned char rState;
+    if (ageResearch == 1) {
         if (id == 2)
-            state = this->md->aiPlayer->researchState(0x65);
+            rState = this->md->aiPlayer->researchState(0x65);
         else
-            state = (unsigned char)*(unsigned char*)&param_1;
+            rState = id;
         if (id == 3)
-            state = this->md->aiPlayer->researchState(0x66);
+            rState = this->md->aiPlayer->researchState(0x66);
         if (id == 4) {
-            state = this->md->aiPlayer->researchState(0x67);
-            return state == 1;
+            rState = this->md->aiPlayer->researchState(0x67);
+            return rState == 1;
         }
     } else {
-        state = this->md->aiPlayer->researchState(param_1);
+        rState = this->md->aiPlayer->researchState(id);
     }
-    return state == 1;
+    return rState == 1;
 }
 
 void TribeBuildAIModule::unskipBuildList(int limit67, int limit44)

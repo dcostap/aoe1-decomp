@@ -58,15 +58,19 @@ The module preserves the prior reviewed state:
   `004D4460`, `004D4DB0`, `004D4F80`, `004D5090`, `004D5170`, `004D5270`,
   `004D4E10`, `004D5310`, `004D5590`, `004D5690`, `004D56F0`, `004D5780`,
   `004D5AD0`, `004D5B80`, `004D5BB0`, `004D5C20`, `004D5DE0`.
-- `accepted_drift`: `004D4540`, `004D5600`, `004D5CA0`, `004D5D40`.
+- `accepted_drift`: `004D4540`, `004D5600`, `004D5D40`.
 - `scratch`: `004D3D60`.
+- `blocked; recommend scratch`: `004D5CA0`.
 
-The four accepted-drift owners retain their previous bounded equivalence
+The accepted-drift owners retain their previous bounded equivalence
 reviews. `004D4540` differs only in complementary branch encoding and a
 switch-table relocation. `004D5600` differs only in a virtual-call register.
-`004D5CA0` differs only in equivalent register allocation. `004D5D40` retains
-its localized loop/register drift review. None changes
-calls, predicates, cleanup, memory effects, or return behavior.
+`004D5CA0` is blocked in its function note. Its natural typed source removes
+forbidden compiler steering, but its rebuilt code changes saved-register
+allocation, branch displacement, low-byte parameter loading, and strict
+stack-fault order. Recommend registry demotion to `scratch`.
+`004D5D40` retains its localized loop/register drift review. None changes
+the target call set or logical return behavior.
 
 ## Current scratch and accepted-drift notes
 
