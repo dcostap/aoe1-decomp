@@ -52,7 +52,7 @@
     "00445710": {"status": "matching", "symbol": "?SetTrans@TDrawArea@@QAEXHE@Z"},
     "00445780": {"status": "matching", "symbol": "?SetOverlayTrans@TDrawArea@@QAEXHE@Z"},
     "004457E0": {"status": "matching", "symbol": "?SetPixel@TDrawArea@@QAEXJJE@Z"},
-    "00445840": {"status": "scratch", "symbol": "?DrawLine@TDrawArea@@QAEXHHHHE@Z"},
+    "00445840": {"status": "new_verified_logic", "symbol": "?DrawLine@TDrawArea@@QAEXHHHHE@Z", "behavior_review": "logic_matching/00445840/review-01/attempt-01"},
     "004459A0": {"status": "matching", "symbol": "?DrawRect@TDrawArea@@QAEXJJJJE@Z"},
     "00445A40": {"status": "matching", "symbol": "?DrawRect@TDrawArea@@QAEXPAUtagRECT@@E@Z"},
     "00445A60": {"status": "accepted_drift", "symbol": "?DrawHorzLine@TDrawArea@@QAEXJJJE@Z"},

@@ -1811,74 +1811,82 @@ void TDrawArea::SetPixel(long x, long y, unsigned char color) {
     }
 }
 
-void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
-    int yd;
-    int yl;
+void TDrawArea::DrawLine(int x1, int y1, int x2, int y2,
+                         unsigned char color)
+{
+    int temp;
 
     if (x1 == x2) {
-        yd = y1;
-        yl = y2;
-        if (yd > yl) {
-            int t = yd;
-            yd = yl;
-            yl = t;
-        }
-        if (yd <= yl) {
-            unsigned int c = (unsigned int)color;
-            do {
-                ASMDraw_HLine(x1, x2, yd, c);
-                yd++;
-            } while (yd <= yl);
-        }
-    } else if (y1 == y2) {
-        ASMDraw_HLine(x1, x2, y1, (unsigned int)color);
-    } else {
-        int dy;
-
-        if (x2 < x1) {
-            int t = x1;
-            x1 = x2;
-            x2 = t;
-            t = y1;
+        if (y1 > y2) {
+            temp = y1;
             y1 = y2;
-            y2 = t;
+            y2 = temp;
         }
 
-        int dx;
-        dx = x2 - x1 + 1;
-        if (y1 < y2) {
-            dy = y2 - y1;
-            yd = 1;
-        } else {
-            dy = y1 - y2;
-            yd = -1;
-        }
-        ++dy;
+        for (; y1 <= y2; ++y1)
+            ASMDraw_HLine(x1, x2, y1, color);
+        return;
+    }
 
-        if (dx >= dy) {
-            int error = 0;
-            int line_start = x1;
-            for (; x1 < x2; ++x1) {
-                error += dy;
-                if (error >= dx) {
-                    ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
-                    y1 += yd;
-                    error -= dx;
-                    line_start = x1 + 1;
-                }
+    if (y1 == y2) {
+        ASMDraw_HLine(x1, x2, y1, color);
+        return;
+    }
+
+    if (x2 < x1) {
+        temp = y1;
+        y1 = y2;
+        y2 = temp;
+
+        temp = x1;
+        x1 = x2;
+        x2 = temp;
+    }
+
+    int x_length = x2 - x1 + 1;
+    int y = y1;
+    int y_length;
+    int y_step;
+
+    if (y1 < y2) {
+        y_length = y2 - y1 + 1;
+        y_step = 1;
+    }
+    else {
+        y_length = y1 - y2 + 1;
+        y_step = -1;
+    }
+
+    if (y_length <= x_length) {
+        int error = 0;
+        int run_start = x1;
+
+        while (x1 < x2) {
+            error += y_length;
+            if (error >= x_length) {
+                ASMDraw_HLine(run_start, x1, y, color);
+                y += y_step;
+                error -= x_length;
+                run_start = x1 + 1;
             }
-            ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
-        } else {
-            int error = 0;
-            unsigned int c = (unsigned int)color;
-            do {
-                ASMDraw_HLine(x1, x1, y1, c);
-            } while (y1 != y2 &&
-                     (error += dx,
-                      error >= dy && (++x1, error -= dy),
-                      y1 += yd,
-                      1));
+            ++x1;
         }
+        ASMDraw_HLine(run_start, x1, y, color);
+        return;
+    }
+
+    int error = 0;
+    for (;;) {
+        ASMDraw_HLine(x1, x1, y, color);
+        if (y == y2)
+            return;
+
+        error += x_length;
+        if (error >= y_length) {
+            ++x1;
+            error -= y_length;
+        }
+        y += y_step;
     }
 }
 
