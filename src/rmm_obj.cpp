@@ -326,8 +326,6 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
     this->deinit_stack(obj_stack);
 }
 
-// still differs in the initial world/player/count scheduling block.
-
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 {
     long y;
@@ -337,6 +335,8 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
     long count;
     Map_Stack obj_stack;
     float zone;
+    RGE_Master_Static_Object* master;
+    short radius;
 
     memset(this->search_map, 1, this->map_width * this->map_height);
 
@@ -344,42 +344,47 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
     this->make_placement_stack(obj_stack, -1, -1, -1, -1);
 
     RGE_Player* player = this->world->players[
-        info.player_id & (info.player_id <= -1 ? 0 : -1)];
+        info.player_id & ((info.player_id <= -1) - 1)];
     count = info.number_of_groups;
 
-    while (pop_stack(obj_stack, x, y, zone) && count > 0) {
-        if (info.terrain < 0 ||
-            ((this->map_row_offset[y][x].terrain_type & 0x1f) ==
-             (unsigned int)info.terrain)) {
-            tile_x = (float)x;
-            tile_y = (float)y;
-            RGE_Master_Static_Object* master =
-                player->master_objects[info.obj_id];
-            short radius = (short)(int)master->radius_x;
-            if (0.0f < master->radius_x - (float)radius) {
-                tile_x = tile_x - -0.5f;
-            }
-            radius = (short)(int)master->radius_y;
-            if (0.0f < master->radius_y - (float)radius) {
-                tile_y = tile_y - -0.5f;
-            }
-            if (!master->check_placement(player, tile_x, tile_y,
-                                         0, 0, 1, 1, 1, 0, 1)) {
-                remove_area_from_lists(x, y, info.object_exclusion_zone);
-                switch (info.group_flag) {
-                case 0:
-                    player->make_new_object(info.obj_id, tile_x, tile_y, 0, 1);
-                    break;
-                case 1:
-                    place_group(info, x, y, player);
-                    break;
-                case 2:
-                    place_cluster(info, x, y, player);
-                    break;
-                }
-                count--;
+    while (this->pop_stack(obj_stack, x, y, zone) && count > 0) {
+        if (info.terrain >= 0) {
+            if ((this->map_row_offset[y][x].terrain_type & 0x1f) !=
+                (unsigned int)info.terrain) {
+                goto next;
             }
         }
+
+        tile_x = (float)x;
+        tile_y = (float)y;
+        master = player->master_objects[info.obj_id];
+        radius = (short)(int)master->radius_x;
+        if (master->radius_x - (float)radius > 0.0f) {
+            tile_x = tile_x - -0.5f;
+        }
+        radius = (short)(int)master->radius_y;
+        if (master->radius_y - (float)radius > 0.0f) {
+            tile_y = tile_y - -0.5f;
+        }
+
+        if (!master->check_placement(player, tile_x, tile_y,
+                                     0, 0, 1, 1, 1, 0, 1)) {
+            this->remove_area_from_lists(x, y, info.object_exclusion_zone);
+            switch (info.group_flag) {
+            case 0:
+                player->make_new_object(info.obj_id, tile_x, tile_y, 0, 1);
+                break;
+            case 1:
+                this->place_group(info, x, y, player);
+                break;
+            case 2:
+                this->place_cluster(info, x, y, player);
+                break;
+            }
+            count--;
+        }
+    next:
+        ;
     }
     this->deinit_stack(obj_stack);
 }
