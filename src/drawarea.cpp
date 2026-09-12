@@ -1314,103 +1314,93 @@ void TDrawArea::SetSize(long width, long height, int flags)
 
 void TDrawArea::Clear(tagRECT* rect, int color)
 {
+    RECT dest;
+    DDBLTFX ddbltfx;
+    int width;
+
     if (DDSys_CanColorFill == 0) {
         this->PtrClear(rect, color);
         return;
     }
 
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 1) {
-        unsigned char* p = this->Bits;
+        unsigned char* bits = this->Bits;
+        if (bits == 0)
+            return;
 
-        if (p != 0) {
-            if (rect == 0) {
-                memset(p, color, this->Height * this->Pitch);
-                return;
-            }
-
-            int x1 = rect->left;
-            int y1 = rect->top;
-            int x2 = rect->right;
-            int y2 = rect->bottom;
-
-            if (x1 < 0) {
-                x1 = 0;
-            }
-            else if (x1 >= this->Width) {
-                x1 = this->Width - 1;
-            }
-
-            if (y1 < 0) {
-                y1 = 0;
-            }
-            else if (y1 >= this->Height) {
-                y1 = this->Height - 1;
-            }
-
-            if (x2 < 0) {
-                x2 = 0;
-            }
-            else if (x2 >= this->Width) {
-                x2 = this->Width - 1;
-            }
-
-            if (y2 < 0) {
-                y2 = 0;
-            }
-            else if (y2 >= this->Height) {
-                y2 = this->Height - 1;
-            }
-
-            if (x2 > x1 && y2 > y1) {
-                int wid = x2 - x1 + 1;
-
-                int step;
-                int offset;
-                if (this->Orien == 1) {
-                    step = this->Pitch;
-                    offset = y1 * step;
-                    p = p + offset + x1;
-                }
-                else {
-                    offset = (this->Height - y1 - 1) * this->Pitch;
-                    step = -this->Pitch;
-                    p = p + offset + x1;
-                }
-
-                if (y1 <= y2) {
-                    int rows = y2 - y1 + 1;
-                    do {
-                        memset(p, color, wid);
-                        p += step;
-                        --rows;
-                    } while (rows != 0);
-                }
-            }
+        if (rect == 0) {
+            memset(bits, color, this->Height * this->Pitch);
+            return;
         }
-    }
-    else {
-        tagRECT dest;
-        _DDBLTFX ddbltfx;
-        IDirectDrawSurface* surface = this->DrawSurface;
 
-        if (surface != 0) {
-            ddbltfx.dwSize = sizeof(ddbltfx);
-            ddbltfx.dwFillColor = color;
+        long left = rect->left;
+        long top = rect->top;
+        long right = rect->right;
+        long bottom = rect->bottom;
 
-            if (rect == 0) {
-                surface->Blt(0, 0, 0, 0x1000400, &ddbltfx);
-                return;
-            }
+        if (left < 0)
+            left = 0;
+        else if (left >= this->Width)
+            left = this->Width - 1;
 
-            dest.left = rect->left;
-            dest.top = rect->top;
-            dest.right = rect->right;
-            ++dest.right;
-            dest.bottom = rect->bottom;
-            ++dest.bottom;
-            surface->Blt(&dest, 0, 0, 0x1000400, &ddbltfx);
+        if (top < 0)
+            top = 0;
+        else if (top >= this->Height)
+            top = this->Height - 1;
+
+        if (right < 0)
+            right = 0;
+        else if (right >= this->Width)
+            right = this->Width - 1;
+
+        if (bottom < 0)
+            bottom = 0;
+        else if (bottom >= this->Height)
+            bottom = this->Height - 1;
+
+        if (right <= left || bottom <= top)
+            return;
+
+        width = right - left + 1;
+        int delta;
+        if (this->Orien == 1) {
+            bits += top * this->Pitch + left;
+            delta = this->Pitch;
         }
+        else {
+            bits += (this->Height - top - 1) * this->Pitch + left;
+            delta = -this->Pitch;
+        }
+
+        if (top <= bottom) {
+            int height = bottom - top + 1;
+            do {
+                memset(bits, color, width);
+                bits += delta;
+                --height;
+            } while (height != 0);
+        }
+        return;
     }
+
+    IDirectDrawSurface* surface = this->DrawSurface;
+    if (surface == 0)
+        return;
+
+    ddbltfx.dwSize = 0x64;
+    ddbltfx.dwFillColor = color;
+    if (rect == 0) {
+        surface->Blt(0, 0, 0, 0x1000400, &ddbltfx);
+        return;
+    }
+
+    dest.left = rect->left;
+    dest.top = rect->top;
+    dest.right = rect->right;
+    dest.bottom = rect->bottom;
+    ++dest.right;
+    ++dest.bottom;
+    surface->Blt(&dest, 0, 0, 0x1000400, &ddbltfx);
 }
 
 void TDrawArea::SetAccessOffsets()
