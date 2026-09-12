@@ -20,47 +20,43 @@ extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned size);
 
-// The executable publishes the node before its password and version checks.
 void __cdecl RESFILE_open_new_resource_file(
     char* name, char* cmpName, char* path, int isMapped)
 {
     char resFile[260];
     char error_msg[80];
-    resfile_header rHdr;
-    unsigned char* mappedData = 0;
+    resfile_header rHeader;
     int fHandle = -1;
+    unsigned char* mapped_file_data = 0;
 
     sprintf(resFile, "%s%s", path, name);
 
     if (isMapped == 0) {
-        HANDLE hFile;
-        HANDLE hMapping;
-
-        hFile = CreateFileA(resFile, 0x80000000, 1, 0, 4, 0x80, 0);
-        if (hFile == (HANDLE)-1) {
+        fHandle = (int)CreateFileA(resFile, 0x80000000, 1, 0, 4, 0x80, 0);
+        if (fHandle == -1) {
             sprintf(error_msg,
-                "Error: Open_new_ResFile, mapped file %s not found.", name);
+                "Error: Open_new_ResFile, mapped file %s not Found.", name);
             MessageBoxA(0, error_msg, "RESOURCE ERROR", 0x30);
             return;
         }
 
-        hMapping = CreateFileMappingA(hFile, 0, 2, 0, 0, 0);
-        CloseHandle(hFile);
-
-        if (hMapping == 0) {
-            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file.",
+        HANDLE mapping = CreateFileMappingA((HANDLE)fHandle, 0, 2, 0, 0, 0);
+        CloseHandle((HANDLE)fHandle);
+        if (mapping == 0) {
+            MessageBoxA(0,
+                "Error: Open_Mapped_ResFile, Could not map file(1).",
                 "RESOURCE ERROR", 0x30);
             return;
         }
 
-        mappedData = (unsigned char*)MapViewOfFile(hMapping, 4, 0, 0, 0);
-        if (mappedData == 0) {
-            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file.",
+        mapped_file_data = (unsigned char*)MapViewOfFile(mapping, 4, 0, 0, 0);
+        if (mapped_file_data == 0) {
+            MessageBoxA(0,
+                "Error: Open_Mapped_ResFile, Could not map file to addr.",
                 "RESOURCE ERROR", 0x30);
             return;
         }
-
-        CloseHandle(hMapping);
+        CloseHandle(mapping);
     } else {
         fHandle = _open(resFile, 0x8000);
         if (fHandle == -1) {
@@ -71,70 +67,60 @@ void __cdecl RESFILE_open_new_resource_file(
         }
     }
 
-    {
-        ResFileHdr* node;
-        node = (ResFileHdr*)malloc(0x114);
-        if (node == 0) {
-            MessageBoxA(0, "Error: Out of memory in Open_resfile.",
+    ResFileHdr* newFile = (ResFileHdr*)malloc(sizeof(ResFileHdr));
+    if (newFile == 0) {
+        MessageBoxA(0, "Error: Out of memory in Open_resfile.",
+            "RESOURCE ERROR", 0x30);
+        return;
+    }
+
+    strcpy(newFile->res_name, name);
+    newFile->next = 0;
+
+    if (isMapped == 0) {
+        newFile->handle = -1;
+        newFile->mapped_file = mapped_file_data;
+        newFile->header = (resfile_header*)mapped_file_data;
+    } else {
+        newFile->handle = fHandle;
+        newFile->mapped_file = 0;
+        lseek(fHandle, 0, 1);
+        if (read(fHandle, &rHeader, 0x40) != 0x40) {
+            __asm int 3
+            MessageBoxA(0, "Error: Reading resfile header.",
                 "RESOURCE ERROR", 0x30);
             return;
         }
-
-        // The shipped copy has no length guard for a malformed name.
-        strcpy(node->res_name, name);
-        node->next = 0;
-
-        if (isMapped == 0) {
-            node->handle = -1;
-            node->mapped_file = mappedData;
-            node->header = (resfile_header*)mappedData;
-        } else {
-            node->handle = fHandle;
-            node->mapped_file = 0;
-            lseek(fHandle, 0, 1);
-            if (read(fHandle, &rHdr, sizeof(rHdr)) != sizeof(rHdr)) {
-                // The original reaches a parent-owned INT3 fragment here.
-                MessageBoxA(0, "Error: Reading resfile header.",
-                    "RESOURCE ERROR", 0x30);
-                return;
-            }
-            node->header = (resfile_header*)malloc(rHdr.directory_size);
-            lseek(fHandle, 0, 0);
-            if (read(fHandle, node->header, rHdr.directory_size) !=
-                rHdr.directory_size) {
-                MessageBoxA(0, "Error: Reading resfile header data.",
-                    "RESOURCE ERROR", 0x30);
-                return;
-            }
-        }
-
-        {
-            ResFileHdr* head;
-            head = Res_Files;
-            if (head == 0) {
-                Res_Files = node;
-            } else {
-                ResFileHdr* cur;
-                cur = head;
-                while (cur->next != 0) {
-                    cur = cur->next;
-                }
-                cur->next = node;
-            }
-        }
-
-        if (strcmp(node->header->password, cmpName) != 0) {
-            MessageBoxA(0,
-                "Error: Open_ResFile, Corruption detected in resourcefile.",
+        newFile->header = (resfile_header*)malloc(rHeader.directory_size);
+        lseek(fHandle, 0, 0);
+        if (read(fHandle, newFile->header, rHeader.directory_size) !=
+            rHeader.directory_size) {
+            MessageBoxA(0, "Error: Reading resfile header data.",
                 "RESOURCE ERROR", 0x30);
             return;
         }
+    }
 
-        if (strncmp(node->header->version, "1.00", 4) != 0) {
-            MessageBoxA(0, "Error: Open_ResFile, Resfile not correct version.",
-                "RESOURCE ERROR", 0x30);
-            return;
+    if (Res_Files == 0) {
+        Res_Files = newFile;
+    } else {
+        ResFileHdr* cur = Res_Files;
+        while (cur->next != 0) {
+            cur = cur->next;
         }
+        cur->next = newFile;
+    }
+
+    if (strcmp(newFile->header->password, cmpName) != 0) {
+        MessageBoxA(0,
+            "Error: Open_ResFile, Corruption detected in resfile.",
+            "RESOURCE ERROR", 0x30);
+        return;
+    }
+
+    if (strncmp(newFile->header->version, "1.00", 4) != 0) {
+        MessageBoxA(0, "Error: Open_ResFile, Resfile not correct.",
+            "RESOURCE ERROR", 0x30);
     }
 }
 
