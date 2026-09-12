@@ -2282,98 +2282,85 @@ byte TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num,
 }
 
 byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
-                                       long param_5, long param_6)
+                                      long p8, long p9)
 {
-    long width;
-    long orientation;
-    Shape_Header* sh;
-    long height;
-    Shape_Payload* src;
-    byte* save_buffer;
-    long parity;
-    long next_parity;
-    long output_count;
-    byte count;
-    byte* end;
+    long orientation = area->Orien;
+    long width = area->AlignedWidth() * orientation;
+    Shape_Header* header = this->shape_header;
+    long height = header->ymax - header->ymin + 1;
+    byte* src = (byte*)(header + 1);
+    long row_offset;
 
-    orientation = area->Orien;
-    width = area->AlignedWidth() * orientation;
-    sh = this->shape_header;
-    src = (Shape_Payload*)(sh + 1);
-    height = sh->ymax - sh->ymin + 1;
+    if (orientation < 1)
+        row_offset = (y - area->Height + 1) * width;
+    else
+        row_offset = y * width;
 
-    if (orientation < 1) {
-        save_buffer = area->Bits + x + (y - area->Height + 1) * width;
-    } else {
-        save_buffer = area->Bits + x + y * width;
-    }
-
-    parity = (param_5 + x) & 1;
-    if (((param_6 + y) & 1) != 0)
-        parity = (parity != 1);
+    byte* save_buffer = area->Bits + x + row_offset;
+    byte dither = (byte)((p8 + x) & 1);
+    if (((p9 + y) & 1U) != 0)
+        dither = (byte)(dither != 1);
 
     if (height > 0) {
+        long rows = height;
         do {
-            next_parity = (parity != 1);
-            byte done = 0;
+            byte row_dither = (byte)(dither != 1);
             byte* dst = save_buffer;
-            Shape_Payload* row_src = src;
+            byte done = 0;
+
             do {
-                byte command;
-                command = row_src++->value;
+                byte command = *src++;
                 if ((command & 1) == 1) {
-                    command >>= 1;
-                    if (command == 0) {
-                        count = row_src->value;
-                        dst += (unsigned int)count;
+                    byte source_count = command >> 1;
+                    if (source_count == 0) {
+                        byte count = *src++;
+                        dst += count;
                         if ((count & 1) != 0)
-                            parity = (parity != 1);
-                        row_src++;
+                            dither = (byte)(dither != 1);
                     } else {
-                        count = command;
-                        if (parity != 0) {
-                            count--;
-                            dst++;
+                        byte count = source_count;
+                        if (dither != 0) {
+                            --count;
+                            ++dst;
                         }
-                        output_count = (unsigned int)count;
-                        end = dst + output_count;
-                        parity = output_count & 1;
+                        dither = (byte)(count & 1);
+                        byte* end = dst + count;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if (parity != 0)
-                            dst--;
-                        row_src += (unsigned int)command;
+                        if (dither != 0)
+                            --dst;
+                        src += source_count;
                     }
                 } else {
-                    command >>= 1;
-                    if (command == 0) {
+                    byte source_count = command >> 1;
+                    if (source_count == 0) {
                         done = 1;
                     } else {
-                        count = command;
-                        if (parity != 0) {
-                            count--;
-                            dst++;
+                        byte count = source_count;
+                        if (dither != 0) {
+                            --count;
+                            ++dst;
                         }
-                        output_count = (unsigned int)count;
-                        end = dst + output_count;
-                        parity = output_count & 1;
+                        dither = (byte)(count & 1);
+                        byte* end = dst + count;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if (parity != 0)
-                            dst--;
-                        row_src++;
+                        if (dither != 0)
+                            --dst;
+                        ++src;
                     }
                 }
-            } while (!done);
-            src = row_src;
+            } while (done == 0);
+
             save_buffer += width;
-            parity = next_parity;
-        } while (--height);
+            dither = row_dither;
+        } while (--rows != 0);
     }
+
     return 1;
 }
 
