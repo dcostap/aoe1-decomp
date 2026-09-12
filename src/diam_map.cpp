@@ -887,21 +887,21 @@ void RGE_Diamond_Map::draw_object(short param_1, short param_2,
   }
 }
 
-void RGE_Diamond_Map::draw_clipped_horz_line(short x, short y, short len,
-                                             unsigned char color,
-                                             RGE_Map_Image_Line *image_line) {
-  long clipped_left = this->pnl_x + image_line->start_x;
+void RGE_Diamond_Map::draw_clipped_horz_line(
+    short x, short y, short width, unsigned char color,
+    RGE_Map_Image_Line *line) {
+  short start_x = line->start_x;
+  int line_start = this->pnl_x + (int)start_x;
 
-  if (x < clipped_left) {
-    x = (short)(this->pnl_x + image_line->start_x);
+  if ((int)x < line_start) {
+    x = (short)this->pnl_x + start_x;
   }
 
-  short result_x = len;
-  if ((long)(x + len - 1) >= clipped_left + image_line->line_len) {
-    result_x = (short)(this->pnl_x - x + image_line->line_len + image_line->start_x);
+  if (line->line_len + line_start <= width - 1 + (int)x) {
+    width = (short)this->pnl_x - x + line->line_len + start_x;
   }
 
-  this->render_area->DrawHorzLine((long)x, (long)y, (long)result_x, color);
+  this->render_area->DrawHorzLine(x, y, width, color);
 }
 
 void RGE_Diamond_Map::draw_view_rect() {

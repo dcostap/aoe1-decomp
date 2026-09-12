@@ -25,7 +25,7 @@
     "00437CC0": {"status": "matching", "symbol": "?draw_objects@RGE_Diamond_Map@@MAEXXZ"},
     "00437EC0": {"status": "scratch", "symbol": "?draw_visible_object@RGE_Diamond_Map@@MAEXPAVRGE_Static_Object@@EE@Z"},
     "00438060": {"status": "matching", "symbol": "?draw_object@RGE_Diamond_Map@@MAEXFFEFPAVRGE_Static_Object@@@Z"},
-    "004381D0": {"status": "scratch", "symbol": "?draw_clipped_horz_line@RGE_Diamond_Map@@IAEXFFFEPAURGE_Map_Image_Line@@@Z"},
+    "004381D0": {"status": "new_verified_logic", "symbol": "?draw_clipped_horz_line@RGE_Diamond_Map@@IAEXFFFEPAURGE_Map_Image_Line@@@Z", "behavior_review": "logic_matching/004381D0/review-01/attempt-01"},
     "00438250": {"status": "scratch", "symbol": "?draw_view_rect@RGE_Diamond_Map@@MAEXXZ"},
     "00438530": {"status": "accepted_drift", "symbol": "?pick_tile@RGE_Diamond_Map@@QAEHJJPAF0PAPAURGE_Tile@@@Z"},
     "00438630": {"status": "matching", "symbol": "?handle_size@RGE_Diamond_Map@@UAEJJJ@Z"},
