@@ -594,92 +594,93 @@ void PointMaker::DrawCurrentSatelliteIntoProbArray(int point)
     }
 }
 
-void PointMaker::AddingRect(int x, int y, int w, int h)
+void PointMaker::AddingRect(int left, int top, int right, int bottom)
 {
-    int iVar2;
-    int iVar3;
-    int iVar5;
-    int iVar6;
-    int iVar8;
-    int edge_count;
-    char cell_value;
-    char add_value;
-    char* cell;
-    iVar5 = Width * y + x;
-    iVar6 = w - x;
-    iVar3 = h - y - 1;
-    iVar8 = iVar3 * Width + iVar5;
+    int first = top * Width + left;
+    int width = right - left;
+    int height = bottom - top;
+    int rows = height - 1;
+    int opposite = rows * Width + first;
 
-    if (iVar6 >= 0) {
-        if (h - y >= 0) {
-            iVar2 = iVar5;
-            if (w - x >= 0) {
-                edge_count = iVar6 + 1;
-                do {
-                    int prob_add = ProbabilityAdd;
-                    if (iVar2 >= 1 && iVar2 < SizeArrays - 1) {
-                        char* cell = ProbArray + iVar2;
-                        if (*cell == 0) {
-                            *cell = (char)prob_add;
-                            ProbabilityTiles++;
-                        } else if (prob_add + (int)*cell < 0xFF) {
-                            *cell = (char)(prob_add + (int)*cell);
-                        } else {
-                            *cell = (char)-1;
-                        }
-                    }
-                    prob_add = ProbabilityAdd;
-                    if (iVar8 >= 1 && iVar8 < SizeArrays - 1) {
-                        cell = ProbArray + iVar8;
-                        cell_value = ProbArray[iVar8];
-                        add_value = (char)prob_add;
-                        if (cell_value == 0) {
-                            *cell = add_value;
-                            ProbabilityTiles++;
-                        } else if (prob_add + (int)cell_value < 0xFF) {
-                            *cell = add_value + cell_value;
-                        } else {
-                            *cell = (char)-1;
-                        }
-                    }
-                    iVar8++;
-                    iVar2++;
-                    edge_count--;
-                } while (edge_count != 0);
-            }
+    if (width < 0) return;
+    if (height < 0) return;
 
-            iVar5 += Width;
-            if (iVar3 >= 0) {
-                while (iVar3-- != 0) {
-                    int prob_add = ProbabilityAdd;
-                    if (iVar5 >= 1 && iVar5 < SizeArrays - 1) {
-                        char* cell = ProbArray + iVar5;
-                        char value = ProbArray[iVar5];
-                        if (value == 0) {
-                            *cell = (char)prob_add;
-                            ProbabilityTiles++;
-                        } else if (prob_add + (int)value < 0xFF) {
-                            *cell = (char)(prob_add + (int)value);
-                        } else {
-                            *cell = (char)-1;
-                        }
+    if (width >= 0) {
+        int count = width + 1;
+        int map = first;
+        do {
+                int add_value = ProbabilityAdd;
+                char add = (char)add_value;
+                if (map > 0 && map < SizeArrays - 1) {
+                    char* cell = ProbArray + map;
+                    char value = *cell;
+                    if (value == 0) {
+                        *cell = add;
+                        ProbabilityTiles++;
+                    } else if (add_value + (int)value < 0xFF) {
+                        *cell = add + value;
+                    } else {
+                        *cell = (char)-1;
                     }
-                    iVar8 = iVar6 + iVar5;
-                    prob_add = ProbabilityAdd;
-                    if (iVar8 >= 1 && iVar8 < SizeArrays - 1) {
-                        char* cell = ProbArray + iVar8;
-                        if (*cell == 0) {
-                            *cell = (char)prob_add;
-                            ProbabilityTiles++;
-                        } else if (prob_add + (int)*cell < 0xFF) {
-                            *cell = (char)(prob_add + (int)*cell);
-                        } else {
-                            *cell = (char)-1;
-                        }
-                    }
-                    iVar5 += Width;
                 }
-            }
+
+                add_value = ProbabilityAdd;
+                add = (char)add_value;
+                if (opposite > 0 && opposite < SizeArrays - 1) {
+                    char* cell = ProbArray + opposite;
+                    char value = *cell;
+                    if (value == 0) {
+                        *cell = add;
+                        ProbabilityTiles++;
+                    } else if (add_value + (int)value < 0xFF) {
+                        *cell = add + value;
+                    } else {
+                        *cell = (char)-1;
+                    }
+                }
+                ++map;
+                ++opposite;
+            --count;
+        } while (count != 0);
+    }
+
+    first += Width;
+    if (rows >= 0) {
+        if (rows != 0) {
+            do {
+                    int add_value = ProbabilityAdd;
+                    char add = (char)add_value;
+                    if (first > 0 && first < SizeArrays - 1) {
+                        char* cell = ProbArray + first;
+                        char value = *cell;
+                        if (value == 0) {
+                            *cell = add;
+                            ProbabilityTiles++;
+                        } else if (add_value + (int)value < 0xFF) {
+                            *cell = add + value;
+                        } else {
+                            *cell = (char)-1;
+                        }
+                    }
+
+                    int other = first + width;
+                    add_value = ProbabilityAdd;
+                    add = (char)add_value;
+                    if (other > 0 && other < SizeArrays - 1) {
+                        char* cell = ProbArray + other;
+                        char value = *cell;
+                        if (value == 0) {
+                            *cell = add;
+                            ProbabilityTiles++;
+                        } else if (add_value + (int)value < 0xFF) {
+                            *cell = add + value;
+                        } else {
+                            *cell = (char)-1;
+                        }
+                    }
+                    first += Width;
+                --rows;
+            } while (rows != 0);
         }
     }
 }
