@@ -2711,8 +2711,8 @@ void RGE_Map::update(unsigned long world_time)
             if (terrain->interval <= elapsed) {
                 short frame_count = (short)(elapsed / terrain->interval);
                 short animation_frames = terrain->animation_frames;
-                short total_frames = terrain->pause_frames + animation_frames;
                 short frame = frame_count + terrain->frame;
+                short total_frames = terrain->pause_frames + animation_frames;
 
                 if (frame >= total_frames)
                     frame %= total_frames;
@@ -2737,8 +2737,8 @@ void RGE_Map::update(unsigned long world_time)
             if (border->interval <= elapsed) {
                 short frame_count = (short)(elapsed / border->interval);
                 short animation_frames = border->animation_frames;
-                short total_frames = border->pause_frames + animation_frames;
                 short frame = frame_count + border->frame;
+                short total_frames = border->pause_frames + animation_frames;
 
                 if (frame >= total_frames)
                     frame %= total_frames;
