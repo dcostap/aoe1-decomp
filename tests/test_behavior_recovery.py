@@ -4,6 +4,7 @@ import argparse
 import io
 import json
 from pathlib import Path
+import os
 import sys
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -212,6 +213,151 @@ def test_candidate_integration_patch_applies_to_main_base_without_source_swap(re
     br.git(repo, "apply", "-", data=patch)
     assert b"x + 2" in (repo / "src/sample.cpp").read_bytes()
     br.git(repo, "apply", "-R", "-", data=patch)
+
+
+def test_candidate_check_reuses_pool_and_resumes_saved_result(repo, tmp_path):
+    checker = (b"import sys\n"
+               b"print('Function: sample (00400000)')\n"
+               b"print('Result: MATCH')\n"
+               b"raise SystemExit(0)\n")
+    br.write_files(repo, {"tools/check_function.py": checker})
+    br.git(repo, "add", "tools/check_function.py")
+    br.git(repo, "commit", "-m", "Add fixture checker")
+    wave, worker = prepare(repo, tmp_path)
+    deliver(worker, SOURCE.replace(b"x + 1", b"x + 2"))
+    attempt = collect(repo, wave, worker)
+    args = argparse.Namespace(repo=repo, attempt=[attempt], jobs=1, force=False)
+
+    assert br.candidate_check(args) == 0
+    record = br.load_json(attempt / "candidate_check.json")
+    assert record["state"] == "complete"
+    assert record["result"] == "MATCH"
+    assert b"Result: MATCH" in (attempt / "candidate_check.txt").read_bytes()
+    assert (repo / "build/behavior_recovery/validation/slot-01/worktree/.git").is_file()
+
+    original = br.run
+
+    def no_second_check(command, **kwargs):
+        if any(str(part).endswith("check_function.py") for part in command):
+            raise AssertionError("saved candidate check was repeated")
+        return original(command, **kwargs)
+
+    with patch.object(br, "run", side_effect=no_second_check):
+        assert br.candidate_check(args) == 0
+    record_path = attempt / "candidate_check.json"
+    changed_record = br.load_json(record_path)
+    changed_record["returncode"] = 1
+    record_path.write_bytes(br.json_bytes(changed_record))
+    assert br.completed_candidate_check(attempt) is None
+    record_path.write_bytes(br.json_bytes(record))
+    wave_meta = br.load_json(wave / "wave.json")
+    wave_meta["test_change"] = True
+    (wave / "wave.json").write_bytes(br.json_bytes(wave_meta))
+    assert br.completed_candidate_check(attempt) is None
+
+
+def test_candidate_check_rejects_changed_pinned_compiler(repo, tmp_path):
+    wave, worker = prepare(repo, tmp_path)
+    deliver(worker)
+    attempt = collect(repo, wave, worker)
+    compiler = tmp_path / "compiler.exe"
+    compiler.write_bytes(b"pinned")
+    meta = br.load_json(wave / "wave.json")
+    meta["prerequisites"]["compiler_files"] = {str(compiler): br.sha(compiler.read_bytes())}
+    (wave / "wave.json").write_bytes(br.json_bytes(meta))
+    compiler.write_bytes(b"changed")
+    args = argparse.Namespace(repo=repo, attempt=[attempt], jobs=1, force=False)
+    with pytest.raises(ValueError, match="Pinned compiler file changed"):
+        br.candidate_check(args)
+    assert not (repo / "build/behavior_recovery/validation/slot-01/worktree").exists()
+
+
+def test_candidate_check_rejects_inputs_changed_during_check(repo, tmp_path):
+    checker = b"print('Function: sample (00400000)')\nprint('Result: MATCH')\n"
+    br.write_files(repo, {"tools/check_function.py": checker})
+    br.git(repo, "add", "tools/check_function.py")
+    br.git(repo, "commit", "-m", "Add fixture checker")
+    wave, worker = prepare(repo, tmp_path)
+    deliver(worker, SOURCE.replace(b"x + 1", b"x + 2"))
+    attempt = collect(repo, wave, worker)
+    args = argparse.Namespace(repo=repo, attempt=[attempt], jobs=1, force=False)
+    original = br.run
+
+    def change_after_check(command, **kwargs):
+        result = original(command, **kwargs)
+        if any(str(part).endswith("check_function.py") for part in command):
+            path = attempt / "source.patch"
+            path.write_bytes(path.read_bytes() + b"\n")
+        return result
+
+    with patch.object(br, "run", side_effect=change_after_check), pytest.raises(
+            ValueError, match="inputs changed during validation"):
+        br.candidate_check(args)
+    assert not (attempt / "candidate_check.json").exists()
+
+
+def test_candidate_check_job_limit_is_bounded():
+    parser = br.parser()
+    args = parser.parse_args(["candidate-check", "--attempt", "attempt-01"])
+    assert args.jobs == br.CANDIDATE_CHECK_JOBS
+    with pytest.raises(SystemExit):
+        parser.parse_args(["candidate-check", "--attempt", "attempt-01", "--jobs",
+                           str(br.CANDIDATE_CHECK_MAX_JOBS + 1)])
+
+
+@pytest.mark.skipif(os.name != "nt", reason="Windows lock retry")
+def test_cache_lock_retries_windows_contention(tmp_path):
+    import msvcrt
+
+    calls = 0
+
+    def locking(handle, mode, count):
+        nonlocal calls
+        if mode == msvcrt.LK_NBLCK:
+            calls += 1
+            if calls < 3:
+                raise OSError(br.errno.EACCES, "busy")
+
+    with patch.object(msvcrt, "locking", side_effect=locking), patch.object(br.time, "sleep"):
+        with br.cache_lock(tmp_path / "queue.lock"):
+            pass
+    assert calls == 3
+
+
+def test_candidate_check_does_not_cache_build_failure(repo, tmp_path):
+    checker = b"print('compiler failed')\nraise SystemExit(1)\n"
+    br.write_files(repo, {"tools/check_function.py": checker})
+    br.git(repo, "add", "tools/check_function.py")
+    br.git(repo, "commit", "-m", "Add failing fixture checker")
+    wave, worker = prepare(repo, tmp_path)
+    deliver(worker, SOURCE.replace(b"x + 1", b"x + 2"))
+    attempt = collect(repo, wave, worker)
+    args = argparse.Namespace(repo=repo, attempt=[attempt], jobs=1, force=False)
+
+    assert br.candidate_check(args) == 1
+    assert br.load_json(attempt / "candidate_check.json")["state"] == "failed"
+    assert br.completed_candidate_check(attempt) is None
+
+
+def test_validation_pool_repairs_missing_registration_and_rejects_foreign_worktree(repo, tmp_path):
+    base = br.git(repo, "rev-parse", "HEAD").decode().strip()
+    workspace = br.validation_workspace(repo, 1, base)
+    br.remove_tree(workspace)
+    assert br.validation_workspace(repo, 1, base) == workspace
+
+    foreign = tmp_path / "foreign"
+    foreign.mkdir()
+    br.git(foreign, "init", "--template=", "--initial-branch=main")
+    br.git(foreign, "config", "user.name", "Test")
+    br.git(foreign, "config", "user.email", "test@local")
+    br.write_files(foreign, {"file.txt": b"foreign\n"})
+    br.git(foreign, "add", "--all")
+    br.git(foreign, "commit", "-m", "Foreign fixture")
+    foreign_slot = repo / "build/behavior_recovery/validation/slot-02/worktree"
+    foreign_slot.parent.mkdir(parents=True, exist_ok=True)
+    br.git(foreign, "worktree", "add", "--detach", str(foreign_slot), "HEAD")
+    with pytest.raises(ValueError, match="another repository"):
+        br.validation_workspace(repo, 2, base)
 
 
 def test_collection_refuses_missing_delivery_dirty_and_overwrite(repo, tmp_path):

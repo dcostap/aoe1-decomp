@@ -84,10 +84,15 @@ The archive paths, payloads, and Git milestone commits are the record.
 Run the mechanical exactness check for every completed reconstruction delivery:
 
 ```text
-python tools/behavior_recovery.py candidate-check --attempt ATTEMPT_DIR
+python tools/behavior_recovery.py candidate-check --attempt ATTEMPT_DIR --attempt ATTEMPT_DIR
 ```
 
-The command uses an isolated worktree. It never swaps main source.
+Submit related attempts in one command. Do not start one command per attempt.
+The command queues attempts across two persistent validation worktrees by default.
+Use `--jobs 1` through `--jobs 4` to change this fixed limit.
+The command serializes worktree setup and never swaps main source.
+It saves `candidate_check.json` and `candidate_check.txt` in each attempt archive.
+A later run skips a valid saved result. Use `--force` to repeat it.
 Do not use byte output to select the review parent.
 
 ## First review
@@ -157,6 +162,8 @@ logic_matching/<VA>/
       changes.patch
       source.patch
       commits.patch
+      candidate_check.json
+      candidate_check.txt
       evidence/
   review-.../
     wave.json

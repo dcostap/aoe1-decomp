@@ -2,16 +2,20 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
+import errno
 import hashlib
 import io
 import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import shutil
 import stat
 import subprocess
 import sys
+import time
 import uuid
 import zipfile
 from datetime import datetime, timezone
@@ -39,6 +43,9 @@ EVIDENCE_ROOTS = ("inventory", "orig")
 ORIGINAL_ROOT = "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/"
 THINKING = ("off", "minimal", "low", "medium", "high", "xhigh", "max")
 TOKEN = re.compile(rb'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\r\n]*|/\*.*?\*/', re.S)
+CANDIDATE_CHECK_SCHEMA = 1
+CANDIDATE_CHECK_JOBS = 2
+CANDIDATE_CHECK_MAX_JOBS = 4
 
 
 def run(command, *, cwd, data=None, env=None, check=True):
@@ -157,8 +164,15 @@ def cache_lock(path):
             handle.flush()
         if os.name == "nt":
             import msvcrt
-            handle.seek(0)
-            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+            while True:
+                try:
+                    handle.seek(0)
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as error:
+                    if error.errno not in (errno.EACCES, errno.EDEADLK):
+                        raise
+                    time.sleep(0.1)
         else:
             import fcntl
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
@@ -629,48 +643,217 @@ def attempt_source_patch(repo, attempt_path):
 
 def candidate_integration_patch(repo, attempt_path):
     meta, files, attempt, source_patch = attempt_source_patch(repo, attempt_path)
-    stage = scratch(repo) / "candidate"
-    init_workspace(stage, files, meta["created"],
-                   evidence_root=linked_evidence_root(repo, meta))
-    if source_patch:
-        git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=source_patch)
-    names = [raw.decode() for raw in filter(None, git(stage, "diff", "--cached", "--name-only", "-z", "HEAD").split(b"\0"))]
-    tree = read_tree(stage, "HEAD")
-    replacements = {name: inside(stage, name).read_bytes() if inside(stage, name).is_file() else None
-                    for name in names}
-    patch, _ = index_diff(repo, meta["main_base"], replacements,
-                          {name: row[0] for name, row in tree.items()})
-    return meta, attempt, patch
+    stage_root = scratch(repo)
+    stage = stage_root / "candidate"
+    try:
+        init_workspace(stage, files, meta["created"],
+                       evidence_root=linked_evidence_root(repo, meta))
+        if source_patch:
+            git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=source_patch)
+        names = [raw.decode() for raw in filter(None, git(stage, "diff", "--cached", "--name-only", "-z", "HEAD").split(b"\0"))]
+        tree = read_tree(stage, "HEAD")
+        replacements = {name: inside(stage, name).read_bytes() if inside(stage, name).is_file() else None
+                        for name in names}
+        patch, _ = index_diff(repo, meta["main_base"], replacements,
+                              {name: row[0] for name, row in tree.items()})
+        return meta, attempt, patch
+    finally:
+        remove_tree(stage_root)
+
+
+def candidate_check_record(attempt_path):
+    return attempt_path / "candidate_check.json", attempt_path / "candidate_check.txt"
+
+
+def candidate_check_inputs(attempt_path):
+    wave = attempt_path.parent
+    meta = load_json(wave / "wave.json")
+    compiler_files = {}
+    for name, expected in meta.get("prerequisites", {}).get("compiler_files", {}).items():
+        path = Path(name)
+        actual = sha(path.read_bytes()) if path.is_file() else "MISSING"
+        if actual != expected:
+            raise ValueError(f"Pinned compiler file changed: {name}")
+        compiler_files[name] = actual
+    return {
+        "attempt.json": sha((attempt_path / "attempt.json").read_bytes()),
+        "source.patch": sha((attempt_path / "source.patch").read_bytes()),
+        "wave.json": sha((wave / "wave.json").read_bytes()),
+        "input.zip": sha((wave / "input.zip").read_bytes()),
+        "compiler_files": compiler_files,
+    }
+
+
+def completed_candidate_check(attempt_path):
+    record_path, output_path = candidate_check_record(attempt_path)
+    if not record_path.is_file() or not output_path.is_file():
+        return None
+    try:
+        record = load_json(record_path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        return None
+    if record.get("schema") != CANDIDATE_CHECK_SCHEMA or record.get("state") != "complete":
+        return None
+    inputs = record.get("inputs", {})
+    expected = candidate_check_inputs(attempt_path)
+    output = output_path.read_bytes()
+    if inputs != expected or record.get("output_sha256") != sha(output):
+        return None
+    text = output.decode("utf-8", "replace")
+    result = parse_candidate_result(text)
+    meta = load_json(attempt_path.parent / "wave.json")
+    target = {"va": meta["va"], "main_base": meta["main_base"]}
+    if (result is None or record.get("result") != result
+            or record.get("returncode") != {"MATCH": 0, "MISMATCH": 1}[result]
+            or record.get("target") != target):
+        return None
+    va_rows = re.findall(r"^Function: .*\(([0-9A-Fa-f]{8})\)\s*$", text, re.M)
+    if len(va_rows) != 1 or va_rows[0].upper() != meta["va"].upper():
+        return None
+    return record, text
+
+
+def atomic_write(path, data):
+    temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    temporary.write_bytes(data)
+    os.replace(temporary, path)
+
+
+def remove_tree(root):
+    def writable_remove(function, path, error):
+        Path(path).chmod(stat.S_IWRITE | stat.S_IREAD)
+        function(path)
+
+    shutil.rmtree(root, onexc=writable_remove)
+
+
+def parse_candidate_result(text):
+    rows = re.findall(r"^Result:\s*(MATCH|MISMATCH)\s*$", text, re.M)
+    return rows[0] if len(rows) == 1 else None
+
+
+def save_candidate_check(attempt_path, meta, inputs, result, text):
+    output = text.encode("utf-8")
+    check_result = parse_candidate_result(text)
+    va_rows = re.findall(r"^Function: .*\(([0-9A-Fa-f]{8})\)\s*$", text, re.M)
+    valid = (check_result is not None
+             and result.returncode == {"MATCH": 0, "MISMATCH": 1}[check_result]
+             and len(va_rows) == 1 and va_rows[0].upper() == meta["va"].upper())
+    state = "complete" if valid else "failed"
+    record = {
+        "schema": CANDIDATE_CHECK_SCHEMA,
+        "state": state,
+        "checked_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "returncode": result.returncode,
+        "result": check_result or "ERROR",
+        "target": {"va": meta["va"], "main_base": meta["main_base"]},
+        "inputs": inputs,
+        "output_sha256": sha(output),
+    }
+    record_path, output_path = candidate_check_record(attempt_path)
+    atomic_write(output_path, output)
+    atomic_write(record_path, json_bytes(record))
+    return record
+
+
+def validation_workspace(root, slot, base):
+    pool = root / "build" / "behavior_recovery" / "validation"
+    workspace = pool / f"slot-{slot:02}" / "worktree"
+    with cache_lock(pool / "worktree-metadata.lock"):
+        registered = set()
+        for line in git(root, "worktree", "list", "--porcelain").decode("utf-8", "replace").splitlines():
+            if line.startswith("worktree "):
+                registered.add(Path(line.removeprefix("worktree ")).resolve())
+        if not workspace.exists() and workspace.resolve() in registered:
+            git(root, "worktree", "remove", "--force", "--force", str(workspace))
+        if workspace.exists():
+            if not (workspace / ".git").is_file():
+                raise ValueError(f"Validation workspace is not a Git worktree: {workspace}")
+            actual = git(workspace, "rev-parse", "--show-toplevel").decode().strip()
+            if Path(actual).resolve() != workspace.resolve():
+                raise ValueError(f"Validation worktree has the wrong root: {workspace}")
+            expected_common = Path(git(root, "rev-parse", "--path-format=absolute", "--git-common-dir")
+                                   .decode().strip()).resolve()
+            actual_common = Path(git(workspace, "rev-parse", "--path-format=absolute", "--git-common-dir")
+                                 .decode().strip()).resolve()
+            if actual_common != expected_common:
+                raise ValueError(f"Validation worktree belongs to another repository: {workspace}")
+        else:
+            workspace.parent.mkdir(parents=True, exist_ok=True)
+            git(root, "worktree", "add", "--detach", "--force", str(workspace), base)
+    return workspace
+
+
+def run_candidate_check(root, attempt_path, workspace, *, expected_inputs, force=False):
+    lock_name = sha(str(attempt_path.resolve()).encode()) + ".lock"
+    lock = root / "build" / "behavior_recovery" / "validation" / "attempt-locks" / lock_name
+    with cache_lock(lock):
+        saved = None if force else completed_candidate_check(attempt_path)
+        if saved:
+            record, text = saved
+            return record["returncode"], text, True
+        inputs = candidate_check_inputs(attempt_path)
+        if inputs != expected_inputs:
+            raise ValueError(f"Candidate-check inputs changed before validation: {attempt_path}")
+        meta, _, patch = candidate_integration_patch(root, attempt_path)
+        git(workspace, "reset", "--hard", meta["main_base"])
+        git(workspace, "clean", "-fdx")
+        if patch:
+            git(workspace, "apply", "--whitespace=nowarn", "-", data=patch)
+        result = run([sys.executable, str(workspace / "tools" / "check_function.py"),
+                      "--va", meta["va"], "--rebuild", "--refresh-original", "--no-history", "--call-map"],
+                     cwd=workspace, check=False)
+        text = (result.stdout + result.stderr).decode("utf-8", "replace")
+        if candidate_check_inputs(attempt_path) != inputs:
+            raise ValueError(f"Candidate-check inputs changed during validation: {attempt_path}")
+        record = save_candidate_check(attempt_path, meta, inputs, result, text)
+        code = result.returncode if record["state"] == "complete" else 2
+        return code, text, False
 
 
 def candidate_check(args):
     root = args.repo.resolve()
     if not args.attempt:
         raise ValueError("Candidate check needs at least one complete attempt")
+    attempts = [path.resolve() for path in args.attempt]
+    force = getattr(args, "force", False)
+    rows = {}
+    pending = []
+    input_snapshots = {}
+    for attempt_path in attempts:
+        saved = None if force else completed_candidate_check(attempt_path)
+        if saved:
+            record, text = saved
+            rows[attempt_path] = (record["returncode"], text, True)
+        else:
+            pending.append(attempt_path)
+            input_snapshots[attempt_path] = candidate_check_inputs(attempt_path)
+    jobs = min(getattr(args, "jobs", CANDIDATE_CHECK_JOBS), len(pending)) if pending else 0
+    lanes = [pending[index::jobs] for index in range(jobs)] if jobs else []
+
+    def check_lane(item):
+        slot, paths = item
+        first_meta, _ = load_input(paths[0].parent)
+        slot_lock = root / "build" / "behavior_recovery" / "validation" / f"slot-{slot:02}.lock"
+        rows = []
+        with cache_lock(slot_lock):
+            workspace = validation_workspace(root, slot, first_meta["main_base"])
+            for attempt_path in paths:
+                rows.append((attempt_path, *run_candidate_check(root, attempt_path, workspace,
+                                                                 expected_inputs=input_snapshots[attempt_path],
+                                                                 force=force)))
+        return rows
+
     results = []
-    workspaces = {}
-    try:
-        for supplied in args.attempt:
-            attempt_path = supplied.resolve()
-            meta, attempt, patch = candidate_integration_patch(root, attempt_path)
-            workspace = workspaces.get(meta["main_base"])
-            if workspace is None:
-                workspace = scratch(root) / "check"
-                git(root, "worktree", "add", "--detach", "--force", str(workspace), meta["main_base"])
-                workspaces[meta["main_base"]] = workspace
-            git(workspace, "reset", "--hard", meta["main_base"])
-            git(workspace, "clean", "-fdx")
-            if patch:
-                git(workspace, "apply", "--whitespace=nowarn", "-", data=patch)
-            result = run([sys.executable, str(workspace / "tools" / "check_function.py"),
-                          "--va", meta["va"], "--rebuild", "--refresh-original", "--no-history", "--call-map"],
-                         cwd=workspace, check=False)
-            text = (result.stdout + result.stderr).decode("utf-8", "replace")
-            print(f"=== {reference(root, attempt_path)} ===\n{text}", end="" if text.endswith("\n") else "\n")
-            results.append(result.returncode)
-    finally:
-        for workspace in workspaces.values():
-            git(root, "worktree", "remove", "--force", str(workspace))
+    if lanes:
+        with ThreadPoolExecutor(max_workers=jobs) as executor:
+            for lane_rows in executor.map(check_lane, enumerate(lanes, 1)):
+                rows.update({path: (code, text, skipped) for path, code, text, skipped in lane_rows})
+    for attempt_path in attempts:
+        code, text, skipped = rows[attempt_path]
+        note = " [saved result]" if skipped else ""
+        print(f"=== {reference(root, attempt_path)} ==={note}\n{text}", end="" if text.endswith("\n") else "\n")
+        results.append(code)
     return 0 if all(code in (0, 1) for code in results) else 1
 
 
@@ -886,6 +1069,10 @@ def parser():
     check = sub.add_parser("candidate-check", help="Run exact checks for archived candidates in isolated worktrees")
     check.add_argument("--attempt", type=Path, action="append", required=True,
                        help="Complete reconstruction or review attempt; repeat as needed")
+    check.add_argument("--jobs", type=int, choices=range(1, CANDIDATE_CHECK_MAX_JOBS + 1),
+                       default=CANDIDATE_CHECK_JOBS,
+                       help=f"Validation workers (default {CANDIDATE_CHECK_JOBS}; maximum {CANDIDATE_CHECK_MAX_JOBS})")
+    check.add_argument("--force", action="store_true", help="Repeat checks with valid saved results")
     check.set_defaults(func=candidate_check)
     col = sub.add_parser("collect", help="Preserve and verify a complete or interrupted worker result")
     col.add_argument("--wave", type=Path, required=True)
