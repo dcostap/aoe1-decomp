@@ -85,7 +85,7 @@
     "00416B80": {"status": "matching", "symbol": "?moveTo@UnitAIModule@@UAEHHMH@Z"},
     "00416C10": {"status": "matching", "symbol": "?moveTo@UnitAIModule@@UAEHMMMMH@Z"},
     "00416C80": {"status": "matching", "symbol": "?evasiveMoveTo@UnitAIModule@@UAEHMMMH@Z"},
-    "00416F30": {"status": "scratch", "symbol": "?intelligentEvasiveMoveTo@UnitAIModule@@UAEHMMMHH@Z"},
+    "00416F30": {"status": "new_verified_logic", "symbol": "?intelligentEvasiveMoveTo@UnitAIModule@@UAEHMMMHH@Z", "behavior_review": "logic_matching/00416F30/review-01/attempt-01"},
     "004171F0": {"status": "matching", "symbol": "?runAwayFromAttackers@UnitAIModule@@UAEHH@Z"},
     "00417360": {"status": "matching", "symbol": "?followObject@UnitAIModule@@UAEHHMH@Z"},
     "004173D0": {"status": "matching", "symbol": "?defendObject@UnitAIModule@@UAEHHMH@Z"},

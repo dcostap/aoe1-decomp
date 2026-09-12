@@ -2422,51 +2422,46 @@ int UnitAIModule::evasiveMoveTo(float x, float y, float z, int flag)
     return 0;
 }
 
-//
-//
-int UnitAIModule::intelligentEvasiveMoveTo(float targetX, float targetY,
-                                            float targetZ, int goCloser,
-                                            int unconditional)
+int UnitAIModule::intelligentEvasiveMoveTo(
+    float param_1, float param_2, float param_3, int param_4, int param_5)
 {
-    float baseDistance;
-    int facet;
-    XYZPoint point;
-
-    if (unconditional == 0 && this->currentActionValue != -1) {
+    if (param_5 == 0 && this->currentActionValue != -1) {
         return 0;
     }
 
-    if (targetX < DAT_0056ebc8) {
-        targetX = 0.0f;
-    } else {
-        if (targetX >= (float)this->objectValue->owner->world->map->map_width) {
-            targetX = (float)this->objectValue->owner->world->map->map_width - DAT_0056ebd0;
-        }
+    if (param_1 < DAT_0056ebc8) {
+        param_1 = 0.0f;
+    } else if (param_1 >= (float)this->objectValue->owner->world->map->map_width) {
+        param_1 = (float)this->objectValue->owner->world->map->map_width - DAT_0056ebd0;
     }
 
-    if (targetY < DAT_0056ebc8) {
-        targetY = 0.0f;
-    } else {
-        if (targetY >= (float)this->objectValue->owner->world->map->map_height) {
-            targetY = (float)this->objectValue->owner->world->map->map_height - DAT_0056ebd0;
-        }
+    if (param_2 < DAT_0056ebc8) {
+        param_2 = 0.0f;
+    } else if (param_2 >= (float)this->objectValue->owner->world->map->map_height) {
+        param_2 = (float)this->objectValue->owner->world->map->map_height - DAT_0056ebd0;
     }
 
-    point.x = (int)targetX;
-    point.y = (int)targetY;
+    XYZPoint point;
+    point.x = (int)param_1;
+    point.y = (int)param_2;
     point.z = (int)this->objectValue->world_z;
 
     if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
-        facet = -1;
-        baseDistance = this->objectValue->distance_to_position(
-            targetX, targetY, this->objectValue->world_z);
+        float baseDistance = this->objectValue->distance_to_position(
+            param_1, param_2, this->objectValue->world_z);
+        int facet = -1;
 
         while (1) {
             ++facet;
+            if (facet > 7) {
+                return 0;
+            }
 
             switch (facet) {
             case 0:
                 point.x -= 2;
+                // Fall through.
+            case 7:
                 point.y -= 2;
                 break;
             case 1:
@@ -2481,32 +2476,21 @@ int UnitAIModule::intelligentEvasiveMoveTo(float targetX, float targetY,
             case 6:
                 point.x -= 2;
                 break;
-            case 7:
-                point.y -= 2;
-                break;
-            default:
-                return 0;
             }
 
             if (point.x < 0) {
                 point.x = 0;
-            } else {
-                int width = this->objectValue->owner->world->map->map_width;
-                if (point.x >= width) {
-                    point.x = width - 1;
-                }
+            } else if (point.x >= this->objectValue->owner->world->map->map_width) {
+                point.x = this->objectValue->owner->world->map->map_width - 1;
             }
 
             if (point.y < 0) {
                 point.y = 0;
-            } else {
-                int height = this->objectValue->owner->world->map->map_height;
-                if (point.y >= height) {
-                    point.y = height - 1;
-                }
+            } else if (point.y >= this->objectValue->owner->world->map->map_height) {
+                point.y = this->objectValue->owner->world->map->map_height - 1;
             }
 
-            if (goCloser == 0 &&
+            if (param_4 == 0 &&
                 this->objectValue->distance_to_position(
                     (float)point.x - DAT_0056ebe4,
                     (float)point.y - DAT_0056ebe4,
@@ -2515,7 +2499,8 @@ int UnitAIModule::intelligentEvasiveMoveTo(float targetX, float targetY,
                 continue;
             }
 
-            if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 1) {
+            if (this->objectValue->canPath(
+                    point, 1.0f, -1, 0, 0, -1, -1) == 1) {
                 break;
             }
         }
@@ -2524,12 +2509,11 @@ int UnitAIModule::intelligentEvasiveMoveTo(float targetX, float targetY,
     if (this->objectValue->moveTo(
             (float)point.x - DAT_0056ebe4,
             (float)point.y - DAT_0056ebe4,
-            targetZ, 0.5f, unconditional) == 1) {
+            param_3, 0.5f, param_5) == 1) {
         this->setCurrentAction(0x262);
-        this->setCurrentTarget(-1, targetX, targetY, targetZ);
+        this->setCurrentTarget(-1, param_1, param_2, param_3);
         return 1;
     }
-
     return 0;
 }
 
