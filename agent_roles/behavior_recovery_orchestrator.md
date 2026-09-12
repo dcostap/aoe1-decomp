@@ -89,7 +89,7 @@ python tools/behavior_recovery.py candidate-check --attempt ATTEMPT_DIR --attemp
 
 Submit related attempts in one command. Do not start one command per attempt.
 The command queues attempts across two persistent validation worktrees by default.
-Use `--jobs 1` through `--jobs 4` to change this fixed limit.
+Use `--jobs` within the supported range shown by the command help.
 The command serializes worktree setup and never swaps main source.
 It saves `candidate_check.json` and `candidate_check.txt` in each attempt archive.
 A later run skips a valid saved result. Use `--force` to repeat it.
