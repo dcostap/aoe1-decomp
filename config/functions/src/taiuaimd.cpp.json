@@ -13,7 +13,7 @@
     "005040A0": {"status": "matching", "symbol": "?canAttackUnitAtNeutrality@TribePreditorUnitAIModule@@UAEHH@Z"},
     "005040B0": {"status": "matching", "symbol": "?processNotify@TribePreditorUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
     "00504170": {"status": "matching", "symbol": "??0TribeElephantUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
-    "005041C0": {"status": "accepted_drift", "symbol": "?processNotify@TribeElephantUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
+    "005041C0": {"status": "matching", "symbol": "?processNotify@TribeElephantUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
     "005042D0": {"status": "matching", "symbol": "?processIdle@TribeElephantUnitAIModule@@MAEHH@Z"},
     "005042E0": {"status": "matching", "symbol": "??0TribeLionUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
     "00504470": {"status": "matching", "symbol": "?canAttackUnitAtNeutrality@TribeLionUnitAIModule@@UAEHH@Z"},

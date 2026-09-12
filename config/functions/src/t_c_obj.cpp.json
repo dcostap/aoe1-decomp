@@ -24,7 +24,7 @@
     "004CAA00": {"status": "matching", "symbol": "?calc_attack_modifier@TRIBE_Combat_Object@@UAEMPAVRGE_Static_Object@@@Z"},
     "004CAA50": {"status": "matching", "symbol": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z"},
     "004CAAA0": {"status": "matching", "symbol": "?do_attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@MMM@Z"},
-    "004CAC10": {"status": "accepted_drift", "symbol": "?get_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
+    "004CAC10": {"status": "matching", "symbol": "?get_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
     "004CAC80": {"status": "matching", "symbol": "?get_pierce_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
     "004CACE0": {"status": "matching", "symbol": "?reposition_artifact@TRIBE_Combat_Object@@QAEXXZ"},
     "004CB040": {"status": "matching", "symbol": "?can_debark@TRIBE_Combat_Object@@QAEHXZ"},

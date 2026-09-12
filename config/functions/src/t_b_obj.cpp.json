@@ -13,7 +13,7 @@
     "004C8370": {"status": "matching", "symbol": "?recycle_out_of_game@TRIBE_Building_Object@@UAEXXZ"},
     "004C83E0": {"status": "matching", "symbol": "?setup@TRIBE_Building_Object@@MAEHPAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMM@Z"},
     "004C8490": {"status": "matching", "symbol": "?setup@TRIBE_Building_Object@@MAEHHPAVRGE_Game_World@@@Z"},
-    "004C85D0": {"status": "accepted_drift", "symbol": "?take_building_attribute_from_owner@TRIBE_Building_Object@@UAEXXZ"},
+    "004C85D0": {"status": "matching", "symbol": "?take_building_attribute_from_owner@TRIBE_Building_Object@@UAEXXZ"},
     "004C8630": {"status": "matching", "symbol": "?give_building_attribute_to_owner@TRIBE_Building_Object@@UAEXXZ"},
     "004C8690": {"status": "matching", "symbol": "?destroy_obj@TRIBE_Building_Object@@UAEXXZ"},
     "004C86C0": {"status": "accepted_drift", "symbol": "?heal@TRIBE_Building_Object@@UAEEM@Z"},

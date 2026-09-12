@@ -71,7 +71,7 @@
     "004653E0": {"status": "matching", "symbol": "?wnd_proc@TPanel@@UAEJPAXIIJ@Z"},
     "00465780": {"status": "matching", "symbol": "?handle_idle@TPanel@@UAEJXZ"},
     "00465820": {"status": "new_verified_logic", "symbol": "?handle_size@TPanel@@UAEJJJ@Z", "behavior_review": "logic_matching/00465820/review-01/attempt-01"},
-    "00465A70": {"status": "accepted_drift", "symbol": "?handle_paint@TPanel@@UAEJXZ"},
+    "00465A70": {"status": "scratch", "symbol": "?handle_paint@TPanel@@UAEJXZ"},
     "00465B30": {"status": "matching", "symbol": "?handle_key_down@TPanel@@UAEJJFHHH@Z"},
     "00465BE0": {"status": "matching", "symbol": "?handle_char@TPanel@@UAEJJF@Z"},
     "00465C30": {"status": "matching", "symbol": "?handle_command@TPanel@@UAEJIJ@Z"},

@@ -30,7 +30,7 @@
     "004DA0E0": {"status": "matching", "symbol": "?hasAdjacentTileType@TribeInformationAIModule@@QAEHHHH@Z"},
     "004DA190": {"status": "matching", "symbol": "?mapXSize@TribeInformationAIModule@@QAEHXZ"},
     "004DA1C0": {"status": "matching", "symbol": "?mapYSize@TribeInformationAIModule@@QAEHXZ"},
-    "004DA1F0": {"status": "accepted_drift", "symbol": "?addEnemyInfluences@TribeInformationAIModule@@QAEXHH@Z"},
+    "004DA1F0": {"status": "scratch", "symbol": "?addEnemyInfluences@TribeInformationAIModule@@QAEXHH@Z"},
     "004DA420": {"status": "matching", "symbol": "?addPriorAttackInfluences@TribeInformationAIModule@@QAEXHH@Z"},
     "004DA5A0": {"status": "matching", "symbol": "?objectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004DA5F0": {"status": "matching", "symbol": "?addObjectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@PAVRGE_Static_Object@@@Z"},
