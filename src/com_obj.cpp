@@ -233,7 +233,8 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
     return 1;
 }
 
-unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Object* attacker)
+unsigned char RGE_Combat_Object::attack(float x, float y, float z,
+                                        RGE_Combat_Object* attacker)
 {
     float c;
     float s;
@@ -243,10 +244,11 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
         static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     short missile_id = combat_master->missile_id;
     if (missile_id >= 0) {
-        float radius_y = this->master_obj->radius_y;
-        float radius_x = this->master_obj->radius_x;
-        rangeDistance = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
-            combat_master->weapon_range + 6.0f;
+        float radius_y = combat_master->radius_y;
+        float radius_x = combat_master->radius_x;
+        rangeDistance =
+            (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
+            combat_master->weapon_range - DAT_0056f4ac;
         float angle1 = this->angle;
         float angle2 = this->angle;
         c = (float)cos(angle1);
@@ -254,15 +256,14 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
         RGE_Master_Static_Object* entry = owner->master_objects[missile_id];
         s = (float)sin(angle2);
 
-        RGE_Missile_Object* missile = (RGE_Missile_Object*)entry->make_new_obj(owner,
+        RGE_Missile_Object* missile =
+            (RGE_Missile_Object*)entry->make_new_obj(owner,
             this->world_x + c * combat_master->weapon_offset_y -
                 s * combat_master->weapon_offset_x,
-            this->world_y + s * combat_master->weapon_offset_y +
-                c * combat_master->weapon_offset_x,
+            this->world_y + (s * combat_master->weapon_offset_y +
+                c * combat_master->weapon_offset_x),
             this->world_z + combat_master->weapon_offset_z);
-
-        missile->init_missile(attacker, x, y, z,
-            rangeDistance);
+        missile->init_missile(attacker, x, y, z, rangeDistance);
         this->notify(this->id, this->id, 0x200, 0x258, -1, 0);
         return 1;
     }
