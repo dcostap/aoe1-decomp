@@ -2607,46 +2607,46 @@ void TRIBE_Player::setupBabylonian(int* p, int type, int unused1, int unused2)
 
 
 
-void TRIBE_Player::setupAssyrian(int* p, int type, int unused1, int unused2)
+void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize)
 {
     this->playerAI->logCommonHistory("Setting up as Assyrians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (type == 0 || type == 1) {
-            p[0x3C] = 100;
-        } else if (type == 2 || type == 6) {
-            p[0x16] = 0x3C;
-            p[0x3C] = 0x28;
-        } else if (type == 5 || type == 8) {
-            p[0x16] = 0x50;
-            p[0x3C] = 0x14;
+        if (mapType == 0 || mapType == 1) {
+            b[0x3C] = 100;
+        } else if (mapType == 2 || mapType == 6) {
+            b[0x16] = 0x3C;
+            b[0x3C] = 0x28;
+        } else if (mapType == 5 || mapType == 8) {
+            b[0x16] = 0x50;
+            b[0x3C] = 0x14;
         } else {
-            p[0x16] = 100;
+            b[0x16] = 100;
         }
     } else if (rge_base_game->difficulty() < 1) {
-        p[0x22] = 100;
+        b[0x22] = 100;
     } else {
-        p[3] = 10;
-        p[7] = 10;
-        p[9] = 10;
-        p[10] = 10;
-        p[0x14] = 10;
-        p[0x48] = 0x50;
-        p[0x49] = 0x50;
-        p[0x4A] = 0x50;
-        p[0x10] = 0x28;
-        p[0x0B] = 0x28;
-        p[6] = 0x14;
-        p[0x13] = 0x14;
-        p[0x28] = 100;
-        p[0x29] = 100;
+        b[3] = 10;
+        b[7] = 10;
+        b[9] = 10;
+        b[10] = 10;
+        b[0x14] = 10;
+        b[0x48] = 0x50;
+        b[0x49] = 0x50;
+        b[0x4A] = 0x50;
+        b[0x10] = 0x28;
+        b[0x0B] = 0x28;
+        b[6] = 0x14;
+        b[0x13] = 0x14;
+        b[0x28] = 100;
+        b[0x29] = 100;
 
-        if (type == 0 || type == 1) {
-            p[0x4B] = 100;
-            p[0x4C] = 100;
-        } else if (type == 2 || type == 6 || type == 8 || type == 5) {
-            p[0x4B] = 0x32;
-            p[0x4C] = 0x32;
+        if (mapType == 0 || mapType == 1) {
+            b[0x4B] = 100;
+            b[0x4C] = 100;
+        } else if (mapType == 2 || mapType == 6 || mapType == 8 || mapType == 5) {
+            b[0x4B] = 0x32;
+            b[0x4C] = 0x32;
         }
     }
 }
