@@ -879,97 +879,90 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target)
         return 1;
     }
 
-    float dest_x = target->world_x;
-    float start_x = this->world_x;
-    float dest_y = target->world_y;
-    float start_y = this->world_y;
-    float x_distance = dest_x - start_x;
-    float y_distance = dest_y - start_y;
-
-    if ((x_distance == 0.0f) && (y_distance == 0.0f)) {
+    float StartX = this->world_x;
+    float StartY = this->world_y;
+    float DestX = target->world_x;
+    float DestY = target->world_y;
+    float Dx = DestX - StartX;
+    float Dy = DestY - StartY;
+    if (Dx == DAT_00574c98 && Dy == DAT_00574c98) {
         return 0;
     }
 
-    int num_steps;
-    if (fabs(y_distance) > fabs(x_distance)) {
-        num_steps = abs(static_cast<int>(y_distance)) * 2;
+    int NumSteps;
+    if (fabs(Dy) > fabs(Dx)) {
+        NumSteps = abs(static_cast<int>(Dy)) * 2;
     } else {
-        num_steps = abs(static_cast<int>(x_distance)) * 2;
+        NumSteps = abs(static_cast<int>(Dx)) * 2;
     }
 
-    float x_step;
-    float y_step;
-    x_step = x_distance / static_cast<float>(num_steps);
-    y_step = y_distance / static_cast<float>(num_steps);
-
-    float abs_x = x_step;
-    float abs_y = y_step;
-    if (abs_x < 0.0f) {
-        abs_x = -x_step;
-    }
-    if (abs_y < 0.0f) {
-        abs_y = -y_step;
-    }
-
-    int dx1;
-    int dy2;
-    int dx2;
-    int diagonal;
-    if (abs_x > abs_y) {
-        dx1 = -1;
-        dy2 = 0;
-        diagonal = 0;
-        dx2 = 1;
+    float XStep = Dx / NumSteps;
+    float YStep = Dy / NumSteps;
+    int Tile_Dx1;
+    int Tile_Dy1;
+    int Tile_Dx2;
+    int Tile_Dy2;
+    if (XStep < DAT_00574c98) {
+        Dx = -XStep;
     } else {
-        dy2 = -1;
-        dx1 = 0;
-        diagonal = 1;
-        dx2 = 0;
+        Dx = XStep;
+    }
+    if (YStep < DAT_00574c98) {
+        Dy = -YStep;
+    } else {
+        Dy = YStep;
+    }
+    if (Dx > Dy) {
+        Tile_Dx1 = 0;
+        Tile_Dy1 = -1;
+        Tile_Dx2 = 0;
+        Tile_Dy2 = 1;
+    } else {
+        Tile_Dx1 = -1;
+        Tile_Dy1 = 0;
+        Tile_Dx2 = 1;
+        Tile_Dy2 = 0;
     }
 
-    float x = start_x;
-    float y = start_y;
-    int prior_x = -999;
-    int prior_y = -999;
-    RGE_Map* map = this->owner->world->map;
-    float angle = -1.0f;
-    int direction = 0;
-    int i;
-    if (num_steps > 0) {
-        i = num_steps;
-        do {
-            x += x_step;
-            y += y_step;
-            int tile_x = static_cast<int>(x);
-            int tile_y = static_cast<int>(y);
-            if (tile_x != prior_x || tile_y != prior_y) {
-                prior_x = tile_x;
-                prior_y = tile_y;
-                if (this->higher_check_for_cliff(
-                        target, tile_x, tile_y, start_x, start_y, dest_x,
-                        dest_y, map, 0, angle, direction) == 0) {
-                    if (this->higher_check_for_cliff(
-                            target, tile_x + dy2, tile_y + dx1, start_x,
-                            start_y, dest_x, dest_y, map, 0, angle,
-                            direction) == 0) {
-                        this->higher_check_for_cliff(
-                            target, tile_x + diagonal, tile_y + dx2, start_x,
-                            start_y, dest_x, dest_y, map, 0, angle,
-                            direction);
-                    }
-                }
+    float XTile = StartX;
+    float YTile = StartY;
+    int PriorX = -999;
+    int PriorY = -999;
+    RGE_Map* Map = this->owner->world->map;
+    float AngleToTarget = -1.0f;
+    int HigherCalc = 0;
+
+    while (NumSteps > 0) {
+        XTile += XStep;
+        YTile += YStep;
+        int XTileInt = static_cast<int>(XTile);
+        int YTileInt = static_cast<int>(YTile);
+        if (XTileInt != PriorX || YTileInt != PriorY) {
+            PriorX = XTileInt;
+            PriorY = YTileInt;
+            if (this->higher_check_for_cliff(
+                    target, XTileInt, YTileInt, StartX, StartY, DestX, DestY,
+                    Map, 0, AngleToTarget, HigherCalc) == 0 &&
+                this->higher_check_for_cliff(
+                    target, XTileInt + Tile_Dx1, YTileInt + Tile_Dy1,
+                    StartX, StartY, DestX, DestY, Map, 0, AngleToTarget,
+                    HigherCalc) == 0) {
+                this->higher_check_for_cliff(
+                    target, XTileInt + Tile_Dx2, YTileInt + Tile_Dy2,
+                    StartX, StartY, DestX, DestY, Map, 0, AngleToTarget,
+                    HigherCalc);
             }
-            --i;
-        } while (i != 0);
+        }
+        --NumSteps;
     }
 
-    if (direction < 1) {
-        direction = 0;
+    if (HigherCalc < 1) {
+        HigherCalc = 0;
     }
-    if (direction > 0) {
-        direction = 1;
+    if (HigherCalc > 0) {
+        HigherCalc = 1;
     }
-    return direction > 0;
+    return HigherCalc > 0;
 }
 
 unsigned char TRIBE_Combat_Object::area_attack(
