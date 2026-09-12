@@ -316,50 +316,36 @@ invalid:
     return 0;
 }
 
-// The upper y clamp preserves the shipped x2-versus-height comparison.
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
     long x, long y, long spacing)
 {
-    long cliff_height2 = this->map_height / 3 - 1;
     long cliff_width2 = this->map_width / 3 - 1;
-    long cliff_x = x - spacing;
-    long cliff_x2 = spacing + x;
-    long cliff_y = y - spacing;
-    long cliff_y2 = spacing + y;
+    long cliff_height2 = this->map_height / 3 - 1;
+    long min_x = x - spacing;
+    long min_y = y - spacing;
+    long max_x = x + spacing;
+    long max_y = y + spacing;
 
-    spacing = cliff_x;
-    x = cliff_x2;
-    if (cliff_x < 0) {
-        spacing = 0;
+    if (min_x < 0) {
+        min_x = 0;
     }
-    if (cliff_y < 0) {
-        cliff_y = 0;
+    if (min_y < 0) {
+        min_y = 0;
     }
-    if (cliff_x2 > cliff_width2) {
-        cliff_x2 = cliff_width2;
-        x = cliff_x2;
+    if (max_x > cliff_width2) {
+        max_x = cliff_width2;
     }
-    if (cliff_x2 > cliff_height2) {
-        cliff_y2 = cliff_height2;
+    if (max_x > cliff_height2) {
+        max_y = cliff_height2;
     }
 
-    if (cliff_y <= cliff_y2) {
-        long row = cliff_y;
-        long row_count = cliff_y2 - cliff_y + 1;
-        do {
-            long column = spacing;
-            if (spacing <= cliff_x2) {
-                do {
-                    if (this->search_map_rows[row][column] != 0) {
-                        this->search_map_rows[row][column] = 0;
-                        this->remove_stack_node(
-                            this->stack_offsets[row] + column);
-                    }
-                    column++;
-                } while (column <= x);
+    for (long row = min_y; row <= max_y; row++) {
+        for (long column = min_x; column <= max_x; column++) {
+            if (this->search_map_rows[row][column] != 0) {
+                this->search_map_rows[row][column] = 0;
+                this->remove_stack_node(
+                    this->stack_offsets[row] + column);
             }
-            row++;
-            row_count--;
-        } while (row_count != 0);
+        }
     }
 }

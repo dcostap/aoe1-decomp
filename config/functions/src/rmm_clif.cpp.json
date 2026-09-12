@@ -11,6 +11,6 @@
     "00481A00": {"status": "matching", "symbol": "?setup_cliff_maps@RGE_RMM_Cliffs_Generator@@IAEXXZ"},
     "00481CD0": {"status": "matching", "symbol": "?generate_cliff@RGE_RMM_Cliffs_Generator@@IAEXXZ"},
     "00481FC0": {"status": "matching", "symbol": "?check_for_valid_cliff_site@RGE_RMM_Cliffs_Generator@@IAEEJAAJ0J@Z"},
-    "004820A0": {"status": "scratch", "symbol": "?invalidate_cliff_area@RGE_RMM_Cliffs_Generator@@IAEXJJJ@Z"}
+    "004820A0": {"status": "matching", "symbol": "?invalidate_cliff_area@RGE_RMM_Cliffs_Generator@@IAEXJJJ@Z", "behavior_review": "logic_matching/004820A0/review-01/attempt-01"}
   }
 }
