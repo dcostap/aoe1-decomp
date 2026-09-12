@@ -1,0 +1,19 @@
+# Experiment ff7c03767cb4c571f396163705036998081932664e5f253c882e2b22d22ab70b
+# Base 00c84a4a1c32ae81f12092c81759cf818aee2fee
+diff --git a/src/Panel_ez.cpp b/src/Panel_ez.cpp
+index e9496b494..11d582452 100644
+--- a/src/Panel_ez.cpp
++++ b/src/Panel_ez.cpp
+@@ -647,10 +647,9 @@ void TEasy_Panel::set_state_colors(unsigned long a, unsigned long b) {
+ void TEasy_Panel::set_popup_info_file(char* filename, long id) {
+     if (filename) {
+         strcpy(popup_info_file_name, filename);
+-        popup_info_id = id;
+-        return;
++    } else {
++        popup_info_file_name[0] = 0;
+     }
+-    popup_info_file_name[0] = 0;
+     popup_info_id = id;
+ }
+ 

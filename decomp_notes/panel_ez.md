@@ -43,9 +43,11 @@ CFG, owner symbol, relocations, and boundary all match. The low-severity
 diagnostic identifies private center-coordinate scheduling, matching the
 written behavior review. The natural body remains unchanged.
 
-`00468000 set_popup_info_file` remains accepted drift. Its fresh grouped result
-differs by two bytes with matching ownership, relocation, and boundary checks.
-Exact repair resumes from this canonical source tree.
+`00468000 set_popup_info_file` is now an exact match. Moving the
+`popup_info_id` assignment after the filename `if/else` matches the original PDB
+line mapping and the exact `set_info_file` donor. The fresh target result is
+85/85 bytes equal, and the one-job translation-unit closure reports no exact-
+neighbor regressions.
 
 ## Nested format enums
 

@@ -647,10 +647,9 @@ void TEasy_Panel::set_state_colors(unsigned long a, unsigned long b) {
 void TEasy_Panel::set_popup_info_file(char* filename, long id) {
     if (filename) {
         strcpy(popup_info_file_name, filename);
-        popup_info_id = id;
-        return;
+    } else {
+        popup_info_file_name[0] = 0;
     }
-    popup_info_file_name[0] = 0;
     popup_info_id = id;
 }
 
