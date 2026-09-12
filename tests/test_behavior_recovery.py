@@ -105,6 +105,13 @@ def test_prepare_blinds_before_git_and_preserves_other_source(repo, tmp_path):
     assert br.git(worker, "rev-list", "--count", "HEAD").strip() == b"1"
     assert br.git(worker, "config", "--get", "gc.auto").strip() == b"0"
     assert br.git(worker, "config", "--get", "maintenance.auto").strip() == b"false"
+    assert br.load_json(wave / "wave.json")["schema"] == 3
+    assert br.load_json(wave / "wave.json")["evidence_cache"]["files"]
+    assert not br.git(worker, "ls-files", "inventory", "orig").strip()
+    excludes = (worker / ".git/info/exclude").read_text()
+    assert "/inventory" in excludes and "/orig" in excludes
+    assert (worker / "inventory/functions/0040" / f"{VA}_sample.txt").read_bytes().startswith(b"Name: sample")
+    assert (worker / "orig/alias.exe").read_bytes() == b"original-executable"
     assert not br.git(worker, "remote").strip()
     assert not br.git(worker, "status", "--porcelain").strip()
     assert (repo / "src/sample.cpp").read_bytes() == SOURCE
@@ -140,6 +147,40 @@ def test_second_workspace_reproduces_baseline_without_history(repo, tmp_path):
     assert b"UNIMPLEMENTED" in (destination / "src/sample.cpp").read_bytes()
     assert not (destination / "report.md").exists()
     assert br.git(destination, "rev-list", "--count", "HEAD").strip() == b"1"
+    assert (worker / "inventory").resolve() == (destination / "inventory").resolve()
+
+
+def test_linked_evidence_cache_is_hash_checked_and_manifest_guarded(repo, tmp_path):
+    wave, _ = prepare(repo, tmp_path)
+    meta = br.load_json(wave / "wave.json")
+    cache = repo / "build/behavior_recovery/evidence_cache" / meta["evidence_cache"]["sha256"]
+    br.verify_evidence_cache(cache, meta["evidence_cache"], full=True)
+    evidence = cache / "orig/alias.exe"
+    evidence.chmod(0o600)
+    evidence.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="Evidence cache file differs"):
+        br.verify_evidence_cache(cache, meta["evidence_cache"], full=True)
+    marker = cache / ".manifest.json"
+    marker.chmod(0o600)
+    marker.write_bytes(b"changed")
+    with pytest.raises(ValueError, match="Evidence cache manifest differs"):
+        br.workspace(argparse.Namespace(repo=repo, wave=wave, destination=tmp_path / "second"))
+
+
+def test_schema_two_workspace_keeps_legacy_full_snapshot(repo, tmp_path):
+    wave, _ = prepare(repo, tmp_path)
+    meta, files = br.load_input(wave)
+    legacy = tmp_path / "legacy-base"
+    commit = br.init_workspace(legacy, files, meta["created"])
+    meta["schema"] = 2
+    meta.pop("evidence_cache")
+    meta["prepared_commit"] = commit
+    meta["prepared_tree"] = br.git(legacy, "rev-parse", "HEAD^{tree}").decode().strip()
+    (wave / "wave.json").write_bytes(br.json_bytes(meta))
+    destination = tmp_path / "second"
+    br.workspace(argparse.Namespace(repo=repo, wave=wave, destination=destination))
+    assert br.git(destination, "ls-files", "inventory", "orig").strip()
+    assert not (destination / "inventory").is_symlink()
 
 
 def test_collect_roundtrip_binary_deletion_message_and_history(repo, tmp_path):
@@ -220,7 +261,10 @@ def test_review_receives_all_payloads_and_perfect_result_builds_integration_patc
     br.git(reviewer, "commit", "-m", "Approve fixture", "-m",
            "Checked the supplied evidence. Compile passed.\n\nBehavior-Recovery-Choice: delivery-01\nBehavior-Recovery-Verdict: PERFECT")
     br.write_files(reviewer, {"build/manifests/build_sample.json": b'{"returncode": 0}\n'})
-    assert br.load_json(review_wave / "wave.json")["mode"] == "review"
+    review_wave_meta = br.load_json(review_wave / "wave.json")
+    assert review_wave_meta["mode"] == "review"
+    assert review_wave_meta["schema"] == 3
+    assert not br.git(reviewer, "ls-files", "inventory", "orig").strip()
     reviewed = collect(repo, review_wave, reviewer)
     review_meta = br.load_json(reviewed / "attempt.json")
     assert review_meta["verdict"] == "PERFECT"

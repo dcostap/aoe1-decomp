@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import hashlib
 import io
 import json
 import os
 from pathlib import Path, PurePosixPath
 import re
+import stat
 import subprocess
 import sys
 import uuid
@@ -33,6 +35,7 @@ CONFIG_FILES = {
 CONTEXT_FILES = {"agents.md", "agents.override.md", "claude.md"}
 SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".inl", ".inc"}
 COMPILER_PREFIXES = ("src/", "include/", "third_party/", "config/", "tools/")
+EVIDENCE_ROOTS = ("inventory", "orig")
 ORIGINAL_ROOT = "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/"
 THINKING = ("off", "minimal", "low", "medium", "high", "xhigh", "max")
 TOKEN = re.compile(rb'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\r\n]*|/\*.*?\*/', re.S)
@@ -133,6 +136,115 @@ def write_files(root, files):
         path.write_bytes(data)
 
 
+def split_evidence(files):
+    evidence = {name: data for name, data in files.items()
+                if name.split("/", 1)[0] in EVIDENCE_ROOTS}
+    writable = {name: data for name, data in files.items() if name not in evidence}
+    return writable, evidence
+
+
+def evidence_metadata(files):
+    manifest = {name: sha(data) for name, data in sorted(files.items())}
+    return {"sha256": sha(json_bytes(manifest)), "roots": list(EVIDENCE_ROOTS), "files": manifest}
+
+
+@contextmanager
+def cache_lock(path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a+b") as handle:
+        if handle.tell() == 0:
+            handle.write(b"0")
+            handle.flush()
+        if os.name == "nt":
+            import msvcrt
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+        else:
+            import fcntl
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if os.name == "nt":
+                handle.seek(0)
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def verify_evidence_cache(cache, metadata, *, full=False):
+    marker = cache / ".manifest.json"
+    if not marker.is_file() or marker.read_bytes() != json_bytes(metadata):
+        raise ValueError(f"Evidence cache manifest differs: {cache}")
+    for root in metadata["roots"]:
+        if any(name.startswith(root + "/") for name in metadata["files"]) and not (cache / root).is_dir():
+            raise ValueError(f"Evidence cache root is missing: {cache / root}")
+    if not full:
+        return
+    for name, expected in metadata["files"].items():
+        path = inside(cache, name)
+        if path.is_symlink() or not path.is_file() or sha(path.read_bytes()) != expected:
+            raise ValueError(f"Evidence cache file differs: {path}")
+
+
+def make_read_only(root, names):
+    paths = [inside(root, name) for name in names]
+    for path in paths:
+        path.chmod(stat.S_IRUSR | stat.S_IRGRP | stat.S_IROTH)
+    directories = {path.parent for path in paths}
+    for path in sorted(directories, key=lambda item: len(item.parts), reverse=True):
+        if path.is_relative_to(root):
+            path.chmod(stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP |
+                       stat.S_IROTH | stat.S_IXOTH)
+
+
+def ensure_evidence_cache(root, files):
+    metadata = evidence_metadata(files)
+    parent = root / "build" / "behavior_recovery" / "evidence_cache"
+    cache = parent / metadata["sha256"]
+    with cache_lock(parent / f"{metadata['sha256']}.lock"):
+        marker = cache / ".manifest.json"
+        if marker.is_file():
+            verify_evidence_cache(cache, metadata)
+            return cache, metadata
+        cache.mkdir(parents=True, exist_ok=True)
+        for name in metadata["files"]:
+            path = inside(cache, name)
+            if path.exists():
+                path.chmod(stat.S_IWUSR | stat.S_IRUSR)
+        write_files(cache, files)
+        marker.write_bytes(json_bytes(metadata))
+        make_read_only(cache, [*metadata["files"], ".manifest.json"])
+        verify_evidence_cache(cache, metadata, full=True)
+    return cache, metadata
+
+
+def link_directory(target, link):
+    try:
+        link.symlink_to(target, target_is_directory=True)
+    except OSError:
+        if os.name != "nt":
+            raise
+        result = subprocess.run(["cmd", "/d", "/c", "mklink", "/J", str(link), str(target)],
+                                capture_output=True)
+        if result.returncode:
+            raise ValueError("Cannot create evidence directory link:\n"
+                             + result.stdout.decode("utf-8", "replace")
+                             + result.stderr.decode("utf-8", "replace"))
+
+
+def install_evidence_links(destination, cache, metadata):
+    exclude = destination / ".git" / "info" / "exclude"
+    exclude.parent.mkdir(parents=True, exist_ok=True)
+    with exclude.open("ab") as handle:
+        handle.write(b"\n# Shared read-only behavior-recovery evidence\n")
+        for root in metadata["roots"]:
+            target = cache / root
+            if target.is_dir():
+                handle.write(f"/{root}\n".encode())
+                link_directory(target, destination / root)
+
+
 def input_zip(files):
     output = io.BytesIO()
     with zipfile.ZipFile(output, "w", compression=zipfile.ZIP_DEFLATED) as archive:
@@ -175,9 +287,10 @@ def check_destination(root, destination):
                 raise ValueError(f"Ancestor context file would also load: {parent / name}")
 
 
-def init_workspace(destination, files, date):
+def init_workspace(destination, files, date, *, evidence_root=None):
     destination.mkdir(parents=True, exist_ok=False)
-    write_files(destination, files)
+    writable, evidence = split_evidence(files) if evidence_root is not None else (files, {})
+    write_files(destination, writable)
     git(destination, "init", "--template=", "--initial-branch=attempt", env=git_env())
     git(destination, "config", "core.autocrlf", "false")
     git(destination, "config", "core.filemode", "false")
@@ -186,6 +299,9 @@ def init_workspace(destination, files, date):
     git(destination, "config", "maintenance.auto", "false")
     git(destination, "config", "user.name", "Behavior Recovery")
     git(destination, "config", "user.email", "behavior-recovery@local")
+    if evidence:
+        cache, metadata = ensure_evidence_cache(evidence_root, evidence)
+        install_evidence_links(destination, cache, metadata)
     git(destination, "add", "--all", env=git_env())
     env = git_env()
     env.update(GIT_AUTHOR_DATE=date, GIT_COMMITTER_DATE=date,
@@ -193,6 +309,10 @@ def init_workspace(destination, files, date):
                GIT_AUTHOR_EMAIL="behavior-recovery@local", GIT_COMMITTER_EMAIL="behavior-recovery@local")
     git(destination, "commit", "--no-gpg-sign", "-m", "Prepared behavior recovery input", env=env)
     return git(destination, "rev-parse", "HEAD").decode().strip()
+
+
+def linked_evidence_root(root, meta):
+    return root if meta.get("schema", 2) >= 3 and meta.get("evidence_cache") else None
 
 
 def blank_function(data, start, end, va, name):
@@ -447,14 +567,17 @@ def prepare(args):
     assignment = dict(mode="reconstruct", blank_target=True, target=target,
                       compile_command=["python", "tools/build_function.py", "--va", va, "--force"])
     files["assignment.json"] = json_bytes(assignment)
-    commit = init_workspace(destination, files, date.isoformat())
+    _, evidence = split_evidence(files)
+    evidence_cache = evidence_metadata(evidence)
+    commit = init_workspace(destination, files, date.isoformat(), evidence_root=root)
     prerequisites = preflight(destination, target)
     payload = input_zip(files)
-    meta = dict(schema=2, va=va, main_base=base, mode="reconstruct", target=target,
+    meta = dict(schema=3, va=va, main_base=base, mode="reconstruct", target=target,
                 created=date.isoformat(), prepared_commit=commit,
                 prepared_tree=git(destination, "rev-parse", "HEAD^{tree}").decode().strip(),
                 parent_attempts=[], removal=removal, input_sha256=sha(payload),
-                files={n: sha(d) for n, d in files.items()}, prerequisites=prerequisites)
+                files={n: sha(d) for n, d in files.items()}, evidence_cache=evidence_cache,
+                prerequisites=prerequisites)
     wave.mkdir(parents=True, exist_ok=False)
     (wave / "input.zip").write_bytes(payload)
     (wave / "wave.json").write_bytes(json_bytes(meta))
@@ -465,7 +588,13 @@ def prepare(args):
 def workspace(args):
     check_destination(args.repo.resolve(), args.destination.resolve())
     meta, files = load_input(args.wave)
-    commit = init_workspace(args.destination.resolve(), files, meta["created"])
+    evidence_root = linked_evidence_root(args.repo.resolve(), meta)
+    if evidence_root is not None:
+        _, evidence = split_evidence(files)
+        if evidence_metadata(evidence) != meta["evidence_cache"]:
+            raise ValueError("Prepared evidence-cache metadata differs")
+    commit = init_workspace(args.destination.resolve(), files, meta["created"],
+                            evidence_root=evidence_root)
     if commit != meta["prepared_commit"]:
         raise ValueError("Recreated baseline commit does not match")
     for name, expected in meta["prerequisites"].get("compiler_files", {}).items():
@@ -489,7 +618,8 @@ def attempt_source_patch(repo, attempt_path):
             raise ValueError(f"Review source patch hash does not match: {attempt_path}")
         return meta, files, attempt, data
     stage = scratch(repo) / "source"
-    init_workspace(stage, files, meta["created"])
+    init_workspace(stage, files, meta["created"],
+                   evidence_root=linked_evidence_root(repo, meta))
     if patch:
         git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=patch)
     data = git(stage, "diff", "--cached", "--binary", "--full-index", "--no-ext-diff",
@@ -500,7 +630,8 @@ def attempt_source_patch(repo, attempt_path):
 def candidate_integration_patch(repo, attempt_path):
     meta, files, attempt, source_patch = attempt_source_patch(repo, attempt_path)
     stage = scratch(repo) / "candidate"
-    init_workspace(stage, files, meta["created"])
+    init_workspace(stage, files, meta["created"],
+                   evidence_root=linked_evidence_root(repo, meta))
     if source_patch:
         git(stage, "apply", "--index", "--whitespace=nowarn", "-", data=source_patch)
     names = [raw.decode() for raw in filter(None, git(stage, "diff", "--cached", "--name-only", "-z", "HEAD").split(b"\0"))]
@@ -584,15 +715,18 @@ def review(args):
     wave = (args.store or root / "logic_matching") / first_meta["va"] / wave_name
     if wave.exists():
         raise ValueError(f"Wave already exists: {wave}")
-    commit = init_workspace(destination, core, date.isoformat())
+    _, evidence = split_evidence(core)
+    evidence_cache = evidence_metadata(evidence)
+    commit = init_workspace(destination, core, date.isoformat(), evidence_root=root)
     prerequisites = preflight(destination, first_meta["target"])
     payload = input_zip(core)
-    review_meta = dict(schema=2, va=first_meta["va"], main_base=first_meta["main_base"], mode="review",
+    review_meta = dict(schema=3, va=first_meta["va"], main_base=first_meta["main_base"], mode="review",
                        target=first_meta["target"], created=date.isoformat(), prepared_commit=commit,
                        prepared_tree=git(destination, "rev-parse", "HEAD^{tree}").decode().strip(),
                        parent_attempts=[item["origin"] for item in deliveries], deliveries=deliveries,
                        removal=first_meta.get("removal"), input_sha256=sha(payload),
-                       files={name: sha(data) for name, data in core.items()}, prerequisites=prerequisites)
+                       files={name: sha(data) for name, data in core.items()}, evidence_cache=evidence_cache,
+                       prerequisites=prerequisites)
     wave.mkdir(parents=True, exist_ok=False)
     (wave / "input.zip").write_bytes(payload)
     (wave / "wave.json").write_bytes(json_bytes(review_meta))

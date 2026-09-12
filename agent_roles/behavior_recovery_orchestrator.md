@@ -27,6 +27,12 @@ The tool copies `behavior_recovery_worker.md` to each workspace as root `AGENTS.
 Check ancestor context files before launch.
 A fresh repository is not a security boundary.
 
+New workspace waves keep immutable `inventory/` and `orig/` evidence in a
+hash-checked, read-only content cache. Each workspace links those paths and
+excludes them through its local `.git/info/exclude`. Git tracks only writable
+workspace inputs. The wave archive remains the complete portable record.
+Legacy waves retain their original full-snapshot baseline format.
+
 Workers can use only supplied files and declared compiler or SDK paths.
 They cannot use the network, main repository, other workspaces, or past sessions.
 Do not run original or rebuilt game executables.
