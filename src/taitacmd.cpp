@@ -3095,63 +3095,150 @@ int TribeTacticalAIModule::clearArea(int object_id, float x1, float y1,
 
 
 
-void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+void TribeTacticalAIModule::addObject(RGE_Static_Object* object)
 {
-    short group = obj->master_obj->object_group;
-    int id;
+    RGE_Static_Object* objectToAdd = object;
+    short objectGroup = objectToAdd->master_obj->object_group;
+    int objectId;
+    int number;
     int i;
     ManagedArray<int>* list;
+    int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+    int (ManagedArray<int>::*contains)(const int&) =
+        &ManagedArray<int>::contains;
+    int (ManagedArray<int>::*add)(int) = &ManagedArray<int>::add;
 
-    if (group == 4) {
-        this->civilians.add(obj->id);
-    } else if (group == 0 || group == 0x18 || group == 6 || group == 0x19 ||
-               group == 0x1a || group == 0x0c || group == 0x23 ||
-               group == 0x17 || group == 0x24 || group == 0x1c ||
-               group == 0x12 || group == 0x0d || group == 0x27) {
-        this->soldiers.add(obj->id);
-    } else {
-        if (group != 2 && group != 0x14 && group != 0x16 && group != 0x15) {
-            if (obj->master_obj->id != 0x9f)
+    if (objectGroup == 4) {
+        number = this->civilians.numberValue;
+        objectId = objectToAdd->id;
+        list = &this->civilians;
+        for (i = 0; i < number; i++) {
+            if (i >= list->maximumSizeValue)
+                break;
+            if (list->value[i] == objectId)
                 return;
-            if (this->md->player->world->difficultyLevel() >= 4)
+        }
+        if (number <= list->maximumSizeValue - 1)
+            goto add_to_list;
+    }
+    else {
+        if (objectGroup != 0 && objectGroup != 0x18 &&
+            objectGroup != 6 && objectGroup != 0x19 &&
+            objectGroup != 0x1A && objectGroup != 0x0C &&
+            objectGroup != 0x23 && objectGroup != 0x17 &&
+            objectGroup != 0x24 && objectGroup != 0x1C &&
+            objectGroup != 0x12 && objectGroup != 0x0D &&
+            objectGroup != 0x27) {
+            if (objectGroup != 2 && objectGroup != 0x14 &&
+                objectGroup != 0x16 && objectGroup != 0x15) {
+                if (objectToAdd->master_obj->id != 0x9F)
+                    return;
+                if (this->md->player->world->difficultyLevel() >= 4)
+                    return;
+                (this->artifacts.*add)(objectToAdd->id);
                 return;
-            // This call stays out of line. Later add calls inline.
-            this->artifacts.add(obj->id);
+            }
+
+            int boatId = objectToAdd->id;
+            ManagedArray<int>* boatList = &this->boats;
+            number = boatList->numberValue;
+            i = 0;
+            if (number > 0) {
+                do {
+                    if (i >= boatList->maximumSizeValue)
+                        break;
+                    if (boatList->value[i] == boatId)
+                        goto boat_added;
+                    i++;
+                } while (i < number);
+            }
+            if (number > boatList->maximumSizeValue - 1)
+                (boatList->*resize)(number + 1);
+            boatList->value[boatList->numberValue] = boatId;
+            boatList->numberValue = boatList->numberValue + 1;
+
+boat_added:
+            if (objectToAdd->master_obj->object_group == 2) {
+                int tradeId = objectToAdd->id;
+                ManagedArray<int>* tradeList = &this->tradeBoats;
+                number = tradeList->numberValue;
+                i = 0;
+                if (number > 0) {
+                    do {
+                        if (i >= tradeList->maximumSizeValue)
+                            break;
+                        if (tradeList->value[i] == tradeId)
+                            goto trade_added;
+                        i++;
+                    } while (i < number);
+                }
+                if (number > tradeList->maximumSizeValue - 1)
+                    (tradeList->*resize)(number + 1);
+                tradeList->value[tradeList->numberValue] = tradeId;
+                tradeList->numberValue = tradeList->numberValue + 1;
+            }
+
+trade_added:
+
+            if (objectToAdd->master_obj->object_group == 0x14) {
+                int transportId = objectToAdd->id;
+                ManagedArray<int>* transportList = &this->transportBoats;
+                if ((transportList->*contains)(transportId) != 1) {
+                    number = transportList->numberValue;
+                    if (number > transportList->maximumSizeValue - 1)
+                        (transportList->*resize)(number + 1);
+                    transportList->value[transportList->numberValue] = transportId;
+                    transportList->numberValue = transportList->numberValue + 1;
+                }
+            }
+
+            if (objectToAdd->master_obj->object_group == 0x16) {
+                int warId = objectToAdd->id;
+                ManagedArray<int>* warList = &this->warBoats;
+                if ((warList->*contains)(warId) != 1) {
+                    number = warList->numberValue;
+                    if (number > warList->maximumSizeValue - 1)
+                        (warList->*resize)(number + 1);
+                    warList->value[warList->numberValue] = warId;
+                    warList->numberValue = warList->numberValue + 1;
+                }
+            }
+
+            if (objectToAdd->master_obj->object_group != 0x15)
+                return;
+
+            {
+                int fishingId = objectToAdd->id;
+                ManagedArray<int>* fishingList = &this->fishingBoats;
+                if ((fishingList->*contains)(fishingId) == 1)
+                    return;
+                number = fishingList->numberValue;
+                if (number > fishingList->maximumSizeValue - 1)
+                    (fishingList->*resize)(number + 1);
+                fishingList->value[fishingList->numberValue] = fishingId;
+                fishingList->numberValue = fishingList->numberValue + 1;
+            }
             return;
         }
 
-        this->boats.add(obj->id);
-        if (obj->master_obj->object_group == 2) {
-            this->tradeBoats.add(obj->id);
-        }
-
-        if (obj->master_obj->object_group == 0x14) {
-            id = obj->id;
-            list = &this->transportBoats;
-            if (list->contains(id) != 1) {
-                (*list)[list->numberValue] = id;
-                list->numberValue++;
-            }
-        }
-
-        if (obj->master_obj->object_group == 0x16) {
-            id = obj->id;
-            list = &this->warBoats;
-            if (list->contains(id) != 1) {
-                (*list)[list->numberValue] = id;
-                list->numberValue++;
-            }
-        }
-
-        if (obj->master_obj->object_group == 0x15) {
-            id = obj->id;
-            list = &this->fishingBoats;
-            if (list->contains(id) == 1)
+        number = this->soldiers.numberValue;
+        objectId = objectToAdd->id;
+        list = &this->soldiers;
+        for (i = 0; i < number; i++) {
+            if (i >= list->maximumSizeValue)
+                break;
+            if (list->value[i] == objectId)
                 return;
-            (*list)[list->numberValue] = id;
-            list->numberValue++;
         }
+        if (number <= list->maximumSizeValue - 1)
+            goto add_to_list;
     }
+
+    (list->*resize)(number + 1);
+
+add_to_list:
+    list->value[list->numberValue] = objectId;
+    list->numberValue = list->numberValue + 1;
 }
 
 
@@ -3211,81 +3298,75 @@ void TribeTacticalAIModule::removeObject(int objectId)
 void TribeTacticalAIModule::evaluateCivilianDistribution()
 {
     int percentExplored;
-    int numberItems;
-    int desired;
-    int gatherers;
-    ManagedArray<int>* list;
-    int zero;
+    int enemyObjects;
+    int soldierExplorers;
 
-    percentExplored = (int)(this->md->player->visible->percentExplored() * 100.0f);
-
-    list = &this->playersToAttack;
-    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
+    percentExplored = (int)(this->md->player->visible->percentExplored() *
+                            100.0f);
+    enemyObjects = this->md->informationAI.numberGameIDsOwnedBy(
+        -1, this->playersToAttack[0]);
 
     if (this->civilians.numberValue >= 3) {
-    list = &this->civilians;
-    if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
-        zero = 0;
-        this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
-        desired = this->numberSoldierExplorers();
-        if (desired + this->civilianExplorers.desiredNumberValue > this->sn[18]) {
-            this->civilianExplorers.desiredNumberValue = this->sn[18] - desired;
-        }
-        if (this->sn[3] != -1 && this->civilianExplorers.desiredNumberValue > this->sn[3]) {
-            this->civilianExplorers.desiredNumberValue = this->sn[3];
-        }
-    }
-    else {
-        zero = 0;
-        this->civilianExplorers.desiredNumberValue = zero;
-    }
-
-    if (percentExplored >= this->sn[32] && numberItems > this->sn[145]) {
-        desired = this->sn[35];
-        if (this->civilianExplorers.desiredNumberValue > desired) {
-            this->civilianExplorers.desiredNumberValue = desired;
-        }
-    }
-    else if (percentExplored >= this->sn[179]) {
-        desired = this->civilianExplorers.desiredNumberValue / 2;
-        if (desired <= zero) {
-            desired = zero;
-        }
-        this->civilianExplorers.desiredNumberValue = desired;
-    }
-
-    if (this->zoomingToNextAge == 1) {
-        this->civilianExplorers.desiredNumberValue = zero;
-    }
-
-    gatherers = this->civilians.numberValue - this->civilianExplorers.desiredNumberValue;
-    this->desiredNumberGatherersValue = gatherers;
-    if (this->sn[5] != -1 && gatherers > this->sn[5]) {
-        this->desiredNumberGatherersValue = this->sn[5];
-    }
-    }
-    else {
-        desired = 1;
-        if (this->civilians.numberValue == 1) {
-            this->desiredNumberGatherersValue = 0;
+        if (this->md->informationAI.fullyExploredZone(
+                this->civilians[0]) == 1) {
+            this->civilianExplorers.desiredNumberValue = (int)ceil(
+                (double)((float)this->sn[0] * this->civilians.numberValue *
+                         0.01f));
+            soldierExplorers = this->numberSoldierExplorers();
+            if (this->civilianExplorers.desiredNumberValue + soldierExplorers >
+                this->sn[0x12]) {
+                this->civilianExplorers.desiredNumberValue =
+                    this->sn[0x12] - soldierExplorers;
+            }
+            if (this->sn[3] != -1 &&
+                this->civilianExplorers.desiredNumberValue > this->sn[3]) {
+                this->civilianExplorers.desiredNumberValue = this->sn[3];
+            }
         }
         else {
-            desired = this->sn[5];
-            this->desiredNumberGatherersValue = 1;
-            if (desired != -1 && desired < 1) {
-                this->desiredNumberGatherersValue = desired;
-            }
-            // Reread the count before publishing explorer demand.
-            gatherers = this->civilians.number() -
-                        this->desiredNumberGatherersValue;
-            this->civilianExplorers.setDesiredNumber(gatherers);
-            desired = this->sn[3];
-            if (desired == -1 || gatherers <= desired)
-                goto low_count_done;
+            this->civilianExplorers.desiredNumberValue = 0;
         }
-        this->civilianExplorers.desiredNumberValue = desired;
-low_count_done:
-        ;
+
+        if (percentExplored >= this->sn[0x20] &&
+            enemyObjects > this->sn[0x91]) {
+            if (this->civilianExplorers.desiredNumberValue > this->sn[0x23]) {
+                this->civilianExplorers.desiredNumberValue = this->sn[0x23];
+            }
+        }
+        else if (percentExplored >= this->sn[0xb3]) {
+            this->civilianExplorers.desiredNumberValue /= 2;
+            if (this->civilianExplorers.desiredNumberValue < 1) {
+                this->civilianExplorers.desiredNumberValue = 0;
+            }
+        }
+
+        if (this->zoomingToNextAge == 1) {
+            this->civilianExplorers.desiredNumberValue = 0;
+        }
+
+        this->desiredNumberGatherersValue =
+            this->civilians.numberValue -
+            this->civilianExplorers.desiredNumberValue;
+        if (this->sn[5] != -1 &&
+            this->desiredNumberGatherersValue > this->sn[5]) {
+            this->desiredNumberGatherersValue = this->sn[5];
+        }
+    }
+    else if (this->civilians.numberValue == 1) {
+        this->desiredNumberGatherersValue = 0;
+        this->civilianExplorers.desiredNumberValue = 1;
+    }
+    else {
+        this->desiredNumberGatherersValue = 1;
+        if (this->sn[5] != -1 && this->desiredNumberGatherersValue > this->sn[5]) {
+            this->desiredNumberGatherersValue = this->sn[5];
+        }
+        this->civilianExplorers.desiredNumberValue =
+            this->civilians.numberValue - this->desiredNumberGatherersValue;
+        if (this->sn[3] != -1 &&
+            this->civilianExplorers.desiredNumberValue > this->sn[3]) {
+            this->civilianExplorers.desiredNumberValue = this->sn[3];
+        }
     }
 
     this->displayCivilianDistribution();
@@ -3617,7 +3698,7 @@ next_group:
 
 
 
-void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
+void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableTime)
 {
     TacticalAIGroup* cur;
     ObjectMemory* mem;
@@ -3694,17 +3775,15 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                                 } else {
                                     defendDistance = (float)this->sn[0x39];
                                 }
-                                point.z = mem->z;
                                 point.x = mem->x;
                                 point.y = mem->y;
+                                point.z = mem->z;
                                 if (!commanderObj->canPath(point,
                                         commanderObj->weaponRange(),
                                         mem->id, &pathDistance, 1, -1, -1)) {
                                     if (!commanderObj->canPathWithAdditionalPassability(
                                             point, defendDistance, mem->id, &pathDistance,
                                             1, 0x16, 1, -1, -1)) {
-                                        cur->setConsecutiveIdleUnitCount(
-                                            this->md->player->world->world_time);
                                         cur->setAction(1);
                                         goto clear_attack_state;
                                     }
@@ -3804,88 +3883,11 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
                             goto clear_attack_state;
                         } else {
                             goto inactive_post_setup;
-active_target_selection:
-                            int* players;
-                            int* newPlayers;
-                            if (this->md->strategyAI.currentVictoryCondition() == 0) {
-                                int capture;
-                                capture = this->itemToCapture();
-                                mem = this->md->informationAI.objectMemory(capture);
-                                if (mem == 0) {
-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)::operator new(4);
-                                        if (newPlayers != 0) {
-                                            int i;
-                                            i = 0;
-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
-                                                newPlayers[i] = this->playersToAttack.value[i];
-                                                i++;
-                                            }
-                                            goto inactive_resize_commit;
-                                        }
-                                    }
-                                    goto inactive_object_to_attack;
-                                }
-                            } else if (this->md->strategyAI.currentVictoryCondition() == 4) {
-                                int bring;
-                                bring = this->itemToBringToArea();
-                                mem = this->md->informationAI.objectMemory(bring);
-                                if (mem == 0) {
-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)::operator new(4);
-                                        if (newPlayers != 0) {
-                                            int i;
-                                            i = 0;
-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
-                                                newPlayers[i] = this->playersToAttack.value[i];
-                                                i++;
-                                            }
-                                            goto inactive_resize_commit;
-                                        }
-                                    }
-                                    goto inactive_object_to_attack;
-                                }
-                            } else {
-                                if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                    int* newPlayers;
-                                    newPlayers = (int*)::operator new(4);
-                                    if (newPlayers != 0) {
-                                        int i;
-                                        i = 0;
-                                        while (i < this->playersToAttack.maximumSizeValue && i < 1) {
-                                            newPlayers[i] = this->playersToAttack.value[i];
-                                            i++;
-                                        }
-                                        ::operator delete(this->playersToAttack.value);
-                                        this->playersToAttack.value = newPlayers;
-                                        this->playersToAttack.maximumSizeValue = 1;
-                                    }
-                                }
-                                players = this->playersToAttack.value;
-                                mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, param_1);
-                                if (this->attackStateValue.active == 1) {
-                                    this->nextActiveSoldierGroupToTaskValue = cur->id();
-                                    return;
-                                }
-                                goto active_target_selected_common;
-                            }
-                            goto active_target_selected_common;
-inactive_resize_commit:
-                            ::operator delete(this->playersToAttack.value);
-                            this->playersToAttack.value = newPlayers;
-                            this->playersToAttack.maximumSizeValue = 1;
-inactive_object_to_attack:
-                            players = this->playersToAttack.value;
-                            mem = this->md->informationAI.objectToAttack(*players, 1, 1,
-                                                                         cur->commander(),
-                                                                         attackAsAttack);
-                            goto active_target_selected_common;
                         }
                     }
                 } else {
                     int attackEnabled;
                     int* players;
-                    int* newPlayers;
                     unsigned long lastAttackTime;
                     unsigned long elapsed;
 
@@ -3912,18 +3914,7 @@ inactive_object_to_attack:
                                 capture = this->itemToCapture();
                                 mem = this->md->informationAI.objectMemory(capture);
                                 if (mem == 0) {
-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)::operator new(4);
-                                        if (newPlayers != 0) {
-                                            int i;
-                                            i = 0;
-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
-                                                newPlayers[i] = this->playersToAttack.value[i];
-                                                i++;
-                                            }
-                                            goto active_resize_commit;
-                                        }
-                                    }
+                                    players = &this->playersToAttack[0];
                                     goto active_object_to_attack;
                                 }
                             } else if (this->md->strategyAI.currentVictoryCondition() == 4) {
@@ -3931,39 +3922,13 @@ inactive_object_to_attack:
                                 bring = this->itemToBringToArea();
                                 mem = this->md->informationAI.objectMemory(bring);
                                 if (mem == 0) {
-                                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)::operator new(4);
-                                        if (newPlayers != 0) {
-                                            int i;
-                                            i = 0;
-                                            while (i < this->playersToAttack.maximumSizeValue && i < 1) {
-                                                newPlayers[i] = this->playersToAttack.value[i];
-                                                i++;
-                                            }
-                                            goto active_resize_commit;
-                                        }
-                                    }
+                                    players = &this->playersToAttack[0];
                                     goto active_object_to_attack;
                                 }
                             } else {
-                                if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                    int* generalPlayers;
-                                    generalPlayers = (int*)::operator new(4);
-                                    if (generalPlayers != 0) {
-                                        int i;
-                                        i = 0;
-                                        while (i < this->playersToAttack.maximumSizeValue && i < 1) {
-                                            generalPlayers[i] = this->playersToAttack.value[i];
-                                            i++;
-                                        }
-                                        ::operator delete(this->playersToAttack.value);
-                                        this->playersToAttack.value = generalPlayers;
-                                        this->playersToAttack.maximumSizeValue = 1;
-                                    }
-                                }
-                                players = this->playersToAttack.value;
+                                players = &this->playersToAttack[0];
                                 mem = this->md->informationAI.objectToAttackByGroup(
-                                    *players, cur, this->attackStateValue, param_1);
+                                    *players, cur, this->attackStateValue, startTime);
                                 if (this->attackStateValue.active == 1) {
                                     this->nextActiveSoldierGroupToTaskValue = cur->id();
                                     return;
@@ -3971,12 +3936,7 @@ inactive_object_to_attack:
                                 goto active_target_selected_common;
                             }
                             goto active_target_selected_common;
-active_resize_commit:
-                            ::operator delete(this->playersToAttack.value);
-                            this->playersToAttack.value = newPlayers;
-                            this->playersToAttack.maximumSizeValue = 1;
 active_object_to_attack:
-                            players = this->playersToAttack.value;
                             mem = this->md->informationAI.objectToAttack(*players, 1, 1,
                                                                          cur->commander(),
                                                                          attackAsAttack);
@@ -3994,24 +3954,21 @@ attack_target_ready:
                                     goto clear_attack_state;
                                 } else {
                                     float point;
-                                    float attackRange;
                                     XYZPoint targetPoint;
                                     targetPoint.x = mem->x;
                                     targetPoint.y = mem->y;
                                     targetPoint.z = mem->z;
-                                    attackRange = commanderObj->weaponRange();
                                     if (!commanderObj->canPath(targetPoint,
-                                            attackRange, mem->id,
+                                            commanderObj->weaponRange(), mem->id,
                                             &point, 1, mem->owner, 0x1b)) {
-                                        float exceptionPoint;
                                         float gatherX2;
                                         float aux2;
                                         if (cur->type() == 0x67) {
                                             goto active_exception_rejected;
                                         }
                                         if (!commanderObj->canPathWithAdditionalPassability(
-                                                targetPoint, attackRange,
-                                                mem->id, &exceptionPoint, 1, 0x16, 1,
+                                                targetPoint, commanderObj->weaponRange(),
+                                                mem->id, &point, 1, 0x16, 1,
                                                 mem->owner, 0x1b)) {
                                             cur->numberObjectsToDestroyValue = 0;
                                             cur->setAction(1);
@@ -4071,7 +4028,7 @@ inactive_post_setup:
                     targetTile.y = (int)mem->y;
                     targetTile.z = 1;
                     avoidancePath = commanderObj->findAvoidancePath(
-                        targetTile, commanderObj->weaponRange(), 1);
+                        targetTile, commanderObj->weaponRange(), mem->id);
                     if (avoidancePath != 0) {
                         this->stuffAvoidancePath(cur, avoidancePath);
                     }
@@ -4117,15 +4074,15 @@ inactive_post_setup:
                         }
                         if (assist != 0) {
                             RGE_Static_Object* transportObj;
-                            short transportCount;
-                            unsigned char transportCapacity;
                             transportObj = this->md->object(assist->commander());
                             if (transportObj != 0) {
-                                transportCount = transportObj->objects->number_of_objects;
-                                transportCapacity = transportObj->master_obj->obj_max;
+                                RGE_Object_List* transportContents = transportObj->objects;
+                                if (transportContents->number_of_objects >= transportObj->master_obj->obj_max) {
+                                    cur->setAction(0x0f);
+                                    goto clear_attack_state;
+                                }
                             }
-                            if (transportObj == 0 ||
-                                transportCount < transportCapacity) {
+                            {
                                 int i;
                                 int didTask;
                                 didTask = 0;
@@ -4154,9 +4111,6 @@ inactive_post_setup:
                                 } else {
                                     goto clear_attack_state;
                                 }
-                            } else {
-                                cur->setAction(0x0f);
-                                this->attackStateValue.active = 0;
                             }
                         } else {
                             cur->setAssistGroupID(-1);
@@ -4292,23 +4246,17 @@ inactive_post_setup:
                                 if (unitObj2 != 0 && unitObj2->unitAI() != 0) {
                                     if (unitObj2->inside_obj == 0) {
                                         allOutside = 0;
-                                        if (cur->type() == 100) {
-                                            RGE_Static_Object* targetObj;
-                                            targetObj = this->md->object(cur->target());
-                                            if (targetObj != 0) {
-                                                UnitAIModule* attackAI;
-                                                attackAI = unitObj2->unitAI();
-                                                if (attackAI->currentTarget() != cur->target()) {
-                                                if (unitObj2->unitAI()->canAttackUnit(
-                                                            targetObj) == 1) {
-                                                        this->taskAttacker(cur->unit(i),
-                                                            cur->targetLocation().x,
-                                                            cur->targetLocation().y,
-                                                            cur->target(), -1, 0, 0, -1, 0);
-                                                    }
-                                                }
-                                            } else {
-                                                this->stopUnit(cur->unit(i), 100);
+                                        RGE_Static_Object* targetObj;
+                                        targetObj = this->md->object(cur->target());
+                                        if (cur->type() == 100 && targetObj != 0) {
+                                            if (unitObj2->unitAI() != 0 &&
+                                                unitObj2->unitAI()->currentTarget() != cur->target() &&
+                                                unitObj2->canPath(cur->target(),
+                                                    unitObj2->weaponRange(), 0, 1, -1, -1) == 1) {
+                                                this->taskAttacker(cur->unit(i),
+                                                    cur->targetLocation().x,
+                                                    cur->targetLocation().y,
+                                                    cur->target(), -1, 0, 0, -1, 0);
                                             }
                                         } else {
                                             this->stopUnit(cur->unit(i), 100);
@@ -4348,15 +4296,12 @@ inactive_post_setup:
                                 }
                                 if (cur->type() == 100) {
                                     RGE_Static_Object* commanderObjT;
-                                    RGE_Static_Object* attackTarget;
                                     commanderObjT = this->md->object(cur->commander());
                                     if (commanderObjT == 0) {
                                         goto action10_attack_failure;
                                     } else {
-                                        attackTarget = this->md->object(cur->target());
-                                        if (attackTarget != 0 &&
-                                            commanderObjT->unitAI()->canAttackUnit(
-                                                attackTarget) == 1) {
+                                        if (commanderObjT->canPath(cur->target(),
+                                                commanderObjT->weaponRange(), 0, 1, -1, -1) == 1) {
                                             this->lastGroupAttackTime = this->md->player->world->world_time;
                                             if (this->sn[0x47] == 1) {
                                                 this->lastAttackResponseTime = this->md->player->world->world_time;
@@ -4418,23 +4363,8 @@ reset_action10:
                     int* players;
 
                     commanderObj3 = this->md->object(cur->commander());
-                    if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                        int* newPlayers;
-                        newPlayers = (int*)::operator new(4);
-                        if (newPlayers != 0) {
-                            int k;
-                            k = 0;
-                            while (k < this->playersToAttack.maximumSizeValue && k < 1) {
-                                newPlayers[k] = this->playersToAttack.value[k];
-                                k++;
-                            }
-                            ::operator delete(this->playersToAttack.value);
-                            this->playersToAttack.value = newPlayers;
-                            this->playersToAttack.maximumSizeValue = 1;
-                        }
-                    }
-                    players = this->playersToAttack.value;
-                    mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, param_1);
+                    players = &this->playersToAttack[0];
+                    mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, startTime);
                     if (this->attackStateValue.active == 1) {
                         this->nextActiveSoldierGroupToTaskValue = cur->id();
                         return;
@@ -4447,14 +4377,12 @@ reset_action10:
                         goto action7_timeout;
                     } else {
                         float pathOut;
-                        float attackRange7;
                         XYZPoint targetPoint7;
                         targetPoint7.x = mem->x;
                         targetPoint7.y = mem->y;
                         targetPoint7.z = mem->z;
-                        attackRange7 = commanderObj3->weaponRange();
                         if (commanderObj3->canPath(targetPoint7,
-                                attackRange7, mem->id,
+                                commanderObj3->weaponRange(), mem->id,
                                 &pathOut, 1, mem->owner, 0x1b) == 1) {
                             cur->setAction(2);
                             cur->setTarget(mem->id);
@@ -4465,14 +4393,14 @@ reset_action10:
                             this->attackStateValue.active = 0;
                             goto ContinueLoop;
                         } else {
-                            char aux7[4];
+                            float gatherY7;
                             float gather7;
                             if (commanderObj3->canPathWithAdditionalPassability(
-                                    targetPoint7, attackRange7,
+                                    targetPoint7, commanderObj3->weaponRange(),
                                     mem->id, &pathOut, 1, 0x16, 1,
                                     mem->owner, 0x1b) == 1 &&
                                 commanderObj3->findFirstTerrainAlongExceptionPath(
-                                    2, &gather7, (float*)aux7) == 1) {
+                                    2, &gather7, &gatherY7) == 1) {
                                 cur->task(this, this->md, 0x0e, 1, 0);
                                 cur->setAction(0x0d);
                                 cur->setTarget(mem->id);
@@ -4563,24 +4491,9 @@ action7_done:
                                 this->attackStateValue.active = 0;
                                 goto ContinueLoop;
                             }
-                            if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                int* newPlayers;
-                                newPlayers = (int*)::operator new(4);
-                                if (newPlayers != 0) {
-                                    int k;
-                                    k = 0;
-                                    while (k < this->playersToAttack.maximumSizeValue && k < 1) {
-                                        newPlayers[k] = this->playersToAttack.value[k];
-                                        k++;
-                                    }
-                                    ::operator delete(this->playersToAttack.value);
-                                    this->playersToAttack.value = newPlayers;
-                                    this->playersToAttack.maximumSizeValue = 1;
-                                }
-                            }
-                            players2 = this->playersToAttack.value;
+                            players2 = &this->playersToAttack[0];
                             replacement = this->md->informationAI.objectToAttackByGroup(
-                                *players2, cur, this->attackStateValue, param_1);
+                                *players2, cur, this->attackStateValue, startTime);
                             if (this->attackStateValue.active == 1) {
                                 this->nextActiveSoldierGroupToTaskValue = cur->id();
                                 return;
@@ -4620,9 +4533,9 @@ action7_done:
                                     int cx;
                                     int cy;
                                     int radius;
-                                    cx = (int)replacementCommander->world_x;
                                     cy = (int)replacementCommander->world_y;
                                     radius = this->sn[0x88];
+                                    cx = (int)replacementCommander->world_x;
                                     this->md->informationAI.blotExploredMap(cx - radius, cy - radius, cx + radius, cy + radius);
                                 }
                                 cur->setInUse(1);
@@ -4640,22 +4553,18 @@ action7_done:
                             this->md->isMoveable(targetObj2->id)) {
                             Waypoint p1;
                             Waypoint p2;
-                            float mx;
-                            float my;
-                            float mz;
                             cur->addUnit(targetObj2->id, this->md);
                             p1 = this->md->strategyAI.targetPoint1();
                             p2 = this->md->strategyAI.targetPoint2();
-                            mx = (p1.x + p2.x) * 0.5f;
-                            my = (p1.y + p2.y) * 0.5f;
-                            mz = (p1.z + p2.z) * 0.5f;
                             cur->setInUse(0);
                             cur->setAction(1);
                             cur->setTarget(-1);
                             cur->numberObjectsToDestroyValue = 0;
                             cur->setTargetType(-1);
                             cur->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                            cur->setGatherLocation(mx, my, mz);
+                            cur->setGatherLocation((p1.x + p2.x) * 0.5f,
+                                                   (p1.y + p2.y) * 0.5f,
+                                                   (p1.z + p2.z) * 0.5f);
                         }
                         idle = cur->consecutiveIdleUnitCount();
                         if ((this->md->player->world->world_time - idle) / 1000 >
@@ -4670,7 +4579,7 @@ action7_done:
                             goto ContinueLoop;
                         }
                     } else {
-                        if (this->md->player->isEnemy(
+                        if (this->md->player->isAlly(
                                 targetObj2->owner->id) != 0) {
                             RGE_Static_Object* commanderObj8;
                             cur->setInUse(0);
@@ -4698,11 +4607,8 @@ action7_done:
                                     this->attackStateValue.active = 0;
                                     goto ContinueLoop;
                                 } else {
-                                    RGE_Static_Object* attackTarget =
-                                        this->md->object(cur->target());
-                                    if (attackTarget != 0 &&
-                                        commanderObj4->unitAI()->canAttackUnit(
-                                            attackTarget) == 1) {
+                                    if (commanderObj4->canPath(cur->target(),
+                                            commanderObj4->weaponRange(), 0, 1, -1, -1) == 1) {
                                     cur->task(this, this->md, 0x14, 0, 1);
                                     this->attackStateValue.active = 0;
                                     goto ContinueLoop;
@@ -4875,7 +4781,7 @@ ContinueLoop:
             } else {
                 this->nextActiveSoldierGroupToTaskValue = cur->id();
             }
-            if (debug_timeGetTime(s_file, 0x14fe) - param_1 >= param_2) {
+            if (debug_timeGetTime(s_file, 0x14fe) - startTime >= availableTime) {
                 return;
             }
         } while (cur != &this->groups);
@@ -4950,43 +4856,52 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long startTime,
 
 void TribeTacticalAIModule::taskUngroupedSoldiers()
 {
-    int i;
+    RGE_Static_Object* centerObject;
+    RGE_Static_Object* soldierObject;
+    TacticalAIGroup* group;
     XYPoint centerPoint;
-    RGE_Static_Object* soldierObj;
     XYPoint gatherPoint;
+    int i;
 
-    unsigned long currentTime = this->md->player->world->world_time;
-    if ((currentTime - this->lastUngroupedSoldierTaskTime) / 1000 >= 60) {
-        this->lastUngroupedSoldierTaskTime = currentTime;
-        soldierObj = this->md->object(
-            -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-        if (soldierObj != 0) {
-            centerPoint.x = (int)soldierObj->world_x;
-            centerPoint.y = (int)soldierObj->world_y;
-            for (i = 0; i < this->soldiers.number(); i++) {
-                if (this->groupUnitIsIn(this->soldiers[i]) != 0) {
-                    this->ungroupedSoldiers.remove(this->soldiers[i]);
-                }
-                else {
-                    soldierObj = this->md->object(this->soldiers[i]);
-                    if (soldierObj != 0) {
-                        if (this->ungroupedSoldiers.contains(
-                                this->soldiers[i]) == 0) {
-                            this->ungroupedSoldiers.add(this->soldiers[i]);
-                            if (this->md->informationAI.findGatherPosition(
-                                    centerPoint, 1, 1,
-                                    this->sn[0x16], this->sn[0x48],
-                                    soldierObj, gatherPoint) == 1) {
-                                this->moveUnit(
-                                    this->soldiers[i],
-                                    (float)gatherPoint.x,
-                                    (float)gatherPoint.y, 0x32);
-                            }
+    if ((this->md->player->world->world_time -
+         this->lastUngroupedSoldierTaskTime) / 1000 < 60)
+        return;
+
+    this->lastUngroupedSoldierTaskTime =
+        this->md->player->world->world_time;
+    centerObject = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1,
+                                    -1, -1);
+    if (centerObject == 0)
+        return;
+
+    centerPoint.x = (int)centerObject->world_x;
+    centerPoint.y = (int)centerObject->world_y;
+
+    i = 0;
+    if (this->soldiers.numberValue > 0) {
+        do {
+            group = this->groupUnitIsIn(this->soldiers[i]);
+            if (group != 0) {
+                this->ungroupedSoldiers.remove(this->soldiers[i]);
+            }
+            else {
+                soldierObject = this->md->object(this->soldiers[i]);
+                if (soldierObject != 0) {
+                    if (this->ungroupedSoldiers.contains(this->soldiers[i]) == 0) {
+                        this->ungroupedSoldiers.add(this->soldiers[i]);
+                        if (this->md->informationAI.findGatherPosition(
+                                centerPoint, 1, 1, this->sn[0x16],
+                                this->sn[0x48], soldierObject,
+                                gatherPoint) == 1) {
+                            this->moveUnit(this->soldiers[i],
+                                           (float)gatherPoint.x,
+                                           (float)gatherPoint.y, 50);
                         }
                     }
                 }
             }
-        }
+            i++;
+        } while (i < this->soldiers.numberValue);
     }
 }
 
@@ -6007,38 +5922,37 @@ int TribeTacticalAIModule::numberIdleSoldiers()
 }
 
 
-int TribeTacticalAIModule::numberSoldiersWithPriority(int priority, int flag, int zeroWorkingArea)
+int TribeTacticalAIModule::numberSoldiersWithPriority(int priority, int flag, int clear)
 {
     int count = 0;
     int i;
-    if (zeroWorkingArea == 1)
+    RGE_Static_Object* object;
+
+    if (clear == 1)
         this->workingArea.zeroNumber();
 
     for (i = 0; i < this->soldiers.number(); i++) {
-        RGE_Static_Object* object =
-            this->md->aiPlayer->world->object(this->soldiers[i]);
-        if (object == 0 || object->unitAI() == 0)
-            continue;
-        if (this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 1)
-            continue;
-
-        if (flag < 0) {
-            if (object->unitAI()->currentAction() == -1 ||
-                object->unitAI()->currentOrderPriority() < priority) {
-                this->workingArea.add(this->soldiers[i]);
-                count++;
-            }
-        } else if (flag > 0) {
-            if (object->unitAI()->currentAction() != -1 &&
-                object->unitAI()->currentOrderPriority() > priority) {
-                this->workingArea.add(this->soldiers[i]);
-                count++;
-            }
-        } else {
-            if (object->unitAI()->currentAction() != -1 &&
-                object->unitAI()->currentOrderPriority() == priority) {
-                this->workingArea.add(this->soldiers[i]);
-                count++;
+        object = this->md->aiPlayer->world->object(this->soldiers[i]);
+        if (object != 0 && object->unitAI() != 0 &&
+            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0) {
+            if (flag < 0) {
+                if (object->unitAI()->currentAction() == -1 ||
+                    object->unitAI()->currentOrderPriority() < priority) {
+                    this->workingArea.add(this->soldiers[i]);
+                    count++;
+                }
+            } else if (flag > 0) {
+                if (object->unitAI()->currentAction() != -1 &&
+                    object->unitAI()->currentOrderPriority() > priority) {
+                    this->workingArea.add(this->soldiers[i]);
+                    count++;
+                }
+            } else {
+                if (object->unitAI()->currentAction() != -1 &&
+                    object->unitAI()->currentOrderPriority() == priority) {
+                    this->workingArea.add(this->soldiers[i]);
+                    count++;
+                }
             }
         }
     }
