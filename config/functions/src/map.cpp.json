@@ -44,7 +44,7 @@
     "00457C50": {"status": "accepted_drift", "symbol": "?save_map@RGE_Map@@QAEXH@Z"},
     "00457DF0": {"status": "matching", "symbol": "?save@RGE_Map@@UAEXH@Z"},
     "00457EB0": {"status": "matching", "symbol": "?load_terrain_types@RGE_Map@@QAEXPAPAVRGE_Sound@@@Z"},
-    "00457F80": {"status": "scratch", "symbol": "?load_terrain_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z"},
+    "00457F80": {"status": "new_verified_logic", "symbol": "?load_terrain_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z", "behavior_review": "logic_matching/00457F80/review-01/attempt-01"},
     "00458280": {"status": "matching", "symbol": "?load_border_types@RGE_Map@@QAEXPAPAVRGE_Sound@@@Z"},
     "00458350": {"status": "new_verified_logic", "symbol": "?load_border_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z", "behavior_review": "logic_matching/00458350/review-01/attempt-01"},
     "00458600": {"status": "accepted_drift", "symbol": "?load_terrain_obj_types@RGE_Map@@QAEXPAD@Z"},

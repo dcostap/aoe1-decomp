@@ -1451,118 +1451,115 @@ void RGE_Map::load_terrain_types(RGE_Sound** sounds)
         free(filename2);
 }
 
-void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
+void RGE_Map::load_terrain_types(char* terrain_table, RGE_Sound** sounds)
 {
+    short border_num;
+    short border;
+    short sound_id;
+    short low_color;
+    short med_color;
+    short hi_color;
+    short lt_cliff_color;
+    short rt_cliff_color;
+    short impassable_terrain;
+    short passable_terrain;
+    short row;
+    short col;
+    short is_animated;
+    short animation_frames;
+    short terrain_to_draw;
+    short random;
+    float interval;
+    float pause_between_loops;
+    FILE* infile;
+    long resource_id;
+    char name[13];
+    char pict_name[13];
+
     int i;
     for (i = 31; i >= 0; --i)
         this->terrain_types[i].loaded = 0;
 
-    FILE* local_38 = fopen(filename, "r");
-    if (local_38 != 0) {
-        fscanf(local_38, (char*)"%hd", &this->num_terrain);
-        short terrain_count = this->num_terrain - 1;
-        if (terrain_count >= 0) {
-            long resource_id = (int)terrain_count + 1;
+    infile = fopen(terrain_table, "r");
+    if (infile != 0) {
+        fscanf(infile, "%hd", &this->num_terrain);
+        short remaining = this->num_terrain - 1;
+        if (remaining >= 0) {
+            int terrain_count = (int)remaining + 1;
             do {
-                short border_num;
-                short sound_id;
-                short border;
-                short low_color;
-                short med_color;
-                short hi_color;
-                short lt_cliff_color;
-                short rt_cliff_color;
-                short impassable_terrain;
-                short passable_terrain;
-                short row;
-                short col;
-                short is_animated;
-                short animation_frames;
-                short terrain_to_draw;
-                short random;
-                float interval;
-                float infile;
-                float local_30;
-                long local_28;
-                short terrain_id;
-                char name[13];
-                char pict_name[13];
-                int i2;
-                RGE_TOB_Picts* tile;
-
-                if (fscanf(local_38,
-                    (char*)"%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd",
-                    &terrain_id, name, pict_name, &local_28,
-                    &border_num, &lt_cliff_color, &rt_cliff_color, &hi_color,
-                    &med_color, &terrain_to_draw, &random, &infile,
-                    &local_30, &interval, &is_animated, &animation_frames,
-                    &impassable_terrain, &passable_terrain, &row, &col,
-                    &sound_id) != -1) {
-                    if (terrain_id < 32 && terrain_id >= 0) {
-                        RGE_Tile_Set* terrain = &this->terrain_types[terrain_id];
-                        short shape_index = 0;
-                        int tile_count = 19;
-                        tile = terrain->tiles;
-                        do {
-                            fscanf(local_38, "%hd %hd", &tile->count,
-                                   &tile->animations);
-                            tile->shape_index = shape_index;
-                            shape_index += tile->count * tile->animations;
-                            ++tile;
-                            --tile_count;
-                        } while (tile_count != 0);
-
-                        i2 = 0;
-                        if (sound_id > 0) {
-                            do {
-                                fscanf(local_38, "%hd %hd", &border,
-                                       &low_color);
-                                terrain->borders[border] = low_color;
-                                ++i2;
-                            } while (i2 < sound_id);
-                        }
-
-                        if (med_color < 0)
-                            terrain->sound = 0;
-                        else
-                            terrain->sound = sounds[med_color];
-                        terrain->map_low_color = (unsigned char)hi_color;
-                        terrain->map_med_color = (unsigned char)lt_cliff_color;
-                        terrain->map_hi_color = (unsigned char)rt_cliff_color;
-                        terrain->map_lt_cliff_color =
-                            (unsigned char)impassable_terrain;
-                        terrain->map_rt_cliff_color =
-                            (unsigned char)passable_terrain;
-                        terrain->impassable_terrain = (unsigned char)row;
-                        terrain->passable_terrain = (unsigned char)col;
-                        convert_us(name);
-                        strcpy(terrain->name, name);
-                        strcpy(terrain->pict_name, pict_name);
-                        terrain->animate_last = 0.0f;
-                        terrain->resource_id = local_28;
-                        terrain->loaded = 1;
-                        terrain->rows = is_animated;
-                        terrain->cols = animation_frames;
-                        terrain->is_animated = (unsigned char)terrain_to_draw;
-                        terrain->animation_frames = random;
-                        if (infile == 0.0f)
-                            terrain->pause_frames = 0;
-                        else
-                            terrain->pause_frames = (short)(local_30 / infile);
-                        terrain->interval = infile;
-                        terrain->frame = 0;
-                        terrain->pause_between_loops = local_30;
-                        terrain->draw_frame = 0;
-                        terrain->frame_changed = 0;
-                        terrain->drawn = 0;
-                        terrain->terrain_to_draw = sound_id;
+                short id;
+                short shape_index = 0;
+                if (fscanf(infile,
+                    "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd",
+                    &id, name, pict_name, &resource_id, &random,
+                    &med_color, &hi_color, &low_color, &sound_id,
+                    &is_animated, &animation_frames, &interval,
+                    &pause_between_loops, &terrain_to_draw, &row, &col,
+                    &lt_cliff_color, &rt_cliff_color,
+                    &impassable_terrain, &passable_terrain,
+                    &border_num) != -1 &&
+                    id < 32 && id >= 0) {
+                    RGE_Tile_Set* terrain = &this->terrain_types[id];
+                    RGE_TOB_Picts* pict = terrain->tiles;
+                    for (int tile = 0; tile < 19; ++tile) {
+                        fscanf(infile, "%hd %hd", &pict->count,
+                               &pict->animations);
+                        pict->shape_index = shape_index;
+                        shape_index += pict->count * pict->animations;
+                        ++pict;
                     }
+
+                    short border_index = 0;
+                    if (border_num > 0) {
+                        do {
+                            fscanf(infile, "%hd %hd", &id, &border);
+                            terrain->borders[id] = border;
+                            ++border_index;
+                        } while (border_index < border_num);
+                    }
+
+                    if (sound_id >= 0)
+                        terrain->sound = sounds[sound_id];
+                    else
+                        terrain->sound = 0;
+                    terrain->map_low_color = (unsigned char)low_color;
+                    terrain->map_med_color = (unsigned char)med_color;
+                    terrain->map_hi_color = (unsigned char)hi_color;
+                    terrain->map_lt_cliff_color =
+                        (unsigned char)lt_cliff_color;
+                    terrain->map_rt_cliff_color =
+                        (unsigned char)rt_cliff_color;
+                    terrain->impassable_terrain =
+                        (unsigned char)impassable_terrain;
+                    terrain->passable_terrain =
+                        (unsigned char)passable_terrain;
+                    convert_us(name);
+                    strcpy(terrain->name, name);
+                    strcpy(terrain->pict_name, pict_name);
+                    terrain->resource_id = resource_id;
+                    terrain->animate_last = 0.0f;
+                    terrain->loaded = 1;
+                    terrain->rows = row;
+                    terrain->cols = col;
+                    terrain->is_animated = (unsigned char)is_animated;
+                    terrain->animation_frames = animation_frames;
+                    if (interval == DAT_005706ac)
+                        terrain->pause_frames = 0;
+                    else
+                        terrain->pause_frames =
+                            (short)(long)(pause_between_loops / interval);
+                    terrain->interval = interval;
+                    terrain->frame = 0;
+                    terrain->pause_between_loops = pause_between_loops;
+                    terrain->draw_frame = 0;
+                    terrain->frame_changed = 0;
+                    terrain->drawn = 0;
+                    terrain->terrain_to_draw = terrain_to_draw;
                 }
-                --resource_id;
-            } while (resource_id != 0);
+            } while (--terrain_count != 0);
         }
     }
-    fclose(local_38);
+    fclose(infile);
 }
 
 void RGE_Map::load_border_types(RGE_Sound** sounds)
