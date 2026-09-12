@@ -90,7 +90,7 @@
     "004E1BD0": {"status": "matching", "symbol": "?withinXTilesOfObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@HHHHH@Z"},
     "004E1D10": {"status": "matching", "symbol": "?findStagingPoint@TribeInformationAIModule@@QAEHUXYPoint@@AAU2@HHHHH@Z"},
     "004E21E0": {"status": "matching", "symbol": "?setupLOSMap@TribeInformationAIModule@@QAEHHHH@Z"},
-    "004E22F0": {"status": "accepted_drift", "symbol": "?setupAttackMap@TribeInformationAIModule@@QAEHHHH@Z"},
+    "004E22F0": {"status": "matching", "symbol": "?setupAttackMap@TribeInformationAIModule@@QAEHHHH@Z"},
     "004E23A0": {"status": "matching", "symbol": "?addResourceType@TribeInformationAIModule@@QAEXHH@Z"},
     "004E2440": {"status": "matching", "symbol": "?resourceType@TribeInformationAIModule@@QAEHHH@Z"},
     "004E2490": {"status": "matching", "symbol": "?addResourceObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@@Z"},

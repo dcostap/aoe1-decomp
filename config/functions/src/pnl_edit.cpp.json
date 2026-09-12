@@ -27,7 +27,7 @@
     "00475F40": {"status": "matching", "symbol": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z"},
     "00476040": {"status": "scratch", "symbol": "?sub_wnd_proc@TEditPanel@@QAEJPAXIIJ@Z"},
     "00476440": {"status": "matching", "symbol": "?verify_char@TEditPanel@@QAEHH@Z"},
-    "00476680": {"status": "accepted_drift", "symbol": "?draw@TEditPanel@@UAEXXZ"},
+    "00476680": {"status": "scratch", "symbol": "?draw@TEditPanel@@UAEXXZ"},
     "00476A50": {"status": "matching", "symbol": "?paint@TEditPanel@@UAEXXZ"},
     "00476A60": {"status": "matching", "symbol": "?is_blank@TEditPanel@@QAEHXZ"},
     "00476AB0": {"status": "matching", "symbol": "?get_trimmed_str@TEditPanel@@QAEPADPADH@Z"},

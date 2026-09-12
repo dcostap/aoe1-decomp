@@ -11,7 +11,7 @@
     "0046A810": {"status": "matching", "symbol": "??6@YAAAVostream@@AAV0@ABVPath@@@Z"},
     "0046A8E0": {"status": "matching", "symbol": "??HPath@@QBE?AV0@ABV0@@Z"},
     "0046A9E0": {"status": "matching", "symbol": "??4Path@@QAEAAV0@ABV0@@Z"},
-    "0046AAE0": {"status": "accepted_drift", "symbol": "??8Path@@QBEHABV0@@Z"},
+    "0046AAE0": {"status": "scratch", "symbol": "??8Path@@QBEHABV0@@Z"},
     "0046AB60": {"status": "matching", "symbol": "?insertAtCurrent@Path@@QAEHABUWaypoint@@@Z"},
     "0046AC10": {"status": "matching", "symbol": "?insertAtEnd@Path@@QAEHUWaypoint@@@Z"},
     "0046ACE0": {"status": "matching", "symbol": "?contains@Path@@QBEHABUWaypoint@@@Z"},

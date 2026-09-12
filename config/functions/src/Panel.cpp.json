@@ -58,7 +58,7 @@
     "00464E00": {"status": "matching", "symbol": "?set_positioning@TPanel@@UAEXW4PositionMode@1@JJJJJJJJPAV1@111@Z"},
     "00464EB0": {"status": "matching", "symbol": "?set_fixed_position@TPanel@@UAEXJJJJ@Z"},
     "00464EE0": {"status": "matching", "symbol": "?set_redraw@TPanel@@UAEXW4RedrawMode@1@@Z"},
-    "00464F20": {"status": "accepted_drift", "symbol": "?set_overlapped_redraw@TPanel@@UAEXPAV1@0W4RedrawMode@1@@Z"},
+    "00464F20": {"status": "matching", "symbol": "?set_overlapped_redraw@TPanel@@UAEXPAV1@0W4RedrawMode@1@@Z"},
     "00465050": {"status": "matching", "symbol": "?set_any_overlapping_redraw@TPanel@@QAEXPAV1@W4RedrawMode@1@@Z"},
     "00465160": {"status": "matching", "symbol": "?draw@TPanel@@UAEXXZ"},
     "004651C0": {"status": "matching", "symbol": "?draw_rect@TPanel@@UAEXPAUtagRECT@@@Z"},
