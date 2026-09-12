@@ -288,6 +288,7 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
 
 void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
     RGE_Action_Node* node;
+    RGE_Action_Node* current;
 
     if (this->obj->object_state > 2) {
         if (action != 0) {
@@ -299,39 +300,23 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
     node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
     node->action = action;
 
-    if (this->list != 0) {
-        short action_type;
-        action_type = action->type();
-        if (this->list->action->type() == action_type) {
-            RGE_Action_Node* current = this->list;
-            if (current != 0) {
-                while (true) {
-                    if (current->next == 0) {
-                        break;
-                    }
-                    action_type = action->type();
-                    if (current->next->action->type() != action_type) {
-                        break;
-                    }
-                    current = current->next;
-                    if (current == 0) {
-                        action->first_in_stack(1);
-                        return;
-                    }
-                }
+    if (this->list != 0 &&
+        this->list->action->type() == action->type()) {
+        current = this->list;
+        while (current != 0) {
+            if (current->next == 0 ||
+                current->next->action->type() != action->type()) {
                 node->next = current->next;
                 current->next = node;
-                action->first_in_stack(1);
-                return;
+                break;
             }
-            goto notify;
+            current = current->next;
         }
+    } else {
+        node->next = this->list;
+        this->list = node;
     }
 
-    node->next = this->list;
-    this->list = node;
-
-notify:
     action->first_in_stack(1);
 }
 

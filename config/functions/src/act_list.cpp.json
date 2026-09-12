@@ -18,7 +18,7 @@
     "004044F0": {"status": "matching", "symbol": "?update@RGE_Action_List@@UAEEXZ"},
     "00404540": {"status": "matching", "symbol": "?add_action@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
     "00404590": {"status": "accepted_drift", "symbol": "?add_action_at_end@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
-    "00404610": {"status": "scratch", "symbol": "?add_action_at_end_of_action_queue@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
+    "00404610": {"status": "matching", "symbol": "?add_action_at_end_of_action_queue@RGE_Action_List@@QAEXPAVRGE_Action@@@Z", "behavior_review": "logic_matching/00404610/review-01/attempt-01"},
     "00404710": {"status": "matching", "symbol": "?remove_action@RGE_Action_List@@QAEXXZ"},
     "00404760": {"status": "matching", "symbol": "?have_action@RGE_Action_List@@QAEEXZ"},
     "00404770": {"status": "matching", "symbol": "?action_stop@RGE_Action_List@@QAEHXZ"},
