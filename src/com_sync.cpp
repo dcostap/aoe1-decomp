@@ -392,44 +392,32 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
 }
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
-    unsigned int playerNo, unsigned long commTurn) {
-    unsigned long uVar5;
-    CHECKSUMARRAY* scanEntry = &this->Check[1];
-    int NumPlayers;
-    int NumDiff;
-    long lVar6;
-    long mycs4;
-    long mycs5;
-    long mycs2;
-    long mycs3;
-    int NumSame;
-    int foundMine;
-    unsigned int myRandom;
+    unsigned int pnum, unsigned long worldturn) {
+    int NumDiff = 0;
+    int NumSame = 0;
+    int foundMine = 0;
 
-    NumDiff = 0;
-    NumSame = 0;
-    foundMine = 0;
-    uVar5 = 0;
-    mycs2 = 0;
-    mycs3 = 0;
-    mycs4 = 0;
-    mycs5 = 0;
-    lVar6 = 0;
-    myRandom = 0;
-    NumPlayers = 0;
+    unsigned long myWorldTime = 0;
+    long mycs1 = 0;
+    long mycs2 = 0;
+    long mycs3 = 0;
+    long mycs4 = 0;
+    long mycs5 = 0;
+    unsigned int myRandom = 0;
+    int NumPlayers = 0;
 
-    unsigned int firstIndex = 1;
-    for (; firstIndex <= 0x36; ++firstIndex) {
-        if (this->Check[firstIndex].PlayerNo == playerNo &&
-            this->Check[firstIndex].WTurn == commTurn) {
-            mycs2 = this->Check[firstIndex].cs2;
-            mycs3 = this->Check[firstIndex].cs3;
-            uVar5 = this->Check[firstIndex].WTime;
-            mycs4 = this->Check[firstIndex + 2].PlayerNo;
-            mycs5 = this->Check[firstIndex].cs5;
-            lVar6 = this->Check[firstIndex].cs1;
-            myRandom = this->Check[firstIndex].Random;
+    unsigned int i;
+    for (i = 1; i <= 0x36; i++) {
+        CHECKSUMARRAY& entry = this->Check[i];
+        if (entry.PlayerNo == pnum && entry.WTurn == worldturn) {
             foundMine = 1;
+            myWorldTime = entry.WTime;
+            mycs1 = entry.cs1;
+            mycs2 = entry.cs2;
+            mycs3 = entry.cs3;
+            mycs4 = entry.cs4;
+            mycs5 = entry.cs5;
+            myRandom = entry.Random;
             break;
         }
     }
@@ -440,40 +428,34 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     }
 
     L->Log("OUTOFSYNC: my values: %d %d %d %d %d %d",
-           uVar5, lVar6, mycs2, mycs3, mycs4, mycs5);
+           myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
 
-    unsigned int i = 1;
-    do {
-        if (scanEntry->PlayerNo != playerNo && commTurn == scanEntry->WTurn) {
-            if (uVar5 == scanEntry->WTime &&
-                lVar6 == scanEntry->cs1 &&
-                mycs2 == scanEntry->cs2 &&
-                mycs3 == scanEntry->cs3 &&
-                mycs4 == scanEntry->cs4 &&
-                mycs5 == scanEntry->cs5 &&
-                myRandom == scanEntry->Random) {
-                ++NumSame;
+    for (i = 1; i <= 0x36; i++) {
+        CHECKSUMARRAY& entry = this->Check[i];
+        if (entry.PlayerNo != pnum && entry.WTurn == worldturn) {
+            if (entry.WTime == myWorldTime && entry.cs1 == mycs1 &&
+                entry.cs2 == mycs2 && entry.cs3 == mycs3 &&
+                entry.cs4 == mycs4 && entry.cs5 == mycs5 &&
+                entry.Random == myRandom) {
+                NumSame++;
                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
-                       i, uVar5, lVar6, mycs2,
-                       mycs3, mycs4, mycs5);
-            } else {
-                ++NumDiff;
+                       i, myWorldTime, mycs1, mycs2, mycs3, mycs4,
+                       mycs5);
+            }
+            else {
+                NumDiff++;
                 L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d",
-                       i, uVar5, lVar6, mycs2,
-                       mycs3, mycs4, mycs5);
+                       i, myWorldTime, mycs1, mycs2, mycs3, mycs4,
+                       mycs5);
             }
         }
-        ++i;
-        ++scanEntry;
-    } while (i <= 0x36);
+    }
 
-    int player = 1;
-    do {
-        if (this->Comm->GetPlayerHumanity(player) == 2) {
-            ++NumPlayers;
+    for (i = 1; i <= 9; i++) {
+        if (this->Comm->GetPlayerHumanity(i) == ME_HUMAN) {
+            NumPlayers++;
         }
-        ++player;
-    } while (player <= 9);
+    }
 
     L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
            NumPlayers, NumDiff, NumSame);
