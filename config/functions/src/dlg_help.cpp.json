@@ -9,7 +9,7 @@
     "0043E840": {"status": "matching", "symbol": "??0THelpDialog@@QAE@PAVTEasy_Panel@@PADJJJJ@Z"},
     "0043E8E0": {"status": "matching", "symbol": "??0THelpDialog@@QAE@PAVTEasy_Panel@@PAD1JJJ@Z"},
     "0043E950": {"status": "matching", "symbol": "??1THelpDialog@@UAE@XZ"},
-    "0043E9E0": {"status": "scratch", "symbol": "?setup_help@THelpDialog@@IAEXPAVTEasy_Panel@@PAD1JJJ@Z"},
+    "0043E9E0": {"status": "new_verified_logic", "symbol": "?setup_help@THelpDialog@@IAEXPAVTEasy_Panel@@PAD1JJJ@Z", "behavior_review": "logic_matching/0043E9E0/review-01/attempt-01"},
     "0043ED40": {"status": "matching", "symbol": "?action@THelpDialog@@UAEJPAVTPanel@@JKK@Z"},
     "0043EE10": {"status": "matching", "symbol": "?handle_mouse_down@THelpDialog@@UAEJEJJHH@Z"}
   }

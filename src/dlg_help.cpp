@@ -29,85 +29,96 @@ THelpDialog::~THelpDialog()
     delete title;
 }
 
-void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
-                             long page_id, long x_limit, long y_limit)
+void THelpDialog::setup_help(TEasy_Panel* parent, char* name, char* text,
+                             long help_page_id, long help_x,
+                             long help_y)
 {
-    RGE_Font* rge_text_font;
-    TPanel* tabList[2];
+    TPanel* tab_list[2];
+    RGE_Font* text_font;
+    long line_height;
+    long dialog_height;
+    long x;
+    long y;
+
     this->ok_button = 0;
     this->encyclopedia_button = 0;
     this->title = 0;
     this->list = 0;
-    strcpy(this->parent_panel, text);
-    this->help_page_id = page_id;
-    rge_text_font = ((RGE_Base_Game*)rge_base_game)->get_font(11);
+    strcpy(this->parent_panel, name);
+    this->help_page_id = help_page_id;
 
-    if (this->setup(parent->renderArea(), parent, 0x154, 0x190,
-                    parent->get_popup_info_file(), parent->get_popup_info_id(), 1)) {
-        this->create_text(this, &this->list, more_text, 10, 10, 0x14a, 0x186,
-                          11, 0, 0, 1);
-        long line_count = this->list->bot_line + 2;
-        long dialog_x;
-        long panel_height;
-        panel_height = line_count * rge_text_font->font_hgt + 0x37;
-
-        if (parent->width() + parent->xPosition() >= x_limit + 0x163) {
-            dialog_x = abs(parent->xPosition() - x_limit - 5);
-        } else if (parent->xPosition() + 10 <= x_limit - 0x159) {
-            dialog_x = abs((x_limit - 0x159) - parent->xPosition());
-        } else {
-            dialog_x = parent->width() / 2 - 0xaa;
-        }
-        if (dialog_x < 0) dialog_x = 0;
-
-        long y = y_limit - panel_height;
-        if (parent->yPosition() <= y - 10) {
-            y = abs(y - parent->yPosition() - 10);
-        } else {
-            y = parent->height();
-            y += parent->yPosition();
-            if (panel_height + y_limit + 10 <= y) {
-                y = abs(y_limit - parent->yPosition() + 10);
-            } else {
-                y = parent->height() / 2 - panel_height / 2;
-            }
-        }
-        if (y < 0) y = 0;
-
-        this->set_fixed_position(dialog_x, y, 0x154, panel_height);
-        this->set_ideal_size(this->max_wid, this->max_hgt);
-        this->list->set_fixed_position(10, 10, 0x14a,
-                                       line_count * rge_text_font->font_hgt);
-
-        if (((RGE_Base_Game*)rge_base_game)->singlePlayerGame() && page_id >= 0) {
-            char* s = this->get_string((int)page_id);
-            if (s != 0 && *s != 0) {
-                this->create_button(this, &this->encyclopedia_button, 0x243d, 0, 25,
-                                    line_count * rge_text_font->font_hgt + 20,
-                                    0x78, 25, 11, 0, 0);
-            }
-        }
-
-        if (this->encyclopedia_button == 0) {
-            this->create_button(this, &this->ok_button, 0xfa1, 0, 0x6e,
-                                line_count * rge_text_font->font_hgt + 20,
-                                0x78, 25, 11, 0, 0);
-        } else {
-            this->create_button(this, &this->ok_button, 0xfa1, 0, 0xc3,
-                                line_count * rge_text_font->font_hgt + 20,
-                                0x78, 25, 11, 0, 0);
-        }
-        this->ok_button->hotkey = 0x1b;
-        this->ok_button->hotkey_shift = 0;
-        this->set_curr_child(this->ok_button);
-        tabList[0] = this->ok_button;
-        long count = 1;
-        if (this->encyclopedia_button != 0) {
-            tabList[1] = this->encyclopedia_button;
-            count = 2;
-        }
-        this->set_tab_order(tabList, (short)count);
+    text_font = rge_base_game->get_font(0x0B);
+    if (!this->setup(parent->renderArea(), parent, 0x154, 0x190,
+                     parent->get_popup_info_file(),
+                     parent->get_popup_info_id(), 1)) {
+        return;
     }
+
+    this->create_text(this, &this->list, text, 10, 10, 0x14A, 0x186,
+                      0x0B, 0, 0, 1);
+
+    line_height = this->list->bot_line + 2;
+    dialog_height = line_height * text_font->font_hgt + 0x37;
+
+    if (parent->width() + parent->xPosition() >= help_x + 0x163) {
+        x = abs(parent->xPosition() - help_x - 5);
+    } else if (parent->xPosition() + 10 <= help_x - 0x159) {
+        x = abs(help_x - 0x159 - parent->xPosition());
+    } else {
+        x = parent->width() / 2 - 0xAA;
+    }
+    if (x < 0) {
+        x = 0;
+    }
+
+    if (parent->yPosition() <= help_y - dialog_height - 10) {
+        y = abs(help_y - dialog_height - parent->yPosition() - 10);
+    } else if (dialog_height + help_y + 10 <=
+               parent->yPosition() + parent->height()) {
+        y = abs(help_y - parent->yPosition() + 10);
+    } else {
+        y = parent->height() / 2 - dialog_height / 2;
+    }
+    if (y < 0) {
+        y = 0;
+    }
+
+    this->set_fixed_position(x, y, 0x154, dialog_height);
+    this->set_ideal_size(this->max_wid, this->max_hgt);
+    this->list->set_fixed_position(10, 10, 0x14A,
+                                   line_height * text_font->font_hgt);
+
+    if (rge_base_game->singlePlayerGame() && help_page_id >= 0) {
+        char* help_string = this->get_string(help_page_id);
+        if (help_string != 0 && *help_string != '\0') {
+            this->create_button(this, &this->encyclopedia_button, 0x243D, 0,
+                                0x19,
+                                line_height * text_font->font_hgt + 0x14,
+                                0x78, 0x19, 0x0B, 0, 0);
+        }
+    }
+
+    if (this->encyclopedia_button == 0) {
+        this->create_button(this, &this->ok_button, 0xFA1, 0, 0x6E,
+                            line_height * text_font->font_hgt + 0x14,
+                            0x78, 0x19, 0x0B, 0, 0);
+    } else {
+        this->create_button(this, &this->ok_button, 0xFA1, 0, 0xC3,
+                            line_height * text_font->font_hgt + 0x14,
+                            0x78, 0x19, 0x0B, 0, 0);
+    }
+    TButtonPanel* button = this->ok_button;
+    button->hotkey = 0x1B;
+    button->hotkey_shift = 0;
+    this->set_curr_child(this->ok_button);
+
+    tab_list[0] = this->ok_button;
+    short tab_count = 1;
+    if (this->encyclopedia_button != 0) {
+        tab_list[1] = this->encyclopedia_button;
+        tab_count = 2;
+    }
+    this->set_tab_order(tab_list, tab_count);
 }
 
 long THelpDialog::action(TPanel* panel, long command, unsigned long param_3,
