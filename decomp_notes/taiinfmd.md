@@ -142,3 +142,12 @@ registered owner matches. The six changed source calls are limited to
 Final shared ABI repairs make `004DA5F0`, `004E21E0`, `004E41C0`, and
 `004E4240` exact. Standalone checks report `MATCH`, `0.0000%`, correct owners,
 boundaries, relocations, direct targets, and aligned calls for all four.
+
+## 2026-09-12 setupAttackMap typed ownership repair
+
+`004E22F0 setupAttackMap` now reads `AttackMemory` through direct typed array
+fields. The raw byte cursor was removed. The final check is an exact 165-byte
+match with four aligned calls and eight compatible relocations. A one-job
+translation-unit audit compiled 121 owners and kept all existing matching
+neighbors exact. Detailed behavior evidence is in
+`decomp_notes/functions/004E/004E22F0.md`.

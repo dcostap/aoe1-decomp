@@ -5368,21 +5368,20 @@ int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param
 
     int i = 0;
     if (this->maxAttackMemories > 0) {
-        int offset = 0;
         do {
-            if ((unsigned char)((char*)this->attackMemories)[offset + 0x0A] == (unsigned int)param_1) {
-                unsigned short owner = (unsigned char)((char*)this->attackMemories)[offset + 0x09];
+            if ((unsigned char)this->attackMemories[i].targetOwner ==
+                (unsigned int)param_1) {
+                unsigned short owner = this->attackMemories[i].attackingOwner;
                 if (owner == (unsigned short)this->md->player->id) {
                     attackMap.incrementValue(
-                        (unsigned char)((char*)this->attackMemories)[offset + 0x05],
-                        (unsigned char)((char*)this->attackMemories)[offset + 0x06],
-                        (unsigned char)((char*)this->attackMemories)[offset + 0x07],
-                        (unsigned char)((char*)this->attackMemories)[offset + 0x08],
+                        this->attackMemories[i].minX,
+                        this->attackMemories[i].minY,
+                        this->attackMemories[i].maxX,
+                        this->attackMemories[i].maxY,
                         1);
                 }
             }
             i++;
-            offset += 0x18;
         } while (i < this->maxAttackMemories);
     }
 
