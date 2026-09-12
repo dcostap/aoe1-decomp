@@ -22,7 +22,7 @@
     "00434920": {"status": "matching", "symbol": "?do_command_give_attribute@RGE_Command@@MAEXPAURGE_Command_Give_Attribute@@@Z"},
     "00434A00": {"status": "matching", "symbol": "?do_command_formation@RGE_Command@@IAEXPAURGE_Command_Formation@@@Z"},
     "00434D40": {"status": "matching", "symbol": "?do_command_ai_order@RGE_Command@@IAEXPAURGE_Command_AI_Order@@@Z"},
-    "00434DC0": {"status": "scratch", "symbol": "?do_command_group_ai_order@RGE_Command@@IAEXPAURGE_Command_Group_AI_Order@@@Z"},
+    "00434DC0": {"status": "new_verified_logic", "symbol": "?do_command_group_ai_order@RGE_Command@@IAEXPAURGE_Command_Group_AI_Order@@@Z", "behavior_review": "logic_matching/00434DC0/review-01/attempt-01"},
     "00434EB0": {"status": "accepted_drift", "symbol": "?do_command_resign@RGE_Command@@IAEXPAURGE_Command_Resign@@@Z"},
     "00434F70": {"status": "matching", "symbol": "?do_command_add_waypoint@RGE_Command@@IAEXPAURGE_Command_Add_Waypoint@@@Z"},
     "00434FB0": {"status": "accepted_drift", "symbol": "?do_command_group_waypoint@RGE_Command@@IAEXPAURGE_Command_Group_Waypoint@@@Z"},
