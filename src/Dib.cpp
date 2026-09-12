@@ -23,102 +23,108 @@ extern "C" int __cdecl atoi(const char*);
 #pragma function(memcpy)
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 
-void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
-    long dest_x, long dest_y, long dest_width, long dest_height,
-    BITMAPINFO256* src_info, BYTE* src_bits,
-    long src_x, long src_y, long src_width, long src_height,
-    int do_clip, int flip_x, int flip_y)
+void __cdecl DibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
+                    long dx, long dy, long dw, long dh,
+                    BITMAPINFO256* srcInfo, uchar* src,
+                    long sx, long sy, long sw, long sh,
+                    int doClip, int flipX, int flipY)
 {
-    long dy, DestTotWid, DestTotHgt, DestOrien, SrcOrien;
+    if (doClip != 0 &&
+        ClipDibBlt(dstInfo, dstRect, dx, dy, dw, dh,
+                   sx, sy, sw, sh, flipX, flipY) == 0)
+        return;
 
-    if (do_clip != 0) {
-        if (!ClipDibBlt(dest_info, dest_rect, dest_x, dest_y,
-                dest_width, dest_height, src_x, src_y, src_width, src_height,
-                flip_x, flip_y))
-            return;
-    }
-    GetDibDim(dest_info, DestTotWid, DestTotHgt, DestOrien);
-    long src_total_height;
-    GetDibDim(src_info, dy, src_total_height, SrcOrien);
+    long dstStride;
+    long dstHeight;
+    long dstOrientation;
+    long srcStride;
+    long srcHeight;
+    long srcOrientation;
 
-    if (flip_y != 0)
-        SrcOrien = -SrcOrien;
+    GetDibDim(dstInfo, dstStride, dstHeight, dstOrientation);
+    GetDibDim(srcInfo, srcStride, srcHeight, srcOrientation);
+    if (flipY != 0)
+        srcOrientation = -srcOrientation;
 
-    int x_step = (src_width << 8) / dest_width;
-    int y_step = (src_height << 8) / dest_height;
-    BYTE* dest;
-    if (DestOrien == 1) {
-        dest = dest_bits + DestTotWid * dest_y + dest_x;
-    } else {
-        dest = dest_bits + DestTotWid * (DestTotHgt - dest_y - 1) + dest_x;
-    }
+    long xStep = (sw << 8) / dw;
+    long yStep = (sh << 8) / dh;
+    long dstRow;
+    if (dstOrientation == 1)
+        dstRow = dy;
+    else
+        dstRow = dstHeight - dy - 1;
+    uchar* dstLine = dst + dstRow * dstStride + dx;
 
-    if (x_step == 0x100 && y_step == 0x100 && flip_x == 0) {
-        long src_row;
-        if (SrcOrien == 1) {
-            src_row = src_y * dy;
-        } else {
-            src_row = (src_total_height - src_y - 1) * dy;
-        }
-        BYTE* src = src_bits + src_row + src_x;
-        DestTotWid = DestOrien * DestTotWid;
-        dy = SrcOrien * dy;
-        int row = 0;
-        if (dest_height > 0) {
+    if (xStep == 0x100 && yStep == 0x100 && flipX == 0) {
+        long srcRow;
+        if (srcOrientation == 1)
+            srcRow = sy;
+        else
+            srcRow = srcHeight - sy - 1;
+
+        uchar* srcLine = src + srcRow * srcStride + sx;
+        long dstLineStep = dstOrientation * dstStride;
+        long srcLineStep = srcOrientation * srcStride;
+        long row = 0;
+        if (dh > 0) {
             do {
-                memcpy(dest, src, dest_width);
-                dest += DestTotWid;
-                src += dy;
+                memcpy(dstLine, srcLine, dw);
+                dstLine += dstLineStep;
+                srcLine += srcLineStep;
                 ++row;
-            } while (row < dest_height);
+            } while (row < dh);
         }
         return;
     }
 
-    if (flip_x == 0) {
-        if (dest_width > 0) {
-            long* x_entry = SrcXTbl;
-            long source_position = src_x;
-            long remaining = dest_width;
+    long srcPosition = sx;
+    if (flipX == 0) {
+        if (dw > 0) {
+            long* entry = SrcXTbl;
+            long remaining = dw;
             do {
-                *x_entry++ = source_position >> 8;
-                source_position += x_step;
+                *entry++ = srcPosition >> 8;
+                srcPosition += xStep;
                 --remaining;
             } while (remaining != 0);
         }
-    } else if (dest_width - 1 >= 0) {
-        long* x_entry = SrcXTbl + dest_width - 1;
-        long source_position = src_x;
-        long remaining = dest_width;
-        do {
-            *x_entry-- = source_position >> 8;
-            source_position += x_step;
-            --remaining;
-        } while (remaining != 0);
+    } else {
+        long remaining = dw - 1;
+        if (remaining >= 0) {
+            long* entry = SrcXTbl + remaining;
+            ++remaining;
+            do {
+                *entry-- = srcPosition >> 8;
+                srcPosition += xStep;
+                --remaining;
+            } while (remaining != 0);
+        }
     }
 
-    int source_y = src_y << 8;
-    int output_row = 0;
-    if (dest_height > 0) {
+    long dstLineStep = dstOrientation * dstStride;
+    long srcY = sy << 8;
+    long row = 0;
+    if (dh > 0) {
         do {
-            int source_row = source_y >> 8;
-            if (SrcOrien != 1)
-                source_row = src_total_height - 1 - source_row;
+            long srcRow;
+            if (srcOrientation == 1)
+                srcRow = srcY >> 8;
+            else
+                srcRow = srcHeight - (srcY >> 8) - 1;
 
-            if (dest_width > 0) {
-                int i = 0;
-                long* x_entry = SrcXTbl;
+            uchar* srcLine = src + srcRow * srcStride + sx;
+            long x = 0;
+            if (dw > 0) {
+                long* entry = SrcXTbl;
                 do {
-                    dest[i] = src_bits[(int)*x_entry +
-                        source_row * dy + src_x];
-                    ++i;
-                    ++x_entry;
-                } while (i < dest_width);
+                    dstLine[x] = srcLine[*entry++];
+                    ++x;
+                } while (x < dw);
             }
-            source_y += y_step;
-            dest += DestOrien * DestTotWid;
-            ++output_row;
-        } while (output_row < dest_height);
+            srcY += yStep;
+            dstLine += dstLineStep;
+            ++row;
+        } while (row < dh);
     }
 }
 
