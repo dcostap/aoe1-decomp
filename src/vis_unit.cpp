@@ -213,79 +213,91 @@ void Visible_Unit_Manager::Update_Unit_Info(
 }
 
 int Visible_Unit_Manager::GetVisibleUnits(
-    int x, int y, int distance, int player, int* categories,
-    int category_count, int* player_map)
+    int x, int y, int distance, int player,
+    int* categories, int category_count, int* player_map)
 {
     int found = 0;
-    unsigned char* distTable;
-    VISIBLE_UNIT_PTR* PDP;
-    VISIBLE_UNIT_REC* rec;
 
-    if (category_count <= 0) {
+    if (category_count <= 0 || player >= this->Player_Count) {
         return 0;
     }
-    if (player >= this->Player_Count) {
-        return 0;
+    if (distance > 15) {
+        distance = 15;
     }
-    distance = distance > 0x0f ? 0x0f : distance;
 
-    PDP = this->PlayerDataPtrs[player];
-    distTable = this->distanceTable;
+    VISIBLE_UNIT_PTR* player_data = this->PlayerDataPtrs[player];
+    unsigned char* distance_table = this->distanceTable;
+
     VisibleUnitList_Size[0] = 0;
     VisibleUnitList_Size[1] = 0;
     VisibleUnitList_Size[2] = 0;
     VisibleUnitList_Size[3] = 0;
     VisibleUnitList_Size[4] = 0;
 
-    int x2 = x + distance;
-    int x1 = x - distance;
-    int y1 = y - distance;
-    int y2 = y + distance;
+    int min_x = x - distance;
+    int max_x = x + distance;
+    int min_y = y - distance;
+    int max_y = y + distance;
 
     do {
-        int category = *categories;
-        categories++;
-        VISIBLE_UNIT_PTR* bucket = &PDP[category];
-        rec = bucket->unit_list;
-        int count = (unsigned short)bucket->used;
-        while (count != 0) {
-            int dx;
-            int dy;
-            if (rec->pos_x <= x2) {
-                if (rec->pos_x < x) {
-                    if (rec->pos_x < x1) goto next_entry;
-                    dx = x - rec->pos_x;
-                } else {
-                    dx = rec->pos_x - x;
-                }
-                if (rec->pos_y <= y2) {
-                    if (rec->pos_y < y) {
-                        if (rec->pos_y < y1) goto next_entry;
-                        dy = y - rec->pos_y;
-                    } else {
-                        dy = rec->pos_y - y;
-                    }
-                    int d = distTable[(dx & 0x0f) +
-                                      ((dy & 0x0f) << 4)];
-                    if (d <= distance) {
-                        int mapped = player_map[rec->player];
-                        int size = VisibleUnitList_Size[mapped];
-                        if (size < 0x100) {
-                            VISIBLE_UNIT_REC* out =
-                                VisibleUnitList[mapped] + size;
-                            VisibleUnitList_Size[mapped]++;
-                            found++;
-                            *out = *rec;
-                            out->distance = d;
-                        }
-                    }
-                }
+        VISIBLE_UNIT_PTR* bucket = &player_data[*categories++];
+        VISIBLE_UNIT_REC* record = bucket->unit_list;
+        int count = *(int*)&bucket->used & 0xffff;
+
+        for (; count != 0; record++, count--) {
+            int record_x = record->pos_x;
+            if (record_x > max_x) {
+                continue;
             }
-next_entry:
-            rec++;
-            count--;
+
+            int dx;
+            if (record_x < x) {
+                if (record_x < min_x) {
+                    continue;
+                }
+                dx = x - record_x;
+            } else {
+                dx = record_x - x;
+            }
+
+            int record_y = record->pos_y;
+            if (record_y > max_y) {
+                continue;
+            }
+
+            int dy;
+            if (record_y < y) {
+                if (record_y < min_y) {
+                    continue;
+                }
+                dy = y - record_y;
+            } else {
+                dy = record_y - y;
+            }
+
+            int unit_distance =
+                distance_table[(dy & 15) * 16 + (dx & 15)];
+            if (unit_distance > distance) {
+                continue;
+            }
+
+            int list = player_map[record->player];
+            int list_size = VisibleUnitList_Size[list];
+            if (list_size >= 0x100) {
+                continue;
+            }
+
+            VISIBLE_UNIT_REC* result =
+                &VisibleUnitList[list][list_size];
+            VisibleUnitList_Size[list] = list_size + 1;
+            VISIBLE_UNIT_REC saved = *record;
+            saved.distance = (unsigned char)unit_distance;
+            found++;
+            *result = saved;
         }
-    } while (--category_count != 0);
+        category_count--;
+    } while (category_count != 0);
+
     return found;
 }
 Visible_Resource_Manager::Visible_Resource_Manager(
