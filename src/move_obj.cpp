@@ -2359,21 +2359,21 @@ void RGE_Moving_Object::rotate(long angleDeg) {
 
 
 long RGE_Moving_Object::get_waypoint_checksum() {
-    float sum = 0.0f;
-    int savedIndex;
+    float temp = 0.0f;
     Path* path = &this->pathValue;
-    savedIndex = path->currentWaypointNumber();
+    int savedIndex = path->currentWaypointNumber();
     path->initToStart();
     int i = 0;
     if (path->numberOfWaypoints() > 0) {
         do {
-            Waypoint* wp1 = path->currentWaypoint();
-            Waypoint* wp2 = path->currentWaypoint();
-            sum += wp1->y + wp2->x;
+            Waypoint* yWaypoint = path->currentWaypoint();
+            Waypoint* xWaypoint = path->currentWaypoint();
+            float waypointSum = yWaypoint->y + xWaypoint->x;
+            temp += waypointSum;
             i++;
             path->moveToNextWaypoint();
         } while (i < path->numberOfWaypoints());
     }
     path->setCurrentWaypointNumber(savedIndex);
-    return (long)(int)sum;
+    return (long)(int)temp;
 }
