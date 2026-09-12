@@ -368,69 +368,90 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity()
 }
 
 int RGE_Communications_Speed::AnalyzeGameSpeed(
-    unsigned int* out_granularity, unsigned int* out_frames, int param_3)
+    unsigned int* NewGranularity, unsigned int* NewBufferFrames,
+    int ChangeAlso)
 {
-    if (!Comm->IsHost()) return 0;
-    if (NextLatencyChangeTurn != 0) return 0;
-
-    unsigned long total_turns = Comm->current_turn +
-                                 Comm->PlayerOptions.CommandTurnIncrement;
-    if (total_turns < 20) return 0;
-
-    LastAdjusted++;
-    if (LastAdjusted < 5) return 0;
-
-    unsigned int min_avg;
-    unsigned int max_high;
-    int i;
     unsigned long SyncTurn;
-    unsigned int cur_frames;
-    min_avg = 10;
-    max_high = 30;
-    for (i = 1; i <= 9; ++i) {
-        if (Comm->IsPlayerHuman(i)) {
-            unsigned long avg = PlayerAvgFramesMsec[i];
-            if (min_avg <= avg) min_avg = avg;
-            if (max_high <= PlayerHighLatencyMsec[i]) {
-                max_high = PlayerHighLatencyMsec[i];
+    unsigned int AvgFramesMsec;
+    unsigned int HighLatencyMsec;
+    unsigned int Granularity;
+    unsigned int BufferFrames;
+    unsigned int CurrentTurnMsec;
+    unsigned int NewTurnMsec;
+    unsigned int Difference;
+
+    if (this->Comm->IsHost() == 0) {
+        return 0;
+    }
+    if (this->NextLatencyChangeTurn != 0) {
+        return 0;
+    }
+
+    SyncTurn = this->Comm->current_turn +
+               this->Comm->PlayerOptions.CommandTurnIncrement;
+    if (SyncTurn < 20) {
+        return 0;
+    }
+
+    this->LastAdjusted++;
+    if (this->LastAdjusted < 5) {
+        return 0;
+    }
+
+    AvgFramesMsec = 10;
+    HighLatencyMsec = 30;
+    for (int player = 1; player <= 9; player++) {
+        if (this->Comm->IsPlayerHuman(player) != 0) {
+            if (AvgFramesMsec <= this->PlayerAvgFramesMsec[player]) {
+                AvgFramesMsec = this->PlayerAvgFramesMsec[player];
+            }
+            if (HighLatencyMsec <= this->PlayerHighLatencyMsec[player]) {
+                HighLatencyMsec = this->PlayerHighLatencyMsec[player];
             }
         }
     }
 
-    unsigned int new_gran = ((min_avg + 5) / 10) * 10;
-    if (new_gran > 150) new_gran = 150;
-
-    SyncTurn = CurrentBufferGranularity;
-    unsigned long gran_diff = abs(static_cast<int>(new_gran - SyncTurn));
-    if (gran_diff < 10) new_gran = SyncTurn;
-
-    unsigned int new_frames = max_high / new_gran + 2;
-    if (new_frames >= 20) new_frames = 20;
-    if (new_frames <= 4) new_frames = 4;
-
-    if (new_gran * new_frames < 250) {
-        new_frames = 250 / new_gran + 1;
+    Granularity = ((AvgFramesMsec + 5) / 10) * 10;
+    if (Granularity > 150) {
+        Granularity = 150;
     }
 
-    cur_frames = CurrentBufferFrames;
-    unsigned long throughput_diff =
-        abs(static_cast<int>(new_gran * new_frames) -
-            static_cast<int>(cur_frames * SyncTurn));
-    if (throughput_diff <= 10) return 0;
-
-    if (new_gran * new_frames < cur_frames * SyncTurn &&
-        throughput_diff > 100 && cur_frames > 4) {
-        new_frames = cur_frames - 1;
+    Difference = abs((int)(Granularity - this->CurrentBufferGranularity));
+    if (Difference < 10) {
+        Granularity = this->CurrentBufferGranularity;
     }
 
-    *out_granularity = new_gran;
-    *out_frames = new_frames;
-
-    if (param_3 != 0 && SpeedControlEnabled != 0) {
-        SetFutureSpeedChange(new_frames, new_gran, total_turns);
-        Comm->SendSpeedChange(new_frames, new_gran);
+    BufferFrames = HighLatencyMsec / Granularity + 2;
+    if (BufferFrames >= 20) {
+        BufferFrames = 20;
+    }
+    if (BufferFrames <= 4) {
+        BufferFrames = 4;
+    }
+    if (Granularity * BufferFrames < 250) {
+        BufferFrames = 250 / Granularity + 1;
     }
 
+    CurrentTurnMsec =
+        this->CurrentBufferFrames * this->CurrentBufferGranularity;
+    NewTurnMsec = Granularity * BufferFrames;
+    Difference = abs((int)(NewTurnMsec - CurrentTurnMsec));
+    if (Difference <= 10) {
+        return 0;
+    }
+
+    if (NewTurnMsec < CurrentTurnMsec && Difference > 100 &&
+        this->CurrentBufferFrames > 4) {
+        BufferFrames = this->CurrentBufferFrames - 1;
+    }
+
+    *NewGranularity = Granularity;
+    *NewBufferFrames = BufferFrames;
+
+    if (ChangeAlso != 0 && this->SpeedControlEnabled != 0) {
+        this->SetFutureSpeedChange(BufferFrames, Granularity, SyncTurn);
+        this->Comm->SendSpeedChange(BufferFrames, Granularity);
+    }
     return 1;
 }
 

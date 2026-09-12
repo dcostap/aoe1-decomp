@@ -30,7 +30,7 @@
     "00432D20": {"status": "matching", "symbol": "?GetRecommendedBufferFrames@RGE_Communications_Speed@@QAEIXZ"},
     "00432D90": {"status": "matching", "symbol": "?GetAvgFrameRate@RGE_Communications_Speed@@QAEIXZ"},
     "00432DA0": {"status": "matching", "symbol": "?GetRecommendedBufferGranularity@RGE_Communications_Speed@@QAEIXZ"},
-    "00432DE0": {"status": "scratch", "symbol": "?AnalyzeGameSpeed@RGE_Communications_Speed@@QAEHPAI0H@Z"},
+    "00432DE0": {"status": "new_verified_logic", "symbol": "?AnalyzeGameSpeed@RGE_Communications_Speed@@QAEHPAI0H@Z", "behavior_review": "logic_matching/00432DE0/review-01/attempt-01"},
     "00432FB0": {"status": "matching", "symbol": "?SetV1@RGE_Communications_Speed@@QAEXK@Z"},
     "00432FD0": {"status": "matching", "symbol": "?SetV2@RGE_Communications_Speed@@QAEXK@Z"}
   }
