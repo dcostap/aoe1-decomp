@@ -151,24 +151,23 @@ void TButtonPanel::set_text_pos(long a, long b) {
 #include <stdlib.h>
 
 void TButtonPanel::set_radio_info(TButtonPanel** buttons, short count) {
-    int old_radio = (int)this->radio_buttons;
+    TButtonPanel** old_radio = this->radio_buttons;
     this->buttonTypeValue = TButtonPanel::Radio;
     if (old_radio != 0) {
-        free((void*)old_radio);
+        free(old_radio);
         this->radio_buttons = 0;
     }
     if (count != 0) {
         int cnt = (int)(short)count;
         this->num_radio_buttons = count;
-        this->radio_buttons = (TButtonPanel**)calloc(cnt, 4);
+        this->radio_buttons = (TButtonPanel**)calloc(
+            cnt, sizeof(TButtonPanel*));
         if (count > 0) {
-            TButtonPanel**& destination = this->radio_buttons;
-            int offset = 0;
+            int index = 0;
             int remaining = cnt;
             do {
-                *(TButtonPanel**)((char*)destination + offset) =
-                    *(TButtonPanel**)((char*)buttons + offset);
-                offset += 4;
+                this->radio_buttons[index] = buttons[index];
+                ++index;
                 --remaining;
             } while (remaining != 0);
         }
