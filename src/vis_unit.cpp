@@ -137,77 +137,82 @@ void Visible_Unit_Manager::Update_Unit_Info(
     VISIBLE_UNIT_REC** refs)
 {
     unsigned long mask = (new_mask ^ old_mask) & 0xffff;
-    VISIBLE_UNIT_REC** current_refs = refs;
 
     if (category < this->Category_Count) {
-        int p = 0;
+        int r = 0;
         if (this->Player_Count > 0) {
-            while (p < this->Player_Count) {
+            int i = 0x194 - (int)refs;
+
+            do {
                 if (mask == 0) {
                     return;
                 }
-                if ((mask & 1) == 1) {
-                    VISIBLE_UNIT_PTR* bucket =
-                        &this->PlayerDataPtrs[p][category];
-                    if ((new_mask & 1) == 1) {
-                        short size = bucket->list_size;
-                        if (bucket->used == size) {
-                            VISIBLE_UNIT_REC* new_list =
-                                (VISIBLE_UNIT_REC*)calloc(size + size, 8);
-                            memcpy(new_list, bucket->unit_list, size * 8);
-                            free(bucket->unit_list);
-                            bucket->unit_list = new_list;
-                            bucket->list_size = (short)(size + size);
 
-                            int i = 0;
-                            if (bucket->used > 0) {
-                                VISIBLE_UNIT_REC* record = new_list;
-                                do {
-                                    RGE_Combat_Object* object =
-                                        (RGE_Combat_Object*)
-                                            VIS_UNIT_objectsValue[
-                                                record->object_id];
-                                    if (object != 0) {
-                                        object->VUR_Ptrs[p] = record;
-                                    }
-                                    i++;
-                                    record++;
-                                } while (i < bucket->used);
+                if ((mask & 1) == 1) {
+                    VISIBLE_UNIT_PTR* list =
+                        this->PlayerDataPtrs[r] + category;
+
+                    if ((new_mask & 1) == 1) {
+                        if (list->used == list->list_size) {
+                            short list_size = list->list_size;
+                            VISIBLE_UNIT_REC* new_list =
+                                (VISIBLE_UNIT_REC*)calloc(list_size * 2, 8);
+                            memcpy(new_list, list->unit_list,
+                                   list_size * 8);
+                            free(list->unit_list);
+                            list->unit_list = new_list;
+                            list->list_size = list_size * 2;
+
+                            VISIBLE_UNIT_REC* record = new_list;
+                            int j = 0;
+                            while (j < list->used) {
+                                RGE_Static_Object* object =
+                                    VIS_UNIT_objectsValue[record->object_id];
+                                if (object != 0) {
+                                    *(VISIBLE_UNIT_REC **)(
+                                        (int)object + i + (int)refs) = record;
+                                }
+                                ++j;
+                                ++record;
                             }
                         }
 
-                        int used = bucket->used;
+                        int index = (int)list->used;
                         VISIBLE_UNIT_REC* record =
-                            bucket->unit_list + used;
+                            list->unit_list + index;
                         record->distance = 0;
                         record->object_id = object_id;
                         record->player = (unsigned char)player;
                         record->pos_x = (unsigned char)x;
                         record->pos_y = (unsigned char)y;
-                        bucket->used++;
-                        *current_refs = record;
+                        list->used++;
+                        *refs = record;
                     } else {
-                        VISIBLE_UNIT_REC* record = *current_refs;
-                        VISIBLE_UNIT_REC* last =
-                            bucket->unit_list + bucket->used - 1;
-                        if (last != record) {
-                            *record = *last;
-                            RGE_Combat_Object* object =
-                                (RGE_Combat_Object*)
-                                    VIS_UNIT_objectsValue[record->object_id];
+                        VISIBLE_UNIT_REC* record = *refs;
+                        VISIBLE_UNIT_REC* last_record =
+                            list->unit_list + list->used - 1;
+
+                        if (last_record != record) {
+                            *record = *last_record;
+
+                            RGE_Static_Object* object =
+                                VIS_UNIT_objectsValue[record->object_id];
                             if (object != 0) {
-                                object->VUR_Ptrs[p] = record;
+                                *(VISIBLE_UNIT_REC **)(
+                                    (int)object + i + (int)refs) = record;
                             }
                         }
-                        *current_refs = 0;
-                        bucket->used--;
+
+                        *refs = 0;
+                        list->used--;
                     }
                 }
-                current_refs++;
+
+                ++refs;
                 new_mask >>= 1;
                 mask >>= 1;
-                p++;
-            }
+                ++r;
+            } while (r < this->Player_Count);
         }
     }
 }
