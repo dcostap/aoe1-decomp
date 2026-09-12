@@ -3123,63 +3123,68 @@ int RGE_View::Get_Cursor_Position(tagPOINT& point, int offset_x, int offset_y) {
 
 
 
-int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
-    int map_h;
-    int map_w;
-    int by1;
+int RGE_View::Pick_Tile(long x, long y, int* Tile_X, int* Tile_Y)
+{
+    int MapW;
+    int MapH;
+    int TileX;
+    int TileY;
+    int screenTileX;
     int bx1;
-    map_h = map->map_height;
-    map_w = map->map_width;
-    bx1 = (map_scr_x_offset - this->render_rect.left) + px;
-    by1 = (map_scr_y_offset - this->render_rect.top) + py;
+    int by1;
+    int bx2;
+    int by2;
+    int Search;
 
-    if (bx1 < 0) {
-        *col_out = -1;
-        *row_out = -1;
-        return 0;
+    MapW = this->map->map_width;
+    MapH = this->map->map_height;
+    x += this->map_scr_x_offset - this->render_rect.left;
+    y += this->map_scr_y_offset - this->render_rect.top;
+
+    if (x < 0) {
+        *Tile_X = -1;
+        *Tile_Y = -1;
     }
-
-    if (bx1 >= map_w * tile_wid) {
-        *col_out = map_w + 1;
-        *row_out = map_h + 1;
-        return 0;
+    else if (x >= MapW * this->tile_wid) {
+        *Tile_X = MapW + 1;
+        *Tile_Y = MapH + 1;
     }
+    else {
+        screenTileX = x / this->tile_wid;
+        TileY = y / this->tile_hgt;
+        TileX = screenTileX + TileY;
+        TileY = screenTileX - TileY;
 
-    int tcol = bx1 / tile_wid;
-    int trow = by1 / tile_hgt;
-    int diff = tcol - trow;
-    tcol = tcol + trow;
-
-    while (diff < 0 || tcol >= map_w) {
-        tcol--;
-        diff++;
-    }
-
-    while (diff >= map_h || tcol < 0) {
-        tcol++;
-        diff--;
-    }
-
-    int found = 1;
-    do {
-        int bound_row;
-        int bound_top;
-        int bound_left;
-        get_tile_bounding_coords(tcol, diff, map_w,
-                                 bound_row, bound_top, bound_left);
-        if (by1 < bound_row) {
-            tcol++;
-            diff--;
-        } else if (by1 > bound_left) {
-            tcol--;
-            diff++;
-        } else {
-            found = 0;
+        while (TileY < 0 || TileX >= MapW) {
+            --TileX;
+            ++TileY;
         }
-    } while (found);
+        while (TileY >= MapH || TileX < 0) {
+            ++TileX;
+            --TileY;
+        }
 
-    tile_half_hgt = 0;
-    tile_half_wid = 0;
+        Search = 1;
+        while (Search) {
+            this->get_tile_bounding_coords(
+                TileX, TileY, bx1, by1, bx2, by2);
+            if (y < by1) {
+                ++TileX;
+                --TileY;
+            }
+            else if (y > by2) {
+                --TileX;
+                ++TileY;
+            }
+            else {
+                Search = 0;
+            }
+        }
+
+        this->tile_half_hgt = 0;
+        this->tile_half_wid = 0;
+    }
+
     return 0;
 }
 
