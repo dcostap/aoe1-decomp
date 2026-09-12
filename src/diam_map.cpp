@@ -898,110 +898,91 @@ void RGE_Diamond_Map::draw_clipped_horz_line(
 }
 
 void RGE_Diamond_Map::draw_view_rect() {
-  short view_x = (short)(long)this->player->view_x;
-  short row = (short)(long)this->player->view_y;
+  short col = (short)(long)this->player->view_x;
+  long row = (long)this->player->view_y;
 
-  if (view_x != this->view_col || row != this->view_row) {
-    if (view_x < 0) {
-      return;
-    }
-    RGE_Map *map = this->map;
-    if ((int)view_x >= map->map_width) {
-      return;
-    }
-    if (row < 0) {
-      return;
-    }
-    if ((int)row >= map->map_height) {
+  if (col != this->view_col || (short)row != this->view_row) {
+    if (col < 0 || col >= this->map->map_width || (short)row < 0 ||
+        (short)row >= this->map->map_height) {
       return;
     }
 
-    short map_x = (short)this->map_wid;
-    short tile_x = (short)(long)this->player->view_x;
-    short tile_y = (short)(long)this->player->view_y;
     RGE_Map_Tile_Row *tile_row =
-        this->map_tile_rows + ((int)map_x - (int)tile_x) - 1 + (int)tile_y;
+        &this->map_tile_rows[(int)this->map_wid -
+                             (int)(short)(long)this->player->view_x +
+                             (int)(short)(long)this->player->view_y - 1];
 
-    short draw_row = row;
-    if (view_x < row) {
-      draw_row = view_x;
+    short min_coord = (short)row;
+    if (col < (short)row) {
+      min_coord = col;
     }
-    long x_offset;
+
+    short x_offset;
     if (tile_row->ratio < 1.0f) {
-      x_offset = (long)((float)draw_row * tile_row->ratio);
+      x_offset = (short)((float)min_coord * tile_row->ratio);
     } else {
-      x_offset = (long)((float)draw_row * tile_row->draw_step);
+      x_offset = (short)((float)min_coord * tile_row->draw_step);
     }
 
-    short image_line_num = tile_row->image_line;
-    RGE_Map_Image_Line *image_line = this->map_image_lines + image_line_num;
-    short x = (short)(this->pnl_x + image_line->start_x + x_offset);
-    short y = (short)(this->pnl_y + this->map_image_start_y + image_line_num);
-
-    short vwid;
-    short vhgt;
-    this->main_view->get_max_size(&vwid, &vhgt);
+    short image_line = tile_row->image_line;
+    short map_x = (short)this->pnl_x +
+                  this->map_image_lines[image_line].start_x + x_offset;
+    short map_y =
+        (short)this->pnl_y + this->map_image_start_y + image_line;
+    short view_wid;
+    short view_hgt;
+    this->main_view->get_max_size(&view_wid, &view_hgt);
 
     this->view_rect.left =
-        (long)((float)x - (float)(vwid / 2) * this->map_col_ratio);
+        (long)((float)map_x - (float)(view_wid / 2) * this->map_col_ratio);
     this->view_rect.top =
-        (long)((float)y - (float)vhgt * this->map_row_ratio);
+        (long)((float)map_y - (float)view_hgt * this->map_row_ratio);
     this->view_rect.right =
-        (long)((float)x + (float)((vwid / 2) + 2) * this->map_col_ratio);
+        (long)((float)map_x +
+               (float)(view_wid / 2 + 2) * this->map_col_ratio);
     this->view_rect.bottom =
-        (long)((float)y + (float)(vhgt + 4) * this->map_row_ratio);
-    this->view_col = view_x;
-    this->view_row = row;
+        (long)((float)map_y + (float)(view_hgt + 4) * this->map_row_ratio);
+
+    this->view_col = col;
+    this->view_row = (short)row;
   }
 
-  long current_y = this->view_rect.top;
-  long bottom = this->view_rect.bottom;
-  if (current_y <= bottom) {
-    do {
-      long image_top = this->pnl_y + this->map_image_start_y;
-      if (!(current_y < image_top ||
-            current_y > this->map_image_hgt - 1 + image_top)) {
-        long image_index = (current_y - this->map_image_start_y) - this->pnl_y;
-        long right = this->view_rect.right;
-        RGE_Map_Image_Line *line = this->map_image_lines + image_index;
-        long left = this->view_rect.left;
+  for (long y = this->view_rect.top; y <= this->view_rect.bottom; ++y) {
+    long image_top = this->pnl_y + (long)this->map_image_start_y;
+    if (y < image_top ||
+        y > image_top + (long)this->map_image_hgt - 1) {
+      continue;
+    }
 
-        if (current_y == this->view_rect.top || current_y == bottom) {
-          long line_start = line->start_x;
-          line_start += this->pnl_x;
-          long line_end = line_start + line->line_len;
-          if (left < line_end) {
-            if (right >= line_start) {
-              if (left < line_start) {
-                left = line_start;
-              }
-              if (right >= line_end) {
-                right = line_end - 1;
-              }
-              this->render_area->DrawHorzLine(left, current_y, right - left + 1,
-                                              0xFF);
-            }
-          }
-        } else {
-          long line_start = line->start_x;
-          line_start += this->pnl_x;
-          if (left < line_start + line->line_len) {
-            if (left >= line_start) {
-              this->render_area->SetPixel(left, current_y, 0xFF);
-            }
-          }
-          line_start = line->start_x;
-          line_start += this->pnl_x;
-          if (right < line_start + line->line_len) {
-            if (right >= line_start) {
-              this->render_area->SetPixel(right, current_y, 0xFF);
-            }
-          }
+    RGE_Map_Image_Line *line =
+        &this->map_image_lines[y - this->map_image_start_y - this->pnl_y];
+    long left = this->view_rect.left;
+    long right = this->view_rect.right;
+
+    if (y == this->view_rect.top || y == this->view_rect.bottom) {
+      long line_start = this->pnl_x + (long)line->start_x;
+      long line_end = line_start + (long)line->line_len;
+      if (left < line_end && right >= line_start) {
+        if (left < line_start) {
+          left = line_start;
         }
+        if (right >= line_end) {
+          right = line_end - 1;
+        }
+        this->render_area->DrawHorzLine(left, y, right - left + 1, 0xFF);
       }
-      bottom = this->view_rect.bottom;
-      ++current_y;
-    } while (current_y <= bottom);
+    } else {
+      long line_start = this->pnl_x + (long)line->start_x;
+      long line_end = line_start + (long)line->line_len;
+      if (left < line_end && left >= line_start) {
+        this->render_area->SetPixel(left, y, 0xFF);
+      }
+      line_start = this->pnl_x + (long)line->start_x;
+      line_end = line_start + (long)line->line_len;
+      if (right < line_end && right >= line_start) {
+        this->render_area->SetPixel(right, y, 0xFF);
+      }
+    }
   }
 }
 
