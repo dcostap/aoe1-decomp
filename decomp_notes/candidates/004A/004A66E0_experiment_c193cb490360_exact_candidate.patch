@@ -1,0 +1,65 @@
+# Experiment c193cb49036007edee4ec9c0b09bb4782556e06ac34377cfd763109823d12d4a
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/scr_name.cpp b/src/scr_name.cpp
+index 5603ce4cb..1dff5f6bf 100644
+--- a/src/scr_name.cpp
++++ b/src/scr_name.cpp
+@@ -91,15 +91,15 @@ TRIBE_Screen_Name::~TRIBE_Screen_Name()
+ {
+     panel_system.setCurrentPanel("New Name Dialog", 0);
+ 
+-    delete this->title;
+-    delete this->name_text;
+-    delete this->name_list;
+-    delete this->name_scrollbar;
+-    delete this->new_button;
+-    delete this->remove_button;
+-    delete this->ok_button;
+-    delete this->cancel_button;
+-    delete this->close_button;
++    this->delete_panel((TPanel**)&this->title);
++    this->delete_panel((TPanel**)&this->name_text);
++    this->delete_panel((TPanel**)&this->name_list);
++    this->delete_panel((TPanel**)&this->name_scrollbar);
++    this->delete_panel((TPanel**)&this->new_button);
++    this->delete_panel((TPanel**)&this->remove_button);
++    this->delete_panel((TPanel**)&this->ok_button);
++    this->delete_panel((TPanel**)&this->cancel_button);
++    this->delete_panel((TPanel**)&this->close_button);
+ }
+ 
+ void TRIBE_Screen_Name::init_vars()
+@@ -275,7 +275,7 @@ long TRIBE_Screen_Name::action(TPanel* panel, long event, unsigned long p3,
+ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
+     : TDialogPanel("New Name Dialog")
+ {
+-    TPanel* tab_list[2];
++    TPanel* tab_list[3];
+     this->title = 0;
+     this->name_text = 0;
+     this->name_input = 0;
+@@ -307,17 +307,18 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
+     this->cancel_button->hotkey_shift = 0;
+     tab_list[0] = this->name_input;
+     tab_list[1] = this->ok_button;
+-    this->set_tab_order(tab_list, 2);
++    tab_list[2] = this->cancel_button;
++    this->set_tab_order(tab_list, 3);
+     this->set_curr_child(this->name_input);
+ }
+ 
+ TRIBE_Dialog_Name::~TRIBE_Dialog_Name()
+ {
+-    delete this->title;
+-    delete this->name_text;
+-    delete this->name_input;
+-    delete this->ok_button;
+-    delete this->cancel_button;
++    this->delete_panel((TPanel**)&this->title);
++    this->delete_panel((TPanel**)&this->name_text);
++    this->delete_panel((TPanel**)&this->name_input);
++    this->delete_panel((TPanel**)&this->ok_button);
++    this->delete_panel((TPanel**)&this->cancel_button);
+ }
+ 
+ long TRIBE_Dialog_Name::action(TPanel* panel, long p2, unsigned long p3,

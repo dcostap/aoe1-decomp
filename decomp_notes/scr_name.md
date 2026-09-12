@@ -29,29 +29,24 @@ selection type needed by the two natural allocation expressions.
 `src/scr_name.cpp` privately includes the canonical panel, screen, child-panel,
 game-info, Base Game, global, campaign-selection, and single-player screen
 providers. It uses the canonical `error_code`, `sorted`, and
-`TPanel::PositionRightTop` fields and enum. Cleanup uses natural `delete`
-expressions for derived-panel fields. The source keeps all 11 handwritten
+`TPanel::PositionRightTop` fields and enum. Cleanup uses the original
+`TPanel::delete_panel` helper for derived-panel fields. The source keeps all 11 handwritten
 bodies in PDB order. It has no wrapper, fragment
 include, context macro, fallback declaration, raw vptr, inline assembly, raw
 address, or private-symbol alias.
 
 ## Status and validation
 
-The migration check found eight exact functions. It retained three reviewed
-code-generation differences.
+The accepted-drift repair check found all 11 handwritten functions exact.
 
-The grouped provider candidate is
-`build/candidate_tus/scr_name_natural_final_cleanup2/report.json`. It compiled the canonical
-source and reports `MATCH` and `0.0000%` for all eight matching owners. The two
-compiler-generated deleting destructors also report `MATCH` and `0.0000%`, with
-zero boundary errors. The two natural-delete destructors report accepted drift
-with matching ownership and zero relocation errors. The accepted-drift
-constructor remains an 89-byte mismatch with matching ownership and zero
-relocation and boundary errors after the natural two-entry tab array cleanup.
+Worker `repair-07` replaced direct deletes with the original helper calls.
+It also restored the three-entry dialog tab order. The PDB records
+`tab_list` as `TPanel*[12 bytes]`. The exact same-module donor in
+`src/scr_cj.cpp` supports the retained local source form.
 
-The candidate proposal is `build/scr_name_natural_proposal.json`. It does not
-change global translation-unit registration. The direct source is registered
-with the accepted-drift constructor and destructors.
+Final closure runs report `MATCH` for `004A66E0`, `004A6D50`, and `004A6F60`.
+They report no exact-function regression. Durable state and event IDs are in
+the three function notes under `decomp_notes/functions/004A/`.
 
 ## Consumer handoff
 
