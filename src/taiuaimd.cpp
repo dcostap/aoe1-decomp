@@ -2767,118 +2767,47 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* obj, int
 
 int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
-    switch (event->mType - 0x1f4) {
-    case 0:
-    {
+    switch (event->mType) {
+    case 0x1f4:
         if (event->p2 <= 0) {
-            RGE_Static_Object* obj = this->objectValue;
-            obj->owner->notify(obj->id, obj->id, 0x209, event->caller, 0, 0);
+            RGE_Static_Object* object = this->objectValue;
+            object->owner->notify(object->id, object->id, 0x209,
+                                  event->caller, 0, 0);
             this->purgeNotifyQueue(param_2);
             return 4;
         }
 
         if (this->attackingUnitsValue.numberValue == 0 ||
             this->objectValue->owner->computerPlayer() == 1) {
-            RGE_Static_Object* obj = this->objectValue;
-            obj->owner->notify(obj->id, obj->id, 0x201, event->caller, 0, 0);
+            RGE_Static_Object* object = this->objectValue;
+            object->owner->notify(object->id, object->id, 0x201,
+                                  event->caller, 0, 0);
         }
 
-        ManagedArray<int>* array = &this->attackingUnitsValue;
-        int count = array->numberValue;
-        int i = 0;
-        for (; i < count && i < array->maximumSizeValue; ++i) {
-            if (array->value[i] == event->caller) goto found_for_help;
-        }
-        if (this->objectValue->owner->computerPlayer() == 0 &&
+        if (!this->attackingUnitsValue.contains(event->caller) &&
+            this->objectValue->owner->computerPlayer() == 0 &&
             this->currentTargetValue != event->caller) {
             this->askForHelp(event->caller);
         }
 
-found_for_help:
-        i = 0;
-        int caller = event->caller;
-        count = array->numberValue;
-        for (; i < count && i < array->maximumSizeValue; ++i) {
-            if (array->value[i] == caller) goto already_in_list;
+        if (!this->attackingUnitsValue.contains(event->caller)) {
+            int index = this->attackingUnitsValue.numberValue;
+            this->attackingUnitsValue[index] = event->caller;
+            this->attackingUnitsValue.numberValue++;
         }
-
-        if (array->numberValue > array->maximumSizeValue - 1) {
-            array->resize(array->numberValue + 1);
-        }
-        array->value[array->numberValue] = caller;
-        array->numberValue++;
-
-already_in_list:
         this->objectValue->setUnderAttack(1);
         return 2;
-    }
 
-    case 0x17:
-        return 2;
-
-    case 0x64:
-    {
-        int caller = event->caller;
-        int count = this->attackingUnitsValue.numberValue;
-        int i = 0;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == caller) goto changed_258;
-        }
-
-        if (this->attackingUnitsValue.numberValue >
-            this->attackingUnitsValue.maximumSizeValue - 1) {
-            int newMax = this->attackingUnitsValue.numberValue + 1;
-            int* newList = (int*)operator new(newMax * 4);
-            if (newList != 0) {
-                for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i)
-                    newList[i] = this->attackingUnitsValue.value[i];
-                operator delete(this->attackingUnitsValue.value);
-                this->attackingUnitsValue.value = newList;
-                this->attackingUnitsValue.maximumSizeValue = newMax;
-            }
-        }
-        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
-        this->attackingUnitsValue.numberValue++;
-
-changed_258:
+    case 0x258:
+        this->attackingUnitsValue.add(event->caller);
         this->objectValue->setUnderAttack(1);
         return 2;
-    }
 
-    case 0xc7:
-    {
-        int count = this->attackingUnitsValue.numberValue;
-        int i = 0;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == event->caller) goto found_2bb;
+    case 0x2bb:
+        if (this->attackingUnitsValue.contains(event->caller)) {
+            this->attackingUnitsValue.remove(event->caller);
         }
         return 2;
-
-found_2bb:
-        ManagedArray<int>* array = &this->attackingUnitsValue;
-        int max = array->maximumSizeValue;
-        int caller = event->caller;
-        i = 0;
-        if (max > 0) {
-            while (i < max) {
-                if (array->value[i] == caller)
-                    break;
-                ++i;
-            }
-        }
-        if (i < max) {
-            if (i < max - 1) {
-                do {
-                    array->value[i] = array->value[i + 1];
-                    ++i;
-                } while (i < this->attackingUnitsValue.maximumSizeValue - 1);
-            }
-            array->numberValue--;
-            if (array->numberValue < 0)
-                array->numberValue = 0;
-        }
-        return 2;
-    }
 
     default:
         return 2;

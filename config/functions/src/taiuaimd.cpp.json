@@ -67,7 +67,7 @@
     "00508110": {"status": "matching", "symbol": "?canAttackUnit@TribeTowerUnitAIModule@@UAEHPAVRGE_Static_Object@@@Z"},
     "00508140": {"status": "matching", "symbol": "?canAttackUnitAtNeutrality@TribeTowerUnitAIModule@@UAEHH@Z"},
     "00508170": {"status": "matching", "symbol": "??0TribeBuildingUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
-    "00508320": {"status": "scratch", "symbol": "?processNotify@TribeBuildingUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
+    "00508320": {"status": "new_verified_logic", "symbol": "?processNotify@TribeBuildingUnitAIModule@@MAEHPAUNotifyEvent@@K@Z", "behavior_review": "logic_matching/00508320/review-01/attempt-01"},
     "00508660": {"status": "matching", "symbol": "?processIdle@TribeBuildingUnitAIModule@@MAEHH@Z"}
   }
 }
