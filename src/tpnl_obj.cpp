@@ -653,14 +653,15 @@ finish:
 
 void TRIBE_Panel_Object::draw_score()
 {
-    int i;
-    short x_val;
-    HGDIOBJ old_font;
-    RGE_Player* temp_player;
-    short x;
-    short y;
-    RECT rect;
     char str[100];
+    tagRECT rect;
+    short y;
+    short x;
+    RGE_Player* temp_player;
+    HGDIOBJ old_font;
+    short x_val;
+    int i;
+    int y_pos = 0;
 
     if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         this->need_redraw = 0;
@@ -671,7 +672,6 @@ void TRIBE_Panel_Object::draw_score()
     this->render_area->Clear(&this->clip_rect, 0);
 
     if (this->render_area->GetDc("tpnl_obj::draw_score") != 0) {
-        int y_offset;
         SetBkMode(this->render_area->DrawDc, 1);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
         old_font = SelectObject(this->render_area->DrawDc,
@@ -681,58 +681,42 @@ void TRIBE_Panel_Object::draw_score()
         x_val = (short)this->pnl_x + 0x5A;
         y = (short)this->pnl_y - 1;
 
-        y_offset = 0;
         i = 1;
         do {
             int player_id = rge_base_game->playerID(i);
             if (player_id != 0 &&
                 player_id < rge_base_game->world->player_num) {
                 temp_player = rge_base_game->world->players[player_id];
-                int color;
 
+                COLORREF color;
                 switch (temp_player->color_table->id) {
-                case 0:
-                    color = 0xFF0000;
-                    break;
-                case 1:
-                    color = 0x2139C6;
-                    break;
-                case 2:
-                    color = 0xFFFF;
-                    break;
-                case 3:
-                    color = 0x4F73A3;
-                    break;
-                case 4:
-                    color = 0x0F77F3;
-                    break;
-                case 5:
-                    color = 0xC700;
-                    break;
-                case 6:
-                    color = 0x7B90A2;
-                    break;
-                case 7:
-                    color = 0xADAD00;
-                    break;
-                default:
-                    color = 0xFFFFFF;
-                    break;
+                case 0: color = 0xFF0000; break;
+                case 1: color = 0x2139C6; break;
+                case 2: color = 0x00FFFF; break;
+                case 3: color = 0x4F73A3; break;
+                case 4: color = 0x0F77F3; break;
+                case 5: color = 0x00C700; break;
+                case 6: color = 0x7B90A2; break;
+                case 7: color = 0xADAD00; break;
+                default: color = 0xFFFFFF; break;
                 }
-
                 SetTextColor(this->render_area->DrawDc, color);
+
                 strcpy(str, comm->GetPlayerName(i));
-                int text_len = strlen(str);
-                int current_y = y + y_offset;
-                TextOutA(this->render_area->DrawDc, x, current_y, str,
-                         text_len);
+                TextOutA(this->render_area->DrawDc,
+                         x, y + y_pos, str, (int)strlen(str));
+
                 sprintf(str, "%d",
-                        temp_player->victory_conditions->get_victory_points());
-                SetRect(&rect, x_val, current_y,
+                        temp_player->victory_conditions
+                            ->get_victory_points());
+                SetRect(&rect,
+                        x_val,
+                        y + y_pos,
                         this->pnl_x + this->pnl_wid - 3,
-                        current_y + 0x0E);
-                DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x22);
-                y_offset += 0x0E;
+                        y + y_pos + 0x0E);
+                DrawTextA(this->render_area->DrawDc,
+                          str, -1, &rect, 0x22);
+                y_pos += 0x0E;
             }
             ++i;
         } while (i < 9);
