@@ -12,38 +12,39 @@ TDialogPanel::TDialogPanel(char* name)
 {
 }
 
-int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
-                        long param_4, char* param_5, long param_6, int param_7)
+int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in,
+                        long wid_in, long hgt_in, char* info_file_name_in,
+                        long resource_file_id, int allow_shadow_area_in)
 {
     int height;
     int width;
 
-    if (param_2) {
-        width = param_2->width();
-        height = param_2->height();
-        param_2->xPosition();
-        param_2->yPosition();
+    if (parent_in) {
+        width = parent_in->width();
+        height = parent_in->height();
+        parent_in->xPosition();
+        parent_in->yPosition();
     } else {
-        width = param_1->Width;
-        height = param_1->Height;
+        width = render_area_in->Width;
+        height = render_area_in->Height;
     }
 
-    if (((TEasy_Panel*)this)->setup(param_1, param_2, param_5, param_6, 0,
-                                    width / 2 - param_3 / 2,
-                                    height / 2 - param_4 / 2,
-                                    param_3, param_4, param_7) == 0) {
+    if (TEasy_Panel::setup(render_area_in, parent_in, info_file_name_in,
+                           resource_file_id, 0,
+                           width / 2 - wid_in / 2,
+                           height / 2 - hgt_in / 2,
+                           wid_in, hgt_in, allow_shadow_area_in) == 0) {
         this->error_code = 1;
         return 0;
     }
 
-    TPanel* p = this->parent_panel;
-    if (p) {
-        this->save_parent_child = p->curr_child;
-        p->set_curr_child((TPanel*)this);
+    if (this->parent_panel) {
+        this->save_parent_child = this->parent_panel->curr_child;
+        this->parent_panel->set_curr_child(this);
     }
 
-    ((TPanel*)this)->set_z_order(1, 0);
-    panel_system.setModalPanel((TPanel*)this);
+    this->set_z_order(1, 0);
+    panel_system.setModalPanel(this);
 
     return 1;
 }
