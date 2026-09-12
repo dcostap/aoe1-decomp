@@ -19,7 +19,7 @@
     "004B97F0": {"status": "matching", "symbol": "?shape_draw_unclipped@TShape@@AAEEPAVTDrawArea@@JJJ@Z"},
     "004B98E0": {"status": "accepted_drift", "symbol": "?shape_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"},
     "004B99F0": {"status": "accepted_drift", "symbol": "?shape_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
-    "004B9AF0": {"status": "scratch", "symbol": "?shape_draw_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z"},
+    "004B9AF0": {"status": "new_verified_logic", "symbol": "?shape_draw_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z", "behavior_review": "logic_matching/004B9AF0/review-01/attempt-01"},
     "004B9E20": {"status": "scratch", "symbol": "?shape_color_trans_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJPAE@Z"},
     "004BA1C0": {"status": "scratch", "symbol": "?shape_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z"},
     "004BA550": {"status": "scratch", "symbol": "?shape_mirror@TShape@@QAEEPAVTDrawArea@@JJJEPAE@Z"},
