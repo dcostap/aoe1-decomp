@@ -11,8 +11,8 @@ claims.
 
 ## Accepted-drift evidence
 
-The seven rows below retain reviewed, behavior-equivalent drift. They remain
-unregistered. Only the 20 matching bodies have exact translation-unit owners.
+The six rows below retain reviewed, behavior-equivalent drift. They remain
+unregistered. Only the 21 matching bodies have exact translation-unit owners.
 
 - `0052E220 data_load_players_type`: The source loads `p2` before FS setup,
   while the executable loads it after FS setup. No throwing operation occurs
@@ -22,9 +22,6 @@ unregistered. Only the 20 matching bodies have exact translation-unit owners.
 - `0052E4C0 map_init`: The natural `/GX` new/null/constructor/common-store
   form adds a dead `test eax,eax; jne +0` join. It shifts four epilogue bytes
   into padding, with no behavior or memory difference.
-- `0052E530 command_init`: The same `/GX` common-store join adds the dead
-  `test eax,eax; jne +0` sequence. It shifts four epilogue bytes into padding;
-  calls, stores, and memory effects match.
 - `0052E590 scenario_init(int, RGE_Game_World*)`: The same constructor,
   null, and common-store pattern adds the dead four-byte join sequence. Only
   the epilogue and padding shift; behavior is unchanged.

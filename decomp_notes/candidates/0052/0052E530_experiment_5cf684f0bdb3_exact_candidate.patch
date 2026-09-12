@@ -1,0 +1,16 @@
+# Experiment 5cf684f0bdb3644f8e733d4ca56bbc8dd88b524aa28defbf12e501d7a66428b7
+# Base ea9150b51124a8d0e96dda90f82b644a6ed5e540
+diff --git a/src/tworld.cpp b/src/tworld.cpp
+index 9618cc1ad..4f95ec557 100644
+--- a/src/tworld.cpp
++++ b/src/tworld.cpp
+@@ -162,9 +162,6 @@ void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
+ void TRIBE_World::command_init(int unused, TCommunications_Handler* handler) {
+     TRIBE_Command* cmd;
+     cmd = new TRIBE_Command(this, handler);
+-    if (cmd == 0) {
+-        cmd = 0;
+-    }
+     this->commands = cmd;
+ }
+ 

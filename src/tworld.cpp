@@ -162,9 +162,6 @@ void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
 void TRIBE_World::command_init(int unused, TCommunications_Handler* handler) {
     TRIBE_Command* cmd;
     cmd = new TRIBE_Command(this, handler);
-    if (cmd == 0) {
-        cmd = 0;
-    }
     this->commands = cmd;
 }
 
