@@ -78,3 +78,21 @@ difference exchanges two non-faulting address calculations.
 field writes do not keep original fault order. No source change is retained.
 The neighboring `00484320` edit changes its grouped result from 373 to 183
 positional differences, so `00484470` is in the affected closure.
+
+## Fault-order repair re-review: repair-06
+
+The fresh `00484470` baseline remains 564 bytes with 183 positional
+differences after the `00484320` repair. The target reads width, grown percent,
+then height before its first elevation write. The rebuild reads width, height,
+then grown percent. This changes the first possible fault for malformed
+selected-map storage.
+
+The original rule-store sequence is already emitted by the retained source.
+Moving the source statements to the original listing order did not change the
+output. Separate locals, compound updates, comma expressions, an array
+initializer, a typed pointer, and operand permutations also emitted the same
+schedule. These probes are preserved by state IDs and the finding event in the
+`00484470` function note. No volatile or other compiler-steering form is safe.
+
+The source remains unchanged. Keep `00484470` blocked until a supported source
+dependency or original source context proves the read schedule.
