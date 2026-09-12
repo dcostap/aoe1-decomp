@@ -230,11 +230,10 @@ int TRIBE_Building_Object::setup(int fd, RGE_Game_World* world_arg)
 void TRIBE_Building_Object::take_building_attribute_from_owner()
 {
     for (int i = 0; i < 3; ++i) {
-        RGE_Master_Static_Object* master = master_obj;
-        if (master->attribute_flag[i] > 3 &&
-            master->attribute_type_held[i] >= 0) {
-            owner->add_attribute_num(master->attribute_type_held[i],
-                                     -master->attribute_amount_held[i], 0);
+        if (this->master_obj->attribute_flag[i] >= 4 &&
+            this->master_obj->attribute_type_held[i] >= 0) {
+            owner->add_attribute_num(this->master_obj->attribute_type_held[i],
+                                     -this->master_obj->attribute_amount_held[i], 0);
         }
     }
 }
