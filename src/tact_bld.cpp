@@ -304,24 +304,25 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
 
 int TRIBE_Action_Build::work(RGE_Static_Object* target,
                              float param_2, float param_3, float param_4) {
-    if (target != 0 && target->owner->id == this->obj->owner->id) {
-        if (target == this->target_obj) {
-            unsigned char action = this->state;
-            if (action == 4 || action == 6) {
-                return 1;
+    if (target != 0) {
+        RGE_Player* target_owner = target->owner;
+        if (target_owner == target->owner &&
+            target_owner->id == this->obj->owner->id) {
+            if (target == this->target_obj) {
+                unsigned char action = this->state;
+                if (action == 4 || action == 6) {
+                    return 1;
+                }
             }
+            this->set_target_obj(target);
+            this->set_state(4);
+            return 1;
         }
-        this->set_target_obj(target);
-        this->set_state(4);
-        return 1;
     }
 
-    int iz = *(int*)&param_4;
-    int ix = *(int*)&param_2;
-    int iy = *(int*)&param_3;
-    *(int*)&this->target_z = iz;
-    *(int*)&this->target_x = ix;
-    *(int*)&this->target_y = iy;
+    this->target_x = param_2;
+    this->target_y = param_3;
+    this->target_z = param_4;
     this->set_target_obj(0);
     this->set_state(11);
     return 1;

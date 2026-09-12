@@ -56,9 +56,9 @@ change is not equivalent drift. The function remains scratch until the
 canonical virtual call selects the original slot.
 
 `work` keeps its 121-byte boundary, owner symbol, four calls, five conditions,
-and two returns. It has nine strict byte differences. The differences cover
-the owner-id register map and fallback coordinate stack-home load order. The
-accepted-drift status remains supported by this strict register-map mismatch.
+and two returns. The repaired source now emits all 121 bytes exactly. A typed
+target-owner local and identity conjunct preserve the original owner-read
+order. The identity conjunct emits no instruction and needs source review.
 
 ## Migration effects
 
@@ -89,8 +89,9 @@ relocation-target mismatches, and zero boundary escapes. The observed owners
 also had owner-symbol match, zero relocation-target mismatches, and zero
 boundary escapes: `004CD210` reported `MATCH` with 142 bytes, `004CD5E0`
 reported `MISMATCH` with four bytes (`0.5525%`), and `004CD960` reported
-`MISMATCH` with nine bytes (`7.4380%`). No status move was made from the
-observed candidate result.
+`MATCH` with 121 bytes. The repair target still needs its registry status
+review.
 
-The wave20 full audit confirms `004CD210` as an exact natural owner. It is now
-registered as matching. `004CD960` remains accepted drift.
+The wave20 full audit confirms `004CD210` as an exact natural owner. The
+repair audit reports seven matching results, one existing accepted drift, and
+the repaired `004CD960` as an exact result pending promotion review.
