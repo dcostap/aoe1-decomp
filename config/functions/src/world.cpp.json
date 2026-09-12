@@ -22,7 +22,7 @@
     "005414A0": {"status": "matching", "symbol": "?data_load_effects@RGE_Game_World@@MAEXPAD@Z"},
     "00541500": {"status": "matching", "symbol": "?data_load_map@RGE_Game_World@@MAEXPAD000FFFPAPAVRGE_Sound@@0@Z"},
     "00541590": {"status": "matching", "symbol": "?data_load_random_map@RGE_Game_World@@MAEXPAD000@Z"},
-    "005415B0": {"status": "accepted_drift", "symbol": "?data_load_world@RGE_Game_World@@MAEEPAU_iobuf@@@Z"},
+    "005415B0": {"status": "matching", "symbol": "?data_load_world@RGE_Game_World@@MAEEPAU_iobuf@@@Z"},
     "00541720": {"status": "matching", "symbol": "?data_load@RGE_Game_World@@UAEEPAD0@Z"},
     "00541770": {"status": "matching", "symbol": "?init_player_type@RGE_Game_World@@MAEEHFE@Z"},
     "00541800": {"status": "matching", "symbol": "?init_player@RGE_Game_World@@MAEEH@Z"},

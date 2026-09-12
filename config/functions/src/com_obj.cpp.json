@@ -36,7 +36,7 @@
     "00430A90": {"status": "matching", "symbol": "?attack@RGE_Combat_Object@@UAEHMMMH@Z"},
     "00430C10": {"status": "matching", "symbol": "?moveTo@RGE_Combat_Object@@UAEHHH@Z"},
     "00430C30": {"status": "matching", "symbol": "?moveTo@RGE_Combat_Object@@UAEHHMH@Z"},
-    "00430D50": {"status": "accepted_drift", "symbol": "?moveTo@RGE_Combat_Object@@UAEHMMMMH@Z"},
+    "00430D50": {"status": "matching", "symbol": "?moveTo@RGE_Combat_Object@@UAEHMMMMH@Z"},
     "00430EC0": {"status": "matching", "symbol": "?moveAwayFrom@RGE_Combat_Object@@UAEHHH@Z"},
     "00430ED0": {"status": "accepted_drift", "symbol": "?gather@RGE_Combat_Object@@UAEHHH@Z"},
     "00431020": {"status": "matching", "symbol": "?explore@RGE_Combat_Object@@UAEHHHH@Z"},

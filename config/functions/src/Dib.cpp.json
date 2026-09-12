@@ -27,7 +27,7 @@
     "0043A500": {"status": "matching", "symbol": "?DibCreate@@YAPAUtagBITMAPINFOHEADER@@HHH@Z"},
     "0043A660": {"status": "scratch", "symbol": "?DibMapToPalette@@YAXPAUtagBITMAPINFOHEADER@@PAXHH@Z"},
     "0043AA60": {"status": "accepted_drift", "symbol": "?xlatClut8@@YAXPAEK0@Z"},
-    "0043AA90": {"status": "accepted_drift", "symbol": "?xlatClut4@@YAXPAEK0@Z"},
+    "0043AA90": {"status": "matching", "symbol": "?xlatClut4@@YAXPAEK0@Z"},
     "0043AAD0": {"status": "accepted_drift", "symbol": "?xlatRle8@@YAXPAEK0@Z"},
     "0043AB40": {"status": "matching", "symbol": "?xlatRle4@@YAXPAEK0@Z"},
     "0043AB50": {"status": "matching", "symbol": "_memmove"},

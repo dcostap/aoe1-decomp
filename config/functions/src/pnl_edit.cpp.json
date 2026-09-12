@@ -22,7 +22,7 @@
     "00475E10": {"status": "matching", "symbol": "?set_text_color@TEditPanel@@QAEXKK@Z"},
     "00475E30": {"status": "matching", "symbol": "?set_highlight_text_color@TEditPanel@@QAEXKK@Z"},
     "00475E40": {"status": "matching", "symbol": "?set_back_color@TEditPanel@@QAEXPAXKE@Z"},
-    "00475E50": {"status": "accepted_drift", "symbol": "?set_bevel_info@TEditPanel@@QAEXHHHHHHH@Z"},
+    "00475E50": {"status": "matching", "symbol": "?set_bevel_info@TEditPanel@@QAEXHHHHHHH@Z"},
     "00475F20": {"status": "matching", "symbol": "?set_ime_info@TEditPanel@@QAEXHH@Z"},
     "00475F40": {"status": "matching", "symbol": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z"},
     "00476040": {"status": "scratch", "symbol": "?sub_wnd_proc@TEditPanel@@QAEJPAXIIJ@Z"},

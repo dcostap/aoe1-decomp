@@ -45,6 +45,6 @@
     "00475440": {"status": "matching", "symbol": "?get_id@TDropDownPanel@@QAEJJ@Z"},
     "00475460": {"status": "matching", "symbol": "?empty_list@TDropDownPanel@@QAEXXZ"},
     "00475470": {"status": "matching", "symbol": "??0TDropDownButtonPanel@@QAE@PAVTDropDownPanel@@@Z"},
-    "004754C0": {"status": "accepted_drift", "symbol": "?handle_mouse_move@TDropDownButtonPanel@@UAEJJJHH@Z"}
+    "004754C0": {"status": "matching", "symbol": "?handle_mouse_move@TDropDownButtonPanel@@UAEJJJHH@Z"}
   }
 }

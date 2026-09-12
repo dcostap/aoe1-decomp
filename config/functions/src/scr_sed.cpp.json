@@ -43,7 +43,7 @@
     "004AD300": {"status": "matching", "symbol": "?command_new@TRIBE_Screen_Sed@@QAEXXZ"},
     "004AD340": {"status": "matching", "symbol": "?command_new_map@TRIBE_Screen_Sed@@QAEHPADHHHHH@Z"},
     "004AD590": {"status": "matching", "symbol": "?command_open@TRIBE_Screen_Sed@@QAEXXZ"},
-    "004AD630": {"status": "accepted_drift", "symbol": "?command_outline@TRIBE_Screen_Sed@@QAEXXZ"},
+    "004AD630": {"status": "matching", "symbol": "?command_outline@TRIBE_Screen_Sed@@QAEXXZ"},
     "004AD680": {"status": "matching", "symbol": "?command_player@TRIBE_Screen_Sed@@QAEXH@Z"},
     "004AD6A0": {"status": "matching", "symbol": "?command_quit@TRIBE_Screen_Sed@@QAEXXZ"},
     "004AD700": {"status": "matching", "symbol": "?command_save@TRIBE_Screen_Sed@@QAEXEE@Z"},

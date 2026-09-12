@@ -23,7 +23,7 @@
     "0045BA60": {"status": "accepted_drift", "symbol": "?draw@TMousePointer@@QAEXH@Z"},
     "0045BD60": {"status": "matching", "symbol": "?erase@TMousePointer@@QAEXXZ"},
     "0045BE20": {"status": "matching", "symbol": "?set_facet@TMousePointer@@QAEXH@Z"},
-    "0045BE80": {"status": "accepted_drift", "symbol": "?set_game_facet@TMousePointer@@QAEXH@Z"},
+    "0045BE80": {"status": "matching", "symbol": "?set_game_facet@TMousePointer@@QAEXH@Z"},
     "0045BEE0": {"status": "matching", "symbol": "?off@TMousePointer@@QAEXXZ"},
     "0045BF40": {"status": "matching", "symbol": "?on@TMousePointer@@QAEXXZ"},
     "0045BF80": {"status": "matching", "symbol": "?reset@TMousePointer@@QAEXXZ"},

@@ -12,7 +12,7 @@
     "004CE6D0": {"status": "matching", "symbol": "?save@TRIBE_Action_Discovery_Artifact@@UAEXH@Z"},
     "004CE700": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Discovery_Artifact@@UAEXE@Z"},
     "004CE720": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z"},
-    "004CE740": {"status": "accepted_drift", "symbol": "?update@TRIBE_Action_Discovery_Artifact@@UAEEXZ"},
+    "004CE740": {"status": "matching", "symbol": "?update@TRIBE_Action_Discovery_Artifact@@UAEEXZ"},
     "004CE7A0": {"status": "matching", "symbol": "?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ"}
   }
 }
