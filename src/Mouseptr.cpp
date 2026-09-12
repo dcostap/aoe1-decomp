@@ -580,12 +580,12 @@ void TMousePointer::set_facet(int f)
     this->d_bottom = this->cHeight - info->Hotspot_Y;
 }
 
-void TMousePointer::set_game_facet(int facet)
+void TMousePointer::set_game_facet(int facet_in)
 {
-    if (facet >= 0 && facet < this->Num_Cursors) {
-        Shape_Info* info = this->Cursor_Shape->shape_info;
-        this->game_facet = facet;
-        info = info + facet;
+    if (facet_in >= 0 && facet_in < this->Num_Cursors) {
+        TShape* shape = this->Cursor_Shape;
+        this->game_facet = facet_in;
+        Shape_Info* info = shape->shape_info + facet_in;
         this->gWidth = info->Width;
         this->gHeight = info->Height;
         this->g_top = info->Hotspot_Y;

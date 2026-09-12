@@ -1252,16 +1252,17 @@ static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
     } while (dwSize != 0);
 }
 
-static void __cdecl xlatClut4(unsigned char *buf, unsigned long count,
-    unsigned char *clut)
+static void __cdecl xlatClut4(unsigned char *pb, unsigned long dwSize,
+    unsigned char *xlat)
 {
-    while (count) {
-        unsigned int v = *buf;
-        unsigned int h = v >> 4;
-        *buf = (unsigned char)(clut[h] << 4) | clut[v & 0x0F];
-        ++buf;
-        --count;
-    }
+    if (dwSize <= 0)
+        return;
+
+    do {
+        *pb = xlat[*pb & 0x0f] | (xlat[*pb >> 4] << 4);
+        ++pb;
+        --dwSize;
+    } while (dwSize != 0);
 }
 
 static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned char* xlat)

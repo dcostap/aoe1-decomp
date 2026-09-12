@@ -1,0 +1,26 @@
+# Experiment b4200d1f15f8e116721603d524b6689c8ea806bfad47f8a98f4cbaab35066efa
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/Dib.cpp b/src/Dib.cpp
+index 42905f34a..314a36e9a 100644
+--- a/src/Dib.cpp
++++ b/src/Dib.cpp
+@@ -1260,13 +1260,14 @@ static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
+ static void __cdecl xlatClut4(unsigned char *buf, unsigned long count,
+     unsigned char *clut)
+ {
+-    while (count) {
+-        unsigned int v = *buf;
+-        unsigned int h = v >> 4;
+-        *buf = (unsigned char)(clut[h] << 4) | clut[v & 0x0F];
++    if (count <= 0)
++        return;
++
++    do {
++        *buf = clut[*buf & 0x0f] | (clut[*buf >> 4] << 4);
+         ++buf;
+         --count;
+-    }
++    } while (count != 0);
+ }
+ 
+ static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned char* xlat)

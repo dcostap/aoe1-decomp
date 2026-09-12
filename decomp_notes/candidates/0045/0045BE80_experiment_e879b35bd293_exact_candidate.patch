@@ -1,0 +1,18 @@
+# Experiment e879b35bd2933a8109f2cebe0824967432f3a537dc945f095313b17a7b59d3bb
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/Mouseptr.cpp b/src/Mouseptr.cpp
+index 029e478a6..57efa873c 100644
+--- a/src/Mouseptr.cpp
++++ b/src/Mouseptr.cpp
+@@ -589,9 +589,9 @@ void TMousePointer::set_facet(int f)
+ void TMousePointer::set_game_facet(int facet)
+ {
+     if (facet >= 0 && facet < this->Num_Cursors) {
+-        Shape_Info* info = this->Cursor_Shape->shape_info;
++        TShape* shape = this->Cursor_Shape;
+         this->game_facet = facet;
+-        info = info + facet;
++        Shape_Info* info = shape->shape_info + facet;
+         this->gWidth = info->Width;
+         this->gHeight = info->Height;
+         this->g_top = info->Hotspot_Y;
