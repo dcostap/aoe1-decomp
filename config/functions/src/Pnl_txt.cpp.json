@@ -38,7 +38,7 @@
     "0047D3D0": {"status": "matching", "symbol": "?draw_background@TTextPanel@@QAEXXZ"},
     "0047D570": {"status": "matching", "symbol": "?draw_border@TTextPanel@@QAEXXZ"},
     "0047D760": {"status": "matching", "symbol": "?draw_line@TTextPanel@@QAEXPAXFFKK@Z"},
-    "0047D9E0": {"status": "scratch", "symbol": "?calc_line_pos@TTextPanel@@QAEXPAXFFPAUtagRECT@@PAJ@Z"},
+    "0047D9E0": {"status": "new_verified_logic", "symbol": "?calc_line_pos@TTextPanel@@QAEXPAXFFPAUtagRECT@@PAJ@Z", "behavior_review": "logic_matching/0047D9E0/review-01/attempt-01"},
     "0047DC10": {"status": "matching", "symbol": "?mouse_left_down_action@TTextPanel@@UAEJJJHH@Z"},
     "0047DC30": {"status": "matching", "symbol": "?numberLines@TTextPanel@@QBEHXZ"},
     "0047DC40": {"status": "matching", "symbol": "?numberDrawLines@TTextPanel@@QBEHXZ"},
