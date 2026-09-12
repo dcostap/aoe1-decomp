@@ -49,7 +49,10 @@ The generated deleting destructor at `00436910` also matches.
   block, so this is not localized equivalent drift.
 - `00438250 draw_view_rect`: scratch. 662 bytes, 89.5805%.
   The rebuilt body crosses the original boundary once.
-- `00438530 pick_tile`: accepted drift. 10 bytes, 4.0650%.
+- `00438530 pick_tile`: exact candidate recovered in the current repair wave.
+  The registry remains `accepted_drift` pending orchestrator promotion. The
+  source and complete byte/fault-order review are in
+  `decomp_notes/functions/0043/00438530.md`.
 
 The two former exact wrapper bodies at `004376D0` and `00438060` are now
 scratch. The canonical provider surface changed their code generation.

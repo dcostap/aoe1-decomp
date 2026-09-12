@@ -1015,8 +1015,8 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short *param_3,
     return 0;
   }
 
-  int adjusted_y = param_2 - this->pnl_y;
   int adjusted_x = param_1 - this->pnl_x;
+  int adjusted_y = param_2 - this->pnl_y;
 
   if (adjusted_y >= this->map_image_start_y &&
       adjusted_y <= this->map_image_start_y + this->map_image_hgt - 1) {

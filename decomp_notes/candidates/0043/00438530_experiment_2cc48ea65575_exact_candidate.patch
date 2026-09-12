@@ -1,0 +1,16 @@
+# Experiment 2cc48ea655751391316eb5c64382b9ad388178f710846e923469348de0027717
+# Base ea9150b51124a8d0e96dda90f82b644a6ed5e540
+diff --git a/src/diam_map.cpp b/src/diam_map.cpp
+index ebf99e040..0930d8fd4 100644
+--- a/src/diam_map.cpp
++++ b/src/diam_map.cpp
+@@ -1015,8 +1015,8 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short *param_3,
+     return 0;
+   }
+ 
+-  int adjusted_y = param_2 - this->pnl_y;
+   int adjusted_x = param_1 - this->pnl_x;
++  int adjusted_y = param_2 - this->pnl_y;
+ 
+   if (adjusted_y >= this->map_image_start_y &&
+       adjusted_y <= this->map_image_start_y + this->map_image_hgt - 1) {
