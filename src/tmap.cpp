@@ -418,7 +418,8 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
                                               TRIBE_Cliff_Info info)
 {
     long info0 = info.info[0];
-    int table_index = info0 * 16 + info.info[1] * 4 + info.info[2];
+    long info1 = info.info[1];
+    int table_index = info0 * 16 + info1 * 4 + info.info[2];
     int cliff_index = table_index * 4 + info.info[3] + 0x55;
     long facet;
     float x_pos = (float)(x * 3) +
