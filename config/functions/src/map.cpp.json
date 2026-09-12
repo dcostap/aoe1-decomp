@@ -64,7 +64,7 @@
     "004595E0": {"status": "matching", "symbol": "?set_elev@RGE_Map@@QAEXFFFFEFE@Z"},
     "00459900": {"status": "matching", "symbol": "?set_terrain@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z"},
     "00459A00": {"status": "matching", "symbol": "?set_terrain_absolute@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z"},
-    "00459A90": {"status": "scratch", "symbol": "?set_terrain@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFFFEEH@Z"},
+    "00459A90": {"status": "new_verified_logic", "symbol": "?set_terrain@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFFFEEH@Z", "behavior_review": "logic_matching/00459A90/review-01/attempt-01"},
     "00459D20": {"status": "matching", "symbol": "?get_tile_type@RGE_Map@@QAEEFF@Z"},
     "0045A030": {"status": "matching", "symbol": "?get_border_type@RGE_Map@@QAEXFF@Z"},
     "0045A490": {"status": "matching", "symbol": "?check_for_border@RGE_Map@@QAEXEAAE@Z"},

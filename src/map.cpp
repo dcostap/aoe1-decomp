@@ -2408,78 +2408,96 @@ void RGE_Map::set_terrain_absolute(RGE_Game_World* gw, short row, short col,
 }
 
 void RGE_Map::set_terrain(RGE_Player* player, RGE_Game_World* world,
-                          short x1, short y1, short x2, short y2,
-                          unsigned char terrain, unsigned char blend,
-                          int arg9)
+                          short col0, short row0, short col1, short row1,
+                          unsigned char terrain, unsigned char apply_terrain,
+                          int object_behavior)
 {
-    short terrain_id;
-    unsigned int terrain_index;
+    short terrain_id = (short)(unsigned short)terrain;
 
-    if ((short)(unsigned char)terrain < this->num_terrain) {
-        terrain_id = (short)(unsigned char)terrain;
-        terrain_index = (unsigned char)terrain;
-        if (this->terrain_types[terrain_index].loaded != 0 ||
-            (this->terrain_types[terrain_index].terrain_to_draw > -1 &&
-             this->terrain_types[
-                 this->terrain_types[terrain_index].terrain_to_draw].loaded == 1)) {
-            if (y1 > y2) {
-                short temp = y1;
-                y1 = y2;
-                y2 = temp;
-            }
-            if (x1 > x2) {
-                short temp = x1;
-                x1 = x2;
-                x2 = temp;
-            }
+    if (terrain_id >= this->num_terrain)
+        return;
 
-            if (y1 < 0) y1 = 0;
-            if ((int)y2 >= this->map_height)
-                y2 = (short)(this->map_height - 1);
-            if (x1 < 0) x1 = 0;
-            if ((int)x2 >= this->map_width)
-                x2 = (short)(this->map_width - 1);
+    if (this->terrain_types[terrain_id].loaded == 0) {
+        short terrain_to_draw =
+            this->terrain_types[terrain_id].terrain_to_draw;
+        if (terrain_to_draw < 0 ||
+            this->terrain_types[terrain_to_draw].loaded != 1)
+            return;
+    }
 
-            if ((blend != 0 || player != 0) && y1 <= y2) {
-                for (short row = y1; row <= y2; ++row) {
-                    if (x1 <= x2) {
-                        RGE_Tile* tile =
-                            this->map_row_offset[(int)row] + (int)x1;
-                        unsigned char* tile_terrain =
-                            (unsigned char*)tile + 5;
-                        for (short col = x1; col <= x2; ++col) {
-                            if (this->terrain_types[terrain_index].tiles[
-                                    tile_terrain[-1]].count > 0) {
-                                unsigned char old_value = *tile_terrain;
-                                short old_terrain = (short)(old_value & 0x1F);
-                                if (old_terrain != terrain_id && blend != 0) {
-                                    *tile_terrain =
-                                        (unsigned char)((terrain ^ old_value) & 0x1F) ^ old_value;
-                                }
-                                if (player != 0) {
-                                    this->create_terrain_object(
-                                        player, world, row, col, old_terrain,
-                                        arg9, -1, -1);
-                                }
+    if (row0 > row1) {
+        short temp = row1;
+        row1 = row0;
+        row0 = temp;
+    }
+    if (col0 > col1) {
+        short temp = col1;
+        col1 = col0;
+        col0 = temp;
+    }
+
+    if (row0 < 0)
+        row0 = 0;
+    if (row1 >= this->map_height)
+        row1 = (short)this->map_height - 1;
+    if (col0 < 0)
+        col0 = 0;
+    if (col1 >= this->map_width)
+        col1 = (short)this->map_width - 1;
+
+    if (apply_terrain != 0 || player != 0) {
+        short maprow = row0;
+        if (maprow <= row1) {
+            do {
+                short col = col0;
+                if (col <= col1) {
+                    unsigned char* tile_data =
+                        reinterpret_cast<unsigned char*>(
+                            this->map_row_offset[maprow] + col) + 5;
+                    do {
+                        if (0 < this->terrain_types[terrain_id]
+                                .tiles[tile_data[-1]].count) {
+                            unsigned char old_terrain = *tile_data;
+                            short old_terrain_id =
+                                (short)(old_terrain & 0x1f);
+
+                            if (old_terrain_id != terrain_id &&
+                                apply_terrain != 0) {
+                                *tile_data =
+                                    (unsigned char)(((terrain ^ old_terrain) &
+                                                     0x1f) ^ old_terrain);
                             }
-                            tile_terrain += sizeof(RGE_Tile);
+
+                            if (player != 0) {
+                                this->create_terrain_object(
+                                    player, world, maprow, col,
+                                    old_terrain_id, object_behavior, -1, -1);
+                            }
                         }
-                    }
+                        ++col;
+                        tile_data += sizeof(RGE_Tile);
+                    } while (col <= col1);
                 }
-            }
-
-            if (y1 > 0) --y1;
-            if ((int)y2 < this->map_height - 1) ++y2;
-            if (x1 > 0) --x1;
-            if ((int)x2 < this->map_width - 1) ++x2;
-
-            for (short row = y1; row <= y2; ++row) {
-                for (short col = x1; col <= x2; ++col)
-                    this->get_border_type(col, row);
-            }
-            this->request_redraw(x1, y1, x2, y2, 0);
+                ++maprow;
+            } while (maprow <= row1);
         }
     }
+
+    if (row0 > 0)
+        --row0;
+    if (row1 < this->map_height - 1)
+        ++row1;
+    if (col0 > 0)
+        --col0;
+    if (col1 < this->map_width - 1)
+        ++col1;
+
+    for (short row = row0; row <= row1; ++row) {
+        for (short col = col0; col <= col1; ++col)
+            this->get_border_type(col, row);
+    }
+
+    this->request_redraw((int)col0, (int)row0, (int)col1, (int)row1, 0);
 }
 
 unsigned char RGE_Map::get_tile_type(short x, short y)
