@@ -1,0 +1,16 @@
+# Experiment 071f58f3a729deba82555b2b274e1677245fa719b424b17c08b20b0af336b90a
+# Base 3e516e8516eb0372115756286222df2cfb525135
+diff --git a/src/tworld.cpp b/src/tworld.cpp
+index 550ee07bc..59aa882f1 100644
+--- a/src/tworld.cpp
++++ b/src/tworld.cpp
+@@ -177,9 +177,6 @@ void TRIBE_World::scenario_init(RGE_Game_World* param_1) {
+ 
+ void TRIBE_World::effects_init(int param_1) {
+     TRIBE_Effects* e = new TRIBE_Effects(param_1);
+-    if (e == 0) {
+-        e = 0;
+-    }
+     this->effects = e;
+ }
+ 

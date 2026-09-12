@@ -177,9 +177,6 @@ void TRIBE_World::scenario_init(RGE_Game_World* param_1) {
 
 void TRIBE_World::effects_init(int param_1) {
     TRIBE_Effects* e = new TRIBE_Effects(param_1);
-    if (e == 0) {
-        e = 0;
-    }
     this->effects = e;
 }
 
