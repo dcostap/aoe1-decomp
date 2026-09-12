@@ -62,7 +62,7 @@
     "004DE600": {"status": "accepted_drift", "symbol": "?checkDefend@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@@Z"},
     "004DEA70": {"status": "matching", "symbol": "?numberItemsToDefend@TribeInformationAIModule@@QAEHXZ"},
     "004DEA80": {"status": "accepted_drift", "symbol": "?objectToTradeWith@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
-    "004DEBA0": {"status": "scratch", "symbol": "?findGatherPosition@TribeInformationAIModule@@QAEHAAUXYPoint@@HHHHPAVRGE_Static_Object@@0@Z"},
+    "004DEBA0": {"status": "new_verified_logic", "symbol": "?findGatherPosition@TribeInformationAIModule@@QAEHAAUXYPoint@@HHHHPAVRGE_Static_Object@@0@Z", "behavior_review": "logic_matching/004DEBA0/review-01/attempt-01"},
     "004DEE90": {"status": "scratch", "symbol": "?setupInfluenceMap@TribeInformationAIModule@@QAEXHHAAUXYPoint@@00@Z"},
     "004DFCE0": {"status": "matching", "symbol": "?mapBound@TribeInformationAIModule@@QAEHAAUXYPoint@@@Z"},
     "004DFD40": {"status": "matching", "symbol": "?groupInfluenceDimension@TribeInformationAIModule@@QAEHH@Z"},

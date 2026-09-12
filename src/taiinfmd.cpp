@@ -3584,86 +3584,110 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
 }
 
 int TribeInformationAIModule::findGatherPosition(
-    XYPoint& centerPoint, int num, int landTroops, int desiredDistance,
-    int maximumDistanceVariation, RGE_Static_Object* testUnit,
-    XYPoint& rPoint)
+    XYPoint& point, int group, int clearDistance, int minDistance,
+    int maxDistance, RGE_Static_Object* object, XYPoint& out)
 {
-    int clearDistance;
     XYPoint min;
-    XYPoint maxExclude;
-    int x;
-    XYPoint minExclude;
     XYPoint max;
-    int bestPointValue;
-    int y;
-    XYPoint lineCollisionPoint;
-    int i;
-    XYPoint maxClear;
-    XYPoint minClear;
+    XYPoint minExclude;
+    XYPoint maxExclude;
     XYPoint cPosition;
-    int j;
-    int blocked;
+    XYPoint lineCollisionPoint;
+    int bestPointValue;
+    int halfGroupDimension;
+    int x;
+    int y;
 
-    if (maximumDistanceVariation >= landTroops) return 0;
-    min.y = centerPoint.x - landTroops - maximumDistanceVariation;
-    minExclude.x = centerPoint.y - landTroops - maximumDistanceVariation;
-    mapBound(min);
-    minClear.x = centerPoint.y + maximumDistanceVariation + landTroops;
-    max.y = centerPoint.x + maximumDistanceVariation + landTroops;
-    mapBound(max);
-    minExclude.y = centerPoint.x - landTroops + maximumDistanceVariation;
-    maxExclude.x = centerPoint.y + maximumDistanceVariation - landTroops;
-    mapBound(minExclude);
-    maxExclude.y = centerPoint.x - maximumDistanceVariation + landTroops;
-    cPosition.x = centerPoint.y + landTroops - maximumDistanceVariation;
-    mapBound(maxExclude);
-    setupInfluenceMap(0, -1, centerPoint, min, max);
+    if (minDistance <= maxDistance)
+        return 0;
+
+    min.x = point.x - minDistance - maxDistance;
+    min.y = point.y - minDistance - maxDistance;
+    this->mapBound(min);
+
+    max.x = point.x + maxDistance + minDistance;
+    max.y = point.y + maxDistance + minDistance;
+    this->mapBound(max);
+
+    minExclude.x = point.x - minDistance + maxDistance;
+    minExclude.y = point.y - minDistance + maxDistance;
+    this->mapBound(minExclude);
+
+    maxExclude.x = point.x - maxDistance + minDistance;
+    maxExclude.y = point.y - maxDistance + minDistance;
+    this->mapBound(maxExclude);
+
+    this->setupInfluenceMap(0, -1, point, min, max);
     bestPointValue = -1;
-    maxClear.x = groupInfluenceDimension(num);
-    j = min.y;
-    if (j <= max.y) do {
-        i = minExclude.x;
-        if (i <= minClear.x) do {
-            if (minExclude.y > j || j > maxExclude.y || maxExclude.x > i || i > cPosition.x) {
-                clearDistance = maxClear.x / 2;
-                minClear.y = j - clearDistance;
-                min.x = i - clearDistance;
-                if (mapBound(minClear) != 1) {
-                    maxClear.y = j + clearDistance;
-                    max.x = i + clearDistance;
-                    if (mapBound(maxClear) != 1) {
-                        blocked = 0;
-                        for (y = minClear.y; y < maxClear.y && !blocked; y++) {
-                            for (x = min.x; x < max.x && !blocked; x++) {
-                                if (testUnit->passableTile((float)y, (float)x, 1) == 0) blocked = 1;
-                            }
+    halfGroupDimension = this->groupInfluenceDimension(group) / 2;
+
+    for (x = min.x; x <= max.x; ++x) {
+        for (y = min.y; y <= max.y; ++y) {
+            if (x < minExclude.x || maxExclude.x < x ||
+                y < minExclude.y || maxExclude.y < y) {
+                XYPoint minClear;
+                XYPoint maxClear;
+                minClear.x = x - halfGroupDimension;
+                minClear.y = y - halfGroupDimension;
+                if (this->mapBound(minClear) == 1)
+                    continue;
+
+                maxClear.x = x + halfGroupDimension;
+                maxClear.y = y + halfGroupDimension;
+                if (this->mapBound(maxClear) == 1)
+                    continue;
+
+                int blocked = 0;
+                int clearX = minClear.x;
+                while (clearX < maxClear.x && blocked == 0) {
+                    int clearY = minClear.y;
+                    while (clearY < maxClear.y && blocked == 0) {
+                        if (object->passableTile((float)clearX,
+                                                 (float)clearY, 1) == 0)
+                            blocked = 1;
+                        ++clearY;
+                    }
+                    ++clearX;
+                }
+
+                if (blocked == 0) {
+                    cPosition.x = x;
+                    cPosition.y = y;
+                    int score;
+                    if (object->canLinePath(
+                            cPosition, point, (float)minDistance,
+                            lineCollisionPoint, 1) == 0)
+                        score = 0x40;
+                    else
+                        score = 0x80;
+
+                    int influenceX = minClear.x;
+                    while (influenceX <= maxClear.x && blocked == 0) {
+                        int influenceY = minClear.y;
+                        while (influenceY <= maxClear.y && blocked == 0) {
+                            int value = iMap.lookupValue(
+                                influenceX, influenceY);
+                            if (value == 0xff)
+                                blocked = 1;
+                            else
+                                score += value;
+                            ++influenceY;
                         }
-                        if (blocked != 1) {
-                            int val = 0x80;
-                            cPosition.x = j;
-                            cPosition.y = i;
-                            if (testUnit->canLinePath(cPosition, centerPoint,
-                                                      (float)desiredDistance,
-                                                      lineCollisionPoint, 1) == 0) val = 0x40;
-                            for (y = minClear.y; y <= maxClear.y && !blocked; y++) {
-                                for (x = min.x; x <= max.x && !blocked; x++) {
-                                    int v = iMap.lookupValue(y, x);
-                                    if (v == 0xff) blocked = 1; else val += v;
-                                }
-                            }
-                            if (blocked != 1 && (bestPointValue == -1 || bestPointValue < val)) {
-                                bestPointValue = val;
-                                rPoint.x = j;
-                                rPoint.y = i;
-                            }
-                        }
+                        ++influenceX;
+                    }
+
+                    if (blocked == 0 &&
+                        (bestPointValue == -1 ||
+                         bestPointValue < score)) {
+                        out.x = x;
+                        out.y = y;
+                        bestPointValue = score;
                     }
                 }
             }
-            i++;
-        } while (i <= minClear.x);
-        j++;
-    } while (j <= max.y);
+        }
+    }
+
     return bestPointValue != -1;
 }
 
