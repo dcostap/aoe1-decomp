@@ -304,35 +304,20 @@ LOSTBL* RGE_Visible_Map::get_los_table(int distance, int diagonal) {
 
 int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
                                      int UpdateMap, int id) {
-    int Revealed;
-    int plNum;
-    int csum;
-    RGE_Player* curPlayer;
-    int VisibleToCurPlayer;
-    RGE_Player* curVisPlayer;
-    LOSTBL* Tbl;
-    int offY;
-    int y2;
-    int x1;
-    int x2;
-    unsigned char* vis;
-    unsigned long* u;
-    RGE_Tile* tile;
-    unsigned char v;
+    int Revealed = 0;
 
-    Revealed = 0;
-    log_map_call(this->world->world_time, this->player->id, 1, id,
+    log_map_call(this->world->world_time, (int)this->player->id, 1, id,
                  tx, ty, radius, Square, Map_Update_Suppresion);
+
     if (Map_Update_Suppresion != 0) {
         return 0;
     }
 
-    csum = this->input_csum;
-    plNum = (int)this->player->id;
+    int csum = this->input_csum;
     csum = _rotl(csum, 3);
     csum ^= 0x01010101;
     csum = _rotl(csum, 2);
-    csum ^= plNum;
+    csum ^= (int)this->player->id;
     csum = _rotl(csum, 3);
     csum ^= tx;
     csum = _rotl(csum, 4);
@@ -342,81 +327,79 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
     csum += Square;
     this->input_csum = csum;
 
-    curPlayer = this->world->players[this->world->curr_player];
-    if (curPlayer != 0) {
-        VisibleToCurPlayer =
-            (curPlayer->mutualAlly[this->player->id] == 1);
-    } else {
-        VisibleToCurPlayer = 0;
-    }
-
-    curVisPlayer = 0;
-    if (VisibleToCurPlayer) {
-        curVisPlayer = curPlayer;
+    RGE_Player* curVisPlayer =
+        this->world->players[this->world->curr_player];
+    int VisibleToCurPlayer =
+        curVisPlayer != 0 && curVisPlayer->mutualAlly[this->player->id] == 1;
+    if (!VisibleToCurPlayer) {
+        curVisPlayer = 0;
     }
 
     if (radius > 0x10) {
         radius = 0x10;
     }
 
-    tile = 0;
-
+    LOSTBL* offsets;
     if (Square != 0) {
-        Tbl = SquareLOS[radius];
+        offsets = SquareLOS[radius];
     } else {
-        Tbl = NormalLOS[radius];
+        offsets = NormalLOS[radius];
     }
 
-    offY = Tbl->y;
-    while (offY != 999) {
-        y2 = ty + offY;
-        if ((y2 >= 0) && (y2 < this->heightValue)) {
-            x1 = tx + Tbl->x1;
+    RGE_Tile* tile = 0;
+    int off_y = offsets->y;
+    while (off_y != 999) {
+        off_y += ty;
+        if ((off_y >= 0) && (off_y < this->heightValue)) {
+            int x1 = offsets->x1 + tx;
             if (x1 < 0) {
                 x1 = 0;
             }
-            x2 = tx + Tbl->x2;
+            int x2 = offsets->x2 + tx;
             if (x2 >= this->widthValue) {
                 x2 = this->widthValue - 1;
             }
 
-            u = unified_map_offsets[y2] + x1;
-            vis = this->map_offsets[y2] + x1;
+            unsigned char* visible = this->map_offsets[off_y] + x1;
+            unsigned long* explored = unified_map_offsets[off_y] + x1;
             if (UpdateMap != 0) {
-                tile = this->map->map_row_offset[y2] + x1;
+                tile = this->map->map_row_offset[off_y] + x1;
             }
 
             while (x1 <= x2) {
-                v = (unsigned char)(*vis + 1);
-                if (v == 0) {
-                    Revealed++;
-                    this->numberTilesExploredValue++;
-                    this->player->tile_list.add_node(x1, y2);
+                unsigned char value = *visible;
+                ++value;
+                if (value == 0) {
+                    ++Revealed;
+                    ++this->numberTilesExploredValue;
+                    this->player->tile_list.add_node(x1, off_y);
                     if (VisibleToCurPlayer) {
-                        curVisPlayer->diam_tile_list.add_node(x1, y2);
+                        curVisPlayer->diam_tile_list.add_node(x1, off_y);
                     }
-                    v = 1;
-                    *u |= this->PlayerExploredMaskValue;
+                    *explored |= this->PlayerExploredMaskValue;
+                    value = 1;
                 }
-                if (v == 1) {
+                if (value == 1) {
                     if (UpdateMap != 0) {
-                        tile->draw_as = 0x0F;
+                        tile->draw_as = 0x0f;
                     }
-                    *u |= this->PlayerVisibleMaskValue;
+                    *explored |= this->PlayerVisibleMaskValue;
                 }
-                if (v == 0xFA) {
-                    v = 0xF9;
+                if (value == 0xfa) {
+                    value = 0xf9;
                 }
-                *vis = v;
-                ++vis;
-                ++u;
-                x1++;
+                *visible = value;
+                ++visible;
+                ++explored;
+                ++x1;
                 ++tile;
             }
         }
-        ++Tbl;
-        offY = Tbl->y;
+
+        ++offsets;
+        off_y = offsets->y;
     }
+
     return Revealed;
 }
 
