@@ -399,7 +399,8 @@ float RGE_Moving_Object::angle_to_object(RGE_Static_Object* target, float tx, fl
             ax = tx;
         }
 
-        float a = (float)atan2((double)(ay - world_y), (double)(ax - world_x));
+        float x_delta = ax - world_x;
+        float a = atan2(ay - world_y, x_delta);
         if (a < DAT_00570b48)
             a -= DAT_00570b4c;
         a -= angle;
