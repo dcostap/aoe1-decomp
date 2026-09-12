@@ -2225,9 +2225,7 @@ void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
         short row = y1;
         do {
             if (x1 <= x2) {
-                short col = x1;
-                int col_count = (int)x2 - (int)x1 + 1;
-                do {
+                for (int col = x1; col <= x2; ++col) {
                     RGE_Tile* tile = &this->map_row_offset[row][col];
                     unsigned char old_terrain = tile->terrain_type;
                     short terrain_type = (short)(old_terrain & 0x1F);
@@ -2237,12 +2235,10 @@ void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
                         replacement = this->terrain_types[terrain_type].passable_terrain;
                     else
                         replacement = this->terrain_types[terrain_type].impassable_terrain;
-                    ++col;
                     tile->terrain_type =
                         (unsigned char)((replacement ^ old_terrain) & 0x1F) ^
                         old_terrain;
-                    --col_count;
-                } while (col_count != 0);
+                }
             }
             ++row;
             --row_count;
