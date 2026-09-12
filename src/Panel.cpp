@@ -835,26 +835,26 @@ void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::Red
 
     do {
         TPanel* panel = node->panel;
-        if (panel != param_1 && panel != param_2 && param_1->z_order < panel->z_order) {
+        if (panel != param_1 && panel != param_2 && panel->z_order > param_1->z_order) {
             tagRECT n_rect = panel->clip_rect;
             int n_left = n_rect.left;
             int n_top = n_rect.top;
             int n_right = n_rect.right;
             int n_bottom = n_rect.bottom;
 
-            if ((((n_left < p1_left || p1_right < n_left) &&
-                  (n_right < p1_left || p1_right < n_right)) &&
-                 (p1_left <= n_left || n_right <= p1_right)) ||
-                (((n_top < p1_top || p1_bottom < n_top) &&
-                  (n_bottom < p1_top || p1_bottom < n_bottom)) &&
-                 (p1_top <= n_top || n_bottom <= p1_bottom)))
+            if ((((n_left < p1_left || n_left > p1_right) &&
+                  (n_right < p1_left || n_right > p1_right)) &&
+                 (n_left >= p1_left || n_right <= p1_right)) ||
+                (((n_top < p1_top || n_top > p1_bottom) &&
+                  (n_bottom < p1_top || n_bottom > p1_bottom)) &&
+                 (n_top >= p1_top || n_bottom <= p1_bottom)))
             {
-                if ((((n_left <= p1_left && p1_left <= n_right) ||
-                      (n_left <= p1_right && p1_right <= n_right)) ||
-                     (p1_left < n_left && n_right < p1_right)) &&
-                    (((n_top <= p1_top && p1_top <= n_bottom) ||
-                      (n_top <= p1_bottom && p1_bottom <= n_bottom)) ||
-                     (p1_top < n_top && n_bottom < p1_bottom)))
+                if ((((p1_left >= n_left && p1_left <= n_right) ||
+                      (p1_right >= n_left && p1_right <= n_right)) ||
+                     (p1_left < n_left && p1_right > n_right)) &&
+                    (((p1_top >= n_top && p1_top <= n_bottom) ||
+                      (p1_bottom >= n_top && p1_bottom <= n_bottom)) ||
+                     (p1_top < n_top && p1_bottom > n_bottom)))
                 {
                     panel->set_redraw(param_3);
                 }
