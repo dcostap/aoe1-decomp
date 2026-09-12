@@ -588,67 +588,66 @@ int TDrawSystem::HandleQueryNewPalette(void* param1, unsigned int param2, unsign
     return 0;
 }
 
-void TDrawSystem::Paint(tagRECT* param_1)
+void TDrawSystem::Paint(tagRECT* rect)
 {
-    int right;
-    int bottom;
     tagRECT dest;
     tagRECT src;
-    long dest_top;
 
-    if (this->DrawType != 1) {
-    if (this->PrimarySurface &&
-        this->DrawArea &&
-        this->DrawArea->DrawSurface) {
-        if (this->ScreenMode == 1) {
+    if (this->DrawType == 1 || this->PrimarySurface == 0 ||
+        this->DrawArea == 0 || this->DrawArea->DrawSurface == 0)
+        return;
+
+    if (this->ScreenMode == 1) {
         GetClientRect(this->Wnd, &src);
+
         dest.left = src.left;
         dest.top = src.top;
         dest.right = src.right;
         dest.bottom = src.bottom;
+
         ClientToScreen(this->Wnd, (POINT*)&dest.left);
         ClientToScreen(this->Wnd, (POINT*)&dest.right);
-        } else {
-            bottom = this->ScreenHeight;
-            right = this->ScreenWidth;
-            src.left = 0;
-            src.top = 0;
-            src.right = right;
-            src.bottom = bottom;
-            dest.left = 0;
-            dest.top = 0;
-            dest.right = right;
-            dest.bottom = bottom;
-        }
+    }
+    else {
+        src.left = 0;
+        src.top = 0;
+        src.right = this->ScreenWidth;
+        src.bottom = this->ScreenHeight;
 
-        if (param_1) {
-        src.left = param_1->left;
-        src.top = param_1->top;
-        right = param_1->right;
-        bottom = param_1->bottom;
+        dest.left = 0;
+        dest.top = 0;
+        dest.right = this->ScreenWidth;
+        dest.bottom = this->ScreenHeight;
+    }
 
-        if (src.left < 0) src.left = 0;
-        if (src.top < 0) src.top = 0;
+    if (rect != 0) {
+        int left = rect->left;
+        int top = rect->top;
+        int right = rect->right;
+        int bottom = rect->bottom;
+
+        if (left < 0)
+            left = 0;
+        if (top < 0)
+            top = 0;
         if (right >= this->ScreenWidth)
             right = this->ScreenWidth - 1;
         if (bottom >= this->ScreenHeight)
             bottom = this->ScreenHeight - 1;
 
-        dest.left = dest.left + src.left;
-        dest_top = dest.top;
-        dest_top = dest_top + src.top;
-        dest.top = dest_top;
-        dest.right = dest.left + right - src.left + 1;
-        dest.bottom = dest_top + bottom - src.top + 1;
+        src.left = left;
+        src.top = top;
+        dest.left += left;
+        dest.top += top;
+        dest.right = dest.left + right - left + 1;
+        dest.bottom = dest.top + bottom - top + 1;
 
         src.right = right + 1;
         src.bottom = bottom + 1;
-        }
+    }
 
-        this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface,
-                                  &src, 0x1000000, 0);
-    }
-    }
+    this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src,
+                              0x1000000, 0);
 }
 
 int TDrawSystem::GetIsLostErrorNum(long error_num) {

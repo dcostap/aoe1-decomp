@@ -21,7 +21,7 @@
     "004433F0": {"status": "matching", "symbol": "?HandleSize@TDrawSystem@@QAEXPAXIIJ@Z"},
     "00443460": {"status": "matching", "symbol": "?HandlePaletteChanged@TDrawSystem@@QAEXPAXIIJ@Z"},
     "00443490": {"status": "matching", "symbol": "?HandleQueryNewPalette@TDrawSystem@@QAEHPAXIIJ@Z"},
-    "00443520": {"status": "scratch", "symbol": "?Paint@TDrawSystem@@QAEXPAUtagRECT@@@Z"},
+    "00443520": {"status": "new_verified_logic", "symbol": "?Paint@TDrawSystem@@QAEXPAUtagRECT@@@Z", "behavior_review": "logic_matching/00443520/review-01/attempt-01"},
     "00443680": {"status": "matching", "symbol": "?GetIsLostErrorNum@TDrawSystem@@QAEHJ@Z"},
     "004436D0": {"status": "matching", "symbol": "?GetRestoreErrorNum@TDrawSystem@@QAEHJ@Z"},
     "00443780": {"status": "matching", "symbol": "?GetSetDispModeErrorNum@TDrawSystem@@QAEHJ@Z"},
