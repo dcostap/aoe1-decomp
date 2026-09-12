@@ -2757,58 +2757,60 @@ void RGE_Static_Object::new_angle(float p0) {}
 
 
 
-unsigned char RGE_Static_Object::drop_held_objects(int mode)
+unsigned char RGE_Static_Object::drop_held_objects(int terrain)
 {
-    int i = 1;
-    unsigned char count = 0;
-    RGE_Object_Node* temp;
-    float x;
-    float y;
+    float drop_x[10];
     float drop_y[10];
     float radius_x[10];
-    float drop_x[10];
     float radius_y[10];
-    drop_x[1] = this->world_x;
-    drop_y[1] = this->world_y;
-    radius_x[1] = this->master_obj->radius_x + this->master_obj->radius_x;
-    radius_y[1] = this->master_obj->radius_y + this->master_obj->radius_y;
-    temp = this->objects->list;
+    float x;
+    float y;
+    unsigned char count;
+    int drop_points = 1;
 
-    while (temp != 0) {
-        RGE_Object_Node* next;
-        next = temp->next;
-        while (i > 0) {
-                    if (
-                        this->find_drop_location(mode, x, y,
-                                                  temp->node->master_obj,
-                                                  temp->node, drop_x[1],
-                                                  drop_y[1], radius_x[1],
-                                                  radius_y[1])
-                    ) {
-                        RGE_Static_Object* held = temp->node;
-                        held->set_location(this->world_x, this->world_y, this->world_z);
-                        held->exit_obj();
-                        held->teleport(x, y, this->world_z);
-                        ++count;
-                        if (i < 9) {
-                            RGE_Master_Static_Object* master = held->master_obj;
-                            int index = i++;
-                            drop_x[index + 1] = x;
-                            drop_y[index + 1] = y;
-                            radius_x[index + 1] = master->radius_x + master->radius_x;
-                            radius_y[index + 1] = master->radius_y + master->radius_y;
-                        }
-                        break;
-                    }
-                    --i;
-                    if (i <= 0) break;
-                    drop_x[i] = drop_x[i + 1];
-                    drop_y[i] = drop_y[i + 1];
-                    radius_y[i] = radius_y[i + 1];
-                    radius_x[i] = radius_x[i + 1];
+    drop_x[0] = this->world_x;
+    drop_y[0] = this->world_y;
+    radius_x[0] = this->master_obj->radius_x * 2.0f;
+    radius_y[0] = this->master_obj->radius_y * 2.0f;
+    count = 0;
+
+    RGE_Object_Node* node = this->objects->list;
+    while (node != 0) {
+        RGE_Object_Node* next = node->next;
+
+        while (drop_points > 0) {
+            if (this->find_drop_location(
+                    terrain, x, y, node->node->master_obj, node->node,
+                    drop_x[0], drop_y[0], radius_x[0], radius_y[0]) != 0) {
+                RGE_Static_Object* object = node->node;
+                object->set_location(this->world_x, this->world_y,
+                                     this->world_z);
+                object->exit_obj();
+                object->teleport(x, y, this->world_z);
+                ++count;
+
+                if (drop_points < 9) {
+                    drop_x[drop_points] = x;
+                    drop_y[drop_points] = y;
+                    radius_x[drop_points] = object->master_obj->radius_x * 2.0f;
+                    radius_y[drop_points] = object->master_obj->radius_y * 2.0f;
+                    ++drop_points;
+                }
+                break;
+            }
+
+            --drop_points;
+            if (drop_points > 0) {
+                drop_x[drop_points - 1] = drop_x[drop_points];
+                drop_y[drop_points - 1] = drop_y[drop_points];
+                radius_x[drop_points - 1] = radius_x[drop_points];
+                radius_y[drop_points - 1] = radius_y[drop_points];
+            }
         }
-        temp = next;
+
+        node = next;
     }
+
     return count;
 }
 

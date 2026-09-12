@@ -82,7 +82,7 @@
     "004C60A0": {"status": "matching", "symbol": "?box_hit_test@RGE_Static_Object@@QAEEFFFFFF@Z"},
     "004C6240": {"status": "matching", "symbol": "?set_location@RGE_Static_Object@@QAEXMMM@Z"},
     "004C6260": {"status": "matching", "symbol": "?new_angle@RGE_Static_Object@@UAEXM@Z"},
-    "004C6270": {"status": "scratch", "symbol": "?drop_held_objects@RGE_Static_Object@@QAEEH@Z"},
+    "004C6270": {"status": "matching", "symbol": "?drop_held_objects@RGE_Static_Object@@QAEEH@Z", "behavior_review": "logic_matching/004C6270/review-01/attempt-01"},
     "004C6400": {"status": "matching", "symbol": "?find_drop_location@RGE_Static_Object@@QAEEHAAM0PAVRGE_Master_Static_Object@@PAV1@MMMM@Z"},
     "004C66C0": {"status": "matching", "symbol": "??0RGE_Check_List@@QAE@XZ"},
     "004C66D0": {"status": "matching", "symbol": "??1RGE_Check_List@@QAE@XZ"},
