@@ -3387,11 +3387,12 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
 ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
 {
     RGE_Static_Object* mainObj = this->md->object(objId);
+    unsigned char currentZone;
     ObjectMemory* best;
     if (mainObj == 0)
         return 0;
 
-    *(unsigned char*)&objId = mainObj->currentZone();
+    currentZone = mainObj->currentZone();
     best = 0;
     group = this->defendPriority(type, group);
     int i = 0;
@@ -3410,13 +3411,13 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, 
                             if (entry->attackAttempts <= 0) {
                                 RGE_Static_Object* target = this->md->object(id);
                                 if (target != 0) {
-                                    if (*(unsigned char*)&objId != target->currentZone()) {
+                                    if (currentZone != target->currentZone()) {
                                         XYPoint pt;
                                         pt.x = (int)target->world_x;
                                         pt.y = (int)target->world_y;
                                         if (mainObj->withinRangeOfZoneAtPoint(
-                                                *(unsigned char*)&objId,
-                                                mainObj->getSpeed(), pt) != 1)
+                                                currentZone,
+                                                mainObj->weaponRange(), pt) != 1)
                                             break;
                                     }
                                     int pri = this->defendPriority(
