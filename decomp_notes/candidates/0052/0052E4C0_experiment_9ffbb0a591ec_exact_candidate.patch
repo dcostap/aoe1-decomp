@@ -1,0 +1,16 @@
+# Experiment 9ffbb0a591ec97166f811b7dc30460396e837b56cfd87a61f396cdc83b6fb40a
+# Base 00c84a4a1c32ae81f12092c81759cf818aee2fee
+diff --git a/src/tworld.cpp b/src/tworld.cpp
+index 9b4d67d82..9618cc1ad 100644
+--- a/src/tworld.cpp
++++ b/src/tworld.cpp
+@@ -156,9 +156,6 @@ unsigned char TRIBE_World::init_player_type(int player, short index, unsigned ch
+ 
+ void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
+     TRIBE_Map* p = new TRIBE_Map(param_1, this->sounds, 1);
+-    if (p == 0) {
+-        p = 0;
+-    }
+     this->map = p;
+ }
+ 

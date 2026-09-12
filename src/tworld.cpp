@@ -156,9 +156,6 @@ unsigned char TRIBE_World::init_player_type(int player, short index, unsigned ch
 
 void TRIBE_World::map_init(int param_1, TSound_Driver* param_2) {
     TRIBE_Map* p = new TRIBE_Map(param_1, this->sounds, 1);
-    if (p == 0) {
-        p = 0;
-    }
     this->map = p;
 }
 
