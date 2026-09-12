@@ -506,26 +506,24 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square,
 
 int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
                                         int UpdateMap, int id) {
+    int Revealed;
     int isCurPlayer;
     RGE_Player* curVisPlayer;
-    int Revealed;
-    unsigned char* p;
     int csum;
-    unsigned long* unified;
+    unsigned char* p;
+    unsigned long* u;
     RGE_Tile* tile;
-    int y;
 
     Revealed = 0;
     log_map_call(this->world->world_time, (int)this->player->id, 2, id,
                  x1, y1, x2, y2, Map_Update_Suppresion);
-
     if (Map_Update_Suppresion != 0) {
         return 0;
     }
 
     isCurPlayer =
-        (this->world->players[this->world->curr_player]->
-             mutualAlly[this->player->id] == 1);
+        (this->world->players[this->world->curr_player]
+             ->mutualAlly[this->player->id] == 1);
     curVisPlayer = 0;
     tile = 0;
 
@@ -542,18 +540,14 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     csum ^= y2;
     this->input_csum = csum;
 
-    if (isCurPlayer) {
-        curVisPlayer =
-            this->world->players[this->world->curr_player];
+    if (isCurPlayer != 0) {
+        curVisPlayer = this->world->players[this->world->curr_player];
     }
 
     if ((x1 >= this->widthValue) || (x2 < 0)) {
         return 0;
     }
-    if (y1 >= this->heightValue) {
-        return 0;
-    }
-    if (y2 < 0) {
+    if ((y1 >= this->heightValue) || (y2 < 0)) {
         return 0;
     }
     if (x1 < 0) {
@@ -569,40 +563,38 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
         y2 = this->heightValue - 1;
     }
 
-    for (y = y1; y <= y2; ++y) {
-        unified = unified_map_offsets[y] + x1;
-        p = this->map_offsets[y] + x1;
-        int x = x1;
+    for (; y1 <= y2; ++y1) {
+        u = unified_map_offsets[y1] + x1;
+        p = this->map_offsets[y1] + x1;
         if (UpdateMap != 0) {
-            tile = this->map->map_row_offset[y] + x1;
+            tile = this->map->map_row_offset[y1] + x1;
         }
 
-        while (x <= x2) {
-            unsigned char value = *p;
-            ++value;
-            if (value == 0) {
-                ++Revealed;
-                ++this->numberTilesExploredValue;
-                this->player->tile_list.add_node(x, y);
-                if (isCurPlayer) {
-                    curVisPlayer->diam_tile_list.add_node(x, y);
+        int x = x1;
+        for (; x <= x2; ++x) {
+            unsigned char v = (unsigned char)(*p + 1);
+            if (v == 0) {
+                Revealed++;
+                this->numberTilesExploredValue++;
+                this->player->tile_list.add_node(x, y1);
+                if (isCurPlayer != 0) {
+                    curVisPlayer->diam_tile_list.add_node(x, y1);
                 }
-                *unified |= this->PlayerExploredMaskValue;
-                value = 1;
+                v = 1;
+                *u |= this->PlayerExploredMaskValue;
             }
-            if (value == 1) {
+            if (v == 1) {
                 if (UpdateMap != 0) {
                     tile->draw_as = 0x0F;
                 }
-                *unified |= this->PlayerVisibleMaskValue;
+                *u |= this->PlayerVisibleMaskValue;
             }
-            if (value == 0xFA) {
-                value = 0xF9;
+            if (v == 0xFA) {
+                v = 0xF9;
             }
-            *p = value;
+            *p = v;
             ++p;
-            ++unified;
-            ++x;
+            ++u;
             ++tile;
         }
     }
