@@ -747,32 +747,40 @@ void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, 
 
 
 
-void RGE_View::ProcessQueuedBlit(int force)
+void RGE_View::ProcessQueuedBlit(int param_1)
 {
-    if (!this->Queued_Blits)
-        return;
+    tagRECT src;
 
-    if (force == 0) {
-        if (this->render_area->DrawSurface->GetBltStatus(1))
+    if (this->Queued_Blits != 0) {
+        if (param_1 == 0 &&
+            this->render_area->DrawSurface->GetBltStatus(1) != 0) {
             return;
-    }
+        }
 
-    this->Current_Blit++;
-    if (this->Blit_Queue && this->Current_Blit >= 0 && this->Current_Blit < this->Blit_Queue_Size) {
-        Blit_Queue_Entry* entry = &this->Blit_Queue[this->Current_Blit];
-        tagRECT src;
-        src.top = entry->src.top + this->Blit_Offset_Y;
-        src.left = entry->src.left + this->Blit_Offset_X;
-        src.bottom = entry->src.bottom + this->Blit_Offset_Y + 1;
-        src.right = entry->src.right + this->Blit_Offset_X + 1;
-        this->render_area->DrawSurface->BltFast(
-            entry->dest.left + this->Blit_Offset_X,
-            entry->dest.top + this->Blit_Offset_Y,
-            this->render_area->DrawSurface, &src, 16);
-        if (this->Current_Blit + 1 < this->Blit_Queue_Size)
-            return;
+        this->Current_Blit++;
+        if (this->Blit_Queue != 0 &&
+            this->Current_Blit >= 0 &&
+            this->Current_Blit < this->Blit_Queue_Size) {
+            Blit_Queue_Entry* entry =
+                &this->Blit_Queue[this->Current_Blit];
+
+            src.left = entry->src.left + this->Blit_Offset_X;
+            src.top = entry->src.top + this->Blit_Offset_Y;
+            src.right = entry->src.right + this->Blit_Offset_X + 1;
+            src.bottom = entry->src.bottom + this->Blit_Offset_Y + 1;
+
+            this->render_area->DrawSurface->BltFast(
+                entry->dest.left + this->Blit_Offset_X,
+                entry->dest.top + this->Blit_Offset_Y,
+                this->render_area->DrawSurface, &src, 0x10);
+
+            if (this->Current_Blit + 1 < this->Blit_Queue_Size) {
+                return;
+            }
+        }
+
+        this->Queued_Blits = 0;
     }
-    this->Queued_Blits = 0;
 }
 
 

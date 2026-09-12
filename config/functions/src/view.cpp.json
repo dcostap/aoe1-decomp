@@ -23,7 +23,7 @@
     "00534530": {"status": "matching", "symbol": "?set_selection_area@RGE_View@@QAEXJJJJ@Z"},
     "005345D0": {"status": "matching", "symbol": "?get_selection_area@RGE_View@@QAEHAAJ000H@Z"},
     "005346F0": {"status": "scratch", "symbol": "?CreateBlitQueue@RGE_View@@IAEXAAUtagRECT@@0HH@Z"},
-    "00534A00": {"status": "scratch", "symbol": "?ProcessQueuedBlit@RGE_View@@IAEXH@Z"},
+    "00534A00": {"status": "new_verified_logic", "symbol": "?ProcessQueuedBlit@RGE_View@@IAEXH@Z", "behavior_review": "logic_matching/00534A00/review-01/attempt-01"},
     "00534AE0": {"status": "scratch", "symbol": "?draw@RGE_View@@UAEXXZ"},
     "00535210": {"status": "scratch", "symbol": "?update@RGE_View@@IAEXXZ"},
     "00535480": {"status": "matching", "symbol": "?draw_view@RGE_View@@IAEXEPAVTDrawArea@@@Z"},
