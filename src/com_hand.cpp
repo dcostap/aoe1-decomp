@@ -2957,50 +2957,56 @@ void TCommunications_Handler::ClearRXTXForPlayer(unsigned int player) {
 typedef unsigned int uint;
 typedef unsigned long ulong;
 
-int TCommunications_Handler::StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID)
+int TCommunications_Handler::StoreIncoming(uint SerialNumber,
+                                            char* InBuff,
+                                            uint Length,
+                                            ulong dcoFromID,
+                                            ulong dcoReceiveID)
 {
-    HOLDER* h;
-    unsigned int i;
-
     if (Length == 0) {
         L->Log("+++StoreIncoming called for zero-length message");
     }
 
-    h = this->OnHold;
-    for (i = 0; i <= 0x1F5; i++) {
-        if (h[i].Serial == SerialNumber && h[i].dcoFromID == dcoFromID) {
-            L->Log("Future Ser#%d previously stored (Slot#%d)", SerialNumber, i);
+    uint slot;
+    for (slot = 0; slot <= 501; slot++) {
+        HOLDER* entry = &this->OnHold[slot];
+        if (entry->Serial == SerialNumber &&
+            entry->dcoFromID == dcoFromID) {
+            L->Log("Future Ser#%d previously stored (Slot#%d)",
+                   SerialNumber, slot);
             return 1;
         }
     }
 
-    for (i = 0; i < 0x1F5; i++) {
-        if (h[i].Length == 0 && Length != 0) {
-            this->OnHold[i].Length = Length;
-            h = &this->OnHold[i];
-            h->HoldMsg = new char[h->Length];
-            if (h->HoldMsg != 0) {
-                memcpy(h->HoldMsg, InBuff, h->Length);
-                h->Length = Length;
+    for (slot = 0; slot < 501; slot++) {
+        if (this->OnHold[slot].Length == 0 && Length != 0) {
+            this->OnHold[slot].Length = Length;
+            HOLDER* entry = &this->OnHold[slot];
+            entry->HoldMsg = new char[entry->Length];
+            if (entry->HoldMsg != 0) {
+                memcpy(entry->HoldMsg, InBuff, entry->Length);
+                entry->Length = Length;
             }
-            this->OnHold[i].Serial = SerialNumber;
-            this->OnHold[i].dcoFromID = dcoFromID;
-            this->OnHold[i].dcoReceiveID = dcoReceiveID;
+            this->OnHold[slot].Serial = SerialNumber;
+            this->OnHold[slot].dcoFromID = dcoFromID;
+            this->OnHold[slot].dcoReceiveID = dcoReceiveID;
             return 1;
         }
     }
 
     L->Log("+++ DID NOT STORE:  ");
-    if (i > 0x1EB) {
-        L->Log("HOLD FULL WARNING.  COUNT=%d", i);
-        i = 0;
-        do {
-            HOLDER* scan_h = &this->OnHold[i];
-            if (scan_h->Length != 0) {
-                L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, scan_h->Serial, scan_h->dcoFromID, scan_h->Length, static_cast<int>(scan_h->HoldMsg[0]), static_cast<int>(scan_h->HoldMsg[0]), static_cast<int>(scan_h->HoldMsg[1]));
+    if (slot > 491) {
+        L->Log("HOLD FULL WARNING.  COUNT=%d", slot);
+        for (uint i = 0; i < 501; i++) {
+            HOLDER* entry = &this->OnHold[i];
+            if (entry->Length != 0) {
+                int command = static_cast<signed char>(entry->HoldMsg[0]);
+                int byte1 = static_cast<signed char>(entry->HoldMsg[1]);
+                L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d",
+                       i, entry->Serial, entry->dcoFromID, entry->Length,
+                       command, command, byte1);
             }
-            i++;
-        } while (i < 501);
+        }
     }
     return 1;
 }
