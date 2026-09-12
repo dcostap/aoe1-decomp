@@ -2946,49 +2946,47 @@ void RGE_Check_List::add_node(RGE_Static_Object* object, float dx, float dy, uns
 
 
 
-RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
-    float rx;
-    float ry;
-    RGE_Map* map;
-    RGE_Check_List* check_list;
-    RGE_Check_List* result;
+RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float extra)
+{
+    RGE_Master_Static_Object* master = this->master_obj;
+    float radius_x = master->radius_x;
+    float radius_y = master->radius_y;
 
-    rx = this->master_obj->radius_x;
-    ry = this->master_obj->radius_y;
-    if (rx <= 0.0f || ry <= 0.0f ||
-        this->master_obj->radius_z <= DAT_00574718) {
+    if (!(radius_x > 0.0f) || !(radius_y > 0.0f) ||
+        !(master->radius_z > 0.0f)) {
         return 0;
     }
 
-    short x1 = (short)(int)(this->world_x - DAT_00574748);
-    short y1 = (short)(int)(this->world_y - DAT_00574748);
-    short x2 = (short)(int)(this->world_x - DAT_0057474c);
-    short y2 = (short)(int)(this->world_y - DAT_0057474c);
+    short min_x = (short)(this->world_x - DAT_00574748);
+    short min_y = (short)(this->world_y - DAT_00574748);
+    short max_x = (short)(this->world_x - DAT_0057474c);
+    short max_y = (short)(this->world_y - DAT_0057474c);
+    RGE_Map* map = this->owner->world->map;
 
-    map = this->owner->world->map;
-    check_list = new RGE_Check_List;
-    result = check_list;
+    RGE_Check_List* result = new RGE_Check_List;
 
-    if (x1 < 0) {
-        x1 = 0;
+    if (min_x < 0) {
+        min_x = 0;
     }
-    if (x2 >= map->map_width) {
-        x2 = (short)(map->map_width - 1);
+    if (max_x >= map->map_width) {
+        max_x = (short)map->map_width;
+        --max_x;
     }
-    if (y1 < 0) {
-        y1 = 0;
+    if (min_y < 0) {
+        min_y = 0;
     }
-    if (y2 >= map->map_height) {
-        y2 = (short)(map->map_height - 1);
+    if (max_y >= map->map_height) {
+        max_y = (short)map->map_height;
+        --max_y;
     }
 
-    if (y1 <= y2) {
-        short row = y1;
-        int row_count = (int)y2 - (int)y1 + 1;
+    if (min_y <= max_y) {
+        int y_count = (int)max_y - (int)min_y + 1;
+        int y = (int)min_y;
         do {
-            RGE_Tile* tile = &map->map_row_offset[row][x1];
-            if (x1 <= x2) {
-                int col_count = (int)x2 - (int)x1 + 1;
+            RGE_Tile* tile = map->map_row_offset[y] + min_x;
+            if (min_x <= max_x) {
+                int x_count = (int)max_x - (int)min_x + 1;
                 do {
                     RGE_Object_Node* object_node = tile->objects.list;
                     while (object_node != 0) {
@@ -2996,53 +2994,53 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
                         if (object != this) {
                             RGE_Master_Static_Object* object_master =
                                 object->master_obj;
-                            float ry2 = object_master->radius_y;
-                            float rx2 = object_master->radius_x;
-                            if (ry2 > 0.0f && rx2 > 0.0f) {
-                                float z = object->world_z - this->world_z;
-                                if (z >= -object_master->radius_z &&
-                                    z <= this->master_obj->radius_z) {
-                                    float dx = object->world_x - this->world_x;
-                                    float dy = object->world_y - this->world_y;
-                                    unsigned char flag;
+                            float object_radius_y = object_master->radius_y;
+                            float object_radius_x = object_master->radius_x;
 
-                                    if (dx < 0.0f) {
-                                        dx = -dx;
-                                        flag = 1;
-                                    } else {
-                                        flag = 0;
-                                    }
-                                    if (dy < 0.0f) {
-                                        flag = (unsigned char)(flag + 2);
-                                        dy = -dy;
-                                    }
+                            if (object_radius_y > 0.0f &&
+                                object_radius_x > 0.0f) {
+                                float dz = object->world_z - this->world_z;
+                                if (!(dz >= -object_master->radius_z) ||
+                                    dz > this->master_obj->radius_z) {
+                                    object_node = object_node->next;
+                                    continue;
+                                }
 
-                                    dx -= rx2 + rx;
-                                    dy -= ry2 + ry;
-                                    if (dx < max_dist && dy < max_dist &&
-                                        (0.0f <= dy ||
-                                         0.0f <= dx)) {
-                                        check_list->add_node(object, dx, dy,
-                                                             flag);
-                                    }
+                                float raw_x = object->world_x - this->world_x;
+                                float raw_y = object->world_y - this->world_y;
+                                unsigned char flag = 0;
+                                if (!(raw_x >= 0.0f)) {
+                                    raw_x = -raw_x;
+                                    flag = 1;
+                                }
+                                if (!(raw_y >= 0.0f)) {
+                                    raw_y = -raw_y;
+                                    flag = (unsigned char)(flag + 2);
+                                }
+
+                                float dx = raw_x -
+                                    (object_radius_x + radius_x);
+                                float dy = raw_y -
+                                    (object_radius_y + radius_y);
+                                if (!(dx >= extra) && !(dy >= extra) &&
+                                    (dy >= 0.0f || dx >= 0.0f)) {
+                                    result->add_node(object, dx, dy, flag);
                                 }
                             }
                         }
                         object_node = object_node->next;
                     }
-                    ++tile;
-                    --col_count;
-                } while (col_count != 0);
+                    tile = tile + 1;
+                    --x_count;
+                } while (x_count != 0);
             }
-            ++row;
-            --row_count;
-        } while (row_count != 0);
+            ++y;
+            --y_count;
+        } while (y_count != 0);
     }
 
-    if (check_list->list == 0) {
-        if (check_list != 0) {
-            delete check_list;
-        }
+    if (result->list == 0) {
+        delete result;
         result = 0;
     }
     return result;

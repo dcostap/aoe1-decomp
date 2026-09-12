@@ -87,7 +87,7 @@
     "004C66C0": {"status": "matching", "symbol": "??0RGE_Check_List@@QAE@XZ"},
     "004C66D0": {"status": "matching", "symbol": "??1RGE_Check_List@@QAE@XZ"},
     "004C6700": {"status": "matching", "symbol": "?add_node@RGE_Check_List@@QAEXPAVRGE_Static_Object@@MME@Z"},
-    "004C6740": {"status": "scratch", "symbol": "?make_object_bounds_list@RGE_Static_Object@@QAEPAVRGE_Check_List@@M@Z"},
+    "004C6740": {"status": "new_verified_logic", "symbol": "?make_object_bounds_list@RGE_Static_Object@@QAEPAVRGE_Check_List@@M@Z", "behavior_review": "logic_matching/004C6740/review-03/attempt-01"},
     "004C6AA0": {"status": "matching", "symbol": "?boundToFacet@RGE_Static_Object@@QAEHMMH@Z"},
     "004C6B50": {"status": "matching", "symbol": "?numberFacets@RGE_Static_Object@@QAEHXZ"},
     "004C6B60": {"status": "matching", "symbol": "?underAttack@RGE_Static_Object@@UBEEXZ"},
