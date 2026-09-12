@@ -55,7 +55,7 @@
     "00458C90": {"status": "accepted_drift", "symbol": "?place_terrain_object@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFHH@Z"},
     "00458FD0": {"status": "matching", "symbol": "?create_terrain_objects@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@@Z"},
     "00459020": {"status": "matching", "symbol": "?set_tile_size@RGE_Map@@QAEXEFFF@Z"},
-    "00459060": {"status": "scratch", "symbol": "?tile_map_coords@RGE_Map@@QAEXFFPAURGE_Tile@@PAM1@Z"},
+    "00459060": {"status": "new_verified_logic", "symbol": "?tile_map_coords@RGE_Map@@QAEXFFPAURGE_Tile@@PAM1@Z", "behavior_review": "logic_matching/00459060/review-01/attempt-01"},
     "004593A0": {"status": "matching", "symbol": "?check_map_coords@RGE_Map@@QAEEFF@Z"},
     "004593D0": {"status": "matching", "symbol": "?get_elev@RGE_Map@@QAEEFF@Z"},
     "00459400": {"status": "matching", "symbol": "?get_terrain@RGE_Map@@QAEEFF@Z"},

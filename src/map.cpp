@@ -2061,120 +2061,129 @@ void RGE_Map::set_tile_size(unsigned char index, short width, short height,
 }
 
 void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile,
-                              float* out1, float* out2)
+                              float* offset_x, float* offset_y)
 {
-    double fx = (double)(int)x / (double)(int)this->tile_width;
-    register float result;
-    double raw_y = (double)(int)y;
-    double fy = raw_y / (double)(int)this->tile_height;
-    double z = 0.0;
+    double fVar1;
+    double fVar2;
+    double fVar3;
+    double fVar4;
+    double z;
 
+    fVar2 = (float)(int)x / (float)(int)this->tile_width;
+    fVar1 = 0.0f;
+    fVar3 = (float)(int)y;
+    fVar4 = fVar3 / (float)(int)this->tile_height;
     switch (tile->tile_type) {
-    case 1:
-        if (fx > DAT_005706c0)
-            result = (fy + fy) - ((fx - DAT_005706c0) +
-                                  (fx - DAT_005706c0));
-        else
-            result = (fy + fy) - ((DAT_005706c0 - fx) +
-                                  (DAT_005706c0 - fx));
-        goto z_result;
-    case 2:
-        if (fx > DAT_005706c0) {
-            result = fx * DAT_005706d0 - (fy - DAT_005706c0);
-            goto z_result;
-        }
-        goto tile_case8;
-    case 3:
-        if (fx * DAT_005706c0 < raw_y) {
-            result = (DAT_005706d8 - fx) * DAT_005706c0 -
-                     (fy - DAT_005706c0);
-            goto z_result;
-        }
-        result = (((DAT_005706d8 - fx) + (DAT_005706d8 - fx)) -
-                  DAT_005706d8) + (fy + fy);
-        goto z_result;
-    case 4:
-        if ((DAT_005706d8 - fx) * DAT_005706c0 < raw_y) {
-            result = fx * DAT_005706c0 - (fy - DAT_005706c0);
-            goto z_result;
-        }
-        goto tile_case7;
-    case 10:
-        if (DAT_005706d8 <= fy)
-            z = -1.0;
-        else {
-            result = -fy;
-            goto z_result;
-        }
-        goto default_result;
-    case 11:
-        if (fx <= DAT_005706c0) {
-            result = (DAT_005706c0 - fx) + (DAT_005706c0 - fx);
-            goto z_result;
-        }
-        goto tile_case0;
-    case 12:
-        if (fx > DAT_005706c0) {
-            result = (fx - DAT_005706c0) + (fx - DAT_005706c0);
-            goto z_result;
-        }
     case 0:
     case 9:
-tile_case0:
-        z = 0.0;
-        goto default_result;
-    case 13:
-        if (fx > DAT_005706c0)
-            result = ((fx - DAT_005706c0) + fy) +
-                     ((fx - DAT_005706c0) + fy);
-        else
-            result = ((DAT_005706c0 - fx) + fy) +
-                     ((DAT_005706c0 - fx) + fy);
-        goto z_result;
-    case 14:
-        if (fx <= DAT_005706c0) goto tile_case6;
-        goto tile_case8;
-    case 15:
-        if (raw_y <= DAT_005706d8 - fx * DAT_005706c0)
-            goto tile_case7;
-        goto tile_case8;
-    case 8:
-tile_case8:
-        result = (DAT_005706d8 - fx) * DAT_005706d0 -
-                 (fy - DAT_005706c0);
-        goto z_result;
-    case 7:
-tile_case7:
-        fy = fy + fy;
-        result = (fx + fx) - DAT_005706d8;
-add_fy:
-        result = result + fy;
-        goto z_result;
-    case 16:
-        if (DAT_005706d8 - (DAT_005706d8 - fx) * DAT_005706c0 < raw_y)
-            goto tile_case6;
-        goto tile_case5;
-    case 6:
-tile_case6:
-        result = fx * DAT_005706d0 - (fy - DAT_005706c0);
-        goto z_result;
-    case 5:
-tile_case5:
-        result = fy + fy;
-        fy = DAT_005706d8 - (fx + fx);
-        goto add_fy;
-z_result:
-        z = result;
-default_result:
-default:
-        {
-            float normalized = (float)((((fx + fx) -
-                (DAT_005706d8 - (fy + fy))) + z) * DAT_005706c0);
-            *out2 = normalized;
-            *out1 = (float)((fx + fx) - normalized);
+        goto case_zero;
+    case 1:
+        if (fVar2 <= DAT_005706c0) {
+            fVar1 = (fVar4 + fVar4) -
+                    ((DAT_005706c0 - fVar2) + (DAT_005706c0 - fVar2));
+        }
+        else {
+            fVar1 = (fVar4 + fVar4) -
+                    ((fVar2 - DAT_005706c0) + (fVar2 - DAT_005706c0));
         }
         break;
+    case 2:
+        if (DAT_005706c0 < fVar2) {
+            fVar1 = fVar2 * DAT_005706d0 - (fVar4 - DAT_005706c0);
+            break;
+        }
+        goto case_eight;
+    case 3:
+        fVar1 = DAT_005706d8 - fVar2;
+        if (fVar2 * DAT_005706c0 < fVar3) {
+            fVar1 = fVar1 * DAT_005706c0 - (fVar4 - DAT_005706c0);
+            break;
+        }
+        fVar3 = fVar4 + fVar4;
+        fVar1 = (fVar1 + fVar1) - DAT_005706d8;
+        goto add_vertical;
+    case 4:
+        if ((DAT_005706d8 - fVar2) * DAT_005706c0 < fVar3) {
+            fVar1 = fVar2 * DAT_005706c0 - (fVar4 - DAT_005706c0);
+            break;
+        }
+    case 7:
+    case_seven:
+        fVar3 = fVar4 + fVar4;
+        fVar1 = (fVar2 + fVar2) - DAT_005706d8;
+    add_vertical:
+        fVar1 = fVar1 + fVar3;
+        break;
+    case 5:
+        goto case_five;
+    case 6:
+        goto case_six;
+    case 8:
+        goto case_eight;
+    case 14:
+        if (fVar2 <= DAT_005706c0)
+            goto case_six;
+        goto case_eight;
+    case_eight:
+        fVar1 = (DAT_005706d8 - fVar2) * DAT_005706d0 -
+                (fVar4 - DAT_005706c0);
+        break;
+    case_six:
+        fVar1 = fVar2 * DAT_005706d0 - (fVar4 - DAT_005706c0);
+        break;
+    case 10:
+        if (DAT_005706d8 <= fVar4) {
+            fVar1 = -DAT_005706d8;
+        }
+        else {
+            fVar1 = -fVar4;
+        }
+        break;
+    case 11:
+        if (fVar2 <= DAT_005706c0) {
+            fVar1 = (DAT_005706c0 - fVar2) +
+                    (DAT_005706c0 - fVar2);
+            break;
+        }
+        goto case_zero;
+    case 12:
+        if (DAT_005706c0 < fVar2) {
+            fVar1 = (fVar2 - DAT_005706c0) +
+                    (fVar2 - DAT_005706c0);
+            break;
+        }
+    case_zero:
+        fVar1 = 0.0f;
+        break;
+    case 13:
+        if (fVar2 <= DAT_005706c0) {
+            fVar1 = (DAT_005706c0 - fVar2) + fVar4;
+            fVar1 = fVar1 + fVar1;
+        }
+        else {
+            fVar1 = (fVar2 - DAT_005706c0) + fVar4;
+            fVar1 = fVar1 + fVar1;
+        }
+        break;
+    case 15:
+        if (fVar3 <= DAT_005706d8 - fVar2 * DAT_005706c0)
+            goto case_seven;
+        goto case_eight;
+    case 16:
+        if (DAT_005706d8 - (DAT_005706d8 - fVar2) * DAT_005706c0 <
+            fVar3)
+            goto case_six;
+    case_five:
+        fVar1 = fVar4 + fVar4;
+        fVar3 = DAT_005706d8 - (fVar2 + fVar2);
+        goto add_vertical;
     }
+
+    fVar1 = (((fVar2 + fVar2) -
+              (DAT_005706d8 - (fVar4 + fVar4))) + fVar1) *
+            DAT_005706c0;
+    *offset_y = fVar1;
+    *offset_x = (fVar2 + fVar2) - fVar1;
 }
 
 unsigned char RGE_Map::check_map_coords(short x, short y)
