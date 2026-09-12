@@ -421,86 +421,91 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
 }
 
 void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square,
-                                        int UpdateMap, int id) {
-    int csum;
+                                       int UpdateMap, int id) {
     int plNum;
-    RGE_Tile* tile = 0;
+    int csum;
+    LOSTBL* Tbl;
+    int offY;
+    int y2;
+    int x1;
+    int x2;
+    unsigned char* vis;
+    unsigned long* u;
+    RGE_Tile* tile;
+    unsigned char v;
 
+    tile = 0;
     log_map_call(this->world->world_time, (int)this->player->id, 3, id,
                  tx, ty, radius, Square, Map_Update_Suppresion);
+    if (Map_Update_Suppresion != 0) {
+        return;
+    }
 
-    if (Map_Update_Suppresion == 0) {
-        csum = this->input_csum;
-        plNum = (int)this->player->id;
-        csum = _rotl(csum, 3);
-        csum ^= 0x20202020;
-        csum = _rotl(csum, 2);
-        csum ^= plNum;
-        csum = _rotl(csum, 3);
-        csum ^= tx;
-        csum = _rotl(csum, 4);
-        csum ^= ty;
-        csum = _rotl(csum, 3);
-        csum ^= radius;
-        csum += Square;
-        this->input_csum = csum;
+    csum = this->input_csum;
+    plNum = (int)this->player->id;
+    csum = _rotl(csum, 3);
+    csum ^= 0x20202020;
+    csum = _rotl(csum, 2);
+    csum ^= plNum;
+    csum = _rotl(csum, 3);
+    csum ^= tx;
+    csum = _rotl(csum, 4);
+    csum ^= ty;
+    csum = _rotl(csum, 3);
+    csum ^= radius;
+    csum += Square;
+    this->input_csum = csum;
 
-        if (radius > 0x10) {
-            radius = 0x10;
-        }
+    if (radius > 0x10) {
+        radius = 0x10;
+    }
 
-        LOSTBL* offsets;
-        if (Square != 0) {
-            offsets = SquareLOS[radius];
-        } else {
-            offsets = NormalLOS[radius];
-        }
+    if (Square != 0) {
+        Tbl = SquareLOS[radius];
+    } else {
+        Tbl = NormalLOS[radius];
+    }
 
-        int off_y = offsets->y;
-        while (off_y != 999) {
-            off_y += ty;
-            if ((off_y >= 0) && (off_y < this->heightValue)) {
-                int x1 = offsets->x1 + tx;
-                if (x1 < 0) {
-                    x1 = 0;
-                }
-                int x2 = offsets->x2 + tx;
-                if (x2 >= this->widthValue) {
-                    x2 = this->widthValue - 1;
-                }
-
-                unsigned char* visible = this->map_offsets[off_y] + x1;
-                unsigned long* explored = unified_map_offsets[off_y] + x1;
-                if (UpdateMap != 0) {
-                    tile = this->map->map_row_offset[off_y] + x1;
-                }
-
-                if (x1 <= x2) {
-                    int count = x2 - x1 + 1;
-                    do {
-                        unsigned char value = *visible;
-                        --value;
-                        if (value == 0xff) {
-                            value = 0;
-                        }
-                        if (value == 0) {
-                            if (UpdateMap != 0) {
-                                tile->draw_as = 0x80;
-                            }
-                            *explored &= this->PlayerVisibleMaskInvertValue;
-                        }
-                        *visible = value;
-                        ++visible;
-                        ++explored;
-                        ++tile;
-                        --count;
-                    } while (count != 0);
-                }
+    offY = Tbl->y;
+    while (offY != 999) {
+        y2 = ty + offY;
+        if ((y2 >= 0) && (y2 < this->heightValue)) {
+            x1 = tx + Tbl->x1;
+            if (x1 < 0) {
+                x1 = 0;
+            }
+            x2 = tx + Tbl->x2;
+            if (x2 >= this->widthValue) {
+                x2 = this->widthValue - 1;
             }
 
-            ++offsets;
-            off_y = offsets->y;
+            vis = this->map_offsets[y2] + x1;
+            u = unified_map_offsets[y2] + x1;
+            if (UpdateMap != 0) {
+                tile = this->map->map_row_offset[y2] + x1;
+            }
+
+            while (x1 <= x2) {
+                v = *vis;
+                --v;
+                if (v == 0xff) {
+                    v = 0;
+                }
+                if (v == 0) {
+                    if (UpdateMap != 0) {
+                        tile->draw_as = 0x80;
+                    }
+                    *u &= this->PlayerVisibleMaskInvertValue;
+                }
+                *vis = v;
+                ++vis;
+                ++u;
+                ++x1;
+                ++tile;
+            }
         }
+        ++Tbl;
+        offY = Tbl->y;
     }
 }
 

@@ -17,7 +17,7 @@
     "0053C680": {"status": "matching", "symbol": "?recomputeExplored@RGE_Visible_Map@@QAEXXZ"},
     "0053C6C0": {"status": "matching", "symbol": "?get_los_table@RGE_Visible_Map@@QAEPAULOSTBL@@HH@Z"},
     "0053C6F0": {"status": "scratch", "symbol": "?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z"},
-    "0053C920": {"status": "scratch", "symbol": "?unexplore_terrain@RGE_Visible_Map@@QAEXHHHHHH@Z"},
+    "0053C920": {"status": "new_verified_logic", "symbol": "?unexplore_terrain@RGE_Visible_Map@@QAEXHHHHHH@Z", "behavior_review": "logic_matching/0053C920/review-01/attempt-01"},
     "0053CAC0": {"status": "new_verified_logic", "symbol": "?explore_terrain_sq@RGE_Visible_Map@@QAEHHHHHHH@Z", "behavior_review": "logic_matching/0053CAC0/review-01/attempt-01"},
     "0053CCF0": {"status": "new_verified_logic", "symbol": "?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z", "behavior_review": "logic_matching/0053CCF0/review-01/attempt-01"},
     "0053CE70": {"status": "matching", "symbol": "?checksum_visible_inputs@RGE_Visible_Map@@QAEKXZ"},
