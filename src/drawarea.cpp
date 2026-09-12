@@ -2175,67 +2175,58 @@ void TDrawArea::SetShadowTable(RGE_Color_Table* table)
 
 void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
 {
-    if (this->shadow_color_table != 0 && this->Bits != 0) {
-        if (x1 < this->ClipRect.left) {
-            x1 = this->ClipRect.left;
-        }
-        if (y1 < this->ClipRect.top) {
-            y1 = this->ClipRect.top;
-        }
-        if (x2 > this->ClipRect.right) {
-            x2 = this->ClipRect.right;
-        }
-        if (y2 > this->ClipRect.bottom) {
-            y2 = this->ClipRect.bottom;
-        }
-        if (x1 < 0) {
-            x1 = 0;
-        }
-        if (y1 < 0) {
-            y1 = 0;
-        }
-        if (x2 >= this->Width) {
-            x2 = this->Width - 1;
-        }
-        if (y2 >= this->Height) {
-            y2 = this->Height - 1;
-        }
+    if (this->shadow_color_table == 0 || this->Bits == 0)
+        return;
 
-        if (x2 < x1 || y2 < y1) {
-            return;
-        }
+    if (x1 < this->ClipRect.left)
+        x1 = this->ClipRect.left;
+    if (y1 < this->ClipRect.top)
+        y1 = this->ClipRect.top;
+    if (x2 > this->ClipRect.right)
+        x2 = this->ClipRect.right;
+    if (y2 > this->ClipRect.bottom)
+        y2 = this->ClipRect.bottom;
 
-        long orientation = this->Orien;
-        long row_pitch = this->AlignedWidth() * orientation;
+    if (x1 < 0)
+        x1 = 0;
+    if (y1 < 0)
+        y1 = 0;
+    if (x2 >= this->Width)
+        x2 = this->Width - 1;
+    if (y2 >= this->Height)
+        y2 = this->Height - 1;
 
-        unsigned char* row_start;
-        unsigned char* row_end;
-        unsigned char* pixel;
-        unsigned char* table;
+    if (x1 <= x2 && y1 <= y2) {
+        int orientation = this->Orien;
+        int row_size = this->AlignedWidth() * orientation;
+        int row_offset;
 
         if (orientation < 1) {
-            row_start = this->Bits + x1;
-            row_start += (y1 - this->Height + 1) * row_pitch;
+            row_offset = y1 - this->Height + 1;
+            row_offset *= row_size;
         }
         else {
-            row_start = this->Bits + x1;
-            row_start += row_pitch * y1;
+            row_offset = row_size * y1;
         }
 
-        row_end = row_start + (x2 - x1);
-        table = this->shadow_color_table->table;
+        RGE_Color_Table* table = this->shadow_color_table;
+        unsigned char* start = this->Bits + row_offset + x1;
+        unsigned char* end = start;
+        end -= x1;
+        end += x2;
 
         if (y1 <= y2) {
-            int row_count = (y2 - y1) + 1;
+            int rows = y2 - y1 + 1;
+            unsigned char* row_start = start;
             do {
-                pixel = row_start;
-                for (; pixel <= row_end; pixel++) {
-                    *pixel = table[*pixel];
-                }
-                row_start += row_pitch;
-                row_end += row_pitch;
-                row_count--;
-            } while (row_count != 0);
+                for (; start <= end; ++start)
+                    *start = table->table[*start];
+
+                start = row_start + row_size;
+                end += row_size;
+                --rows;
+                row_start = start;
+            } while (rows != 0);
         }
     }
 }

@@ -64,7 +64,7 @@
     "00445FE0": {"status": "matching", "symbol": "?DrawBevel21@TDrawArea@@QAEXJJJJEEEE@Z"},
     "004460C0": {"status": "matching", "symbol": "?DrawBevel32@TDrawArea@@QAEXJJJJEEEEEE@Z"},
     "00446220": {"status": "matching", "symbol": "?SetShadowTable@TDrawArea@@QAEXPAVRGE_Color_Table@@@Z"},
-    "00446230": {"status": "scratch", "symbol": "?DrawShadowBox@TDrawArea@@QAEXJJJJ@Z"},
+    "00446230": {"status": "new_verified_logic", "symbol": "?DrawShadowBox@TDrawArea@@QAEXJJJJ@Z", "behavior_review": "logic_matching/00446230/review-01/attempt-01"},
     "00446340": {"status": "matching", "symbol": "?GetPalette@TDrawArea@@QAEXPAUtagPALETTEENTRY@@@Z"},
     "00446370": {"status": "matching", "symbol": "?SetPalette@TDrawArea@@QAEXPAUtagPALETTEENTRY@@@Z"},
     "004463B0": {"status": "scratch", "symbol": "?take_snapshot@TDrawArea@@QAEXPADAAH@Z"}
