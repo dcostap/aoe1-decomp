@@ -354,12 +354,14 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
 {
     int i;
     RGE_Master_Static_Object* obj;
+    RGE_Task* task;
 
     if (target != this) {
         if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
                     ->task_by_group != 0) {
-            if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                        ->tasks->get_target_task(this, target, x, y, z) != 0) {
+            task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
+                       ->tasks->get_target_task(this, target, x, y, z);
+            if (task != 0) {
                 return this->master_obj;
             }
 
@@ -374,9 +376,10 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
                                 ->task_by_group ==
                             static_cast<RGE_Master_Action_Object*>(
                                 this->master_obj)->task_by_group) {
-                        if (static_cast<RGE_Master_Action_Object*>(obj)
-                                ->tasks->get_target_task(
-                                    this, target, x, y, z) != 0) {
+                        task = static_cast<RGE_Master_Action_Object*>(obj)
+                                   ->tasks->get_target_task(
+                                       this, target, x, y, z);
+                        if (task != 0) {
                             return obj;
                         }
                     }

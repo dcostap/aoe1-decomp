@@ -1,0 +1,37 @@
+# Experiment 99c309a5d77d1747c4dd12b954cd9ef150ef0ef93519564841c59bef3f17b98f
+# Base b1965b8b7a739c0478daebf5879f01873fb3dd1f
+diff --git a/src/act_obj.cpp b/src/act_obj.cpp
+index e876f15c6..92466fc73 100644
+--- a/src/act_obj.cpp
++++ b/src/act_obj.cpp
+@@ -354,12 +354,14 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
+ {
+     int i;
+     RGE_Master_Static_Object* obj;
++    RGE_Task* task;
+ 
+     if (target != this) {
+         if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
+                     ->task_by_group != 0) {
+-            if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
+-                        ->tasks->get_target_task(this, target, x, y, z) != 0) {
++            task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
++                       ->tasks->get_target_task(this, target, x, y, z);
++            if (task != 0) {
+                 return this->master_obj;
+             }
+ 
+@@ -374,9 +376,10 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
+                                 ->task_by_group ==
+                             static_cast<RGE_Master_Action_Object*>(
+                                 this->master_obj)->task_by_group) {
+-                        if (static_cast<RGE_Master_Action_Object*>(obj)
+-                                ->tasks->get_target_task(
+-                                    this, target, x, y, z) != 0) {
++                        task = static_cast<RGE_Master_Action_Object*>(obj)
++                                   ->tasks->get_target_task(
++                                       this, target, x, y, z);
++                        if (task != 0) {
+                             return obj;
+                         }
+                     }
