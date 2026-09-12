@@ -423,28 +423,28 @@ RGE_Time_Entry* RGE_Timeline::add_delete(float time,
     return node;
 }
 
-void RGE_Timeline::sub(RGE_Time_Entry* entry) {
-    RGE_Time_Entry* p = this->time_list;
+void RGE_Timeline::sub(RGE_Time_Entry* entry)
+{
+    RGE_Time_Entry* current = this->time_list;
     RGE_Time_Entry** link = &this->time_list;
-    RGE_Time_Entry* temp2;
-    if (p != 0) {
-        for (; p != 0 && p != entry; ) {
-            link = &p->next;
-            p = p->next;
-            if (p == 0)
+
+    if (current != 0) {
+        while (current != 0) {
+            if (current == entry) {
+                *link = current->next;
+                if (current->command == 1) {
+                    entry = this->time_list;
+                    while (entry != 0)
+                        entry = entry->next;
+                }
+                this->sub(entry);
+                free(current);
+                this->list_num--;
                 return;
+            }
+
+            link = &current->next;
+            current = current->next;
         }
-        *link = p->next;
-        if (p->command == 1) {
-            temp2 = this->time_list;
-            while (temp2 != 0)
-                temp2 = temp2->next;
-        } else {
-            temp2 = entry;
-        }
-        this->sub(temp2);
-        free(p);
-        this->list_num--;
     }
-    return;
 }
