@@ -929,25 +929,30 @@ int TribeDiplomacyDialog::check_stone()
 
 void TribeDiplomacyDialog::draw()
 {
-    int y = 0;
+    int y;
 
     TEasy_Panel::draw();
+    y = 0;
     if (this->backgroundPics != 0) {
         RGE_Game_World* world = rge_base_game->world;
         this->draw_setup(0);
 
-        for (int i = 1; i < world->player_num; ++i) {
-            RGE_Player* player = world->players[i];
-            RGE_Color_Table* colors = player->color_table;
-            if (colors != 0) {
-                ASMSet_Color_Xform((colors->id + 1) * 16);
-                this->backgroundPics->shape_draw(
-                    this->render_area,
-                    this->pnl_x + 0x0A,
-                    this->pnl_y + y + 0x50,
-                    0, 1, colors->table);
-            }
-            y += 0x1E;
+        if (world->player_num - 1 > 0) {
+            int i = 0;
+            do {
+                RGE_Player* player = world->players[i + 1];
+                RGE_Color_Table* colors = player->color_table;
+                if (colors != 0) {
+                    ASMSet_Color_Xform((colors->id + 1) * 16);
+                    this->backgroundPics->shape_draw(
+                        this->render_area,
+                        this->pnl_x + 0x0A,
+                        this->pnl_y + y + 0x50,
+                        0, 1, world->players[i + 1]->color_table->table);
+                }
+                y += 0x1E;
+                ++i;
+            } while (i < world->player_num - 1);
         }
 
         this->draw_finish();

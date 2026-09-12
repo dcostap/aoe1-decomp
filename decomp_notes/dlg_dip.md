@@ -82,3 +82,26 @@ constructor and action. The latest provider cleanup check confirms the
 generated deleting destructor separately. Fresh exact repair must use the
 existing module response file and inspect all eight normal owners plus that
 generated destructor.
+
+## Draw re-review
+
+Worker `sa-1f0a3a08-r1-0043E770` established a fresh draw baseline before
+repair. The baseline rebuilt 178 bytes against 195 original bytes and differed
+by 166 bytes. The old 193/195 accepted-drift result used retired standalone
+inputs and was not valid evidence for the reunified module.
+
+The retained natural source moves `y` initialization after the base draw,
+uses a zero-based player loop, and rereads the player color table for
+`shape_draw`. It rebuilds 195 bytes with the original 0x8 frame, 70
+instructions, five aligned calls, and zero boundary escapes. Six bytes remain
+different in two localized instruction-selection spans. One span selects
+`test eax,eax` instead of `cmp eax,ebp` after `ebp` is zero. The other changes
+the order of two independent arithmetic updates. The branch consumes only the
+zero flag, and later arithmetic overwrites all flags before the loop branch.
+No call, memory access, fault, exception, cleanup, or ABI effect changes.
+
+The one-job translation-unit audit is in
+`build/sa-1f0a3a08-r1-0043E770-final-audit/report.txt`. It confirms exact
+neighbors at `0043D6E0`, `0043E530`, `0043E5C0`, `0043E650`, and `0043E6E0`.
+The draw classification is `accepted_drift`. The registry already records this
+status, so no registry edit is needed.
