@@ -33,74 +33,71 @@ TShape::TShape()
     load_size = 0;
 }
 
-TShape::TShape(char* filename, long resource_file_id)
+TShape::TShape(char* filename, long resource_id)
 {
-    this->shape = 0;
-    this->shape_header = 0;
-    this->head = 0;
-    this->offsets = 0;
-    this->FShape = 0;
+    char next_file[260];
+    int file_handle;
+    int file_size;
 
-    char NextFile[260];
-    int fd;
-    if (shape_file_first || resource_file_id < 0) {
+    shape = 0;
+    shape_header = 0;
+    head = 0;
+    offsets = 0;
+    FShape = 0;
+
+    if (shape_file_first != 0 || resource_id < 0) {
         color_log('T', 'T', 1);
-
-        strcpy(NextFile, filename);
-        strcpy(NextFile + strlen(NextFile) - 4, ".slp");
-        Shape_Loads++;
-        fd = open(NextFile, 0x8000);
-        if (fd != -1) {
-            lseek(fd, 0, 2);
-            int sz = tell(fd);
-            this->FShape = (SLhape_File_Header*)malloc(sz);
-            lseek(fd, 0, 0);
-            read(fd, this->FShape, sz);
-            close(fd);
-            this->load_type = 1;
-            this->shape_info = (Shape_Info*)(this->FShape + 1);
-            this->load_size = sz;
+        strcpy(next_file, filename);
+        strcpy(next_file + strlen(next_file) - 3, "SLP");
+        ++Shape_Loads;
+        file_handle = open(next_file, 0x8000);
+        if (file_handle != -1) {
+            lseek(file_handle, 0, 2);
+            file_size = tell(file_handle);
+            FShape = (SLhape_File_Header*)malloc(file_size);
+            lseek(file_handle, 0, 0);
+            read(file_handle, FShape, file_size);
+            close(file_handle);
+            shape_info = (Shape_Info*)(FShape + 1);
+            load_type = 1;
+            load_size = file_size;
         }
 
-        if (this->FShape == 0) {
-            strcpy(NextFile + strlen(NextFile) - 4, ".shp");
-            fd = open(NextFile, 0x8000);
-            if (fd != -1) {
-                lseek(fd, 0, 2);
-                int sz = tell(fd);
-                this->shape = (byte*)malloc(sz);
-                lseek(fd, 0, 0);
-                read(fd, this->shape, sz);
-                close(fd);
-                this->head = (Shape_File_Header*)this->shape;
-                this->offsets = (Shape_Offsets*)(this->shape +
-                                                   sizeof(Shape_File_Header));
-                this->load_type = 1;
-                this->load_size = sz;
+        if (FShape == 0) {
+            strcpy(next_file + strlen(next_file) - 3, "SHP");
+            file_handle = open(next_file, 0x8000);
+            if (file_handle != -1) {
+                lseek(file_handle, 0, 2);
+                file_size = tell(file_handle);
+                shape = (byte*)malloc(file_size);
+                lseek(file_handle, 0, 0);
+                read(file_handle, shape, file_size);
+                close(file_handle);
+                head = (Shape_File_Header*)shape;
+                offsets = (Shape_Offsets*)(head + 1);
+                load_type = 1;
+                load_size = file_size;
             }
         }
-
         color_log('T', '_', 1);
     }
 
-    if (this->FShape == 0 && this->shape == 0 && resource_file_id >= 0) {
-        Shape_Loads++;
-        this->shape = (byte*)RESFILE_load(0x73687020, resource_file_id,
-                                          this->load_type, this->load_size);
-        if (this->shape != 0) {
-            if (((Shape_File_Header*)this->shape)->version == shape_version_110) {
-                this->head = (Shape_File_Header*)this->shape;
-                this->offsets = (Shape_Offsets*)(this->shape +
-                                                   sizeof(Shape_File_Header));
-                return;
+    if (FShape == 0 && shape == 0 && resource_id >= 0) {
+        ++Shape_Loads;
+        shape = RESFILE_load(0x73687020, resource_id,
+            load_type, load_size);
+        if (shape != 0) {
+            if (((Shape_File_Header*)shape)->version == shape_version_110) {
+                head = (Shape_File_Header*)shape;
+                offsets = (Shape_Offsets*)(head + 1);
             }
         } else {
-            this->shape = (byte*)RESFILE_load(0x736c7020, resource_file_id,
-                                              this->load_type, this->load_size);
-            if (this->shape != 0) {
-                this->FShape = (SLhape_File_Header*)this->shape;
-                this->shape = 0;
-                this->shape_info = (Shape_Info*)(this->FShape + 1);
+            shape = RESFILE_load(0x736c7020, resource_id,
+                load_type, load_size);
+            if (shape != 0) {
+                FShape = (SLhape_File_Header*)shape;
+                shape = 0;
+                shape_info = (Shape_Info*)(FShape + 1);
             }
         }
     }
