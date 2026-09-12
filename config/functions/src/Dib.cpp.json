@@ -11,7 +11,7 @@
     "00438E80": {"status": "matching", "symbol": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z"},
     "00439060": {"status": "matching", "symbol": "?GetDibDim@@YAXPAUBITMAPINFO256@@AAJ11@Z"},
     "004390A0": {"status": "scratch", "symbol": "?TileDibBlt@@YAJPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJJJ01PAUTRANSINFO@@JJJJHHH@Z"},
-    "004395A0": {"status": "scratch", "symbol": "?DibCheckTrans@@YAHPAUBITMAPINFO256@@PAUTRANSINFO@@PAE@Z"},
+    "004395A0": {"status": "new_verified_logic", "symbol": "?DibCheckTrans@@YAHPAUBITMAPINFO256@@PAUTRANSINFO@@PAE@Z", "behavior_review": "logic_matching/004395A0/review-01/attempt-01"},
     "00439700": {"status": "matching", "symbol": "?GetPaletteFromDib@@YAPAXPADH@Z"},
     "00439750": {"status": "matching", "symbol": "?ReadPalette@@YAPAXPADJH@Z"},
     "00439A10": {"status": "matching", "symbol": "?DibOpenFile@@YAPAUtagBITMAPINFOHEADER@@PAD@Z"},

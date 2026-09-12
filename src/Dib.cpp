@@ -457,85 +457,80 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     return param_7 * param_6;
 }
 
-int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
-    unsigned char* bits)
+int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
+    unsigned char* DibBits)
 {
     long tw;
-    long orientation;
+    long orien;
     long y;
-    long height;
-    long width;
-    long raw_width;
+    long h;
+    long w;
+    int AnyTrans;
 
-    GetDibDim(dib, width, height, orientation);
-    raw_width = dib->bmiHeader.biWidth;
-    info->LineInfo = (LINEINFO*)malloc(height << 4);
-    if (info->LineInfo == 0)
+    GetDibDim(DibInfo, tw, h, orien);
+    w = DibInfo->bmiHeader.biWidth;
+    TransInfo->LineInfo = (LINEINFO*)malloc(h << 4);
+    if (TransInfo->LineInfo == 0)
         return 1;
 
-    tw = 0;
+    AnyTrans = 0;
     y = 0;
-    if (height > 0) {
+    if (h > 0) {
         do {
-            int all_trans = 1;
-            long first = raw_width;
-            long row;
-
-            if (orientation == 1)
-                row = width * y;
+            int AllTrans = 1;
+            unsigned char* line;
+            if (orien == 1)
+                line = DibBits + tw * y;
             else
-                row = (height - y - 1) * width;
+                line = DibBits + (h - y - 1) * tw;
+            int StartX = w;
+            int x = 0;
 
-            unsigned char* scan = bits + row;
-            long x = 0;
-            if (raw_width > 0) {
-                do {
-                    if (scan[x] != 0) {
-                        if (all_trans) {
-                            all_trans = 0;
-                            first = x;
-                        }
-                    } else if (tw == 0) {
-                        tw = 1;
-                    }
-                    ++x;
-                } while (x < raw_width);
+            while (x < w) {
+                if (line[x] == 0) {
+                    if (AnyTrans == 0)
+                        AnyTrans = 1;
+                } else if (AllTrans != 0) {
+                    AllTrans = 0;
+                    StartX = x;
+                }
+                ++x;
             }
 
-            long last = first;
-            if (!all_trans) {
-                x = first + 1;
-                while (x < raw_width) {
-                    if (scan[x] != 0)
-                        last = x;
+            int EndX = StartX;
+            if (AllTrans == 0) {
+                x = StartX + 1;
+                while (x < w) {
+                    if (line[x] != 0)
+                        EndX = x;
                     ++x;
                 }
             }
 
-            int solid = 1;
-            if (!all_trans) {
-                x = first;
-                while (x <= last) {
-                    if (scan[x] == 0) {
-                        solid = 0;
+            int MidSolid = 1;
+            if (AllTrans == 0) {
+                x = StartX;
+                while (x <= EndX) {
+                    if (line[x] == 0) {
+                        MidSolid = 0;
                         break;
                     }
                     ++x;
                 }
             }
 
-            info->LineInfo[y].AllTrans = all_trans;
-            info->LineInfo[y].MidSolid = solid;
-            info->LineInfo[y].StartX = first;
-            info->LineInfo[y].EndX = last;
+            TransInfo->LineInfo[y].AllTrans = AllTrans;
+            TransInfo->LineInfo[y].MidSolid = MidSolid;
+            TransInfo->LineInfo[y].StartX = StartX;
+            TransInfo->LineInfo[y].EndX = EndX;
             ++y;
-        } while (y < height);
+        } while (y < h);
     }
 
-    info->AnyTrans = tw;
-    if (tw == 0)
-        free(info->LineInfo);
-    return tw;
+    TransInfo->AnyTrans = AnyTrans;
+    if (AnyTrans == 0)
+        free(TransInfo->LineInfo);
+    return AnyTrans;
 }
 
 void* __cdecl GetPaletteFromDib(char* path, int make_identity)
