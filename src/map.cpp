@@ -1773,28 +1773,29 @@ void RGE_Map::delete_all_objects_on_tile(int x, int y)
     }
 }
 
-void RGE_Map::create_terrain_object(RGE_Player* obj_owner,
-                                    RGE_Game_World* gworld, short row,
+void RGE_Map::create_terrain_object(RGE_Player* player,
+                                    RGE_Game_World* /*world*/, short row,
                                     short col, short old_terrain,
                                     int delete_obj, int no_delete_start,
                                     int no_delete_end)
 {
-    float y = 0.0f;
     float x = 0.0f;
-    short terrain = (short)this->get_terrain(col, row);
-    short object_id;
-    RGE_Object_Node* node;
-    RGE_Static_Object* object;
+    float y = 0.0f;
+    short terrain = this->get_terrain(col, row);
     short end_i = this->terrain_types[terrain].num_obj_type;
 
     if (end_i > 0) {
-        node = this->map_row_offset[row][col].objects.list;
-        while (node != 0) {
-            object = node->node;
-            node = node->next;
-            object_id = object->master_obj->id;
-            if (object->owner == obj_owner &&
-                (object_id < no_delete_start || object_id > no_delete_end)) {
+        RGE_Object_Node* list =
+            this->map_row_offset[row][col].objects.list;
+
+        while (list != 0) {
+            RGE_Static_Object* object = list->node;
+            RGE_Object_Node* next_list = list->next;
+            short object_type = object->master_obj->id;
+
+            if (object->owner == player &&
+                (object_type < no_delete_start ||
+                 object_type > no_delete_end)) {
                 if (old_terrain < 0) {
                     if (delete_obj != 0) {
                         if (object != 0)
@@ -1803,85 +1804,77 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner,
                         object->destroy_obj();
                     }
                 } else {
-                    short replacement_count =
-                        this->terrain_types[old_terrain].num_obj_type;
-                    if (replacement_count >= 0) {
-                        short* replacement_types =
-                            this->terrain_types[old_terrain].obj_types;
-                        do {
-                            if (replacement_types[replacement_count] == object_id)
-                                break;
-                            --replacement_count;
-                        } while (replacement_count >= 0);
-                        if (replacement_count >= 0) {
-                            if (delete_obj != 0) {
-                                if (object != 0)
-                                    delete object;
-                            } else {
-                                object->destroy_obj();
-                            }
+                    short index;
+                    for (index =
+                             this->terrain_types[old_terrain].num_obj_type;
+                         index >= 0; --index) {
+                        if (this->terrain_types[old_terrain]
+                                .obj_types[index] == object_type)
+                            break;
+                    }
+
+                    if (index >= 0) {
+                        if (delete_obj != 0) {
+                            if (object != 0)
+                                delete object;
+                        } else {
+                            object->destroy_obj();
                         }
                     }
                 }
             }
+            list = next_list;
         }
 
-        if (end_i > 0) {
-            unsigned char* placement =
-                this->terrain_types[terrain].obj_placement_flag;
-            short* density = this->terrain_types[terrain].obj_density;
-            int remaining = (int)end_i;
-            do {
-                short object_type = density[-30];
-                if (object_type != -1) {
-                    short chance = *density;
-                    RGE_Master_Static_Object* master =
-                        obj_owner->master_objects[object_type];
-                    unsigned char obj_flag = *placement;
-                    if (master != 0 && chance > 0) {
-                        int chance_left = (int)chance;
-                        do {
-                            switch (obj_flag) {
-                            case 0:
-                                y = (float)(int)col -
-                                    (float)debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                        0x813) * -3.051851e-05f;
-                                x = (float)(int)row -
-                                    (float)debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                        0x814) * -3.051851e-05f;
-                                break;
-                            case 1:
-                                y = (float)(int)col - -0.5f;
-                                x = (float)(int)row - -0.5f;
-                                break;
-                            }
+        for (int i = 0; i < end_i; ++i) {
+            int object_type =
+                (short)this->terrain_types[terrain].obj_types[i];
+            if (object_type != -1) {
+                RGE_Master_Static_Object* master_obj =
+                    player->master_objects[object_type];
+                short obj_density =
+                    this->terrain_types[terrain].obj_density[i];
+                unsigned char obj_flag =
+                    this->terrain_types[terrain].obj_placement_flag[i];
 
-                            int place_it;
-                            if (chance >= 1000) {
-                                place_it = 1;
-                            } else {
-                                int random_value = debug_rand(
+                if (master_obj != 0 && obj_density > 0) {
+                    int density_left = obj_density;
+                    do {
+                        if (obj_flag == 0) {
+                            x = (float)(int)col -
+                                (float)debug_rand(
                                     (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                    0x820);
-                                place_it = (random_value * 1000) /
-                                    0x7fff < chance_left;
-                            }
-                            if (place_it) {
-                                if (!master->check_placement(obj_owner, y, x,
-                                                       0, 0, 1, 0, 1, 0, 1))
-                                    master->make_new_obj(obj_owner, y, x, 0);
-                            }
-                            chance -= 1000;
-                            chance_left -= 1000;
-                        } while (chance > 0);
-                    }
+                                    0x813) * -3.051851e-05f;
+                            y = (float)(int)row -
+                                (float)debug_rand(
+                                    (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
+                                    0x814) * -3.051851e-05f;
+                        } else if (obj_flag == 1) {
+                            x = (float)(int)col - -0.5f;
+                            y = (float)(int)row - -0.5f;
+                        }
+
+                        int place_it;
+                        if (obj_density >= 1000) {
+                            place_it = 1;
+                        } else {
+                            int random_value = debug_rand(
+                                (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
+                                0x820);
+                            place_it = ((random_value * 1000) / 0x7fff) <
+                                       density_left;
+                        }
+
+                        if (place_it) {
+                            if (!master_obj->check_placement(
+                                    player, x, y, 0, 0, 1, 0, 1, 0, 1))
+                                master_obj->make_new_obj(player, x, y, 0);
+                        }
+                        obj_density -= 1000;
+                        density_left -= 1000;
+                    } while (obj_density > 0);
                 }
-                ++density;
-                ++placement;
-                --remaining;
-            } while (remaining != 0);
+            }
         }
     }
 }
