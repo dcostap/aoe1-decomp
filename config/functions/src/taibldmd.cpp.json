@@ -31,7 +31,7 @@
     "004D5B80": {"status": "matching", "symbol": "?insertGathererPercentage@TribeBuildAIModule@@QAEHHHH@Z"},
     "004D5BB0": {"status": "matching", "symbol": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z"},
     "004D5C20": {"status": "matching", "symbol": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z"},
-    "004D5CA0": {"status": "accepted_drift", "symbol": "?readyToResearch@TribeBuildAIModule@@QAEHHH@Z"},
+    "004D5CA0": {"status": "scratch", "symbol": "?readyToResearch@TribeBuildAIModule@@QAEHHH@Z"},
     "004D5D40": {"status": "accepted_drift", "symbol": "?unskipBuildList@TribeBuildAIModule@@QAEXHH@Z"},
     "004D5DE0": {"status": "matching", "symbol": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z"}
   }

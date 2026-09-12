@@ -18,7 +18,7 @@
     "0045D0E0": {"status": "matching", "symbol": "?transform@RGE_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
     "0045D120": {"status": "matching", "symbol": "?is_moving@RGE_Moving_Object@@UAEEXZ"},
     "0045D140": {"status": "matching", "symbol": "?stop_moving@RGE_Moving_Object@@UAEXXZ"},
-    "0045D150": {"status": "accepted_drift", "symbol": "?angle_to_object@RGE_Moving_Object@@QAEMPAVRGE_Static_Object@@MM@Z"},
+    "0045D150": {"status": "matching", "symbol": "?angle_to_object@RGE_Moving_Object@@QAEMPAVRGE_Static_Object@@MM@Z"},
     "0045D1F0": {"status": "matching", "symbol": "?turn_towards@RGE_Moving_Object@@UAEEPAVRGE_Static_Object@@MM@Z"},
     "0045D360": {"status": "matching", "symbol": "?set_angle@RGE_Moving_Object@@QAEXXZ"},
     "0045D3D0": {"status": "matching", "symbol": "?teleport@RGE_Moving_Object@@UAEMMMM@Z"},

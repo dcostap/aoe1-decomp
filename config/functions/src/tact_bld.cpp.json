@@ -14,6 +14,6 @@
     "004CD5E0": {"status": "accepted_drift", "symbol": "?update@TRIBE_Action_Build@@UAEEXZ"},
     "004CD910": {"status": "matching", "symbol": "?stop@TRIBE_Action_Build@@UAEHXZ"},
     "004CD920": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"},
-    "004CD960": {"status": "accepted_drift", "symbol": "?work@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+    "004CD960": {"status": "matching", "symbol": "?work@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"}
   }
 }

@@ -79,7 +79,7 @@
     "00465C50": {"status": "matching", "symbol": "?handle_timer_command@TPanel@@UAEJIJ@Z"},
     "00465C60": {"status": "matching", "symbol": "?handle_scroll@TPanel@@UAEJJJ@Z"},
     "00465C70": {"status": "matching", "symbol": "?handle_mouse_down@TPanel@@UAEJEJJHH@Z"},
-    "00465DC0": {"status": "accepted_drift", "symbol": "?handle_mouse_move@TPanel@@UAEJJJHH@Z"},
+    "00465DC0": {"status": "scratch", "symbol": "?handle_mouse_move@TPanel@@UAEJJJHH@Z"},
     "00465F70": {"status": "matching", "symbol": "?handle_mouse_up@TPanel@@UAEJEJJHH@Z"},
     "00466060": {"status": "matching", "symbol": "?handle_mouse_dbl_click@TPanel@@UAEJEJJHH@Z"},
     "00466140": {"status": "matching", "symbol": "?action@TPanel@@UAEJPAV1@JKK@Z"},
