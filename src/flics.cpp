@@ -321,75 +321,87 @@ void RGE_Flic_Player::literal()
 
 void RGE_Flic_Player::delta_flc()
 {
-    ushort* p;
     long cur_y = 0;
-    p = (ushort*)this->chunk;
-    int lines = (int)(short)*p;
-    p++;
-    if (lines <= 0) {
+    char* chunk = this->chunk;
+    int count = *(short*)chunk;
+    chunk += 2;
+
+    if (count <= 0) {
         return;
     }
-    int remaining = lines;
 
     do {
-        unsigned char found = 0;
-        ushort packets = 0;
-        ushort* scan = p;
-        do {
-            ushort code = *scan;
-            ++scan;
-            unsigned int top = ((unsigned int)code) >> 14;
-            if (top == packets) {
-                packets = code;
-                found = 1;
-            } else if (top == 2) {
-                this->window_buffer[this->flic_width - 1] = (uchar)code;
-                packets = *scan;
-                ++scan;
-                found = 1;
-            } else if (top == 3) {
-                int skip = (short)-code;
-                cur_y += skip;
-                this->save_buffer += this->drawarea_width * skip;
-                this->window_buffer = this->save_buffer;
-            }
-            p = scan;
-        } while (found == 0);
+        bool done = false;
+        ushort packet_count = 0;
 
-        if ((short)packets > 0) {
-            int packet_count = (short)packets;
+        do {
+            ushort command = *(ushort*)chunk;
+            packet_count = 0;
+            chunk += 2;
+
+            switch (command >> 14) {
+            case 0:
+                packet_count = command;
+                done = true;
+                break;
+            case 2:
+                this->window_buffer[this->flic_width - 1] =
+                    (uchar)command;
+                command = *(ushort*)chunk;
+                chunk += 2;
+                packet_count = command;
+                done = true;
+                break;
+            case 3: {
+                cur_y += -(short)command;
+                this->save_buffer +=
+                    this->drawarea_width * (-(short)command);
+                this->window_buffer = this->save_buffer;
+                break;
+            }
+            }
+        } while (!done);
+
+        if ((short)packet_count > 0) {
+            int packets = (short)packet_count;
             do {
-                ushort pair = *p;
-                this->window_buffer += (signed char)pair;
-                signed char size = *((signed char*)p + 1);
-                ushort* payload = p + 1;
-                if (size > 0) {
-                    int bytes = (int)size << 1;
-                    memcpy(this->window_buffer, payload, bytes);
-                    this->window_buffer += bytes;
-                    p = payload + size;
+                this->window_buffer += (signed char)*chunk;
+                chunk++;
+                char copy_count = *chunk;
+                chunk++;
+
+                if (copy_count > 0) {
+                    int byte_count = (signed char)copy_count * 2;
+                    memcpy(this->window_buffer, chunk, byte_count);
+                    this->window_buffer += byte_count;
+                    chunk += byte_count;
                 } else {
-                    int bytes = -(int)size << 1;
-                    if (bytes > 1) {
-                        int n = bytes >> 1;
+                    int byte_count = -(signed char)copy_count * 2;
+                    if (byte_count > 1) {
+                        unsigned int word_count = byte_count >> 1;
                         do {
-                            *(ushort*)this->window_buffer = *payload;
+                            *(ushort*)this->window_buffer = *(ushort*)chunk;
                             this->window_buffer += 2;
-                            n--;
-                        } while (n != 0);
+                            byte_count -= 2;
+                            word_count--;
+                        } while (word_count != 0);
                     }
-                    if (bytes == 1) {
-                        *this->window_buffer = (uchar)*payload;
+                    if (byte_count == 1) {
+                        *this->window_buffer = (uchar)*chunk;
                         this->window_buffer++;
                     }
-                    p = payload + 1;
+                    chunk += 2;
                 }
-            } while (--packet_count != 0);
+
+                packets--;
+            } while (packets != 0);
         }
+
         this->window_buffer = this->save_buffer + this->drawarea_width;
         cur_y++;
         this->save_buffer += this->drawarea_width;
-    } while (--remaining != 0);
+        count--;
+    } while (count != 0);
 }
 
 void RGE_Flic_Player::delta_fli()
