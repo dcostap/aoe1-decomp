@@ -1396,77 +1396,98 @@ static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
 void RGE_Static_Object::check_damage_sprites()
 {
-    RGE_Master_Static_Object* master = this->master_obj;
-    long old_damage_loc = -1;
     long new_damage_loc = -1;
-    unsigned char new_percent;
+    long current_damage_loc = -1;
 
-    if (master->hp <= 0) return;
-    if (master->damage_sprite_num == 0) return;
-
-    new_percent = (unsigned char)(100 -
-                                  (int)(this->hp * DAT_0057473c / master->hp));
-    if (new_percent == this->curr_damage_percent) return;
-
-    if (new_percent < 100 && master->damage_sprite_num > 0) {
-        for (int i = 0, n = master->damage_sprite_num; i < n; i++) {
-            if (master->damage_sprites[i].damage_percent < new_percent) new_damage_loc = i;
-            if (master->damage_sprites[i].damage_percent < this->curr_damage_percent) old_damage_loc = i;
-        }
+    RGE_Master_Static_Object* master = this->master_obj;
+    if (master->hp <= 0 || master->damage_sprite_num == 0) {
+        return;
     }
 
-    if (new_damage_loc != old_damage_loc) {
-        if (new_damage_loc > -1) {
-            RGE_Damage_Sprite_Info* info = &this->master_obj->damage_sprites[new_damage_loc];
-            unsigned char flag = info->flag;
-            RGE_Sprite* sprite;
-            long add_x;
-            long add_y;
-            switch (flag) {
-            case 0:
-                sprite = info->sprite;
-                add_x = 0;
-                add_y = 0;
-                goto add_damage_sprite;
-            case 1: {
-                    RGE_Master_Static_Object* m = this->master_obj;
-                    float rand_x = (float)debug_rand(s_stat_obj_cpp, 0x774);
-                    float fx = (this->world_x - (short)this->world_x) +
-                               ((rand_x * m->radius_x) * DAT_00574740 - m->radius_x);
-                    rand_x = (float)debug_rand(s_stat_obj_cpp, 0x775);
-                    float fy = (this->world_y - (short)this->world_y) +
-                               ((rand_x * m->radius_y) * DAT_00574740 - m->radius_y);
-                    short sx, sy;
-                    this->owner->world->map->get_point(sx, sy, fx, fy, this->world_z, 0, 0);
-                    sprite = info->sprite;
-                    add_x = sx;
-                    add_y = sy;
-                    goto add_damage_sprite;
-                }
-            case 2:
-                this->new_sprite(info->sprite);
-                goto damage_sprite_done;
-            default:
-                goto damage_sprite_done;
+    long health_percent = (long)(this->hp * DAT_0057473c / master->hp);
+    unsigned char new_damage_percent =
+        (unsigned char)(100 - health_percent);
+    if (new_damage_percent == this->curr_damage_percent) {
+        return;
+    }
+
+    if (new_damage_percent < 100) {
+        for (long i = 0; i < (long)master->damage_sprite_num; ++i) {
+            RGE_Damage_Sprite_Info* damage_sprite =
+                &master->damage_sprites[i];
+            if (damage_sprite->damage_percent < new_damage_percent) {
+                current_damage_loc = i;
             }
-
-        add_damage_sprite:
-            this->sprite_list->add_sprite(sprite, 0x5A, add_x, add_y);
-        damage_sprite_done:;
-        }
-
-        if (old_damage_loc > -1) {
-            RGE_Damage_Sprite_Info* oldInfo = &this->master_obj->damage_sprites[old_damage_loc];
-            if (oldInfo->flag == 2) {
-                if (new_damage_loc < 0 || this->master_obj->damage_sprites[new_damage_loc].flag != 2) {
-                    this->new_sprite(this->master_obj->sprite);
-                }
-            } else if (oldInfo->flag < 2) {
-                this->sprite_list->remove_sprite(oldInfo->sprite);
+            if (damage_sprite->damage_percent < this->curr_damage_percent) {
+                new_damage_loc = i;
             }
         }
     }
-    this->curr_damage_percent = new_percent;
+
+    if (current_damage_loc == new_damage_loc) {
+        this->curr_damage_percent = new_damage_percent;
+        return;
+    }
+
+    if (current_damage_loc >= 0) {
+        RGE_Damage_Sprite_Info* damage_sprite =
+            &this->master_obj->damage_sprites[current_damage_loc];
+        RGE_Sprite* sprite = 0;
+        short x = 0;
+        short y = 0;
+
+        switch (damage_sprite->flag) {
+        case 0:
+            sprite = damage_sprite->sprite;
+            break;
+        case 1: {
+            RGE_Master_Static_Object* random_master = this->master_obj;
+            int random_value = debug_rand(s_stat_obj_cpp, 0x774);
+            float random_x =
+                (float)random_value * random_master->radius_x;
+            random_x = random_x * DAT_00574740 - random_master->radius_x;
+            short x_part = (short)this->world_x;
+            random_x += this->world_x - (float)x_part;
+
+            random_master = this->master_obj;
+            random_value = debug_rand(s_stat_obj_cpp, 0x775);
+            float random_y =
+                (float)random_value * random_master->radius_y;
+            random_y = random_y * DAT_00574740 - random_master->radius_y;
+            short y_part = (short)this->world_y;
+            random_y += this->world_y - (float)y_part;
+
+            this->owner->world->map->get_point(
+                x, y, random_x, random_y, this->world_z, 0, 0);
+            sprite = damage_sprite->sprite;
+            break;
+        }
+        case 2:
+            this->new_sprite(damage_sprite->sprite);
+            goto damage_sprite_done;
+        default:
+            goto damage_sprite_done;
+        }
+
+        this->sprite_list->add_sprite(sprite, 0x5A, x, y);
+    }
+
+damage_sprite_done:
+    if (new_damage_loc >= 0) {
+        RGE_Damage_Sprite_Info* damage_sprite =
+            &this->master_obj->damage_sprites[new_damage_loc];
+        if (damage_sprite->flag < 2) {
+            this->sprite_list->remove_sprite(damage_sprite->sprite);
+        } else if (damage_sprite->flag == 2 &&
+                   (current_damage_loc < 0 ||
+                    this->master_obj->damage_sprites[current_damage_loc].flag != 2)) {
+            this->new_sprite(this->master_obj->sprite);
+            this->curr_damage_percent = new_damage_percent;
+            return;
+        }
+    }
+
+    this->curr_damage_percent = new_damage_percent;
 }
 
 

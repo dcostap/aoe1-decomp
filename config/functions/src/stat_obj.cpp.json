@@ -34,7 +34,7 @@
     "004C31E0": {"status": "matching", "symbol": "?draw_frame_3d_cube_front@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z"},
     "004C3B30": {"status": "accepted_drift", "symbol": "?draw_frame@RGE_Static_Object@@UAEXPAVTDrawArea@@FF@Z"},
     "004C3C70": {"status": "matching", "symbol": "?update@RGE_Static_Object@@UAEEXZ"},
-    "004C3F90": {"status": "scratch", "symbol": "?check_damage_sprites@RGE_Static_Object@@UAEXXZ"},
+    "004C3F90": {"status": "new_verified_logic", "symbol": "?check_damage_sprites@RGE_Static_Object@@UAEXXZ", "behavior_review": "logic_matching/004C3F90/review-01/attempt-01"},
     "004C41D0": {"status": "matching", "symbol": "?spawn_death_obj@RGE_Static_Object@@UAEPAV1@XZ"},
     "004C4210": {"status": "matching", "symbol": "?rehook@RGE_Static_Object@@UAEXXZ"},
     "004C4250": {"status": "accepted_drift", "symbol": "?get_object_pointer@RGE_Static_Object@@QAEPAV1@J@Z"},
