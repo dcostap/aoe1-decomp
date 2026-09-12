@@ -2250,96 +2250,81 @@ void TDrawArea::SetPalette(tagPALETTEENTRY* entries)
     this->DrawSystem->ModifyPalette(0, 256, entries);
 }
 
-void TDrawArea::take_snapshot(char* name, int& number)
+void TDrawArea::take_snapshot(char* file_name, int& snapshot_number)
 {
-    int bmWide;
-    int bmHeight;
-    BITMAPFILEHEADER bmFH;
-    BITMAPINFOHEADER bmIH;
-    char BMPFile[60];
-    RGBQUAD bmPAL[256];
-    PALETTEENTRY thePal[256];
+    BITMAPFILEHEADER file_header;
+    BITMAPINFOHEADER info_header;
+    char bitmap_file[60];
+    RGBQUAD bitmap_palette[256];
+    PALETTEENTRY palette[256];
 
-    bmIH.biWidth = this->Width;
-    bmHeight = this->Height;
-    bmWide = (bmIH.biWidth + 3) & 0xfffc;
+    int bitmap_width = this->Width;
+    int bitmap_height = this->Height;
+    int row_width = (bitmap_width + 3) & 0xFFFC;
 
-    bmFH.bfType = 0x4d42;
-    int total = this->Height * bmWide;
-    bmFH.bfSize = total + 0x436;
-    bmIH.biHeight = bmHeight;
-    bmFH.bfReserved1 = 0;
-    bmFH.bfReserved2 = 0;
-    bmFH.bfOffBits = 0x436;
+    file_header.bfType = 0x4D42;
+    file_header.bfSize = bitmap_height * row_width + 0x436;
+    file_header.bfReserved1 = 0;
+    file_header.bfReserved2 = 0;
+    file_header.bfOffBits = 0x436;
 
-    bmIH.biSize = 0x28;
-    bmIH.biPlanes = 1;
-    bmIH.biBitCount = 8;
-    bmIH.biCompression = 0;
-    bmIH.biSizeImage = 0;
-    bmIH.biXPelsPerMeter = 0;
-    bmIH.biYPelsPerMeter = 0;
-    bmIH.biClrUsed = 0;
-    bmIH.biClrImportant = 0;
+    info_header.biSize = sizeof(info_header);
+    info_header.biWidth = bitmap_width;
+    info_header.biHeight = bitmap_height;
+    info_header.biPlanes = 1;
+    info_header.biBitCount = 8;
+    info_header.biCompression = 0;
+    info_header.biSizeImage = 0;
+    info_header.biXPelsPerMeter = 0;
+    info_header.biYPelsPerMeter = 0;
+    info_header.biClrUsed = 0;
+    info_header.biClrImportant = 0;
 
-    *(int*)BMPFile = 0;
-
-    this->GetPalette(thePal);
+    bitmap_file[0] = '\0';
+    this->GetPalette(palette);
     for (int i = 0; i < 256; ++i) {
-        bmPAL[i].rgbBlue = thePal[i].peBlue;
-        bmPAL[i].rgbGreen = thePal[i].peGreen;
-        bmPAL[i].rgbRed = thePal[i].peRed;
-        bmPAL[i].rgbReserved = 0;
+        bitmap_palette[i].rgbBlue = palette[i].peBlue;
+        bitmap_palette[i].rgbGreen = palette[i].peGreen;
+        bitmap_palette[i].rgbRed = palette[i].peRed;
+        bitmap_palette[i].rgbReserved = 0;
     }
 
-    int tries = 0;
-    int file;
-    while (1) {
-        if (name == 0) {
-            sprintf(BMPFile, (char*)0x5845e4, number);
-        }
-        else {
-            sprintf(BMPFile, name, number);
-        }
+    int attempts = 0;
+    for (;;) {
+        if (file_name == 0)
+            sprintf(bitmap_file, "C:\\AOE_%03d.BMP", snapshot_number);
+        else
+            sprintf(bitmap_file, file_name, snapshot_number);
 
-        ++tries;
-        file = _open(BMPFile, 0);
-        if (file == -1)
+        ++attempts;
+        int existing_file = _open(bitmap_file, 0);
+        if (existing_file == -1)
             break;
 
-        ++number;
-        close(file);
-        if (tries <= 1000)
-            continue;
-        return;
+        ++snapshot_number;
+        close(existing_file);
+        if (attempts > 1000)
+            return;
     }
 
-    unsigned char* buffer = (unsigned char*)malloc(bmWide);
-    file = _open(BMPFile, 0x8301, 0x180);
-    if (file != -1) {
-        write(file, &bmFH, 0x0e);
-        write(file, &bmIH, 0x28);
-        write(file, bmPAL, 0x400);
+    unsigned char* row = (unsigned char*)malloc(row_width);
+    int output_file = _open(bitmap_file, 0x8301, 0x180);
+    if (output_file != -1) {
+        write(output_file, &file_header, sizeof(file_header));
+        write(output_file, &info_header, sizeof(info_header));
+        write(output_file, bitmap_palette, sizeof(bitmap_palette));
 
         if (this->Lock("take_snapshot", 1) != 0) {
-            int y = bmHeight - 1;
-            while (y >= 0) {
+            for (int y = bitmap_height - 1; y >= 0; --y) {
                 unsigned char* source =
                     (unsigned char*)this->CurDisplayOffsets[y];
-                int x = 0;
-                if (this->Width > 0) {
-                    do {
-                        buffer[x] = *source;
-                        ++x;
-                        ++source;
-                    } while (x < this->Width);
-                }
-                write(file, buffer, bmWide);
-                --y;
+                for (int x = 0; x < this->Width; ++x)
+                    row[x] = source[x];
+                write(output_file, row, row_width);
             }
             this->Unlock("take_snapshot");
         }
-        close(file);
+        close(output_file);
     }
-    free(buffer);
+    free(row);
 }

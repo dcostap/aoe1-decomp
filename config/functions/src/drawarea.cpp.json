@@ -67,6 +67,6 @@
     "00446230": {"status": "new_verified_logic", "symbol": "?DrawShadowBox@TDrawArea@@QAEXJJJJ@Z", "behavior_review": "logic_matching/00446230/review-01/attempt-01"},
     "00446340": {"status": "matching", "symbol": "?GetPalette@TDrawArea@@QAEXPAUtagPALETTEENTRY@@@Z"},
     "00446370": {"status": "matching", "symbol": "?SetPalette@TDrawArea@@QAEXPAUtagPALETTEENTRY@@@Z"},
-    "004463B0": {"status": "scratch", "symbol": "?take_snapshot@TDrawArea@@QAEXPADAAH@Z"}
+    "004463B0": {"status": "new_verified_logic", "symbol": "?take_snapshot@TDrawArea@@QAEXPADAAH@Z", "behavior_review": "logic_matching/004463B0/review-02/attempt-01"}
   }
 }
