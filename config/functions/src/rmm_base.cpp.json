@@ -27,7 +27,7 @@
     "00480E20": {"status": "matching", "symbol": "?remove_stack_node@RGE_Random_Map_Module@@IAEXPAUMap_Stack@@@Z"},
     "00480E50": {"status": "matching", "symbol": "?clear_stack@RGE_Random_Map_Module@@IAEXXZ"},
     "00480EA0": {"status": "matching", "symbol": "?check_stack@RGE_Random_Map_Module@@IAEEPAUMap_Stack@@@Z"},
-    "00480EC0": {"status": "scratch", "symbol": "?randomize_stack@RGE_Random_Map_Module@@IAEXPAUMap_Stack@@@Z"},
+    "00480EC0": {"status": "new_verified_logic", "symbol": "?randomize_stack@RGE_Random_Map_Module@@IAEXPAUMap_Stack@@@Z", "behavior_review": "logic_matching/00480EC0/review-01/attempt-01"},
     "00480FB0": {"status": "matching", "symbol": "?find_path@RGE_Random_Map_Module@@IAEEJJAAJ0PAM@Z"},
     "00481000": {"status": "scratch", "symbol": "?find_path@RGE_Random_Map_Module@@IAEEAAUMap_Stack@@JJAAJ1PAM@Z"}
   }

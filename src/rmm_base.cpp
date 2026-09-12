@@ -396,29 +396,29 @@ uchar RGE_Random_Map_Module::check_stack(Map_Stack* stack)
     return 1;
 }
 
-void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
+void RGE_Random_Map_Module::randomize_stack(Map_Stack* stack)
 {
-    Map_Stack sub_stacks[100];
     int i;
+    int j;
+    Map_Stack sub_stacks[100];
 
-    for (i = 0; i < 100; i++) {
-        init_stack(sub_stacks[i]);
+    for (i = 0; i < 100; ++i) {
+        this->init_stack(sub_stacks[i]);
     }
 
-    for (int outer = 2; outer != 0; outer--) {
-        while (param_1->next != 0) {
-            int r = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1E8) * 100) / 0x7FFF;
-            add_stack_node(&sub_stacks[r], param_1->next);
+    for (i = 0; i < 2; ++i) {
+        while (stack->next != 0) {
+            j = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1e8) * 100) / 0x7fff;
+            this->add_stack_node(&sub_stacks[j], stack->next);
         }
 
-        for (int stack_index = 1; stack_index < 100; stack_index += 2) {
-            while (sub_stacks[stack_index - 1].next != 0 ||
-                   sub_stacks[stack_index].next != 0) {
-                if (sub_stacks[stack_index - 1].next != 0) {
-                    add_stack_node(param_1, sub_stacks[stack_index - 1].next);
+        for (j = 0; j < 100; j += 2) {
+            while (sub_stacks[j].next != 0 || sub_stacks[j + 1].next != 0) {
+                if (sub_stacks[j].next != 0) {
+                    this->add_stack_node(stack, sub_stacks[j].next);
                 }
-                if (sub_stacks[stack_index].next != 0) {
-                    add_stack_node(param_1, sub_stacks[stack_index].next);
+                if (sub_stacks[j + 1].next != 0) {
+                    this->add_stack_node(stack, sub_stacks[j + 1].next);
                 }
             }
         }
