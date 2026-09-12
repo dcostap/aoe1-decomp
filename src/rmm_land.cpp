@@ -28,20 +28,20 @@ unsigned char RGE_RMM_Land_Generator::generate() {
 }
 
 unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
-    unsigned char target, unsigned char land_id, long x, long y)
+    uchar unused, uchar land_id, long x, long y)
 {
     long count = 0;
     long area = this->info.land[land_id].area;
     long x0 = x - area;
+    long y0 = y - area;
     long x1 = x + area;
     long y1 = y + area;
-    long y0 = y - area;
-    long octogon = area * DAT_00571ed0;
+    volatile long octogon = (long)(area * DAT_00571ed0);
     long cx0 = x - 2;
     long cy0 = y - 2;
     long cx1 = x + 2;
     long cy1 = y + 2;
-    unsigned char zone = this->info.land[land_id].zone;
+    uchar zone = this->info.land[land_id].zone;
 
     if (this->search_map_rows[y][x] != this->info.land_num) {
         return 0;
@@ -50,57 +50,46 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     if (octogon < 2) {
         octogon = 2;
     }
-    long octogon_y0 = y - octogon;
-    long octogon_y1 = y + octogon;
 
     long row = y0;
-    long column;
-    if (row > y1) {
-        return count;
-    }
-
-    do {
-        if (row < 0) {
-            if (row > cy0) {
-                count += 5;
-            }
-        } else if (row >= this->map_height) {
-            if (row < cy1) {
-                if (row < octogon_y1) {
+    if (row <= y1) {
+        do {
+            if (row < 0) {
+                if (row > cy0) {
                     count += 5;
                 }
-            }
-        } else {
-            column = x0;
-            if (column <= x1) {
-                do {
-                    if (column < 0) {
-                        if (column > cx0) {
-                            count++;
-                        }
-                    } else if (column >= this->map_width) {
-                        if (column < cx1) {
-                            count++;
-                        }
-                    } else {
-                        if (this->search_map_rows[row][column] == zone) {
-                            if (row >= cy0 && row <= cy1 &&
-                                column >= cx0 && column <= cx1) {
-                                count++;
+            } else if (row < this->map_height) {
+                long column = x0;
+                if (column <= x1) {
+                    do {
+                        if (column < 0) {
+                            if (column > cx0) {
+                                ++count;
                             }
-                        } else if (this->search_map_rows[row][column] <
-                                   this->info.land_num) {
-                            return 0;
+                        } else if (column < this->map_width) {
+                            uchar state = this->search_map_rows[row][column];
+                            if (state == zone) {
+                                if (row >= cy0 && row <= cy1 &&
+                                    column >= cx0 && column <= cx1) {
+                                    ++count;
+                                }
+                            } else if (state < this->info.land_num) {
+                                return 0;
+                            }
+                        } else if (column < cx1) {
+                            ++count;
                         }
-                    }
-                    column++;
-                } while (column <= x1);
+                        ++column;
+                    } while (column <= x1);
+                }
+            } else if (row < cy1) {
+                count += 5;
             }
-        }
-        row++;
-    } while (row <= y1);
+            ++row;
+        } while (row <= y1);
+    }
 
-    return count;
+    return (unsigned char)count;
 }
 
 // boundary under the canonical header.
