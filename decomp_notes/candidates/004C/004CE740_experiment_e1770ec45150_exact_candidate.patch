@@ -1,0 +1,22 @@
+# Experiment e1770ec45150ec0f04afdcb67547d2788565dffb85c14b54654cea420711667c
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/tact_dar.cpp b/src/tact_dar.cpp
+index 099bc0ae7..fc1683930 100644
+--- a/src/tact_dar.cpp
++++ b/src/tact_dar.cpp
+@@ -84,9 +84,13 @@ unsigned char TRIBE_Action_Discovery_Artifact::update()
+         break;
+ 
+     case 10:
+-        this->timer -= this->obj->owner->world->world_time_delta_seconds;
+-        if (this->timer <= DAT_00575070) {
++        float timer =
++            this->timer - this->obj->owner->world->world_time_delta_seconds;
++        if (timer <= DAT_00575070) {
++            this->timer = timer;
+             this->set_state(6);
++        } else {
++            this->timer = timer;
+         }
+         break;
+     }

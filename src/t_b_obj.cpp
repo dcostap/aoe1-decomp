@@ -443,7 +443,7 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* player)
     if (object_state == 2) {
         for (int i = 0; i < 3; ++i) {
             RGE_Master_Static_Object* master = master_obj;
-            if (master->attribute_flag[i] > 3 &&
+            if (master->attribute_flag[i] >= 4 &&
                 master->attribute_type_held[i] >= 0) {
                 owner->add_attribute_num(master->attribute_type_held[i],
                                          -master->attribute_amount_held[i], 0);
@@ -458,13 +458,19 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* player)
     if (production_queue_count > 0) {
         if (production_queue_need_attr == 4) {
             production_queue_need_attr = -1;
-            adjust_pop_waiting(owner, -1);
+            int id = owner->id;
+            long* value =
+                &static_cast<TRIBE_Game*>(rge_base_game)
+                     ->queue_is_waiting_on_pop_counter[id];
+            long old = *value;
+            long result = old - 1;
+            *value = result;
         }
         production_queue_count = 1;
         production_queue->unit_count = 1;
     }
 
-    production_queue_actions->delete_list();
+    actions->delete_list();
     TRIBE_Combat_Object::change_ownership(player);
 
     if (object_state == 0) {
@@ -472,15 +478,25 @@ void TRIBE_Building_Object::change_ownership(RGE_Player* player)
     }
 
     if (object_state == 2) {
-        if (building_master(this)->on_build_make_tile >= 0) {
-            owner->master_objects[building_master(this)->on_build_make_tile]->make_new_obj(
+        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj > -1) {
+            owner->master_objects[static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj]->make_new_obj(
                 owner, world_x, world_y, world_z);
         }
-        if (building_master(this)->on_build_make_tech >= 0) {
-            tribe_player(owner)->tech_tree->do_tech(
-                building_master(this)->on_build_make_tech);
+        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
+            static_cast<TRIBE_Player*>(owner)->tech_tree->do_tech(
+                static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech);
         }
-        give_building_attribute_to_owner();
+    }
+
+    if (object_state == 2) {
+        for (int i = 0; i < 3; ++i) {
+            RGE_Master_Static_Object* master = master_obj;
+            if (master->attribute_flag[i] >= 4 &&
+                master->attribute_type_held[i] >= 0) {
+                owner->add_attribute_num(master->attribute_type_held[i],
+                                         master->attribute_amount_held[i], 0);
+            }
+        }
     }
 }
 

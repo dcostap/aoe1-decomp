@@ -84,9 +84,13 @@ unsigned char TRIBE_Action_Discovery_Artifact::update()
         break;
 
     case 10:
-        this->timer -= this->obj->owner->world->world_time_delta_seconds;
-        if (this->timer <= DAT_00575070) {
+        float timer =
+            this->timer - this->obj->owner->world->world_time_delta_seconds;
+        if (timer <= DAT_00575070) {
+            this->timer = timer;
             this->set_state(6);
+        } else {
+            this->timer = timer;
         }
         break;
     }
