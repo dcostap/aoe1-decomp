@@ -67,3 +67,14 @@ calls. The target PDB's one-based `long[8]` homes remain unsafe source bounds
 without a proven land-count limit. Completed `00483600` land-start and
 `00484160` terrain-module evidence was preserved. No shared header or global
 defect was found. Further probes need new source or compiler-context evidence.
+
+## Accepted-drift repair pass: repair-06
+
+`00484320` now uses direct typed destination indexing. This restores the
+original `x`, `y`, `id`, then `player_id` memory order. Its remaining 12-byte
+difference exchanges two non-faulting address calculations.
+
+`00484470` is not safe accepted drift. Its generated dimension reads and rule
+field writes do not keep original fault order. No source change is retained.
+The neighboring `00484320` edit changes its grouped result from 373 to 183
+positional differences, so `00484470` is in the affected closure.

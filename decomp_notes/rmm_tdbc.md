@@ -26,3 +26,13 @@ current direct loop changes the old register and zero setup order.
 
 Reopen an owner only with direct source evidence. Do not restore raw cursors,
 absolute global macros, copied DBCT layouts, or wrapper context.
+
+## Accepted-drift repair pass: repair-06
+
+`00487DD0` now uses direct typed array accesses and ordered type tests. This
+restores the original terrain-size, clumps, and `avoid_hot_spots` write order.
+The one-job closure keeps all eight exact neighbors exact.
+
+The generated land-tile expression still reads width before height. The
+original reads height before width. This unresolved fault order blocks a new
+accepted-drift proposal.

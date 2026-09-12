@@ -899,13 +899,13 @@ void RGE_RMM_Database_Controller::add_object_module()
     int land_index = 0;
     if (this->land_info.land_num > 0) {
         RGE_Land_Info_Line* source = this->land_info.land;
-        RGE_Land_Point_Info_Line* destination = this->object_info.lands;
         int map_land_index = 0;
         do {
-        destination->x = source->x;
-        destination->y = source->y;
-        destination->id = map->land_info.land[map_land_index].land_id;
-        destination->player_id = player;
+        this->object_info.lands[land_index].x = source->x;
+        this->object_info.lands[land_index].y = source->y;
+        this->object_info.lands[land_index].id =
+            map->land_info.land[map_land_index].land_id;
+        this->object_info.lands[land_index].player_id = player;
 
         if (player > 0 && ++player > this->number_of_players)
             player = 0;
@@ -916,7 +916,6 @@ void RGE_RMM_Database_Controller::add_object_module()
         }
         ++land_index;
         ++source;
-        ++destination;
         } while (land_index < this->land_info.land_num);
     }
 }

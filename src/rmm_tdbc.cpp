@@ -220,7 +220,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
 void TRIBE_RMM_Database_Controller::add_terrain_module()
 {
     long land_tiles = this->map_info.maps[this->map_type].land_info.grown_land_percent *
-        this->map_width * this->map_height / 100;
+        this->map_height * this->map_width / 100;
     this->RGE_RMM_Database_Controller::add_terrain_module();
 
     float scale = (float)land_tiles * 0.00005f;
@@ -232,13 +232,28 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
 
     if (debug_rand(s_rmm_tdbc_path, 0x154) < 0x1fff) {
         for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
-            RGE_Terrain_Info_Line& terrain = this->terrain_info.terrain[i];
-            switch (terrain.terrain_type) {
-            case 0x0d: terrain.terrain_size *= 3; terrain.clumps *= 3; terrain.avoid_hot_spots = 2; break;
-            case 0x14:
-            case 0x13: terrain.terrain_size /= 2; terrain.clumps /= 2; break;
-            case 0x0a: terrain.terrain_size /= 2; terrain.clumps /= 2; terrain.avoid_hot_spots = 2; break;
-            case 6: terrain.terrain_size += terrain.terrain_size; terrain.avoid_hot_spots = 0; break;
+            if (this->terrain_info.terrain[i].terrain_type == 0x0d) {
+                this->terrain_info.terrain[i].terrain_size *= 3;
+                this->terrain_info.terrain[i].clumps *= 3;
+                this->terrain_info.terrain[i].avoid_hot_spots = 2;
+            }
+            else if (this->terrain_info.terrain[i].terrain_type == 0x14) {
+                this->terrain_info.terrain[i].terrain_size /= 2;
+                this->terrain_info.terrain[i].clumps /= 2;
+            }
+            else if (this->terrain_info.terrain[i].terrain_type == 0x13) {
+                this->terrain_info.terrain[i].terrain_size /= 2;
+                this->terrain_info.terrain[i].clumps /= 2;
+            }
+            else if (this->terrain_info.terrain[i].terrain_type == 0x0a) {
+                this->terrain_info.terrain[i].terrain_size /= 2;
+                this->terrain_info.terrain[i].clumps /= 2;
+                this->terrain_info.terrain[i].avoid_hot_spots = 2;
+            }
+            else if (this->terrain_info.terrain[i].terrain_type == 6) {
+                this->terrain_info.terrain[i].terrain_size +=
+                    this->terrain_info.terrain[i].terrain_size;
+                this->terrain_info.terrain[i].avoid_hot_spots = 0;
             }
         }
     }
