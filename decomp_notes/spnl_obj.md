@@ -40,5 +40,7 @@
 
 - Recover the remaining schedule differences in `draw` without compiler-only
   source forms.
-- Find a natural source reason for the required unused `prog_mode` read in
-  `mouse_left_up_action`.
+- The PDB type stream proves a public vanilla `get_prog_mode` accessor.
+  Its unused expression still disappears under the default VC5 recipe.
+- Keep `mouse_left_up_action` in scratch status until period source or a natural
+  read-preserving declaration explains the post-call reads and faults.
