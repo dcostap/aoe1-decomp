@@ -1,0 +1,21 @@
+# Experiment c066dba70eb49a1f07a9e4ad5cb744088f4be25cc578fc0679085c5f2fb2eb43
+# Base 00c84a4a1c32ae81f12092c81759cf818aee2fee
+diff --git a/src/player.cpp b/src/player.cpp
+index 540f533e6..36347f2f9 100644
+--- a/src/player.cpp
++++ b/src/player.cpp
+@@ -2050,12 +2050,8 @@ void RGE_Player::remake_visible_map() {
+ }
+ 
+ void RGE_Player::load_victory(int param_1, long* param_2, unsigned char param_3) {
+-    RGE_Victory_Conditions* victory;
+-
+-    victory = new RGE_Victory_Conditions(this, param_1, param_2, param_3);
+-    if (victory == 0) {
+-        victory = 0;
+-    }
++    RGE_Victory_Conditions* victory =
++        new RGE_Victory_Conditions(this, param_1, param_2, param_3);
+     this->victory_conditions = victory;
+ }
+ 

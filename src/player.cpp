@@ -2050,12 +2050,8 @@ void RGE_Player::remake_visible_map() {
 }
 
 void RGE_Player::load_victory(int param_1, long* param_2, unsigned char param_3) {
-    RGE_Victory_Conditions* victory;
-
-    victory = new RGE_Victory_Conditions(this, param_1, param_2, param_3);
-    if (victory == 0) {
-        victory = 0;
-    }
+    RGE_Victory_Conditions* victory =
+        new RGE_Victory_Conditions(this, param_1, param_2, param_3);
     this->victory_conditions = victory;
 }
 
