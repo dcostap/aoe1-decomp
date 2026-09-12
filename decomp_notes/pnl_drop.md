@@ -92,3 +92,10 @@ zero.
 The remaining exact-owner difference is a temporary translation-unit context
 regression after canonical dependency composition. Keep the natural source and
 recheck it after the dependent panel owners settle.
+
+## Accepted-drift repair
+
+Worker `repair-05` replaced the two dimension locals in `004754C0` with one
+adjusted-x initializer. This restores the original nested-pointer read order.
+The function now matches all 253 bytes. The serial module closure reports no
+exact-owner regression. See `decomp_notes/functions/0047/004754C0.md`.

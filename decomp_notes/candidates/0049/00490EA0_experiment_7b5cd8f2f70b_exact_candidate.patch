@@ -1,0 +1,37 @@
+# Experiment 7b5cd8f2f70b631c85df669511bb79b822654859db6e97a0614eb3854536a28f
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/scr_cams.cpp b/src/scr_cams.cpp
+index 4aa042eb8..1cbbaf835 100644
+--- a/src/scr_cams.cpp
++++ b/src/scr_cams.cpp
+@@ -133,18 +133,18 @@ void TRIBE_Screen_Campaign_Selection::init_vars()
+ 
+ TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection()
+ {
+-    delete this->title;
+-    delete this->campaignTitle;
+-    delete this->campaignList;
+-    delete this->campaignScrollbar;
+-    delete this->scenarioTitle;
+-    delete this->scenarioList;
+-    delete this->scenarioScrollbar;
+-    delete this->difficultyTitle;
+-    delete this->difficultyDrop;
+-    delete this->okButton;
+-    delete this->cancelButton;
+-    delete this->close_button;
++    delete_panel((TPanel**)&title);
++    delete_panel((TPanel**)&campaignTitle);
++    delete_panel((TPanel**)&campaignList);
++    delete_panel((TPanel**)&campaignScrollbar);
++    delete_panel((TPanel**)&scenarioTitle);
++    delete_panel((TPanel**)&scenarioList);
++    delete_panel((TPanel**)&scenarioScrollbar);
++    delete_panel((TPanel**)&difficultyTitle);
++    delete_panel((TPanel**)&difficultyDrop);
++    delete_panel((TPanel**)&okButton);
++    delete_panel((TPanel**)&cancelButton);
++    delete_panel((TPanel**)&close_button);
+ }
+ 
+ long TRIBE_Screen_Campaign_Selection::handle_idle()

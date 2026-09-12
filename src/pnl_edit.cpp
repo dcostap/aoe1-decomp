@@ -328,13 +328,13 @@ void TEditPanel::set_back_color(void*, unsigned long, unsigned char)
 void TEditPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4,
                                 int c5, int c6)
 {
-    this->bevel_color1 = (unsigned char)c1;
-    this->bevel_color2 = (unsigned char)c2;
-    this->bevel_type = type;
-    this->bevel_color3 = (unsigned char)c3;
-    this->bevel_color4 = (unsigned char)c4;
-    this->bevel_color5 = (unsigned char)c5;
-    this->bevel_color6 = (unsigned char)c6;
+    bevel_type = type;
+    bevel_color1 = (unsigned char)c1;
+    bevel_color2 = (unsigned char)c2;
+    bevel_color3 = (unsigned char)c3;
+    bevel_color4 = (unsigned char)c4;
+    bevel_color5 = (unsigned char)c5;
+    bevel_color6 = (unsigned char)c6;
     switch (type) {
     case 1:
     case 2:

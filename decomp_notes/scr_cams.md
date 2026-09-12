@@ -70,3 +70,10 @@ The canonical `scr_name.h` owner now consumes the canonical Panel, dialog, and
 screen providers. Its eight exact normal owners and two generated destructors
 still report `MATCH` and `0.0000%`. Its two natural-delete destructors and
 `004A6D50 TRIBE_Dialog_Name` are honest accepted-drift owners.
+
+## Accepted-drift repair
+
+Worker `repair-05` restored the 12 original `delete_panel` calls in `00490EA0`.
+The helper calls clear all 12 member slots after deletion. The function now
+matches all 240 bytes. The serial module closure reports no exact-owner
+regression. See `decomp_notes/functions/0049/00490EA0.md`.

@@ -132,3 +132,10 @@ function statuses. The migration check found 23 exact functions.
 
 The two canonical globals remain open. Publish them through reviewed global
 owners before removing the source-local declarations.
+
+## Accepted-drift repair
+
+Worker `repair-05` restored the donor-supported bevel-type-first assignment
+order in `00475E50`. This repairs the input-load and receiver-store fault order.
+The function now matches all 168 bytes. The serial module closure reports no
+exact-owner regression. See `decomp_notes/functions/0047/00475E50.md`.
