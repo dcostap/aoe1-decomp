@@ -540,7 +540,7 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* target,
             if (id == object_master->drop_site ||
                 id == object_master->backup_drop_site) {
                 if (this->obj->attribute_amount_held > 0.0f) {
-                    if (target == this->target_obj && this->state == 8) {
+                    if (target == this->target_obj2 && this->state == 8) {
                         return 1;
                     }
                     this->set_target_obj(0);

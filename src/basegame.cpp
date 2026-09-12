@@ -244,9 +244,7 @@ extern int do_fps_log;
 extern FILE* fps_log;
 int RGE_Base_Game::setup()
 {
-    unsigned long directx_version;
-    unsigned long directx_platform;
-    int game_speed_setting;
+    int temp_val;
     MEMORYSTATUS ms;
     char filename[260];
     char s[256];
@@ -255,8 +253,8 @@ int RGE_Base_Game::setup()
     debug_srand("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x20A,
                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x20A));
 
-    int screen_size = this->registry->RegGetInt(1, "Screen Size");
-    switch (screen_size) {
+    temp_val = this->registry->RegGetInt(1, "Screen Size");
+    switch (temp_val) {
     case 0x280:
             this->prog_info->main_wid = 0x280;
             this->prog_info->main_hgt = 0x1E0;
@@ -270,43 +268,43 @@ int RGE_Base_Game::setup()
             this->prog_info->main_hgt = 0x300;
         break;
     case 0x500:
-            this->prog_info->main_wid = screen_size;
+            this->prog_info->main_wid = temp_val;
             this->prog_info->main_hgt = 0x400;
         break;
     }
 
-    int rollover = this->registry->RegGetInt(1, "Rollover Text");
-    if (rollover == 2)
+    temp_val = this->registry->RegGetInt(1, "Rollover Text");
+    if (temp_val == 2)
         this->rollover = 0;
     else
         this->rollover = 1;
 
-    int mouse_style = this->registry->RegGetInt(1, "Mouse Style");
-    if (mouse_style == 2)
+    temp_val = this->registry->RegGetInt(1, "Mouse Style");
+    if (temp_val == 2)
         this->prog_info->interface_style = 2;
-    else if (mouse_style == 1)
+    else if (temp_val == 1)
         this->prog_info->interface_style = 1;
 
-    game_speed_setting = this->registry->RegGetInt(1, "Game Speed");
-    if (game_speed_setting != -1)
-        this->game_speed = (float)game_speed_setting * 0.1f;
+    temp_val = this->registry->RegGetInt(1, "Game Speed");
+    if (temp_val != -1)
+        this->game_speed = (float)temp_val * 0.1f;
 
-    int difficulty = this->registry->RegGetInt(1, "Difficulty");
-    if (difficulty != -1)
-        this->single_player_difficulty = difficulty;
+    temp_val = this->registry->RegGetInt(1, "Difficulty");
+    if (temp_val != -1)
+        this->single_player_difficulty = temp_val;
 
-    int path_finding = this->registry->RegGetInt(1, "Path Finding");
-    if (path_finding >= 1 && path_finding <= 3)
-        this->setPathFinding((unsigned char)(path_finding - 1));
+    temp_val = this->registry->RegGetInt(1, "Path Finding");
+    if (temp_val >= 1 && temp_val <= 3)
+        this->setPathFinding((unsigned char)(temp_val - 1));
 
-    int mp_path_finding = this->registry->RegGetInt(1, "MP Path Finding");
-    if (mp_path_finding >= 1 && mp_path_finding <= 3)
-        this->setMpPathFinding((unsigned char)(mp_path_finding - 1));
+    temp_val = this->registry->RegGetInt(1, "MP Path Finding");
+    if (temp_val >= 1 && temp_val <= 3)
+        this->setMpPathFinding((unsigned char)(temp_val - 1));
 
-    int scroll_speed = this->registry->RegGetInt(1, "Scroll Speed");
-    if (scroll_speed != -1 && scroll_speed >= 10 && scroll_speed <= 200) {
-        this->prog_info->mouse_scroll_interval = scroll_speed;
-        this->prog_info->key_scroll_interval = scroll_speed;
+    temp_val = this->registry->RegGetInt(1, "Scroll Speed");
+    if (temp_val != -1 && temp_val >= 10 && temp_val <= 200) {
+        this->prog_info->mouse_scroll_interval = temp_val;
+        this->prog_info->key_scroll_interval = temp_val;
     }
 
     if (_findfirst("empires.exe", &file_info) == -1) {
@@ -333,6 +331,8 @@ int RGE_Base_Game::setup()
                 if (debugActions == 1)
                     actionFile = fopen("c:\\aoeact.txt", "w");
 
+                unsigned long directx_version;
+                unsigned long directx_platform;
                 if (this->prog_info->check_expiration != 0 &&
                     this->check_expiration() == 0) {
                     this->error_code = 3;

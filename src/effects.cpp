@@ -58,39 +58,41 @@ RGE_Effects::RGE_Effects(int fd) {
 }
 
 RGE_Effects::RGE_Effects(char* path) {
-    int local_4, index, count;
+    FILE* fp;
+    long count;
+    long index;
+    long this_effect_num;
+    short effect_command;
 
-    FILE* fp = fopen(path, "r");
+    fp = fopen(path, "r");
     if (fp != 0) {
-        if (fscanf(fp, "%d %d", &effect_num, &local_4) != -1) {
+        if (fscanf(fp, "%d %d", &effect_num, &count) != -1) {
             effects = (RGE_Effect*)calloc(effect_num, 0x2C);
-            for (count = 0; count < local_4; count++) {
+            for (index = 0; index < count; index++) {
                 short sVar7 = 0;
-                fscanf(fp, "%d", &index);
-                if (fscanf(fp, "%s %hd", effects[index].name, &effects[index].effect_list_num) == -1) break;
-                effects[index].id = (short)index;
-                if (effects[index].effect_list_num > 0) {
-                    effects[index].effect_list = (RGE_Effect_Command*)calloc(effects[index].effect_list_num, 0x0C);
-                    if (effects[index].effect_list_num > 0) {
-                        while (effects[index].effect_list_num > sVar7) {
-                            RGE_Effect_Command* command = &effects[index].effect_list[sVar7];
-                            short command_num;
-                            if (fscanf(fp, "%hd %hd %hd %hd %f", &command_num, &command->change_num1, &command->change_num2, &command->change_num3, &command->change_amount) == -1) break;
+                fscanf(fp, "%d", &this_effect_num);
+                if (fscanf(fp, "%s %hd", effects[this_effect_num].name, &effects[this_effect_num].effect_list_num) == -1) break;
+                effects[this_effect_num].id = (short)this_effect_num;
+                if (effects[this_effect_num].effect_list_num > 0) {
+                    effects[this_effect_num].effect_list = (RGE_Effect_Command*)calloc(effects[this_effect_num].effect_list_num, 0x0C);
+                    if (effects[this_effect_num].effect_list_num > 0) {
+                        while (effects[this_effect_num].effect_list_num > sVar7) {
+                            RGE_Effect_Command* command = &effects[this_effect_num].effect_list[sVar7];
+                            if (fscanf(fp, "%hd %hd %hd %hd %f", &effect_command, &command->change_num1, &command->change_num2, &command->change_num3, &command->change_amount) == -1) break;
                             sVar7++;
-                            command->command = (unsigned char)command_num;
+                            command->command = (unsigned char)effect_command;
                         }
                     }
                 } else {
-                    effects[index].effect_list = 0;
+                    effects[this_effect_num].effect_list = 0;
                 }
-                convert_us(effects[index].name);
+                convert_us(effects[this_effect_num].name);
             }
-            fclose(fp);
         } else {
             effect_num = 0;
             effects = 0;
-            fclose(fp);
         }
+        fclose(fp);
     } else {
         effect_num = 0;
         effects = 0;

@@ -66,7 +66,7 @@ public:
     RGE_Person_Info** people_info;
     int campaign_num;
     RGE_Campaign** campaigns;
-    char save_filename[256];
+    char save_filename[260];
 
     RGE_Game_Info(char* path);
     ~RGE_Game_Info();
@@ -88,5 +88,8 @@ public:
     int open_scenario();
     void remove_player(long person);
 };
+
+typedef char rge_game_info_size_check[
+    (sizeof(RGE_Game_Info) == 0x118) ? 1 : -1];
 
 #endif
