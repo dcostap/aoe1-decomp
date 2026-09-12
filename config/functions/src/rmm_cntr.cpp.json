@@ -9,7 +9,7 @@
     "004821A0": {"status": "matching", "symbol": "??0RGE_RMM_Controller@@QAE@PAVRGE_Map@@PAVRGE_Game_World@@EJ@Z"},
     "00482260": {"status": "matching", "symbol": "?generate@RGE_RMM_Controller@@UAEEXZ"},
     "00482270": {"status": "scratch", "symbol": "?add_land_module@RGE_RMM_Controller@@IAEXAAURGE_Land_Info@@JJ@Z"},
-    "004826E0": {"status": "accepted_drift", "symbol": "?add_terrain_module@RGE_RMM_Controller@@IAEXAAURGE_Terrain_Info@@AAURGE_Land_Info@@J@Z"},
+    "004826E0": {"status": "new_verified_logic", "symbol": "?add_terrain_module@RGE_RMM_Controller@@IAEXAAURGE_Terrain_Info@@AAURGE_Land_Info@@J@Z", "behavior_review": "logic_matching/004826E0/review-01/attempt-01"},
     "004828A0": {"status": "matching", "symbol": "?count_map_tiles@RGE_RMM_Controller@@IAEJE@Z"},
     "004828B0": {"status": "matching", "symbol": "?add_object_module@RGE_RMM_Controller@@IAEXPAVRGE_Game_World@@AAURGE_Land_Info@@@Z", "behavior_review": "logic_matching/004828B0/review-01/attempt-01"}
   }
