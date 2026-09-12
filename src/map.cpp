@@ -1610,96 +1610,98 @@ void RGE_Map::load_border_types(RGE_Sound** sounds)
 
 void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
 {
-    short sound_id;
-    short low_color;
-    short med_color;
-    short hi_color;
-    short is_animated;
-    short animation_frames;
-    short tile_flag;
-    short underlay_terrain;
-    short border_style;
-    short random;
-    short local_48;
-    short local_46;
-    RGE_TOB_Picts* p;
-    RGE_TOB_Picts* row_start;
-    float frame_rate;
-    float pause_between_loops;
-    FILE* infile;
-    int border_count;
-    long resource_id;
-    char name[13];
-    char pict_name[13];
-
     int i;
     for (i = 15; i >= 0; --i)
         this->border_types[i].loaded = 0;
 
-    infile = fopen(filename, "r");
-    if (infile != 0) {
-        fscanf(infile, "%hd", &this->num_borders);
-        short remaining = this->num_borders - 1;
-        if (remaining >= 0) {
-            border_count = (int)remaining + 1;
+    FILE* file = fopen(filename, "r");
+    if (file != 0) {
+        fscanf(file, "%hd", &this->num_borders);
+        short border_count = this->num_borders - 1;
+        if (border_count >= 0) {
+            long count = (int)border_count + 1;
             do {
+                short border_id;
                 short border_num;
-                short shape_index = 0;
-                if (fscanf(infile,
-                    "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd",
-                    &border_num, name + 4, pict_name + 4, &resource_id,
-                    &local_46, &is_animated, &animation_frames, &hi_color,
-                    &med_color, &tile_flag, &underlay_terrain, &frame_rate,
-                    &pause_between_loops, &border_style, &random, &local_48) != -1 &&
-                    border_num < 16 && border_num >= 0) {
-                    RGE_Border_Set* border = &this->border_types[border_num];
-                    p = border->borders[0];
-                    for (int row = 0; row < 19; ++row) {
-                        row_start = p;
-                        for (int col = 0; col < 12; ++col) {
-                            fscanf(infile, "%hd %hd", &p->count,
-                                   &p->animations);
-                            p->shape_index = shape_index;
-                            shape_index += p->count * p->animations;
-                            ++p;
-                        }
-                        p = row_start + 12;
-                    }
+                short map_med_color;
+                short map_hi_color;
+                short map_low_color;
+                short sound_id;
+                short is_animated;
+                short animation_frames;
+                float interval;
+                float pause_between_loops;
+                short draw_tile;
+                short underlay_terrain;
+                short border_style;
+                long resource_id;
+                char name[13];
+                char pict_name[13];
 
-                    if (med_color >= 0)
-                        border->sound = sounds[med_color];
-                    else
-                        border->sound = 0;
-                    border->map_low_color = (unsigned char)hi_color;
-                    border->map_med_color = (unsigned char)is_animated;
-                    border->map_hi_color = (unsigned char)animation_frames;
-                    convert_us(name);
-                    strcpy(border->name, name);
-                    strcpy(border->pict_name, pict_name);
-                    border->resource_id = resource_id;
-                    border->loaded = 1;
-                    border->is_animated = (unsigned char)tile_flag;
-                    border->animation_frames = underlay_terrain;
-                    if (frame_rate == DAT_005706ac)
-                        border->pause_frames = 0;
-                    else
-                        border->pause_frames =
-                            (short)(long)(pause_between_loops / frame_rate);
-                    border->interval = frame_rate;
-                    border->pause_between_loops = pause_between_loops;
-                    border->frame = 0;
-                    border->draw_frame = 0;
-                    border->animate_last = 0.0f;
-                    border->frame_changed = 0;
-                    border->drawn = 0;
-                    border->draw_tile = (unsigned char)border_style;
-                    border->underlay_terrain = random;
-                    border->border_style = local_48;
+                if (fscanf(file,
+                    "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd",
+                    &border_id, name, pict_name, &resource_id, &border_num,
+                    &map_med_color, &map_hi_color, &map_low_color, &sound_id,
+                    &is_animated, &animation_frames, &interval,
+                    &pause_between_loops, &draw_tile, &underlay_terrain,
+                    &border_style) != EOF) {
+                    if (border_id < 16 && border_id >= 0) {
+                        RGE_Border_Set* border =
+                            &this->border_types[border_id];
+                        short shape_index = 0;
+
+                        for (i = 0; i < 19; ++i) {
+                            RGE_TOB_Picts* tile = border->borders[i];
+                            int j = 0;
+                            do {
+                                fscanf(file, "%hd %hd", &tile->count,
+                                       &tile->animations);
+                                tile->shape_index = shape_index;
+                                shape_index += tile->count * tile->animations;
+                                ++tile;
+                                ++j;
+                            } while (j < 12);
+                        }
+
+                        if (sound_id < 0)
+                            border->sound = 0;
+                        else
+                            border->sound = sounds[sound_id];
+                        border->map_low_color =
+                            (unsigned char)map_low_color;
+                        border->map_med_color =
+                            (unsigned char)map_med_color;
+                        border->map_hi_color =
+                            (unsigned char)map_hi_color;
+                        convert_us(name);
+                        strcpy(border->name, name);
+                        strcpy(border->pict_name, pict_name);
+                        border->resource_id = resource_id;
+                        border->loaded = 1;
+                        border->is_animated = (unsigned char)is_animated;
+                        border->animation_frames = animation_frames;
+                        if (interval == 0.0f)
+                            border->pause_frames = 0;
+                        else
+                            border->pause_frames =
+                                (short)(pause_between_loops / interval);
+                        border->interval = interval;
+                        border->pause_between_loops = pause_between_loops;
+                        border->frame = 0;
+                        border->draw_frame = 0;
+                        border->animate_last = 0.0f;
+                        border->frame_changed = 0;
+                        border->drawn = 0;
+                        border->draw_tile = (unsigned char)draw_tile;
+                        border->underlay_terrain = underlay_terrain;
+                        border->border_style = border_style;
+                    }
                 }
-            } while (--border_count != 0);
+                --count;
+            } while (count != 0);
         }
     }
-    fclose(infile);
+    fclose(file);
 }
 
 void RGE_Map::load_terrain_obj_types(char* filename)
