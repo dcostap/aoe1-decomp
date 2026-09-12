@@ -1884,51 +1884,43 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner,
     }
 }
 
-int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
+int RGE_Map::clear_terrain_object(RGE_Game_World* gworld, short row,
                                   short col, short old_terrain,
-                                  int remove_now, int min_id, int max_id)
+                                  int delete_obj, int no_delete_start,
+                                  int no_delete_end)
 {
-    short object_id;
+    short object_type = -1;
     RGE_Object_Node* list;
     RGE_Object_Node* next_list;
-    short result;
-    short object_type;
 
-    result = -1;
     this->get_terrain(col, row);
     list = this->map_row_offset[row][col].objects.list;
 
-    do {
-        if (list == 0)
-            return result;
-
+    while (list != 0) {
         RGE_Static_Object* object = list->node;
         next_list = list->next;
-        object_id = object->master_obj->id;
 
-        if (object_id < min_id || object_id > max_id) {
+        if (object->master_obj->id < no_delete_start ||
+            object->master_obj->id > no_delete_end) {
             if (old_terrain < 0) {
-                if (remove_now != 0) {
+                if (delete_obj != 0) {
                     if (object != 0)
                         delete object;
                 } else {
                     object->destroy_obj();
                 }
             } else {
-                object_type = this->terrain_types[old_terrain].num_obj_type;
-                result = object_id;
-                if (object_type >= 0) {
-                    short* object_types =
-                        this->terrain_types[old_terrain].obj_types;
-                    do {
-                        if (object_types[object_type] == object_id)
-                            break;
-                        --object_type;
-                    } while (object_type >= 0);
+                object_type = object->master_obj->id;
+                short index;
+                for (index = this->terrain_types[old_terrain].num_obj_type;
+                     index >= 0; --index) {
+                    if (this->terrain_types[old_terrain].obj_types[index] ==
+                        object_type)
+                        break;
                 }
 
-                if (object_type >= 0) {
-                    if (remove_now != 0) {
+                if (index >= 0) {
+                    if (delete_obj != 0) {
                         if (object != 0)
                             delete object;
                     } else {
@@ -1938,7 +1930,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
                                object->owner, object->world_x, object->world_y,
                                0, 0, 1, 1, 1, 0, 0)) {
                     object = list->node;
-                    if (remove_now != 0) {
+                    if (delete_obj != 0) {
                         if (object != 0)
                             delete object;
                     } else {
@@ -1947,9 +1939,10 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
                 }
             }
         }
-
         list = next_list;
-    } while (1);
+    }
+
+    return object_type;
 }
 
 void RGE_Map::place_terrain_object(RGE_Player* player,
