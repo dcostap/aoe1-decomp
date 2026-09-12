@@ -236,173 +236,167 @@ byte TShape::shape_minmax(long& out_minx, long& out_miny,
 
 byte TShape::shape_check(long x, long y, long frame)
 {
-    byte* p;
-    byte command;
-
-    if (frame < 0)
-        return 0;
-    if (Check_shape(frame, "RGL_shape_draw"))
+    if (frame < 0 ||
+        this->Check_shape(frame, (char*)"RGL_shape_draw") != 0)
         return 0;
 
-    byte* base = (byte*)this->FShape;
-    if (base != 0) {
-        Shape_Info* info;
-        int px;
-        int py;
-        int width;
-        info = &this->shape_info[frame];
-        px = info->Hotspot_X + x;
-        py = info->Hotspot_Y + y;
-        width = info->Width;
-        if (px < 0 || py < 0 || px >= width || py >= info->Height)
-            return 0;
-        int row_offset = py * 4;
-        byte* rowtab = base + info->Shape_Outline_Offset;
-        int minx = *(short*)(rowtab + row_offset);
-        int span = *(short*)(rowtab + row_offset + 2);
-        if (minx < 0 || px < minx || px > width - span)
-            return 0;
-        byte* data = base + info->Shape_Data_Offsets;
-        int data_offset = *(int*)(data + row_offset);
-        p = base + data_offset;
-        while (minx < width) {
-            if (px < minx)
-                return 0;
-            command = *p++;
-            unsigned char selector = command & 0xf;
-            switch (selector) {
-            case 0:
-            case 4:
-            case 8:
-            case 12: {
-                unsigned int n = ((unsigned int)command) >> 2;
-                minx += n;
-                if (px < minx)
-                    return 1;
-                p += n;
-                break;
-            }
-            case 2: {
-                unsigned int n = (((unsigned int)command) << 4) | *p++;
-                minx += n;
-                if (px < minx)
-                    return 1;
-                p += n;
-                break;
-            }
-            case 1:
-            case 5:
-            case 9:
-            case 13: {
-                unsigned int n = ((unsigned int)command) >> 2;
-                minx += n;
-                break;
-            }
-            case 3: {
-                unsigned int n = (((unsigned int)command) << 4) | *p++;
-                minx += n;
-                break;
-            }
-            case 6: {
-                unsigned int n = ((unsigned int)command) >> 4;
-                if (n == 0)
-                    n = *p++;
-                minx += n;
-                if (px < minx)
-                    return 1;
-                p += n;
-                break;
-            }
-            case 7:
-            case 10: {
-                unsigned int n = ((unsigned int)command) >> 4;
-                if (n == 0)
-                    n = *p++;
-                minx += n;
-                if (px < minx)
-                    return 1;
-                ++p;
-                break;
-            }
-            case 11: {
-                unsigned int n = ((unsigned int)command) >> 4;
-                if (n == 0)
-                    n = *p++;
-                minx += n;
-                if (px < minx)
-                    return 1;
-                break;
-            }
-            case 15:
-                return 0;
-            default:
-                return 0;
+    if (this->FShape != 0) {
+        Shape_Info* info = this->shape_info + frame;
+        long shape_x = info->Hotspot_X + x;
+        long shape_y = info->Hotspot_Y + y;
+        long width = info->Width;
+
+        if (shape_x >= 0 && shape_y >= 0 && shape_x < width &&
+            shape_y < info->Height) {
+            short* outline =
+                (short*)(this->FShape->Version +
+                         info->Shape_Outline_Offset);
+            long left = outline[shape_y * 2];
+            long right = outline[shape_y * 2 + 1];
+
+            if (left >= 0 && left <= shape_x &&
+                shape_x <= width - right) {
+                long* data_offsets =
+                    (long*)(this->FShape->Version +
+                            info->Shape_Data_Offsets);
+                byte* source =
+                    (byte*)(this->FShape->Version + data_offsets[shape_y]);
+
+                if (left < width) {
+                    long count;
+                    while (left <= shape_x) {
+                        byte command = *source++;
+
+                        switch (command & 0x0f) {
+                        case 0:
+                        case 4:
+                        case 8:
+                        case 0x0c:
+                            count = command >> 2;
+                            left += count;
+                            if (shape_x < left)
+                                return 1;
+                            source += count;
+                            break;
+                        case 1:
+                        case 5:
+                        case 9:
+                        case 0x0d:
+                            left += command >> 2;
+                            break;
+                        case 2:
+                            count = ((command & 0xff) << 4) | *source++;
+                            left += count;
+                            if (shape_x < left)
+                                return 1;
+                            source += count;
+                            break;
+                        case 3:
+                            count = ((command & 0xff) << 4) | *source++;
+                            left += count;
+                            break;
+                        case 6:
+                            count = command >> 4;
+                            if (count == 0)
+                                count = *source++;
+                            left += count;
+                            if (shape_x < left)
+                                return 1;
+                            source += count;
+                            break;
+                        case 7:
+                        case 0x0a:
+                            count = command >> 4;
+                            if (count == 0)
+                                count = *source++;
+                            left += count;
+                            if (shape_x < left)
+                                return 1;
+                            ++source;
+                            break;
+                        case 0x0b:
+                            count = command >> 4;
+                            if (count == 0)
+                                count = *source++;
+                            left += count;
+                            if (shape_x < left)
+                                return 1;
+                            break;
+                        default:
+                            return 0;
+                        }
+
+                        if (width <= left)
+                            return 0;
+                    }
+                }
             }
         }
     } else {
         Shape_Header* header =
             (Shape_Header*)(this->shape + this->offsets[frame].shape);
         this->shape_header = header;
-        int minY = header->ymin;
-        int minX2 = header->xmin;
-        int maxX2 = header->xmax;
-        p = (byte*)(header + 1);
-        int maxY2 = header->ymax;
-        if (y < minY || y > maxY2 || x < minX2 || x > maxX2)
-            return 0;
-        if (minY < y) {
-            int rows = y - minY;
-            do {
-                byte done = 0;
+
+        long shape_x = header->xmin;
+        long shape_y = header->ymin;
+        byte* source = (byte*)(header + 1);
+
+        if (shape_y <= y && y <= header->ymax && shape_x <= x &&
+            x <= header->xmax) {
+            if (shape_y < y) {
+                long rows = y - shape_y;
                 do {
-                    command = *p++;
-                    if ((command & 1) == 1) {
-                        command >>= 1;
-                        if (command == 0)
-                            done = 1;
-                        else
-                            p += command;
-                    } else {
-                        command >>= 1;
-                        if (command == 0)
-                            done = 1;
-                        else
-                            ++p;
-                    }
-                } while (!done);
-                --rows;
-            } while (rows != 0);
-        }
-        long r = minX2;
-        byte done = 0;
-        do {
-            command = *p++;
-            if ((command & 1) == 1) {
-                command >>= 1;
-                if (command == 0) {
-                    r += *p;
-                    if (r > x)
-                        return 0;
-                    ++p;
-                } else {
-                    r += command;
-                    if (r > x)
-                        return 1;
-                    p += command;
-                }
-            } else {
-                command >>= 1;
-                if (command == 0) {
-                    done = 1;
-                } else {
-                    r += command;
-                    if (r > x)
-                        return 1;
-                }
-                ++p;
+                    byte done = 0;
+                    do {
+                        byte command = *source++;
+                        if ((command & 1) == 1) {
+                            command >>= 1;
+                            if (command == 0)
+                                ++source;
+                            else
+                                source += command;
+                        } else {
+                            command >>= 1;
+                            if (command == 0)
+                                done = 1;
+                            else
+                                ++source;
+                        }
+                    } while (!done);
+                } while (--rows);
             }
-        } while (!done);
+
+            byte done = 0;
+            do {
+                byte command = *source++;
+                if ((command & 1) == 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        shape_x += *source;
+                        if (x < shape_x)
+                            return 0;
+                        ++source;
+                    } else {
+                        shape_x += command;
+                        if (x < shape_x)
+                            return 1;
+                        source += command;
+                    }
+                } else {
+                    command >>= 1;
+                    if (command == 0) {
+                        done = 1;
+                    } else {
+                        shape_x += command;
+                        if (x < shape_x)
+                            return 1;
+                        ++source;
+                    }
+                }
+            } while (!done);
+        }
     }
+
     return 0;
 }
 
