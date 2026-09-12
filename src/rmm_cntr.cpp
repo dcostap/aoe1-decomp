@@ -137,42 +137,60 @@ set_land_defaults:
 }
 
 void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& info,
-    RGE_Land_Info& lands, long type)
+    RGE_Land_Info& land_info, long type)
 {
-    long area;
-    long i;
     info.terrain_num = 2;
     switch (type) {
-    case 3: case 4:
-        area = this->map_height * this->map_width;
-        info.terrain[0].terrain_type = 10; info.terrain[0].clumps = 30;
-        info.terrain[0].base_terrain_type = 0; info.terrain[0].terrain_generated = 0;
-        info.terrain[0].terrain_size = area * 20 / 100; info.terrain[0].spacing = 2;
-        area = this->map_height * this->map_width;
-        info.terrain[1].terrain_type = 6; info.terrain[1].clumps = 17;
-        info.terrain[1].terrain_size = area * 30 / 100; break;
-    case 0: case 1: case 2:
-        area = this->map_height * this->map_width;
-        info.terrain[0].terrain_type = 10; info.terrain[0].clumps = 20;
-        info.terrain[0].base_terrain_type = 0; info.terrain[0].terrain_generated = 0;
-        info.terrain[0].terrain_size = area * 20 / 100; info.terrain[0].spacing = 2;
-        area = this->map_height * this->map_width;
-        info.terrain[1].terrain_type = 6; info.terrain[1].clumps = 7;
-        info.terrain[1].terrain_size = area * 30 / 100; break;
-    default: goto after_defaults;
+    case 3:
+    case 4:
+        info.terrain[0].terrain_size =
+            this->map_width * this->map_height * 20 / 100;
+        info.terrain[0].terrain_type = 10;
+        info.terrain[0].clumps = 30;
+        info.terrain[0].base_terrain_type = 0;
+        info.terrain[0].terrain_generated = 0;
+        info.terrain[0].spacing = 2;
+
+        info.terrain[1].terrain_size =
+            this->map_width * this->map_height * 30 / 100;
+        info.terrain[1].terrain_type = 6;
+        info.terrain[1].clumps = 17;
+        goto terrain_defaults;
+    case 0:
+    case 1:
+    case 2:
+        info.terrain[0].terrain_size =
+            this->map_width * this->map_height * 20 / 100;
+        info.terrain[0].terrain_type = 10;
+        info.terrain[0].clumps = 20;
+        info.terrain[0].base_terrain_type = 0;
+        info.terrain[0].terrain_generated = 0;
+        info.terrain[0].spacing = 2;
+
+        info.terrain[1].terrain_size =
+            this->map_width * this->map_height * 30 / 100;
+        info.terrain[1].terrain_type = 6;
+        info.terrain[1].clumps = 7;
+    terrain_defaults:
+        info.terrain[1].base_terrain_type = 0;
+        info.terrain[1].terrain_generated = 0;
+        info.terrain[1].spacing = 0;
+
+    default:
+        long i = 0;
+        info.hot_spot_num = land_info.land_num;
+        if (info.hot_spot_num > 0) {
+            do {
+                info.hot_spots[i].x = land_info.land[i].x;
+                info.hot_spots[i].y = land_info.land[i].y;
+                info.hot_spots[i].radius = 12;
+                info.hot_spots[i].fade = 20;
+                ++i;
+            } while (i < info.hot_spot_num);
+        }
+
+        new RGE_RMM_Terrain_Generator(this->map, this, &info);
     }
-    info.terrain[1].base_terrain_type = 0;
-    info.terrain[1].terrain_generated = 0;
-    info.terrain[1].spacing = 0;
-after_defaults:
-    info.hot_spot_num = lands.land_num;
-    for (i = 0; i < info.hot_spot_num; ++i) {
-        info.hot_spots[i].x = lands.land[i].x;
-        info.hot_spots[i].y = lands.land[i].y;
-        info.hot_spots[i].radius = 12;
-        info.hot_spots[i].fade = 20;
-    }
-    new RGE_RMM_Terrain_Generator(this->map, this, &info);
 }
 
 long RGE_RMM_Controller::count_map_tiles(uchar ignored)
