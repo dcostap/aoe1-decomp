@@ -460,12 +460,12 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
 int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
     unsigned char* DibBits)
 {
-    long tw;
+    int AnyTrans;
     long orien;
     long y;
     long h;
+    long tw;
     long w;
-    int AnyTrans;
 
     GetDibDim(DibInfo, tw, h, orien);
     w = DibInfo->bmiHeader.biWidth;
@@ -477,52 +477,57 @@ int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
     y = 0;
     if (h > 0) {
         do {
-            int AllTrans = 1;
-            unsigned char* line;
-            if (orien == 1)
-                line = DibBits + tw * y;
-            else
-                line = DibBits + (h - y - 1) * tw;
-            int StartX = w;
-            int x = 0;
+            int all_trans = 1;
+            long first = w;
+            long row;
 
-            while (x < w) {
-                if (line[x] == 0) {
-                    if (AnyTrans == 0)
+            if (orien == 1)
+                row = tw * y;
+            else
+                row = (h - y - 1) * tw;
+
+            unsigned char* scan = DibBits + row;
+            long x = 0;
+            if (w > 0) {
+                do {
+                    if (scan[x] != 0) {
+                        if (all_trans) {
+                            all_trans = 0;
+                            first = x;
+                        }
+                    } else if (AnyTrans == 0) {
                         AnyTrans = 1;
-                } else if (AllTrans != 0) {
-                    AllTrans = 0;
-                    StartX = x;
-                }
-                ++x;
+                    }
+                    ++x;
+                } while (x < w);
             }
 
-            int EndX = StartX;
-            if (AllTrans == 0) {
-                x = StartX + 1;
+            long last = first;
+            if (!all_trans) {
+                x = first + 1;
                 while (x < w) {
-                    if (line[x] != 0)
-                        EndX = x;
+                    if (scan[x] != 0)
+                        last = x;
                     ++x;
                 }
             }
 
-            int MidSolid = 1;
-            if (AllTrans == 0) {
-                x = StartX;
-                while (x <= EndX) {
-                    if (line[x] == 0) {
-                        MidSolid = 0;
+            int solid = 1;
+            if (!all_trans) {
+                x = first;
+                while (x <= last) {
+                    if (scan[x] == 0) {
+                        solid = 0;
                         break;
                     }
                     ++x;
                 }
             }
 
-            TransInfo->LineInfo[y].AllTrans = AllTrans;
-            TransInfo->LineInfo[y].MidSolid = MidSolid;
-            TransInfo->LineInfo[y].StartX = StartX;
-            TransInfo->LineInfo[y].EndX = EndX;
+            TransInfo->LineInfo[y].AllTrans = all_trans;
+            TransInfo->LineInfo[y].MidSolid = solid;
+            TransInfo->LineInfo[y].StartX = first;
+            TransInfo->LineInfo[y].EndX = last;
             ++y;
         } while (y < h);
     }
