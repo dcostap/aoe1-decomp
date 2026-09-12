@@ -1,0 +1,49 @@
+# Experiment 434f87a81e31a645a2002dfe6ae9d4cbc6a7282f2b952b5d9140d98b2c7f35d7
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/world.cpp b/src/world.cpp
+index 87d6534a4..b456d6cd2 100644
+--- a/src/world.cpp
++++ b/src/world.cpp
+@@ -493,25 +493,25 @@ unsigned char RGE_Game_World::data_load_world(FILE* file) {
+     char rmm_map_file[23];
+ 
+     fscanf(file, world_data_format,
+-        terrain_table_file + 4, color_file + 4, sound_file + 4,
+-        border_file + 4, overlay_file + 4, terrain_file + 4, map_file + 4,
+-        sprite_file + 4, player_file + 4, object_file + 4, effects_file + 4,
+-        terrain_object_file + 4, rmm_map_file + 4, rmm_land_file + 4,
+-        rmm_terrain_file + 4, rmm_object_file + 4, &tile_height,
++        terrain_table_file, color_file, sound_file,
++        border_file, overlay_file, terrain_file, map_file,
++        sprite_file, player_file, object_file, effects_file,
++        terrain_object_file, rmm_map_file, rmm_land_file,
++        rmm_terrain_file, rmm_object_file, &tile_height,
+         &elev_height, &tile_width);
+ 
+-    this->data_load_terrain_tables(terrain_table_file + 4);
+-    this->data_load_color_tables(color_file + 4);
+-    this->data_load_sounds(sound_file + 4);
+-    this->data_load_sprites(sprite_file + 4);
+-    this->data_load_players(player_file + 4);
+-    this->data_load_objects(object_file + 4);
+-    this->data_load_effects(effects_file + 4);
+-    this->data_load_map(border_file + 4, overlay_file + 4, terrain_file + 4,
+-        map_file + 4, tile_height, elev_height, tile_width, this->sounds,
+-        terrain_object_file + 4);
+-    this->data_load_random_map(rmm_map_file + 4, rmm_land_file + 4,
+-        rmm_terrain_file + 4, rmm_object_file + 4);
++    this->data_load_terrain_tables(terrain_table_file);
++    this->data_load_color_tables(color_file);
++    this->data_load_sounds(sound_file);
++    this->data_load_sprites(sprite_file);
++    this->data_load_players(player_file);
++    this->data_load_objects(object_file);
++    this->data_load_effects(effects_file);
++    this->data_load_map(border_file, overlay_file, terrain_file,
++        map_file, tile_height, elev_height, tile_width, this->sounds,
++        terrain_object_file);
++    this->data_load_random_map(rmm_map_file, rmm_land_file,
++        rmm_terrain_file, rmm_object_file);
+     return 1;
+ }
+ 
