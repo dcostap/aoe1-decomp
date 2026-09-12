@@ -16,7 +16,7 @@
     "0042FC50": {"status": "matching", "symbol": "?stop@RGE_Combat_Object@@UAEXXZ"},
     "0042FC90": {"status": "matching", "symbol": "?calc_attack_modifier@RGE_Combat_Object@@UAEMPAVRGE_Static_Object@@@Z"},
     "0042FCA0": {"status": "matching", "symbol": "?area_attack@RGE_Combat_Object@@UAEEMMMPAV1@PAVRGE_Static_Object@@@Z"},
-    "0042FF50": {"status": "scratch", "symbol": "?attack@RGE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAV1@@Z"},
+    "0042FF50": {"status": "new_verified_logic", "symbol": "?attack@RGE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAV1@@Z", "behavior_review": "logic_matching/0042FF50/review-02/attempt-01"},
     "004300F0": {"status": "new_verified_logic", "symbol": "?attack@RGE_Combat_Object@@UAEEMMMPAV1@@Z", "behavior_review": "logic_matching/004300F0/review-01/attempt-01"},
     "00430230": {"status": "matching", "symbol": "?do_attack@RGE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAV1@MMM@Z"},
     "00430320": {"status": "matching", "symbol": "?damage@RGE_Combat_Object@@UAEXHPAURGE_Armor_Weapon_Info@@MPAVRGE_Player@@PAVRGE_Static_Object@@@Z"},
