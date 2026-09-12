@@ -11,6 +11,8 @@
 
 extern float DAT_0056e380;
 extern double DAT_0056e388;
+extern float DAT_0056e390;
+extern float DAT_0056e394;
 
 
 
@@ -67,68 +69,71 @@ void RGE_Action_Missile::intercept(float& x, float& y, float& z)
     }
 }
 
-void RGE_Action_Missile::set_state(unsigned char new_state)
+void RGE_Action_Missile::set_state(unsigned char value)
 {
-    float tx;
-    float ty;
-    float tz;
-    float d;
-    float dx;
-    float dz;
-    float speed;
+    this->state = value;
 
-    this->state = new_state;
-
-    switch (new_state) {
-    case 1:
-        this->obj->die_die_die();
-        break;
-
+    switch (value) {
     case 3: {
-        this->intercept(tx, ty, tz);
+        float target_x;
+        float target_y;
+        float target_z;
+        float dx;
+        float dy;
+        float dz;
+        float distance;
 
-        d = tx - this->obj->world_x;
-        dx = ty - this->obj->world_y;
-        dz = tz - this->obj->world_z;
-        speed = (float)sqrt(d * d + dx * dx + dz * dz);
+        this->intercept(target_x, target_y, target_z);
+        dx = target_x - this->obj->world_x;
+        dy = target_y - this->obj->world_y;
+        dz = target_z - this->obj->world_z;
+        distance = (float)sqrt(dx * dx + dy * dy + dz * dz);
 
-        if (((RGE_Master_Missile_Object*)this->obj->master_obj)->targetting_type == 1 &&
-            this->target_obj != 0 && this->target_obj->getSpeed() > 0.0) {
-            float launch_speed = this->target_obj->getSpeed();
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj)
+                    ->targetting_type == 1 &&
+            this->target_obj != 0 &&
+            this->target_obj->getSpeed() > DAT_0056e388) {
+            float target_speed = this->target_obj->getSpeed();
 
             if (this->target_obj2 != 0 &&
                 (this->target_obj2->master_obj->id == 0x23 ||
                  this->target_obj2->master_obj->id == 0x24 ||
                  this->target_obj2->master_obj->id == 0x118) &&
-                launch_speed > 1.0f) {
-                launch_speed = 1.0f;
+                target_speed > DAT_0056e390) {
+                target_speed = 1.0f;
             }
 
-            float target_vx = (float)cos(this->target_obj->getAngle()) * launch_speed;
-            float target_vy = (float)sin(this->target_obj->getAngle()) * launch_speed;
+            float target_velocity_x =
+                (float)cos(this->target_obj->getAngle()) * target_speed;
+            float target_velocity_y =
+                (float)sin(this->target_obj->getAngle()) * target_speed;
+            target_speed =
+                distance -
+                (float)sqrt((dx + target_velocity_x) *
+                                (dx + target_velocity_x) +
+                            (dy + target_velocity_y) *
+                                (dy + target_velocity_y) +
+                            dz * dz) +
+                ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed;
 
-            float virtual_speed =
-                (float)sqrt((target_vy + dx) * (target_vy + dx) +
-                            (target_vx + d) * (target_vx + d) + dz * dz);
-
-            if (speed - virtual_speed +
-                    ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed >
-                ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed * 0.5f) {
-                float scale = speed /
-                    (speed - virtual_speed +
-                     ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed);
-                d = scale * target_vx + d;
-                dx = scale * target_vy + dx;
-                speed = (float)sqrt(dx * dx + d * d + dz * dz);
+            if (target_speed >
+                ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed *
+                    DAT_0056e380) {
+                float adjustment = distance / target_speed;
+                dx += target_velocity_x * adjustment;
+                dy += target_velocity_y * adjustment;
+                distance = (float)sqrt(dx * dx + dy * dy + dz * dz);
             }
         }
 
-        switch (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type) {
+        switch (((RGE_Master_Missile_Object*)this->obj->master_obj)
+                    ->missile_type) {
         case 0:
-            this->velocity_x = d / speed;
-            this->velocity_y = dx / speed;
-            this->velocity_z = dz / speed;
-            this->obj->new_angle((float)atan2(dx / speed, d / speed));
+            this->velocity_x = dx / distance;
+            this->velocity_y = dy / distance;
+            this->velocity_z = dz / distance;
+            this->obj->new_angle(
+                (float)atan2(this->velocity_y, this->velocity_x));
             this->timer = 0.0f;
             break;
 
@@ -141,38 +146,45 @@ void RGE_Action_Missile::set_state(unsigned char new_state)
             break;
 
         case 3:
-            this->velocity_x = d;
-            this->velocity_y = dx;
+            this->velocity_x = dx;
+            this->velocity_y = dy;
             this->velocity_z = dz;
-            this->obj->new_angle((float)atan2(dx, d));
+            this->obj->new_angle(
+                (float)atan2(this->velocity_y, this->velocity_x));
             break;
         }
 
-        RGE_Master_Missile_Object* master =
-            (RGE_Master_Missile_Object*)this->obj->master_obj;
-        if (master->ballistics_ratio > 0.0) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj)
+                ->ballistics_ratio > DAT_0056e388) {
             float time;
-            float acceleration;
-            if (master->speed > 0.0f)
-                time = speed / master->speed;
-            else
-                time = 0.0f;
+            if (((RGE_Master_Animated_Object*)this->obj->master_obj)->speed >
+                DAT_0056e394) {
+                time = distance /
+                       ((RGE_Master_Animated_Object*)this->obj->master_obj)
+                           ->speed;
+            } else {
+                time = DAT_0056e394;
+            }
 
-            time = time * 0.5f;
-            acceleration = -(speed * master->ballistics_ratio);
-            acceleration = (acceleration + acceleration) / (time * time);
-            this->ballistic_acceleration = acceleration;
-            this->ballistic_velocity = -(time * acceleration);
-            this->set_state(4);
-            break;
+            time *= DAT_0056e380;
+            float acceleration =
+                -(distance *
+                  ((RGE_Master_Missile_Object*)this->obj->master_obj)
+                      ->ballistics_ratio);
+            this->ballistic_acceleration =
+                (acceleration + acceleration) / (time * time);
+            this->ballistic_velocity =
+                -(time * this->ballistic_acceleration);
+        } else {
+            this->ballistic_velocity = 0.0f;
+            this->ballistic_acceleration = 0.0f;
         }
-
-        this->ballistic_velocity = 0.0f;
-        this->ballistic_acceleration = 0.0f;
         this->set_state(4);
         break;
     }
-    default:
+
+    case 1:
+        this->obj->die_die_die();
         break;
     }
 }
