@@ -393,16 +393,12 @@ int TRIBE_Panel_Time::render_to_image_buffer()
     char str[256];
     int text_flags;
 
-    if (this->ImageBuffer == 0) {
-        return 0;
-    }
+    if (this->ImageBuffer == 0) return 0;
 
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    old_font =
-        this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
-    if (old_font == 0) {
-        return 0;
-    }
+    old_font = this->ImageBuffer->GetDc(
+        "tpnl_tim::render_to_image_buffer");
+    if (old_font == 0) return 0;
 
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
@@ -421,8 +417,11 @@ int TRIBE_Panel_Time::render_to_image_buffer()
                 minutes = minutes - hours * 0x3C;
             }
         }
-        sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds,
-                rge_base_game->world->game_speed);
+        {
+            float game_speed = rge_base_game->world->game_speed;
+            sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes,
+                    seconds, game_speed);
+        }
         text_flags = 0x20;
     } else {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
@@ -444,7 +443,6 @@ int TRIBE_Panel_Time::render_to_image_buffer()
     }
 
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
-
     {
         const int width = this->pnl_wid - 1;
         const int height = this->pnl_hgt - 1;
@@ -468,16 +466,16 @@ int TRIBE_Panel_Time::render_to_image_buffer()
     this->ImageBuffer->ReleaseDc("tpnl_tim::render_to_image_buffer");
 
     int width = this->pnl_wid;
-    int screen_left = this->render_rect.left;
     int height = this->pnl_hgt;
+    int screen_left = this->render_rect.left;
     this->UsedImageRect.left = 0;
     this->UsedImageRect.top = 0;
     int screen_top = this->render_rect.top;
     --width;
     this->UsedScreenRect.left = screen_left;
     --height;
-    screen_left += width;
     this->UsedScreenRect.top = screen_top;
+    screen_left += width;
     this->UsedImageRect.right = width;
     this->UsedImageRect.bottom = height;
     this->UsedScreenRect.right = screen_left;
@@ -487,6 +485,5 @@ int TRIBE_Panel_Time::render_to_image_buffer()
     this->old_clock_type = this->clock_type;
     this->old_clock_format = this->clock_format;
     this->ImageTextActive = 1;
-
     return 1;
 }
