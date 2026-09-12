@@ -982,83 +982,72 @@ void RGE_Master_Static_Object::make_available(unsigned char v) {
 }
 
 unsigned char RGE_Master_Static_Object::alignment(
-    float& col, float& row, RGE_Game_World* world,
-    unsigned char center_flag) {
-    float dx1;
-    float dy1;
-    float dx2;
-    float dy2;
-    float map_w;
-    float map_h;
-    short i;
+    float& x, float& y, RGE_Game_World* world, unsigned char align) {
+    float left = x - this->radius_x;
+    float top = y - this->radius_y;
+    float right = x + this->radius_x;
+    float bottom = y + this->radius_y;
+    float map_width = (float)world->map->map_width - 0.00001f;
+    float map_height = (float)world->map->map_height - 0.00001f;
+    float aligned_x;
+    float aligned_y;
 
-    dx1 = col - radius_x;
-    dy1 = row - radius_y;
-    dx2 = col + radius_x;
-    dy2 = row + radius_y;
-    map_w = (float)world->map->map_width - 0.00001f;
-    map_h = (float)world->map->map_height - 0.00001f;
-
-    if (dx1 < 0.0f) {
-        dx2 = dx2 + (-dx1);
-        col = col + (-dx1);
-        dx1 = 0.0f;
+    if (left < 0.0f) {
+        left = -left;
+        right += left;
+        x += left;
+        left = 0.0f;
     }
-    if (dy1 < 0.0f) {
-        dy2 = dy2 + (-dy1);
-        row = row + (-dy1);
-        dy1 = 0.0f;
+    if (top < 0.0f) {
+        top = -top;
+        bottom += top;
+        y += top;
+        top = 0.0f;
     }
-    if (!(dx2 < map_w)) {
-        dx1 = dx1 + (map_w - dx2);
-        col = col + (map_w - dx2);
-        dx2 = map_w;
+    if (right >= map_width) {
+        left += map_width - right;
+        x += map_width - right;
+        right = map_width;
     }
-    if (!(dy2 < map_h)) {
-        dy1 = dy1 + (map_h - dy2);
-        row = row + (map_h - dy2);
-        dy2 = map_h;
+    if (bottom >= map_height) {
+        top += map_height - bottom;
+        y += map_height - bottom;
+        bottom = map_height;
     }
 
-    if (center_flag != 0) {
-        if (dx1 < 0.0f) dx1 = -dx1;
-        if (dy1 < 0.0f) dy1 = -dy1;
-        if (dx2 < 0.0f) dx2 = -dx2;
-        if (dy2 < 0.0f) dy2 = -dy2;
+    if (align != 0) {
+        if (left < 0.0f) left = -left;
+        if (top < 0.0f) top = -top;
+        if (right < 0.0f) right = -right;
+        if (bottom < 0.0f) bottom = -bottom;
 
-        i = (short)(long)dx1;
-        dx1 = dx1 - (float)(int)i;
-        i = (short)(long)dy1;
-        dy1 = dy1 - (float)(int)i;
-        i = (short)(long)dx2;
-        dx2 = 1.0f - (dx2 - (float)(int)i);
-        i = (short)(long)dy2;
-        dy2 = 1.0f - (dy2 - (float)(int)i);
+        left -= (short)left;
+        top -= (short)top;
+        right = 1.0f - (right - (short)right);
+        bottom = 1.0f - (bottom - (short)bottom);
 
-        if (!(dx2 + dx1 < 1.0f)) {
-            if (dx1 > dx2) {
-                dx1 = (1.0f - dx1) + col;
+        if (left + right >= 1.0f) {
+            if (left > right) {
+                aligned_x = x + (1.0f - left);
             } else {
-                dx1 = col - (1.0f - dx2);
+                aligned_x = x - (1.0f - right);
             }
         } else {
-            dx1 = col;
+            aligned_x = x;
         }
 
-        if (1.0f <= dy2 + dy1) {
-            if (dy1 > dy2) {
-                col = dx1;
-                row = (1.0f - dy1) + row;
-                return 1;
+        if (top + bottom >= 1.0f) {
+            if (top > bottom) {
+                aligned_y = y + (1.0f - top);
+            } else {
+                aligned_y = y - (1.0f - bottom);
             }
-            col = dx1;
-            row = row - (1.0f - dy2);
-            return 1;
+        } else {
+            aligned_y = y;
         }
-        float final_row = row;
-        col = dx1;
-        row = final_row;
-        return 1;
+
+        x = aligned_x;
+        y = aligned_y;
     }
     return 1;
 }
