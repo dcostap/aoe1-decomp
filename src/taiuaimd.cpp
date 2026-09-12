@@ -214,52 +214,46 @@ TribeElephantUnitAIModule::TribeElephantUnitAIModule(RGE_Static_Object* obj, int
 int TribeElephantUnitAIModule::processNotify(NotifyEvent* event, unsigned long param_2)
 {
     switch (event->mType) {
-    case 500:
+    case 0x1F4: {
         if (event->p2 <= 0) {
             this->purgeNotifyQueue(param_2);
             return 4;
         }
-        {
-            int caller = event->caller;
-            int count = this->attackingUnitsValue.numberValue;
-            int i = 0;
-            if (count > 0) {
-                goto loop_check;
-                do {
-                    if (i >= this->attackingUnitsValue.maximumSizeValue)
-                        goto after_loop;
-                    if (this->attackingUnitsValue.value[i] == caller)
-                        goto found;
-                    i++;
-loop_check:;
-                } while (i < count);
-after_loop:;
-            }
 
-            if (count >= this->attackingUnitsValue.maximumSizeValue) {
-                int newCapacity = count + 1;
-                int* newArray = (int*)::operator new(newCapacity * 4);
-                if (newArray != 0) {
-                    int j = 0;
-                    if (count > 0) {
-                        while (j < newCapacity && j < count) {
-                            newArray[j] = this->attackingUnitsValue.value[j];
-                            j++;
-                        }
-                    }
-                    ::operator delete(this->attackingUnitsValue.value);
-                    this->attackingUnitsValue.value = newArray;
-                    this->attackingUnitsValue.maximumSizeValue = newCapacity;
-                }
-            }
-            this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
-            this->attackingUnitsValue.numberValue++;
-found:
-            this->objectValue->setUnderAttack(1);
-            int val = this->closestAttacker(0);
-            this->attackObject(val, 0);
-            return 3;
+        int caller = event->caller;
+        int i = 0;
+        while (i < this->attackingUnitsValue.numberValue &&
+               i < this->attackingUnitsValue.maximumSizeValue) {
+            if (this->attackingUnitsValue.value[i] == caller)
+                goto done;
+            i++;
         }
+
+        if (this->attackingUnitsValue.numberValue >
+            this->attackingUnitsValue.maximumSizeValue - 1) {
+            int newCapacity = this->attackingUnitsValue.numberValue + 1;
+            int* newArray = new int[newCapacity];
+            if (newArray) {
+                int j;
+                for (j = 0;
+                     j < this->attackingUnitsValue.maximumSizeValue && j < newCapacity;
+                     j++)
+                    newArray[j] = this->attackingUnitsValue.value[j];
+                delete[] this->attackingUnitsValue.value;
+                this->attackingUnitsValue.value = newArray;
+                this->attackingUnitsValue.maximumSizeValue = newCapacity;
+            }
+        }
+
+        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+        this->attackingUnitsValue.numberValue++;
+
+done:
+        this->objectValue->setUnderAttack(1);
+        int val = this->closestAttacker(0);
+        this->attackObject(val, 0);
+        return 3;
+    }
 
     case 0x20F:
         return 2;
