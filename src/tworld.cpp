@@ -167,9 +167,6 @@ void TRIBE_World::command_init(int unused, TCommunications_Handler* handler) {
 
 void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
     T_Scenario* s = new T_Scenario(param_1, param_2);
-    if (s == 0) {
-        s = 0;
-    }
     this->scenario = s;
 }
 

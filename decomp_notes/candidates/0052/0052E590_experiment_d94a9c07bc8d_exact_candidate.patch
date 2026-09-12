@@ -1,0 +1,16 @@
+# Experiment d94a9c07bc8d6e1704e92581b56818fe2f73ee67084f2984c9afdc46a62765b1
+# Base d9f0715b066f648c88e24b34486e3c4946234bf5
+diff --git a/src/tworld.cpp b/src/tworld.cpp
+index 4f95ec557..1d36dfe74 100644
+--- a/src/tworld.cpp
++++ b/src/tworld.cpp
+@@ -167,9 +167,6 @@ void TRIBE_World::command_init(int unused, TCommunications_Handler* handler) {
+ 
+ void TRIBE_World::scenario_init(int param_1, RGE_Game_World* param_2) {
+     T_Scenario* s = new T_Scenario(param_1, param_2);
+-    if (s == 0) {
+-        s = 0;
+-    }
+     this->scenario = s;
+ }
+ 

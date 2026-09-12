@@ -11,8 +11,8 @@ claims.
 
 ## Accepted-drift evidence
 
-The six rows below retain reviewed, behavior-equivalent drift. They remain
-unregistered. Only the 21 matching bodies have exact translation-unit owners.
+The five rows below retain reviewed, behavior-equivalent drift. They remain
+unregistered. The remaining matching bodies have exact translation-unit owners.
 
 - `0052E220 data_load_players_type`: The source loads `p2` before FS setup,
   while the executable loads it after FS setup. No throwing operation occurs
@@ -22,9 +22,6 @@ unregistered. Only the 21 matching bodies have exact translation-unit owners.
 - `0052E4C0 map_init`: The natural `/GX` new/null/constructor/common-store
   form adds a dead `test eax,eax; jne +0` join. It shifts four epilogue bytes
   into padding, with no behavior or memory difference.
-- `0052E590 scenario_init(int, RGE_Game_World*)`: The same constructor,
-  null, and common-store pattern adds the dead four-byte join sequence. Only
-  the epilogue and padding shift; behavior is unchanged.
 - `0052E5F0 scenario_init(RGE_Game_World*)`: The same `/GX` phi-merge artifact
   adds `test eax,eax; jne +0` before the common store. The four-byte shift is
   confined to the epilogue and padding.
@@ -34,6 +31,10 @@ unregistered. Only the 21 matching bodies have exact translation-unit owners.
 - `0052E920 setup_gaia`: The natural `/GX` new/null/constructor/common-store
   form adds the same dead four-byte join. The first 81 bytes match, and the
   remaining shift affects only the epilogue and padding.
+
+`0052E590 scenario_init(int, RGE_Game_World*)` now matches exactly after
+removing its unsupported redundant null self-assignment. See its function note
+for the complete behavior and closure review.
 
 The old prefix and phase wrappers are migration scaffolds and must not be
 restored. The unified source uses typed fields, canonical globals, named string
