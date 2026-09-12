@@ -103,6 +103,8 @@ def test_prepare_blinds_before_git_and_preserves_other_source(repo, tmp_path):
         assert forbidden not in files
     assert b"previous target note" not in br.git(worker, "log", "--all", "-p", "--", "src/sample.cpp")
     assert br.git(worker, "rev-list", "--count", "HEAD").strip() == b"1"
+    assert br.git(worker, "config", "--get", "gc.auto").strip() == b"0"
+    assert br.git(worker, "config", "--get", "maintenance.auto").strip() == b"false"
     assert not br.git(worker, "remote").strip()
     assert not br.git(worker, "status", "--porcelain").strip()
     assert (repo / "src/sample.cpp").read_bytes() == SOURCE
