@@ -838,21 +838,19 @@ unsigned char RGE_Player::get_checksums(long& cksum1, long& cksum2,
 }
 
 long RGE_Player::create_checksum(void) {
-    int attribute_checksum = 0;
-    int object_checksum = 0;
-    int object_count = 0;
-    float position_checksum = 0.0f;
     long result = (long)this->id;
     this->checksum_created_this_update = 1;
     this->action_checksum = 0;
 
     result += this->sleeping_objects->number_of_objects;
+    int object_checksum = 0;
     result += this->doppleganger_objects->number_of_objects;
-    long attribute_count;
-    long attribute_num_value = (long)this->attribute_num;
+    int attribute_checksum = 0;
+    float position_checksum = 0.0f;
+    int object_count = 0;
 
-    if (attribute_num_value > 0) {
-        attribute_count = attribute_num_value;
+    if ((int)this->attribute_num > 0) {
+        int attribute_count = (int)this->attribute_num;
         float* attribute = this->attributes;
         do {
             attribute_checksum += (int)*attribute;
