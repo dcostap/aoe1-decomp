@@ -632,105 +632,113 @@ int RGE_View::get_selection_area(long& col1, long& row1, long& col2, long& row2,
 }
 
 
-void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, int param_4)
+void RGE_View::CreateBlitQueue(tagRECT& src_rect, tagRECT& dest_rect,
+                               int xDelta, int yDelta)
 {
+    int one_blit = 0;
     int nBlits;
-    int yd;
+    int One_Blit;
+    int blt_deltaX = 0;
+    int blt_deltaY = 0;
     tagRECT blt_src;
-    int local_4;
-    int One_Blit = 0;
-    int vBlits;
-    int blt_deltaX;
-    int blt_deltaY;
-    int iVar1;
-    int iVar2;
-    int iVar3;
-    int iVar6;
-    int xd;
-    int blit_index;
-    int count;
-    yd = param_4;
-    if ((param_3 != 0) || (yd != 0)) {
-        if (((iVar6 = param_1.top) > param_2.bottom) ||
-            (((iVar1 = param_1.left, iVar1 > param_2.right ||
-              (iVar2 = param_1.bottom, iVar2 < param_2.top)) ||
-             (iVar3 = param_1.right, iVar3 < param_2.left)))) {
-            One_Blit = 1;
-            nBlits = 1;
-            blt_src.left = iVar1;
-            blt_src.top = iVar6;
-            blt_src.right = iVar3;
-            local_4 = iVar2;
-        } else {
-            nBlits = param_4;
-            if (nBlits < 0) nBlits = -nBlits;
-            xd = param_3;
-            if (xd < 0) xd = -xd;
-            vBlits = 9999;
-            if (param_4 != 0) vBlits = (nBlits + (iVar2 - iVar6)) / nBlits;
-            nBlits = 9999;
-            if (param_3 != 0) nBlits = (xd + (iVar3 - iVar1)) / xd;
-            blt_src.left = param_1.left;
-            blt_src.top = param_1.top;
-            blt_src.right = param_1.right;
-            local_4 = param_1.bottom;
-            blt_deltaX = 0;
-            blt_deltaY = 0;
-            if (vBlits < nBlits) {
-                nBlits = vBlits;
-                blt_deltaY = param_4;
-                if (param_4 < 0) blt_src.top = param_4 + iVar2 + 1;
-                else local_4 = param_4 + iVar6 - 1;
-            } else {
-                blt_deltaX = param_3;
-                if (param_3 < 0) blt_src.left = param_3 + iVar3 + 1;
-                else blt_src.right = param_3 + iVar1 - 1;
-            }
-        }
 
-        if (nBlits > this->Blt_Queue_Allocated) {
-            if (this->Blit_Queue != 0) free(this->Blit_Queue);
-            this->Blit_Queue = 0;
+    if (xDelta == 0 && yDelta == 0) return;
+
+    if (src_rect.top > dest_rect.bottom ||
+        src_rect.left > dest_rect.right ||
+        src_rect.bottom < dest_rect.top ||
+        src_rect.right < dest_rect.left) {
+        one_blit = 1;
+        nBlits = 1;
+    } else {
+        int width = src_rect.right - src_rect.left + 1;
+        int height = src_rect.bottom - src_rect.top + 1;
+        int yd = yDelta;
+        int xd = xDelta;
+
+        if (yd < 0) yd = -yd;
+        if (xd < 0) xd = -xd;
+
+        One_Blit = 9999;
+        nBlits = 9999;
+        if (yDelta != 0) One_Blit = (yd + height - 1) / yd;
+        if (xDelta != 0) nBlits = (xd + width - 1) / xd;
+
+        blt_src = src_rect;
+        if (One_Blit < nBlits) {
+            nBlits = One_Blit;
+            blt_deltaY = yDelta;
+            if (yDelta < 0)
+                blt_src.top = yDelta + src_rect.bottom + 1;
+            else
+                blt_src.bottom = yDelta + src_rect.top - 1;
+        } else {
+            blt_deltaX = xDelta;
+            if (xDelta < 0)
+                blt_src.left = xDelta + src_rect.right + 1;
+            else
+                blt_src.right = xDelta + src_rect.left - 1;
         }
-        if (this->Blit_Queue == 0) {
-            this->Blit_Queue = (Blit_Queue_Entry*)calloc(
-                nBlits, sizeof(Blit_Queue_Entry));
-            this->Blt_Queue_Allocated = nBlits;
-        }
-        if (One_Blit) {
-            this->Blit_Queue[0].src = param_1;
-            this->Blit_Queue[0].dest = param_2;
-        } else if (nBlits > 0) {
-            count = nBlits;
-            blit_index = 0;
-            do {
-                Blit_Queue_Entry* entry = &this->Blit_Queue[blit_index];
-                entry->src.left = blt_src.left;
-                entry->src.top = blt_src.top;
-                entry->src.right = blt_src.right;
-                entry->src.bottom = local_4;
-                entry->dest.left = blt_src.left - param_3;
-                entry->dest.top = blt_src.top - param_4;
-                entry->dest.right = blt_src.right - param_3;
-                entry->dest.bottom = local_4 - param_4;
-                blt_src.top += blt_deltaY;
-                local_4 += blt_deltaY;
-                blt_src.left += blt_deltaX;
-                blt_src.right += blt_deltaX;
-                if (blt_src.top < param_1.top) blt_src.top = param_1.top;
-                if (blt_src.left < param_1.left) blt_src.left = param_1.left;
-                if (blt_src.right > param_1.right) blt_src.right = param_1.right;
-                if (local_4 > param_1.bottom) local_4 = param_1.bottom;
-                blit_index++;
-                count--;
-            } while (count != 0);
-        }
-        this->Queued_Blits = 1;
-        this->Blit_Queue_Size = nBlits;
-        this->Current_Blit = -1;
-        this->Blit_Offset_X = this->render_rect.left;
-        this->Blit_Offset_Y = this->render_rect.top;
     }
+
+    if (this->Blt_Queue_Allocated < nBlits) {
+        if (this->Blit_Queue != 0) free(this->Blit_Queue);
+        this->Blit_Queue = 0;
+    }
+
+    if (this->Blit_Queue == 0) {
+        this->Blit_Queue =
+            (Blit_Queue_Entry*)calloc(nBlits, 0x20);
+        this->Blt_Queue_Allocated = nBlits;
+    }
+
+    if (one_blit) {
+        Blit_Queue_Entry* entry = this->Blit_Queue;
+        entry->src.left = src_rect.left;
+        entry->src.top = src_rect.top;
+        entry->src.right = src_rect.right;
+        entry->src.bottom = src_rect.bottom;
+        entry->dest.left = dest_rect.left;
+        entry->dest.top = dest_rect.top;
+        entry->dest.right = dest_rect.right;
+        entry->dest.bottom = dest_rect.bottom;
+    } else if (nBlits > 0) {
+        int offset = 0;
+        int count = nBlits;
+
+        do {
+            Blit_Queue_Entry* entry =
+                (Blit_Queue_Entry*)((unsigned char*)this->Blit_Queue + offset);
+
+            entry->src.left = blt_src.left;
+            entry->src.top = blt_src.top;
+            entry->src.right = blt_src.right;
+            entry->src.bottom = blt_src.bottom;
+            entry->dest.top = blt_src.top - yDelta;
+            entry->dest.left = blt_src.left - xDelta;
+            entry->dest.bottom = blt_src.bottom - yDelta;
+            entry->dest.right = blt_src.right - xDelta;
+
+            blt_src.top += blt_deltaY;
+            blt_src.bottom += blt_deltaY;
+            blt_src.left += blt_deltaX;
+            blt_src.right += blt_deltaX;
+
+            if (blt_src.top < src_rect.top) blt_src.top = src_rect.top;
+            if (blt_src.left < src_rect.left) blt_src.left = src_rect.left;
+            if (blt_src.right > src_rect.right) blt_src.right = src_rect.right;
+            if (blt_src.bottom > src_rect.bottom) blt_src.bottom = src_rect.bottom;
+
+            offset += 0x20;
+            --count;
+        } while (count != 0);
+    }
+
+    this->Queued_Blits = 1;
+    this->Blit_Queue_Size = nBlits;
+    this->Current_Blit = -1;
+    this->Blit_Offset_X = this->render_rect.left;
+    this->Blit_Offset_Y = this->render_rect.top;
 }
 
 
