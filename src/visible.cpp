@@ -609,81 +609,77 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     return Revealed;
 }
 
-void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2,
-                                           int UpdateMap, int id) {
-    RGE_Tile* tile;
+void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
+                                          int UpdateMap, int id) {
+    int csum;
+    RGE_Tile* tile = 0;
 
-    tile = 0;
     log_map_call(this->world->world_time, (int)this->player->id, 4, id,
-                 tx1, ty1, tx2, ty2, Map_Update_Suppresion);
+                 x1, y1, x2, y2, Map_Update_Suppresion);
 
-    if (Map_Update_Suppresion == 0) {
-        int csum;
+    if (Map_Update_Suppresion != 0) {
+        return;
+    }
 
-        csum = this->input_csum;
-        csum = _rotl(csum, 3);
-        csum ^= 0x56565656;
-        csum = _rotl(csum, 2);
-        csum ^= tx1;
-        csum = _rotl(csum, 4);
-        csum ^= ty1;
-        csum = _rotl(csum, 3);
-        csum ^= tx2;
-        csum = _rotl(csum, 3);
-        csum ^= ty2;
-        this->input_csum = csum;
+    csum = this->input_csum;
+    csum = _rotl(csum, 3);
+    csum ^= 0x56565656;
+    csum = _rotl(csum, 2);
+    csum ^= x1;
+    csum = _rotl(csum, 4);
+    csum ^= y1;
+    csum = _rotl(csum, 3);
+    csum ^= x2;
+    csum = _rotl(csum, 3);
+    csum ^= y2;
+    this->input_csum = csum;
 
-        if ((tx1 >= this->widthValue) || (tx2 < 0) ||
-            (ty1 >= this->heightValue) || (ty2 < 0)) {
-            return;
-        }
-        if (tx1 < 0) {
-            tx1 = 0;
-        }
-        if (tx2 >= this->widthValue) {
-            tx2 = this->widthValue - 1;
-        }
-        if (ty1 < 0) {
-            ty1 = 0;
-        }
-        if (ty2 >= this->heightValue) {
-            ty2 = this->heightValue - 1;
+    if ((x1 >= this->widthValue) || (x2 < 0)) {
+        return;
+    }
+    if ((y1 >= this->heightValue) || (y2 < 0)) {
+        return;
+    }
+    if (x1 < 0) {
+        x1 = 0;
+    }
+    if (x2 >= this->widthValue) {
+        x2 = this->widthValue - 1;
+    }
+    if (y1 < 0) {
+        y1 = 0;
+    }
+    if (y2 >= this->heightValue) {
+        y2 = this->heightValue - 1;
+    }
+
+    for (; y1 <= y2; ++y1) {
+        unsigned char* visible = this->map_offsets[y1] + x1;
+        unsigned long* explored = unified_map_offsets[y1] + x1;
+        if (UpdateMap != 0) {
+            tile = this->map->map_row_offset[y1] + x1;
         }
 
-        int y;
-        y = ty1;
-        if (y <= ty2) {
+        if (x1 <= x2) {
+            int count = x2 - x1 + 1;
             do {
-                unsigned char* visible = this->map_offsets[y] + tx1;
-                unsigned long* explored = unified_map_offsets[y] + tx1;
-
-                if (UpdateMap != 0) {
-                    tile = this->map->map_row_offset[y] + tx1;
+                unsigned char value = *visible;
+                --value;
+                if (value == 0xff) {
+                    value = 0;
                 }
-
-                if (tx1 <= tx2) {
-                    int count = tx2 - tx1 + 1;
-                    do {
-                        unsigned char value = *visible;
-                        --value;
-                        if (value == 0xff) {
-                            value = 0;
-                        }
-                        if (value == 0) {
-                            if (UpdateMap != 0) {
-                                tile->draw_as = 0x80;
-                            }
-                            *explored &= this->PlayerVisibleMaskInvertValue;
-                        }
-                        *visible = value;
-                        ++visible;
-                        ++explored;
-                        ++tile;
-                        --count;
-                    } while (count != 0);
+                if (value == 0) {
+                    if (UpdateMap != 0) {
+                        tile->draw_as = 0x80;
+                    }
+                    *explored &= this->PlayerVisibleMaskInvertValue;
                 }
-                ++y;
-            } while (y <= ty2);
+                *visible = value;
+                ++visible;
+                ++explored;
+                ++tile;
+                --count;
+            } while (count != 0);
         }
     }
 }
