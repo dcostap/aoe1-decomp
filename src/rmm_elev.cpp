@@ -20,36 +20,33 @@ uchar RGE_RMM_Elevation_Generator::generate()
 {
     this->clear_stack();
 
-    if (this->info.elevation_num > 0) {
-        long row = 0;
-        if (row < this->map_height) {
-            do {
-                long col;
-                if ((col = 0) < this->map_width) {
-                    do {
-                        RGE_Tile* tile = this->map_row_offset[row] + col;
-                        tile->height =
-                            (uchar)this->info.elevation[0].base_elevation;
-                        ++col;
-                    } while (col < this->map_width);
-                }
-                ++row;
-            } while (row < this->map_height);
-        }
+    long row = 0;
+    if (this->info.elevation_num > 0 && this->map_height > 0) {
+        do {
+            long column = 0;
+            if (this->map_width > 0) {
+                do {
+                    this->map_row_offset[row][column].height =
+                        this->info.elevation[0].base_elevation;
+                    ++column;
+                } while (column < this->map_width);
+            }
+            ++row;
+        } while (row < this->map_height);
     }
 
     this->generate_modifiers();
 
-    long i = 0;
+    long index = 0;
     if (this->info.elevation_num > 0) {
-        RGE_Elevation_Info_Line* line = this->info.elevation;
+        RGE_Elevation_Info_Line* line = &this->info.elevation[0];
         do {
             this->base_elevation_generate(*line);
             this->map->clean_elevation(0, 0, this->map_width - 1,
                 this->map_height - 1, 8);
-            ++i;
+            ++index;
             ++line;
-        } while (i < this->info.elevation_num);
+        } while (index < this->info.elevation_num);
     }
 
     return 1;
