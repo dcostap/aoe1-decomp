@@ -1,0 +1,16 @@
+# Experiment 14c88ec47bad22d076e799a4cc993a107a3611eb96c4e998100c65fa481de7e8
+# Base 00c84a4a1c32ae81f12092c81759cf818aee2fee
+diff --git a/src/tplayer.cpp b/src/tplayer.cpp
+index e1b19ee05..4ea4937df 100644
+--- a/src/tplayer.cpp
++++ b/src/tplayer.cpp
+@@ -3267,9 +3267,6 @@ void TRIBE_Player::get_achievement(unsigned char type, char* buffer)
+ 
+ void TRIBE_Player::load_victory(int first, long* second, unsigned char third) {
+     TRIBE_Victory_Conditions* v = new TRIBE_Victory_Conditions(this, first, second, third);
+-    if (v == 0) {
+-        v = 0;
+-    }
+     this->victory_conditions = v;
+ }
+ 

@@ -3267,9 +3267,6 @@ void TRIBE_Player::get_achievement(unsigned char type, char* buffer)
 
 void TRIBE_Player::load_victory(int first, long* second, unsigned char third) {
     TRIBE_Victory_Conditions* v = new TRIBE_Victory_Conditions(this, first, second, third);
-    if (v == 0) {
-        v = 0;
-    }
     this->victory_conditions = v;
 }
 
