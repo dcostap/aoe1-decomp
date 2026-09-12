@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "00423EE0": {"status": "scratch", "symbol": "?RGE_translate_palette@@YAXPAUtagPALETTEENTRY@@0U1@JHH@Z"},
+    "00423EE0": {"status": "matching", "symbol": "?RGE_translate_palette@@YAXPAUtagPALETTEENTRY@@0U1@JHH@Z", "behavior_review": "logic_matching/00423EE0/review-01/attempt-01"},
     "004240B0": {"status": "accepted_drift", "symbol": "?RGE_fade_palette@@YAXPAVTDrawArea@@UtagPALETTEENTRY@@MEPAU2@HH@Z"},
     "00424350": {"status": "matching", "symbol": "??0RGE_Color_Table@@QAE@H@Z"},
     "00424440": {"status": "matching", "symbol": "??0RGE_Color_Table@@QAE@PAU_iobuf@@F@Z"},

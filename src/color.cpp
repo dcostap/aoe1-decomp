@@ -12,64 +12,51 @@ extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" long __cdecl _ftol();
 extern char s_C__msdev_work_age1_x1_color_cpp[];
 
-void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2,
+void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1,
+                                   tagPALETTEENTRY* palette2,
                                    tagPALETTEENTRY color, long amount,
                                    int ignore_color1, int ignore_color2)
 {
-    unsigned char* d;
-    unsigned char* s;
-    long diff;
     long index1;
     long intense[3];
-    index1 = 0;
-    d = &palette2->peFlags;
-    diff = (int)palette2 - (int)palette1;
-    s = &palette1->peGreen;
 
-    do {
+    for (index1 = 0; index1 < 256; index1++) {
         if (index1 == ignore_color1 || index1 == ignore_color2) {
-            d[-3] = s[-1];
-            s[diff] = *s;
-            d[-1] = s[1];
-            d[0] = s[2];
+            palette2[index1].peRed = palette1[index1].peRed;
+            palette2[index1].peGreen = palette1[index1].peGreen;
+            palette2[index1].peBlue = palette1[index1].peBlue;
+            palette2[index1].peFlags = palette1[index1].peFlags;
         } else {
-            tagPALETTEENTRY t = *(tagPALETTEENTRY*)(s - 1);
-            intense[0] = t.peRed;
-            intense[1] = *s;
-            intense[2] = s[1];
+            intense[0] = palette1[index1].peRed;
+            intense[1] = palette1[index1].peGreen;
+            intense[2] = palette1[index1].peBlue;
 
-            {
-                long inner_index = 2;
-                do {
-                    long* p = &intense[1];
-                    for (long n = 2; n != 0; n--) {
-                        long a = p[-1];
-                        long b = p[0];
-                        if (a < b) {
-                            p[-1] = b;
-                            p[0] = a;
-                        }
-                        p++;
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    if (intense[j] < intense[j + 1]) {
+                        long temp = intense[j];
+                        intense[j] = intense[j + 1];
+                        intense[j + 1] = temp;
                     }
-                    inner_index--;
-                } while (inner_index != 0);
+                }
             }
 
-            long minv = intense[0];
-            long inten = (((intense[1] + intense[2]) * (0xff - minv)) / 512) + minv;
-            long v;
-            v = ((color.peRed * inten) / 255 - t.peRed) * amount;
-            d[-3] = (unsigned char)(t.peRed + (v / 100));
-            v = ((color.peGreen * inten) / 255 - *s) * amount;
-            s[diff] = (unsigned char)(*s + (v / 100));
-            v = ((color.peBlue * inten) / 255 - s[1]) * amount;
-            d[-1] = (unsigned char)(s[1] + (v / 100));
-            d[0] = s[2];
+            long intensity = intense[0]
+                           + (intense[1] + intense[2])
+                           * (255 - intense[0]) / 512;
+
+            palette2[index1].peRed = palette1[index1].peRed
+                + ((color.peRed * intensity / 255
+                    - palette1[index1].peRed) * amount / 100);
+            palette2[index1].peGreen = palette1[index1].peGreen
+                + ((color.peGreen * intensity / 255
+                    - palette1[index1].peGreen) * amount / 100);
+            palette2[index1].peBlue = palette1[index1].peBlue
+                + ((color.peBlue * intensity / 255
+                    - palette1[index1].peBlue) * amount / 100);
+            palette2[index1].peFlags = palette1[index1].peFlags;
         }
-        index1++;
-        s += 4;
-        d += 4;
-    } while (index1 < 0x100);
+    }
 }
 
 void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
