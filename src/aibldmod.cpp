@@ -354,49 +354,52 @@ int BuildAIModule::haveBuildList() const {
 
 static const char s_SetGatherPercentage[] = "SetGatherPercentage";
 static const char s_AddedBuildListItem[] = "AddedBuildListItem";
-int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber)
+
+int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity,
+                              int buildCategory, int buildFrom, int buildCap,
+                              int insertAfterItemNumber)
 {
-    BuildItem* pos;
-    int i;
-    int j;
+    if (insertAfterItemNumber > this->buildListLengthValue) {
+        return 0;
+    }
+
+    BuildItem* insertAfter = this->buildList.next;
+    int itemNumber = 0;
+    while (insertAfter != &this->buildList &&
+           itemNumber < insertAfterItemNumber) {
+        insertAfter = insertAfter->next;
+        itemNumber++;
+    }
+
+    char name[64];
     float xSize;
     float ySize;
-    BuildItem* item;
-    char name[64];
-
-    if (insertAfterItemNumber > this->buildListLengthValue) return 0;
-    pos = this->buildList.next;
-    i = 0;
-    while (pos != &this->buildList && i < insertAfterItemNumber) {
-        pos = pos->next;
-        i++;
-    }
-    // The special arm and shared strncpy tail retain the
-    // original branch and call order.
     if (buildCategory != 6) {
-        if (player->master_objects[typeID] != 0) {
-            strncpy(name + 4, player->master_objects[typeID]->name, 0x3f);
-            xSize = player->master_objects[typeID]->radius_x +
-                    player->master_objects[typeID]->radius_x;
-            ySize = player->master_objects[typeID]->radius_y +
-                    player->master_objects[typeID]->radius_y;
-            goto name_done;
+        RGE_Master_Static_Object* master = player->master_objects[typeID];
+        if (master != 0) {
+            strncpy(name, master->name, 0x3f);
+            xSize = master->radius_x + master->radius_x;
+            ySize = master->radius_y + master->radius_y;
         } else {
-            strncpy(name + 4, s_AddedBuildListItem, 0x3f);
+            strncpy(name, s_AddedBuildListItem, 0x3f);
             xSize = 3.0f;
             ySize = 3.0f;
         }
     } else {
-        strncpy(name + 4, s_SetGatherPercentage, 0x3f);
+        strncpy(name, s_SetGatherPercentage, 0x3f);
         xSize = 3.0f;
         ySize = 3.0f;
     }
 
-name_done:
-    i = this->buildListLengthValue;
-    for (j = 0; j < quantity; ++j) {
-        item = new BuildItem(buildCategory, typeID, i, 1, 0, buildFrom, name + 4, xSize, ySize, 1.0f, -1, -1, -1, 0);
-        if (item == 0) return 0;
+    int uniqueID = this->buildListLengthValue;
+    for (int i = 0; i < quantity; i++) {
+        BuildItem* item = new BuildItem(
+            buildCategory, typeID, uniqueID, 1, 0, buildFrom, name,
+            xSize, ySize, 1.0f, -1, -1, -1, 0);
+        if (item == 0) {
+            return 0;
+        }
+
         item->setBuilt(0);
         item->setInProgress(0);
         item->setBuildAttempts(0);
@@ -409,14 +412,15 @@ name_done:
         item->setBuildCap(buildCap);
         item->setSkipCycles(0);
         item->setPermanentSkip(0);
-        item->prev = pos;
-        BuildItem* next = pos->next;
-        item->next = next;
-        i++;
-        next->prev = item;
-        pos->next = item;
+
+        item->prev = insertAfter;
+        item->next = insertAfter->next;
+        uniqueID++;
+        item->next->prev = item;
+        insertAfter->next = item;
         this->buildListLengthValue++;
     }
+
     return 1;
 }
 

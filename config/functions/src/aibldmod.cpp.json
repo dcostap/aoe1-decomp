@@ -15,7 +15,7 @@
     "004098A0": {"status": "matching", "symbol": "?buildListLength@BuildAIModule@@QBEHXZ"},
     "004098B0": {"status": "matching", "symbol": "?buildListName@BuildAIModule@@QAEPADXZ"},
     "004098C0": {"status": "matching", "symbol": "?haveBuildList@BuildAIModule@@QBEHXZ"},
-    "00409950": {"status": "scratch", "symbol": "?insertItem@BuildAIModule@@QAEHPAVRGE_Player@@HHHHHH@Z"},
+    "00409950": {"status": "new_verified_logic", "symbol": "?insertItem@BuildAIModule@@QAEHPAVRGE_Player@@HHHHHH@Z", "behavior_review": "logic_matching/00409950/review-01/attempt-01"},
     "00409B70": {"status": "matching", "symbol": "?numberItemsBuilt@BuildAIModule@@QBEHXZ"},
     "00409BB0": {"status": "matching", "symbol": "?numberItemsInProgress@BuildAIModule@@QBEHXZ"},
     "00409BF0": {"status": "matching", "symbol": "?numberItemsBuiltOrInProgress@BuildAIModule@@QBEHXZ"},
