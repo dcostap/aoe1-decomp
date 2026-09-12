@@ -387,15 +387,20 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
 
 void TRIBE_Combat_Object::get_armor(short& armor, short& original)
 {
-    RGE_Master_Combat_Object* master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
-    armor = master->base_armor;
-    for (int i = 0; i < master->armor_num; ++i) {
-        if (master->armor[i].type == 4 && master->armor[i].value > armor) {
-            armor = master->armor[i].value;
+    armor = static_cast<RGE_Master_Combat_Object*>(master_obj)->base_armor;
+    for (int i = 0;
+         i < static_cast<RGE_Master_Combat_Object*>(master_obj)->armor_num;
+         ++i) {
+        if (static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].type ==
+                4 &&
+            static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].value >
+                armor) {
+            armor = static_cast<RGE_Master_Combat_Object*>(master_obj)
+                        ->armor[i]
+                        .value;
         }
     }
-    original = master->orig_armor;
+    original = static_cast<RGE_Master_Combat_Object*>(master_obj)->orig_armor;
 }
 
 void TRIBE_Combat_Object::get_pierce_armor(short& armor, short& original)
