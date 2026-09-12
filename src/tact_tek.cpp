@@ -175,21 +175,19 @@ void TRIBE_Action_Make_Tech::get_info(short& tech_id_out,
                                        short& progress_out,
                                        char* name_out,
                                        short max_length) {
-    register TRIBE_Action_Make_Tech* self = this;
-    char* destination = name_out;
-
-    tech_id_out = self->tech_id;
-    if (self->state == 1) {
+    tech_id_out = this->tech_id;
+    if (this->state == 1) {
         progress_out = 100;
     } else {
-        TRIBE_Player* player = static_cast<TRIBE_Player*>(self->obj->owner);
-        progress_out = player->tech_tree->get_progress(self->tech_id);
+        progress_out = static_cast<TRIBE_Player*>(this->obj->owner)
+                           ->tech_tree->get_progress(this->tech_id);
     }
 
-    if (destination != 0) {
-        int length = max_length;
-        TRIBE_Player* player = static_cast<TRIBE_Player*>(self->obj->owner);
-        strncpy(destination, player->tech_tree->get_name(self->tech_id), length);
-        destination[length - 1] = 0;
+    if (name_out != 0) {
+        strncpy(name_out,
+                static_cast<TRIBE_Player*>(this->obj->owner)
+                    ->tech_tree->get_name(this->tech_id),
+                max_length);
+        name_out[max_length - 1] = 0;
     }
 }

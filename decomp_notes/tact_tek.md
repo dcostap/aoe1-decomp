@@ -76,3 +76,15 @@ and is removed. The module uses the tracked `config/flags/gx.rsp`
 response file because the constructor and destructor both use EH frames. The
 two target-specific response files are removed. No shared header, ABI, tool,
 or global flag changed.
+
+## 004D25E0 follow-up
+
+The accepted-drift `get_info` source used `self`, `destination`, `length`, and
+repeated `player` aliases without source or exact-output evidence. State
+`42c74423164779e532b7bcaf48078f34ec66f01abe7d69631f96eaf115ea15e7` removes
+those aliases and uses direct member and call expressions.
+
+The target now matches all 120 original bytes. The one-job closure kept all
+seven existing matching neighbors exact. `004D2250` remains a nine-byte
+accepted-drift result. The registry status remains unchanged for orchestrator
+review. See `decomp_notes/functions/004D/004D25E0.md` for the behavior review.
