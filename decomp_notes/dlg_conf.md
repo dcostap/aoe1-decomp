@@ -36,8 +36,9 @@ unresolved `?s_*@@3PADA` references and adds no string provider.
 
 The statuses remain unchanged:
 
-- `0043B560`: accepted drift. The fresh grouped check rebuilds 2,879 bytes
-  against 2,880 original bytes, with 313 differing bytes.
+- `0043B560`: the registry remains `accepted_drift` by task instruction, but
+  the repaired source now matches the 2,880-byte original body exactly.
+  Promotion is deferred so this review does not change registry status.
 - `0043C0C0`: matching. Fresh standalone check reports `MATCH`, `0.0000%`,
   485 bytes, correct owner symbol, boundaries, relocations, and direct calls.
 - `0043C2B0`: scratch. Fresh standalone check rebuilds 1,601 bytes against
@@ -64,5 +65,11 @@ python tools/check_function.py --va 0043C2B0 --rebuild --detail concise
 
 The path-finding controls use their typed title and button arrays. They do not
 depend on cross-array cursor arithmetic. The derived game and command calls
-use proven `static_cast` conversions. This keeps the constructor as accepted
-drift and keeps the action as scratch.
+use proven `static_cast` conversions. The constructor registry status remains
+unchanged, and the action remains scratch.
+
+The constructor review replaced the explicit path `y` cursor with the original
+`i * 0x23 + 0xE1` expression. It also binds `cancelButton` once before its two
+hotkey stores. Both changes are natural source forms supported by the original
+Ghidra expression and load sequence. The exact check is recorded in
+`decomp_notes/functions/0043/0043B560.md`.

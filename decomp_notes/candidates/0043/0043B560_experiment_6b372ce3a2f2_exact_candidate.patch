@@ -1,0 +1,41 @@
+# Experiment 6b372ce3a2f2546f31cbac2b0ab919a6e01f4233db021cdddbccba1cf570a365
+# Base 3e516e8516eb0372115756286222df2cfb525135
+diff --git a/src/dlg_conf.cpp b/src/dlg_conf.cpp
+index 25c4daf1e..58d976969 100644
+--- a/src/dlg_conf.cpp
++++ b/src/dlg_conf.cpp
+@@ -270,19 +270,18 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
+     if (!this->create_text(this, this->pathFindingTitle, 0x260D, 0x1CC,
+                            0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
+         return;
+-    y = 0xE1;
+     for (i = 0; i < 3; ++i) {
+         string_id = 0x260E + i;
+         if (!this->create_text(this, &this->pathFindingTitle[i + 1],
+-                               string_id, 0x1EF, y, 0x78, 0x1E,
++                               string_id, 0x1EF, i * 0x23 + 0xE1, 0x78, 0x1E,
+                                0x0B, 0, 1, 0))
+             return;
+         if (!this->create_radio_button(this, &this->pathFindingButton[i],
+-                                       0x1CC, y, 0x1E, 0x1E, 0, 0))
++                                       0x1CC, i * 0x23 + 0xE1,
++                                       0x1E, 0x1E, 0, 0))
+             return;
+         if (rge_base_game->multiplayerGame())
+             this->pathFindingButton[i]->set_disabled(1);
+-        y += 0x23;
+     }
+     for (i = 0; i < 3; ++i)
+         this->pathFindingButton[i]->set_radio_info(this->pathFindingButton, 3);
+@@ -301,8 +300,9 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
+                              0x136, 0x159, 0xAA, 0x1E, 0, 0, 0))
+         return;
+ 
+-    this->cancelButton->hotkey = 0x1B;
+-    this->cancelButton->hotkey_shift = 0;
++    TButtonPanel* cancel_button = this->cancelButton;
++    cancel_button->hotkey = 0x1B;
++    cancel_button->hotkey_shift = 0;
+     this->set_curr_child(this->okButton);
+     tab_list[0] = this->okButton;
+     tab_list[1] = this->cancelButton;
