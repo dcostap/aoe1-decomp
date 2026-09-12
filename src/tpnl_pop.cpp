@@ -247,21 +247,28 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     void* old_font;
     char str[256];
 
-    if (this->ImageBuffer == 0) return 0;
-    this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    old_font = this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
-    if (old_font == 0)
+    if (this->ImageBuffer == 0) {
         return 0;
+    }
+
+    this->ImageBuffer->PtrClear(&this->ImageRect, 1);
+    if (this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer") == 0) {
+        return 0;
+    }
+
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, 1);
-    sprintf(str, "%s%ld/%ld", this->get_string(0x2b2a),
-            this->pop, this->max_pop);
+
+    sprintf(str, "%s%ld/%ld", this->get_string(0x2B2A), this->pop,
+            this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
+
     {
         const int width = this->pnl_wid - 1;
         const int height = this->pnl_hgt - 1;
+
         SetRect(&rect, 0, 0, width - 2, height - 2);
         DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
         SetRect(&rect, 0, 2, width - 2, height);
@@ -270,34 +277,38 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
         DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
         SetRect(&rect, 2, 2, width, height);
         DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+
         if (this->mode == 1) {
             SetTextColor(this->ImageBuffer->DrawDc, this->color3);
         } else {
             SetTextColor(this->ImageBuffer->DrawDc, this->color1);
         }
+
         SetRect(&rect, 1, 1, width - 1, height - 1);
         DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
     }
+
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
     this->ImageBuffer->ReleaseDc("tpnl_tim::render_to_image_buffer");
 
     int width = this->pnl_wid;
-    int height = this->pnl_hgt;
     int screen_left = this->render_rect.left;
+    int height = this->pnl_hgt;
     this->UsedImageRect.left = 0;
     this->UsedImageRect.top = 0;
     int screen_top = this->render_rect.top;
     --width;
     this->UsedScreenRect.left = screen_left;
     --height;
-    this->UsedScreenRect.top = screen_top;
     screen_left += width;
+    this->UsedScreenRect.top = screen_top;
     this->UsedImageRect.right = width;
     this->UsedImageRect.bottom = height;
     this->UsedScreenRect.right = screen_left;
     screen_top += height;
     this->UsedScreenRect.bottom = screen_top;
     this->ImageTextActive = 1;
+
     return 1;
 }
