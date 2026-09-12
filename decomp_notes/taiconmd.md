@@ -64,3 +64,11 @@ registered owners, both scratch rows, and generated `004D5E90`.
 
 The seven registered owners and generated destructor match. `004D60E0` and
 `004D68A0` remain scratch. Neither observed result supports promotion.
+
+## Accepted-drift defect update
+
+Worker `repair-10` found a cleanup defect in the `004D60E0` drift claim.
+The rebuilt EH state becomes one before the list-head load. The original state
+becomes one after that load and its comparison. A fault at the load destroys
+`tempLots` only in the rebuild. Final state `87d6b9f662f1` remains a 72-byte
+mismatch. The source is unchanged, and the result is blocked.

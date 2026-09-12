@@ -326,12 +326,13 @@ RGE_Time_Entry* RGE_Timeline::add(float time)
     }
 
     {
-        RGE_Time_Entry* new_node = (RGE_Time_Entry*)calloc(1, 0x30);
-        new_node->time = time;
-        new_node->next = 0;
-        *prev = new_node;
+        node = (RGE_Time_Entry*)calloc(1, 0x30);
+        RGE_Time_Entry** node_next = &node->next;
+        node->time = time;
+        *node_next = 0;
+        *prev = node;
         this->list_num++;
-        return new_node;
+        return node;
     }
 }
 

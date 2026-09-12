@@ -1,0 +1,25 @@
+# Experiment 1e5732f8b3b187e9fc4cd4a3c8f1d324b733291ca6f586a8a202951f09b81bf5
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/Timeline.cpp b/src/Timeline.cpp
+index 46ad4aeb6..8c3a5c695 100644
+--- a/src/Timeline.cpp
++++ b/src/Timeline.cpp
+@@ -326,12 +326,13 @@ RGE_Time_Entry* RGE_Timeline::add(float time)
+     }
+ 
+     {
+-        RGE_Time_Entry* new_node = (RGE_Time_Entry*)calloc(1, 0x30);
+-        new_node->time = time;
+-        new_node->next = 0;
+-        *prev = new_node;
++        node = (RGE_Time_Entry*)calloc(1, 0x30);
++        RGE_Time_Entry** node_next = &node->next;
++        node->time = time;
++        *node_next = 0;
++        *prev = node;
+         this->list_num++;
+-        return new_node;
++        return node;
+     }
+ }
+ 

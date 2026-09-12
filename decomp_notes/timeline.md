@@ -125,3 +125,10 @@ The final grouped reconciliation promotes destructor `0050D7E0`. It reports
 The generated vector deleting destructor at `0050D790` remains compiler
 generated and has no ordinary source owner. The grouped audit reported no
 compile errors and no policy issues.
+
+## Accepted-drift repair update
+
+Worker `repair-10` repaired `0050DD70`. State `1e5732f8b3b1` is an exact
+136-byte match. A typed pointer to the append node's `next` field prevents VC5
+from moving that write before `time`. This restores the original null-allocation
+fault location. The final timeline closure keeps all ten exact owners exact.
