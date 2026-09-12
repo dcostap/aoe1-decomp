@@ -199,52 +199,99 @@ long RGE_RMM_Controller::count_map_tiles(uchar ignored)
 }
 
 void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
-    RGE_Land_Info& lands)
+    RGE_Land_Info& land_info)
 {
-    RGE_Object_Info info;
-    long i;
-    int count;
-    info.object_num = 6;
-    info.objects[1].land_outer_radius = 4;
-    info.objects[2].object_number_per_group = 6;
-    info.objects[3].object_number_per_group = 6;
-    info.objects[3].group_area = 4;
-    info.objects[4].object_number_per_group = 6;
-    RGE_Object_Info_Line& deer = info.objects[0];
-    deer.obj_id = 0x6d; deer.terrain = 0; deer.group_flag = 0; deer.scale_flag = 0;
-    deer.object_number_per_group = 1; deer.object_number_varience = 0;
-    deer.number_of_groups = 1; deer.player_id = -1; deer.land_id = 0;
-    deer.land_inner_radius = 0; deer.land_outer_radius = 0;
-    RGE_Object_Info_Line& berry = info.objects[1];
-    berry.obj_id = 0x53; berry.terrain = 0; berry.group_flag = 0; berry.scale_flag = 0;
-    berry.object_number_per_group = 1; berry.object_number_varience = 0;
-    berry.number_of_groups = 3; berry.player_id = -1; berry.land_id = 0;
-    berry.land_inner_radius = 2;
-    RGE_Object_Info_Line& gold = info.objects[2];
-    gold.obj_id = 0x41; gold.terrain = 0; gold.group_flag = 1; gold.scale_flag = 1;
-    gold.object_number_varience = 3; gold.number_of_groups = 10; gold.group_area = 3;
-    gold.player_id = 0; gold.land_id = -1; gold.land_inner_radius = -1;
-    gold.land_outer_radius = -1;
-    RGE_Object_Info_Line& stone = info.objects[3];
-    stone.obj_id = 0x66; stone.terrain = -1; stone.group_flag = 2; stone.scale_flag = 0;
-    stone.object_number_varience = 2; stone.number_of_groups = 1;
-    stone.player_id = 0; stone.land_id = 0; stone.land_outer_radius = 15; stone.land_inner_radius = 9;
-    RGE_Object_Info_Line& tree = info.objects[4];
-    tree.obj_id = 0x42; tree.terrain = -1; tree.group_flag = 2; tree.scale_flag = 0;
-    tree.object_number_varience = 2; tree.number_of_groups = 1; tree.group_area = 4;
-    tree.player_id = 0; tree.land_id = 0; tree.land_inner_radius = 9; tree.land_outer_radius = 15;
-    RGE_Object_Info_Line& predator = info.objects[5];
-    predator.obj_id = 0x3b; predator.terrain = -1; predator.group_flag = 1; predator.scale_flag = 0;
-    predator.object_number_per_group = 5; predator.object_number_varience = 2;
-    predator.number_of_groups = 1; predator.group_area = 3; predator.player_id = 0;
-    predator.land_id = 0; predator.land_outer_radius = 15; predator.land_inner_radius = 9;
-    count = lands.land_num;
-    info.land_num = count;
-    for (i = 0; i < count; ++i) {
-        info.lands[i].x = lands.land[i].x;
-        info.lands[i].y = lands.land[i].y;
-        info.lands[i].id = 0;
-        info.lands[i].player_id = i + 1;
+    RGE_Object_Info object_info;
+    object_info.object_num = 6;
+
+    object_info.objects[0].obj_id = 0x6d;
+    object_info.objects[0].terrain = 0;
+    object_info.objects[0].group_flag = 0;
+    object_info.objects[0].scale_flag = 0;
+    object_info.objects[0].object_number_per_group = 1;
+    object_info.objects[0].object_number_varience = 0;
+    object_info.objects[0].number_of_groups = 1;
+    object_info.objects[0].player_id = -1;
+    object_info.objects[0].land_id = 0;
+    object_info.objects[0].land_inner_radius = 0;
+    object_info.objects[0].land_outer_radius = 0;
+
+    object_info.objects[1].obj_id = 0x53;
+    object_info.objects[1].terrain = 0;
+    object_info.objects[1].group_flag = 0;
+    object_info.objects[1].scale_flag = 0;
+    object_info.objects[1].object_number_per_group = 1;
+    object_info.objects[1].object_number_varience = 0;
+    object_info.objects[1].number_of_groups = 3;
+    object_info.objects[1].player_id = -1;
+    object_info.objects[1].land_id = 0;
+    object_info.objects[1].land_inner_radius = 2;
+    object_info.objects[1].land_outer_radius = 4;
+
+    object_info.objects[2].obj_id = 0x41;
+    object_info.objects[2].terrain = 0;
+    object_info.objects[2].group_flag = 1;
+    object_info.objects[2].scale_flag = 1;
+    object_info.objects[2].object_number_per_group = 6;
+    object_info.objects[2].object_number_varience = 3;
+    object_info.objects[2].number_of_groups = 10;
+    object_info.objects[2].group_area = 3;
+    object_info.objects[2].player_id = 0;
+    object_info.objects[2].land_id = -1;
+    object_info.objects[2].land_inner_radius = -1;
+    object_info.objects[2].land_outer_radius = -1;
+
+    object_info.objects[3].obj_id = 0x66;
+    object_info.objects[3].terrain = -1;
+    object_info.objects[3].group_flag = 2;
+    object_info.objects[3].scale_flag = 0;
+    object_info.objects[3].object_number_per_group = 6;
+    object_info.objects[3].object_number_varience = 2;
+    object_info.objects[3].number_of_groups = 1;
+    object_info.objects[3].group_area = 4;
+    object_info.objects[3].player_id = 0;
+    object_info.objects[3].land_id = 0;
+    object_info.objects[3].land_inner_radius = 9;
+    object_info.objects[3].land_outer_radius = 15;
+
+    object_info.objects[4].obj_id = 0x42;
+    object_info.objects[4].terrain = -1;
+    object_info.objects[4].group_flag = 2;
+    object_info.objects[4].scale_flag = 0;
+    object_info.objects[4].object_number_per_group = 6;
+    object_info.objects[4].object_number_varience = 2;
+    object_info.objects[4].number_of_groups = 1;
+    object_info.objects[4].group_area = 4;
+    object_info.objects[4].player_id = 0;
+    object_info.objects[4].land_id = 0;
+    object_info.objects[4].land_inner_radius = 9;
+    object_info.objects[4].land_outer_radius = 15;
+
+    object_info.objects[5].obj_id = 0x3b;
+    object_info.objects[5].terrain = -1;
+    object_info.objects[5].group_flag = 1;
+    object_info.objects[5].scale_flag = 0;
+    object_info.objects[5].object_number_per_group = 5;
+    object_info.objects[5].object_number_varience = 2;
+    object_info.objects[5].number_of_groups = 1;
+    object_info.objects[5].group_area = 3;
+    object_info.objects[5].player_id = 0;
+    object_info.objects[5].land_id = 0;
+    object_info.objects[5].land_inner_radius = 9;
+    object_info.objects[5].land_outer_radius = 15;
+
+    long land_num = land_info.land_num;
+    object_info.land_num = land_num;
+    long i = 0;
+    if (0 < land_num) {
+        do {
+            object_info.lands[i].x = land_info.land[i].x;
+            object_info.lands[i].y = land_info.land[i].y;
+            object_info.lands[i].id = 0;
+            object_info.lands[i].player_id = i + 1;
+            ++i;
+        } while (i < land_num);
     }
-    new RGE_RMM_Object_Generator(this->map, this, world, &info, 1);
+
+    new RGE_RMM_Object_Generator(this->map, this, world, &object_info, 1);
 }
