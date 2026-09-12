@@ -1933,15 +1933,13 @@ void RGE_Static_Object::change_ownership(RGE_Player* player)
     this->player_object_node = new_node;
     RGE_Master_Static_Object* new_master =
         player->master_objects[old_master->id];
-    RGE_Sprite* new_sprite = this->sprite;
-    if (new_sprite != old_master->sprite) {
-        if (new_sprite == old_master->death_sprite) {
-            new_sprite = new_master->death_sprite;
-        } else if (new_sprite == old_master->undead_sprite) {
-            new_sprite = new_master->undead_sprite;
-        } else {
-            new_sprite = new_master->sprite;
-        }
+    RGE_Sprite* new_sprite;
+    if (this->sprite == old_master->sprite) {
+        new_sprite = new_master->sprite;
+    } else if (this->sprite == old_master->death_sprite) {
+        new_sprite = new_master->death_sprite;
+    } else if (this->sprite == old_master->undead_sprite) {
+        new_sprite = new_master->undead_sprite;
     } else {
         new_sprite = new_master->sprite;
     }
