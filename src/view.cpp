@@ -1025,57 +1025,73 @@ label_done:
 
 void RGE_View::update()
 {
-    RGE_Tile* tile;
-    RGE_Player* p;
-    short sVar6;
-    short sVar7;
-    short sVar8;
-    short sVar9;
-    short sVar10;
-    float row_offset;
-    p = this->player;
-    if (p && (p->view_x != this->last_view_x || p->view_y != this->last_view_y)) {
-        sVar6 = (short)(int)p->view_x;
-        this->center_map_col = sVar6;
-        sVar7 = (short)(int)p->view_y;
-        this->center_map_row = sVar7;
-        row_offset = p->view_y - (float)sVar7;
-        sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2);
-        sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2);
-        this->last_view_x = p->view_x;
-        this->last_view_y = p->view_y;
-        sVar9 -= this->tile_half_wid;
-        sVar10 -= this->tile_half_hgt;
-        this->center_scr_col = sVar9;
-        this->center_scr_row = sVar10;
-        sVar7 = (short)(int)((row_offset * DAT_005776b4 *
-                              (float)this->tile_wid) +
-                              ((p->view_x - (float)this->center_map_col) * DAT_005776b4 *
-                              (float)this->tile_wid));
-        sVar8 = (short)(int)((row_offset * DAT_005776b4 *
-                              (float)this->tile_hgt) -
-                             ((p->view_x - (float)this->center_map_col) * DAT_005776b4 *
-                             (float)this->tile_hgt));
-        sVar9 -= sVar7;
-        sVar10 -= sVar8 + this->tile_half_hgt;
-        this->center_scr_col = sVar9;
-        this->center_scr_row = sVar10;
-        tile = this->map->map_row_offset[this->center_map_row] + this->center_map_col;
-        this->map_scr_x_offset = (int)tile->screen_xpos - (int)sVar9;
-        this->map_scr_y_offset = ((int)this->elev_hgt * tile->height +
-                                  (int)tile->screen_ypos) - (int)sVar10;
-        this->center_scr_col_offset = (short)((this->center_map_col + this->center_map_row) * this->tile_half_wid - sVar7);
-        this->center_scr_row_offset = (short)((this->center_map_row - this->center_map_col) * this->tile_half_hgt - sVar8 - this->tile_half_hgt);
-        sVar7 = this->max_col_num / 2 + 2;
-        this->start_map_row = this->center_map_row;
-        this->start_map_row -= sVar7;
-        this->start_map_col = this->center_map_col - sVar7;
-        this->start_scr_col = (short)(sVar9 - sVar7 * this->tile_half_wid * 2);
-        sVar6 = this->max_row_num / 2 + 1;
-        this->start_map_col += sVar6;
-        this->start_map_row -= sVar6;
-        this->start_scr_row = (short)(sVar10 - sVar6 * this->tile_half_hgt * 2);
+    RGE_Player* view_player = this->player;
+
+    if (view_player == 0 ||
+        (view_player->view_x == this->last_view_x &&
+         view_player->view_y == this->last_view_y)) {
+        return;
     }
+
+    this->center_map_col = (short)view_player->view_x;
+    this->center_map_row = (short)view_player->view_y;
+    this->last_view_x = view_player->view_x;
+    this->last_view_y = view_player->view_y;
+
+    float view_x_fraction = view_player->view_x - (float)this->center_map_col;
+    float view_y_fraction = view_player->view_y - (float)this->center_map_row;
+
+    this->center_scr_col = (short)(this->render_rect.left +
+                                    this->pnl_wid / 2 -
+                                    this->tile_half_wid);
+    this->center_scr_row = (short)(this->render_rect.top +
+                                    this->pnl_hgt / 2 -
+                                    this->tile_half_hgt);
+
+    int screen_col_adjust = (int)((view_x_fraction * DAT_005776b4) *
+                                  this->tile_wid +
+                                  (view_y_fraction * DAT_005776b4) *
+                                  this->tile_wid);
+    screen_col_adjust = -screen_col_adjust;
+
+    int screen_row_adjust = (int)((view_y_fraction * DAT_005776b4) *
+                                  this->tile_hgt -
+                                  (view_x_fraction * DAT_005776b4) *
+                                  this->tile_hgt);
+    screen_row_adjust = -screen_row_adjust - this->tile_half_hgt;
+
+    this->center_scr_col = (short)(this->center_scr_col +
+                                   screen_col_adjust);
+    this->center_scr_row = (short)(this->center_scr_row +
+                                   screen_row_adjust);
+
+    RGE_Tile* center_tile =
+        this->map->map_row_offset[this->center_map_row] +
+        this->center_map_col;
+    this->map_scr_x_offset = (int)center_tile->screen_xpos -
+                             (int)this->center_scr_col;
+    this->map_scr_y_offset = (int)center_tile->screen_ypos +
+                             (int)center_tile->height * this->elev_hgt -
+                             (int)this->center_scr_row;
+
+    this->center_scr_col_offset =
+        (this->center_map_col + this->center_map_row) *
+            this->tile_half_wid + screen_col_adjust;
+    this->center_scr_row_offset =
+        (this->center_map_row - this->center_map_col) *
+            this->tile_half_hgt + screen_row_adjust;
+
+    int col_adjust = this->max_col_num / 2 + 2;
+    this->start_map_row = (short)(this->center_map_row - col_adjust);
+    this->start_map_col = (short)(this->center_map_col - col_adjust);
+    this->start_scr_col = (short)(this->center_scr_col -
+                                  col_adjust * this->tile_half_wid * 2);
+
+    int row_adjust = this->max_row_num / 2 + 1;
+    this->start_map_col = (short)(this->start_map_col + row_adjust);
+    this->start_map_row = (short)(this->start_map_row - row_adjust);
+    this->start_scr_row = (short)(this->center_scr_row -
+                                  row_adjust * this->tile_half_hgt * 2);
 }
 
 
