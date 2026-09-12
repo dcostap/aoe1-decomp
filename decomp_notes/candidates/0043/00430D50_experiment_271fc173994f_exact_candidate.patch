@@ -1,0 +1,90 @@
+# Experiment 271fc173994fa4c8e2a161300c15f9b269845f2cb6f2882f03420a10d3f67134
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/com_obj.cpp b/src/com_obj.cpp
+index 8ca36447a..a2bfa4a3b 100644
+--- a/src/com_obj.cpp
++++ b/src/com_obj.cpp
+@@ -660,7 +660,6 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float range, int force)
+     RGE_Action* action;
+     RGE_Action_Move_To* move_action;
+     RGE_Sprite* sprite;
+-    int result;
+     RGE_Master_Moving_Object* moving_master;
+ 
+     if (force == 0) {
+@@ -689,21 +688,20 @@ int RGE_Combat_Object::moveTo(float x, float y, float z, float range, int force)
+     }
+ 
+     moving_master = static_cast<RGE_Master_Moving_Object*>(this->master_obj);
+-    sprite = moving_master->move_sprite;
++    sprite = moving_master->run_sprite;
+     if (sprite == 0) {
+-        sprite = this->master_obj->sprite;
++        sprite = moving_master->move_sprite;
+     }
+ 
+     move_action = new RGE_Action_Move_To(this, x, y, z, range, sprite);
+-    result = 0;
+-    if (move_action != 0) {
+-        this->actions->delete_list();
+-        this->set_only_action(move_action);
++    if (move_action == 0) {
++        return 0;
++    }
++    this->actions->delete_list();
++    this->set_only_action(move_action);
+ 
+ success:
+-        result = 1;
+-    }
+-    return result;
++    return 1;
+ }
+ 
+ int RGE_Combat_Object::moveAwayFrom(int p0, int p1) { return 0; }
+@@ -712,9 +710,8 @@ int RGE_Combat_Object::gather(int object_id, int force) {
+     RGE_Static_Object* target = this->owner->world->object(object_id);
+     RGE_Task* task;
+     RGE_Action_Gather* action;
+-    RGE_Static_Object* result = target;
+     if (target == 0) {
+-        goto done;
++        return 0;
+     }
+ 
+     if (force == 0 &&
+@@ -726,29 +723,26 @@ int RGE_Combat_Object::gather(int object_id, int force) {
+ 
+     if (this->actions->have_action() == 1 &&
+         this->actions->get_action()->type() == 5) {
+-        this->actions->get_action()->set_target_obj(target);
++        this->actions->get_action()->work(
++            target, target->world_x, target->world_y, target->world_z);
+         goto success;
+     }
+ 
+     task = this->getTask(target, target->world_x, target->world_y,
+                          target->world_z);
+     if (task == 0) {
+-        result = 0;
+-        goto done;
++        return 0;
+     }
+ 
+     action = new RGE_Action_Gather(this, task, target);
+-    result = (RGE_Static_Object*)action;
+     if (action == 0) {
+-        goto done;
++        return 0;
+     }
+ 
+     this->actions->delete_list();
+     this->set_only_action(action);
+ success:
+-    result = (RGE_Static_Object*)1;
+-done:
+-    return (int)result;
++    return 1;
+ }
+ 
+ int RGE_Combat_Object::explore(int param_1, int param_2, int param_3)
