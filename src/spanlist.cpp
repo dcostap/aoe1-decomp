@@ -569,50 +569,72 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* data,
 
 void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
 {
-    int x1v = x1;
-    if (x1v == x2) {
-        int line = y1;
-        if (line > y2) { int t = line; line = y2; y2 = t; }
-        int a = x1v & ~3;
-        int b = x1v | 3;
-        while (line <= y2) { AddSpan(a, b, line); line++; }
-    } else if (y1 == y2) {
-        AddSpan(x1v & ~3, x2 | 3, y1);
-    } else {
-        if (x2 < x1v) {
-            int tx = x1v; x1v = x2; x2 = tx;
-            int ty = y1; y1 = y2; y2 = ty;
+    int temp;
+    int x_length;
+    int y_length;
+    int y_step;
+    int error;
+    int span_start;
+
+    if (x1 == x2) {
+        if (y1 > y2) {
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
         }
-        int dy = x2 - x1v + 1;
-        int dx, step_y;
-        if (y1 < y2) { dx = y2 - y1 + 1; step_y = 1; }
-        else { dx = y1 - y2 + 1; step_y = -1; }
-        if (dy >= dx) {
-            int err = 0;
-            int span_x = x1v;
-            int cur_x = x1v;
-            while (cur_x < x2) {
-                err += dx;
-                if (err >= dy) {
-                    AddSpan(span_x & ~3, cur_x | 3, y1);
-                    y1 += step_y;
-                    err -= dy;
-                    span_x = cur_x + 1;
-                }
-                cur_x++;
-            }
-            AddSpan(span_x & ~3, cur_x | 3, y1);
+
+        for (; y1 <= y2; y1++) {
+            AddSpan(x1 & 0xfffffffc, x1 | 3, y1);
+        }
+    } else if (y1 == y2) {
+        AddSpan(x1 & 0xfffffffc, x2 | 3, y1);
+    } else {
+        if (x2 < x1) {
+            temp = y1;
+            y1 = y2;
+            y2 = temp;
+            temp = x1;
+            x1 = x2;
+            x2 = temp;
+        }
+
+        x_length = x2 - x1 + 1;
+        span_start = x1;
+
+        if (y1 < y2) {
+            y_step = 1;
+            y_length = y2 - y1 + 1;
         } else {
-            int y_stop = y2;
-            y2 = step_y;
-            x2 = 0;
-            while (1) {
-                AddSpan(x1v & ~3, x1v | 3, y1);
-                if (y1 == y_stop) break;
-                x2 += dy;
-                if (x2 >= dx) { x1v++; x2 -= dx; }
-                y1 += y2;
+            y_step = -1;
+            y_length = y1 - y2 + 1;
+        }
+
+        if (y_length <= x_length) {
+            error = 0;
+            for (; x1 < x2; x1++) {
+                error += y_length;
+                if (error >= x_length) {
+                    AddSpan(span_start & 0xfffffffc, x1 | 3, y1);
+                    y1 += y_step;
+                    error -= x_length;
+                    span_start = x1 + 1;
+                }
             }
+            AddSpan(span_start & 0xfffffffc, x1 | 3, y1);
+        } else {
+            error = 0;
+            do {
+                AddSpan(x1 & 0xfffffffc, x1 | 3, y1);
+                if (y1 == y2) {
+                    break;
+                }
+                error += x_length;
+                if (error >= y_length) {
+                    x1++;
+                    error -= y_length;
+                }
+                y1 += y_step;
+            } while (1);
         }
     }
 }
