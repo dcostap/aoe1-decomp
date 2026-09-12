@@ -688,48 +688,51 @@ void RGE_Static_Object::capture_frame(TDrawArea* area, short x, short y) {
 
 
 
-void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
-                                             short x, short y)
+void RGE_Static_Object::capture_square_frame(TDrawArea*, short x, short y)
 {
-    short min_y;
     short min_x;
-    int y0;
+    short min_y;
     short max_y;
     short max_x;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
 
     if (this->sprite != 0 && this->sprite_list != 0) {
         this->sprite_list->get_facetindex(this->sprite, this->facet);
 
         if (this->get_frame(min_x, min_y, max_x, max_y) != 0) {
-            int x1;
-            int y1;
-            x1 = x + min_x - 1 + this->screen_x_offset;
-            y1 = y + min_y - 1 + this->screen_y_offset;
-            y0 = y + max_y + 1 + this->screen_y_offset;
-            SDI_List->AddGDINode(4, y0, x1, y1,
-                                 x + max_x + this->screen_x_offset + 1, y0,
-                                 0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
+            x1 = x + min_x + this->screen_x_offset - 1;
+            y1 = y + min_y + this->screen_y_offset - 1;
+            x2 = x + max_x + this->screen_x_offset + 1;
+            y2 = y + max_y + this->screen_y_offset + 1;
+            int draw_line = y2;
+
+            SDI_List->AddGDINode(
+                4, draw_line, x1, y1, x2, y2,
+                0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
 
             if (this->object_state <= 2) {
-                int health = (int)this->hp;
-                if (health < 1) {
-                    health = 0;
+                int cur_hp = (int)this->hp;
+                if (cur_hp < 1) {
+                    cur_hp = 0;
                 }
 
-                int max_health = (int)this->master_obj->hp;
-                if (max_health > 0) {
+                int tot_hp = (int)this->master_obj->hp;
+                if (tot_hp > 0) {
                     y1 -= 6;
-                    int y2 = y1 + 5;
-                    int x2 = x1 + 26;
-                    health = (health * 25) / max_health + x1;
-                    if (health >= x2) {
-                        health = x2 - 1;
+                    x2 = x1 + 26;
+                    y2 = y1 + 5;
+                    int health_end = x1 + (cur_hp * 25) / tot_hp;
+                    if (health_end >= x2) {
+                        health_end = x2 - 1;
                     }
 
-                    SDI_List->AddGDINode(2, y0, x1, y1, x2,
-                                         y2, health, 0,
-                                         health + 1, 0, 20, 0xff,
-                                         SDI_Object_ID);
+                    SDI_List->AddGDINode(
+                        2, draw_line, x1, y1, x2, y2,
+                        health_end, 0, health_end + 1, 0,
+                        20, 0xff, SDI_Object_ID);
                 }
             }
         }
