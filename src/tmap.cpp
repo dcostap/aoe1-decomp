@@ -106,15 +106,16 @@ void TRIBE_Map::load_random_map(char* param_1, char* param_2, char* param_3,
 }
 
 void TRIBE_Map::check_tile_for_forest_change(short x, short y,
-                                             RGE_Game_World* world)
+                                              RGE_Game_World* world)
 {
     RGE_Tile* tile = this->map_row_offset[y] + x;
-    short y0 = y - 1;
-    short y1 = y + 1;
     short x0 = x - 1;
+    short y0 = y - 1;
     short x1 = x + 1;
-    unsigned char changed = 0;
-    unsigned char object_found = 0;
+    short y1 = y + 1;
+    unsigned char forest_object = 0;
+    unsigned char success = 0;
+
     if (x0 < 0)
         x0 = 0;
     if (y0 < 0)
@@ -124,45 +125,30 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     if (y1 >= this->map_height)
         y1 = (short)this->map_height - 1;
 
-    unsigned char terrain = tile->terrain_type;
-    switch (terrain) {
-    case 0x0A: {
-        RGE_Tile** row_cursor;
-        RGE_Tile* row_tile;
-        row_tile = this->map_row_offset[y0] + x0;
-        row_cursor = this->map_row_offset + y0;
-        if (y0 <= y1) {
-            int row_count = (int)y1 - (int)y0 + 1;
-            do {
-                if (x0 <= x1) {
-                    RGE_Tile* scan = row_tile;
-                    int col_count = (int)x1 - (int)x0 + 1;
-                    do {
-                        unsigned char nearby = scan->terrain_type;
-                        if (nearby != 0x0A && nearby != 0x12)
-                            changed = 1;
-                        ++scan;
-                    } while (--col_count != 0);
-                }
-                row_tile = row_cursor[1] + x0;
-                ++row_cursor;
-            } while (--row_count != 0);
+    if (tile->terrain_type == 10) {
+        for (short row = y0; row <= y1; ++row) {
+            for (short col = x0; col <= x1; ++col) {
+                unsigned char terrain =
+                    this->map_row_offset[row][col].terrain_type;
+                if (terrain != 10 && terrain != 18)
+                    success = 1;
+            }
         }
 
-        if (changed)
-            change_terrain(x, y, 0x12, world);
-        break;
-    }
-    case 0x12: {
-        for (RGE_Object_Node* node = tile->objects.list; node != 0;
-             node = node->next) {
-            RGE_Static_Object* object = node->node;
-            if (object->master_obj->object_group == 0x0F && object->object_state < 8)
-                object_found = 1;
+        if (success)
+            this->change_terrain(x, y, 18, world);
+    } else if (tile->terrain_type == 18) {
+        RGE_Object_Node* node = tile->objects.list;
+        while (node != 0) {
+            if (node->node->master_obj->object_group == 15 &&
+                node->node->object_state < 8)
+                forest_object = 1;
+            node = node->next;
         }
 
-        if (!object_found) {
-            change_terrain(x, y, 0, world);
+        if (!forest_object) {
+            this->change_terrain(x, y, 0, world);
+
             for (short row = y0; row <= y1; ++row) {
                 for (short col = x0; col <= x1; ++col) {
                     if (col != x || row != y)
@@ -170,66 +156,57 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
                 }
             }
         }
-        break;
-    }
-    default:
-        break;
     }
 }
 
 void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
-                                RGE_Game_World* world)
+                               RGE_Game_World* world)
 {
-    RGE_Player* player;
-    RGE_Tile* tile;
-    unsigned char old_border;
-    int col_start;
-    short col_end;
-    int row_start;
-    short row_end;
-    short col;
-
-    tile = this->map_row_offset[y] + x;
-    old_border = tile->terrain_type;
+    RGE_Tile* tile = this->map_row_offset[y] + x;
     tile->terrain_type = terrain;
 
-    if (world->curr_player <= 0 || world->curr_player >= world->player_num)
-        player = 0;
+    short current_player = world->curr_player;
+    RGE_Player* player;
+    if (current_player > 0 && current_player < world->player_num)
+        player = world->players[current_player];
     else
-        player = world->players[world->curr_player];
+        player = 0;
 
     if (player != 0 && world->game_state != 3)
         player->diam_tile_list.add_node(x, y);
 
+    short start_x;
+    short start_y;
+    short end_x = x;
+    short end_y = y;
+
     if (x == 0)
-        col_start = 0;
+        start_x = 0;
     else
-        col_start = x - 1;
+        start_x = x - 1;
 
     if (y == 0)
-        row_start = 0;
+        start_y = 0;
     else
-        row_start = y - 1;
+        start_y = y - 1;
 
-    col_end = (x == this->map_width - 1) ? x : x + 1;
-    row_end = (y == this->map_height - 1) ? y : y + 1;
+    if (x != this->map_width - 1)
+        ++end_x;
+    if (y != this->map_height - 1)
+        ++end_y;
 
-    y = row_start;
-    for (; y <= row_end; ++y) {
-        col = col_start;
-        for (; col <= col_end; ++col) {
-            tile = this->map_row_offset[y] + col;
-            old_border = tile->border_type;
-            terrain = tile->border_shape;
+    for (short row = start_y; row <= end_y; ++row) {
+        for (short col = start_x; col <= end_x; ++col) {
+            tile = this->map_row_offset[row] + col;
+            unsigned char old_border = tile->border_type;
+            unsigned char old_shape = tile->border_shape;
+            this->get_border_type(col, row);
 
-            this->get_border_type(col, y);
-
-            if (player != 0) {
-                if (tile->border_type != old_border ||
-                    tile->border_shape != terrain) {
-                    if (world->game_state != 3)
-                        player->diam_tile_list.add_node(col, y);
-                }
+            if (player != 0 &&
+                (tile->border_type != old_border ||
+                 tile->border_shape != old_shape) &&
+                world->game_state != 3) {
+                player->diam_tile_list.add_node(col, row);
             }
         }
     }
