@@ -2236,48 +2236,56 @@ byte TShape::shape_mirror_shadow_clipped(
 }
 
 byte TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num,
-                          long param_5, long param_6)
+                          long dither_x, long dither_y)
 {
-    tagRECT rect = area->ClipRect;
+    long clip_y1;
+    tagRECT rect;
 
-    if (Check_shape(shape_num, "RGL_shape_draw") != 0)
+    rect = area->ClipRect;
+    if (this->Check_shape(shape_num, (char*)"RGL_shape_draw") != 0)
         return 0;
 
-    this->shape_header =
-        (Shape_Header*)(this->offsets[shape_num].shape + this->shape);
+    Shape_Header* frame =
+        (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
+    this->shape_header = frame;
 
-    long sx1 = x + this->shape_header->xmin;
-    long sy1 = y + this->shape_header->ymin;
-    long sx2 = x + this->shape_header->xmax;
-    long sy2_orig = y + this->shape_header->ymax;
+    long shape_x0 = frame->xmin + x;
+    long shape_y0 = frame->ymin + y;
+    long shape_x1 = frame->xmax + x;
+    long shape_y1 = frame->ymax + y;
 
-    x = sx1;
-    shape_num = sy1;
-    y = sx2;
-    long sy2 = sy2_orig;
-    if (sx1 < rect.left)
-        x = rect.left;
-    if (sy1 < rect.top)
-        shape_num = rect.top;
-    if (sx2 > rect.right)
-        y = rect.right;
-    if (sy2_orig > rect.bottom)
-        sy2 = rect.bottom;
-    if (x < 0)
-        x = 0;
-    if (shape_num < 0)
-        shape_num = 0;
-    if (y >= area->Width)
-        y = area->Width - 1;
-    if (sy2 >= area->Height)
-        sy2 = area->Height - 1;
+    long clip_x0 = shape_x0;
+    long clip_y0 = shape_y0;
+    long clip_x1 = shape_x1;
+    clip_y1 = shape_y1;
 
-    if (y >= x && sy2 >= shape_num) {
-        if (x == sx1 && shape_num == sy1 && y == sx2 && sy2 == sy2_orig)
-            return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
+    if (shape_x0 < rect.left)
+        clip_x0 = rect.left;
+    if (shape_y0 < rect.top)
+        clip_y0 = rect.top;
+    if (shape_x1 > rect.right)
+        clip_x1 = rect.right;
+    if (shape_y1 > rect.bottom)
+        clip_y1 = rect.bottom;
+    if (clip_x0 < 0)
+        clip_x0 = 0;
+    if (clip_y0 < 0)
+        clip_y0 = 0;
+    if (area->Width <= clip_x1)
+        clip_x1 = area->Width - 1;
+    if (area->Height <= clip_y1)
+        clip_y1 = area->Height - 1;
 
-        return shape_dithered_clipped(area, sx1, sy1, x, shape_num,
-                                      y, sy2, param_5, param_6);
+    if (clip_x0 <= clip_x1 && clip_y0 <= clip_y1) {
+        if (clip_x0 == shape_x0 && clip_y0 == shape_y0 &&
+            clip_x1 == shape_x1 && clip_y1 == shape_y1) {
+            return this->shape_dithered_unclipped(
+                area, shape_x0, shape_y0, dither_x, dither_y);
+        }
+
+        return this->shape_dithered_clipped(
+            area, shape_x0, shape_y0, clip_x0, clip_y0, clip_x1, clip_y1,
+            dither_x, dither_y);
     }
 
     return 0;

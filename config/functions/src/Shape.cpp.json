@@ -29,7 +29,7 @@
     "004BAC00": {"status": "scratch", "symbol": "?shape_mirror_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z"},
     "004BAF20": {"status": "scratch", "symbol": "?shape_mirror_color_trans_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJPAE@Z"},
     "004BB280": {"status": "scratch", "symbol": "?shape_mirror_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z"},
-    "004BB5E0": {"status": "scratch", "symbol": "?shape_dither@TShape@@QAEEPAVTDrawArea@@JJJJJ@Z"},
+    "004BB5E0": {"status": "new_verified_logic", "symbol": "?shape_dither@TShape@@QAEEPAVTDrawArea@@JJJJJ@Z", "behavior_review": "logic_matching/004BB5E0/review-01/attempt-01"},
     "004BB770": {"status": "scratch", "symbol": "?shape_dithered_unclipped@TShape@@AAEEPAVTDrawArea@@JJJJ@Z"},
     "004BB910": {"status": "scratch", "symbol": "?shape_dithered_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJJ@Z"}
   }
