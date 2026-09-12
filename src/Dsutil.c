@@ -832,8 +832,8 @@ void __cdecl WaveSaveFile(void* param_1, void* param_2, void* param_3,
     }
 }
 
-void __cdecl ds_stream_init(unsigned int main_wnd, unsigned int lpDS,
-                            unsigned int lpBuffer)
+void __cdecl ds_stream_init(void* hWnd, LPDIRECTSOUND lpd,
+                            LPDIRECTSOUNDBUFFER lpb)
 {
     _uLastPercent = 100;
     _lpDSBStreamBuffer = 0;
@@ -841,9 +841,9 @@ void __cdecl ds_stream_init(unsigned int main_wnd, unsigned int lpDS,
     _bPlaying = 0;
     _bTimerInstalled = 0;
     _uTimerID = 0;
-    _main_wnd = (HWND)main_wnd;
-    _lpBuffer = lpBuffer;
-    _lpDS = (void*)lpDS;
+    _main_wnd = (HWND)hWnd;
+    _lpBuffer = lpb;
+    _lpDS = lpd;
     _ds_ready = 1;
 }
 

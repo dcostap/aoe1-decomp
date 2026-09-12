@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" void __cdecl ds_stream_init(void* main_wnd, void* direct_sound,
-                                         void* primary_buffer);
+extern "C" void __cdecl ds_stream_init(
+    void* main_wnd, LPDIRECTSOUND direct_sound,
+    LPDIRECTSOUNDBUFFER primary_buffer);
 extern "C" void __cdecl ds_stream_exit(void);
 extern "C" int __cdecl ds_stream_file(char* file_name, int mode, long resource_id);
 extern "C" int __cdecl ds_stream_volume(long volume);

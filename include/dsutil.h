@@ -18,7 +18,7 @@ extern int _bPlaying;
 extern int _bTimerInstalled;
 extern unsigned int _uTimerID;
 extern HWND _main_wnd;
-extern unsigned int _lpBuffer;
+extern LPDIRECTSOUNDBUFFER _lpBuffer;
 extern LPDIRECTSOUND _lpDS;
 extern int _ds_ready;
 extern int _stream_paused;
