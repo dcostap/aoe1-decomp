@@ -578,120 +578,104 @@ long RGE_Map::get_map_height()
     return this->map_height;
 }
 
-unsigned char RGE_Map::postclean_elevation(long x0, long y0, long x1,
-                                            long y1, unsigned char elevation)
+unsigned char RGE_Map::postclean_elevation(long x1, long y1, long x2,
+                                            long y2,
+                                            unsigned char elevation)
 {
-    int last_row;
-    int last_col;
-    short width;
-    bool bad;
-    bool neighbor_bad;
-    int x;
-    unsigned char tile_byte;
-    unsigned short next_elevation;
-    RGE_Tile* tile;
-    long changed;
-    short offset3;
-    short offset2;
-    short offset1;
+    short width = (short)this->map_width;
+    short offset_northwest = (short)(-1 - width);
+    short offset_northeast = (short)(1 - width);
+    short offset_north = (short)-width;
+    short offset_southwest = (short)(width - 1);
+    short offset_southeast = (short)(width + 1);
+    short offset_south = width;
+    unsigned char was_bad = 0;
+    long index1;
 
-    width = (short)this->map_width;
-    offset3 = (short)(-1 - width);
-    offset2 = (short)(1 - width);
-    offset1 = (short)(-width);
-    changed = 0;
-
-    if (x0 > 0) --x0;
-    if (y0 > 0) --y0;
-    if (x1 < this->map_width - 1) ++x1;
-    if (y1 < this->map_height - 1) ++y1;
+    if (x1 > 0) --x1;
+    if (y1 > 0) --y1;
+    if (x2 < this->map_width - 1) ++x2;
+    if (y2 < this->map_height - 1) ++y2;
 
     do {
-        if (y1 < y0)
-            return (unsigned char)changed;
+        if (y2 < y1)
+            return was_bad;
 
-        tile = this->map_row_offset[y0] + x0;
-        for (x = (int)x0; x <= x1; ++x) {
-            neighbor_bad = false;
-            bad = false;
-            tile_byte = tile->height;
-            next_elevation = (unsigned short)tile_byte;
+        RGE_Tile* tile = this->map_row_offset[y1] + x1;
+        for (index1 = x1; index1 <= x2; ++index1) {
+            bool bad = false;
+            unsigned char current_height = tile->height;
+            unsigned short new_height = current_height;
 
-            if (next_elevation < elevation) {
-                ++next_elevation;
-                if (y0 > 0 && next_elevation <
-                    (unsigned short)(tile[offset1].height))
-                    neighbor_bad = true;
-                last_row = this->map_height - 1;
-                if (y0 < last_row && next_elevation <
-                    (unsigned short)(tile[width].height))
-                    neighbor_bad = true;
-                if (x > 0 && next_elevation <
-                    (unsigned short)(tile[-1].height))
-                    neighbor_bad = true;
-                last_col = this->map_width - 1;
-                if (x < last_col && next_elevation <
-                    (unsigned short)(tile[1].height))
-                    neighbor_bad = true;
-                bad = neighbor_bad;
-                if (y0 > 0) {
-                    if (x > 0 && next_elevation <
-                        (unsigned short)(tile[offset3].height))
-                        neighbor_bad = true;
-                    bad = neighbor_bad;
-                    if (x < last_col && next_elevation <
-                        (unsigned short)(tile[offset2].height))
+            if (current_height < elevation) {
+                ++new_height;
+
+                if (y1 > 0 &&
+                    (tile + offset_north)->height > new_height)
+                    bad = true;
+                if (y1 < this->map_height - 1 &&
+                    (tile + offset_south)->height > new_height)
+                    bad = true;
+                if (index1 > 0 && tile[-1].height > new_height)
+                    bad = true;
+                if (index1 < this->map_width - 1 &&
+                    tile[1].height > new_height)
+                    bad = true;
+                if (y1 > 0) {
+                    if (index1 > 0 &&
+                        (tile + offset_northwest)->height > new_height)
+                        bad = true;
+                    if (index1 < this->map_width - 1 &&
+                        (tile + offset_northeast)->height > new_height)
                         bad = true;
                 }
-                if (y0 < last_row) {
-                    if (x > 0 && next_elevation <
-                        (unsigned short)(tile[width - 1].height))
+                if (y1 < this->map_height - 1) {
+                    if (index1 > 0 &&
+                        (tile + offset_southwest)->height > new_height)
                         bad = true;
-                    if (x < last_col && next_elevation <
-                        (unsigned short)(tile[width + 1].height))
-                        bad = true;
-                }
-            } else if (elevation < next_elevation) {
-                next_elevation = (unsigned short)(next_elevation - 1);
-                if (y0 > 0 && (short)(unsigned short)
-                    (tile[offset1].height) < (short)next_elevation)
-                    bad = true;
-                last_row = this->map_height - 1;
-                if (y0 < last_row && (short)(unsigned short)
-                    (tile[width].height) < (short)next_elevation)
-                    bad = true;
-                if (x > 0 && (short)(unsigned short)
-                    (tile[-1].height) < (short)next_elevation)
-                    bad = true;
-                last_col = this->map_width - 1;
-                if (x < last_col && (short)(unsigned short)
-                    (tile[1].height) < (short)next_elevation)
-                    bad = true;
-                if (y0 > 0) {
-                    if (x > 0 && (short)(unsigned short)
-                        (tile[offset3].height) < (short)next_elevation)
-                        bad = true;
-                    if (x < last_col && (short)(unsigned short)
-                        (tile[offset2].height) < (short)next_elevation)
+                    if (index1 < this->map_width - 1 &&
+                        (tile + offset_southeast)->height > new_height)
                         bad = true;
                 }
-                if (y0 < last_row) {
-                    if (x > 0 && (short)(unsigned short)
-                        (tile[width - 1].height) < (short)next_elevation)
+            } else if (elevation < current_height) {
+                --new_height;
+
+                if (y1 > 0 &&
+                    (tile + offset_north)->height < new_height)
+                    bad = true;
+                if (y1 < this->map_height - 1 &&
+                    (tile + offset_south)->height < new_height)
+                    bad = true;
+                if (index1 > 0 && tile[-1].height < new_height)
+                    bad = true;
+                if (index1 < this->map_width - 1 &&
+                    tile[1].height < new_height)
+                    bad = true;
+                if (y1 > 0) {
+                    if (index1 > 0 &&
+                        (tile + offset_northwest)->height < new_height)
                         bad = true;
-                    if (x < last_col && (short)(unsigned short)
-                        (tile[width + 1].height) < (short)next_elevation)
+                    if (index1 < this->map_width - 1 &&
+                        (tile + offset_northeast)->height < new_height)
+                        bad = true;
+                }
+                if (y1 < this->map_height - 1) {
+                    if (index1 > 0 &&
+                        (tile + offset_southwest)->height < new_height)
+                        bad = true;
+                    if (index1 < this->map_width - 1 &&
+                        (tile + offset_southeast)->height < new_height)
                         bad = true;
                 }
             }
 
             if (bad) {
-                changed = 1;
-                tile->height = (unsigned char)next_elevation;
+                was_bad = 1;
+                tile->height = new_height;
             }
             ++tile;
         }
-        ++y0;
+        ++y1;
     } while (true);
 }
 

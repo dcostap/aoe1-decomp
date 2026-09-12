@@ -26,7 +26,7 @@
     "00456140": {"status": "matching", "symbol": "?give_up_map_offsets@RGE_Map@@QAEPAPAURGE_Tile@@XZ"},
     "00456150": {"status": "matching", "symbol": "?get_map_width@RGE_Map@@QAEJXZ"},
     "00456160": {"status": "matching", "symbol": "?get_map_height@RGE_Map@@QAEJXZ"},
-    "00456170": {"status": "scratch", "symbol": "?postclean_elevation@RGE_Map@@QAEEJJJJE@Z"},
+    "00456170": {"status": "new_verified_logic", "symbol": "?postclean_elevation@RGE_Map@@QAEEJJJJE@Z", "behavior_review": "logic_matching/00456170/review-01/attempt-01"},
     "004564E0": {"status": "matching", "symbol": "?preclean_elevation@RGE_Map@@QAEXJJJJE@Z"},
     "004568C0": {"status": "matching", "symbol": "?clean_elevation@RGE_Map@@QAEXJJJJE@Z"},
     "00456E90": {"status": "matching", "symbol": "?clean_terrain@RGE_Map@@QAEXJJJJE@Z"},
