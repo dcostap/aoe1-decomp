@@ -69,7 +69,7 @@
     "0042A650": {"status": "matching", "symbol": "?RXAcknowledgeStoredMessage@TCommunications_Handler@@QAEHII@Z"},
     "0042A6E0": {"status": "verified_logic", "symbol": "?PurgeAcknowledgedStoredMessages@TCommunications_Handler@@QAEHXZ"},
     "0042A800": {"status": "scratch", "symbol": "?SendStoredMessages@TCommunications_Handler@@QAEHXZ"},
-    "0042AD10": {"status": "scratch", "symbol": "?TXResendReply@TCommunications_Handler@@QAEHII@Z"},
+    "0042AD10": {"status": "new_verified_logic", "symbol": "?TXResendReply@TCommunications_Handler@@QAEHII@Z", "behavior_review": "logic_matching/0042AD10/review-02/attempt-01"},
     "0042B0A0": {"status": "matching", "symbol": "?TXResendRequest@TCommunications_Handler@@QAEHII@Z"},
     "0042B200": {"status": "matching", "symbol": "?GetNextSequence@TCommunications_Handler@@QAEEK@Z"},
     "0042B270": {"status": "accepted_drift", "symbol": "?CommOut@TCommunications_Handler@@IAEJKEPAXHE@Z"},

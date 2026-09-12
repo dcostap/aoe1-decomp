@@ -3562,131 +3562,129 @@ no_transmit:
 typedef unsigned int uint;
 
 
-int TCommunications_Handler::TXResendReply(uint serial, uint player)
+int TCommunications_Handler::TXResendReply(uint serial, uint toPlayer)
 {
-    unsigned int offset;
-    uint playerNumber;
-    unsigned long now;
-    uint GoodTransmitCount;
+    char* error_text;
     uint i;
+    uint BadTransmitCount;
+    uint GoodTransmitCount;
     long hr;
+    char* OutCommBuff;
     MSGFORMAT_RESEND nosuch;
-    char* errorText;
+    unsigned long now;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
         return 0;
     }
 
-    offset = 0;
-    if (this->PlayerOptions.dcoID[player] == 0) {
-        errorText = "Invalid player req.";
-        goto resend_failure;
+    if (this->PlayerOptions.dcoID[toPlayer] == 0) {
+        error_text = "Invalid player req.";
+        goto no_transmit;
     }
-
-    playerNumber = player;
 
     if (local_player_dpid == 0) {
         return 0;
     }
+
     now = debug_timeGetTime(com_hand_source_path, 0xEE7);
-    if (serial == this->LastSerialRepliedTX[player]) {
-        unsigned long elapsed = now - this->LastRequestRepliedTX[player];
+    if (serial == this->LastSerialRepliedTX[toPlayer]) {
+        unsigned long elapsed = now - this->LastRequestRepliedTX[toPlayer];
         if (elapsed < 500) {
             L->Log("Res reply too soon #%u %u", serial, elapsed);
             return 0;
         }
     }
 
-    this->LastSerialRepliedTX[player] = serial;
-    this->LastRequestRepliedTX[player] = now;
+    this->LastSerialRepliedTX[toPlayer] = serial;
+    this->LastRequestRepliedTX[toPlayer] = now;
 
-    hr = 0;
-    i = 0;
     GoodTransmitCount = 0;
-    player = player * 4 + 0x10;
-
+    BadTransmitCount = 0;
+    i = 0;
     do {
-        if (*(unsigned int*)((char*)this->Resend + offset + 4) == serial) {
+        if (this->Resend[i].Serial == serial) {
             sprintf(this->TBuff, "Found Resend Ser#%d for P#%d",
-                    *(unsigned int*)((char*)this->Resend + offset + 4),
-                    playerNumber);
+                    this->Resend[i].Serial, toPlayer);
             L->Log(this->TBuff);
 
-            nosuch.Serialno = (uint)operator new(
-                *(unsigned int*)((char*)this->Resend + offset + 0xC));
-            (*(unsigned int*)((char*)this->Resend + player))--;
+            OutCommBuff = new char[this->Resend[i].Length];
+            this->Resend->DestMap[toPlayer]--;
 
             if (local_player_dpid == 0) {
-                errorText = "+++BAD DCOID=0 NO TX";
-                goto resend_failure;
+                error_text = "+++BAD DCOID=0 NO TX";
+                goto no_transmit;
             }
 
             unsigned long send_start =
                 debug_timeGetTime(com_hand_source_path, 0xF19);
-            L->Log("  >TX RES REP #%d %d (%d)", playerNumber, serial,
-                   *(unsigned int*)((char*)this->Resend + offset + 0xC));
-            int send_result = direct_play_interface->Send(
+            L->Log("  >TX RES REP #%d %d (%d)", toPlayer, serial,
+                   this->Resend[i].Length);
+
+            hr = direct_play_interface->Send(
                 local_player_dpid,
-                this->PlayerOptions.dcoID[playerNumber], 0,
-                *(char**)((char*)this->Resend + offset + 8),
-                *(unsigned int*)((char*)this->Resend + offset + 0xC));
+                this->PlayerOptions.dcoID[toPlayer],
+                0,
+                this->Resend[i].ResendMsg,
+                this->Resend[i].Length);
+
             unsigned long send_elapsed =
-                debug_timeGetTime(com_hand_source_path, 0xF28)
-                - send_start;
+                debug_timeGetTime(com_hand_source_path, 0xF28) - send_start;
             if (send_elapsed > 0x32) {
                 L->Log("!!!TXResendReply slow - %ld msec", send_elapsed);
             }
 
-            if (send_result == 0) {
-                ++hr;
-                this->TXPacketLength +=
-                    *(unsigned int*)((char*)this->Resend + offset + 0xC);
+            if (hr == 0) {
+                ++GoodTransmitCount;
+                this->TXPacketLength += this->Resend[i].Length;
             } else {
-                this->Err->ShowReturn(send_result, "Resend TX");
-                ++i;
+                this->Err->ShowReturn(hr, "Resend TX");
+                ++BadTransmitCount;
             }
 
-            int command = (signed char)*(
-                *(char**)((char*)this->Resend + offset + 8));
-            unsigned long log_time =
-                debug_timeGetTime(com_hand_source_path, 0xF42);
-            L->Log("COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
-                   playerNumber,
-                   *(unsigned int*)((char*)this->Resend + offset + 4),
-                   GoodTransmitCount, command, command,
-                   *(unsigned int*)((char*)this->Resend + offset + 0xC),
-                   *(unsigned int*)((char*)this->Resend + player),
-                   log_time);
-            operator delete((void*)nosuch.Serialno);
-        }
-        offset += 0x38;
-        ++GoodTransmitCount;
-        player += 0x38;
-    } while (offset <= 0x6D98);
+            L->Log(
+                "COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
+                toPlayer,
+                this->Resend[i].Serial,
+                i,
+                static_cast<int>(static_cast<signed char>(
+                    this->Resend[i].ResendMsg[0])),
+                static_cast<int>(static_cast<signed char>(
+                    this->Resend[i].ResendMsg[0])),
+                this->Resend[i].Length,
+                this->Resend->DestMap[toPlayer],
+                debug_timeGetTime(com_hand_source_path, 0xF42));
 
-    if ((hr == 0) && (i == 0)) {
-        if (this->PlayerOptions.ProgramState == 3) {
+            delete[] OutCommBuff;
+        }
+
+        ++i;
+    } while (i <= 0x1F5);
+
+    if (GoodTransmitCount == 0 && BadTransmitCount == 0) {
+        if (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
             L->Log("+++ Did not have requested Ser#%d for P#%d ",
-                   serial, playerNumber);
-            nosuch.Command = 'Y';
+                   serial, toPlayer);
+
+            nosuch.Command = 0x59;
             nosuch.Serialno = this->GTDSerialNo - 1;
-            L->Log("  >TX RNSM #%d %d (%d)",
-                   playerNumber, serial, 8);
-            this->FastSend(this->PlayerOptions.dcoID[playerNumber], &nosuch,
+            L->Log("  >TX RNSM #%d %d (%d)", toPlayer, serial, 8);
+            this->FastSend(this->PlayerOptions.dcoID[toPlayer], &nosuch,
                            8, 0, 0);
-            L->Log("+++ TX: No such message as #%d..resynchronizing ser#s", serial);
-            this->ClearTXForPlayer(playerNumber);
+            L->Log("+++ TX: No such message as #%d..resynchronizing ser#s",
+                   serial);
+            this->ClearTXForPlayer(toPlayer);
         }
     } else {
         L->Log("RESEND to P#%d FULFILLED:  GoodTX=%d BadTX=%d Total=%d",
-               playerNumber, hr, i, hr + i);
+               toPlayer, GoodTransmitCount, BadTransmitCount,
+               GoodTransmitCount + BadTransmitCount);
     }
 
     this->PurgeAcknowledgedStoredMessages();
     return 1;
 
-resend_failure:
-    L->Log(errorText);
+no_transmit:
+    L->Log(error_text);
     return 0;
 }
 
