@@ -313,164 +313,161 @@ long TScrollBarPanel::mouse_left_down_action(long param_1, long param_2, int par
     return 0;
 }
 
-long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
+long TScrollBarPanel::mouse_left_move_action(long param_1, long param_2, int param_3, int param_4)
 {
-    int delta;
-    long value;
+    long delta;
+    long position;
 
     switch (this->item_down) {
     case 1:
-        if (this->is_inside_rect(x, y, &this->up_rect)) {
-            if (this->item_is_down == 0) {
-                this->item_is_down = 1;
-                this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x19A);
-                this->scroll(ActionUp, 0);
+        if (this->is_inside_rect(param_1, param_2, &this->up_rect) == 0) {
+            if (this->item_is_down != 0) {
+                this->item_is_down = 0;
+                this->item_mode = 0;
                 this->set_redraw(TPanel::RedrawNormal);
             }
-        } else if (this->item_is_down != 0) {
-            this->item_is_down = 0;
-            this->item_mode = 0;
+        } else if (this->item_is_down == 0) {
+            this->item_is_down = 1;
+            this->item_mode = 2;
+            this->item_last_time = debug_timeGetTime(
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x19a);
+            this->scroll(ActionUp, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
         break;
 
     case 2:
-        if (this->is_inside_rect(x, y, &this->down_rect)) {
-            if (this->item_is_down == 0) {
-                this->item_is_down = 1;
-                this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x1AD);
-                this->scroll(ActionDown, 0);
+        if (this->is_inside_rect(param_1, param_2, &this->down_rect) == 0) {
+            if (this->item_is_down != 0) {
+                this->item_is_down = 0;
+                this->item_mode = 0;
                 this->set_redraw(TPanel::RedrawNormal);
             }
-        } else if (this->item_is_down != 0) {
-            this->item_is_down = 0;
-            this->item_mode = 0;
-            this->set_redraw(TPanel::RedrawNormal);
-        }
-        break;
-
-    case 4:
-        if (this->is_inside_rect(x, y, &this->top_rect)) {
-            if (this->item_is_down == 0) {
-                this->item_is_down = 1;
-                this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x1C0);
-                this->scroll(ActionPrior, 0);
-                this->set_redraw(TPanel::RedrawNormal);
-            }
-        } else if (this->item_is_down != 0) {
-            this->item_is_down = 0;
-            this->item_mode = 0;
-            this->set_redraw(TPanel::RedrawNormal);
-        }
-        break;
-
-    case 5:
-        if (this->is_inside_rect(x, y, &this->bottom_rect)) {
-            if (this->item_is_down == 0) {
-                this->item_is_down = 1;
-                this->item_mode = 2;
-                this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x1D3);
-                this->scroll(ActionNext, 0);
-                this->set_redraw(TPanel::RedrawNormal);
-            }
-        } else if (this->item_is_down != 0) {
-            this->item_is_down = 0;
-            this->item_mode = 0;
+        } else if (this->item_is_down == 0) {
+            this->item_is_down = 1;
+            this->item_mode = 2;
+            this->item_last_time = debug_timeGetTime(
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1ad);
+            this->scroll(ActionDown, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
         break;
 
     case 3:
-        if (this->orientationValue == 1) {
-            delta = x - this->item_x;
-            if (delta > 0) {
-                if ((this->tab_x == this->tab_min_x) &&
-                    (x < this->tab_mouse_x + this->tab_x)) {
-                    delta = 0;
-                }
+        if (this->orientationValue == Horizontal) {
+            delta = param_1 - this->item_x;
+            if (this->tab_x == this->tab_min_x && delta > 0 &&
+                param_1 < this->tab_mouse_x + this->tab_x) {
+                delta = 0;
+            } else if (this->tab_x == this->tab_max_x && delta < 0 &&
+                       this->tab_mouse_x + this->tab_x <= param_1) {
+                delta = 0;
             }
-            if (this->tab_x == this->tab_max_x) {
-                if ((delta < 0) && (x >= this->tab_mouse_x + this->tab_x)) {
-                    delta = 0;
-                }
+
+            if (delta == 0) {
+                break;
             }
-            if (delta != 0) {
-                long min_x = this->tab_min_x;
-                this->tab_x += delta;
-                if (this->tab_x < min_x) {
-                    this->tab_x = min_x;
-                } else if (this->tab_x > this->tab_max_x) {
-                    this->tab_x = this->tab_max_x;
+
+            this->tab_x += delta;
+            if (this->tab_x < this->tab_min_x) {
+                this->tab_x = this->tab_min_x;
+            } else if (this->tab_x > this->tab_max_x) {
+                this->tab_x = this->tab_max_x;
+            }
+
+            this->calc_item_rects();
+            this->set_redraw(TPanel::RedrawNormal);
+
+            if (this->tab_min_x == this->tab_max_x) {
+                position = 0;
+            } else {
+                position = ((this->tab_x - this->tab_min_x) * this->list_len) /
+                           (this->tab_max_x - this->tab_min_x);
+                if (position < 0) {
+                    position = 0;
+                } else if (position > this->list_len - 1) {
+                    position = this->list_len - 1;
                 }
-                this->calc_item_rects();
-                this->set_redraw(TPanel::RedrawNormal);
-                if (this->tab_min_x == this->tab_max_x) {
-                    value = 0;
-                } else {
-                    value = ((this->tab_x - this->tab_min_x) * this->list_len) /
-                            (this->tab_max_x - this->tab_min_x);
-                    if (value < 0) {
-                        value = 0;
-                    } else {
-                        long max_value = this->list_len - 1;
-                        if (value > max_value) {
-                            value = max_value;
-                        }
-                    }
-                }
-                this->scroll(ActionPosition, value);
             }
         } else {
-            delta = y;
-            delta -= this->item_y;
-            if (this->tab_min_y == this->tab_y) {
-                if ((delta > 0) &&
-                    (y < this->tab_mouse_y + this->tab_y)) {
-                    delta = 0;
+            delta = param_2 - this->item_y;
+            if (this->tab_y == this->tab_min_y && delta > 0 &&
+                param_2 < this->tab_mouse_y + this->tab_y) {
+                delta = 0;
+            } else if (this->tab_y == this->tab_max_y && delta < 0 &&
+                       this->tab_mouse_y + this->tab_y <= param_2) {
+                delta = 0;
+            }
+
+            if (delta == 0) {
+                break;
+            }
+
+            this->tab_y += delta;
+            if (this->tab_y < this->tab_min_y) {
+                this->tab_y = this->tab_min_y;
+            } else if (this->tab_y > this->tab_max_y) {
+                this->tab_y = this->tab_max_y;
+            }
+
+            this->calc_item_rects();
+            this->set_redraw(TPanel::RedrawNormal);
+
+            if (this->tab_min_y == this->tab_max_y) {
+                position = 0;
+            } else {
+                position = ((this->tab_y - this->tab_min_y) * this->list_len) /
+                           (this->tab_max_y - this->tab_min_y);
+                if (position < 0) {
+                    position = 0;
+                } else if (position > this->list_len - 1) {
+                    position = this->list_len - 1;
                 }
             }
-            if (this->tab_y == this->tab_max_y) {
-                if ((delta < 0) && (y >= this->tab_mouse_y + this->tab_y)) {
-                    delta = 0;
-                }
+        }
+        this->scroll(ActionPosition, position);
+        break;
+
+    case 4:
+        if (this->is_inside_rect(param_1, param_2, &this->top_rect) == 0) {
+            if (this->item_is_down != 0) {
+                this->item_is_down = 0;
+                this->item_mode = 0;
+                this->set_redraw(TPanel::RedrawNormal);
             }
-            if (delta != 0) {
-                long min_y = this->tab_min_y;
-                this->tab_y += delta;
-                if (this->tab_y < min_y) {
-                    this->tab_y = min_y;
-                } else if (this->tab_y > this->tab_max_y) {
-                    this->tab_y = this->tab_max_y;
-                }
-                this->calc_item_rects();
-                    this->set_redraw(TPanel::RedrawNormal);
-                if (this->tab_min_y == this->tab_max_y) {
-                    value = 0;
-                } else {
-                    value = ((this->tab_y - this->tab_min_y) * this->list_len) /
-                            (this->tab_max_y - this->tab_min_y);
-                    if (value < 0) {
-                        value = 0;
-                    } else {
-                        long max_value = this->list_len - 1;
-                        if (value > max_value) {
-                            value = max_value;
-                        }
-                    }
-                }
-                this->scroll(ActionPosition, value);
+        } else if (this->item_is_down == 0) {
+            this->item_is_down = 1;
+            this->item_mode = 2;
+            this->item_last_time = debug_timeGetTime(
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1c0);
+            this->scroll(ActionPrior, 0);
+            this->set_redraw(TPanel::RedrawNormal);
+        }
+        break;
+
+    case 5:
+        if (this->is_inside_rect(param_1, param_2, &this->bottom_rect) == 0) {
+            if (this->item_is_down != 0) {
+                this->item_is_down = 0;
+                this->item_mode = 0;
+                this->set_redraw(TPanel::RedrawNormal);
             }
+        } else if (this->item_is_down == 0) {
+            this->item_is_down = 1;
+            this->item_mode = 2;
+            this->item_last_time = debug_timeGetTime(
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1d3);
+            this->scroll(ActionNext, 0);
+            this->set_redraw(TPanel::RedrawNormal);
         }
         break;
     }
 
     if (this->item_down != 0) {
-        this->item_x = x;
-        this->item_y = y;
+        this->item_x = param_1;
+        this->item_y = param_2;
     }
+
     return 0;
 }
 
