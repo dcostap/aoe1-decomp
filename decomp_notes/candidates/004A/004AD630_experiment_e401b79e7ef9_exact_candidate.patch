@@ -1,0 +1,34 @@
+# Experiment e401b79e7ef9113ffd8a2fc24eee29d0ce07450934441afc54e793d45e04cc1f
+# Base 4a603c669103afff6e2ff8ff6ab2edc399b3cb42
+diff --git a/src/scr_sed.cpp b/src/scr_sed.cpp
+index 30012e064..940d5b7bb 100644
+--- a/src/scr_sed.cpp
++++ b/src/scr_sed.cpp
+@@ -2489,18 +2489,20 @@ void TRIBE_Screen_Sed::command_open(void)
+ 
+ void TRIBE_Screen_Sed::command_outline(void)
+ {
+-    switch (rge_base_game->outline_type) {
++    unsigned char outline_type = rge_base_game->outline_type;
++    switch (outline_type) {
+     case 0:
+     case 3:
+-        rge_base_game->outline_type = 2;
+-        return;
++        outline_type = 2;
++        break;
+     case 2:
+-        rge_base_game->outline_type = 1;
+-        return;
++        outline_type = 1;
++        break;
+     case 1:
+-        rge_base_game->outline_type = 0;
+-        return;
++        outline_type = 0;
++        break;
+     }
++    rge_base_game->outline_type = outline_type;
+ }
+ 
+ void TRIBE_Screen_Sed::command_player(int player) {

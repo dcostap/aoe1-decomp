@@ -505,8 +505,8 @@ void RGE_Static_Object::give_attribute_to_owner(void) {
         if (status >= 1 && status <= 2) {
             short attr_id = master->attribute_type_held[i];
             if (attr_id >= 0) {
-                float value = master->attribute_amount_held[i];
-                this->owner->add_attribute_num(attr_id, value, 0);
+                this->owner->add_attribute_num(
+                    attr_id, master->attribute_amount_held[i], 0);
             }
         }
     }

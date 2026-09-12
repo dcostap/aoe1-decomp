@@ -2489,18 +2489,20 @@ void TRIBE_Screen_Sed::command_open(void)
 
 void TRIBE_Screen_Sed::command_outline(void)
 {
-    switch (rge_base_game->outline_type) {
+    unsigned char outline_type = rge_base_game->outline_type;
+    switch (outline_type) {
     case 0:
     case 3:
-        rge_base_game->outline_type = 2;
-        return;
+        outline_type = 2;
+        break;
     case 2:
-        rge_base_game->outline_type = 1;
-        return;
+        outline_type = 1;
+        break;
     case 1:
-        rge_base_game->outline_type = 0;
-        return;
+        outline_type = 0;
+        break;
     }
+    rge_base_game->outline_type = outline_type;
 }
 
 void TRIBE_Screen_Sed::command_player(int player) {
