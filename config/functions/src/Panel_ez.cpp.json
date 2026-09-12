@@ -30,7 +30,7 @@
     "00467FA0": {"status": "matching", "symbol": "?set_text_colors@TEasy_Panel@@QAEXKK@Z"},
     "00467FC0": {"status": "matching", "symbol": "?set_focus_colors@TEasy_Panel@@QAEXKK@Z"},
     "00467FE0": {"status": "matching", "symbol": "?set_state_colors@TEasy_Panel@@QAEXKK@Z"},
-    "00468000": {"status": "accepted_drift", "symbol": "?set_popup_info_file@TEasy_Panel@@QAEXPADJ@Z"},
+    "00468000": {"status": "matching", "symbol": "?set_popup_info_file@TEasy_Panel@@QAEXPADJ@Z"},
     "00468060": {"status": "matching", "symbol": "?set_button_pics@TEasy_Panel@@QAEXPADJ@Z"},
     "004681D0": {"status": "matching", "symbol": "?set_shadow_amount@TEasy_Panel@@QAEXJ@Z"},
     "004682D0": {"status": "matching", "symbol": "?set_enable_ime@TEasy_Panel@@QAEXH@Z"},

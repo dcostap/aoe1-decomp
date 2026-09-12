@@ -97,7 +97,7 @@
     "00518F00": {"status": "matching", "symbol": "?logStatus@TRIBE_Player@@UAEXPAU_iobuf@@H@Z"},
     "005192F0": {"status": "matching", "symbol": "?trackUnitGather@TRIBE_Player@@UAEXHHH@Z"},
     "00519320": {"status": "matching", "symbol": "?get_achievement@TRIBE_Player@@QAEXEPAD@Z"},
-    "00519490": {"status": "accepted_drift", "symbol": "?load_victory@TRIBE_Player@@UAEXHPAJE@Z"},
+    "00519490": {"status": "matching", "symbol": "?load_victory@TRIBE_Player@@UAEXHPAJE@Z"},
     "00519500": {"status": "matching", "symbol": "?new_victory@TRIBE_Player@@UAEXXZ"},
     "00519570": {"status": "matching", "symbol": "?add_attribute_num@TRIBE_Player@@UAEXFME@Z"},
     "005195D0": {"status": "matching", "symbol": "?analyize_selected_objects@TRIBE_Player@@UAEXXZ"},

@@ -115,7 +115,7 @@
     "00471BE0": {"status": "matching", "symbol": "?notify@RGE_Player@@UAEXHHHJJJ@Z"},
     "00471BF0": {"status": "matching", "symbol": "?set_map_visible@RGE_Player@@QAEXXZ"},
     "00471C00": {"status": "matching", "symbol": "?remake_visible_map@RGE_Player@@QAEXXZ"},
-    "00471C90": {"status": "accepted_drift", "symbol": "?load_victory@RGE_Player@@UAEXHPAJE@Z"},
+    "00471C90": {"status": "matching", "symbol": "?load_victory@RGE_Player@@UAEXHPAJE@Z"},
     "00471D00": {"status": "matching", "symbol": "?new_victory@RGE_Player@@UAEXXZ"},
     "00471D70": {"status": "matching", "symbol": "?add_node@RGE_Tile_List@@QAEXHH@Z"},
     "00471DF0": {"status": "matching", "symbol": "?del_list@RGE_Tile_List@@QAEXXZ"},

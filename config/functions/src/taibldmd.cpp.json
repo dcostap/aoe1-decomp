@@ -13,7 +13,7 @@
     "004D3B20": {"status": "matching", "symbol": "?loadBuildList@TribeBuildAIModule@@UAEHPADPAVRGE_Player@@@Z"},
     "004D3D60": {"status": "scratch", "symbol": "?initialize@TribeBuildAIModule@@QAEXXZ"},
     "004D4460": {"status": "matching", "symbol": "?skipNextBuildListItem@TribeBuildAIModule@@QAEXXZ"},
-    "004D4540": {"status": "accepted_drift", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z"},
+    "004D4540": {"status": "scratch", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z"},
     "004D4DB0": {"status": "matching", "symbol": "?nextBuildListItemCategory@TribeBuildAIModule@@QAEHXZ"},
     "004D4E10": {"status": "matching", "symbol": "?blockingResource@TribeBuildAIModule@@QAEHXZ"},
     "004D4F80": {"status": "accepted_drift", "symbol": "?mostNeededResource@TribeBuildAIModule@@QAEHAAVResourceItem@@H@Z"},
