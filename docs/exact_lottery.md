@@ -106,9 +106,9 @@ implementation. Do not select the closest byte score.
 
 ## Review and promotion
 
-An exact byte result is not technical approval.
-It can still contain prohibited or unsupported source.
-It also needs linked identity and closure checks.
+An exact byte result still needs a source-policy check.
+The root performs this check directly. Do not launch a separate reviewer for an
+exact-lottery hit unless the user requests one.
 
 The lottery orchestrator never integrates a hit.
 The root performs these separate steps:
@@ -116,16 +116,14 @@ The root performs these separate steps:
 1. Preserve the exact workspace and commit identity.
 2. Import the candidate into a unique durable attempt archive.
 3. Reproduce the exact result from the current integration base.
-4. Send only that exact candidate to a fresh technical reviewer.
-5. Require approval of behavior, source, ownership, ABI, boundaries, and calls.
-6. Integrate only the reviewed, unchanged candidate.
-7. Run the authoritative function check again.
-8. Run the affected translation-unit closure audit.
-9. Set `matching` only while exactness and review remain valid.
+4. Check behavior, source policy, ownership, ABI, boundaries, and calls.
+5. Integrate only the unchanged exact candidate.
+6. Run the authoritative function check again.
+7. Run the affected translation-unit closure audit.
+8. Set `matching` only while exactness and the root check remain valid.
 
-If the reviewer changes compiler-facing source, the exact candidate does not
-qualify for direct lottery promotion. Route the revision through normal behavior
-recovery or run another authorized lottery.
+If the root changes compiler-facing source, recheck exactness before promotion.
+Route a nonexact revision through normal behavior recovery.
 
 ## Pilot result
 

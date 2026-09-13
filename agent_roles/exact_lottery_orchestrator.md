@@ -75,6 +75,6 @@ BLOCKED <VA> <specific-condition>
 ## Authority boundary
 
 Do not review, archive, integrate, or promote a candidate.
-Preserve an exact workspace unchanged for a fresh technical review.
-The root owns archive import, current-base validation, review, integration,
-registry status, and closure audits.
+Preserve an exact workspace unchanged for the root's source-policy check.
+The root owns archive import, current-base validation, source review,
+integration, registry status, and closure audits.
