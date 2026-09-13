@@ -482,13 +482,11 @@ int UnitAIModule::numberAttackingUnits() const {
 }
 
 
-int UnitAIModule::update(unsigned long param_1)
+int UnitAIModule::update(unsigned long uTime)
 {
-    RGE_Static_Object* target;
-    int i;
     int haveGameAction;
 
-    if (2 < this->objectValue->object_state) {
+    if (this->objectValue->object_state > 2) {
         return 1;
     }
 
@@ -497,25 +495,24 @@ int UnitAIModule::update(unsigned long param_1)
     numberVisibleObjects = 0;
     numberDifferentPlayerObjectsVisible = 0;
 
-    haveGameAction = ((RGE_Action_Object*)this->objectValue)->actions->have_action();
+    haveGameAction = ((RGE_Action_Object*)this->objectValue)
+                         ->actions->have_action();
     if (haveGameAction == 0 && this->objectValue->waitingToMove() == 1) {
         this->objectValue->setWaitingToMove(0);
     }
 
-    i = -1;
-    if (this->currentTargetValue != i) {
-        target = this->lookupObject(this->currentTargetValue);
+    if (this->currentTargetValue != -1) {
+        RGE_Static_Object* target =
+            this->lookupObject(this->currentTargetValue);
+
         if (target == 0) {
-            this->currentTargetValue = i;
-            if (this->currentActionValue == 600) {
+            this->currentTargetValue = -1;
+            if (this->currentActionValue == 0x258) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    long objectID;
-                    if (this->objectValue != 0) {
-                        objectID = this->objectValue->id;
-                    } else {
-                        objectID = i;
-                    }
+                    int objectID = this->objectValue != 0
+                                       ? this->objectValue->id
+                                       : -1;
                     fprintf(actionFile, str_fmt_stopObject, objectID,
                             str_aiuaimod_path, 0x306);
                 }
@@ -523,67 +520,64 @@ int UnitAIModule::update(unsigned long param_1)
                 this->idleTimerValue = this->idleTimeoutValue;
             }
         } else {
-            long targetLogObjectID;
-            if (this->objectValue->object_state == 2 && target->object_state > 2) {
-                if (this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
-                    this->stopAfterTargetKilledValue = 0;
-                    if (this->currentActionValue == 600) {
-                        int idleResult = this->processIdle(0);
-                        if (idleResult == 5) {
-                            if (this->currentOrderValue != 0x2D5) {
-                                if (this->moveTo(this->currentTargetXValue,
-                                                 this->currentTargetYValue,
-                                                 this->currentTargetZValue,
-                                                 this->objectValue->weaponRange(),
-                                                 1) == 0) {
-                                    this->removeCurrentTarget();
-                                    if (actionFile != 0) {
-                                        if (this->objectValue != 0) {
-                                            targetLogObjectID = this->objectValue->id;
-                                        } else {
-                                            targetLogObjectID = i;
-                                        }
-                                        fprintf(actionFile, str_fmt_stopObject,
-                                                targetLogObjectID,
-                                                str_aiuaimod_path, 0x335);
-                                    }
-                                    this->stopObject(1);
-                                } else {
-                                    this->lastOrderValue = this->currentOrderValue;
-                                    this->currentOrderValue = i;
-                                    this->currentOrderPriorityValue = i;
+            if (this->objectValue->object_state == 2 &&
+                target->object_state > 2 &&
+                this->actionRequiresLiveTarget(this->currentActionValue) == 1) {
+                this->stopAfterTargetKilledValue = 0;
+                if (this->currentActionValue == 0x258) {
+                    int idleResult = this->processIdle(0);
+                    int currentOrder = this->currentOrderValue;
+                    if (idleResult == 5) {
+                        if (currentOrder != 0x2D5) {
+                            if (this->moveTo(this->currentTargetXValue,
+                                             this->currentTargetYValue,
+                                             this->currentTargetZValue,
+                                             this->objectValue->weaponRange(),
+                                             1) == 0) {
+                                this->removeCurrentTarget();
+                                if (actionFile != 0) {
+                                    int objectID = this->objectValue != 0
+                                                       ? this->objectValue->id
+                                                       : -1;
+                                    fprintf(actionFile, str_fmt_stopObject,
+                                            objectID, str_aiuaimod_path, 0x335);
                                 }
-                            }
-                        } else if (this->currentOrderValue != 0x2D5) {
-                            this->lastOrderValue = this->currentOrderValue;
-                            this->currentOrderValue = i;
-                            this->currentOrderPriorityValue = i;
-                        }
-                    } else {
-                        this->removeCurrentTarget();
-                        if (actionFile != 0) {
-                            if (this->objectValue != 0) {
-                                targetLogObjectID = this->objectValue->id;
+                                this->stopObject(1);
                             } else {
-                                targetLogObjectID = i;
+                                int currentOrderAfterMove =
+                                    this->currentOrderValue;
+                                this->currentOrderValue = -1;
+                                this->lastOrderValue = currentOrderAfterMove;
+                                this->currentOrderPriorityValue = -1;
                             }
-                            fprintf(actionFile, str_fmt_stopObject,
-                                    targetLogObjectID, str_aiuaimod_path, 0x356);
                         }
-                        this->stopObject(1);
+                    } else if (currentOrder != 0x2D5) {
+                        this->lastOrderValue = currentOrder;
+                        this->currentOrderValue = -1;
+                        this->currentOrderPriorityValue = -1;
                     }
+                } else {
+                    this->removeCurrentTarget();
+                    if (actionFile != 0) {
+                        int objectID = this->objectValue != 0
+                                           ? this->objectValue->id
+                                           : -1;
+                        fprintf(actionFile, str_fmt_stopObject, objectID,
+                                str_aiuaimod_path, 0x356);
+                    }
+                    this->stopObject(1);
                 }
             }
+
             if (this->objectValue->owner->computerPlayer() == 1 &&
-                this->currentOrderPriorityValue != i &&
+                this->currentOrderPriorityValue != -1 &&
                 this->currentOrderPriorityValue < 100) {
-                float distanceValue =
-                    this->objectValue->distance_to_object(target);
-                int distance = (int)(DAT_0056ebc0 / distanceValue);
-                if (distance > 99) {
-                    distance = 99;
+                int priority = (int)(DAT_0056ebc0 /
+                    this->objectValue->distance_to_object(target));
+                if (priority > 99) {
+                    priority = 99;
                 }
-                this->currentOrderPriorityValue = distance;
+                this->currentOrderPriorityValue = priority;
             }
         }
     }
@@ -592,53 +586,44 @@ int UnitAIModule::update(unsigned long param_1)
         this->objectValue->underAttack() != 0) {
         this->objectValue->setUnderAttack(0);
     } else {
-        i = 0;
-        if (this->attackingUnitsValue.numberValue > 0) {
-            do {
-                RGE_Static_Object* attacker =
-                    this->lookupObject(this->attackingUnitsValue[i]);
-                if (attacker != 0 && attacker->unitAI() != 0 &&
-                    attacker->object_state <= 2 &&
-                    attacker->unitAI()->currentTarget() == this->objectValue->id) {
-                    ++i;
-                    continue;
-                }
-
-                this->attackingUnitsValue.remove(
-                    this->attackingUnitsValue[i]);
-                break;
-            } while (i < this->attackingUnitsValue.numberValue);
-        }
-    }
-
-    this->lastWorldPositionValue.x = this->objectValue->world_x;
-    this->lastWorldPositionValue.y = this->objectValue->world_y;
-    this->lastWorldPositionValue.z = this->objectValue->world_z;
-    this->idleTimerValue += param_1;
-    this->secondaryTimerValue += param_1;
-    this->lookAroundTimerValue += param_1;
-
-    {
         int i = 0;
-        while (i < this->notifyQueueSizeValue) {
-            int result = this->processNotify(
-                &this->notifyQueueValue[i], param_1);
-            if (result == 4) {
-                this->purgeNotifyQueue(param_1);
-                return 0;
-            }
-            if (result == 3) {
+        while (i < this->attackingUnitsValue.numberValue) {
+            RGE_Static_Object* attacker =
+                this->lookupObject(this->attackingUnitsValue[i]);
+            if (attacker == 0 || attacker->unitAI() == 0 ||
+                attacker->object_state > 2 ||
+                attacker->unitAI()->currentTarget() != this->objectValue->id) {
+                this->attackingUnitsValue.remove(this->attackingUnitsValue[i]);
                 break;
             }
             ++i;
         }
     }
 
-    this->purgeNotifyQueue(param_1);
+    this->lastWorldPositionValue.x = this->objectValue->world_x;
+    this->lastWorldPositionValue.y = this->objectValue->world_y;
+    this->lastWorldPositionValue.z = this->objectValue->world_z;
+    this->idleTimerValue += uTime;
+    this->secondaryTimerValue += uTime;
+    this->lookAroundTimerValue += uTime;
+
+    int i = 0;
+    while (i < this->notifyQueueSizeValue) {
+        int result = this->processNotify(&this->notifyQueueValue[i], uTime);
+        if (result == 4) {
+            this->purgeNotifyQueue(uTime);
+            return 0;
+        }
+        if (result == 3) {
+            break;
+        }
+        ++i;
+    }
+    this->purgeNotifyQueue(uTime);
 
     if (haveGameAction == 0) {
         switch (this->currentActionValue) {
-        case 600:
+        case 0x258:
         case 0x261:
         case 0x262:
         case 0x265:
@@ -646,50 +631,43 @@ int UnitAIModule::update(unsigned long param_1)
         case 0x26C:
             this->currentActionValue = -1;
             break;
-        default:
-            break;
         }
     }
 
-    if (2 < this->objectValue->object_state) {
+    if (this->objectValue->object_state > 2) {
         return 0;
     }
 
-    int groupCommanderValue = this->objectValue->groupCommanderValue;
-    if (groupCommanderValue == this->objectValue->id) {
-        this->updateGroup(param_1);
+    if (this->objectValue->groupCommanderValue == this->objectValue->id) {
+        this->updateGroup(uTime);
     }
 
     if (this->currentActionValue == -1) {
-        int i = 0;
-        while (i < this->orderQueueSizeValue) {
-            int result = this->processOrder(
-                &this->orderQueueValue[i], i);
-            if (result == 1) {
+        int orderIndex = 0;
+        while (orderIndex < this->orderQueueSizeValue) {
+            if (this->processOrder(&this->orderQueueValue[orderIndex],
+                                   orderIndex) == 1) {
                 break;
             }
-            ++i;
+            ++orderIndex;
         }
     }
 
     this->processMisc();
 
     if (this->idleTimerValue > this->adjustedIdleTimeoutValue) {
-        if (this->currentActionValue == -1) {
-            if (this->currentTargetValue == -1) {
-                this->idleTimerValue = 0;
-                this->processIdle(1);
-                goto update_tail;
-            }
+        if (this->currentActionValue == -1 &&
+            this->currentTargetValue == -1) {
+            this->idleTimerValue = 0;
+            this->processIdle(1);
+        } else {
+            this->idleTimerValue = 0;
         }
-    } else if (this->currentActionValue == -1 &&
-               this->currentTargetValue == -1) {
-        goto update_tail;
+    } else if (this->currentActionValue != -1 ||
+               this->currentTargetValue != -1) {
+        this->idleTimerValue = 0;
     }
 
-    this->idleTimerValue = 0;
-
-update_tail:
     if (this->objectValue->owner->computerPlayer() == 1 &&
         this->lookAroundTimerValue > this->lookAroundTimeoutValue) {
         this->lookAround();
