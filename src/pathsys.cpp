@@ -965,23 +965,12 @@ void PathingSystem::incrementCanPaths() {
     ++numCanPathsValue;
 }
 
-int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
-                            int checkObjects)
+int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY,
+                            int checkTerrain)
 {
-    int local_14 = 0;
-    int minY;
-    int maxY;
-    int minX;
-    int maxX;
-    int removed;
-    uchar terrain;
-    uchar mapByte;
-    uchar shift;
-
-    this->currentObject = object;
+    this->currentObject = obj;
     this->currentTerrainTable =
-        this->worldValue->terrains[object->master_obj->terrain];
-
+        this->worldValue->terrains[obj->master_obj->terrain];
     this->initialTile.x = -1;
     this->initialTile.y = -1;
     this->minInitialPosition.x = -1;
@@ -989,159 +978,148 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
     this->maxInitialPosition.x = -1;
     this->maxInitialPosition.y = -1;
 
-    float xFraction = x - (float)floor((double)x);
-    float yFraction = y - (float)floor((double)y);
-    float radiusX = object->master_obj->radius_x;
-    float radiusY = object->master_obj->radius_y;
+    float currentXOffset = newX - (float)floor((double)newX);
+    float currentYOffset = newY - (float)floor((double)newY);
+    float xRadius = obj->master_obj->radius_x;
+    float yRadius = obj->master_obj->radius_y;
 
-    int xTile = (int)x;
-    xTile *= 4;
-    int xMin = xTile;
-    xMin -= (int)(((xFraction - DAT_00570e68) - radiusX) *
-                  DAT_00570e74);
-    xMin -= 400;
+    int minX = (int)newX * 4 -
+        (int)(((currentXOffset - DAT_00570e68) - xRadius) * DAT_00570e74) - 400;
+    int minY = (int)newY * 4 -
+        (int)(((currentYOffset - DAT_00570e68) - yRadius) * DAT_00570e74) - 400;
+    int maxX = (int)newX * 4 -
+        (int)((xRadius + currentXOffset - DAT_00570e68) * DAT_00570e74) - 400;
+    int maxY = (int)newY * 4 -
+        (int)((yRadius + currentYOffset - DAT_00570e68) * DAT_00570e74) - 400;
 
-    int yTile = (int)y;
-    yTile *= 4;
-    int yMin = yTile;
-    yMin -= (int)(((yFraction - DAT_00570e68) - radiusY) *
-                  DAT_00570e74);
-    yMin -= 400;
+    if (minX < 0) {
+        ++minX;
+    }
+    if (minY < 0) {
+        ++minY;
+    }
 
-    int xMax = xTile;
-    xMax -= (int)(((xFraction + radiusX) - DAT_00570e68) *
-                  DAT_00570e74);
-    xMax -= 400;
+    if (checkTerrain != 0) {
+        unsigned char minTileX = (unsigned char)(minX >> 2);
+        unsigned char minTileY = (unsigned char)(minY >> 2);
+        unsigned char maxTileX = (unsigned char)(maxX >> 2);
+        unsigned char maxTileY = (unsigned char)(maxY >> 2);
 
-    int yMax = yTile;
-    yMax -= (int)(((yFraction + radiusY) - DAT_00570e68) *
-                  DAT_00570e74);
-    yMax -= 400;
-
-    if (xMin < 0)
-        ++xMin;
-    if (yMin < 0)
-        ++yMin;
-
-    if (checkObjects != 0) {
-        minY = yMin >> 2;
-        maxY = yMax >> 2;
-        minX = xMin >> 2;
-        maxX = xMax >> 2;
-
-        if ((int)(uchar)maxX >= this->mapValue->map_width ||
-            (int)(uchar)maxY >= this->mapValue->map_height)
+        if ((int)maxTileX >= this->mapValue->map_width ||
+            (int)maxTileY >= this->mapValue->map_height) {
             return 0;
+        }
 
-        if ((uchar)minY <= (uchar)maxY) {
-            uchar row = (uchar)minY;
+        unsigned char tileY = minTileY;
+        if (tileY <= maxTileY) {
             do {
-                uchar col = (uchar)minX;
-                if (col <= (uchar)maxX) {
-                    RGE_Tile* tile =
-                        &this->mapValue->map_row_offset[row][(uchar)minX];
+                unsigned char tileX = minTileX;
+                RGE_Tile* tile = this->mapValue->map_row_offset[tileY] + tileX;
+                if (tileX <= maxTileX) {
                     do {
-                        local_14 = col;
-                        if (this->initialTile.x != local_14 ||
-                            this->initialTile.y != row) {
-                            terrain = tile->terrain_type & 0x1F;
-                            float terrainValue =
-                                this->currentTerrainTable[terrain];
+                        if (this->initialTile.x != tileX ||
+                            this->initialTile.y != tileY) {
+                            int terrain = tile->terrain_type & 0x1f;
+                            float terrainPassability = this->currentTerrainTable[terrain];
                             if (terrain != this->currentTerrainException1 &&
                                 terrain != this->currentTerrainException2 &&
-                                terrainValue <= DAT_00570e80) {
-                                int border = tile->border_type & 0x0F;
-                                if (border == 0)
+                                !(terrainPassability > DAT_00570e80)) {
+                                int border = tile->border_type & 0x0f;
+                                if (border == 0) {
                                     return 0;
+                                }
                                 int underlay =
-                                    this->mapValue->border_types[border]
-                                        .underlay_terrain;
-                                if (this->currentTerrainTable[underlay] <=
-                                    DAT_00570e80)
+                                    this->mapValue->border_types[border].underlay_terrain;
+                                if (!(this->currentTerrainTable[underlay] >
+                                      DAT_00570e80)) {
                                     return 0;
+                                }
                             }
                         }
-                        tile++;
-                        ++col;
-                    } while (col <= (uchar)maxX);
+                        ++tile;
+                        ++tileX;
+                    } while (tileX <= maxTileX);
                 }
-                ++row;
-            } while (row <= (uchar)maxY);
+                ++tileY;
+            } while (tileY <= maxTileY);
         }
     }
 
-    removed = object->removeFromObstructionMap(this->aiPS);
-    int foundBlockingGroup = 0;
-    uchar* obstruction;
-    int height = yMax - yMin - 1;
+    int inObMap = obj->removeFromObstructionMap(this->aiPS);
+    int foundTargetObstruction = 0;
+    int height = maxY - minY - 1;
 
     if (height >= 0) {
         if (height < 0x18 &&
-            (xMin > this->maxTarget.x || yMin > this->maxTarget.y ||
-             xMax < this->minTarget.x || yMax < this->minTarget.y)) {
-            int maskIndex = (yMin & 3) + height * 4;
-            maskIndex *= 2;
-
-            uint maskB = ObstructionMasks[maskIndex + 1];
-            uint maskA = ObstructionMasks[maskIndex];
-            if (maskB == 0) {
-                if (xMin < xMax) {
-                    obstruction = this->obstructionValue[xMin] + (yMin >> 2);
-                    int row = xMin;
+            (minX > this->maxTarget.x || minY > this->maxTarget.y ||
+             maxX < this->minTarget.x || maxY < this->minTarget.y)) {
+            int maskIndex = (minY & 3) + height * 4;
+            unsigned long maskA = ObstructionMasks[maskIndex * 2];
+            unsigned long maskB = ObstructionMasks[maskIndex * 2 + 1];
+            int column = minX;
+            if (column < maxX) {
+                unsigned char* obstruction =
+                    this->obstructionValue[column] + (minY >> 2);
+                if (maskB == 0) {
                     do {
-                        if ((*(uint*)obstruction & maskA) != 0)
-                            goto blocked;
-                        ++row;
-                        obstruction += 0xFF;
-                    } while (row < xMax);
-                }
-            } else if (xMin < xMax) {
-                    obstruction = this->obstructionValue[xMin] + (yMin >> 2);
-                    int row = xMin;
-                    do {
-                        if ((*(uint*)obstruction & maskA) != 0 ||
-                            (*(uint*)(obstruction + 4) & maskB) != 0) {
-                            goto blocked;
+                        if ((*(unsigned long*)obstruction & maskA) != 0) {
+                            goto obstruction_found;
                         }
-                        ++row;
-                        obstruction += 0xFF;
-                    } while (row < xMax);
+                        ++column;
+                        obstruction += 0xff;
+                    } while (column < maxX);
+                } else {
+                    do {
+                        if ((*(unsigned long*)obstruction & maskA) != 0 ||
+                            (*(unsigned long*)(obstruction + 4) & maskB) != 0) {
+                            goto obstruction_found;
+                        }
+                        ++column;
+                        obstruction += 0xff;
+                    } while (column < maxX);
+                }
             }
-        } else if (xMin < xMax) {
-            int row = xMin;
-            do {
-                int col = yMin;
-                while (col < yMax) {
-                    local_14 = col;
-                    mapByte = this->obstructionValue[0]
-                        [row * 0xFF + (local_14 >> 2)];
-                    shift = ObstructionValueShift[local_14 & 3];
-                    if (((mapByte >> (shift & 0x1F)) & 3) != 0) {
-                        if (this->currentTargetID == -1 ||
-                            row < this->minTarget.x ||
-                            this->maxTarget.x < row ||
-                            (int)local_14 < this->minTarget.y ||
-                            this->maxTarget.y < (int)local_14) {
-                            goto blocked;
-                        }
-                        foundBlockingGroup = 1;
+        } else {
+            int column = minX;
+            if (column < maxX) {
+                do {
+                    int row = minY;
+                    if (row < maxY) {
+                        do {
+                            if (((this->obstructionValue[column][row >> 2] >>
+                                  (ObstructionValueShift[row & 3] & 0x1f)) &
+                                 3) != 0) {
+                                if (this->currentTargetID == -1 ||
+                                    column < this->minTarget.x ||
+                                    this->maxTarget.x < column ||
+                                    row < this->minTarget.y ||
+                                    this->maxTarget.y < row) {
+                                    goto obstruction_found;
+                                }
+                                foundTargetObstruction = 1;
+                            }
+                            ++row;
+                        } while (row < maxY);
                     }
-                    ++col;
-                }
-                ++row;
-            } while (row < xMax);
-            if (foundBlockingGroup == 1)
-                goto blocked;
+                    ++column;
+                } while (column < maxX);
+            }
         }
     }
 
-    if (removed != 0 && object->inside_obj == 0)
-        object->addToObstructionMap(this->aiPS);
+    if (foundTargetObstruction == 1) {
+        goto obstruction_found;
+    }
+
+    if (inObMap != 0 && obj->inside_obj == 0) {
+        obj->addToObstructionMap(this->aiPS);
+    }
     return 1;
 
-blocked:
-    if (removed != 0 && object->inside_obj == 0)
-        object->addToObstructionMap(this->aiPS);
+obstruction_found:
+    if (inObMap != 0 && obj->inside_obj == 0) {
+        obj->addToObstructionMap(this->aiPS);
+    }
     return 0;
 }
 
