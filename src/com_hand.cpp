@@ -1759,139 +1759,159 @@ void TCommunications_Handler::NotifyWindowParam(COMMMESSAGES msg, long param) {
 
 
 
-int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
-                                                   unsigned int player,
-                                                   unsigned long turn,
-                                                   unsigned char opcode,
-                                                   unsigned char flags,
-                                                   char* data,
-                                                   unsigned int length,
-                                                   unsigned long from,
-                                                   unsigned long to)
+int TCommunications_Handler::EvaluatePlayerMessage(unsigned long a1,
+                                                    unsigned int player,
+                                                    unsigned long a3,
+                                                    unsigned char opcode,
+                                                    unsigned char p5,
+                                                    char* data,
+                                                    unsigned int p7,
+                                                    unsigned long p8,
+                                                    unsigned long p9)
 {
-    if (!this->Multiplayer)
+    if (this->Multiplayer == 0)
         return 0;
+
     switch (opcode) {
-    case 0x44: {
-        MSGFORMAT_ALL_DONE* done = (MSGFORMAT_ALL_DONE*)data;
+    case 'D': {
+        MSGFORMAT_ALL_DONE* done =
+            reinterpret_cast<MSGFORMAT_ALL_DONE*>(data);
         this->Speed->SetPlayerTurnSpeed(player, done->FrameRateMsec,
                                         done->HighLatencyCenti);
-        if ((this->PlayerOptions.ProgramState < COMM_STATE_RUNNING ||
-             this->current_turn < 6) && done->ExecuteOnTurn < this->current_turn) {
-            L->Log("+++REGRESSION WARNING, Current=%d ExecuteOnTurn=%d",
-                   this->current_turn, done->ExecuteOnTurn);
-            return 0;
+        if ((this->PlayerOptions.ProgramState < COMM_STATE_RUNNING) ||
+            (this->current_turn < 6)) {
+            if (done->ExecuteOnTurn < this->current_turn) {
+                L->Log("+++REGRESSION WARNING, Current=%d  ExecuteOnTurn=%d",
+                       this->current_turn, done->ExecuteOnTurn);
+                return 0;
+            }
         }
-        unsigned int next = done->ExecuteOnTurn -
-                            this->PlayerOptions.CommandTurnIncrement;
-        if (next <= this->LastTurnAck[player])
-            next = this->LastTurnAck[player];
-        this->LastTurnAck[player] = next;
+
+        unsigned long turn = done->ExecuteOnTurn -
+                             this->PlayerOptions.CommandTurnIncrement;
+        if (turn <= this->LastTurnAck[player])
+            turn = this->LastTurnAck[player];
+        this->LastTurnAck[player] = turn;
         return 1;
     }
-    case 0x51: {
-        MSGFORMAT_ONTURN* stop_turn = (MSGFORMAT_ONTURN*)data;
-        this->SetPlayerStopTurn(player, stop_turn->ExecuteOnTurn);
+
+    case 'Q':
+        this->SetPlayerStopTurn(
+            player, *reinterpret_cast<unsigned long*>(data));
         return 1;
-    }
-    case 0x4D: {
-        MSGFORMAT_CHECKSUM* checksum = (MSGFORMAT_CHECKSUM*)data;
+
+    case 'M': {
+        MSGFORMAT_CHECKSUM* checksum =
+            reinterpret_cast<MSGFORMAT_CHECKSUM*>(data);
         this->Sync->Add(player, checksum->WorldTime, checksum->WorldTurn,
                         checksum->Random, checksum->cs1, checksum->cs2,
                         checksum->cs3, checksum->cs4, checksum->cs5);
         return 1;
     }
-    case 0x3E:
-        this->AddCommand(turn, data, size, static_cast<int>(player), flags, 0);
+
+    case '>':
+        this->AddCommand(a3, data, a1, player, p5, 0);
         return 1;
-    case 0x53: {
-        MSGFORMAT_SPEEDCHANGE* speed_change = (MSGFORMAT_SPEEDCHANGE*)data;
-        this->Speed->SetFutureSpeedChange(speed_change->BufferFrames,
-                                           speed_change->FrameSizeMsec, turn);
+
+    case 'S': {
+        MSGFORMAT_SPEEDCHANGE* speed =
+            reinterpret_cast<MSGFORMAT_SPEEDCHANGE*>(data);
+        this->Speed->SetFutureSpeedChange(speed->BufferFrames,
+                                          speed->FrameSizeMsec, a3);
         return 1;
     }
-    case 0x43: {
-        MSGFORMAT_CHAT* chat = (MSGFORMAT_CHAT*)data;
-        L->Log("CHAT-RX from P#%d(%d) RXID=%d Chat content='%s' MsgSize=%d TotalSize=%d pregame=%d",
-               player, from, to, chat->ChatMsg, chat->TextSize, length,
+
+    case 'C': {
+        MSGFORMAT_CHAT* chat = reinterpret_cast<MSGFORMAT_CHAT*>(data);
+        L->Log("CHAT-RX from P#%d(%d) RXID=%d Chat content='%s' TextSize=%d TotalSize=%d Pregame=%d",
+               player, p8, p9, chat->ChatMsg, chat->TextSize, p7,
                chat->Pregame);
-        if (chat->DestPlayers[this->Me] == 'Y' ||
-            this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
+        if ((chat->DestPlayers[this->Me] == 'Y') ||
+            (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW)) {
             this->Chat->AddChatMsg(this->FriendlyName[chat->FromGamerID].Text,
                                    chat->ChatMsg, 0);
+            return 1;
         }
-        return 1;
+        break;
     }
-    case 0x50:
+
+    case 'P':
         L->Log("P#%d Requested pause");
         this->LocalPauseGame(player);
         this->Sync->LogChecksums(0, 0, 0, 0, 0, 0, 0, 0, 0);
         return 1;
-    case 0x55:
+
+    case 'U':
         L->Log("Resume msg rcvd");
         this->LocalResumeGame(player);
         return 1;
-    case 0x2B:
-        if (this->MeHost) {
+
+    case '+':
+        if (this->MeHost != 0) {
             this->SendPauseGame(0);
             L->Log("Non-host requested resume");
             this->LocalResumeGame(player);
             return 1;
         }
         break;
-    case 0x57:
-        if (this->MeHost) {
+
+    case 'W':
+        if (this->MeHost != 0) {
             this->SendPauseGame(1);
             this->LocalPauseGame(player);
             return 1;
         }
         break;
-    case 0x4B: {
-        MSGFORMAT_KILL_PLAYER* kill_message = (MSGFORMAT_KILL_PLAYER*)data;
-        TDebuggingLog* kill_log = L;
-        kill_log->Log("KILL Message recieved from %d to kill P#%d ",
-                      player, kill_message->PlayerNo);
-        unsigned long dco_id = kill_message->dcoID;
-        unsigned int found;
+
+    case 'K': {
+        MSGFORMAT_KILL_PLAYER* kill =
+            reinterpret_cast<MSGFORMAT_KILL_PLAYER*>(data);
+        L->Log("KILL Message recieved from %d to kill P#%d ", player,
+               kill->PlayerNo);
+
+        unsigned long dco_id = kill->dcoID;
+        unsigned int target = 0;
         if (dco_id != 0) {
-            int candidate = this->PlayerOptions.LowPlayerNumber;
-            int high = this->PlayerOptions.HighPlayerNumber;
-            if (candidate <= high) {
-                for (; candidate <= high; ++candidate) {
-                    if (this->PlayerOptions.dcoID[candidate] == dco_id) {
-                        found = candidate;
-                        goto found_player;
-                    }
-                }
+            target = this->PlayerOptions.LowPlayerNumber;
+            unsigned int high = this->PlayerOptions.HighPlayerNumber;
+            if (static_cast<int>(target) <= static_cast<int>(high)) {
+                do {
+                    if (this->PlayerOptions.dcoID[target] == dco_id)
+                        goto kill_target_found;
+                    ++target;
+                } while (static_cast<int>(target) <= static_cast<int>(high));
             }
+            target = 0;
         }
-        found = 0;
-found_player:
-        if (found > 0) {
-            if (this->PlayerStopTurn[found] == 0)
-                this->DropDeadPlayer(found, dco_id);
-            if (found == this->Me) {
+
+kill_target_found:
+        if (target != 0) {
+            if (this->PlayerStopTurn[target] == 0)
+                this->DropDeadPlayer(target, dco_id);
+            if (target == this->Me) {
                 this->NotifyWindow(COMM_PLAYER_KICKED);
                 return 1;
             }
-            if (this->PlayerStopTurn[found] == 0) {
-                this->NotifyWindowParam(COMM_OTHER_PLAYER_DROPPED, found);
+            if (this->PlayerStopTurn[target] == 0) {
+                this->NotifyWindowParam(COMM_OTHER_PLAYER_DROPPED, target);
                 return 1;
             }
         }
         break;
     }
-    case 0x4E:
-        if (!this->MeHost) {
+
+    case 'N':
+        if (this->MeHost == 0) {
             L->Log("Host requested we delete and recreate our player");
             return 1;
         }
         break;
+
     default:
-        L->Log("Unknown message : %d '%c'", static_cast<unsigned int>(opcode),
-               static_cast<unsigned int>(opcode));
+        L->Log("Unknown message : %d '%c'", opcode, opcode);
         break;
     }
+
     return 1;
 }
 

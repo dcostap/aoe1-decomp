@@ -38,7 +38,7 @@
     "00427600": {"status": "scratch", "symbol": "?PreprocessMessages@TCommunications_Handler@@IAEHKPADKKH@Z"},
     "00428270": {"status": "matching", "symbol": "?NotifyWindow@TCommunications_Handler@@QAEXW4COMMMESSAGES@@@Z"},
     "00428280": {"status": "matching", "symbol": "?NotifyWindowParam@TCommunications_Handler@@QAEXW4COMMMESSAGES@@J@Z"},
-    "004282C0": {"status": "scratch", "symbol": "?EvaluatePlayerMessage@TCommunications_Handler@@IAEHKIKEEPADIKK@Z"},
+    "004282C0": {"status": "new_verified_logic", "symbol": "?EvaluatePlayerMessage@TCommunications_Handler@@IAEHKIKEEPADIKK@Z", "behavior_review": "logic_matching/004282C0/review-coord-06-004282C0-20260913T050634Z/attempt-01"},
     "004286F0": {"status": "matching", "symbol": "?SetPlayerStopTurn@TCommunications_Handler@@IAEXIK@Z"},
     "00428710": {"status": "matching", "symbol": "?CheckPlayerStopTurn@TCommunications_Handler@@IAEXK@Z"},
     "00428810": {"status": "matching", "symbol": "?ReleaseSettings@TCommunications_Handler@@QAEXXZ"},
