@@ -62,6 +62,10 @@ Fresh reviewers repeat until one accepts the prior delivery without source chang
 The orchestrator only routes, preserves, and integrates approved work.
 See `agent_roles/behavior_recovery_orchestrator.md` for the workflow and tool use.
 Copy `agent_roles/behavior_recovery_worker.md` into each prepared workspace as its root `AGENTS.md`.
+
+Exact lottery is an optional follow-up for a reviewed nonexact recovery.
+It runs independent natural reconstructions and stops at the first exact match.
+See `docs/exact_lottery.md` and the `agent_roles/exact_lottery_*.md` roles.
 Run `python tools/behavior_recovery.py --help` for preparation and collection commands.
 
 ## Common commands

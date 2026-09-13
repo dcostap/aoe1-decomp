@@ -12,6 +12,8 @@ See [Older-build tools](reference_builds.md) for hash-pinned counterpart searche
 
 Role definitions live under `agent_roles/`:
 
+- `exact_lottery_orchestrator.md` runs an authorized first-hit exact search;
+- `exact_lottery_worker.md` defines one isolated natural reconstruction;
 - `root_orchestrator.md` defines direct user interaction and optional hierarchical orchestration.
 - `orchestrator.md` defines one-worktree matching worker management and review.
 - `matching_worker.md` defines matching work for one natural translation unit.
