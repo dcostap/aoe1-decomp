@@ -678,302 +678,298 @@ int UnitAIModule::update(unsigned long uTime)
 
 
 
-void UnitAIModule::updateGroup(unsigned long param_1)
+void UnitAIModule::updateGroup(unsigned long)
 {
-    RGE_Static_Object* target;
     AIPlay* play;
+    RGE_Static_Object* target;
+    RGE_Static_Object* member;
     AIPlayPhase* phase;
-    int i;
-    int newTarget;
-    int totalHitPoints[5];
-    int groupList[50];
-    int groupCount;
-    int a;
-    int triggerSatisfied;
     AIPlayPhaseTrigger* trigger;
-    float gatherDistance;
-    int deadCount;
+    int i;
 
-    if (this->playStatus &&
-        (play = this->objectValue->owner->world->playbook->play(
-             this->playStatus->playNumberValue)) != 0) {
-        target = this->lookupObject(this->playStatus->targetValue);
-        if (!target) {
-            newTarget = this->bestUnitToAttack(1, 0, (float*)0);
-            RGE_Static_Object* object = this->objectValue;
-            int memberIndex = 0;
-            if (object->groupMembers.numberValue > 0) {
-                do {
-                    if (newTarget != -1) {
-                        goto foundTrigger;
-                    }
+    if (this->playStatus == 0) {
+        return;
+    }
 
-                    object = this->objectValue;
-                    if (object->groupMembers[memberIndex] != object->id) {
-                        if (memberIndex > object->groupMembers.maximumSizeValue - 1) {
-                            object->groupMembers.resize(memberIndex + 1);
-                        }
-                        object = this->lookupObject(
-                            object->groupMembers.value[memberIndex]);
-                        if (object != 0 && object->unitAI() != 0) {
-                            UnitAIModule* memberAI = object->unitAI();
-                            newTarget = memberAI->bestUnitToAttack(1, 0, (float*)0);
-                        }
-                    }
+    play = this->objectValue->owner->world->playbook->play(
+        this->playStatus->playNumberValue);
+    if (play == 0) {
+        return;
+    }
 
-                    object = this->objectValue;
-                    ++memberIndex;
-                } while (memberIndex < object->groupMembers.numberValue);
-            }
+    target = this->lookupObject(this->playStatus->targetValue);
+    if (target == 0) {
+        int newTarget = this->bestUnitToAttack(1, 0, 0);
 
-            if (newTarget == -1) {
-                operator delete(this->playStatus);
-                this->playStatus = 0;
-                return;
-            }
-
-foundTrigger:
-            this->playStatus->targetValue = newTarget;
-            this->selectNewPlayPhase(
-                (unsigned int)this->playStatus->currentPhaseValue, 0);
-            target = this->lookupObject(newTarget);
-        }
-
-        if (this->playStatus->currentPhaseValue == 0xFD) {
-            totalHitPoints[0] = 0;
-            totalHitPoints[1] = 0;
-            totalHitPoints[2] = 0;
-            totalHitPoints[3] = 0;
-            totalHitPoints[4] = 0;
-            groupCount = 0;
-            deadCount = 0;
-            groupList[0] = 0;
-            if (this->objectValue->groupMembers.numberValue > 0) {
-                int* groupListCursor = groupList + 1;
-                do {
-                    RGE_Static_Object* member = this->lookupObject(
-                        this->objectValue->groupMembers[deadCount]);
-                    if (member != 0) {
-                        *groupListCursor = member->id;
-                        ++groupCount;
-                        ++groupListCursor;
-                        int commandIndex = 0;
-                        int commandCount =
-                            this->objectValue->numberUserDefinedWaypoints();
-                        if (commandCount > 0) {
-                            do {
-                                member->addUserDefinedWaypoint(
-                                    this->objectValue->userDefinedWaypoint(
-                                        commandIndex),
-                                    1);
-                                ++commandIndex;
-                                commandCount = this->objectValue
-                                                   ->numberUserDefinedWaypoints();
-                            } while (commandIndex < commandCount);
-                        }
-                    }
-
-                    ++deadCount;
-                } while (deadCount < this->objectValue->groupMembers.numberValue);
-            }
-
-            this->playStatus->lastPhaseChangeTimeValue =
-                this->objectValue->owner->world->world_time;
-            play->fillGroups(this->playStatus, groupList + 1, groupCount,
-                             this->objectValue->owner->world);
-            if (groupCount > 0) {
-                int* group = groupList + 1;
-                int remaining = groupCount;
-                do {
-                    RGE_Static_Object* member = this->lookupObject(*group);
-                    totalHitPoints[this->playStatus->group(*group)] +=
-                        (int)member->hp;
-                    --remaining;
-                    ++group;
-                } while (remaining != 0);
-            }
-
-            i = 0;
+        i = 0;
+        if (this->objectValue->groupMembers.numberValue > 0) {
             do {
-                this->playStatus->setOriginalHitPoints(
-                    i, totalHitPoints[i]);
-                ++i;
-            } while (i < 5);
-            this->selectNewPlayPhase(0, 0);
-            return;
-        }
+                if (newTarget != -1) {
+                    break;
+                }
 
-        phase = play->phase((unsigned int)this->playStatus->currentPhaseValue);
-        if (phase) {
-            i = 0;
-            do {
-                trigger = phase->trigger(i);
-                if (trigger != 0 && trigger->type() != 0) {
-                    triggerSatisfied = 0;
-                    switch (trigger->type()) {
-                    case 1: {
-                        triggerSatisfied = 1;
-                        a = 0;
-                        while (triggerSatisfied != 0) {
-                            int command = play->groupGivenCommandOnPhase(
-                                a, 1, this->playStatus->currentPhaseValue);
-                            if (command != -1) {
-                                AIPlayPhaseCommand* phaseCommand =
-                                    phase->command(command);
-                                int groupingIndex = 0;
-                                while (triggerSatisfied != 0 &&
-                                       groupingIndex < 50) {
-                                    AIPlayStatus::GroupingStruct* grouping =
-                                        &this->playStatus->groupings[groupingIndex];
-                                    if (grouping->groupID == a) {
-                                        RGE_Static_Object* member =
-                                            this->lookupObject(grouping->id);
-                                        if (member != 0) {
-                                            gatherDistance =
-                                                member->distance_to_position(
-                                                    (float)phaseCommand->value1() +
-                                                        target->world_x,
-                                                    (float)phaseCommand->value2() +
-                                                        target->world_y,
-                                                    (float)phaseCommand->value2() +
-                                                        target->world_z);
-                                            if (gatherDistance >
-                                                (float)trigger->value1()) {
-                                                triggerSatisfied = 0;
-                                            }
-                                        }
-                                    }
-                                    groupingIndex++;
-                                }
-                            }
-                            ++a;
-                            if (a >= 5) {
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    case 2: {
-                        int matchingGroups = 0;
-                        int deadGroups = 0;
-                        int groupingIndex = 0;
-                        do {
-                            AIPlayStatus::GroupingStruct* grouping =
-                                &this->playStatus->groupings[groupingIndex];
-                            if ((unsigned int)grouping->groupID ==
-                                (unsigned int)trigger->value1()) {
-                                ++matchingGroups;
-                                RGE_Static_Object* member =
-                                    this->lookupObject(grouping->id);
-                                if (member == 0 || member->object_state > 2) {
-                                    ++deadGroups;
-                                }
-                            }
-                            groupingIndex++;
-                        } while (groupingIndex < 50);
-                        if (matchingGroups != 0 &&
-                            trigger->value2() <= (deadGroups * 100) /
-                                matchingGroups) {
-                            triggerSatisfied = 1;
-                        }
-                        break;
-                    }
-                    case 3: {
-                        int lostHitPoints = 0;
-                        int groupingIndex = 0;
-                        do {
-                            AIPlayStatus::GroupingStruct* grouping =
-                                &this->playStatus->groupings[groupingIndex];
-                            if ((unsigned int)grouping->type ==
-                                (unsigned int)trigger->value1()) {
-                                RGE_Static_Object* member =
-                                    this->lookupObject(grouping->id);
-                                if (member != 0) {
-                                    lostHitPoints += (int)member->hp;
-                                }
-                            }
-                            groupingIndex++;
-                        } while (groupingIndex < 50);
-                        int original = this->playStatus->originalHitPoints(
-                            trigger->value1());
-                        if (trigger->value2() <=
-                            ((original - lostHitPoints) * 100) /
-                                this->playStatus->originalHitPoints(
-                                    trigger->value1())) {
-                            triggerSatisfied = 1;
-                        }
-                        break;
-                    }
-                    case 8: {
-                        triggerSatisfied = 1;
-                        int groupingIndex = 0;
-                        do {
-                            if (triggerSatisfied == 0) {
-                                break;
-                            }
-                            AIPlayStatus::GroupingStruct* grouping =
-                                &this->playStatus->groupings[groupingIndex];
-                            if ((unsigned int)grouping->groupID ==
-                                    (unsigned int)trigger->value1()) {
-                                RGE_Static_Object* member =
-                                    this->lookupObject(grouping->id);
-                                if (member != 0 && member->object_state == 2) {
-                                    triggerSatisfied = 0;
-                                }
-                            }
-                            groupingIndex++;
-                        } while (groupingIndex < 50);
-                        break;
-                    }
-                    case 9: {
-                        triggerSatisfied = 1;
-                        int groupingIndex = 0;
-                        do {
-                            if (triggerSatisfied == 0) {
-                                break;
-                            }
-                            AIPlayStatus::GroupingStruct* grouping =
-                                &this->playStatus->groupings[groupingIndex];
-                            if ((unsigned int)grouping->type ==
-                                    (unsigned int)trigger->value1()) {
-                                RGE_Static_Object* member =
-                                    this->lookupObject(grouping->id);
-                                if (member != 0 &&
-                                    (int)member->hp <
-                                        member->master_obj->hp) {
-                                    triggerSatisfied = 0;
-                                }
-                            }
-                            groupingIndex++;
-                        } while (groupingIndex < 50);
-                        break;
-                    }
-                    case 10:
-                        triggerSatisfied = 1;
-                        break;
-                    case 11:
-                        if (trigger->value1() <
-                            (this->objectValue->owner->world->world_time -
-                             this->playStatus->lastPhaseChangeTimeValue) /
-                                1000) {
-                            triggerSatisfied = 1;
-                        }
-                        break;
-                    default:
-                        break;
-                    }
-
-                    if (triggerSatisfied &&
-                        this->selectNewPlayPhase(trigger->nextPhase(), 0) == 1) {
-                        return;
+                if (this->objectValue->groupMembers[i] !=
+                    this->objectValue->id) {
+                    member = this->lookupObject(
+                        this->objectValue->groupMembers[i]);
+                    if (member != 0 && member->unitAI() != 0) {
+                        newTarget = member->unitAI()->bestUnitToAttack(1, 0, 0);
                     }
                 }
                 ++i;
-            } while (i < 3);
-            this->selectNewPlayPhase(
-                this->playStatus->currentPhaseValue, 1);
+            } while (i < this->objectValue->groupMembers.numberValue);
         }
+
+        if (newTarget == -1) {
+            operator delete(this->playStatus);
+            this->playStatus = 0;
+            return;
+        }
+
+        this->playStatus->targetValue = newTarget;
+        this->selectNewPlayPhase(this->playStatus->currentPhaseValue, 0);
+        target = this->lookupObject(newTarget);
     }
+
+    if (this->playStatus->currentPhaseValue == 0xFD) {
+        int totalHitPoints[5];
+        int groupList[50];
+        int groupCount;
+        int memberIndex;
+
+        for (i = 0; i < 5; ++i) {
+            totalHitPoints[i] = 0;
+        }
+
+        groupCount = 0;
+        memberIndex = 0;
+        if (this->objectValue->groupMembers.numberValue > 0) {
+            do {
+                member = this->lookupObject(
+                    this->objectValue->groupMembers[memberIndex]);
+                if (member != 0) {
+                    groupList[groupCount] = member->id;
+                    ++groupCount;
+
+                    i = 0;
+                    if (this->objectValue->numberUserDefinedWaypoints() > 0) {
+                        do {
+                            member->addUserDefinedWaypoint(
+                                this->objectValue->userDefinedWaypoint(i), 1);
+                            ++i;
+                        } while (i <
+                                 this->objectValue->numberUserDefinedWaypoints());
+                    }
+                }
+                ++memberIndex;
+            } while (memberIndex <
+                     this->objectValue->groupMembers.numberValue);
+        }
+
+        this->playStatus->lastPhaseChangeTimeValue =
+            this->objectValue->owner->world->world_time;
+        play->fillGroups(this->playStatus, groupList, groupCount,
+                         this->objectValue->owner->world);
+
+        for (i = 0; i < groupCount; ++i) {
+            member = this->lookupObject(groupList[i]);
+            totalHitPoints[this->playStatus->group(groupList[i])] +=
+                (int)member->hp;
+        }
+
+        for (i = 0; i < 5; ++i) {
+            this->playStatus->setOriginalHitPoints(i, totalHitPoints[i]);
+        }
+
+        this->selectNewPlayPhase(0, 0);
+        return;
+    }
+
+    phase = play->phase(this->playStatus->currentPhaseValue);
+    if (phase == 0) {
+        return;
+    }
+
+    i = 0;
+    do {
+        int triggerSatisfied = 0;
+
+        trigger = phase->trigger(i);
+        if (trigger != 0 && trigger->type() != 0) {
+            switch (trigger->type()) {
+            case AIPlayPhaseTrigger::GatherTrigger: {
+                int group = 0;
+                triggerSatisfied = 1;
+
+                do {
+                    int commandIndex;
+                    AIPlayPhaseCommand* command;
+                    int groupingIndex;
+
+                    if (triggerSatisfied == 0) {
+                        break;
+                    }
+
+                    commandIndex = play->groupGivenCommandOnPhase(
+                        group, AIPlayPhaseCommand::MoveCommand,
+                        this->playStatus->currentPhaseValue);
+                    if (commandIndex != -1) {
+                        command = phase->command(commandIndex);
+                        groupingIndex = 0;
+                        do {
+                            AIPlayStatus::GroupingStruct* grouping;
+
+                            if (triggerSatisfied == 0) {
+                                break;
+                            }
+
+                            grouping = &this->playStatus->groupings[groupingIndex];
+                            if (grouping->groupID == group) {
+                                member = this->lookupObject(grouping->id);
+                                if (member != 0) {
+                                    float gatherDistance =
+                                        member->distance_to_position(
+                                        (float)command->value1() + target->world_x,
+                                        (float)command->value2() + target->world_y,
+                                        (float)command->value2() + target->world_z);
+                                    if (gatherDistance > (float)trigger->value1()) {
+                                        triggerSatisfied = 0;
+                                    }
+                                }
+                            }
+                            ++groupingIndex;
+                        } while (groupingIndex < 50);
+                    }
+                    ++group;
+                } while (group < 5);
+                break;
+            }
+
+            case AIPlayPhaseTrigger::DeathTrigger: {
+                int numberInGroup = 0;
+                int deadCount = 0;
+                int groupingIndex = 0;
+
+                do {
+                    AIPlayStatus::GroupingStruct* grouping =
+                        &this->playStatus->groupings[groupingIndex];
+                    if (grouping->groupID == trigger->value1()) {
+                        ++numberInGroup;
+                        member = this->lookupObject(grouping->id);
+                        if (member == 0 || member->object_state > 2) {
+                            ++deadCount;
+                        }
+                    }
+                    ++groupingIndex;
+                } while (groupingIndex < 50);
+
+                if (numberInGroup == 0 ||
+                    trigger->value2() <= deadCount * 100 / numberInGroup) {
+                    triggerSatisfied = 1;
+                }
+                break;
+            }
+
+            case AIPlayPhaseTrigger::HealthLostTrigger: {
+                int currentHitPoints = 0;
+                int groupingIndex = 0;
+
+                do {
+                    AIPlayStatus::GroupingStruct* grouping =
+                        &this->playStatus->groupings[groupingIndex];
+                    if (grouping->groupID == trigger->value1()) {
+                        member = this->lookupObject(grouping->id);
+                        if (member != 0) {
+                            currentHitPoints += (int)member->hp;
+                        }
+                    }
+                    ++groupingIndex;
+                } while (groupingIndex < 50);
+
+                if (trigger->value2() <=
+                    (this->playStatus->originalHitPoints(trigger->value1()) -
+                     currentHitPoints) * 100 /
+                    this->playStatus->originalHitPoints(trigger->value1())) {
+                    triggerSatisfied = 1;
+                }
+                break;
+            }
+
+            case AIPlayPhaseTrigger::DeathOfGroupTrigger: {
+                int groupingIndex = 0;
+                triggerSatisfied = 1;
+
+                do {
+                    AIPlayStatus::GroupingStruct* grouping;
+
+                    if (triggerSatisfied == 0) {
+                        break;
+                    }
+
+                    grouping = &this->playStatus->groupings[groupingIndex];
+                    if (grouping->groupID == trigger->value1()) {
+                        member = this->lookupObject(grouping->id);
+                        if (member != 0 && member->object_state == 2) {
+                            triggerSatisfied = 0;
+                        }
+                    }
+                    ++groupingIndex;
+                } while (groupingIndex < 50);
+                break;
+            }
+
+            case AIPlayPhaseTrigger::HealOfGroupTrigger: {
+                int groupingIndex = 0;
+                triggerSatisfied = 1;
+
+                do {
+                    AIPlayStatus::GroupingStruct* grouping;
+
+                    if (triggerSatisfied == 0) {
+                        break;
+                    }
+
+                    grouping = &this->playStatus->groupings[groupingIndex];
+                    if (grouping->groupID == trigger->value1()) {
+                        member = this->lookupObject(grouping->id);
+                        if (member != 0) {
+                            int hitPoints = (int)member->hp;
+                            if (hitPoints < member->master_obj->hp) {
+                                triggerSatisfied = 0;
+                            }
+                        }
+                    }
+                    ++groupingIndex;
+                } while (groupingIndex < 50);
+                break;
+            }
+
+            case AIPlayPhaseTrigger::ImmediateTrigger:
+                triggerSatisfied = 1;
+                break;
+
+            case AIPlayPhaseTrigger::TimeTrigger:
+                if (trigger->value1() <
+                    (int)(this->objectValue->owner->world->world_time -
+                          this->playStatus->lastPhaseChangeTimeValue) / 1000) {
+                    triggerSatisfied = 1;
+                }
+                break;
+
+            default:
+                break;
+            }
+
+            if (triggerSatisfied == 1 &&
+                this->selectNewPlayPhase(trigger->nextPhase(), 0) == 1) {
+                return;
+            }
+        }
+
+        ++i;
+    } while (i < 3);
+
+    this->selectNewPlayPhase(this->playStatus->currentPhaseValue, 1);
 }
 
 // aiuaimod.cpp

@@ -43,7 +43,7 @@
     "00413A20": {"status": "matching", "symbol": "?attackingUnitID@UnitAIModule@@QAEHH@Z"},
     "00413AA0": {"status": "matching", "symbol": "?numberAttackingUnits@UnitAIModule@@QBEHXZ"},
     "00413AB0": {"status": "new_verified_logic", "symbol": "?update@UnitAIModule@@QAEHK@Z", "behavior_review": "logic_matching/00413AB0/review-coord-09-00413AB0-20260207T100003Z/attempt-01"},
-    "00414040": {"status": "scratch", "symbol": "?updateGroup@UnitAIModule@@QAEXK@Z"},
+    "00414040": {"status": "new_verified_logic", "symbol": "?updateGroup@UnitAIModule@@QAEXK@Z", "behavior_review": "logic_matching/00414040/review-coord-09-00414040-20260207T130001Z/attempt-01"},
     "00414800": {"status": "new_verified_logic", "symbol": "?selectNewPlayPhase@UnitAIModule@@QAEHHH@Z", "behavior_review": "logic_matching/00414800/review-coord-09-00414800-20260207T110003Z/attempt-01"},
     "00414D40": {"status": "accepted_drift", "symbol": "?order@UnitAIModule@@UAEHHHHHMMMMHHH@Z"},
     "00414E80": {"status": "matching", "symbol": "?notify@UnitAIModule@@UAEHHHHJJJ@Z"},
