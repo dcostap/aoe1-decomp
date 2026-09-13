@@ -13,7 +13,7 @@
     "00476F20": {"status": "matching", "symbol": "?set_format@TInputPanel@@QAEXW4FormatType@1@@Z"},
     "00476F30": {"status": "matching", "symbol": "?handle_idle@TInputPanel@@UAEJXZ"},
     "00476FA0": {"status": "matching", "symbol": "?char_action@TInputPanel@@UAEJJF@Z"},
-    "00477220": {"status": "scratch", "symbol": "?key_down_action@TInputPanel@@UAEJJFHHH@Z"},
+    "00477220": {"status": "new_verified_logic", "symbol": "?key_down_action@TInputPanel@@UAEJJFHHH@Z", "behavior_review": "logic_matching/00477220/coord-10-00477220-review-01/attempt-01"},
     "004777C0": {"status": "matching", "symbol": "?draw@TInputPanel@@UAEXXZ"},
     "00477910": {"status": "matching", "symbol": "?set_text@TInputPanel@@UAEXPAD@Z"},
     "00477990": {"status": "matching", "symbol": "?set_text@TInputPanel@@UAEXPAPADF@Z"},

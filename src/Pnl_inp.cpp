@@ -156,171 +156,187 @@ long TInputPanel::char_action(long ch, short count)
     return 1;
 }
 
-long TInputPanel::key_down_action(long key, short count, int alt_key,
-                                   int ctrl_key, int shift_key)
+long TInputPanel::key_down_action(long key, short, int, int control, int shift)
 {
-    short len;
-    short col;
-    short line;
+    short line_len;
+    short column;
 
     switch (key) {
     case 0x25:
         if (this->num_lines < 1) return 1;
-        col = this->cur_col;
-        if (col > 0) {
-            col--;
-            this->cur_col = col;
-            this->calc_input_pos();
-            this->set_redraw(TPanel::RedrawNormal);
-            return 1;
+        if (this->cur_col > 0) {
+            this->cur_col--;
         } else {
-            col = this->cur_line;
-            if (col <= 0) return 1;
-            col--;
-            this->cur_line = col;
-            col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
+            if (this->cur_line <= 0) break;
+            this->cur_line--;
+            this->cur_col = (short)_mbslen(
+                (const unsigned char*)this->get_text(this->cur_line));
         }
-        this->cur_col = col;
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
-        return 1;
+        break;
 
     case 0x27:
         if (this->num_lines < 1) return 1;
-        col = this->cur_col;
-        len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
-        if (col < len) {
-            this->cur_col = col + 1;
-            this->calc_input_pos();
-            this->set_redraw(TPanel::RedrawNormal);
+        column = this->cur_col;
+        line_len = (short)_mbslen(
+            (const unsigned char*)this->get_text(this->cur_line));
+        if (column < line_len) {
+            this->cur_col = column + 1;
         } else {
-            if (this->cur_line >= this->num_lines - 1) return 1;
+            if (this->cur_line >= this->num_lines - 1) break;
             this->cur_line++;
             this->cur_col = 0;
-            this->calc_input_pos();
-            this->set_redraw(TPanel::RedrawNormal);
         }
-        return 1;
+        this->calc_input_pos();
+        this->set_redraw(TPanel::RedrawNormal);
+        break;
 
     case 0x26:
         if (this->num_lines < 1) return 1;
-        if (this->cur_line > 0) {
-            this->cur_line--;
-            if (this->cur_col > (short)_mbslen((const unsigned char*)this->get_text(this->cur_line)))
-                this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
-            this->calc_input_pos();
-            this->set_redraw(TPanel::RedrawNormal);
-            return 1;
+        if (this->cur_line <= 0) break;
+        this->cur_line--;
+        line_len = (short)_mbslen(
+            (const unsigned char*)this->get_text(this->cur_line));
+        if (this->cur_col > line_len) {
+            this->cur_col = (short)_mbslen(
+                (const unsigned char*)this->get_text(this->cur_line));
         }
+        this->calc_input_pos();
+        this->set_redraw(TPanel::RedrawNormal);
         break;
 
     case 0x28:
         if (this->num_lines < 1) return 1;
-        if (this->cur_line >= this->num_lines - 1) return 1;
+        if (this->cur_line >= this->num_lines - 1) break;
         this->cur_line++;
-        line = this->cur_line;
-        goto page_update;
+        line_len = (short)_mbslen(
+            (const unsigned char*)this->get_text(this->cur_line));
+        if (this->cur_col > line_len) {
+            this->cur_col = (short)_mbslen(
+                (const unsigned char*)this->get_text(this->cur_line));
+        }
+        this->calc_input_pos();
+        this->set_redraw(TPanel::RedrawNormal);
+        break;
 
     case 0x24:
         if (this->num_lines < 1) return 1;
-        if (ctrl_key != 0) {
+        if (control != 0) {
             if (this->cur_col == 0 && this->cur_line == 0) break;
             this->cur_col = 0;
             this->cur_line = 0;
             this->calc_input_pos();
             this->set_redraw(TPanel::RedrawNormal);
-            return 1;
+            break;
         }
         if (this->cur_col == 0) break;
         this->cur_col = 0;
         this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
-        return 1;
+        break;
 
     case 0x23:
         if (this->num_lines < 1) return 1;
-        if (ctrl_key != 0) {
+        if (control != 0) {
             if (this->cur_line == this->num_lines - 1) {
-                len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
-                if (this->cur_col == len) break;
+                line_len = (short)_mbslen(
+                    (const unsigned char*)this->get_text(this->cur_line));
+                if (this->cur_col == line_len) break;
             }
             this->cur_line = this->num_lines - 1;
-            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         } else {
-            len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
-            if (this->cur_col == len) break;
-            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
+            line_len = (short)_mbslen(
+                (const unsigned char*)this->get_text(this->cur_line));
+            if (this->cur_col == line_len) break;
         }
+        this->cur_col = (short)_mbslen(
+            (const unsigned char*)this->get_text(this->cur_line));
         this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
-        return 1;
+        break;
 
     case 0x21:
         if (this->num_lines < 1) return 1;
-        if (this->cur_line <= 0) return 1;
-        line = this->cur_line;
-        if (line < this->top_line || line > this->bot_line) line = this->top_line;
-        if (line == this->top_line) {
-            this->scroll(5, 0, 1);
-            line = this->top_line;
+        if (this->cur_line <= 0) break;
+        if (this->cur_line < this->top_line ||
+            this->cur_line > this->bot_line) {
+            this->cur_line = this->top_line;
         }
-        goto page_update;
+        if (this->cur_line == this->top_line) {
+            this->scroll(5, 0, 1);
+        }
+        this->cur_line = this->top_line;
+        line_len = (short)_mbslen(
+            (const unsigned char*)this->get_text(this->cur_line));
+        if (this->cur_col > line_len) {
+            this->cur_col = (short)_mbslen(
+                (const unsigned char*)this->get_text(this->cur_line));
+        }
+        this->calc_input_pos();
+        this->set_redraw(TPanel::RedrawNormal);
+        break;
 
     case 0x22:
         if (this->num_lines < 1) return 1;
-        if (this->cur_line >= this->num_lines - 1) return 1;
-        line = this->cur_line;
-        if (line < this->top_line || line > this->bot_line) line = this->bot_line;
-        if (line == this->bot_line) {
-            this->scroll(4, 0, 1);
-            line = this->bot_line;
+        if (this->cur_line >= this->num_lines - 1) break;
+        if (this->cur_line < this->top_line ||
+            this->cur_line > this->bot_line) {
+            this->cur_line = this->bot_line;
         }
-page_update:
-        this->cur_line = line;
-        len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
-        if (this->cur_col > len)
-            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
+        if (this->cur_line == this->bot_line) {
+            this->scroll(4, 0, 1);
+        }
+        this->cur_line = this->bot_line;
+        line_len = (short)_mbslen(
+            (const unsigned char*)this->get_text(this->cur_line));
+        if (this->cur_col > line_len) {
+            this->cur_col = (short)_mbslen(
+                (const unsigned char*)this->get_text(this->cur_line));
+        }
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
-        return 1;
+        break;
 
-    case 0x2E:
+    case 0x2e:
         this->delete_character();
-        return 1;
+        break;
 
-    case 0x2D:
-        if (shift_key != 0) goto paste_action;
-        if (ctrl_key != 0) return 1;
-        this->insert_mode = (this->insert_mode == 0);
-        return 1;
+    case 0x2d:
+        if (shift != 0) {
+            this->paste();
+        } else if (control == 0) {
+            this->insert_mode = (this->insert_mode == 0);
+        }
+        break;
 
     case 8:
         this->backspace_character();
-        return 1;
+        break;
 
-    case 0x0D:
+    case 13:
         if (this->format_type == FormatMultiLine) {
             this->insert_character(10);
-            return 1;
-        }
-        if (this->parent_panel != 0)
+        } else if (this->parent_panel != 0) {
             this->parent_panel->action(this, 0, 0, 0);
-        return 1;
+        }
+        break;
 
-    case 0x1B:
-        if (this->parent_panel != 0)
+    case 27:
+        if (this->parent_panel != 0) {
             this->parent_panel->action(this, 1, 0, 0);
-        return 1;
+        }
+        break;
 
     case 0x56:
-        if (ctrl_key == 0) return 0;
-paste_action:
+        if (control == 0) return 0;
         this->paste();
-        return 1;
+        break;
 
     default:
         return 0;
     }
+
     return 1;
 }
 
