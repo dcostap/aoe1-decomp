@@ -107,11 +107,12 @@ Path& Path::operator=(const Path& other)
 int Path::operator==(const Path& other) const
 {
     for (int i = 0; i < currentSizeValue; i++) {
-        if (pathValue[i].x != other.pathValue[i].x ||
-            pathValue[i].y != other.pathValue[i].y ||
-            pathValue[i].z != other.pathValue[i].z ||
-            pathValue[i].facetToNextWaypoint !=
-                other.pathValue[i].facetToNextWaypoint) {
+        Waypoint* path = pathValue + i;
+        Waypoint* other_path = other.pathValue + i;
+        if (path->x != other_path->x ||
+            path->y != other_path->y ||
+            path->z != other_path->z ||
+            path->facetToNextWaypoint != other_path->facetToNextWaypoint) {
             return 0;
         }
     }
