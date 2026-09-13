@@ -787,26 +787,29 @@ void TRIBE_Panel_Object::draw_item(int index, int frame, ValueType type,
 long TRIBE_Panel_Object::handle_idle()
 {
     TPanel::handle_idle();
-    if (this->active == 0) return 0;
+
+    if (this->active == 0)
+        return 0;
 
     unsigned long now = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 0x37C);
-    if (now - this->idle_time < this->idle_interval) return 0;
-    now = debug_timeGetTime(
+    if (now - this->idle_time < this->idle_interval)
+        return 0;
+
+    this->idle_time = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 0x37F);
-    this->idle_time = now;
 
     if (this->mode == 2) {
         for (int i = 1; i < 9; ++i) {
-            int p = rge_base_game->playerID(i);
-            if (p != 0) {
-                long score = rge_base_game->world->players[p]->victory_conditions->get_victory_points();
-                if (this->save_score[p] != score) {
-                    if (this->need_redraw == 0)
-                        this->set_redraw(TPanel::RedrawNormal);
-                    this->save_object_info();
-                    return 0;
-                }
+            int player_id = rge_base_game->playerID(i);
+            if (player_id != 0 &&
+                this->save_score[player_id] !=
+                    rge_base_game->world->players[player_id]
+                        ->victory_conditions->get_victory_points()) {
+                if (this->need_redraw == 0)
+                    this->set_redraw(TPanel::RedrawNormal);
+                this->save_object_info();
+                return 0;
             }
         }
         return 0;
@@ -815,161 +818,175 @@ long TRIBE_Panel_Object::handle_idle()
     if ((this->player == 0 && this->game_obj != 0) ||
         (this->player != 0 &&
          this->player->selected_obj != this->game_obj)) {
-        if (this->player != 0) {
+        if (this->player != 0)
             this->set_object(this->player->selected_obj);
-        } else {
+        else
             this->set_object(0);
-        }
         return 0;
     }
 
-    RGE_Action_Object* object;
     int changed = 0;
     int do_buttons = 0;
-    short cur_val;
-    short work_target;
-    short orig_val;
-    float cur_fval;
-    short work_type;
-    TRIBE_Building_Object* bldg;
-    short progress_value;
-    float orig_fval;
-    char name[100];
+    RGE_Action_Object* object =
+        static_cast<RGE_Action_Object*>(this->game_obj);
 
-    object = static_cast<RGE_Action_Object*>(this->game_obj);
-    if (object == 0) return 0;
-
-    if (object->owner != this->save_owner) {
-        changed = 1;
-        do_buttons = 1;
-        goto identity_done;
-    }
-    if (object->selected_group != this->save_selected_group) {
-        changed = 1;
-        do_buttons = 1;
-        goto identity_done;
-    }
-    if (object->master_obj != this->save_obj_type) {
-        changed = 1;
-        do_buttons = 1;
-        goto identity_done;
-    }
-    {
-        short n = object->objects->number_of_objects;
-        if (n == this->save_number_of_objects) {
-            if (object->attribute_type_held != this->save_attr_type ||
-                object->attribute_amount_held != this->save_attr_amount ||
-                object->hp != this->save_hp ||
-                object->objects->list != this->save_list ||
-                object->master_obj->los != this->save_los ||
-                object->master_obj->id == 0x2d) {
-                changed = 1;
-            }
+    if (object != 0) {
+        if (object->owner != this->save_owner) {
+            changed = 1;
+            do_buttons = 1;
+        } else if (object->selected_group != this->save_selected_group) {
+            changed = 1;
+            do_buttons = 1;
         } else {
-            changed = 1;
-            if (n == 0 || this->save_number_of_objects == 0) do_buttons = 1;
-        }
-    }
-
-identity_done:
-
-    if (!changed) {
-        unsigned char type = object->master_obj->master_type;
-        if (type >= 0x46 && type != 0x5A) {
-            if (object->have_action() != this->save_have_action) {
-                changed = 1; do_buttons = 1;
-            }
-            if (!changed) {
-                this->game_obj->get_armor(orig_val, cur_val);
-                if (orig_val != this->save_armor) { changed = 1; }
-                if (!changed) {
-                    this->game_obj->get_pierce_armor(orig_val, cur_val);
-                    if (orig_val != this->save_pierce_armor) { changed = 1; }
-                }
-                if (!changed) {
-                    this->game_obj->get_weapon(orig_val, cur_val);
-                    if (orig_val != this->save_weapon) { changed = 1; }
-                }
-                if (!changed) {
-                    this->game_obj->get_weapon_range(cur_fval, orig_fval);
-                    if (cur_fval != this->save_weapon_range) { changed = 1; }
-                }
-                if (!changed) {
-                    this->game_obj->get_speed_of_attack(cur_fval, orig_fval);
-                    if (cur_fval != this->save_speed_of_attack) { changed = 1; }
-                }
-            }
-        }
-    }
-
-    if (changed) {
-        if (do_buttons) goto update;
-    }
-    bldg = static_cast<TRIBE_Building_Object*>(this->game_obj);
-    if (bldg->master_obj->master_type != 'P') goto update;
-    if (bldg->object_state != this->save_object_state) {
-        changed = 1; do_buttons = 1;
-    }
-    if (!changed || !do_buttons) {
-        {
-            short temp = bldg->get_construction_progress();
-            if ((float)temp != this->save_build_pts) {
+            RGE_Master_Static_Object* master = object->master_obj;
+            if (master != this->save_obj_type) {
                 changed = 1;
-                if ((float)temp > 99.0f) do_buttons = 1;
+                do_buttons = 1;
+            } else {
+                RGE_Object_List* objects = object->objects;
+                short object_count = objects->number_of_objects;
+                if (object_count != this->save_number_of_objects) {
+                    changed = 1;
+                    if (object_count == 0 ||
+                        this->save_number_of_objects == 0) {
+                        do_buttons = 1;
+                    }
+                } else if (object->attribute_type_held !=
+                               this->save_attr_type) {
+                    changed = 1;
+                } else if (object->attribute_amount_held !=
+                               this->save_attr_amount ||
+                           object->hp != this->save_hp ||
+                           objects->list != this->save_list ||
+                           master->los != this->save_los ||
+                           master->id == 0x2D) {
+                    changed = 1;
+                }
+            }
+        }
+
+        if (changed == 0 &&
+            object->master_obj->master_type >= 0x46 &&
+            object->master_obj->master_type != 0x5A) {
+            short cur_val;
+            short orig_val;
+            float cur_fval;
+            float orig_fval;
+
+            if (object->have_action() != this->save_have_action) {
+                changed = 1;
+                do_buttons = 1;
+            } else {
+                this->game_obj->get_armor(cur_val, orig_val);
+                if (cur_val != this->save_armor) {
+                    changed = 1;
+                } else {
+                    this->game_obj->get_pierce_armor(cur_val, orig_val);
+                    if (cur_val != this->save_pierce_armor) {
+                        changed = 1;
+                    } else {
+                        this->game_obj->get_weapon(cur_val, orig_val);
+                        if (cur_val != this->save_weapon) {
+                            changed = 1;
+                        } else {
+                            this->game_obj->get_weapon_range(cur_fval,
+                                                             orig_fval);
+                            if (cur_fval != this->save_weapon_range) {
+                                changed = 1;
+                            } else {
+                                this->game_obj->get_speed_of_attack(
+                                    cur_fval, orig_fval);
+                                if (cur_fval !=
+                                    this->save_speed_of_attack) {
+                                    changed = 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (changed == 0 || do_buttons == 0) {
+            if (this->game_obj->master_obj->master_type == 'P') {
+                TRIBE_Building_Object* building = this->game_obj;
+
+                if (building->object_state != this->save_object_state) {
+                    changed = 1;
+                    do_buttons = 1;
+                }
+
+                if (changed == 0 || do_buttons == 0) {
+                    short progress = building->get_construction_progress();
+                    if ((float)progress != this->save_build_pts) {
+                        changed = 1;
+                        if ((float)progress > DAT_00576db8)
+                            do_buttons = 1;
+                    }
+                }
+
+                if (changed == 0 || do_buttons == 0) {
+                    short work_type;
+                    short work_target;
+                    short progress;
+                    short temp;
+                    char name[100];
+
+                    building->work_status(work_type, work_target, progress,
+                                          name, 100);
+                    if (work_type != 0x67 && work_type != 0x66 &&
+                        building->production_queue_status(work_target,
+                                                          temp) != 0) {
+                        work_type = 0x66;
+                        progress = temp;
+                    }
+
+                    if (work_type != this->save_work_type ||
+                        work_target != this->save_work_target ||
+                        progress != this->save_progress ||
+                        strcmp(name, this->save_name) != 0) {
+                        changed = 1;
+                        if (work_type != this->save_work_type ||
+                            work_target != this->save_work_target ||
+                            strcmp(name, this->save_name) != 0) {
+                            do_buttons = 1;
+                        }
+                    }
+                }
+
+                if ((changed == 0 || do_buttons == 0) &&
+                    this->game_obj->master_obj->id == 0x46) {
+                    if ((int)this->player->attributes[11] !=
+                            this->save_pop ||
+                        (int)this->player->attributes[4] !=
+                            this->save_max_pop) {
+                        changed = 1;
+                    }
+                }
+
+                if ((changed == 0 || do_buttons == 0) &&
+                    this->game_obj->owner == this->player &&
+                    this->game_obj->master_obj->id == 0x32) {
+                    RGE_Action* action = building->actions->get_action();
+                    if (action != 0 &&
+                        (int)(action->timer +
+                              this->game_obj->attribute_amount_held -
+                              DAT_00576D84) != this->save_farm_amt) {
+                        changed = 1;
+                    }
+                }
             }
         }
     }
-    if (!changed || !do_buttons) {
-        bldg->work_status(work_type, work_target, progress_value, name, 100);
-        {
-            short temp;
-            if (work_type != 0x67 && work_type != 0x66 &&
-                bldg->production_queue_status(work_target, temp) != 0) {
-                work_type = 0x66;
-                progress_value = temp;
-            }
-        }
-        if (work_type == this->save_work_type &&
-            work_target == this->save_work_target &&
-            progress_value == this->save_progress) {
-            if (strcmp(name, this->save_name) == 0) {
-                goto name_same;
-            }
-        }
-        changed = 1;
-        if (work_type == this->save_work_type &&
-            work_target == this->save_work_target) {
-            if (strcmp(name, this->save_name) == 0) {
-                goto name_same;
-            }
-        }
-        do_buttons = 1;
-    }
-name_same:
-    ;
-finish:
-    if ((!changed || !do_buttons) && this->game_obj->master_obj->id == 0x46) {
-        if ((int)this->player->attributes[11] != this->save_pop ||
-            (int)this->player->attributes[4] != this->save_max_pop) {
-            changed = 1;
-        }
-    }
-    if ((!changed || !do_buttons) &&
-        bldg->owner == this->player && bldg->master_obj->id == 0x32) {
-        RGE_Action* action = bldg->actions->get_action();
-        if (action != 0 &&
-            (int)(action->timer + bldg->attribute_amount_held -
-                  DAT_00576D84) != this->save_farm_amt) {
-            changed = 1;
-        }
-    }
-update:
-    if (changed) {
+
+    if (changed != 0) {
         if (this->need_redraw == 0)
             this->set_redraw(TPanel::RedrawNormal);
         this->save_object_info();
-        if (do_buttons) this->parent_panel->action(this, 1, 0, 0);
+        if (do_buttons != 0)
+            this->parent_panel->action(this, 1, 0, 0);
     }
+
     return 0;
 }
 
