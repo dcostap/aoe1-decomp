@@ -418,9 +418,11 @@ void RGE_Command::do_command_create(RGE_Command_Create* order) {
         player, order->location_x, order->location_y, order->location_z);
 }
 
-void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* param_1) {
-    RGE_Player* player = this->world->players[param_1->player_id];
-    player->add_attribute_num(param_1->attr_id, param_1->amount, 0);
+void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* order)
+{
+    int player_id = order->player_id;
+    world->players[player_id]->add_attribute_num(
+        order->attr_id, order->amount, 0);
 }
 
 void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* cmd)
