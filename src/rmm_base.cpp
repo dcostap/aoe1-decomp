@@ -439,311 +439,260 @@ uchar RGE_Random_Map_Module::find_path(
     return result;
 }
 
-// own this second overload.  The executable has ten ordered helper calls,
-// including clear_stack, eight push_stack calls, and pop_stack.
-// LIKELY INTENT: Search eight neighboring tiles through the shared stack and
-// differs from the executable.
 uchar RGE_Random_Map_Module::find_path(
     Map_Stack& path_stack, long x, long y, long& target_x, long& target_y,
     float* terrain_cost)
 {
-    unsigned char up;
-    unsigned char down;
-    unsigned char left;
-    unsigned char right;
-    float calc_cost;
-    unsigned char tile_type;
-    float cost;
-    float ty;
-    long map_h;
-    long map_w;
-    int local_4;
-    unsigned char state;
-    unsigned char* cell;
+    long max_x = this->map_width - 1;
+    long max_y = this->map_height - 1;
+    float path_cost = 0.0f;
 
-    ty = 0.0f;
-    local_4 = this->map_width;
-    --local_4;
-    map_w = this->map_height;
-    --map_w;
     this->clear_stack();
     memset(this->search_map, 0, this->map_height * this->map_width);
 
     this->search_map_rows[y][x] = 3;
-    tile_type = this->map_row_offset[target_y][target_x].terrain_type & 0x1F;
+    uchar tile_type = this->map_row_offset[target_y][target_x].terrain_type;
     this->search_map_rows[target_y][target_x] = 2;
 
-    if (terrain_cost[tile_type] > 0.0f) {
-        map_h = (x - target_x) * (x - target_x)
-            + (y - target_y) * (y - target_y);
-        cost = (float)sqrt((double)map_h);
+    if (!(terrain_cost[tile_type] > 0.0f)) {
+        return 0;
+    }
 
-        while (cost != 0.0) {
-            if (y < map_w) {
-                float hcost;
-                if (target_y > y) {
-                    hcost = cost - 1.0f;
-                } else {
-                    hcost = cost - -1.0f;
-                }
+    for (;;) {
+        long dx = x - target_x;
+        long dy = y - target_y;
+        float distance = (float)sqrt((double)(dx * dx + dy * dy));
 
-                cell = this->search_map_rows[y + 1] + x;
-                state = this->search_map_rows[y + 1][x];
-                if (state == 0) {
-                    tile_type = this->map_row_offset[y + 1][x].terrain_type & 0x1F;
-                    if (terrain_cost[tile_type] > 0.0) {
-                        calc_cost = ty + terrain_cost[tile_type];
-                        *cell = 7;
-                        this->push_stack(path_stack, x, y + 1,
-                                         calc_cost, calc_cost + hcost);
-                        down = 1;
-                    } else {
-                        *cell = 1;
-                        down = 0;
-                    }
-                } else if (state == 2) {
-                    *cell = 7;
-                    target_x = x;
-                    target_y = y + 1;
-                    return 1;
+        if (distance == 0.0) {
+            if (path_stack.next != 0) {
+                path_stack.next->prev = 0;
+            }
+            return 1;
+        }
+
+        uchar down;
+        uchar up;
+        uchar side;
+        float adjusted_distance;
+        float new_cost;
+        long next_x;
+        long next_y;
+        uchar state;
+
+        if (y < max_y) {
+            adjusted_distance = distance -
+                ((y < target_y) ? 1.0f : -1.0f);
+            next_y = y + 1;
+            state = this->search_map_rows[next_y][x];
+            if (state == 0) {
+                tile_type = this->map_row_offset[next_y][x].terrain_type;
+                if (terrain_cost[tile_type] > 0.0) {
+                    new_cost = path_cost + terrain_cost[tile_type];
+                    this->search_map_rows[next_y][x] = 7;
+                    this->push_stack(path_stack, x, next_y, new_cost,
+                                     new_cost + adjusted_distance);
+                    down = 1;
                 } else {
-                    if (state == 1) down = 0;
-                    else down = 1;
+                    this->search_map_rows[next_y][x] = 1;
+                    down = 0;
                 }
+            } else if (state == 2) {
+                this->search_map_rows[next_y][x] = 7;
+                target_x = x;
+                target_y = next_y;
+                return 1;
             } else {
-                down = 0;
+                down = state != 1;
+            }
+        } else {
+            down = 0;
+        }
+
+        if (y > 0) {
+            adjusted_distance = distance -
+                ((target_y < y) ? 1.0f : -1.0f);
+            next_y = y - 1;
+            state = this->search_map_rows[next_y][x];
+            if (state == 0) {
+                tile_type = this->map_row_offset[next_y][x].terrain_type;
+                if (terrain_cost[tile_type] > 0.0) {
+                    new_cost = path_cost + terrain_cost[tile_type];
+                    this->search_map_rows[next_y][x] = 6;
+                    this->push_stack(path_stack, x, next_y, new_cost,
+                                     new_cost + adjusted_distance);
+                    up = 1;
+                } else {
+                    this->search_map_rows[next_y][x] = 1;
+                    up = 0;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[next_y][x] = 6;
+                target_x = x;
+                target_y = next_y;
+                return 1;
+            } else {
+                up = state != 1;
+            }
+        } else {
+            up = 0;
+        }
+
+        if (x > 0) {
+            adjusted_distance = distance -
+                ((target_x < x) ? 1.0f : -1.0f);
+            next_x = x - 1;
+            state = this->search_map_rows[y][next_x];
+            if (state == 0) {
+                tile_type = this->map_row_offset[y][next_x].terrain_type;
+                if (terrain_cost[tile_type] > 0.0f) {
+                    new_cost = path_cost + terrain_cost[tile_type];
+                    this->search_map_rows[y][next_x] = 4;
+                    this->push_stack(path_stack, next_x, y, new_cost,
+                                     new_cost + adjusted_distance);
+                    side = 1;
+                } else {
+                    this->search_map_rows[y][next_x] = 1;
+                    side = 0;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[y][next_x] = 4;
+                target_x = next_x;
+                target_y = y;
+                return 1;
+            } else {
+                side = state != 1;
             }
 
             if (y > 0) {
-                float hcost;
-                if (target_y < y) {
-                    hcost = cost - 1.0f;
-                } else {
-                    hcost = cost - -1.0f;
-                }
-
-                cell = this->search_map_rows[y - 1] + x;
-                state = this->search_map_rows[y - 1][x];
+                next_y = y - 1;
+                state = this->search_map_rows[next_y][next_x];
                 if (state == 0) {
-                    tile_type = this->map_row_offset[y - 1][x].terrain_type & 0x1F;
-                    if (terrain_cost[tile_type] > 0.0) {
-                        calc_cost = ty + terrain_cost[tile_type];
-                        *cell = 6;
-                        this->push_stack(path_stack, x, y - 1,
-                                         calc_cost, calc_cost + hcost);
-                        up = 1;
-                    } else {
-                        *cell = 1;
-                        up = 0;
+                    tile_type =
+                        this->map_row_offset[next_y][next_x].terrain_type;
+                    if (!(terrain_cost[tile_type] > 0.0f)) {
+                        this->search_map_rows[next_y][next_x] = 1;
+                    } else if (up && side) {
+                        new_cost = path_cost -
+                            terrain_cost[tile_type] * DAT_00571e50;
+                        this->search_map_rows[next_y][next_x] = 8;
+                        this->push_stack(path_stack, next_x, next_y, new_cost,
+                            new_cost +
+                            (adjusted_distance -
+                             ((target_y < y) ? DAT_00571e54 : DAT_00571e58)));
                     }
                 } else if (state == 2) {
-                    this->search_map_rows[y - 1][x] = 6;
-                    target_x = x;
-                    target_y = y - 1;
+                    this->search_map_rows[next_y][next_x] = 8;
+                    target_x = next_x;
+                    target_y = next_y;
                     return 1;
-                } else {
-                    if (state == 1) up = 0;
-                    else up = 1;
                 }
+            }
+
+            if (y < max_y) {
+                next_y = y + 1;
+                state = this->search_map_rows[next_y][next_x];
+                if (state == 0) {
+                    tile_type =
+                        this->map_row_offset[next_y][next_x].terrain_type;
+                    if (!(terrain_cost[tile_type] > 0.0f)) {
+                        this->search_map_rows[next_y][next_x] = 1;
+                    } else if (down && side) {
+                        new_cost = path_cost -
+                            terrain_cost[tile_type] * DAT_00571e50;
+                        this->search_map_rows[next_y][next_x] = 9;
+                        this->push_stack(path_stack, next_x, next_y, new_cost,
+                            new_cost +
+                            (adjusted_distance -
+                             ((y < target_y) ? DAT_00571e54 : DAT_00571e58)));
+                    }
+                } else if (state == 2) {
+                    this->search_map_rows[next_y][next_x] = 9;
+                    target_x = next_x;
+                    target_y = next_y;
+                    return 1;
+                }
+            }
+        }
+
+        if (x < max_x) {
+            adjusted_distance = distance -
+                ((x < target_x) ? 1.0f : -1.0f);
+            next_x = x + 1;
+            state = this->search_map_rows[y][next_x];
+            if (state == 0) {
+                tile_type = this->map_row_offset[y][next_x].terrain_type;
+                if (terrain_cost[tile_type] > 0.0f) {
+                    new_cost = path_cost + terrain_cost[tile_type];
+                    this->search_map_rows[y][next_x] = 5;
+                    this->push_stack(path_stack, next_x, y, new_cost,
+                                     new_cost + adjusted_distance);
+                    side = 1;
+                } else {
+                    this->search_map_rows[y][next_x] = 1;
+                    side = 0;
+                }
+            } else if (state == 2) {
+                this->search_map_rows[y][next_x] = 5;
+                target_x = next_x;
+                target_y = y;
+                return 1;
             } else {
-                up = 0;
+                side = state != 1;
             }
 
-            if (x > 0) {
-                float hcost;
-                if (target_x < x) {
-                    hcost = cost - 1.0f;
-                } else {
-                    hcost = cost - -1.0f;
-                }
-
-                cell = this->search_map_rows[y] + x - 1;
-                state = this->search_map_rows[y][x - 1];
+            if (y > 0) {
+                next_y = y - 1;
+                state = this->search_map_rows[next_y][next_x];
                 if (state == 0) {
-                    tile_type = this->map_row_offset[y][x - 1].terrain_type & 0x1F;
-                    if (terrain_cost[tile_type] > 0.0f) {
-                        calc_cost = terrain_cost[tile_type] + ty;
-                        *cell = 4;
-                        this->push_stack(path_stack, x - 1, y,
-                                         calc_cost, calc_cost + hcost);
-                        left = 1;
-                    } else {
-                        *cell = 1;
-                        left = 0;
+                    tile_type =
+                        this->map_row_offset[next_y][next_x].terrain_type;
+                    if (!(terrain_cost[tile_type] > 0.0f)) {
+                        this->search_map_rows[next_y][next_x] = 1;
+                    } else if (up && side) {
+                        new_cost = path_cost -
+                            terrain_cost[tile_type] * DAT_00571e50;
+                        this->search_map_rows[next_y][next_x] = 10;
+                        this->push_stack(path_stack, next_x, next_y, new_cost,
+                            new_cost +
+                            (adjusted_distance -
+                             ((target_y < y) ? DAT_00571e5c : DAT_00571e60)));
                     }
                 } else if (state == 2) {
-                    this->search_map_rows[y][x - 1] = 4;
-                    target_x = x - 1;
-                    target_y = y;
+                    this->search_map_rows[next_y][next_x] = 10;
+                    target_x = next_x;
+                    target_y = next_y;
                     return 1;
-                } else {
-                    if (state == 1) left = 0;
-                    else left = 1;
-                }
-
-                if (y > 0) {
-                    map_h = y - 1;
-                    cell = this->search_map_rows[map_h] + x - 1;
-                    state = this->search_map_rows[map_h][x - 1];
-                    if (state == 0) {
-                        tile_type = this->map_row_offset[map_h][x - 1].terrain_type & 0x1F;
-                        if (terrain_cost[tile_type] > 0.0f) {
-                            if (up && left) {
-                                calc_cost = ty - terrain_cost[tile_type] * DAT_00571e50;
-                                *cell = 8;
-                                if (target_y < y) {
-                                    hcost = hcost - 0.41f;
-                                } else {
-                                    hcost = hcost - -0.41f;
-                                }
-                                this->push_stack(path_stack, x - 1, map_h,
-                                                 calc_cost, calc_cost + hcost);
-                            }
-                        } else {
-                            *cell = 1;
-                        }
-                    } else if (state == 2) {
-                        *cell = 8;
-                        target_x = x - 1;
-                        target_y = y - 1;
-                        return 1;
-                    }
-                }
-
-                if (y < map_w) {
-                    map_h = y + 1;
-                    cell = this->search_map_rows[map_h] + x - 1;
-                    state = this->search_map_rows[map_h][x - 1];
-                    if (state == 0) {
-                        tile_type = this->map_row_offset[map_h][x - 1].terrain_type & 0x1F;
-                        if (terrain_cost[tile_type] > 0.0f) {
-                            if (down && left) {
-                                calc_cost = ty - terrain_cost[tile_type] * DAT_00571e50;
-                                *cell = 9;
-                                if (target_y > y) {
-                                    hcost = hcost - 0.41f;
-                                } else {
-                                    hcost = hcost - -0.41f;
-                                }
-                                this->push_stack(path_stack, x - 1, map_h,
-                                                 calc_cost, calc_cost + hcost);
-                            }
-                        } else {
-                            *cell = 1;
-                        }
-                    } else if (state == 2) {
-                        *cell = 9;
-                        target_x = x - 1;
-                        target_y = y + 1;
-                        return 1;
-                    }
                 }
             }
 
-            if (x < local_4) {
-                float hcost;
-                if (target_x > x) {
-                    hcost = cost - 1.0f;
-                } else {
-                    hcost = cost - -1.0f;
-                }
-
-                cell = this->search_map_rows[y] + x + 1;
-                state = this->search_map_rows[y][x + 1];
+            if (y < max_y) {
+                next_y = y + 1;
+                state = this->search_map_rows[next_y][next_x];
                 if (state == 0) {
-                    tile_type = this->map_row_offset[y][x + 1].terrain_type & 0x1F;
-                    if (terrain_cost[tile_type] > 0.0f) {
-                        calc_cost = ty + terrain_cost[tile_type];
-                        *cell = 5;
-                        this->push_stack(path_stack, x + 1, y,
-                                         calc_cost, calc_cost + hcost);
-                        right = 1;
-                    } else {
-                        *cell = 1;
-                        right = 0;
+                    tile_type =
+                        this->map_row_offset[next_y][next_x].terrain_type;
+                    if (!(terrain_cost[tile_type] > 0.0f)) {
+                        this->search_map_rows[next_y][next_x] = 1;
+                    } else if (down && side) {
+                        new_cost = path_cost -
+                            terrain_cost[tile_type] * DAT_00571e50;
+                        this->search_map_rows[next_y][next_x] = 11;
+                        this->push_stack(path_stack, next_x, next_y, new_cost,
+                            new_cost +
+                            (adjusted_distance -
+                             ((y < target_y) ? DAT_00571e5c : DAT_00571e60)));
                     }
                 } else if (state == 2) {
-                    *cell = 5;
-                    target_x = x + 1;
-                    target_y = y;
+                    this->search_map_rows[next_y][next_x] = 11;
+                    target_x = next_x;
+                    target_y = next_y;
                     return 1;
-                } else {
-                    if (state == 1) right = 0;
-                    else right = 1;
-                }
-
-                if (y > 0) {
-                    map_h = y - 1;
-                    cell = this->search_map_rows[map_h] + x + 1;
-                    state = this->search_map_rows[map_h][x + 1];
-                    if (state == 0) {
-                        tile_type = this->map_row_offset[map_h][x + 1].terrain_type & 0x1F;
-                        if (terrain_cost[tile_type] > 0.0f) {
-                            if (up && right) {
-                                calc_cost = ty - terrain_cost[tile_type] * DAT_00571e50;
-                                *cell = 10;
-                                if (target_y < y) {
-                                    hcost = hcost - 0.4f;
-                                } else {
-                                    hcost = hcost - -0.4f;
-                                }
-                                this->push_stack(path_stack, x + 1, map_h,
-                                                 calc_cost, calc_cost + hcost);
-                            }
-                        } else {
-                            *cell = 1;
-                        }
-                    } else if (state == 2) {
-                        *cell = 10;
-                        target_x = x + 1;
-                        target_y = y - 1;
-                        return 1;
-                    }
-                }
-
-                if (y < map_w) {
-                    map_h = y + 1;
-                    cell = this->search_map_rows[map_h] + x + 1;
-                    state = this->search_map_rows[map_h][x + 1];
-                    if (state == 0) {
-                        tile_type = this->map_row_offset[map_h][x + 1].terrain_type & 0x1F;
-                        if (terrain_cost[tile_type] > 0.0f) {
-                            if (down && right) {
-                                calc_cost = ty - terrain_cost[tile_type] * DAT_00571e50;
-                                *cell = 11;
-                                if (target_y > y) {
-                                    hcost = hcost - 0.4f;
-                                } else {
-                                    hcost = hcost - -0.4f;
-                                }
-                                this->push_stack(path_stack, x + 1, map_h,
-                                                 calc_cost, calc_cost + hcost);
-                            }
-                        } else {
-                            *cell = 1;
-                        }
-                    } else if (state == 2) {
-                        *cell = 11;
-                        target_x = x + 1;
-                        target_y = y + 1;
-                        return 1;
-                    }
                 }
             }
-
-            if (this->pop_stack(path_stack, x, y, ty) == 0) {
-                return 0;
-            }
-
-            map_h = (x - target_x) * (x - target_x)
-                + (y - target_y) * (y - target_y);
-            cost = (float)sqrt((double)map_h);
         }
 
-        if (path_stack.next != 0) {
-            path_stack.next->prev = 0;
+        if (this->pop_stack(path_stack, x, y, path_cost) == 0) {
+            return 0;
         }
-        return 1;
     }
-    return 0;
 }
