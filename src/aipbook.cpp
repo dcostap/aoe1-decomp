@@ -425,127 +425,110 @@ AIPlayPhase* AIPlay::phase(int index) {
     return 0;
 }
 
-// surface, grouping order, capacity stop, and deviation calculation.
-int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
-                       int numberGroupMembers, RGE_Game_World* world) {
-    AIPlay* play;
-    int deviation;
-    int i;
-    int rVal;
-    int unitsByTypeCount[6];
-    int unitsByType[6][50];
-    int j;
-    int minUnits;
-    int numAssigned;
-    int a;
-    int smallestGroupSize;
-    int* end;
-
-    play = world->playbook->play(playStatus->playNumberValue);
-
+int AIPlay::fillGroups(AIPlayStatus* status, int* units, int unitCount,
+                       RGE_Game_World* world) {
+    AIPlay* play = world->playbook->play(status->playNumberValue);
     if (play == 0) {
         return 0;
     }
 
-    minUnits = 1;
+    int unitsByTypeCount[6];
+    int unitsByType[6][50];
+    int minUnits = 1;
+    int i;
+    int overflowType;
+    int overflowUnit;
+    unsigned char maximumUnits;
+
     for (i = 0; i < 6; i++) {
         unitsByTypeCount[i] = 0;
     }
 
-    if (numberGroupMembers > 0) {
-        j = numberGroupMembers;
-        do {
-            RGE_Static_Object* object = world->object(*groupMembers);
-            if (object == 0) {
-                minUnits = 0;
-            } else {
-                i = world->playbook->convertUnitToIntType(object);
-                if (i < 0 || i >= 6) {
-                    minUnits = 0;
-                } else {
-                    unitsByType[i][unitsByTypeCount[i]] = *groupMembers;
-                    unitsByTypeCount[i]++;
-                }
-            }
-            groupMembers++;
-            j--;
-        } while (j != 0);
+    for (i = 0; i < unitCount; i++) {
+        RGE_Static_Object* object = world->object(units[i]);
+        int type;
+        if (object == 0 ||
+            (type = world->playbook->convertUnitToIntType(object)) < 0 ||
+            type >= 6) {
+            minUnits = 0;
+        } else {
+            unitsByType[type][unitsByTypeCount[type]] = units[i];
+            unitsByTypeCount[type]++;
+        }
     }
 
-    i = 0;
-    while (i < play->numberGroupsValue) {
-        AIPlayGroup* group = play->group(i);
+    int groupNumber;
+    for (groupNumber = 0; groupNumber < play->numberGroupsValue;
+         groupNumber++) {
+        AIPlayGroup* group = play->group(groupNumber);
         if (group == 0) {
             return 0;
         }
 
-        j = 0;
-        while (j < 6) {
-            a = group->minimum(j);
-            if (a != 0) {
-                numAssigned = 0;
-                smallestGroupSize = unitsByTypeCount[j];
-                rVal = 0;
-                while (rVal < smallestGroupSize && numAssigned < a) {
-                    if (unitsByType[j][rVal] != -1) {
-                        if (playStatus->addGrouping(
-                                unitsByType[j][rVal], (unsigned char)i,
-                                (unsigned char)j) == 1) {
-                            numAssigned++;
-                            unsigned char maximumUnits =
-                                play->maximumNumberUnitsValue;
-                            unitsByType[j][rVal] = -1;
-                            if (playStatus->numberInPlay() ==
-                                maximumUnits) {
+        for (int type = 0; type < 6; type++) {
+            int minimum = group->minimum(type);
+            if (minimum != 0) {
+                int added = 0;
+                for (int unit = 0;
+                     unit < unitsByTypeCount[type] && added < minimum;
+                     unit++) {
+                    int& id = unitsByType[type][unit];
+                    if (id != -1) {
+                        if (status->addGrouping(id,
+                                                (unsigned char)groupNumber,
+                                                (unsigned char)type) == 1) {
+                            added++;
+                            maximumUnits = play->maximumNumberUnitsValue;
+                            id = -1;
+                            if (status->numberInPlay() == maximumUnits) {
                                 goto CountDeviation;
                             }
                         } else {
                             minUnits = 0;
                         }
                     }
-                    rVal++;
                 }
             }
-            j++;
         }
-        i++;
     }
 
-    i = 0;
-    rVal = 0;
-    do {
-        int* unit = unitsByType[i];
-        end = unit + unitsByTypeCount[i];
-        for (; unit < end; unit++) {
-            if (*unit == -1) {
+    for (overflowType = 0; overflowType < 6; overflowType++) {
+        for (overflowUnit = 0;
+             overflowUnit < unitsByTypeCount[overflowType];
+             overflowUnit++) {
+            int& id = unitsByType[overflowType][overflowUnit];
+            if (id == -1) {
                 continue;
             }
 
             if (this->overflowValue == 1) {
-                a = -1;
-                smallestGroupSize = 0;
+                int smallestGroup = -1;
+                int smallestGroupSize = 0;
 
-                for (j = 0; j < play->numberGroupsValue; j++) {
-                    AIPlayGroup* group = play->group(j);
-                    if (group != 0) {
-                        if (group->maximum(i) >
-                                playStatus->numberOfTypeInGroup(j, i) &&
-                            (a == -1 ||
-                             smallestGroupSize >
-                                 playStatus->numberInGroup(j))) {
-                            smallestGroupSize = playStatus->numberInGroup(j);
-                            a = j;
-                        }
+                for (groupNumber = 0;
+                     groupNumber < play->numberGroupsValue;
+                     groupNumber++) {
+                    AIPlayGroup* group = play->group(groupNumber);
+                    if (group != 0 &&
+                        status->numberOfTypeInGroup(groupNumber,
+                                                    overflowType) <
+                            group->maximum(overflowType) &&
+                        (smallestGroup == -1 ||
+                         status->numberInGroup(groupNumber) <
+                             smallestGroupSize)) {
+                        smallestGroupSize =
+                            status->numberInGroup(groupNumber);
+                        smallestGroup = groupNumber;
                     }
                 }
 
-                if (a != -1) {
-                    if (playStatus->addGrouping(
-                            *unit, a,
-                            (unsigned char)i) == 1) {
-                        *unit = -1;
-                        if (playStatus->numberInPlay() ==
-                            play->maximumNumberUnitsValue) {
+                if (smallestGroup != -1) {
+                    if (status->addGrouping(id,
+                                            (unsigned char)smallestGroup,
+                                            (unsigned char)overflowType) == 1) {
+                        maximumUnits = play->maximumNumberUnitsValue;
+                        id = -1;
+                        if (status->numberInPlay() == maximumUnits) {
                             goto CountDeviation;
                         }
                     } else {
@@ -553,50 +536,48 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                     }
                 }
             } else if (this->overflowValue == 2) {
-                for (j = 0; j < play->numberGroupsValue; j++) {
-                    AIPlayGroup* group = play->group(j);
-                    if (group != 0) {
-                        if (group->maximum(i) >
-                                playStatus->numberOfTypeInGroup(j, i)) {
-                            if (playStatus->addGrouping(
-                                    *unit, (unsigned char)j,
-                                    (unsigned char)i) == 1) {
-                                *unit = -1;
-                                if (playStatus->numberInPlay() ==
-                                    play->maximumNumberUnitsValue) {
-                                    goto CountDeviation;
-                                }
-                                break;
-                            } else {
-                                minUnits = 0;
+                for (groupNumber = 0;
+                     groupNumber < play->numberGroupsValue;
+                     groupNumber++) {
+                    AIPlayGroup* group = play->group(groupNumber);
+                    if (group != 0 &&
+                        status->numberOfTypeInGroup(groupNumber,
+                                                    overflowType) <
+                            group->maximum(overflowType)) {
+                        if (status->addGrouping(id,
+                                                (unsigned char)groupNumber,
+                                                (unsigned char)overflowType) ==
+                            1) {
+                            maximumUnits = play->maximumNumberUnitsValue;
+                            id = -1;
+                            if (status->numberInPlay() == maximumUnits) {
+                                goto CountDeviation;
                             }
+                            break;
                         }
+                        minUnits = 0;
                     }
                 }
             }
         }
-        i++;
-        rVal += 200;
-    } while (i < 6);
+    }
 
 CountDeviation:
-    deviation = 0;
-    i = 0;
-    while (i < play->numberGroupsValue) {
-        AIPlayGroup* group = play->group(i);
+    int deviation = 0;
+    for (groupNumber = 0; groupNumber < play->numberGroupsValue;
+         groupNumber++) {
+        AIPlayGroup* group = play->group(groupNumber);
         if (group != 0) {
-            for (j = 0; j < 6; j++) {
-                a = group->minimum(j);
-                rVal = playStatus->numberOfTypeInGroup(i, j);
-                if (a > rVal) {
-                    deviation += a - rVal;
+            for (int type = 0; type < 6; type++) {
+                int minimum = group->minimum(type);
+                int actual = status->numberOfTypeInGroup(groupNumber, type);
+                if (actual < minimum) {
+                    deviation += minimum - actual;
                 }
             }
         }
-        i++;
     }
-
-    playStatus->deviationValue = (unsigned char)deviation;
+    status->deviationValue = (unsigned char)deviation;
     return minUnits;
 }
 
