@@ -1216,22 +1216,16 @@ class TRIBE_Player;
 // calls shown at 004EA6EF, 004EA71A, and 004EA72A.
 #pragma inline_depth(0)
 
-void TribeStrategyAIModule::setVictoryCondition(int v)
+void TribeStrategyAIModule::setVictoryCondition(int value)
 {
-    int& currentReference = this->currentVictoryConditionValue;
-    currentReference = v;
+    ManagedArray<int>* rules = &this->vcRuleSet;
+    int v;
+    int i;
+
+    this->currentVictoryConditionValue = value;
     this->vcRuleSet.numberValue = 0;
 
-    v = 1;
-    if (this->vcRuleSet.contains(v) != 1) {
-        ManagedArray<int>* firstRules = &this->vcRuleSet;
-        if (firstRules->numberValue > firstRules->maximumSizeValue - 1)
-            firstRules->resize(firstRules->numberValue + 1);
-        firstRules->value[firstRules->numberValue] = v;
-        firstRules->numberValue++;
-    }
-
-    ManagedArray<int>* rules = &this->vcRuleSet;
+    ADD_REQUIRED(1);
     ADD_REQUIRED(2);
     ADD_REQUIRED(0x0C);
     ADD_REQUIRED(0x0D);
@@ -1270,21 +1264,24 @@ void TribeStrategyAIModule::setVictoryCondition(int v)
     rules->add(0x30);
     rules->add(0x31);
 
-    int i = 0;
+    i = 0;
     if (this->vcRuleSet.numberValue > 0) {
         do {
-            if (this->vcRules.evaluateAsNonInProgress(
-                    this->md->aiPlayer, (*rules)[i]) == -2) {
+            int rule = (*rules)[i];
+            int result = this->vcRules.evaluateAsNonInProgress(
+                this->md->aiPlayer, rule);
+            if (result == -2) {
+                rule = (*rules)[i];
                 if (this->vcRules.execute(
                         this->md->aiPlayer,
                         this->currentVictoryConditionValue,
-                        (*rules)[i]) == 1) {
+                        rule) == 1) {
                     this->executingRules.add((*rules)[i]);
                 } else {
                     this->idleRules.add((*rules)[i]);
                 }
             }
-            ++i;
+            i++;
         } while (i < this->vcRuleSet.numberValue);
     }
 }

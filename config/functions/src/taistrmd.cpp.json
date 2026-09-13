@@ -36,7 +36,7 @@
     "004EA250": {"status": "matching", "symbol": "?targetPoint2@TribeStrategyAIModule@@QBEABUWaypoint@@XZ"},
     "004EA260": {"status": "matching", "symbol": "?targetAttribute@TribeStrategyAIModule@@QBEHXZ"},
     "004EA270": {"status": "matching", "symbol": "?targetNumber@TribeStrategyAIModule@@QBEHXZ"},
-    "004EA280": {"status": "scratch", "symbol": "?setVictoryCondition@TribeStrategyAIModule@@QAEXH@Z"},
+    "004EA280": {"status": "new_verified_logic", "symbol": "?setVictoryCondition@TribeStrategyAIModule@@QAEXH@Z", "behavior_review": "logic_matching/004EA280/coord-12-review-20260310T000000Z/attempt-01"},
     "004EA7C0": {"status": "matching", "symbol": "?isRuleExecuting@TribeStrategyAIModule@@QAEHH@Z"},
     "004EA810": {"status": "matching", "symbol": "?isRuleIdle@TribeStrategyAIModule@@QAEHH@Z"}
   }
