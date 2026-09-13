@@ -14,7 +14,7 @@
     "00495AE0": {"status": "matching", "symbol": "?handle_size@TRIBE_Screen_Game@@UAEJJJ@Z"},
     "00496550": {"status": "accepted_drift", "symbol": "?handle_paint@TRIBE_Screen_Game@@UAEJXZ"},
     "00496700": {"status": "matching", "symbol": "?handle_idle@TRIBE_Screen_Game@@UAEJXZ"},
-    "00496800": {"status": "scratch", "symbol": "?handle_game_update@TRIBE_Screen_Game@@QAEXXZ"},
+    "00496800": {"status": "new_verified_logic", "symbol": "?handle_game_update@TRIBE_Screen_Game@@QAEXXZ", "behavior_review": "logic_matching/00496800/coord-10-00496800-review-01/attempt-01"},
     "004970A0": {"status": "matching", "symbol": "?wnd_proc@TRIBE_Screen_Game@@UAEJPAXIIJ@Z"},
     "00497210": {"status": "matching", "symbol": "?handle_mouse_down@TRIBE_Screen_Game@@UAEJEJJHH@Z"},
     "00497280": {"status": "matching", "symbol": "?handle_user_command@TRIBE_Screen_Game@@UAEJIJ@Z"},
