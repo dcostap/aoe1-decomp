@@ -60,7 +60,7 @@
     "004EB6C0": {"status": "matching", "symbol": "?setAssistGroupID@TacticalAIGroup@@QAEXH@Z"},
     "004EB6D0": {"status": "matching", "symbol": "?assistGroupType@TacticalAIGroup@@QBEHXZ"},
     "004EB6E0": {"status": "matching", "symbol": "?setAssistGroupType@TacticalAIGroup@@QAEXH@Z"},
-    "004EB6F0": {"status": "scratch", "symbol": "?task@TacticalAIGroup@@QAEHPAVTribeTacticalAIModule@@PAVTribeMainDecisionAIModule@@HHH@Z"},
+    "004EB6F0": {"status": "new_verified_logic", "symbol": "?task@TacticalAIGroup@@QAEHPAVTribeTacticalAIModule@@PAVTribeMainDecisionAIModule@@HHH@Z", "behavior_review": ["logic_matching/004EB6F0/coord-19-7e6ccedc2-004EB6F0-correct-r03-a/attempt-01", "logic_matching/004EB6F0/coord-19-7e6ccedc2-004EB6F0-correct-r03-b/attempt-01"]},
     "004ECD80": {"status": "matching", "symbol": "?isGathered@TacticalAIGroup@@QAEHPAVTribeTacticalAIModule@@PAVTribeMainDecisionAIModule@@@Z"},
     "004ECE70": {"status": "matching", "symbol": "?isTightGathered@TacticalAIGroup@@QAEHPAVTribeTacticalAIModule@@PAVTribeMainDecisionAIModule@@@Z"},
     "004ECF10": {"status": "matching", "symbol": "?allUnitsIdle@TacticalAIGroup@@QAEHPAVTribeMainDecisionAIModule@@H@Z"},

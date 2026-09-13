@@ -711,588 +711,645 @@ static char s_log_88[] = "";
 static char s_log_89[] = "";
 
 
-int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIModule* md, int taskID, int firstTime, int busyOK)
+int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
+                          TribeMainDecisionAIModule* md, int taskID,
+                          int resetOriginal, int overrideTask)
 {
-    tactical->logGroupDebug(idValue, s_log_00, taskID, firstTime, busyOK);
+    int i;
+    int total;
+    int distance;
+    int priority;
+    int* unit;
+    RGE_Static_Object* object;
+    UnitAIModule* unitAI;
 
-    int commander = commanderValue;
-    if (commander == -1) {
+    tactical->logGroupDebug(idValue, s0, taskID, resetOriginal, overrideTask);
+
+    if (commanderValue == -1) {
         tactical->logGroupDebug(idValue, s_no_commander);
         return 0;
     }
 
-    if (taskID != 9 && taskID != 14)
+    if (taskID != 9 && taskID != 14) {
         consecutiveGatherAttemptsValue = 0;
+    }
 
-    int oHP;
-    float distance;
     switch (taskID) {
     case 0:
-    case 1: {
-        int i;
-        RGE_Static_Object* obj;
-        tactical->logGroupDebug(idValue, s_log_01);
-        taskID = 0;
-        for (i = 0; i < 40; ++i) {
-            if (unitsValue[i] != -1) {
-                tactical->logGroupDebug(idValue, s_log_02, unitsValue[i]);
-                obj = md->object(unitsValue[i]);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_03, unitsValue[i]);
+    case 1:
+        tactical->logGroupDebug(idValue, s_log_00);
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit != -1) {
+                tactical->logGroupDebug(idValue, s_log_01, *unit);
+                object = md->object(*unit);
+                if (object == 0 || object->unitAI() == 0) {
+                    tactical->logGroupDebug(idValue, s_log_02, *unit);
                     removeUnitByIndex(i, md);
-                } else {
-                    taskID += (unitsOriginalHitPointsValue[i] = (int)obj->hp);
-                    tactical->stopUnit(unitsValue[i], 100);
+                }
+                else {
+                    unitsOriginalHitPointsValue[i] = (int)object->hp;
+                    total += unitsOriginalHitPointsValue[i];
+                    tactical->stopUnit(*unit, 100);
                 }
             }
         }
         inUseValue = 0;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        originalHitPointsValue = taskID;
-        originalUnitNumberValue = numberUnitsValue;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
         return 1;
-    }
-
 
     case 9:
-    case 14: {
-        if (consecutiveGatherAttemptsValue < 0xff) consecutiveGatherAttemptsValue++;
-        RGE_Static_Object* gatherObj = md->object(commanderValue);
-        if (gatherObj == 0) goto return_zero_tail;
-        int zone = gatherObj->currentZone();
-        if (zone != gatherObj->lookupZone((int)gatherLocationValue.x, (int)gatherLocationValue.y))
-            setGatherLocation(gatherObj->world_x, gatherObj->world_y, gatherObj->world_z);
-        int gi;
-        float nearDist;
-        int* unitp;
-        for (gi = 0, unitp = unitsValue; gi < 40; ++gi, ++unitp) {
-            if (*unitp == -1) continue;
-            RGE_Static_Object* u = md->object(*unitp);
-            if (u == 0 || u->unitAI() == 0) {
-                removeUnitByIndex(gi, md);
-            } else if (gatherObj->lookupZone((int)u->world_x, (int)u->world_y) != zone) {
-                removeUnitByIndex(gi, md);
-            } else {
-                if (busyOK == 0 && u->unitAI()->currentAction() != -1 && u->unitAI()->currentAction() != 0x266)
-                    continue;
-                if (taskID == 14)
-                    nearDist = 0.0f;
-                else
-                    nearDist = (float)tactical->strategicNumber(0x29);
-                float gatherDist = u->distance_to_position(gatherLocationValue.x, gatherLocationValue.y, gatherLocationValue.z) - 1.0f;
-                if (gatherDist < 0.0f) gatherDist = 0.0f;
-                if (gatherDist < nearDist) {
-                    if (u->unitAI()->currentOrder() != -1)
-                        tactical->stopUnit(*unitp, 100);
-                } else {
-                    tactical->groupGatherUnit(*unitp, commanderValue, gatherLocationValue.x, gatherLocationValue.y, gatherLocationValue.z, nearDist, tactical->calculatePriority(gatherDist));
-                }
-            }
+    case 14:
+    {
+        RGE_Static_Object* commanderObject;
+        unsigned char commanderZone;
+
+        if (consecutiveGatherAttemptsValue != 255) {
+            ++consecutiveGatherAttemptsValue;
         }
-        return 1;
-    }
-
-
-
-
-
-
-    case 3: {
-        int i;
-        int* unitp;
-        RGE_Static_Object* obj;
-        float distance;
-        tactical->logGroupDebug(idValue, s_log_19);
-        tactical->logGroupDebug(idValue, s_log_20, retreatLocationValue.x, retreatLocationValue.y);
-        for (i = 0, unitp = unitsValue; i < 40; ++i, ++unitp) {
-            if (*unitp == -1) continue;
-            tactical->logGroupDebug(idValue, s_log_21, *unitp);
-            obj = md->object(*unitp);
-            if (obj == 0 || obj->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_22, *unitp);
-                removeUnitByIndex(i, md);
-                continue;
-            }
-            distance = obj->distance_to_position(retreatLocationValue.x, retreatLocationValue.y, retreatLocationValue.z) - 1.0f;
-            if (distance < 0.0f) distance = 0.0f;
-            if (distance < obj->master_obj->los * 0.33333334f) {
-                tactical->logGroupDebug(idValue, s_log_24, *unitp);
-            } else {
-                tactical->logGroupDebug(idValue, s_log_23, *unitp);
-                tactical->moveUnit(*unitp, retreatLocationValue.x, retreatLocationValue.y, 100);
-            }
-        }
-        return 1;
-    }
-
-
-
-
-    case 7: {
-        int* unitp;
-        RGE_Static_Object* obj;
-        tactical->logGroupDebug(idValue, s_log_32);
-        oHP = 0;
-        int roll = debug_rand(s_file, 0x3af) % 100;
-        taskID = 0;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_33, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_34, *unitp);
-                    removeUnitByIndex(taskID, md);
-                } else {
-                    unitp[40] = (int)obj->hp;
-                    oHP += unitp[40];
-                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
-                        int busyAction = obj->unitAI()->currentAction();
-                        tactical->logGroupDebug(idValue, s_log_35, *unitp, busyAction);
-                    } else if (*unitp == commanderValue) {
-                        tactical->logGroupDebug(idValue, s_log_36, *unitp);
-                        tactical->taskExplorer(*unitp, 0);
-                    } else if (roll < tactical->strategicNumber(200)) {
-                        tactical->logGroupDebug(idValue, s_log_37, *unitp);
-                        tactical->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
-                    } else {
-                        tactical->logGroupDebug(idValue, s_log_38, *unitp);
-                        tactical->taskExplorer(*unitp, 0);
-                    }
-                }
-            }
-            ++unitp;
-            ++taskID;
-        } while (taskID < 40);
-        inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_one_mid;
-    }
-
-
-
-
-    case 8: {
-        int* unitp;
-        RGE_Static_Object* obj;
-        tactical->logGroupDebug(idValue, s_log_39);
-        oHP = 0;
-        taskID = 0;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_40, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_41, *unitp);
-                    removeUnitByIndex(taskID, md);
-                } else {
-                    unitp[40] = (int)obj->hp;
-                    oHP += unitp[40];
-                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
-                        int busyAction = obj->unitAI()->currentAction();
-                        tactical->logGroupDebug(idValue, s_log_42, *unitp, busyAction);
-                    } else {
-                        tactical->taskExplorer(*unitp, 0);
-                    }
-                }
-            }
-            ++unitp;
-            ++taskID;
-        } while (taskID < 40);
-        inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_one;
-    }
-
-
-
-
-
-
-    case 20: {
-        tactical->logGroupDebug(idValue, s_log_55, targetValue);
-        tactical->logGroupDebug(idValue, s_log_56, targetLocationValue.x, targetLocationValue.y);
-        int waited = (int)(md->player->world->world_time - lastAttackRoundupTime) / 1000;
-        if (waited < 10) { tactical->logGroupDebug(idValue, s_log_57, waited); return 0; }
-        tactical->logGroupDebug(idValue, s_log_58, waited);
-        lastAttackRoundupTime = md->player->world->world_time;
-        if (playNumberValue != -1) {
-            tactical->logGroupDebug(idValue, s_log_59);
+        commanderObject = md->object(commanderValue);
+        if (commanderObject == 0) {
             return 0;
         }
-        int stored20 = 0;
-        taskID = 0;
-        int* unitp;
-        RGE_Static_Object* obj;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_60, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_61, *unitp);
-                    removeUnitByIndex(taskID, md);
-                } else {
-                    tactical->logGroupDebug(idValue, s_log_62, obj->unitAI()->currentAction());
-                    oHP = ((int)obj->hp); unitp[40] = oHP; stored20 += oHP;
-                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
-                        tactical->logGroupDebug(idValue, s_log_63, *unitp);
-                } else {
-                    tactical->logGroupDebug(idValue, s_log_64, *unitp, subTypeValue);
-                    if (subTypeValue == 0 || subTypeValue == 4) {
-                            tactical->logGroupDebug(idValue, s_log_65, *unitp, targetValue);
-                            tactical->taskDefender(*unitp, targetValue, 2.0f, 100);
-                        } else {
-                            RGE_Static_Object* targ20 = md->object(targetValue);
-                            if (targ20 != 0) {
-                                tactical->logGroupDebug(idValue, s_log_67, *unitp, targetValue);
-                                tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ20->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 1);
-                            } else {
-                                // the shipped null-target log has no unit or target arguments.
-                                tactical->logGroupDebug(idValue, s_log_66);
-                            }
-                        }
-                    }
-                }
+
+        commanderZone = commanderObject->currentZone();
+        if (commanderZone != commanderObject->lookupZone(
+                (int)gatherLocationValue.x, (int)gatherLocationValue.y)) {
+            setGatherLocation(commanderObject->world_x,
+                              commanderObject->world_y,
+                              commanderObject->world_z);
+        }
+
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
             }
-case20_next:
-            ++unitp;
-            ++taskID;
-        } while (taskID < 40);
-        inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        taskID = stored20;
-        goto store_return_one_zero_waypoints;
-    }
-
-
-
-    case 2:
-    case 21: {
-        tactical->logGroupDebug(idValue, s_log_04, targetValue);
-        tactical->logGroupDebug(idValue, s_log_05, targetLocationValue.x, targetLocationValue.y);
-        if (playNumberValue != -1)
-            tactical->logGroupDebug(idValue, s_log_07, playNumberValue);
-        else
-            tactical->logGroupDebug(idValue, s_log_06);
-        lastAttackRoundupTime = md->player->world->world_time;
-        int madeMemory = 1;
-        int stored = 0;
-        int i = 0;
-        int* unitp = unitsValue;
-        for (; i < 40; ++i, ++unitp) {
-            if (*unitp == -1) continue;
-            tactical->logGroupDebug(idValue, s_log_08, *unitp);
-            RGE_Static_Object* obj = md->object(*unitp);
-            if (obj == 0 || obj->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_09, *unitp);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0 ||
+                commanderObject->lookupZone((int)object->world_x,
+                                            (int)object->world_y) !=
+                    commanderZone) {
                 removeUnitByIndex(i, md);
                 continue;
             }
-            // the null-test unitAI call is not cached for this read.
-            int action = obj->unitAI()->currentAction();
-            tactical->logGroupDebug(idValue, s_log_10, action);
-            oHP = ((int)obj->hp); unitp[40] = oHP; stored += oHP;
-            if (playNumberValue == -1) {
-            if (busyOK == 0) {
-                if (obj->unitAI()->currentAction() == 600 && obj->unitAI()->currentTargetType() != 0x1b) {
-                    tactical->logGroupDebug(idValue, s_log_11, *unitp);
-                    continue;
-                }
+
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1 &&
+                object->unitAI()->currentAction() != 614) {
+                continue;
             }
-            tactical->logGroupDebug(idValue, s_log_12, *unitp, subTypeValue);
-            if (subTypeValue == 0 || subTypeValue == 4) {
-                tactical->logGroupDebug(idValue, s_log_13, *unitp);
-                tactical->taskDefender(*unitp, targetValue, 2.0f, 100);
-            } else {
-                RGE_Static_Object* targ = md->object(targetValue);
-                if (targ != 0) {
-                    if (madeMemory == 1) {
-                        tactical->logGroupDebug(idValue, s_log_15);
-                        XYPoint min;
-                        XYPoint max;
-                        min.x = (int)targetLocationValue.x - 7;
-                        min.y = (int)targetLocationValue.y - 7;
-                        TribeInformationAIModule* info = &md->informationAI;
-                        info->mapBound(min);
-                        max.x = (int)targetLocationValue.x + 7;
-                        max.y = (int)targetLocationValue.y + 7;
-                        info->mapBound(max);
-                        if (numberAttackWaypointsValue >= 2) {
-                            Waypoint* prev = &attackWaypoints[numberAttackWaypointsValue - 2];
-                            if ((float)min.x <= prev->x)
-                                max.x = (int)prev->x;
-                            else
-                                min.x = (int)prev->x;
-                            if ((float)min.y <= prev->y)
-                                max.y = (int)prev->y;
-                            else
-                                min.y = (int)prev->y;
-                        }
-                        info->storeAttackMemory(0, (unsigned char)min.x, (unsigned char)min.y, (unsigned char)max.x, (unsigned char)max.y,
-                            (unsigned char)md->player->id, (unsigned char)targ->owner->id, 0, 0,
-                            md->player->world->world_time, -1);
-                        tactical->resetAttackSeparationTime(); madeMemory = 0;
-                    }
-                    tactical->logGroupDebug(idValue, s_log_16, *unitp, targetValue);
-                    if (*unitp == commanderValue || tactical->importantGroupLeader(commanderValue) == 0 || tactical->strategicNumber(0x79) == 0) {
-                        tactical->logGroupDebug(idValue, s_log_17);
-                        if (taskID == 21)
-                            tactical->moveUnit(*unitp, targetLocationValue.x, targetLocationValue.y, 100);
-                        else
-                            tactical->taskAttacker(*unitp, targetLocationValue.x, targetLocationValue.y, targetValue, (int)targ->owner->id, attackWaypoints, numberAttackWaypointsValue, commanderValue, 0);
-                    } else {
-                        tactical->logGroupDebug(idValue, s_log_18);
-                        int range = tactical->strategicNumber(0x83);
-                        tactical->taskDefender(*unitp, commanderValue, (float)range, 99);
-                    }
-                } else {
-                    tactical->logGroupDebug(idValue, s_log_14);
+
+            {
+                float range;
+                float desiredRange;
+
+                if (taskID == 14) {
+                    desiredRange = 0.0f;
                 }
-            }
+                else {
+                    desiredRange = (float)tactical->strategicNumber(41);
+                }
+                range = object->distance_to_position(
+                    gatherLocationValue.x, gatherLocationValue.y,
+                    gatherLocationValue.z) - DAT_005756f4;
+                if (range < DAT_005756f0) {
+                    range = 0.0f;
+                }
+                if (!(range >= desiredRange)) {
+                    if (object->unitAI()->currentOrder() != -1) {
+                        tactical->stopUnit(*unit, 100);
+                    }
+                }
+                else {
+                    tactical->groupGatherUnit(
+                        *unit, commanderValue, gatherLocationValue.x,
+                        gatherLocationValue.y, gatherLocationValue.z,
+                        desiredRange, tactical->calculatePriority(range));
+                }
             }
         }
+        return 1;
+    }
+
+    case 3:
+        tactical->logGroupDebug(idValue, s_log_18);
+        tactical->logGroupDebug(idValue, s_log_19,
+                                (double)retreatLocationValue.x,
+                                (double)retreatLocationValue.y);
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+            tactical->logGroupDebug(idValue, s_log_20, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_21, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+
+            {
+                float range = object->distance_to_position(
+                    retreatLocationValue.x, retreatLocationValue.y,
+                    retreatLocationValue.z) - DAT_005756f4;
+                if (range < DAT_005756f0) {
+                    range = DAT_005756f0;
+                }
+                if (!(range >= object->master_obj->los * DAT_005756f8)) {
+                    tactical->logGroupDebug(idValue, s_log_23, *unit);
+                }
+                else {
+                    tactical->logGroupDebug(idValue, s_log_22, *unit);
+                    tactical->moveUnit(*unit, retreatLocationValue.x,
+                                       retreatLocationValue.y, 100);
+                }
+            }
+        }
+        return 1;
+
+    case 7:
+    {
+        int random;
+
+        tactical->logGroupDebug(idValue, s_log_31);
+        random = debug_rand(s_file, 943) % 100;
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+            tactical->logGroupDebug(idValue, s_log_32, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_33, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1) {
+                tactical->logGroupDebug(idValue, s_log_34, *unit,
+                                        object->unitAI()->currentAction());
+                continue;
+            }
+
+            if (*unit == commanderValue) {
+                tactical->logGroupDebug(idValue, s_log_35, commanderValue);
+                tactical->taskExplorer(*unit, 0);
+            }
+            else if (random < tactical->strategicNumber(200)) {
+                tactical->logGroupDebug(idValue, s_log_36, *unit);
+                tactical->taskDefender(*unit, commanderValue,
+                    object->master_obj->los * DAT_005756fc, 99);
+            }
+            else {
+                tactical->logGroupDebug(idValue, s_log_37, *unit);
+                tactical->taskExplorer(*unit, 0);
+            }
+        }
+        inUseValue = 1;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
+        return 1;
+    }
+
+    case 8:
+        tactical->logGroupDebug(idValue, s_log_38);
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+            tactical->logGroupDebug(idValue, s_log_39, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_40, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1) {
+                tactical->logGroupDebug(idValue, s_log_41, *unit,
+                                        object->unitAI()->currentAction());
+                continue;
+            }
+            tactical->taskExplorer(*unit, 0);
+        }
+        inUseValue = 1;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
+        return 1;
+
+    case 20:
+    {
+        int elapsed;
+
+        tactical->logGroupDebug(idValue, s_log_54, targetValue);
+        tactical->logGroupDebug(idValue, s_log_55,
+                                (double)targetLocationValue.x,
+                                (double)targetLocationValue.y);
+        elapsed = (int)(md->player->world->world_time -
+                        lastAttackRoundupTime);
+        elapsed /= 1000;
+        if (elapsed < 10) {
+            tactical->logGroupDebug(idValue, s_log_56, elapsed);
+            return 0;
+        }
+        tactical->logGroupDebug(idValue, s_log_57, elapsed);
+        lastAttackRoundupTime = md->player->world->world_time;
         if (playNumberValue != -1) {
-            int* list = (int*)operator new(numberUnitsValue << 2);
+            tactical->logGroupDebug(idValue, s_log_58);
+            return 0;
+        }
+
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+            tactical->logGroupDebug(idValue, s_log_59, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_60, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+
+            unitAI = object->unitAI();
+            tactical->logGroupDebug(idValue, s_log_61,
+                                    unitAI->currentAction());
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1) {
+                tactical->logGroupDebug(idValue, s_log_62, *unit);
+                continue;
+            }
+
+            tactical->logGroupDebug(idValue, s_log_63, *unit, subTypeValue);
+            if (subTypeValue != 0 && subTypeValue != 4) {
+                RGE_Static_Object* targetObject = md->object(targetValue);
+                if (targetObject != 0) {
+                    tactical->logGroupDebug(idValue, s_log_66, *unit,
+                                            targetValue);
+                    tactical->taskAttacker(
+                        *unit, targetLocationValue.x, targetLocationValue.y,
+                        targetValue, targetObject->owner->id,
+                        attackWaypoints, numberAttackWaypointsValue,
+                        commanderValue, 1);
+                }
+                else {
+                    tactical->logGroupDebug(idValue, s_log_65);
+                }
+            }
+            else {
+                tactical->logGroupDebug(idValue, s_log_64, *unit,
+                                        targetValue);
+                tactical->taskDefender(*unit, targetValue, 2.0f, 100);
+            }
+        }
+
+        inUseValue = 1;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+            numberAttackWaypointsValue = 0;
+        }
+        return 1;
+    }
+
+    case 2:
+    case 21:
+    {
+        int firstTime;
+
+        tactical->logGroupDebug(idValue, s_log_03, targetValue);
+        tactical->logGroupDebug(idValue, s_log_04,
+                                (double)targetLocationValue.x,
+                                (double)targetLocationValue.y);
+        if (playNumberValue == -1) {
+            tactical->logGroupDebug(idValue, s_log_05);
+        }
+        else {
+            tactical->logGroupDebug(idValue, s_log_06, playNumberValue);
+        }
+
+        firstTime = 1;
+        total = 0;
+        lastAttackRoundupTime = md->player->world->world_time;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+
+            tactical->logGroupDebug(idValue, s_log_07, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_08, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+
+            unitAI = object->unitAI();
+            tactical->logGroupDebug(idValue, s_log_09,
+                                    unitAI->currentAction());
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+
+            if (playNumberValue != -1) {
+                continue;
+            }
+
+            if (overrideTask == 0 && object->unitAI()->currentAction() == 600 &&
+                object->unitAI()->currentTargetType() != 27) {
+                tactical->logGroupDebug(idValue, s_log_10, *unit);
+                continue;
+            }
+
+            tactical->logGroupDebug(idValue, s_log_11, *unit, subTypeValue);
+            if (subTypeValue != 0 && subTypeValue != 4) {
+                RGE_Static_Object* targetObject = md->object(targetValue);
+                if (targetObject != 0) {
+                    if (firstTime) {
+                        XYPoint min;
+                        XYPoint max;
+                        unsigned char waypoint;
+
+                        tactical->logGroupDebug(idValue, s_log_14);
+                        min.x = (int)targetLocationValue.x - 7;
+                        min.y = (int)targetLocationValue.y - 7;
+                        md->informationAI.mapBound(min);
+                        max.x = (int)targetLocationValue.x + 7;
+                        max.y = (int)targetLocationValue.y + 7;
+                        md->informationAI.mapBound(max);
+
+                        if (numberAttackWaypointsValue > 1) {
+                            waypoint = numberAttackWaypointsValue - 2;
+                            if (!((float)min.x > attackWaypoints[waypoint].x)) {
+                                max.x = (int)attackWaypoints[waypoint].x;
+                            }
+                            else {
+                                min.x = (int)attackWaypoints[waypoint].x;
+                            }
+                            if (!((float)min.y > attackWaypoints[waypoint].y)) {
+                                max.y = (int)attackWaypoints[waypoint].y;
+                            }
+                            else {
+                                min.y = (int)attackWaypoints[waypoint].y;
+                            }
+                        }
+
+                        md->informationAI.storeAttackMemory(
+                            0, (unsigned char)min.x, (unsigned char)min.y,
+                            (unsigned char)max.x, (unsigned char)max.y,
+                            (unsigned char)md->player->id,
+                            (unsigned char)targetObject->owner->id, 0, 0,
+                            md->player->world->world_time, -1);
+                        tactical->resetAttackSeparationTime();
+                        firstTime = 0;
+                    }
+
+                    tactical->logGroupDebug(idValue, s_log_15, *unit,
+                                            targetValue);
+                    if (*unit == commanderValue ||
+                        tactical->importantGroupLeader(commanderValue) == 0 ||
+                        tactical->strategicNumber(121) == 0) {
+                        tactical->logGroupDebug(idValue, s_log_16);
+                        if (taskID == 21) {
+                            tactical->moveUnit(*unit, targetLocationValue.x,
+                                               targetLocationValue.y, 100);
+                        }
+                        else {
+                            tactical->taskAttacker(
+                                *unit, targetLocationValue.x,
+                                targetLocationValue.y, targetValue,
+                                (int)targetObject->owner->id,
+                                attackWaypoints, numberAttackWaypointsValue,
+                                commanderValue, 0);
+                        }
+                    }
+                    else {
+                        tactical->logGroupDebug(idValue, s_log_17);
+                        tactical->taskDefender(
+                            *unit, commanderValue,
+                            (float)tactical->strategicNumber(131), 99);
+                    }
+                }
+                else {
+                    tactical->logGroupDebug(idValue, s_log_13);
+                }
+            }
+            else {
+                tactical->logGroupDebug(idValue, s_log_12, *unit,
+                                        targetValue);
+                tactical->taskDefender(*unit, targetValue, 2.0f, 100);
+            }
+        }
+
+        if (playNumberValue != -1) {
+            int* list = new int[numberUnitsValue];
             if (list == 0) {
                 tactical->logGroupDebug(idValue, s_attack_play_alloc_fail);
                 return 0;
             }
-            int* scan = unitsValue;
-            int count = 40;
-            int* out = list;
-            do {
-                if (*scan != -1) *out++ = *scan;
-                ++scan;
-                --count;
-            } while (count != 0);
-            tactical->taskPlay(commanderValue, list, numberUnitsValue, targetValue, playNumberValue, attackWaypoints, numberAttackWaypointsValue);
-            operator delete(list);
+
+            int* destination = list;
+            unit = unitsValue;
+            for (i = 0; i < 40; ++i, ++unit) {
+                if (*unit != -1) {
+                    *destination++ = *unit;
+                }
+            }
+            tactical->taskPlay(commanderValue, list, numberUnitsValue,
+                               targetValue, playNumberValue, attackWaypoints,
+                               numberAttackWaypointsValue);
+            delete[] list;
             return 0;
         }
+
         inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        taskID = stored;
-        goto store_return_one_zero_waypoints;
-    }
-
-
-    case 4: {
-        int* unitp;
-        RGE_Static_Object* obj;
-        tactical->logGroupDebug(idValue, s_log_25, targetValue, targetLocationValue.x, targetLocationValue.y);
-        oHP = 0;
-        taskID = 0;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_26, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_27, *unitp);
-                    removeUnitByIndex(taskID, md);
-                } else {
-                    unitp[40] = (int)obj->hp;
-                    oHP += unitp[40];
-                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
-                        int busyAction = obj->unitAI()->currentAction();
-                        tactical->logGroupDebug(idValue, s_log_28, *unitp, busyAction);
-                    } else {
-                        int pri;
-                        distance = 0.0f;
-                        {
-                            distance = obj->distance_to_position(targetLocationValue.x, targetLocationValue.y, targetLocationValue.z);
-                        }
-                        pri = tactical->calculatePriority(distance);
-                        if (targetTypeValue == 0x6d) {
-                            int sn = tactical->strategicNumber(0x16);
-                            tactical->taskDefender(*unitp, targetValue, (float)sn, pri);
-                        } else {
-                            int sn = tactical->strategicNumber(0x39);
-                            tactical->taskDefender(*unitp, targetValue, (float)sn, pri);
-                        }
-                    }
-                }
-            }
-            ++unitp;
-            ++taskID;
-        } while (taskID < 40);
-        inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_one_mid;
-    }
-
-
-
-
-
-    case 10: {
-        int* unitp;
-        RGE_Static_Object* obj;
-        tactical->logGroupDebug(idValue, s_log_43);
-        oHP = 0;
-        taskID = 0;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_44, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_45, *unitp);
-                    removeUnitByIndex(taskID, md);
-                } else {
-                    unitp[40] = (int)obj->hp;
-                    oHP += unitp[40];
-                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
-                        int busyAction = obj->unitAI()->currentAction();
-                        tactical->logGroupDebug(idValue, s_log_46, *unitp, busyAction);
-                    } else if (*unitp == commanderValue) {
-                        tactical->logGroupDebug(idValue, s_log_47, *unitp);
-                        tactical->taskWaterFisher(*unitp, targetValue, targetLocationValue.x, targetLocationValue.y);
-                    } else {
-                        tactical->logGroupDebug(idValue, s_log_48, *unitp);
-                        tactical->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
-                    }
-                }
-            }
-            ++unitp;
-            ++taskID;
-        } while (taskID < 40);
-        inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-
-store_return_one_mid:
-        originalHitPointsValue = oHP;
-        originalUnitNumberValue = numberUnitsValue;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+            numberAttackWaypointsValue = 0;
+        }
         return 1;
     }
 
-    case 11: {
-        int* unitp;
-        RGE_Static_Object* obj;
-        int total = 0;
-        tactical->logGroupDebug(idValue, s_log_49);
-        taskID = 0;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_50, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_51, *unitp);
-                    removeUnitByIndex(taskID, md);
-                } else {
-                    oHP = ((int)obj->hp);
-                    unitp[40] = oHP;
-                    total += oHP;
-                    if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
-                        int busyAction = obj->unitAI()->currentAction();
-                        tactical->logGroupDebug(idValue, s_log_52, *unitp, busyAction);
-                    } else if (*unitp == commanderValue) {
-                        tactical->logGroupDebug(idValue, s_log_53, *unitp);
-                        tactical->taskWaterTrader(*unitp, targetValue);
-                    } else {
-                        tactical->logGroupDebug(idValue, s_log_54, *unitp);
-                        tactical->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
-                    }
-                }
+    case 4:
+        tactical->logGroupDebug(idValue, s_log_24, targetValue,
+                                (double)targetLocationValue.x,
+                                (double)targetLocationValue.y);
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
             }
-            ++unitp;
-            ++taskID;
-        } while (taskID < 40);
+            tactical->logGroupDebug(idValue, s_log_25, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_26, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1) {
+                tactical->logGroupDebug(idValue, s_log_27, *unit,
+                                        object->unitAI()->currentAction());
+                continue;
+            }
+
+            priority = tactical->calculatePriority(
+                object->distance_to_position(targetLocationValue.x,
+                                             targetLocationValue.y,
+                                             targetLocationValue.z));
+            if (targetTypeValue == 109) {
+                tactical->taskDefender(
+                    *unit, targetValue,
+                    (float)tactical->strategicNumber(22), priority);
+            }
+            else {
+                tactical->taskDefender(
+                    *unit, targetValue,
+                    (float)tactical->strategicNumber(57), priority);
+            }
+        }
         inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        originalHitPointsValue = total;
-        originalUnitNumberValue = numberUnitsValue;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
         return 1;
-    }
 
+    case 10:
+        tactical->logGroupDebug(idValue, s_log_42);
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+            tactical->logGroupDebug(idValue, s_log_43, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_44, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1) {
+                tactical->logGroupDebug(idValue, s_log_45, *unit,
+                                        object->unitAI()->currentAction());
+                continue;
+            }
+            if (*unit == commanderValue) {
+                tactical->logGroupDebug(idValue, s_log_46, *unit);
+                tactical->taskWaterFisher(*unit, targetValue,
+                                          targetLocationValue.x,
+                                          targetLocationValue.y);
+            }
+            else {
+                tactical->logGroupDebug(idValue, s_log_47, *unit);
+                tactical->taskDefender(*unit, commanderValue,
+                    object->master_obj->los * DAT_005756fc, 99);
+            }
+        }
+        inUseValue = 1;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
+        return 1;
 
+    case 11:
+        tactical->logGroupDebug(idValue, s_log_48);
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit == -1) {
+                continue;
+            }
+            tactical->logGroupDebug(idValue, s_log_49, *unit);
+            object = md->object(*unit);
+            if (object == 0 || object->unitAI() == 0) {
+                tactical->logGroupDebug(idValue, s_log_50, *unit);
+                removeUnitByIndex(i, md);
+                continue;
+            }
+            unitsOriginalHitPointsValue[i] = (int)object->hp;
+            total += unitsOriginalHitPointsValue[i];
+            if (overrideTask == 0 && object->unitAI()->currentAction() != -1) {
+                tactical->logGroupDebug(idValue, s_log_51, *unit,
+                                        object->unitAI()->currentAction());
+                continue;
+            }
+            if (*unit == commanderValue) {
+                tactical->logGroupDebug(idValue, s_log_52, *unit);
+                tactical->taskWaterTrader(*unit, targetValue);
+            }
+            else {
+                tactical->logGroupDebug(idValue, s_log_53, *unit);
+                tactical->taskDefender(*unit, commanderValue,
+                    object->master_obj->los * DAT_005756fc, 99);
+            }
+        }
+        inUseValue = 1;
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
+        return 1;
 
     case 5:
     case 6:
     case 12:
-    case 19: {
-        int* unitp;
-        RGE_Static_Object* obj;
-        tactical->logGroupDebug(idValue, s_log_29);
-        taskID = 0;
-        busyOK = 0;
-        unitp = unitsValue;
-        do {
-            if (*unitp != -1) {
-                tactical->logGroupDebug(idValue, s_log_30, *unitp);
-                obj = md->object(*unitp);
-                if (obj == 0 || obj->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_31, *unitp);
-                    removeUnitByIndex(busyOK, md);
-                } else {
-                    oHP = ((int)obj->hp);
-                    unitp[40] = oHP;
-                    taskID += oHP;
+    case 19:
+        tactical->logGroupDebug(idValue, s_log_28);
+        total = 0;
+        unit = unitsValue;
+        for (i = 0; i < 40; ++i, ++unit) {
+            if (*unit != -1) {
+                tactical->logGroupDebug(idValue, s_log_29, *unit);
+                object = md->object(*unit);
+                if (object == 0 || object->unitAI() == 0) {
+                    tactical->logGroupDebug(idValue, s_log_30, *unit);
+                    removeUnitByIndex(i, md);
+                }
+                else {
+                    unitsOriginalHitPointsValue[i] = (int)object->hp;
+                    total += unitsOriginalHitPointsValue[i];
                 }
             }
-            ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+        }
         inUseValue = 1;
-        if (firstTime != 1)
-            goto return_zero_tail;
-        goto store_return_zero;
-    }
-
-
-
-
+        if (resetOriginal == 1) {
+            originalHitPointsValue = total;
+            originalUnitNumberValue = numberUnitsValue;
+        }
+        return 0;
 
     default:
-        goto unknown_task_tail;
-
-
+        tactical->logGroupDebug(idValue, s_unknown_task, taskID);
+        return 0;
     }
-
-    if (firstTime == 1) {
-        originalHitPointsValue = taskID;
-        originalUnitNumberValue = numberUnitsValue;
-    }
-    return 1;
-
-return_zero_tail:
-    return 0;
-
-
-
-
-store_return_one:
-    originalHitPointsValue = oHP;
-    originalUnitNumberValue = numberUnitsValue;
-    return 1;
-
-store_return_zero:
-    originalHitPointsValue = taskID;
-    originalUnitNumberValue = numberUnitsValue;
-    return 0;
-
-unknown_task_tail:
-    tactical->logGroupDebug(idValue, s_unknown_task, taskID);
-    goto return_zero_tail;
-
-
-store_return_one_zero_waypoints:
-    originalHitPointsValue = taskID;
-    originalUnitNumberValue = numberUnitsValue;
-    numberAttackWaypointsValue = 0;
-    return 1;
-
 }
 
 
