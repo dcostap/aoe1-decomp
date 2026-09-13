@@ -12,7 +12,7 @@
     "004CF210": {"status": "matching", "symbol": "?save@TRIBE_Action_Hunt@@UAEXH@Z"},
     "004CF240": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Hunt@@UAEXE@Z"},
     "004CF300": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Hunt@@MAEXE@Z"},
-    "004CF860": {"status": "scratch", "symbol": "?update@TRIBE_Action_Hunt@@UAEEXZ"},
+    "004CF860": {"status": "new_verified_logic", "symbol": "?update@TRIBE_Action_Hunt@@UAEEXZ", "behavior_review": "logic_matching/004CF860/coord-17-review-01-A/attempt-01"},
     "004CFF20": {"status": "matching", "symbol": "?get_move_sprite@TRIBE_Action_Hunt@@IAEPAVRGE_Sprite@@XZ"},
     "004CFF50": {"status": "matching", "symbol": "?get_wait_sprite@TRIBE_Action_Hunt@@IAEPAVRGE_Sprite@@XZ"},
     "004CFF90": {"status": "matching", "symbol": "?stop@TRIBE_Action_Hunt@@UAEHXZ"},
