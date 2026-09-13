@@ -1258,35 +1258,48 @@ long TPanel::handle_size(long win_wid, long win_hgt) {
     return 0;
 }
 
-long TPanel::handle_paint(void) {
-    PanelNode* node = 0;
-        TPanel* parent;
-
-    if (render_area != 0 && visible != 0 && active != 0 && rge_base_game->prog_active != 0 && IsIconic(render_area->Wnd) == 0) {
-        if (need_redraw != 0) {
-            node = first_child_node;
-            while (node != 0) {
-                node->panel->set_redraw((TPanel::RedrawMode)need_redraw);
-                node = node->next_node;
-            }
-            parent = parent_panel;
-            if (parent != 0 && parent->overlapping_children != 0) {
-                parent->set_overlapped_redraw(this, this, (TPanel::RedrawMode)need_redraw);
-            }
-            draw();
-            need_redraw = 0;
-            just_drawn = 1;
-        }
-        node = first_child_node;
-        while (node != 0) {
-            node->panel->handle_paint();
-            node = node->next_node;
-        }
-        just_drawn = 0;
-    }
-    if (node == 0)
+long TPanel::handle_paint() {
+    if (this->render_area == 0) {
         return 0;
-    return (long)node;
+    }
+    if (this->visible == 0) {
+        return 0;
+    }
+    if (this->active == 0) {
+        return 0;
+    }
+    if (rge_base_game->prog_active == 0) {
+        return 0;
+    }
+    if (IsIconic(this->render_area->Wnd) != 0) {
+        return 0;
+    }
+
+    if (this->need_redraw != 0) {
+        for (PanelNode* node = this->first_child_node;
+             node != 0;
+             node = node->next_node) {
+            node->panel->set_redraw(
+                static_cast<TPanel::RedrawMode>(this->need_redraw));
+        }
+
+        if (this->parent_panel != 0 && this->parent_panel->overlapping_children != 0) {
+            this->parent_panel->set_overlapped_redraw(
+                this, this, static_cast<TPanel::RedrawMode>(this->need_redraw));
+        }
+        this->draw();
+        this->need_redraw = 0;
+        this->just_drawn = 1;
+    }
+
+    for (PanelNode* node = this->first_child_node;
+         node != 0;
+         node = node->next_node) {
+        node->panel->handle_paint();
+    }
+
+    this->just_drawn = 0;
+    return 0;
 }
 
 long TPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
