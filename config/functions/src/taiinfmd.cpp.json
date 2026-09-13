@@ -63,7 +63,7 @@
     "004DEA70": {"status": "matching", "symbol": "?numberItemsToDefend@TribeInformationAIModule@@QAEHXZ"},
     "004DEA80": {"status": "accepted_drift", "symbol": "?objectToTradeWith@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004DEBA0": {"status": "new_verified_logic", "symbol": "?findGatherPosition@TribeInformationAIModule@@QAEHAAUXYPoint@@HHHHPAVRGE_Static_Object@@0@Z", "behavior_review": "logic_matching/004DEBA0/review-01/attempt-01"},
-    "004DEE90": {"status": "scratch", "symbol": "?setupInfluenceMap@TribeInformationAIModule@@QAEXHHAAUXYPoint@@00@Z"},
+    "004DEE90": {"status": "new_verified_logic", "symbol": "?setupInfluenceMap@TribeInformationAIModule@@QAEXHHAAUXYPoint@@00@Z", "behavior_review": ["logic_matching/004DEE90/review-coord-16-004DEE90-round-01-20260912/attempt-01", "logic_matching/004DEE90/review-coord-16-004DEE90-round-01-20260912/attempt-02"]},
     "004DFCE0": {"status": "matching", "symbol": "?mapBound@TribeInformationAIModule@@QAEHAAUXYPoint@@@Z"},
     "004DFD40": {"status": "matching", "symbol": "?groupInfluenceDimension@TribeInformationAIModule@@QAEHH@Z"},
     "004DFD60": {"status": "matching", "symbol": "?findObjectMemoryLimits@TribeInformationAIModule@@QAE?AUObjectMemory@@HHAAH0@Z"},

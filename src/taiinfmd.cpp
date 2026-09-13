@@ -3845,131 +3845,145 @@ int TribeInformationAIModule::findGatherPosition(
 
 #include <stdlib.h>
 
-void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
-                                                   XYPoint& unused,
-                                                   XYPoint& from,
-                                                   XYPoint& to)
+void TribeInformationAIModule::setupInfluenceMap(
+    int mode, int objectType, XYPoint& unused, XYPoint& from, XYPoint& to)
 {
-    iMap.initialize(0x14);
+    XYPoint mapMin;
+    XYPoint mapMax;
+    int x;
+    int y;
+
+    iMap.initialize(20);
     iMap.setUnchangeableLimit(0xff);
 
     this->md->buildAI.numberBuiltItemsOfType(0x44, 0);
     this->md->buildAI.numberBuiltItemsOfType(0x67, 0);
 
-    XYPoint min;
-    XYPoint max;
-    int resourceTypeToPlaceBy;
-    int a;
-    int b;
-    min.x = 0;
-    min.y = 0;
-    max.x = this->mapXSizeValue;
-    max.y = this->mapYSizeValue;
+    mapMin.x = 0;
+    mapMin.y = 0;
+    mapMax.x = this->mapXSizeValue;
+    mapMax.y = this->mapYSizeValue;
 
     if (mode == 3 || mode == 4 || mode == 0) {
-        XYPoint innerMax;
-        innerMax.x = this->mapXSizeValue - 5;
-        innerMax.y = this->mapYSizeValue - 5;
-
-        for (int x = 0; x < max.x; x++) {
-            for (int y = 0; y < max.y; y++) {
-                if (x < 5 || x > innerMax.x || y < 5 || y > innerMax.y) {
+        int mapWidth = this->mapXSizeValue;
+        int mapHeight = this->mapYSizeValue;
+        int maxX = mapWidth - 5;
+        int maxY = mapHeight - 5;
+        for (x = 0; x < mapWidth; ++x) {
+            for (y = 0; y < mapHeight; ++y) {
+                if (x < 5 || x > maxX || y < 5 || y > maxY)
                     iMap.decrementValue(x, y, 10);
-                }
             }
         }
     }
 
     if (mode == 1 || mode == 2 || mode == 9) {
-        resourceTypeToPlaceBy = this->resourceTypeToPlaceDropsiteBy(mode);
+        int resourceType = this->resourceTypeToPlaceDropsiteBy(mode);
+        int resourceList;
 
-        for (a = 0; a < 4; a++) {
-            for (b = 0; b < this->numResources[a]; b++) {
-                ResourceMemory* resource = &this->resources[a][b];
-                if (resource->gone != 1) {
-                    RGE_Static_Object* object = this->md->object(resource->id);
-                    if (object != 0) {
-                        float resYRadius = object->master_obj->radius_y;
-                        XYPoint rMax;
-                        XYPoint rMin;
-                        XYPoint position;
+        for (resourceList = 0; resourceList < 4; ++resourceList) {
+            int resourceIndex;
+            for (resourceIndex = 0;
+                 resourceIndex < this->numResources[resourceList];
+                 ++resourceIndex) {
+                ResourceMemory* memory =
+                    &this->resources[resourceList][resourceIndex];
+                if (memory->gone == 1)
+                    continue;
 
-                        rMin.x = (int)(object->world_x - object->master_obj->radius_x - DAT_00575564);
-                        rMin.y = (int)(object->world_y - resYRadius - DAT_00575564);
-                        this->mapBound(rMin);
-                        rMax.x = (int)(object->world_x + resYRadius - DAT_0057556c);
-                        rMax.y = (int)(object->world_y + resYRadius - DAT_0057556c);
-                        this->mapBound(rMax);
-                        position.x = (int)object->master_obj->radius_x;
-                        position.y = (int)object->master_obj->radius_y;
-                        this->mapBound(position);
+                RGE_Static_Object* object = this->md->object(memory->id);
+                if (object == 0)
+                    continue;
 
-                        if (mode == 1 || mode == 2) {
-                            iMap.setValue(position.x, position.y, 0xff);
-                        } else {
-                            iMap.setValue(rMin.x, rMin.y, rMax.x, rMax.y, 0xff);
-                        }
+                RGE_Master_Static_Object* master = object->master_obj;
+                XYPoint objectMin;
+                XYPoint objectMax;
+                XYPoint center;
+                float radiusY = master->radius_y;
 
-                        if (mode == 1) {
-                            short group = object->master_obj->object_group;
-                            if (group != 7) {
-                                if (resourceTypeToPlaceBy == -1 ||
-                                    (resourceTypeToPlaceBy == 3 && group == 0x20) ||
-                                    (resourceTypeToPlaceBy == 2 && group == 8) ||
-                                    (resourceTypeToPlaceBy == 1 && group == 0x0f) ||
-                                    (resourceTypeToPlaceBy == 0 && group != 0x20 &&
-                                     group != 8 && group != 0x0f)) {
-                                    rMin.x -= 1;
-                                    rMin.y -= 1;
-                                    this->mapBound(rMin);
-                                    rMax.x += 1;
-                                    rMax.y += 1;
-                                    this->mapBound(rMax);
-                                    iMap.incrementValue(rMin.x, rMin.y,
-                                                          rMax.x, rMax.y, 8);
+                objectMin.x = (int)(object->world_x - master->radius_x -
+                                    DAT_00575564);
+                objectMin.y = (int)(object->world_y - radiusY -
+                                    DAT_00575564);
+                this->mapBound(objectMin);
+                objectMax.x = (int)(radiusY + object->world_x -
+                                    DAT_0057556c);
+                objectMax.y = (int)(radiusY + object->world_y -
+                                    DAT_0057556c);
+                this->mapBound(objectMax);
+                center.x = (int)object->world_x;
+                center.y = (int)object->world_y;
+                this->mapBound(center);
 
-                                    rMin.x -= 3;
-                                    rMin.y -= 3;
-                                    this->mapBound(rMin);
-                                    rMax.x += 3;
-                                    rMax.y += 3;
-                                    this->mapBound(rMax);
-                                    iMap.incrementValue(rMin.x, rMin.y,
-                                                          rMax.x, rMax.y, 4);
+                if (mode == 1 || mode == 2)
+                    iMap.setValue(center.x, center.y, 0xff);
+                else
+                    iMap.setValue(objectMin.x, objectMin.y,
+                                  objectMax.x, objectMax.y, 0xff);
 
-                                    rMin.x -= 5;
-                                    rMin.y -= 5;
-                                    this->mapBound(rMin);
-                                    rMax.x += 5;
-                                    rMax.y += 5;
-                                    this->mapBound(rMax);
-                                    iMap.incrementValue(rMin.x, rMin.y,
-                                                          rMax.x, rMax.y, 2);
-                                }
-                            } else {
-                                if (object->master_obj->object_group == 7) {
-                                    rMin.x -= 5;
-                                    rMin.y -= 5;
-                                    this->mapBound(rMin);
-                                    rMax.x += 5;
-                                    rMax.y += 5;
-                                    this->mapBound(rMax);
-                                    iMap.decrementValue(rMin.x, rMin.y,
-                                                          rMax.x, rMax.y, 0x80);
-                                }
-                            }
-                        } else if (mode == 2 &&
-                                   object->master_obj->object_group == 7) {
-                            rMin.x -= 3;
-                            rMin.y -= 3;
-                            this->mapBound(rMin);
-                            rMax.x += 3;
-                            rMax.y += 3;
-                            this->mapBound(rMax);
-                            iMap.incrementValue(rMin.x, rMin.y,
-                                                  rMax.x, rMax.y, 0x80);
+                short group = master->object_group;
+                if (mode == 1) {
+                    if (group == 7) {
+                        objectMin.x -= 5;
+                        objectMin.y -= 5;
+                        this->mapBound(objectMin);
+                        objectMax.x += 5;
+                        objectMax.y += 5;
+                        this->mapBound(objectMax);
+                        iMap.decrementValue(objectMin.x, objectMin.y,
+                                            objectMax.x, objectMax.y, 0x80);
+                    } else {
+                        int applicable = 0;
+                        if (resourceType == -1)
+                            applicable = 1;
+                        else if (resourceType == 3 && group == 0x20)
+                            applicable = 1;
+                        else if (resourceType == 2 && group == 8)
+                            applicable = 1;
+                        else if (resourceType == 1 && group == 0x0f)
+                            applicable = 1;
+                        else if (resourceType == 0 && group != 0x20 &&
+                                 group != 8 && group != 0x0f)
+                            applicable = 1;
+
+                        if (applicable) {
+                            objectMin.x--;
+                            objectMin.y--;
+                            this->mapBound(objectMin);
+                            objectMax.x++;
+                            objectMax.y++;
+                            this->mapBound(objectMax);
+                            iMap.incrementValue(objectMin.x, objectMin.y,
+                                                objectMax.x, objectMax.y, 8);
+
+                            objectMin.x -= 3;
+                            objectMin.y -= 3;
+                            this->mapBound(objectMin);
+                            objectMax.x += 3;
+                            objectMax.y += 3;
+                            this->mapBound(objectMax);
+                            iMap.incrementValue(objectMin.x, objectMin.y,
+                                                objectMax.x, objectMax.y, 4);
+
+                            objectMin.x -= 5;
+                            objectMin.y -= 5;
+                            this->mapBound(objectMin);
+                            objectMax.x += 5;
+                            objectMax.y += 5;
+                            this->mapBound(objectMax);
+                            iMap.incrementValue(objectMin.x, objectMin.y,
+                                                objectMax.x, objectMax.y, 2);
                         }
                     }
+                } else if (mode == 2 && group == 7) {
+                    objectMin.x -= 3;
+                    objectMin.y -= 3;
+                    this->mapBound(objectMin);
+                    objectMax.x += 3;
+                    objectMax.y += 3;
+                    this->mapBound(objectMax);
+                    iMap.incrementValue(objectMin.x, objectMin.y,
+                                        objectMax.x, objectMax.y, 0x80);
                 }
             }
         }
@@ -3977,267 +3991,230 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
     if (mode == 1 || mode == 2 || mode == 3 || mode == 4 || mode == 0 ||
         mode == 5 || mode == 6 || mode == 8) {
-        a = 0;
-        if (this->playerBuildings.numberValue > 0) {
-        do {
-            RGE_Static_Object* object = this->md->object(this->playerBuildings[a]);
-            if (object != 0) {
-                RGE_Master_Static_Object* master = object->master_obj;
-                int placement = this->placementCode(master->id);
-                float bXRadius = master->radius_x;
-                float bYRadius = master->radius_y;
-                XYPoint bMin;
-                XYPoint bMax;
+        int buildingIndex;
+        for (buildingIndex = 0;
+             buildingIndex < this->playerBuildings.numberValue;
+             ++buildingIndex) {
+            RGE_Static_Object* building =
+                this->md->object(this->playerBuildings[buildingIndex]);
+            if (building == 0)
+                continue;
 
-                if (bXRadius == DAT_00575598) {
-                    bMin.x = (int)object->world_x;
-                    bMin.x -= 3;
-                    bMin.y = (int)object->world_y;
-                    bMin.y -= 3;
-                    bMax.x = (int)object->world_x;
-                    bMax.x += 3;
-                    bMax.y = (int)object->world_y;
-                    bMax.y += 3;
-                } else if (bXRadius == DAT_005755a0) {
-                    if (placement == 6) {
-                        bMin.x = (int)object->world_x;
-                        bMin.x -= 1;
-                        bMin.y = (int)object->world_y;
-                        bMin.y -= 1;
-                        bMax.x = (int)object->world_x;
-                        bMax.y = (int)object->world_y;
-                    } else if (objectType == 0x46) {
-                        bMin.x = (int)object->world_x;
-                        bMin.x -= 3;
-                        bMin.y = (int)object->world_y;
-                        bMin.y -= 3;
-                        bMax.x = (int)object->world_x;
-                        bMax.x += 3;
-                        bMax.y = (int)object->world_y;
-                        bMax.y += 3;
-                    } else {
-                        bMin.x = (int)object->world_x;
-                        bMin.x -= 2;
-                        bMin.y = (int)object->world_y;
-                        bMin.y -= 2;
-                        bMax.x = (int)object->world_x;
-                        bMax.x += 2;
-                        bMax.y = (int)object->world_y;
-                        bMax.y += 2;
-                    }
-                } else if (bXRadius == DAT_00575564) {
-                    if (placement == 6 || placement == 3) {
-                        bMin.x = (int)object->world_x;
-                        bMin.x -= 1;
-                        bMin.y = (int)object->world_y;
-                        bMin.y -= 1;
-                        bMax.x = (int)object->world_x;
-                        bMax.y = (int)object->world_y;
-                    } else {
-                        bMin.x = (int)object->world_x;
-                        bMin.x -= 2;
-                        bMin.y = (int)object->world_y;
-                        bMin.y -= 2;
-                        bMax.x = (int)object->world_x;
-                        bMax.x += 1;
-                        bMax.y = (int)object->world_y;
-                        bMax.y += 1;
-                    }
-                } else if (bXRadius == DAT_005755a8) {
-                    if (placement == 6 || placement == 4) {
-                        bMin.x = (int)object->world_x;
-                        bMin.y = (int)object->world_y;
-                        bMax.x = (int)object->world_x;
-                        bMax.y = (int)object->world_y;
-                    } else {
-                        bMin.x = (int)object->world_x;
-                        bMin.x -= 1;
-                        bMin.y = (int)object->world_y;
-                        bMin.y -= 1;
-                        bMax.x = (int)object->world_x;
-                        bMax.x += 1;
-                        bMax.y = (int)object->world_y;
-                        bMax.y += 1;
-                    }
+            RGE_Master_Static_Object* master = building->master_obj;
+            int buildingCode = this->placementCode(master->id);
+            XYPoint buildingMin;
+            XYPoint buildingMax;
+            float radiusX = master->radius_x;
+            float radiusY = master->radius_y;
+
+            if (radiusX == DAT_00575598) {
+                buildingMin.x = (int)building->world_x - 3;
+                buildingMin.y = (int)building->world_y - 3;
+                buildingMax.x = (int)building->world_x + 3;
+                buildingMax.y = (int)building->world_y + 3;
+            } else if (radiusX == DAT_005755a0) {
+                if (buildingCode == 6) {
+                    buildingMin.x = (int)building->world_x - 1;
+                    buildingMin.y = (int)building->world_y - 1;
+                    buildingMax.x = (int)building->world_x + 1;
+                    buildingMax.y = (int)building->world_y + 1;
+                } else if (objectType == 0x46) {
+                    buildingMin.x = (int)building->world_x - 3;
+                    buildingMin.y = (int)building->world_y - 3;
+                    buildingMax.x = (int)building->world_x + 3;
+                    buildingMax.y = (int)building->world_y + 3;
                 } else {
-                    this->logCommonHistory("    Unsupported building size (%d x %d).",
-                                     (double)(bXRadius + bXRadius),
-                                     (double)((float)bYRadius + (float)bYRadius));
-                    goto building_next;
+                    buildingMin.x = (int)building->world_x - 2;
+                    buildingMin.y = (int)building->world_y - 2;
+                    buildingMax.x = (int)building->world_x + 2;
+                    buildingMax.y = (int)building->world_y + 2;
                 }
-
-                if (placement == 0x6d) {
-                    bMin.x--;
-                    bMin.y--;
-                    bMax.x++;
-                    bMax.y++;
+            } else if (radiusX == DAT_00575564) {
+                if (buildingCode == 6 || buildingCode == 3) {
+                    buildingMin.x = (int)building->world_x - 1;
+                    buildingMin.y = (int)building->world_y - 1;
+                    buildingMax.x = (int)building->world_x;
+                    buildingMax.y = (int)building->world_y;
+                } else {
+                    buildingMin.x = (int)building->world_x - 2;
+                    buildingMin.y = (int)building->world_y - 2;
+                    buildingMax.x = (int)building->world_x + 1;
+                    buildingMax.y = (int)building->world_y + 1;
                 }
-                this->mapBound(bMin);
-                this->mapBound(bMax);
-                iMap.setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
+            } else if (radiusX == DAT_005755a8) {
+                if (buildingCode == 6 || buildingCode == 4) {
+                    buildingMin.x = (int)building->world_x;
+                    buildingMin.y = (int)building->world_y;
+                    buildingMax.x = (int)building->world_x;
+                    buildingMax.y = (int)building->world_y;
+                } else {
+                    buildingMin.x = (int)building->world_x - 1;
+                    buildingMin.y = (int)building->world_y - 1;
+                    buildingMax.x = (int)building->world_x + 1;
+                    buildingMax.y = (int)building->world_y + 1;
+                }
+            } else {
+                this->logCommonHistory(
+                    (char*)"    Unsupported building size (%d x %d).",
+                    (double)(radiusX + radiusX),
+                    (double)(radiusY + radiusY));
+                continue;
+            }
 
-                if (mode == 3 || mode == 0) {
-                    float radiusValue = master->los;
-                    if (mode == 3) {
-                        radiusValue *= DAT_005755b4;
-                    }
-                    if (placement == 0x6d) {
-                        radiusValue *= DAT_005755b4;
-                    }
-                    int radius = (int)radiusValue;
-                    XYPoint minLOS;
-                    XYPoint maxLOS;
-                    minLOS.x = bMin.x - radius;
-                    minLOS.y = bMin.y - radius;
-                    this->mapBound(minLOS);
-                    maxLOS.x = bMax.x + radius;
-                    maxLOS.y = bMax.y + radius;
-                    this->mapBound(maxLOS);
-                    if (mode == 0 && placement == 3) {
-                iMap.incrementValue(minLOS.x, minLOS.y,
-                                              maxLOS.x, maxLOS.y, 10);
-                    } else {
-                iMap.decrementValue(minLOS.x, minLOS.y,
-                                              maxLOS.x, maxLOS.y, 10);
-                    }
-                } else if (mode == 1 || mode == 2) {
-                    float radiusValue = master->los;
-                    if (placement == 0x6d) {
-                        radiusValue *= DAT_005755b4;
-                    }
-                    if (objectType == 0x44 || objectType == 0x67) {
-                        radiusValue = DAT_00575578;
-                    }
-                    int radius = (int)radiusValue;
-                    XYPoint aMax;
-                    XYPoint aMin;
-                    aMax.x = bMax.x - radius;
-                    aMax.y = bMin.y - radius;
-                    this->mapBound(aMax);
-                    aMin.x = bMin.x + radius;
-                    aMin.y = bMax.y + radius;
-                    this->mapBound(aMin);
-                    iMap.decrementValue(aMax.x, aMax.y,
-                                          aMin.x, aMin.y, 10);
-                } else if (mode == 5) {
-                    float radiusValue = master->los;
-                    if (placement == 0x6d) {
-                        radiusValue *= DAT_005755b0;
-                    }
-                    int radius = (int)radiusValue;
-                    XYPoint minDC;
-                    XYPoint maxDC;
-                    minDC.x = bMin.x - radius * 2;
-                    minDC.y = bMin.y - radius * 2;
-                    this->mapBound(minDC);
-                    maxDC.x = bMax.x + radius * 2;
-                    maxDC.y = bMax.y + radius * 2;
-                    this->mapBound(maxDC);
-                    iMap.decrementValue(minDC.x, minDC.y,
-                                          maxDC.x, maxDC.y, 20);
-                } else if (mode == 8) {
-                    int radius = (int)master->los;
-                    XYPoint minLOS;
-                    XYPoint maxLOS;
-                    minLOS.x = bMin.x - radius;
-                    minLOS.y = bMin.y - radius;
-                    this->mapBound(minLOS);
-                    maxLOS.x = bMax.x + radius;
-                    maxLOS.y = bMax.y + radius;
-                    this->mapBound(maxLOS);
-                    iMap.incrementValue(minLOS.x, minLOS.y,
-                                          maxLOS.x, maxLOS.y, 20);
+            if (buildingCode == 0x6d) {
+                buildingMin.x--;
+                buildingMin.y--;
+                buildingMax.x++;
+                buildingMax.y++;
+            }
+            this->mapBound(buildingMin);
+            this->mapBound(buildingMax);
+            iMap.setValue(buildingMin.x, buildingMin.y,
+                          buildingMax.x, buildingMax.y, 0xff);
 
-                    int halfRadius = radius / 2;
-                    minLOS.x = bMin.x - halfRadius;
-                    minLOS.y = bMin.y - halfRadius;
-                    this->mapBound(minLOS);
-                    maxLOS.x = bMax.x + halfRadius;
-                    maxLOS.y = bMax.y + halfRadius;
-                    this->mapBound(maxLOS);
-                    iMap.incrementValue(minLOS.x, minLOS.y,
-                                          maxLOS.x, maxLOS.y, 20);
+            if (mode == 3 || mode == 0) {
+                float influenceRadius = master->los;
+                if (mode != 0)
+                    influenceRadius *= DAT_005755b4;
+                if (buildingCode == 0x6d)
+                    influenceRadius *= DAT_005755b4;
+                int radius = (int)influenceRadius;
 
-                    int thirdRadius = radius / 3;
-                    minLOS.x = bMin.x - thirdRadius;
-                    minLOS.y = bMin.y - thirdRadius;
-                    this->mapBound(minLOS);
-                    maxLOS.x = bMax.x + thirdRadius;
-                    maxLOS.y = bMax.y + thirdRadius;
-                    this->mapBound(maxLOS);
-                    iMap.incrementValue(minLOS.x, minLOS.y,
-                                          maxLOS.x, maxLOS.y, 20);
+                XYPoint influenceMin;
+                XYPoint influenceMax;
+                influenceMin.x = buildingMin.x - radius;
+                influenceMin.y = buildingMin.y - radius;
+                this->mapBound(influenceMin);
+                influenceMax.x = buildingMax.x + radius;
+                influenceMax.y = buildingMax.y + radius;
+                this->mapBound(influenceMax);
+                if (mode == 0 && buildingCode == 3)
+                    iMap.incrementValue(influenceMin.x, influenceMin.y,
+                                        influenceMax.x, influenceMax.y, 10);
+                else
+                    iMap.decrementValue(influenceMin.x, influenceMin.y,
+                                        influenceMax.x, influenceMax.y, 10);
+            } else if (mode == 1 || mode == 2) {
+                float influenceRadius = master->los;
+                if (buildingCode == 0x6d)
+                    influenceRadius *= DAT_005755b4;
+                else if (buildingCode == 0x44 || buildingCode == 0x67)
+                    influenceRadius = DAT_00575578;
+                int radius = (int)influenceRadius;
+
+                XYPoint influenceMin;
+                XYPoint influenceMax;
+                influenceMin.x = buildingMin.x - radius;
+                influenceMin.y = buildingMin.y - radius;
+                this->mapBound(influenceMin);
+                influenceMax.x = buildingMax.x + radius;
+                influenceMax.y = buildingMax.y + radius;
+                this->mapBound(influenceMax);
+                iMap.decrementValue(influenceMin.x, influenceMin.y,
+                                    influenceMax.x, influenceMax.y, 10);
+            } else if (mode == 5) {
+                float influenceRadius = master->los;
+                if (buildingCode == 0x6d)
+                    influenceRadius *= DAT_005755b0;
+                int radius = (int)influenceRadius;
+                radius *= 2;
+
+                XYPoint influenceMin;
+                XYPoint influenceMax;
+                influenceMin.x = buildingMin.x - radius;
+                influenceMin.y = buildingMin.y - radius;
+                this->mapBound(influenceMin);
+                influenceMax.x = buildingMax.x + radius;
+                influenceMax.y = buildingMax.y + radius;
+                this->mapBound(influenceMax);
+                iMap.decrementValue(influenceMin.x, influenceMin.y,
+                                    influenceMax.x, influenceMax.y, 20);
+            } else if (mode == 8) {
+                int radius = (int)master->los;
+                int layerRadius = radius;
+                int layer;
+                for (layer = 0; layer < 3; ++layer) {
+                    if (layer == 1)
+                        layerRadius = radius / 2;
+                    else if (layer == 2)
+                        layerRadius = radius / 3;
+
+                    XYPoint influenceMin;
+                    XYPoint influenceMax;
+                    influenceMin.x = buildingMin.x - layerRadius;
+                    influenceMin.y = buildingMin.y - layerRadius;
+                    this->mapBound(influenceMin);
+                    influenceMax.x = buildingMax.x + layerRadius;
+                    influenceMax.y = buildingMax.y + layerRadius;
+                    this->mapBound(influenceMax);
+                    iMap.incrementValue(influenceMin.x, influenceMin.y,
+                                        influenceMax.x, influenceMax.y, 20);
                 }
             }
-        building_next:
-            a++;
-        } while (a < this->playerBuildings.numberValue);
         }
     }
 
     if (mode == 3 || mode == 4 || mode == 0) {
         RGE_Map* map = this->md->player->world->map;
-        for (int x = from.x; x <= to.x; x++) {
-            for (int y = from.y; y <= to.y; y++) {
+        for (x = from.x; x <= to.x; ++x) {
+            for (y = from.y; y <= to.y; ++y) {
                 unsigned char terrain = map->get_terrain((short)x, (short)y);
                 if (terrain == 1) {
-                    XYPoint minTerrain;
-                    XYPoint maxTerrain;
-                    minTerrain.x = x - 2;
-                    minTerrain.y = y - 2;
-                    maxTerrain.x = x - 2;
-                    maxTerrain.y = y - 2;
-                    this->mapBound(minTerrain);
-                    this->mapBound(maxTerrain);
+                    XYPoint terrainMin;
+                    XYPoint terrainMax;
+                    terrainMin.x = x - 2;
+                    terrainMin.y = y - 2;
+                    terrainMax = terrainMin;
+                    this->mapBound(terrainMin);
+                    this->mapBound(terrainMax);
                     iMap.setValue(x, y, 0xff);
-                    iMap.decrementValue(minTerrain.x, minTerrain.y,
-                                          maxTerrain.x, maxTerrain.y, 10);
+                    iMap.decrementValue(terrainMin.x, terrainMin.y,
+                                        terrainMax.x, terrainMax.y, 10);
                 }
-                // Original 004DFB0C calls the point overload, not the clamped rectangle overload.
                 iMap.incrementValue(x, y,
-                                      map->map_row_offset[y][x].height * 5);
+                                    (unsigned char)(map->map_row_offset[y][x]
+                                                        .height * 5));
             }
         }
     }
 
     if (mode == 3 || mode == 4 || mode == 0 || mode == 6 || mode == 5) {
-        for (int i = 0, offset = 0; i < this->maxAttackMemories;
-             i++, offset += 0x18) {
-            AttackMemory* memory = (AttackMemory*)((char*)this->attackMemories + offset);
+        int memoryIndex;
+        for (memoryIndex = 0;
+             memoryIndex < this->maxAttackMemories;
+             ++memoryIndex) {
+            AttackMemory* memory = &this->attackMemories[memoryIndex];
             if (memory->id != -1 &&
-                (unsigned short)memory->targetOwner ==
-                    (unsigned short)this->md->player->id) {
-                XYPoint min;
-                XYPoint max;
-                min.x = (unsigned char)memory->minX - 4;
-                min.y = (unsigned char)memory->minY - 4;
-                this->mapBound(min);
-                max.x = (unsigned char)memory->maxX + 4;
-                max.y = (unsigned char)memory->maxY + 4;
-                this->mapBound(max);
-                iMap.incrementValue(min.x, min.y, max.x, max.y, 0x10);
+                memory->targetOwner == this->md->player->id) {
+                XYPoint attackMin;
+                XYPoint attackMax;
+                attackMin.x = memory->minX - 4;
+                attackMin.y = memory->minY - 4;
+                this->mapBound(attackMin);
+                attackMax.x = memory->maxX + 4;
+                attackMax.y = memory->maxY + 4;
+                this->mapBound(attackMax);
+                iMap.incrementValue(attackMin.x, attackMin.y,
+                                    attackMax.x, attackMax.y, 0x10);
             }
         }
     }
 
-    if (mode == 0) {
-                this->md->tacticalAI.setGroupInfluences(iMap);
-    }
+    if (mode == 0)
+        this->md->tacticalAI.setGroupInfluences(iMap);
 
-    int connectionFlag = 1;
-    if (mode == 4) {
-        connectionFlag = 0;
-    }
-    iMap.setConnectionCount(min, max, 0xff, 1, connectionFlag, 1);
+    iMap.setConnectionCount(mapMin, mapMax, 0xff, 1, mode != 4, 1);
 
-    if (mode != 0 && this->maxBuildingLots > 0) {
-        for (int i = 0; i < this->maxBuildingLots; i++) {
-            BuildingLot* lot = &this->buildingLots[i];
-            if (lot->typeID == objectType && lot->status == 2) {
+    if (mode != 0) {
+        int lotIndex;
+        for (lotIndex = 0; lotIndex < this->maxBuildingLots; ++lotIndex) {
+            BuildingLot* lot = &this->buildingLots[lotIndex];
+            if (lot->typeID == objectType && lot->status == 2)
                 iMap.setValue(lot->x, lot->y, 0xff);
-            }
         }
     }
+
+    (void)unused;
 }
 
 int TribeInformationAIModule::mapBound(XYPoint& pt) {
