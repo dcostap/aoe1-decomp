@@ -204,115 +204,127 @@ void TMessagePanel::remove_message(void) {
     this->ImageTextActive = 0;
 }
 
-void TMessagePanel::draw() {
-    if (this->render_area == 0 || this->visible == 0 || this->active == 0 || this->showing_message == 0) {
+void TMessagePanel::draw(void) {
+    tagPALETTEENTRY p;
+    void* old_font;
+    unsigned long font_rgb;
+    unsigned long back_rgb;
+    long x1;
+    long y1;
+    long wid;
+    long hgt;
+    tagSIZE ts;
+    tagRECT rect;
+    unsigned int flags;
+
+    if (this->render_area == 0 || this->visible == 0 ||
+        this->active == 0 || this->showing_message == 0) {
         this->need_redraw = 0;
         return;
     }
 
-    long y;
-    long x;
-    long wid;
-    long hgt;
-    COLORREF font_rgb;
-    HGDIOBJ old_font;
-    COLORREF back_rgb;
-    tagPALETTEENTRY p;
-    tagSIZE ts;
-    tagRECT rect;
-    int len;
     this->draw_setup(0);
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
         if (this->need_restore != 0) {
             this->render_to_image_buffer();
             this->need_restore = 0;
-            this->draw_finish();
-            return;
+            goto finish;
         }
+
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left,
-                                this->UsedScreenRect.top, &this->UsedImageRect,
-                                1);
+        this->ImageBuffer->Copy(this->render_area,
+                                this->UsedScreenRect.left,
+                                this->UsedScreenRect.top,
+                                &this->UsedImageRect, 1);
         this->ImageBuffer->SetTrans(0, 1);
-        this->draw_finish();
-        return;
+        goto finish;
     }
 
-    char* msg = this->text;
-    if (msg[0] != 0) {
-        void* dc = this->render_area->GetDc("pnl_msg::draw");
-        if (dc != 0) {
-            SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
-            old_font = SelectObject(this->render_area->DrawDc, this->font);
-            if (this->index_color != 0) {
-                GetPaletteEntries(rge_base_game->draw_system->Pal,
-                                  this->font_color, 1, &p);
-                font_rgb = ((unsigned long)p.peBlue << 16) |
-                           ((unsigned long)p.peGreen << 8) | p.peRed;
-                GetPaletteEntries(rge_base_game->draw_system->Pal,
-                                  this->back_color, 1, &p);
-                back_rgb = ((unsigned long)p.peBlue << 16) |
-                           ((unsigned long)p.peGreen << 8) | p.peRed;
-            } else {
-                font_rgb = this->font_color1;
-                back_rgb = this->font_color2;
-            }
+    if (this->text[0] == 0) {
+        goto finish;
+    }
 
-            int bk_mode;
-            if (this->message_type == DebugMessage) {
-                SetBkColor(this->render_area->DrawDc, 0);
-                bk_mode = 2;
-            } else {
-                bk_mode = 1;
-            }
-            SetBkMode(this->render_area->DrawDc, bk_mode);
+    if (this->render_area->GetDc("pnl_msg::draw") == 0) {
+        goto finish;
+    }
 
-            x = this->render_rect.left;
-            y = this->render_rect.top;
-            wid = this->pnl_wid - 2;
-            hgt = this->pnl_hgt - 2;
+    SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
+    old_font = SelectObject(this->render_area->DrawDc, this->font);
 
-            len = strlen(msg);
-            GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
+    if (this->index_color != 0) {
+        GetPaletteEntries(rge_base_game->draw_system->Pal,
+                          this->font_color, 1, &p);
+        font_rgb = ((unsigned long)p.peBlue << 16) |
+                   ((unsigned long)p.peGreen << 8) | p.peRed;
+        GetPaletteEntries(rge_base_game->draw_system->Pal,
+                          this->back_color, 1, &p);
+        back_rgb = ((unsigned long)p.peBlue << 16) |
+                   ((unsigned long)p.peGreen << 8) | p.peRed;
+    } else {
+        font_rgb = this->font_color1;
+        back_rgb = this->font_color2;
+    }
 
-            unsigned int flags;
-            if (this->message_type == BadMessage) {
-                flags = 0x21;
-            } else if (this->message_type == RightInfoMessage) {
-                flags = 0x22;
-            } else {
-                len = strlen(msg);
-                GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
-                flags = (this->word_wrap == 0 ||
-                         ts.cx <= wid) ? 0x20 : 0x10;
-                if (this->horz_just == CenterJust) flags |= 1;
-                else if (this->horz_just == RightJust) flags |= 2;
-                if (this->vert_just == CenterJust) flags |= 4;
-                else if (this->vert_just == BottomJust) flags |= 8;
-            }
+    if (this->message_type == DebugMessage) {
+        SetBkColor(this->render_area->DrawDc, 0);
+        SetBkMode(this->render_area->DrawDc, 2);
+    } else {
+        SetBkMode(this->render_area->DrawDc, 1);
+    }
 
-            SetTextColor(this->render_area->DrawDc, back_rgb);
-            hgt = hgt + y + 1;
-            wid = wid + x + 1;
-            SetRect(&rect, x, y, wid - 2, hgt - 2);
-            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
-            SetRect(&rect, x, y + 2, wid - 2, hgt);
-            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
-            SetRect(&rect, x + 2, y, wid, hgt - 2);
-            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
-            SetRect(&rect, x + 2, y + 2, wid, hgt);
-            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
-            SetTextColor(this->render_area->DrawDc, font_rgb);
-            SetRect(&rect, x + 1, y + 1, wid - 1, hgt - 1);
-            DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
+    x1 = this->render_rect.left + 1;
+    y1 = this->render_rect.top + 1;
+    wid = this->pnl_wid - 2;
+    hgt = this->pnl_hgt - 2;
 
-            SelectObject(this->render_area->DrawDc, old_font);
-            SelectClipRgn(this->render_area->DrawDc, 0);
-            this->render_area->ReleaseDc("pnl_msg::draw");
+    GetTextExtentPoint32A(this->render_area->DrawDc, this->text,
+                          strlen(this->text), &ts);
+
+    if (this->message_type == BadMessage) {
+        flags = 0x21;
+    } else if (this->message_type == RightInfoMessage) {
+        flags = 0x22;
+    } else {
+        GetTextExtentPoint32A(this->render_area->DrawDc, this->text,
+                              strlen(this->text), &ts);
+        if (this->word_wrap != 0 && ts.cx > wid) {
+            flags = 0x10;
+        } else {
+            flags = 0x20;
+        }
+
+        if (this->horz_just == CenterJust) {
+            flags |= 1;
+        } else if (this->horz_just == RightJust) {
+            flags |= 2;
+        }
+
+        if (this->vert_just == CenterJust) {
+            flags |= 4;
+        } else if (this->vert_just == BottomJust) {
+            flags |= 8;
         }
     }
 
+    SetTextColor(this->render_area->DrawDc, back_rgb);
+    SetRect(&rect, x1 - 1, y1 - 1, x1 + wid - 2, y1 + hgt - 2);
+    DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
+    SetRect(&rect, x1 - 1, y1 + 1, x1 + wid - 2, y1 + hgt);
+    DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
+    SetRect(&rect, x1 + 1, y1 - 1, x1 + wid, y1 + hgt - 2);
+    DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
+    SetRect(&rect, x1 + 1, y1 + 1, x1 + wid, y1 + hgt);
+    DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
+    SetTextColor(this->render_area->DrawDc, font_rgb);
+    SetRect(&rect, x1, y1, x1 + wid - 1, y1 + hgt - 1);
+    DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
+
+    SelectObject(this->render_area->DrawDc, old_font);
+    SelectClipRgn(this->render_area->DrawDc, 0);
+    this->render_area->ReleaseDc("pnl_msg::draw");
+
+finish:
     this->draw_finish();
 }
 

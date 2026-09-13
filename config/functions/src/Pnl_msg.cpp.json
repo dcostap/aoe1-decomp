@@ -13,7 +13,7 @@
     "004792A0": {"status": "matching", "symbol": "?show_message@TMessagePanel@@QAEXW4MessageType@1@PADEEPAXJJ@Z"},
     "004793C0": {"status": "matching", "symbol": "?show_message2@TMessagePanel@@QAEXW4MessageType@1@PADKKPAXJJPAVTShape@@H3H@Z"},
     "00479540": {"status": "matching", "symbol": "?remove_message@TMessagePanel@@QAEXXZ"},
-    "00479590": {"status": "scratch", "symbol": "?draw@TMessagePanel@@UAEXXZ"},
+    "00479590": {"status": "matching", "symbol": "?draw@TMessagePanel@@UAEXXZ", "behavior_review": "logic_matching/00479590/coord-10-00479590-review-01/attempt-01"},
     "00479A10": {"status": "matching", "symbol": "?get_true_render_rect@TMessagePanel@@UAEXAAUtagRECT@@@Z"},
     "00479A80": {"status": "matching", "symbol": "?handle_idle@TMessagePanel@@UAEJXZ"},
     "00479AE0": {"status": "matching", "symbol": "?render_to_image_buffer@TMessagePanel@@IAEHXZ"},
