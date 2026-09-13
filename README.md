@@ -65,6 +65,8 @@ Copy `agent_roles/behavior_recovery_worker.md` into each prepared workspace as i
 
 Exact lottery is an optional follow-up for a reviewed nonexact recovery.
 It runs independent natural reconstructions and stops at the first exact match.
+If none match, it runs bounded feedback-guided refinement on promising variants.
+It can also produce an independently reviewed accepted-drift proposal.
 See `docs/exact_lottery.md` and the `agent_roles/exact_lottery_*.md` roles.
 Run `python tools/behavior_recovery.py --help` for preparation and collection commands.
 

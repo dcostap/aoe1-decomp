@@ -6,7 +6,8 @@ Run one user-authorized exact-lottery experiment for one function.
 This workflow is separate from normal behavior recovery and matching work.
 
 The root supplies the target, source wave, prepared workspaces, worker count,
-model, thinking level, compiler jobs, and active-agent limit.
+model, thinking level, compiler jobs, active-agent limit, refinement-seed limit,
+and refinement-iteration limit.
 Do not infer missing settings.
 
 Work from the main repository only for read-only orchestration.
@@ -60,10 +61,11 @@ MATCH <VA> variant-NN <worker-agent-id> <commit-id> <workspace>
 Do not report mismatches, worker completions, retries, costs, or routine
 progress.
 
-If all valid variants finish without a hit, report only:
+If all valid variants and the required refinement phase finish without a hit,
+report only:
 
 ```text
-NO_MATCH <VA> <valid-count>/<requested-count>
+NO_MATCH <VA> <valid-count>/<requested-count> refinements=<iteration-count>
 ```
 
 Report a persistent setup, tool, or validation failure as:
@@ -72,9 +74,44 @@ Report a persistent setup, tool, or validation failure as:
 BLOCKED <VA> <specific-condition>
 ```
 
+## Required refinement phase
+
+Do not report `NO_MATCH` when the blind workers only finished. First run the
+bounded refinement phase in `docs/exact_lottery.md`.
+
+After all blind variants mismatch, you can inspect their source and checker
+reports. Select no more than the supplied number of seeds. Source and behavior
+quality are mandatory. Use byte closeness only to find practical code-generation
+hypotheses. Never select different behavior because its score is better.
+
+Clone each selected commit into a new sibling `refinement-NN` workspace. Never
+edit a blind variant workspace. Record the seed variant and commit. You can edit,
+build, check, and commit source in refinement workspaces. Keep one compiler job.
+
+Count each source build followed by an authoritative check as one refinement
+iteration. Stop at the supplied total iteration limit. Stop immediately on the
+first valid exact match and report it as:
+
+```text
+MATCH <VA> refinement-NN <orchestrator-agent-id> <commit-id> <workspace>
+```
+
+You can report an accepted-drift proposal only when the source is canonical and
+you can prove complete semantic equality. Follow the proof requirements in
+`docs/exact_lottery.md`. Commit the candidate and its evidence. Leave the
+workspace clean. Report it as:
+
+```text
+ACCEPTED_DRIFT_PROPOSAL <VA> <seed-variant> <commit-id> <workspace> <evidence-path>
+```
+
+An accepted-drift proposal is not approval. Do not integrate it or change the
+registry. The root must obtain an independent technical review.
+
 ## Authority boundary
 
-Do not review, archive, integrate, or promote a candidate.
+Do not perform the independent approval review, archive into the main repository,
+integrate, or promote a candidate.
 Preserve an exact workspace unchanged for the root's source-policy check.
 The root owns archive import, current-base validation, source review,
 integration, registry status, and closure audits.

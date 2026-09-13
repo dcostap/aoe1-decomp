@@ -6,7 +6,8 @@ Exact lottery is an opt-in follow-up experiment for one reviewed function.
 It asks several independent workers for natural source reconstructions.
 It stops when one variant compiles to the original function bytes.
 
-This workflow does not replace behavior recovery.
+If the blind variants do not match, the orchestrator runs a bounded refinement
+phase on the best candidates. This workflow does not replace behavior recovery.
 Do not run it automatically for every mismatch.
 
 ## Eligibility
@@ -31,7 +32,9 @@ Obtain these settings before launch:
 - exact worker model and thinking level;
 - requested variant count;
 - maximum active agents; and
-- compiler jobs per worker and checker.
+- compiler jobs per worker and checker;
+- maximum refinement seeds; and
+- maximum refinement build-and-check iterations.
 
 The successful pilot used one Luna `xhigh` orchestrator and ten Luna `xhigh`
 workers. This is evidence, not an automatic default.
@@ -101,8 +104,53 @@ It preserves every workspace and reports only the exact hit.
 Do not continue the lottery to count more matches.
 The experiment seeks one viable exact source, not a distribution.
 
-If all valid variants mismatch, retain the approved `new_verified_logic`
-implementation. Do not select the closest byte score.
+## Post-lottery refinement
+
+If all valid blind variants mismatch, do not stop immediately. The orchestrator
+must make a bounded matching effort on the most promising variants.
+
+The orchestrator can now inspect all variant source and checker reports. It can
+use byte differences to find code-generation hypotheses. A byte score cannot
+override behavior, source, ownership, or ABI evidence.
+
+Select up to the supplied refinement-seed limit. Prefer candidates that meet
+all these conditions:
+
+- the source is natural and period-plausible;
+- the behavior model is complete;
+- calls, widths, side effects, faults, and fault order have strong support; and
+- the remaining byte differences are small or localized enough to investigate.
+
+Do not edit an original variant workspace. Clone each selected commit into a
+new sibling directory named `refinement-NN`. Record the seed variant and commit.
+
+The orchestrator can edit source in each refinement workspace. It can use the
+authoritative checker output after each build. Test supported source-shape,
+type, lifetime, expression, and control-flow hypotheses. Do not use inline
+assembly, byte copies, fake volatility, wrappers, manual vtables, or unsupported
+compiler steering.
+
+Stop refinement when one condition applies:
+
+- a valid exact match exists;
+- the supplied iteration limit is reached;
+- no evidence-backed hypothesis remains; or
+- a concrete blocker prevents more work.
+
+An exact refinement hit follows the normal first-hit stop rule.
+
+The orchestrator can also report an `accepted_drift` proposal. Closeness alone
+does not support this proposal. The candidate must have canonical natural source
+and a written semantic proof for all behavior. The proof must cover ABI, calls,
+cleanup, widths, aliasing, side effects, exceptions, faults, and fault order. It
+must also explain why each remaining code difference does not change behavior.
+
+Keep an accepted-drift proposal in a clean committed refinement workspace. Save
+its proof and validation commands in that workspace. The root must send the
+proposal to an independent technical reviewer before integration or promotion.
+
+If refinement finds no exact hit or accepted-drift proposal, retain the approved
+`new_verified_logic` implementation. Do not integrate the closest score.
 
 ## Review and promotion
 

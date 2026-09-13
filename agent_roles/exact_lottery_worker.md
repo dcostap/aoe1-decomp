@@ -41,6 +41,10 @@ Do not run `check_function.py`, candidate checks, byte comparisons, or variant
 comparisons. The orchestrator performs the exactness check after you stop.
 You can fix source or build errors. Do not tune from byte-difference feedback.
 
+Your committed workspace is an immutable blind variant. The orchestrator can
+later clone it into a separate refinement workspace. Do not resume this worker
+for feedback-guided refinement.
+
 Commit only the intended compiler-facing source.
 Put important static evidence and the build command in the commit message.
 Do not commit generated build files.
