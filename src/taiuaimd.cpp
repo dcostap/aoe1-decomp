@@ -649,111 +649,106 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
     switch (event->mType) {
     case 0x20f:
-        if (this->objectValue->owner->world->difficultyLevel() >= 3) {
+        if (this->objectValue->owner->world->difficultyLevel() >= 3)
             return 2;
-        }
-        // Intentional fall-through: 0x20f is the high-priority spelling of 0x1f4.
+        // Fall through.
+
     case 0x1f4: {
         if (event->p2 <= 0) {
-            this->objectValue->owner->notify(
-                this->objectValue->id, this->objectValue->id, 0x209,
-                event->caller, 0, 0);
+            RGE_Static_Object* object = this->objectValue;
+            object->owner->notify(object->id, object->id, 0x209,
+                                  event->caller, 0, 0);
             this->purgeNotifyQueue(param_2);
             return 4;
         }
 
-        RGE_Static_Object* eventObject = this->lookupObject(event->caller);
-        RGE_Static_Object* targetObject = this->lookupObject(this->currentTargetValue);
-        if (eventObject == 0) {
+        RGE_Static_Object* attacker = this->lookupObject(event->caller);
+        RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
+        if (attacker == 0)
             return 2;
-        }
 
         if (this->objectValue->owner->computerPlayer() == 1) {
-            if (eventObject->owner->id != 0 || eventObject->id != this->currentTargetValue) {
-                this->objectValue->owner->notify(
-                    this->objectValue->id, this->objectValue->id, 0x201,
-                    event->caller, 0, 0);
+            if (attacker->owner->id != 0 ||
+                attacker->id != this->currentTargetValue) {
+                RGE_Static_Object* object = this->objectValue;
+                object->owner->notify(object->id, object->id, 0x201,
+                                      event->caller, 0, 0);
             }
         } else if (this->attackingUnitsValue.numberValue == 0) {
-            this->objectValue->owner->notify(
-                this->objectValue->id, this->objectValue->id, 0x201,
-                event->caller, 0, 0);
+            RGE_Static_Object* object = this->objectValue;
+            object->owner->notify(object->id, object->id, 0x201,
+                                  event->caller, 0, 0);
         }
 
         int count = this->attackingUnitsValue.numberValue;
         int i = 0;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == event->caller) {
-                goto found_attacker;
-            }
+        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue;
+             ++i) {
+            if (this->attackingUnitsValue.value[i] == event->caller)
+                goto skip_help;
         }
-
         if (this->objectValue->owner->computerPlayer() == 0 &&
             this->currentTargetValue != event->caller) {
             this->askForHelp(event->caller);
         }
 
-found_attacker:
+skip_help:
         i = 0;
         int caller = event->caller;
         count = this->attackingUnitsValue.numberValue;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == caller) {
-                goto already_attacking;
-            }
+        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue;
+             ++i) {
+            if (this->attackingUnitsValue.value[i] == caller)
+                goto caller_recorded;
         }
 
         if (this->attackingUnitsValue.numberValue >
             this->attackingUnitsValue.maximumSizeValue - 1) {
             int newMaximum = this->attackingUnitsValue.numberValue + 1;
-            int* newValue = (int*)operator new(newMaximum * 4);
-            if (newValue != 0) {
-                i = 0;
-                if (this->attackingUnitsValue.maximumSizeValue > 0) {
-                    do {
-                        if (i >= newMaximum) {
-                            break;
-                        }
-                        ++i;
-                        newValue[i - 1] = this->attackingUnitsValue.value[i - 1];
-                    } while (i < this->attackingUnitsValue.maximumSizeValue);
+            int* values = (int*)operator new(newMaximum * sizeof(int));
+            if (values != 0) {
+                for (i = 0;
+                     i < this->attackingUnitsValue.maximumSizeValue &&
+                     i < newMaximum;
+                     ++i) {
+                    values[i] = this->attackingUnitsValue.value[i];
                 }
                 operator delete(this->attackingUnitsValue.value);
-                this->attackingUnitsValue.value = newValue;
+                this->attackingUnitsValue.value = values;
                 this->attackingUnitsValue.maximumSizeValue = newMaximum;
             }
         }
-        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
-        ++this->attackingUnitsValue.numberValue;
+        this->attackingUnitsValue.value[
+            this->attackingUnitsValue.numberValue] = caller;
+        this->attackingUnitsValue.numberValue++;
 
-already_attacking:
+caller_recorded:
         this->objectValue->setUnderAttack(1);
         float speed = this->objectValue->getSpeed();
-        int state = this->objectValue->actionState();
+        unsigned char actionState = this->objectValue->actionState();
+        int orderValue = this->currentOrderValue;
 
-        if (this->currentOrderValue == 0x2c6 && speed > 0.0f) {
-            goto return_two;
+        if (orderValue == 0x2c6 && speed > 0.0f)
+            return 2;
+        if (orderValue == 0x2bc)
+            return 2;
+        if (orderValue == 0x2c9 && actionState == 0x0c && target != 0 &&
+            target->master_obj->object_group == 0x0a &&
+            attacker->owner->id == 0) {
+            return 2;
         }
-        if (this->currentOrderValue == 0x2bc) {
-            goto return_two;
-        }
-        if (this->currentOrderValue == 0x2c9 && state == 0x0c &&
-            targetObject != 0 && targetObject->master_obj->object_group == 10 &&
-            eventObject->owner->id == 0) {
-            goto return_two;
-        }
-        if (this->currentOrderValue == 0x2ce) {
-            goto return_two;
-        }
+        if (orderValue == 0x2ce)
+            return 2;
 
-        if (eventObject->owner->id == 0) {
-            if (this->currentOrderValue != -1) {
-                this->order(this->objectValue->id, this->currentOrderValue,
-                            this->currentTargetValue, -1,
-                            this->currentTargetXValue, this->currentTargetYValue,
-                            this->currentTargetZValue,
-                            this->desiredTargetDistanceValue, 0, 0,
-                            this->currentOrderPriorityValue);
+        if (attacker->owner->id == 0) {
+            if (orderValue != -1) {
+                this->order(
+                    this->objectValue->id, orderValue,
+                    this->currentTargetValue, -1,
+                    this->currentTargetXValue, this->currentTargetYValue,
+                    this->currentTargetZValue,
+                    this->desiredTargetDistanceValue, 0, 0,
+                    this->currentOrderPriorityValue);
                 this->currentOrderValue = 0x2bc;
                 this->currentOrderPriorityValue = 100;
                 this->attackObject(event->caller, 1);
@@ -764,25 +759,18 @@ already_attacking:
             return 3;
         }
 
-        if (this->currentActionValue == 0x262 && speed != 0.0f) {
+        if (this->currentActionValue == 0x262 && speed != 0.0f)
             return 3;
-        }
-        this->order(this->objectValue->id, this->currentOrderValue,
-                    this->currentTargetValue, -1,
-                    this->currentTargetXValue, this->currentTargetYValue,
-                    this->currentTargetZValue,
-                    this->desiredTargetDistanceValue,
-                    0, 0,
-                    this->currentOrderPriorityValue);
+
+        this->order(
+            this->objectValue->id, orderValue, this->currentTargetValue, -1,
+            this->currentTargetXValue, this->currentTargetYValue,
+            this->currentTargetZValue, this->desiredTargetDistanceValue,
+            0, 0, this->currentOrderPriorityValue);
         if (actionFile != 0) {
-            int id;
-            if (this->objectValue != 0) {
-                id = this->objectValue->id;
-            } else {
-                id = -1;
-            }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x39a);
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
+                    0x39a);
         }
         this->stopObject(1);
         this->runAwayFromAttackers(1);
@@ -790,268 +778,206 @@ already_attacking:
     }
 
     case 0x1fa:
-        if (this->currentActionValue == event->p1) {
-            this->removeCurrentTarget();
-            if (actionFile != 0) {
-                int id;
-                if (this->objectValue != 0) {
-                    id = this->objectValue->id;
-                } else {
-                    id = -1;
-                }
-                fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                        "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3aa);
-            }
-            this->stopObject(1);
-            this->notifyCommander(event);
+        if (this->currentActionValue != event->p1)
             return 2;
+        this->removeCurrentTarget();
+        if (actionFile != 0) {
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
+                    0x3aa);
         }
-        break;
+        this->stopObject(1);
+        this->notifyCommander(event);
+        return 2;
 
     case 0x1f9:
-        if (this->currentActionValue == event->p1) {
-            this->removeCurrentTarget();
-            if (actionFile != 0) {
-                int id;
-                if (this->objectValue != 0) {
-                    id = this->objectValue->id;
-                } else {
-                    id = -1;
-                }
-                fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                        "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3b9);
-            }
-            this->stopObject(1);
-            this->notifyCommander(event);
+        if (this->currentActionValue != event->p1)
             return 2;
+        this->removeCurrentTarget();
+        if (actionFile != 0) {
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
+                    0x3b9);
         }
-        break;
+        this->stopObject(1);
+        this->notifyCommander(event);
+        return 2;
 
     case 0x1fb:
-    case 0x202:
-        if (this->currentActionValue == 0x265) {
-            int type = this->currentTargetTypeValue;
-            if (type == -1) {
-                type = this->lastTargetTypeValue;
-            }
-            if (type == -1) {
+    case 0x202: {
+        int action = this->currentActionValue;
+        if (action == 0x265) {
+            int targetType = this->currentTargetTypeValue;
+            if (targetType == -1)
+                targetType = this->lastTargetTypeValue;
+            if (targetType == -1) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3d3);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x3d3);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
                 return 2;
             }
 
-            int objectType = this->convertToLOSResourceType(type);
-            int result;
-            if (objectType != -1) {
-                result = this->closestResourceObject(objectType, 0);
-            } else {
-                result = this->closestObject(type, -1, -1, -1, 0);
-            }
-            if (result != -1) {
-                if (this->huntObject(result, 1) == 1) {
+            int resourceType = this->convertToLOSResourceType(targetType);
+            int targetID;
+            if (resourceType != -1)
+                targetID = this->closestResourceObject(resourceType, 0);
+            else
+                targetID = this->closestObject(targetType, -1, -1, -1, 0);
+
+            if (targetID != -1) {
+                if (this->huntObject(targetID, 1) == 1)
                     return 3;
-                }
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3f6);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x3f6);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
             } else if (this->objectValue->owner->computerPlayer() == 1) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x40f);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x40f);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
             }
-        } else if (this->currentActionValue == 0x261) {
-            int type = this->currentTargetTypeValue;
-            if (type == -1) {
-                type = this->lastTargetTypeValue;
-            }
-            if (type == -1) {
+        } else if (action == 0x261) {
+            int targetType = this->currentTargetTypeValue;
+            if (targetType == -1)
+                targetType = this->lastTargetTypeValue;
+            if (targetType == -1) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x421);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x421);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
                 return 2;
             }
-            int objectType = this->convertToLOSResourceType(type);
-            int result;
-            if (objectType != -1) {
-                result = this->closestResourceObject(objectType, 0);
+
+            int resourceType = this->convertToLOSResourceType(targetType);
+            int targetID;
+            if (resourceType != -1) {
+                targetID = this->closestResourceObject(resourceType, 0);
+            } else if (event->p2 == 0x32) {
+                targetID = this->closestObject(targetType, -1, 2, 0x32, 0);
             } else {
-                int arg3 = 2;
-                int arg4 = 0x32;
-                if (event->p2 != 0x32) {
-                    arg3 = -1;
-                    arg4 = -1;
-                }
-                result = this->closestObject(type, -1, arg3, arg4, 0);
+                targetID = this->closestObject(targetType, -1, -1, -1, 0);
             }
-            if (result != -1) {
-                if (this->gatherObject(result, 1) == 1) {
+
+            if (targetID != -1) {
+                if (this->gatherObject(targetID, 1) == 1)
                     return 3;
-                }
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x446);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x446);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
             } else if (this->objectValue->owner->computerPlayer() == 1) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x453);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x453);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
             } else if (event->p2 == 0x32) {
+                RGE_Static_Object* object = this->objectValue;
                 float x;
+                if (object->world_x > 5.0f)
+                    x = object->world_x - 2.5f;
+                else
+                    x = object->world_x - -2.5f;
                 float y;
-                if (this->objectValue->world_x <= 5.0f) {
-                    x = this->objectValue->world_x - (-2.5f);
-                } else {
-                    x = this->objectValue->world_x - 2.5f;
-                }
-                if (this->objectValue->world_y <= 5.0f) {
-                    y = this->objectValue->world_y - (-2.5f);
-                } else {
-                    y = this->objectValue->world_y - 2.5f;
-                }
-                this->evasiveMoveTo(x, y, this->objectValue->world_z, 1);
+                if (object->world_y > 5.0f)
+                    y = object->world_y - 2.5f;
+                else
+                    y = object->world_y - -2.5f;
+                this->evasiveMoveTo(x, y, object->world_z, 1);
             }
-        } else if (this->currentActionValue == 0x25a) {
-            int result = this->closestObject(this->currentTargetTypeValue, 3, 0, -1, 0);
-            if (result == -1) {
-                int type = this->currentTargetTypeValue;
-                if (type == 0x1b) {
-                    type = 3;
-                } else {
-                    type = 0x1b;
-                }
-                result = this->closestObject(type, 3, 0, -1, 0);
+        } else if (action == 0x25a) {
+            int targetID = this->closestObject(
+                this->currentTargetTypeValue, 3, 0, -1, 0);
+            if (targetID == -1) {
+                int type = this->currentTargetTypeValue == 0x1b ? 3 : 0x1b;
+                targetID = this->closestObject(type, 3, 0, -1, 0);
             }
-            if (result != -1 &&
-                this->objectValue->canPath(result, 1.0f, 0, 0, -1, -1) == 1 &&
-                this->buildObject(result, 1) == 1) {
-                return 3;
+            if (targetID != -1 &&
+                this->objectValue->canPath(
+                    targetID, 1.0f, 0, 0, -1, -1) == 1) {
+                if (this->buildObject(targetID, 1) == 1)
+                    return 3;
+                goto action_finished;
             }
-            RGE_Static_Object* object = this->lookupObject(this->currentTargetValue);
-            if (object == 0 || this->objectValue->distance_to_object(object) > 1.0f) {
-                this->moveTo(this->currentTargetXValue, this->currentTargetYValue,
-                             this->currentTargetZValue, 1.0f, 1);
+
+            RGE_Static_Object* target =
+                this->lookupObject(this->currentTargetValue);
+            if (target == 0 ||
+                this->objectValue->distance_to_object(target) > 1.0f) {
+                this->moveTo(
+                    this->currentTargetXValue, this->currentTargetYValue,
+                    this->currentTargetZValue, 1.0f, 1);
             }
-        } else if (this->currentActionValue == 0x25d) {
+        } else if (action == 0x25d) {
             int tileX;
             int tileY;
             if (this->closestUndiscoveredTile(&tileX, &tileY, 1) == 1) {
                 this->addToWaypointQueue(tileX, tileY);
-                if (this->explore(tileX, tileY, 1) != 0) {
+                if (this->explore(tileX, tileY, 1) != 0)
                     return 3;
-                }
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x4b4);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x4b4);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
             } else {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
-                    int id;
-                    if (this->objectValue != 0) {
-                        id = this->objectValue->id;
-                    } else {
-                        id = -1;
-                    }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x4c3);
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_taiuaimd_path, 0x4c3);
                 }
                 this->stopObject(1);
                 this->notifyCommander(event);
             }
         }
 
-        if (event->mType != 0x202) {
-            this->removeCurrentTarget();
-            if (actionFile != 0) {
-                int id;
-                if (this->objectValue != 0) {
-                    id = this->objectValue->id;
-                } else {
-                    id = -1;
-                }
-                fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                        "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x4cc);
-            }
-            this->stopObject(1);
-            this->notifyCommander(event);
+action_finished:
+        if (event->mType == 0x202)
+            return 2;
+
+        this->removeCurrentTarget();
+        if (actionFile != 0) {
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
+                    0x4cc);
         }
-        break;
+        this->stopObject(1);
+        this->notifyCommander(event);
+        return 2;
+    }
 
     default:
         return UnitAIModule::processNotify(event, param_2);
     }
-
-return_two:
-    return 2;
 }
 
 

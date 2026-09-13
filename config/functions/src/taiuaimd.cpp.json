@@ -30,7 +30,7 @@
     "00504D40": {"status": "matching", "symbol": "?canAttackUnitAtNeutrality@TribeCivilianUnitAIModule@@UAEHH@Z"},
     "00504D50": {"status": "matching", "symbol": "?retryableOrder@TribeCivilianUnitAIModule@@UAEHH@Z"},
     "00504D80": {"status": "matching", "symbol": "?convertToLOSResourceType@TribeCivilianUnitAIModule@@UAEHH@Z"},
-    "00504E10": {"status": "scratch", "symbol": "?processNotify@TribeCivilianUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
+    "00504E10": {"status": "new_verified_logic", "symbol": "?processNotify@TribeCivilianUnitAIModule@@MAEHPAUNotifyEvent@@K@Z", "behavior_review": "logic_matching/00504E10/review-coord-16-00504E10-round-02-20260912/attempt-01"},
     "00505800": {"status": "matching", "symbol": "?processIdle@TribeCivilianUnitAIModule@@MAEHH@Z"},
     "00505810": {"status": "matching", "symbol": "?processMisc@TribeCivilianUnitAIModule@@MAEHXZ"},
     "00505820": {"status": "matching", "symbol": "??0TribePriestUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
