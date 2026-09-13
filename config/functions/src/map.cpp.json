@@ -60,7 +60,7 @@
     "004593D0": {"status": "matching", "symbol": "?get_elev@RGE_Map@@QAEEFF@Z"},
     "00459400": {"status": "matching", "symbol": "?get_terrain@RGE_Map@@QAEEFF@Z"},
     "00459460": {"status": "matching", "symbol": "?get_border@RGE_Map@@QAEEFF@Z"},
-    "004594B0": {"status": "scratch", "symbol": "?set_terrain_passablity@RGE_Map@@QAEXFFFFE@Z"},
+    "004594B0": {"status": "matching", "symbol": "?set_terrain_passablity@RGE_Map@@QAEXFFFFE@Z", "behavior_review": "logic_matching/004594B0/coord-03-20260913T033426Z/attempt-01"},
     "004595E0": {"status": "matching", "symbol": "?set_elev@RGE_Map@@QAEXFFFFEFE@Z"},
     "00459900": {"status": "matching", "symbol": "?set_terrain@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z"},
     "00459A00": {"status": "matching", "symbol": "?set_terrain_absolute@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z"},

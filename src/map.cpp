@@ -2199,50 +2199,41 @@ unsigned char RGE_Map::get_border(short x, short y)
     return border;
 }
 
-void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
+void RGE_Map::set_terrain_passablity(short col0, short row0,
+                                     short col1, short row1,
                                      unsigned char passable)
 {
-    if (y1 > y2) {
-        short temp = y2;
-        y2 = y1;
-        y1 = temp;
+    short temp;
+
+    if (row0 > row1) {
+        temp = row1;
+        row1 = row0;
+        row0 = temp;
     }
-    if (x1 > x2) {
-        short temp = x2;
-        x2 = x1;
-        x1 = temp;
+    if (col0 > col1) {
+        temp = col1;
+        col1 = col0;
+        col0 = temp;
     }
 
-    if (y1 < 0) y1 = 0;
-    if ((int)y2 >= this->map_height)
-        y2 = (short)this->map_height - 1;
-    if (x1 < 0) x1 = 0;
-    if ((int)x2 >= this->map_width)
-        x2 = (short)this->map_width - 1;
+    if (row0 < 0) row0 = 0;
+    if (row1 >= this->map_height)
+        row1 = (short)this->map_height - 1;
+    if (col0 < 0) col0 = 0;
+    if (col1 >= this->map_width)
+        col1 = (short)this->map_width - 1;
 
-    if (y1 <= y2) {
-        int row_count = (int)y2 - (int)y1 + 1;
-        short row = y1;
-        do {
-            if (x1 <= x2) {
-                for (int col = x1; col <= x2; ++col) {
-                    RGE_Tile* tile = &this->map_row_offset[row][col];
-                    unsigned char old_terrain = tile->terrain_type;
-                    short terrain_type = (short)(old_terrain & 0x1F);
-                    unsigned char replacement;
-
-                    if (passable != 0)
-                        replacement = this->terrain_types[terrain_type].passable_terrain;
-                    else
-                        replacement = this->terrain_types[terrain_type].impassable_terrain;
-                    tile->terrain_type =
-                        (unsigned char)((replacement ^ old_terrain) & 0x1F) ^
-                        old_terrain;
-                }
-            }
-            ++row;
-            --row_count;
-        } while (row_count != 0);
+    for (short row = row0; row <= row1; ++row) {
+        for (short col = col0; col <= col1; ++col) {
+            RGE_Tile* tile = &this->map_row_offset[row][col];
+            short terrain = tile->terrain_type;
+            if (passable != 0)
+                tile->terrain_type =
+                    this->terrain_types[terrain].passable_terrain;
+            else
+                tile->terrain_type =
+                    this->terrain_types[terrain].impassable_terrain;
+        }
     }
 }
 
