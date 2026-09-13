@@ -88,7 +88,7 @@
     "004F0D70": {"status": "new_verified_logic", "symbol": "?addObject@TribeTacticalAIModule@@QAEXPAVRGE_Static_Object@@@Z", "behavior_review": "logic_matching/004F0D70/review-01/attempt-01"},
     "004F1090": {"status": "matching", "symbol": "?removeObject@TribeTacticalAIModule@@QAEXH@Z"},
     "004F13F0": {"status": "new_verified_logic", "symbol": "?evaluateCivilianDistribution@TribeTacticalAIModule@@QAEXXZ", "behavior_review": "logic_matching/004F13F0/review-01/attempt-01"},
-    "004F1600": {"status": "scratch", "symbol": "?taskCivilians@TribeTacticalAIModule@@QAEHKK@Z"},
+    "004F1600": {"status": "new_verified_logic", "symbol": "?taskCivilians@TribeTacticalAIModule@@QAEHKK@Z", "behavior_review": "logic_matching/004F1600/review-coord-13-round-02-a/attempt-01"},
     "004F1E10": {"status": "matching", "symbol": "?taskIdleSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
     "004F21F0": {"status": "verified_logic", "symbol": "?taskActiveSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
     "004F4760": {"status": "matching", "symbol": "?playTaskSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},

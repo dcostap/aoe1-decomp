@@ -3374,178 +3374,136 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
 }
 
 
-int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
-    int newExplorer;
+int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
+                                          unsigned long availableTime)
+{
     int taskedCount;
-    int j;
     int i;
-    int k;
-    int tasked;
-    RGE_Static_Object* obj;
-    int civilian;
+    int newExplorer;
+    XYPoint townCenterPosition;
+    RGE_Static_Object* townCenter;
 
     if (this->civilians.numberValue <= 0) {
         this->nextCivilianToTaskValue = -1;
         return 0;
     }
 
-    j = 0;
+    taskedCount = 0;
     if (this->nextCivilianToTaskValue == -1) {
-        // Create new civilian explorers up to the desired number.
-        if (this->civilianExplorers.numberValue < this->civilianExplorers.desiredNumberValue) {
-            do {
-                obj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-                if (obj != 0) {
-                    XYPoint tcPosition = {
-                        (int)obj->world_x, (int)obj->world_y
-                    };
-                    tasked = this->idleCivilian(-1, tcPosition, 0);
-                } else {
-                    tasked = this->idleCivilian(-1);
-                }
-                taskedCount = tasked;
-                if (tasked != -1) goto append_explorer;
-                // Too many gatherers: convert the one carrying the highest-priority
-                // needed resource into an explorer instead.
-                if (this->desiredNumberGatherersValue < this->numberGatherersValue) {
-                    newExplorer = 3;
-                    while (newExplorer > -1) {
-                        if (tasked != -1) goto append_explorer;
-                            obj = this->md->object(tasked, tasked, tasked, 0x261, 0x25D,
-                                                   tasked, tasked,
-                                                   this->neededResourceValue[newExplorer],
-                                                   tasked, 0);
-                            if (obj == 0) {
-                                obj = this->md->object(tasked, tasked, tasked, 0x265, 0x25D,
-                                                       tasked, tasked,
-                                                       this->neededResourceValue[newExplorer],
-                                                       tasked, 0);
-                            }
-                            if (obj != 0 && obj->attribute_amount_held == 0.0f) {
-                                int id = obj->id;
-                                for (i = 0; i < this->civilianExplorers.numberValue &&
-                                             i < this->civilianExplorers.maximumSizeValue; i++) {
-                                    if (this->civilianExplorers.value[i] == id) goto next_resource;
-                                }
-                                tasked = id;
-                                taskedCount = id;
-                                this->removeGatherer(id);
-                            }
-next_resource:
-                        newExplorer = newExplorer - 1;
+        while (this->civilianExplorers.numberValue <
+               this->civilianExplorers.desiredNumberValue) {
+            townCenter = this->md->object(-1, 0x6d, -1, -1, -1,
+                                           -1, -1, -1, -1, -1);
+            if (townCenter != 0) {
+                townCenterPosition.x = (int)townCenter->world_x;
+                townCenterPosition.y = (int)townCenter->world_y;
+                newExplorer = this->idleCivilian(-1, townCenterPosition, 0);
+            }
+            else {
+                newExplorer = this->idleCivilian(-1);
+            }
+
+            if (newExplorer == -1 &&
+                this->desiredNumberGatherersValue <
+                    this->numberGatherersValue) {
+                for (i = 3; i >= 0 && newExplorer == -1; i--) {
+                    RGE_Static_Object* resource = this->md->object(
+                        -1, -1, -1, 0x261, 0x25d, -1, -1,
+                        this->neededResourceValue[i], -1, 0);
+                    if (resource == 0) {
+                        resource = this->md->object(
+                            -1, -1, -1, 0x265, 0x25d, -1, -1,
+                            this->neededResourceValue[i], -1, 0);
+                    }
+                    if (resource != 0 &&
+                        resource->attribute_amount_held == 0.0f &&
+                        this->civilianExplorers.contains(resource->id) == 0) {
+                        newExplorer = resource->id;
+                        this->removeGatherer(newExplorer);
                     }
                 }
-                if (tasked == -1) goto skip_append;
-append_explorer:
-                {
-                    int explorerCount = this->civilianExplorers.numberValue;
-                    int scan = 0;
-                    if (explorerCount > 0) {
-                        do {
-                            if (this->civilianExplorers.maximumSizeValue <= scan)
-                                break;
-                            if (this->civilianExplorers.value[scan] == tasked)
-                                goto skip_append;
-                            scan = scan + 1;
-                        } while (scan < explorerCount);
-                    }
-                    if (this->civilianExplorers.maximumSizeValue - 1 <
-                        explorerCount)
-                        this->civilianExplorers.resize(explorerCount + 1);
-                    this->civilianExplorers.value[explorerCount] = tasked;
-                    this->civilianExplorers.numberValue = explorerCount + 1;
-                }
-            } while (this->civilianExplorers.numberValue <
-                     this->civilianExplorers.desiredNumberValue);
+            }
+
+            if (newExplorer == -1 ||
+                this->civilianExplorers.add(newExplorer) == 0) {
+                break;
+            }
         }
-skip_append:
-        // Remove excess explorers (the oldest first).
-        if (this->civilianExplorers.numberValue > this->civilianExplorers.desiredNumberValue) {
-            int id;
-            if (this->civilianExplorers.numberValue <= 0)
-                goto excess_explorers_done;
-remove_excess_explorer:
-            id = this->civilianExplorers[0];
-            this->civilianExplorers.remove(id);
-            this->stopUnit(id, 100);
-            if (this->civilianExplorers.numberValue >
-                this->civilianExplorers.desiredNumberValue)
-                goto remove_excess_explorer;
+
+        while (this->civilianExplorers.numberValue >
+               this->civilianExplorers.desiredNumberValue) {
+            if (this->civilianExplorers.numberValue < 1)
+                break;
+            newExplorer = this->civilianExplorers[0];
+            this->civilianExplorers.remove(newExplorer);
+            this->stopUnit(newExplorer, 100);
         }
-excess_explorers_done:
-        // Create gatherers up to the desired number.
-        if (this->numberGatherersValue < this->desiredNumberGatherersValue) {
-            do {
-                obj = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-                if (obj != 0) {
-                    XYPoint tcPosition = {
-                        (int)obj->world_x, (int)obj->world_y
-                    };
-                    tasked = this->idleCivilian(-1, tcPosition, 0);
-                } else {
-                    tasked = this->idleCivilian(-1);
-                }
-            } while (tasked != -1 && this->addGatherer(tasked) != 0 &&
-                     this->numberGatherersValue < this->desiredNumberGatherersValue);
+
+        while (this->numberGatherersValue <
+               this->desiredNumberGatherersValue) {
+            townCenter = this->md->object(-1, 0x6d, -1, -1, -1,
+                                           -1, -1, -1, -1, -1);
+            if (townCenter != 0) {
+                townCenterPosition.x = (int)townCenter->world_x;
+                townCenterPosition.y = (int)townCenter->world_y;
+                newExplorer = this->idleCivilian(-1, townCenterPosition, 0);
+            }
+            else {
+                newExplorer = this->idleCivilian(-1);
+            }
+
+            if (newExplorer == -1 || this->addGatherer(newExplorer) == 0) {
+                break;
+            }
         }
-        ManagedArray<int>* civilianList = &this->civilians;
-        if (civilianList->maximumSizeValue - 1 < 0)
-            civilianList->resize(1);
-        this->nextCivilianToTaskValue = civilianList->value[0];
-        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0D8A) - param_1 >= param_2) {
-            return 0;
+
+        this->nextCivilianToTaskValue = this->civilians[0];
+        if (debug_timeGetTime(s_file, 0xd8a) - startTime >= availableTime) {
+            return taskedCount;
         }
     }
 
-    // Refresh phase: find the civilian to task this tick and task the rest.
-    for (i = 0; i < this->civilians.numberValue; i++) {
-        if (this->nextCivilianToTaskValue == this->civilians[i]) break;
+    i = 0;
+    while (i < this->civilians.numberValue &&
+           this->nextCivilianToTaskValue != this->civilians[i]) {
+        i++;
     }
-    if (i >= this->civilians.numberValue) goto no_more;
 
-    taskedCount = i + 1;
-    newExplorer = taskedCount * 4;
-    do {
-        j = j + 1;
-        civilian = this->civilians[i];
-        // Already an explorer?
-        for (k = 0; k < this->civilianExplorers.numberValue &&
-                     k < this->civilianExplorers.maximumSizeValue; k++) {
-            if (this->civilianExplorers.value[k] == civilian) goto is_explorer;
+    if (i >= this->civilians.numberValue) {
+        this->nextCivilianToTaskValue = -1;
+        return taskedCount;
+    }
+
+    while (i < this->civilians.numberValue) {
+        taskedCount++;
+        if (this->civilianExplorers.contains(this->civilians[i])) {
+            this->highLevelTaskExplorer(this->civilians[i], 1);
         }
-        if (this->highLevelTaskGatherer(this->civilians[i], param_1) == 0) {
+        else if (this->highLevelTaskGatherer(this->civilians[i], startTime) ==
+                 0) {
             this->addGatherer(this->civilians[i]);
-            i = i + 1;
-            taskedCount = taskedCount + 1;
-            newExplorer = newExplorer + 4;
-            goto loop_cond;
+            i++;
+            continue;
         }
-task_done:
+
         this->updateGathererDistribution();
-        i = i + 1;
-        taskedCount = taskedCount + 1;
-        newExplorer = newExplorer + 4;
-        if (i >= this->civilians.numberValue) goto no_more;
+        i++;
+        if (i >= this->civilians.numberValue) {
+            this->nextCivilianToTaskValue = -1;
+            return taskedCount;
+        }
+
         this->nextCivilianToTaskValue = this->civilians[i];
-        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0DC6) - param_1 >= param_2) {
+        if (debug_timeGetTime(s_file, 0xdc6) - startTime >= availableTime) {
             if (i > 0) {
                 this->civilians[i - 1];
             }
-            goto done;
+            return taskedCount;
         }
-loop_cond:
-        ;
-    } while (i < this->civilians.numberValue);
-    goto no_more;
+    }
 
-no_more:
     this->nextCivilianToTaskValue = -1;
-done:
-    return j;
-
-is_explorer:
-    this->highLevelTaskExplorer(this->civilians[i], 1);
-    goto task_done;
+    return taskedCount;
 }
 
 
