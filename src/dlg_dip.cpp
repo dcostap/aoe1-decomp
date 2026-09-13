@@ -13,18 +13,11 @@
 TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     : TDialogPanel("Diplomacy Dialog")
 {
-    TButtonPanel** button;
-    int y;
-    RGE_Game_World* world;
-    int humanity;
-    int player_id;
-    int i;
-    TButtonPanel** tab_buttons;
-    int tab_count = 0;
-    int disable_buttons;
-    tagPALETTEENTRY palette_color;
+    PALETTEENTRY palette_color;
     char temp_str[100];
     TPanel* tab_list[35];
+    int tab_count = 0;
+    int i;
 
     for (i = 0; i < 8; ++i) {
         this->title[i] = 0;
@@ -40,7 +33,6 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         this->stoneTributeAmount[i] = 0.0f;
         this->woodTributeAmount[i] = 0.0f;
     }
-
     for (i = 0; i < 24; ++i) {
         this->allyButton[i] = 0;
     }
@@ -63,205 +55,212 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     this->goldTotal = 0.0f;
     this->tribute_flag = 0;
 
-    if (this->setup(parent->renderArea(), parent, 0x271, 0x195,
-                    parent->get_popup_info_file(), parent->get_popup_info_id(), 1) == 0) {
+    if (!this->setup(parent->renderArea(), parent, 0x271, 0x195,
+                     parent->get_popup_info_file(),
+                     parent->get_popup_info_id(), 1)) {
         return;
     }
 
-    if ((this->buttonPics = new TShape("tradicon.shp", 0xC62C)) == 0) {
+    this->buttonPics = new TShape("tradicon.shp", 0xC62C);
+    if (this->buttonPics == 0) {
         return;
     }
-
-    if ((this->backgroundPics = new TShape("dlg_plbn.shp", 0xC63A)) == 0) {
+    this->backgroundPics = new TShape("dlg_plbn.shp", 0xC63A);
+    if (this->backgroundPics == 0) {
         return;
     }
 
     rge_base_game->get_font(1);
-    if (this->create_text(this, &this->title[0], 0x267B,
-                          0x48, 5, 0x1F4, 0x1E, 1, 1, 1, 0) == 0) {
+
+    if (!this->create_text(this, &this->title[0], 0x267B, 0x48, 5,
+                           0x1F4, 0x1E, 1, 1, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->needMarket, 0x2687,
-                          0x1B8, 0x6E, 0xAF, 0x3C, 0x0B, 1, 1, 1) == 0) {
+    if (!this->create_text(this, &this->needMarket, 0x2687, 0x1B8, 0x6E,
+                           0xAF, 0x3C, 0x0B, 1, 1, 1)) {
         return;
     }
-    if (this->create_text(this, &this->title[1], 0x2686,
-                          5, 0x32, 0x82, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->title[1], 0x2686, 5, 0x32,
+                           0x82, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->title[2], 0x267C,
-                          0x89, 0x32, 0x50, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->title[2], 0x267C, 0x89, 0x32,
+                           0x50, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->title[3], 0x267D,
-                          0xEB, 0x32, 0x46, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->title[3], 0x267D, 0xEB, 0x32,
+                           0x46, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->title[4], 0x267E,
-                          0x122, 0x32, 0x46, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->title[4], 0x267E, 0x122, 0x32,
+                           0x46, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->title[5], 0x267F,
-                          0x168, 0x32, 0x46, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->title[5], 0x267F, 0x168, 0x32,
+                           0x46, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
 
     sprintf(temp_str, this->get_string(0x2680),
             static_cast<long>(rge_base_game->get_player()->attributes[46] *
-                              100.0f));
-    if (this->create_text(this, &this->title[6], temp_str,
-                          0x1B8, 0x32, 0xB4, 0x1E, 0x0B, 0, 1, 0) == 0) {
+                              DAT_0056f880));
+    if (!this->create_text(this, &this->title[6], temp_str, 0x1B8, 0x32,
+                           0xB4, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->title[7], 0x2681,
-                          0x13E, 0x14A, 300, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->title[7], 0x2681, 0x13E, 0x14A,
+                           0x12C, 0x1E, 0x0B, 0, 1, 0)) {
         return;
     }
 
     this->cur_player_row = -1;
-    world = rge_base_game->world;
-    player_id = 1;
-    if (world->player_num - 1 > 0) {
-        button = this->woodTributeButton;
-        tab_buttons = this->allyButton;
-        y = 0x50;
-        do {
-            RGE_Player* player =
-                *(world->players + (button - this->woodTributeButton) + 1);
-            const int row = player_id - 1;
+    RGE_Game_World* world = rge_base_game->world;
+    int player_id = 1;
+    int row = 0;
+    int y = 0x50;
+    while (player_id < world->player_num) {
+        GetPaletteEntries(this->palette,
+                          world->players[player_id]->color_table->map_color,
+                          1, &palette_color);
 
-            GetPaletteEntries(this->palette, player->color_table->map_color,
-                              1, &palette_color);
+        int disable_buttons;
+        if (rge_base_game->prog_mode == 5 ||
+            player_id == world->curr_player ||
+            world->players[player_id]->game_status != 0) {
+            disable_buttons = 1;
+        } else {
             disable_buttons = 0;
+        }
 
-            if (rge_base_game->prog_mode == 5 ||
-                player_id == world->curr_player || player->game_status != 0) {
-                humanity = 1;
-            } else {
-                humanity = 0;
-            }
+        if (player_id == world->curr_player) {
+            this->cur_player_row = player_id - 1;
+        }
 
-            if (player_id == world->curr_player) {
-                this->cur_player_row = row;
-            }
-
-            if (player->game_status == 2) {
-                disable_buttons = 1;
-            } else if (rge_base_game->multiplayerGame()) {
-                int humanity_result = 0;
-                int j = 1;
-                if (j <= rge_base_game->numberPlayers()) {
-                    do {
-                        if (rge_base_game->playerID(j) == player_id) {
-                            int h = comm->GetPlayerHumanity(j);
-                            if (h == 2 || h == 4) {
-                                humanity_result = h;
-                            }
-                        }
-                        ++j;
-                    } while (j <= rge_base_game->numberPlayers());
-                }
-                if (humanity_result != 2 && humanity_result != 4) {
-                    disable_buttons = 1;
-                }
-            }
-
-            if (this->create_text(this, &this->playerName[row], player->name,
-                                  5, y, 0x82, 0x1E,
-                                  disable_buttons ? 8 : 0x0B, 0, 1, 0) == 0) {
-                return;
-            }
-            rge_base_game->get_string2(0x69, player->master_player_id, 0,
-                                       temp_str, 100);
-            if (this->create_text(this, &this->playerCivilization[row], temp_str,
-                                  0x89, y, 0x64, 0x1E, 0x0B, 0, 1, 0) == 0) {
-                return;
-            }
-
-            if (player_id != world->curr_player) {
-                if (this->create_radio_button(this, &tab_buttons[0],
-                                              0xF0, y, 0x1E, 0x1E, 0, 0) == 0) {
-                    return;
-                }
-                tab_buttons[0]->set_help_info(0x7684, -1);
-                if (this->create_radio_button(this, &tab_buttons[1],
-                                              0x136, y, 0x1E, 0x1E, 0, 0) == 0) {
-                    return;
-                }
-                tab_buttons[1]->set_help_info(0x7685, -1);
-                if (this->create_radio_button(this, &tab_buttons[2],
-                                              0x17C, y, 0x1E, 0x1E, 0, 0) == 0) {
-                    return;
-                }
-                tab_buttons[2]->set_help_info(0x7686, -1);
-
-                for (i = 0; i < 3; ++i) {
-                    tab_buttons[i]->set_radio_info(tab_buttons, 3);
-                    if (rge_base_game->prog_mode == 5) {
-                        tab_buttons[i]->set_disabled(1);
+        int computer_font = 0;
+        if (world->players[player_id]->game_status == 2) {
+            computer_font = 1;
+        } else if (rge_base_game->multiplayerGame()) {
+            int humanity = 0;
+            int player_number;
+            for (player_number = 1;
+                 player_number <= rge_base_game->numberPlayers();
+                 ++player_number) {
+                if (rge_base_game->playerID(player_number) == player_id) {
+                    int value = comm->GetPlayerHumanity(player_number);
+                    if (value == 2 || value == 4) {
+                        humanity = value;
                     }
                 }
+            }
+            if (humanity != 2 && humanity != 4) {
+                computer_font = 1;
+            }
+        }
 
-                unsigned char relation =
-                    rge_base_game->get_player()->relation(player_id);
-                if (player_id == world->curr_player || relation == 0) {
-                    tab_buttons[0]->set_radio_button();
-                } else if (relation == 1) {
-                    tab_buttons[1]->set_radio_button();
-                } else {
-                    tab_buttons[2]->set_radio_button();
+        if (!this->create_text(this, &this->playerName[row],
+                               world->players[player_id]->name, 5, y, 0x82,
+                               0x1E, computer_font ? 8 : 0x0B, 0, 1, 0)) {
+            return;
+        }
+
+        rge_base_game->get_string2(0x69,
+                                   world->players[player_id]->master_player_id,
+                                   0, temp_str, 100);
+        if (!this->create_text(this, &this->playerCivilization[row],
+                               temp_str, 0x89, y, 100, 0x1E, 0x0B,
+                               0, 1, 0)) {
+            return;
+        }
+
+        if (player_id != world->curr_player) {
+            TButtonPanel** buttons = &this->allyButton[row * 3];
+            if (!this->create_radio_button(this, &buttons[0], 0xF0, y,
+                                           0x1E, 0x1E, 0, 0)) {
+                return;
+            }
+            buttons[0]->set_help_info(0x7684, -1);
+            if (!this->create_radio_button(this, &buttons[1], 0x136, y,
+                                           0x1E, 0x1E, 0, 0)) {
+                return;
+            }
+            buttons[1]->set_help_info(0x7685, -1);
+            if (!this->create_radio_button(this, &buttons[2], 0x17C, y,
+                                           0x1E, 0x1E, 0, 0)) {
+                return;
+            }
+            buttons[2]->set_help_info(0x7686, -1);
+
+            for (i = 0; i < 3; ++i) {
+                buttons[i]->set_radio_info(buttons, 3);
+                if (rge_base_game->prog_mode == 5) {
+                    buttons[i]->set_disabled(1);
                 }
             }
 
-            if (humanity == 0) {
-                if (this->create_button(this, button,
-                                        -1, 0, 0x1B8, y, 0x28, 0x1E,
-                                        0x0B, 0, 0) == 0) {
-                    return;
-                }
-                if (this->create_button(this, button + 8,
-                                        -1, 0, 0x1E0, y, 0x28, 0x1E,
-                                        0x0B, 0, 0) == 0) {
-                    return;
-                }
-                if (this->create_button(this, button - 8,
-                                        -1, 0, 0x208, y, 0x28, 0x1E,
-                                        0x0B, 0, 0) == 0) {
-                    return;
-                }
-                if (this->create_button(this, button + 16,
-                                        -1, 0, 0x230, y, 0x28, 0x1E,
-                                        0x0B, 0, 0) == 0) {
-                    return;
-                }
+            unsigned char relation =
+                rge_base_game->get_player()->relation(player_id);
+            if (player_id == world->curr_player || relation == 0) {
+                buttons[0]->set_radio_button();
+            } else if (relation == 1) {
+                buttons[1]->set_radio_button();
+            } else {
+                buttons[2]->set_radio_button();
+            }
+        }
 
-                button[0]->set_picture(0, this->buttonPics, 0);
-                button[8]->set_picture(0, this->buttonPics, 2);
-                button[-8]->set_picture(0, this->buttonPics, 3);
-                button[16]->set_picture(0, this->buttonPics, 1);
-                button[0]->setDrawType(
-                    TButtonPanel::DrawPictureAndText);
-                button[8]->setDrawType(
-                    TButtonPanel::DrawPictureAndText);
-                button[-8]->setDrawType(
-                    TButtonPanel::DrawPictureAndText);
-                button[16]->setDrawType(
-                    TButtonPanel::DrawPictureAndText);
-                button[0]->set_help_info(0x7687, -1);
-                button[8]->set_help_info(0x7688, -1);
-                button[-8]->set_help_info(0x7689, -1);
-                button[16]->set_help_info(0x768A, -1);
+        if (disable_buttons == 0) {
+            if (!this->create_button(this, &this->woodTributeButton[row],
+                                     -1, 0, 0x1B8, y, 0x28, 0x1E,
+                                     0x0B, 0, 0)) {
+                return;
+            }
+            if (!this->create_button(this, &this->foodTributeButton[row],
+                                     -1, 0, 0x1E0, y, 0x28, 0x1E,
+                                     0x0B, 0, 0)) {
+                return;
+            }
+            if (!this->create_button(this, &this->goldTributeButton[row],
+                                     -1, 0, 0x208, y, 0x28, 0x1E,
+                                     0x0B, 0, 0)) {
+                return;
+            }
+            if (!this->create_button(this, &this->stoneTributeButton[row],
+                                     -1, 0, 0x230, y, 0x28, 0x1E,
+                                     0x0B, 0, 0)) {
+                return;
             }
 
-            tab_buttons += 3;
-            y += 0x1E;
-            ++button;
-            ++player_id;
-        } while (player_id < world->player_num);
+            this->woodTributeButton[row]->set_picture(
+                0, this->buttonPics, 0);
+            this->foodTributeButton[row]->set_picture(
+                0, this->buttonPics, 2);
+            this->goldTributeButton[row]->set_picture(
+                0, this->buttonPics, 3);
+            this->stoneTributeButton[row]->set_picture(
+                0, this->buttonPics, 1);
+
+            this->woodTributeButton[row]->setDrawType(
+                TButtonPanel::DrawPictureAndText);
+            this->foodTributeButton[row]->setDrawType(
+                TButtonPanel::DrawPictureAndText);
+            this->goldTributeButton[row]->setDrawType(
+                TButtonPanel::DrawPictureAndText);
+            this->stoneTributeButton[row]->setDrawType(
+                TButtonPanel::DrawPictureAndText);
+
+            this->woodTributeButton[row]->set_help_info(0x7687, -1);
+            this->foodTributeButton[row]->set_help_info(0x7688, -1);
+            this->goldTributeButton[row]->set_help_info(0x7689, -1);
+            this->stoneTributeButton[row]->set_help_info(0x768A, -1);
+        }
+
+        ++player_id;
+        ++row;
+        y += 0x1E;
     }
 
-    if (this->create_check_box(this, &this->allianceButton,
-                               0x11A, 0x147, 0x1E, 0x1E, 0, 0) == 0) {
+    if (!this->create_check_box(this, &this->allianceButton, 0x11A, 0x147,
+                                0x1E, 0x1E, 0, 0)) {
         return;
     }
     this->allianceButton->set_state(
@@ -272,66 +271,58 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     }
 
     if (rge_base_game->prog_mode != 5) {
-        if (this->create_button(this, &this->okButton,
-                                0xFA1, 0, 0x0A, 0x16F, 0xBE, 0x1E,
-                                0, 0, 0) == 0) {
+        if (!this->create_button(this, &this->okButton, 0xFA1, 0, 10,
+                                 0x16F, 0xBE, 0x1E, 0, 0, 0)) {
             return;
         }
         this->okButton->set_help_info(0x7531, -1);
-        if (this->create_button(this, &this->clearButton,
-                                0x2683, 0, 0xD7, 0x16F, 0xBE, 0x1E,
-                                0, 0, 0) == 0) {
+
+        if (!this->create_button(this, &this->clearButton, 0x2683, 0, 0xD7,
+                                 0x16F, 0xBE, 0x1E, 0, 0, 0)) {
             return;
         }
         this->clearButton->set_help_info(0x768B, -1);
     }
 
-    if (this->create_button(this, &this->cancelButton,
-                            0xFA2, 0, 0x1A4, 0x16F, 0xBE, 0x1E,
-                            0, 0, 0) == 0) {
+    if (!this->create_button(this, &this->cancelButton, 0xFA2, 0, 0x1A4,
+                             0x16F, 0xBE, 0x1E, 0, 0, 0)) {
         return;
     }
-    TButtonPanel* cancel_button = this->cancelButton;
-    cancel_button->set_help_info(0x7532, -1);
-    cancel_button->hotkey = 0x1B;
-    cancel_button->hotkey_shift = 0;
+    this->cancelButton->set_help_info(0x7532, -1);
+    this->cancelButton->hotkey = 0x1B;
+    this->cancelButton->hotkey_shift = 0;
 
-    if (this->create_button(this, &this->help_button,
-                            0xFA9, 0, 0x1F4, 0x147, 0x1E, 0x1E,
-                            0, 0, 0) == 0) {
+    if (!this->create_button(this, &this->help_button, 0xFA9, 0, 0x1F4,
+                             0x147, 0x1E, 0x1E, 0, 0, 0)) {
         return;
     }
 
-    sprintf(temp_str, "%ld",
-            static_cast<long>(rge_base_game->get_player()->attributes[1] -
-                              this->woodTotal));
-    if (this->create_text(this, &this->playerWood, temp_str,
-                          0x1B8, this->cur_player_row * 0x1E + 0x50,
-                          0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    sprintf(temp_str, "%ld", static_cast<long>(
+        rge_base_game->get_player()->attributes[1] - this->woodTotal));
+    if (!this->create_text(this, &this->playerWood, temp_str, 0x1B8,
+                           this->cur_player_row * 0x1E + 0x50, 0x28, 0x1E,
+                           0x0B, 0, 1, 0)) {
         return;
     }
-    sprintf(temp_str, "%ld",
-            static_cast<long>(rge_base_game->get_player()->attributes[0] -
-                              this->foodTotal));
-    if (this->create_text(this, &this->playerFood, temp_str,
-                          0x1E0, this->cur_player_row * 0x1E + 0x50,
-                          0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    sprintf(temp_str, "%ld", static_cast<long>(
+        rge_base_game->get_player()->attributes[0] - this->foodTotal));
+    if (!this->create_text(this, &this->playerFood, temp_str, 0x1E0,
+                           this->cur_player_row * 0x1E + 0x50, 0x28, 0x1E,
+                           0x0B, 0, 1, 0)) {
         return;
     }
-    sprintf(temp_str, "%ld",
-            static_cast<long>(rge_base_game->get_player()->attributes[3] -
-                              this->goldTotal));
-    if (this->create_text(this, &this->playerGold, temp_str,
-                          0x208, this->cur_player_row * 0x1E + 0x50,
-                          0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    sprintf(temp_str, "%ld", static_cast<long>(
+        rge_base_game->get_player()->attributes[3] - this->goldTotal));
+    if (!this->create_text(this, &this->playerGold, temp_str, 0x208,
+                           this->cur_player_row * 0x1E + 0x50, 0x28, 0x1E,
+                           0x0B, 0, 1, 0)) {
         return;
     }
-    sprintf(temp_str, "%ld",
-            static_cast<long>(rge_base_game->get_player()->attributes[2] -
-                              this->stoneTotal));
-    if (this->create_text(this, &this->playerStone, temp_str,
-                          0x230, this->cur_player_row * 0x1E + 0x50,
-                          0x28, 0x1E, 0x0B, 0, 1, 0) == 0) {
+    sprintf(temp_str, "%ld", static_cast<long>(
+        rge_base_game->get_player()->attributes[2] - this->stoneTotal));
+    if (!this->create_text(this, &this->playerStone, temp_str, 0x230,
+                           this->cur_player_row * 0x1E + 0x50, 0x28, 0x1E,
+                           0x0B, 0, 1, 0)) {
         return;
     }
 
@@ -365,16 +356,19 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     this->check_wood();
     this->check_food();
     this->check_stone();
-    this->set_curr_child(this->okButton);
 
+    this->set_curr_child(this->okButton);
     if (this->okButton != 0) {
-        tab_list[tab_count++] = this->okButton;
+        tab_list[tab_count] = this->okButton;
+        ++tab_count;
     }
     if (this->clearButton != 0) {
-        tab_list[tab_count++] = this->clearButton;
+        tab_list[tab_count] = this->clearButton;
+        ++tab_count;
     }
     if (this->cancelButton != 0) {
-        tab_list[tab_count++] = this->cancelButton;
+        tab_list[tab_count] = this->cancelButton;
+        ++tab_count;
     }
     this->set_tab_order(tab_list, static_cast<short>(tab_count));
 }
