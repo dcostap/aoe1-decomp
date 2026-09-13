@@ -34,6 +34,6 @@
     "00510CB0": {"status": "matching", "symbol": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z"},
     "00511000": {"status": "matching", "symbol": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z"},
     "005110E0": {"status": "matching", "symbol": "?tribe_clean_elevation@TRIBE_Map@@QAEXJJJJ@Z"},
-    "005111A0": {"status": "scratch", "symbol": "?tribe_clean_terrain@TRIBE_Map@@QAEXJJJJEE@Z"}
+    "005111A0": {"status": "new_verified_logic", "symbol": "?tribe_clean_terrain@TRIBE_Map@@QAEXJJJJEE@Z", "behavior_review": ["logic_matching/005111A0/coord-11-review-20260913T093000Z/attempt-01", "logic_matching/005111A0/coord-11-dual-review-02-20260913T100000Z/attempt-01"]}
   }
 }

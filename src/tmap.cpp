@@ -937,25 +937,15 @@ void TRIBE_Map::tribe_clean_elevation(long x_start, long y_start,
 }
 
 void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
-                                    uchar flag, uchar terrain)
+                                     unsigned char unused,
+                                     unsigned char terrain)
 {
-    uchar change_flag;
-    RGE_Tile* tile;
-    short up;
-    short upper_right;
-    short right;
-    short lower_right;
-    short down;
-    short lower_left;
-    short left;
-    short upper_left;
-    short width = (short)this->map_width;
-    short up_left_offset = (short)(-1 - width);
-    short down_offset = width;
-    short up_offset = (short)-width;
-    short up_right_offset = (short)(1 - width);
-    short down_right_offset = (short)(width + 1);
-    short down_left_offset = (short)(width - 1);
+    short map_width = (short)this->map_width;
+    short offset_nw = (short)(-1 - map_width);
+    short offset_n = (short)-map_width;
+    short offset_ne = (short)(1 - map_width);
+    short offset_se = (short)(map_width + 1);
+    short offset_sw = (short)(map_width - 1);
 
     if (x1 < 0)
         x1 = 0;
@@ -966,6 +956,7 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
     if (y2 >= this->map_height)
         y2 = this->map_height - 1;
 
+    unsigned char change_flag;
     do {
         change_flag = 0;
         if (x1 > 0)
@@ -977,142 +968,141 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
         if (y2 < this->map_height - 1)
             ++y2;
 
-        for (long pass = 0; pass < 2; ++pass) {
-            for (long y = y1; y <= y2; ++y) {
-                long x = x1;
-                tile = this->map_row_offset[y] + x;
-                if (x <= x2) {
-                    do {
-                        if (!this->water(tile->terrain_type)) {
-                            up = 0;
-                            upper_right = 0;
-                            right = 0;
-                            lower_right = 0;
-                            down = 0;
-                            lower_left = 0;
-                            left = 0;
-                            upper_left = 0;
+        int pass = 0;
+        do {
+            for (int row = (int)y1; row <= y2; ++row) {
+                RGE_Tile* tile = this->map_row_offset[row] + x1;
+                for (int col = (int)x1; col <= x2; ++tile, ++col) {
+                    if (this->water(tile->terrain_type & 0x1f))
+                        continue;
 
-                            if (y > 0 && this->water((tile[up_offset]).terrain_type))
-                                up = 1;
-                            if (y < this->map_height - 1 &&
-                                this->water((tile[down_offset]).terrain_type))
-                                down = 1;
-                            if (x > 0 && this->water((tile - 1)->terrain_type))
-                                left = 1;
-                            if (x < this->map_width - 1 &&
-                                this->water((tile + 1)->terrain_type))
-                                right = 1;
-                            if (y > 0) {
-                                if (x > 0 &&
-                                    this->water((tile[up_left_offset]).terrain_type))
-                                    upper_left = 1;
-                                if (x < this->map_width - 1 &&
-                                    this->water((tile[up_right_offset]).terrain_type))
-                                    upper_right = 1;
-                            }
-                            if (y < this->map_height - 1) {
-                                if (x > 0 &&
-                                    this->water((tile[down_left_offset]).terrain_type))
-                                    lower_left = 1;
-                                if (x < this->map_width - 1 &&
-                                    this->water((tile[down_right_offset]).terrain_type))
-                                    lower_right = 1;
-                            }
+                    short north_west = 0;
+                    short north = 0;
+                    short north_east = 0;
+                    short east = 0;
+                    short south_east = 0;
+                    short south = 0;
+                    short south_west = 0;
+                    short west = 0;
 
-                            uchar place = 0;
-                            if (pass == 0) {
-                                if ((up && down) || (left && right))
-                                    place = 1;
-                            } else {
-                                if (upper_left) {
-                                    if ((upper_right && !up) ||
-                                        (right && !upper_right) ||
-                                        (lower_left && !left) ||
-                                        (down && !lower_left))
-                                        place = 1;
-                                    else if (lower_right && !down && !right)
-                                        place = 1;
-                                }
-                                if (upper_right && !place) {
-                                    if ((upper_left && !up) ||
-                                        (left && !upper_left) ||
-                                        (lower_right && !right) ||
-                                        (down && !lower_right) ||
-                                        (lower_left && !left && !down))
-                                        place = 1;
-                                }
-                                if (lower_right && !place) {
-                                    if ((upper_right && !right) ||
-                                        (up && !upper_right) ||
-                                        (lower_left && !down) ||
-                                        (left && !lower_left) ||
-                                        (upper_left && !left && !up))
-                                        place = 1;
-                                }
-                                if (lower_left && !place) {
-                                    if ((upper_left && !left) ||
-                                        (up && !upper_left) ||
-                                        (lower_right && !down) ||
-                                        (right && !lower_right) ||
-                                        (upper_right && !right && !up))
-                                        place = 1;
-                                }
-                            }
+                    if (row > 0 &&
+                        this->water(tile[offset_n].terrain_type & 0x1f))
+                        north = 1;
+                    if (row < this->map_height - 1 &&
+                        this->water(tile[map_width].terrain_type & 0x1f))
+                        south = 1;
+                    if (col > 0 &&
+                        this->water(tile[-1].terrain_type & 0x1f))
+                        west = 1;
+                    if (col < this->map_width - 1 &&
+                        this->water(tile[1].terrain_type & 0x1f))
+                        east = 1;
 
-                            if (place) {
-                                if (this->water(terrain)) {
-                                    if (this->do_terrain_brush_check(x, y)) {
-                                        this->set_terrain(this->game_world,
-                                                          (short)x, (short)y,
-                                                          terrain, 0, 0);
-                                        change_flag = 1;
-                                    }
-                                } else {
-                                    if (upper_left)
-                                        this->set_terrain(this->game_world,
-                                            (short)(x - 1), (short)(y - 1),
-                                            terrain, 0, 0);
-                                    if (up)
-                                        this->set_terrain(this->game_world,
-                                            (short)x, (short)(y - 1), terrain,
-                                            0, 0);
-                                    if (upper_right)
-                                        this->set_terrain(this->game_world,
-                                            (short)(x + 1), (short)(y - 1),
-                                            terrain, 0, 0);
-                                    if (right)
-                                        this->set_terrain(this->game_world,
-                                            (short)(x + 1), (short)y, terrain,
-                                            0, 0);
-                                    if (lower_right)
-                                        this->set_terrain(this->game_world,
-                                            (short)(x + 1), (short)(y + 1),
-                                            terrain, 0, 0);
-                                    if (down)
-                                        this->set_terrain(this->game_world,
-                                            (short)x, (short)(y + 1), terrain,
-                                            0, 0);
-                                    if (lower_left)
-                                        this->set_terrain(this->game_world,
-                                            (short)(x - 1), (short)(y + 1),
-                                            terrain, 0, 0);
-                                    if (left)
-                                        this->set_terrain(this->game_world,
-                                            (short)(x - 1), (short)y, terrain,
-                                            0, 0);
-                                    change_flag = 1;
-                                }
-                            }
+                    if (row > 0) {
+                        if (col > 0 &&
+                            this->water(tile[offset_nw].terrain_type & 0x1f))
+                            north_west = 1;
+                        if (col < this->map_width - 1 &&
+                            this->water(tile[offset_ne].terrain_type & 0x1f))
+                            north_east = 1;
+                    }
+                    if (row < this->map_height - 1) {
+                        if (col > 0 &&
+                            this->water(tile[offset_sw].terrain_type & 0x1f))
+                            south_west = 1;
+                        if (col < this->map_width - 1 &&
+                            this->water(tile[offset_se].terrain_type & 0x1f))
+                            south_east = 1;
+                    }
+
+                    unsigned char fix = 0;
+                    if (pass == 0) {
+                        if ((north && south) || (east && west))
+                            fix = 1;
+                    } else {
+                        if (north_west) {
+                            if ((north_east && !north) ||
+                                (east && !north_east) ||
+                                (south_west && !west) ||
+                                (south && !south_west))
+                                fix = 1;
+                            else if (south_east && !south && !east)
+                                fix = 1;
                         }
-                        ++x;
-                        ++tile;
-                    } while (x <= x2);
+                        if (north_east && !fix) {
+                            if ((north_west && !north) ||
+                                (west && !north_west) ||
+                                (south_east && !east) ||
+                                (south && !south_east))
+                                fix = 1;
+                            else if (south_west && !west && !south)
+                                fix = 1;
+                        }
+                        if (south_east && !fix) {
+                            if ((north_east && !east) ||
+                                (north && !north_east) ||
+                                (south_west && !south) ||
+                                (west && !south_west))
+                                fix = 1;
+                            else if (north_west && !west && !north)
+                                fix = 1;
+                        }
+                        if (south_west && !fix) {
+                            if ((north_west && !west) ||
+                                (north && !north_west) ||
+                                (south_east && !south) ||
+                                (east && !south_east))
+                                fix = 1;
+                            else if (north_east && !east && !north)
+                                fix = 1;
+                        }
+                    }
+
+                    if (!fix)
+                        continue;
+
+                    if (!this->water(terrain)) {
+                        short srow = (short)row;
+                        short scol = (short)col;
+                        if (north_west)
+                            RGE_Map::set_terrain(this->game_world, scol - 1,
+                                                 srow - 1, terrain, 0, 0);
+                        if (north)
+                            RGE_Map::set_terrain(this->game_world, scol,
+                                                 srow - 1, terrain, 0, 0);
+                        if (north_east)
+                            RGE_Map::set_terrain(this->game_world, scol + 1,
+                                                 srow - 1, terrain, 0, 0);
+                        if (east)
+                            RGE_Map::set_terrain(this->game_world, scol + 1,
+                                                 srow, terrain, 0, 0);
+                        if (south_east)
+                            RGE_Map::set_terrain(this->game_world, scol + 1,
+                                                 srow + 1, terrain, 0, 0);
+                        if (south)
+                            RGE_Map::set_terrain(this->game_world, scol,
+                                                 srow + 1, terrain, 0, 0);
+                        if (south_west)
+                            RGE_Map::set_terrain(this->game_world, scol - 1,
+                                                 srow + 1, terrain, 0, 0);
+                        if (west)
+                            RGE_Map::set_terrain(this->game_world, scol - 1,
+                                                 srow, terrain, 0, 0);
+                    } else {
+                        if (!this->do_terrain_brush_check(col, row))
+                            continue;
+                        RGE_Map::set_terrain(this->game_world, (short)col,
+                                             (short)row, terrain, 0, 0);
+                    }
+                    change_flag = 1;
                 }
             }
-        }
-    } while (change_flag);
+            ++pass;
+        } while (pass < 2);
+    } while (change_flag != 0);
 
     this->clean_borders(x1, y1, x2, y2, terrain);
-    this->set_terrain(0, 0, x1, y1, x2, y2, 0, 0, 0);
+    RGE_Map::set_terrain((RGE_Player*)0, (RGE_Game_World*)0,
+                         (short)x1, (short)y1, (short)x2, (short)y2,
+                         0, 0, 0);
 }
