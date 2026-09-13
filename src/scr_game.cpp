@@ -3336,20 +3336,18 @@ int scr_game_score_compare(const void* param_b, const void* param_a) {
     return (a->player_id >= b->player_id) - 1;
 }
 
-void TRIBE_Screen_Game::reset_score_display()
-{
-    int i;
+void TRIBE_Screen_Game::reset_score_display() {
     int player_count;
+    int team_count;
+    int team;
+    int player_num;
     int icon_num2;
-    int low_fps_player;
-    TShape* icon1;
-    int icon_frame1;
     TShape* icon2;
-    int icon_frame2;
+    TShape* icon1;
     PLAYER_SCORE player_score[9];
     char str[512];
 
-    for (i = 0; i < 9; ++i) {
+    for (int i = 0; i < 9; ++i) {
         player_score[i].comm_id = 0;
         player_score[i].player_id = 0;
         player_score[i].team_id = 0;
@@ -3357,144 +3355,190 @@ void TRIBE_Screen_Game::reset_score_display()
         player_score[i].team_score = 0;
     }
 
-    i = 0;
-    icon_num2 = 1;
-    PLAYER_SCORE* score = player_score;
-    while (icon_num2 <= rge_base_game->numberPlayers()) {
-        int player_id = rge_base_game->playerID(icon_num2);
-        if (player_id != 0 && player_id < this->world->player_num) {
-            if (score->team_id == 0) {
-                ++i;
-                score->team_id = i;
-            }
-            score->comm_id = icon_num2;
-            score->player_id = player_id;
-            score->player_score =
-                this->world->players[player_id]->victory_conditions->get_victory_points();
-            score->team_score = score->player_score;
-            player_count = 1;
+    player_count = 0;
+    player_num = 1;
+    if (player_num <= rge_base_game->numberPlayers()) {
+        do {
+            int player_id = rge_base_game->playerID(player_num);
+            int score_index = player_num - 1;
 
-            if (this->world->players[player_id]->allied_victory != 0) {
-                int team = 1;
-                PLAYER_SCORE* team_score = player_score;
-                while (team <= rge_base_game->numberPlayers()) {
-                    if (team != icon_num2) {
-                        int player_id2 = rge_base_game->playerID(team);
-                        if (player_id2 != 0 && player_id2 < this->world->player_num &&
-                            this->world->players[player_id]->relation(player_id2) == 0 &&
-                            this->world->players[player_id2]->relation(player_id) == 0 &&
-                            this->world->players[player_id2]->allied_victory != 0) {
-                            if (team_score->team_id == 0) {
-                                team_score->team_id = score->team_id;
-                            }
-                            score->team_score +=
-                                this->world->players[player_id2]->victory_conditions->get_victory_points();
-                            ++player_count;
-                        }
-                    }
-                    ++team;
-                    ++team_score;
+            if (player_id != 0 && player_id < this->world->player_num) {
+                if (player_score[score_index].team_id == 0) {
+                    ++player_count;
+                    player_score[score_index].team_id = player_count;
                 }
+
+                player_score[score_index].comm_id = player_num;
+                player_score[score_index].player_id = player_id;
+                long points = this->world->players[player_id]
+                                  ->victory_conditions->get_victory_points();
+                player_score[score_index].player_score = points;
+                player_score[score_index].team_score = points;
+                team_count = 1;
+
+                if (this->world->players[player_id]->allied_victory != 0) {
+                    int allied_player_num = 1;
+                    if (allied_player_num <= rge_base_game->numberPlayers()) {
+                        team = 0;
+                        do {
+                            if (allied_player_num != player_num) {
+                                int allied_player_id =
+                                    rge_base_game->playerID(allied_player_num);
+                                if (allied_player_id != 0 &&
+                                    allied_player_id < this->world->player_num &&
+                                    this->world->players[player_id]->relation(
+                                        allied_player_id) == 0 &&
+                                    this->world->players[allied_player_id]->relation(
+                                        player_id) == 0 &&
+                                    this->world->players[allied_player_id]
+                                            ->allied_victory != 0) {
+                                    int allied_score_index = allied_player_num - 1;
+                                    if (player_score[allied_score_index].team_id == 0) {
+                                        player_score[allied_score_index].team_id =
+                                            player_score[score_index].team_id;
+                                    }
+                                    player_score[score_index].team_score +=
+                                        this->world->players[allied_player_id]
+                                            ->victory_conditions->get_victory_points();
+                                    ++team_count;
+                                }
+                            }
+
+                            team += sizeof(PLAYER_SCORE);
+                            ++allied_player_num;
+                        } while (allied_player_num <=
+                                 rge_base_game->numberPlayers());
+                    }
+                }
+
+                player_score[score_index].team_score /= team_count;
             }
-            score->team_score /= player_count;
-        }
-        ++score;
-        ++icon_num2;
+
+            ++player_num;
+        } while (player_num <= rge_base_game->numberPlayers());
     }
 
     qsort(player_score, rge_base_game->numberPlayers(), sizeof(PLAYER_SCORE),
           scr_game_score_compare);
-    low_fps_player = 0;
+    player_score[0].comm_id = 0;
+
     if (rge_base_game->multiplayerGame() != 0) {
-        int low_fps = 11;
-        PLAYER_SCORE* p = player_score;
-        for (i = 0; i < 8; ++i) {
-            if (p->player_id != 0 && comm->GetPlayerHumanity(p->comm_id) == 2) {
-                unsigned long average =
-                    comm->Speed->PlayerAvgFramesMsec[p->comm_id];
-                int frame_rate;
-                if (average > 999) {
-                    frame_rate = 1;
-                } else if (average < 10) {
-                    frame_rate = 100;
+        unsigned int best_speed = 0x0B;
+        for (int score_index = 0; score_index < 8; ++score_index) {
+            if (player_score[score_index].player_id != 0 &&
+                comm->GetPlayerHumanity(player_score[score_index].comm_id) == 2) {
+                unsigned long speed = comm->Speed->PlayerAvgFramesMsec[
+                    player_score[score_index].comm_id];
+                if (speed < 1000) {
+                    if (speed < 10) {
+                        speed = 100;
+                    } else {
+                        speed = 1000 / speed;
+                    }
                 } else {
-                    frame_rate = 1000 / average;
+                    speed = 1;
                 }
-                if (frame_rate < low_fps) {
-                    low_fps_player = p->comm_id;
-                    low_fps = frame_rate;
+                if (speed < best_speed) {
+                    player_score[0].comm_id = player_score[score_index].comm_id;
+                    best_speed = speed;
                 }
             }
-            ++p;
         }
     }
 
-    icon_num2 = 0;
-    PLAYER_SCORE* p = player_score;
-    TMessagePanel** panel = this->score_panel;
-    for (; icon_num2 < 8; ++icon_num2, ++p, ++panel) {
-        if (*panel == 0) {
+    PLAYER_SCORE* score = player_score;
+    TMessagePanel** score_panel = this->score_panel;
+    for (icon_num2 = 0; icon_num2 < 8; ++icon_num2, ++score, ++score_panel) {
+        if (*score_panel == 0) {
             return;
         }
-        if (p->player_id == 0) {
-            (*panel)->set_active(0);
-        } else {
-            sprintf(str + 4, "%s: %d/%d", comm->GetPlayerName(p->comm_id),
-                    p->player_score, p->team_score);
 
-            RGE_Player* player = this->world->players[p->player_id];
-            int font_color;
-            int back_color;
-            switch (player->color_table->id) {
-            case 0:
-                font_color = 0xFF0000;
-                back_color = 0xB3B3B3;
-                break;
-            case 1: font_color = 0x2139C6; break;
-            case 2: font_color = 0xFFFF; break;
-            case 3: font_color = 0x4F73A3; break;
-            case 4: font_color = 0x0F77F3; break;
-            case 5: font_color = 0xC700; break;
-            case 6: font_color = 0x7B90A2; break;
-            case 7: font_color = 0xADAD00; break;
-            default: font_color = 0xFFFFFF; break;
-            }
-
-            int dimmed = 0;
-            if (player->game_status == 2) {
-                dimmed = 1;
-            } else if (rge_base_game->multiplayerGame() != 0) {
-                int humanity = comm->GetPlayerHumanity(p->comm_id);
-                if (humanity != 2 && humanity != 4) {
-                    dimmed = 1;
-                }
-            }
-            RGE_Font* font = rge_base_game->get_font(dimmed != 0 ? 8 : 11);
-
-            icon1 = 0;
-            icon_frame1 = 0;
-            icon2 = 0;
-            icon_frame2 = 0;
-            if (rge_base_game->multiplayerGame() != 0 &&
-                comm->GetPlayerHumanity(p->comm_id) == 2) {
-                unsigned long latency = comm->Speed->GetPlayerLatency(p->comm_id);
-                if (p->comm_id == low_fps_player) {
-                    icon2 = this->button_pics;
-                    icon_frame2 = 17;
-                }
-                if (latency >= 300) {
-                    icon1 = this->button_pics;
-                    icon_frame1 = 20;
-                    if (latency <= 1000) {
-                        icon_frame1 = 19;
-                    }
-                }
-            }
-
-            (*panel)->show_message2(TMessagePanel::RightInfoMessage, str + 4, font_color, back_color,
-                                    font->font, font->font_wid, font->font_hgt,
-                                    icon1, icon_frame1, icon2, icon_frame2);
+        if (score->player_id == 0) {
+            (*score_panel)->set_active(0);
+            continue;
         }
+
+        sprintf(str, "%s: %d/%d", comm->GetPlayerName(score->comm_id),
+                score->player_score, score->team_score);
+
+        RGE_Player* player = this->world->players[score->player_id];
+        unsigned long font_color1;
+        unsigned long font_color2;
+        switch (player->color_table->id) {
+        case 0:
+            font_color1 = 0xFF0000;
+            font_color2 = 0xB3B3B3;
+            break;
+        case 1:
+            font_color1 = 0x2139C6;
+            font_color2 = 0;
+            break;
+        case 2:
+            font_color1 = 0xFFFF;
+            font_color2 = 0;
+            break;
+        case 3:
+            font_color1 = 0x4F73A3;
+            font_color2 = 0;
+            break;
+        case 4:
+            font_color1 = 0x0F77F3;
+            font_color2 = 0;
+            break;
+        case 5:
+            font_color1 = 0xC700;
+            font_color2 = 0;
+            break;
+        case 6:
+            font_color1 = 0x7B90A2;
+            font_color2 = 0;
+            break;
+        case 7:
+            font_color1 = 0xADAD00;
+            font_color2 = 0;
+            break;
+        default:
+            font_color1 = 0xFFFFFF;
+            font_color2 = 0;
+            break;
+        }
+
+        int special_font = 0;
+        if (player->game_status == 2) {
+            special_font = 1;
+        } else if (rge_base_game->multiplayerGame() != 0) {
+            int humanity = comm->GetPlayerHumanity(score->comm_id);
+            if (humanity != 2 && humanity != 4) {
+                special_font = 1;
+            }
+        }
+        RGE_Font* font = rge_base_game->get_font(special_font != 0 ? 8 : 0x0B);
+
+        icon1 = 0;
+        int icon_frame1 = 0;
+        icon2 = 0;
+        int icon_frame2 = 0;
+        if (rge_base_game->multiplayerGame() != 0 &&
+            comm->GetPlayerHumanity(score->comm_id) == 2) {
+            unsigned long latency =
+                comm->Speed->GetPlayerLatency(score->comm_id);
+            if (score->comm_id == player_score[0].comm_id) {
+                icon2 = this->button_pics;
+                icon_frame2 = 0x11;
+            }
+            if (latency > 299) {
+                icon1 = this->button_pics;
+                icon_frame1 = 0x14;
+                if (latency < 0x3E9) {
+                    icon_frame1 = 0x13;
+                }
+            }
+        }
+
+        (*score_panel)->show_message2(
+            TMessagePanel::RightInfoMessage, str, font_color1, font_color2,
+            font->font, font->font_wid, font->font_hgt, icon1, icon_frame1,
+            icon2, icon_frame2);
     }
 }
 

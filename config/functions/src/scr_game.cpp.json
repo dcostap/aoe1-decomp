@@ -42,7 +42,7 @@
     "0049AB60": {"status": "matching", "symbol": "?set_button@TRIBE_Screen_Game@@IAEXPAVTShape@@FFJJJJJPAEPAD2H@Z"},
     "0049ADA0": {"status": "matching", "symbol": "?reset_clocks@TRIBE_Screen_Game@@QAEXXZ"},
     "0049B000": {"status": "matching", "symbol": "?scr_game_score_compare@@YAHPBX0@Z"},
-    "0049B080": {"status": "scratch", "symbol": "?reset_score_display@TRIBE_Screen_Game@@QAEXXZ"},
+    "0049B080": {"status": "new_verified_logic", "symbol": "?reset_score_display@TRIBE_Screen_Game@@QAEXXZ", "behavior_review": "logic_matching/0049B080/coord-10-0049B080-review-02/attempt-01"},
     "0049B560": {"status": "matching", "symbol": "?draw@TRIBE_Screen_Game@@UAEXXZ"},
     "0049B830": {"status": "matching", "symbol": "?handle_anim_pal@TRIBE_Screen_Game@@IAEXXZ"},
     "0049B910": {"status": "accepted_drift", "symbol": "?handle_terrain_sound@TRIBE_Screen_Game@@IAEXXZ"},
