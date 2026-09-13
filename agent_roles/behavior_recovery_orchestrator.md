@@ -131,6 +131,31 @@ Do not add an unchanged cycle without a fresh reviewer.
 If a reviewer reports an unresolved blocker, keep the function unpromoted.
 Route a focused new review only when it can resolve the blocker.
 
+## Dual-review mode
+
+Use this mode only when the user selects it for an assignment.
+Launch two fresh reviewers concurrently for each review round.
+Give both reviewers the same complete input set.
+Do not let either reviewer inspect the other session.
+
+A round approves a function only when both reviewers return `PERFECT` for the
+same compiler-facing source. Compare their complete `source.patch` content and
+SHA-256 hashes. Two `PERFECT` verdicts for different source do not approve the
+function.
+
+If either reviewer returns `REVISED`, give both collected review results to two
+new fresh reviewers. Do the same when both return `PERFECT` for different
+source. Each new reviewer selects and checks one parent from the two prior
+results. Repeat until both reviewers return `PERFECT` for identical source.
+
+Preserve every review result. Never replace or omit one side of a round.
+If consecutive rounds repeat the same conflicting source set without new
+evidence, report a concrete blocker. Do not create an unchanged review cycle.
+
+In dual-review mode, `COMPLETE` also requires both final `PERFECT` attempts,
+identical source hashes, successful final compilation, clean reviewer
+workspaces, and a validated integration patch for the approved source.
+
 ## Promotion
 
 A complete review with verdict `PERFECT` is the technical approval.
