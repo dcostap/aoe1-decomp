@@ -1416,58 +1416,50 @@ long TPanel::handle_mouse_down(unsigned char param_1, long param_2, long param_3
     return 1;
 }
 
-long TPanel::handle_mouse_move(long x, long y, int a, int b)
+long TPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4)
 {
-    if (this->active == 0) {
+    if (this->active == 0)
         return 0;
-    }
 
     if (this->mouse_captured == 0) {
-        if (!this->is_inside(x, y)) {
+        if (this->is_inside(param_1, param_2) == 0)
             return 0;
+
+        for (PanelNode* node = this->last_child_node; node != 0; node = node->prev_node) {
+            long result = node->panel->handle_mouse_move(param_1, param_2, param_3, param_4);
+            if (result != 0)
+                return result;
         }
-        PanelNode* node = this->last_child_node;
-        while (node != 0) {
-            int r = node->panel->handle_mouse_move(x, y, a, b);
-            if (r != 0) {
-                return r;
-            }
-            node = node->prev_node;
-        }
-        if (this->handle_mouse_input == 0) {
+
+        if (this->handle_mouse_input == 0)
             return 0;
-        }
-        return this->mouse_move_action(x, y, a, b);
+
+        return this->mouse_move_action(param_1, param_2, param_3, param_4);
     }
 
-    if (this->handle_mouse_input == 0) {
+    if (this->handle_mouse_input == 0)
         return 0;
-    }
 
     if (this->mouse_action == 1 || this->mouse_action == 2) {
         if (this->mouse_down_button == 1) {
-            if (abs(x - this->mouse_down_x) <= this->mouse_move_tolerance &&
-                abs(y - this->mouse_down_y) <= this->mouse_move_tolerance) {
+            if (abs(param_1 - this->mouse_down_x) <= this->mouse_move_tolerance &&
+                abs(param_2 - this->mouse_down_y) <= this->mouse_move_tolerance)
                 return 1;
-            }
         } else {
-            if (abs(x - this->mouse_down_x) <= 10 &&
-                abs(y - this->mouse_down_y) <= 10) {
+            if (abs(param_1 - this->mouse_down_x) <= 10 &&
+                abs(param_2 - this->mouse_down_y) <= 10)
                 return 1;
-            }
         }
     }
 
     this->mouse_action = 3;
     if (this->mouse_down_button == 1) {
-        this->mouse_left_move_action(x, y, a, b);
-        return 1;
+        this->mouse_left_move_action(param_1, param_2, param_3, param_4);
+    } else if (this->mouse_down_button == 2) {
+        this->mouse_right_move_action(param_1, param_2, param_3, param_4);
+    } else {
+        this->mouse_move_action(param_1, param_2, param_3, param_4);
     }
-    if (this->mouse_down_button == 2) {
-        this->mouse_right_move_action(x, y, a, b);
-        return 1;
-    }
-    this->mouse_move_action(x, y, a, b);
     return 1;
 }
 
