@@ -18,6 +18,6 @@
     "004864F0": {"status": "new_verified_logic", "symbol": "?place_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z", "behavior_review": "logic_matching/004864F0/review-01/attempt-01"},
     "00486700": {"status": "matching", "symbol": "?place_land_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJJJJ@Z"},
     "00486A60": {"status": "matching", "symbol": "?place_group@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJPAVRGE_Player@@@Z"},
-    "00486C40": {"status": "scratch", "symbol": "?place_cluster@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJPAVRGE_Player@@@Z"}
+    "00486C40": {"status": "new_verified_logic", "symbol": "?place_cluster@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJPAVRGE_Player@@@Z", "behavior_review": "logic_matching/00486C40/review-coord-06-00486C40-20260913T042924Z/attempt-01"}
   }
 }

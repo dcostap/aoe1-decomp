@@ -543,92 +543,82 @@ void RGE_RMM_Object_Generator::place_group(
 }
 
 void RGE_RMM_Object_Generator::place_cluster(
-    RGE_Object_Info_Line& info, long x, long y, RGE_Player* player)
+    RGE_Object_Info_Line& info, long px, long py, RGE_Player* player)
 {
-    long tile_y;
-    long x1;
-    long y0;
-    long y1;
-    long x_start;
-    long zone;
-    long count;
-    float tile_x;
-    float tile_y_float;
+    long x;
+    long y;
     float cost;
-    Map_Stack* node;
-
+    float tile_x;
+    float tile_y;
     Map_Stack obj_stack;
+
+    obj_stack.next = 0;
+    obj_stack.prev = 0;
     this->init_stack(obj_stack);
-    this->add_stack_node(&obj_stack, &this->stack_offsets[y][x]);
+    this->add_stack_node(&obj_stack, &this->stack_offsets[py][px]);
 
-    y1 = y - info.group_area;
-    y0 = x + info.group_area;
-    zone = y + info.group_area;
-    x_start = x - info.group_area;
-    if (x_start < 0) x_start = 0;
-    if (y1 < 0) y1 = 0;
-    if (y0 >= this->map_width) y0 = this->map_width - 1;
-    if (zone >= this->map_height) zone = this->map_height - 1;
+    long min_x = px - info.group_area;
+    long min_y = py - info.group_area;
+    long max_x = px + info.group_area;
+    long max_y = py + info.group_area;
 
-    for (x1 = y1; x1 <= zone; ++x1) {
-        for (tile_y = x_start; tile_y <= y0; ++tile_y) {
-            this->search_map_rows[x1][tile_y] = 1;
+    if (min_x < 0) min_x = 0;
+    if (min_y < 0) min_y = 0;
+    if (max_x >= this->map_width) max_x = this->map_width - 1;
+    if (max_y >= this->map_height) max_y = this->map_height - 1;
+
+    for (y = min_y; y <= max_y; y++) {
+        for (x = min_x; x <= max_x; x++) {
+            this->search_map_rows[y][x] = 1;
         }
     }
 
-    count = info.object_number_per_group;
-    long variance = info.object_number_varience;
-    count += (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x256) *
-        (variance << 1)) / 0x7fff - variance;
+    int count = info.object_number_per_group;
+    register int var = info.object_number_varience;
+    int delta = (debug_rand(s_rmm_obj_cpp, 0x256) * (var << 1)) /
+                0x7fff - var;
+    count += delta;
     if (count < 1) count = 1;
 
-    node = this->pop_stack(obj_stack, tile_y, x1, cost);
-    while (node != 0 && count > 0) {
-        RGE_Master_Static_Object* master = player->master_objects[info.obj_id];
-        tile_y_float = (float)tile_y;
-        tile_x = (float)x1;
-        if (master->radius_x -
-                (float)(short)(int)master->radius_x > 0.0f) {
-            tile_y_float += 0.5f;
+    while (this->pop_stack(obj_stack, x, y, cost) && count > 0) {
+        tile_x = (float)x;
+        tile_y = (float)y;
+        RGE_Master_Static_Object* master =
+            player->master_objects[info.obj_id];
+
+        short radius = (short)(int)master->radius_x;
+        if (master->radius_x - (float)radius > 0.0f) {
+            tile_x = tile_x - -0.5f;
         }
-        if (master->radius_y -
-                (float)(short)(int)master->radius_y > 0.0f) {
-            tile_x += 0.5f;
+        radius = (short)(int)master->radius_y;
+        if (master->radius_y - (float)radius > 0.0f) {
+            tile_y = tile_y - -0.5f;
         }
 
-        master->alignment(tile_y_float, tile_x, this->world, 1);
-        if (master->check_placement(player, tile_y_float, tile_x,
-                0, 0, 1, 1, 1, 0, 1) == 0) {
-            player->make_new_object(info.obj_id, tile_y_float, tile_x, 0, 1);
-            --count;
-            this->search_map_rows[x1][tile_y] = 0;
+        master->alignment(tile_x, tile_y, this->world, 1);
+        if (!master->check_placement(player, tile_x, tile_y,
+                                     0, 0, 1, 1, 1, 0, 1)) {
+            player->make_new_object(info.obj_id, tile_x, tile_y, 0, 1);
+            count--;
+            this->search_map_rows[y][x] = 0;
 
-            if (tile_y > x_start &&
-                this->search_map_rows[x1][tile_y - 1] != 0) {
-                this->push_stack(obj_stack, tile_y - 1, x1, 0.0f,
-                    (float)debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x270));
+            if (x > min_x && this->search_map_rows[y][x - 1] != 0) {
+                this->push_stack(obj_stack, x - 1, y, 0.0f,
+                    (float)debug_rand(s_rmm_obj_cpp, 0x270));
             }
-            if (tile_y < y0 &&
-                this->search_map_rows[x1][tile_y + 1] != 0) {
-                this->push_stack(obj_stack, tile_y + 1, x1, 0.0f,
-                    (float)debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x273));
+            if (x < max_x && this->search_map_rows[y][x + 1] != 0) {
+                this->push_stack(obj_stack, x + 1, y, 0.0f,
+                    (float)debug_rand(s_rmm_obj_cpp, 0x273));
             }
-            if (x1 > y1 &&
-                this->search_map_rows[x1 - 1][tile_y] != 0) {
-                this->push_stack(obj_stack, tile_y, x1 - 1, 0.0f,
-                    (float)debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x276));
+            if (y > min_y && this->search_map_rows[y - 1][x] != 0) {
+                this->push_stack(obj_stack, x, y - 1, 0.0f,
+                    (float)debug_rand(s_rmm_obj_cpp, 0x276));
             }
-            if (x1 < zone &&
-                this->search_map_rows[x1 + 1][tile_y] != 0) {
-                this->push_stack(obj_stack, tile_y, x1 + 1, 0.0f,
-                    (float)debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x279));
+            if (y < max_y && this->search_map_rows[y + 1][x] != 0) {
+                this->push_stack(obj_stack, x, y + 1, 0.0f,
+                    (float)debug_rand(s_rmm_obj_cpp, 0x279));
             }
         }
-        node = this->pop_stack(obj_stack, tile_y, x1, cost);
     }
 
     this->deinit_stack(obj_stack);
