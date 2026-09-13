@@ -1050,133 +1050,124 @@ int RGE_Main_View::command_make_do(long x, long y, int allow_move,
     return 0;
 }
 
-unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_object, long x, long y,
-                           RGE_Pick_Info* out,
-                           RGE_Static_Object* exclude, int alt) {
-    RGE_Pick_Obj_Info* info;
-    RGE_Static_Object* picked_obj;
-    short scr_x;
-    short scr_y;
-    int target_count;
-    if (command == 0x29) {
-        out->x = 0;
-        out->y = 0;
-        out->scr_x = 0;
-        out->scr_y = 0;
-        out->object = 0;
-        out->tile = 0;
-
-        if (!small_object)
-            target_count = this->pick_objects(x, y, 0, 40, 15, 4, 1);
-        else
-            target_count = this->pick_objects(x, y, 10, 20, 15, 4, 1);
-        int high_confidence = target_count;
-        if (!target_count)
-            return 0x32;
-
-        if (!exclude) {
-            picked_obj = 0;
-            scr_x = 0;
-            scr_y = 0;
-            x = 0;
-            info = Picked_Objects;
-            for (int i = high_confidence; i > 0; --i, ++info) {
-                if (info->object_id >= 0) {
-                    RGE_Static_Object* object =
-                        this->world->objectsValue[info->object_id];
-                    if (object != 0 && object->object_state < 7 &&
-                        object->master_obj->select_level >= small_object) {
-                        if (alt || this->map->map_visible_flag ||
-                            this->pick_through_fog(object) ||
-                            this->player->visible->get_visible(
-                                (int)object->world_x,
-                                (int)object->world_y) == 0x0F) {
-                            int score = this->pick_weight(
-                                object, info->confidence);
-                            if (score > x) {
-                                scr_x = this->TPanel::render_rect.left + info->draw_x;
-                                scr_y = this->TPanel::render_rect.top + info->draw_y;
-                                picked_obj = object;
-                                x = score;
-                            }
-                        }
-                    }
-                }
-            }
-            if (picked_obj != 0) {
-                out->object = picked_obj;
-                out->scr_x = scr_x;
-                out->scr_y = scr_y;
-                out->x = picked_obj->world_x;
-                out->y = picked_obj->world_y;
-                return 0x34;
-            }
-            return 0x32;
-        }
-
-        int found_last = 0;
-        picked_obj = 0;
-        scr_x = 0;
-        scr_y = 0;
-        info = Picked_Objects;
-        x = 0;
-        while (x < target_count) {
-            if (info->object_id >= 0) {
-                RGE_Static_Object* object =
-                this->world->objectsValue[info->object_id];
-                if (object != 0 && object->object_state < 7 &&
-                    object->master_obj->select_level >= small_object) {
-                    if (this->pick_weight(object, info->confidence) > 0 &&
-                        (alt || this->map->map_visible_flag ||
-                         this->pick_through_fog(object) ||
-                         this->player->visible->get_visible(
-                             (int)object->world_x,
-                             (int)object->world_y) == 0x0F)) {
-                        if (object == exclude) {
-                            found_last = 1;
-                        } else if (!found_last) {
-                            if (picked_obj == 0) {
-                                picked_obj = object;
-                                scr_x = this->TPanel::render_rect.left;
-                                scr_y = this->TPanel::render_rect.top;
-                                scr_x += info->draw_x;
-                                scr_y += info->draw_y;
-                            }
-                        } else {
-                            picked_obj = object;
-                            scr_x = this->TPanel::render_rect.left;
-                            scr_y = this->TPanel::render_rect.top;
-                            scr_x += info->draw_x;
-                            scr_y += info->draw_y;
-                            break;
-                        }
-                    }
-                }
-            }
-            ++x;
-            ++info;
-        }
-        if (found_last && picked_obj == 0) {
-            picked_obj = exclude;
-            scr_x = this->TPanel::render_rect.left + Picked_Objects[target_count].draw_x;
-            scr_y = this->TPanel::render_rect.top + Picked_Objects[target_count].draw_y;
-        }
-        if (picked_obj != 0) {
-            out->object = picked_obj;
-            out->scr_x = scr_x;
-            out->scr_y = scr_y;
-            out->x = picked_obj->world_x;
-            out->y = picked_obj->world_y;
+unsigned char RGE_Main_View::pick1(unsigned char action,
+                                   unsigned char select_level, long x, long y,
+                                   RGE_Pick_Info* pick_info,
+                                   RGE_Static_Object* previous, int through_fog) {
+    if (action != 0x29) {
+        if (action == 0x2A &&
+            this->pick1(0x29, select_level, x, y, pick_info, previous, 1) ==
+                0x34)
             return 0x34;
-        }
+        return this->RGE_View::pick(0x28, select_level, x, y, pick_info,
+                                    previous);
+    }
+
+    pick_info->x = 0.0f;
+    pick_info->y = 0.0f;
+    pick_info->scr_x = 0;
+    pick_info->scr_y = 0;
+    pick_info->object = 0;
+    pick_info->tile = 0;
+
+    int count;
+    if (select_level == 0)
+        count = this->pick_objects(x, y, 0, 40, 15, 4, 1);
+    else
+        count = this->pick_objects(x, y, 10, 20, 15, 4, 1);
+
+    if (count == 0)
         return 0x32;
+
+    RGE_Static_Object* selected = 0;
+    short selected_x = 0;
+    short selected_y = 0;
+
+    if (previous == 0) {
+        int best_weight = 0;
+        RGE_Pick_Obj_Info* info = Picked_Objects;
+
+        for (int i = 0; i < count; i++, info++) {
+            if (info->object_id < 0)
+                continue;
+
+            RGE_Static_Object* object =
+                this->world->objectsValue[info->object_id];
+            if (object == 0 || object->object_state >= 7 ||
+                object->master_obj->select_level < select_level)
+                continue;
+
+            if (through_fog == 0 && this->map->map_visible_flag == 0 &&
+                this->pick_through_fog(object) == 0 &&
+                this->player->visible->get_visible((int)object->world_x,
+                                                   (int)object->world_y) != 0x0F)
+                continue;
+
+            int weight = this->pick_weight(object, info->confidence);
+            if (weight > best_weight) {
+                selected = object;
+                selected_x = (short)this->render_rect.left + info->draw_x;
+                selected_y = (short)this->render_rect.top + info->draw_y;
+                best_weight = weight;
+            }
+        }
+    } else {
+        int found_previous = 0;
+        int i = 0;
+        RGE_Pick_Obj_Info* info = Picked_Objects;
+
+        for (; i < count; i++, info++) {
+            if (info->object_id < 0)
+                continue;
+
+            RGE_Static_Object* object =
+                this->world->objectsValue[info->object_id];
+            if (object == 0 || object->object_state >= 7 ||
+                object->master_obj->select_level < select_level ||
+                this->pick_weight(object, info->confidence) <= 0)
+                continue;
+
+            if (through_fog == 0 && this->map->map_visible_flag == 0 &&
+                this->pick_through_fog(object) == 0 &&
+                this->player->visible->get_visible((int)object->world_x,
+                                                   (int)object->world_y) != 0x0F)
+                continue;
+
+            if (object == previous) {
+                found_previous = 1;
+                continue;
+            }
+
+            if (found_previous != 0) {
+                selected = object;
+                selected_x = (short)this->render_rect.left + info->draw_x;
+                selected_y = (short)this->render_rect.top + info->draw_y;
+                break;
+            }
+
+            if (selected == 0) {
+                selected = object;
+                selected_x = (short)this->render_rect.left + info->draw_x;
+                selected_y = (short)this->render_rect.top + info->draw_y;
+            }
+        }
+
+        if (found_previous != 0 && selected == 0) {
+            selected = previous;
+            selected_x = (short)this->render_rect.left + Picked_Objects[i].draw_x;
+            selected_y = (short)this->render_rect.top + Picked_Objects[i].draw_y;
+        }
     }
 
-    if (command == 0x2A) {
-        if (pick1(0x29, small_object, x, y, out, exclude, 1) == 0x34)
-            return 0x34;
-    }
-    return this->pick(0x28, small_object, x, y, out, exclude);
+    if (selected == 0)
+        return 0x32;
+
+    pick_info->object = selected;
+    pick_info->scr_x = selected_x;
+    pick_info->scr_y = selected_y;
+    pick_info->x = selected->world_x;
+    pick_info->y = selected->world_y;
+    return 0x34;
 }
 
 int RGE_Main_View::pick_objects1(long x, long y,
