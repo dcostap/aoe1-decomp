@@ -34,7 +34,7 @@
     "004DA420": {"status": "matching", "symbol": "?addPriorAttackInfluences@TribeInformationAIModule@@QAEXHH@Z"},
     "004DA5A0": {"status": "matching", "symbol": "?objectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004DA5F0": {"status": "matching", "symbol": "?addObjectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@PAVRGE_Static_Object@@@Z"},
-    "004DA680": {"status": "scratch", "symbol": "?addObjectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@HFFEEEEFHEMMMPAVRGE_Static_Object@@@Z"},
+    "004DA680": {"status": "new_verified_logic", "symbol": "?addObjectMemory@TribeInformationAIModule@@QAEPAUObjectMemory@@HFFEEEEFHEMMMPAVRGE_Static_Object@@@Z", "behavior_review": "logic_matching/004DA680/review-20260322T000016/attempt-01"},
     "004DABB0": {"status": "matching", "symbol": "?addImportantObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004DAF80": {"status": "matching", "symbol": "?addImportantObject@TribeInformationAIModule@@QAEHH@Z"},
     "004DAFB0": {"status": "matching", "symbol": "?importantObject@TribeInformationAIModule@@QAEHH@Z"},

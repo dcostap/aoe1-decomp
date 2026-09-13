@@ -1645,84 +1645,105 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* obj) 
                            obj);
 }
 
-ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, short group, uchar x, uchar y, uchar z, uchar owner, short hp, int attempts, uchar kills, float dmg, float rof, float range, RGE_Static_Object* obj)
+ObjectMemory* TribeInformationAIModule::addObjectMemory(
+    int id, short type, short group, unsigned char x, unsigned char y,
+    unsigned char z, unsigned char owner, short hp, int attempts,
+    unsigned char kills, float damage, float rate, float range,
+    RGE_Static_Object* object)
 {
-    int maxMemory = this->maxImportantObjectMemory;
-    int empty = -1;
-    int i = 0;
-    ObjectMemory* p;
-    if (maxMemory > 0) {
-        p = this->importantObjectMemory;
-        while (i < maxMemory) {
-            if (p->id == id) {
-                goto duplicate;
+    int emptyIndex = -1;
+    int index = 0;
+
+    if (this->maxImportantObjectMemory > 0) {
+        do {
+            if (this->importantObjectMemory[index].id == id) {
+                this->importantObjectMemory[index].id = id;
+                this->importantObjectMemory[index].type = type;
+                this->importantObjectMemory[index].group = group;
+                this->importantObjectMemory[index].x = x;
+                this->importantObjectMemory[index].y = y;
+                this->importantObjectMemory[index].z = z;
+                this->importantObjectMemory[index].owner = owner;
+                this->importantObjectMemory[index].hitPoints = hp;
+                this->importantObjectMemory[index].attackAttempts = attempts;
+                this->importantObjectMemory[index].kills = kills;
+                this->importantObjectMemory[index].damageCapability = damage;
+                this->importantObjectMemory[index].rateOfFire = rate;
+                this->importantObjectMemory[index].range = range;
+                return this->importantObjectMemory + index;
             }
-            if (p->id == -1 && empty == -1) empty = i;
-            ++i;
-            ++p;
+            if (this->importantObjectMemory[index].id == -1 &&
+                emptyIndex == -1) {
+                emptyIndex = index;
+            }
+            index++;
+        } while (index < this->maxImportantObjectMemory);
+    }
+
+    if (object != 0) {
+        unsigned char controllingPlayer =
+            ((TRIBE_World*)this->md->player->world)->controllingComputerPlayer;
+        if (this->md->tacticalAI.strategicNumber(201) == 1 &&
+            (controllingPlayer == this->md->player->id ||
+             controllingPlayer == 0xff) &&
+            object->owner->id > 0 &&
+            object->owner->computerPlayer() == 0 &&
+            rge_base_game->singlePlayerGame() == 1) {
+            int unitType = this->convertUnitToIntType(object);
+            if (unitType != -1) {
+                this->unitHistory[unitType]++;
+            }
         }
     }
 
-    if (obj) {
-        unsigned int playerNum =
-            static_cast<TRIBE_World*>(this->md->player->world)
-                ->controllingComputerPlayer;
-        if (this->md->tacticalAI.strategicNumber(0xc9) == 1) {
-            int myNum = this->md->player->id;
-            if (playerNum == (unsigned int)myNum || playerNum == 0xff) {
-                RGE_Player* op = obj->owner;
-                if (op->id > 0 && op->computerPlayer() == 0 && rge_base_game->singlePlayerGame() == 1) {
-                    int t = this->convertUnitToIntType(obj);
-                    if (t != -1) ++this->unitHistory[t];
-                }
-            }
+    if (emptyIndex == -1) {
+        ObjectMemory* expanded = (ObjectMemory*)operator new(
+            this->maxImportantObjectMemory * sizeof(ObjectMemory) * 2);
+        if (expanded == 0) {
+            return 0;
         }
-    }
 
-    if (empty == -1) {
-        ObjectMemory* mem = (ObjectMemory*)operator new(this->maxImportantObjectMemory * 0x48);
-        if (!mem) return 0;
-        empty = 0;
+        index = 0;
         if (this->maxImportantObjectMemory > 0) {
-            i = 0;
             do {
-                mem[i].id = this->importantObjectMemory[i].id;
-                mem[i].type = this->importantObjectMemory[i].type;
-                mem[i].group = this->importantObjectMemory[i].group;
-                mem[i].x = this->importantObjectMemory[i].x;
-                mem[i].y = this->importantObjectMemory[i].y;
-                mem[i].z = this->importantObjectMemory[i].z;
-                mem[i].owner = this->importantObjectMemory[i].owner;
-                mem[i].hitPoints = this->importantObjectMemory[i].hitPoints;
-                mem[i].attackAttempts = this->importantObjectMemory[i].attackAttempts;
-                mem[i].kills = this->importantObjectMemory[i].kills;
-                mem[i].damageCapability = this->importantObjectMemory[i].damageCapability;
-                mem[i].rateOfFire = this->importantObjectMemory[i].rateOfFire;
-                mem[i].range = this->importantObjectMemory[i].range;
-                ++empty;
-                ++i;
-            } while (empty < this->maxImportantObjectMemory);
+                expanded[index].id = this->importantObjectMemory[index].id;
+                expanded[index].type = this->importantObjectMemory[index].type;
+                expanded[index].group = this->importantObjectMemory[index].group;
+                expanded[index].x = this->importantObjectMemory[index].x;
+                expanded[index].y = this->importantObjectMemory[index].y;
+                expanded[index].z = this->importantObjectMemory[index].z;
+                expanded[index].owner = this->importantObjectMemory[index].owner;
+                expanded[index].hitPoints = this->importantObjectMemory[index].hitPoints;
+                expanded[index].attackAttempts = this->importantObjectMemory[index].attackAttempts;
+                expanded[index].kills = this->importantObjectMemory[index].kills;
+                expanded[index].damageCapability = this->importantObjectMemory[index].damageCapability;
+                expanded[index].rateOfFire = this->importantObjectMemory[index].rateOfFire;
+                expanded[index].range = this->importantObjectMemory[index].range;
+                index++;
+            } while (index < this->maxImportantObjectMemory);
         }
-        if (empty < this->maxImportantObjectMemory * 2) {
+
+        if (index < this->maxImportantObjectMemory * 2) {
             do {
-                mem[empty].id = -1;
-                mem[empty].type = -1;
-                mem[empty].group = -1;
-                mem[empty].x = 0;
-                mem[empty].y = 0;
-                mem[empty].z = 0;
-                mem[empty].owner = 0;
-                mem[empty].hitPoints = 0;
-                mem[empty].attackAttempts = 0;
-                mem[empty].kills = 0;
-                mem[empty].damageCapability = 0.0f;
-                mem[empty].rateOfFire = 0.0f;
-                mem[empty].range = 0.0f;
-                ++empty;
-            } while (empty < this->maxImportantObjectMemory * 2);
+                expanded[index].id = -1;
+                expanded[index].type = -1;
+                expanded[index].group = -1;
+                expanded[index].x = 0;
+                expanded[index].y = 0;
+                expanded[index].z = 0;
+                expanded[index].owner = 0;
+                expanded[index].hitPoints = 0;
+                expanded[index].attackAttempts = 0;
+                expanded[index].kills = 0;
+                expanded[index].damageCapability = 0.0f;
+                expanded[index].rateOfFire = 0.0f;
+                expanded[index].range = 0.0f;
+                index++;
+            } while (index < this->maxImportantObjectMemory * 2);
         }
+
         operator delete(this->importantObjectMemory);
-        this->importantObjectMemory = mem;
+        this->importantObjectMemory = expanded;
         this->importantObjectMemory[this->maxImportantObjectMemory].id = id;
         this->importantObjectMemory[this->maxImportantObjectMemory].type = type;
         this->importantObjectMemory[this->maxImportantObjectMemory].group = group;
@@ -1733,44 +1754,29 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, shor
         this->importantObjectMemory[this->maxImportantObjectMemory].hitPoints = hp;
         this->importantObjectMemory[this->maxImportantObjectMemory].attackAttempts = attempts;
         this->importantObjectMemory[this->maxImportantObjectMemory].kills = kills;
-        this->importantObjectMemory[this->maxImportantObjectMemory].damageCapability = dmg;
-        this->importantObjectMemory[this->maxImportantObjectMemory].rateOfFire = rof;
+        this->importantObjectMemory[this->maxImportantObjectMemory].damageCapability = damage;
+        this->importantObjectMemory[this->maxImportantObjectMemory].rateOfFire = rate;
         this->importantObjectMemory[this->maxImportantObjectMemory].range = range;
-        int oldCount = this->maxImportantObjectMemory;
-        this->maxImportantObjectMemory = oldCount * 2;
-        return this->importantObjectMemory + oldCount;
+
+        index = this->maxImportantObjectMemory;
+        this->maxImportantObjectMemory *= 2;
+        return this->importantObjectMemory + index;
     }
 
-    this->importantObjectMemory[empty].id = id;
-    this->importantObjectMemory[empty].type = type;
-    this->importantObjectMemory[empty].group = group;
-    this->importantObjectMemory[empty].x = x;
-    this->importantObjectMemory[empty].y = y;
-    this->importantObjectMemory[empty].z = z;
-    this->importantObjectMemory[empty].owner = owner;
-    this->importantObjectMemory[empty].hitPoints = hp;
-    this->importantObjectMemory[empty].attackAttempts = attempts;
-    this->importantObjectMemory[empty].kills = kills;
-    this->importantObjectMemory[empty].damageCapability = dmg;
-    this->importantObjectMemory[empty].rateOfFire = rof;
-    this->importantObjectMemory[empty].range = range;
-    return this->importantObjectMemory + empty;
-
-duplicate:
-    this->importantObjectMemory[i].id = id;
-    this->importantObjectMemory[i].type = type;
-    this->importantObjectMemory[i].group = group;
-    this->importantObjectMemory[i].x = x;
-    this->importantObjectMemory[i].y = y;
-    this->importantObjectMemory[i].z = z;
-    this->importantObjectMemory[i].owner = owner;
-    this->importantObjectMemory[i].hitPoints = hp;
-    this->importantObjectMemory[i].attackAttempts = attempts;
-    this->importantObjectMemory[i].kills = kills;
-    this->importantObjectMemory[i].damageCapability = dmg;
-    this->importantObjectMemory[i].rateOfFire = rof;
-    this->importantObjectMemory[i].range = range;
-    return this->importantObjectMemory + i;
+    this->importantObjectMemory[emptyIndex].id = id;
+    this->importantObjectMemory[emptyIndex].type = type;
+    this->importantObjectMemory[emptyIndex].group = group;
+    this->importantObjectMemory[emptyIndex].x = x;
+    this->importantObjectMemory[emptyIndex].y = y;
+    this->importantObjectMemory[emptyIndex].z = z;
+    this->importantObjectMemory[emptyIndex].owner = owner;
+    this->importantObjectMemory[emptyIndex].hitPoints = hp;
+    this->importantObjectMemory[emptyIndex].attackAttempts = attempts;
+    this->importantObjectMemory[emptyIndex].kills = kills;
+    this->importantObjectMemory[emptyIndex].damageCapability = damage;
+    this->importantObjectMemory[emptyIndex].rateOfFire = rate;
+    this->importantObjectMemory[emptyIndex].range = range;
+    return this->importantObjectMemory + emptyIndex;
 }
 
 int TribeInformationAIModule::addImportantObject(RGE_Static_Object* obj, int recurse) {
