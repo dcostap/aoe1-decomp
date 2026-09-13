@@ -283,198 +283,211 @@ void TSpan_List_Manager::ResetAll()
     }
 }
 
-void TSpan_List_Manager::AddSpan(int start, int end, int line)
+void TSpan_List_Manager::AddSpan(int left, int right, int line)
 {
-    VSpan_Node* node;
-    VSpan_Node* other;
-    VSpan_Node* next;
     int temp;
 
     if (line < this->Min_Line || line > this->Max_Line) {
         return;
     }
 
-    if (start > end) {
-        temp = end;
-        end = start;
-        start = temp;
+    if (left > right) {
+        temp = left;
+        left = right;
+        right = temp;
     }
 
-    if (end < this->Min_Span_Px || start > this->Max_Span_Px) {
+    if (right < this->Min_Span_Px || left > this->Max_Span_Px) {
         return;
     }
-    if (start < this->Min_Span_Px) {
-        start = this->Min_Span_Px;
+    if (left < this->Min_Span_Px) {
+        left = this->Min_Span_Px;
     }
-    if (end > this->Max_Span_Px) {
-        end = this->Max_Span_Px;
+    if (right > this->Max_Span_Px) {
+        right = this->Max_Span_Px;
     }
 
-    node = this->Line_Head_Ptrs[line];
-    if (node == 0) {
-        node = this->VSList.GetNode();
+    VSpan_Node* head = this->Line_Head_Ptrs[line];
+    if (head == 0) {
+        VSpan_Node* node = this->VSList.GetNode();
         node->Prev = 0;
         node->Next = 0;
-        node->StartPx = start;
-        node->EndPx = end;
+        node->StartPx = left;
+        node->EndPx = right;
         this->Line_Head_Ptrs[line] = node;
         this->Line_Tail_Ptrs[line] = node;
-        this->LeftMostPx[line] = start;
-        this->RightMostPx[line] = end;
+        this->LeftMostPx[line] = left;
+        this->RightMostPx[line] = right;
         this->Span_Count[line] = this->Span_Count[line] + 1;
         return;
     }
 
-    other = this->Line_Tail_Ptrs[line];
-    if (start <= this->LeftMostPx[line]) {
-        if (end < this->LeftMostPx[line] - 1) {
-            other = this->VSList.GetNode();
-            other->Prev = 0;
-            other->Next = node;
-            node->Prev = other;
-            other->StartPx = start;
-            other->EndPx = end;
-            this->LeftMostPx[line] = start;
-            this->Line_Head_Ptrs[line] = other;
-            this->Span_Count[line] = this->Span_Count[line] + 1;
-            return;
-        }
+    VSpan_Node* tail = this->Line_Tail_Ptrs[line];
+    int leftmost = this->LeftMostPx[line];
 
-        if (end >= this->RightMostPx[line]) {
-            int* count = this->Span_Count;
-            temp = this->VSList.FreeThread(node->Next, 0);
-            count[line] = count[line] - temp;
-            node->Prev = 0;
-            node->Next = 0;
-            node->StartPx = start;
-            node->EndPx = end;
-            this->Line_Tail_Ptrs[line] = node;
-            this->RightMostPx[line] = end;
-            this->LeftMostPx[line] = start;
-            return;
-        }
+    if (leftmost < left) {
+        int rightmost = this->RightMostPx[line];
 
-        this->LeftMostPx[line] = start;
-        int boundary = end;
-        boundary++;
-        if (boundary >= node->StartPx) {
-            do {
-                if (end <= node->EndPx) {
-                    node->StartPx = start;
-                    return;
+        if (right < rightmost) {
+            VSpan_Node* current = head;
+            int current_end = current->EndPx;
+
+            while (current_end < left - 1) {
+                current = current->Next;
+                current_end = current->EndPx;
+            }
+
+            if (right + 1 < current->StartPx) {
+                VSpan_Node* node = this->VSList.GetNode();
+                tail = current->Prev;
+                node->Next = current;
+                node->Prev = tail;
+                current->Prev = node;
+                node->Prev->Next = node;
+                node->StartPx = left;
+                node->EndPx = right;
+                this->Span_Count[line] = this->Span_Count[line] + 1;
+                return;
+            }
+
+            if (left < current->StartPx) {
+                current->StartPx = left;
+            }
+
+            if (current->EndPx < right
+                && (tail = current->Next) != 0) {
+                for (;;) {
+                    if (right + 1 < tail->StartPx) {
+                        current->EndPx = right;
+                        return;
+                    }
+                    if (right <= tail->EndPx) {
+                        break;
+                    }
+
+                    if (tail->Prev != 0) {
+                        tail->Prev->Next = tail->Next;
+                    }
+                    if (tail->Next != 0) {
+                        tail->Next->Prev = tail->Prev;
+                    }
+
+                    VSpan_Node* next = tail->Next;
+                    this->VSList.FreeNode(tail);
+                    this->Span_Count[line] = this->Span_Count[line] - 1;
+                    tail = next;
+                    if (next == 0) {
+                        return;
+                    }
                 }
-                other = node->Next;
-                if (boundary < other->StartPx) {
-                    break;
-                }
-                this->Line_Head_Ptrs[line] = other;
-                other->Prev = 0;
-                this->VSList.FreeNode(node);
+
+                current->EndPx = tail->EndPx;
+                current->Next = tail->Next;
+                this->VSList.FreeNode(tail);
                 this->Span_Count[line] = this->Span_Count[line] - 1;
-                node = other;
-                if (boundary < other->StartPx) {
+                if (current->Next != 0) {
+                    current->Next->Prev = current;
                     return;
                 }
-            } while (1);
-            node->StartPx = start;
-            node->EndPx = end;
-        }
-    } else {
-        if (end >= this->RightMostPx[line]) {
-            if (start > this->RightMostPx[line] + 1) {
-                node = this->VSList.GetNode();
-                node->Prev = other;
+                this->Line_Tail_Ptrs[line] = current;
+            }
+        } else {
+            if (rightmost + 1 < left) {
+                VSpan_Node* node = this->VSList.GetNode();
+                node->Prev = tail;
                 node->Next = 0;
-                other->Next = node;
-                node->StartPx = start;
-                node->EndPx = end;
-                this->RightMostPx[line] = end;
+                tail->Next = node;
+                node->StartPx = left;
+                node->EndPx = right;
+                this->RightMostPx[line] = right;
                 this->Line_Tail_Ptrs[line] = node;
                 this->Span_Count[line] = this->Span_Count[line] + 1;
                 return;
             }
 
-            this->RightMostPx[line] = end;
-            if (start - 1 <= other->EndPx) {
-                while (1) {
-                    if (start >= other->StartPx) {
-                        other->EndPx = end;
+            this->RightMostPx[line] = right;
+            int before = left - 1;
+            if (before <= tail->EndPx) {
+                for (;;) {
+                    if (tail->StartPx <= left) {
+                        tail->EndPx = right;
                         return;
                     }
-                    node = other;
-                    other = other->Prev;
-                    if (start - 1 > other->EndPx) {
+
+                    VSpan_Node* previous = tail->Prev;
+                    if (previous->EndPx < before) {
                         break;
                     }
-                    this->Line_Tail_Ptrs[line] = other;
-                    other->Next = 0;
-                    this->VSList.FreeNode(node);
+
+                    this->Line_Tail_Ptrs[line] = previous;
+                    previous->Next = 0;
+                    this->VSList.FreeNode(tail);
                     this->Span_Count[line] = this->Span_Count[line] - 1;
-                    node = other;
-                    if (other->EndPx < start - 1) {
+                    tail = previous;
+                    if (previous->EndPx < before) {
                         return;
                     }
                 }
-                node->StartPx = start;
-                node->EndPx = end;
-            }
-        } else {
-            while (node->EndPx < start - 1) {
-                node = node->Next;
-            }
 
-            if (node->StartPx > end + 1) {
-                VSpan_Node* inserted = this->VSList.GetNode();
-                other = node->Prev;
-                inserted->Next = node;
-                inserted->Prev = other;
-                node->Prev = inserted;
-                inserted->Prev->Next = inserted;
-                inserted->StartPx = start;
-                inserted->EndPx = end;
-                this->Span_Count[line] = this->Span_Count[line] + 1;
+                tail->StartPx = left;
+                tail->EndPx = right;
                 return;
             }
+        }
+    } else {
+        if (right < leftmost - 1) {
+            VSpan_Node* node = this->VSList.GetNode();
+            node->Prev = 0;
+            node->Next = head;
+            head->Prev = node;
+            node->StartPx = left;
+            node->EndPx = right;
+            this->LeftMostPx[line] = left;
+            this->Line_Head_Ptrs[line] = node;
+            this->Span_Count[line] = this->Span_Count[line] + 1;
+            return;
+        }
 
-            if (start < node->StartPx) {
-                node->StartPx = start;
-            }
-            if (node->EndPx < end) {
-                next = node->Next;
-                if (next != 0) {
-                    while (1) {
-                        if (end + 1 < next->StartPx) {
-                            node->EndPx = end;
-                            return;
-                        }
-                        if (end <= next->EndPx) {
-                            break;
-                        }
-                        if (next->Prev != 0) {
-                            next->Prev->Next = next->Next;
-                        }
-                        if (next->Next != 0) {
-                            next->Next->Prev = next->Prev;
-                        }
-                        VSpan_Node* after = next->Next;
-                        this->VSList.FreeNode(next);
-                        this->Span_Count[line] = this->Span_Count[line] - 1;
-                        next = after;
-                        if (next == 0) {
-                            return;
-                        }
-                    }
-                    node->EndPx = next->EndPx;
-                    node->Next = next->Next;
-                    this->VSList.FreeNode(next);
-                    this->Span_Count[line] = this->Span_Count[line] - 1;
-                    if (node->Next != 0) {
-                        node->Next->Prev = node;
-                        return;
-                    }
-                    this->Line_Tail_Ptrs[line] = node;
+        if (this->RightMostPx[line] <= right) {
+            int* span_count = this->Span_Count + line;
+            int freed = this->VSList.FreeThread(head->Next, 0);
+            *span_count = *span_count - freed;
+            head->Prev = 0;
+            head->Next = 0;
+            head->StartPx = left;
+            head->EndPx = right;
+            this->Line_Tail_Ptrs[line] = head;
+            this->RightMostPx[line] = right;
+            this->LeftMostPx[line] = left;
+            return;
+        }
+
+        this->LeftMostPx[line] = left;
+        int after = right + 1;
+        if (head->StartPx <= after) {
+            for (;;) {
+                if (right <= head->EndPx) {
+                    head->StartPx = left;
+                    return;
+                }
+
+                VSpan_Node* next = head->Next;
+                if (after < next->StartPx) {
+                    break;
+                }
+
+                this->Line_Head_Ptrs[line] = next;
+                next->Prev = 0;
+                this->VSList.FreeNode(head);
+                this->Span_Count[line] = this->Span_Count[line] - 1;
+                head = next;
+                if (after < next->StartPx) {
+                    return;
                 }
             }
+
+            head->StartPx = left;
+            head->EndPx = right;
         }
     }
 }
