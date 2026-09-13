@@ -40,7 +40,7 @@
     "004C4250": {"status": "matching", "symbol": "?get_object_pointer@RGE_Static_Object@@QAEPAV1@J@Z", "behavior_review": "logic_matching/004C4250/review-coord-04-004C4250-20260913T000001Z/attempt-01"},
     "004C4330": {"status": "matching", "symbol": "?get_sprite_pointer@RGE_Static_Object@@QAEPAVRGE_Sprite@@F@Z"},
     "004C4360": {"status": "matching", "symbol": "?save@RGE_Static_Object@@UAEXH@Z"},
-    "004C4680": {"status": "scratch", "symbol": "?teleport@RGE_Static_Object@@UAEMMMM@Z"},
+    "004C4680": {"status": "new_verified_logic", "symbol": "?teleport@RGE_Static_Object@@UAEMMMM@Z", "behavior_review": "logic_matching/004C4680/review-coord-04-004C4680-20260913T000002Z/attempt-01"},
     "004C4BD0": {"status": "matching", "symbol": "?new_sprite@RGE_Static_Object@@UAEXPAVRGE_Sprite@@@Z"},
     "004C4C20": {"status": "matching", "symbol": "?add_overlay_sprite@RGE_Static_Object@@UAEXPAVRGE_Sprite@@E@Z"},
     "004C4C40": {"status": "matching", "symbol": "?remove_overlay_sprite@RGE_Static_Object@@UAEXPAVRGE_Sprite@@@Z"},

@@ -1657,59 +1657,49 @@ void RGE_Static_Object::save(int file)
 // teleport uses the canonical named terrain methods.
 
 
-float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
-    float result;
-    RGE_Map* map;
-    float rz;
-    float rx;
-    int tx;
-    int ty;
-    RGE_Tile* new_tile;
-    result = 0.0f;
-    map = this->owner->world->map;
+float RGE_Static_Object::teleport(float x, float y, float z)
+{
+    float tile_z = 0.0f;
+    RGE_Map* map = this->owner->world->map;
     if (this->inside_obj != 0) {
         return 0.0f;
     }
 
-    if (0.0 < this->master_obj->radius_z) {
+    if (this->master_obj->radius_z > 0.0) {
         this->removeFromObstructionMap(2);
     }
 
-    if (param_1 < 0.0f) {
-        param_1 = 0.0f;
+    if (x < 0.0f) {
+        x = 0.0f;
     }
-    // The upper-bound loads come directly from map width and height.
-    if (param_1 >= (float)map->map_width) {
-        param_1 = (float)map->map_width - DAT_00574744;
+    if (x >= (float)map->map_width) {
+        x = (float)map->map_width - 0.001f;
     }
-    if (param_2 < 0.0f) {
-        param_2 = 0.0f;
+    if (y < 0.0f) {
+        y = 0.0f;
     }
-    if (param_2 >= (float)map->map_height) {
-        param_2 = (float)map->map_height - DAT_00574744;
-    }
-
-    tx = (int)param_1;
-    ty = (int)param_2;
-    rx = param_1 - (float)tx;
-    rz = param_2 - (float)ty;
-    if (tx >= map->map_width) {
-        tx = map->map_width - 1;
-    } else if (tx < 0) {
-        tx = 0;
-    }
-    if (ty >= map->map_height) {
-        ty = map->map_height - 1;
-    } else if (ty < 0) {
-        ty = 0;
+    if (y >= (float)map->map_height) {
+        y = (float)map->map_height - 0.001f;
     }
 
-    new_tile = map->map_row_offset[ty] + tx;
-    if (new_tile == this->tile || this->inside_obj != 0) {
-        this->world_x = param_1;
-        this->world_y = param_2;
-        this->world_z = param_3;
-    } else {
+    int tile_x = (int)x;
+    int tile_y = (int)y;
+    float offset_x = x - (float)tile_x;
+    float offset_y = y - (float)tile_y;
+
+    if (tile_x >= map->map_width) {
+        tile_x = map->map_width - 1;
+    } else if (tile_x < 0) {
+        tile_x = 0;
+    }
+    if (tile_y >= map->map_height) {
+        tile_y = map->map_height - 1;
+    } else if (tile_y < 0) {
+        tile_y = 0;
+    }
+
+    RGE_Tile* new_tile = map->map_row_offset[tile_y] + tile_x;
+    if (new_tile != this->tile && this->inside_obj == 0) {
         if (this->tile != 0) {
             this->tile->objects.remove_node(this, 0);
         }
@@ -1717,158 +1707,145 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         if (this->tile != 0) {
             this->unexplore_terrain(this->owner, 0, -1);
         }
-        this->world_x = param_1;
-        this->world_y = param_2;
-        this->world_z = param_3;
+
+        this->world_z = z;
+        this->world_x = x;
+        this->world_y = y;
         this->tile = new_tile;
         if (this->object_state == 2) {
             this->explore_terrain(this->owner, 0, -1);
         }
+    } else {
+        this->world_x = x;
+        this->world_y = y;
+        this->world_z = z;
     }
 
-    if (0.0 < this->master_obj->radius_z) {
+    if (this->master_obj->radius_z > 0.0) {
         this->addToObstructionMap(2);
     }
 
-    float slope_flag = 0.0f;
+    float y_adjust = 0.0f;
     switch (new_tile->tile_type) {
     case 0:
-        result = 0.0f;
+        tile_z = 0.0f;
         break;
     case 1:
-        if (rx + rz < DAT_0057472c) {
-            result = rz;
-        } else {
-            result = DAT_0057472c - rx;
-        }
+        tile_z = offset_x + offset_y < 1.0f
+                     ? offset_y : 1.0f - offset_x;
         break;
     case 2:
-        if (rx + rz < DAT_0057472c) {
-            result = rx;
-            slope_flag = 1.0f;
-        } else {
-            result = DAT_0057472c - rz;
-            slope_flag = 1.0f;
-        }
+        tile_z = offset_x + offset_y < 1.0f
+                     ? offset_x : 1.0f - offset_y;
+        y_adjust = 1.0f;
         break;
     case 3:
-        if (rx <= rz) {
-            result = DAT_0057472c - rz;
-        } else {
-            result = DAT_0057472c - rx;
-        }
+        tile_z = offset_x <= offset_y
+                     ? 1.0f - offset_y : 1.0f - offset_x;
         break;
     case 4:
-        if (rx <= rz) {
-            result = rx;
-        } else {
-            result = rz;
-        }
+        tile_z = offset_x <= offset_y ? offset_x : offset_y;
         break;
     case 5:
-        result = DAT_0057472c - rx;
+        tile_z = 1.0f - offset_x;
         break;
     case 6:
-        result = DAT_0057472c - rz;
-        slope_flag = 1.0f;
+        tile_z = 1.0f - offset_y;
+        y_adjust = 1.0f;
         break;
     case 7:
-        result = rz;
+        tile_z = offset_y;
         break;
     case 8:
-        result = rx;
-        slope_flag = 1.0f;
+        tile_z = offset_x;
+        y_adjust = 1.0f;
         break;
     case 9:
-        if (rx - rz < 0.0f) {
-            result = -(rx - rz);
+        tile_z = offset_x - offset_y;
+        if (tile_z < 0.0f) {
+            tile_z = -tile_z;
         } else {
-            result = 0.0f;
+            tile_z = 0.0f;
         }
         break;
     case 10:
-        result = rx - rz;
-        if (result <= 0.0f) {
-            result = 0.0f;
+        tile_z = offset_x - offset_y;
+        if (tile_z <= 0.0f) {
+            tile_z = 0.0f;
         }
-        slope_flag = 1.0f;
+        y_adjust = 1.0f;
         break;
     case 11:
-        if (rx + rz < DAT_0057472c) {
-            result = DAT_0057472c - (rx + rz);
+        tile_z = offset_x + offset_y;
+        if (tile_z < 1.0f) {
+            tile_z = 1.0f - tile_z;
         } else {
-            result = 0.0f;
+            tile_z = 0.0f;
         }
         break;
     case 12:
-        if (DAT_0057472c < rx + rz) {
-            result = (rx + rz) - DAT_0057472c;
+        tile_z = offset_x + offset_y;
+        if (tile_z > 1.0f) {
+            tile_z -= 1.0f;
         } else {
-            result = 0.0f;
+            tile_z = 0.0f;
         }
         break;
     case 13:
-        if (DAT_0057472c <= rx + rz) {
-            result = rz;
-        } else {
-            result = DAT_0057472c - rx;
-        }
+        tile_z = offset_x + offset_y < 1.0f
+                     ? 1.0f - offset_x : offset_y;
         break;
     case 14:
-        if (DAT_0057472c <= rx + rz) {
-            result = rx;
-            slope_flag = 1.0f;
-        } else {
-            result = DAT_0057472c - rz;
-            slope_flag = 1.0f;
-        }
+        tile_z = offset_x + offset_y < 1.0f
+                     ? 1.0f - offset_y : offset_x;
+        y_adjust = 1.0f;
         break;
     case 15:
-        if (rx <= rz) {
-            result = rz;
-        } else {
-            result = rx;
-        }
-        slope_flag = 1.0f;
+        tile_z = offset_x <= offset_y ? offset_y : offset_x;
+        y_adjust = 1.0f;
         break;
     case 16:
-        if (rx <= rz) {
-            result = DAT_0057472c - rx;
-        } else {
-            result = DAT_0057472c - rz;
-        }
-        slope_flag = 1.0f;
+        tile_z = offset_x <= offset_y
+                     ? 1.0f - offset_x : 1.0f - offset_y;
+        y_adjust = 1.0f;
         break;
     default:
         break;
     }
 
-    result += (float)this->tile->height;
     RGE_Master_Static_Object* master = this->master_obj;
-    unsigned char movement = master->movement_type;
-    if (movement == 0) {
-        this->world_z = result;
-    } else if (movement == 1 && this->world_z < result) {
-        this->world_z = result;
+    tile_z += this->tile->height;
+    switch (master->movement_type) {
+    case 0:
+        this->world_z = tile_z;
+        break;
+    case 1:
+        if (tile_z > this->world_z) {
+            this->world_z = tile_z;
+        }
+        break;
     }
 
     this->screen_x_offset =
-        (short)((rx + rz) * map->tile_half_width);
+        (short)((offset_y + offset_x) * map->tile_half_width);
+    float screen_y = y_adjust + offset_y + 1.0f - offset_x;
     this->screen_y_offset =
-        (short)((slope_flag + rz - DAT_00574730 - rx - this->world_z) *
-                map->tile_half_height);
+        (short)((screen_y - this->world_z) * map->tile_half_height);
 
-    if (master->movement_type == 0) {
+    switch (master->movement_type) {
+    case 0:
         this->shadow_x_offset = this->screen_x_offset;
         this->shadow_y_offset = this->screen_y_offset;
-    } else if (master->movement_type == 1) {
+        break;
+    case 1:
         this->shadow_x_offset =
-            (short)((rx + rz) * map->tile_half_width);
+            (short)((offset_y + offset_x) * map->tile_half_width);
         this->shadow_y_offset =
-            (short)((slope_flag + rz - DAT_00574730 - rx - result) *
-                    map->tile_half_height);
+            (short)((screen_y - tile_z) * map->tile_half_height);
+        break;
     }
-    return result;
+
+    return tile_z;
 }
 
 
