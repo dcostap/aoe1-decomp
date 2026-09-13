@@ -4123,90 +4123,96 @@ int RGE_View::start_scroll_view(unsigned char action, long x, long y,
     return result;
 }
 
-int RGE_View::handle_scroll_view(long param_1, long param_2)
+int RGE_View::handle_scroll_view(long x, long y)
 {
-    long point_x;                 // saved mouse_last_x
-    float save_view_x;            // saved player view_x
-    float save_view_y;            // saved player view_y
-    long lVar12;                  // saved mouse_last_y (late)
-    int iVar10;                   // deltas / ftol results
-    tagPOINT point;
     RGE_Pick_Info pick_info;
-    int bVar7;
+    tagPOINT point;
+    float old_view_x;
+    float old_view_y;
+    long old_mouse_x;
+    long old_mouse_y;
+    int move_view;
+    long delta;
 
-    point_x = this->mouse_last_x;
-    if (param_1 == this->mouse_last_x && param_2 == this->mouse_last_y) {
+    if (x == this->mouse_last_x && y == this->mouse_last_y) {
         return 0;
     }
 
-    save_view_x = this->player->view_x;
-    save_view_y = this->player->view_y;
+    old_view_x = this->player->view_x;
+    old_view_y = this->player->view_y;
 
     switch (this->scroll_action) {
     case 2:
-        this->mouse_last_x = param_1;
-        this->mouse_last_y = param_2;
+        this->mouse_last_x = x;
+        this->mouse_last_y = y;
         this->bound_point(this->mouse_last_x, this->mouse_last_y);
-            this->set_redraw((TPanel::RedrawMode)1);
+        this->set_redraw((TPanel::RedrawMode)1);
         return 0;
 
     case 6:
-        if (this->is_inside(param_1, param_2) != 0 &&
-            this->pick(0x28, 0, param_1, param_2, &pick_info, 0) == 0x33) {
-            this->player->set_view_loc(pick_info.x - DAT_005776c0, pick_info.y - DAT_005776c0);
+        if (this->is_inside(x, y) &&
+            this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
+            this->player->set_view_loc(pick_info.x - DAT_005776c0,
+                                       pick_info.y - DAT_005776c0);
         }
-        this->mouse_last_x = param_1;
-        this->mouse_last_y = param_2;
-        if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
+        this->mouse_last_x = x;
+        this->mouse_last_y = y;
+        if (old_view_x == this->player->view_x &&
+            old_view_y == this->player->view_y) {
             return 0;
         }
-            this->set_redraw((TPanel::RedrawMode)1);
+        this->set_redraw((TPanel::RedrawMode)1);
         return 1;
 
     case 7:
-        iVar10 = param_2 - this->mouse_last_y;
-        if (iVar10 != 0 && iVar10 < 100 && iVar10 > -100) {
-            short sVar9 = (short)((float)iVar10 * DAT_005776b4);
-            this->player->map_y += sVar9;
-            this->player->map_x -= sVar9;
+        delta = y - this->mouse_last_y;
+        if (delta != 0 && delta < 100 && delta > -100) {
+            short amount = (short)((float)delta * DAT_005776b4);
+            this->player->map_y += amount;
+            this->player->map_x -= amount;
         }
-        iVar10 = param_1 - this->mouse_last_x;
-        if (iVar10 != 0 && iVar10 < 100 && iVar10 > -100) {
-            short sVar9 = (short)((float)iVar10 * DAT_005776b4);
-            this->player->map_y += sVar9;
-            this->player->map_x += sVar9;
+
+        delta = x - this->mouse_last_x;
+        if (delta != 0 && delta < 100 && delta > -100) {
+            short amount = (short)((float)delta * DAT_005776b4);
+            this->player->map_y += amount;
+            this->player->map_x += amount;
         }
-        if (abs(param_2 - this->mouse_down_y) > 8 || abs(param_1 - this->mouse_down_x) > 8) {
+
+        if (abs(y - this->mouse_down_y) <= 8 &&
+            abs(x - this->mouse_down_x) <= 8) {
+            this->mouse_last_x = x;
+            this->mouse_last_y = y;
+        } else {
             point.x = this->mouse_down_x;
             point.y = this->mouse_down_y;
             ClientToScreen(this->render_area->Wnd, &point);
             SetCursorPos(point.x, point.y);
-            this->mouse_last_y = this->mouse_down_y;
             this->mouse_last_x = this->mouse_down_x;
-            this->set_redraw((TPanel::RedrawMode)1);
-            return 1;
+            this->mouse_last_y = this->mouse_down_y;
         }
-        this->mouse_last_x = param_1;
-        this->mouse_last_y = param_2;
         this->set_redraw((TPanel::RedrawMode)1);
         return 1;
 
     case 8:
-        iVar10 = param_2 - this->mouse_last_y;
-        if (iVar10 != 0 && iVar10 < 100 && iVar10 > -100) {
-            iVar10 = (int)((float)iVar10 * DAT_005776b4);
-            this->player->set_view_loc(this->player->view_x - (float)iVar10,
-                                       this->player->view_y + (float)iVar10);
+        delta = y - this->mouse_last_y;
+        if (delta != 0 && delta < 100 && delta > -100) {
+            long amount = (long)((float)delta * DAT_005776b4);
+            this->player->set_view_loc(this->player->view_x - amount,
+                                       this->player->view_y + amount);
         }
-        iVar10 = param_1 - this->mouse_last_x;
-        if (iVar10 != 0 && iVar10 < 100 && iVar10 > -100) {
-            iVar10 = (int)((float)iVar10 * DAT_005776b4);
-            this->player->set_view_loc(this->player->view_x + (float)iVar10,
-                                       this->player->view_y + (float)iVar10);
+
+        delta = x - this->mouse_last_x;
+        if (delta != 0 && delta < 100 && delta > -100) {
+            long amount = (long)((float)delta * DAT_005776b4);
+            this->player->set_view_loc(this->player->view_x + amount,
+                                       this->player->view_y + amount);
         }
-        if (abs(param_2 - this->mouse_down_y) <= 8 && abs(param_1 - this->mouse_down_x) <= 8) {
-            this->mouse_last_x = param_1;
-            this->mouse_last_y = param_2;
+
+        if (abs(y - this->mouse_down_y) <= 8 &&
+            abs(x - this->mouse_down_x) <= 8) {
+            this->mouse_last_x = x;
+            this->mouse_last_y = y;
         } else {
             point.x = this->mouse_down_x;
             point.y = this->mouse_down_y;
@@ -4215,43 +4221,48 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
             this->mouse_last_x = this->mouse_down_x;
             this->mouse_last_y = this->mouse_down_y;
         }
-        if (save_view_x == this->player->view_x && save_view_y == this->player->view_y) {
+
+        if (old_view_x == this->player->view_x &&
+            old_view_y == this->player->view_y) {
             return 0;
         }
         this->set_redraw((TPanel::RedrawMode)1);
         return 1;
     }
 
-    if (this->scroll_action == 3 || this->scroll_action == 4 || this->scroll_action == 9) {
-        if ((param_1 < this->clip_rect.left + 0x40 && param_1 < point_x) ||
-            (param_1 > this->clip_rect.right - 0x40 && param_1 > point_x) ||
-            (param_2 < this->clip_rect.top + 0x20 && param_2 < this->mouse_last_y) ||
-            (param_2 > this->clip_rect.bottom - 0x20 && param_2 > this->mouse_last_y)) {
-            bVar7 = 1;
-        } else {
-            bVar7 = 0;
-        }
+    if (this->scroll_action == 3 || this->scroll_action == 4 ||
+        this->scroll_action == 9) {
+        move_view =
+            (x < this->clip_rect.left + 64 && x < this->mouse_last_x) ||
+            (x > this->clip_rect.right - 64 && x > this->mouse_last_x) ||
+            (y < this->clip_rect.top + 32 && y < this->mouse_last_y) ||
+            (y > this->clip_rect.bottom - 32 && y > this->mouse_last_y);
     } else {
-        bVar7 = 1;
+        move_view = 1;
     }
 
-    iVar10 = param_2 - this->mouse_last_y;
-    if (iVar10 != 0 && iVar10 < 200 && iVar10 > -200 && bVar7) {
-        this->player->set_view_loc(this->player->view_x - (float)iVar10 * DAT_005776c4,
-                                   this->player->view_y + (float)iVar10 * DAT_005776c4);
-    }
-    iVar10 = param_1 - this->mouse_last_x;
-    if (iVar10 != 0 && iVar10 < 200 && iVar10 > -200 && bVar7) {
-        this->player->set_view_loc(this->player->view_x + (float)iVar10 * DAT_005776c4,
-                                   this->player->view_y + (float)iVar10 * DAT_005776c4);
+    delta = y - this->mouse_last_y;
+    if (delta != 0 && delta < 200 && delta > -200 && move_view) {
+        this->player->set_view_loc(
+            this->player->view_x - (float)delta * DAT_005776c4,
+            this->player->view_y + (float)delta * DAT_005776c4);
     }
 
-    point_x = this->mouse_last_x;
-    lVar12 = this->mouse_last_y;
-    this->mouse_last_x = param_1;
-    this->mouse_last_y = param_2;
-    if (bVar7) {
-        if (abs(param_2 - this->mouse_down_y) > 8 || abs(param_1 - this->mouse_down_x) > 8) {
+    delta = x - this->mouse_last_x;
+    if (delta != 0 && delta < 200 && delta > -200 && move_view) {
+        this->player->set_view_loc(
+            this->player->view_x + (float)delta * DAT_005776c4,
+            this->player->view_y + (float)delta * DAT_005776c4);
+    }
+
+    old_mouse_x = this->mouse_last_x;
+    old_mouse_y = this->mouse_last_y;
+    this->mouse_last_x = x;
+    this->mouse_last_y = y;
+
+    if (move_view) {
+        if (abs(y - this->mouse_down_y) > 8 ||
+            abs(x - this->mouse_down_x) > 8) {
             point.x = this->mouse_down_x;
             point.y = this->mouse_down_y;
             ClientToScreen(this->render_area->Wnd, &point);
@@ -4260,44 +4271,48 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
             this->mouse_last_y = this->mouse_down_y;
         }
     } else {
-        this->mouse_down_x = param_1;
-        this->mouse_down_y = param_2;
+        this->mouse_down_x = x;
+        this->mouse_down_y = y;
     }
 
     if (this->scroll_action == 3) {
-        if (this->pick(0x28, 0, param_1, param_2, &pick_info, 0) == 0x33 && this->player != 0) {
+        if (this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33 &&
+            this->player != 0) {
             this->set_selection_area(this->sel_col1, this->sel_row1,
                                      (long)pick_info.x, (long)pick_info.y);
         }
     } else if (this->scroll_action == 4) {
         if (this->player->selected_obj != 0 &&
-            this->pick(0x28, 0, param_1, param_2, &pick_info, 0) == 0x33) {
-            this->player->selected_obj->teleport(pick_info.x, pick_info.y, 0);
-            RGE_Static_Object* pRVar6 = this->player->selected_obj;
-            unsigned char level;
-            if (pRVar6->sprite_list != 0) {
-                level = pRVar6->sprite_list->get_lowest_draw_level();
-            } else if (pRVar6->sprite != 0) {
-                level = pRVar6->sprite->get_lowest_draw_level();
+            this->pick(0x28, 0, x, y, &pick_info, 0) == 0x33) {
+            this->player->selected_obj->teleport(
+                pick_info.x, pick_info.y, 0);
+            unsigned char draw_level;
+            if (this->player->selected_obj->sprite_list != 0) {
+                draw_level = this->player->selected_obj->sprite_list->
+                    get_lowest_draw_level();
+            } else if (this->player->selected_obj->sprite != 0) {
+                draw_level = this->player->selected_obj->sprite->
+                    get_lowest_draw_level();
             } else {
-                level = 0x14;
+                draw_level = 20;
             }
-            if (level == 0) {
+            if (draw_level == 0) {
                 this->set_redraw((TPanel::RedrawMode)2);
             } else {
-        this->set_redraw((TPanel::RedrawMode)1);
+                this->set_redraw((TPanel::RedrawMode)1);
             }
         }
     } else if (this->scroll_action == 9) {
-        this->do_paint(point_x, lVar12, param_1, param_2, 2);
+        this->do_paint(old_mouse_x, old_mouse_y, x, y, 2);
         this->set_redraw((TPanel::RedrawMode)1);
     }
 
-    if (save_view_x != this->player->view_x || save_view_y != this->player->view_y) {
-        this->set_redraw((TPanel::RedrawMode)1);
-        return 1;
+    if (old_view_x == this->player->view_x &&
+        old_view_y == this->player->view_y) {
+        return 0;
     }
-    return 0;
+    this->set_redraw((TPanel::RedrawMode)1);
+    return 1;
 }
 
 void RGE_View::end_scroll_view() {
