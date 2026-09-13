@@ -49,7 +49,7 @@
     "004DB1F0": {"status": "matching", "symbol": "?isBoatAccessible@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004DB240": {"status": "matching", "symbol": "?isLandAccessible@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004DB280": {"status": "matching", "symbol": "?influenceCanPlaceStructure@TribeInformationAIModule@@QAEHPAVBuildItem@@@Z"},
-    "004DB290": {"status": "scratch", "symbol": "?influencePlaceStructure@TribeInformationAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@HHMPADHHHHAAUPlacementState@@K@Z"},
+    "004DB290": {"status": "new_verified_logic", "symbol": "?influencePlaceStructure@TribeInformationAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@HHMPADHHHHAAUPlacementState@@K@Z", "behavior_review": ["logic_matching/004DB290/review-coord-16-004DB290-round-02-20260912/attempt-01", "logic_matching/004DB290/review-coord-16-004DB290-round-02-20260912/attempt-02"]},
     "004DC1B0": {"status": "matching", "symbol": "?addObject@TribeInformationAIModule@@QAEXPAVRGE_Static_Object@@@Z"},
     "004DC3A0": {"status": "matching", "symbol": "?removeObject@TribeInformationAIModule@@QAEXH@Z"},
     "004DC490": {"status": "new_verified_logic", "symbol": "?objectToAttackWithPlay@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAHHAAH011@Z", "behavior_review": "logic_matching/004DC490/review-01/attempt-01"},

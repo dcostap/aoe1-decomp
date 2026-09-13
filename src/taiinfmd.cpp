@@ -2006,496 +2006,473 @@ int TribeInformationAIModule::influenceCanPlaceStructure(BuildItem* p0) {
 #pragma intrinsic(sqrt)
 
 ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
-    BuildItem* item, int builderID, int objectType, float objectSize,
-    char* objectName, int minimumDistance, int centerX, int centerY,
-    int maxClearX, PlacementState& state, ulong currentTime)
+    BuildItem* bi, int builderID, int alternateType, float alternateSize,
+    char* alternateName, int alternateMinD, int alternateMaxD,
+    int alternateX, int alternateY, PlacementState& placementState,
+    unsigned long startTime)
 {
-    float buildingSize;
+    RGE_Static_Object* protoBuilder = this->md->object(
+        -1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
+    if (protoBuilder == 0) {
+        placementState.active = 0;
+        return 0;
+    }
+
     int buildingType;
-    int x;
-    int randSelect;
-    int placementType;
-    int placement;
-    XYPoint bestPoint;
-    int basePlacementTotal;
-    int y;
-    int candidate;
-    int maximumPlacementDistance;
-    XYPoint placementCenter;
-    XYPoint maxClear;
-    XYPoint minClear;
-    int minimumDistanceValue;
-    int minimumPlacementDistance;
-    XYPoint max;
-    ulong availableTime;
-    int firstTimeThrough;
-    int useExcludeRegion;
-    XYPoint min;
-    XYPoint maxExclude;
-    XYPoint minExclude;
-    int placementResult;
-    XYPoint newPosition;
-    char buildingName[0x100];
-    RGE_Static_Object* townCenter;
-    RGE_Static_Object* builderObject;
-    RGE_Static_Object* placementObject;
-
-    placementObject = this->md->object(-1, -1, 4, -1, -1,
-                                       -1, -1, -1, -1, -1);
-    if (placementObject == 0) {
-        state.active = 0;
+    float buildingSize;
+    char* sourceName;
+    if (placementState.active == 1) {
+        buildingType = placementState.buildingTypeID;
+        buildingSize = placementState.buildingSize;
+        sourceName = placementState.buildingName;
+    } else if (bi != 0) {
+        buildingType = bi->typeID();
+        buildingSize = bi->xSize();
+        sourceName = bi->name();
     } else {
-    if (state.active == 1) {
-        x = state.buildingTypeID;
-        buildingSize = state.buildingSize;
-        strncpy(buildingName + 4, state.buildingName, 0xff);
-    } else if (item != 0) {
-        x = item->typeID();
-        buildingSize = item->xSize();
-        strncpy(buildingName + 4, item->name(), 0xff);
-    } else {
-        x = objectType;
-        buildingSize = objectSize;
-        strncpy(buildingName + 4, objectName, 0xff);
-    }
-    buildingType = (int)buildingSize;
-    y = buildingType * buildingType * 0x14;
-
-    if (this->md->player->master_objects[x] != 0) {
-        RGE_Master_Static_Object* masterObj =
-            this->md->player->master_objects[x];
-        townCenter = this->md->object(-1, 0x6d, -1, -1, -1,
-                                      -1, -1, -1, -1, -1);
-        if (state.active == 1)
-            builderObject = this->md->object(state.builderID);
-        else
-            builderObject = this->md->object(builderID);
-
-    if (item == 0 && state.active != 1) {
-        maximumPlacementDistance = centerX;
-        minimumPlacementDistance = minimumDistance;
-        placementCenter.x = centerY;
-        placementCenter.y = maxClearX;
-    } else {
-        RGE_Static_Object* coordinateObject;
-        if (townCenter != 0)
-            coordinateObject = townCenter;
-        else if (builderObject != 0)
-            coordinateObject = builderObject;
-        else
-            coordinateObject = placementObject;
-
-        placementCenter.x = (int)coordinateObject->world_x;
-        placementCenter.y = (int)coordinateObject->world_y;
+        buildingType = alternateType;
+        buildingSize = alternateSize;
+        sourceName = alternateName;
     }
 
-    placement = this->placementCode(x);
+    char buildingName[256];
+    strncpy(buildingName, sourceName, 0xff);
 
-    if (placement == -1) {
+    int buildingSizeInt = (int)buildingSize;
+    int minimumPlacementValue =
+        buildingSizeInt * buildingSizeInt * 20;
+    RGE_Master_Static_Object* masterObj =
+        this->md->player->master_objects[buildingType];
+    if (masterObj == 0) {
+        placementState.active = 0;
+        return 0;
+    }
+
+    RGE_Static_Object* townCenter = this->md->object(
+        -1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
+    int actualBuilderID = builderID;
+    if (placementState.active == 1) {
+        actualBuilderID = placementState.builderID;
+    }
+    RGE_Static_Object* builder = this->md->object(actualBuilderID);
+
+    XYPoint centerPoint;
+    if (bi == 0 && placementState.active != 1) {
+        centerPoint.x = alternateX;
+        centerPoint.y = alternateY;
+    } else {
+        RGE_Static_Object* centerObject = townCenter;
+        if (centerObject == 0) {
+            centerObject = builder;
+        }
+        if (centerObject == 0) {
+            centerObject = protoBuilder;
+        }
+        centerPoint.x = (int)centerObject->world_x;
+        centerPoint.y = (int)centerObject->world_y;
+    }
+
+    int placementType = this->placementCode(buildingType);
+    if (placementType == -1) {
         this->logCommonHistory(
-            (char*)"Invalid influence placement type id (%d), bombing.", x);
-    } else {
-    if (item == 0 && state.active != 1) {
-        placementObject->lookupZone(centerY, maxClearX);
-    } else {
-        if (placement == 1) {
-            minimumPlacementDistance = 7;
-            int placementRadius = placement;
-            if (this->md->tacticalAI.inAge(2) != 0) {
-                placementRadius = 2;
-            } else if (this->md->tacticalAI.inAge(3) != 0) {
-                placementRadius = 3;
-            } else if (this->md->tacticalAI.inAge(4) != 0) {
-                placementRadius = 4;
-            }
-            maximumPlacementDistance =
-                this->md->tacticalAI.strategicNumber(0x56) * placementRadius;
-        } else if (placement == 2) {
-            maximumPlacementDistance =
-                this->md->tacticalAI.strategicNumber(0x57);
-            minimumPlacementDistance = 4;
-        } else if (placement == 3 || placement == 4) {
-            minimumPlacementDistance =
-                this->md->tacticalAI.strategicNumber(0x49);
-            maximumPlacementDistance =
-                this->md->tacticalAI.strategicNumber(0x4a);
-        } else {
-            minimumPlacementDistance = 4;
-            maximumPlacementDistance =
-                this->md->tacticalAI.strategicNumber(0x4a);
-        }
-
-        if (townCenter == 0)
-            townCenter = placementObject;
-        townCenter->currentZone();
-
+            "Invalid influence placement type id (%d), bombing.",
+            buildingType);
+        placementState.active = 0;
+        return 0;
     }
 
-    if (minimumPlacementDistance < maximumPlacementDistance) {
-        min.x = placementCenter.x - maximumPlacementDistance;
-        min.y = placementCenter.y - maximumPlacementDistance;
-        this->mapBound(min);
-
-        max.x = placementCenter.x + maximumPlacementDistance;
-        max.y = placementCenter.y + maximumPlacementDistance;
-        this->mapBound(max);
-
-        minExclude.x = placementCenter.x - minimumPlacementDistance;
-        minExclude.y = placementCenter.y - minimumPlacementDistance;
-        this->mapBound(minExclude);
-
-        maxExclude.x = placementCenter.x + minimumPlacementDistance;
-        maxExclude.y = placementCenter.y + minimumPlacementDistance;
-        this->mapBound(maxExclude);
-
-        if (item != 0 && state.active == 0) {
-            BuildingLot* lot = this->availableLot(x);
-            if (lot != 0) {
-                ConstructionItem* result;
-                if (placement == 4) {
-                    this->lastWallPosition2.x = this->lastWallPosition.x;
-                    this->lastWallPosition2.y = this->lastWallPosition.y;
-                    this->lastWallPosition.x = lot->x;
-                    this->lastWallPosition.y = lot->y;
-                }
-
-                if (buildingSize == DAT_00575574) {
-                    result = new ConstructionItem(
-                        (float)lot->x, (float)lot->y, 1.0f,
-                        buildingSize, buildingSize, 1.0f, x,
-                        buildingName + 4);
-                } else {
-                    result = new ConstructionItem(
-                        (float)lot->x - DAT_00575570,
-                        (float)lot->y - DAT_00575570,
-                        1.0f, buildingSize, buildingSize, 1.0f, x,
-                        buildingName + 4);
-                }
-                lot->status = 1;
-                state.active = 0;
-                return result;
+    int minimumDistance;
+    int maximumDistance;
+    if (bi == 0 && placementState.active != 1) {
+        minimumDistance = alternateMinD;
+        maximumDistance = alternateMaxD;
+        protoBuilder->lookupZone(alternateX, alternateY);
+    } else {
+        if (placementType == 1) {
+            minimumDistance = 7;
+            int age = 1;
+            if (this->md->tacticalAI.inAge(2)) {
+                age = 2;
+            } else if (this->md->tacticalAI.inAge(3)) {
+                age = 3;
+            } else if (this->md->tacticalAI.inAge(4)) {
+                age = 4;
             }
-        }
-
-        if (state.active == 0)
-            this->setupInfluenceMap(placement, x, placementCenter, min, max);
-
-        if (state.active == 0) {
-            int maxInfluence = this->md->tacticalAI.strategicNumber(0xa8);
-            if (maxInfluence < 1) {
-                placementType = 0;
-            } else {
-                placementType = debug_rand(
-                    (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                    0xac8) % maxInfluence;
-            }
-            bestPoint.x = -1;
-            basePlacementTotal = -1;
-            minimumDistanceValue = -1;
-            randSelect = min.x;
+            maximumDistance =
+                this->md->tacticalAI.strategicNumber(0x56) * age;
+        } else if (placementType == 2) {
+            minimumDistance = 4;
+            maximumDistance =
+                this->md->tacticalAI.strategicNumber(0x57);
+        } else if (placementType == 3 || placementType == 4) {
+            minimumDistance =
+                this->md->tacticalAI.strategicNumber(0x49);
+            maximumDistance =
+                this->md->tacticalAI.strategicNumber(0x4a);
         } else {
-            placementType = state.randomInfluence;
-            bestPoint.x = state.bestPoint.x;
-            basePlacementTotal = state.bestPoint.y;
-            minimumDistanceValue = state.bestPointValue;
-            randSelect = state.iterationX;
+            minimumDistance = 4;
+            maximumDistance =
+                this->md->tacticalAI.strategicNumber(0x4a);
         }
 
-        availableTime = this->md->player->world->availableComputerPlayerUpdateTime;
-        firstTimeThrough = debug_timeGetTime(
-            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xade);
-
-        if (state.active == 0 && availableTime <= firstTimeThrough - currentTime) {
-            state.buildingTypeID = x;
-            strncpy(state.buildingName, buildingName + 4, 0xff);
-            state.buildingSize = buildingSize;
-            state.builderID = builderID;
-            state.minimumDistance = minimumPlacementDistance;
-            state.maximumDistance = maximumPlacementDistance;
-            state.bestPoint.x = bestPoint.x;
-            state.active = 1;
-            state.bestPoint.y = basePlacementTotal;
-            state.bestPointValue = minimumDistanceValue;
-            state.iterationX = randSelect;
-            state.randomInfluence = placementType;
-            state.buildItem = item;
-            return 0;
+        RGE_Static_Object* zoneObject = townCenter;
+        if (zoneObject == 0) {
+            zoneObject = protoBuilder;
         }
+        zoneObject->currentZone();
+    }
 
-        min.x = 0;
-        if (placement == 4 || placement == 3)
-            min.x = 1;
+    if (minimumDistance >= maximumDistance) {
+        placementState.active = 0;
+        return 0;
+    }
 
-        useExcludeRegion = 1;
-        if (randSelect <= max.x) {
-            do {
-                if (useExcludeRegion != 0) {
-                    useExcludeRegion = 0;
-                } else {
-                    firstTimeThrough = debug_timeGetTime(
-                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                        0xb16);
-                    if (availableTime <= firstTimeThrough - currentTime) {
-                        goto save_state_second;
-                    }
-                }
+    XYPoint min;
+    XYPoint max;
+    XYPoint minExclude;
+    XYPoint maxExclude;
+    min.x = centerPoint.x - maximumDistance;
+    min.y = centerPoint.y - maximumDistance;
+    this->mapBound(min);
+    max.x = centerPoint.x + maximumDistance;
+    max.y = centerPoint.y + maximumDistance;
+    this->mapBound(max);
+    minExclude.x = centerPoint.x - minimumDistance;
+    minExclude.y = centerPoint.y - minimumDistance;
+    this->mapBound(minExclude);
+    maxExclude.x = centerPoint.x + minimumDistance;
+    maxExclude.y = centerPoint.y + minimumDistance;
+    this->mapBound(maxExclude);
 
-                candidate = min.y;
-                if (candidate <= max.y) {
-                    do {
-                        if (min.x != 1 || randSelect < minExclude.x ||
-                            maxExclude.x < randSelect ||
-                            candidate < minExclude.y ||
-                            maxExclude.y < candidate) {
-                            if (buildingSize == DAT_00575578) {
-                                minClear.x = randSelect - 2;
-                                minClear.y = candidate - 2;
-                                maxClear.x = randSelect + 2;
-                                maxClear.y = candidate + 2;
-                            } else if (buildingSize == DAT_0057557c) {
-                                if (placement == 6 || placement == 3 ||
-                                    placement == 4 || placement == 1 ||
-                                    placement == 2 || placement == 8) {
-                                    minClear.x = randSelect - 1;
-                                    minClear.y = candidate - 1;
-                                    maxClear.x = randSelect + 1;
-                                    maxClear.y = candidate + 1;
-                                } else {
-                                    minClear.x = randSelect - 2;
-                                    minClear.y = candidate - 2;
-                                    maxClear.x = randSelect + 2;
-                                    maxClear.y = candidate + 2;
-                                }
-                            } else if (buildingSize == DAT_00575574) {
-                                if (placement == 6 || placement == 3 ||
-                                    placement == 4) {
-                                    minClear.x = randSelect - 1;
-                                    minClear.y = candidate - 1;
-                                    maxClear.x = randSelect;
-                                    maxClear.y = candidate;
-                                } else {
-                                    minClear.x = randSelect - 2;
-                                    minClear.y = candidate - 2;
-                                    maxClear.x = randSelect + 1;
-                                    maxClear.y = candidate + 1;
-                                }
-                            } else {
-                                if (buildingSize != DAT_00575564) {
-                                    goto unsupported_size;
-                                }
-                                minClear.x = randSelect;
-                                minClear.y = candidate;
-                                maxClear.x = randSelect;
-                                maxClear.y = candidate;
-                                if (placement != 6 &&
-                                    placement != 3 && placement != 4) {
-                                    minClear.x = randSelect - 1;
-                                    minClear.y = candidate - 1;
-                                    maxClear.x = randSelect + 1;
-                                    maxClear.y = candidate + 1;
-                                }
-                            }
-
-                            if (this->mapBound(minClear) != 1 &&
-                                this->mapBound(maxClear) != 1) {
-                                placementResult = -1;
-                                if (masterObj->check_placement(
-                                        this->md->player,
-                                        (float)randSelect - DAT_00575570,
-                                        (float)candidate - DAT_00575570,
-                                        &placementResult,
-                                        1, 1, 1, 1, 1, 1) == 0) {
-                                    int score = 0;
-                                    bool blocked = false;
-                                    int row = minClear.x;
-
-                                    while (!blocked && row <= maxClear.x) {
-                                        int column = minClear.y;
-                                        while (!blocked &&
-                                               column <= maxClear.y) {
-                                            int value = iMap.lookupValue(
-                                                row, column);
-                                            if (value == 0xff)
-                                                blocked = true;
-                                            else
-                                                score += value;
-                                            column++;
-                                        }
-                                        row++;
-                                    }
-
-                                    if (!blocked) {
-                                        int connectionsBefore =
-                                            iMap.connectionCountValue;
-                                        if (placement == 4 ||
-                                            placement == 6) {
-                                            int connections =
-                                                iMap.connectionsIncluding(
-                                                    minClear, maxClear,
-                                                    0xff, 0xff, 1, 0, 1);
-                                            if (placement == 4 &&
-                                                6 < connections -
-                                                    connectionsBefore)
-                                                goto candidate_done;
-                                            score = (connections -
-                                                     connectionsBefore) * score;
-                                        }
-
-                                        if (placement == 4) {
-                                            newPosition.x = randSelect;
-                                            newPosition.y = candidate;
-                                            if (this->lastWallPosition.x != -1 &&
-                                                this->isNextTo(
-                                                    this->lastWallPosition,
-                                                    newPosition, 0) == 0)
-                                                score /= 2;
-
-                                            int direction = this->facetTo(
-                                                this->lastWallPosition,
-                                                newPosition);
-                                            if (direction % 2 == 1)
-                                                score *= 3;
-
-                                            int previousDirection = this->facetTo(
-                                                this->lastWallPosition2,
-                                                this->lastWallPosition);
-                                            if (previousDirection == direction)
-                                                score *= 3;
-
-                                            int dx = abs(this->lastWallPosition.x -
-                                                         placementCenter.x);
-                                            int dy = abs(this->lastWallPosition.y -
-                                                         placementCenter.y);
-                                            if (dy < dx) {
-                                                if (direction == 1 || direction == 5)
-                                                    score *= 3;
-                                            } else if (dx < dy) {
-                                                if (direction == 3 || direction == 7)
-                                                    score *= 3;
-                                            }
-                                        } else if (placement == 1 ||
-                                                   placement == 2) {
-                                            if (this->undesirableLot(
-                                                    x, (uchar)randSelect,
-                                                    (uchar)candidate, 10) == 1)
-                                                score /= 10;
-                                        } else if (placement != 6) {
-                                            if (this->undesirableLot(
-                                                    x, (uchar)randSelect,
-                                                    (uchar)candidate,
-                                                    buildingType) == 1)
-                                                score /= 10;
-                                        }
-
-                                        if (placement == 1 ||
-                                            placement == 2) {
-                                            int distanceSquared =
-                                                (randSelect - placementCenter.x) *
-                                                    (randSelect - placementCenter.x) +
-                                                (candidate - placementCenter.y) *
-                                                    (candidate - placementCenter.y);
-                                            int distance =
-                                                (int)sqrt((float)distanceSquared);
-                                            if (distance > 10) {
-                                                int adjusted = score -
-                                                    (distance - 10) / 5;
-                                                if (y < adjusted)
-                                                    score = adjusted;
-                                            }
-                                        }
-
-                                        if (minimumDistanceValue == -1 ||
-                                            minimumDistanceValue <
-                                                score + placementType) {
-                                            if (score <= minimumDistanceValue)
-                                                placementType /= 2;
-                                            bestPoint.x = randSelect;
-                                            minimumDistanceValue = score;
-                                            basePlacementTotal = candidate;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-candidate_done:
-                        candidate++;
-                    } while (candidate <= max.y);
-                }
-
-                randSelect++;
-            } while (randSelect <= max.x);
-        }
-
-        if (minimumDistanceValue != -1 &&
-            (y < minimumDistanceValue ||
-             (placement != 2 &&
-              (y < minimumDistanceValue || placement != 1)))) {
-            if (placement == 4) {
-                this->lastWallPosition2.x = this->lastWallPosition.x;
-                this->lastWallPosition2.y = this->lastWallPosition.y;
-                this->lastWallPosition.x = bestPoint.x;
-                this->lastWallPosition.y = basePlacementTotal;
-            }
-
-            if (item == 0 && state.active != 1) {
-                this->storeLot(x, (uchar)bestPoint.x,
-                               (uchar)basePlacementTotal, 0);
-                state.active = 0;
-                return (ConstructionItem*)1;
+    if (bi != 0 && placementState.active == 0) {
+        BuildingLot* lot = this->availableLot(buildingType);
+        if (lot != 0) {
+            if (placementType == 4) {
+                this->lastWallPosition2 = this->lastWallPosition;
+                this->lastWallPosition.x = lot->x;
+                this->lastWallPosition.y = lot->y;
             }
 
             ConstructionItem* result;
             if (buildingSize == DAT_00575574) {
                 result = new ConstructionItem(
-                    (float)bestPoint.x, (float)basePlacementTotal,
-                    1.0f, buildingSize, buildingSize, 1.0f, x,
-                    buildingName + 4);
+                    (float)lot->x, (float)lot->y, 1.0f, buildingSize,
+                    buildingSize, 1.0f, buildingType, buildingName);
             } else {
                 result = new ConstructionItem(
-                    (float)bestPoint.x - DAT_00575570,
-                    (float)basePlacementTotal - DAT_00575570,
-                    1.0f, buildingSize, buildingSize, 1.0f, x,
-                    buildingName + 4);
+                    (float)lot->x - DAT_00575570,
+                    (float)lot->y - DAT_00575570, 1.0f,
+                    buildingSize, buildingSize, 1.0f, buildingType,
+                    buildingName);
             }
-            this->storeLot(x, (uchar)bestPoint.x,
-                           (uchar)basePlacementTotal, 1);
-            state.active = 0;
+            lot->status = 1;
+            placementState.active = 0;
             return result;
         }
+    }
 
-        if (placement == 4) {
-            this->lastWallPosition2.x = this->lastWallPosition.x;
-            this->lastWallPosition2.y = this->lastWallPosition.y;
-            this->lastWallPosition.x = -1;
-            this->lastWallPosition.y = -1;
+    if (placementState.active == 0) {
+        this->setupInfluenceMap(
+            placementType, buildingType, centerPoint, min, max);
+    }
+
+    int randomInfluence;
+    XYPoint bestPoint;
+    int bestPointValue;
+    int x;
+    if (placementState.active == 0) {
+        int randomRange = this->md->tacticalAI.strategicNumber(0xa8);
+        if (randomRange > 0) {
+            randomInfluence = debug_rand(
+                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                0xac8) % randomRange;
+        } else {
+            randomInfluence = 0;
+        }
+        bestPoint.x = -1;
+        bestPoint.y = -1;
+        bestPointValue = -1;
+        x = min.x;
+    } else {
+        randomInfluence = placementState.randomInfluence;
+        bestPoint = placementState.bestPoint;
+        bestPointValue = placementState.bestPointValue;
+        x = placementState.iterationX;
+    }
+
+    unsigned long availableTime =
+        this->md->player->world->availableComputerPlayerUpdateTime;
+    unsigned long now = debug_timeGetTime(
+        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xade);
+    if (placementState.active == 0 && availableTime <= now - startTime) {
+        placementState.buildingTypeID = buildingType;
+        strncpy(placementState.buildingName, buildingName, 0xff);
+        placementState.buildingSize = buildingSize;
+        placementState.builderID = builderID;
+        placementState.minimumDistance = minimumDistance;
+        placementState.maximumDistance = maximumDistance;
+        placementState.bestPoint.x = bestPoint.x;
+        placementState.active = 1;
+        placementState.bestPoint.y = bestPoint.y;
+        placementState.bestPointValue = bestPointValue;
+        placementState.iterationX = x;
+        placementState.randomInfluence = randomInfluence;
+        placementState.buildItem = bi;
+        return 0;
+    }
+
+    int useExcludeRegion = 0;
+    if (placementType == 4 || placementType == 3) {
+        useExcludeRegion = 1;
+    }
+
+    int firstTimeThrough = 1;
+    for (; x <= max.x; ++x) {
+        if (firstTimeThrough) {
+            firstTimeThrough = 0;
+        } else {
+            now = debug_timeGetTime(
+                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                0xb16);
+            if (availableTime <= now - startTime) {
+                placementState.buildingTypeID = buildingType;
+                strncpy(placementState.buildingName, buildingName, 0xff);
+                placementState.buildingSize = buildingSize;
+                placementState.builderID = builderID;
+                placementState.minimumDistance = minimumDistance;
+                placementState.maximumDistance = maximumDistance;
+                placementState.bestPoint.x = bestPoint.x;
+                placementState.active = 1;
+                placementState.bestPoint.y = bestPoint.y;
+                placementState.bestPointValue = bestPointValue;
+                placementState.iterationX = x;
+                placementState.randomInfluence = randomInfluence;
+                placementState.buildItem = bi;
+                return 0;
+            }
+        }
+
+        for (int y = min.y; y <= max.y; ++y) {
+            if (useExcludeRegion == 1 &&
+                x >= minExclude.x && x <= maxExclude.x &&
+                y >= minExclude.y && y <= maxExclude.y) {
+                continue;
+            }
+
+            XYPoint minClear;
+            XYPoint maxClear;
+            if (buildingSize == DAT_00575578) {
+                minClear.x = x - 2;
+                minClear.y = y - 2;
+                maxClear.x = x + 2;
+                maxClear.y = y + 2;
+            } else if (buildingSize == DAT_0057557c) {
+                if (placementType == 6 || placementType == 3 ||
+                    placementType == 4 || placementType == 1 ||
+                    placementType == 2 || placementType == 8) {
+                    minClear.x = x - 1;
+                    minClear.y = y - 1;
+                    maxClear.x = x + 1;
+                    maxClear.y = y + 1;
+                } else {
+                    minClear.x = x - 2;
+                    minClear.y = y - 2;
+                    maxClear.x = x + 2;
+                    maxClear.y = y + 2;
+                }
+            } else if (buildingSize == DAT_00575574) {
+                if (placementType == 6 || placementType == 3 ||
+                    placementType == 4) {
+                    minClear.x = x - 1;
+                    minClear.y = y - 1;
+                    maxClear.x = x;
+                    maxClear.y = y;
+                } else {
+                    minClear.x = x - 2;
+                    minClear.y = y - 2;
+                    maxClear.x = x + 1;
+                    maxClear.y = y + 1;
+                }
+            } else if (buildingSize == DAT_00575564) {
+                if (placementType == 6 || placementType == 3 ||
+                    placementType == 4) {
+                    minClear.x = x;
+                    minClear.y = y;
+                    maxClear.x = x;
+                    maxClear.y = y;
+                } else {
+                    minClear.x = x - 1;
+                    minClear.y = y - 1;
+                    maxClear.x = x + 1;
+                    maxClear.y = y + 1;
+                }
+            } else {
+                this->logCommonHistory(
+                    "    Unsupported building size (%d x %d), failing.",
+                    buildingSize, buildingSize);
+                placementState.active = 0;
+                return 0;
+            }
+
+            if (this->mapBound(minClear) == 1 ||
+                this->mapBound(maxClear) == 1) {
+                continue;
+            }
+
+            int blockingObject = -1;
+            if (masterObj->check_placement(
+                    this->md->player, (float)x - DAT_00575570,
+                    (float)y - DAT_00575570, &blockingObject,
+                    1, 1, 1, 1, 1, 1) != 0) {
+                continue;
+            }
+
+            int placementTotal = 0;
+            int blocked = 0;
+            for (int clearX = minClear.x;
+                 clearX <= maxClear.x && blocked == 0; ++clearX) {
+                for (int clearY = minClear.y;
+                     clearY <= maxClear.y && blocked == 0; ++clearY) {
+                    int value = iMap.lookupValue(clearX, clearY);
+                    if (value == 0xff) {
+                        blocked = 1;
+                    } else {
+                        placementTotal += value;
+                    }
+                }
+            }
+            if (blocked != 0) {
+                continue;
+            }
+
+            if (placementType == 4 || placementType == 6) {
+                int oldConnectionCount = iMap.connectionCountValue;
+                int connectionCount = iMap.connectionsIncluding(
+                    minClear, maxClear, 0xff, 0xff, 1, 0, 1);
+                int connectionsAdded =
+                    connectionCount - oldConnectionCount;
+                if (placementType == 4 && connectionsAdded > 6) {
+                    continue;
+                }
+                placementTotal *= connectionsAdded;
+            }
+
+            if (placementType == 4) {
+                XYPoint newPosition;
+                newPosition.x = x;
+                newPosition.y = y;
+                if (this->lastWallPosition.x != -1 &&
+                    this->isNextTo(
+                        this->lastWallPosition, newPosition, 0) == 0) {
+                    placementTotal /= 2;
+                }
+
+                int facet = this->facetTo(
+                    this->lastWallPosition, newPosition);
+                if (facet % 2 == 1) {
+                    placementTotal *= 3;
+                }
+                if (this->facetTo(
+                        this->lastWallPosition2,
+                        this->lastWallPosition) == facet) {
+                    placementTotal *= 3;
+                }
+
+                int deltaX = abs(
+                    this->lastWallPosition.x - centerPoint.x);
+                int deltaY = abs(
+                    this->lastWallPosition.y - centerPoint.y);
+                if (deltaY < deltaX) {
+                    if (facet == 1 || facet == 5) {
+                        placementTotal *= 3;
+                    }
+                } else if (deltaX < deltaY) {
+                    if (facet == 3 || facet == 7) {
+                        placementTotal *= 3;
+                    }
+                }
+            } else if (placementType == 1 || placementType == 2) {
+                if (this->undesirableLot(
+                        buildingType, (unsigned char)x,
+                        (unsigned char)y, 10) == 1) {
+                    placementTotal /= 10;
+                }
+            } else if (placementType != 6) {
+                if (this->undesirableLot(
+                        buildingType, (unsigned char)x,
+                        (unsigned char)y, buildingSizeInt) == 1) {
+                    placementTotal /= 10;
+                }
+            }
+
+            if (placementType == 1 || placementType == 2) {
+                int deltaX = x - centerPoint.x;
+                int deltaY = y - centerPoint.y;
+                int distance = (int)sqrt(
+                    (double)(deltaX * deltaX + deltaY * deltaY));
+                distance -= 10;
+                if (distance > 0) {
+                    int adjustedTotal = placementTotal - distance / 5;
+                    if (adjustedTotal > minimumPlacementValue) {
+                        placementTotal = adjustedTotal;
+                    }
+                }
+            }
+
+            if (bestPointValue == -1 ||
+                bestPointValue < placementTotal + randomInfluence) {
+                if (placementTotal <= bestPointValue) {
+                    randomInfluence /= 2;
+                }
+                bestPoint.x = x;
+                bestPoint.y = y;
+                bestPointValue = placementTotal;
+            }
         }
     }
+
+    if (bestPointValue != -1 &&
+        (bestPointValue > minimumPlacementValue || placementType != 2) &&
+        (bestPointValue > minimumPlacementValue || placementType != 1)) {
+        if (placementType == 4) {
+            this->lastWallPosition2 = this->lastWallPosition;
+            this->lastWallPosition = bestPoint;
+        }
+
+        if (bi == 0 && placementState.active != 1) {
+            this->storeLot(
+                buildingType, (unsigned char)bestPoint.x,
+                (unsigned char)bestPoint.y, 0);
+            placementState.active = 0;
+            return (ConstructionItem*)1;
+        }
+
+        ConstructionItem* result;
+        if (buildingSize == DAT_00575574) {
+            result = new ConstructionItem(
+                (float)bestPoint.x, (float)bestPoint.y, 1.0f,
+                buildingSize, buildingSize, 1.0f, buildingType,
+                buildingName);
+        } else {
+            result = new ConstructionItem(
+                (float)bestPoint.x - DAT_00575570,
+                (float)bestPoint.y - DAT_00575570, 1.0f,
+                buildingSize, buildingSize, 1.0f, buildingType,
+                buildingName);
+        }
+        this->storeLot(
+            buildingType, (unsigned char)bestPoint.x,
+            (unsigned char)bestPoint.y, 1);
+        placementState.active = 0;
+        return result;
     }
 
-save_state_second:
-    state.buildingTypeID = x;
-    strncpy(state.buildingName, buildingName + 4, 0xff);
-    state.buildingSize = buildingSize;
-    state.builderID = builderID;
-    state.minimumDistance = minimumPlacementDistance;
-    state.maximumDistance = maximumPlacementDistance;
-    state.bestPoint.x = bestPoint.x;
-    state.active = 1;
-    state.bestPoint.y = basePlacementTotal;
-    state.bestPointValue = minimumDistanceValue;
-    state.iterationX = randSelect;
-    state.randomInfluence = placementType;
-    state.buildItem = item;
-    return 0;
-
-unsupported_size:
-    this->logCommonHistory(
-        (char*)"    Unsupported building size (%d x %d), failing.",
-        buildingSize, buildingSize);
+    if (placementType == 4) {
+        this->lastWallPosition2 = this->lastWallPosition;
+        this->lastWallPosition.x = -1;
+        this->lastWallPosition.y = -1;
     }
-    state.active = 0;
-    }
+    placementState.active = 0;
     return 0;
 }
 
