@@ -5885,6 +5885,7 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag)
     int count = 0;
     int i;
     RGE_Static_Object* object;
+
     this->workingArea.zeroNumber();
 
     for (i = 0; i < this->warBoats.number(); i++) {
@@ -5916,31 +5917,31 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int flag)
     for (i = 0; i < this->soldiers.number(); i++) {
         object = this->md->aiPlayer->world->object(this->soldiers[i]);
         if (object != 0 && object->unitAI() != 0 &&
-            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0) {
-            short objectGroup = object->master_obj->object_group;
-            if (objectGroup == 0x12 || objectGroup == 0x0D) {
-                if (flag < 0) {
-                    if (object->unitAI()->currentAction() == -1 ||
-                        object->unitAI()->currentOrderPriority() < priority) {
-                        this->workingArea.add(this->soldiers[i]);
-                        count++;
-                    }
-                } else if (flag > 0) {
-                    if (object->unitAI()->currentAction() != -1 &&
-                        object->unitAI()->currentOrderPriority() > priority) {
-                        this->workingArea.add(this->soldiers[i]);
-                        count++;
-                    }
-                } else {
-                    if (object->unitAI()->currentAction() != -1 &&
-                        object->unitAI()->currentOrderPriority() == priority) {
-                        this->workingArea.add(this->soldiers[i]);
-                        count++;
-                    }
+            this->unitsTaskedThisUpdate.contains(this->soldiers[i]) == 0 &&
+            (object->master_obj->object_group == 0x12 ||
+             object->master_obj->object_group == 0x0D)) {
+            if (flag < 0) {
+                if (object->unitAI()->currentAction() == -1 ||
+                    object->unitAI()->currentOrderPriority() < priority) {
+                    this->workingArea.add(this->soldiers[i]);
+                    count++;
+                }
+            } else if (flag > 0) {
+                if (object->unitAI()->currentAction() != -1 &&
+                    object->unitAI()->currentOrderPriority() > priority) {
+                    this->workingArea.add(this->soldiers[i]);
+                    count++;
+                }
+            } else {
+                if (object->unitAI()->currentAction() != -1 &&
+                    object->unitAI()->currentOrderPriority() == priority) {
+                    this->workingArea.add(this->soldiers[i]);
+                    count++;
                 }
             }
         }
     }
+
     return count;
 }
 

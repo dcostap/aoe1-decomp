@@ -112,7 +112,7 @@
     "004F62C0": {"status": "scratch", "symbol": "?notify@TribeTacticalAIModule@@UAEXHHHJJJ@Z"},
     "004F7350": {"status": "matching", "symbol": "?numberIdleSoldiers@TribeTacticalAIModule@@QAEHXZ"},
     "004F7590": {"status": "new_verified_logic", "symbol": "?numberSoldiersWithPriority@TribeTacticalAIModule@@QAEHHHH@Z", "behavior_review": "logic_matching/004F7590/review-01/attempt-01"},
-    "004F7870": {"status": "scratch", "symbol": "?numberWarshipsWithPriority@TribeTacticalAIModule@@QAEHHH@Z"},
+    "004F7870": {"status": "new_verified_logic", "symbol": "?numberWarshipsWithPriority@TribeTacticalAIModule@@QAEHHH@Z", "behavior_review": "logic_matching/004F7870/coord-08-004F7870-review-01/attempt-01"},
     "004F7D90": {"status": "matching", "symbol": "?idleSoldier@TribeTacticalAIModule@@QAEHXZ"},
     "004F7E80": {"status": "accepted_drift", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHH@Z"},
     "004F81A0": {"status": "new_verified_logic", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHHAAUXYPoint@@H@Z", "behavior_review": "logic_matching/004F81A0/coord-08-004F81A0-review-01/attempt-01"},
