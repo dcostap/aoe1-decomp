@@ -483,32 +483,30 @@ void Time_Line_Panel::record_special_event(
 }
 
 int Time_Line_Panel::calculate_icon_location(
-    Special_Events* param_1, short param_2, uchar param_3)
+    Special_Events* event, short icon, unsigned char)
 {
-    Special_Events* event_ptr = param_1;
-    short width;
-    short height;
-    int ret_val;
-    long temp_start_txt_x1 = 1;
-    long temp_start_y = 0;
-    int local_4 = 0;
-    long temp_start_x = 0;
+    int result = 1;
+    long start_x = 0;
+    long start_y = 0;
+    long start_text_x = 0;
+    long start_text_y = 0;
 
-    event_ptr->icon_flag = 0;
+    event->icon_flag = 0;
 
     if (this->special_events_pic == 0) {
-        temp_start_txt_x1 = 0;
+        result = 0;
     }
     if (this->special_events_pic->shape_count() == 0) {
-        temp_start_txt_x1 = 0;
+        result = 0;
     }
-    if (this->special_events_pic->shape_count() <
-        static_cast<long>(param_2)) {
-        temp_start_txt_x1 = 0;
+    if (this->special_events_pic->shape_count() < icon) {
+        result = 0;
     }
 
-    if (temp_start_txt_x1 != 0) {
-        this->special_events_pic->shape_bounds(param_2, width, height);
+    if (result != 0) {
+        short width;
+        short height;
+        this->special_events_pic->shape_bounds(icon, width, height);
         if (width > 0) {
             this->special_events_pic_wid = width;
         }
@@ -517,177 +515,156 @@ int Time_Line_Panel::calculate_icon_location(
         }
     }
 
-    if (temp_start_txt_x1 != 0) {
-        if (this->special_events_pic_hgt > event_ptr->intermediate_y_line_segment) {
-            temp_start_txt_x1 = 0;
+    if (result != 0) {
+        if (this->special_events_pic_hgt >
+            event->intermediate_y_line_segment) {
+            result = 0;
+        }
+        long half_width = this->special_events_pic_wid / 2;
+        if (event->X_line_pos + half_width >
+            this->X_start_line_pos + this->X_line_max_width) {
+            result = 0;
+        }
+        long icon_start_x = event->X_line_pos - half_width;
+        if (icon_start_x < this->X_start_line_pos) {
+            result = 0;
         }
 
-        int half_width = this->special_events_pic_wid / 2;
-        if (event_ptr->X_line_pos + half_width >
-            this->X_line_max_width + this->X_start_line_pos) {
-            temp_start_txt_x1 = 0;
-        }
-        half_width = event_ptr->X_line_pos - half_width;
-        if (half_width < this->X_start_line_pos) {
-            temp_start_txt_x1 = 0;
-        }
-
-        if (temp_start_txt_x1 != 0) {
-            local_4 = half_width;
-            temp_start_x = (event_ptr->intermediate_y_line_segment / 2 +
-                       event_ptr->Y_line_pos * 2) -
-                      this->special_events_pic_hgt / 2;
+        if (result != 0) {
+            start_x = icon_start_x;
+            start_y = event->Y_line_pos * 2
+                + event->intermediate_y_line_segment / 2
+                - this->special_events_pic_hgt / 2;
         }
     }
 
-    switch (event_ptr->event) {
-    case 0:
-    {
-        int text_x;
-        event_ptr->text_length1 = strlen(event_ptr->text1);
-        text_x = event_ptr->X_line_pos;
-        ret_val = this->body_font_wid * event_ptr->text_length1;
-        if (ret_val + 2 + text_x >=
-            this->X_line_max_width + this->X_start_line_pos) {
-            temp_start_y = this->X_line_max_width - ret_val - 3 +
-                      this->X_start_line_pos;
+    switch (event->event) {
+    case 0: {
+        event->text_length1 = strlen(event->text1);
+        long text_width = this->body_font_wid * event->text_length1;
+        if (event->X_line_pos + text_width + 2 <
+            this->X_start_line_pos + this->X_line_max_width) {
+            start_text_x = event->X_line_pos + 2;
         } else {
-            temp_start_y = text_x + 2;
+            start_text_x = this->X_start_line_pos
+                + this->X_line_max_width - text_width - 3;
         }
-        ret_val = event_ptr->Y_line_pos +
-                        event_ptr->intermediate_y_line_segment -
-                        this->body_font_hgt;
+
+        start_text_y = event->Y_line_pos
+            + event->intermediate_y_line_segment
+            - this->body_font_hgt - 2;
+        if (start_text_y <= this->Y_start_line_pos) {
+            start_text_y = this->Y_start_line_pos + 2;
+        } else if (start_text_y >=
+                   this->Y_start_line_pos + this->Y_line_max_length) {
+            start_text_y = this->Y_start_line_pos
+                + this->Y_line_max_length - this->body_font_hgt - 3;
+        }
         break;
     }
 
-    case 1:
-        event_ptr->text_length1 = strlen(event_ptr->text1);
-        ret_val = this->body_font_wid * event_ptr->text_length1;
-        if (ret_val + 2 + event_ptr->X_line_pos >=
-            this->X_line_max_width + this->X_start_line_pos) {
-            temp_start_y = this->X_line_max_width - ret_val - 8 +
-                      this->X_start_line_pos;
+    case 1: {
+        event->text_length1 = strlen(event->text1);
+        long text_width = this->body_font_wid * event->text_length1;
+        if (event->X_line_pos + text_width + 2 <
+            this->X_start_line_pos + this->X_line_max_width) {
+            start_text_x = event->X_line_pos + 2;
         } else {
-            temp_start_y = event_ptr->X_line_pos + 2;
+            start_text_x = this->X_start_line_pos
+                + this->X_line_max_width - text_width - 8;
         }
-        ret_val = event_ptr->Y_line_pos;
-        if (this->body_font_hgt + 2 + ret_val >=
+
+        if (event->Y_line_pos + this->body_font_hgt + 2 <
             this->Y_start_line_pos + this->Y_line_max_length) {
-            ret_val = this->Y_start_line_pos +
-                            this->Y_line_max_length -
-                            this->body_font_hgt - 2;
-            goto store_location;
-        }
-        goto top_location;
-
-    case 2:
-    {
-        event_ptr->text_length1 = strlen(event_ptr->text1);
-        ret_val = this->body_font_wid * event_ptr->text_length1;
-        int case2_x;
-        if (ret_val + 2 + event_ptr->X_line_pos >=
-            this->X_line_max_width + this->X_start_line_pos) {
-            case2_x = this->X_line_max_width - ret_val - 3 +
-                      this->X_start_line_pos;
+            start_text_y = this->Y_start_line_pos + 2;
         } else {
-            case2_x = event_ptr->X_line_pos + 2;
+            start_text_y = this->Y_start_line_pos
+                + this->Y_line_max_length - this->body_font_hgt - 2;
         }
-        ret_val = event_ptr->Y_line_pos +
-                        event_ptr->intermediate_y_line_segment -
-                        this->body_font_hgt;
-        temp_start_y = case2_x;
         break;
     }
 
-    default:
-        goto store_location;
-
-    case 6:
-    {
-        int body_height;
-        int max_length;
-        int top;
-        if (static_cast<int>(strlen(event_ptr->text1) * this->body_font_wid +
-                             event_ptr->X_line_pos) >
+    case 2: {
+        event->text_length1 = strlen(event->text1);
+        long text_width = this->body_font_wid * event->text_length1;
+        if (event->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            event_ptr->text_length1 =
-                (this->X_start_line_pos + this->X_line_max_width -
-                 event_ptr->X_line_pos) / this->body_font_wid;
+            start_text_x = event->X_line_pos + 2;
         } else {
-            event_ptr->text_length1 = strlen(event_ptr->text1);
+            start_text_x = this->X_start_line_pos
+                + this->X_line_max_width - text_width - 3;
         }
-        if (event_ptr->text_length1 > 2) {
-            event_ptr->text_length1 = 2;
+
+        start_text_y = event->Y_line_pos
+            + event->intermediate_y_line_segment
+            - this->body_font_hgt - 2;
+        if (start_text_y <= this->Y_start_line_pos) {
+            start_text_y = this->Y_start_line_pos + 2;
+        } else if (start_text_y >=
+                   this->Y_start_line_pos + this->Y_line_max_length) {
+            start_text_y = this->Y_start_line_pos
+                + this->Y_line_max_length - this->body_font_hgt - 3;
         }
-        ret_val = this->special_events_pic_hgt;
-        body_height = this->body_font_hgt;
-        max_length = this->Y_line_max_length;
-        top = this->Y_start_line_pos;
-        if (temp_start_x + body_height + 1 + ret_val > max_length + top) {
-            temp_start_x = (max_length - body_height) - ret_val - 1 + top;
-        }
-        temp_start_y = local_4;
-        ret_val = temp_start_x + 1 + ret_val;
-        goto store_location;
+        break;
     }
 
-    case 8:
-    {
-        int body_height;
-        int max_length;
-        int top;
-        if (static_cast<int>(strlen(event_ptr->text1) * this->body_font_wid +
-                             event_ptr->X_line_pos) >
-            this->X_start_line_pos + this->X_line_max_width) {
-            event_ptr->text_length1 =
-                (this->X_start_line_pos + this->X_line_max_width -
-                 event_ptr->X_line_pos) / this->body_font_wid;
+    case 6: {
+        long right = this->X_start_line_pos + this->X_line_max_width;
+        long text_length = static_cast<long>(strlen(event->text1));
+        if (event->X_line_pos + text_length * this->body_font_wid > right) {
+            event->text_length1 =
+                (right - event->X_line_pos) / this->body_font_wid;
         } else {
-            event_ptr->text_length1 = strlen(event_ptr->text1);
+            event->text_length1 = strlen(event->text1);
         }
-        if (event_ptr->text_length1 > 5) {
-            event_ptr->text_length1 = 5;
+        if (event->text_length1 > 2) {
+            event->text_length1 = 2;
         }
-        ret_val = this->special_events_pic_hgt;
-        body_height = this->body_font_hgt;
-        max_length = this->Y_line_max_length;
-        top = this->Y_start_line_pos;
-        if (max_length + top < temp_start_x + body_height + 1 + ret_val) {
-            temp_start_x = (max_length - body_height) - ret_val - 1 + top;
+
+        if (start_y + this->body_font_hgt
+                + this->special_events_pic_hgt + 1 >
+            this->Y_start_line_pos + this->Y_line_max_length) {
+            start_y = this->Y_start_line_pos + this->Y_line_max_length
+                - this->body_font_hgt - this->special_events_pic_hgt - 1;
         }
-        temp_start_y = local_4;
-        ret_val = temp_start_x + 1 + ret_val;
-        goto store_location;
-    }
+        start_text_x = start_x;
+        start_text_y = start_y + this->special_events_pic_hgt + 1;
+        break;
     }
 
-    ret_val -= 2;
-    {
-        int top = this->Y_start_line_pos;
-        if (top < ret_val) {
-            int bottom = this->Y_line_max_length + top;
-            if (bottom <= ret_val) {
-                ret_val = bottom - this->body_font_hgt - 3;
-            }
+    case 8: {
+        long right = this->X_start_line_pos + this->X_line_max_width;
+        long text_length = static_cast<long>(strlen(event->text1));
+        if (event->X_line_pos + text_length * this->body_font_wid > right) {
+            event->text_length1 =
+                (right - event->X_line_pos) / this->body_font_wid;
         } else {
-            ret_val = top + 2;
+            event->text_length1 = strlen(event->text1);
         }
-    }
-    goto store_location;
+        if (event->text_length1 > 5) {
+            event->text_length1 = 5;
+        }
 
-top_location:
-    ret_val = event_ptr->Y_line_pos + 2;
-    goto store_location;
-
-store_location:
-    event_ptr->start_x = local_4;
-    event_ptr->start_txt_x1 = temp_start_y;
-    event_ptr->start_y = temp_start_x;
-    event_ptr->start_txt_y1 = ret_val;
-    if (temp_start_txt_x1 != 0) {
-        event_ptr->icon_flag = 1;
+        if (start_y + this->body_font_hgt
+                + this->special_events_pic_hgt + 1 >
+            this->Y_start_line_pos + this->Y_line_max_length) {
+            start_y = this->Y_start_line_pos + this->Y_line_max_length
+                - this->body_font_hgt - this->special_events_pic_hgt - 1;
+        }
+        start_text_x = start_x;
+        start_text_y = start_y + this->special_events_pic_hgt + 1;
+        break;
     }
-    return temp_start_txt_x1;
+    }
+
+    event->start_x = start_x;
+    event->start_txt_x1 = start_text_x;
+    event->start_y = start_y;
+    event->start_txt_y1 = start_text_y;
+    if (result != 0) {
+        event->icon_flag = 1;
+    }
+    return result;
 }
 
 void Time_Line_Panel::draw(void) {
