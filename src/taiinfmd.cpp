@@ -2947,311 +2947,378 @@ next_object:
 #include <math.h>
 
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
-    int owner, TacticalAIGroup* group, AttackState& stateRef, unsigned long currentTime)
+    int owner, TacticalAIGroup* group, AttackState& state,
+    unsigned long currentTime)
 {
-    unsigned char commanderZone;
-    unsigned char tempZone;
     RGE_Static_Object* commanderObject = this->md->object(group->commander());
-    RGE_Static_Object* oTDObject;
-    ObjectMemory* wonder;
-    bool commanderIsBoat = false;
-    float targetDistance;
-    int commanderIsPriest = 0;
-    int destroyIndex;
-
     if (commanderObject == 0 || commanderObject->unitAI() == 0) {
-        stateRef.active = 0;
+        state.active = 0;
         return 0;
     }
 
-    commanderZone = commanderObject->currentZone();
-    if (commanderObject->master_obj->object_group == 0x12) {
-        commanderIsPriest = 1;
-    }
-    if (this->isBoat(commanderObject) == 1) {
-        commanderIsBoat = 1;
-    }
+    unsigned char commanderZone = commanderObject->currentZone();
+    int commanderIsPriest =
+        commanderObject->master_obj->object_group == 0x12;
+    int commanderIsBoat = this->isBoat(commanderObject) == 1;
 
-    if (stateRef.active == 0 &&
+    if (state.active == 0 &&
         group->objectsToDestroyOwnerValue == owner &&
         group->numberObjectsToDestroyValue > 0 &&
-        group->objectsToDestroyCommanderZoneValue == (int)commanderZone) {
-        int objectID = group->objectToDestroy(group->numberObjectsToDestroyValue - 1);
-        oTDObject = this->md->object(objectID);
+        group->objectsToDestroyCommanderZoneValue == commanderZone) {
+        int last = group->numberObjectsToDestroyValue - 1;
+        int targetID = group->objectToDestroy(last);
+        RGE_Static_Object* target = this->md->object(targetID);
 
-        if (oTDObject != 0 &&
-            this->md->player->isEnemy(oTDObject->owner->id) == 1 &&
-            oTDObject->object_state <= 2 &&
-            commanderObject->canPath(
-                group->objectToDestroy(group->numberObjectsToDestroyValue - 1),
-                commanderObject->weaponRange()) == 1) {
-            objectID = group->objectToDestroy(group->numberObjectsToDestroyValue - 1);
-            group->numberObjectsToDestroyValue = 0;
-            group->addObjectToDestroy(objectID);
-            return this->objectMemory(objectID);
-        }
-    }
-
-    if (group->numberObjectsToDestroyValue - 1 > 0) {
-        for (destroyIndex = 0;
-             destroyIndex < group->numberObjectsToDestroyValue - 1;
-             ++destroyIndex) {
-            oTDObject = this->md->object(group->objectToDestroy(destroyIndex));
-            if (oTDObject != 0 &&
-                this->md->player->isEnemy(oTDObject->owner->id) == 1 &&
-                oTDObject->object_state <= 2 &&
-                commanderObject->canPath(
-                    group->objectToDestroy(destroyIndex),
-                    commanderObject->weaponRange()) == 1) {
-
-                goto selected_destroy_object;
+        if (target != 0 && this->md->player->isEnemy(target->owner->id) == 1 &&
+            target->object_state <= 2) {
+            int pathIndex = group->numberObjectsToDestroyValue - 1;
+            if (commanderObject->canPath(
+                    group->objectToDestroy(pathIndex),
+                    commanderObject->weaponRange(), 0, 1, -1, -1) == 1) {
+                targetID = group->objectToDestroy(
+                    group->numberObjectsToDestroyValue - 1);
+                group->numberObjectsToDestroyValue = 0;
+                group->addObjectToDestroy(targetID);
+                return this->objectMemory(targetID);
             }
         }
+
+        int i = 0;
+        if (group->numberObjectsToDestroyValue - 1 > 0) {
+            do {
+                targetID = group->objectToDestroy(i);
+                target = this->md->object(targetID);
+                if (target != 0 &&
+                    this->md->player->isEnemy(target->owner->id) == 1 &&
+                    target->object_state <= 2 &&
+                    commanderObject->canPath(
+                        group->objectToDestroy(i), commanderObject->weaponRange(),
+                        0, 1, -1, -1) == 1) {
+                    return this->objectMemory(group->objectToDestroy(i));
+                }
+                ++i;
+            } while (i < group->numberObjectsToDestroyValue - 1);
+        }
     }
 
-    if (stateRef.active == 0) {
-        wonder = this->wonderToAttack(-1);
+    if (state.active == 0) {
+        ObjectMemory* wonder = this->wonderToAttack(-1);
         if (wonder != 0) {
-            unsigned char wonderZone = commanderObject->lookupZone((int)wonder->x, (int)wonder->y);
-            if (wonderZone != commanderZone && !commanderIsBoat) {
-                return 0;
+            unsigned char wonderZone = commanderObject->lookupZone(
+                (int)wonder->x, (int)wonder->y);
+            if (wonderZone != commanderZone && commanderIsBoat == 0) {
+                return wonder;
             }
-            if (commanderObject->canPath(wonder->id,
-                                         commanderObject->weaponRange()) == 1) {
+
+            if (commanderObject->canPath(
+                    wonder->id, commanderObject->weaponRange(),
+                    0, 1, -1, -1) == 1) {
                 group->numberObjectsToDestroyValue = 0;
                 group->addObjectToDestroy(wonder->id);
                 group->objectsToDestroyOwnerValue = wonder->owner;
-                group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
+                group->objectsToDestroyCommanderZoneValue = commanderZone;
                 return wonder;
             }
 
             ManagedArray<int> wallObjects;
             if (commanderObject->canPathWithObstructions(
-                    wonder->id, commanderObject->weaponRange(), 0, 1, owner, 0x1B,
-                    wallObjects) == 1) {
+                    wonder->id, commanderObject->weaponRange(), 0, 1,
+                    owner, 0x1b, wallObjects) == 1) {
                 group->numberObjectsToDestroyValue = 0;
-                for (int i = 0; i < wallObjects.numberValue; ++i) {
-                    if (this->md->object(wallObjects[i]) != 0) {
-                        this->addImportantObject(wallObjects[i]);
-                        group->addObjectToDestroy(wallObjects[i]);
-                    }
+                int wallIndex = 0;
+                if (wallObjects.numberValue > 0) {
+                    do {
+                        if (this->md->object(wallObjects[wallIndex]) != 0) {
+                            this->addImportantObject(wallObjects[wallIndex]);
+                            group->addObjectToDestroy(wallObjects[wallIndex]);
+                        }
+                        ++wallIndex;
+                    } while (wallIndex < wallObjects.numberValue);
                 }
                 group->addObjectToDestroy(wonder->id);
-                group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
-                group->objectsToDestroyOwnerValue = wonder->owner;
+                unsigned char wonderOwner = wonder->owner;
+                group->objectsToDestroyCommanderZoneValue = commanderZone;
+                group->objectsToDestroyOwnerValue = wonderOwner;
                 return wonder;
             }
         }
 
-        stateRef.bestTargetID = -1;
-        stateRef.bestTargetValue = -1.0f;
-        stateRef.bestTargetMemoryIndex = -1;
-        stateRef.iterationIndex = 0;
-        stateRef.attackGroupID = -1;
-        stateRef.playID = -1;
-        stateRef.phase = 0;
-        stateRef.bestNonWallTargetID = -1;
-        stateRef.bestNonWallTargetValue = -1.0f;
-        stateRef.bestNonWallTargetMemoryIndex = -1;
-        stateRef.active = 1;
+        state.bestTargetID = -1;
+        state.bestTargetValue = -1.0f;
+        state.bestTargetMemoryIndex = -1;
+        state.iterationIndex = 0;
+        state.attackGroupID = -1;
+        state.playID = -1;
+        state.phase = 0;
+        state.bestNonWallTargetID = -1;
+        state.bestNonWallTargetValue = -1.0f;
+        state.bestNonWallTargetMemoryIndex = -1;
+        state.active = 1;
     }
 
-    destroyIndex = stateRef.iterationIndex;
-    for (; destroyIndex < this->maxImportantObjectMemory; ++destroyIndex) {
-        ObjectMemory* memory = this->importantObjectMemory + destroyIndex;
-
-        if (destroyIndex > stateRef.iterationIndex) {
-            if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xF5A) - currentTime >=
-                this->md->player->world->availableComputerPlayerUpdateTime) {
-                stateRef.iterationIndex = destroyIndex;
-                return 0;
+    int memoryIndex = state.iterationIndex;
+    if (memoryIndex < this->maxImportantObjectMemory) {
+        do {
+            if (state.iterationIndex < memoryIndex) {
+                unsigned long availableTime =
+                    this->md->player->world->availableComputerPlayerUpdateTime;
+                if (debug_timeGetTime(
+                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                        0xf5a) - currentTime >= availableTime) {
+                    state.iterationIndex = memoryIndex;
+                    return 0;
+                }
             }
-        }
 
-        if (memory->owner != owner) {
-            continue;
-        }
+            if ((int)this->importantObjectMemory[memoryIndex].owner == owner) {
+                RGE_Static_Object* target = this->md->object(
+                    this->importantObjectMemory[memoryIndex].id);
+                if (target != 0 && target->object_state <= 2 &&
+                    target->hp != DAT_00575580 &&
+                    (commanderIsBoat != 0 || this->isBoat(target) != 1)) {
+                    unsigned char targetZone = commanderObject->lookupZone(
+                        (int)target->world_x, (int)target->world_y);
 
-        oTDObject = this->md->object(memory->id);
-        if (oTDObject == 0 || oTDObject->object_state > 2 || oTDObject->hp == DAT_00575580) {
-            continue;
-        }
+                    if ((commanderIsBoat != 0 ||
+                         this->importantObjectMemory[memoryIndex].type != 0x2d ||
+                         commanderZone == targetZone) &&
+                        (state.phase != 0 ||
+                         this->importantObjectMemory[memoryIndex].group != 0x1b) &&
+                        (state.phase != 1 ||
+                         this->importantObjectMemory[memoryIndex].group == 0x1b)) {
+                        int targetX = (int)target->world_x;
+                        int dx =
+                            (int)this->importantObjectMemory[memoryIndex].x - targetX;
+                        if (dx < 0)
+                            dx = -dx;
 
-        if (!commanderIsBoat && this->isBoat(oTDObject) == 1) {
-            continue;
-        }
+                        int targetY = (int)target->world_y;
+                        int dy =
+                            (int)this->importantObjectMemory[memoryIndex].y - targetY;
+                        if (dy < 0)
+                            dy = -dy;
 
-        int targetX = (int)oTDObject->world_x;
-        int targetY = (int)oTDObject->world_y;
-        tempZone = commanderObject->lookupZone(targetX, targetY);
+                        if ((dx <= 5 && dy <= 5) ||
+                            this->md->player->visible->get_visible(
+                                targetX, targetY) == 0x0f) {
+                            if (commanderIsPriest == 0 ||
+                                commanderObject->unitAI()->canConvert(
+                                    this->importantObjectMemory[memoryIndex].id) != 0) {
+                                float damage = this->damageInflictedPerSecond(
+                                    group, target);
+                                float targetHitPoints = target->hp;
+                                float timeToKill = targetHitPoints / damage;
+                                float timeKilled = this->timeToBeKilled(
+                                    group, target);
 
-        if (!commanderIsBoat && memory->type == 0x2D && tempZone != commanderZone) {
-            continue;
-        }
-        if (stateRef.phase == 0 && memory->group == 0x1B) {
-            continue;
-        }
-        if (stateRef.phase == 1 && memory->group != 0x1B) {
-            continue;
-        }
+                                if (damage != DAT_00575580 &&
+                                    timeKilled != DAT_00575580) {
+                                    float timeKillRatio =
+                                        timeKilled / timeToKill;
 
-        int visibleDX = (int)memory->x - (int)oTDObject->world_x;
-        if (visibleDX < 0) {
-            visibleDX = -visibleDX;
-        }
-        int visibleDY = (int)memory->y - (int)oTDObject->world_y;
-        if (visibleDY < 0) {
-            visibleDY = -visibleDY;
-        }
-        if ((visibleDX > 5 || visibleDY > 5) &&
-            this->md->player->visible->get_visible(targetX, targetY) != 0x0F) {
-            continue;
-        }
+                                    dx =
+                                         (int)this->importantObjectMemory[memoryIndex].x -
+                                         (int)commanderObject->world_x;
+                                    dy =
+                                         (int)this->importantObjectMemory[memoryIndex].y -
+                                         (int)commanderObject->world_y;
+                                    float targetDistance = (float)sqrt(
+                                        (float)(dx * dx + dy * dy));
+                                    if (targetDistance < DAT_00575564)
+                                        targetDistance = 1.0f;
 
-        if (commanderIsPriest != 0 &&
-            commanderObject->unitAI()->canConvert(memory->id) == 0) {
-            continue;
-        }
+                                    float killsByTarget = (float)
+                                        this->importantObjectMemory[memoryIndex].kills;
 
-        float damage = this->damageInflictedPerSecond(group, oTDObject);
-        float killTimeRatio = oTDObject->hp / damage;
-        float killTime = this->timeToBeKilled(group, oTDObject);
-        if (killTimeRatio == DAT_00575580 || killTime == DAT_00575580) {
-            continue;
-        }
-        killTimeRatio = killTime / killTimeRatio;
+                                    float targetRandomization;
+                                    if (this->md->tacticalAI.strategicNumber(
+                                            0x53) > 0) {
+                                        int randomLimit =
+                                            this->md->tacticalAI.strategicNumber(
+                                                0x53);
+                                        targetRandomization = (float)(debug_rand(
+                                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                            0xfd5) % randomLimit);
+                                    } else {
+                                        targetRandomization = 0.0f;
+                                    }
 
-        int dx = (int)memory->x - (int)oTDObject->world_x;
-        if (dx < 0) {
-            dx = -dx;
-        }
-        int dy = (int)memory->y - (int)oTDObject->world_y;
-        if (dy < 0) {
-            dy = -dy;
-        }
-        targetDistance = (float)sqrt((double)(dx * dx + dy * dy));
-        if (targetDistance < DAT_00575564) {
-            targetDistance = 1.0f;
-        }
+                                    float attackAttemptFactor =
+                                        (float)this->md->tacticalAI.strategicNumber(
+                                            0x59) *
+                                        this->importantObjectMemory[memoryIndex]
+                                            .attackAttempts;
 
-        float randomFactor = 0.0f;
-        if (this->md->tacticalAI.strategicNumber(0x53) > 0) {
-            randomFactor = (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xFD5) %
-                this->md->tacticalAI.strategicNumber(0x53));
-        }
+                                    float sameZoneFactor;
+                                    if (commanderZone == targetZone) {
+                                        sameZoneFactor =
+                                            (float)this->md->tacticalAI.strategicNumber(
+                                                0x7a);
+                                    } else {
+                                        sameZoneFactor = 0.0f;
+                                    }
 
-        float attackAttemptFactor =
-            (float)this->md->tacticalAI.strategicNumber(0x59) * memory->attackAttempts;
-        float sameZoneFactor = 0.0f;
-        if (tempZone == commanderZone) {
-            sameZoneFactor = (float)this->md->tacticalAI.strategicNumber(0x7A);
-        }
+                                    float inProgressFactor = 0.0f;
+                                    if (this->md->tacticalAI.strategicNumber(
+                                            0xb9) > 0) {
+                                        int inProgressCount = 0;
+                                        int unitIndex = 0;
+                                        if (group->numberUnits() > 0) {
+                                            do {
+                                                RGE_Static_Object* unit =
+                                                    this->md->object(
+                                                        group->unit(unitIndex));
+                                                if (unit != 0 &&
+                                                    unit->unitAI() != 0 &&
+                                                    unit->unitAI()->currentTarget() ==
+                                                        this->importantObjectMemory[
+                                                            memoryIndex].id) {
+                                                    ++inProgressCount;
+                                                }
+                                                ++unitIndex;
+                                            } while (unitIndex <
+                                                     group->numberUnits());
+                                        }
+                                        inProgressFactor =
+                                            (float)this->md->tacticalAI.strategicNumber(
+                                                0xb9) * inProgressCount;
+                                    }
 
-        float currentTargetFactor = 0.0f;
-        if (this->md->tacticalAI.strategicNumber(0xB9) > 0) {
-            int currentTargetCount = 0;
-            if (group->numberUnits() > 0) {
-                int unitIndex = 0;
-                do {
-                    RGE_Static_Object* unit =
-                        this->md->object(group->unit(unitIndex));
-                    if (unit != 0 && unit->unitAI() != 0 &&
-                        unit->unitAI()->currentTarget() == memory->id) {
-                        ++currentTargetCount;
+                                    float miscFactor = 0.0f;
+                                    if (state.phase == 1 &&
+                                        state.bestNonWallTargetID != -1) {
+                                        ObjectMemory* nonWall =
+                                            &this->importantObjectMemory[
+                                                state.bestNonWallTargetMemoryIndex];
+                                        dx = (int)this->importantObjectMemory[
+                                                 memoryIndex].x - (int)nonWall->x;
+                                        dy = (int)this->importantObjectMemory[
+                                                 memoryIndex].y - (int)nonWall->y;
+                                        float distance = (float)sqrt(
+                                            (float)(dx * dx + dy * dy));
+                                        if (distance < DAT_00575564)
+                                            miscFactor = 1000.0f;
+                                        else
+                                            miscFactor = DAT_0057558c / distance;
+                                    }
+
+                                    if (this->isUnitBuilding(target) == 1) {
+                                        if (target->master_obj->id == 0x6d ||
+                                            target->master_obj->id == 0x2d)
+                                            miscFactor -= DAT_00575594;
+                                        else
+                                            miscFactor -= DAT_00575590;
+                                    }
+
+                                    float attackValue =
+                                        (float)this->md->tacticalAI.strategicNumber(
+                                            0x50) * killsByTarget;
+                                    attackValue =
+                                        (float)this->md->tacticalAI.strategicNumber(
+                                            0x4d) / targetDistance + attackValue;
+                                    attackValue =
+                                        (float)this->md->tacticalAI.strategicNumber(
+                                            0xb8) * timeKillRatio + attackValue;
+                                    attackValue += miscFactor;
+                                    attackValue += inProgressFactor;
+                                    attackValue += sameZoneFactor;
+                                    attackValue += attackAttemptFactor;
+                                    attackValue += targetRandomization;
+
+                                    if (state.bestTargetID == -1 ||
+                                        attackValue > state.bestTargetValue) {
+                                        if (state.phase == 0 &&
+                                            target->maximumSpeed() ==
+                                                DAT_00575580) {
+                                            state.bestNonWallTargetID =
+                                                this->importantObjectMemory[
+                                                    memoryIndex].id;
+                                            state.bestNonWallTargetMemoryIndex =
+                                                memoryIndex;
+                                            state.bestNonWallTargetValue =
+                                                attackValue;
+                                        }
+
+                                        ManagedArray<int> wallObjects;
+                                        int obstructionGroup =
+                                            state.phase == 0 ? 0x1b : -1;
+                                        int canReach = 1;
+                                        if (commanderZone == targetZone) {
+                                            if (commanderObject->canPath(
+                                                    this->importantObjectMemory[
+                                                        memoryIndex].id,
+                                                    commanderObject->weaponRange(),
+                                                    0, 1, -1, -1) != 1 &&
+                                                commanderObject->canPathWithObstructions(
+                                                    this->importantObjectMemory[
+                                                        memoryIndex].id,
+                                                    commanderObject->weaponRange(),
+                                                    0, 1, owner,
+                                                    obstructionGroup,
+                                                    wallObjects) != 1) {
+                                                canReach = 0;
+                                            }
+                                        }
+
+                                        if (canReach != 0) {
+                                            group->numberObjectsToDestroyValue = 0;
+                                            int wallIndex = 0;
+                                            if (wallObjects.numberValue > 0) {
+                                                do {
+                                                    if (this->md->object(
+                                                            wallObjects[wallIndex]) != 0) {
+                                                        this->addImportantObject(
+                                                            wallObjects[wallIndex]);
+                                                        group->addObjectToDestroy(
+                                                            wallObjects[wallIndex]);
+                                                    }
+                                                    ++wallIndex;
+                                                } while (wallIndex <
+                                                         wallObjects.numberValue);
+                                            }
+                                            group->addObjectToDestroy(
+                                                this->importantObjectMemory[
+                                                    memoryIndex].id);
+                                            unsigned char selectedOwner =
+                                                this->importantObjectMemory[
+                                                    memoryIndex].owner;
+                                            group->objectsToDestroyCommanderZoneValue =
+                                                commanderZone;
+                                            group->objectsToDestroyOwnerValue =
+                                                selectedOwner;
+                                            state.bestTargetID =
+                                                this->importantObjectMemory[
+                                                    memoryIndex].id;
+                                            state.bestTargetMemoryIndex =
+                                                memoryIndex;
+                                            state.bestTargetValue = attackValue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    ++unitIndex;
-                } while (unitIndex < group->numberUnits());
+                }
             }
-            currentTargetFactor =
-                (float)this->md->tacticalAI.strategicNumber(0xB9) * currentTargetCount;
-        }
 
-        float nonWallFactor = 0.0f;
-        if (stateRef.phase == 1 && stateRef.bestNonWallTargetID != -1) {
-            ObjectMemory* previous =
-                this->importantObjectMemory + stateRef.bestNonWallTargetMemoryIndex;
-            int previousDX = (int)memory->x - (int)previous->x;
-            int previousDY = (int)memory->y - (int)previous->y;
-            float previousDistance =
-                (float)sqrt((double)(previousDX * previousDX + previousDY * previousDY));
-            if (previousDistance < DAT_00575564) {
-                nonWallFactor = 1000.0f;
-            } else {
-                nonWallFactor = DAT_0057558c / previousDistance;
-            }
-        }
-
-        if (this->isUnitBuilding(oTDObject) == 1) {
-            if (oTDObject->master_obj->id == 0x6D || oTDObject->master_obj->id == 0x2D) {
-                nonWallFactor -= DAT_00575594;
-            } else {
-                nonWallFactor -= DAT_00575590;
-            }
-        }
-
-        float score =
-            (float)this->md->tacticalAI.strategicNumber(0x50) * memory->kills;
-        score +=
-            (float)this->md->tacticalAI.strategicNumber(0x4D) / targetDistance;
-        score +=
-            (float)this->md->tacticalAI.strategicNumber(0xB8) * killTimeRatio;
-        score += nonWallFactor + currentTargetFactor + attackAttemptFactor +
-            sameZoneFactor + randomFactor;
-
-        if (stateRef.bestTargetID != -1 &&
-            score <= stateRef.bestTargetValue) {
-            continue;
-        }
-
-        if (stateRef.phase == 0 && oTDObject->maximumSpeed() == DAT_00575580) {
-            stateRef.bestNonWallTargetID = memory->id;
-            stateRef.bestNonWallTargetMemoryIndex = destroyIndex;
-            stateRef.bestNonWallTargetValue = score;
-        }
-
-        int obstructionGroup = stateRef.phase == 0 ? 0x1B : -1;
-        ManagedArray<int> wallObjects;
-        if (tempZone == commanderZone &&
-            commanderObject->canPath(memory->id,
-                                     commanderObject->weaponRange()) != 1 &&
-            commanderObject->canPathWithObstructions(
-                memory->id, commanderObject->weaponRange(), 0, 1, owner,
-                obstructionGroup, wallObjects) != 1) {
-            continue;
-        }
-
-        group->numberObjectsToDestroyValue = 0;
-        for (int i = 0; i < wallObjects.numberValue; ++i) {
-            if (this->md->object(wallObjects[i]) != 0) {
-                this->addImportantObject(wallObjects[i]);
-                group->addObjectToDestroy(wallObjects[i]);
-            }
-        }
-        group->addObjectToDestroy(memory->id);
-        group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
-        group->objectsToDestroyOwnerValue = memory->owner;
-        stateRef.bestTargetID = memory->id;
-        stateRef.bestTargetMemoryIndex = destroyIndex;
-        stateRef.bestTargetValue = score;
+            ++memoryIndex;
+        } while (memoryIndex < this->maxImportantObjectMemory);
     }
 
-    if (stateRef.bestTargetID != -1) {
-        ++(this->importantObjectMemory[stateRef.bestTargetMemoryIndex].attackAttempts);
-        stateRef.active = 0;
-        destroyIndex = 0;
-        goto selected_destroy_object;
+    if (state.bestTargetID != -1) {
+        ++this->importantObjectMemory[state.bestTargetMemoryIndex]
+              .attackAttempts;
+        state.active = 0;
+        return this->objectMemory(group->objectToDestroy(0));
     }
 
-    if (stateRef.phase == 0) {
-        stateRef.phase = 1;
-        stateRef.iterationIndex = 0;
+    if (state.phase == 0) {
+        state.phase = 1;
+        state.iterationIndex = 0;
     } else {
-        stateRef.active = 0;
+        state.active = 0;
     }
     return 0;
-
-selected_destroy_object:
-    return this->objectMemory(group->objectToDestroy(destroyIndex));
 }
 
 #include <math.h>
