@@ -43,30 +43,31 @@ extern TCommunications_Handler* comm;
 TribeMPSetupScreen::TribeMPSetupScreen()
     : TScreenPanel("MP Setup Screen")
 {
-    int row;
-    char str[256];
+    char text[256];
+    char* setup_file;
+    TDrawArea* draw_area;
+    int i;
     int y;
-    int button_id;
 
     L->Log("$$$ CHAT SCREEN: CONSTRUCTOR BEGIN");
-    init_vars();
+    this->init_vars();
+
     chat->ClearChat();
-    for (int i = 1; i < 9; i++) {
+    for (i = 1; i < 9; ++i) {
         chat->setInChatGroup(i, 1);
     }
 
-    char* setup_file;
-    if (rge_base_game->multiplayerGame()) {
+    if (rge_base_game->multiplayerGame() != 0) {
         setup_file = "scr3";
     } else {
         setup_file = "scr2";
     }
+    draw_area = rge_base_game->draw_area;
 
-    TDrawArea* draw_area = rge_base_game->draw_area;
-    if (this->TEasy_Panel::setup(
+    if (!this->TEasy_Panel::setup(
             draw_area, 0, setup_file,
-            (rge_base_game->multiplayerGame() != 0) + 0xC384,
-            1, 0, 0, 0, 0, 1) == 0) {
+            0xC384 + (rge_base_game->multiplayerGame() != 0),
+            1, 0, 0, 0, 0, 1)) {
         this->error_code = 1;
         return;
     }
@@ -74,299 +75,314 @@ TribeMPSetupScreen::TribeMPSetupScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (this->create_text(this, &this->title,
-                          0x25CF + (rge_base_game->multiplayerGame() ? -1 : 0),
-                          0x14, 6, 600, 0x1E, 1, 1, 0, 0) == 0) {
+    if (!this->create_text(
+            this, &this->title,
+            0x25CF - (rge_base_game->multiplayerGame() != 0),
+            0x14, 6, 0x258, 0x1E, 1, 1, 0, 0)) {
         return;
     }
-    if (this->create_text(this, &this->playerTitle, 0x25D0,
-                          0x1A, 0x32, 0xA0, 0x1E, 0, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->playerTitle, 0x25D0,
+                           0x1A, 0x32, 0xA0, 0x1E, 0, 0, 1, 0)) {
         return;
     }
-    if (this->create_text(this, &this->civTitle, 0x25D1,
-                          0xBD, 0x32, 0xA0, 0x1E, 0, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->civTitle, 0x25D1,
+                           0xBD, 0x32, 0xA0, 0x1E, 0, 0, 1, 0)) {
         return;
     }
-
-    if (!rge_base_game->singlePlayerGame() && !comm->IsHost()) {
-        if (this->create_text(this, &this->settingsTitle, 0x25D2,
-                              0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 1, 0) == 0) {
+    if (rge_base_game->singlePlayerGame() == 0 && !comm->IsHost()) {
+        if (!this->create_text(this, &this->settingsTitle, 0x25D2,
+                               0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 1, 0)) {
             return;
         }
     }
-
-    if (this->create_text(this, &this->colorTitle, 0x25AE,
-                          0xF0, 0x32, 100, 0x1E, 0, 0, 1, 0) == 0) {
+    if (!this->create_text(this, &this->colorTitle, 0x25AE,
+                           0xF0, 0x32, 0x64, 0x1E, 0, 0, 1, 0)) {
         return;
     }
     this->colorTitle->set_alignment(TTextPanel::AlignCenter,
-                                    TTextPanel::AlignRight);
-    if (this->create_text(this, &this->teamTitle, 0x25AF,
-                          0x136, 0x32, 100, 0x1E, 0, 0, 1, 0) == 0) {
+                                     TTextPanel::AlignRight);
+    if (!this->create_text(this, &this->teamTitle, 0x25AF,
+                           0x136, 0x32, 0x64, 0x1E, 0, 0, 1, 0)) {
         return;
     }
     this->teamTitle->set_alignment(TTextPanel::AlignCenter,
-                                   TTextPanel::AlignRight);
+                                    TTextPanel::AlignRight);
 
     y = 0x55;
-    row = 0;
-    for (; y < 0x115; ++row, y += 0x18) {
-        if (this->create_drop_down(this, &this->playerNameDrop[row],
-                                   0x9E, 100, 7, y - 1,
-                                   0x9E, 0x18, 0x0B) == 0) {
+    for (i = 0; y < 0x115; ++i, y += 0x18) {
+        if (!this->create_drop_down(
+                this, &this->playerNameDrop[i],
+                0x9E, 0x64, 7, y - 1, 0x9E, 0x18, 0x0B)) {
             return;
         }
-        this->playerNameDrop[row]->set_draw_style(
+        this->playerNameDrop[i]->set_draw_style(
             TDropDownPanel::DrawStyleLeftButton);
-        this->playerNameDrop[row]->set_draw_val_rect(0);
-        this->playerNameDrop[row]->set_help_info(0x75F9, -1);
-        this->playerNameDrop[row]->empty_list();
-        if (rge_base_game->multiplayerGame()) {
-            this->playerNameDrop[row]->append_line(0x25D3, 4);
-            this->playerNameDrop[row]->append_line(0x25D4, 1);
-            this->playerNameDrop[row]->append_line(0x25D5, 0);
+        this->playerNameDrop[i]->set_draw_val_rect(0);
+        this->playerNameDrop[i]->set_help_info(0x75F9, -1);
+        this->playerNameDrop[i]->empty_list();
+        if (rge_base_game->multiplayerGame() != 0) {
+            this->playerNameDrop[i]->append_line(0x25D3, 4);
+            this->playerNameDrop[i]->append_line(0x25D4, 1);
+            this->playerNameDrop[i]->append_line(0x25D5, 0);
         } else {
-            this->playerNameDrop[row]->append_line(0x25D3, 4);
-            this->playerNameDrop[row]->append_line(0x25D6, 0);
+            this->playerNameDrop[i]->append_line(0x25D3, 4);
+            this->playerNameDrop[i]->append_line(0x25D6, 0);
         }
 
-        if (this->create_drop_down(this, &this->playerCivDrop[row],
-                                   0x80, 100, 0xAA, y - 1,
-                                   0x80, 0x18, 0x0B) == 0) {
+        if (!this->create_drop_down(
+                this, &this->playerCivDrop[i],
+                0x80, 0x64, 0xAA, y - 1, 0x80, 0x18, 0x0B)) {
             return;
         }
-        this->playerCivDrop[row]->set_draw_style(
+        this->playerCivDrop[i]->set_draw_style(
             TDropDownPanel::DrawStyleLeftButton);
-        this->playerCivDrop[row]->set_draw_val_rect(0);
-        this->playerCivDrop[row]->set_help_info(0x75FA, 0x25F09);
-        this->playerCivDrop[row]->empty_list();
-        this->playerCivDrop[row]->append_line(0x27F7, 1);
-        this->playerCivDrop[row]->append_line(0x27F8, 2);
-        this->playerCivDrop[row]->append_line(0x27F9, 3);
-        this->playerCivDrop[row]->append_line(0x27FA, 4);
-        this->playerCivDrop[row]->append_line(0x27FB, 5);
-        this->playerCivDrop[row]->append_line(0x27FC, 6);
-        this->playerCivDrop[row]->append_line(0x27FD, 7);
-        this->playerCivDrop[row]->append_line(0x27FE, 8);
-        this->playerCivDrop[row]->append_line(0x27FF, 9);
-        this->playerCivDrop[row]->append_line(0x2800, 10);
-        this->playerCivDrop[row]->append_line(0x2801, 0x0B);
-        this->playerCivDrop[row]->append_line(0x2802, 0x0C);
-        this->playerCivDrop[row]->append_line(0x2806, 0x0D);
-        this->playerCivDrop[row]->append_line(0x2807, 0x0E);
-        this->playerCivDrop[row]->append_line(0x2809, 0x0F);
-        this->playerCivDrop[row]->append_line(0x2808, 0x10);
-        this->playerCivDrop[row]->append_line(0x280A, 0x11);
+        this->playerCivDrop[i]->set_draw_val_rect(0);
+        this->playerCivDrop[i]->set_help_info(0x75FA, 0x25F09);
+        this->playerCivDrop[i]->empty_list();
+        this->playerCivDrop[i]->append_line(0x27F7, 1);
+        this->playerCivDrop[i]->append_line(0x27F8, 2);
+        this->playerCivDrop[i]->append_line(0x27F9, 3);
+        this->playerCivDrop[i]->append_line(0x27FA, 4);
+        this->playerCivDrop[i]->append_line(0x27FB, 5);
+        this->playerCivDrop[i]->append_line(0x27FC, 6);
+        this->playerCivDrop[i]->append_line(0x27FD, 7);
+        this->playerCivDrop[i]->append_line(0x27FE, 8);
+        this->playerCivDrop[i]->append_line(0x27FF, 9);
+        this->playerCivDrop[i]->append_line(0x2800, 10);
+        this->playerCivDrop[i]->append_line(0x2801, 11);
+        this->playerCivDrop[i]->append_line(0x2802, 12);
+        this->playerCivDrop[i]->append_line(0x2806, 13);
+        this->playerCivDrop[i]->append_line(0x2807, 14);
+        this->playerCivDrop[i]->append_line(0x2809, 15);
+        this->playerCivDrop[i]->append_line(0x2808, 16);
+        this->playerCivDrop[i]->append_line(0x280A, 17);
 
-        if (this->create_drop_down(this, &this->scenarioPlayerDrop[row],
-                                   0x28, 100, 0x144, y - 1,
-                                   0x28, 0x18, 0x0B) == 0) {
+        if (!this->create_drop_down(
+                this, &this->scenarioPlayerDrop[i],
+                0x28, 0x64, 0x144, y - 1, 0x28, 0x18, 0x0B)) {
             return;
         }
-        this->scenarioPlayerDrop[row]->set_draw_style(
+        this->scenarioPlayerDrop[i]->set_draw_style(
             TDropDownPanel::DrawStyleLeftButton);
-        this->scenarioPlayerDrop[row]->set_draw_val_rect(0);
-        this->scenarioPlayerDrop[row]->set_help_info(0x75FB, -1);
+        this->scenarioPlayerDrop[i]->set_draw_val_rect(0);
+        this->scenarioPlayerDrop[i]->set_help_info(0x75FB, -1);
 
-        if (this->create_button(this, &this->playerColor[row], "", 0,
-                                0x136, y, 0x1E, 0x14, 0x0B, 0, 1) == 0) {
+        if (!this->create_button(
+                this, &this->playerColor[i], "", 0,
+                0x136, y, 0x1E, 0x14, 0x0B, 0, 1)) {
             return;
         }
-        this->playerColor[row]->set_help_info(0x7604, -1);
-
-        if (this->create_text(this, &this->playerColorText[row], "",
-                              0x131, y, 0x28, 0x16, 0x0B, 1, 1, 0) == 0) {
-            return;
-        }
-
-        if (this->create_button(this, &this->playerTeam[row], 0x25B0,
-                                0, 0x17C, y, 0x1E, 0x14, 0x0B, 0, 1) == 0) {
-            return;
-        }
-        this->playerTeam[row]->set_help_info(0x7603, -1);
-        this->playerTeam[row]->set_state_info(5);
-
-        button_id = 1;
-        do {
-            sprintf(str, "%d", button_id);
-            this->playerTeam[row]->set_text(static_cast<short>(button_id), str);
-            int next_button_id = button_id + 1;
-            this->playerTeam[row]->set_id(static_cast<short>(button_id), next_button_id, 0);
-            button_id = next_button_id;
-        } while (button_id < 5);
-
-        int text_y = y + 2;
-        if (this->create_text(this, &this->playerTeamText[row], "",
-                              0x177, y, 0x28, 0x16, 0x0B, 1, 1, 0) == 0) {
-            return;
-        }
-        if (this->create_text(this, &this->playerNameText[row], "",
-                              0x1C, text_y, 0x8B, 0x16, 0x0B, 0, 0, 0) == 0) {
-            return;
-        }
-        if (this->create_text(this, &this->playerCivText[row], "",
-                              0xBF, text_y, 0x6D, 0x16, 0x0B, 0, 0, 0) == 0) {
-            return;
-        }
-        if (this->create_text(this, &this->scenarioPlayerText[row], "",
-                              0x159, text_y, 0x28, 0x16, 0x0B, 0, 0, 0) == 0) {
-            return;
-        }
-        if (this->create_text(this, &this->playerCDText[row], 0x25DF,
-                              0x151, text_y + 1, 0x14, 0x16, 6, 0, 0, 0) == 0) {
-            return;
-        }
-        if (this->create_text(this, &this->playerVersionText[row], "",
-                              0x161, text_y + 1, 0x1D, 0x16, 6, 0, 0, 0) == 0) {
+        this->playerColor[i]->set_help_info(0x7604, -1);
+        if (!this->create_text(
+                this, &this->playerColorText[i], "",
+                0x131, y, 0x28, 0x16, 0x0B, 1, 1, 0)) {
             return;
         }
 
-        this->playerCDText[row]->set_active(0);
+        if (!this->create_button(
+                this, &this->playerTeam[i], 0x25B0, 0,
+                0x17C, y, 0x1E, 0x14, 0x0B, 0, 1)) {
+            return;
+        }
+        this->playerTeam[i]->set_help_info(0x7603, -1);
+        this->playerTeam[i]->set_state_info(5);
+        for (int state = 1; state < 5; ++state) {
+            sprintf(text, "%d", state);
+            this->playerTeam[i]->set_text((short)state, text);
+            this->playerTeam[i]->set_id((short)state, state + 1, 0);
+        }
+
+        if (!this->create_text(
+                this, &this->playerTeamText[i], "",
+                0x177, y, 0x28, 0x16, 0x0B, 1, 1, 0)) {
+            return;
+        }
+        if (!this->create_text(
+                this, &this->playerNameText[i], "",
+                0x1C, y + 2, 0x8B, 0x16, 0x0B, 0, 0, 0)) {
+            return;
+        }
+        if (!this->create_text(
+                this, &this->playerCivText[i], "",
+                0xBF, y + 2, 0x6D, 0x16, 0x0B, 0, 0, 0)) {
+            return;
+        }
+        if (!this->create_text(
+                this, &this->scenarioPlayerText[i], "",
+                0x159, y + 2, 0x28, 0x16, 0x0B, 0, 0, 0)) {
+            return;
+        }
+        if (!this->create_text(
+                this, &this->playerCDText[i], 0x25DF,
+                0x151, y + 3, 0x14, 0x16, 6, 0, 0, 0)) {
+            return;
+        }
+        if (!this->create_text(
+                this, &this->playerVersionText[i], "",
+                0x161, y + 3, 0x1D, 0x16, 6, 0, 0, 0)) {
+            return;
+        }
+        this->playerCDText[i]->set_active(0);
     }
 
-    if (rge_base_game->singlePlayerGame() || comm->IsHost()) {
-        if (this->create_button(this, &this->gameSettingsButton, 0x25D2,
-                                0, 0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 0) == 0) {
+    if (rge_base_game->singlePlayerGame() != 0 || comm->IsHost()) {
+        if (!this->create_button(
+                this, &this->gameSettingsButton, 0x25D2, 0,
+                0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 0)) {
             return;
         }
         this->gameSettingsButton->set_help_info(0x75FC, -1);
     }
 
-    if (this->create_text(this, &this->scenarioName, "",
-                          0x1A4, 0x54, 0xDC, 0x44, 0x0B, 0, 0, 1) == 0) {
+    if (!this->create_text(this, &this->scenarioName, "",
+                           0x1A4, 0x54, 0xDC, 0x44,
+                           0x0B, 0, 0, 1)) {
         return;
     }
-
     y = 0x53;
-    TTextPanel** setting = this->settingText;
-    for (; y < 0x233; ++setting, y += 0x18) {
-        if (this->create_text(this, setting, "",
-                              0x1A4, y, 0xDC, 0x14, 0x0B, 0, 0, 0) == 0) {
+    for (i = 0; y < 0x233; ++i, y += 0x18) {
+        if (!this->create_text(this, &this->settingText[i], "",
+                               0x1A4, y, 0xDC, 0x14,
+                               0x0B, 0, 0, 0)) {
             return;
         }
     }
 
-    if (rge_base_game->multiplayerGame()) {
-        if (this->create_text(this, &this->chatTitle, 0x25D7,
-                              10, 0x118, 100, 0x14, 4, 0, 1, 0) == 0) {
+    if (rge_base_game->multiplayerGame() != 0) {
+        if (!this->create_text(this, &this->chatTitle, 0x25D7,
+                               10, 0x118, 0x64, 0x14,
+                               4, 0, 1, 0)) {
             return;
         }
-        if (this->create_text(this, &this->chatBox, "",
-                              10, 300, 400, 0x60, 10, 0, 0, 0) == 0) {
+        if (!this->create_text(this, &this->chatBox, "",
+                               10, 0x12C, 0x190, 0x60,
+                               10, 0, 0, 0)) {
             return;
         }
-        if (this->create_auto_scrollbar(&this->chatScrollbar,
-                                        this->chatBox, 0x14) == 0) {
+        if (!this->create_auto_scrollbar(
+                &this->chatScrollbar, this->chatBox, 0x14)) {
             return;
         }
-        if (this->create_edit(this, &this->chatInput, "", 0xF7,
-                              TEditPanel::FormatText,
-                              10, 0x192, 400, 0x17, 10, 1, 0) == 0) {
+        if (!this->create_edit(
+                this, &this->chatInput, "", 0xF7,
+                TEditPanel::FormatText, 10, 0x192, 0x190, 0x17,
+                10, 1, 0)) {
             return;
         }
         this->chatInput->set_help_info(0x75FE, -1);
-        this->chatBox->set_bevel_info(3,
-                                      this->bevel_color1,
-                                      this->bevel_color2,
-                                      this->bevel_color3,
-                                      this->bevel_color4,
-                                      this->bevel_color5,
-                                      this->bevel_color6);
+        this->chatBox->set_bevel_info(
+            3, this->bevel_color1, this->bevel_color2,
+            this->bevel_color3, this->bevel_color4,
+            this->bevel_color5, this->bevel_color6);
         this->chatBox->set_help_info(0x75FD, -1);
         this->chatBox->empty_list();
     }
 
-    if (rge_base_game->singlePlayerGame()) {
-        if (this->create_text(this, &this->numberPlayersTitle, 0x25D8,
-                              0x1A, 0x127, 0x14F, 0x14, 0, 0, 1, 0) == 0) {
+    if (rge_base_game->singlePlayerGame() != 0) {
+        if (!this->create_text(
+                this, &this->numberPlayersTitle, 0x25D8,
+                0x1A, 0x127, 0x14F, 0x14, 0, 0, 1, 0)) {
             return;
         }
-        if (this->create_drop_down(this, &this->numberPlayersDrop,
-                                   0x46, 100, 0x1F, 0x142,
-                                   0x46, 0x18, 0x0B) == 0) {
+        if (!this->create_drop_down(
+                this, &this->numberPlayersDrop,
+                0x46, 0x64, 0x1F, 0x142, 0x46, 0x18, 0x0B)) {
             return;
         }
         this->numberPlayersDrop->set_help_info(0x7600, -1);
     }
 
     this->i_am_ready = 0;
-
-    if (rge_base_game->singlePlayerGame()) {
-        if (this->create_button(this, &this->startButton, "", 0,
-                                0x46, 0x1B8, 0xF0, 0x1E, 0, 0, 0) == 0) {
+    if (rge_base_game->singlePlayerGame() != 0) {
+        if (!this->create_button(
+                this, &this->startButton, "", 0,
+                0x46, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, 0x25EE);
         this->startButton->set_help_info(0x75FF, -1);
         this->set_curr_child(this->startButton);
-        if (this->create_button(this, &this->cancelButton, 0xFA2,
-                                0, 0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0) == 0) {
+        if (!this->create_button(
+                this, &this->cancelButton, 0x0FA2, 0,
+                0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(0x7532, -1);
     } else if (comm->IsHost()) {
-        if (this->create_check_box(this, &this->ready_button,
-                                   10, 0x1B8, 0x1E, 0x1E, 0, 0) == 0) {
+        if (!this->create_check_box(
+                this, &this->ready_button,
+                10, 0x1B8, 0x1E, 0x1E, 0, 0)) {
             return;
         }
-        if (this->create_text(this, &this->ready_button_label, 0x25BF,
-                              0x2D, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0) == 0) {
+        if (!this->create_text(
+                this, &this->ready_button_label, 0x25BF,
+                0x2D, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0)) {
             return;
         }
         this->ready_button->set_help_info(0x7602, -1);
-        if (this->create_button(this, &this->startButton, "", 0,
-                                0xC3, 0x1B8, 200, 0x1E, 0, 0, 0) == 0) {
+        if (!this->create_button(
+                this, &this->startButton, "", 0,
+                0xC3, 0x1B8, 0xC8, 0x1E, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, 0x25EE);
         this->startButton->set_help_info(0x75FF, -1);
         this->startButton->set_disabled(1);
-        if (this->create_button(this, &this->cancelButton, 0xFA2,
-                                0, 0x195, 0x1B8, 0xB4, 0x1E, 0, 0, 0) == 0) {
+        if (!this->create_button(
+                this, &this->cancelButton, 0x0FA2, 0,
+                0x195, 0x1B8, 0xB4, 0x1E, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(0x7532, -1);
-        if (this->create_button(this, &this->netInfoButton, 0x25EF,
-                                0, 600, 400, 0x1E, 0x1E, 0, 0, 0) == 0) {
+        if (!this->create_button(
+                this, &this->netInfoButton, 0x25EF, 0,
+                0x258, 0x190, 0x1E, 0x1E, 0, 0, 0)) {
             return;
         }
         this->netInfoButton->set_help_info(0x7601, -1);
         comm->SetMyReadiness(0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-        if (this->create_check_box(this, &this->ready_button,
-                                   100, 0x1B8, 0x1E, 0x1E, 0, 0) == 0) {
+        if (!this->create_check_box(
+                this, &this->ready_button,
+                0x64, 0x1B8, 0x1E, 0x1E, 0, 0)) {
             return;
         }
-        if (this->create_text(this, &this->ready_button_label, 0x25BF,
-                              0x87, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0) == 0) {
+        if (!this->create_text(
+                this, &this->ready_button_label, 0x25BF,
+                0x87, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0)) {
             return;
         }
         this->ready_button->set_help_info(0x7602, -1);
-        if (this->create_button(this, &this->cancelButton, 0xFA2,
-                                0, 0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0) == 0) {
+        if (!this->create_button(
+                this, &this->cancelButton, 0x0FA2, 0,
+                0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(0x7532, -1);
     }
 
-    if (this->create_button(this, &this->help_button, 0xFA9,
-                            0, 600, 0x1B8, 0x1E, 0x1E, 0, 0, 0) == 0) {
+    if (!this->create_button(
+            this, &this->help_button, 0x0FA9, 0,
+            0x258, 0x1B8, 0x1E, 0x1E, 0, 0, 0)) {
         return;
     }
-    if (this->create_button(this, &this->close_button, 0x3EA,
-                            0, 0, 0, 0, 0, -1, -1, 0) == 0) {
+    if (!this->create_button(
+            this, &this->close_button, 0x03EA, 0,
+            0, 0, 0, 0, -1, -1, 0)) {
         return;
     }
     this->close_button->set_active(1);
-    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4,
-                                        4, 0x11, 0x11, 0x11, 0x11,
-                                        0, 0, 0, 0);
-    this->cancelButton->hotkey = 0x1B;
-    this->cancelButton->hotkey_shift = 0;
+    this->close_button->set_positioning(
+        TPanel::PositionRightTop, 4, 4, 4, 4,
+        0x11, 0x11, 0x11, 0x11, 0, 0, 0, 0);
+
+    TButtonPanel* cancel = this->cancelButton;
+    cancel->hotkey = 0x1B;
+    cancel->hotkey_shift = 0;
     this->setupTabOrder();
     L->Log("$$$ CHAT SCREEN: UPDATE SUMMARY");
     this->updateSummary();
-    if (rge_base_game->singlePlayerGame()) {
+    if (rge_base_game->singlePlayerGame() != 0) {
         this->setupSinglePlayerPlayers();
         this->fillPlayers();
     }
