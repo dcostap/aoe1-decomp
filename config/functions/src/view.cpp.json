@@ -40,7 +40,7 @@
     "00535F20": {"status": "matching", "symbol": "?get_center_coords@RGE_View@@QAEXPAF000@Z"},
     "00535F70": {"status": "matching", "symbol": "?get_tile_sizes@RGE_View@@QAEXPAF000@Z"},
     "00535FC0": {"status": "matching", "symbol": "?get_max_size@RGE_View@@QAEXPAF0@Z"},
-    "00535FE0": {"status": "scratch", "symbol": "?view_function@RGE_View@@IAEJEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z"},
+    "00535FE0": {"status": "new_verified_logic", "symbol": "?view_function@RGE_View@@IAEJEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z", "behavior_review": ["logic_matching/00535FE0/coord-15-00535FE0-review-02A/attempt-02A", "logic_matching/00535FE0/coord-15-00535FE0-review-02B/attempt-02B"]},
     "00536B40": {"status": "scratch", "symbol": "?view_function_terrain@RGE_View@@IAEJEUtagRECT@@@Z"},
     "005381C0": {"status": "matching", "symbol": "?Update_Render_Pointers@RGE_View@@IAEXXZ"},
     "00538280": {"status": "matching", "symbol": "?Add_GDI_Clip_Mask@RGE_View@@IAEXPAUDClipInfo_Node@@PAVTSpan_List_Manager@@@Z"},

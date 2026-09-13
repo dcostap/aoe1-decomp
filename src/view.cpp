@@ -1578,331 +1578,415 @@ void RGE_View::get_max_size(short* cols, short* rows) {
 
 
 
-long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, tagPOINT* p2,
-                             void** out_obj, float* out_x, float* out_y, short* out_col, short* out_row)
+long RGE_View::view_function(unsigned char mode, unsigned char parm,
+                             tagPOINT* point, tagPOINT* start_point,
+                             void** out_object, float* out_x, float* out_y,
+                             short* out_screen_x, short* out_screen_y)
 {
-    unsigned char visible;
-    short map_row;
-    short map_col;
-    short start_scr_col2;
-    short start_scr_row2;
-    short cur_col_num;
-    short picked_type;
-    unsigned char fog_flag;
-    unsigned char tile;
-    RGE_Tile* tile_ptr;
-    short start_map_row2;
-    short direction;
-    unsigned char tile_screen_row;
-    short last_picked_obj;
-    RGE_Static_Object* terrain_type;
-    unsigned char tile_type;
-    unsigned char col_num;
-    short row_num;
-    long calc_sel_col1;
-    long calc_sel_col2;
-    long calc_sel_row1;
-    long calc_sel_row2;
-    long calc_sel_row3;
-    RGE_Static_Object* find_col;
+    RGE_Tile_List_Node* changed_tiles;
+    int changed_tile_count;
+    RGE_Static_Object* original_object;
+    RGE_Static_Object* best_object;
+    short find_col;
     short find_row;
-    short max_col_num2;
-    short max_row_num2;
-    int list_size;
+    long selection_col1;
+    long selection_row1;
+    long selection_col2;
+    long selection_row2;
+    unsigned char result;
 
-    this->function_mode = a1;
-    this->function_parm = a2;
+    this->function_mode = mode;
+    this->function_parm = parm;
 
-    if (a1 == 0x0A && this->calc_draw_count != 0) {
-        for (short i = 0; i < this->map->num_terrain; i++) {
-            this->map->terrain_types[i].drawn = 0;
+    if (this->function_mode == 10 && this->calc_draw_count != 0) {
+        short terrain = 0;
+        if (this->map->num_terrain > 0) {
+            do {
+                this->map->terrain_types[terrain].drawn = 0;
+                ++terrain;
+            } while (terrain < this->map->num_terrain);
         }
     }
 
-    RGE_Tile_List_Node* list_node;
-    int num_active;
-    this->player->tile_list.get_list_info(list_node, num_active);
+    this->player->tile_list.get_list_info(changed_tiles, changed_tile_count);
 
-    fog_flag = 0x32;
-    if (this->function_mode == 0x28 || this->function_mode == 0x3C || this->function_mode == 0x29 ||
-        this->function_mode == 0x2A || this->function_mode == 0x2B || this->function_mode == 0x2C) {
-        if (this->function_mode == 0x3C) {
-            find_row = (short)(long)(*out_x);
-            max_col_num2 = (short)(long)(*out_y);
+    result = 0x32;
+    if (this->function_mode == 0x28 || this->function_mode == 0x3c ||
+        this->function_mode == 0x29 || this->function_mode == 0x2a ||
+        this->function_mode == 0x2b || this->function_mode == 0x2c) {
+        if (this->function_mode == 0x3c) {
+            find_col = (short)(long)*out_x;
+            find_row = (short)(long)*out_y;
         }
+
         *out_x = 0.0f;
         *out_y = 0.0f;
-        *out_col = 0;
-        *out_row = 0;
-        if (this->function_mode == 0x29 || this->function_mode == 0x2A || this->function_mode == 0x2B ||
-            this->function_mode == 0x2C) {
-            find_col = (RGE_Static_Object*)*out_obj;
+        *out_screen_x = 0;
+        *out_screen_y = 0;
+
+        if (this->function_mode == 0x29 ||
+            this->function_mode == 0x2a ||
+            this->function_mode == 0x2b ||
+            this->function_mode == 0x2c) {
+            original_object = (RGE_Static_Object*)*out_object;
         }
-        *out_obj = 0;
-        terrain_type = 0;
+        *out_object = 0;
+        best_object = 0;
     }
 
-    if (this->function_mode == 0x0E) {
-        if (this->get_selection_area(calc_sel_col2, calc_sel_row2,
-                                     calc_sel_row1, calc_sel_row3, 1) == 0) {
+    if (this->function_mode == 0x0e) {
+        if (this->get_selection_area(selection_col1, selection_row1,
+                                     selection_col2, selection_row2, 1) == 0) {
             return 0;
         }
     }
 
-    start_scr_row2 = this->start_scr_col;
-    start_map_row2 = this->start_map_col;
-    direction = this->start_map_row;
-    cur_col_num = this->start_scr_row;
-    list_size = (this->max_row_num + 6) << 1;
-    picked_type = this->max_col_num + 4;
-    max_row_num2 = picked_type;
-    tile_screen_row = 4;
-    calc_sel_col1 = 0;
+    short start_screen_x = this->start_scr_col;
+    short start_screen_y = this->start_scr_row;
+    short start_map_col = this->start_map_col;
+    short start_map_row = this->start_map_row;
+    short rows_to_scan = (short)((this->max_row_num + 6) * 2);
+    short cols_to_scan = (short)(this->max_col_num + 4);
+    short original_cols_to_scan = cols_to_scan;
+    unsigned char direction = 4;
+    short row_number = 0;
 
-    if ((short)list_size > 0) {
+    if (rows_to_scan > 0) {
         do {
-            map_row = start_scr_row2;
-            start_scr_col2 = start_map_row2;
-            map_col = direction;
-            row_num = 0;
-            if (picked_type > 0) {
+            short screen_x = start_screen_x;
+            short map_col = start_map_col;
+            short map_row = start_map_row;
+            short col_number = 0;
+
+            if (cols_to_scan > 0) {
                 do {
-                    bool in_bounds;
-                    int draw_flag;
-                    if (start_scr_col2 >= 0 && start_scr_col2 < this->map->map_width &&
-                        map_col >= 0 && map_col < this->map->map_height) {
-                        in_bounds = 1;
-                    } else {
-                        in_bounds = 0;
-                        if (this->function_mode != 0x28 && this->function_mode != 0x2A) {
-                            goto col_continue;
-                        }
+                    int in_map = 0;
+                    if (map_col >= 0 && map_col < this->map->map_width &&
+                        map_row >= 0 && map_row < this->map->map_height) {
+                        in_map = 1;
                     }
-                    if (in_bounds) {
-                        RGE_Visible_Map* vis = this->player->visible;
-                        if (vis != 0 && this->map->map_visible_flag == 0) {
-                            visible = vis->get_visible(start_scr_col2, map_col);
-                            if (this->function_mode == 0x1E || this->function_mode == 0x1F) {
-                                visible = 0x0F;
+
+                    if (in_map || this->function_mode == 0x28 ||
+                        this->function_mode == 0x2a) {
+                        unsigned char visibility;
+
+                        if (in_map) {
+                            RGE_Visible_Map* visible = this->player->visible;
+                            if (visible == 0 || this->map->map_visible_flag != 0) {
+                                visibility = visible->get_visible(map_col, map_row);
+                                if (visibility == 0) {
+                                    visibility = 0x80;
+                                }
+                            } else {
+                                visibility = visible->get_visible(map_col, map_row);
+                                if (this->function_mode == 0x1e ||
+                                    this->function_mode == 0x1f) {
+                                    visibility = 0x0f;
+                                }
                             }
                         } else {
-                            visible = vis->get_visible(start_scr_col2, map_col);
-                            if (visible == 0) {
-                                visible = 0x80;
+                            visibility = 0;
+                        }
+
+                        if (in_map && this->function_mode == 0x0b) {
+                            RGE_Tile* drawn_tile =
+                                this->map->map_row_offset[map_row] + map_col;
+                            if (drawn_tile->draw_as == drawn_tile->last_drawn_as) {
+                                visibility = 0;
                             }
                         }
-                    } else {
-                        visible = 0;
-                    }
-                    if (this->function_mode == 0x0B) {
-                        RGE_Tile* t = this->map->map_row_offset[map_col] + start_scr_col2;
-                        if (t->draw_as == t->last_drawn_as) {
-                            visible = 0;
+
+                        if (visibility != 0x0f && visibility != 0x80) {
+                            visibility = 0;
                         }
-                    }
-                    if (visible != 0x0F && visible != 0x80) {
-                        visible = 0;
-                    }
-                    if (visible == 0 && this->function_mode != 0x0E && this->function_mode != 0x28 &&
-                        this->function_mode != 0x3C && this->function_mode != 0x2A) {
-                        goto col_continue;
-                    }
-                    if (in_bounds) {
-                        tile_ptr = this->map->map_row_offset[map_col] + start_scr_col2;
-                        col_num = tile_ptr->tile_type;
-                        last_picked_obj = (short)(cur_col_num -
-                            tile_ptr->height * this->elev_hgt);
-                    } else {
-                        tile_ptr = 0;
-                        col_num = 0;
-                        last_picked_obj = cur_col_num;
-                    }
-                    switch (col_num) {
-                    case 2:
-                    case 6:
-                    case 8:
-                    case 10:
-                    case 14:
-                    case 15:
-                    case 16:
-                        last_picked_obj -= this->elev_hgt;
-                        break;
-                    }
-                    draw_flag = map_row > this->render_rect.right || last_picked_obj > this->render_rect.bottom ||
-                        map_row + this->map->tilesizes[col_num].width <= this->render_rect.left ||
-                        last_picked_obj + this->map->tilesizes[col_num].height <= this->render_rect.top ||
-                        (this->function_mode == 0x0E &&
-                          (start_scr_col2 < calc_sel_col2 || start_scr_col2 > calc_sel_row1 ||
-                          map_col < calc_sel_row2 || map_col > calc_sel_row3));
-                    if (this->function_mode == 0x0A || this->function_mode == 0x1E || this->function_mode == 0x1F ||
-                        this->function_mode == 0x20 || this->function_mode == 0x15 || this->function_mode == 0x0B ||
-                        this->function_mode == 0x0E) {
-                        if (draw_flag == 0 &&
-                            (this->function_mode == 0x0A || this->function_mode == 0x0B || this->function_mode == 0x0E)) {
-                            tile_type = tile_ptr->terrain_type;
-                            if (this->map->terrain_types[tile_type].terrain_to_draw != -1) {
-                                tile_type = (unsigned char)this->map->terrain_types[tile_type].terrain_to_draw;
+
+                        if (visibility != 0 || this->function_mode == 0x0e ||
+                            this->function_mode == 0x28 ||
+                            this->function_mode == 0x3c ||
+                            this->function_mode == 0x2a) {
+                            RGE_Tile* tile;
+                            unsigned char tile_type;
+                            unsigned char tile_height;
+
+                            if (in_map) {
+                                tile = this->map->map_row_offset[map_row] + map_col;
+                                tile_type = tile->tile_type;
+                                tile_height = tile->height;
+                            } else {
+                                tile = 0;
+                                tile_type = 0;
+                                tile_height = 0;
                             }
-                            if (this->function_mode == 0x0A && this->calc_draw_count != 0 &&
-                                (short)tile_type < this->map->num_terrain) {
-                                this->map->terrain_types[tile_type].drawn++;
+
+                            short screen_y = (short)(
+                                start_screen_y - tile_height * this->elev_hgt);
+                            switch (tile_type) {
+                                case 2:
+                                case 6:
+                                case 8:
+                                case 10:
+                                case 14:
+                                case 15:
+                                case 16:
+                                    screen_y = (short)(screen_y - this->elev_hgt);
+                                    break;
                             }
-                            if (this->function_mode == 0x0B) {
-                                tile_ptr->last_drawn_as = tile_ptr->draw_as;
+
+                            int outside;
+                            if (screen_x > this->render_rect.right ||
+                                screen_y > this->render_rect.bottom ||
+                                screen_x + this->map->tilesizes[tile_type].width <=
+                                    this->render_rect.left ||
+                                screen_y + this->map->tilesizes[tile_type].height <=
+                                    this->render_rect.top ||
+                                (this->function_mode == 0x0e &&
+                                 (map_col < selection_col1 ||
+                                  map_col > selection_col2 ||
+                                  map_row < selection_row1 ||
+                                  map_row > selection_row2))) {
+                                outside = 1;
+                            } else {
+                                outside = 0;
                             }
-                        }
-                        if (visible == 0x0F || visible == 0x80) {
-                            if (this->function_mode == 0x1E || this->function_mode == 0x1F ||
-                                this->function_mode == 0x20 || this->function_mode == 0x15) {
-                                if (visible == 0x0F || (visible == 0x80 && this->map->fog_flag == 0)) {
-                                    tile = 0;
-                                } else {
-                                    tile = 1;
+
+                            if (this->function_mode == 10 ||
+                                this->function_mode == 0x1e ||
+                                this->function_mode == 0x1f ||
+                                this->function_mode == 0x20 ||
+                                this->function_mode == 0x15 ||
+                                this->function_mode == 0x0b ||
+                                this->function_mode == 0x0e) {
+                                if (!outside &&
+                                    (this->function_mode == 10 ||
+                                     this->function_mode == 0x0b ||
+                                     this->function_mode == 0x0e)) {
+                                    unsigned char terrain_type = tile->terrain_type;
+                                    short terrain_to_draw =
+                                        this->map->terrain_types[terrain_type]
+                                            .terrain_to_draw;
+                                    if (terrain_to_draw != -1) {
+                                        terrain_type = (unsigned char)terrain_to_draw;
+                                    }
+
+                                    if (this->function_mode == 10 &&
+                                        this->calc_draw_count != 0 &&
+                                        (short)terrain_type <
+                                            this->map->num_terrain) {
+                                        ++this->map->terrain_types[terrain_type].drawn;
+                                    }
+
+                                    if (this->function_mode == 0x0b) {
+                                        tile->last_drawn_as = tile->draw_as;
+                                    }
                                 }
-                                if (this->function_mode == 0x1E) {
-                                    this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
-                                    fog_next_shape = 1;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 1, tile);
-                                    this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
-                                    fog_next_shape = 0;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 1, tile);
-                                    this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
-                                }
-                                if (this->function_mode == 0x1F) {
-                                    this->cur_render_area->CurSpanList = this->Terrain_Fog_Clip_Mask;
-                                    fog_next_shape = 1;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 0x0A, tile);
-                                    this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
-                                    fog_next_shape = 0;
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 0x0A, tile);
-                                    this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
-                                }
-                                if (this->function_mode == 0x20) {
-                                    if (this->map->fog_flag != 0 && visible == 0x80) {
+
+                                if ((visibility == 0x0f || visibility == 0x80) &&
+                                    (this->function_mode == 0x1e ||
+                                     this->function_mode == 0x1f ||
+                                     this->function_mode == 0x20 ||
+                                     this->function_mode == 0x15)) {
+                                    unsigned char through_fog =
+                                        (visibility == 0x0f ||
+                                         (visibility == 0x80 &&
+                                          this->map->fog_flag == 0))
+                                            ? 0
+                                            : 1;
+
+                                    if (this->function_mode == 0x1e) {
+                                        this->cur_render_area->CurSpanList =
+                                            this->Terrain_Fog_Clip_Mask;
                                         fog_next_shape = 1;
+                                        tile->objects.shadow_draw(
+                                            this->cur_render_area, screen_x,
+                                            start_screen_y, 1, through_fog);
+                                        this->cur_render_area->CurSpanList =
+                                            this->Terrain_Clip_Mask;
+                                        fog_next_shape = 0;
+                                        tile->objects.shadow_draw(
+                                            this->cur_render_area, screen_x,
+                                            start_screen_y, 1, through_fog);
+                                        this->cur_render_area->CurSpanList =
+                                            this->cur_render_area->SpanList;
                                     }
-                                    tile_ptr->objects.shadow_draw(this->cur_render_area, map_row, cur_col_num, 0, tile);
-                                } else {
-                                    if (this->function_mode != 0x15) {
-                                        goto col_continue;
-                                    }
-                                    if (this->map->fog_flag != 0 && visible == 0x80) {
+
+                                    if (this->function_mode == 0x1f) {
+                                        this->cur_render_area->CurSpanList =
+                                            this->Terrain_Fog_Clip_Mask;
                                         fog_next_shape = 1;
+                                        tile->objects.shadow_draw(
+                                            this->cur_render_area, screen_x,
+                                            start_screen_y, 10, through_fog);
+                                        this->cur_render_area->CurSpanList =
+                                            this->Terrain_Clip_Mask;
+                                        fog_next_shape = 0;
+                                        tile->objects.shadow_draw(
+                                            this->cur_render_area, screen_x,
+                                            start_screen_y, 10, through_fog);
+                                        this->cur_render_area->CurSpanList =
+                                            this->cur_render_area->SpanList;
                                     }
-                                    tile_ptr->objects.normal_draw(this->cur_render_area, map_row, cur_col_num, tile);
-                                }
-                                fog_next_shape = 0;
-                            }
-                        }
-                    } else {
-                        if (visible == 0x0F || visible == 0x80) {
-                            if (this->function_mode == 0x29 || this->function_mode == 0x2A ||
-                                this->function_mode == 0x2B || this->function_mode == 0x2C) {
-                                if (visible == 0x0F || (visible == 0x80 && this->map->fog_flag == 0)) {
-                                    tile = 0;
-                                } else {
-                                    tile = 1;
-                                }
-                                RGE_Static_Object* obj = this->hit_object(tile_ptr, map_row, cur_col_num,
-                                                                           start_scr_col2, map_col,
-                                                                           p1, p2,
-                                                                           out_col, out_row, find_col, tile);
-                                if (obj != 0) {
-                                    if (this->function_mode == 0x2C) {
-                                        fog_flag = 0x34;
-                                    } else {
-                                        if (find_col != 0 && obj == find_col && fog_flag == 0x34) {
-                                            *out_obj = terrain_type;
-                                            return 0x34;
+
+                                    if (this->function_mode == 0x20) {
+                                        if (this->map->fog_flag != 0 &&
+                                            visibility == 0x80) {
+                                            fog_next_shape = 1;
                                         }
-                                        if (terrain_type == 0 ||
-                                            terrain_type->master_obj->select_level <= obj->master_obj->select_level ||
-                                            (terrain_type == find_col && obj != find_col)) {
-                                            *out_x = obj->world_x;
-                                            *out_y = obj->world_y;
-                                            fog_flag = 0x34;
-                                            terrain_type = obj;
+                                        tile->objects.shadow_draw(
+                                            this->cur_render_area, screen_x,
+                                            start_screen_y, 0, through_fog);
+                                        fog_next_shape = 0;
+                                    } else if (this->function_mode == 0x15) {
+                                        if (this->map->fog_flag != 0 &&
+                                            visibility == 0x80) {
+                                            fog_next_shape = 1;
                                         }
+                                        tile->objects.normal_draw(
+                                            this->cur_render_area, screen_x,
+                                            start_screen_y, through_fog);
+                                        fog_next_shape = 0;
                                     }
                                 }
-                            }
-                        }
-                        if (this->function_mode == 0x28 || (this->function_mode == 0x2A && fog_flag == 0x32)) {
-                            if (this->hit_tile(tile_ptr, map_row, last_picked_obj, start_scr_col2, map_col, p1) != 0) {
-                                if (tile_ptr == 0) {
-                                    *out_x = (float)start_scr_col2;
-                                    *out_y = (float)map_col;
-                                } else {
-                                    this->map->tile_map_coords((short)p1->x - map_row,
-                                                               (short)p1->y - last_picked_obj,
-                                                               tile_ptr, out_x, out_y);
-                                    *out_x = (float)start_scr_col2 + *out_x;
-                                    *out_y = (float)map_col + *out_y;
+                            } else {
+                                if ((visibility == 0x0f || visibility == 0x80) &&
+                                    (this->function_mode == 0x29 ||
+                                     this->function_mode == 0x2a ||
+                                     this->function_mode == 0x2b ||
+                                     this->function_mode == 0x2c)) {
+                                    unsigned char through_fog =
+                                        (visibility == 0x0f ||
+                                         (visibility == 0x80 &&
+                                          this->map->fog_flag == 0))
+                                            ? 0
+                                            : 1;
+                                    RGE_Static_Object* object = this->hit_object(
+                                        tile, screen_x, start_screen_y,
+                                        map_col, map_row, point, start_point,
+                                        out_screen_x, out_screen_y,
+                                        original_object, through_fog);
+
+                                    if (object != 0) {
+                                        if (this->function_mode == 0x2c) {
+                                            result = 0x34;
+                                        } else {
+                                            if (original_object != 0 &&
+                                                object == original_object &&
+                                                result == 0x34) {
+                                                *out_object = best_object;
+                                                return 0x34;
+                                            }
+
+                                            if (best_object == 0 ||
+                                                object->master_obj->select_level >=
+                                                    best_object->master_obj
+                                                        ->select_level ||
+                                                (best_object == original_object &&
+                                                 object != original_object)) {
+                                                *out_x = object->world_x;
+                                                *out_y = object->world_y;
+                                                best_object = object;
+                                                result = 0x34;
+                                            }
+                                        }
+                                    }
                                 }
-                                *out_col = map_row;
-                                fog_flag = 0x33;
-                                *out_row = last_picked_obj;
-                                *out_obj = tile_ptr;
-                            }
-                        } else if (this->function_mode == 0x3C) {
-                            if (start_scr_col2 == find_row && map_col == max_col_num2) {
-                                *out_x = (float)start_scr_col2;
-                                *out_y = (float)map_col;
-                                *out_col = map_row;
-                                *out_row = last_picked_obj;
-                                *out_obj = tile_ptr;
-                                return 0x33;
+
+                                if (this->function_mode == 0x28 ||
+                                    (this->function_mode == 0x2a &&
+                                     result == 0x32)) {
+                                    if (this->hit_tile(tile, screen_x, screen_y,
+                                                       map_col, map_row, point)) {
+                                        if (tile != 0) {
+                                            this->map->tile_map_coords(
+                                                (short)(point->x - screen_x),
+                                                (short)(point->y - screen_y),
+                                                tile, out_x, out_y);
+                                            *out_x += (float)map_col;
+                                            *out_y += (float)map_row;
+                                        } else {
+                                            *out_x = (float)map_col;
+                                            *out_y = (float)map_row;
+                                        }
+                                        *out_screen_x = screen_x;
+                                        *out_screen_y = screen_y;
+                                        result = 0x33;
+                                        *out_object = tile;
+                                    }
+                                } else if (this->function_mode == 0x3c &&
+                                           map_col == find_col &&
+                                           map_row == find_row) {
+                                    *out_x = (float)map_col;
+                                    *out_y = (float)map_row;
+                                    *out_screen_x = screen_x;
+                                    *out_screen_y = screen_y;
+                                    *out_object = tile;
+                                    return 0x33;
+                                }
                             }
                         }
                     }
-                col_continue:
-                    map_row += this->tile_wid;
-                    start_scr_col2++;
-                    map_col++;
-                    row_num++;
-                } while (row_num < picked_type);
+
+                    screen_x = (short)(screen_x + this->tile_wid);
+                    ++map_col;
+                    ++map_row;
+                    ++col_number;
+                } while (col_number < cols_to_scan);
             }
-            if (tile_screen_row == 1 && picked_type == max_row_num2) {
-                tile_screen_row = 2;
+
+            if (direction == 1 && cols_to_scan == original_cols_to_scan) {
+                direction = 2;
             }
-            switch (tile_screen_row) {
-            case 1:
-                picked_type++;
-                start_scr_row2 -= this->tile_half_wid;
-                start_map_row2--;
-                break;
-            case 2:
-                picked_type--;
-                start_scr_row2 += this->tile_half_wid;
-                direction++;
-                break;
-            case 3:
-                tile_screen_row = 4;
-                start_scr_row2 -= this->tile_half_wid;
-                start_map_row2--;
-                break;
-            case 4:
-                start_scr_row2 += this->tile_half_wid;
-                direction++;
-                tile_screen_row = 3;
-                break;
+
+            switch (direction) {
+                case 1:
+                    ++cols_to_scan;
+                    start_screen_x =
+                        (short)(start_screen_x - this->tile_half_wid);
+                    --start_map_col;
+                    break;
+                case 2:
+                    --cols_to_scan;
+                    start_screen_x =
+                        (short)(start_screen_x + this->tile_half_wid);
+                    ++start_map_row;
+                    break;
+                case 3:
+                    start_screen_x =
+                        (short)(start_screen_x - this->tile_half_wid);
+                    --start_map_col;
+                    direction = 4;
+                    break;
+                case 4:
+                    start_screen_x =
+                        (short)(start_screen_x + this->tile_half_wid);
+                    ++start_map_row;
+                    direction = 3;
+                    break;
             }
-            cur_col_num += this->tile_half_hgt;
-            calc_sel_col1++;
-        } while ((short)calc_sel_col1 < (short)list_size);
+
+            start_screen_y =
+                (short)(start_screen_y + this->tile_half_hgt);
+            ++row_number;
+        } while (row_number < rows_to_scan);
     }
 
-    if (this->function_mode == 0x0A) {
-        for (short i = 0; i < this->map->num_terrain; i++) {
-            this->map->terrain_types[i].frame_changed = 0;
+    if (this->function_mode == 10) {
+        short terrain = 0;
+        if (this->map->num_terrain > 0) {
+            do {
+                this->map->terrain_types[terrain].frame_changed = 0;
+                ++terrain;
+            } while (terrain < this->map->num_terrain);
         }
     }
-    if (this->function_mode == 0x29 || this->function_mode == 0x2A || this->function_mode == 0x2B) {
-        if (fog_flag == 0x34) {
-            *out_obj = terrain_type;
-        }
+
+    if ((this->function_mode == 0x29 ||
+         this->function_mode == 0x2a ||
+         this->function_mode == 0x2b) &&
+        result == 0x34) {
+        *out_object = best_object;
     }
-    return fog_flag;
+
+    return result;
 }
 
 
