@@ -255,6 +255,10 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - Declaration kind and name length did not matter, while macros and unused members differed.
 - Token-neutral include placement also changed output through front-end state.
 - Treat these as old-MSVC context hypotheses until local VC5 evidence confirms them.
+- Local VC5 tests show that unused member declarations can change code in other translation units.
+- Removing them can reverse getter calls or move memory reads across float-to-integer conversions.
+- Audit every header consumer. Unchanged target bytes do not prove unchanged call order or field reads elsewhere.
+- Body-only cleanup can reverse getter order elsewhere while target bytes stay equal. Check nonexact owners after exact-function closure.
 - VC5 can exhaust its inline budget partway through one large function.
 - Early helper sites can inline while later sites call the same out-of-line body.
 - One method can stay out of line at an early site and inline at later sites.

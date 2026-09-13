@@ -232,7 +232,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int badCollision;
     unsigned char terrainStatus;
     int found;
-    int hitCount;
     int hitId;
     int objectCountOnTile;
     int row;
@@ -340,6 +339,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 ++tile;
                 ++col;
                 (tile - 1)->draw_attribute = (unsigned char)(drawAttribute & 0x70);
+                map = this->mapValue;
             }
             ++row;
             map = this->mapValue;
@@ -367,16 +367,18 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
     this->startOfPath = 1;
     this->checkTerrainOnFirstPass = checkTerrain;
-    this->currentObjectInObMap = obj->removeFromObstructionMap(this->aiPS);
+    this->currentObjectInObMap = this->currentObject->removeFromObstructionMap(this->aiPS);
 
-    fy = (float)floor((double)obj->world_y) - DAT_00570e64;
-    fx = (float)floor((double)obj->world_x) - DAT_00570e64;
-    if (this->passable(obj, fx, fy, 1) == 0) {
+    // VC5 evaluates the Y floor argument before X.
+    if (this->passable(this->currentObject,
+                       (float)(floor((double)this->currentObject->world_x) - DAT_00570e64),
+                       (float)(floor((double)this->currentObject->world_y) - DAT_00570e64), 1)) {
+        // The original stores positive half-tile offsets here.
+        this->currentXOffset = 0.5f;
+        this->currentYOffset = 0.5f;
+    } else {
         this->currentXOffset = obj->world_x - (float)floor((double)obj->world_x);
         this->currentYOffset = obj->world_y - (float)floor((double)obj->world_y);
-    } else {
-        this->currentXOffset = DAT_00570e64;
-        this->currentYOffset = DAT_00570e64;
     }
 
     curObj = this->currentObject;
@@ -457,9 +459,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     tmp = goalX - startX;
     tmp2 = goalY - startY;
     dist = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
-    dist = (dist + ((dist >> 31) & 0x0f)) >> 4;
-    if (dist <= 10) numberIterationCap = (dist * numberPathingIterations) / 10;
-    else numberIterationCap = (dist * numberPathingIterations) / 100;
+    dist /= 16;
+    numberIterationCap = dist * numberPathingIterations;
+    if (dist <= 10) numberIterationCap /= 10;
+    else numberIterationCap /= 100;
     if (this->currentObject->owner->id == 0 && numberIterationCap > 100) numberIterationCap = 100;
     if (this->currentObject->owner->computerPlayer() == 1) numberIterationCap = (dist * 0x9c4) / 100;
 
@@ -494,6 +497,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                         other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
                         other->addToObstructionMap(this->aiPS);
                     }
+                    curObj = this->currentObject;
                     ++i;
                 }
                 goto final_failure_restore;
@@ -507,6 +511,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                     other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
                     other->addToObstructionMap(this->aiPS);
                 }
+                curObj = this->currentObject;
                 ++i;
             }
             goto final_success_restore;
@@ -675,36 +680,44 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 MaxY4 = temp.y * 4 + yDeltaDown4;
                 break;
             }
+            // Adjust minima only. Leave negative maxima unchanged.
             if (minScanX < 0) ++minScanX;
             if (minScanY < 0) ++minScanY;
-            if (maxScanX < 0) ++maxScanX;
-            if (maxScanY < 0) ++maxScanY;
+            if (MinX4 < 0) ++MinX4;
+            if (MinY4 < 0) ++MinY4;
             map = this->mapValue;
             if ((maxScanX & 0xff) >= map->map_width || (maxScanY & 0xff) >= map->map_height) {
                 terrainStatus = 0xfe;
             } else {
                 terrainRow = (unsigned char)minScanY;
-                while (terrainRow <= (unsigned char)maxScanY && terrainStatus == 1) {
-                    terrainCol = (unsigned char)minScanX;
-                    while (terrainCol <= (unsigned char)maxScanX) {
-                        if (this->initialTile.x != terrainCol || this->initialTile.y != terrainRow) {
-                            tile = &map->map_row_offset[terrainRow][terrainCol];
-                            tmp = tile->terrain_type & 0x1f;
-                            if (tmp != this->currentTerrainException1 &&
-                                tmp != this->currentTerrainException2 &&
-                                this->currentTerrainTable[tmp] <= DAT_00570e80) {
-                                tmp = tile->border_type & 0x0f;
-                                if (tmp == 0 ||
-                                    this->currentTerrainTable[
-                                        map->border_types[tmp].underlay_terrain] <= DAT_00570e80) {
-                                    terrainStatus = 0xfe;
-                                    break;
+                if (terrainRow <= (unsigned char)maxScanY) {
+                    RGE_Tile** terrainRows = map->map_row_offset;
+                    do {
+                        terrainCol = (unsigned char)minScanX;
+                        tile = &terrainRows[terrainRow][terrainCol];
+                        while (terrainCol <= (unsigned char)maxScanX) {
+                            if (this->initialTile.x != terrainCol || this->initialTile.y != terrainRow) {
+                                unsigned char terrain = tile->terrain_type & 0x1f;
+                                float* terrainTable = this->currentTerrainTable;
+                                // The original loads cost even for a terrain exception.
+                                float terrainValue = terrainTable[terrain];
+                                if (terrain != this->currentTerrainException1 &&
+                                    terrain != this->currentTerrainException2 &&
+                                    terrainValue <= DAT_00570e80) {
+                                    tmp = tile->border_type & 0x0f;
+                                    if (tmp == 0 ||
+                                        terrainTable[
+                                            map->border_types[tmp].underlay_terrain] <= DAT_00570e80) {
+                                        terrainStatus = 0xfe;
+                                        break;
+                                    }
                                 }
                             }
+                            ++tile;
+                            ++terrainCol;
                         }
-                        ++terrainCol;
-                    }
-                    ++terrainRow;
+                        ++terrainRow;
+                    } while (terrainRow <= (unsigned char)maxScanY && terrainStatus == 1);
                 }
             }
             badCollision = terrainStatus;
@@ -714,10 +727,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 right = MaxX4;
                 top = MinY4;
                 bottom = MaxY4;
-                if (left < 0) ++left;
-                if (right < 0) ++right;
-                if (top < 0) ++top;
-                if (bottom < 0) ++bottom;
                 h = bottom - top - 1;
                 foundBlockingOwnGroup = 0;
                 if (h >= 0) {
@@ -778,17 +787,16 @@ obstruction_done:
             if (badCollision == 0xfe) {
                 if (this->currentUnobstructibleGroupID == -1) goto next_direction;
                 found = 0;
-                hitCount = 0;
                 minScanX = temp.x - 1;
                 if (minScanX < 0) minScanX = 0;
                 maxScanX = temp.x + 1;
                 row = minScanX;
-                while (row <= maxScanX && row < this->xSizeValue && hitCount == 0) {
+                while (row <= maxScanX && row < this->xSizeValue && found == 0) {
                     minScanY = temp.y - 1;
                     if (minScanY < 0) minScanY = 0;
                     maxScanY = temp.y + 1;
                     col = minScanY;
-                    while (col <= maxScanY && col < this->ySizeValue && hitCount == 0) {
+                    while (col <= maxScanY && col < this->ySizeValue && found == 0) {
                         objectCountOnTile = 0;
                         hitId = this->worldValue->objectGroupOnTile(this->currentUnobstructiblePlayerID, this->currentUnobstructibleGroupID, row, col, objectCountOnTile);
                         if (hitId == -1) {
@@ -801,11 +809,10 @@ obstruction_done:
                             }
                         }
                         ++col;
-                        hitCount = found;
                     }
                     ++row;
                 }
-                if (hitCount == 1) goto next_direction;
+                if (found == 1) goto next_direction;
             }
 
             misc = this->miscValue[temp.x][temp.y];
@@ -857,6 +864,7 @@ obstruction_done:
                             other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
                             other->addToObstructionMap(this->aiPS);
                         }
+                        curObj = this->currentObject;
                         ++i;
                     }
                     goto final_failure_restore;
@@ -870,6 +878,7 @@ obstruction_done:
                         other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
                         other->addToObstructionMap(this->aiPS);
                     }
+                    curObj = this->currentObject;
                     ++i;
                 }
                 goto final_success_restore;
@@ -927,6 +936,7 @@ path_exhausted:
                 other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
                 other->addToObstructionMap(this->aiPS);
             }
+            curObj = this->currentObject;
             ++i;
         }
     } else {
@@ -939,6 +949,7 @@ path_exhausted:
                 other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
                 other->addToObstructionMap(this->aiPS);
             }
+            curObj = this->currentObject;
             ++i;
         }
     }

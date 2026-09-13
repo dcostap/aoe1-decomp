@@ -187,3 +187,33 @@ The one-job audit `build/luna12-drawarea-final-audit-004463B0/report.txt`
 compiled 62 normal owners and kept all 50 exact validation targets. No
 matching-neighbor regression came from this pass. Runtime malformed-input,
 API-fault, signed-overflow, and full-gameplay tests remain unperformed.
+
+## Accepted-drift rereview: `00442A90 TDrawSystem::Init`
+
+Worker `sa-093dc5e8` rebuilt the current canonical source at base
+`28ecdd497c`. The fresh check remains `MISMATCH`: 802 original bytes versus
+801 rebuilt bytes, 285 versus 286 instructions, 453 differing bytes in 31
+spans, and one reported CFG edge difference. The frame is `0x60C`, the saved
+register set matches, and all 15 calls align in order with matching targets
+and argument counts. The first mismatch is the function entry.
+
+The source behavior audit confirms the current natural body. It publishes all
+eight fields, rejects draw type 1, calls DirectDrawCreate and CheckAvailModes,
+selects the two cooperative-level paths, checks 8-bit display depth, loads or
+zeros both palette arrays, creates the palette and clipper, creates surfaces,
+reads caps, and clears mode 2. Failure returns set error 1. The depth failure
+sets error 2. The corrected `dwRGBBitCount` test from `27d65b3d3` is retained.
+
+The accepted-drift proof is not complete. The rebuild reads a stack parameter
+before its frame allocation. It also changes the order of vtable and `Wnd`
+loads, moves the `ColorBits` store before fullscreen argument reads, and moves
+the `IsBanked` store before the caps receiver reads. These changes can alter
+fault order for invalid stack, object, or DirectDraw state. The source has no
+safe natural repair for this compiler scheduling basin. A prior direct
+`DirDraw` caps probe reached 436 differing bytes but did not recover the
+entry block; it was not retained.
+
+No source or registry status change is retained. The target needs an explicit
+orchestrator decision on the existing `accepted_drift` status. Runtime tests
+cover startup and display-depth rejection only. API-fault and malformed-input
+tests remain open.

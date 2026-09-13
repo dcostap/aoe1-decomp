@@ -8641,242 +8641,256 @@ void TribeTacticalAIModule::setupBoatGroups()
 {
     ManagedArray<int> groupsToRemove;
     int i;
-    int numEGroups;
-    int numPotentialEGroups;
     int numPotentialAGroups;
-    int numDGroups;
-    int remaining;
+    int numPotentialDGroups;
+    int numPotentialEGroups;
     int numAGroups;
-    TacticalAIGroup* sentinel;
+    int numDGroups;
+    int numEGroups;
+    int remainder;
     TacticalAIGroup* group;
 
     group = this->groups.next;
-    sentinel = &this->groups;
-    while (group != sentinel && group != 0) {
-        if (group->type() != 0x67 &&
-            group->type() != 0x68 &&
-            group->type() != 0x69) {
-            group = group->next;
-            continue;
-        }
-        if (group->numberUnits() == 0) {
+    while (group != &this->groups && group != 0) {
+        if ((group->type() == 0x67 || group->type() == 0x68 ||
+             group->type() == 0x69) &&
+            group->numberUnits() == 0) {
             appendUniqueGroupID(groupsToRemove, group->id());
         }
         group = group->next;
     }
 
-    numEGroups = 0;
-    while (numEGroups < groupsToRemove.numberValue) {
-        this->removeGroup(groupsToRemove[numEGroups]);
-        ++numEGroups;
+    i = 0;
+    while (i < groupsToRemove.numberValue) {
+        this->removeGroup(groupsToRemove[i]);
+        ++i;
     }
 
-    i = this->numberGroups(0x67, -1);
-    numAGroups = this->numberGroups(0x68, -1);
-    numPotentialAGroups = this->numberGroups(0x69, -1);
-    this->numberGroups(0x6b, -1);
-    this->numberGroups(0x6c, -1);
-    this->numberGroups(0x6a, -1);
+    numAGroups = this->numberGroups(0x67, -1);
+    numDGroups = this->numberGroups(0x68, -1);
+    numEGroups = this->numberGroups(0x69, -1);
+    this->numberGroups(0x6B, -1);
+    this->numberGroups(0x6C, -1);
+    this->numberGroups(0x6A, -1);
 
     this->numberUngroupedFishingBoats();
     while (this->workingArea.numberValue > 0) {
-        int object_id = this->workingArea[numEGroups];
-        RGE_Static_Object* object = this->md->object(object_id);
+        int objectID = this->workingArea[i];
+        RGE_Static_Object* object = this->md->object(objectID);
         if (object == 0) {
-            this->workingArea.remove(object_id);
+            this->workingArea.remove(objectID);
         }
         else {
-            TacticalAIGroup* new_group = this->createGroup(1);
-            if (new_group == 0) {
+            TacticalAIGroup* newGroup = this->createGroup(1);
+            if (newGroup == 0) {
                 break;
             }
-            new_group->setType(0x6b);
-            new_group->setDesiredNumberUnits(this->sn[0x41] + 1);
-            new_group->addUnit(object_id, this->md);
-            new_group->setSpecificCommander(object_id, this->md);
-            new_group->setLocation(object->world_x, object->world_y, object->world_z);
-            new_group->setGatherLocation(object->world_x, object->world_y, object->world_z);
-            new_group->setRetreatLocation(object->world_x, object->world_y, object->world_z);
-            this->workingArea.remove(object_id);
+            newGroup->setType(0x6B);
+            newGroup->setDesiredNumberUnits(this->sn[0x41] + 1);
+            newGroup->addUnit(objectID, this->md);
+            newGroup->setSpecificCommander(objectID, this->md);
+            newGroup->setLocation(object->world_x, object->world_y,
+                                  object->world_z);
+            newGroup->setGatherLocation(object->world_x, object->world_y,
+                                        object->world_z);
+            newGroup->setRetreatLocation(object->world_x, object->world_y,
+                                         object->world_z);
+            this->workingArea.remove(objectID);
         }
     }
 
     this->numberUngroupedTradeBoats();
     while (this->workingArea.numberValue > 0) {
-        int object_id = this->workingArea[numEGroups];
-        RGE_Static_Object* object = this->md->object(object_id);
+        int objectID = this->workingArea[i];
+        RGE_Static_Object* object = this->md->object(objectID);
         if (object == 0) {
-            this->workingArea.remove(object_id);
+            this->workingArea.remove(objectID);
         }
         else {
-            TacticalAIGroup* new_group = this->createGroup(1);
-            if (new_group == 0) {
+            TacticalAIGroup* newGroup = this->createGroup(1);
+            if (newGroup == 0) {
                 break;
             }
-            new_group->setType(0x6c);
-            new_group->setDesiredNumberUnits(this->sn[0x40] + 1);
-            new_group->addUnit(object_id, this->md);
-            new_group->setSpecificCommander(object_id, this->md);
-            new_group->setLocation(object->world_x, object->world_y, object->world_z);
-            new_group->setGatherLocation(object->world_x, object->world_y, object->world_z);
-            new_group->setRetreatLocation(object->world_x, object->world_y, object->world_z);
-            this->workingArea.remove(object_id);
+            newGroup->setType(0x6C);
+            newGroup->setDesiredNumberUnits(this->sn[0x40] + 1);
+            newGroup->addUnit(objectID, this->md);
+            newGroup->setSpecificCommander(objectID, this->md);
+            newGroup->setLocation(object->world_x, object->world_y,
+                                  object->world_z);
+            newGroup->setGatherLocation(object->world_x, object->world_y,
+                                        object->world_z);
+            newGroup->setRetreatLocation(object->world_x, object->world_y,
+                                         object->world_z);
+            this->workingArea.remove(objectID);
         }
     }
 
     this->numberUngroupedTransportBoats();
     while (this->workingArea.numberValue > 0) {
-        int object_id = this->workingArea[numEGroups];
-        RGE_Static_Object* object = this->md->object(object_id);
+        int objectID = this->workingArea[i];
+        RGE_Static_Object* object = this->md->object(objectID);
         if (object == 0) {
-            this->workingArea.remove(object_id);
+            this->workingArea.remove(objectID);
         }
         else {
-            TacticalAIGroup* new_group = this->createGroup(1);
-            if (new_group == 0) {
+            TacticalAIGroup* newGroup = this->createGroup(1);
+            if (newGroup == 0) {
                 break;
             }
-            new_group->setType(0x6a);
-            new_group->setDesiredNumberUnits(this->sn[0x42] + 1);
-            new_group->addUnit(object_id, this->md);
-            new_group->setSpecificCommander(object_id, this->md);
-            new_group->setLocation(object->world_x, object->world_y, object->world_z);
-            new_group->setGatherLocation(object->world_x, object->world_y, object->world_z);
-            new_group->setRetreatLocation(object->world_x, object->world_y, object->world_z);
-            this->workingArea.remove(object_id);
+            newGroup->setType(0x6A);
+            newGroup->setDesiredNumberUnits(this->sn[0x42] + 1);
+            newGroup->addUnit(objectID, this->md);
+            newGroup->setSpecificCommander(objectID, this->md);
+            newGroup->setLocation(object->world_x, object->world_y,
+                                  object->world_z);
+            newGroup->setGatherLocation(object->world_x, object->world_y,
+                                        object->world_z);
+            newGroup->setRetreatLocation(object->world_x, object->world_y,
+                                         object->world_z);
+            this->workingArea.remove(objectID);
         }
     }
 
-    int boat_id = this->boats[0];
-    if (this->md->informationAI.fullyExploredZone(boat_id) == 0) {
+    if (this->md->informationAI.fullyExploredZone(this->boats[0]) == 0) {
         this->removeAllGroups(0x69);
-        this->setStrategicNumber(0x3d, 0);
+        this->setStrategicNumber(0x3D, 0);
     }
 
-    numEGroups = 0;
-    numDGroups = 0;
+    numPotentialDGroups = 0;
+    numPotentialEGroups = 0;
     if (this->sn[0x28] == 0) {
-        numPotentialEGroups = (int)ceil(
-            (double)this->warBoats.numberValue / (double)this->sn[0x3b]);
-        if (numPotentialEGroups > this->sn[0x3a]) numPotentialEGroups = this->sn[0x3a];
-        int product = numPotentialEGroups * this->sn[0x3b];
-        remaining = this->warBoats.numberValue - product;
-        if (remaining > 0) {
-            numEGroups = (int)ceil((double)remaining / (double)this->sn[0x44]);
-            if (numEGroups > this->sn[0x43]) numEGroups = this->sn[0x43];
-            remaining = this->warBoats.numberValue -
-                        product - numEGroups * this->sn[0x44];
-            if (remaining > 0) {
-                numDGroups = (int)ceil((double)remaining / (double)this->sn[0x3e]);
-                if (numDGroups > this->sn[0x3d]) numDGroups = this->sn[0x3d];
+        numPotentialAGroups = (int)ceil((double)this->warBoats.numberValue /
+                                        (double)this->sn[0x3B]);
+        if (numPotentialAGroups > this->sn[0x3A]) {
+            numPotentialAGroups = this->sn[0x3A];
+        }
+        int attackUnits = numPotentialAGroups * this->sn[0x3B];
+        remainder = this->warBoats.numberValue - attackUnits;
+        if (remainder > 0) {
+            numPotentialDGroups = (int)ceil((double)remainder /
+                                            (double)this->sn[0x44]);
+            if (numPotentialDGroups > this->sn[0x43]) {
+                numPotentialDGroups = this->sn[0x43];
+            }
+            remainder = this->warBoats.numberValue - attackUnits -
+                        numPotentialDGroups * this->sn[0x44];
+            if (remainder > 0) {
+                numPotentialEGroups = (int)ceil((double)remainder /
+                                                (double)this->sn[0x3E]);
+                if (numPotentialEGroups > this->sn[0x3D]) {
+                    numPotentialEGroups = this->sn[0x3D];
+                }
             }
         }
     }
     else {
-        int maxPotentialEGroups = this->sn[0x3a];
-        int warBoatCount = this->warBoats.numberValue;
-        numPotentialEGroups =
-            warBoatCount < maxPotentialEGroups
-                ? warBoatCount
-                : maxPotentialEGroups;
-        remaining = this->warBoats.numberValue - numPotentialEGroups;
-        if (remaining > 0) {
-            numEGroups = remaining < this->sn[0x43] ? remaining : this->sn[0x43];
-            remaining -= numEGroups;
-            if (remaining > 0) {
-                numDGroups = remaining;
-                if (numDGroups >= this->sn[0x3d]) numDGroups = this->sn[0x3d];
-            }
+        numPotentialAGroups = this->warBoats.numberValue;
+        if (numPotentialAGroups >= this->sn[0x3A]) {
+            numPotentialAGroups = this->sn[0x3A];
         }
-    }
-balance_boat_groups:
-    for (; i < numPotentialEGroups; ++i) {
-        TacticalAIGroup* new_group = 0;
-        if (numAGroups > 0) {
-            new_group = this->group(-1, 0x68, -1, -1);
-            if (new_group != 0) {
-                --numAGroups;
+        remainder = this->warBoats.numberValue - numPotentialAGroups;
+        if (remainder > 0) {
+            numPotentialDGroups = this->sn[0x43];
+            if (remainder < numPotentialDGroups) {
+                numPotentialDGroups = remainder;
             }
-            else {
-                new_group = this->group(-1, 0x69, -1, -1);
-                if (new_group != 0) {
-                    --numPotentialAGroups;
+            remainder -= numPotentialDGroups;
+            if (remainder > 0) {
+                numPotentialEGroups = remainder;
+                if (remainder >= this->sn[0x3D]) {
+                    numPotentialEGroups = this->sn[0x3D];
                 }
             }
         }
-        if (new_group == 0) {
-            new_group = this->createGroup(1);
-            if (new_group == 0) {
+    }
+
+    for (; numAGroups < numPotentialAGroups; ++numAGroups) {
+        TacticalAIGroup* newGroup = 0;
+        if (numDGroups > 0) {
+            newGroup = this->group(-1, 0x68, -1, -1);
+            if (newGroup != 0) {
+                --numDGroups;
+            }
+            else {
+                newGroup = this->group(-1, 0x69, -1, -1);
+                if (newGroup != 0) {
+                    --numEGroups;
+                }
+            }
+        }
+        if (newGroup == 0) {
+            newGroup = this->createGroup(1);
+            if (newGroup == 0) {
                 break;
             }
         }
-        new_group->setType(0x67);
-        new_group->setTarget(-1);
-        new_group->setTargetType(-1);
-        new_group->setAction(1);
-        new_group->setInUse(0);
-        new_group->setDesiredNumberUnits(this->sn[0x3b]);
+        newGroup->setType(0x67);
+        newGroup->setTarget(-1);
+        newGroup->setTargetType(-1);
+        newGroup->setAction(1);
+        newGroup->setInUse(0);
+        newGroup->setDesiredNumberUnits(this->sn[0x3B]);
     }
 
-    while (i > numPotentialEGroups) {
-        TacticalAIGroup* old_group = this->group(-1, 0x67, 0, -1);
-        if (old_group == 0) {
-            old_group = this->group(-1, 0x67, 1, -1);
+    while (numAGroups > numPotentialAGroups) {
+        TacticalAIGroup* oldGroup = this->group(-1, 0x67, 0, -1);
+        if (oldGroup == 0) {
+            oldGroup = this->group(-1, 0x67, 1, -1);
         }
-        if (old_group == 0) {
+        if (oldGroup == 0) {
             break;
         }
-        this->removeGroup(old_group->id());
-        --i;
-    }
-
-    for (; numAGroups < numEGroups; ++numAGroups) {
-        TacticalAIGroup* new_group = 0;
-        if (numPotentialAGroups > 0) {
-            new_group = this->group(-1, 0x69, -1, -1);
-            if (new_group != 0) {
-                --numPotentialAGroups;
-            }
-        }
-        if (new_group == 0) {
-            new_group = this->createGroup(1);
-            if (new_group == 0) {
-                break;
-            }
-        }
-        new_group->setType(0x68);
-        new_group->setTarget(-1);
-        new_group->setTargetType(-1);
-        new_group->setAction(1);
-        new_group->setInUse(0);
-        new_group->setDesiredNumberUnits(this->sn[0x44]);
-    }
-
-    while (numAGroups > numEGroups) {
-        TacticalAIGroup* old_group = this->group(-1, 0x68, -1, -1);
-        if (old_group == 0) {
-            break;
-        }
-        this->removeGroup(old_group->id());
+        this->removeGroup(oldGroup->id());
         --numAGroups;
     }
 
-    for (; numPotentialAGroups < numDGroups; ++numPotentialAGroups) {
-        TacticalAIGroup* new_group = this->createGroup(1);
-        if (new_group == 0) {
-            break;
+    for (; numDGroups < numPotentialDGroups; ++numDGroups) {
+        TacticalAIGroup* newGroup = 0;
+        if (numEGroups > 0) {
+            newGroup = this->group(-1, 0x69, -1, -1);
+            if (newGroup != 0) {
+                --numEGroups;
+            }
         }
-        new_group->setType(0x69);
-        new_group->setDesiredNumberUnits(this->sn[0x3e]);
+        if (newGroup == 0) {
+            newGroup = this->createGroup(1);
+            if (newGroup == 0) {
+                break;
+            }
+        }
+        newGroup->setType(0x68);
+        newGroup->setTarget(-1);
+        newGroup->setTargetType(-1);
+        newGroup->setAction(1);
+        newGroup->setInUse(0);
+        newGroup->setDesiredNumberUnits(this->sn[0x44]);
     }
 
-    while (numPotentialAGroups > numDGroups) {
-        TacticalAIGroup* old_group = this->group(-1, 0x69, -1, -1);
-        if (old_group == 0) {
+    while (numDGroups > numPotentialDGroups) {
+        TacticalAIGroup* oldGroup = this->group(-1, 0x68, -1, -1);
+        if (oldGroup == 0) {
             break;
         }
-        this->removeGroup(old_group->id());
-        --numPotentialAGroups;
+        this->removeGroup(oldGroup->id());
+        --numDGroups;
+    }
+
+    for (; numEGroups < numPotentialEGroups; ++numEGroups) {
+        TacticalAIGroup* newGroup = this->createGroup(1);
+        if (newGroup == 0) {
+            break;
+        }
+        newGroup->setType(0x69);
+        newGroup->setDesiredNumberUnits(this->sn[0x3E]);
+    }
+
+    while (numEGroups > numPotentialEGroups) {
+        TacticalAIGroup* oldGroup = this->group(-1, 0x69, -1, -1);
+        if (oldGroup == 0) {
+            break;
+        }
+        this->removeGroup(oldGroup->id());
+        --numEGroups;
     }
 }
 

@@ -13,8 +13,8 @@ public:
     enum ButtonType { Normal = 1, Radio = 2, State = 3 };
     enum DrawType {
         DrawClear = 1,
-        DrawText = 2,
-        DrawPicture = 3,
+        DrawPicture = 2,
+        DrawText = 3,
         DrawPictureAndText = 4,
         DrawFillAndText = 5,
         DrawBevelPicture = 6

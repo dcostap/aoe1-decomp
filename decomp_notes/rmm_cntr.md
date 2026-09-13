@@ -8,7 +8,14 @@ not copy DBCT, TDBC, map, or world declarations.
 
 The debug path and `debug_rand` declaration are source-private.
 
-## Status
+## Current verification
+
+The 2026-09-12 forced rebuild of `004828B0` reports `MATCH` with zero byte differences.
+The module audit keeps all four registered matching owners exact.
+See [the function note](functions/0048/004828B0.md) for checked behavior and archived reports.
+The registry owns current status. The sections below describe earlier inputs.
+
+## Historical baseline
 
 `004821A0`, `00482260`, and `004828A0` report `MATCH` and `0.0000%` from the
 direct module. They are the registered exact owners.

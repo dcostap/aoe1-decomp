@@ -79,6 +79,7 @@ public:
     AIPlayStatus();
     int originalHitPoints(int groupNumber) const;
     void setOriginalHitPoints(int groupNumber, int value);
+    XYZ originalPoint() const { return this->originalPointValue; }
     unsigned char numberInPlay() const;
     unsigned char numberInGroup(int groupNumber);
     unsigned char numberOfTypeInGroup(int groupNumber, int type);
