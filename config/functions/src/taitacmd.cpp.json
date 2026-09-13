@@ -93,7 +93,7 @@
     "004F21F0": {"status": "verified_logic", "symbol": "?taskActiveSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
     "004F4760": {"status": "matching", "symbol": "?playTaskSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
     "004F4AA0": {"status": "new_verified_logic", "symbol": "?taskUngroupedSoldiers@TribeTacticalAIModule@@QAEXXZ", "behavior_review": "logic_matching/004F4AA0/review-01/attempt-01"},
-    "004F4D90": {"status": "scratch", "symbol": "?taskBoats@TribeTacticalAIModule@@QAEXXZ"},
+    "004F4D90": {"status": "new_verified_logic", "symbol": "?taskBoats@TribeTacticalAIModule@@QAEXXZ", "behavior_review": ["logic_matching/004F4D90/review-coord-13-round-02-a/attempt-01", "logic_matching/004F4D90/review-coord-13-round-02-b/attempt-01"]},
     "004F57C0": {"status": "accepted_drift", "symbol": "?evaluateOpenTasks@TribeTacticalAIModule@@QAEXXZ"},
     "004F5FB0": {"status": "matching", "symbol": "?evaluateBuildListInsertions@TribeTacticalAIModule@@QAEXXZ"},
     "004F6100": {"status": "matching", "symbol": "?numberCivilians@TribeTacticalAIModule@@QBEHXZ"},

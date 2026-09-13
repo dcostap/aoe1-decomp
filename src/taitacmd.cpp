@@ -4830,354 +4830,349 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
 void TribeTacticalAIModule::taskBoats()
 {
     TacticalAIGroup* group;
-    TacticalAIGroup* sentinel;
-    int busyOK;
+    int gathered;
+    int ready;
 
     group = this->groups.next;
-    sentinel = &this->groups;
-    if (group != sentinel) {
-        while (1) {
-            if (group == 0) {
+    if (group != &this->groups) {
+        do {
+            if (group == 0)
                 break;
-            }
 
-            if (group->type() != 100 && group->type() != 101 &&
-                group->type() != 102 && group->type() != 103 &&
-                group->type() != 104 && group->type() != 105 &&
+            if (group->type() != 100 && group->type() != 0x65 &&
+                group->type() != 0x66 && group->type() != 0x67 &&
+                group->type() != 0x68 && group->type() != 0x69 &&
                 (group->action() == 0 || group->action() == 1)) {
-                int ready = 1;
-                int gathered = group->isGathered(this, this->md);
-                int number = group->numberUnits();
-                int desired = group->desiredNumberUnits();
+                int numberUnits;
+                int desiredNumberUnits;
 
-                if (desired > number ||
-                    (gathered == 0 && group->numberUnits() > 1) ||
-                    group->allUnitsIdle(this->md, 1) == 0) {
+                gathered = group->isGathered(this, this->md);
+                ready = 1;
+                numberUnits = group->numberUnits();
+                desiredNumberUnits = group->desiredNumberUnits();
+                if (numberUnits < desiredNumberUnits ||
+                    ((gathered == 0 && group->numberUnits() > 1) ||
+                     group->allUnitsIdle(this->md, 1) == 0)) {
                     ready = 0;
                 }
 
                 if (ready == 0) {
-                    if (gathered == 0) {
+                    if (gathered == 0)
                         group->task(this, this->md, 9, 1, 0);
-                    }
-                }
-                else {
-                    if (group->type() == 0x6B) {
-                        group->setAction(10);
-                    }
-                    else if (group->type() == 0x6C) {
-                        group->setAction(11);
-                    }
-                    else if (group->type() == 0x6A) {
-                        group->setAction(1);
-                    }
-                    else {
-                        goto first_pass_next;
-                    }
+                } else if (group->type() == 0x6b) {
+                    group->setAction(10);
+                } else if (group->type() == 0x6c) {
+                    group->setAction(11);
+                } else if (group->type() == 0x6a) {
+                    group->setAction(1);
                 }
             }
 
-first_pass_next:
             group = group->next;
-            if (group == sentinel) {
-                break;
-            }
-        }
+        } while (group != &this->groups);
     }
 
     group = this->groups.next;
-    if (group != sentinel) {
-        while (1) {
-            if (group == 0) {
+    if (group != &this->groups) {
+        do {
+            if (group == 0)
                 return;
-            }
 
-            if (group->type() != 100 && group->type() != 101 &&
-                group->type() != 102 && group->type() != 103 &&
-                group->type() != 104 && group->type() != 105 &&
-                group->action() != 0 && group->action() != 1) {
-                if (group->inUse() == 0) {
-                    if (group->type() == 0x6B) {
-                        float outputX;
-                        float outputY;
-                        int commanderID = group->commander();
-                        RGE_Static_Object* commander = this->md->object(commanderID);
-                        if (commander == 0) {
-                            group->setAction(1);
-                        }
-                        else {
-                            int resourceID = -1;
-                            int resourceMode = -1;
-                            int exclusionCount = 0;
-                            int exclusionIndex = 0;
-                            int exclusions[5];
-                            int pathOK;
+            if (group->type() == 100 || group->type() == 0x65 ||
+                group->type() == 0x66 || group->type() == 0x67 ||
+                group->type() == 0x68 || group->type() == 0x69 ||
+                group->action() == 0 || group->action() == 1)
+                goto next_group;
 
-                            if (this->numberWaterExplorers() > 0) {
-                                if (this->md->informationAI.fullyExploredZone(
-                                        group->commander()) == 1) {
-                                    do {
-                                        outputX = 0.0f;
-                                        outputY = 0.0f;
-                                        resourceMode = -1;
-                                        resourceID = this->md->informationAI.gameIDOfResourceObject(
-                                            0, commander->id, outputX, outputY, resourceMode,
-                                            exclusions + 1, exclusionCount);
+            if (group->inUse() == 0) {
+                if (group->type() == 0x6b) {
+                    RGE_Static_Object* commanderObject;
+                    RGE_Static_Object* targetObject;
+                    int resourceID;
+                    int dropsiteID;
+                    int numExclusions;
 
-                                        XYZPoint point;
-                                        point.x = (int)outputX;
-                                        point.y = (int)outputY;
-                                        point.z = (int)commander->world_z;
-
-                                        if (resourceMode == -1) {
-                                            pathOK = commander->canPath(point, 1.0f,
-                                                                         resourceID, 0,
-                                                                         1, -1, -1);
-                                        }
-                                        else {
-                                            pathOK = commander->canBidirectionPath(
-                                                resourceID, resourceMode, 1.0f, 0,
-                                                1, -1, -1);
-                                        }
-
-                                        if (pathOK == 0) {
-                                            exclusions[exclusionCount] = resourceID;
-                                            ++exclusionCount;
-                                        }
-                                        ++exclusionIndex;
-                                    } while (pathOK != 1 && exclusionIndex < 5);
-                                }
-                            }
-
-                            RGE_Static_Object* object = this->md->object(resourceID);
-                            if (resourceID >= 0 && object != 0) {
-                                group->setTarget(resourceID);
-                                group->setTargetType((int)object->master_obj->id);
-                                group->setTargetLocation(object->world_x,
-                                                         object->world_y,
-                                                         object->world_z);
-                                group->setInUse(1);
-                                busyOK = 0;
-                                goto task_tail;
-                            }
-                            else {
-                                if (this->md->informationAI.fullyExploredZone(
-                                        group->commander()) == 1) {
-                                    group->setAction(8);
-                                    group->task(this, this->md,
-                                                group->action(), 1, 0);
-                                    group->setInUse(1);
-                                }
-                                else {
-                                    group->setAction(1);
-                                }
-                            }
-                        }
-                    }
-                    else if (group->type() == 0x6C) {
-                        int commanderID = group->commander();
-                        RGE_Static_Object* commander = this->md->object(commanderID);
-                        float pathDistance;
-                        if (commander == 0) {
-                            group->setAction(1);
-                        }
-                        else {
-                            ObjectMemory* trade =
-                                this->md->informationAI.objectToTradeWith(
-                                    group->commander());
-                            if (trade == 0) {
-                                if (this->md->informationAI.fullyExploredZone(
-                                        group->commander()) == 1) {
-                                    group->setAction(8);
-                                    group->task(this, this->md,
-                                                group->action(), 1, (int)trade);
-                                    group->setInUse(1);
-                                }
-                                else {
-                                    group->setAction(1);
-                                }
-                            }
-                            else {
-                                XYZPoint point;
-                                point.x = (int)trade->x;
-                                point.y = (int)trade->y;
-                                point.z = (int)trade->z;
-                                if (commander->canPath(point, 1.0f, trade->id,
-                                                       &pathDistance, 1, -1, -1) == 0) {
-                                    group->setAction(1);
-                                    goto next_group;
-                                }
-                                group->setTarget(trade->id);
-                                group->setTargetType((int)trade->type);
-                                group->setTargetLocation((float)trade->x,
-                                                         (float)trade->y,
-                                                         (float)trade->z);
-                                group->setInUse(1);
-                                busyOK = 0;
-                                goto task_tail;
-                            }
-                        }
-                    }
-                    else {
-                        busyOK = 0;
-                        goto task_tail;
-                    }
-                    goto next_group;
-
-                }
-                if (group->action() == 8) {
-                    int found = 0;
-
-                    if (group->type() == 0x6C) {
-                        if (this->md->informationAI.objectToTradeWith(
-                                group->commander()) != 0) {
-                            found = 1;
-                        }
-                    }
-
-                    if (group->type() == 0x6B) {
-                        if (this->numberWaterExplorers() > 1) {
-                            float pathDistance = 0.0f;
-                            float outputX = 0.0f;
-                            int outputY = -1;
-                            int commanderID = group->commander();
-                            int resourceID =
-                                this->md->informationAI.gameIDOfResourceObject(
-                                    0, commanderID, pathDistance, outputX,
-                                    outputY, 0, 0);
-                            if (resourceID != -1) {
-                                found = 1;
-                            }
-                        }
-                        else {
-                            RGE_Static_Object* object =
-                                this->md->object(group->commander());
-                            if (object != 0 && object->unitAI() != 0 &&
-                                object->unitAI()->currentOrder() != 0x2C1) {
-                                group->setAction(8);
-                                group->task(this, this->md,
-                                            group->action(), 1, 0);
-                                group->setInUse(1);
-                            }
-                        }
-                    }
-
-                    if (found == 1) {
-                        RGE_Static_Object* object =
-                            this->md->object(group->commander());
-                        if (object == 0) {
-                            goto next_group;
-                        }
-                        group->setInUse(0);
+                    commanderObject = this->md->object(group->commander());
+                    if (commanderObject == 0) {
                         group->setAction(1);
-                        group->setTarget(-1);
-                        group->numberObjectsToDestroyValue = 0;
-                        group->setTargetType(-1);
-                        group->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                        group->setGatherLocation(object->world_x,
-                                                 object->world_y,
-                                                 object->world_z);
-                        group->task(this, this->md, group->action(), 0, found);
-                    }
-                }
-
-                if (group->action() == 10) {
-                    int targetID = group->target();
-                    RGE_Static_Object* target = this->md->object(targetID);
-                    if (target == 0) {
-                        group->setInUse(0);
-                        group->setAction(1);
-                        group->setTarget(-1);
-                        group->setTargetType(-1);
-                        group->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                        group->numberObjectsToDestroyValue = 0;
                         goto next_group;
                     }
-                    else {
-                        RGE_Static_Object* commander =
-                            this->md->object(group->commander());
-                        if (commander != 0 && commander->unitAI() != 0 &&
-                            commander->unitAI()->currentAction() == -1) {
-                            group->setInUse(0);
+
+                    resourceID = -1;
+                    numExclusions = 0;
+                    dropsiteID = -1;
+                    if (this->numberWaterExplorers() > 0 &&
+                        this->md->informationAI.fullyExploredZone(
+                            group->commander()) == 1) {
+                        int exclusions[5];
+                        int* nextExclusion;
+                        int attempts;
+                        int canPath;
+                        float rXPos;
+                        float rYPos;
+                        XYZPoint point;
+
+                        nextExclusion = exclusions;
+                        attempts = 0;
+                        do {
+                            rXPos = 0.0f;
+                            rYPos = 0.0f;
+                            resourceID =
+                                this->md->informationAI.gameIDOfResourceObject(
+                                    0, commanderObject->id, rXPos, rYPos,
+                                    dropsiteID, exclusions, numExclusions);
+
+                            point.x = (int)rXPos;
+                            point.y = (int)rYPos;
+                            point.z = (int)commanderObject->world_z;
+
+                            if (dropsiteID == -1) {
+                                canPath = commanderObject->canPath(
+                                    point, 1.0f, resourceID, 0, 1, -1, -1);
+                            } else {
+                                canPath = commanderObject->canBidirectionPath(
+                                    resourceID, dropsiteID, 1.0f, 0, 1, -1,
+                                    -1);
+                            }
+
+                            if (canPath == 0) {
+                                numExclusions++;
+                                *nextExclusion++ = resourceID;
+                            }
+                            if (canPath == 1)
+                                break;
+                            attempts++;
+                        } while (attempts < 5);
+                    }
+
+                    targetObject = this->md->object(resourceID);
+                    if (resourceID >= 0 && targetObject != 0) {
+                        group->setTarget(resourceID);
+                        group->setTargetType((int)targetObject->master_obj->id);
+                        group->setTargetLocation(
+                            targetObject->world_x, targetObject->world_y,
+                            targetObject->world_z);
+                        group->setInUse(1);
+                        group->task(this, this->md, group->action(), 1, 0);
+                    } else if (this->md->informationAI.fullyExploredZone(
+                                   group->commander()) == 1) {
+                        group->setAction(8);
+                        group->task(this, this->md, group->action(), 1, 0);
+                        group->setInUse(1);
+                    } else {
+                        group->setAction(1);
+                    }
+                    goto next_group;
+                }
+
+                if (group->type() == 0x6c) {
+                    RGE_Static_Object* commanderObject;
+                    ObjectMemory* tradeObject;
+
+                    commanderObject = this->md->object(group->commander());
+                    if (commanderObject == 0) {
+                        group->setAction(1);
+                        goto next_group;
+                    }
+
+                    tradeObject = this->md->informationAI.objectToTradeWith(
+                        group->commander());
+                    if (tradeObject == 0) {
+                        if (this->md->informationAI.fullyExploredZone(
+                                group->commander()) != 1) {
                             group->setAction(1);
-                            group->setTarget(-1);
-                            group->numberObjectsToDestroyValue = 0;
-                            group->setTargetType(-1);
-                            group->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                            group = group->next;
+                            goto next_group;
+                        }
+                        group->setAction(8);
+                        group->task(this, this->md, group->action(), 1, 0);
+                        group->setInUse(1);
+                    } else {
+                        XYZPoint point;
+                        float pathDistance;
+
+                        point.x = tradeObject->x;
+                        point.y = tradeObject->y;
+                        point.z = tradeObject->z;
+                        if (commanderObject->canPath(
+                                point, 1.0f, tradeObject->id, &pathDistance,
+                                1, -1, -1) == 0) {
+                            group->setAction(1);
+                            goto next_group;
+                        }
+                        group->setTarget(tradeObject->id);
+                        group->setTargetType((int)tradeObject->type);
+                        group->setTargetLocation(
+                            (float)tradeObject->x, (float)tradeObject->y,
+                            (float)tradeObject->z);
+                        group->setInUse(1);
+                        group->task(this, this->md, group->action(), 1, 0);
+                    }
+                    goto next_group;
+                }
+
+                group->task(this, this->md, group->action(), 1, 0);
+                goto next_group;
+            }
+
+            if (group->action() == 8) {
+                int hasWork;
+
+                hasWork = 0;
+                if (group->type() == 0x6c &&
+                    this->md->informationAI.objectToTradeWith(
+                        group->commander()) != 0) {
+                    hasWork = 1;
+                }
+
+                if (group->type() == 0x6b) {
+                    if (this->numberWaterExplorers() > 1) {
+                        float rXPos;
+                        float rYPos;
+                        int dropsiteID;
+
+                        rXPos = 0.0f;
+                        rYPos = 0.0f;
+                        dropsiteID = -1;
+                        if (this->md->informationAI.gameIDOfResourceObject(
+                                0, group->commander(), rXPos, rYPos,
+                                dropsiteID, 0, 0) != -1) {
+                            hasWork = 1;
+                        }
+                    } else {
+                        RGE_Static_Object* commanderObject;
+
+                        commanderObject =
+                            this->md->object(group->commander());
+                        if (commanderObject != 0 &&
+                            commanderObject->unitAI() != 0 &&
+                            commanderObject->unitAI()->currentOrder() !=
+                                0x2c1) {
+                            group->setAction(8);
+                            group->task(this, this->md, group->action(), 1,
+                                        0);
+                            group->setInUse(1);
                         }
                     }
                 }
 
-                if (group->action() == 11) {
-                    int targetID = group->target();
-                    RGE_Static_Object* target = this->md->object(targetID);
-                    if (target == 0) {
+                if (hasWork == 1) {
+                    RGE_Static_Object* commanderObject;
+
+                    commanderObject = this->md->object(group->commander());
+                    if (commanderObject == 0)
+                        goto next_group;
+
+                    group->setInUse(0);
+                    group->setAction(1);
+                    group->setTarget(-1);
+                    group->numberObjectsToDestroyValue = 0;
+                    group->setTargetType(-1);
+                    group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                    group->setGatherLocation(
+                        commanderObject->world_x, commanderObject->world_y,
+                        commanderObject->world_z);
+                    group->task(this, this->md, group->action(), 1, 0);
+                    goto next_group;
+                }
+            }
+
+            if (group->action() == 10) {
+                RGE_Static_Object* targetObject;
+
+                targetObject = this->md->object(group->target());
+                if (targetObject == 0) {
+                    group->setInUse(0);
+                    group->setAction(1);
+                    group->setTarget(-1);
+                    group->setTargetType(-1);
+                    group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                    group->numberObjectsToDestroyValue = 0;
+                    goto next_group;
+                }
+
+                RGE_Static_Object* commanderObject =
+                    this->md->object(group->commander());
+                if (commanderObject != 0 &&
+                    commanderObject->unitAI() != 0 &&
+                    commanderObject->unitAI()->currentAction() == -1) {
+                    group->setInUse(0);
+                    group->setAction(1);
+                    group->setTarget(-1);
+                    group->numberObjectsToDestroyValue = 0;
+                    group->setTargetType(-1);
+                    group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                    group = group->next;
+                }
+            }
+
+            if (group->action() == 11) {
+                RGE_Static_Object* targetObject;
+
+                targetObject = this->md->object(group->target());
+                if (targetObject == 0) {
+                    group->setInUse(0);
+                    group->setAction(1);
+                    group->setTarget(-1);
+                    group->numberObjectsToDestroyValue = 0;
+                    group->setTargetType(-1);
+                    group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                    goto next_group;
+                }
+
+                RGE_Static_Object* commanderObject =
+                    this->md->object(group->commander());
+                if (commanderObject != 0 &&
+                    commanderObject->unitAI() != 0) {
+                    if (commanderObject->unitAI()->currentAction() == -1) {
                         group->setInUse(0);
                         group->setAction(1);
                         group->setTarget(-1);
                         group->numberObjectsToDestroyValue = 0;
                         group->setTargetType(-1);
                         group->setTargetLocation(-1.0f, -1.0f, -1.0f);
+                        group = group->next;
+                        goto next_group;
                     }
-                    else {
-                        RGE_Static_Object* commander =
-                            this->md->object(group->commander());
-                        RGE_Action_Object* actionObject =
-                            static_cast<RGE_Action_Object*>(commander);
-                        if (actionObject != 0 && actionObject->unitAI() != 0 &&
-                            actionObject->unitAI()->currentAction() == -1) {
-                            group->setInUse(0);
-                            group->setAction(1);
-                            group->setTarget(-1);
-                            group->numberObjectsToDestroyValue = 0;
-                            group->setTargetType(-1);
-                            group->setTargetLocation(-1.0f, -1.0f, -1.0f);
-                            group = group->next;
-                        }
-                        else if (actionObject != 0 && actionObject->have_action() != 0) {
-                            RGE_Action* action = actionObject->actions->get_action();
-                            ObjectMemory* trade =
-                                this->md->informationAI.objectToTradeWith(
-                                    action->target2ID);
-                            if (trade != 0 && trade->id != group->target()) {
-                                float pathDistance;
-                                XYZPoint point;
-                                point.x = (int)trade->x;
-                                point.y = (int)trade->y;
-                                point.z = (int)trade->z;
-                                if (actionObject->canPath(point, 1.0f,
-                                                          trade->id,
-                                                          &pathDistance, 1,
-                                                          -1, -1) == 0) {
-                                    group->setAction(1);
-                                }
-                                else {
-                                    group->setTarget(trade->id);
-                                    group->setTargetType((int)trade->type);
-                                    group->setTargetLocation((float)trade->x,
-                                                             (float)trade->y,
-                                                             (float)trade->z);
-                                    group->setInUse(1);
-                                    busyOK = 1;
-                                    goto task_tail;
-                                }
+
+                    RGE_Action_Object* actionObject =
+                        (RGE_Action_Object*)commanderObject;
+                    if (actionObject->have_action() != 0) {
+                        RGE_Action* action =
+                            actionObject->actions->get_action();
+                        ObjectMemory* tradeObject =
+                            this->md->informationAI.objectToTradeWith(
+                                action->target2ID);
+                        if (tradeObject != 0 &&
+                            tradeObject->id != group->target()) {
+                            XYZPoint point;
+                            float pathDistance;
+
+                            point.x = tradeObject->x;
+                            point.y = tradeObject->y;
+                            point.z = tradeObject->z;
+                            if (commanderObject->canPath(
+                                    point, 1.0f, tradeObject->id,
+                                    &pathDistance, 1, -1, -1) == 0) {
+                                group->setAction(1);
+                                goto next_group;
                             }
+                            group->setTarget(tradeObject->id);
+                            group->setTargetType((int)tradeObject->type);
+                            group->setTargetLocation(
+                                (float)tradeObject->x,
+                                (float)tradeObject->y,
+                                (float)tradeObject->z);
+                            group->setInUse(1);
+                            group->task(this, this->md, group->action(), 1,
+                                        1);
                         }
                     }
                 }
             }
 
-            goto next_group;
-task_tail:
-            group->task(this, this->md, group->action(), 1, busyOK);
-
-next_group:
+        next_group:
             group = group->next;
-            if (group == sentinel) {
-                break;
-            }
-        }
+        } while (group != &this->groups);
     }
 }
 
