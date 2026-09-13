@@ -2812,107 +2812,160 @@ extern void color_log(unsigned char a, unsigned char b, int c);
 
 
 
-long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
-                                       unsigned int wparam, long lparam)
+LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND hwnd, UINT message,
+                                         WPARAM wparam, LPARAM lparam)
 {
-    RGE_Base_Game* self = this;
+    LRESULT result = 0;
+    int mouse_message;
+    int saved_time_get;
+    DWORD game_thread;
+    DWORD window_thread;
+    TPanel* panel;
+
     color_log(0x24, 0x24, 3);
-    int mouse_down = 0;
-    if (msg >= 0x201 && msg <= 0x206) {
-        mouse_down = 1;
+
+    mouse_message = message >= 0x201 && message <= 0x206;
+    if (mouse_message != 0) {
         color_log(0x4C, 0x4C, 4);
     }
 
-    if (self->sound_system != 0) {
-        self->sound_system->handle_messages(hwnd, msg, wparam, lparam);
+    if (this->sound_system != 0) {
+        this->sound_system->handle_messages(hwnd, message, wparam, lparam);
     }
 
     color_log(0x24, 0x16, 3);
-    if (self->music_system != 0) {
-        self->music_system->handle_messages(hwnd, msg, wparam, lparam);
+
+    if (this->music_system != 0) {
+        this->music_system->handle_messages(hwnd, message, wparam, lparam);
     }
 
     color_log(0x24, 0x4C, 3);
 
-    long panel_result = 0;
-    TPanel* panel = panel_system.currentPanel();
+    panel = panel_system.currentPanel();
     if (panel != 0) {
         color_log(0x24, 0x32, 3);
         panel = panel_system.currentPanel();
-        panel_result = panel->wnd_proc(hwnd, msg, wparam, lparam);
-        if (panel_result != 0 && msg != 0x200 && msg != 0x113)
-            goto panel_return_after_exit_menu;
+        result = panel->wnd_proc(hwnd, message, wparam, lparam);
+        if (result != 0 && message != WM_MOUSEMOVE && message != WM_TIMER) {
+            goto handled;
+        }
     }
 
     color_log(0x24, 0x45, 3);
 
-    switch (msg) {
-    case 2:
-        color_log(0x32, 0xBA, 3);
-        if (self->handle_destroy(hwnd, 2, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_alt;
+    switch (message) {
+    case WM_TIMER:
+        this->handle_idle();
+        break;
 
-    case 5:
-        {
-        if (system_ignore_size_messages != 0)
-            goto default_window_proc;
-        color_log(0x32, 0xBA, 3);
-        int size_handled = self->handle_size(hwnd, 5, wparam, lparam);
-        if (size_handled != 0)
-            goto default_window_proc;
-        if (mouse_down != 0) {
-            color_log(0x4C, 0x5F, 4);
+    case WM_MOUSEMOVE:
+        color_log(0x24, 0x54, 3);
+        if (this->handle_mouse_move(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+
+        if (MouseCursorInChildContol != 0) {
+            if (this->windows_mouse == 0) {
+                SetCursor(0);
+                SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
+                this->mouse_on();
+            } else {
+                SetCursor(this->mouse_cursor);
+            }
+            MouseCursorInChildContol = 0;
+        }
+        break;
+
+    case WM_SYSKEYDOWN:
+    case WM_KEYDOWN:
+        color_log(0x24, 0xBA, 3);
+        if (this->handle_key_down(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
+
+    case WM_SYSKEYUP:
+        if (wparam == VK_MENU) {
+            panel = panel_system.currentPanel();
+            if (panel != 0) {
+                panel = panel_system.currentPanel();
+                panel->handle_reactivate();
+            }
+        }
+        break;
+
+    case WM_SYSCOMMAND:
+        if (wparam == 0xF100 && this->prog_info->full_screen != 0 &&
+            IsIconic(this->prog_window) == 0) {
+            return 0;
+        }
+        break;
+
+    case WM_USER:
+        color_log(0x32, 0x24, 3);
+        saved_time_get = debug_timeGetTime_on;
+        debug_timeGetTime_on = 0;
+        if (this->handle_user_command(hwnd, message, wparam, lparam) == 0) {
+            if (mouse_message != 0) {
+                color_log(0x4C, 0x5F, 4);
+            }
             color_log(0x24, 0x5F, 3);
-            return static_cast<LRESULT>(wparam);
+            debug_timeGetTime_on = saved_time_get;
+            return result;
         }
-        goto panel_result_return;
-        }
+        debug_timeGetTime_on = saved_time_get;
+        break;
 
-    case 6:
-        if (self->prog_ready != 0) {
-            int active_state = wparam & 0xFFFF;
-            int minimized = wparam >> 16;
-            if (active_state == 0) {
-                if (GetWindowThreadProcessId(reinterpret_cast<HWND>(lparam), 0) ==
-                    GetWindowThreadProcessId(self->prog_window, 0))
-                    save_active_wnd = reinterpret_cast<HWND>(lparam);
-            }
-            if (hwnd == self->prog_window && active_state != 0 &&
-                minimized != 0 && save_active_wnd != 0) {
-                save_active_wnd = 0;
-            }
+    case WM_COMMAND:
+        color_log(0x32, 0x16, 3);
+        if (this->handle_command(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
         }
-        goto default_window_proc;
+        break;
 
-    case 0x0F:
+    case 0x3B9:
+    case 0x500:
+        color_log(0x32, 0x4C, 3);
+        if (this->handle_music_done(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
+
+    case WM_PAINT:
         color_log(0x32, 0x45, 3);
-        if (self->handle_paint(hwnd, 0x0F, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_after_exit_menu;
+        if (this->handle_paint(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
 
-    case 0x1C:
-        if (self->prog_ready != 0) {
+    case WM_ACTIVATEAPP:
+        if (this->prog_ready != 0) {
             if (wparam == 1) {
                 if (basegame_is_active != 0) {
                     SetCursor(0);
-                    SetClassLongA(self->prog_window, -12, 0);
-                    if (self->prog_mode != 1)
-                        self->restart_sound_system();
-                    basegame_is_active = 0;
-                    if (self->draw_system != 0) {
-                        self->draw_system->CheckSurfaces();
-                        self->draw_system->ClearRestored();
-                        self->set_render_all();
+                    SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
+
+                    if (this->prog_mode != 1) {
+                        this->restart_sound_system();
                     }
-                    if (self->prog_mode != 1) {
-                        if (self->draw_system != 0) {
-                            self->draw_system->ClearPrimarySurface();
-                            self->draw_system->ModifyPalette(
-                                0, 0x100, self->draw_system->palette);
+
+                    basegame_is_active = 0;
+
+                    if (this->draw_system != 0) {
+                        this->draw_system->CheckSurfaces();
+                        this->draw_system->ClearRestored();
+                        this->set_render_all();
+                    }
+
+                    if (this->prog_mode != 1) {
+                        if (this->draw_system != 0) {
+                            this->draw_system->ClearPrimarySurface();
+                            this->draw_system->ModifyPalette(
+                                0, 0x100, this->draw_system->palette);
                         }
-                        self->set_render_all();
-                        InvalidateRect(self->prog_window, 0, 1);
+
+                        this->set_render_all();
+                        InvalidateRect(this->prog_window, 0, 1);
                         do_restore_palette = 10;
                         restore_palette_timer = debug_timeGetTime(
                             "C:\\msdev\\work\\age1_x1\\basegame.cpp", 0xE9B);
@@ -2920,185 +2973,119 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
                     }
                 }
             } else if (basegame_is_active == 0) {
-                SetClassLongA(self->prog_window, -12, 0);
-                if (self->prog_mode != 1)
-                    self->stop_sound_system();
+                SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
+
+                if (this->prog_mode != 1) {
+                    this->stop_sound_system();
+                }
+
                 basegame_is_active = 1;
-                if (self->prog_mode != 1 && self->mouse_pointer != 0)
-                    self->mouse_pointer->Shutdown_Mouse();
-            }
-        }
-        color_log(0x32, 0x54, 3);
-        if (self->handle_activate(hwnd, 0x1C, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_after_exit_menu;
 
-    case 0x104:
-        color_log(0x24, 0xBA, 3);
-        {
-            int handled = self->handle_key_down(hwnd, 0x104, wparam, lparam);
-            if (handled != 0)
-                goto default_window_proc;
-        }
-        goto panel_return_after_exit_menu;
-
-    case 0x100:
-        color_log(0x24, 0xBA, 3);
-        {
-            int handled = self->handle_key_down(hwnd, 0x100, wparam, lparam);
-            if (handled != 0)
-                goto default_window_proc;
-        }
-        goto panel_return_after_exit_menu;
-
-    case 0x105:
-        if (wparam == 0x12 && panel_system.currentPanel() != 0) {
-            panel = panel_system.currentPanel();
-            panel->handle_reactivate();
-        }
-        goto default_window_proc;
-
-    case 0x111:
-        color_log(0x32, 0x16, 3);
-        if (self->handle_command(hwnd, 0x111, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_after_exit_menu;
-
-    case 0x112:
-        if (wparam == 0xF100 && self->prog_info->full_screen != 0 &&
-            IsIconic(self->prog_window) == 0)
-            return 0;
-        goto default_window_proc;
-
-    case 0x113:
-        self->handle_idle();
-        goto default_window_proc;
-
-    case 0x116:
-        color_log(0x32, 0xBA, 3);
-        if (self->handle_init_menu(hwnd, 0x116, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_after_exit_menu;
-
-    case 0x200:
-        color_log(0x24, 0x54, 3);
-        if (self->handle_mouse_move(hwnd, 0x200, wparam, lparam) != 0) {
-            if (MouseCursorInChildContol != 0) {
-                if (self->windows_mouse == 0) {
-                    SetCursor(0);
-                    SetClassLongA(self->prog_window, -12, 0);
-                    self->mouse_on();
-                    MouseCursorInChildContol = 0;
-                } else {
-                    SetCursor(self->mouse_cursor);
-                    MouseCursorInChildContol = 0;
+                if (this->prog_mode != 1 && this->mouse_pointer != 0) {
+                    this->mouse_pointer->Shutdown_Mouse();
                 }
             }
-            goto default_window_proc;
         }
-        goto panel_return_after_exit_menu;
 
-    case 0x212:
-        color_log(0x32, 0xBA, 3);
-        if (self->handle_exit_menu(hwnd, 0x212, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_after_exit_menu;
+        color_log(0x32, 0x54, 3);
+        if (this->handle_activate(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
 
-panel_return_after_exit_menu:
-        if (mouse_down != 0)
-            color_log(0x4C, 0x5F, 4);
-        color_log(0x24, 0x5F, 3);
-        return static_cast<LRESULT>(wparam);
-
-    case 0x218:
-        if (wparam == 0)
-            return 0x424D5144;
-        goto default_window_proc;
-
-    case 0x10:
-        goto close_message;
-
-    case 0x30F:
-        color_log(0x32, 0xBA, 3);
-        if (self->handle_query_new_palette(hwnd, 0x30F, wparam, lparam) != 0)
-            goto close_message;
-        goto panel_return_alt;
-
-    case 0x311:
-        color_log(0x32, 0xBA, 3);
-        if (self->handle_palette_changed(hwnd, 0x311, wparam, lparam) != 0)
-            goto default_window_proc;
-        goto panel_return_alt;
-
-    case 0x3B9:
-        goto music_done_message;
-
-    case 0x400:
-        color_log(0x32, 0x24, 3);
-        {
-            int old_time = debug_timeGetTime_on;
-            debug_timeGetTime_on = 0;
-            if (self->handle_user_command(hwnd, 0x400, wparam, lparam) == 0) {
-                if (mouse_down != 0)
-                    color_log(0x4C, 0x5F, 4);
-                color_log(0x24, 0x5F, 3);
-                debug_timeGetTime_on = old_time;
-                return static_cast<LRESULT>(panel_result);
+    case WM_ACTIVATE:
+        if (this->prog_ready != 0) {
+            if (LOWORD(wparam) == 0) {
+                game_thread = GetWindowThreadProcessId(this->prog_window, 0);
+                window_thread = GetWindowThreadProcessId(
+                    reinterpret_cast<HWND>(lparam), 0);
+                if (window_thread == game_thread) {
+                    save_active_wnd = reinterpret_cast<HWND>(lparam);
+                }
             }
-            debug_timeGetTime_on = old_time;
+
+            if (hwnd == this->prog_window && LOWORD(wparam) != 0 &&
+                HIWORD(wparam) != 0 && save_active_wnd != 0) {
+                save_active_wnd = 0;
+            }
         }
-        goto default_window_proc;
+        break;
 
-    case 0x500:
-        goto music_done_message;
+    case WM_INITMENU:
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_init_menu(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
 
-close_message:
-    color_log(0x32, 0xBA, 3);
-    if (self->handle_close(hwnd, msg, wparam, lparam) != 0)
-        goto default_window_proc;
-    goto panel_return_alt;
+    case WM_EXITMENULOOP:
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_exit_menu(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
 
-music_done_message:
-    {
-    color_log(0x32, 0x4C, 3);
-    int music_handled = self->handle_music_done(hwnd, msg, wparam, lparam);
-    if (music_handled != 0)
-        goto default_window_proc;
-    if (mouse_down != 0)
+    case WM_SIZE:
+        if (system_ignore_size_messages != 0) {
+            break;
+        }
+
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_size(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
+
+    case WM_PALETTECHANGED:
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_palette_changed(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
+
+    case WM_QUERYNEWPALETTE:
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_query_new_palette(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        // The original intentionally continues into the close handler.
+
+    case WM_CLOSE:
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_close(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
+
+    case WM_DESTROY:
+        color_log(0x32, 0xBA, 3);
+        if (this->handle_destroy(hwnd, message, wparam, lparam) == 0) {
+            goto handled;
+        }
+        break;
+
+    case WM_POWERBROADCAST:
+        if (wparam == 0) {
+            return 0x424D5144;
+        }
+        break;
+    }
+
+    color_log(0x54, 0x24, 3);
+    result = DefWindowProcA(hwnd, message, wparam, lparam);
+
+    if (mouse_message != 0) {
         color_log(0x4C, 0x5F, 4);
-    color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(wparam);
     }
-
-    default:
-        goto default_window_proc;
-    }
-
- panel_result_return:
     color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(wparam);
+    return result;
 
-panel_return:
-    if (mouse_down == 0)
-        goto panel_return_alt;
-    color_log(0x4C, 0x5F, 4);
-    color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(panel_result);
-
-panel_return_alt:
-    if (mouse_down != 0)
+handled:
+    if (mouse_message != 0) {
         color_log(0x4C, 0x5F, 4);
-    goto panel_result_return;
-default_window_proc:
-    {
-        color_log(0x24, 0x54, 3);
-        long result = DefWindowProcA(hwnd, msg, wparam, lparam);
-        if (mouse_down != 0)
-            color_log(0x4C, 0x5F, 4);
-        color_log(0x24, 0x5F, 3);
-        return result;
     }
-
+    color_log(0x24, 0x5F, 3);
+    return result;
 }
 
 

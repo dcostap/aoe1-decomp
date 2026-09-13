@@ -97,7 +97,7 @@
     "004205E0": {"status": "matching", "symbol": "?enum_thread_proc@@YGHPAXJ@Z"},
     "00420610": {"status": "matching", "symbol": "?close_thread_windows@@YGHPAXJ@Z"},
     "00420650": {"status": "matching", "symbol": "?close_child_windows@@YGHPAXJ@Z"},
-    "004206D0": {"status": "scratch", "symbol": "?wnd_proc@RGE_Base_Game@@UAGJPAXIIJ@Z"},
+    "004206D0": {"status": "new_verified_logic", "symbol": "?wnd_proc@RGE_Base_Game@@UAGJPAXIIJ@Z", "behavior_review": ["logic_matching/004206D0/review-coord-14-004206D0-round-01-A/attempt-01", "logic_matching/004206D0/review-coord-14-004206D0-round-01-B/attempt-01"]},
     "00420F60": {"status": "matching", "symbol": "?handle_idle@RGE_Base_Game@@MAEHXZ"},
     "00421110": {"status": "matching", "symbol": "?handle_mouse_move@RGE_Base_Game@@MAEHPAXIIJ@Z"},
     "004211D0": {"status": "matching", "symbol": "?handle_key_down@RGE_Base_Game@@MAEHPAXIIJ@Z"},
