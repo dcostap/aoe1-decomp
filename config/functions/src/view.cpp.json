@@ -24,7 +24,7 @@
     "005345D0": {"status": "matching", "symbol": "?get_selection_area@RGE_View@@QAEHAAJ000H@Z"},
     "005346F0": {"status": "new_verified_logic", "symbol": "?CreateBlitQueue@RGE_View@@IAEXAAUtagRECT@@0HH@Z", "behavior_review": "logic_matching/005346F0/review-01/attempt-01"},
     "00534A00": {"status": "new_verified_logic", "symbol": "?ProcessQueuedBlit@RGE_View@@IAEXH@Z", "behavior_review": "logic_matching/00534A00/review-01/attempt-01"},
-    "00534AE0": {"status": "scratch", "symbol": "?draw@RGE_View@@UAEXXZ"},
+    "00534AE0": {"status": "new_verified_logic", "symbol": "?draw@RGE_View@@UAEXXZ", "behavior_review": ["logic_matching/00534AE0/review-20260913T062839Z-coord07-round02/attempt-01", "logic_matching/00534AE0/review-20260913T063337Z-coord07-round02-dualB/attempt-01"]},
     "00535210": {"status": "new_verified_logic", "symbol": "?update@RGE_View@@IAEXXZ", "behavior_review": "logic_matching/00535210/review-01/attempt-01"},
     "00535480": {"status": "matching", "symbol": "?draw_view@RGE_View@@IAEXEPAVTDrawArea@@@Z"},
     "00535610": {"status": "matching", "symbol": "?draw_object_outline@RGE_View@@IAEXXZ"},

@@ -788,11 +788,21 @@ void RGE_View::ProcessQueuedBlit(int param_1)
 
 void RGE_View::draw()
 {
-    tagRECT clip_rect2;
-    tagRECT new_rect;
+    short old_start_map_col;
+    short old_start_map_row;
+    short old_start_scr_col;
+    short old_start_scr_row;
+    int old_map_scr_x_offset;
+    int old_map_scr_y_offset;
+    short x_diff;
+    short y_diff;
     tagRECT old_rect;
+    tagRECT new_rect;
     tagRECT clip_rect1;
+    tagRECT clip_rect2;
+
     tiles_drawn = 0;
+
     if (view_debug_redraw_all != 0) {
         this->render_terrain_mode = 0;
         view_debug_redraw_all = 0;
@@ -808,213 +818,241 @@ void RGE_View::draw()
         return;
     }
 
-    short old_start_map_col = this->start_map_col;
-    short old_start_map_row = this->start_map_row;
-    short old_start_scr_col = this->start_scr_col;
-    short old_start_scr_row = this->start_scr_row;
+    old_start_scr_row = this->start_scr_row;
+    old_start_map_row = this->start_map_row;
+    old_start_scr_col = this->start_scr_col;
+    old_start_map_col = this->start_map_col;
+
     this->Terrain_Clip_Mask->ResetAll();
     this->Terrain_Fog_Clip_Mask->ResetAll();
     this->Master_Clip_Mask->ResetAll();
-    int old_map_scr_x_offset = this->map_scr_x_offset;
-    int old_map_scr_y_offset = this->map_scr_y_offset;
+
+    old_map_scr_y_offset = this->map_scr_y_offset;
+    old_map_scr_x_offset = this->map_scr_x_offset;
     this->Use_Rect2 = 0;
     this->Limited_Render_Rect = 0;
+
     this->update();
     this->draw_setup(0);
 
-    if (this->render_terrain_mode == 1) {
-        if ((this->start_map_col == old_start_map_col && this->start_map_row == old_start_map_row) &&
-            (this->start_scr_col == old_start_scr_col && this->start_scr_row == old_start_scr_row)) {
-            goto label_done;
-        }
+    if (this->render_terrain_mode == 1 &&
+        (this->start_map_col != old_start_map_col ||
+         this->start_map_row != old_start_map_row ||
+         this->start_scr_col != old_start_scr_col ||
+         this->start_scr_row != old_start_scr_row)) {
+        x_diff = (short)((short)this->map_scr_x_offset -
+                         (short)old_map_scr_x_offset);
+        y_diff = (short)((short)this->map_scr_y_offset -
+                         (short)old_map_scr_y_offset);
 
-        short x_diff = this->map_scr_x_offset - old_map_scr_x_offset;
-        short y_diff = this->map_scr_y_offset - old_map_scr_y_offset;
-        if (x_diff == 0 && y_diff == 0) goto label_done;
-        int dx = x_diff;
-        int dy = y_diff;
+        if (x_diff != 0 || y_diff != 0) {
+            int adjust;
 
-        int screen_width = this->pnl_wid;
-        old_rect.left = 0;
-        old_rect.top = 0;
-        int screen_height = this->pnl_hgt;
-        old_rect.right = screen_width - 1;
-        new_rect.left = dx;
-        new_rect.top = dy;
-        old_rect.bottom = screen_height - 1;
-        new_rect.right = old_rect.right + new_rect.left;
-        new_rect.bottom = old_rect.bottom + new_rect.top;
-
-        if (new_rect.bottom < 0 || new_rect.right < 0 || old_rect.bottom < new_rect.top || old_rect.right < new_rect.left) {
-            this->render_terrain_mode = 0;
-            goto label_done;
-        }
-
-        if (((short)dx & 7) != 0) {
-            long t = new_rect.left;
-            if ((short)dx <= 0) t = new_rect.left + 7;
-            long a = (t & ~7) - new_rect.left;
-            dx += a;
-            this->map_scr_x_offset += a;
-        }
-        if (((short)dy & 7) != 0) {
-            long t = new_rect.top;
-            if ((short)dy <= 0) t = new_rect.top + 7;
-            long a = (t & ~7) - new_rect.top;
-            dy += a;
-            this->map_scr_y_offset += a;
-        }
-
-        if ((short)dx < 0) {
             old_rect.left = 0;
-            old_rect.right = dx + screen_width - 1;
-            new_rect.left = -dx;
-        } else {
-            old_rect.left = dx;
-            old_rect.right = screen_width - 1;
-            new_rect.left = 0;
-            screen_width = screen_width - old_rect.left;
-        }
-        new_rect.right = screen_width - 1;
-
-        if ((short)dy < 0) {
             old_rect.top = 0;
-            old_rect.bottom = dy + screen_height - 1;
-            new_rect.top = -dy;
-        } else {
-            old_rect.top = dy;
-            old_rect.bottom = screen_height - 1;
-            new_rect.top = 0;
-            screen_height = screen_height - old_rect.top;
-        }
-        new_rect.bottom = screen_height - 1;
+            old_rect.right = this->pnl_wid - 1;
+            old_rect.bottom = this->pnl_hgt - 1;
 
-        int xd = dx;
-        int yd = dy;
+            new_rect.left = x_diff;
+            new_rect.top = y_diff;
+            new_rect.right = old_rect.right + x_diff;
+            new_rect.bottom = old_rect.bottom + y_diff;
 
-        if (this->render_area->DrawSystem->DrawType == 1 || this->render_area->UsingVidMem == 0) {
-            this->render_area->OverlayMemCopy(old_rect, new_rect, xd, yd,
-                                               this->render_rect.left,
-                                               this->render_rect.top);
-            this->Queued_Blits = 0;
-        } else {
-            this->CreateBlitQueue(old_rect, new_rect, xd, yd);
-            if (MouseSystem != 0) MouseSystem->Poll();
-            if (this->Queued_Blits != 0) this->ProcessQueuedBlit(0);
-        }
-
-        this->prior_objs->Scroll(xd, yd);
-
-        int fxd = this->Float_X_Delta + xd;
-        this->Float_X_Delta = fxd;
-        if (fxd >= this->save_area1->Width) {
-            if (this->save_area1->Lock("view::draw", 1) != 0) {
-                memcpy(this->save_area1->DisplayOffsets[0],
-                       (unsigned char*)this->save_area1->DisplayOffsets[
-                           this->save_area1->Height - 1] + this->save_area1->Width,
-                       this->Float_X_Delta - xd);
-                this->Float_X_Delta -= this->save_area1->Width;
-                this->Float_Y_Delta += 1;
-                if (this->Float_Y_Delta >= this->save_area1->Height) this->Float_Y_Delta = 0;
-                this->save_area1->Unlock("view::draw");
-            }
-        } else {
-            if (fxd < 0 && this->save_area1->Lock("view::draw2", 1) != 0) {
-                this->Float_X_Delta += this->save_area1->Width;
-                this->Float_Y_Delta -= 1;
-                if (this->Float_Y_Delta < 0) this->Float_Y_Delta = this->save_area1->Height - 1;
-                memcpy(this->save_area1->DisplayOffsets[0],
-                       (unsigned char*)this->save_area1->DisplayOffsets[
-                           this->save_area1->Height - 1] + this->save_area1->Width,
-                       this->Float_X_Delta);
-                this->save_area1->Unlock("view::draw3");
-            }
-        }
-
-        this->Float_Y_Delta += yd;
-        if (this->Float_Y_Delta < 0) this->Float_Y_Delta += this->save_area1->Height;
-        if (this->Float_Y_Delta >= this->save_area1->Height) this->Float_Y_Delta -= this->save_area1->Height;
-
-        this->save_area1->SetFloatOffsets(this->Float_X_Delta, this->Float_Y_Delta);
-
-        if ((new_rect.left == 0) && (new_rect.right == this->pnl_wid - 1)) {
-            clip_rect1.left = -1;
-            if ((new_rect.top == 0) && (new_rect.bottom == this->pnl_hgt - 1)) {
-                clip_rect2.left = -1;
+            if (new_rect.bottom < 0 || new_rect.right < 0 ||
+                old_rect.bottom < new_rect.top ||
+                old_rect.right < new_rect.left) {
+                this->render_terrain_mode = 0;
             } else {
-                clip_rect2.left = 0;
-                clip_rect2.right = this->pnl_wid - 1;
-                if (new_rect.top == 0) {
-                    clip_rect2.top = new_rect.bottom + 1;
-                    clip_rect2.bottom = this->pnl_hgt - 1;
-                } else {
-                    clip_rect2.top = 0;
-                    clip_rect2.bottom = new_rect.top - 1;
+                if ((x_diff & 7) != 0) {
+                    adjust = new_rect.left;
+                    if (x_diff <= 0) {
+                        adjust += 7;
+                    }
+                    adjust = (adjust & ~7) - new_rect.left;
+                    x_diff = (short)(x_diff + adjust);
+                    this->map_scr_x_offset += adjust;
                 }
-            }
-        } else if (new_rect.left == 0) {
-            clip_rect1.right = this->pnl_wid - 1;
-            clip_rect1.left = new_rect.right + 1;
-            clip_rect1.bottom = this->pnl_hgt - 1;
-            clip_rect1.top = 0;
-            if ((new_rect.top == 0) && (new_rect.bottom == clip_rect1.bottom)) {
-                clip_rect2.left = -1;
-            } else {
-                clip_rect2.left = 0;
-                if (new_rect.top == 0) {
-                    clip_rect2.top = new_rect.bottom + 1;
-                    clip_rect2.right = new_rect.right;
-                    clip_rect2.bottom = clip_rect1.bottom;
-                } else {
-                    clip_rect2.top = 0;
-                    clip_rect2.right = new_rect.right;
-                    clip_rect2.bottom = new_rect.top - 1;
-                }
-            }
-        } else {
-            clip_rect1.right = new_rect.left - 1;
-            clip_rect1.bottom = this->pnl_hgt - 1;
-            clip_rect1.left = 0;
-            clip_rect1.top = 0;
-            if ((new_rect.top == 0) && (new_rect.bottom == clip_rect1.bottom)) {
-                clip_rect2.left = -1;
-            } else {
-                clip_rect2.left = new_rect.left;
-                if (new_rect.top == 0) {
-                    clip_rect2.top = new_rect.bottom + 1;
-                    clip_rect2.right = this->pnl_wid - 1;
-                    clip_rect2.bottom = clip_rect1.bottom;
-                } else {
-                    clip_rect2.top = 0;
-                    clip_rect2.right = this->pnl_wid - 1;
-                    clip_rect2.bottom = new_rect.top - 1;
-                }
-            }
-        }
 
-        if (clip_rect1.left != -1) {
-            this->save_area1->PtrClear(&clip_rect1, 0);
-            this->Limited_Render_Rect = 1;
-            this->Render_Rect1 = clip_rect1;
-        }
-        if (clip_rect2.left != -1) {
-            this->save_area1->PtrClear(&clip_rect2, 0);
-            if (clip_rect1.left != -1) {
-                this->Use_Rect2 = 1;
-                this->Render_Rect2 = clip_rect2;
-            } else {
-                this->Limited_Render_Rect = 1;
-                this->Render_Rect1 = clip_rect2;
+                if ((y_diff & 7) != 0) {
+                    adjust = new_rect.top;
+                    if (y_diff <= 0) {
+                        adjust += 7;
+                    }
+                    adjust = (adjust & ~7) - new_rect.top;
+                    y_diff = (short)(y_diff + adjust);
+                    this->map_scr_y_offset += adjust;
+                }
+
+                if (x_diff < 0) {
+                    old_rect.left = 0;
+                    old_rect.right = this->pnl_wid + x_diff - 1;
+                    new_rect.left = -x_diff;
+                    new_rect.right = this->pnl_wid - 1;
+                } else {
+                    old_rect.left = x_diff;
+                    old_rect.right = this->pnl_wid - 1;
+                    new_rect.left = 0;
+                    new_rect.right = this->pnl_wid - x_diff - 1;
+                }
+
+                if (y_diff < 0) {
+                    old_rect.top = 0;
+                    old_rect.bottom = this->pnl_hgt + y_diff - 1;
+                    new_rect.top = -y_diff;
+                    new_rect.bottom = this->pnl_hgt - 1;
+                } else {
+                    old_rect.top = y_diff;
+                    old_rect.bottom = this->pnl_hgt - 1;
+                    new_rect.top = 0;
+                    new_rect.bottom = this->pnl_hgt - y_diff - 1;
+                }
+
+                if (this->render_area->DrawSystem->DrawType == 1 ||
+                    this->render_area->UsingVidMem == 0) {
+                    this->render_area->OverlayMemCopy(
+                        old_rect, new_rect, x_diff, y_diff,
+                        this->render_rect.left, this->render_rect.top);
+                    this->Queued_Blits = 0;
+                } else {
+                    this->CreateBlitQueue(old_rect, new_rect, x_diff, y_diff);
+                    if (MouseSystem != 0) {
+                        MouseSystem->Poll();
+                    }
+                    if (this->Queued_Blits != 0) {
+                        this->ProcessQueuedBlit(0);
+                    }
+                }
+
+                this->prior_objs->Scroll(x_diff, y_diff);
+
+                this->Float_X_Delta += x_diff;
+                if (this->Float_X_Delta >= this->save_area1->Width) {
+                    if (this->save_area1->Lock("view::draw", 1) != 0) {
+                        memcpy(this->save_area1->DisplayOffsets[0],
+                               (unsigned char*)this->save_area1->DisplayOffsets[
+                                   this->save_area1->Height - 1] +
+                                   this->save_area1->Width,
+                               this->Float_X_Delta - x_diff);
+                        this->Float_X_Delta -= this->save_area1->Width;
+                        this->Float_Y_Delta++;
+                        if (this->Float_Y_Delta >= this->save_area1->Height) {
+                            this->Float_Y_Delta = 0;
+                        }
+                        this->save_area1->Unlock("view::draw");
+                    }
+                } else if (this->Float_X_Delta < 0) {
+                    if (this->save_area1->Lock("view::draw2", 1) != 0) {
+                        this->Float_X_Delta += this->save_area1->Width;
+                        this->Float_Y_Delta--;
+                        if (this->Float_Y_Delta < 0) {
+                            this->Float_Y_Delta = this->save_area1->Height - 1;
+                        }
+                        memcpy((unsigned char*)this->save_area1->DisplayOffsets[
+                                   this->save_area1->Height - 1] +
+                                   this->save_area1->Width,
+                               this->save_area1->DisplayOffsets[0],
+                               this->Float_X_Delta);
+                        this->save_area1->Unlock("view::draw3");
+                    }
+                }
+
+                this->Float_Y_Delta += y_diff;
+                if (this->Float_Y_Delta < 0) {
+                    this->Float_Y_Delta += this->save_area1->Height;
+                }
+                if (this->Float_Y_Delta >= this->save_area1->Height) {
+                    this->Float_Y_Delta -= this->save_area1->Height;
+                }
+                this->save_area1->SetFloatOffsets(
+                    this->Float_X_Delta, this->Float_Y_Delta);
+
+                if (new_rect.left == 0 &&
+                    new_rect.right == this->pnl_wid - 1) {
+                    clip_rect1.left = -1;
+                    if (new_rect.top == 0 &&
+                        new_rect.bottom == this->pnl_hgt - 1) {
+                        clip_rect2.left = -1;
+                    } else {
+                        clip_rect2.left = 0;
+                        clip_rect2.right = this->pnl_wid - 1;
+                        if (new_rect.top == 0) {
+                            clip_rect2.top = new_rect.bottom + 1;
+                            clip_rect2.bottom = this->pnl_hgt - 1;
+                        } else {
+                            clip_rect2.top = 0;
+                            clip_rect2.bottom = new_rect.top - 1;
+                        }
+                    }
+                } else if (new_rect.left == 0) {
+                    clip_rect1.left = new_rect.right + 1;
+                    clip_rect1.top = 0;
+                    clip_rect1.right = this->pnl_wid - 1;
+                    clip_rect1.bottom = this->pnl_hgt - 1;
+                    if (new_rect.top == 0 &&
+                        new_rect.bottom == this->pnl_hgt - 1) {
+                        clip_rect2.left = -1;
+                    } else {
+                        clip_rect2.left = 0;
+                        if (new_rect.top == 0) {
+                            clip_rect2.top = new_rect.bottom + 1;
+                            clip_rect2.right = new_rect.right;
+                            clip_rect2.bottom = this->pnl_hgt - 1;
+                        } else {
+                            clip_rect2.top = 0;
+                            clip_rect2.right = new_rect.right;
+                            clip_rect2.bottom = new_rect.top - 1;
+                        }
+                    }
+                } else {
+                    clip_rect1.left = 0;
+                    clip_rect1.top = 0;
+                    clip_rect1.right = new_rect.left - 1;
+                    clip_rect1.bottom = this->pnl_hgt - 1;
+                    if (new_rect.top == 0 &&
+                        new_rect.bottom == this->pnl_hgt - 1) {
+                        clip_rect2.left = -1;
+                    } else {
+                        clip_rect2.left = new_rect.left;
+                        if (new_rect.top == 0) {
+                            clip_rect2.top = new_rect.bottom + 1;
+                            clip_rect2.right = this->pnl_wid - 1;
+                            clip_rect2.bottom = this->pnl_hgt - 1;
+                        } else {
+                            clip_rect2.top = 0;
+                            clip_rect2.right = this->pnl_wid - 1;
+                            clip_rect2.bottom = new_rect.top - 1;
+                        }
+                    }
+                }
+
+                if (clip_rect1.left != -1) {
+                    this->save_area1->PtrClear(&clip_rect1, 0);
+                    this->Limited_Render_Rect = 1;
+                    this->Render_Rect1 = clip_rect1;
+                }
+                if (clip_rect2.left != -1) {
+                    this->save_area1->PtrClear(&clip_rect2, 0);
+                    if (clip_rect1.left == -1) {
+                        this->Limited_Render_Rect = 1;
+                        this->Render_Rect1 = clip_rect2;
+                    } else {
+                        this->Use_Rect2 = 1;
+                        this->Render_Rect2 = clip_rect2;
+                    }
+                }
             }
         }
     }
 
-label_done:
-    if (MouseSystem != 0) MouseSystem->Poll();
-    if (this->Queued_Blits != 0) this->ProcessQueuedBlit(0);
+    if (MouseSystem != 0) {
+        MouseSystem->Poll();
+    }
+    if (this->Queued_Blits != 0) {
+        this->ProcessQueuedBlit(0);
+    }
 
-    int gm = rge_base_game->game_mode;
-    if ((gm >= 9 && gm <= 10) || gm == 0x13) {
+    int game_mode = rge_base_game->game_mode;
+    if ((game_mode >= 9 && game_mode <= 10) || game_mode == 0x13) {
         this->draw_paint_brush();
     }
 
