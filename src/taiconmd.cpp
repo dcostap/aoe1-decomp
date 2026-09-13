@@ -69,15 +69,15 @@ int TribeConstructionAIModule::canPlace(BuildItem* bi)
 }
 
 ConstructionItem* TribeConstructionAIModule::placeStructure(
-    BuildItem* item, int builderID, PlacementState& state,
-    unsigned long currentTime)
+    BuildItem* item, int builder_id, PlacementState& state,
+    unsigned long time)
 {
     if (this->xReferencePointValue <= 0.0 ||
         this->yReferencePointValue <= 0.0 ||
         (float)this->mapXSizeValue <= this->xReferencePointValue ||
         (float)this->mapYSizeValue <= this->yReferencePointValue) {
         return this->md->informationAI.influencePlaceStructure(
-            item, builderID, -1, 0, 0, -1, -1, -1, -1, state, currentTime);
+            item, builder_id, -1, 0.0f, 0, -1, -1, -1, -1, state, time);
     }
 
     if (item->typeID() == 0x2d) {
@@ -88,122 +88,137 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
         return 0;
     }
 
-    if (item->typeID() == 0x67 || item->typeID() == 0x44 ||
-        item->typeID() == 0x4f || item->typeID() == 0xc7 ||
-        item->typeID() == 0x45 || item->typeID() == 0x48 ||
-        item->typeID() == 0x75 || item->typeID() == 0x9b ||
-        useInfluencePlacement == 1 || this->numberConstructionLotsValue == 0) {
+    if (item->typeID() == 0x67 ||
+        item->typeID() == 0x44 ||
+        item->typeID() == 0x4f ||
+        item->typeID() == 0xc7 ||
+        item->typeID() == 0x45 ||
+        item->typeID() == 0x48 ||
+        item->typeID() == 0x75 ||
+        item->typeID() == 0x9b ||
+        useInfluencePlacement == 1 ||
+        this->numberConstructionLotsValue == 0) {
         return this->md->informationAI.influencePlaceStructure(
-            item, builderID, -1, 0, 0, -1, -1, -1, -1, state, currentTime);
+            item, builder_id, -1, 0.0f, 0, -1, -1, -1, -1, state, time);
     }
 
-    ConstructionItem* current;
-    RGE_Static_Object* builder = this->md->object(
+    RGE_Static_Object* protoBuilder = this->md->object(
         -1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
-    if (builder == 0) {
+    if (protoBuilder == 0) {
         return 0;
     }
 
-    RGE_Static_Object* builderObject = this->md->object(builderID);
+    RGE_Static_Object* builder = this->md->object(builder_id);
     unsigned char builderZone = 0;
-    if (builderObject != 0) {
-        builderZone = builderObject->currentZone();
+    if (builder != 0) {
+        builderZone = builder->currentZone();
     }
 
     ConstructionItem tempLots;
     tempLots.next = &tempLots;
     tempLots.prev = &tempLots;
+
+    ConstructionItem* current = this->constructionLots.next;
     int numberTempLots = 0;
     int minBuildAttempts = -1;
-    ConstructionItem* end = &this->constructionLots;
 
-    current = this->constructionLots.next;
-    while (current != end && current != 0) {
-        if (item->typeID() == current->typeID() || current->typeID() == -1) {
-            if (current->xSize() == item->xSize() &&
-                current->ySize() == item->ySize() &&
-                current->built() != 1 && current->inProgress() != 1) {
-                int minX = (int)(current->x() - current->xSize());
-                int minY = (int)(current->y() - current->ySize());
-                int maxX = minX + (int)current->xSize();
-                int maxY = minY + (int)current->ySize();
+    while (current != &this->constructionLots && current != 0) {
+        if ((item->typeID() == current->typeID() ||
+             current->typeID() == -1) &&
+            current->xSize() == item->xSize() &&
+            current->ySize() == item->ySize() &&
+            current->built() != 1 &&
+            current->inProgress() != 1) {
+            int minX = (int)(current->x() - current->xSize());
+            int minY = (int)(current->y() - current->ySize());
+            int maxX = minX + (int)current->xSize();
+            int maxY = minY + (int)current->ySize();
 
-                if (minX >= 0 && minY >= 0 &&
-                    maxX < this->mapXSizeValue && maxY < this->mapYSizeValue) {
-                    for (int x = minX; x < maxX; ++x) {
-                        for (int y = minY; y < maxY; ++y) {
-                            if ((builderObject != 0 &&
-                                 builderObject->lookupZone(x, y) != builderZone) ||
-                                builder->passableTile(
-                                    (float)x - -0.5f, (float)y - -0.5f, 1) == 0) {
-                                goto skipPlace;
-                            }
+            if (minX >= 0 && minY >= 0 &&
+                maxX < this->mapXSizeValue &&
+                maxY < this->mapYSizeValue) {
+                int x = minX;
+                for (; x < maxX; ++x) {
+                    int y = minY;
+                    for (; y < maxY; ++y) {
+                        if (builder != 0 &&
+                            builder->lookupZone(x, y) != builderZone) {
+                            goto next_lot;
+                        }
+                        if (protoBuilder->passableTile(
+                                (float)x + 0.5f, (float)y + 0.5f, 1) == 0) {
+                            goto next_lot;
                         }
                     }
+                }
 
-                    ConstructionItem* candidate = new ConstructionItem(current);
-                    candidate->next = &tempLots;
-                    candidate->prev = tempLots.prev;
-                    tempLots.prev->next = candidate;
-                    tempLots.prev = candidate;
-                    numberTempLots++;
-                    if (minBuildAttempts == -1 ||
-                        minBuildAttempts > current->buildAttempts()) {
-                        minBuildAttempts = current->buildAttempts();
-                    }
+                ConstructionItem* copy = new ConstructionItem(current);
+                copy->next = &tempLots;
+                copy->prev = tempLots.prev;
+                tempLots.prev->next = copy;
+                ++numberTempLots;
+                tempLots.prev = copy;
+
+                if (minBuildAttempts == -1 ||
+                    current->buildAttempts() < minBuildAttempts) {
+                    minBuildAttempts = current->buildAttempts();
                 }
             }
         }
-skipPlace:
+
+    next_lot:
         current = current->next;
     }
 
     if (minBuildAttempts >= 2 || minBuildAttempts == -1) {
-        ConstructionItem* placed = this->md->informationAI.influencePlaceStructure(
-            item, builderID, -1, 0, 0, -1, -1, -1, -1, state, currentTime);
-        if (placed != 0) {
-            return placed;
+        ConstructionItem* result =
+            this->md->informationAI.influencePlaceStructure(
+                item, builder_id, -1, 0.0f, 0, -1, -1, -1, -1, state,
+                time);
+        if (result != 0) {
+            return result;
         }
     }
 
-    if (numberTempLots == 0) {
-        this->lastPlacementReturnCodeValue = PlacementFailed;
-        return 0;
-    }
+    if (numberTempLots != 0) {
+        ConstructionItem* best = tempLots.next;
+        ConstructionItem* candidate = best->next;
 
-    ConstructionItem* best = tempLots.next;
-    ConstructionItem* next = best->next;
-    if (item->typeID() == 0x48) {
-        while (next != &tempLots && next != 0) {
-            if (best->buildAttempts() > next->buildAttempts() + 5) {
-                best = next;
+        if (item->typeID() == 0x48) {
+            while (candidate != &tempLots && candidate != 0) {
+                if (best->buildAttempts() >
+                    candidate->buildAttempts() + 5) {
+                    best = candidate;
+                }
+                candidate = candidate->next;
             }
-            next = next->next;
+        } else {
+            while (candidate != &tempLots && candidate != 0) {
+                best = this->compare(best, candidate);
+                candidate = candidate->next;
+            }
         }
-    } else {
-        while (next != &tempLots && next != 0) {
-            best = this->compare(best, next);
-            next = next->next;
+
+        ConstructionItem* selected = this->lot(best->x(), best->y());
+        selected->setInProgress(1);
+        selected->incrementBuildAttempts();
+        selected->setUniqueID(item->uniqueID());
+        this->lastPlacementReturnCodeValue = PlacementOk;
+
+        ConstructionItem* result = new ConstructionItem(selected);
+        result->setTypeID(item->typeID());
+
+        ConstructionItem* old = tempLots.next;
+        while (old != &tempLots && old != 0) {
+            ConstructionItem* next = old->next;
+            delete old;
+            old = next;
         }
+        return result;
     }
 
-    ConstructionItem* lot = this->lot(best->x(), best->y());
-    lot->setInProgress(1);
-    lot->incrementBuildAttempts();
-    lot->setUniqueID(item->uniqueID());
-
-    this->lastPlacementReturnCodeValue = PlacementOk;
-    ConstructionItem* result = new ConstructionItem(lot);
-    result->setTypeID(item->typeID());
-
-    ConstructionItem* temporary = tempLots.next;
-    while (temporary != &tempLots && temporary != 0) {
-        ConstructionItem* following = temporary->next;
-        delete temporary;
-        temporary = following;
-    }
-
-    return result;
+    this->lastPlacementReturnCodeValue = PlacementFailed;
+    return 0;
 }
 
 ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* item)
