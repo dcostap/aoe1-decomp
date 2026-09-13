@@ -81,7 +81,7 @@
     "004EEE40": {"status": "matching", "symbol": "?updateAreaName@TribeTacticalAIModule@@QAEPADXZ"},
     "004EEF40": {"status": "matching", "symbol": "?update@TribeTacticalAIModule@@UAEHH@Z"},
     "004EF4D0": {"status": "matching", "symbol": "?setMainDecisionAI@TribeTacticalAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
-    "004EF4E0": {"status": "scratch", "symbol": "?save@TribeTacticalAIModule@@UAEHH@Z"},
+    "004EF4E0": {"status": "new_verified_logic", "symbol": "?save@TribeTacticalAIModule@@UAEHH@Z", "behavior_review": ["logic_matching/004EF4E0/coord-19-ecc05182e-004EF4E0-r02-a/attempt-01", "logic_matching/004EF4E0/coord-19-ecc05182e-004EF4E0-r02-b/attempt-01"]},
     "004F0180": {"status": "matching", "symbol": "?logGroupDebug@TribeTacticalAIModule@@QAAXHPADZZ"},
     "004F0190": {"status": "new_verified_logic", "symbol": "?doSomething@TribeTacticalAIModule@@QAEHXZ", "behavior_review": ["logic_matching/004F0190/review-coord-13-round-02-a/attempt-01", "logic_matching/004F0190/review-coord-13-round-02-b/attempt-01"]},
     "004F0BC0": {"status": "matching", "symbol": "?clearArea@TribeTacticalAIModule@@QAEHHMMMM@Z"},

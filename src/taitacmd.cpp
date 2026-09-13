@@ -2170,476 +2170,143 @@ void __cdecl operator delete(void* ptr);
 
 int TribeTacticalAIModule::save(int file)
 {
-    int tempInt;
-
-    {
     int i;
+    int tempInt;
+    TacticalAIGroup* group;
+
     tempInt = this->civilians.numberValue;
     rge_write(file, &tempInt, 4);
-    i = 0;
-    if (this->civilians.numberValue > 0) {
-        ManagedArray<int>& arr = this->civilians;
-        do {
-            if (i > arr.maximumSizeValue - 1) {
-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
-                (arr.*resize)(i + 1);
-            }
-            tempInt = arr.value[i];
-            rge_write(file, &tempInt, 4);
-            i++;
-        } while (i < this->civilians.numberValue);
-    }
+    for (i = 0; i < this->civilians.numberValue; i++) {
+        tempInt = this->civilians[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int i;
     tempInt = this->civilianExplorers.numberValue;
     rge_write(file, &tempInt, 4);
-    i = 0;
-    if (this->civilianExplorers.numberValue > 0) {
-        ManagedArray<int>& arr = this->civilianExplorers;
-        do {
-            if (i > arr.maximumSizeValue - 1) {
-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
-                (arr.*resize)(i + 1);
-            }
-            tempInt = arr.value[i];
-            rge_write(file, &tempInt, 4);
-            i++;
-        } while (i < this->civilianExplorers.numberValue);
-    }
+    for (i = 0; i < this->civilianExplorers.numberValue; i++) {
+        tempInt = this->civilianExplorers[i];
+        rge_write(file, &tempInt, 4);
     }
 
     rge_write(file, &this->numberGatherersValue, 4);
     rge_write(file, &this->desiredNumberGatherersValue, 4);
-    rge_write(file, this->gatherers, 0x4B0);
+    rge_write(file, this->gatherers, 0x4b0);
 
-    {
-    int i;
     tempInt = this->soldiers.numberValue;
     rge_write(file, &tempInt, 4);
-    i = 0;
-    if (this->soldiers.numberValue > 0) {
-        ManagedArray<int>& arr = this->soldiers;
-        do {
-            if (i > arr.maximumSizeValue - 1) {
-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
-                (arr.*resize)(i + 1);
-            }
-            tempInt = arr.value[i];
-            rge_write(file, &tempInt, 4);
-            i++;
-        } while (i < this->soldiers.numberValue);
-    }
+    for (i = 0; i < this->soldiers.numberValue; i++) {
+        tempInt = this->soldiers[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int i;
     tempInt = this->ungroupedSoldiers.numberValue;
     rge_write(file, &tempInt, 4);
-    i = 0;
-    if (this->ungroupedSoldiers.numberValue > 0) {
-        ManagedArray<int>& arr = this->ungroupedSoldiers;
-        do {
-            if (i > arr.maximumSizeValue - 1) {
-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
-                (arr.*resize)(i + 1);
-            }
-            tempInt = arr.value[i];
-            rge_write(file, &tempInt, 4);
-            i++;
-        } while (i < this->ungroupedSoldiers.numberValue);
-    }
+    for (i = 0; i < this->ungroupedSoldiers.numberValue; i++) {
+        tempInt = this->ungroupedSoldiers[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->boats.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->boats.numberValue > 0) {
-        do {
-            if (k > this->boats.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->boats.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->boats.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->boats.value);
-                    this->boats.value = newValue;
-                    this->boats.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->boats.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->boats.numberValue);
-    }
+    for (i = 0; i < this->boats.numberValue; i++) {
+        tempInt = this->boats[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->warBoats.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->warBoats.numberValue > 0) {
-        do {
-            if (k > this->warBoats.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->warBoats.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->warBoats.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->warBoats.value);
-                    this->warBoats.value = newValue;
-                    this->warBoats.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->warBoats.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->warBoats.numberValue);
-    }
+    for (i = 0; i < this->warBoats.numberValue; i++) {
+        tempInt = this->warBoats[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->fishingBoats.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->fishingBoats.numberValue > 0) {
-        do {
-            if (k > this->fishingBoats.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->fishingBoats.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->fishingBoats.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->fishingBoats.value);
-                    this->fishingBoats.value = newValue;
-                    this->fishingBoats.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->fishingBoats.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->fishingBoats.numberValue);
-    }
+    for (i = 0; i < this->fishingBoats.numberValue; i++) {
+        tempInt = this->fishingBoats[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->tradeBoats.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->tradeBoats.numberValue > 0) {
-        do {
-            if (k > this->tradeBoats.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->tradeBoats.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->tradeBoats.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->tradeBoats.value);
-                    this->tradeBoats.value = newValue;
-                    this->tradeBoats.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->tradeBoats.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->tradeBoats.numberValue);
-    }
+    for (i = 0; i < this->tradeBoats.numberValue; i++) {
+        tempInt = this->tradeBoats[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->transportBoats.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->transportBoats.numberValue > 0) {
-        do {
-            if (k > this->transportBoats.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->transportBoats.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->transportBoats.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->transportBoats.value);
-                    this->transportBoats.value = newValue;
-                    this->transportBoats.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->transportBoats.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->transportBoats.numberValue);
-    }
+    for (i = 0; i < this->transportBoats.numberValue; i++) {
+        tempInt = this->transportBoats[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->artifacts.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->artifacts.numberValue > 0) {
-        do {
-            if (k > this->artifacts.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->artifacts.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->artifacts.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->artifacts.value);
-                    this->artifacts.value = newValue;
-                    this->artifacts.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->artifacts.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->artifacts.numberValue);
-    }
+    for (i = 0; i < this->artifacts.numberValue; i++) {
+        tempInt = this->artifacts[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    int* writePtr;
-    int writeCount;
-    {
-    tempInt = 0xE2;
+    tempInt = 226;
     rge_write(file, &tempInt, 4);
-    writeCount = 0;
-    if (writeCount < tempInt) {
-        writePtr = this->sn;
-        do {
-            rge_write(file, writePtr, 4);
-            writeCount++;
-            writePtr++;
-        } while (writeCount < tempInt);
-    }
+    for (i = 0; i < tempInt; i++) {
+        rge_write(file, &this->sn[i], 4);
     }
 
-    {
-    int k;
     tempInt = this->playersToAttack.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->playersToAttack.numberValue > 0) {
-        do {
-            if (k > this->playersToAttack.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->playersToAttack.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->playersToAttack.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->playersToAttack.value);
-                    this->playersToAttack.value = newValue;
-                    this->playersToAttack.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->playersToAttack.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->playersToAttack.numberValue);
-    }
+    for (i = 0; i < this->playersToAttack.numberValue; i++) {
+        tempInt = this->playersToAttack[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->playersToDefend.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->playersToDefend.numberValue > 0) {
-        do {
-            if (k > this->playersToDefend.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->playersToDefend.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->playersToDefend.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->playersToDefend.value);
-                    this->playersToDefend.value = newValue;
-                    this->playersToDefend.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->playersToDefend.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->playersToDefend.numberValue);
-    }
+    for (i = 0; i < this->playersToDefend.numberValue; i++) {
+        tempInt = this->playersToDefend[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->workingArea.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->workingArea.numberValue > 0) {
-        do {
-            if (k > this->workingArea.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->workingArea.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->workingArea.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->workingArea.value);
-                    this->workingArea.value = newValue;
-                    this->workingArea.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->workingArea.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->workingArea.numberValue);
-    }
+    for (i = 0; i < this->workingArea.numberValue; i++) {
+        tempInt = this->workingArea[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    {
-    int k;
     tempInt = this->unitsTaskedThisUpdate.numberValue;
     rge_write(file, &tempInt, 4);
-    k = 0;
-    if (this->unitsTaskedThisUpdate.numberValue > 0) {
-        do {
-            if (k > this->unitsTaskedThisUpdate.maximumSizeValue - 1) {
-                int newMax;
-                int* newValue;
-                int j;
-                newMax = k + 1;
-                newValue = (int*)operator new(k * 4 + 4);
-                if (newValue != 0) {
-                    j = 0;
-                    for (; j < this->unitsTaskedThisUpdate.maximumSizeValue && j < newMax; j++) {
-                        int* oldValue = this->unitsTaskedThisUpdate.value;
-                        newValue[j] = oldValue[j];
-                    }
-                    operator delete(this->unitsTaskedThisUpdate.value);
-                    this->unitsTaskedThisUpdate.value = newValue;
-                    this->unitsTaskedThisUpdate.maximumSizeValue = newMax;
-                }
-            }
-            tempInt = this->unitsTaskedThisUpdate.value[k];
-            rge_write(file, &tempInt, 4);
-            k++;
-        } while (k < this->unitsTaskedThisUpdate.numberValue);
-    }
+    for (i = 0; i < this->unitsTaskedThisUpdate.numberValue; i++) {
+        tempInt = this->unitsTaskedThisUpdate[i];
+        rge_write(file, &tempInt, 4);
     }
 
-    writePtr = this->actualGathererDistribution;
-    writeCount = 4;
-    do {
-        rge_write(file, writePtr, 4);
-        writePtr++;
-        writeCount--;
-    } while (writeCount != 0);
-
-    writePtr = this->desiredGathererDistribution;
-    writeCount = 4;
-    do {
-        rge_write(file, writePtr, 4);
-        writePtr++;
-        writeCount--;
-    } while (writeCount != 0);
-
-    writePtr = this->neededResourceValue;
-    writeCount = 4;
-    do {
-        rge_write(file, writePtr, 4);
-        writePtr++;
-        writeCount--;
-    } while (writeCount != 0);
-
-    writePtr = this->resourceDifferenceValue;
-    writeCount = 4;
-    do {
-        rge_write(file, writePtr, 4);
-        writePtr++;
-        writeCount--;
-    } while (writeCount != 0);
-
-    writePtr = this->numberStoragePitsBuilt;
-    writeCount = 4;
-    do {
-        rge_write(file, writePtr, 4);
-        writePtr++;
-        writeCount--;
-    } while (writeCount != 0);
-
-    writePtr = this->numberGranariesBuilt;
-    writeCount = 4;
-    do {
-        rge_write(file, writePtr, 4);
-        writePtr++;
-        writeCount--;
-    } while (writeCount != 0);
-
-    {
-    int i;
-    i = 0;
-    do {
+    for (i = 0; i < 4; i++) {
+        rge_write(file, &this->actualGathererDistribution[i], 4);
+    }
+    for (i = 0; i < 4; i++) {
+        rge_write(file, &this->desiredGathererDistribution[i], 4);
+    }
+    for (i = 0; i < 4; i++) {
+        rge_write(file, &this->neededResourceValue[i], 4);
+    }
+    for (i = 0; i < 4; i++) {
+        rge_write(file, &this->resourceDifferenceValue[i], 4);
+    }
+    for (i = 0; i < 4; i++) {
+        rge_write(file, &this->numberStoragePitsBuilt[i], 4);
+    }
+    for (i = 0; i < 4; i++) {
+        rge_write(file, &this->numberGranariesBuilt[i], 4);
+    }
+    for (i = 0; i < 4; i++) {
         tempInt = this->neededResources.value(i);
         rge_write(file, &tempInt, 4);
-        i++;
-    } while (i < 4);
     }
 
     rge_write(file, &this->groupIDValue, 4);
     rge_write(file, &this->numberGroupsValue, 4);
-
-    TacticalAIGroup* group;
     group = this->groups.next;
     while (group != &this->groups && group != 0) {
         group->save(file);
@@ -2670,9 +2337,8 @@ int TribeTacticalAIModule::save(int file)
     rge_write(file, &this->zoomingToNextAge, 4);
     rge_write(file, &this->lastCoopAttackDemandTime, 4);
     rge_write(file, &this->lastUngroupedSoldierTaskTime, 4);
-    rge_write(file, &this->attackStateValue, 0x2C);
+    rge_write(file, &this->attackStateValue, 0x2c);
     rge_write(file, this->hitsByPlayer, 0x24);
-
     return 1;
 }
 
