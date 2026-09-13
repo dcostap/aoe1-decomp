@@ -3293,57 +3293,36 @@ int TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int param_1, un
 
 int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 {
-    int slot = 0;
+    unsigned int NonAckCount;
+    unsigned int i = 0;
     do {
-        int nonAckCount = 0;
-        RESENDER* resend = &this->Resend[slot];
-
-        if (resend->Serial != 0) {
-            unsigned int player;
-
-            for (player = 1; player <= static_cast<unsigned int>(this->MaxGamePlayers); player++) {
-                if (this->IsPlayerHuman(player)) {
-                    if (resend->DestMap[player] > 0) {
-                        nonAckCount++;
+        NonAckCount = 0;
+        if (this->Resend[i].Serial != 0) {
+            unsigned int player = 1;
+            if (player <= this->MaxGamePlayers) {
+                do {
+                    if (this->IsPlayerHuman(player) &&
+                        this->Resend[i].DestMap[player] > 0) {
+                        NonAckCount++;
                     }
-                }
+                    player++;
+                } while (player <= this->MaxGamePlayers);
             }
 
-            if (nonAckCount == 0) {
+            if (NonAckCount == 0) {
                 L->Log("GTD: Ser #%d Slot=%d  Ackd by all. (Released)",
-                    resend->Serial, slot);
-
-                resend->TimeSent = 0;
-                if (resend->ResendMsg != 0) {
-                    delete[] resend->ResendMsg;
-                }
-                resend->ResendMsg = 0;
-                resend->Serial = 0;
-                resend->Length = 0;
-
-                for (int i = 0; i < 10; i++) {
-                    resend->DestMap[i] = 0;
-                }
+                       this->Resend[i].Serial, i);
+                this->Resend[i].~RESENDER();
             }
         }
+        i++;
+    } while (i <= 501);
 
-        slot++;
-    } while (slot < 502);
-
-
-    {
-        RESENDER* resend = this->Resend;
-        int i = 502;
-
-        do {
-            if (resend->Serial != 0) {
-                this->WaitingForAck++;
-            }
-            resend++;
-            i--;
-        } while (i != 0);
+    for (i = 0; i <= 501; i++) {
+        if (this->Resend[i].Serial != 0) {
+            this->WaitingForAck++;
+        }
     }
-
     return 1;
 }
 

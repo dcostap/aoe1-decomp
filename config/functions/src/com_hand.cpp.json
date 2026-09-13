@@ -67,7 +67,7 @@
     "0042A330": {"status": "new_verified_logic", "symbol": "?StoreForResend@TCommunications_Handler@@QAEHIPADIPAI@Z", "behavior_review": "logic_matching/0042A330/review-01/attempt-01"},
     "0042A540": {"status": "matching", "symbol": "?TXAcknowledgeMessage@TCommunications_Handler@@QAEHII@Z"},
     "0042A650": {"status": "matching", "symbol": "?RXAcknowledgeStoredMessage@TCommunications_Handler@@QAEHII@Z"},
-    "0042A6E0": {"status": "scratch", "symbol": "?PurgeAcknowledgedStoredMessages@TCommunications_Handler@@QAEHXZ"},
+    "0042A6E0": {"status": "matching", "symbol": "?PurgeAcknowledgedStoredMessages@TCommunications_Handler@@QAEHXZ", "behavior_review": ["logic_matching/0042A6E0/coord-17-review-01-A/attempt-01", "logic_matching/0042A6E0/coord-17-review-01-B/attempt-01"]},
     "0042A800": {"status": "new_verified_logic", "symbol": "?SendStoredMessages@TCommunications_Handler@@QAEHXZ", "behavior_review": "logic_matching/0042A800/review-coord-06-0042A800-20260913T053654Z/attempt-01"},
     "0042AD10": {"status": "new_verified_logic", "symbol": "?TXResendReply@TCommunications_Handler@@QAEHII@Z", "behavior_review": "logic_matching/0042AD10/review-02/attempt-01"},
     "0042B0A0": {"status": "matching", "symbol": "?TXResendRequest@TCommunications_Handler@@QAEHII@Z"},
