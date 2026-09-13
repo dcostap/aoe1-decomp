@@ -3257,144 +3257,151 @@ selected_destroy_object:
 
 #include <math.h>
 
-ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* ids, int count)
+ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
+    int group, int* ids, int count)
 {
-    ObjectMemory* bestObject;
     ObjectMemory* wonder = this->wonderToAttack(-1);
     if (wonder != 0) {
         return wonder;
     }
 
-    if (count != 0) {
-        RGE_Static_Object* commanderObj = this->md->object(*ids);
-        if (commanderObj != 0) {
-            if (commanderObj->unitAI() != 0) {
-                unsigned char commanderZone = commanderObj->currentZone();
-                int commanderIsPriest = 0;
-                if (commanderObj->master_obj->object_group == 0x12) {
-                    commanderIsPriest = 1;
-                }
+    if (count == 0) {
+        return 0;
+    }
 
-                bestObject = 0;
-                float bestScore = -1.0f;
-                float bestAttackValue = 0.0f;
-                int timeTK = 0;
+    RGE_Static_Object* commanderObject = this->md->object(ids[0]);
+    if (commanderObject == 0 || commanderObject->unitAI() == 0) {
+        return 0;
+    }
 
-                if (this->maxImportantObjectMemory > 0) {
-                    do {
-                        if (this->importantObjectMemory[timeTK].owner == group) {
-                            RGE_Static_Object* object =
-                                this->md->object(this->importantObjectMemory[timeTK].id);
-                            if (object != 0) {
-                                int dx;
-                                int dy;
-                                if (object->object_state <= 2 && object->hp != DAT_00575580) {
-                                    dx = (int)this->importantObjectMemory[timeTK].x - (int)object->world_x;
-                                    if (dx < 0) {
-                                        dx = -dx;
-                                    }
-                                    dy = (int)this->importantObjectMemory[timeTK].y - (int)object->world_y;
-                                    if (dy < 0) {
-                                        dy = -dy;
-                                    }
+    unsigned char commanderZone = commanderObject->currentZone();
+    int commanderIsPriest = 0;
+    if (commanderObject->master_obj->object_group == 0x12) {
+        commanderIsPriest = 1;
+    }
+    ObjectMemory* bestObject = 0;
+    float bestAttackValue = -1.0f;
 
-                                    if ((dx <= 5 && dy <= 5) ||
-                                        this->md->player->visible->get_visible(
-                                            (int)object->world_x, (int)object->world_y) == 0x0f) {
-                                        if (commanderIsPriest == 0 ||
-                                            commanderObj->unitAI()->canConvert(
-                                                this->importantObjectMemory[timeTK].id) != 0) {
-                                            float damage;
-                                            float hpOverDamage;
-                                            float time;
-                                            float targetTime;
-                                            float targetDistance;
-                                            damage = this->damageInflictedPerSecond(ids, count, object);
-                                            hpOverDamage = object->hp / damage;
-                                            time = this->timeToBeKilled(ids, count, object);
-                                            if (damage != DAT_00575580 && time != DAT_00575580) {
-                                                targetTime = time / hpOverDamage;
-                                                int targetX = (int)commanderObj->world_x;
-                                                int targetY = (int)commanderObj->world_y;
-                                                dx = (int)this->importantObjectMemory[timeTK].x - targetX;
-                                                dy = (int)this->importantObjectMemory[timeTK].y - targetY;
-                                                targetDistance = (float)sqrt((float)(dx * dx + dy * dy));
-                                                if (targetDistance < DAT_00575564) {
-                                                    targetDistance = 1.0f;
-                                                }
+    int i = 0;
+    if (this->maxImportantObjectMemory > 0) {
+        do {
+            ObjectMemory* memory = &this->importantObjectMemory[i];
+            if ((int)memory->owner == group) {
+                RGE_Static_Object* target = this->md->object(memory->id);
+                if (target != 0 && target->object_state <= 2 &&
+                    target->hp != DAT_00575580) {
+                    int targetX = (int)target->world_x;
+                    int dx = (int)memory->x - targetX;
+                    if (dx < 0) {
+                        dx = -dx;
+                    }
 
-                                                int randomNumber = this->md->tacticalAI.strategicNumber(0x53);
-                                                if (randomNumber < 1) {
-                                                    bestAttackValue = 0.0f;
-                                                } else {
-                                                    int randomRange = this->md->tacticalAI.strategicNumber(0x53);
-                                                    bestAttackValue = (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x110b) % randomRange);
-                                                }
+                    int targetY = (int)target->world_y;
+                    int dy = (int)memory->y - targetY;
+                    if (dy < 0) {
+                        dy = -dy;
+                    }
 
-                                                int killCount =
-                                                    this->importantObjectMemory[timeTK].kills;
-                                                float attackAttemptFactor =
-                                                    (float)this->md->tacticalAI.strategicNumber(0x59) *
-                                                    (float)this->importantObjectMemory[timeTK].attackAttempts;
-                                                float targetRandomization = 0.0f;
-                                                int lookupX = (int)object->world_x;
-                                                int lookupY = (int)object->world_y;
-                                                if (commanderZone == commanderObj->lookupZone(lookupX, lookupY)) {
-                                                    targetRandomization = (float)this->md->tacticalAI.strategicNumber(0x7a);
-                                                }
+                    if ((dx <= 5 && dy <= 5) ||
+                        this->md->player->visible->get_visible(
+                            targetX, targetY) == 0x0f) {
+                        if (!commanderIsPriest ||
+                            commanderObject->unitAI()->canConvert(memory->id)) {
+                            float damage = this->damageInflictedPerSecond(
+                                ids, count, target);
+                            float timeKillRatio = target->hp / damage;
+                            float timeToKill = this->timeToBeKilled(
+                                ids, count, target);
 
-                                                float zoneFactor = 0.0f;
-                                                int strategicB9 = this->md->tacticalAI.strategicNumber(0xb9);
-                                                if (strategicB9 > 0) {
-                                                    int currentTargetCount = 0;
-                                                    if (count > 0) {
-                                                        int* currentID = ids;
-                                                        int remaining = count;
-                                                        do {
-                                                            RGE_Static_Object* currentObject = this->md->object(*currentID);
-                                                            if (currentObject != 0 && currentObject->unitAI() != 0 &&
-                                                                currentObject->unitAI()->currentTarget() ==
-                                                                    this->importantObjectMemory[timeTK].id) {
-                                                                ++currentTargetCount;
-                                                            }
-                                                            ++currentID;
-                                                            --remaining;
-                                                        } while (remaining != 0);
-                                                    }
-                                                    zoneFactor = (float)this->md->tacticalAI.strategicNumber(0xb9) * (float)currentTargetCount;
-                                                }
+                            if (damage != DAT_00575580 &&
+                                timeToKill != DAT_00575580) {
+                                timeKillRatio = timeToKill / timeKillRatio;
 
-                                                float score =
-                                                    (float)this->md->tacticalAI.strategicNumber(0xb8) *
-                                                    targetTime;
-                                                score +=
-                                                    (float)this->md->tacticalAI.strategicNumber(0x4d) /
-                                                    targetDistance;
-                                                score +=
-                                                    (float)this->md->tacticalAI.strategicNumber(0x50) *
-                                                    (float)killCount;
-                                                score += zoneFactor;
-                                                score += targetRandomization;
-                                                score += attackAttemptFactor;
-                                                score += bestAttackValue;
-                                                if (bestObject == 0 || score > bestScore) {
-                                                    bestObject = &this->importantObjectMemory[timeTK];
-                                                    bestScore = score;
-                                                }
+                                int commanderX =
+                                    (int)memory->x - (int)commanderObject->world_x;
+                                int commanderY =
+                                    (int)memory->y - (int)commanderObject->world_y;
+                                float targetDistance = (float)sqrt(
+                                    (double)(commanderX * commanderX +
+                                             commanderY * commanderY));
+                                if (targetDistance < DAT_00575564) {
+                                    targetDistance = 1.0f;
+                                }
+
+                                float killsByTarget = (float)memory->kills;
+                                float targetRandomization;
+                                if (this->md->tacticalAI.strategicNumber(0x53) > 0) {
+                                    int randomLimit =
+                                        this->md->tacticalAI.strategicNumber(0x53);
+                                    targetRandomization = (float)(debug_rand(
+                                        "C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                        0x110b) % randomLimit);
+                                } else {
+                                    targetRandomization = 0.0f;
+                                }
+
+                                float attackAttemptFactor =
+                                    (float)this->md->tacticalAI.strategicNumber(0x59) *
+                                    memory->attackAttempts;
+
+                                float sameZoneFactor;
+                                if (commanderObject->lookupZone(
+                                        (int)target->world_x,
+                                        (int)target->world_y) == commanderZone) {
+                                    sameZoneFactor = (float)this->md->tacticalAI.strategicNumber(0x7a);
+                                } else {
+                                    sameZoneFactor = 0.0f;
+                                }
+
+                                float inProgressFactor = 0.0f;
+                                if (this->md->tacticalAI.strategicNumber(0xb9) > 0) {
+                                    int inProgressCount = 0;
+                                    int unitsRemaining = count;
+                                    if (unitsRemaining > 0) {
+                                        int* unitId = ids;
+                                        do {
+                                            RGE_Static_Object* unit =
+                                                this->md->object(*unitId);
+                                            if (unit != 0 && unit->unitAI() != 0 &&
+                                                unit->unitAI()->currentTarget() == memory->id) {
+                                                ++inProgressCount;
                                             }
-                                        }
+                                            ++unitId;
+                                            --unitsRemaining;
+                                        } while (unitsRemaining != 0);
                                     }
+                                    inProgressFactor =
+                                        (float)this->md->tacticalAI.strategicNumber(0xb9) *
+                                        inProgressCount;
+                                }
+
+                                float attackValue =
+                                    (float)this->md->tacticalAI.strategicNumber(0xb8) *
+                                    timeKillRatio;
+                                attackValue =
+                                    (float)this->md->tacticalAI.strategicNumber(0x4d) /
+                                    targetDistance + attackValue;
+                                attackValue =
+                                    (float)this->md->tacticalAI.strategicNumber(0x50) *
+                                    killsByTarget + attackValue + inProgressFactor +
+                                    sameZoneFactor + attackAttemptFactor +
+                                    targetRandomization;
+
+                                if (bestObject == 0 ||
+                                    attackValue > bestAttackValue) {
+                                    bestObject = memory;
+                                    bestAttackValue = attackValue;
                                 }
                             }
                         }
-                        ++timeTK;
-                    } while (timeTK < this->maxImportantObjectMemory);
+                    }
                 }
-                return bestObject;
             }
-        }
+            ++i;
+        } while (i < this->maxImportantObjectMemory);
     }
-    return 0;
+
+    return bestObject;
 }
 
 ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
