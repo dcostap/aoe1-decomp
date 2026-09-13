@@ -75,7 +75,7 @@
     "004E0510": {"status": "matching", "symbol": "?availableLot@TribeInformationAIModule@@QAEPAUBuildingLot@@H@Z"},
     "004E0560": {"status": "matching", "symbol": "?invalidLot@TribeInformationAIModule@@QAEHHEE@Z"},
     "004E05C0": {"status": "accepted_drift", "symbol": "?undesirableLot@TribeInformationAIModule@@QAEHHEEH@Z"},
-    "004E0670": {"status": "scratch", "symbol": "?setupWalls@TribeInformationAIModule@@QAEXHHHHHHHH@Z"},
+    "004E0670": {"status": "new_verified_logic", "symbol": "?setupWalls@TribeInformationAIModule@@QAEXHHHHHHHH@Z", "behavior_review": ["logic_matching/004E0670/review-coord-16-004E0670-round-01-20260912/attempt-01", "logic_matching/004E0670/review-coord-16-004E0670-round-01-20260912/attempt-02"]},
     "004E0F40": {"status": "matching", "symbol": "?insideGate@TribeInformationAIModule@@QAEHHHH@Z"},
     "004E0F90": {"status": "matching", "symbol": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEFEKH@Z"},
     "004E0FD0": {"status": "accepted_drift", "symbol": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEEEFEKH@Z"},

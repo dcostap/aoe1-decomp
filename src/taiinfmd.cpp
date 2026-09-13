@@ -4562,369 +4562,379 @@ ret_zero_late:
     return 0;
 }
 
-void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3, int param_4,
-                                           int param_5, int param_6, int param_7, int param_8)
+void TribeInformationAIModule::setupWalls(
+    int centerX, int centerY, int minimumDistance, int maximumDistance,
+    int wallShape, int numberGates, int gateSize, int setupGates)
 {
-    XYPoint max;
-    XYPoint min;
-    XYPoint realMinDC;
-    XYPoint realMin;
-    XYPoint realMax;
-    XYPoint realMaxF4;
-    int iVar10;
-    int iVar2;
-    int iVar4;
-    int iVar6;
-    int iVar8;
+    int x;
+    int y;
 
-    if (param_8 == 1 && param_6 > 0) {
-        this->numberGatesValue = param_6;
+    if (setupGates == 1 && numberGates > 0) {
+        this->numberGatesValue = numberGates;
 
-        int slot = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1731) % 4;
-        int half = param_7 / 2;
+        int gate = debug_rand(
+            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1731) % 4;
+        int halfGateSize = gateSize / 2;
 
-        this->minGatePosition[slot].x = param_1 - half;
-        this->minGatePosition[slot].y = param_2 - param_4 * 2;
-        this->maxGatePosition[slot].x = param_1 + half;
-        this->maxGatePosition[slot].y = param_2;
+        this->minGatePosition[gate].x = centerX - halfGateSize;
+        this->minGatePosition[gate].y = centerY - maximumDistance * 2;
+        this->maxGatePosition[gate].x = centerX + halfGateSize;
+        this->maxGatePosition[gate].y = centerY;
 
-        slot = (slot + 1) % 4;
-        this->minGatePosition[slot].x = param_1 - half;
-        this->minGatePosition[slot].y = param_2;
-        this->maxGatePosition[slot].x = param_1 + half;
-        this->maxGatePosition[slot].y = param_2 + param_4 * 2;
+        gate = (gate + 1) % 4;
+        this->minGatePosition[gate].x = centerX - halfGateSize;
+        this->minGatePosition[gate].y = centerY;
+        this->maxGatePosition[gate].x = centerX + halfGateSize;
+        this->maxGatePosition[gate].y = centerY + maximumDistance * 2;
 
-        slot = (slot + 1) % 4;
-        this->minGatePosition[slot].x = param_1;
-        this->minGatePosition[slot].y = param_2 - half;
-        this->maxGatePosition[slot].x = param_1 + param_4 * 2;
-        this->maxGatePosition[slot].y = param_2 + half;
+        gate = (gate + 1) % 4;
+        this->minGatePosition[gate].x = centerX;
+        this->minGatePosition[gate].y = centerY - halfGateSize;
+        this->maxGatePosition[gate].x = centerX + maximumDistance * 2;
+        this->maxGatePosition[gate].y = centerY + halfGateSize;
 
-        slot = (slot + 1) % 4;
-        this->minGatePosition[slot].x = param_1 - param_4 * 2;
-        this->minGatePosition[slot].y = param_2 - half;
-        this->maxGatePosition[slot].x = param_1;
-        this->maxGatePosition[slot].y = param_2 + half;
+        gate = (gate + 1) % 4;
+        this->minGatePosition[gate].x = centerX - maximumDistance * 2;
+        this->minGatePosition[gate].y = centerY - halfGateSize;
+        this->maxGatePosition[gate].x = centerX;
+        this->maxGatePosition[gate].y = centerY + halfGateSize;
 
-        if (param_6 > 0) {
-            XYPoint* gate = this->maxGatePosition;
-            param_8 = param_6;
-            do {
-                this->mapBound(*(gate - 4));
-                this->mapBound(*gate);
-                ++gate;
-                --param_8;
-            } while (param_8 != 0);
-        }
+        int gatesLeft = numberGates;
+        XYPoint* maximumGate = this->maxGatePosition;
+        do {
+            this->mapBound(maximumGate[-4]);
+            this->mapBound(*maximumGate);
+            ++maximumGate;
+            --gatesLeft;
+        } while (gatesLeft != 0);
     }
 
-    if (param_5 == 0) {
-        param_5 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x176A) % 3;
+    if (wallShape == 0) {
+        wallShape = debug_rand(
+            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x176a) % 3;
     }
 
-    if (param_5 == 1) {
-        if (param_3 <= param_4) {
-            iVar4 = param_3 + param_2;
-            iVar8 = param_1 - param_2;
-            param_2 = param_2 - param_3;
-            param_8 = (param_4 - param_3 + 3U) / 3;
-            param_3 = iVar4;
-
-            do {
-                realMinDC.x = param_2;
-                min.y = iVar8 + param_2;
-                this->mapBound(*(XYPoint*)&min.y);
-
-                max.y = iVar8 + param_3;
-                min.x = param_3;
-                this->mapBound(*(XYPoint*)&max.y);
-
-                iVar4 = realMinDC.x;
-                iVar6 = min.y;
-
-                if (iVar6 < max.y) {
-                    do {
-                        if (this->insideGate(param_6, iVar6, iVar4) == 0)
-                            this->storeLot(0x48, iVar6, iVar4, 0);
-                        ++iVar6;
-                    } while (iVar6 < max.y);
-                }
-                if (iVar4 < min.x) {
-                    do {
-                        if (this->insideGate(param_6, iVar6, iVar4) == 0)
-                            this->storeLot(0x48, iVar6, iVar4, 0);
-                        ++iVar4;
-                    } while (iVar4 < min.x);
-                }
-                if (min.y < iVar6) {
-                    do {
-                        if (this->insideGate(param_6, iVar6, iVar4) == 0)
-                            this->storeLot(0x48, iVar6, iVar4, 0);
-                        --iVar6;
-                    } while (min.y < iVar6);
-                }
-                if (realMinDC.x < iVar4) {
-                    do {
-                        if (this->insideGate(param_6, iVar6, iVar4) == 0)
-                            this->storeLot(0x48, iVar6, iVar4, 0);
-                        --iVar4;
-                    } while (realMinDC.x < iVar4);
-                }
-
-                param_2 -= 3;
-                param_3 += 3;
-                --param_8;
-            } while (param_8 != 0);
+    if (wallShape == 1) {
+        if (minimumDistance > maximumDistance)
             return;
-        }
-    } else if (param_5 == 2) {
-        param_8 = param_3;
-        if (param_3 <= param_4) {
-            param_7 = param_3 + param_2;
-            iVar6 = param_1 - param_2;
-            iVar8 = param_2 - param_3;
-            min.y = (param_4 - param_3) + 1;
-            iVar4 = iVar8;
-            param_3 = param_3 * 2;
 
-            do {
-                realMin.y = iVar8 + iVar6;
-                realMin.x = iVar8;
-                this->mapBound(*(XYPoint*)&realMin.y);
+        int minimumX = centerX - minimumDistance;
+        int minimumY = centerY - minimumDistance;
+        int maximumX = centerX + minimumDistance;
+        int maximumY = centerY + minimumDistance;
+        unsigned int rings =
+            (unsigned int)(maximumDistance - minimumDistance + 3) / 3;
 
-                max.y = param_8 + 1;
-                realMax.x = param_2 - 1 + max.y;
-                realMax.y = realMax.x + iVar6;
-                this->mapBound(*(XYPoint*)&realMax.y);
+        do {
+            XYPoint minimum;
+            XYPoint maximum;
+            minimum.x = minimumX;
+            minimum.y = minimumY;
+            this->mapBound(minimum);
+            maximum.x = maximumX;
+            maximum.y = maximumY;
+            this->mapBound(maximum);
 
-                realMinDC.y = iVar4 + iVar6;
-                realMinDC.x = iVar4;
-                this->mapBound(*(XYPoint*)&realMinDC.y);
+            x = minimum.x;
+            y = minimum.y;
+            while (x < maximum.x) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                ++x;
+            }
+            while (y < maximum.y) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                ++y;
+            }
+            while (x > minimum.x) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                --x;
+            }
+            while (y > minimum.y) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                --y;
+            }
 
-                realMaxF4.x = param_7;
-                realMaxF4.y = param_7 + iVar6;
-                this->mapBound(*(XYPoint*)&realMaxF4.y);
+            minimumX -= 3;
+            minimumY -= 3;
+            maximumX += 3;
+            maximumY += 3;
+            --rings;
+        } while (rings != 0);
+        return;
+    }
 
-                iVar2 = realMinDC.y;
-                iVar4 = realMinDC.x;
-                iVar10 = param_8;
-
-                if (param_3 > 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        --iVar4;
-                        --iVar10;
-                    } while (iVar10 != 0);
-                }
-                if (param_3 > 0) {
-                    max.x = param_3;
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar2;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                if (param_3 > 0) {
-                    max.x = param_8;
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar4;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                if (param_3 > 0) {
-                    max.x = param_8;
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar2;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                if (param_3 > 0) {
-                    max.x = param_3;
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar4;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                if (param_3 > 0) {
-                    max.x = param_8;
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        --iVar2;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-
-                max.x = max.y;
-                if (param_3 >= 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar4;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                max.x = param_3;
-                if (param_3 > 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        --iVar2;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                max.x = max.y;
-                if (param_3 >= 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        --iVar4;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                max.x = param_8;
-                if (param_3 > 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        --iVar2;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                max.x = param_3;
-                if (param_3 > 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar4;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-                max.x = param_8;
-                if (param_3 > 0) {
-                    do {
-                        if (this->insideGate(param_6, iVar2, iVar4) == 0)
-                            this->storeLot(0x48, iVar2, iVar4, 0);
-                        ++iVar2;
-                        --max.x;
-                    } while (max.x != 0);
-                }
-
-                param_8 += 2;
-                iVar8 -= 2;
-                --iVar4;
-                ++param_7;
-                param_3 += 4;
-                --min.y;
-            } while (min.y != 0);
+    if (wallShape == 2) {
+        if (minimumDistance > maximumDistance)
             return;
-        }
-    } else if (param_5 == 3) {
-        iVar4 = param_3 / 2;
-        if (iVar4 <= param_4) {
-            iVar6 = param_3 + param_2;
-            iVar8 = param_1 - param_2;
-            param_8 = iVar4 + param_2;
-            param_3 = param_2 - param_3;
-            param_7 = (param_4 - iVar4) + 1;
-            param_1 = iVar6;
-            param_2 = param_2 - iVar4;
 
-            do {
-                realMin.x = param_3;
-                realMinDC.y = param_3 + iVar8;
-                this->mapBound(*(XYPoint*)&realMinDC.y);
+        int distance = minimumDistance;
+        int sideLength = minimumDistance * 2;
+        int farMinimum = centerY - minimumDistance;
+        int minimum = farMinimum;
+        int maximum = centerY + minimumDistance;
+        int centerDifference = centerX - centerY;
+        int rings = maximumDistance - minimumDistance + 1;
 
-                realMaxF4.y = param_1 + iVar8;
-                this->mapBound(*(XYPoint*)&realMaxF4.y);
+        do {
+            XYPoint farMinimumPoint;
+            XYPoint farMaximumPoint;
+            XYPoint minimumPoint;
+            XYPoint maximumPoint;
 
-                realMinDC.x = param_2;
-                min.y = param_2 + iVar8;
-                this->mapBound(*(XYPoint*)&min.y);
+            farMinimumPoint.x = farMinimum + centerDifference;
+            farMinimumPoint.y = farMinimum;
+            this->mapBound(farMinimumPoint);
 
-                min.x = param_8;
-                max.y = param_8 + iVar8;
-                this->mapBound(*(XYPoint*)&max.y);
+            farMaximumPoint.x = centerY + distance + centerDifference;
+            farMaximumPoint.y = centerY + distance;
+            this->mapBound(farMaximumPoint);
 
-                iVar4 = realMinDC.y;
-                iVar6 = realMinDC.x;
-                if (iVar4 < min.y) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        ++iVar4;
-                        --iVar6;
-                    } while (iVar4 < min.y);
-                }
-                if (iVar4 < max.y) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        ++iVar4;
-                    } while (iVar4 < max.y);
-                }
-                if (iVar6 < realMinDC.x) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        ++iVar4;
-                        ++iVar6;
-                    } while (iVar6 < realMinDC.x);
-                }
-                if (iVar6 < min.x) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        ++iVar6;
-                    } while (iVar6 < min.x);
-                }
-                if (max.y < iVar4) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        --iVar4;
-                        ++iVar6;
-                    } while (max.y < iVar4);
-                }
-                if (min.y < iVar4) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        --iVar4;
-                    } while (min.y < iVar4);
-                }
-                if (min.x < iVar6) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        --iVar4;
-                        --iVar6;
-                    } while (min.x < iVar6);
-                }
-                if (realMinDC.x < iVar6) {
-                    do {
-                        if (this->insideGate(param_6, iVar4, iVar6) == 0)
-                            this->storeLot(0x48, iVar4, iVar6, 0);
-                        --iVar6;
-                    } while (realMinDC.x < iVar6);
-                }
+            minimumPoint.x = minimum + centerDifference;
+            minimumPoint.y = minimum;
+            this->mapBound(minimumPoint);
 
-                --param_2;
-                param_3 -= 2;
-                param_1 += 2;
-                ++param_8;
-                --param_7;
-            } while (param_7 != 0);
+            maximumPoint.x = maximum + centerDifference;
+            maximumPoint.y = maximum;
+            this->mapBound(maximumPoint);
+
+            x = minimumPoint.x;
+            y = minimumPoint.y;
+
+            if (sideLength > 0) {
+                int count = distance;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    --y;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = sideLength;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    ++x;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = distance;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    ++y;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = distance;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    ++x;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = sideLength;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    ++y;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = distance;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    --x;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength >= 0) {
+                int count = distance + 1;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    ++y;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = sideLength;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    --x;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength >= 0) {
+                int count = distance + 1;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    --y;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = distance;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    --x;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = sideLength;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    --y;
+                    --count;
+                } while (count != 0);
+            }
+            if (sideLength > 0) {
+                int count = distance;
+                do {
+                    if (this->insideGate(numberGates, x, y) == 0)
+                        this->storeLot(0x48, (unsigned char)x,
+                                       (unsigned char)y, 0);
+                    ++x;
+                    --count;
+                } while (count != 0);
+            }
+
+            distance += 2;
+            farMinimum -= 2;
+            --minimum;
+            ++maximum;
+            sideLength += 4;
+            --rings;
+        } while (rings != 0);
+        return;
+    }
+
+    if (wallShape == 3) {
+        int halfDistance = minimumDistance / 2;
+        if (halfDistance > maximumDistance)
             return;
-        }
+
+        int farMinimum = centerY - minimumDistance;
+        int farMaximum = centerY + minimumDistance;
+        int innerCenter = centerY;
+        int innerMaximum = centerY + halfDistance;
+        int centerDifference = centerX - centerY;
+        int rings = maximumDistance - halfDistance + 1;
+
+        do {
+            XYPoint farMinimumPoint;
+            XYPoint farMaximumPoint;
+            XYPoint innerMinimumPoint;
+            XYPoint innerMaximumPoint;
+
+            farMinimumPoint.x = farMinimum + centerDifference;
+            farMinimumPoint.y = farMinimum;
+            this->mapBound(farMinimumPoint);
+
+            farMaximumPoint.x = farMaximum + centerDifference;
+            farMaximumPoint.y = farMaximum;
+            this->mapBound(farMaximumPoint);
+
+            innerMinimumPoint.y = innerCenter - halfDistance;
+            innerMinimumPoint.x = innerMinimumPoint.y + centerDifference;
+            this->mapBound(innerMinimumPoint);
+
+            innerMaximumPoint.x = innerMaximum + centerDifference;
+            innerMaximumPoint.y = innerMaximum;
+            this->mapBound(innerMaximumPoint);
+
+            x = farMinimumPoint.x;
+            y = innerMinimumPoint.y;
+
+            while (x < innerMinimumPoint.x) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                ++x;
+                --y;
+            }
+            while (x < innerMaximumPoint.x) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                ++x;
+            }
+            while (y < innerMinimumPoint.y) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                ++x;
+                ++y;
+            }
+            while (y < innerMaximumPoint.y) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                ++y;
+            }
+            while (x > innerMaximumPoint.x) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                --x;
+                ++y;
+            }
+            while (x > innerMinimumPoint.x) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                --x;
+            }
+            while (y > innerMaximumPoint.y) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                --x;
+                --y;
+            }
+            while (y > innerMinimumPoint.y) {
+                if (this->insideGate(numberGates, x, y) == 0)
+                    this->storeLot(0x48, (unsigned char)x,
+                                   (unsigned char)y, 0);
+                --y;
+            }
+
+            --innerCenter;
+            farMinimum -= 2;
+            farMaximum += 2;
+            ++innerMaximum;
+            --rings;
+        } while (rings != 0);
     }
 }
 
