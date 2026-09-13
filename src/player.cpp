@@ -837,49 +837,41 @@ unsigned char RGE_Player::get_checksums(long& cksum1, long& cksum2,
     return 1;
 }
 
-long RGE_Player::create_checksum(void) {
-    long result = (long)this->id;
+long RGE_Player::create_checksum()
+{
+    long num1 = 0;
+    long num2 = 0;
+    long num3 = 0;
+    long num4;
+    float temp_position_checksum = 0.0f;
+
     this->checksum_created_this_update = 1;
     this->action_checksum = 0;
+    num4 = this->id + this->sleeping_objects->number_of_objects +
+        this->doppleganger_objects->number_of_objects;
 
-    result += this->sleeping_objects->number_of_objects;
-    int object_checksum = 0;
-    result += this->doppleganger_objects->number_of_objects;
-    int attribute_checksum = 0;
-    float position_checksum = 0.0f;
-    int object_count = 0;
-
-    if ((int)this->attribute_num > 0) {
-        int attribute_count = (int)this->attribute_num;
-        float* attribute = this->attributes;
-        do {
-            attribute_checksum += (int)*attribute;
-            ++attribute;
-            --attribute_count;
-        } while (attribute_count != 0);
+    for (int i = 0; i < this->attribute_num; ++i) {
+        num1 += (long)this->attributes[i];
     }
 
-    for (RGE_Object_Node* list = this->objects->list;
-         list != 0;
-         list = list->next) {
-        RGE_Static_Object* object = list->node;
-        unsigned char state = object->object_state;
-        object_checksum += (int)state;
-        object_checksum += (int)object->attribute_amount_held;
-        object_checksum += (int)object->master_obj->id;
-        object_checksum += object->get_waypoint_checksum();
-        ++object_count;
-        position_checksum = list->node->world_x + position_checksum;
-        position_checksum += list->node->world_y;
-        position_checksum += list->node->world_z;
+    RGE_Object_Node* list = this->objects->list;
+    while (list != 0) {
+        num2 += list->node->object_state +
+            (long)list->node->attribute_amount_held +
+            list->node->master_obj->id;
+        num2 += list->node->get_waypoint_checksum();
+        ++num3;
+        temp_position_checksum += list->node->world_x;
+        temp_position_checksum += list->node->world_y;
+        temp_position_checksum += list->node->world_z;
         this->action_checksum += list->node->get_action_checksum();
+        list = list->next;
     }
 
-    result = (result * 0x100 + object_count) * 0x100 + object_checksum;
-    result = result * 0x100 + attribute_checksum;
-    this->checksum = result;
-    this->position_checksum = (long)position_checksum;
-    return result;
+    this->checksum = (((num4 * 0x100 + num3) * 0x100 + num2) * 0x100) +
+        num1;
+    this->position_checksum = (long)temp_position_checksum;
+    return this->checksum;
 }
 
 void RGE_Player::new_attribute_num(short attrib, float value) {
