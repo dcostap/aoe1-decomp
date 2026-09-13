@@ -315,246 +315,264 @@ void TribeBuildAIModule::skipNextBuildListItem()
 
 BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
 {
-    int numGranaries = this->numberBuiltOrInProgressItemsOfType(0x67, 0);
-    int numStoragePits = this->numberBuiltOrInProgressItemsOfType(0x44, 0);
-    int numHouses = this->numberBuiltOrInProgressItemsOfType(0x46, 0);
-    BuildItem* item = this->buildList.next;
-    int realCount = 0;
+    int numStoragePits =
+        this->numberBuiltOrInProgressItemsOfType(0x67, 0);
+    int numGranaries =
+        this->numberBuiltOrInProgressItemsOfType(0x44, 0);
+    int numHouses =
+        this->numberBuiltOrInProgressItemsOfType(0x46, 0);
     int count = 0;
+    int realCount = 0;
 
-    if (this->md->tacticalAI.strategicNumber(0x73) < 0)
+    BuildItem* item = this->buildList.next;
+    BuildItem* sentinel = &this->buildList;
+
+    if (this->md->tacticalAI.strategicNumber(0x73) < 0) {
         return 0;
+    }
 
-    while (1) {
-        if (item == &this->buildList || item == 0)
-            return 0;
-        if (item->buildCategory() == 1 || item->buildCategory() == 4) {
-            if (this->isAgeResearch(item->typeID()) == 1) {
-                switch (this->md->aiPlayer->researchState(item->typeID())) {
-                case 0:
-                case 1:
-                    item->setBuilt(0);
-                    item->setInProgress(0);
-                    break;
-                case 2:
-                    item->setBuilt(0);
-                    item->setInProgress(1);
-                    break;
-                case 3:
-                    item->setBuilt(1);
-                    item->setInProgress(0);
-                    break;
-                default:
-                    break;
-                }
+    do {
+        if (item == sentinel || item == 0) {
+            break;
+        }
+
+        if ((item->buildCategory() == 1 || item->buildCategory() == 4) &&
+            this->isAgeResearch(item->typeID()) == 1) {
+            switch (this->md->aiPlayer->researchState(item->typeID())) {
+            case 0:
+            case 1:
+                item->setBuilt(0);
+                item->setInProgress(0);
+                break;
+            case 2:
+                item->setBuilt(0);
+                item->setInProgress(1);
+                break;
+            case 3:
+                item->setBuilt(1);
+                item->setInProgress(0);
+                break;
             }
         }
 
         if (item->built() == 0 && item->inProgress() == 0) {
-            ++realCount;
-            int canBuild = 1;
-            int strategy = this->md->tacticalAI.strategicNumber(0xA1);
+            ++count;
 
-            if (strategy == 1 && numStoragePits == 0 && numGranaries == 0)
+            int canBuild = 1;
+            int order = this->md->tacticalAI.strategicNumber(0xA1);
+            if (order == 1 && numGranaries == 0 && numStoragePits == 0) {
                 canBuild = 0;
-            if (strategy == 2 && this->md->resourceAI.resource(1) < 250 && numGranaries == 0)
+            }
+            if (order == 2 && this->md->resourceAI.resource(1) < 250 &&
+                numStoragePits == 0) {
                 canBuild = 0;
-            if (strategy == 3 && numStoragePits == 0)
+            }
+            if (order == 3 && numGranaries == 0) {
                 canBuild = 0;
-            if (strategy == 4 && (numStoragePits == 0 || numGranaries == 0))
+            }
+            if (order == 4 &&
+                (numGranaries == 0 || numStoragePits == 0)) {
                 canBuild = 0;
+            }
 
             if (category == 0 && !canBuild && item->buildCategory() == 0 &&
                 item->typeID() != 0x46 && item->typeID() != 0x6D &&
                 item->typeID() != 0x67 && item->typeID() != 0x44) {
-                goto next_item;
+                item = item->next;
+                continue;
             }
-            else {
-                if (category == 0 && item->buildCategory() == 0 &&
-                    (numStoragePits == 0 || numGranaries == 0) &&
-                    numHouses >= this->md->tacticalAI.strategicNumber(0xAE) &&
-                    item->typeID() != 0x6D && item->typeID() != 0x67 &&
-                    item->typeID() != 0x44) {
-                    goto next_item;
+
+            if (category == 0 && item->buildCategory() == 0 &&
+                (numGranaries == 0 || numStoragePits == 0) &&
+                numHouses >= this->md->tacticalAI.strategicNumber(0xAE) &&
+                item->typeID() != 0x6D && item->typeID() != 0x67 &&
+                item->typeID() != 0x44) {
+                item = item->next;
+                continue;
+            }
+
+            if (item->buildCategory() == 5 && realCount == 0) {
+                this->md->tacticalAI.enableAttack(1);
+                item->setInProgress(0);
+                item->setBuilt(1);
+                item = item->next;
+                continue;
+            }
+
+            if (item->buildCategory() == 6) {
+                if (realCount < 1) {
+                    this->md->tacticalAI.setStrategicNumber(
+                        item->typeID() + 0x9C, item->buildFrom());
+                    item->setInProgress(0);
+                    item->setBuilt(1);
                 }
-                else {
-                    if (item->buildCategory() == 5 && count == 0) {
-                        this->md->tacticalAI.enableAttack(1);
-                        item->setInProgress(0);
-                        item->setBuilt(1);
-                        goto next_item;
-                    }
-                    else if (item->buildCategory() == 6) {
-                        if (count < 1) {
-                            this->md->tacticalAI.setStrategicNumber(
-                                item->typeID() + 0x9C, item->buildFrom());
-                            item->setInProgress(0);
-                            item->setBuilt(1);
-                        }
-                        goto next_item;
-                    }
-                    else if (category == 3 && count > 0) {
-                        return 0;
+                item = item->next;
+                continue;
+            }
+
+            if (category == 3 && realCount > 0) {
+                return 0;
+            }
+
+            if (item->buildCap() != -1) {
+                int buildCap = item->buildCap();
+                if (item->numberBuilds() > buildCap) {
+                    item = item->next;
+                    continue;
+                }
+            }
+
+            if (category == 1 &&
+                (item->buildCategory() == 1 ||
+                 item->buildCategory() == 4) &&
+                this->md->aiPlayer->researchEverAvailable(item->typeID()) == 0) {
+                item->setInProgress(0);
+                item->setBuilt(1);
+                item = item->next;
+                continue;
+            }
+
+            if (item->buildCategory() == 4) {
+                ResourceItem itemCost(4);
+                this->md->aiPlayer->researchCost(
+                    item->typeID(), -1, &itemCost, 1);
+                if (!this->md->aiPlayer->researchAvailable(item->typeID()) ||
+                    !this->md->resourceAI.resourcesAvailable(&itemCost) ||
+                    category != 1) {
+                    return 0;
+                }
+            }
+
+            if ((item->skip() == 1 && item->buildAttempts() > 0) ||
+                item->permanentSkip()) {
+                item->decrementBuildAttempts();
+                item = item->next;
+                continue;
+            }
+
+            if (item->skip() == 1 && item->buildAttempts() <= 0) {
+                item->setSkip(0);
+                if (item->buildCategory() == 0 &&
+                    (item->typeID() == 0x67 || item->typeID() == 0x44)) {
+                    item->setBuildAttempts(
+                        this->md->tacticalAI.strategicNumber(0x72) - 1);
+                }
+            }
+
+            if (this->md->player->attributes[11] <
+                    this->md->player->attributes[32] ||
+                item->buildCategory() != 2) {
+                ++realCount;
+            }
+
+            if (category == 1) {
+                if (item->buildCategory() != 1 &&
+                    item->buildCategory() != 4) {
+                    item = item->next;
+                    continue;
+                }
+            }
+            else if (item->buildCategory() != category) {
+                item = item->next;
+                continue;
+            }
+
+            if (category == 3 && item->buildCategory() != 3) {
+                item->setBuildAttempts(0);
+                return 0;
+            }
+
+            item->incrementBuildAttempts();
+            int buildAttempts = item->buildAttempts();
+            if (buildAttempts >
+                    this->md->tacticalAI.strategicNumber(0x72) &&
+                item->skip() == 0 && !item->permanentSkip()) {
+                if (category == 1 && item->buildCategory() == 4) {
+                    item->setBuildAttempts(0);
+                    return 0;
+                }
+
+                if (item->typeID() !=
+                        this->md->tacticalAI.strategicNumber(0xB1) ||
+                    item->buildCategory() != 0) {
+                    item->setSkip(1);
+                    if (item->buildCategory() == 0 &&
+                        (item->typeID() == 0x67 ||
+                         item->typeID() == 0x44)) {
+                        item->setBuildAttempts(
+                            this->md->tacticalAI.strategicNumber(0x72) * 6);
                     }
                     else {
-                        int buildCap = item->buildCap();
-                        if (buildCap != -1) {
-                            int currentCap = item->buildCap();
-                            int numberBuilds = item->numberBuilds();
-                            if (numberBuilds > currentCap)
-                                goto next_item;
-                        }
+                        item->setBuildAttempts(
+                            this->md->tacticalAI.strategicNumber(0x72));
+                    }
+                    item = item->next;
+                    continue;
+                }
+            }
 
-                        if (category == 1 &&
-                            (item->buildCategory() == 1 || item->buildCategory() == 4) &&
-                            this->md->aiPlayer->researchEverAvailable(item->typeID()) == 0) {
-                            item->setInProgress(0);
-                            item->setBuilt(1);
-                        }
-                        else {
-                            if (item->buildCategory() == 4) {
-                                ResourceItem itemCost(4);
-                                this->md->aiPlayer->researchCost(
-                                    item->typeID(), -1, &itemCost, 1);
-                                if (this->md->aiPlayer->researchAvailable(item->typeID()) == 0 ||
-                                    this->md->resourceAI.resourcesAvailable(&itemCost) == 0)
-                                    return 0;
-                                if (category != 1) {
-                                    return 0;
-                                }
-                            }
+            if (category == 3 && item->buildCategory() == 3) {
+                strncpy(this->currentBuildItemRequestedValue,
+                        item->name(), 0x3F);
+                this->numberItemsIntoBuildListValue = item->uniqueID();
+                strncpy(this->nextBuildItemRequestedValue,
+                        item->next->name(), 0x3F);
+                this->numberItemsIntoBuildListValue = item->uniqueID();
+                return item;
+            }
 
-                            if (item->skip() == 1 && item->buildAttempts() > 0 ||
-                                item->permanentSkip() != 0) {
-                                item->decrementBuildAttempts();
-                                goto next_item;
-                            }
-                            else {
-                                if (item->skip() == 1 && item->buildAttempts() <= 0) {
-                                    item->setSkip(0);
-                                    if (item->buildCategory() == 0 &&
-                                        (item->typeID() == 0x67 || item->typeID() == 0x44)) {
-                                        item->setBuildAttempts(
-                                            this->md->tacticalAI.strategicNumber(0x72) - 1);
-                                    }
-                                }
+            int available;
+            if (category == 1) {
+                available =
+                    this->md->aiPlayer->researchAvailable(item->typeID());
+            }
+            else {
+                available =
+                    this->md->aiPlayer->objectAvailable(item->typeID());
+            }
+            if (available) {
+                ResourceItem itemCost(4);
+                if (category == 1) {
+                    this->md->aiPlayer->researchCost(
+                        item->typeID(), -1, &itemCost, 1);
+                }
+                else {
+                    this->md->aiPlayer->objectCost(
+                        item->typeID(), -1, &itemCost, 1);
+                }
 
-                                if (this->md->player->attributes[0x0B] <
-                                        this->md->player->attributes[0x20] ||
-                                    item->buildCategory() != 2) {
-                                    ++count;
-                                }
+                if (this->md->resourceAI.resourcesAvailable(&itemCost)) {
+                    int canBuildItem;
+                    if (category == 2 || category == 1) {
+                        canBuildItem = this->md->object(
+                            -1, item->buildFrom(), -1, -1, -1,
+                            -1, -1, -1, 2, -1) != 0;
+                    }
+                    else {
+                        canBuildItem =
+                            this->md->constructionAI.canPlace(item);
+                    }
 
-                                if (category == 1 && item->buildCategory() != 1 &&
-                                    item->buildCategory() != 4)
-                                    goto next_item;
-                                if (category != 1 && category != item->buildCategory())
-                                    goto next_item;
-
-                                if (category == 3 && item->buildCategory() != 3) {
-                                    item->setBuildAttempts(0);
-                                    return 0;
-                                }
-
-                                item->incrementBuildAttempts();
-                                int buildAttempts = item->buildAttempts();
-                                if (buildAttempts >
-                                    this->md->tacticalAI.strategicNumber(0x72)) {
-                                    if (item->skip() == 0 && item->permanentSkip() == 0) {
-                                        if (category == 1 && item->buildCategory() == 4) {
-                                            item->setBuildAttempts(0);
-                                            return 0;
-                                        }
-
-                                        int strategic = this->md->tacticalAI.strategicNumber(0xB1);
-                                        if (item->typeID() != strategic ||
-                                            item->buildCategory() != 0) {
-                                            item->setSkip(1);
-                                            if (item->buildCategory() == 0 &&
-                                                (item->typeID() == 0x67 ||
-                                                 item->typeID() == 0x44)) {
-                                                item->setBuildAttempts(
-                                                    this->md->tacticalAI.strategicNumber(0x72) * 6);
-                                            }
-                                            else {
-                                                item->setBuildAttempts(
-                                                    this->md->tacticalAI.strategicNumber(0x72));
-                                            }
-                                            goto next_item;
-                                        }
-                                    }
-                                }
-
-                                if (category == 3 && item->buildCategory() == 3) {
-                                    strncpy(this->currentBuildItemRequestedValue,
-                                            item->name(), 0x3F);
-                                    this->numberItemsIntoBuildListValue = item->uniqueID();
-                                    strncpy(this->nextBuildItemRequestedValue,
-                                            item->next->name(), 0x3F);
-                                    this->numberItemsIntoBuildListValue = item->uniqueID();
-                                    return item;
-                                }
-
-                                if (category == 1) {
-                                    if (this->md->aiPlayer->researchAvailable(item->typeID()) != 0)
-                                        goto cost_block;
-                                }
-                                else if (this->md->aiPlayer->objectAvailable(item->typeID()) != 0) {
-                                    goto cost_block;
-                                }
-                                goto next_item;
-
-cost_block:
-                                {
-                                    ResourceItem itemCost2(4);
-                                    if (category == 1) {
-                                        this->md->aiPlayer->researchCost(
-                                            item->typeID(), -1, &itemCost2, 1);
-                                    }
-                                    else {
-                                        this->md->aiPlayer->objectCost(
-                                            item->typeID(), -1, &itemCost2, 1);
-                                    }
-
-                                    if (this->md->resourceAI.resourcesAvailable(&itemCost2)) {
-                                        int found;
-                                        if (category == 2 || category == 1) {
-                                            found = (int)this->md->object(
-                                                -1, item->buildFrom(), -1, -1, -1,
-                                                -1, -1, -1, 2, -1);
-                                        }
-                                        else {
-                                            found = this->md->constructionAI.canPlace(item);
-                                        }
-                                        if (found != 0) {
-                                            strncpy(this->currentBuildItemRequestedValue,
-                                                    item->name(), 0x3F);
-                                            this->numberItemsIntoBuildListValue = item->uniqueID();
-                                            strncpy(this->nextBuildItemRequestedValue,
-                                                    item->next->name(), 0x3F);
-                                            this->numberItemsIntoBuildListValue = item->uniqueID();
-                                            return item;
-                                        }
-                                        item = item->next;
-                                        goto loop_check;
-                                    }
-                                    item = item->next;
-                                    goto loop_check;
-                                }
-                            }
-                        }
+                    if (canBuildItem) {
+                        strncpy(this->currentBuildItemRequestedValue,
+                                item->name(), 0x3F);
+                        this->numberItemsIntoBuildListValue = item->uniqueID();
+                        strncpy(this->nextBuildItemRequestedValue,
+                                item->next->name(), 0x3F);
+                        this->numberItemsIntoBuildListValue = item->uniqueID();
+                        return item;
                     }
                 }
+
+                item = item->next;
+                continue;
             }
         }
 
-next_item:
         item = item->next;
-loop_check:
-        if (count <= this->md->tacticalAI.strategicNumber(0x73))
-            continue;
-        return 0;
-    }
+    } while (realCount <= this->md->tacticalAI.strategicNumber(0x73));
+
+    return 0;
 }
 
 int TribeBuildAIModule::nextBuildListItemCategory()
