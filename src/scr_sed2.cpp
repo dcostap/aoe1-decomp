@@ -193,124 +193,161 @@ void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
 }
 
 
-void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
+void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which)
 {
-    if (this->victory_and_or[1]->get_state())
-        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(1);
-    else
-        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(0);
-
-    if (!this->victory_cond_on[0]->get_state() && this->victory_cond_type[4]->get_state())
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(0);
-    else
-        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(1);
-
-    if (index < 0) return;
-
-    int amount;
-    int kind;
-    int player;
-    int objectType;
     long x1, y1, x2, y2;
-    amount = atoi(this->victory_amount_input->currentLine());
-    kind = this->victory_drop_down->get_line();
-    player = this->victory_enemy_player_list->get_line() + 1;
-    objectType = this->victory_object_list->get_id();
+    int VictoryType;
+    int ObjectNumber;
+
+    if (this->victory_and_or[1]->get_state()) {
+        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(1);
+    } else {
+        static_cast<T_Scenario*>(this->world->scenario)->Set_victory_all_flag(0);
+    }
+
+    if (!this->victory_cond_on[0]->get_state() &&
+        this->victory_cond_type[4]->get_state()) {
+        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(0);
+    } else {
+        static_cast<T_Scenario*>(this->world->scenario)->Set_Multi_Conquest(1);
+    }
+
+    if (which < 0) {
+        return;
+    }
+
+    int amount = atoi(this->victory_amount_input->currentLine());
+    VictoryType = this->victory_drop_down->get_line();
+    int player = this->victory_enemy_player_list->get_line() + 1;
+    ObjectNumber = this->victory_object_list->get_id();
+
     this->main_view->get_selection_area(x1, y1, x2, y2, 1);
     this->px1 = (float)x1;
     this->py1 = (float)y1;
     this->px2 = (float)x2;
     this->py2 = (float)y2;
-    static_cast<T_Scenario*>(this->world->scenario)->ClearSPVictoryCondition(index);
 
-    switch (kind) {
+    static_cast<T_Scenario*>(this->world->scenario)->ClearSPVictoryCondition(which);
+
+    switch (VictoryType) {
     case 0:
-        break;
+        return;
     case 1:
-        if (this->SelectedObject && this->DestinationObject) {
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,3);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(index,this->SelectedObject);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPDestObjectID(index,this->DestinationObject);
+        if (this->SelectedObject == 0 || this->DestinationObject == 0) {
+            return;
         }
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 3);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPDestObjectID(which, this->DestinationObject);
+        return;
     case 2:
-        if (this->SelectedObject) {
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,3);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(index,this->SelectedObject);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPRectangle(index,this->px1,this->py1,this->px2,this->py2);
+        if (this->SelectedObject == 0) {
+            return;
         }
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 3);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPRectangle(which, this->px1, this->py1, this->px2, this->py2);
+        return;
     case 3:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,2);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(index,objectType);
-        goto set_amount;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 2);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
     case 4:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,2);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(index,objectType);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(index,amount);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPRectangle(index,this->px1,this->py1,this->px2,this->py2);
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 2);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPRectangle(which, this->px1, this->py1, this->px2, this->py2);
+        return;
     case 5:
-        if (player >= 1 && player <= 8 && amount) {
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(index,player);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(index,objectType);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(index,amount);
+        if (player < 1 || player > 8 || amount == 0) {
+            return;
         }
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(which, player);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
     case 6:
-        if (!this->SelectedObject) break;
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,1);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(index,this->SelectedObject);
-        break;
+        if (this->SelectedObject == 0) {
+            return;
+        }
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
+        return;
     case 7:
-        if (player >= 1 && player <= 8) {
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(index,player);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(index,objectType);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPAllFlag(index,1);
+        if (player < 1 || player > 8) {
+            return;
         }
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(which, player);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObjectType(which, ObjectNumber);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAllFlag(which, 1);
+        return;
     case 8:
-        if (player >= 1 && player <= 8) {
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,1);
-            static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(index,player);
+        if (player < 1 || player > 8) {
+            return;
         }
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 1);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPPlayerID(which, player);
+        return;
     case 9:
-        if (!this->SelectedObject) break;
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,5);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(index,this->SelectedObject);
-        break;
-    case 10: static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4); objectType = 0; goto attrib_amount;
-    case 11: static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4); objectType = 3; goto attrib_amount;
-    case 12: static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4); objectType = 1; goto attrib_amount;
-    case 13: static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4); objectType = 2; goto attrib_amount;
-    case 14: static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4); objectType = 4; goto attrib_amount;
+        if (this->SelectedObject == 0) {
+            return;
+        }
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 5);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPObject(which, this->SelectedObject);
+        return;
+    case 10:
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 0);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
+    case 11:
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 3);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
+    case 12:
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 1);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
+    case 13:
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 2);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
+    case 14:
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
     case 15:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(index,5);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(index,this->victory_ages_list->get_line()+1);
-        break;
-    case 16: static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,4); objectType = 6; goto attrib_amount;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 5);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(
+            which, this->victory_ages_list->get_line() + 1);
+        return;
+    case 16:
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 6);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
     case 17:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,6);
-        objectType = this->victory_attribute_list->get_id();
-attrib_amount:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(index,objectType);
-set_amount:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(index,amount);
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 6);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(
+            which, this->victory_attribute_list->get_id());
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
+        return;
     case 18:
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(index,7);
-        objectType = this->victory_tech_list->get_id();
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(index,objectType);
-        break;
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 7);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(
+            which, this->victory_tech_list->get_id());
+        return;
     default:
-        break;
+        return;
     }
-
-    return;
 }
 
 // Case 1 tests the amount home, not the destination-object

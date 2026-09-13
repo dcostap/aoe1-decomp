@@ -10,7 +10,7 @@
     "004ADD00": {"status": "matching", "symbol": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@IAEXXZ"},
     "004ADD50": {"status": "matching", "symbol": "?save_info_in_scenario@TRIBE_Screen_Sed@@IAEXXZ"},
     "004ADD60": {"status": "matching", "symbol": "?save_multi_victory_cond_in_scenario@TRIBE_Screen_Sed@@IAEXXZ"},
-    "004AE070": {"status": "scratch", "symbol": "?save_victory_cond_in_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
+    "004AE070": {"status": "matching", "symbol": "?save_victory_cond_in_scenario@TRIBE_Screen_Sed@@IAEXH@Z", "behavior_review": "logic_matching/004AE070/coord-11-review-20260913T064000Z/attempt-01"},
     "004AE620": {"status": "matching", "symbol": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
     "004AE9D0": {"status": "matching", "symbol": "?load_multi_victory_cond_from_scenario@TRIBE_Screen_Sed@@IAEXXZ"},
     "004AECB0": {"status": "matching", "symbol": "?save_diplomacy_in_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
