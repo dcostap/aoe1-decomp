@@ -745,204 +745,185 @@ void RGE_Static_Object::capture_frame_3d_cube(TDrawArea* p0, short p1, short p2)
 
 
 void RGE_Static_Object::capture_frame_3d_square(
-    TDrawArea*, short param_3, short param_4)
+    TDrawArea* render_area, short x, short y)
 {
-    RGE_Master_Static_Object* pRVar1;
-    RGE_Map* this_00;
-    TShape* pTVar2;
-    int iVar3;
-    int iVar4;
-    int* piVar5;
-    unsigned int uVar6;
-    int iVar7;
-    short sVar8;
-    int sVar9;
-    unsigned char draw_color;
-    short y2;
-    float x3_radius;
-    float ry1;
+    RGE_Master_Static_Object* master = this->master_obj;
+    RGE_Map* map = this->owner->world->map;
+    float radius_x;
     float radius_y;
-    int tot_hp;
     float radius_z;
-    float neg_x3;
-    short x0;
-    short y0;
-    short corner1_x;
-    short corner1_y;
-    short corner2_x;
-    short corner3_x;
-    short corner3_y;
-    short corner4_x;
-    short corner4_y;
-    int idv[6];
-    int digit_x;
-
-    pRVar1 = this->master_obj;
-    this_00 = this->owner->world->map;
     if (rge_base_game->outline_type == 3) {
-        x3_radius = pRVar1->radius_x;
-        radius_y = pRVar1->radius_y;
-        radius_z = pRVar1->radius_z;
+        radius_x = master->radius_x;
+        radius_y = master->radius_y;
+        radius_z = master->radius_z;
     } else {
-        x3_radius = pRVar1->outline_radius_x;
-        radius_y = pRVar1->outline_radius_y;
-        radius_z = pRVar1->outline_radius_z;
+        radius_x = master->outline_radius_x;
+        radius_y = master->outline_radius_y;
+        radius_z = master->outline_radius_z;
     }
-    if (startLoggingAI == 1 && this->groupCommanderValue == this->id &&
-        this->id >= 0) {
+
+    unsigned char draw_color;
+    if (startLoggingAI == 1 &&
+        this->groupCommanderValue == this->id && this->id >= 0) {
         draw_color = 0;
     } else if ((this->selected & 1) == 0) {
         if (rge_base_game->outline_type == 3) {
             draw_color = 0x74;
-        } else if ((pRVar1->draw_flag & 1) == 1 &&
+        } else if ((master->draw_flag & 1) == 1 &&
                    rge_base_game->prog_mode == 7) {
-            draw_color = pRVar1->draw_color;
+            draw_color = master->draw_color;
         } else {
-            draw_color = 0xFF;
+            draw_color = 0xff;
         }
     } else {
-        draw_color = 0xFF;
+        draw_color = 0xff;
     }
+
     if ((this->selected & 2) != 0) {
-        draw_color = 0x4A;
+        draw_color = 0x4a;
     }
     if ((this->selected & 4) != 0) {
         draw_color = 0x97;
     }
 
-    ry1 = -radius_y;
-    sVar9 = param_4 + this->screen_y_offset;
-    sVar8 = param_3 + this->screen_x_offset;
-    digit_x = param_3;
-    this_00->get_point(corner1_x, corner1_y,
-                       x3_radius, ry1, 0.0f, sVar8, sVar9);
-    this_00->get_point(corner2_x, y2, x3_radius, radius_y,
-                       0.0f, sVar8, sVar9);
-    neg_x3 = -x3_radius;
-    this_00->get_point(corner3_x, corner3_y, neg_x3, radius_y,
-                       0.0f, sVar8, sVar9);
-    this_00->get_point(corner4_x, corner4_y, neg_x3, ry1,
-                       0.0f, sVar8, sVar9);
+    x += this->screen_x_offset;
+    y += this->screen_y_offset;
 
-    tot_hp = draw_color;
-    iVar4 = (int)sVar9;
-    SDI_List->AddGDINode(
-        1, iVar4, corner1_x, corner1_y,
-        corner2_x, y2, corner3_x, corner3_y, corner4_x,
-        corner4_y, 10, draw_color, SDI_Object_ID);
+    short x1;
+    short y1;
+    short x2;
+    short y2;
+    short x3;
+    short y3;
+    short x4;
+    short y4;
+    map->get_point(x1, y1, radius_x, -radius_y, 0.0f, x, y);
+    map->get_point(x2, y2, radius_x, radius_y, 0.0f, x, y);
+    map->get_point(x3, y3, -radius_x, radius_y, 0.0f, x, y);
+    map->get_point(x4, y4, -radius_x, -radius_y, 0.0f, x, y);
 
-    if (this->selected != 0 && this->selected_group != 0 &&
+    SDI_List->AddGDINode(1, y, x1, y1, x2, y2, x3, y3, x4, y4,
+                         10, draw_color, SDI_Object_ID);
+
+    if (this->selected != 0 && this->selected_group > 0 &&
         this->selected_group < 10 &&
-        this->owner->id == this->owner->world->curr_player &&
-        (pTVar2 = rge_base_game->get_shape(0)) != 0) {
-        SDI_List->AddDrawNode(
-            pTVar2->FShape,
-            pTVar2->shape_info + this->selected_group,
-            iVar4, corner4_x - 6, corner4_y - 8,
-            0, 0, 0, 0x1E, SDI_Object_ID);
+        this->owner->id == this->owner->world->curr_player) {
+        TShape* group_num_shape = rge_base_game->get_shape(0);
+        if (group_num_shape != 0) {
+            Shape_Info* shape_info =
+                (Shape_Info*)group_num_shape->FShape + this->selected_group;
+            SDI_List->AddDrawNode(group_num_shape->FShape, shape_info, y,
+                                  x4 - 6, y4 - 8, 0, 0, 0, 0x1e,
+                                  SDI_Object_ID);
+        }
     }
 
-    if ((this->selected & 1) == 1 && (pRVar1->draw_flag & 2) == 0) {
-        int health = (int)this->hp;
-        if (health > 0) {
-            this_00->get_point(x0, y0, x3_radius, ry1, radius_z,
-                               sVar8, sVar9);
-            int max_hp = pRVar1->hp;
-            if (max_hp > 0) {
-                y2 = y0 - 1;
-                int health_left = x0 - 12;
-                int health_top = y0 - 2;
-                int health_right = x0 + 11;
-                int health_bottom = y0 - 1;
-                int health_fill_end;
-                int health_fill_style;
-                int health_fill_start;
-                int health_draw;
+    if ((this->selected & 1) == 1 &&
+        (this->master_obj->draw_flag & 2) == 0) {
+        int cur_hp = (int)this->hp;
+        if (cur_hp > 0) {
+            short bar_x;
+            short bar_y;
+            map->get_point(bar_x, bar_y, radius_x, -radius_y,
+                           radius_z, x, y);
 
-                digit_x = health_right;
-                if (max_hp == health) {
-                    health_fill_end = health_right;
-                    health_fill_style = 1;
-                    health_fill_start = -1;
-                    health_draw = 0;
+            if (cur_hp < 1) {
+                cur_hp = 0;
+            }
+            int tot_hp = this->master_obj->hp;
+            if (tot_hp > 0) {
+                short left = bar_x - 12;
+                short top = bar_y - 2;
+                short right = left + 23;
+                short bottom = bar_y - 1;
+                short filled_right;
+                short empty_left;
+                int has_filled;
+                int has_empty;
+
+                x2 = right;
+                y2 = bottom;
+
+                if (cur_hp == tot_hp) {
+                    filled_right = right;
+                    has_filled = 1;
+                    empty_left = -1;
+                    has_empty = 0;
+                } else if (cur_hp == 0) {
+                    filled_right = -1;
+                    has_filled = 0;
+                    empty_left = left;
+                    has_empty = 1;
                 } else {
-                    if (health == 0) {
-                        health_fill_end = -1;
-                        health_fill_style = 0;
-                        health_fill_start = health_left;
-                    } else {
-                        health_fill_style = 1;
-                        health_fill_end = health_top + (health * 24) / max_hp;
-                        if (health_right <= health_fill_end) {
-                            health_fill_end = x0 + 10;
-                        }
-                        health_fill_start = health_fill_end + 1;
+                    filled_right = left + (cur_hp * 24) / tot_hp;
+                    if (filled_right >= right) {
+                        filled_right = right - 1;
                     }
-                    health_draw = 1;
+                    has_filled = 1;
+                    empty_left = filled_right + 1;
+                    has_empty = 1;
                 }
-                SDI_List->AddGDINode(
-                    2, iVar4, health_left, health_top, health_right,
-                    health_bottom, health_fill_end, health_fill_style,
-                    health_fill_start, health_draw, 0x1E, tot_hp, SDI_Object_ID);
+
+                SDI_List->AddGDINode(2, y, left, top, right, bottom,
+                                     filled_right, has_filled, empty_left,
+                                     has_empty, 0x1e, draw_color,
+                                     SDI_Object_ID);
             }
         }
     }
 
     if (rge_base_game->display_selected_ids != 0) {
-        pTVar2 = rge_base_game->get_shape(0);
-        iVar7 = this->id;
-        iVar3 = iVar7;
-        if (iVar7 < 0) {
-            iVar3 = -iVar7;
+        TShape* number_shape = rge_base_game->get_shape(0);
+        int object_id = this->id;
+        int value = object_id;
+        if (value < 0) {
+            value = -value;
         }
-        idv[1] = iVar3 / 10000;
-        idv[2] = (iVar3 % 10000) / 1000;
-        iVar3 = (iVar3 % 10000) % 1000;
-        idv[3] = iVar3 / 100;
-        iVar3 = iVar3 % 100;
-        idv[4] = iVar3 / 10;
-        idv[5] = iVar3 % 10;
-        uVar6 = 0;
-        if (iVar7 < 10000) {
-            uVar6 = 1;
+
+        int digits[5];
+        digits[0] = value / 10000;
+        value %= 10000;
+        digits[1] = value / 1000;
+        value %= 1000;
+        digits[2] = value / 100;
+        value %= 100;
+        digits[3] = value / 10;
+        digits[4] = value % 10;
+
+        int first_digit = 0;
+        if (object_id < 10000) {
+            first_digit = 1;
         }
-        if (iVar7 < 1000) {
-            uVar6 = 2;
+        if (object_id < 1000) {
+            first_digit = 2;
         }
-        if (iVar7 < 100) {
-            uVar6 = 3;
+        if (object_id < 100) {
+            first_digit = 3;
         }
-        if (iVar7 < 10) {
-            uVar6 = 4;
+        if (object_id < 10) {
+            first_digit = 4;
         }
-        if (iVar7 < 0) {
-            digit_x += 7;
-            SDI_List->AddGDINode(
-                4, iVar4, digit_x + 1, y2 + 3,
-                digit_x + 5, y2 + 3,
-                0, 0, 0, 0, 0x1E, 0x97, SDI_Object_ID);
+
+        if (object_id < 0) {
+            x2 += 7;
+            SDI_List->AddGDINode(4, y, x2 + 1, y2 + 3, x2 + 5,
+                                 y2 + 3, 0, 0, 0, 0, 0x1e, 0x97,
+                                 SDI_Object_ID);
         }
-        if (uVar6 < 5) {
-            piVar5 = idv + uVar6 + 1;
-            iVar7 = 5 - uVar6;
-            do {
-                digit_x += 7;
-                sVar8 = (short)digit_x;
-                if (*piVar5 != 0) {
-                    SDI_List->AddDrawNode(
-                        pTVar2->FShape,
-                        pTVar2->shape_info + *piVar5,
-                        iVar4, (int)sVar8, y2,
-                        0, 0, 0, 0x1E, SDI_Object_ID);
-                } else {
-                    SDI_List->AddGDINode(
-                        4, iVar4, sVar8 + 1, y2,
-                        sVar8 + 5, y2 + 5,
-                        0, 0, 0, 0, 0x1E, 0xFF, SDI_Object_ID);
-                }
-                ++piVar5;
-                --iVar7;
-            } while (iVar7 != 0);
+
+        for (int i = first_digit; i < 5; ++i) {
+            x2 += 7;
+            if (digits[i] == 0) {
+                SDI_List->AddGDINode(4, y, x2 + 1, y2, x2 + 5,
+                                     y2 + 5, 0, 0, 0, 0, 0x1e, 0xff,
+                                     SDI_Object_ID);
+            } else {
+                Shape_Info* shape_info =
+                    (Shape_Info*)number_shape->FShape + digits[i];
+                SDI_List->AddDrawNode(number_shape->FShape, shape_info, y,
+                                      x2, y2, 0, 0, 0, 0x1e,
+                                      SDI_Object_ID);
+            }
         }
     }
 }
