@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "0052CAF0": {"status": "scratch", "symbol": "?draw_multi_object_outline@TRIBE_Main_View@@UAEXXZ"},
+    "0052CAF0": {"status": "new_verified_logic", "symbol": "?draw_multi_object_outline@TRIBE_Main_View@@UAEXXZ", "behavior_review": "logic_matching/0052CAF0/coord-12-review-resume-20260913T070000Z/attempt-01"},
     "0052D060": {"status": "matching", "symbol": "?draw_wall_outline@TRIBE_Main_View@@IAEHJJPAVTRIBE_Master_Building_Object@@J@Z"},
     "0052D1F0": {"status": "matching", "symbol": "?command_place_object@TRIBE_Main_View@@UAEHJJH@Z"},
     "0052D320": {"status": "matching", "symbol": "?command_place_multi_object@TRIBE_Main_View@@UAEHJJJJH@Z"},
