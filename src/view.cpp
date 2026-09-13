@@ -2873,63 +2873,47 @@ int RGE_View::get_tile_mask_num(int col, int row, int map_width,
 
 
 
-int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
-                        short x, short y, short map_x, short map_y,
-                        unsigned char visible, int draw1, int draw2)
+int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain,
+                        short x, short y, short col, short row,
+                        unsigned char visible, int normal_draw, int fog_draw)
 {
-    unsigned char draw_attribute;
-    int terrain_offset;
-    int draw_border;
-    int terrain_draw;
-    unsigned char border_info;
-    unsigned char border_type;
-    int left_index;
-    int right_index;
-    int bottom_index;
-    int retval;
-    int result = 0;
+    unsigned char draw_attribute = tile->draw_attribute;
 
-    draw_attribute = tile->draw_attribute;
-
-    if ((short)terrain_type >= this->map->num_terrain ||
-        ((terrain_offset = (int)terrain_type * (int)sizeof(RGE_Tile_Set)),
-         this->map->terrain_types[terrain_type].loaded == 0)) {
+    if ((short)terrain >= this->map->num_terrain ||
+        this->map->terrain_types[terrain].loaded == 0) {
         return 0;
     }
 
-    terrain_draw = 1;
-    result = 0;
-    draw_border = 0;
-    border_info = tile->border_type | (tile->border_shape << 4);
-    border_type = border_info & 0x0F;
+    int draw_base = 1;
+    int result = 0;
+    int draw_border = 0;
+    unsigned char border_type = tile->border_type;
+    int left_index;
+    int right_index;
+    int bottom_index;
+    int border_index;
 
-    if (border_type != 0) {
-        RGE_Border_Set* border = &this->map->border_types[border_type];
-        if (border->loaded != 0 && border->shape != 0) {
-            if (border->border_style == 0) {
-                short picture = this->get_border_picture(
-                    border_type, tile->tile_type,
-                    (unsigned char)(border_info >> 4), map_x, map_y);
-                if (picture != -1) {
-                    draw_border = 1;
-                    terrain_draw = border->draw_tile;
-                }
-            } else {
-                if (this->get_border_edge_pictures(
-                        border_type, tile->tile_type,
-                        (unsigned char)(border_info >> 4), map_x, map_y,
-                        left_index, bottom_index,
-                        right_index, retval) != 0) {
-                    draw_border = 1;
-                    terrain_draw = 1;
-                }
+    if (border_type != 0 &&
+        this->map->border_types[border_type].loaded != 0 &&
+        this->map->border_types[border_type].shape != 0) {
+        if (this->map->border_types[border_type].border_style == 0) {
+            short frame = this->get_border_picture(
+                border_type, tile->tile_type, tile->border_shape, col, row);
+            if (frame != -1) {
+                draw_border = 1;
+                draw_base = this->map->border_types[border_type].draw_tile;
             }
+        } else if (this->get_border_edge_pictures(
+                       border_type, tile->tile_type, tile->border_shape,
+                       col, row, left_index, bottom_index,
+                       right_index, border_index) != 0) {
+            draw_border = 1;
+            draw_base = 1;
         }
     }
 
-    if (View_Grid_Mode > 0 && (draw_attribute & 0xDF) == 0 &&
-        ((((int)map_x / View_Grid_Mode) +
-          ((int)map_y / View_Grid_Mode)) & 1) == 1) {
+    if (View_Grid_Mode > 0 && (draw_attribute & 0xdf) == 0 &&
+        (((col / View_Grid_Mode) + (row / View_Grid_Mode)) & 1) == 1) {
         draw_attribute |= 0x20;
     }
 
@@ -2937,94 +2921,88 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
         draw_border = 0;
     }
 
-    if (terrain_draw != 0) {
-        TShape* shape = this->map->terrain_types[terrain_type].shape;
-        short picture = this->get_tile_picture(
-            terrain_type, tile->tile_type, map_x, map_y);
-        if (shape != 0 && picture != -1) {
+    if (draw_base != 0) {
+        TShape* terrain_shape = this->map->terrain_types[terrain].shape;
+        short frame = this->get_tile_picture(
+            terrain, tile->tile_type, col, row);
+
+        if (terrain_shape != 0 && frame != -1) {
             if (view_debug_ObstructionMap != 0) {
                 this->draw_terrain_obstruction_map(
-                    x, y, shape, picture, map_x, map_y);
+                    x, y, terrain_shape, frame, col, row);
                 return 1;
             }
+
             this->draw_terrain_shape(
-                x, y, shape, picture, visible,
-                draw_attribute, draw1, draw2);
+                x, y, terrain_shape, frame, visible, draw_attribute,
+                normal_draw, fog_draw);
             result = 1;
         }
 
         if (draw_border == 0) {
-            if (map_x > 0) {
-                RGE_Tile* left = this->map->map_row_offset[map_y] + map_x - 1;
-                left->draw_attribute |= 0x40;
+            if (col > 0) {
+                RGE_Tile* neighbor =
+                    this->map->map_row_offset[row] + col - 1;
+                neighbor->draw_attribute |= 0x40;
             }
-            if (map_y < this->map->map_height - 1) {
-                RGE_Tile* below = this->map->map_row_offset[map_y + 1] + map_x;
-                below->draw_attribute |= 0x40;
+            if (row < this->map->map_height - 1) {
+                RGE_Tile* neighbor =
+                    this->map->map_row_offset[row + 1] + col;
+                neighbor->draw_attribute |= 0x40;
             }
         }
     }
 
-    if (draw_border == 0) {
-        goto done;
-    }
-
-    {
-        TShape* shape = this->map->border_types[border_type].shape;
-        if (shape != 0) {
+    if (draw_border != 0) {
+        TShape* border_shape = this->map->border_types[border_type].shape;
+        if (border_shape != 0) {
             if (this->map->border_types[border_type].border_style == 0) {
-                short picture = this->get_border_picture(
-                    border_type, tile->tile_type,
-                    (unsigned char)(border_info >> 4), map_x, map_y);
-                if (picture != -1) {
-                    retval = picture;
-                } else {
-                    goto mark_neighbors;
+                short frame = this->get_border_picture(
+                    border_type, tile->tile_type, tile->border_shape, col, row);
+                if (frame != -1) {
+                    this->draw_terrain_shape(
+                        x, y, border_shape, frame, visible, draw_attribute,
+                        normal_draw, fog_draw);
                 }
-            } else {
-                if (this->get_border_edge_pictures(
-                        border_type, tile->tile_type,
-                        (unsigned char)(border_info >> 4), map_x, map_y,
-                        left_index, bottom_index,
-                        right_index, retval) == 0) {
-                    goto mark_neighbors;
-                }
+            } else if (this->get_border_edge_pictures(
+                           border_type, tile->tile_type, tile->border_shape,
+                           col, row, left_index, bottom_index,
+                           right_index, border_index) != 0) {
                 if (left_index != -1) {
                     this->draw_terrain_shape(
-                        x, y, shape, left_index, visible,
-                        draw_attribute, draw1, draw2);
+                        x, y, border_shape, left_index, visible, draw_attribute,
+                        normal_draw, fog_draw);
                 }
                 if (right_index != -1) {
                     this->draw_terrain_shape(
-                        x, y, shape, right_index, visible,
-                        draw_attribute, draw1, draw2);
+                        x, y, border_shape, right_index, visible, draw_attribute,
+                        normal_draw, fog_draw);
                 }
                 if (bottom_index != -1) {
                     this->draw_terrain_shape(
-                        x, y, shape, bottom_index, visible,
-                        draw_attribute, draw1, draw2);
+                        x, y, border_shape, bottom_index, visible, draw_attribute,
+                        normal_draw, fog_draw);
                 }
-                if (retval == -1) {
-                    goto mark_neighbors;
+                if (border_index != -1) {
+                    this->draw_terrain_shape(
+                        x, y, border_shape, border_index, visible, draw_attribute,
+                        normal_draw, fog_draw);
                 }
             }
-            this->draw_terrain_shape(
-                x, y, shape, retval, visible,
-                draw_attribute, draw1, draw2);
+        }
+
+        if (col > 0) {
+            RGE_Tile* neighbor =
+                this->map->map_row_offset[row] + col - 1;
+            neighbor->draw_attribute |= 0x40;
+        }
+        if (row < this->map->map_height - 1) {
+            RGE_Tile* neighbor =
+                this->map->map_row_offset[row + 1] + col;
+            neighbor->draw_attribute |= 0x40;
         }
     }
 
-mark_neighbors:
-    if (map_x > 0) {
-        RGE_Tile* left = this->map->map_row_offset[map_y] + map_x - 1;
-        left->draw_attribute |= 0x40;
-    }
-    if (map_y < this->map->map_height - 1) {
-        RGE_Tile* below = this->map->map_row_offset[map_y + 1] + map_x;
-        below->draw_attribute |= 0x40;
-    }
-
-done:
     return result;
 }
 

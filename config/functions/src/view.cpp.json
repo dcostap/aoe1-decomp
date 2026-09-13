@@ -47,7 +47,7 @@
     "00538410": {"status": "matching", "symbol": "?draw_multi_object_outline@RGE_View@@UAEXXZ"},
     "00538420": {"status": "matching", "symbol": "?Draw_GDI_Object@RGE_View@@IAEXPAUDClipInfo_Node@@PAVTDrawArea@@@Z"},
     "00538590": {"status": "matching", "symbol": "?get_tile_mask_num@RGE_View@@IAEHHHHHK@Z"},
-    "00538710": {"status": "scratch", "symbol": "?draw_tile@RGE_View@@IAEHPAURGE_Tile@@EFFFFEHH@Z"},
+    "00538710": {"status": "new_verified_logic", "symbol": "?draw_tile@RGE_View@@IAEHPAURGE_Tile@@EFFFFEHH@Z", "behavior_review": "logic_matching/00538710/review-20260913T051741Z-coord07/attempt-01"},
     "00538B80": {"status": "matching", "symbol": "?draw_terrain_shape@RGE_View@@IAEXHHPAVTShape@@HEEHH@Z"},
     "00538D60": {"status": "verified_logic", "symbol": "?draw_terrain_obstruction_map@RGE_View@@IAEXHHPAVTShape@@HHH@Z"},
     "00538E60": {"status": "matching", "symbol": "?Get_Cursor_Position@RGE_View@@QAEHAAUtagPOINT@@HH@Z"},
