@@ -117,7 +117,7 @@
     "004F7E80": {"status": "accepted_drift", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHH@Z"},
     "004F81A0": {"status": "new_verified_logic", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHHAAUXYPoint@@H@Z", "behavior_review": "logic_matching/004F81A0/coord-08-004F81A0-review-01/attempt-01"},
     "004F8570": {"status": "matching", "symbol": "?civilian@TribeTacticalAIModule@@QAEHAAUXYPoint@@HHHHH@Z"},
-    "004F87B0": {"status": "scratch", "symbol": "?unit@TribeTacticalAIModule@@QAEHHHH@Z"},
+    "004F87B0": {"status": "new_verified_logic", "symbol": "?unit@TribeTacticalAIModule@@QAEHHHH@Z", "behavior_review": "logic_matching/004F87B0/coord-08-004F87B0-review-01/attempt-01"},
     "004F8BE0": {"status": "matching", "symbol": "?busyWithAction@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F8C30": {"status": "matching", "symbol": "?displayCivilianDistribution@TribeTacticalAIModule@@QAEXXZ"},
     "004F8C40": {"status": "matching", "symbol": "?updateNeededResources@TribeTacticalAIModule@@QAEXXZ"},

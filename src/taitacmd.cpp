@@ -6218,85 +6218,54 @@ next:
 
 
 
-int TribeTacticalAIModule::unit(int player, int currentAction, int currentTargetType)
+int TribeTacticalAIModule::unit(int action, int target, int targetType)
 {
-    int i = 0;
-    ManagedArray<int>* resultArray;
+    int i;
+    RGE_Static_Object* object;
 
-    while (i < this->civilians.numberValue) {
-        RGE_Static_Object* object = this->md->aiPlayer->world->object(this->civilians[i]);
+    for (i = 0; i < this->civilians.numberValue; i++) {
+        object = this->md->aiPlayer->world->object(this->civilians[i]);
         if (object == 0 && object->unitAI() == 0) {
-            if (player != -1) {
-                if (object->unitAI()->currentAction() != player)
-                    goto next_civilian;
-            }
-            if (currentAction != -1) {
-                if (object->unitAI()->currentTarget() != currentAction)
-                    goto next_civilian;
-            }
-            if (currentTargetType == -1) {
-                resultArray = &this->civilians;
-                goto found_civilian;
-            }
-            if (object->unitAI()->currentTargetType() == currentTargetType) {
-                resultArray = &this->civilians;
-                goto found_civilian;
+            if (action == -1 || object->unitAI()->currentAction() == action) {
+                if (target == -1 || object->unitAI()->currentTarget() == target) {
+                    if (targetType == -1 ||
+                        object->unitAI()->currentTargetType() == targetType) {
+                        return this->civilians[i];
+                    }
+                }
             }
         }
-next_civilian:
-        ++i;
     }
 
-    i = 0;
-    while (i < this->soldiers.numberValue) {
-        RGE_Static_Object* object = this->md->aiPlayer->world->object(this->soldiers[i]);
+    for (i = 0; i < this->soldiers.numberValue; i++) {
+        object = this->md->aiPlayer->world->object(this->soldiers[i]);
         if (object == 0 && object->unitAI() == 0) {
-            if (player != -1) {
-                if (object->unitAI()->currentAction() != player)
-                    goto next_soldier;
+            if (action == -1 || object->unitAI()->currentAction() == action) {
+                if (target == -1 || object->unitAI()->currentTarget() == target) {
+                    if (targetType == -1 ||
+                        object->unitAI()->currentTargetType() == targetType) {
+                        return this->soldiers[i];
+                    }
+                }
             }
-            if (currentAction != -1) {
-                if (object->unitAI()->currentTarget() != currentAction)
-                    goto next_soldier;
-            }
-            if (currentTargetType != -1) {
-                if (object->unitAI()->currentTargetType() != currentTargetType)
-                    goto next_soldier;
-            }
-            return this->soldiers[i];
         }
-next_soldier:
-        ++i;
     }
 
-    i = 0;
-    while (i < this->boats.numberValue) {
-        RGE_Static_Object* object = this->md->aiPlayer->world->object(this->boats[i]);
+    for (i = 0; i < this->boats.numberValue; i++) {
+        object = this->md->aiPlayer->world->object(this->boats[i]);
         if (object == 0 && object->unitAI() == 0) {
-            if (player != -1) {
-                if (object->unitAI()->currentAction() != player)
-                    goto next_boat;
+            if (action == -1 || object->unitAI()->currentAction() == action) {
+                if (target == -1 || object->unitAI()->currentTarget() == target) {
+                    if (targetType == -1 ||
+                        object->unitAI()->currentTargetType() == targetType) {
+                        return this->boats[i];
+                    }
+                }
             }
-            if (currentAction != -1) {
-                if (object->unitAI()->currentTarget() != currentAction)
-                    goto next_boat;
-            }
-            if (currentTargetType != -1) {
-                if (object->unitAI()->currentTargetType() != currentTargetType)
-                    goto next_boat;
-            }
-            return this->boats[i];
         }
-next_boat:
-        ++i;
     }
+
     return -1;
-
-found_civilian:
-    if (i > resultArray->maximumSizeValue - 1)
-        resultArray->resize(i + 1);
-    return resultArray->value[i];
-
 }
 
 int TribeTacticalAIModule::busyWithAction(int object_id, int action_id) {
