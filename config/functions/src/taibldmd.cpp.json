@@ -11,7 +11,7 @@
     "004D3B00": {"status": "matching", "symbol": "??1TribeBuildAIModule@@UAE@XZ"},
     "004D3B10": {"status": "matching", "symbol": "?setMainDecisionAI@TribeBuildAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
     "004D3B20": {"status": "matching", "symbol": "?loadBuildList@TribeBuildAIModule@@UAEHPADPAVRGE_Player@@@Z"},
-    "004D3D60": {"status": "scratch", "symbol": "?initialize@TribeBuildAIModule@@QAEXXZ"},
+    "004D3D60": {"status": "new_verified_logic", "symbol": "?initialize@TribeBuildAIModule@@QAEXXZ", "behavior_review": "logic_matching/004D3D60/coord-03-20260913T033102Z/attempt-01"},
     "004D4460": {"status": "matching", "symbol": "?skipNextBuildListItem@TribeBuildAIModule@@QAEXXZ"},
     "004D4540": {"status": "scratch", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z"},
     "004D4DB0": {"status": "matching", "symbol": "?nextBuildListItemCategory@TribeBuildAIModule@@QAEHXZ"},

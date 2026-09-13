@@ -44,232 +44,248 @@ int TribeBuildAIModule::loadBuildList(char* filename, RGE_Player* player)
 
 void TribeBuildAIModule::initialize()
 {
-    int bronzeAgeIndex = 0;
+    int bronzeAgeCount = 0;
     int transportCount = 0;
-    int toolAgeIndex = 0;
+    int toolAgeCount = 0;
     int fishingBoatCount = 0;
-    int resourceCount = 0;
-    int warshipCount = -1;
-    int count = -1;
-    int totalPercentage = -1;
-    int ironAgeIndex = 0;
-    int divisionSize = 0;
-    int dockCount = 0;
-    int triremeUpgrade = 0;
+    int resourceBuildingCount = 0;
+    int firstMarkerIndex = -1;
+    int secondMarkerIndex = -1;
+    int thirdMarkerIndex = -1;
+    int ironAgePresent = 0;
+    int bronzeAgePresent = 0;
+    int dockPresent = 0;
 
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
-
-    while (item != sentinel) {
-        if (item == 0) {
-            break;
-        }
-
+    while (item != sentinel && item != 0) {
         if (item->buildCategory() == 0) {
             if (item->typeID() == 0x46) {
-                bronzeAgeIndex++;
-            } else if (item->typeID() == 0x2D) {
-                transportCount++;
+                ++bronzeAgeCount;
             }
-        } else if (item->buildCategory() == 2) {
+            else if (item->typeID() == 0x2D) {
+                ++transportCount;
+            }
+        }
+        else if (item->buildCategory() == 2) {
             if (item->typeID() == 0x0D) {
-                toolAgeIndex++;
-            } else if (item->typeID() == 0x11 || item->typeID() == 0x12) {
-                fishingBoatCount++;
-            } else if (item->typeID() == 0x13 || item->typeID() == 0xFA) {
-                resourceCount++;
+                ++toolAgeCount;
             }
-        } else if (item->buildCategory() == 1 || item->buildCategory() == 4) {
+            else if (item->typeID() == 0x11 || item->typeID() == 0x12) {
+                ++fishingBoatCount;
+            }
+            else if (item->typeID() == 0x13 || item->typeID() == 0xFA) {
+                ++resourceBuildingCount;
+            }
+        }
+        else if (item->buildCategory() == 1 || item->buildCategory() == 4) {
             if (item->typeID() == 0x65) {
-                warshipCount = item->uniqueID();
-            } else if (item->typeID() == 0x66) {
-                count = item->uniqueID();
-            } else if (item->typeID() == 0x67) {
-                totalPercentage = item->uniqueID();
-            } else if (item->typeID() == 5) {
-                ironAgeIndex = 1;
-            } else if (item->typeID() == 7) {
-                triremeUpgrade = 1;
-            } else if (item->typeID() == 8) {
-                dockCount = 1;
+                firstMarkerIndex = item->uniqueID();
+            }
+            else if (item->typeID() == 0x66) {
+                secondMarkerIndex = item->uniqueID();
+            }
+            else if (item->typeID() == 0x67) {
+                thirdMarkerIndex = item->uniqueID();
+            }
+            else if (item->typeID() == 5) {
+                ironAgePresent = 1;
+            }
+            else if (item->typeID() == 7) {
+                bronzeAgePresent = 1;
+            }
+            else if (item->typeID() == 8) {
+                dockPresent = 1;
             }
         }
 
         item = item->next;
     }
 
+    int count;
+    int spacing;
+    int index;
+
     if (transportCount < this->md->tacticalAI.strategicNumber(0xD4) &&
         this->md->tacticalAI.strategicNumber(0xD0) == 1) {
-        int remaining = this->md->tacticalAI.strategicNumber(0xD4) - transportCount;
-        int step;
-        if (count != -1) {
-            step = count / remaining;
-        } else if (warshipCount != -1) {
-            step = warshipCount / remaining;
-        } else {
-            step = 10;
+        count = this->md->tacticalAI.strategicNumber(0xD4) - transportCount;
+        if (secondMarkerIndex != -1) {
+            spacing = secondMarkerIndex / count;
         }
-        if (remaining > 0) {
-            int val = step;
-            while (remaining > 0) {
-                insert(0x2D, -1, val);
-                val += step;
-                remaining--;
-            }
+        else if (firstMarkerIndex != -1) {
+            spacing = firstMarkerIndex / count;
+        }
+        else {
+            spacing = 10;
+        }
+
+        index = spacing;
+        while (count > 0) {
+            this->insert(0x2D, -1, index);
+            index += spacing;
+            --count;
         }
     }
 
-    if (toolAgeIndex < this->md->tacticalAI.strategicNumber(0xD5) &&
+    if (toolAgeCount < this->md->tacticalAI.strategicNumber(0xD5) &&
         this->md->tacticalAI.strategicNumber(0xD1) == 1) {
-        int remaining = this->md->tacticalAI.strategicNumber(0xD5) - toolAgeIndex;
-        if (remaining > 0) {
-            int step;
-            if (count != -1) {
-                step = count / remaining;
-            } else if (warshipCount != -1) {
-                step = warshipCount / remaining;
-            } else {
-                step = 10;
+        count = this->md->tacticalAI.strategicNumber(0xD5) - toolAgeCount;
+        if (count > 0) {
+            if (secondMarkerIndex != -1) {
+                spacing = secondMarkerIndex / count;
             }
-            int val = step;
-            do {
-                insert(0x0D, -1, val);
-                val += step;
-                remaining--;
-            } while (remaining > 0);
+            else if (firstMarkerIndex != -1) {
+                spacing = firstMarkerIndex / count;
+            }
+            else {
+                spacing = 10;
+            }
+
+            index = spacing;
+            while (count > 0) {
+                this->insert(0x0D, -1, index);
+                index += spacing;
+                --count;
+            }
         }
     }
 
     if (fishingBoatCount < this->md->tacticalAI.strategicNumber(0xD6) &&
         this->md->tacticalAI.strategicNumber(0xD2) == 1) {
-        int remaining = this->md->tacticalAI.strategicNumber(0xD6) - fishingBoatCount;
-        int step;
-        int first;
-        if (warshipCount != -1) {
-            step = (this->buildListLengthValue - warshipCount) / (remaining * 2);
-            first = count;
-        } else if (count != -1) {
-            step = (this->buildListLengthValue - count) / (remaining * 2);
-            first = -1;
-        } else {
-            step = 10;
-            first = 0;
+        count = this->md->tacticalAI.strategicNumber(0xD6) - fishingBoatCount;
+        if (firstMarkerIndex != -1) {
+            spacing = (this->buildListLengthValue - firstMarkerIndex) / (count * 2);
+            index = secondMarkerIndex;
         }
-        while (remaining > 0) {
-            first += step;
-            insert(0x11, -1, first);
-            remaining--;
+        else if (secondMarkerIndex != -1) {
+            spacing = (this->buildListLengthValue - secondMarkerIndex) / (count * 2);
+            index = -1;
+        }
+        else {
+            spacing = 10;
+            index = 0;
         }
 
-        if (dockCount == 0 && totalPercentage != -1) {
-            insertResearch(8, totalPercentage + 2);
+        while (count > 0) {
+            index += spacing;
+            this->insert(0x11, -1, index);
+            --count;
+        }
+
+        if (!dockPresent && thirdMarkerIndex != -1) {
+            this->insertResearch(8, thirdMarkerIndex + 2);
         }
     }
 
-    if (resourceCount < this->md->tacticalAI.strategicNumber(0xE0) &&
+    if (resourceBuildingCount < this->md->tacticalAI.strategicNumber(0xE0) &&
         this->md->tacticalAI.strategicNumber(0xDF) == 1 &&
-        (totalPercentage != -1 || count != -1)) {
-        int remaining = this->md->tacticalAI.strategicNumber(0xE0) - resourceCount;
-        int step = (totalPercentage != -1 ? totalPercentage : count) / remaining;
-        if (remaining > 0) {
-            int val = step;
-            while (remaining > 0) {
-                insertResearch(0x13, val);
-                val += step;
-                remaining--;
-            }
+        (thirdMarkerIndex != -1 || secondMarkerIndex != -1)) {
+        count = this->md->tacticalAI.strategicNumber(0xE0) - resourceBuildingCount;
+        if (thirdMarkerIndex != -1) {
+            spacing = thirdMarkerIndex / count;
+        }
+        else {
+            spacing = secondMarkerIndex / count;
         }
 
-        if (ironAgeIndex == 0 && count != -1) {
-            insertResearch(5, count + 5);
+        index = spacing;
+        while (count > 0) {
+            this->insertResearch(0x13, index);
+            index += spacing;
+            --count;
         }
-        if (triremeUpgrade == 0 && totalPercentage != -1) {
-            insertResearch(7, totalPercentage + 5);
+
+        if (!ironAgePresent && secondMarkerIndex != -1) {
+            this->insertResearch(5, secondMarkerIndex + 5);
+        }
+        if (!bronzeAgePresent && thirdMarkerIndex != -1) {
+            this->insertResearch(7, thirdMarkerIndex + 5);
         }
     }
 
-    if (bronzeAgeIndex == 0 && this->md->tacticalAI.strategicNumber(0xB4) == 1) {
-        BuildItem* item2 = this->buildList.next;
-        BuildItem* sentinel2 = &this->buildList;
-        int bx = 0;
-        int bp = 0;
-        bronzeAgeIndex = 0;
+    if (bronzeAgeCount == 0 &&
+        this->md->tacticalAI.strategicNumber(0xB4) == 1) {
+        item = this->buildList.next;
+        int buildIndex = 0;
+        int supportedCount = 0;
+        int trainedCount = 0;
 
-        while (item2 != sentinel2 && item2 != 0) {
-            if (item2->buildCategory() == 0 && item2->typeID() == 0x6D) {
-                bx += 4;
+        while (item != sentinel && item != 0) {
+            if (item->buildCategory() == 0 && item->typeID() == 0x6D) {
+                supportedCount += 4;
             }
-            if (item2->buildCategory() == 2) {
-                bronzeAgeIndex++;
+            if (item->buildCategory() == 2) {
+                ++trainedCount;
             }
-            if (bronzeAgeIndex > bx) {
-                int r;
-                if (bp > 1) {
-                    r = insert(0x46, -1, bp - 1);
-                } else {
-                    r = insert(0x46, -1, 1);
+            if (trainedCount > supportedCount) {
+                int insertIndex;
+                if (buildIndex > 1) {
+                    insertIndex = buildIndex - 1;
                 }
-                if (r == 1) {
-                    bx += 4;
+                else {
+                    insertIndex = 1;
+                }
+                if (this->insert(0x46, -1, insertIndex) == 1) {
+                    supportedCount += 4;
                 }
             }
-            if (bx > this->md->tacticalAI.strategicNumber(0x98) + 0x32) {
+            if (supportedCount >
+                this->md->tacticalAI.strategicNumber(0x98) + 50) {
                 break;
             }
-            item2 = item2->next;
-            bp++;
+
+            item = item->next;
+            ++buildIndex;
         }
     }
 
-    int valA0 = this->md->tacticalAI.strategicNumber(0xA0);
-    int val9B = this->md->tacticalAI.strategicNumber(0x9B);
-    ironAgeIndex = val9B + 4;
-    if (valA0 != 0) {
-        BuildItem* item2 = this->buildList.next;
-        BuildItem* sentinel2 = &this->buildList;
+    int totalPercentage = this->md->tacticalAI.strategicNumber(0xA0);
+    int divisionSize = this->md->tacticalAI.strategicNumber(0x9B) + 4;
+    if (totalPercentage != 0) {
+        item = this->buildList.next;
+        ResourceItem resourceCount(4);
+        resourceCount.setAllValues(0);
+        int itemCount = 0;
+        int divisionIndex = 0;
 
-        ResourceItem resource(4);
-        divisionSize = 0;
-        resource.setAllValues(0);
-
-        if (item2 != sentinel2) {
-            bronzeAgeIndex = 0;
-            do {
-                if (item2 == 0) {
-                    break;
-                }
-                if (item2->buildCategory() == 6) {
-                    item2 = item2->next;
-                    divisionSize++;
-                } else {
-                    if (item2->buildCategory() == 1 || item2->buildCategory() == 4) {
-                        this->md->aiPlayer->researchCost(item2->typeID(), -1, &resource, 1);
-                    } else {
-                        this->md->aiPlayer->objectCost(item2->typeID(), -1, &resource, 1);
-                    }
-                    divisionSize++;
-
-                    if (divisionSize >= ironAgeIndex) {
-                        int total = 0;
-                        for (int i = 0; i < 4; i++) {
-                            total += resource.value(i);
-                        }
-                        if (total > 0) {
-                            for (int i = 0; i < 4; i++) {
-                                insertGathererPercentage(i,
-                                    (resource.value(i) * valA0) / total,
-                                    bronzeAgeIndex);
-                            }
-                            resource.setAllValues(0);
-                            bronzeAgeIndex += ironAgeIndex;
-                            divisionSize = 0;
-                        }
-                    }
-
-                    item2 = item2->next;
-                }
+        while (item != sentinel && item != 0) {
+            if (item->buildCategory() == 6) {
+                item = item->next;
+                ++itemCount;
             }
-            while (item2 != sentinel2);
+            else {
+                if (item->buildCategory() == 1 || item->buildCategory() == 4) {
+                    this->md->aiPlayer->researchCost(
+                        item->typeID(), -1, &resourceCount, 1);
+                }
+                else {
+                    this->md->aiPlayer->objectCost(
+                        item->typeID(), -1, &resourceCount, 1);
+                }
+
+                ++itemCount;
+                if (itemCount >= divisionSize) {
+                    int totalCost = 0;
+                    int resource;
+                    for (resource = 0; resource < 4; ++resource) {
+                        totalCost += resourceCount.value(resource);
+                    }
+
+                    if (totalCost > 0) {
+                        for (resource = 0; resource < 4; ++resource) {
+                            this->insertGathererPercentage(
+                                resource,
+                                resourceCount.value(resource) * totalPercentage / totalCost,
+                                divisionIndex);
+                        }
+                        resourceCount.setAllValues(0);
+                        divisionIndex += divisionSize;
+                        itemCount = 0;
+                    }
+                }
+
+                item = item->next;
+            }
         }
     }
 }
