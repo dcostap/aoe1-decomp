@@ -1422,68 +1422,61 @@ int TribeInformationAIModule::mapYSize() {
 
 void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
 {
-    XYPoint maxLOS;
-    XYPoint maxRange;
     XYPoint minLOS;
+    XYPoint maxLOS;
     XYPoint minRange;
-    int index = 0;
-    if (this->maxImportantObjectMemory <= 0) return;
-    do {
-        if (this->importantObjectMemory[index].owner == player) {
-            int id = this->importantObjectMemory[index].id;
-            if (id != excludeId) {
-                RGE_Static_Object* obj = this->md->object(id);
-                if (obj != 0) {
-                    minLOS.x = (int)(obj->world_x - obj->master_obj->los);
-                    minLOS.y = (int)(obj->world_y - obj->master_obj->los);
-                    this->mapBound(minLOS);
-                    maxLOS.x = (int)(obj->master_obj->los + obj->world_x);
-                    maxLOS.y = (int)(obj->master_obj->los + obj->world_y);
-                    this->mapBound(maxLOS);
-                    int x = minLOS.x;
-                    if (x <= maxLOS.x) {
-                        do {
-                            int y = minLOS.y;
-                            if (y <= maxLOS.y) {
-                                do {
-                                    int v = (int)aiPathSystem.lookupMisc(x, y) + 10;
-                                    if (v > 255) v = 255;
-                                    aiPathSystem.setMisc(x, y, (unsigned char)v);
-                                    y++;
-                                } while (y <= maxLOS.y);
-                            }
-                            x++;
-                        } while (x <= maxLOS.x);
-                    }
+    XYPoint maxRange;
 
-                    if (this->importantObjectMemory[index].range > DAT_00575564) {
-                        minRange.x = (int)(obj->world_x - this->importantObjectMemory[index].range);
-                        minRange.y = (int)(obj->world_y - this->importantObjectMemory[index].range);
-                        this->mapBound(minRange);
-                        maxRange.x = (int)(obj->world_x + this->importantObjectMemory[index].range);
-                        maxRange.y = (int)(obj->world_y + this->importantObjectMemory[index].range);
-                        this->mapBound(maxRange);
-                        int x2 = minRange.x;
-                        if (x2 <= maxRange.x) {
-                            do {
-                                int y2 = minRange.y;
-                                if (y2 <= maxRange.y) {
-                                    do {
-                                        int v2 = (int)aiPathSystem.lookupMisc(x2, y2) + 10;
-                                        if (v2 > 255) v2 = 255;
-                                        aiPathSystem.setMisc(x2, y2, (unsigned char)v2);
-                                        y2++;
-                                    } while (y2 <= maxRange.y);
-                                }
-                                x2++;
-                            } while (x2 <= maxRange.x);
-                        }
-                    }
+    for (int i = 0; i < this->maxImportantObjectMemory; ++i) {
+        if ((int)this->importantObjectMemory[i].owner != player ||
+            this->importantObjectMemory[i].id == excludeId)
+            continue;
+
+        RGE_Static_Object* object =
+            this->md->object(this->importantObjectMemory[i].id);
+        if (object == 0)
+            continue;
+
+        minLOS.x = (int)(object->world_x - object->master_obj->los);
+        minLOS.y = (int)(object->world_y - object->master_obj->los);
+        this->mapBound(minLOS);
+
+        maxLOS.x = (int)(object->master_obj->los + object->world_x);
+        maxLOS.y = (int)(object->master_obj->los + object->world_y);
+        this->mapBound(maxLOS);
+
+        for (int x = minLOS.x; x <= maxLOS.x; ++x) {
+            for (int y = minLOS.y; y <= maxLOS.y; ++y) {
+                int influence = aiPathSystem.lookupMisc(x, y) + 10;
+                if (influence > 0xff)
+                    influence = 0xff;
+                aiPathSystem.setMisc(x, y, (unsigned char)influence);
+            }
+        }
+
+        if (this->importantObjectMemory[i].range > DAT_00575564) {
+            minRange.x = (int)(object->world_x -
+                               this->importantObjectMemory[i].range);
+            minRange.y = (int)(object->world_y -
+                               this->importantObjectMemory[i].range);
+            this->mapBound(minRange);
+
+            maxRange.x = (int)(this->importantObjectMemory[i].range +
+                               object->world_x);
+            maxRange.y = (int)(this->importantObjectMemory[i].range +
+                               object->world_y);
+            this->mapBound(maxRange);
+
+            for (int x = minRange.x; x <= maxRange.x; ++x) {
+                for (int y = minRange.y; y <= maxRange.y; ++y) {
+                    int influence = aiPathSystem.lookupMisc(x, y) + 10;
+                    if (influence > 0xff)
+                        influence = 0xff;
+                    aiPathSystem.setMisc(x, y, (unsigned char)influence);
                 }
             }
         }
-        index++;
-    } while (index < this->maxImportantObjectMemory);
+    }
 }
 
 void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unused)
