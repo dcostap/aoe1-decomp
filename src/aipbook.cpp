@@ -904,322 +904,302 @@ AIPlayBook::~AIPlayBook() {
 }
 
 int AIPlayBook::loadPlays(char* filename) {
-    int temp4;
-    int phaseValue1;
-    char commentTemp2;
-    int phaseState;
-    char commentTemp1;
-    int groupPhase;
-    int currentPlay;
-    int refPhase;
-    int i;
-    int temp8;
-    int temp7;
-    int fileValue;
-    FILE* file;
-    char temp2[0x100];
-    char temp[0x100];
-    char temp6[0x100];
-
     if (filename == 0 || strcmp(filename, s_NONE) == 0) {
-        if (filename == 0) {
+        if (filename == 0)
             strcpy(this->nameValue, s_NULL);
-        } else {
+        else
             strcpy(this->nameValue, s_NONE);
-        }
         return 0;
     }
 
-    strncpy(this->nameValue, filename, 0x40);
-    sprintf(temp + 4, s_format_percent_s, this->nameValue);
-    file = fopen(temp + 4, s_mode_r);
-    if (file == 0) {
+    strncpy(this->nameValue, filename, 64);
+
+    char line[256];
+    char word[256];
+    char text[256];
+    sprintf(line, s_format_percent_s, this->nameValue);
+    FILE* fileIn = fopen(line, s_mode_r);
+    if (fileIn == 0)
         return 0;
-    }
 
     if (this->plays != 0) {
         delete[] this->plays;
         this->plays = 0;
     }
+
     this->numberPlaysValue = 0;
-
-    while (fgets(temp + 4, 0x100, file) != 0) {
-        if (strlen(temp + 4) == 0) {
-            continue;
-        }
-
-        sscanf(temp + 4, s_format_percent_s_space, temp2 + 4);
-        if (strcmp(temp2 + 4, s_Play) == 0) {
-            this->numberPlaysValue += 8;
+    while (fgets(line, 256, fileIn) != 0) {
+        if (strlen(line) != 0) {
+            sscanf(line, s_format_percent_s_space, word);
+            if (strcmp(word, s_Play) == 0)
+                this->numberPlaysValue += 8;
         }
     }
 
-    if (this->numberPlaysValue > 0x3E80) {
-        this->numberPlaysValue = 0x3E80;
-    }
+    if (this->numberPlaysValue > 16000)
+        this->numberPlaysValue = 16000;
 
     this->plays = new AIPlay[this->numberPlaysValue];
-    if (this->plays == 0) {
+    if (this->plays == 0)
         return 0;
-    }
 
-    rewind(file);
-    refPhase = -1;
-    phaseState = -1;
+    rewind(fileIn);
 
-    while (refPhase < 0x3E80 && fgets(temp + 4, 0x100, file) != 0) {
-        if (strlen(temp + 4) == 0) {
+    int currentPlay = -1;
+    int currentPhase = -1;
+    while (fgets(line, 256, fileIn) != 0) {
+        if (strlen(line) == 0)
             continue;
-        }
 
-        strcpy(temp2 + 4, s_592A40);
-        strcpy(temp6 + 4, s_592A40);
-        temp4 = 0;
-        phaseValue1 = 0;
-        i = 0;
-        fileValue = 0;
-        temp7 = 0;
+        strcpy(word, s_592A40);
+        strcpy(text, s_592A40);
 
-        if (sscanf(temp + 4, s_format_comment,
-                  &commentTemp1, &commentTemp2) == -1) {
-            continue;
-        }
-        if (commentTemp1 == '/' && commentTemp2 == '/') {
-            continue;
-        }
+        int value1 = 0;
+        int value2 = 0;
+        int value3 = 0;
+        int value4 = 0;
+        int value5 = 0;
+        char comment1;
+        char comment2;
 
-        sscanf(temp + 4, s_format_percent_s_space, temp2 + 4);
-        if (strcmp(temp2 + 4, s_Play) == 0) {
-            temp4 = 0;
-            i = 0;
-            while (temp[i + 4] != '"') {
-                ++i;
-                ++temp4;
-            }
-            ++i;
-            ++temp4;
+        if (sscanf(line, s_format_comment, &comment1, &comment2) != -1 &&
+            (comment1 != '/' || comment2 != '/')) {
+            sscanf(line, s_format_percent_s_space, word);
 
-            phaseValue1 = temp4;
-            while (temp[i + 4] != '"') {
-                ++i;
-                ++phaseValue1;
-            }
+            if (strcmp(word, s_Play) == 0) {
+                int firstQuote = 0;
+                while (line[firstQuote] != '"')
+                    firstQuote++;
+                firstQuote++;
 
-            if (temp4 < phaseValue1) {
-                memcpy(temp2 + 4, temp + temp4 + 4, phaseValue1 - temp4);
-            }
-            temp2[4 + (phaseValue1 - temp4)] = 0;
+                int lastQuote = firstQuote;
+                while (line[lastQuote] != '"')
+                    lastQuote++;
 
-            ++refPhase;
-            if (refPhase >= 0x3E80) {
-                break;
-            }
-            this->plays[refPhase].setName(temp2 + 4);
-        } else if (strcmp(temp2 + 4, s_PlayType) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_string, temp2 + 4);
-            this->plays[refPhase].typeValue =
-                this->plays[refPhase].convertToIntType(temp2 + 4);
-        } else if (strcmp(temp2 + 4, s_MinUnits) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            this->plays[refPhase].minimumNumberUnitsValue = (unsigned char)temp4;
-        } else if (strcmp(temp2 + 4, s_MaxUnits) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            this->plays[refPhase].maximumNumberUnitsValue = (unsigned char)temp4;
-        } else if (strcmp(temp2 + 4, s_Power) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            this->plays[refPhase].powerValue = (unsigned char)temp4;
-        } else if (strcmp(temp2 + 4, s_Overflow) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_string, temp2 + 4);
-            if (strcmp(temp2 + 4, s_Balance) == 0) {
-                this->plays[refPhase].overflowValue = 1;
-            } else if (strcmp(temp2 + 4, s_FirstGroup) == 0) {
-                this->plays[refPhase].overflowValue = 2;
-            }
-        } else if (strcmp(temp2 + 4, s_DeathPercentage) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            if (temp4 < 0) {
-                this->plays[refPhase].deathPercentageValue = 0;
-            } else if (temp4 > 100) {
-                this->plays[refPhase].deathPercentageValue = 100;
-            } else {
-                this->plays[refPhase].deathPercentageValue = (unsigned char)temp4;
-            }
-        } else if (strcmp(temp2 + 4, s_Intelligence) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            if (temp4 < 0) {
-                this->plays[refPhase].intelligenceValue = 0;
-            } else if (temp4 > 100) {
-                this->plays[refPhase].intelligenceValue = 100;
-            } else {
-                this->plays[refPhase].intelligenceValue = (unsigned char)temp4;
-            }
-        } else if (strcmp(temp2 + 4, s_TargetChar) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_string, temp6 + 4);
-            int characteristic = this->convertTargetCharacteristicNameToIntType(temp6 + 4);
-            if (characteristic != 0) {
-                this->plays[refPhase].addTargetCharacteristic((unsigned char)characteristic);
-            }
-        } else if (strcmp(temp2 + 4, s_TargetType) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_string, temp6 + 4);
-            int type = this->convertTargetNameToIntType(temp6 + 4);
-            if (type != 0) {
-                this->plays[refPhase].addTargetType((unsigned char)type);
-            }
-        } else if (strcmp(temp2 + 4, s_NumberGroups) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            this->plays[refPhase].numberGroupsValue = (unsigned char)temp4;
-        } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && phaseState == -1) {
-            sscanf(temp + 4, s_format_group_range,
-                   &temp4, temp6 + 4, &phaseValue1, &i);
-            if (temp4 >= 0 && temp4 < 5) {
-                int groupType = this->convertUnitNameToIntType(temp6 + 4);
-                if (groupType != -1) {
-                    if (phaseValue1 < 0) {
-                        this->plays[refPhase].group(temp4)->setMinimum(
-                            groupType, 0);
-                    } else {
-                        this->plays[refPhase].group(temp4)->setMinimum(
-                            groupType, phaseValue1);
-                    }
+                int length = lastQuote - firstQuote;
+                if (firstQuote < lastQuote)
+                    memcpy(word, line + firstQuote, length);
+                word[length] = 0;
 
-                    if (i > 50) {
-                        this->plays[refPhase].group(temp4)->setMaximum(
-                            groupType, 50);
-                    } else {
-                        this->plays[refPhase].group(temp4)->setMaximum(
-                            groupType, i);
+                currentPlay++;
+                if (currentPlay >= 16000)
+                    break;
+                this->plays[currentPlay].setName(word);
+            }
+            else if (strcmp(word, s_PlayType) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_string, word);
+                this->plays[currentPlay].typeValue =
+                    this->plays[currentPlay].convertToIntType(word);
+            }
+            else if (strcmp(word, s_MinUnits) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                this->plays[currentPlay].minimumNumberUnitsValue = value1;
+            }
+            else if (strcmp(word, s_MaxUnits) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                this->plays[currentPlay].maximumNumberUnitsValue = value1;
+            }
+            else if (strcmp(word, s_Power) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                this->plays[currentPlay].powerValue = value1;
+            }
+            else if (strcmp(word, s_Overflow) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_string, word);
+                if (strcmp(word, s_Balance) == 0)
+                    this->plays[currentPlay].overflowValue = 1;
+                else if (strcmp(word, s_FirstGroup) == 0)
+                    this->plays[currentPlay].overflowValue = 2;
+            }
+            else if (strcmp(word, s_DeathPercentage) == 0 &&
+                     currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                if (value1 < 0)
+                    this->plays[currentPlay].deathPercentageValue = 0;
+                else if (value1 > 100)
+                    this->plays[currentPlay].deathPercentageValue = 100;
+                else
+                    this->plays[currentPlay].deathPercentageValue = value1;
+            }
+            else if (strcmp(word, s_Intelligence) == 0 &&
+                     currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                if (value1 < 0)
+                    this->plays[currentPlay].intelligenceValue = 0;
+                else if (value1 > 100)
+                    this->plays[currentPlay].intelligenceValue = 100;
+                else
+                    this->plays[currentPlay].intelligenceValue = value1;
+            }
+            else if (strcmp(word, s_TargetChar) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_string, text);
+                int type = this->convertTargetCharacteristicNameToIntType(text);
+                if (type != 0)
+                    this->plays[currentPlay].addTargetCharacteristic(type);
+            }
+            else if (strcmp(word, s_TargetType) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_string, text);
+                int type = this->convertTargetNameToIntType(text);
+                if (type != 0)
+                    this->plays[currentPlay].addTargetType(type);
+            }
+            else if (strcmp(word, s_NumberGroups) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                this->plays[currentPlay].numberGroupsValue = value1;
+            }
+            else if (strcmp(word, s_Group) == 0 && currentPlay != -1 &&
+                     currentPhase == -1) {
+                sscanf(line, s_format_group_range, &value1, text, &value2,
+                       &value3);
+                if (value1 >= 0 && value1 < 5) {
+                    int type = this->convertUnitNameToIntType(text);
+                    if (type != -1) {
+                        AIPlayGroup* group =
+                            this->plays[currentPlay].group(value1);
+                        if (value3 < 0)
+                            group->setMinimum(type, 0);
+                        else
+                            group->setMinimum(type, value2);
+
+                        if (value3 > 50)
+                            group->setMaximum(type, 50);
+                        else
+                            group->setMaximum(type, value3);
                     }
                 }
             }
-        } else if (strcmp(temp2 + 4, s_Phase) == 0 && refPhase != -1) {
-            sscanf(temp + 4, s_format_skip_string_int, &temp4);
-            phaseState = temp4;
-        } else if (strcmp(temp2 + 4, s_Group) == 0 && refPhase != -1 && phaseState != -1) {
-            sscanf(temp + 4, s_format_command,
-                   &temp4, temp6 + 4, &phaseValue1, &i, &fileValue);
-            if (temp4 >= 0 && temp4 < 5) {
-                AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
-                AIPlayPhaseCommand command(
-                    (unsigned char)temp4, temp6 + 4, phaseValue1, i, fileValue);
-                phase->addCommand(command);
+            else if (strcmp(word, s_Phase) == 0 && currentPlay != -1) {
+                sscanf(line, s_format_skip_string_int, &value1);
+                currentPhase = value1;
             }
-        } else if (strcmp(temp2 + 4, s_Trigger) == 0 && refPhase != -1 && phaseState != -1) {
-            sscanf(temp + 4, s_format_trigger,
-                   &temp4, temp6 + 4, &phaseValue1, &temp7);
-            AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
-            AIPlayPhaseTrigger trigger(
-                temp6 + 4, phaseValue1, temp7,
-                (unsigned char)phaseState, (unsigned char)temp4, 0);
-            phase->addTrigger(trigger);
-        } else if (strcmp(temp2 + 4, s_RTrigger) == 0 && refPhase != -1 && phaseState != -1) {
-            sscanf(temp + 4, s_format_command,
-                   &temp4, temp6 + 4, &phaseValue1, &temp7, &fileValue);
-            AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
-            AIPlayPhaseTrigger rtrigger(
-                temp6 + 4, phaseValue1, temp7,
-                (unsigned char)phaseState, (unsigned char)temp4, fileValue);
-            phase->addTrigger(rtrigger);
-        } else if (strcmp(temp2 + 4, s_EndPlay) == 0 && refPhase != -1) {
-            phaseState = -1;
-            strcpy(temp2 + 4, this->plays[refPhase].nameValue);
-            if (temp2[4] == 'H' && temp2[5] == 'P') {
-                this->numberPlaysValue -= 7;
-            } else {
-                int oldPhase = refPhase;
-                refPhase = oldPhase + 7;
-                temp8 = 1;
-                do {
-                    sprintf(temp2 + 4, s_format_play_variant,
-                            this->plays[oldPhase].nameValue, temp8);
-                    this->plays[oldPhase + temp8].setName(temp2 + 4);
-                    this->plays[oldPhase + temp8].typeValue =
-                        this->plays[oldPhase].typeValue;
-                    this->plays[oldPhase + temp8].minimumNumberUnitsValue =
-                        this->plays[oldPhase].minimumNumberUnitsValue;
-                    this->plays[oldPhase + temp8].maximumNumberUnitsValue =
-                        this->plays[oldPhase].maximumNumberUnitsValue;
-                    this->plays[oldPhase + temp8].powerValue =
-                        this->plays[oldPhase].powerValue;
-                    this->plays[oldPhase + temp8].overflowValue =
-                        this->plays[oldPhase].overflowValue;
-                    this->plays[oldPhase + temp8].deathPercentageValue =
-                        this->plays[oldPhase].deathPercentageValue;
-                    this->plays[oldPhase + temp8].intelligenceValue =
-                        this->plays[oldPhase].intelligenceValue;
+            else if (strcmp(word, s_Group) == 0 && currentPlay != -1 &&
+                     currentPhase != -1) {
+                sscanf(line, s_format_command, &value1, text, &value2,
+                       &value3, &value4);
+                if (value1 >= 0 && value1 < 5) {
+                    AIPlayPhase* phase =
+                        this->plays[currentPlay].phase(currentPhase);
+                    AIPlayPhaseCommand command((unsigned char)value1, text,
+                                               value2, value3, value4);
+                    phase->addCommand(command);
+                }
+            }
+            else if (strcmp(word, s_Trigger) == 0 && currentPlay != -1 &&
+                     currentPhase != -1) {
+                sscanf(line, s_format_trigger, &value1, text, &value2,
+                       &value5);
+                AIPlayPhase* phase =
+                    this->plays[currentPlay].phase(currentPhase);
+                AIPlayPhaseTrigger trigger(text, value2, value5,
+                                           (unsigned char)currentPhase,
+                                           (unsigned char)value1, 0);
+                phase->addTrigger(trigger);
+            }
+            else if (strcmp(word, s_RTrigger) == 0 && currentPlay != -1 &&
+                     currentPhase != -1) {
+                sscanf(line, s_format_command, &value1, text, &value2,
+                       &value5, &value4);
+                AIPlayPhase* phase =
+                    this->plays[currentPlay].phase(currentPhase);
+                AIPlayPhaseTrigger trigger(text, value2, value5,
+                                           (unsigned char)currentPhase,
+                                           (unsigned char)value1, value4);
+                phase->addTrigger(trigger);
+            }
+            else if (strcmp(word, s_EndPlay) == 0 && currentPlay != -1) {
+                currentPhase = -1;
+                strcpy(word, this->plays[currentPlay].nameValue);
+                if (word[0] == 'H' && word[1] == 'P') {
+                    this->numberPlaysValue -= 7;
+                }
+                else {
+                    int sourcePlay = currentPlay;
+                    currentPlay += 7;
+                    for (int facet = 1; facet < 8; facet++) {
+                        AIPlay* source = &this->plays[sourcePlay];
+                        AIPlay* destination = &this->plays[sourcePlay + facet];
 
-                    int targetIndex = 0;
-                    do {
-                        this->plays[oldPhase + temp8].addTargetType(
-                            this->plays[oldPhase].targetType(targetIndex));
-                        this->plays[oldPhase + temp8].addTargetCharacteristic(
-                            this->plays[oldPhase].targetCharacteristic(targetIndex));
-                        ++targetIndex;
-                    } while (targetIndex < 5);
+                        sprintf(word, s_format_play_variant,
+                                source->nameValue, facet);
+                        destination->setName(word);
+                        destination->typeValue = source->typeValue;
+                        destination->minimumNumberUnitsValue =
+                            source->minimumNumberUnitsValue;
+                        destination->maximumNumberUnitsValue =
+                            source->maximumNumberUnitsValue;
+                        destination->powerValue = source->powerValue;
+                        destination->overflowValue = source->overflowValue;
+                        destination->deathPercentageValue =
+                            source->deathPercentageValue;
+                        destination->intelligenceValue =
+                            source->intelligenceValue;
 
-                    this->plays[oldPhase + temp8].numberGroupsValue =
-                        this->plays[oldPhase].numberGroupsValue;
-                    groupPhase = 0;
-                    do {
-                        AIPlayGroup* sourceGroup =
-                            this->plays[oldPhase].group(groupPhase);
-                        AIPlayGroup* destinationGroup =
-                            this->plays[oldPhase + temp8].group(groupPhase);
-                        int groupIndex = 0;
-                        do {
-                            destinationGroup->setMinimum(
-                                groupIndex, sourceGroup->minimum(groupIndex));
-                            destinationGroup->setMaximum(
-                                groupIndex, sourceGroup->maximum(groupIndex));
-                            ++groupIndex;
-                        } while (groupIndex < 6);
-                        ++groupPhase;
-                    } while (groupPhase < 5);
+                        for (int iTargets = 0; iTargets < 5; iTargets++) {
+                            destination->addTargetType(
+                                source->targetType(iTargets));
+                            destination->addTargetCharacteristic(
+                                source->targetCharacteristic(iTargets));
+                        }
+                        destination->numberGroupsValue =
+                            source->numberGroupsValue;
 
-                    groupPhase = 0;
-                    do {
-                        AIPlayPhase* sourcePhase =
-                            this->plays[oldPhase].phase(groupPhase);
-                        AIPlayPhase* destinationPhase =
-                            this->plays[oldPhase + temp8].phase(groupPhase);
-                        currentPlay = 0;
-                        do {
-                            AIPlayPhaseCommand* phaseCommand =
-                                sourcePhase->command(currentPlay);
-                            if (phaseCommand->type() != 1) {
-                                destinationPhase->addCommand(*phaseCommand);
-                            } else {
-                                XYZ origin(0, 0, 0);
-                                XYZ rotatedPoint;
-                                XYZ originalPoint(phaseCommand->value1(),
-                                                  phaseCommand->value2(),
-                                                  phaseCommand->value3());
-                                originalPoint.rotateXYByFacet(
-                                    origin, rotatedPoint, (unsigned char)temp8);
-                                AIPlayPhaseCommand newCommand(
-                                    phaseCommand->group(), phaseCommand->type(),
-                                    rotatedPoint.yValue, rotatedPoint.zValue,
-                                    originalPoint.xValue);
-                                destinationPhase->addCommand(newCommand);
+                        for (int iGroups = 0; iGroups < 5; iGroups++) {
+                            AIPlayGroup* sourceGroup = source->group(iGroups);
+                            AIPlayGroup* destinationGroup =
+                                destination->group(iGroups);
+                            for (int jTypes = 0; jTypes < 6; jTypes++) {
+                                destinationGroup->setMinimum(
+                                    jTypes, sourceGroup->minimum(jTypes));
+                                destinationGroup->setMaximum(
+                                    jTypes, sourceGroup->maximum(jTypes));
                             }
-                            ++currentPlay;
-                        } while (currentPlay < 5);
+                        }
 
-                        int triggerIndex = 0;
-                        do {
-                            destinationPhase->addTrigger(
-                                *sourcePhase->trigger(triggerIndex));
-                            ++triggerIndex;
-                        } while (triggerIndex < 3);
-                        ++groupPhase;
-                    } while (groupPhase < 10);
+                        for (int iPhases = 0; iPhases < 10; iPhases++) {
+                            AIPlayPhase* sourcePhase = source->phase(iPhases);
+                            AIPlayPhase* destinationPhase =
+                                destination->phase(iPhases);
+                            for (int jCommands = 0; jCommands < 5;
+                                 jCommands++) {
+                                AIPlayPhaseCommand* command =
+                                    sourcePhase->command(jCommands);
+                                if (command->type() == 1) {
+                                    XYZ origin(0, 0, 0);
+                                    XYZ rotatedPoint;
+                                    XYZ originalPoint(command->value1(),
+                                                      command->value2(),
+                                                      command->value3());
+                                    originalPoint.rotateXYByFacet(
+                                        origin, rotatedPoint,
+                                        (unsigned char)facet);
+                                    AIPlayPhaseCommand newCommand(
+                                        command->group(), command->type(),
+                                        rotatedPoint.xValue,
+                                        rotatedPoint.yValue,
+                                        rotatedPoint.zValue);
+                                    destinationPhase->addCommand(newCommand);
+                                }
+                                else {
+                                    destinationPhase->addCommand(*command);
+                                }
+                            }
 
-                    ++temp8;
-                } while (temp8 < 8);
+                            for (int jTriggers = 0; jTriggers < 3;
+                                 jTriggers++) {
+                                AIPlayPhaseTrigger* trigger =
+                                    sourcePhase->trigger(jTriggers);
+                                destinationPhase->addTrigger(*trigger);
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        if (currentPlay >= 16000)
+            break;
     }
 
-    fclose(file);
+    fclose(fileIn);
     return 1;
 }
 

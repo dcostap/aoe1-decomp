@@ -686,13 +686,12 @@ long TribeMPSetupScreen::key_down_action(long p0, short p1, int p2, int p3, int 
 
 
 
-long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
+long TribeMPSetupScreen::action(TPanel* panel, long event,
+                                unsigned long param_3,
+                                unsigned long param_4)
 {
-    char file_name[260];
-    _finddata_t file_info;
-
-    if (param_1 != 0) {
-        if (param_1 == this->startButton && param_2 == 1) {
+    if (panel != 0) {
+        if (panel == this->startButton && event == 1) {
             if (this->chatInput != 0 && this->chatInput->active != 0) {
                 this->set_curr_child(this->chatInput);
             }
@@ -700,7 +699,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
             return 1;
         }
 
-        if (param_1 == this->ready_button && param_2 == 1) {
+        if (panel == this->ready_button && event == 1) {
             if (this->ready_button->get_state() != 0) {
                 L->Log("$$$ SELECTED I'M READY");
                 if (comm->IsHost()) {
@@ -708,28 +707,41 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                 } else {
                     if (rge_base_game->playerVersion(0) != 1) {
                         this->ready_button->set_state(0);
-                        this->TEasy_Panel::popupOKDialog(0x25E3, 0, 0x1C2, 100);
+                        this->popupOKDialog(0x25E3, 0, 0x1C2, 100);
                         return 1;
                     }
-                    int me = comm->WhoAmI() - 1;
+
+                    int player = comm->WhoAmI() - 1;
                     L->Log("$$$ SAVING MYCIV & MYTEAM");
-                    this->myCivilization = this->playerCivDrop[me]->get_id();
-                    this->myScenarioPlayer = this->scenarioPlayerDrop[me]->get_id();
-                    this->myPlayerColor = this->playerColor[me]->get_id();
-                    this->myPlayerTeam = this->playerTeam[me]->get_state() + 1;
+                    this->myCivilization =
+                        this->playerCivDrop[player]->get_id();
+                    this->myScenarioPlayer =
+                        this->scenarioPlayerDrop[player]->get_id();
+                    this->myPlayerColor =
+                        this->playerColor[player]->get_id();
+                    this->myPlayerTeam =
+                        this->playerTeam[player]->get_state() + 1;
+
                     if (rge_base_game->scenarioGame()) {
-                        char* dir = rge_base_game->prog_info->scenario_dir;
-                        sprintf(file_name, "%s%s.scn", dir,
+                        char file_name[260];
+                        struct _finddata_t file_info;
+                        char* scenario_dir =
+                            rge_base_game->prog_info->scenario_dir;
+                        sprintf(file_name, "%s%s.scn", scenario_dir,
                                 rge_base_game->scenarioName());
                         if (_findfirst(file_name, &file_info) == -1) {
-                            sprintf(file_name, "%s.scx", rge_base_game->scenarioName());
+                            sprintf(file_name, "%s.scx",
+                                    rge_base_game->scenarioName());
                         } else {
-                            sprintf(file_name, "%s.scn", rge_base_game->scenarioName());
+                            sprintf(file_name, "%s.scn",
+                                    rge_base_game->scenarioName());
                         }
-                        this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name);
+                        this->myScenarioChecksum =
+                            rge_base_game->get_scenario_checksum(file_name);
                     } else {
                         this->myScenarioChecksum = 0;
                     }
+
                     comm->SetMyReadiness(
                         1, this->myCivilization,
                         this->myScenarioPlayer + 1,
@@ -737,57 +749,60 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                         this->myPlayerColor, this->myPlayerTeam,
                         this->myScenarioChecksum, 1);
                 }
+
                 if (this->chatInput != 0 && this->chatInput->active != 0) {
                     this->set_curr_child(this->chatInput);
                 }
                 this->i_am_ready = 1;
             } else {
                 L->Log("$$$ SELECTED NOT READY");
-                int cd = 0;
-                if (!comm->IsHost()) {
-                    cd = rge_base_game->check_for_cd(0) + 1;
+                int cd_status;
+                if (comm->IsHost()) {
+                    cd_status = 0;
+                } else {
+                    cd_status = rge_base_game->check_for_cd(0) + 1;
                 }
-                comm->SetMyReadiness(0, 0, 0, cd, 0, 0, 0, 0);
+                comm->SetMyReadiness(0, 0, 0, cd_status, 0, 0, 0, 0);
                 if (this->chatInput != 0 && this->chatInput->active != 0) {
                     this->set_curr_child(this->chatInput);
                 }
                 this->i_am_ready = 0;
             }
+
             this->fillPlayers();
             if (comm->IsHost()) {
                 this->gameSettingsButton->set_disabled(this->i_am_ready);
-                this->startButton->set_disabled(this->i_am_ready == 0);
+                this->startButton->set_disabled(!this->i_am_ready);
                 rge_base_game->send_game_options();
                 this->resend_game_options = 0;
                 comm->SendSharedData(1);
-                return 1;
             }
             return 1;
         }
 
-        if (param_1 == this->gameSettingsButton && param_2 == 1) {
+        if (panel == this->gameSettingsButton && event == 1) {
             if (this->chatInput != 0 && this->chatInput->active != 0) {
                 this->set_curr_child(this->chatInput);
             }
             if (panel_system.panel("Game Settings Screen") == 0) {
                 rge_base_game->disable_input();
-                new TribeGameSettingsScreen();
+                new TribeGameSettingsScreen;
             }
             panel_system.setCurrentPanel("Game Settings Screen", 0);
             return 1;
         }
 
-        if (param_1 == this->help_button && param_2 == 1) {
+        if (panel == this->help_button && event == 1) {
             this->setup_popup_help();
             return 1;
         }
 
-        if (param_1 == this->close_button && param_2 == 1) {
+        if (panel == this->close_button && event == 1) {
             rge_base_game->close();
             return 1;
         }
 
-        if (param_1 == this->cancelButton && param_2 == 1) {
+        if (panel == this->cancelButton && event == 1) {
             if (this->chatInput != 0 && this->chatInput->active != 0) {
                 this->set_curr_child(this->chatInput);
             }
@@ -795,47 +810,54 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
             return 1;
         }
 
-        if (param_1 == this->netInfoButton) {
-            if (param_2 == 1) {
+        if (panel == this->netInfoButton) {
+            if (event == 1) {
                 this->showNetInfo();
                 return 1;
             }
-        } else if (param_2 == 1) {
-            for (int i = 0; i < 8; i++) {
-                if (param_1 == this->playerColor[i]) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, this->playerColor[i]->get_id());
+        } else if (event == 1) {
+            for (int i = 0; i < 8; ++i) {
+                if (panel == this->playerColor[i]) {
+                    int color = this->playerColor[i]->get_id();
+                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
+                        i, color);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
-                        this->myPlayerColor = this->playerColor[i]->get_id();
-                        return 1;
+                        this->myPlayerColor =
+                            this->playerColor[i]->get_id();
                     }
                     return 1;
                 }
-                if (param_1 == this->playerTeam[i]) {
-                    rge_base_game->setPlayerTeam(i, this->playerTeam[i]->get_state() + 1);
+
+                if (panel == this->playerTeam[i]) {
+                    int team = this->playerTeam[i]->get_state() + 1;
+                    rge_base_game->setPlayerTeam(i, team);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
-                        this->myPlayerTeam = this->playerTeam[i]->get_state() + 1;
-                        return 1;
+                        this->myPlayerTeam =
+                            this->playerTeam[i]->get_state() + 1;
                     }
                     return 1;
                 }
             }
         }
 
-        if (param_1 == this->chatInput && param_2 == 0 &&
-            this->chatInput->currentLine() != 0 && this->chatInput->currentLine()[0] != 0) {
+        if (panel == this->chatInput && event == 0 &&
+            this->chatInput->currentLine() != 0 &&
+            this->chatInput->currentLine()[0] != 0) {
             comm->SendChatMsgAll(this->chatInput->currentLine());
             this->chatInput->set_text("");
             return 1;
         }
 
-        if (param_1 == this->numberPlayersDrop && param_2 == 0) {
-            rge_base_game->setNumberPlayers(this->numberPlayersDrop->get_id());
+        if (panel == this->numberPlayersDrop && event == 0) {
+            rge_base_game->setNumberPlayers(
+                this->numberPlayersDrop->get_id());
             this->updateSummary();
             return 1;
         }
 
-        if (param_1->panelName() != 0 && strcmp(param_1->panelName(), "Game Settings Screen") == 0) {
-            if (param_2 != 0) {
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "Game Settings Screen") == 0) {
+            if (event != 0) {
                 this->updateSummary();
                 if (!rge_base_game->singlePlayerGame()) {
                     rge_base_game->send_game_options();
@@ -846,80 +868,97 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
             return 1;
         }
 
-        if (param_1->panelName() != 0 && strcmp(param_1->panelName(), "Kick Dialog") == 0) {
-            if (param_2 == 0) {
-                long id = this->playerNameDrop[this->playerToKick - 1]->get_id();
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "Kick Dialog") == 0) {
+            if (event == 0) {
+                PLAYERHUMANITY humanity =
+                    static_cast<PLAYERHUMANITY>(
+                        this->playerNameDrop[this->playerToKick - 1]
+                            ->get_id());
                 comm->Kick(this->playerToKick);
-            comm->SetPlayerHumanity(this->playerToKick,
-                                    static_cast<PLAYERHUMANITY>(id));
-                this->playerNameDrop[this->playerToKick - 1]->set_line(
-                    this->playerNameDrop[this->playerToKick - 1]->get_line(id));
+                comm->SetPlayerHumanity(this->playerToKick, humanity);
+                long line =
+                    this->playerNameDrop[this->playerToKick - 1]
+                        ->get_line(humanity);
+                this->playerNameDrop[this->playerToKick - 1]->set_line(line);
             } else {
                 this->playerNameDrop[this->playerToKick - 1]->set_line(0);
             }
-            delete param_1;
+            delete panel;
             return 1;
         }
 
-        if (param_2 == 0 && rge_base_game->numberPlayers() > 0) {
+        if (event == 0 && rge_base_game->numberPlayers() > 0) {
             int i = 0;
-            TDropDownPanel** player_civ = this->playerCivDrop;
-            while (1) {
-                if (param_1 == player_civ[-8]) {
+            do {
+                if (panel == this->playerNameDrop[i]) {
                     if (rge_base_game->multiplayerGame() &&
-                        player_civ[-8]->get_line() > 0 &&
+                        this->playerNameDrop[i]->get_line() > 0 &&
                         comm->IsPlayerHuman(i + 1)) {
                         this->kickPlayer(i + 1);
-                        return 1;
+                    } else {
+                        comm->SetPlayerHumanity(
+                            i + 1,
+                            static_cast<PLAYERHUMANITY>(
+                                this->playerNameDrop[i]->get_id()));
                     }
-                    comm->SetPlayerHumanity(
-                        i + 1,
-                        static_cast<PLAYERHUMANITY>(
-                            player_civ[-8]->get_id()));
                     return 1;
                 }
-                if (param_1 == player_civ[0]) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, player_civ[0]->get_id());
+
+                if (panel == this->playerCivDrop[i]) {
+                    int civilization = this->playerCivDrop[i]->get_id();
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
+                        i, civilization);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
-                        this->myCivilization = player_civ[0]->get_id();
-                        return 1;
+                        this->myCivilization =
+                            this->playerCivDrop[i]->get_id();
                     }
                     return 1;
                 }
-                if (param_1 == player_civ[8]) {
+
+                if (panel == this->scenarioPlayerDrop[i]) {
                     if (rge_base_game->multiplayerGame()) {
-                        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, player_civ[8]->get_id());
+                        int scenario_player =
+                            this->scenarioPlayerDrop[i]->get_id();
+                        static_cast<TRIBE_Game*>(rge_base_game)
+                            ->setScenarioPlayer(i, scenario_player);
                         if (!comm->IsHost()) {
-                            this->myScenarioPlayer = player_civ[8]->get_id();
-                            return 1;
+                            this->myScenarioPlayer =
+                                this->scenarioPlayerDrop[i]->get_id();
                         }
                         return 1;
                     }
-                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, player_civ[8]->get_id());
-                    int sp = 1;
-                    int player = 0;
+
+                    int scenario_player =
+                        this->scenarioPlayerDrop[0]->get_id();
+                    static_cast<TRIBE_Game*>(rge_base_game)
+                        ->setScenarioPlayer(0, scenario_player);
+                    int player = 1;
+                    int position = 0;
                     do {
-                        if (player != static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0) &&
-                            this->scenarioInfo->Get_player_Active(player) != 0) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(sp, player);
-                            sp++;
-                            if (sp >= rge_base_game->numberPlayers()) break;
+                        if (position !=
+                                static_cast<TRIBE_Game*>(rge_base_game)
+                                    ->scenarioPlayer(0) &&
+                            this->scenarioInfo->Get_player_Active(position)) {
+                            static_cast<TRIBE_Game*>(rge_base_game)
+                                ->setScenarioPlayer(player, position);
+                            ++player;
+                            if (player >= rge_base_game->numberPlayers()) {
+                                break;
+                            }
                         }
-                        player++;
-                        } while (player < 8);
+                        ++position;
+                    } while (position < 8);
                     this->fillPlayers();
                     return 1;
                 }
-                i++;
-                player_civ++;
-                if (i >= rge_base_game->numberPlayers()) {
-                    break;
-                }
-            }
+
+                ++i;
+            } while (i < rge_base_game->numberPlayers());
         }
-        return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
     }
-    return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
+
+    return this->TEasy_Panel::action(panel, event, param_3, param_4);
 }
 
 
@@ -1307,238 +1346,295 @@ void TribeMPSetupScreen::cancelScreen(int timed_out) {
 long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
 {
     char message[256];
-    int ready;
-    unsigned long user1, user2, user3, user4, user5, user6, user7;
 
     if (rge_base_game->singlePlayerGame()) {
         return 1;
     }
 
     switch (command) {
-    case 0x17BB:  // COMM_SHARED_DATA_SENT
-        L->Log("$$$ USER_COMMAND: COMM_SHARED_DATA_SENT (%d,%d)", command, param);
+    case COMM_SHARED_DATA_SENT: {
+        L->Log("$$$ USER_COMMAND: COMM_SHARED_DATA_SENT (%d,%d)", command,
+               param);
         if (comm->IsHost()) {
-            int i = 0;
-            if (rge_base_game->numberPlayers() > 0) {
-                do {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) >= 0x32) {
-                        L->Log("$$$ HOST RESET CIV+50");
-                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i,
-                            static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) - 0x32);
-                        this->resend_game_options = 1;
-                    }
-                    if (rge_base_game->playerTeam(i) >= 0x32) {
-                        L->Log("$$$ HOST RESET TEAM+50");
-                        rge_base_game->setPlayerTeam(i, rge_base_game->playerTeam(i) - 0x32);
-                        this->resend_game_options = 1;
-                    }
-                    ++i;
-                } while (i < rge_base_game->numberPlayers());
+            for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
+                int civilization =
+                    static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
+                if (civilization >= 0x32) {
+                    L->Log("$$$ HOST RESET CIV+50");
+                    civilization =
+                        static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
+                        i, civilization - 0x32);
+                    this->resend_game_options = 1;
+                }
+
+                int team = rge_base_game->playerTeam(i);
+                if (team >= 0x32) {
+                    L->Log("$$$ HOST RESET TEAM+50");
+                    team = rge_base_game->playerTeam(i);
+                    rge_base_game->setPlayerTeam(i, team - 0x32);
+                    this->resend_game_options = 1;
+                }
             }
         }
         return 1;
+    }
 
-    case 0x17A4:  // COMM_UPDATE_PLAYERS
-        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PLAYERS (%d,%d)", command, param);
-        {
-            int changed = 0;
-            if (comm->IsHost() && this->sent_cd_status == 0) {
-                this->sent_cd_status = 1;
-                if (rge_base_game->check_for_cd(0)) {
-                    changed = 1;
-                    rge_base_game->setPlayerHasCD(comm->WhoAmI() - 1, 1);
-                }
+    case COMM_UPDATE_PLAYERS: {
+        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PLAYERS (%d,%d)", command,
+               param);
+        int changed = 0;
+
+        if (comm->IsHost() && this->sent_cd_status == 0) {
+            this->sent_cd_status = 1;
+            if (rge_base_game->check_for_cd(0) != 0) {
+                changed = 1;
+                rge_base_game->setPlayerHasCD(comm->WhoAmI() - 1, 1);
             }
-            if (comm->IsHost()) {
-                int i = 0;
-                long* checksum = this->scenarioCheckSum;
-                int player;
-                do {
-                    player = i + 1;
-                    int humanity = comm->GetPlayerHumanity(player);
-                    if (comm->WhoAmI() != player && humanity == 2) {
-                        comm->GetClientReadiness(player, &ready,
-                                                 &user1, &user2, &user3,
-                                                 &user4, &user5, &user6,
-                                                 &user7);
-                        if (user1 != 0 && user1 != static_cast<TRIBE_Game*>(rge_base_game)->civilization(i)) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, user1);
+        }
+
+        if (comm->IsHost()) {
+            long* scenario_checksum = this->scenarioCheckSum;
+            for (int i = 0; i < 8; ++i, ++scenario_checksum) {
+                int player = i + 1;
+                int humanity = comm->GetPlayerHumanity(player);
+                if (comm->WhoAmI() == player) {
+                    if (humanity == ME_HUMAN) {
+                        continue;
+                    }
+                } else if (humanity == ME_HUMAN) {
+                    int ready;
+                    unsigned long civilization;
+                    unsigned long scenario_player;
+                    unsigned long cd;
+                    unsigned long color;
+                    unsigned long team;
+                    unsigned long checksum;
+                    unsigned long version;
+
+                    comm->GetClientReadiness(
+                        player, &ready, &civilization, &scenario_player,
+                        &cd, &color, &team, &checksum, &version);
+
+                    if (civilization != 0 &&
+                        civilization != static_cast<unsigned long>(
+                                            static_cast<TRIBE_Game*>(
+                                                rge_base_game)
+                                                ->civilization(i))) {
+                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
+                            i, civilization);
+                        changed = 1;
+                    }
+                    if (scenario_player != 0) {
+                        int value = static_cast<int>(scenario_player) - 1;
+                        if (value != static_cast<TRIBE_Game*>(rge_base_game)
+                                        ->scenarioPlayer(i)) {
+                            static_cast<TRIBE_Game*>(rge_base_game)
+                                ->setScenarioPlayer(i, value);
                             changed = 1;
                         }
-                        if (user2 != 0) {
-                            int sp = user2 - 1;
-                            if (sp != static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(i)) {
-                                static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, sp);
+                    }
+                    if (cd != 0) {
+                        if (cd == 1) {
+                            if (rge_base_game->playerHasCD(i) == 1) {
+                                rge_base_game->setPlayerHasCD(i, 0);
                                 changed = 1;
                             }
-                        }
-                        if (user3 != 0) {
-                            if (user3 == 1) {
-                                if (rge_base_game->playerHasCD(i) == 1) {
-                                    rge_base_game->setPlayerHasCD(i, 0);
-                                    changed = 1;
-                                }
-                            } else if (user3 == 2) {
-                                if (rge_base_game->playerHasCD(i) == 0) {
-                                    rge_base_game->setPlayerHasCD(i, 1);
-                                    changed = 1;
-                                }
-                            }
-                        }
-                        if (user4 != 0 && user4 != static_cast<TRIBE_Game*>(rge_base_game)->playerColor(i)) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, user4);
+                        } else if (cd == 2 &&
+                                   rge_base_game->playerHasCD(i) == 0) {
+                            rge_base_game->setPlayerHasCD(i, 1);
                             changed = 1;
                         }
-                        if (user5 != 0 && user5 != rge_base_game->playerTeam(i)) {
-                            rge_base_game->setPlayerTeam(i, user5);
-                            changed = 1;
-                        }
-                        if (user6 != 0) {
-                            *checksum = user6;
-                        }
-                        if (user7 != 0) {
-                            rge_base_game->setPlayerVersion(
-                                i, static_cast<unsigned char>(user7));
-                            changed = 1;
-                        }
-                    } else if (humanity != 2 && humanity != 4) {
-                        int r = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x6D6) % 16 + 1;
-                        if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) != r) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, r);
-                            changed = 1;
-                        }
-                        if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(i) != i) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, i);
-                            changed = 1;
-                        }
-                        if (rge_base_game->playerHasCD(i)) {
-                            rge_base_game->setPlayerHasCD(i, 0);
-                            changed = 1;
-                        }
-                        if (static_cast<TRIBE_Game*>(rge_base_game)->playerColor(i) != this->defaultColor[i]) {
-                            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
-                            changed = 1;
-                        }
-                        if (rge_base_game->playerTeam(i) != 1) {
-                            rge_base_game->setPlayerTeam(i, 1);
-                            changed = 1;
-                        }
-                        if (rge_base_game->playerVersion(i) != 0) {
-                            rge_base_game->setPlayerVersion(i, 0);
-                            changed = 1;
-                        }
-                        *checksum = 0;
                     }
-                    checksum++;
-                    i = player;
-                } while (player < 8);
-                if (changed) {
-                    rge_base_game->send_game_options();
-                    this->resend_game_options = 0;
+                    if (color != 0 &&
+                        color != static_cast<unsigned long>(
+                                    static_cast<TRIBE_Game*>(rge_base_game)
+                                        ->playerColor(i))) {
+                        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
+                            i, color);
+                        changed = 1;
+                    }
+                    if (team != 0 &&
+                        team != static_cast<unsigned long>(
+                                    rge_base_game->playerTeam(i))) {
+                        rge_base_game->setPlayerTeam(i, team);
+                        changed = 1;
+                    }
+                    if (checksum != 0) {
+                        *scenario_checksum = checksum;
+                    }
+                    if (version != 0) {
+                        rge_base_game->setPlayerVersion(
+                            i, static_cast<unsigned char>(version));
+                        changed = 1;
+                    }
+                    continue;
+                }
+
+                if (humanity == ME_COMPUTER) {
+                    continue;
+                }
+
+                int civilization =
+                    debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp",
+                               0x6D6) %
+                        16 +
+                    1;
+                if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) !=
+                    civilization) {
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
+                        i, civilization);
+                    changed = 1;
+                }
+                if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(i) !=
+                    i) {
+                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
+                        i, i);
+                    changed = 1;
+                }
+                if (rge_base_game->playerHasCD(i) != 0) {
+                    rge_base_game->setPlayerHasCD(i, 0);
+                    changed = 1;
+                }
+                if (static_cast<TRIBE_Game*>(rge_base_game)->playerColor(i) !=
+                    this->defaultColor[i]) {
+                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
+                        i, this->defaultColor[i]);
+                    changed = 1;
+                }
+                if (rge_base_game->playerTeam(i) != 1) {
+                    rge_base_game->setPlayerTeam(i, 1);
+                    changed = 1;
+                }
+                if (rge_base_game->playerVersion(i) != 0) {
+                    rge_base_game->setPlayerVersion(i, 0);
+                    changed = 1;
+                }
+                *scenario_checksum = 0;
+            }
+
+            if (changed != 0) {
+                rge_base_game->send_game_options();
+                this->resend_game_options = 0;
+            }
+        }
+
+        this->fillPlayers();
+        this->set_redraw(TPanel::RedrawNormal);
+        return 1;
+    }
+
+    case COMM_UPDATE_PARAMS: {
+        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PARAMS (%d,%d)", command,
+               param);
+        rge_base_game->receive_game_options();
+        for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
+            int civilization =
+                static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
+            if (civilization >= 0x32) {
+                L->Log("$$$ CIV2>50");
+                civilization =
+                    static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
+                static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
+                    i, civilization - 0x32);
+                if (i + 1 == comm->WhoAmI()) {
+                    this->myCivilization = 0;
+                    L->Log("$$$ RESETTING MYCIV2");
                 }
             }
-            this->fillPlayers();
-            this->set_redraw(TPanel::RedrawNormal);
-            return 1;
-        }
 
-    case 0x17D5:  // CHAT_RECEIVED
-        L->Log("$$$ USER_COMMAND: CHAT_RECEIVED (%d,%d)", command, param);
-        this->fillChat(param);
-        return 1;
-
-    case 0x17A6:  // COMM_UPDATE_PARAMS
-        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PARAMS (%d,%d)", command, param);
-        rge_base_game->receive_game_options();
-        {
-            int i = 0;
-            if (rge_base_game->numberPlayers() > 0) {
-                do {
-                    if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) >= 0x32) {
-                        L->Log("$$$ CIV2>50");
-                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i,
-                            static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) - 0x32);
-                        if (i + 1 == comm->WhoAmI()) {
-                            this->myCivilization = 0;
-                            L->Log("$$$ RESETTING MYCIV2");
-                        }
-                    }
-                    if (rge_base_game->playerTeam(i) >= 0x32) {
-                        L->Log("$$$ TEAM2>50");
-                        rge_base_game->setPlayerTeam(i, rge_base_game->playerTeam(i) - 0x32);
-                        if (i + 1 == comm->WhoAmI()) {
-                            this->myPlayerTeam = 0;
-                            L->Log("$$$ RESETTING MYTEAM2");
-                        }
-                    }
-                    ++i;
-                } while (i < rge_base_game->numberPlayers());
+            int team = rge_base_game->playerTeam(i);
+            if (team >= 0x32) {
+                L->Log("$$$ TEAM2>50");
+                team = rge_base_game->playerTeam(i);
+                rge_base_game->setPlayerTeam(i, team - 0x32);
+                if (i + 1 == comm->WhoAmI()) {
+                    this->myPlayerTeam = 0;
+                    L->Log("$$$ RESETTING MYTEAM2");
+                }
             }
         }
-        if (this->myScenarioPlayer != 0) {
-            if (strcmp(this->saveScenarioName, rge_base_game->scenarioName()) != 0) {
-                this->myScenarioPlayer = -1;
-            }
+
+        if (this->myScenarioPlayer != 0 &&
+            strcmp(this->saveScenarioName, rge_base_game->scenarioName()) != 0) {
+            this->myScenarioPlayer = -1;
         }
         this->updateSummary();
+
         if (!comm->IsHost()) {
-            if (!(this->sent_cd_status != 0 &&
-                  this->myScenarioChecksum == this->saveScenarioChecksum &&
-                  comm->IsPlayerReady(comm->WhoAmI()) == this->i_am_ready)) {
-                int checksum = this->myScenarioChecksum;
-                this->sent_cd_status = 1;
-                this->saveScenarioChecksum = checksum;
-                comm->SetMyReadiness(this->i_am_ready, 0, 0,
-                                     rge_base_game->check_for_cd(0) + 1, 0, 0, checksum, 1);
+            int me = comm->WhoAmI();
+            if (this->sent_cd_status != 0 &&
+                this->myScenarioChecksum == this->saveScenarioChecksum &&
+                comm->IsPlayerReady(me) == this->i_am_ready) {
+                return 1;
             }
+
+            this->sent_cd_status = 1;
+            this->saveScenarioChecksum = this->myScenarioChecksum;
+            comm->SetMyReadiness(
+                this->i_am_ready, 0, 0,
+                rge_base_game->check_for_cd(0) + 1, 0, 0,
+                this->myScenarioChecksum, 1);
         }
         return 1;
+    }
 
-    case 0x17A7:  // COMM_LAUNCH_GAME
-        L->Log("$$$ USER_COMMAND: COMM_LAUNCH_GAME (%d,%d)", command, param);
+    case COMM_LAUNCH_GAME:
+        L->Log("$$$ USER_COMMAND: COMM_LAUNCH_GAME (%d,%d)", command,
+               param);
         chat->setWindowHandle(AppWnd);
         comm->SetWindowHandle(AppWnd);
         static_cast<TRIBE_Game*>(rge_base_game)->start_game(0);
         return 1;
 
-    case 0x17A8:  // COMM_CANCEL_GAME
+    case COMM_CANCEL_GAME:
         L->Log("$$$ USER_COMMAND: COMM_CANCEL_GAME (%d,%d)", command, param);
         this->handleKickedPlayer(0);
         return 1;
 
-    case 0x17A9:  // COMM_HOST_EXITED
+    case COMM_HOST_EXITED:
         L->Log("$$$ USER_COMMAND: COMM_HOST_EXITED (%d,%d)", command, param);
         this->handleKickedPlayer(0);
         return 1;
 
-    case 0x17B2:  // COMM_PLAYER_DROPPED
-        L->Log("$$$ USER_COMMAND: COMM_PLAYER_DROPPED (%d,%d)", command, param);
+    case COMM_PLAYER_KICKED:
+        L->Log("$$$ USER_COMMAND: COMM_PLAYER_KICKED (%d,%d)", command,
+               param);
         this->handleKickedPlayer(1);
         return 1;
 
-    case 0x17AA:  // COMM_PLAYER_KICKED
-        L->Log("$$$ USER_COMMAND: COMM_PLAYER_KICKED (%d,%d)", command, param);
+    case COMM_NO_LINK:
+        L->Log("$$$ USER_COMMAND: COMM_NO_LINK (%d,%d)", command, param);
+        this->cancelScreen(0);
+        return 1;
+
+    case COMM_PLAYER_DROPPED:
+        L->Log("$$$ USER_COMMAND: COMM_PLAYER_DROPPED (%d,%d)", command,
+               param);
         this->handleKickedPlayer(1);
         return 1;
 
-    case 0x17B3:  // COMM_OTHER_PLAYER_DROPPED
-        L->Log("$$$ USER_COMMAND: COMM_OTHER_PLAYER_DROPPED (%d,%d)", command, param);
+    case COMM_OTHER_PLAYER_DROPPED:
+        L->Log("$$$ USER_COMMAND: COMM_OTHER_PLAYER_DROPPED (%d,%d)",
+               command, param);
         this->fillPlayers();
         return 1;
 
-    case 0x17B7:  // COMM_PLAYER_SERVICE_ERROR
-        L->Log("$$$ USER_COMMAND: COMM_PLAYER_SERVICE_ERROR (%d,%d)", command, param);
-        sprintf(message, this->get_string(0x25DE), comm->GetPlayerName(param));
-        this->popupOKDialog(message, 0, 0x1C2, 100);
-        return 1;
-
-    case 0x17B6:  // COMM_BAD_VERSION
+    case COMM_PLAYER_BAD_VERSION:
         L->Log("$$$ USER_COMMAND: COMM_BAD_VERSION (%d,%d)", command, param);
         sprintf(message, this->get_string(0x25DD), comm->GetPlayerName(param));
         this->popupOKDialog(message, 0, 0x1C2, 100);
         return 1;
 
-    case 0x17B9:  // COMM_HOST_BUSY
+    case COMM_PLAYER_SERVICE_ERROR:
+        L->Log("$$$ USER_COMMAND: COMM_PLAYER_SERVICE_ERROR (%d,%d)", command,
+               param);
+        sprintf(message, this->get_string(0x25DE),
+                comm->GetPlayerName(param));
+        this->popupOKDialog(message, 0, 0x1C2, 100);
+        return 1;
+
+    case COMM_HOST_BUSY:
         L->Log("$$$ USER_COMMAND: COMM_HOST_BUSY (%d,%d)", command, param);
         if (comm->IsLobbyLaunched()) {
             this->cancelScreen(1);
@@ -1547,9 +1643,9 @@ long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
         }
         return 1;
 
-    case 0x17AE:  // COMM_NO_LINK
-        L->Log("$$$ USER_COMMAND: COMM_NO_LINK (%d,%d)", command, param);
-        this->cancelScreen(0);
+    case 0x17D5:
+        L->Log("$$$ USER_COMMAND: CHAT_RECEIVED (%d,%d)", command, param);
+        this->fillChat(param);
         return 1;
 
     default:
