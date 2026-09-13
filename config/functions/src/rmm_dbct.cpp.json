@@ -13,7 +13,7 @@
     "00483430": {"status": "matching", "symbol": "?generate@RGE_RMM_Database_Controller@@UAEEXZ"},
     "00483540": {"status": "matching", "symbol": "?init@RGE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z"},
     "004835A0": {"status": "matching", "symbol": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ"},
-    "00483600": {"status": "scratch", "symbol": "?calc_land_start@RGE_RMM_Database_Controller@@IAEXJJJPAURGE_Land_Data_Entry@@@Z"},
+    "00483600": {"status": "new_verified_logic", "symbol": "?calc_land_start@RGE_RMM_Database_Controller@@IAEXJJJPAURGE_Land_Data_Entry@@@Z", "behavior_review": "logic_matching/00483600/coord-03-20260913T040347Z/attempt-01"},
     "00483A20": {"status": "scratch", "symbol": "?add_land_module@RGE_RMM_Database_Controller@@MAEXE@Z"},
     "00484160": {"status": "new_verified_logic", "symbol": "?add_terrain_module@RGE_RMM_Database_Controller@@MAEXXZ", "behavior_review": "logic_matching/00484160/review-01/attempt-01"},
     "00484320": {"status": "accepted_drift", "symbol": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"},

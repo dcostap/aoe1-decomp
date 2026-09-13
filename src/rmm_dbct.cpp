@@ -420,111 +420,139 @@ uchar RGE_RMM_Database_Controller::de_init()
 void RGE_RMM_Database_Controller::calc_land_start(
     long start, long radius, long count, RGE_Land_Data_Entry* land)
 {
+    float radius2;
+    float bound_square;
+    long min_x;
+    long min_y;
+    long max_x;
+    long max_y;
     long index;
-    long previous;
+    long end;
     long x;
     long y;
-    bool retry;
-    float bound;
-    long minimum_x;
-    long minimum_y;
-    long maximum_x;
-    long maximum_y;
+    long index2;
+    long* land_ptr;
+    const long* prior;
+    long dx;
+    long dy;
+    uchar not_done;
 
-    L->Log(s_calc_land_start, debug_rand(s_rmm_dbct_path, 0x1C3));
-    long diameter = radius + radius;
-    bound = (float)(this->map_width - diameter) / sqrt((float)count);
+    int random = debug_rand(s_rmm_dbct_path, 451);
+    L->Log(s_calc_land_start, random);
+
+    radius2 = (float)(this->map_width - radius * 2) /
+        sqrt((float)count);
+
     if (count > 3 && count < 7)
-        bound *= 0.9F;
+        radius2 *= 0.9F;
     else if (count >= 7)
-        bound *= 0.8F;
+        radius2 *= 0.8F;
 
-    float bound_square = bound * bound;
-    minimum_x = (int)(this->map_width / 2 - bound * 0.9);
-    minimum_y = (int)(this->map_height / 2 - bound * 0.9);
-    maximum_x = (int)(this->map_width / 2 - bound * -0.9);
-    maximum_y = (int)(this->map_height / 2 - bound * -0.9);
-    if (minimum_x <= radius)
-        minimum_x = radius + 1;
-    if (minimum_y <= radius)
-        minimum_y = radius + 1;
-    if (maximum_x >= this->map_width - radius - 1)
-        maximum_x = this->map_width - radius - 2;
-    if (maximum_y >= this->map_height - radius - 1)
-        maximum_y = this->map_height - radius - 2;
+    bound_square = radius2 * radius2;
+    min_x = (long)(this->map_width / 2 - radius2 * 0.9);
+    min_y = (long)(this->map_height / 2 - radius2 * 0.9);
+    max_x = (long)(this->map_width / 2 + radius2 * 0.9);
+    max_y = (long)(this->map_height / 2 + radius2 * 0.9);
+
+    if (min_x <= radius)
+        min_x = radius + 1;
+    if (min_y <= radius)
+        min_y = radius + 1;
+    if (max_x >= this->map_width - radius - 1)
+        max_x = this->map_width - radius - 2;
+    if (max_y >= this->map_height - radius - 1)
+        max_y = this->map_height - radius - 2;
 
     switch (land->placement_type) {
     case 0:
         L->Log(s_calc_land_end_point1);
-        for (index = start; index < start + count; ++index) {
-            this->land_info.land[index].x =
-                debug_rand(s_rmm_dbct_path, 0x1E5) *
-                (this->map_width - diameter) / 0x7FFF + radius;
-            this->land_info.land[index].y =
-                debug_rand(s_rmm_dbct_path, 0x1E6) *
-                (this->map_height - diameter) / 0x7FFF + radius;
+        end = start + count;
+        if (start < end) {
+            land_ptr = &this->land_info.land[start].y;
+            do {
+                land_ptr[-1] = debug_rand(s_rmm_dbct_path, 0x1e5) *
+                    (this->map_width - radius * 2) / 0x7fff + radius;
+                *land_ptr = debug_rand(s_rmm_dbct_path, 0x1e6) *
+                    (this->map_height - radius * 2) / 0x7fff + radius;
+                land_ptr += 13;
+                --count;
+            } while (count != 0);
         }
         break;
+
     case 1:
         L->Log(s_calc_land_end_point2);
-        for (index = start; index < start + count; ++index) {
-            this->land_info.land[index].x = land->x;
-            this->land_info.land[index].y = land->y;
+        end = start + count;
+        if (start < end) {
+            land_ptr = &this->land_info.land[start].y;
+            do {
+                land_ptr[-1] = land->x;
+                *land_ptr = land->y;
+                land_ptr += 13;
+                --count;
+            } while (count != 0);
         }
         break;
+
     case 2:
         L->Log(s_calc_land_end_point3);
         index = start;
-        if (index < start + count) {
+        end = start + count;
+        if (index < end) {
+            land_ptr = &this->land_info.land[index].y;
             do {
                 do {
-                    retry = false;
-                    x = debug_rand(s_rmm_dbct_path, 0x1FC) *
-                        (this->map_width - diameter) / 0x7FFF + radius;
-                    y = debug_rand(s_rmm_dbct_path, 0x1FD) *
-                        (this->map_height - diameter) / 0x7FFF + radius;
-                    if (x > minimum_x && x < maximum_x &&
-                        y > minimum_y && y < maximum_y)
-                        goto retry_position;
-                    previous = start;
-                    if (previous < index) {
-                        do {
-                            long delta_x;
-                            long delta_y;
-                            delta_x =
-                                x - this->land_info.land[previous].x;
-                            if (delta_x < 0)
-                                delta_x = -delta_x;
-                            delta_y =
-                                y - this->land_info.land[previous].y;
-                            if (delta_y < 0)
-                                delta_y = -delta_y;
-                            if ((float)(delta_x * delta_x +
-                                        delta_y * delta_y) <= bound_square) {
-                                if (previous == index - 1) {
-                                    this->land_info.land[index].y = y;
-                                    this->land_info.land[index].x = x;
-                                    L->Log(s_calc_land_xy, index, x, y);
-                                }
-                                goto retry_position;
-                            }
-                            ++previous;
-                        } while (previous < index);
+                    not_done = 0;
+                    x = debug_rand(s_rmm_dbct_path, 0x1fc) *
+                        (this->map_width - radius * 2) / 0x7fff + radius;
+                    y = debug_rand(s_rmm_dbct_path, 0x1fd) *
+                        (this->map_height - radius * 2) / 0x7fff + radius;
+
+                    if (x > min_x && x < max_x &&
+                        y > min_y && y < max_y) {
+                        not_done = 1;
                     }
-                    goto retry_done;
-retry_position:
-                    retry = true;
-retry_done:
-                    ;
-                } while (retry);
-                this->land_info.land[index].x = x;
-                this->land_info.land[index].y = y;
+                    else {
+                        index2 = start;
+                        prior = land_ptr;
+                        if (start < index) {
+                            do {
+                                dx = x - prior[-1];
+                                if (dx < 0)
+                                    dx = -dx;
+                                dy = y - *prior;
+                                if (dy < 0)
+                                    dy = -dy;
+                                if ((float)(dx * dx + dy * dy) <=
+                                    bound_square) {
+                                    if (index2 == index - 1) {
+                                        long* fallback =
+                                            &this->land_info.land[index - 1].y;
+                                        *fallback = y;
+                                        fallback[-1] = x;
+                                        L->Log(s_calc_land_xy,
+                                               index2, x, y);
+                                    }
+                                    not_done = 1;
+                                    break;
+                                }
+                                prior += 13;
+                                ++index2;
+                            } while (index2 < index);
+                        }
+                    }
+                } while (not_done != 0);
+
+                land_ptr[-1] = x;
+                *land_ptr = y;
                 L->Log(s_calc_land_xy, index, x, y);
                 ++index;
-            } while (index < start + count);
+                land_ptr += 13;
+            } while (index < end);
         }
         break;
     }
+
     L->Log(s_calc_land_end);
 }
 
