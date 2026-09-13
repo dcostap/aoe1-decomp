@@ -4705,51 +4705,49 @@ void TRIBE_Game::shutdown_video_system()
 
 void TRIBE_Game::disconnect_multiplayer_game()
 {
-    if (this->multiplayerGame()) {
-        if (this->prog_mode == 4 || this->prog_mode == 6 ||
-            this->prog_mode == 7 || this->prog_mode == 5) {
-            this->comm_handler->SendIResignMsg();
+    if (this->multiplayerGame() == 0) {
+        this->comm_handler->GameOver();
+        return;
+    }
+
+    if (this->prog_mode != 4 && this->prog_mode != 6 &&
+        this->prog_mode != 7 && this->prog_mode != 5) {
+        return;
+    }
+
+    this->comm_handler->SendIResignMsg();
+    this->comm_handler->ShutdownGameMessages();
+
+    if (this->comm_handler->CountWaitingMessages() > 0) {
+        this->disable_input();
+        this->show_status_message(0x4C0, 0, -1);
+
+        unsigned long start_time = debug_timeGetTime(
+            "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15F8);
+        unsigned long last_time = start_time;
+
+        while (this->world != 0 && this->world->game_state != 1) {
             this->comm_handler->ShutdownGameMessages();
-
-            if (this->comm_handler->CountWaitingMessages() > 0) {
-                this->disable_input();
-                this->show_status_message(0x4C0, 0, -1);
-
-                unsigned long start_time = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15F8);
-                unsigned long elapsed_start = start_time;
-
-                int disconnected = 0;
-                while (!disconnected) {
-                    unsigned long now;
-                    if (this->world == 0 || this->world->game_state == 1) {
-                        break;
-                    }
-
-                    this->comm_handler->ShutdownGameMessages();
-                    now = debug_timeGetTime(
-                        "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601);
-                    if (now - elapsed_start < 500) {
-                        continue;
-                    }
-
-                    if (this->comm_handler->CountWaitingMessages() == 0) {
-                        break;
-                    }
-                    elapsed_start = debug_timeGetTime(
-                        "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
-                    if (elapsed_start - start_time >= 15000) {
-                        disconnected = 1;
-                    }
-                }
+            if (debug_timeGetTime(
+                    "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601) -
+                    last_time < 500) {
+                continue;
             }
 
-            this->comm_handler->GameOver();
-            this->comm_handler->UnlinkToLevel(SERVICE_AVAILABLE);
+            if (this->comm_handler->CountWaitingMessages() == 0) {
+                break;
+            }
+
+            last_time = debug_timeGetTime(
+                "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
+            if (last_time - start_time >= 15000) {
+                break;
+            }
         }
-    } else {
-        this->comm_handler->GameOver();
     }
+
+    this->comm_handler->GameOver();
+    this->comm_handler->UnlinkToLevel(SERVICE_AVAILABLE);
 }
 
 

@@ -121,7 +121,7 @@
     "0052A210": {"status": "matching", "symbol": "?set_interface_messages@TRIBE_Game@@UAEXXZ"},
     "0052A260": {"status": "matching", "symbol": "?setup_video_system@TRIBE_Game@@QAEHXZ"},
     "0052A430": {"status": "matching", "symbol": "?shutdown_video_system@TRIBE_Game@@QAEXXZ"},
-    "0052A510": {"status": "scratch", "symbol": "?disconnect_multiplayer_game@TRIBE_Game@@QAEXXZ"},
+    "0052A510": {"status": "new_verified_logic", "symbol": "?disconnect_multiplayer_game@TRIBE_Game@@QAEXXZ", "behavior_review": "logic_matching/0052A510/review-coord-14-0052A510-round-01-reviewer-01-20260913T135632Z/review-01"},
     "0052A630": {"status": "matching", "symbol": "?add_notification_loc@TRIBE_Game@@QAEXJJ@Z"},
     "0052A6A0": {"status": "matching", "symbol": "?goto_notification_loc@TRIBE_Game@@QAEXXZ"}
   }
