@@ -27,6 +27,6 @@
     "004C0D80": {"status": "accepted_drift", "symbol": "?shape_hit_test@RGE_Sprite@@QAEEFFJJ@Z"},
     "004C0F90": {"status": "matching", "symbol": "?make_active_sprite@RGE_Sprite@@QAEPAVRGE_Active_Sprite@@XZ"},
     "004C1030": {"status": "matching", "symbol": "?check_for_shadows@RGE_Sprite@@QAEHXZ"},
-    "004C1080": {"status": "scratch", "symbol": "?update@RGE_Sprite@@QAEXK@Z"}
+    "004C1080": {"status": "new_verified_logic", "symbol": "?update@RGE_Sprite@@QAEXK@Z", "behavior_review": "logic_matching/004C1080/review-20260913-004C1080-r01/attempt-01"}
   }
 }

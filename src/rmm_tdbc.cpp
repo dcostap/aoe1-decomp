@@ -277,114 +277,178 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
 
 void TRIBE_RMM_Database_Controller::add_object_module()
 {
-    int i;
+    int index;
+
     this->RGE_RMM_Database_Controller::add_object_module();
     debug_rand(s_rmm_tdbc_path, 0x198);
 
-    if (((TRIBE_Game*)rge_base_game)->startingAge() == 1) {
-        for (i = 0; i < this->object_info.object_num; ++i)
-            if (this->object_info.objects[i].obj_id == 0x53)
-                this->object_info.objects[i].number_of_groups = 1;
-        for (i = 0; i < this->object_info.object_num; ++i)
-            if (this->object_info.objects[i].obj_id == 0x6d)
-                this->object_info.objects[i].number_of_groups = 0;
+    if (((TRIBE_Game*)rge_base_game)->startingAge() ==
+        TRIBE_Game::NomadAge) {
+        for (index = 0; index < this->object_info.object_num; ++index) {
+            if (this->object_info.objects[index].obj_id == 0x53)
+                this->object_info.objects[index].number_of_groups = 1;
+        }
+        for (index = 0; index < this->object_info.object_num; ++index) {
+            if (this->object_info.objects[index].obj_id == 0x6d)
+                this->object_info.objects[index].number_of_groups = 0;
+        }
     }
 
     if (this->map_type == 6) {
-        for (i = this->land_info.land_num; i > 0; --i)
-            this->land_info.land[i] = this->land_info.land[i - 1];
-        long sixth = this->map_width / 6;
-        RGE_Land_Info_Line& land = this->land_info.land[0];
-        land.zone = (uchar)this->land_info.land_num;
-        land.terrain_type = 1;
-        land.area = 7;
-        land.base_size = 2;
-        land.land_size = (long)((double)((this->map_height - sixth * 2) *
-            (this->map_width - sixth * 2)) * DAT_00571f38);
-        land.clumpiness_factor = 10;
-        land.x = this->map->map_width / 2;
-        land.y = this->map->map_height / 2;
-        land.wall_1_avoidance_line = sixth;
-        land.wall_2_avoidance_line = sixth;
-        land.wall_3_avoidance_line = this->map_width - sixth;
-        land.wall_4_avoidance_line = this->map_height - sixth;
-        land.wall_fade = 10;
+        for (index = this->land_info.land_num; index > 0; --index)
+            this->land_info.land[index] = this->land_info.land[index - 1];
+
+        int width = this->map_width;
+        int edge = width / 6;
+        int height = this->map_height;
+        this->land_info.land[0].zone = (uchar)this->land_info.land_num;
+        this->land_info.land[0].terrain_type = 1;
+        this->land_info.land[0].area = 7;
+        this->land_info.land[0].base_size = 2;
+        this->land_info.land[0].land_size = (long)((double)
+            ((height - edge * 2) * (width - edge * 2)) * DAT_00571f38);
+        this->land_info.land[0].clumpiness_factor = 10;
+        this->land_info.land[0].x = this->map->map_width / 2;
+        this->land_info.land[0].y = this->map->map_height / 2;
+        this->land_info.land[0].wall_1_avoidance_line = edge;
+        this->land_info.land[0].wall_2_avoidance_line = edge;
+        this->land_info.land[0].wall_3_avoidance_line = width - edge;
+        this->land_info.land[0].wall_4_avoidance_line = height - edge;
+        this->land_info.land[0].wall_fade = 10;
         ++this->land_info.land_num;
     }
 
     if (this->map_type < 2) {
         long count = debug_rand(s_rmm_tdbc_path, 0x1c3) * 4 / 0x7fff + 1;
-        if (this->number_of_players + count > 10)
+        if (count + this->number_of_players > 10)
             count = 10 - this->number_of_players;
-        long adjustment = (this->map_height + this->map_width) * count /
+
+        long adjustment =
+            (this->map_width + this->map_height) * count /
             this->land_info.land_num;
-        for (i = 0; i < this->land_info.land_num; ++i)
-            this->land_info.land[i].land_size -= adjustment;
+        for (index = 0; index < this->land_info.land_num; ++index)
+            this->land_info.land[index].land_size -= adjustment;
 
-        long land_count = this->land_info.land_num;
-        for (i = 0; i < count; ++i) {
-            RGE_Land_Info_Line& land = this->land_info.land[land_count + i];
-            land.terrain_type = 0;
-            land.area = 7;
-            land.base_size = 3;
-            land.zone = (uchar)(i + land_count);
-            land.land_size = (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
-            land.clumpiness_factor = 10;
-            land.wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
-            land.wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
-            land.wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
-            land.wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
-            land.wall_fade = this->land_info.wall_fade;
+        for (index = 0; index < count; ++index) {
+            this->land_info.land[index + this->land_info.land_num].terrain_type =
+                0;
+            this->land_info.land[index + this->land_info.land_num].area = 7;
+            this->land_info.land[index + this->land_info.land_num].base_size = 3;
+            this->land_info.land[index + this->land_info.land_num].zone =
+                (uchar)(index + this->land_info.land_num);
+            this->land_info.land[index + this->land_info.land_num].land_size =
+                (long)((double)(this->map_width + this->map_height) *
+                    DAT_00571f40);
+            this->land_info.land[index + this->land_info.land_num].
+                clumpiness_factor = 10;
+            this->land_info.land[index + this->land_info.land_num].
+                wall_1_avoidance_line =
+                this->land_info.wall_1_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].
+                wall_2_avoidance_line =
+                this->land_info.wall_2_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].
+                wall_3_avoidance_line =
+                this->land_info.wall_3_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].
+                wall_4_avoidance_line =
+                this->land_info.wall_4_avoidance_line;
+            this->land_info.land[index + this->land_info.land_num].wall_fade =
+                this->land_info.wall_fade;
 
-            int attempts = 0;
+            long attempts = 0;
             long x;
             long y;
+            uchar done;
             do {
                 ++attempts;
-                x = debug_rand(s_rmm_tdbc_path, 0x1de) * (this->map_width - 16) / 0x7fff + 8;
-                y = debug_rand(s_rmm_tdbc_path, 0x1df) * (this->map_height - 16) / 0x7fff + 8;
-                uchar clear = 1;
-                for (int j = 0; j < this->land_info.land_num; ++j) {
-                    long dx = x - this->land_info.land[j].x;
-                    long dy = y - this->land_info.land[j].y;
-                    if (dx * dx + dy * dy < 400) { clear = 0; break; }
-                }
-                if (clear) break;
-            } while (attempts < 1000);
-            if (attempts >= 1000) count = i;
-            land.x = x;
-            land.y = y;
+                done = 1;
+                x = debug_rand(s_rmm_tdbc_path, 0x1de) *
+                    (this->map_width - 16) / 0x7fff + 8;
+                y = debug_rand(s_rmm_tdbc_path, 0x1df) *
+                    (this->map_height - 16) / 0x7fff + 8;
 
-            RGE_Object_Info_Line& object = this->object_info.objects[this->object_info.object_num];
-            object.terrain = -1; object.group_flag = 2; object.scale_flag = 0;
-            object.object_number_per_group = 8; object.object_number_varience = 0;
-            object.number_of_groups = 1; object.group_area = 4; object.player_id = 0;
-            object.land_id = land_count + i; object.land_inner_radius = 0;
-            object.land_outer_radius = 0x1a; object.object_exclusion_zone = 0;
-            object.obj_id = debug_rand(s_rmm_tdbc_path, 0x1fd) < 0x3fff ? 0x66 : 0x42;
+                for (int prior = 0;
+                     prior < this->land_info.land_num && done != 0;
+                     ++prior) {
+                    long dx = x - this->land_info.land[prior].x;
+                    long dy = y - this->land_info.land[prior].y;
+                    if (dx * dx + dy * dy < 400)
+                        done = 0;
+                }
+            } while (done == 0 && attempts < 1000);
+
+            if (attempts >= 1000)
+                count = index;
+
+            this->land_info.land[index + this->land_info.land_num].x = x;
+            this->land_info.land[index + this->land_info.land_num].y = y;
+
+            this->object_info.objects[this->object_info.object_num].terrain = -1;
+            this->object_info.objects[this->object_info.object_num].group_flag = 2;
+            this->object_info.objects[this->object_info.object_num].scale_flag = 0;
+            this->object_info.objects[this->object_info.object_num].
+                object_number_per_group = 8;
+            this->object_info.objects[this->object_info.object_num].
+                object_number_varience = 0;
+            this->object_info.objects[this->object_info.object_num].
+                number_of_groups = 1;
+            this->object_info.objects[this->object_info.object_num].group_area = 4;
+            this->object_info.objects[this->object_info.object_num].player_id = 0;
+            this->object_info.objects[this->object_info.object_num].land_id =
+                index + this->land_info.land_num;
+            this->object_info.objects[this->object_info.object_num].
+                land_inner_radius = 0;
+            this->object_info.objects[this->object_info.object_num].
+                land_outer_radius = 0x1a;
+            this->object_info.objects[this->object_info.object_num].
+                object_exclusion_zone = 0;
+            if (debug_rand(s_rmm_tdbc_path, 0x1fd) < 0x3fff)
+                this->object_info.objects[this->object_info.object_num].obj_id =
+                    0x66;
+            else
+                this->object_info.objects[this->object_info.object_num].obj_id =
+                    0x42;
             ++this->object_info.object_num;
-            RGE_Land_Point_Info_Line& point = this->object_info.lands[this->object_info.land_num];
-            point.x = x; point.y = y; point.id = land_count + i; point.player_id = 0;
+
+            this->object_info.lands[this->object_info.land_num].y = y;
+            this->object_info.lands[this->object_info.land_num].x = x;
+            this->object_info.lands[this->object_info.land_num].id =
+                index + this->land_info.land_num;
+            this->object_info.lands[this->object_info.land_num].player_id = 0;
             ++this->object_info.land_num;
         }
         this->land_info.land_num += count;
     }
 
-    for (i = 0; i < this->object_info.object_num; ++i) {
-        RGE_Object_Info_Line& object = this->object_info.objects[i];
+    for (index = 0; index < this->object_info.object_num; ++index) {
+        RGE_Object_Info_Line& object = this->object_info.objects[index];
         if (object.land_id >= 0) {
             switch (object.obj_id) {
-            case 0x3b: case 0x41: case 0x42: case 0x66: object.object_exclusion_zone = 12; break;
+            case 0x3b:
+            case 0x41:
+            case 0x42:
+            case 0x66:
+                object.object_exclusion_zone = 12;
+                break;
             }
         }
         else if (object.land_id == -2) {
             switch (object.obj_id) {
-            case 0x3b: case 0x42: object.object_exclusion_zone = this->map->map_width / 6; break;
-            case 0x41: object.object_exclusion_zone = this->map->map_width / 8; break;
-            case 0x66: object.object_exclusion_zone = this->map->map_width / 6; break;
+            case 0x41:
+                object.object_exclusion_zone = this->map->map_width / 8;
+                break;
+            case 0x3b:
+            case 0x42:
+                object.object_exclusion_zone = this->map->map_width / 6;
+                break;
+            case 0x66:
+                object.object_exclusion_zone = this->map->map_width / 6;
+                break;
             }
         }
     }
+
     L->Log(s_object_log, debug_rand(s_rmm_tdbc_path, 0x236));
 }
 

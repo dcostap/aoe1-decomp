@@ -1053,30 +1053,21 @@ ret1:
     return 1;
 }
 
-void RGE_Sprite::update(unsigned long param_1)
+void RGE_Sprite::update(unsigned long time)
 {
-    if (loaded) {
-        TShape* pS = shape;
-        if (pS) {
-            int dt = delta_time;
-            unsigned long time = param_1;
-            // update compares against the double at 00574528.
-            if ((double)dt == DAT_00574528) {
-                this->last_time = time;
-                this->delta_time = 1;
-                return;
-            }
-            int old_time = this->last_time;
-            int elapsed = time - old_time;
+    if (this->loaded != 0 && this->shape != 0) {
+        long old_delta_time = this->delta_time;
+        if (old_delta_time == DAT_00574528) {
             this->last_time = time;
-            int new_dt = elapsed + dt;
-            this->delta_time = new_dt;
-            if (180000 <= new_dt) {
-                TShape* pS2 = this->shape;
-                if (pS2) {
-                    pS2->~TShape();
-                    ::operator delete(pS2);
-                }
+            this->delta_time = 1;
+        } else {
+            unsigned long elapsed_time = time - this->last_time;
+            this->last_time = time;
+            elapsed_time += old_delta_time;
+            this->delta_time = elapsed_time;
+
+            if (this->delta_time >= 180000) {
+                delete this->shape;
                 this->shape = 0;
             }
         }

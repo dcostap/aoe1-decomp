@@ -15,8 +15,7 @@
 extern "C" int __cdecl stricmp(const char*, const char*);
 
 Time_Line_Panel::Time_Line_Panel()
-    : TEasy_Panel(),
-      axis_font(0),
+    : axis_font(0),
       axis_font_wid(0),
       axis_font_hgt(0),
       body_font(0),
@@ -49,13 +48,14 @@ Time_Line_Panel::Time_Line_Panel()
       total_slices_to_drop(0),
       time_slice_events(0)
 {
-    handle_mouse_input = 0;
-    timeline_flag = 1;
-    drop_flag = 0;
-    pop_reading_rate = 0x0C;
-    legend_entry_text[0] = 0;
-    legend_entry_text[1] = 0;
-    legend_entry_text[2] = 0;
+    this->handle_mouse_input = 0;
+    this->timeline_flag = 1;
+    this->drop_flag = 0;
+    this->pop_reading_rate = 12;
+
+    for (int i = 0; i < 3; i++) {
+        this->legend_entry_text[i] = 0;
+    }
 }
 
 Time_Line_Panel::~Time_Line_Panel() {

@@ -3209,14 +3209,97 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, in
 
 RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
 {
-    if (this->master_obj->radius_x <= 0.0f ||
-        this->master_obj->radius_y <= 0.0f ||
-        this->master_obj->radius_z <= 0.0f) {
+    RGE_Master_Static_Object* master = this->master_obj;
+    float master_radius_y = master->radius_y;
+    if (!(master->radius_x > 0.0f) ||
+        !(master_radius_y > 0.0f) ||
+        !(master->radius_z > 0.0)) {
         return 0;
     }
-    RGE_Check_List* result = new RGE_Check_List;
-    result->add_node(this, 0.0f, 0.0f, 0);
-    (void)extra;
+
+    RGE_Map* map = this->owner->world->map;
+    int minXTile = (int)this->world_x - 3;
+    int maxXTile = (int)this->world_x + 3;
+    int minYTile = (int)this->world_y - 3;
+    int maxYTile = (int)this->world_y + 3;
+
+    if (minXTile < 0) {
+        minXTile = 0;
+    }
+    if (maxXTile >= map->map_width) {
+        maxXTile = map->map_width - 1;
+    }
+    if (minYTile < 0) {
+        minYTile = 0;
+    }
+    if (maxYTile >= map->map_height) {
+        maxYTile = map->map_height - 1;
+    }
+
+    RGE_Check_List* result = 0;
+    for (int y = minYTile; y <= maxYTile; ++y) {
+        RGE_Tile* tile = map->map_row_offset[y] + minXTile;
+        for (int x = minXTile; x <= maxXTile; ++x, ++tile) {
+            for (RGE_Object_Node* node = tile->objects.list;
+                 node != 0; node = node->next) {
+                RGE_Static_Object* object = node->node;
+                if (object == this) {
+                    continue;
+                }
+
+                RGE_Master_Static_Object* object_master = object->master_obj;
+                if (!(object_master->radius_z > 0.0)) {
+                    continue;
+                }
+
+                float radius_x = object_master->radius_x;
+                float radius_y = object_master->radius_y;
+                if (!(radius_x > 0.0f) || !(radius_y > 0.0f)) {
+                    continue;
+                }
+
+                float dz = object->world_z - this->world_z;
+                if ((dz > 0.0f && dz > this->master_obj->radius_z) ||
+                    (dz < 0.0f && dz < -object_master->radius_z)) {
+                    continue;
+                }
+
+                if (this->world_x < object->world_x) {
+                    float gap = (object->world_x - radius_x) -
+                                (this->world_x + this->master_obj->radius_x);
+                    if (gap > extra) {
+                        continue;
+                    }
+                } else {
+                    float overlap = (object->world_x + radius_x) -
+                                    (this->world_x - this->master_obj->radius_x);
+                    if (overlap < -extra) {
+                        continue;
+                    }
+                }
+
+                if (this->world_y < object->world_y) {
+                    float gap = (object->world_y - radius_y) -
+                                (this->world_y + this->master_obj->radius_y);
+                    if (gap > extra) {
+                        continue;
+                    }
+                } else {
+                    float overlap = (object->world_y + radius_y) -
+                                    (this->world_y - this->master_obj->radius_y);
+                    if (overlap < -extra) {
+                        continue;
+                    }
+                }
+
+                if (result == 0) {
+                    result = new RGE_Check_List;
+                }
+                result->add_node(object, 0.0f, 0.0f, 0);
+            }
+        }
+    }
+
     return result;
 }
 
