@@ -6103,35 +6103,33 @@ second_next:
 }
 
 
-int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseMode)
+int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& pos, int chooseMode)
 {
-    float bestUnitDistance;
-    int bestUnitID;
-    int i;
-    RGE_Static_Object* firstObj;
-    RGE_Static_Object* secondObj;
+    RGE_Static_Object* firstObject;
+    RGE_Static_Object* secondObject;
+    float bestUnitDistance = 0.0f;
+    int bestUnitID = -1;
+    int i = 0;
 
-    bestUnitID = -1;
-    bestUnitDistance = 0;
-    i = 0;
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>* civilians = &this->civilians;
         do {
             if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
                 goto first_next;
 
-            firstObj = this->md->player->world->object((*civilians)[i]);
-            if ((firstObj != 0) && (firstObj->unitAI() != 0)) {
+            firstObject =
+                this->md->player->world->object((*civilians)[i]);
+            if ((firstObject != 0) && (firstObject->unitAI() != 0)) {
                 if (this->isGatherer((*civilians)[i]) == 0) {
                     if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto first_next;
-                    if (firstObj->unitAI()->currentAction() == -1 &&
-                        firstObj->unitAI()->currentOrder() == -1)
-                        return firstObj->id;
+                    if (firstObject->unitAI()->currentAction() == -1 &&
+                        firstObject->unitAI()->currentOrder() == -1)
+                        return firstObject->id;
                 }
             }
 first_next:
-            ++i;
+            i++;
         } while (i < this->civilians.numberValue);
     }
 
@@ -6142,8 +6140,9 @@ first_next:
             if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
                 goto second_next;
 
-            secondObj = this->md->player->world->object((*civilians)[i]);
-            if ((secondObj != 0) && (secondObj->unitAI() != 0)) {
+            secondObject =
+                this->md->player->world->object((*civilians)[i]);
+            if ((secondObject != 0) && (secondObject->unitAI() != 0)) {
                 if (mode != 0) {
                     if (mode != 3) {
                         if (this->isGatherer((*civilians)[i]) != 0)
@@ -6154,24 +6153,23 @@ first_next:
                     if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto second_next;
                 }
-
-                if (secondObj->unitAI()->currentAction() == -1 &&
-                    secondObj->unitAI()->currentOrder() == -1) {
-                    float distance = secondObj->distance_to_position(
-                        (float)position.x, (float)position.y, secondObj->world_z);
+                if (secondObject->unitAI()->currentAction() == -1 &&
+                    secondObject->unitAI()->currentOrder() == -1) {
+                    float distance = secondObject->distance_to_position(
+                        (float)pos.x, (float)pos.y, secondObject->world_z);
                     if (bestUnitID == -1) {
                         bestUnitDistance = distance;
-                        bestUnitID = secondObj->id;
+                        bestUnitID = secondObject->id;
                     }
                     else if ((chooseMode == 1 && bestUnitDistance > distance) ||
                              (chooseMode == 0 && bestUnitDistance < distance)) {
                         bestUnitDistance = distance;
-                        bestUnitID = secondObj->id;
+                        bestUnitID = secondObject->id;
                     }
                 }
             }
 second_next:
-            ++i;
+            i++;
         } while (i < this->civilians.numberValue);
     }
     return bestUnitID;
