@@ -3345,188 +3345,169 @@ int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 
 int TCommunications_Handler::SendStoredMessages()
 {
-    static unsigned char resendMessagesInitialized = 0;
-    static unsigned long lastResendTime = 0;
-    static unsigned long lastResendBytes = 0;
-    char* error_text;
-    {
-    RESENDER* resend;
-    unsigned int* dest_map;
-    unsigned long now;
-    unsigned int items;
-    unsigned long oldest_message_elapsed;
-    unsigned int oldest_message_slot;
-    unsigned int max_dest_delay;
-    unsigned int player;
-    long hr;
-    MSGFORMAT_MISSING_PLAYER m;
-    RESENDER* selected;
-    unsigned int* map;
-    unsigned int* dest;
-    unsigned long* dco;
-    unsigned int slot;
-    unsigned int count;
-    unsigned int elapsed;
-    unsigned int limit;
-    unsigned long send_start;
-    unsigned long send_elapsed;
-    char* name;
-
     if (this->RGE_Guaranteed_Delivery == 0) {
-        error_text = "!RGEGTD SendStore";
-        goto no_transmit;
-    }
-
-    if ((resendMessagesInitialized & 1) == 0) {
-        resendMessagesInitialized |= 1;
-        lastResendTime = debug_timeGetTime(com_hand_source_path, 0xE00);
-    }
-
-    now = debug_timeGetTime(com_hand_source_path, 0xE02);
-    if (static_cast<float>(lastResendBytes) / (now - lastResendTime) >
-        DAT_0056f210) {
+        L->Log("!RGEGTD SendStore");
         return 0;
     }
 
-    lastResendTime = now;
+    static unsigned long lastResendBytes = 0;
+    static unsigned long lastResendTime =
+        debug_timeGetTime(com_hand_source_path, 0xE00);
+
+    unsigned long Now = debug_timeGetTime(com_hand_source_path, 0xE02);
+    if (static_cast<float>(lastResendBytes) /
+            static_cast<float>(static_cast<long>(Now - lastResendTime)) >
+        2.0f) {
+        return 0;
+    }
+
+    lastResendTime = Now;
     lastResendBytes = 0;
-    items = 0;
-    oldest_message_elapsed = 0;
-    oldest_message_slot = 0;
+
+    unsigned int items = 0;
+    unsigned long OldestMessageElapsed = 0;
+    unsigned int OldestMessageSlot = 0;
+    unsigned int mostRetries = 0;
+
     this->PurgeAcknowledgedStoredMessages();
 
-    resend = this->Resend;
-    dest_map = resend->DestMap + 1;
-    slot = 0;
-    max_dest_delay = 0;
-    do {
+    unsigned int slot;
+    for (slot = 0; slot <= 501; slot++) {
+        RESENDER* resend = &this->Resend[slot];
         if (resend->Serial != 0) {
-            ++items;
-            elapsed = now - resend->TimeSent;
-            if (elapsed > oldest_message_elapsed) {
-                oldest_message_elapsed = elapsed;
-                oldest_message_slot = slot;
+            items++;
+            unsigned long elapsed = Now - resend->TimeSent;
+            if (elapsed > OldestMessageElapsed) {
+                OldestMessageElapsed = elapsed;
+                OldestMessageSlot = slot;
             }
 
-            map = dest_map;
-            count = this->MaxGamePlayers;
-            while (count != 0) {
-                unsigned int free_delay = 0xF0 - *map;
-                if (free_delay > max_dest_delay) {
-                    max_dest_delay = free_delay;
+            for (unsigned int player = 1;
+                 player <= static_cast<unsigned int>(this->MaxGamePlayers);
+                 player++) {
+                unsigned int retries = 240 - resend->DestMap[player];
+                if (retries > mostRetries) {
+                    mostRetries = retries;
                 }
-                ++map;
-                --count;
             }
         }
-        ++slot;
-        ++resend;
-        dest_map += 0xE;
-    } while (slot <= 0x1F5);
+    }
 
     if (items == 0) {
         return 0;
     }
 
     if (this->current_turn <= 6) {
-        if (oldest_message_elapsed < 2000) {
+        if (OldestMessageElapsed < 2000) {
             return 0;
         }
     } else if (this->ShuttingDown != 0) {
-        if (oldest_message_elapsed < 0xFA) {
+        if (OldestMessageElapsed < 250) {
             return 0;
         }
     } else {
-        unsigned int limit = resend_adj2 + this->Speed->HighestLatencyMsec * 2;
-        if (limit < resend_adj1 + 500U) {
-            limit = resend_adj1 + 500U;
+        unsigned int resendDelay =
+            resend_adj2 + this->Speed->HighestLatencyMsec * 2;
+        unsigned int minimumDelay = resend_adj1 + 500;
+        if (resendDelay < minimumDelay) {
+            resendDelay = minimumDelay;
         }
-        if (oldest_message_elapsed < limit) {
+        if (OldestMessageElapsed < resendDelay) {
             return 0;
         }
     }
 
-    selected = &this->Resend[oldest_message_slot];
-    selected->TimeSent =
+    this->Resend[OldestMessageSlot].TimeSent =
         debug_timeGetTime(com_hand_source_path, 0xE55);
 
-    if (this->MaxGamePlayers < 1) {
-        return this->ResentToOther;
-    }
-
-    dest = selected->DestMap + 1;
-    dco = this->PlayerOptions.dcoID + 1;
-    player = 1;
-
-    do {
-        if (dest[0] > 0 && this->IsPlayerHuman(player) != 0 &&
-            dco[0] != 0 && player != this->Me) {
-            if (dest[0] != 0) {
-                --dest[0];
+    for (unsigned int player = 1;
+         player <= static_cast<unsigned int>(this->MaxGamePlayers);
+         player++) {
+        if (this->Resend[OldestMessageSlot].DestMap[player] > 0 &&
+            this->IsPlayerHuman(player) &&
+            this->PlayerOptions.dcoID[player] != 0 &&
+            player != this->Me) {
+            if (this->Resend[OldestMessageSlot].DestMap[player] != 0) {
+                this->Resend[OldestMessageSlot].DestMap[player]--;
             }
 
-            L->Log("Resending #%d to P#%d dcoid=%d Length=%d  (elapsed=%d)",
-                   oldest_message_slot, player, dco[0], selected->Length,
-                   oldest_message_elapsed,
-                   debug_timeGetTime(com_hand_source_path, 0xE69));
+            L->Log(
+                "Resending #%d to P#%d dcoid=%d Length=%d  (elapsed=%d timeGetTime=%d) remaining=%d",
+                OldestMessageSlot,
+                player,
+                this->PlayerOptions.dcoID[player],
+                this->Resend[OldestMessageSlot].Length,
+                OldestMessageElapsed,
+                debug_timeGetTime(com_hand_source_path, 0xE69),
+                this->Resend[OldestMessageSlot].DestMap[player]);
 
             if (local_player_dpid == 0) {
-                error_text = "+++BAD DCOID=0 NO TX";
-                goto no_transmit;
+                L->Log("+++BAD DCOID=0 NO TX");
+                return 0;
             }
 
-            send_start = debug_timeGetTime(com_hand_source_path, 0xE76);
-            L->Log("  >TX STOR #%d %d (%d)", player, oldest_message_slot,
-                   selected->Length);
-            hr = direct_play_interface->Send(local_player_dpid, dco[0], 0,
-                                    selected->ResendMsg, selected->Length);
-            send_elapsed = debug_timeGetTime(com_hand_source_path, 0xE86) - send_start;
-            if (send_elapsed > 0x32) {
+            unsigned long sendStart =
+                debug_timeGetTime(com_hand_source_path, 0xE76);
+            L->Log("  >TX STOR #%d %d (%d)", player,
+                   OldestMessageSlot,
+                   this->Resend[OldestMessageSlot].Length);
+
+            long hr = direct_play_interface->Send(
+                local_player_dpid,
+                this->PlayerOptions.dcoID[player],
+                0,
+                this->Resend[OldestMessageSlot].ResendMsg,
+                this->Resend[OldestMessageSlot].Length);
+
+            unsigned long sendElapsed =
+                debug_timeGetTime(com_hand_source_path, 0xE86) - sendStart;
+            if (sendElapsed > 50) {
                 L->Log("!!!SendStoredMessages slow - %ld msec",
-                       send_elapsed);
+                       sendElapsed);
             }
 
             if (hr == 0) {
-                ++this->ResentToOther;
-                this->TXPacketLength += selected->Length;
-                lastResendBytes += selected->Length;
+                this->ResentToOther++;
+                this->TXPacketLength +=
+                    this->Resend[OldestMessageSlot].Length;
+                lastResendBytes +=
+                    this->Resend[OldestMessageSlot].Length;
                 L->Log("COMM: RESENT TX Ser#%d To=P#%d Len=%d",
-                       selected->Serial, player, selected->Length);
+                       this->Resend[OldestMessageSlot].Serial,
+                       player,
+                       this->Resend[OldestMessageSlot].Length);
             } else {
                 this->Err->ShowReturn(hr, "RESEND Transmit");
             }
 
-            if (dest[0] == 0 && this->IsPlayerHuman(player) != 0 &&
-                dco[0] != 0 && player != this->Me) {
-                name = this->GetPlayerName(player);
-                sprintf(this->TBuff,
-                        "Max resends to Player #%d '%s' ", player, name);
+            if (this->Resend[OldestMessageSlot].DestMap[player] == 0 &&
+                this->IsPlayerHuman(player) &&
+                this->PlayerOptions.dcoID[player] != 0 &&
+                player != this->Me) {
+                sprintf(this->TBuff, "Max resends to Player #%d '%s' ",
+                        player, this->GetPlayerName(player));
                 L->Log(this->TBuff);
+
                 if (this->MeHost != 0) {
                     L->Log("HOST Rcvd MAX TX for player #%d", player);
                     this->Kicked[player] = 1;
                     this->Kick(player);
                 } else {
+                    MSGFORMAT_MISSING_PLAYER m;
+                    m.PlayerID = this->PlayerOptions.dcoID[player];
                     L->Log("TX Missing Player report for player=%d ",
-                           dco[0]);
+                           m.PlayerID);
                     m.Command = '?';
-                    L->Log("  >TX MP (%d)", 8);
-                    this->FastSend(0, &m, 8, 0, 0);
+                    L->Log("  >TX MP (%d)",
+                           sizeof(MSGFORMAT_MISSING_PLAYER));
+                    this->FastSend(0, &m,
+                                   sizeof(MSGFORMAT_MISSING_PLAYER), 0, 0);
                 }
             }
         }
-
-        ++player;
-        ++dest;
-        ++dco;
-    } while (player <= this->MaxGamePlayers);
-
-    return this->ResentToOther;
     }
 
-no_transmit:
-    L->Log(error_text);
-    return 0;
+    return this->ResentToOther;
 }
 
 
