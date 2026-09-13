@@ -2726,223 +2726,245 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
 
 #include <math.h>
 
-ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& output)
+ObjectMemory* TribeInformationAIModule::objectToAttack(
+    int player, int siegeWeapons, int boats, int objectNumber, int& output)
 {
-    RGE_Static_Object* unit;
-    RGE_Static_Object* candidate;
-    ObjectMemory* best;
-    int specialRating3;
-    uchar unitZone;
-    int rangeRating;
-    ObjectMemory* mem = this->wonderToAttack(-1);
-    if (mem != 0) {
+    ObjectMemory* wonder = this->wonderToAttack(-1);
+    if (wonder != 0) {
         output = 1;
-        return mem;
+        return wonder;
     }
 
-    unit = this->md->object(objnum);
+    RGE_Static_Object* unit = this->md->object(objectNumber);
     if (unit == 0 || unit->unitAI() == 0) {
         return 0;
     }
 
-    unitZone = unit->currentZone();
+    unsigned char unitZone = unit->currentZone();
+    int siegeWeapon = 0;
     if (unit->master_obj->id == 0x23 ||
         unit->master_obj->id == 0x24 ||
         unit->master_obj->id == 0x0B) {
-        rangeRating = 1;
-    } else {
-        rangeRating = 0;
+        siegeWeapon = 1;
     }
-    int unitIsBoat = this->isBoat(unit);
-    int numberNonSiegeTargets = 0;
-    if (unit->master_obj->object_group == 0x12) numberNonSiegeTargets = 1;
+    int boatWeapon = this->isBoat(unit);
+    int unitIsPriest = unit->master_obj->object_group == 0x12;
 
-    int randomRating;
-    int id;
-    ObjectMemory oLimits = findObjectMemoryLimits(player, objnum, randomRating, id);
+    int numberNonSiegeTargets;
+    int numberNonBoatTargets;
+    ObjectMemory limits = this->findObjectMemoryLimits(
+        player, objectNumber, numberNonSiegeTargets, numberNonBoatTargets);
 
-    best = 0;
-    specialRating3 = -1;
-    int dCRating;
-    int i;
-    dCRating = 0;
+    ObjectMemory* bestObject = 0;
+    int bestAttackValue = -1;
+    int i = 0;
     if (this->maxImportantObjectMemory > 0) {
-        i = 0;
         do {
-            if (*(uchar*)((char*)this->importantObjectMemory + i + 0x0B) == player) {
-                candidate = this->md->object(*(int*)((char*)this->importantObjectMemory + i));
-                if (candidate != 0 && candidate->object_state <= 2) {
-                    float damage = this->damagePerSecond(objnum,
-                                                         (int)candidate->world_x,
-                                                         (int)candidate->world_y);
-                    float fVar3 = candidate->damageCapability(unit) /
-                                  unit->rateOfFire();
-                    float boatWeapon;
-                    float bestObject;
+            ObjectMemory* memory = &this->importantObjectMemory[i];
+            if ((int)memory->owner == player) {
+                RGE_Static_Object* object = this->md->object(memory->id);
+                if (object != 0 && object->object_state <= 2) {
+                    float damage = this->damagePerSecond(
+                        objectNumber, (int)object->world_x,
+                        (int)object->world_y);
+                    float objectDamage =
+                        object->damageCapability(unit) / unit->rateOfFire();
+
+                    float timeToBeKilled;
                     if (damage > DAT_00575580) {
-                        boatWeapon = unit->hp / damage;
+                        timeToBeKilled = unit->hp / damage;
                     } else {
-                        boatWeapon = -1.0f;
+                        timeToBeKilled = -1.0f;
                     }
-                    if (fVar3 > DAT_00575580) {
-                        bestObject =
-                            (float)*(short*)((char*)this->importantObjectMemory + i + 0x0C) / fVar3;
+
+                    float timeToKill;
+                    if (objectDamage > DAT_00575580) {
+                        timeToKill = (float)memory->hitPoints / objectDamage;
                     } else {
-                        bestObject = -1.0f;
+                        timeToKill = -1.0f;
                     }
-                    if (rangeRating == 0 && siegeWeapons != 0 &&
-                        (candidate->master_obj->object_group == 3 ||
-                         candidate->master_obj->object_group == 0x1B) &&
-                        randomRating > 0) {
-                        goto objectToAttack_loop_continue;
-                    }
-                    if (unitIsBoat == 0 && boats != 0 &&
-                        (candidate->master_obj->id == 0x2D ||
-                         candidate->master_obj->object_group == 2 ||
-                         candidate->master_obj->object_group == 0x15 ||
-                         candidate->master_obj->object_group == 0x16 ||
-                         candidate->master_obj->object_group == 0x14) &&
-                        id > 0) {
-                        goto objectToAttack_loop_continue;
-                    }
-                    if (numberNonSiegeTargets != 0) {
-                        if (unit->unitAI()->canConvert(
-                                this->importantObjectMemory[dCRating].id) == 0)
-                            goto objectToAttack_loop_continue;
-                    }
-                    int ix = (int)candidate->world_x;
-                    int iy = (int)candidate->world_y;
-                    int dx1 = (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x08) - ix;
-                    if (dx1 < 0) dx1 = -dx1;
-                    int dy1 = (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x09) - iy;
-                    if (dy1 < 0) dy1 = -dy1;
-                    if (dx1 > 5 || dy1 > 5) {
-                        if (this->md->player->visible->get_visible(ix, iy) != 0x0F) {
-                            goto objectToAttack_loop_continue;
+
+                    if (siegeWeapon == 0 && siegeWeapons != 0) {
+                        int objectGroup = object->master_obj->object_group;
+                        if ((objectGroup == 3 || objectGroup == 0x1B) &&
+                            numberNonSiegeTargets > 0) {
+                            goto next_object;
                         }
                     }
-                    int dx2 = (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x08)
-                              - (int)unit->world_x;
-                    int dy2 = (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x09)
-                              - (int)unit->world_y;
-                    int distance = (int)(sqrt(dx2 * dx2 + dy2 * dy2));
-                    int unitIsPriest;
-                    if (oLimits.id != 0) {
-                        unitIsPriest = 100 - distance * 100 / oLimits.id;
-                    } else {
-                        unitIsPriest = 100;
+
+                    if (boatWeapon == 0 && boats != 0) {
+                        RGE_Master_Static_Object* objectMaster =
+                            object->master_obj;
+                        int boatTarget = objectMaster->id == 0x2D;
+                        if (boatTarget == 0) {
+                            int objectGroup = objectMaster->object_group;
+                            boatTarget = objectGroup == 2 ||
+                                objectGroup == 0x15 || objectGroup == 0x16 ||
+                                objectGroup == 0x14;
+                        }
+                        if (boatTarget != 0 && numberNonBoatTargets > 0) {
+                            goto next_object;
+                        }
                     }
+
+                    if (unitIsPriest != 0 &&
+                        unit->unitAI()->canConvert(memory->id) == 0) {
+                        goto next_object;
+                    }
+
+                    int objectX = (int)object->world_x;
+                    int dx = (int)memory->x - objectX;
+                    if (dx < 0) {
+                        dx = -dx;
+                    }
+                    int objectY = (int)object->world_y;
+                    int dy = (int)memory->y - objectY;
+                    if (dy < 0) {
+                        dy = -dy;
+                    }
+                    if ((dx > 5 || dy > 5) &&
+                        this->md->player->visible->get_visible(
+                            objectX, objectY) != 0x0F) {
+                        goto next_object;
+                    }
+
+                    dx = (int)memory->x - (int)unit->world_x;
+                    dy = (int)memory->y - (int)unit->world_y;
+                    int distance = (int)sqrt((float)(dx * dx + dy * dy));
+
                     int distanceRating;
-                    if (oLimits.hitPoints != 0) {
-                        distanceRating =
-                            (int)*(short*)((char*)this->importantObjectMemory + i + 0x0C) * 100
-                            / oLimits.hitPoints;
+                    if (limits.id != 0) {
+                        distanceRating = 100 - distance * 100 / limits.id;
                     } else {
                         distanceRating = 100;
                     }
-                    int bestAttackValue;
-                    if (oLimits.kills != 0) {
-                        bestAttackValue =
-                            (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x14) * 100
-                            / (int)oLimits.kills;
-                    } else {
-                        bestAttackValue = 100;
-                    }
+
                     int hpRating;
-                    if (oLimits.damageCapability != DAT_00575580) {
-                        hpRating =
-                            (int)(*(float*)((char*)this->importantObjectMemory + i + 0x18)
-                                  * DAT_00575584 / oLimits.damageCapability);
+                    if (limits.hitPoints != 0) {
+                        hpRating = memory->hitPoints * 100 / limits.hitPoints;
                     } else {
                         hpRating = 100;
                     }
-                    int timeToKill;
-                    int siegeWeapon;
-                    if (*(float*)((char*)this->importantObjectMemory + i + 0x18) > DAT_00575580) {
-                        if (oLimits.range != DAT_00575580) {
-                            timeToKill =
-                                (int)(*(float*)((char*)this->importantObjectMemory + i + 0x20)
-                                      * DAT_00575584 / oLimits.range);
+
+                    int killRating;
+                    if (limits.kills != 0) {
+                        killRating = memory->kills * 100 / limits.kills;
+                    } else {
+                        killRating = 100;
+                    }
+
+                    int damageCapabilityRating;
+                    if (limits.damageCapability == DAT_00575580) {
+                        damageCapabilityRating = 100;
+                    } else {
+                        damageCapabilityRating = (int)(
+                            memory->damageCapability * DAT_00575584 /
+                            limits.damageCapability);
+                    }
+
+                    int rangeRating;
+                    int rateOfFireRating;
+                    if (memory->damageCapability > DAT_00575580) {
+                        if (limits.range == DAT_00575580) {
+                            rangeRating = 100;
                         } else {
-                            timeToKill = 100;
+                            rangeRating = (int)(memory->range * DAT_00575584 /
+                                                limits.range);
                         }
-                        if (oLimits.rateOfFire != DAT_00575580) {
-                            siegeWeapon =
-                                100 - (int)(*(float*)((char*)this->importantObjectMemory + i + 0x1C)
-                                           * DAT_00575584 / oLimits.rateOfFire);
+                        if (limits.rateOfFire == DAT_00575580) {
+                            rateOfFireRating = 100;
                         } else {
-                            siegeWeapon = 100;
+                            rateOfFireRating = 100 - (int)(
+                                memory->rateOfFire * DAT_00575584 /
+                                limits.rateOfFire);
                         }
                     } else {
-                        timeToKill = 0;
-                        siegeWeapon = 0;
+                        rangeRating = 0;
+                        rateOfFireRating = 0;
                     }
-                    int numberNonBoatTargets =
-                        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xE36) % 100;
-                    int typeMatchA = 0;
-                    if (*(short*)((char*)this->importantObjectMemory + i + 0x04)
-                            == this->md->tacticalAI.strategicNumber(0x6A)) typeMatchA = 1;
-                    int typeMatchB = 0;
-                    if (*(short*)((char*)this->importantObjectMemory + i + 0x04)
-                            == this->md->tacticalAI.strategicNumber(0x6B)) typeMatchB = 1;
-                    int typeMatchC = 0;
-                    if (*(short*)((char*)this->importantObjectMemory + i + 0x04)
-                            == this->md->tacticalAI.strategicNumber(0x6C)) typeMatchC = 1;
-                    int specialRating2 = 0;
-                    if (unit->lookupZone((int)candidate->world_x,
-                                         (int)candidate->world_y) == unitZone) {
-                        specialRating2 = 1;
-                    }
-                    int rangeSign;
-                    int boatSign;
-                    if (candidate->master_obj->object_group == 3 ||
-                        candidate->master_obj->object_group == 0x1B) {
-                        rangeSign = rangeRating ? 1 : -1;
+
+                    int randomRating = debug_rand(
+                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                        0xE36) % 100;
+                    int specialRating1 =
+                        memory->type == this->md->tacticalAI.strategicNumber(0x6A);
+                    int specialRating2 =
+                        memory->type == this->md->tacticalAI.strategicNumber(0x6B);
+                    int specialRating3 =
+                        memory->type == this->md->tacticalAI.strategicNumber(0x6C);
+                    int zoneRating = unitZone == unit->lookupZone(
+                        (int)object->world_x, (int)object->world_y);
+
+                    RGE_Master_Static_Object* objectMaster = object->master_obj;
+                    int ratingObjectGroup = objectMaster->object_group;
+
+                    int siegeRating;
+                    if (ratingObjectGroup == 3 || ratingObjectGroup == 0x1B) {
+                        siegeRating = siegeWeapon != 0 ? 1 : -1;
                     } else {
-                        rangeSign = rangeRating ? -1 : 1;
+                        siegeRating = siegeWeapon != 0 ? -1 : 1;
                     }
-                    if (candidate->master_obj->id == 0x2D ||
-                        candidate->master_obj->object_group == 2 ||
-                        candidate->master_obj->object_group == 0x15 ||
-                        candidate->master_obj->object_group == 0x16 ||
-                        candidate->master_obj->object_group == 0x14) {
-                        boatSign = unitIsBoat ? 1 : -1;
+
+                    int boatRating;
+                    if (objectMaster->id == 0x2D ||
+                        ratingObjectGroup == 2 || ratingObjectGroup == 0x15 ||
+                        ratingObjectGroup == 0x16 || ratingObjectGroup == 0x14) {
+                        boatRating = boatWeapon != 0 ? 1 : -1;
                     } else {
-                        boatSign = unitIsBoat ? -1 : 1;
+                        boatRating = boatWeapon != 0 ? -1 : 1;
                     }
-                    int rating =
-                            this->md->tacticalAI.strategicNumber(0x59)
-                            * *(int*)((char*)this->importantObjectMemory + i + 0x10);
-                    rating += this->md->tacticalAI.strategicNumber(0x90) * boatSign;
-                    rating += this->md->tacticalAI.strategicNumber(0x7B) * rangeSign;
-                    rating += this->md->tacticalAI.strategicNumber(0x7A) * specialRating2;
-                    rating += this->md->tacticalAI.strategicNumber(0x50) * bestAttackValue;
-                    rating += this->md->tacticalAI.strategicNumber(0x53) * numberNonBoatTargets;
-                    rating += this->md->tacticalAI.strategicNumber(0x4D) * unitIsPriest;
-                    rating += this->md->tacticalAI.strategicNumber(0x6F) * typeMatchC;
-                    rating += this->md->tacticalAI.strategicNumber(0x5A) * timeToKill;
-                    rating += this->md->tacticalAI.strategicNumber(0x4E) * distanceRating;
-                    rating += this->md->tacticalAI.strategicNumber(0x4F) * hpRating;
-                    rating += this->md->tacticalAI.strategicNumber(0x52) * siegeWeapon;
-                    rating += this->md->tacticalAI.strategicNumber(0x6E) * typeMatchB;
-                    rating += this->md->tacticalAI.strategicNumber(0x6D) * typeMatchA;
-                    if ((bestObject > boatWeapon && boatWeapon != -1.0f) ||
-                        bestObject == -1.0f) {
-                        rating = 1;
+
+                    int attackValue =
+                        this->md->tacticalAI.strategicNumber(0x59) *
+                        memory->attackAttempts;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x90) * boatRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x7B) * siegeRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x7A) * zoneRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x50) * killRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x53) * randomRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x4D) * distanceRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x6F) * specialRating3;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x5A) * rangeRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x4E) * hpRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x4F) *
+                        damageCapabilityRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x52) *
+                        rateOfFireRating;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x6E) * specialRating2;
+                    attackValue +=
+                        this->md->tacticalAI.strategicNumber(0x6D) * specialRating1;
+
+                    if ((timeToKill > timeToBeKilled &&
+                         timeToBeKilled != DAT_0057556c) ||
+                        timeToKill == DAT_0057556c) {
+                        attackValue = 1;
                     }
-                    if (best == 0 || rating > specialRating3) {
-                        best = (ObjectMemory*)((char*)this->importantObjectMemory + i);
-                        specialRating3 = rating;
+
+                    if (bestObject == 0 || attackValue > bestAttackValue) {
+                        bestObject = memory;
+                        bestAttackValue = attackValue;
                         output = 1;
                     }
                 }
             }
-objectToAttack_loop_continue:
-            dCRating++;
-            i += 0x24;
-        } while (dCRating < this->maxImportantObjectMemory);
+
+next_object:
+            ++i;
+        } while (i < this->maxImportantObjectMemory);
     }
-    return best;
+    return bestObject;
 }
 
 #include <math.h>

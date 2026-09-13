@@ -53,7 +53,7 @@
     "004DC1B0": {"status": "matching", "symbol": "?addObject@TribeInformationAIModule@@QAEXPAVRGE_Static_Object@@@Z"},
     "004DC3A0": {"status": "matching", "symbol": "?removeObject@TribeInformationAIModule@@QAEXH@Z"},
     "004DC490": {"status": "new_verified_logic", "symbol": "?objectToAttackWithPlay@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAHHAAH011@Z", "behavior_review": "logic_matching/004DC490/review-01/attempt-01"},
-    "004DC750": {"status": "scratch", "symbol": "?objectToAttack@TribeInformationAIModule@@QAEPAUObjectMemory@@HHHHAAH@Z"},
+    "004DC750": {"status": "new_verified_logic", "symbol": "?objectToAttack@TribeInformationAIModule@@QAEPAUObjectMemory@@HHHHAAH@Z", "behavior_review": "logic_matching/004DC750/review-20260322T000019/attempt-01"},
     "004DCF10": {"status": "scratch", "symbol": "?objectToAttackByGroup@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAVTacticalAIGroup@@AAUAttackState@@K@Z"},
     "004DDD40": {"status": "new_verified_logic", "symbol": "?objectToAttackByGroup2@TribeInformationAIModule@@QAEPAUObjectMemory@@HPAHH@Z", "behavior_review": "logic_matching/004DDD40/review-20260322T000018/attempt-01"},
     "004DE1F0": {"status": "matching", "symbol": "?objectToDefend@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
