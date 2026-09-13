@@ -1591,148 +1591,143 @@ void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
     this->CurSpanList = this->SpanList;
 }
 
-void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
-                     int transparent)
+void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
+                     RECT* src_rect, int allow_trans)
 {
     static long ddrval;
     static int err;
+    tagRECT dest_rect2;
+    tagRECT src_rect2;
+
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 1) {
-        if (this->Bits != 0 && area != 0 && area->Bits != 0) {
-            int width;
-            int height;
-            int source_x;
-            int source_y;
-
-            if (rect == 0) {
-                width = this->Width;
-                height = this->Height;
-                source_x = 0;
-                source_y = 0;
-            }
-            else {
-                source_x = rect->left;
-                source_y = rect->top;
-                width = rect->right - source_x + 1;
-                height = rect->bottom - source_y + 1;
-            }
-
-            if (width + source_x > this->Width) {
-                width = this->Width - source_x;
-            }
-            if (height + source_y > this->Height) {
-                height = this->Height - source_y;
-            }
-
-            if (this->UseTrans != 0 && transparent != 0) {
-                TransDibBlt(area->BitmapInfo, area->Bits, &area->ClipRect,
-                            x, y, width, height,
-                            this->BitmapInfo, this->Bits, 0,
-                            source_x, source_y, width, height,
-                            1, 0, 0, this->TransColor);
-                err = 0;
-                return;
-            }
-
-            DibBlt(area->BitmapInfo, area->Bits, &area->ClipRect,
-                   x, y, width, height,
-                   this->BitmapInfo, this->Bits,
-                   source_x, source_y, width, height, 1, 0, 0);
-            err = 0;
+        if (this->Bits == 0 || dest_area == 0 || dest_area->Bits == 0)
             return;
-        }
-    }
-    else if (this->DrawSurface != 0 && area != 0 &&
-             area->DrawSurface != 0) {
-        RECT src_rect2;
-        RECT dest_rect2;
 
-        if (rect == 0) {
-            src_rect2.left = 0;
-            src_rect2.top = 0;
-            src_rect2.right = this->Width - 1;
-            src_rect2.bottom = this->Height - 1;
+        long src_x;
+        long src_y;
+        long width;
+        long height;
+        if (src_rect == 0) {
+            src_x = 0;
+            src_y = 0;
+            width = this->Width;
+            height = this->Height;
         }
         else {
-            src_rect2.left = rect->left;
-            src_rect2.top = rect->top;
-            src_rect2.right = rect->right;
-            src_rect2.bottom = rect->bottom;
+            src_x = src_rect->left;
+            src_y = src_rect->top;
+            width = src_rect->right - src_x + 1;
+            height = src_rect->bottom - src_y + 1;
         }
 
-        ++src_rect2.right;
-        ++src_rect2.bottom;
+        if (src_x + width > this->Width)
+            width = this->Width - src_x;
+        if (src_y + height > this->Height)
+            height = this->Height - src_y;
 
-        SetRect(&dest_rect2, x, y,
-                (src_rect2.right - src_rect2.left) + x,
-                (src_rect2.bottom - src_rect2.top) + y);
-
-        if (src_rect2.left < 0) {
-            dest_rect2.left -= src_rect2.left;
-            src_rect2.left = 0;
+        if (this->UseTrans != 0 && allow_trans != 0) {
+            TransDibBlt(dest_area->BitmapInfo, dest_area->Bits,
+                        &dest_area->ClipRect, dest_x, dest_y, width, height,
+                        this->BitmapInfo, this->Bits, 0, src_x, src_y, width,
+                        height, 1, 0, 0, this->TransColor);
         }
-        if (src_rect2.top < 0) {
-            dest_rect2.top -= src_rect2.top;
-            src_rect2.top = 0;
+        else {
+            DibBlt(dest_area->BitmapInfo, dest_area->Bits,
+                   &dest_area->ClipRect, dest_x, dest_y, width, height,
+                   this->BitmapInfo, this->Bits, src_x, src_y, width, height,
+                   1, 0, 0);
         }
-
-        if (src_rect2.right > this->Width) {
-            long amount = src_rect2.right - this->Width;
-            src_rect2.right -= amount;
-            dest_rect2.right -= amount;
-        }
-        if (src_rect2.bottom > this->Height) {
-            long amount = src_rect2.bottom - this->Height;
-            src_rect2.bottom -= amount;
-            dest_rect2.bottom -= amount;
-        }
-
-        if (dest_rect2.left < area->ClipRect.left) {
-            long amount = area->ClipRect.left - dest_rect2.left;
-            dest_rect2.left += amount;
-            src_rect2.left += amount;
-        }
-        if (dest_rect2.top < area->ClipRect.top) {
-            long amount = area->ClipRect.top - dest_rect2.top;
-            dest_rect2.top += amount;
-            src_rect2.top += amount;
-        }
-        if (dest_rect2.right > area->ClipRect.right + 1) {
-            long amount = dest_rect2.right - area->ClipRect.right - 1;
-            dest_rect2.right -= amount;
-            src_rect2.right -= amount;
-        }
-        if (dest_rect2.bottom > area->ClipRect.bottom + 1) {
-            long amount = dest_rect2.bottom - area->ClipRect.bottom - 1;
-            dest_rect2.bottom -= amount;
-            src_rect2.bottom -= amount;
-        }
-
-        if (dest_rect2.left < dest_rect2.right &&
-            dest_rect2.top < dest_rect2.bottom &&
-            src_rect2.left < src_rect2.right &&
-            src_rect2.top < src_rect2.bottom) {
-            ddrval = 1;
-            if (this->UseTrans != 0 && transparent != 0) {
-                ddrval = area->DrawSurface->Blt(
-                    &dest_rect2, this->DrawSurface, &src_rect2,
-                    0x1008000, 0);
-            }
-            else {
-                ddrval = area->DrawSurface->Blt(
-                    &dest_rect2, this->DrawSurface, &src_rect2,
-                    0x1000000, 0);
-            }
-
-            err = 0;
-            if (ddrval != 0) {
-                err = this->DrawSystem->GetBlitErrorNum(
-                    ddrval);
-            }
-            if (err == 0) {
-                err = 0;
-            }
-        }
+        err = 0;
+        return;
     }
+
+    if (this->DrawSurface == 0 || dest_area == 0 ||
+        dest_area->DrawSurface == 0)
+        return;
+
+    if (src_rect == 0) {
+        src_rect2.left = 0;
+        src_rect2.top = 0;
+        src_rect2.right = this->Width - 1;
+        src_rect2.bottom = this->Height - 1;
+    }
+    else {
+        src_rect2.left = src_rect->left;
+        src_rect2.top = src_rect->top;
+        src_rect2.right = src_rect->right;
+        src_rect2.bottom = src_rect->bottom;
+    }
+
+    ++src_rect2.right;
+    ++src_rect2.bottom;
+    SetRect(&dest_rect2, dest_x, dest_y,
+            dest_x + src_rect2.right - src_rect2.left,
+            dest_y + src_rect2.bottom - src_rect2.top);
+
+    if (src_rect2.left < 0) {
+        long amount = -src_rect2.left;
+        src_rect2.left = 0;
+        dest_rect2.left += amount;
+    }
+    if (src_rect2.top < 0) {
+        long amount = -src_rect2.top;
+        src_rect2.top = 0;
+        dest_rect2.top += amount;
+    }
+    if (src_rect2.right > this->Width) {
+        long amount = src_rect2.right - this->Width;
+        src_rect2.right -= amount;
+        dest_rect2.right -= amount;
+    }
+    if (src_rect2.bottom > this->Height) {
+        long amount = src_rect2.bottom - this->Height;
+        src_rect2.bottom -= amount;
+        dest_rect2.bottom -= amount;
+    }
+
+    if (dest_rect2.left < dest_area->ClipRect.left) {
+        long amount = dest_area->ClipRect.left - dest_rect2.left;
+        dest_rect2.left += amount;
+        src_rect2.left += amount;
+    }
+    if (dest_rect2.top < dest_area->ClipRect.top) {
+        long amount = dest_area->ClipRect.top - dest_rect2.top;
+        dest_rect2.top += amount;
+        src_rect2.top += amount;
+    }
+    if (dest_rect2.right > dest_area->ClipRect.right + 1) {
+        long amount = dest_rect2.right - dest_area->ClipRect.right - 1;
+        dest_rect2.right -= amount;
+        src_rect2.right -= amount;
+    }
+    if (dest_rect2.bottom > dest_area->ClipRect.bottom + 1) {
+        long amount = dest_rect2.bottom - dest_area->ClipRect.bottom - 1;
+        dest_rect2.bottom -= amount;
+        src_rect2.bottom -= amount;
+    }
+
+    if (dest_rect2.left >= dest_rect2.right ||
+        dest_rect2.top >= dest_rect2.bottom ||
+        src_rect2.left >= src_rect2.right ||
+        src_rect2.top >= src_rect2.bottom)
+        return;
+
+    ddrval = 1;
+    if (this->UseTrans != 0 && allow_trans != 0) {
+        ddrval = dest_area->DrawSurface->Blt(
+            &dest_rect2, this->DrawSurface, &src_rect2, 0x1008000, 0);
+    }
+    else {
+        ddrval = dest_area->DrawSurface->Blt(
+            &dest_rect2, this->DrawSurface, &src_rect2, 0x1000000, 0);
+    }
+
+    err = 0;
+    if (ddrval != 0)
+        err = this->DrawSystem->GetBlitErrorNum(ddrval);
+    if (err != 0)
+        return;
+    err = 0;
 }
 
 void TDrawArea::SetTrans(int useTrans, unsigned char transColor)

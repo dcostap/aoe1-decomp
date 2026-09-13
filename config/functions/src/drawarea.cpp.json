@@ -48,7 +48,7 @@
     "00444B40": {"status": "matching", "symbol": "?AlignedWidth@TDrawArea@@QAEJXZ"},
     "00444B50": {"status": "matching", "symbol": "?SetClipRect@TDrawArea@@QAEXPAUtagRECT@@@Z"},
     "00444C30": {"status": "accepted_drift", "symbol": "?SetClipRect@TDrawArea@@QAEXJJJJ@Z"},
-    "00444D50": {"status": "scratch", "symbol": "?Copy@TDrawArea@@QAEXPAV1@JJPAUtagRECT@@H@Z"},
+    "00444D50": {"status": "matching", "symbol": "?Copy@TDrawArea@@QAEXPAV1@JJPAUtagRECT@@H@Z", "behavior_review": "logic_matching/00444D50/review-coord-05-00444D50-20260913T050700Z/attempt-01"},
     "00445710": {"status": "matching", "symbol": "?SetTrans@TDrawArea@@QAEXHE@Z"},
     "00445780": {"status": "matching", "symbol": "?SetOverlayTrans@TDrawArea@@QAEXHE@Z"},
     "004457E0": {"status": "matching", "symbol": "?SetPixel@TDrawArea@@QAEXJJE@Z"},
