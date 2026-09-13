@@ -106,16 +106,12 @@ Path& Path::operator=(const Path& other)
 
 int Path::operator==(const Path& other) const
 {
-    int i = 0;
-    if (currentSizeValue <= 0) {
-        return 1;
-    }
-    for (; i < currentSizeValue; i++) {
-        if (other.pathValue[i].x != pathValue[i].x ||
-            other.pathValue[i].y != pathValue[i].y ||
-            other.pathValue[i].z != pathValue[i].z ||
-            other.pathValue[i].facetToNextWaypoint !=
-                pathValue[i].facetToNextWaypoint) {
+    for (int i = 0; i < currentSizeValue; i++) {
+        if (pathValue[i].x != other.pathValue[i].x ||
+            pathValue[i].y != other.pathValue[i].y ||
+            pathValue[i].z != other.pathValue[i].z ||
+            pathValue[i].facetToNextWaypoint !=
+                other.pathValue[i].facetToNextWaypoint) {
             return 0;
         }
     }
