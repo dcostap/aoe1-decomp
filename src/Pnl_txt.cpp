@@ -1240,101 +1240,93 @@ int TTextPanel::insert_line(long line, char* text1, long value) {
     return insert_line(line, text1, 0, value);
 }
 
-int TTextPanel::insert_line(long line, char* text, char* text2, long value)
+int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
 {
-    int i;
-    TTextPanel::TextNode* previous;
-    TTextPanel::TextNode* node =
-        (TTextPanel::TextNode*)calloc(1, sizeof(TTextPanel::TextNode));
-    if (node == 0) {
+    TextNode* new_node = (TextNode*)calloc(1, sizeof(TextNode));
+    if (new_node == 0) {
         return 0;
     }
 
     if (this->fixed_len != 0) {
-        node->text = (char*)calloc((int)this->fixed_len + 1, 1);
-    } else if (text == 0) {
-        node->text = (char*)calloc(1, 1);
+        new_node->text = (char*)calloc(this->fixed_len + 1, 1);
+    } else if (text1 == 0) {
+        new_node->text = (char*)calloc(1, 1);
     } else {
-        node->text = (char*)calloc(strlen(text) + 1, 1);
+        new_node->text = (char*)calloc(strlen(text1) + 1, 1);
     }
 
-    if (node->text == 0) {
-        free(node);
+    if (new_node->text == 0) {
+        free(new_node);
         return 0;
     }
 
     if (text2 != 0) {
-        node->text2 = (char*)calloc(strlen(text2) + 1, 1);
-        if (node->text2 == 0) {
-            free(node->text);
-            free(node);
+        new_node->text2 = (char*)calloc(strlen(text2) + 1, 1);
+        if (new_node->text2 == 0) {
+            free(new_node->text);
+            free(new_node);
             return 0;
         }
     }
 
-    if (text == 0) {
-        node->text[0] = '\0';
+    if (text1 == 0) {
+        new_node->text[0] = '\0';
     } else if (this->fixed_len != 0) {
-        strncpy(node->text, text, (int)this->fixed_len);
-        node->text[(short)this->fixed_len] = '\0';
+        strncpy(new_node->text, text1, this->fixed_len);
+        new_node->text[this->fixed_len] = '\0';
     } else {
-        strcpy(node->text, text);
+        strcpy(new_node->text, text1);
     }
 
     if (text2 != 0) {
-        strcpy(node->text2, text2);
+        strcpy(new_node->text2, text2);
     }
 
-    node->id = value;
-    i = 0;
-    node->next_node = 0;
+    new_node->id = value;
+    new_node->next_node = 0;
 
-    TTextPanel::TextNode* list_node = this->list;
-    if (list_node == 0) {
-        this->list = node;
+    TextNode* node = this->list;
+    if (node == 0) {
+        this->list = new_node;
     } else if (this->sorted != 0) {
-        TTextPanel::TextNode* current = list_node;
-        previous = 0;
-        while (current != 0) {
-            int result = CompareStringA(0x400, 1,
-                                        node->text, -1,
-                                        current->text, -1);
-            if (result == 1) {
-                node->next_node = current;
-                if (previous != 0) {
-                    previous->next_node = node;
+        TextNode* previous = 0;
+        while (node != 0) {
+            if (CompareStringA(0x400, 1, new_node->text, -1,
+                               node->text, -1) == 1) {
+                new_node->next_node = node;
+                if (previous == 0) {
+                    this->list = new_node;
                 } else {
-                    this->list = node;
+                    previous->next_node = new_node;
                 }
                 break;
             }
-            previous = current;
-            current = current->next_node;
+            previous = node;
+            node = node->next_node;
         }
-        if (current == 0) {
-            previous->next_node = node;
+        if (node == 0) {
+            previous->next_node = new_node;
         }
+    } else if (line == 0) {
+        new_node->next_node = node;
+        this->list = new_node;
+    } else if (line >= this->num_lines) {
+        while (node->next_node != 0) {
+            node = node->next_node;
+        }
+        node->next_node = new_node;
     } else {
-        if (line == 0) {
-            node->next_node = list_node;
-            this->list = node;
-        } else if (line < this->num_lines) {
-            --line;
-            while (i != line) {
-                list_node = list_node->next_node;
-                i++;
-            }
-            node->next_node = list_node->next_node;
-            list_node->next_node = node;
-        } else {
-            while (list_node->next_node != 0) {
-                list_node = list_node->next_node;
-            }
-            list_node->next_node = node;
+        int index = 0;
+        --line;
+        while (index != line) {
+            node = node->next_node;
+            ++index;
         }
+        new_node->next_node = node->next_node;
+        node->next_node = new_node;
     }
 
-    this->num_lines++;
+    ++this->num_lines;
     this->calc_draw_info(1);
     this->set_redraw(TPanel::RedrawNormal);
     return 1;
