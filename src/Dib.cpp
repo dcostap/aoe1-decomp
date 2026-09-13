@@ -130,142 +130,148 @@ void __cdecl DibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
 
 void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                          long dx, long dy, long dw, long dh,
-                         BITMAPINFO256* srcInfo, uchar* src, TRANSINFO* trans,
+                         BITMAPINFO256* srcInfo, uchar* src,
+                         TRANSINFO* transInfo,
                          long sx, long sy, long sw, long sh,
-                         int doClip, int flipX, int flipY, int transparent)
+                         int doClip, int flipX, int flipY, int transColor)
 {
-    if (trans != 0 && trans->AnyTrans == 0) {
-        DibBlt(dstInfo, dst, dstRect, dx, dy, dw, dh, srcInfo, src, sx, sy, sw, sh, doClip, flipX, flipY);
+    if (transInfo != 0 && transInfo->AnyTrans == 0) {
+        DibBlt(dstInfo, dst, dstRect, dx, dy, dw, dh,
+               srcInfo, src, sx, sy, sw, sh, doClip, flipX, flipY);
         return;
     }
 
-    if (transparent < 0)
-        transparent = 0;
+    if (transColor < 0)
+        transColor = 0;
 
-    int clipFlipY = flipY;
-    if (doClip == 0 ||
-        ClipDibBlt(dstInfo, dstRect, dx, dy, dw, dh, sx, sy, sw, sh, flipX, clipFlipY)) {
-        int xStep = (sw << 8) / dw;
-        long yStep = (sh << 8) / dh;
-        long dstStride;
-        long dstHeight;
-        long dstOrientation;
-        long srcStride;
-        long srcHeight;
-        long srcOrientation;
+    if (doClip != 0 &&
+        ClipDibBlt(dstInfo, dstRect, dx, dy, dw, dh,
+                   sx, sy, sw, sh, flipX, flipY) == 0)
+        return;
 
-        GetDibDim(dstInfo, dstStride, dstHeight, dstOrientation);
-        GetDibDim(srcInfo, srcStride, srcHeight, srcOrientation);
-        if (clipFlipY)
-            srcOrientation = -srcOrientation;
+    long xStep = (sw << 8) / dw;
+    long yStep = (sh << 8) / dh;
+    long dstStride;
+    long dstHeight;
+    long dstOrientation;
+    long srcStride;
+    long srcHeight;
+    long srcOrientation;
 
-        long xScale = (dw << 8) / sw;
-        long destY;
-        if (dstOrientation == 1)
-            destY = dy;
-        else
-            destY = dstHeight - dy - 1;
-        uchar* destLine = dst + dstStride * destY + dx;
+    GetDibDim(dstInfo, dstStride, dstHeight, dstOrientation);
+    GetDibDim(srcInfo, srcStride, srcHeight, srcOrientation);
+    if (flipY != 0)
+        srcOrientation = -srcOrientation;
 
-        long sourcePosition = sx;
-        if (flipX == 0) {
-            if (dw > 0) {
-                long* xEntry = SrcXTbl;
-                long remaining = dw;
-                do {
-                    *xEntry++ = sourcePosition >> 8;
-                    sourcePosition += xStep;
-                    --remaining;
-                } while (remaining != 0);
-            }
-        } else {
-            long remaining = dw - 1;
-            if (remaining >= 0) {
-                long* xEntry = SrcXTbl + remaining;
-                ++remaining;
-                do {
-                    *xEntry-- = sourcePosition >> 8;
-                    sourcePosition += xStep;
-                    --remaining;
-                } while (remaining != 0);
-            }
+    long dstPerSrc = (dw << 8) / sw;
+    long dstRow;
+    if (dstOrientation == 1)
+        dstRow = dy;
+    else
+        dstRow = dstHeight - dy - 1;
+    uchar* dstLine = dst + dstRow * dstStride + dx;
+
+    long srcPosition = sx;
+    if (flipX == 0) {
+        if (dw > 0) {
+            long* entry = SrcXTbl;
+            long remaining = dw;
+            do {
+                *entry++ = srcPosition >> 8;
+                srcPosition += xStep;
+                --remaining;
+            } while (remaining != 0);
         }
-
-        if (flipX == 0 && trans != 0 && trans->LineInfo != 0) {
-            long dstStep = dstOrientation * dstStride;
-            long sourceY = sy << 8;
-            int row = 0;
-            if (dh > 0) {
-                do {
-                    long sourceRow = sourceY >> 8;
-                    long sourceOffset;
-                    if (srcOrientation == 1)
-                        sourceOffset = sourceRow * srcStride + sx;
-                    else
-                        sourceOffset = (srcHeight - sourceRow - 1) * srcStride + sx;
-
-                    LINEINFO* lineInfo = &trans->LineInfo[sourceRow];
-                    if (lineInfo->AllTrans == 0) {
-                        long first;
-                        if (lineInfo->StartX < sx)
-                            first = 0;
-                        else
-                            first = ((lineInfo->StartX - sx) * xScale) >> 8;
-                        long last = (((lineInfo->EndX - sx) + 1) * xScale) >> 8;
-                        if (last > dw)
-                            last = dw;
-                        if (last > first) {
-                            if (xScale == 0x100 && lineInfo->MidSolid != 0) {
-                                memcpy(destLine + first, src + first + sourceOffset,
-                                    last - first);
-                            } else {
-                                long i = first;
-                                long* table = SrcXTbl + first;
-                                while (i < last) {
-                                    uchar c = src[*table + sourceOffset];
-                                    if ((unsigned)c != (unsigned)transparent)
-                                        destLine[i] = c;
-                                    ++i;
-                                    ++table;
-                                }
-                            }
-                        }
-                    }
-                    destLine += dstStep;
-                    sourceY += yStep;
-                    ++row;
-                } while (row < dh);
-            }
-            return;
+    } else {
+        long remaining = dw - 1;
+        if (remaining >= 0) {
+            long* entry = SrcXTbl + remaining;
+            ++remaining;
+            do {
+                *entry-- = srcPosition >> 8;
+                srcPosition += xStep;
+                --remaining;
+            } while (remaining != 0);
         }
+    }
 
-        long sourceY = sy << 8;
-        int row = 0;
+    long dstLineStep = dstOrientation * dstStride;
+    long srcY = sy << 8;
+    long row = 0;
+
+    if (flipX == 0 && transInfo != 0 && transInfo->LineInfo != 0) {
+        LINEINFO* lineInfo = transInfo->LineInfo;
         if (dh > 0) {
             do {
-                long sourceRow;
+                long srcLineNumber = srcY >> 8;
+                long srcRow;
                 if (srcOrientation == 1)
-                    sourceRow = sourceY >> 8;
+                    srcRow = srcLineNumber;
                 else
-                    sourceRow = srcHeight - (sourceY >> 8) - 1;
+                    srcRow = srcHeight - srcLineNumber - 1;
+                uchar* srcLine = src + srcRow * srcStride + sx;
+                LINEINFO* line = lineInfo + srcLineNumber;
 
-                long sourceBase = sourceRow * srcStride + sx;
-                long i = 0;
-                if (dw > 0) {
-                    long* table = SrcXTbl;
-                    do {
-                        uchar c = src[*table + sourceBase];
-                        if ((unsigned)c != (unsigned)transparent)
-                            destLine[i] = c;
-                        ++i;
-                        ++table;
-                    } while (i < dw);
+                if (line->AllTrans == 0) {
+                    long first;
+                    if (line->StartX < sx)
+                        first = 0;
+                    else
+                        first = ((line->StartX - sx) * dstPerSrc) >> 8;
+
+                    long last = ((line->EndX - sx + 1) * dstPerSrc) >> 8;
+                    if (last > dw)
+                        last = dw;
+
+                    if (first < last) {
+                        if (dstPerSrc == 0x100 && line->MidSolid != 0) {
+                            memcpy(dstLine + first, srcLine + first,
+                                   last - first);
+                        } else {
+                            long x = first;
+                            do {
+                                uchar color = srcLine[SrcXTbl[x]];
+                                if ((unsigned int)color !=
+                                    (unsigned int)transColor)
+                                    dstLine[x] = color;
+                                ++x;
+                            } while (x < last);
+                        }
+                    }
                 }
-                destLine += dstOrientation * dstStride;
-                sourceY += yStep;
+
+                dstLine += dstLineStep;
+                srcY += yStep;
                 ++row;
             } while (row < dh);
         }
+        return;
+    }
+
+    if (dh > 0) {
+        do {
+            long srcLineNumber = srcY >> 8;
+            long srcRow;
+            if (srcOrientation == 1)
+                srcRow = srcLineNumber;
+            else
+                srcRow = srcHeight - srcLineNumber - 1;
+            uchar* srcLine = src + srcRow * srcStride + sx;
+
+            long x = 0;
+            if (dw > 0) {
+                do {
+                    uchar color = srcLine[SrcXTbl[x]];
+                    if ((unsigned int)color != (unsigned int)transColor)
+                        dstLine[x] = color;
+                    ++x;
+                } while (x < dw);
+            }
+
+            dstLine += dstLineStep;
+            srcY += yStep;
+            ++row;
+        } while (row < dh);
     }
 }
 

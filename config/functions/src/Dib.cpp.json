@@ -7,7 +7,7 @@
   },
   "functions": {
     "00438820": {"status": "new_verified_logic", "symbol": "?DibBlt@@YAXPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJ01JJJJHHH@Z", "behavior_review": "logic_matching/00438820/review-01/attempt-01"},
-    "00438AA0": {"status": "scratch", "symbol": "?TransDibBlt@@YAXPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJ01PAUTRANSINFO@@JJJJHHHH@Z"},
+    "00438AA0": {"status": "new_verified_logic", "symbol": "?TransDibBlt@@YAXPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJ01PAUTRANSINFO@@JJJJHHHH@Z", "behavior_review": "logic_matching/00438AA0/review-20260913T035607Z-coord07/attempt-01"},
     "00438E80": {"status": "matching", "symbol": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z"},
     "00439060": {"status": "matching", "symbol": "?GetDibDim@@YAXPAUBITMAPINFO256@@AAJ11@Z"},
     "004390A0": {"status": "scratch", "symbol": "?TileDibBlt@@YAJPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJJJ01PAUTRANSINFO@@JJJJHHH@Z"},
