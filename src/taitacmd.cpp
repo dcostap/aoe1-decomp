@@ -6615,141 +6615,123 @@ int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
 }
 
 
-int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, ulong startTime)
+int TribeTacticalAIModule::highLevelTaskGatherer(int id, unsigned long availableTime)
 {
-    unsigned long now;
-    RGE_Static_Object* gathererObj;
-    int triedTasking[4];
-    UnitAIModule* ai;
-    int numNonFarmers;
-    int task;
-    int* tried;
-    int* desired;
-    int i;
-    int j;
-    int foundIndex;
-    int taskResult;
+    int triedTasking[4] = {0, 0, 0, 0};
+    int gathererIndex = 0;
 
-    i = 0;
-    taskResult = 0;
-    triedTasking[1] = 0;
-    triedTasking[2] = 0;
-    triedTasking[3] = 0;
-    while (i < this->numberGatherersValue && this->gatherers[i].id != unitID)
-        ++i;
-    if (i >= this->numberGatherersValue)
-        goto fail;
-    foundIndex = i;
-
-    now = debug_timeGetTime(s_file, 0x1F5C);
-    if (now - this->gatherers[foundIndex].lastTaskTime < 5000)
-        return 1;
-    this->gatherers[foundIndex].lastTaskTime = now;
-
-    gathererObj = this->md->player->world->object(unitID);
-    if (gathererObj != 0 && gathererObj->unitAI() != 0) {
-        ai = gathererObj->unitAI();
-    if (ai->currentAction() == 0x258)
-        return 1;
-    ai = gathererObj->unitAI();
-    if (ai->currentAction() == 0x25A)
-        goto success;
-    ai = gathererObj->unitAI();
-    if (ai->currentAction() == 0x26A)
-        goto success;
-
-    if (gathererObj->attribute_amount_held > DAT_005756f0)
-        return 1;
-
-    if (this->isFarmer(gathererObj) == 1) {
-        numNonFarmers = this->civilians.numberValue;
-        numNonFarmers -= this->numberFarmers();
-        if (this->md->resourceAI.resource(0) < 1000 && numNonFarmers > 3)
-            return 1;
+    while (gathererIndex < this->numberGatherersValue &&
+           this->gatherers[gathererIndex].id != id) {
+        gathererIndex++;
+    }
+    if (gathererIndex >= this->numberGatherersValue) {
+        return 0;
     }
 
-    ai = gathererObj->unitAI();
-    if (ai->currentOrder() == 0x2C6) {
-        ai = gathererObj->unitAI();
-        if (ai->currentOrderPriority() == 100)
-            goto success;
-    }
-    ai = gathererObj->unitAI();
-    if (ai->currentOrder() == 0x2BE)
+    UnitData* gatherer = &this->gatherers[gathererIndex];
+    unsigned long currentTime = debug_timeGetTime(
+        "C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1F5C);
+    if (currentTime - gatherer->lastTaskTime < 5000) {
         return 1;
+    }
+    gatherer->lastTaskTime = currentTime;
 
-    if (this->gatherers[foundIndex].data2 > this->gatherers[foundIndex].data3) {
-        ai = gathererObj->unitAI();
-        if (ai->currentAction() != -1)
-            return 1;
-        task = this->gatherers[foundIndex].data1;
-        triedTasking[task + 1] = 1;
-        if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, startTime, 0) == 1)
-            return 1;
-        this->gatherers[foundIndex].data1 = -1;
-        this->gatherers[foundIndex].data2 = -1;
-        this->gatherers[foundIndex].data3 = -1;
+    RGE_Static_Object* gathererObject = this->md->player->world->object(id);
+    if (gathererObject == 0 || gathererObject->unitAI() == 0) {
+        return 0;
     }
 
-    tried = triedTasking + 1;
-    desired = this->desiredGathererDistribution;
-    j = 0;
-    task = 0;
-    do {
-        if (*tried != 1 && desired[-4] < *desired) {
-            if (this->gatherers[foundIndex].data1 == task) {
-                ai = gathererObj->unitAI();
-                if (ai->currentAction() == 0x265)
-                    goto success;
-                ai = gathererObj->unitAI();
-                if (ai->currentAction() == 0x261)
-                    goto success;
+    if (gathererObject->unitAI()->currentAction() == 0x258) {
+        return 1;
+    }
+    if (gathererObject->unitAI()->currentAction() == 0x25A ||
+        gathererObject->unitAI()->currentAction() == 0x26A) {
+        return 1;
+    }
+    if (gathererObject->attribute_amount_held > 0.0f) {
+        return 1;
+    }
+
+    if (this->isFarmer(gathererObject) == 1) {
+        int numberCivilians = this->civilians.numberValue;
+        int nonFarmers = numberCivilians - this->numberFarmers();
+        if (this->md->resourceAI.resource(0) < 1000 && nonFarmers > 3) {
+            return 1;
+        }
+    }
+
+    if (gathererObject->unitAI()->currentOrder() == 0x2C6 &&
+        gathererObject->unitAI()->currentOrderPriority() == 100) {
+        return 1;
+    }
+    if (gathererObject->unitAI()->currentOrder() == 0x2BE) {
+        return 1;
+    }
+
+    if (gatherer->data3 < gatherer->data2) {
+        if (gathererObject->unitAI()->currentAction() != -1) {
+            return 1;
+        }
+
+        triedTasking[gatherer->data1] = 1;
+        if (this->taskGatherer(gatherer->id, gatherer->data1, 0,
+                               availableTime, 0) == 1) {
+            return 1;
+        }
+        gatherer->data1 = -1;
+        gatherer->data2 = -1;
+        gatherer->data3 = -1;
+    }
+
+    int taskResult = 0;
+    int resource;
+    for (resource = 0; resource < 4; resource++) {
+        if (triedTasking[resource] != 1 &&
+            this->actualGathererDistribution[resource] <
+                this->desiredGathererDistribution[resource]) {
+            if (gatherer->data1 == resource) {
+                int action = gathererObject->unitAI()->currentAction();
+                if (action == 0x265 ||
+                    gathererObject->unitAI()->currentAction() == 0x261) {
+                    return 1;
+                }
             }
-            *tried = 1;
-            if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, startTime, 0) == 1)
-                goto success;
-        }
-        ++task;
-        ++tried;
-        ++desired;
-        ++j;
-    } while (j < 4);
 
-    // With no enabled age branch, the original skips the ordinary task.
-    if ((this->inAge(1) == 0 || this->sn[0xB5] != 1) &&
-        (this->inAge(2) == 0 || this->sn[0xB6] != 1 || triedTasking[1] != 0)) {
-        if (this->inAge(3) == 0 || this->sn[0xB7] != 1)
-            goto fallback;
-
-        if (triedTasking[1] == 0) {
-            taskResult = this->taskGatherer(this->gatherers[foundIndex].id, 0, 1, startTime, 0);
-            triedTasking[1] = 1;
+            triedTasking[resource] = 1;
+            taskResult = this->taskGatherer(gatherer->id, resource, 0,
+                                            availableTime, 0);
+            if (taskResult == 1) {
+                return 1;
+            }
         }
-        if (taskResult != 0)
-            goto normal_success;
-        task = 3;
-    } else {
-        task = 0;
-        triedTasking[1] = 1;
     }
 
-    if (this->taskGatherer(this->gatherers[foundIndex].id, task, 1, startTime, 0) == 0)
-        goto fallback;
-
-    goto normal_success;
-
-fallback:
-    this->taskGatherer(this->gatherers[foundIndex].id, -1, 1, startTime, triedTasking + 1);
-
-success:
-        return 1;
-
-normal_success:
-        return 1;
+    if ((this->inAge(1) != 0 && this->sn[0xB5] == 1) ||
+        (this->inAge(2) != 0 && this->sn[0xB6] == 1 &&
+         triedTasking[0] == 0)) {
+        triedTasking[0] = 1;
+        taskResult = this->taskGatherer(gatherer->id, 0, 1,
+                                        availableTime, 0);
+    } else if (this->inAge(3) != 0 && this->sn[0xB7] == 1) {
+        if (triedTasking[0] == 0) {
+            taskResult = this->taskGatherer(gatherer->id, 0, 1,
+                                            availableTime, 0);
+            triedTasking[0] = 1;
+        }
+        if (triedTasking[3] == 0) {
+            if (taskResult != 0) {
+                return 1;
+            }
+            triedTasking[3] = 1;
+            taskResult = this->taskGatherer(gatherer->id, 3, 1,
+                                            availableTime, 0);
+        }
     }
 
-fail:
-    return 0;
+    if (taskResult == 0) {
+        this->taskGatherer(gatherer->id, -1, 1, availableTime, triedTasking);
+    }
+    return 1;
 }
 
 
