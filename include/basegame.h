@@ -43,6 +43,7 @@ class TRIBE_Screen_Sed;
 class TRIBE_Screen_Sed_Menu;
 class TRIBE_Screen_Sed_Open;
 class TRIBE_Screen_Status_Message;
+class TRIBE_Scenario_Editor_Panel_Object;
 class TRIBE_Credits_Screen;
 class TRIBE_Command;
 class TribeInformationAIModule;
@@ -157,6 +158,7 @@ class RGE_Base_Game {
     friend class TRIBE_Screen_Sed_Menu;
     friend class TRIBE_Screen_Sed_Open;
     friend class TRIBE_Screen_Status_Message;
+    friend class TRIBE_Scenario_Editor_Panel_Object;
     friend class TRIBE_Credits_Screen;
     friend class TRIBE_Command;
     friend class TribeAboutDialog;

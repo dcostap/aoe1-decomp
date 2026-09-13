@@ -340,10 +340,13 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(
 
 // spnl_obj.cpp lines 390-397.
 long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(
-    long x, long y, int ctrl_key, int shift_key)
+    long x, long y, int ctrl, int shift)
 {
-    release_mouse();
-    (void)*(volatile int*)&rge_base_game->prog_mode;
+    this->release_mouse();
+    if (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
+        rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) {
+        return 1;
+    }
     return 1;
 }
 
