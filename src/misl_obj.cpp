@@ -93,25 +93,19 @@ unsigned char RGE_Missile_Object::missile_move() {
     float new_x;
     float new_y;
     float new_z;
-    int result;
 
     new_x = this->world_x + this->velocity_x;
     new_y = this->world_y + this->velocity_y;
     new_z = this->world_z + this->velocity_z;
 
-    if (new_x < 0.0f ||
-        (float)this->owner->world->map->map_width <= new_x ||
-        new_y < 0.0f ||
-        (float)this->owner->world->map->map_height <= new_y) {
+    if (new_x < DAT_00570934 ||
+        new_x >= (float)this->owner->world->map->map_width ||
+        new_y < DAT_00570934 ||
+        new_y >= (float)this->owner->world->map->map_height) {
         this->die_die_die();
     }
 
-    if (this->teleport(new_x, new_y, new_z) == this->world_z) {
-        result = 1;
-    } else {
-        result = 0;
-    }
-    return result;
+    return this->teleport(new_x, new_y, new_z) == this->world_z;
 }
 
 RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
