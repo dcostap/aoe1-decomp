@@ -2735,41 +2735,41 @@ void TRIBE_Player::setupHittite(int* first, int second, int third, int fourth)
 
 
 
-void TRIBE_Player::setupPhoenician(int* first, int second, int third, int fourth)
+void TRIBE_Player::setupPhoenician(int* p, int type, int unused1, int unused2)
 {
     this->playerAI->logCommonHistory("Setting up as Phoenicians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (second == 0 || second == 1) {
-            first[0x44] = 100;
-        } else if (second == 2 || second == 6) {
-            first[0x1E] = 60;
-            first[0x44] = 40;
-        } else if (second == 5 || second == 8) {
-            first[0x1E] = 80;
-            first[0x44] = 20;
+        if (type == 0 || type == 1) {
+            p[0x44] = 100;
+        } else if (type == 2 || type == 6) {
+            p[0x1E] = 60;
+            p[0x44] = 40;
+        } else if (type == 5 || type == 8) {
+            p[0x1E] = 80;
+            p[0x44] = 20;
         } else {
-            first[0x1E] = 100;
+            p[0x1E] = 100;
         }
     } else {
-        first[3] = 10;
-        first[4] = 10;
-        first[9] = 10;
-        first[10] = 10;
-        first[11] = 10;
-        first[0x11] = 70;
-        first[0x12] = 70;
-        first[0] = 20;
-        first[6] = 20;
-        first[0x13] = 20;
-        first[1] = 40;
-        first[0x14] = 30;
-        first[0x35] = 100;
+        p[3] = 10;
+        p[4] = 10;
+        p[9] = 10;
+        p[10] = 10;
+        p[11] = 10;
+        p[0x11] = 70;
+        p[0x12] = 70;
+        p[0] = 20;
+        p[6] = 20;
+        p[0x13] = 20;
+        p[1] = 40;
+        p[0x14] = 30;
+        p[0x35] = 100;
 
-        if (second == 0 || second == 1) {
-            first[0x5C] = 200;
-        } else if (second == 2 || second == 6 || second == 8 || second == 5) {
-            first[0x5C] = 100;
+        if (type == 0 || type == 1) {
+            p[0x5C] = 200;
+        } else if (type == 2 || type == 6 || type == 8 || type == 5) {
+            p[0x5C] = 100;
         }
     }
 }

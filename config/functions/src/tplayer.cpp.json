@@ -84,7 +84,7 @@
     "00517F30": {"status": "new_verified_logic", "symbol": "?setupAssyrian@TRIBE_Player@@QAEXPAHHHH@Z", "behavior_review": "logic_matching/00517F30/review-01/attempt-01"},
     "00518090": {"status": "accepted_drift", "symbol": "?setupMinoan@TRIBE_Player@@QAEXPAHHHH@Z"},
     "005181C0": {"status": "matching", "symbol": "?setupHittite@TRIBE_Player@@QAEXPAHHHH@Z"},
-    "005182E0": {"status": "scratch", "symbol": "?setupPhoenician@TRIBE_Player@@QAEXPAHHHH@Z"},
+    "005182E0": {"status": "new_verified_logic", "symbol": "?setupPhoenician@TRIBE_Player@@QAEXPAHHHH@Z", "behavior_review": "logic_matching/005182E0/review-coord-05-005182E0-20260913T032800Z/attempt-01"},
     "00518400": {"status": "accepted_drift", "symbol": "?setupSumerian@TRIBE_Player@@QAEXPAHHHH@Z"},
     "00518540": {"status": "accepted_drift", "symbol": "?setupPersian@TRIBE_Player@@QAEXPAHHHH@Z"},
     "00518670": {"status": "accepted_drift", "symbol": "?setupShang@TRIBE_Player@@QAEXPAHHHH@Z"},
