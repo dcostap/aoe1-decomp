@@ -11,6 +11,6 @@
     "0050B4D0": {"status": "matching", "symbol": "?create_build_list@TRIBE_Dialog_List@@IAEHXZ"},
     "0050B5E0": {"status": "matching", "symbol": "?create_train_list@TRIBE_Dialog_List@@IAEHXZ"},
     "0050B700": {"status": "matching", "symbol": "?create_research_list@TRIBE_Dialog_List@@IAEHXZ"},
-    "0050B820": {"status": "accepted_drift", "symbol": "?get_cur_id@TRIBE_Dialog_List@@MAEFXZ"}
+    "0050B820": {"status": "matching", "symbol": "?get_cur_id@TRIBE_Dialog_List@@MAEFXZ", "exact_lottery": "logic_matching/0050B820/exact-lottery-20260913T110000Z/refinement-01"}
   }
 }

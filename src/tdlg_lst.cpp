@@ -124,15 +124,14 @@ int TRIBE_Dialog_List::create_research_list() {
 }
 
 short TRIBE_Dialog_List::get_cur_id() {
-    int value = this->list_type - 100;
-    if (value == 0)
-        goto return_minus_one;
-    if (--value == 0)
-        goto return_minus_one;
-    if (--value == 0)
-        goto return_minus_one;
-    return RGE_Dialog_List::get_cur_id();
-
-return_minus_one:
-    return -1;
+    switch (this->list_type) {
+    case 100:
+        return -1;
+    case 101:
+        return -1;
+    case 102:
+        return -1;
+    default:
+        return RGE_Dialog_List::get_cur_id();
+    }
 }
