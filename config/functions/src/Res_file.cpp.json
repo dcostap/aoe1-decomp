@@ -13,7 +13,7 @@
     "0047F480": {"status": "matching", "symbol": "?RESFILE_Extract_to_File@@YAHKKPADAAPAU_iobuf@@@Z"},
     "0047F580": {"status": "matching", "symbol": "?RESFILE_Set_Missing_Flag@@YAXH@Z"},
     "0047F590": {"status": "matching", "symbol": "?RESFILE_Decommit_Mapped_Memory@@YAHPAEH@Z"},
-    "0047F5C0": {"status": "scratch", "symbol": "?RESFILE_build_res_file@@YAHPAD00@Z"},
+    "0047F5C0": {"status": "new_verified_logic", "symbol": "?RESFILE_build_res_file@@YAHPAD00@Z", "behavior_review": "logic_matching/0047F5C0/coord-12-review-20260913T090000Z/attempt-01"},
     "0047FC50": {"status": "matching", "symbol": "?BUILDRES_get_files_resource_type@@YAKPAD@Z"}
   }
 }
