@@ -69,196 +69,174 @@ uchar RGE_RMM_Shallows_Generator::generate()
     return 1;
 }
 
-void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
-    int iVar2;
-    int iVar4;
-    long lVar6;
-    float* pfVar7;
-    long lVar8;
-    int iVar9;
+void RGE_RMM_Shallows_Generator::make_tribe_connections(
+    long point1, long point2)
+{
+    long start_x = this->info.shallows[point1].x;
+    long start_y = this->info.shallows[point1].y;
+    long target_x = this->info.shallows[point2].x;
+    long target_y = this->info.shallows[point2].y;
+    long path_x = target_x;
+    long path_y = target_y;
     long x;
     long y;
-    long end_x;
-    long tx1;
-    long end_y;
-    long ty;
     long done;
-    long tx2;
-    long in_zone;
-    long x1;
-    long y1;
+    float cost;
+    float terrain[40] = {0};
     Map_Stack stack;
-    float terrain[41];
-    terrain[1] = 0.0f;
-    x1 = this->info.shallows[param_1].x;
-    y1 = this->info.shallows[param_1].y;
-    iVar2 = this->info.shallows[param_2].x;
-    iVar9 = this->info.shallows[param_2].y;
-
-    // zero out terrain[2..40]
-    pfVar7 = terrain + 2;
-    iVar4 = 0x27;
-    while (iVar4 != 0) {
-        *pfVar7 = 0.0f;
-        pfVar7++;
-        iVar4--;
-    }
-
-    tx1 = iVar2;
-    ty = iVar9;
 
     this->init_stack(stack);
 
-    terrain[1] = 1.0f;
-    terrain[3] = 1.0f;
-    terrain[2] = 7.0f;
-    terrain[0x17] = 14.0f;
-    terrain[5] = 2.0f;
+    terrain[0] = 1.0f;
+    terrain[1] = 7.0f;
+    terrain[2] = 1.0f;
+    terrain[4] = 2.0f;
+    terrain[22] = 14.0f;
 
-    this->find_path(x1, y1, tx1, ty, &terrain[1]);
+    this->find_path(start_x, start_y, path_x, path_y, terrain);
 
-    if (tx1 != iVar2 || ty != iVar9) return;
+    if (path_x != target_x || path_y != target_y) {
+        return;
+    }
 
-    // Keep the first step coordinates live before the bounds guard. The
-    // original loop carries these values across its back edge.
-    x = tx1;
-    y = ty;
+    x = path_x;
+    y = path_y;
+    if (x < 0 || x >= this->map_width ||
+        y < 0 || y >= this->map_height) {
+        return;
+    }
 
-    if (x < 0 || x >= this->map_width) return;
-    if (y < 0 || y >= this->map_height) return;
-
+    stack.next = 0;
     stack.prev = 0;
-    terrain[0] = 0.0f;
-    tx2 = 0;
+    done = 0;
 
-    do {
-        switch (this->search_map_rows[y][x]) {
-        case 7: // tile type 7
-            --y;
+    while (!done) {
+        switch (this->search_map_rows[path_y][path_x]) {
+        case 4:
+            ++x;
             break;
-        case 6: // tile type 6
-            ++y;
-            break;
-        case 11: // tile type 11
-            --y;
+        case 5:
             --x;
             break;
-        case 9: // tile type 9
+        case 6:
+            ++y;
+            break;
+        case 7:
+            --y;
+            break;
+        case 8:
+            ++y;
+            ++x;
+            break;
+        case 9:
             --y;
             ++x;
             break;
-        case 10: // tile type 10
+        case 10:
             ++y;
-        case 5: // tile type 5
             --x;
             break;
-        case 8: // tile type 8
-            ++y;
-        case 4: // tile type 4
-            ++x;
+        case 11:
+            --y;
+            --x;
             break;
         default:
-            tx2 = 1;
+            done = 1;
             break;
         }
 
-        if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height) {
-            tx2 = 1;
+        if (x < 0 || x >= this->map_width ||
+            y < 0 || y >= this->map_height) {
+            done = 1;
         }
 
-        if (tx2 != 0) {
-            // Pop from stack and modify terrain tiles.
-            while (this->pop_stack(stack, x, y, stack.cost) != 0) {
-                RGE_Tile& tile = this->map_row_offset[y][x];
-                tile.terrain_type = 4;
-            }
-            this->deinit_stack(stack);
-            return;
+        if (done) {
+            break;
         }
 
-        // Check current tile terrain.
-        unsigned char terrain_type =
-            this->map_row_offset[y][x].terrain_type & 0x1F;
-
+        uchar terrain_type =
+            this->map_row_offset[y][x].terrain_type & 0x1f;
         if (terrain_type == 1 || terrain_type == 0x16) {
-            // Water tile - generate random area around it.
-            iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xC6);
-            end_y = (x - (iVar2 * 2) / 0x7FFF) - 1;
-            if (end_y < 0) end_y = 0;
-            lVar6 = end_y;
+            long min_x =
+                x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xc6) * 2) /
+                        0x7fff -
+                1;
+            if (min_x < 0) {
+                min_x = 0;
+            }
 
-            iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xCA);
-            lVar8 = (y - (iVar2 * 2) / 0x7FFF) - 1;
-            if (lVar8 < 0) lVar8 = 0;
+            long min_y =
+                y - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xca) * 2) /
+                        0x7fff -
+                1;
+            if (min_y < 0) {
+                min_y = 0;
+            }
 
-            iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xCE);
-            in_zone = (iVar2 * 2) / 0x7FFF + 1 + x;
-            if (in_zone >= this->map_width) in_zone = this->map_width - 1;
+            long max_x =
+                x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xce) * 2) /
+                        0x7fff +
+                1;
+            if (max_x >= this->map_width) {
+                max_x = this->map_width - 1;
+            }
 
-            iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xD2);
-            // This bound remains live for the outer row loop.
-            end_x = (iVar2 * 3) / 0x7FFF + 1 + y;
-            if (end_x >= this->map_height) end_x = this->map_height - 1;
+            long max_y =
+                y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xd2) * 3) /
+                        0x7fff +
+                1;
+            if (max_y >= this->map_height) {
+                max_y = this->map_height - 1;
+            }
 
-            done = lVar8;
-            if (lVar8 <= end_x) {
-                x1 = lVar8;
-                do {
-                    if (end_y <= in_zone) {
-                        y1 = end_y;
-                        done = lVar8;
-                        do {
-                            if ((this->map_row_offset[x1][y1].terrain_type & 0x1F) == 1 ||
-                                (this->map_row_offset[x1][y1].terrain_type & 0x1F) == 0x16) {
-                                this->push_stack(stack, lVar6, lVar8, 0.0f, 0.0f);
-                                lVar8 = done;
-                            }
-                            lVar6++;
-                            ++y1;
-                        } while (lVar6 <= in_zone);
+            for (long fill_y = min_y; fill_y <= max_y; ++fill_y) {
+                for (long fill_x = min_x; fill_x <= max_x; ++fill_x) {
+                    if ((this->map_row_offset[fill_y][fill_x].terrain_type &
+                         0x1f) == 1 ||
+                        (this->map_row_offset[fill_y][fill_x].terrain_type &
+                         0x1f) == 0x16) {
+                        this->push_stack(stack, fill_x, fill_y, 0.0f, 0.0f);
                     }
-                    lVar8++;
-                    ++x1;
-                    lVar6 = end_y;
-                    done = lVar8;
-                } while (lVar8 <= end_x);
+                }
             }
         } else {
-            // Land tile - push adjacent water tiles to stack.
             if (x > 0) {
-                unsigned char adj =
-                    this->map_row_offset[y][x - 1].terrain_type & 0x1F;
-                if (adj == 1 || adj == 0x16) {
+                terrain_type =
+                    this->map_row_offset[y][x - 1].terrain_type & 0x1f;
+                if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x - 1, y, 0.0f, 0.0f);
                 }
             }
             if (x < this->map_width - 1) {
-                unsigned char adj =
-                    this->map_row_offset[y][x + 1].terrain_type & 0x1F;
-                if (adj == 1 || adj == 0x16) {
+                terrain_type =
+                    this->map_row_offset[y][x + 1].terrain_type & 0x1f;
+                if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x + 1, y, 0.0f, 0.0f);
                 }
             }
             if (y > 0) {
-                unsigned char adj =
-                    this->map_row_offset[y - 1][x].terrain_type & 0x1F;
-                if (adj == 1 || adj == 0x16) {
+                terrain_type =
+                    this->map_row_offset[y - 1][x].terrain_type & 0x1f;
+                if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x, y - 1, 0.0f, 0.0f);
                 }
             }
             if (y < this->map_height - 1) {
-                unsigned char adj =
-                    this->map_row_offset[y + 1][x].terrain_type & 0x1F;
-                if (adj == 1 || adj == 0x16) {
+                terrain_type =
+                    this->map_row_offset[y + 1][x].terrain_type & 0x1f;
+                if (terrain_type == 1 || terrain_type == 0x16) {
                     this->push_stack(stack, x, y + 1, 0.0f, 0.0f);
                 }
             }
         }
 
-        // Mark current tile on block map.
-        this->search_map_rows[ty][tx1] = 0xFF;
+        this->search_map_rows[path_y][path_x] = 0xff;
+        path_x = x;
+        path_y = y;
+    }
 
-        tx1 = x;
-        ty = y;
-    } while (1);
+    while (this->pop_stack(stack, x, y, cost)) {
+        this->map_row_offset[y][x].terrain_type = 4;
+    }
+    this->deinit_stack(stack);
 }

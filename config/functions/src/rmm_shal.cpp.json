@@ -8,6 +8,6 @@
   "functions": {
     "00487010": {"status": "matching", "symbol": "??0RGE_RMM_Shallows_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Shallows_Info@@@Z"},
     "00487050": {"status": "matching", "symbol": "?generate@RGE_RMM_Shallows_Generator@@UAEEXZ"},
-    "00487200": {"status": "scratch", "symbol": "?make_tribe_connections@RGE_RMM_Shallows_Generator@@QAEXJJ@Z"}
+    "00487200": {"status": "new_verified_logic", "symbol": "?make_tribe_connections@RGE_RMM_Shallows_Generator@@QAEXJJ@Z", "behavior_review": "logic_matching/00487200/coord-11-review-20260913T050000Z/attempt-01"}
   }
 }
