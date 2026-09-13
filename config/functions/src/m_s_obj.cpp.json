@@ -11,7 +11,7 @@
     "004521A0": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
     "004521E0": {"status": "matching", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z"},
     "004524E0": {"status": "matching", "symbol": "?setup@RGE_Master_Static_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
-    "00452B00": {"status": "scratch", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00452B00": {"status": "new_verified_logic", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z", "behavior_review": "logic_matching/00452B00/review-coord-09-00452B00-20260207T010001Z/attempt-01"},
     "00452FA0": {"status": "matching", "symbol": "??1RGE_Master_Static_Object@@UAE@XZ"},
     "00452FE0": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Static_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
     "004530B0": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Static_Object@@UAEPAV1@XZ"},
