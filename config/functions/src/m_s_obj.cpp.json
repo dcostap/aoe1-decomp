@@ -20,7 +20,7 @@
     "00453540": {"status": "matching", "symbol": "?modify_delta@RGE_Master_Static_Object@@UAEXME@Z"},
     "004535F0": {"status": "matching", "symbol": "?modify_percent@RGE_Master_Static_Object@@UAEXME@Z"},
     "004536D0": {"status": "matching", "symbol": "?save@RGE_Master_Static_Object@@UAEXH@Z"},
-    "00453C40": {"status": "scratch", "symbol": "?check_placement@RGE_Master_Static_Object@@UAEEPAVRGE_Player@@MMPAHEEEEEE@Z"},
+    "00453C40": {"status": "new_verified_logic", "symbol": "?check_placement@RGE_Master_Static_Object@@UAEEPAVRGE_Player@@MMPAHEEEEEE@Z", "behavior_review": "logic_matching/00453C40/review-coord-09-00453C40-20260207T030002Z/attempt-01"},
     "004543C0": {"status": "matching", "symbol": "?make_available@RGE_Master_Static_Object@@QAEXE@Z"},
     "004543D0": {"status": "matching", "symbol": "?alignment@RGE_Master_Static_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z", "behavior_review": "logic_matching/004543D0/review-01/attempt-01"},
     "00454690": {"status": "matching", "symbol": "?alignment_box@RGE_Master_Static_Object@@QAEEPAVRGE_Game_World@@MMAAF1111111@Z"},
