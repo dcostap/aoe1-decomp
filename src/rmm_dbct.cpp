@@ -922,9 +922,9 @@ void RGE_RMM_Database_Controller::add_object_module()
 
 void RGE_RMM_Database_Controller::add_elevation_module()
 {
-    RGE_Land_Data& map_land =
-        this->map_info.maps[this->map_type].land_info;
-    int land_area = map_land.grown_land_percent * this->map_width *
+    RGE_Land_Data* land_data =
+        &this->map_info.maps[this->map_type].land_info;
+    long land_area = this->map_width * land_data->grown_land_percent *
         this->map_height / 100;
 
     this->elevation_info.elevation_num = 4;
@@ -943,12 +943,12 @@ void RGE_RMM_Database_Controller::add_elevation_module()
     this->elevation_info.elevation[1].base_elevation = 1;
     this->elevation_info.elevation[1].spacing = 1;
 
-    this->elevation_info.elevation[2].elevation_size = land_area * 6 / 100;
     this->elevation_info.elevation[2].elevation = 3;
     this->elevation_info.elevation[2].clumps = 6;
     this->elevation_info.elevation[2].base_terrain_type = 0;
     this->elevation_info.elevation[2].base_elevation = 2;
     this->elevation_info.elevation[2].spacing = 1;
+    this->elevation_info.elevation[2].elevation_size = land_area * 6 / 100;
 
     this->elevation_info.elevation[3].elevation_size = land_area * 4 / 100;
     this->elevation_info.elevation[3].elevation = 4;
@@ -957,31 +957,36 @@ void RGE_RMM_Database_Controller::add_elevation_module()
     this->elevation_info.elevation[3].base_elevation = 3;
     this->elevation_info.elevation[3].spacing = 1;
 
-    int hot_spot_index = 0;
-    for (int land_index = 0; land_index < map_land.land_num; ++land_index) {
-        if (map_land.land[land_index].radius >= 0) {
-            if (map_land.land[land_index].by_player_flag != 0) {
-                for (int player_index = 0;
-                     player_index < this->number_of_players;
-                     ++player_index) {
-                    RGE_Elevation_Hot_Spots& hot_spot =
-                        this->elevation_info.hot_spots[hot_spot_index];
-                    hot_spot.x = this->land_info.land[hot_spot_index].x;
-                    hot_spot.y = this->land_info.land[hot_spot_index].y;
-                    hot_spot.radius = map_land.land[land_index].radius;
-                    hot_spot.fade = map_land.land[land_index].fade;
-                    ++hot_spot_index;
-                }
-            }
-            else {
-                RGE_Elevation_Hot_Spots& hot_spot =
-                    this->elevation_info.hot_spots[hot_spot_index];
-                hot_spot.x = this->land_info.land[hot_spot_index].x;
-                hot_spot.y = this->land_info.land[hot_spot_index].y;
-                hot_spot.radius = map_land.land[land_index].radius;
-                hot_spot.fade = map_land.land[land_index].fade;
+    long hot_spot_index = 0;
+    for (long land_index = 0;
+         land_index < land_data->land_num; ++land_index) {
+        if (land_data->land[land_index].radius < 0)
+            continue;
+
+        if (land_data->land[land_index].by_player_flag != 0) {
+            for (long player_index = 0;
+                 player_index < this->number_of_players; ++player_index) {
+                this->elevation_info.hot_spots[hot_spot_index].x =
+                    this->land_info.land[hot_spot_index].x;
+                this->elevation_info.hot_spots[hot_spot_index].y =
+                    this->land_info.land[hot_spot_index].y;
+                this->elevation_info.hot_spots[hot_spot_index].radius =
+                    land_data->land[land_index].radius;
+                this->elevation_info.hot_spots[hot_spot_index].fade =
+                    land_data->land[land_index].fade;
                 ++hot_spot_index;
             }
+        }
+        else {
+            this->elevation_info.hot_spots[hot_spot_index].x =
+                this->land_info.land[hot_spot_index].x;
+            this->elevation_info.hot_spots[hot_spot_index].y =
+                this->land_info.land[hot_spot_index].y;
+            this->elevation_info.hot_spots[hot_spot_index].radius =
+                land_data->land[land_index].radius;
+            this->elevation_info.hot_spots[hot_spot_index].fade =
+                land_data->land[land_index].fade;
+            ++hot_spot_index;
         }
     }
     this->elevation_info.hot_spot_num = hot_spot_index;
