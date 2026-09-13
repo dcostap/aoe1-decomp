@@ -2525,43 +2525,43 @@ void TRIBE_Player::setupEgyptian(int* p, int type, int unused1, int unused2)
 
 
 
-void TRIBE_Player::setupGreek(int* first, int second, int third, int fourth)
+void TRIBE_Player::setupGreek(int* p, int type, int unused1, int unused2)
 {
     this->playerAI->logCommonHistory("Setting up as Greeks.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
-        if (second == 0 || second == 1) {
-            first[0x40] = 100;
-        } else if (second == 2 || second == 6) {
-            first[0x1A] = 60;
-            first[0x40] = 40;
-        } else if (second == 5 || second == 8) {
-            first[0x1A] = 80;
-            first[0x40] = 20;
+        if (type == 0 || type == 1) {
+            p[0x40] = 100;
+        } else if (type == 2 || type == 6) {
+            p[0x1A] = 0x3C;
+            p[0x40] = 0x28;
+        } else if (type == 5 || type == 8) {
+            p[0x1A] = 0x50;
+            p[0x40] = 0x14;
         } else {
-            first[0x1A] = 100;
+            p[0x1A] = 100;
         }
     } else if (rge_base_game->difficulty() < 1) {
-        first[0x24] = 100;
+        p[0x24] = 100;
     } else {
-        first[6] = 30;
-        first[0xB] = 30;
-        first[0x14] = 30;
-        first[9] = 10;
-        first[10] = 10;
-        first[3] = 70;
-        first[4] = 50;
-        first[7] = 20;
-        first[0x13] = 50;
-        first[0x30] = 100;
-        first[0x54] = 100;
+        p[6] = 0x1E;
+        p[0xB] = 0x1E;
+        p[0x14] = 0x1E;
+        p[9] = 10;
+        p[10] = 10;
+        p[3] = 0x46;
+        p[4] = 0x32;
+        p[7] = 0x14;
+        p[0x13] = 0x32;
+        p[0x30] = 100;
+        p[0x54] = 100;
 
-        if (second == 0 || second == 1) {
-            first[0x55] = 200;
-            first[0x56] = 200;
-        } else if (second == 2 || second == 6 || second == 8 || second == 5) {
-            first[0x55] = 100;
-            first[0x56] = 100;
+        if (type == 0 || type == 1) {
+            p[0x55] = 200;
+            p[0x56] = 200;
+        } else if (type == 2 || type == 6 || type == 8 || type == 5) {
+            p[0x55] = 100;
+            p[0x56] = 100;
         }
     }
 }
