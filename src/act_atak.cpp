@@ -1,6 +1,7 @@
 
 #include "../include/act_atak.h"
 #include "../include/act_list.h"
+#include "../include/asp_list.h"
 #include "../include/act_move.h"
 #include "../include/act_obj.h"
 #include "../include/com_obj.h"
@@ -307,131 +308,134 @@ unsigned char RGE_Action_Attack::update()
     }
 
     if (this->target_obj != 0 && this->obj->owner->id != 0 &&
-        this->obj->owner->isAlly(this->target_obj->owner->id) != 0) {
+        this->obj->owner->isAlly(this->target_obj->owner->id)) {
         this->set_state(1);
-        if (this->subActionValue != 0) {
-            goto target_done;
+        if (this->subActionValue == 0) {
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258,
+                              this->targetID, 0);
         }
-        goto target_notify_body;
+        return 4;
     }
 
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
         this->set_state(1);
-        goto target_notify;
+        if (this->subActionValue == 0) {
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258,
+                              this->targetID, 0);
+        }
+        return 4;
     }
 
     switch (this->state) {
-    case 13:
-        goto state13_notify;
+    case 1:
+        return 1;
+
+    case 2:
+        if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
+            this->set_target_obj(0);
+            if (this->subActionValue == 0) {
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FA,
+                                  0x258, 0, 0);
+            }
+            this->set_state(1);
+            if (this->subActionValue == 1) {
+                return 5;
+            }
+            return 2;
+        }
+        break;
 
     case 4:
         switch (this->sub_actions->update()) {
-        case 3:
-            this->set_state(13);
-            if (this->subActionValue != 0) {
-                return 3;
-            }
-state13_notify:
-            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258,
-                              0, 0);
-            return 3;
-        case 4:
-            this->set_state(14);
-            goto target_notify;
         case 1:
         case 2:
             this->set_state(6);
-            return 0;
+            break;
+
+        case 3:
+            this->set_state(13);
+            if (this->subActionValue == 0) {
+                this->obj->notify(this->obj->id, this->obj->id, 0x1F9,
+                                  0x258, 0, 0);
+            }
+            return 3;
+
+        case 4:
+            this->set_state(14);
+            if (this->subActionValue == 0) {
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FB,
+                                  0x258, this->targetID, 0);
+            }
+            return 4;
+
         default:
-            goto return_zero;
+            break;
         }
-
-    case 3:
-        goto return_zero;
-
-    default:
-        goto return_zero;
-
-target_notify:
-        if (this->subActionValue != 0) {
-            goto target_done;
-        }
-
-target_notify_body:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258,
-                          this->targetID, 0);
-
-target_done:
-        return 4;
-
-return_zero:
-        return 0;
+        break;
 
     case 6: {
         int range_status = -1;
-        if (this->ready_to_attack(range_status) != 0) {
+        if (this->ready_to_attack(range_status)) {
             static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
             this->set_state(7);
-            return 0;
         }
-        goto return_zero;
+        break;
     }
 
-    case 7: {
+    case 7:
         if (this->need_to_attack == 0) {
             if (this->obj->can_attack() == 1) {
                 if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
                     this->set_state(2);
                     return 0;
                 }
-                static_cast<RGE_Combat_Object*>(this->obj)->reset_attack_timer();
+
+                static_cast<RGE_Combat_Object*>(this->obj)
+                    ->reset_attack_timer();
                 this->set_state(6);
-                if (this->state != 13 && this->state != 4) {
-                    this->set_state(7);
+                if (this->state == 13 || this->state == 4) {
+                    return 0;
                 }
+                this->set_state(7);
             }
 
             if (this->need_to_attack == 0) {
                 if (this->obj->sprite_list->looped(this->obj->sprite) != 1 &&
                     (this->obj->sprite->flags & 1) != 0) {
-                    goto return_zero;
-                }
-                if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
-                    this->set_state(2);
                     return 0;
                 }
-                this->set_state(6);
+
+                if (this->target_obj == 0 && this->indirect_fire_flag == 0) {
+                    this->set_state(2);
+                } else {
+                    this->set_state(6);
+                }
                 return 0;
             }
         }
 
-        short frame = this->fire_missile_at_frame;
-        if (frame == 0) {
-            frame = (short)((float)this->obj->sprite->frame_num * 0.5f);
-        }
-        if (this->obj->sprite_list->frame_passed(this->obj->sprite, frame) !=
-            0) {
-            this->do_attack();
-        }
-        return 0;
-    }
-
-    case 2:
-        if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
-            this->set_target_obj(0);
-            if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x258,
-                                  0, 0);
+        {
+            short attack_frame = this->fire_missile_at_frame;
+            if (attack_frame == 0) {
+                attack_frame =
+                    static_cast<short>(this->obj->sprite->frame_num * 0.5f);
             }
-            this->set_state(1);
-            return this->subActionValue == 1 ? (unsigned char)5
-                                              : (unsigned char)2;
+            if (this->obj->sprite_list->frame_passed(this->obj->sprite,
+                                                     attack_frame)) {
+                this->do_attack();
+            }
         }
-        goto return_zero;
+        break;
 
-    case 1:
-        return 1;
+    case 13:
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258, 0, 0);
+        return 3;
+
+    default:
+        break;
     }
+
+    return 0;
 }
 
 int RGE_Action_Attack::work(RGE_Static_Object* target, float x, float y,
