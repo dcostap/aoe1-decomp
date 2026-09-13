@@ -5114,367 +5114,325 @@ void TribeTacticalAIModule::setStrategicNumber(int index, int value)
 
 
 
-void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
-                                   long param_4, long param_5, long param_6)
+void TribeTacticalAIModule::notify(int objectID, int, int notification,
+                                   long attackerID, long, long)
 {
-    int callerID = param_1;
-    int numberToRespond;
-    RGE_Static_Object* targetObj;
-    ulong entryTime;
-    RGE_Static_Object* callerObject;
-    XYPoint attackPoint;
-    XYZPoint point;
-    ObjectMemory* itemToCapture;
-    int i;
-    int repCount;
-    RGE_Static_Object* townCenter;
-    float distance;
-    int coopX;
-    int coopY;
-    RGE_Static_Object* initialObject = this->md->aiPlayer->world->object(callerID);
-    if (param_3 != 0x72 && param_3 != 0x74 && initialObject == 0) {
+    RGE_Static_Object* callerObject =
+        this->md->aiPlayer->world->object(objectID);
+
+    if (notification != 0x72 && notification != 0x74 &&
+        callerObject == 0)
         return;
-    }
 
-    entryTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1904);
+    ulong entryTime = debug_timeGetTime(s_file, 0x1904);
 
-    switch (param_3) {
-    case 0x72:
-    case 0x74:
-        goto notify_relic;
-    case 0x201:
-        break;
-    default:
-        return;
-    }
+    if (notification == 0x72 || notification == 0x74) {
+        ObjectMemory* memory;
+        if (notification == 0x72)
+            memory = this->md->informationAI.artifactToCapture(-1);
+        else
+            memory = this->md->informationAI.ruinToCapture(-1);
 
-    targetObj = this->md->aiPlayer->world->object(param_4);
-    if (targetObj == 0) return;
-    if (targetObj->owner->id == this->md->player->id) return;
+        if (memory == 0)
+            return;
 
-    callerObject = this->md->aiPlayer->world->object(param_1);
-    if (callerObject == 0) return;
+        int numberToTask = this->numberSoldiersWithPriority(100, -1, 1);
+        if (numberToTask > 3)
+            numberToTask = 3;
 
-    if (targetObj->owner->id == 0 &&
-        (this->zoomingToNextAge == 0 ||
-         (targetObj->master_obj->id != 0x7E && targetObj->master_obj->id != 0x59)) &&
-        this->dealWithGAIAAttacker(targetObj, callerObject) == 1) {
-        return;
-    }
-
-    if (targetObj->owner->id != 0) {
-        int i = 0;
-        int explorerCount;
-        int difficulty;
-        if (0 < this->civilians.numberValue) {
-            do {
-                if (this->civilians.maximumSizeValue <= i) break;
-                if (this->civilians.value[i] == callerID) {
-                    explorerCount = this->civilianExplorers.numberValue;
-                    i = 0;
-                    if (explorerCount < 1) goto notify_difficulty;
-                    goto notify_explorer_scan;
-                }
-                i = i + 1;
-            } while (i < this->civilians.numberValue);
+        int tasked = 0;
+        int index = 0;
+        while (index < this->workingArea.numberValue &&
+               tasked < numberToTask) {
+            RGE_Static_Object* object = this->md->aiPlayer->world->object(
+                this->workingArea[index]);
+            if (object != 0 && object->unitAI() != 0 &&
+                object->canPath(memory->id, 2.0f, 0, 1, -1, -1) != 0 &&
+                this->taskDefender(
+                    this->workingArea[index], memory->id, 2.0f, 100) == 1) {
+                this->removeFromGroup(this->workingArea[index]);
+                tasked++;
+            }
+            index++;
         }
-        goto notify_generic_unit;
+        return;
+    }
 
-notify_generic_unit:
-        if (callerObject->unitAI() != 0 && callerObject->unitAI()->currentOrder() != 0x2C1) {
-            difficulty = this->md->player->world->difficultyLevel();
-            if (difficulty == 3) {
+    if (notification != 0x201)
+        return;
+
+    RGE_Static_Object* attacker =
+        this->md->aiPlayer->world->object(attackerID);
+    if (attacker == 0 || attacker->owner->id == this->md->player->id)
+        return;
+
+    RGE_Static_Object* target =
+        this->md->aiPlayer->world->object(objectID);
+    if (target == 0)
+        return;
+
+    if (attacker->owner->id == 0) {
+        if ((this->zoomingToNextAge == 0 ||
+             (attacker->master_obj->id != 0x7e &&
+              attacker->master_obj->id != 0x59)) &&
+            this->dealWithGAIAAttacker(attacker, target) == 1)
+            return;
+    }
+
+    if (attacker->owner->id != 0) {
+        int adjustAttack = 1;
+        if (this->civilians.contains(objectID) != 0 &&
+            this->civilianExplorers.contains(objectID) == 0) {
+            adjustAttack = 1;
+        }
+        else if (target->unitAI() == 0 ||
+                 target->unitAI()->currentOrder() == 0x2c1) {
+            adjustAttack = 0;
+        }
+
+        if (adjustAttack != 0) {
+            if (this->md->player->world->difficultyLevel() == 3)
                 this->sn[0x68] -= 2;
-            }
-            else {
-                difficulty = this->md->player->world->difficultyLevel();
-                if (difficulty == 4) this->sn[0x68] -= 1;
-                else this->enableAttack(3);
-            }
+            else if (this->md->player->world->difficultyLevel() == 4)
+                this->sn[0x68]--;
+            else
+                this->md->tacticalAI.enableAttack(3);
+
+            this->checkForAttackResponseBuildInsertions(
+                (int)attacker->owner->id);
         }
-        goto notify_after_owner;
+    }
 
-notify_explorer_scan:
-        do {
-            if (this->civilianExplorers.maximumSizeValue <= i) break;
-            if (this->civilianExplorers.value[i] == callerID)
-                goto notify_generic_unit;
-            i = i + 1;
-        } while (i < explorerCount);
-        goto notify_difficulty;
+    this->hitsByPlayer[attacker->owner->id]++;
 
-notify_difficulty:
-        difficulty = this->md->player->world->difficultyLevel();
-        if (difficulty == 3) {
-            this->sn[0x68] -= 2;
+    if (attacker->owner->computerPlayer() == 0) {
+        if (this->md->player->isAlly((int)attacker->owner->id) == 1 &&
+            this->hitsByPlayer[attacker->owner->id] >= this->sn[0xdd] &&
+            this->sn[0xd7] == 1) {
+            this->md->diplomacyAI.setChangeable(
+                (int)attacker->owner->id, 1);
+            this->md->diplomacyAI.setStance(
+                (int)attacker->owner->id, 0, 100);
+            this->md->diplomacyAI.setRelation(
+                (int)attacker->owner->id, 3);
+            this->md->diplomacyAI.setChangeable(
+                (int)attacker->owner->id, 0);
         }
         else {
-            difficulty = this->md->player->world->difficultyLevel();
-            if (difficulty == 4) this->sn[0x68] -= 1;
-            else this->enableAttack(3);
+            this->md->diplomacyAI.changeStance(
+                (int)attacker->owner->id, 2, this->sn[0xb2]);
+            this->md->diplomacyAI.changeStance(
+                (int)attacker->owner->id, 0, this->sn[0xb2]);
         }
     }
-
-notify_after_owner:
-    this->checkForAttackResponseBuildInsertions(targetObj->owner->id);
-    this->hitsByPlayer[targetObj->owner->id]++;
-
-    if (targetObj->owner->computerPlayer() == 0) {
-        if (this->md->player->isAlly(targetObj->owner->id) == 1 &&
-            this->sn[0xDD] <= this->hitsByPlayer[targetObj->owner->id] &&
-            this->sn[0xD7] == 1) {
-            this->md->diplomacyAI.setChangeable(targetObj->owner->id, 1);
-            this->md->diplomacyAI.setStance(targetObj->owner->id, 0, 100);
-            this->md->diplomacyAI.setRelation(targetObj->owner->id, 3);
-            this->md->diplomacyAI.setChangeable(targetObj->owner->id, 0);
-        }
-        else {
-            this->md->diplomacyAI.changeStance(targetObj->owner->id, 2, this->sn[0xB2]);
-            this->md->diplomacyAI.changeStance(targetObj->owner->id, 0, this->sn[0xB2]);
-        }
-    }
-    else if (this->md->player->isAlly(targetObj->owner->id) == 1 &&
-             this->md->player->world->players[targetObj->owner->id]->isEnemy(this->md->player->id) == 1) {
-        this->md->diplomacyAI.setChangeable(targetObj->owner->id, 1);
-        this->md->diplomacyAI.setStance(targetObj->owner->id, 0, 100);
-        this->md->diplomacyAI.setRelation(targetObj->owner->id, 3);
-        this->md->diplomacyAI.setChangeable(targetObj->owner->id, 0);
+    else if (this->md->player->isAlly((int)attacker->owner->id) == 1 &&
+             this->md->player->world->players[attacker->owner->id]->isEnemy(
+                 this->md->player->id) == 1) {
+        this->md->diplomacyAI.setChangeable(
+            (int)attacker->owner->id, 1);
+        this->md->diplomacyAI.setStance(
+            (int)attacker->owner->id, 0, 100);
+        this->md->diplomacyAI.setRelation(
+            (int)attacker->owner->id, 3);
+        this->md->diplomacyAI.setChangeable(
+            (int)attacker->owner->id, 0);
     }
 
-    if (0 < this->sn[0x7C] && this->sn[0x80] == targetObj->owner->id && this->sn[0x85] == 1) {
+    if (this->sn[0x7c] > 0 &&
+        this->sn[0x80] == (int)attacker->owner->id &&
+        this->sn[0x85] == 1)
         this->md->revokeTributeAlliance();
-    }
 
     this->md->informationAI.storeAttackMemory(
-        0,
-        (uchar)targetObj->world_y,
-        (uchar)targetObj->world_x,
-        (uchar)targetObj->owner->id,
-        (uchar)this->md->player->id,
-        0,
-        0,
-        this->md->player->world->world_time,
-        -1);
+        0, (uchar)target->world_x, (uchar)target->world_y,
+        (uchar)attacker->owner->id, (uchar)this->md->player->id, 0, 0,
+        this->md->player->world->world_time, -1);
 
+    ulong elapsed =
+        (this->md->player->world->world_time -
+         this->lastAttackResponseTime) / 1000;
     if (this->lastAttackResponseTime != 0 &&
-        (this->md->player->world->world_time - this->lastAttackResponseTime) / 1000 <
-            this->attackLimiterTime(0x30)) {
+        elapsed < this->attackLimiterTime(0x30))
         return;
-    }
 
-    attackPoint.x = (int)targetObj->world_x;
-    attackPoint.y = (int)targetObj->world_y;
+    XYPoint attackPoint;
+    attackPoint.x = (int)attacker->world_x;
+    attackPoint.y = (int)attacker->world_y;
 
-    TacticalAIGroup* group;
-    if (this->md->informationAI.isBoat(targetObj) == 1) {
-        group = this->readyAndIdleGroup(0x67, this->sn[0x14], attackPoint);
+    TacticalAIGroup* responseGroup;
+    if (this->md->informationAI.isBoat(attacker) == 1) {
+        responseGroup = this->readyAndIdleGroup(
+            0x67, this->sn[0x14], attackPoint);
     }
     else {
-        group = this->readyAndIdleGroup(100, this->sn[0x14], attackPoint);
-        if (group == 0) {
-            group = this->readyAndIdleGroup(0x67, this->sn[0x14], attackPoint);
-        }
+        responseGroup = this->readyAndIdleGroup(
+            100, this->sn[0x14], attackPoint);
+        if (responseGroup == 0)
+            responseGroup = this->readyAndIdleGroup(
+                0x67, this->sn[0x14], attackPoint);
     }
 
-    if (group != 0) {
-        RGE_Static_Object* commanderObject =
-            this->md->aiPlayer->world->object(group->commander());
-        if (commanderObject != 0) {
-            point.x = (int)targetObj->world_x;
-            point.y = (int)targetObj->world_y;
-            point.z = (int)targetObj->world_z;
-            if (commanderObject->canPath(
-                    point, commanderObject->weaponRange(), targetObj->id, 0, 1, -1, -1) == 1) {
-                group->setTarget(callerObject->id);
-                group->setTargetType(targetObj->master_obj->id);
-                group->setTargetLocation(targetObj->world_x, targetObj->world_y, targetObj->world_z);
-                group->setAction(2);
-                group->task(this, this->md, 2, 1, 0);
-                this->lastAttackResponseTime = this->md->player->world->world_time;
-                if (this->sn[0x47] != 1) return;
-                this->lastGroupAttackTime = this->md->player->world->world_time;
+    if (responseGroup != 0) {
+        RGE_Static_Object* commander = this->md->player->world->object(
+            responseGroup->commander());
+        if (commander != 0) {
+            XYZPoint point;
+            point.x = (int)attacker->world_x;
+            point.y = (int)attacker->world_y;
+            point.z = (int)attacker->world_z;
+            if (commander->canPath(
+                    point, commander->weaponRange(), attacker->id,
+                    0, 1, -1, -1) == 1) {
+                responseGroup->setTarget((int)attackerID);
+                responseGroup->setTargetType((int)attacker->master_obj->id);
+                responseGroup->setTargetLocation(
+                    attacker->world_x, attacker->world_y, attacker->world_z);
+                responseGroup->setAction(2);
+                responseGroup->task(this, this->md, 2, 1, 0);
+                this->lastAttackResponseTime =
+                    this->md->player->world->world_time;
+                if (this->sn[0x47] == 1)
+                    this->lastGroupAttackTime =
+                        this->md->player->world->world_time;
                 return;
             }
         }
     }
 
-    townCenter = this->md->object(
-        -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-    distance = 1000.0f;
+    RGE_Static_Object* townCenter = this->md->object(
+        -1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
+    int townDistance = 1000;
     if (townCenter != 0) {
-        distance = sqrt((townCenter->world_x - targetObj->world_x) *
-                        (townCenter->world_x - targetObj->world_x) +
-                        (townCenter->world_y - targetObj->world_y) *
-                        (townCenter->world_y - targetObj->world_y));
+        float xDistance = townCenter->world_x - attacker->world_x;
+        float yDistance = townCenter->world_y - attacker->world_y;
+        townDistance = (int)sqrt(
+            xDistance * xDistance + yDistance * yDistance);
     }
 
-    if ((int)distance < 0x14) {
-        int warships = this->numberWarshipsWithPriority(100, -1);
-        int soldiers = this->numberSoldiersWithPriority(100, -1, 0);
-        numberToRespond = warships + soldiers;
-        if (numberToRespond == 0 && this->md->informationAI.isBoat(targetObj) == 0 &&
-            this->sn[0xE1] == 1 &&
-            this->md->player->world->world_time / 1000 < (ulong)this->sn[0x68]) {
-            int i = 0;
-            if (0 < this->civilians.numberValue) {
-                do {
-                    int civilian = this->civilians[i];
-                    int j = 0;
-                    int found = 0;
-                    if (0 < this->workingArea.numberValue) {
-                        do {
-                            if (this->workingArea.maximumSizeValue <= j) break;
-                            if (this->workingArea.value[j] == civilian) {
-                                found = 1;
-                                break;
-                            }
-                            j = j + 1;
-                        } while (j < this->workingArea.numberValue);
-                    }
-                    if (found == 0) {
-                        this->workingArea[this->workingArea.numberValue] = civilian;
-                        this->workingArea.numberValue++;
-                    }
-                    i = i + 1;
-                } while (i < this->civilians.numberValue);
+    int numberToRespond;
+    int available;
+    if (townDistance < 20) {
+        available = this->numberWarshipsWithPriority(100, -1);
+        available += this->numberSoldiersWithPriority(100, -1, 0);
+        numberToRespond = available;
+
+        ulong seconds = this->md->player->world->world_time / 1000;
+
+        if (numberToRespond == 0 &&
+            this->md->informationAI.isBoat(attacker) == 0 &&
+            this->sn[0xe1] == 1 &&
+            seconds < this->sn[0x68]) {
+            int i;
+            for (i = 0; i < this->civilians.numberValue; i++) {
+                int civilian = this->civilians[i];
+                this->workingArea.add(civilian);
             }
             numberToRespond = this->civilians.numberValue;
         }
-        coopY = (int)townCenter->world_y;
-        coopX = (int)townCenter->world_x;
     }
     else {
-        int available;
-        if (this->md->informationAI.isBoat(targetObj) == 1) {
-            available = this->numberWarshipsWithPriority(this->sn[0x14], -1);
+        if (this->md->informationAI.isBoat(attacker) == 1) {
+            available = this->numberWarshipsWithPriority(
+                this->sn[0x14], -1);
         }
         else {
-            available = this->numberWarshipsWithPriority(this->sn[0x14], -1);
-            available += this->numberSoldiersWithPriority(this->sn[0x14], -1, 0);
+            available = this->numberWarshipsWithPriority(
+                this->sn[0x14], -1);
+            available += this->numberSoldiersWithPriority(
+                this->sn[0x14], -1, 0);
         }
-        numberToRespond = (this->sn[0x13] * available) / 100;
-        if (townCenter != 0) {
-            coopY = (int)townCenter->world_y;
-            coopX = (int)townCenter->world_x;
-        }
-        else {
-            coopY = (int)targetObj->world_y;
-            coopX = (int)targetObj->world_x;
-        }
+        numberToRespond = this->sn[0x13] * available / 100;
     }
-    this->checkForCoopAttack(targetObj->owner->id, coopX, coopY);
 
-    param_2 = 0;
-    param_3 = 0;
-    if (0 < this->workingArea.numberValue) {
-        while (param_2 < numberToRespond &&
-               (param_3 < 2 ||
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1A54) - entryTime < 0xB)) {
-            RGE_Static_Object* attackedUnit =
-                this->md->aiPlayer->world->object(this->workingArea[param_3]);
-            if (attackedUnit != 0 && attackedUnit->unitAI() != 0) {
-                int action = attackedUnit->unitAI()->currentAction();
-                if (action == 600) {
-                    int currentTarget = attackedUnit->unitAI()->currentTarget();
-                    if (currentTarget != -1) {
-                        currentTarget = attackedUnit->unitAI()->currentTarget();
-                        if (currentTarget != targetObj->id) {
-                            currentTarget = attackedUnit->unitAI()->currentTarget();
-                            RGE_Static_Object* oldTarget =
-                                this->md->aiPlayer->world->object(currentTarget);
-                            if (oldTarget != 0) {
-                                if (oldTarget->owner->id == this->playersToAttack[0]) {
-                                    param_2++;
-                                    goto notify_next_unit;
-                                }
-                            }
-                        }
+    if (townCenter != 0) {
+        this->checkForCoopAttack(
+            (int)attacker->owner->id, (int)townCenter->world_x,
+            (int)townCenter->world_y);
+    }
+    else {
+        this->checkForCoopAttack(
+            (int)attacker->owner->id, (int)attacker->world_x,
+            (int)attacker->world_y);
+    }
+
+    int responded = 0;
+    int index = 0;
+    while (index < this->workingArea.numberValue &&
+           responded < numberToRespond) {
+        if (index > 1 &&
+            debug_timeGetTime(s_file, 0x1a54) - entryTime > 10)
+            return;
+
+        RGE_Static_Object* object = this->md->aiPlayer->world->object(
+            this->workingArea[index]);
+        if (object != 0 && object->unitAI() != 0) {
+            if (object->unitAI()->currentAction() == 600) {
+                if (object->unitAI()->currentTarget() != -1) {
+                    if (object->unitAI()->currentTarget() == attacker->id) {
+                        responded++;
+                        goto next_object;
                     }
-                    goto notify_try_attack;
+
+                    RGE_Static_Object* currentTarget =
+                        this->md->player->world->object(
+                            object->unitAI()->currentTarget());
+                    if (currentTarget != 0 &&
+                        (int)currentTarget->owner->id ==
+                            this->playersToAttack[0])
+                        goto next_object;
                 }
-notify_try_attack:
-                if (this->workingArea[param_3] == callerID) {
-                    if (attackedUnit->unitAI()->currentOrderPriority() != 100) {
-                        XYZPoint point;
-                        point.x = (int)targetObj->world_x;
-                        point.y = (int)targetObj->world_y;
-                        point.z = (int)targetObj->world_z;
-                        if (attackedUnit->canPath(
-                                point, attackedUnit->weaponRange(), targetObj->id,
-                                0, 1, -1, -1) != 0) {
-                            if (this->taskAttacker(this->workingArea[param_3],
-                                                   targetObj->world_x, targetObj->world_y,
-                                                   targetObj->id, targetObj->owner->id,
-                                                   0, 0, -1, 0) == 1) {
-                                this->lastAttackResponseTime = this->md->player->world->world_time;
-                                if (this->sn[0x47] == 1) {
-                                    this->lastGroupAttackTime = this->md->player->world->world_time;
-                                }
-                                param_2++;
-                            }
-                        }
-                    }
-                }
-                else {
-                    float distance = initialObject->distance_to_object(attackedUnit);
-                    int priority = this->calculatePriority(distance);
-                    if (distance < (float)this->sn[0x14]) {
-                        int currentPriority = attackedUnit->unitAI()->currentOrderPriority();
-                        if (currentPriority < priority && 0 < priority) {
-                            XYZPoint point;
-                            point.x = (int)targetObj->world_x;
-                            point.y = (int)targetObj->world_y;
-                            point.z = (int)targetObj->world_z;
-                            if (attackedUnit->canPath(
-                                    point, attackedUnit->weaponRange(), targetObj->id,
-                                    0, 1, -1, -1) != 0) {
-                                if (this->taskAttacker(this->workingArea[param_3],
-                                                       targetObj->world_x, targetObj->world_y,
-                                                       targetObj->id, targetObj->owner->id,
-                                                       0, 0, -1, 0) == 1) {
-                                    param_2++;
-                                }
-                            }
-                        }
+            }
+
+            if (this->workingArea[index] == objectID) {
+                if (object->unitAI()->currentOrderPriority() != 100) {
+                    XYZPoint point;
+                    point.x = (int)attacker->world_x;
+                    point.y = (int)attacker->world_y;
+                    point.z = (int)attacker->world_z;
+                    if (object->canPath(
+                            point, object->weaponRange(), attacker->id,
+                            0, 1, -1, -1) != 0 &&
+                        this->taskAttacker(
+                            this->workingArea[index], attacker->world_x,
+                            attacker->world_y, attacker->id,
+                            (int)attacker->owner->id,
+                            0, 0, -1, 0) == 1) {
+                        this->lastAttackResponseTime =
+                            this->md->player->world->world_time;
+                        if (this->sn[0x47] == 1)
+                            this->lastGroupAttackTime =
+                                this->md->player->world->world_time;
+                        responded++;
                     }
                 }
             }
-notify_next_unit:
-            param_3++;
-        }
-    }
-
-    return;
-
-notify_relic:
-    if (param_3 == 0x72) {
-        itemToCapture = this->md->informationAI.artifactToCapture(-1);
-    }
-    else {
-        itemToCapture = this->md->informationAI.ruinToCapture(-1);
-    }
-    if (itemToCapture == 0) return;
-
-    numberToRespond = this->numberSoldiersWithPriority(100, -1, 1);
-    if (numberToRespond > 3) numberToRespond = 3;
-    repCount = 0;
-    i = 0;
-    if (this->workingArea.numberValue < 1) return;
-    do {
-        if (numberToRespond <= repCount) return;
-        RGE_Static_Object* object =
-            this->md->aiPlayer->world->object(this->workingArea[i]);
-        if (object != 0 && object->unitAI() != 0 &&
-            object->canPath(itemToCapture->id, 2.0f, 0, 1, -1, -1) != 0) {
-            if (this->taskDefender(this->workingArea[i], itemToCapture->id,
-                                   2.0f, 100) == 1) {
-                this->removeFromGroup(this->workingArea[i]);
-                repCount = repCount + 1;
+            else {
+                float distance = callerObject->distance_to_object(object);
+                int priority = this->calculatePriority(distance);
+                if (distance < (float)this->sn[0x14] &&
+                    object->unitAI()->currentOrderPriority() < priority &&
+                    priority > 0) {
+                    XYZPoint point;
+                    point.x = (int)attacker->world_x;
+                    point.y = (int)attacker->world_y;
+                    point.z = (int)attacker->world_z;
+                    if (object->canPath(
+                            point, object->weaponRange(), attacker->id,
+                            0, 1, -1, -1) != 0 &&
+                        this->taskAttacker(
+                            this->workingArea[index], attacker->world_x,
+                            attacker->world_y, attacker->id,
+                            (int)attacker->owner->id,
+                            0, 0, -1, 0) == 1) {
+                        responded++;
+                    }
+                }
             }
         }
-        i = i + 1;
-        if (this->workingArea.numberValue <= i) return;
-    } while (1);
+
+next_object:
+        index++;
+    }
 }
 
 
