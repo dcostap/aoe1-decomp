@@ -3224,125 +3224,70 @@ void RGE_View::get_tile_bounding_coords(int Tile_X, int Tile_Y, int& bx1, int& b
 
 
 
-int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
-                           int range, int max_confidence, int ignoreNeg)
+int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
+                           int pick_size, int max_confidence,
+                           int require_object)
 {
-    RGE_SPick_Info* head[5];
-    RGE_SPick_Info* tail[5];
-    RGE_SPick_Info* freep[5];
-    RGE_SPick_Info* found;
-    RGE_SPick_Info* previous;
-    RGE_SPick_Info* p;
-    RGE_SPick_Info** head_ptr;
-    DClipInfo_Node* node;
-    int l;
-    int confidence;
-    int obj_id;
-    int z;
-    int hotY;
-    int i;
-    int add_it;
-    int num_picked = 0;
-    int* pick_sizes;
-
-    if (range < 0) {
-        return 0;
-    }
-    if (max_level < min_level) {
-        return 0;
-    }
-    if (Xpos < this->render_rect.left || Xpos > this->render_rect.right ||
-        Ypos < this->render_rect.top || Ypos > this->render_rect.bottom) {
-        return 0;
-    }
-    if (0x28 < min_level || max_level < 0) {
+    if (pick_size < 0 || max_level < min_level ||
+        x < this->render_rect.left || x > this->render_rect.right ||
+        y < this->render_rect.top || y > this->render_rect.bottom ||
+        min_level > 40 || max_level < 0) {
         return 0;
     }
 
     if (min_level < 0) {
         min_level = 0;
     }
-    if (max_level > 0x28) {
-        max_level = 0x28;
+    if (max_level > 40) {
+        max_level = 40;
     }
 
-    Ypos -= this->render_rect.top;
-    Xpos -= this->render_rect.left;
+    x -= this->render_rect.left;
+    y -= this->render_rect.top;
 
-    l = max_level;
-    freep[1] = 0;
-    freep[2] = 0;
-    freep[3] = 0;
-    freep[4] = 0;
-    tail[1] = 0;
-    tail[2] = 0;
-    tail[3] = 0;
-    tail[4] = 0;
-    head[1] = 0;
-    head[2] = 0;
-    head[3] = 0;
-    head[4] = 0;
+    RGE_SPick_Info* head[5];
+    RGE_SPick_Info* tail[5];
+    RGE_SPick_Info* free_list[5];
+    int i;
+    for (i = 1; i < 5; ++i) {
+        head[i] = 0;
+        tail[i] = 0;
+        free_list[i] = 0;
+        this->pick_list_size[i] = 0;
+    }
 
-    pick_sizes = &this->pick_list_size[1];
-    pick_sizes[0] = 0;
-    pick_sizes[1] = 0;
-    pick_sizes[2] = 0;
-    pick_sizes[3] = 0;
+    for (int level = max_level; level >= min_level; --level) {
+        DClipInfo_Node* clip = this->prior_objs->Draw_Level_Head[level];
+        while (clip != 0) {
+            int confidence = 0;
 
-    do {
-        if (l < min_level) {
-            int output_level = 1;
-            head_ptr = head + 1;
-            for (; output_level <= 4; ++output_level, ++head_ptr) {
-                p = *head_ptr;
-                if (p != 0) {
-                    RGE_Pick_Obj_Info* output = &Picked_Objects[num_picked];
-                    do {
-                        output->object_id = p->object_id;
-                        output->confidence = p->confidence;
-                        output->draw_level = p->draw_level;
-                        output->draw_x = p->draw_x;
-                        output->draw_y = p->draw_y;
-                        ++num_picked;
-                        ++output;
-                        if (output >= &Picked_Objects[64]) {
-                            return 0x40;
-                        }
-                        p = p->next;
-                    } while (p != 0);
-                }
-            }
-            return num_picked;
-        }
+            if (clip->Node_Type == 0 &&
+                (require_object == 0 || clip->Object_ID >= 0)) {
+                int left = clip->x1;
+                int top = clip->y1;
+                int right = clip->x2;
+                int bottom = clip->y2;
 
-        node = this->prior_objs->Draw_Level_Head[l];
-        for (; node != 0; node = node->NextOnLevel) {
-            confidence = 0;
-            if (node->Node_Type == 0 &&
-                (ignoreNeg == 0 || node->Object_ID >= 0)) {
-                int node_y1 = node->y1;
-                int node_x2 = node->x2;
-                if (Xpos < node->x1 - range ||
-                    Ypos < node_y1 - range ||
-                    range + node_x2 < Xpos ||
-                    node->y2 + range < Ypos) {
-                    confidence = 0;
-                } else {
+                if (x >= left - pick_size && y >= top - pick_size &&
+                    x <= right + pick_size && y <= bottom + pick_size) {
                     confidence = 4;
-                    if (node->x1 <= Xpos && node_y1 <= Ypos &&
-                        Xpos <= node_x2 && Ypos <= node->y2) {
+                    if (x >= left && y >= top && x <= right && y <= bottom) {
                         confidence = 3;
-                        if ((node->Draw_Flag & 2) == 2) {
-                            node_x2 -= Xpos;
-                        } else {
-                            node_x2 = Xpos - node->x1;
+                        int check_x;
+                        if ((clip->Draw_Flag & 2) == 2) {
+                            check_x = right - x;
                         }
-                        int mask = this->sprite_check(
-                            node->Shape_Base, node->Shape,
-                            node_x2, Ypos - node_y1);
-                        if (mask == 1) {
+                        else {
+                            check_x = x - left;
+                        }
+
+                        int check = this->sprite_check(
+                            clip->Shape_Base, clip->Shape,
+                            check_x, y - top);
+                        if (check == 1) {
                             confidence = 2;
-                        } else if (mask == 2) {
+                        }
+                        else if (check == 2) {
                             confidence = 1;
                         }
                     }
@@ -3350,115 +3295,130 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
             }
 
             if (confidence != 0 && confidence <= max_confidence) {
-                hotY = node->y3;
-                obj_id = node->Object_ID;
-                add_it = 1;
-                found = 0;
-                int picked_level = 1;
-                head_ptr = head + 1;
-                do {
-                    if (found == 0) {
-                        p = *head_ptr;
-                        if (p != 0) {
-                            do {
-                                if (p->object_id == obj_id) {
-                                    found = p;
-                                    z = picked_level;
-                                    break;
-                                }
-                                p = p->next;
-                            } while (p != 0);
-                        }
-                    }
-                    ++picked_level;
-                    ++head_ptr;
-                } while (picked_level < 5);
+                short draw_level = clip->y3;
+                int object_id = clip->Object_ID;
+                int add = 1;
+                int old_confidence = 1;
+                RGE_SPick_Info* old = 0;
 
-                if (found != 0) {
-                    if (z < confidence ||
-                        (z == confidence &&
-                         hotY < found->draw_level)) {
-                        add_it = 0;
+                while (old == 0 && old_confidence < 5) {
+                    old = head[old_confidence];
+                    while (old != 0 && old->object_id != object_id) {
+                        old = old->next;
                     }
-
-                    if (add_it) {
-                        if (head[z] == found) {
-                            head[z] = found->next;
-                        }
-                        if (tail[z] == found) {
-                            tail[z] = found->prev;
-                        }
-                        if (found->next != 0) {
-                            found->next->prev = found->prev;
-                        }
-                        if (found->prev != 0) {
-                            found->prev->next = found->next;
-                        }
-                        found->next = freep[z];
-                        found->prev = 0;
-                        freep[z] = found;
+                    if (old == 0) {
+                        ++old_confidence;
                     }
                 }
 
-                if (add_it) {
-                    p = freep[confidence];
-                    if (p == 0) {
-                        i = this->pick_list_size[confidence];
-                        if (i == 0x40) {
-                            add_it = 0;
-                        } else {
-                            p = this->pick_lists[confidence] + i;
-                            this->pick_list_size[confidence] = i + 1;
-                        }
-                    } else {
-                        freep[confidence] = p->next;
+                if (old != 0) {
+                    if (old_confidence < confidence ||
+                        (old_confidence == confidence &&
+                         draw_level < old->draw_level)) {
+                        add = 0;
                     }
 
-                    if (add_it) {
-                        p->object_id = obj_id;
-                        p->confidence = (short)confidence;
-                        p->draw_level = hotY;
-                        p->draw_x = (short)node->Draw_X;
-                        p->draw_y = (short)node->Draw_Y;
-                        head_ptr = head + confidence;
-                        p->next = 0;
-                        p->prev = 0;
-                        found = *head_ptr;
-                        if (found == 0) {
-                            *head_ptr = p;
-                            tail[confidence] = p;
-                        } else {
-                            do {
-                                if (hotY >= found->draw_level) {
-                                    p->next = found;
-                                    previous = found->prev;
-                                    p->prev = previous;
-                                    if (previous == 0) {
-                                        *head_ptr = p;
-                                        found->prev = p;
-                                    } else {
-                                        p->prev->next = p;
-                                        found->prev = p;
-                                    }
-                                    break;
+                    if (add != 0) {
+                        if (head[old_confidence] == old) {
+                            head[old_confidence] = old->next;
+                        }
+                        if (tail[old_confidence] == old) {
+                            tail[old_confidence] = old->prev;
+                        }
+                        if (old->next != 0) {
+                            old->next->prev = old->prev;
+                        }
+                        if (old->prev != 0) {
+                            old->prev->next = old->next;
+                        }
+
+                        old->next = free_list[old_confidence];
+                        old->prev = 0;
+                        free_list[old_confidence] = old;
+                    }
+                }
+
+                if (add != 0) {
+                    RGE_SPick_Info* pick = free_list[confidence];
+                    if (pick != 0) {
+                        free_list[confidence] = pick->next;
+                    }
+                    else {
+                        int size = this->pick_list_size[confidence];
+                        if (size == 64) {
+                            add = 0;
+                        }
+                        else {
+                            pick = this->pick_lists[confidence] + size;
+                            this->pick_list_size[confidence] = size + 1;
+                        }
+                    }
+
+                    if (add != 0) {
+                        pick->object_id = object_id;
+                        pick->confidence = (short)confidence;
+                        pick->draw_level = draw_level;
+                        pick->draw_x = (short)clip->Draw_X;
+                        pick->draw_y = (short)clip->Draw_Y;
+                        pick->next = 0;
+                        pick->prev = 0;
+
+                        RGE_SPick_Info* at = head[confidence];
+                        if (at == 0) {
+                            head[confidence] = pick;
+                            tail[confidence] = pick;
+                        }
+                        else {
+                            while (draw_level < at->draw_level &&
+                                   at->next != 0) {
+                                at = at->next;
+                            }
+
+                            if (draw_level < at->draw_level) {
+                                at->next = pick;
+                                pick->prev = at;
+                                tail[confidence] = pick;
+                            }
+                            else {
+                                pick->next = at;
+                                pick->prev = at->prev;
+                                if (at->prev == 0) {
+                                    head[confidence] = pick;
                                 }
-                                previous = found->next;
-                                if (previous == 0) {
-                                    found->next = p;
-                                    p->prev = found;
-                                    tail[confidence] = p;
-                                    break;
+                                else {
+                                    at->prev->next = pick;
                                 }
-                                found = previous;
-                            } while (found != 0);
+                                at->prev = pick;
+                            }
                         }
                     }
                 }
             }
 
+            clip = clip->NextOnLevel;
         }
-        --l;
-    } while (true);
+    }
+
+    int count = 0;
+    for (i = 1; i < 5; ++i) {
+        RGE_SPick_Info* pick = head[i];
+        while (pick != 0) {
+            RGE_Pick_Obj_Info* output = &Picked_Objects[count];
+            int object_id = pick->object_id;
+            ++count;
+            output->object_id = object_id;
+            output->confidence = pick->confidence;
+            output->draw_level = pick->draw_level;
+            output->draw_x = pick->draw_x;
+            output->draw_y = pick->draw_y;
+            if (count >= 64) {
+                return 64;
+            }
+            pick = pick->next;
+        }
+    }
+
+    return count;
 }
 
 
