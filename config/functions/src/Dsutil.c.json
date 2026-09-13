@@ -37,6 +37,6 @@
     "00448A70": {"status": "matching", "symbol": "_ds_stream_resume"},
     "00448A80": {"status": "matching", "symbol": "_ds_stream_stop"},
     "00448B30": {"status": "matching", "symbol": "_ds_stream_messages"},
-    "00448BA0": {"status": "scratch", "symbol": "_ds_stream_time_func@20"}
+    "00448BA0": {"status": "new_verified_logic", "symbol": "_ds_stream_time_func@20", "behavior_review": "logic_matching/00448BA0/coord-12-review-20260310T000000Z/attempt-01"}
   }
 }

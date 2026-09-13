@@ -1057,174 +1057,195 @@ int __cdecl ds_stream_messages(int a1, int a2)
     return 0;
 }
 
-void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
-    unsigned long user, unsigned long first, unsigned long second)
+void __stdcall ds_stream_time_func(unsigned int uTimerID,
+                                   unsigned int uMsg,
+                                   unsigned long dwUser,
+                                   unsigned long dw1,
+                                   unsigned long dw2)
 {
     static int bInTimer;
-    DWORD dwLen1;
-    DWORD dwLen2;
+    unsigned long dwPlay;
+    unsigned long dwWrite;
     unsigned char* lpWrite1;
-    DWORD uChkErr;
+    unsigned long dwLen1;
     unsigned char* lpWrite2;
-    DWORD dwPlay;
-    DWORD dwWrite;
+    unsigned long dwLen2;
+    unsigned int uChkErr;
+    unsigned long playDistance;
+    unsigned char* lpWriteCursor;
+    LPDIRECTSOUNDBUFFER stream;
 
-    (void)timer_id;
-    (void)message;
-    (void)user;
-    (void)first;
-    (void)second;
-    if (bInTimer != 0) return;
-    if (_stream_paused != 0) return;
+    if (bInTimer != 0 || _stream_paused != 0) {
+        return;
+    }
+
     bInTimer = 1;
-    if (ds_stream_stop_requested != 0) {
-        bInTimer = 0;
-        return;
-    }
-    if (ds_stream_buffer == (void*)0) {
-        bInTimer = 0;
-        return;
+    if (ds_stream_stop_requested != 0 || ds_stream_buffer == 0) {
+        goto done;
     }
 
-    IDirectSoundBuffer_GetCurrentPosition(ds_stream_buffer,
-        &dwPlay, &dwWrite);
-    if (ds_write_cursor < dwPlay) {
-        DWORD t = ds_write_cursor + ds_chunk_size;
-        if (t > dwPlay) goto done;
+    stream = ds_stream_buffer;
+    IDirectSoundBuffer_GetCurrentPosition(stream, &dwPlay, &dwWrite);
+
+    if (ds_write_cursor < dwPlay &&
+        dwPlay < ds_write_cursor + ds_chunk_size) {
+        goto done;
     }
 
-    if (ds_stream_at_end && ds_silence_chunks == 0) {
-        if (ds_stream_stop_requested != 0) goto done;
-        ds_stream_stop_requested = 1;
-        PostMessageA((HWND)_main_wnd, 0x500, 0, 0);
-        bInTimer = 0;
-        return;
-    }
-
-    {
-        DWORD diff;
-        if (dwPlay < ds_last_play_cursor) diff = ds_buffer_size + dwPlay;
-        else diff = dwPlay;
-        diff -= ds_last_play_cursor;
-        ds_stream_position += diff;
-        ds_last_play_cursor = dwPlay;
-        PostMessageA((HWND)_main_wnd, 0x502, 0, 0);
-    }
-
-    if (ds_stream_at_end && ds_silence_chunks) {
-        --ds_silence_chunks;
-        if ((int)ds_silence_chunks <= 1) goto done;
-        if (ds_stream_buffer == (void*)0) goto done;
-        if (IDirectSoundBuffer_Lock(ds_stream_buffer,
-            ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
-            (void**)&lpWrite2, &dwLen2, 0)) goto done;
-        {
-            LPWAVEFORMATEX wave = _wiWave;
-            if (wave && lpWrite1) {
-                if (wave->wBitsPerSample == 8)
-                    memset(lpWrite1, 0x80, dwLen1);
-                else if (wave->wBitsPerSample == 16)
-                    memset(lpWrite1, 0, dwLen1);
-            }
+    if (ds_stream_at_end != 0 && ds_silence_chunks == 0) {
+        if (ds_stream_stop_requested == 0) {
+            ds_stream_stop_requested = 1;
+            PostMessageA(_main_wnd, 0x500, 0, 0);
         }
-        IDirectSoundBuffer_Unlock(ds_stream_buffer,
-            lpWrite1, dwLen1, lpWrite2, dwLen2);
-        ds_write_cursor += ds_chunk_size;
-        if (ds_write_cursor < ds_buffer_size) goto done;
-        goto wrap_play;
+        bInTimer = 0;
+        return;
     }
 
-    if (ds_stream_buffer == (void*)0) goto done;
-    if (IDirectSoundBuffer_Lock(ds_stream_buffer,
-        ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
-        (void**)&lpWrite2, &dwLen2, 0)) goto done;
-
-    if (dwLen1 == 0 || ds_stream_stop_requested != 0) {
-        if (dwLen1 != 0 && ds_stream_stop_requested != 0) {
-            if (_wiWave && lpWrite1) {
-                memset(lpWrite1,
-                       ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
-                       dwLen1);
-            }
-        }
+    if (dwPlay < ds_last_play_cursor) {
+        playDistance = ds_buffer_size + dwPlay - ds_last_play_cursor;
     } else {
-        WaveReadFile(ds_wave_file, dwLen1, lpWrite1, &ds_wave_data_chunk,
-                     &uChkErr);
-        if (uChkErr < dwLen1) {
-            if (ds_stream_loop == 0) {
-                if (_wiWave && lpWrite1) {
-                    if (_wiWave->wBitsPerSample == 8)
-                        memset(lpWrite1 + uChkErr, 0x80,
-                               dwLen1 - uChkErr);
-                    else if (_wiWave->wBitsPerSample == 16)
-                        memset(lpWrite1 + uChkErr, 0,
-                               dwLen1 - uChkErr);
-                }
-                ds_stream_at_end = 1;
-                if (dwPlay > ds_write_cursor)
-                    ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwPlay) / ds_chunk_size;
-                else
-                    ds_silence_chunks = (ds_write_cursor - dwPlay) / ds_chunk_size;
-            } else if (lpWrite1) {
-                unsigned char* retryWrite1 = lpWrite1;
-                do {
-                    retryWrite1 += uChkErr;
-                    dwLen1 -= uChkErr;
-                    WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk,
-                                      &ds_wave_riff_chunk);
-                    WaveReadFile(ds_wave_file, dwLen1, retryWrite1,
-                        &ds_wave_data_chunk, &uChkErr);
-                } while (uChkErr < dwLen1);
+        playDistance = dwPlay - ds_last_play_cursor;
+    }
+    ds_last_play_cursor = dwPlay;
+    ds_stream_position += playDistance;
+    PostMessageA(_main_wnd, 0x502, 0, 0);
+
+    if (ds_stream_at_end != 0 && ds_silence_chunks != 0) {
+        --ds_silence_chunks;
+        if ((int)ds_silence_chunks < 2 || ds_stream_buffer == 0) {
+            goto done;
+        }
+
+        stream = ds_stream_buffer;
+        if (IDirectSoundBuffer_Lock(stream, ds_write_cursor, ds_chunk_size,
+                                    (void**)&lpWrite1, &dwLen1,
+                                    (void**)&lpWrite2, &dwLen2, 0) != 0) {
+            goto done;
+        }
+
+        if (_wiWave != 0 && lpWrite1 != 0) {
+            if (_wiWave->wBitsPerSample == 8) {
+                memset(lpWrite1, 0x80, dwLen1);
+            } else if (_wiWave->wBitsPerSample == 16) {
+                memset(lpWrite1, 0, dwLen1);
             }
+        }
+
+        IDirectSoundBuffer_Unlock(ds_stream_buffer, lpWrite1, dwLen1,
+                                  lpWrite2, dwLen2);
+    } else {
+        if (ds_stream_buffer == 0) {
+            goto done;
+        }
+
+        stream = ds_stream_buffer;
+        if (IDirectSoundBuffer_Lock(stream, ds_write_cursor, ds_chunk_size,
+                                    (void**)&lpWrite1, &dwLen1,
+                                    (void**)&lpWrite2, &dwLen2, 0) != 0) {
+            goto done;
+        }
+
+        if (dwLen1 != 0 && ds_stream_stop_requested == 0) {
+            WaveReadFile(ds_wave_file, dwLen1, lpWrite1,
+                         &ds_wave_data_chunk, &uChkErr);
+            if (uChkErr < dwLen1) {
+                if (ds_stream_loop == 0) {
+                    if (_wiWave != 0 && lpWrite1 != 0) {
+                        if (_wiWave->wBitsPerSample == 8) {
+                            memset(lpWrite1 + uChkErr, 0x80,
+                                   dwLen1 - uChkErr);
+                        } else if (_wiWave->wBitsPerSample == 16) {
+                            memset(lpWrite1 + uChkErr, 0,
+                                   dwLen1 - uChkErr);
+                        }
+                    }
+
+                    ds_stream_at_end = 1;
+                    if (dwPlay > ds_write_cursor) {
+                        ds_silence_chunks =
+                            (ds_write_cursor + ds_buffer_size - dwPlay) /
+                            ds_chunk_size;
+                    } else {
+                        ds_silence_chunks =
+                            (ds_write_cursor - dwPlay) / ds_chunk_size;
+                    }
+                } else if (lpWrite1 != 0) {
+                    lpWriteCursor = lpWrite1;
+                    do {
+                        dwLen1 -= uChkErr;
+                        lpWriteCursor += uChkErr;
+                        WaveStartDataRead(&ds_wave_file,
+                                          &ds_wave_data_chunk,
+                                          &ds_wave_riff_chunk);
+                        WaveReadFile(ds_wave_file, dwLen1, lpWriteCursor,
+                                     &ds_wave_data_chunk, &uChkErr);
+                    } while (uChkErr < dwLen1);
+                }
+            }
+        } else if (dwLen1 != 0 && ds_stream_stop_requested != 0 &&
+                   _wiWave != 0 && lpWrite1 != 0) {
+            memset(lpWrite1,
+                   ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
+                   dwLen1);
+        }
+
+        if (dwLen2 != 0) {
+            if (ds_stream_stop_requested == 0) {
+                WaveReadFile(ds_wave_file, dwLen2, lpWrite2,
+                             &ds_wave_data_chunk, &uChkErr);
+                if (uChkErr < dwLen2) {
+                    if (ds_stream_loop == 0) {
+                        if (_wiWave != 0 && lpWrite2 != 0) {
+                            if (_wiWave->wBitsPerSample == 8) {
+                                memset(lpWrite2 + uChkErr, 0x80,
+                                       dwLen2 - uChkErr);
+                            } else if (_wiWave->wBitsPerSample == 16) {
+                                memset(lpWrite2 + uChkErr, 0,
+                                       dwLen2 - uChkErr);
+                            }
+                        }
+
+                        ds_stream_at_end = 1;
+                        if (dwPlay > ds_write_cursor) {
+                            ds_silence_chunks =
+                                (ds_write_cursor + ds_buffer_size - dwPlay) /
+                                ds_chunk_size;
+                        } else {
+                            ds_silence_chunks =
+                                (ds_write_cursor - dwPlay) / ds_chunk_size;
+                        }
+                    } else if (lpWrite2 != 0) {
+                        lpWriteCursor = lpWrite2;
+                        do {
+                            dwLen2 -= uChkErr;
+                            lpWriteCursor += uChkErr;
+                            WaveStartDataRead(&ds_wave_file,
+                                              &ds_wave_data_chunk,
+                                              &ds_wave_riff_chunk);
+                            WaveReadFile(ds_wave_file, dwLen2,
+                                         lpWriteCursor,
+                                         &ds_wave_data_chunk, &uChkErr);
+                        } while (uChkErr < dwLen2);
+                    }
+                }
+            } else if (ds_stream_stop_requested != 0 && _wiWave != 0 &&
+                       lpWrite2 != 0) {
+                memset(lpWrite2,
+                       ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
+                       dwLen2);
+            }
+        }
+
+        if (ds_stream_buffer != 0) {
+            IDirectSoundBuffer_Unlock(ds_stream_buffer, lpWrite1, dwLen1,
+                                      lpWrite2, dwLen2);
         }
     }
 
-    if (dwLen2 != 0 && ds_stream_stop_requested == 0) {
-        WaveReadFile(ds_wave_file, dwLen2, lpWrite2, &ds_wave_data_chunk,
-                     &uChkErr);
-        if (uChkErr < dwLen2) {
-            if (ds_stream_loop == 0) {
-                if (_wiWave && lpWrite2) {
-                    if (((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
-                        memset(lpWrite2 + uChkErr, 0x80,
-                               dwLen2 - uChkErr);
-                    else if (((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
-                        memset(lpWrite2 + uChkErr, 0,
-                               dwLen2 - uChkErr);
-                }
-                ds_stream_at_end = 1;
-                if (dwPlay > ds_write_cursor)
-                    ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwPlay) / ds_chunk_size;
-                else
-                    ds_silence_chunks = (ds_write_cursor - dwPlay) / ds_chunk_size;
-            } else if (lpWrite2) {
-                unsigned char* retryWrite2 = lpWrite2;
-                do {
-                    retryWrite2 += uChkErr;
-                    dwLen2 -= uChkErr;
-                    WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk,
-                                      &ds_wave_riff_chunk);
-                    WaveReadFile(ds_wave_file, dwLen2, retryWrite2,
-                        &ds_wave_data_chunk, &uChkErr);
-                } while (uChkErr < dwLen2);
-            }
-        }
-    } else if (dwLen2 != 0 && ds_stream_stop_requested != 0) {
-        if (_wiWave && lpWrite2) {
-            unsigned int fill =
-                ((_wiWave->wBitsPerSample != 8) - 1) & 0x80;
-            memset(lpWrite2, fill, dwLen2);
-        }
-    }
-
-    if (ds_stream_buffer) IDirectSoundBuffer_Unlock(
-        ds_stream_buffer, lpWrite1, dwLen1,
-        lpWrite2, dwLen2);
     ds_write_cursor += ds_chunk_size;
-    if (ds_write_cursor < ds_buffer_size) goto done;
-
-wrap_play:
-    ds_write_cursor -= ds_buffer_size;
+    if (ds_write_cursor >= ds_buffer_size) {
+        ds_write_cursor -= ds_buffer_size;
+    }
 
 done:
     bInTimer = 0;
