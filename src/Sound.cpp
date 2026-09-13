@@ -48,16 +48,15 @@ RGE_Sound::RGE_Sound(int handle, TSound_Driver* driver)
 
     if (this->sound_num > 0) {
         this->sounds = (RGE_Sound_Info*)calloc(this->sound_num, 0x24);
-        if (this->sound_num > 0) {
-            for (int i = 0; i < this->sound_num; i++) {
-                rge_read(handle, this->sounds[i].name, 0x0D);
-                rge_read(handle, &this->sounds[i].resource_id, 4);
-                rge_read(handle, &this->sounds[i].percent, 2);
-                this->sounds[i].digital_sound = new TDigital(
-                    driver, this->sounds[i].name,
-                    this->sounds[i].resource_id);
-                this->sounds[i].loaded = 2;
-            }
+        for (int i = 0; i < this->sound_num; i++) {
+            rge_read(handle, this->sounds[i].name, 0x0D);
+            rge_read(handle, &this->sounds[i].resource_id, 4);
+            rge_read(handle, &this->sounds[i].percent, 2);
+            this->sounds[i].digital_sound =
+                new TDigital(driver,
+                             this->sounds[i].name,
+                             this->sounds[i].resource_id);
+            this->sounds[i].loaded = 2;
         }
     } else {
         this->sounds = 0;
@@ -169,54 +168,50 @@ void RGE_Sound::update_play()
     }
 }
 
-void RGE_Sound::play(int play_list_param)
+void RGE_Sound::play(int add_to_list)
 {
     char s[256];
-    int sound_count;
-    int idx;
 
     if (this->sound_num > 0) {
-        int rand_val = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
+        int rand_val = debug_rand(
+            "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
         rand_val = (rand_val * 100) / 0x7FFF;
 
-        sound_count = this->sound_num;
-        idx = 0;
-        if (sound_count > 0) {
-            for (; idx < sound_count; ++idx) {
-                short percent = this->sounds[idx].percent;
-                rand_val -= percent;
-                if (rand_val <= 0) {
-                    if (this->sounds[idx].digital_sound != 0) {
-                        if (do_draw_log) {
-                            sprintf(s, "{%s", this->sounds[idx].name);
-                            if (safe_draw_log)
-                                write_draw_log2(s);
-                            else
-                                write_draw_log(s);
+        for (int i = 0; i < this->sound_num; i++) {
+            rand_val -= this->sounds[i].percent;
+            if (rand_val <= 0) {
+                if (this->sounds[i].digital_sound != 0) {
+                    if (do_draw_log != 0) {
+                        sprintf(s, "{%s", this->sounds[i].name);
+                        if (safe_draw_log != 0) {
+                            write_draw_log2(s);
+                        } else {
+                            write_draw_log(s);
                         }
-
-                        if (play_list_param)
-                            this->sounds[idx].digital_sound->add_to_play_list();
-                        else
-                            this->sounds[idx].digital_sound->play();
-
-                        if (do_draw_log) {
-                            if (safe_draw_log)
-                                write_draw_log2("}");
-                            else
-                                write_draw_log("}");
-                        }
-
-                        this->sounds[idx].loaded = 1;
-                        int saved_time_get = debug_timeGetTime_on;
-                        debug_timeGetTime_on = 0;
-                        unsigned long time_val = debug_timeGetTime(
-                            "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
-                        this->sounds[idx].time = time_val;
-                        debug_timeGetTime_on = saved_time_get;
                     }
-                    return;
+
+                    if (add_to_list != 0) {
+                        this->sounds[i].digital_sound->add_to_play_list();
+                    } else {
+                        this->sounds[i].digital_sound->play();
+                    }
+
+                    if (do_draw_log != 0) {
+                        if (safe_draw_log != 0) {
+                            write_draw_log2("}");
+                        } else {
+                            write_draw_log("}");
+                        }
+                    }
+
+                    this->sounds[i].loaded = 1;
+                    int saved_time_get = debug_timeGetTime_on;
+                    debug_timeGetTime_on = 0;
+                    this->sounds[i].time = debug_timeGetTime(
+                        "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
+                    debug_timeGetTime_on = saved_time_get;
                 }
+                break;
             }
         }
     }

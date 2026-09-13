@@ -462,31 +462,29 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
     return self->connectionCountValue;
 }
 
-int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
-                                    unsigned char minimum,
-                                    unsigned char amount)
+int InfluenceMap::coverageIncluding(const XYPoint& min, const XYPoint& max,
+                                    unsigned char valueLevel,
+                                    unsigned char newValueLevel)
 {
     int rVal = this->coverageCountValue;
 
-    if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
-        from.y >= this->ySizeValue || to.x < 0 || to.y < 0 ||
-        to.x >= this->xSizeValue || to.y >= this->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
+        min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
+        max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
 
-    for (int x = from.x; x <= to.x; x++) {
-        if (from.y <= to.y) {
-            int xOffset = x - this->xReferencePointValue;
-            int y = from.y;
-            int rows = (to.y - from.y) + 1;
-
-            do {
-                if (this->rowValue[y - this->yReferencePointValue][xOffset] < minimum &&
-                    this->rowValue[y - this->yReferencePointValue][xOffset] + amount >= minimum) {
-                    rVal++;
+    for (int i = min.x; i <= max.x; ++i) {
+        for (int j = min.y; j <= max.y; ++j) {
+            int xr = i - this->xReferencePointValue;
+            if (this->rowValue[j - this->yReferencePointValue]
+                              [xr] < valueLevel) {
+                if (this->rowValue[j - this->yReferencePointValue]
+                                  [xr] +
+                        newValueLevel >= valueLevel) {
+                    ++rVal;
                 }
-                y++;
-            } while (--rows);
+            }
         }
     }
 

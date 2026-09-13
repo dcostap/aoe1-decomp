@@ -125,42 +125,44 @@ void RGE_Active_Sprite_List::use_sprite_list(RGE_Active_Sprite_Node* list) {
     this->list = list;
 }
 
-// The source preserves duplicate counts and order insertion.
-void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* param_1, unsigned char param_2,
-                                        long param_3, long param_4) {
-    RGE_Active_Sprite_Node* pp;
-    RGE_Active_Sprite_Node** ppPrev;
+void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* sprite,
+                                         unsigned char order,
+                                         long offset_x, long offset_y) {
+    RGE_Active_Sprite_Node* node;
+    RGE_Active_Sprite_Node** link;
+    RGE_Active_Sprite* active_sprite;
 
-    if (param_1 == 0) { return; }
+    if (sprite == 0) {
+        return;
+    }
 
-    if (param_1->check_for_shadows() && this->owner) {
+    if (sprite->check_for_shadows() != 0 && this->owner != 0) {
         this->owner->remove_shadows();
     }
 
-    pp = this->list;
-    ppPrev = &this->list;
-    while (pp != 0) {
-        if (pp->node->sprite == param_1) {
-            pp->count++;
+    link = &this->list;
+    node = this->list;
+    while (node != 0) {
+        if (node->node->sprite == sprite) {
+            node->count++;
             return;
         }
-        pp = pp->next;
+        node = node->next;
     }
 
-    pp = this->list;
-    while (pp != 0 && pp->order <= param_2) {
-        ppPrev = &pp->next;
-        pp = pp->next;
+    node = this->list;
+    while (node != 0 && node->order <= order) {
+        link = &node->next;
+        node = node->next;
     }
 
-    RGE_Active_Sprite_Node* node =
-        (RGE_Active_Sprite_Node*)calloc(0xc, 1);
-    RGE_Active_Sprite* asp = param_1->make_active_sprite();
-    node->node = asp;
-    asp->set_offset(param_3, param_4);
-    node->order = param_2;
-    node->next = *ppPrev;
-    *ppPrev = node;
+    node = (RGE_Active_Sprite_Node*)calloc(0xc, 1);
+    active_sprite = sprite->make_active_sprite();
+    node->node = active_sprite;
+    active_sprite->set_offset(offset_x, offset_y);
+    node->order = order;
+    node->next = *link;
+    *link = node;
 }
 
 void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {

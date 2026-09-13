@@ -7,7 +7,7 @@
   },
   "functions": {
     "004BBE40": {"status": "matching", "symbol": "??0RGE_Sound@@QAE@PAU_iobuf@@F@Z"},
-    "004BBF30": {"status": "scratch", "symbol": "??0RGE_Sound@@QAE@HPAVTSound_Driver@@@Z"},
+    "004BBF30": {"status": "matching", "symbol": "??0RGE_Sound@@QAE@HPAVTSound_Driver@@@Z", "behavior_review": "logic_matching/004BBF30/coord-sa6be4b4e8-review-20260913T163000Z/attempt-01"},
     "004BC070": {"status": "matching", "symbol": "??0RGE_Sound@@QAE@XZ"},
     "004BC080": {"status": "matching", "symbol": "??1RGE_Sound@@QAE@XZ"},
     "004BC0F0": {"status": "matching", "symbol": "?save@RGE_Sound@@QAEXH@Z"},
@@ -16,7 +16,7 @@
     "004BC2D0": {"status": "matching", "symbol": "?set_cache_time@RGE_Sound@@QAEXK@Z"},
     "004BC2E0": {"status": "matching", "symbol": "?play_at_update@RGE_Sound@@QAEXXZ"},
     "004BC2F0": {"status": "matching", "symbol": "?update_play@RGE_Sound@@QAEXXZ"},
-    "004BC310": {"status": "scratch", "symbol": "?play@RGE_Sound@@QAEXH@Z"},
+    "004BC310": {"status": "matching", "symbol": "?play@RGE_Sound@@QAEXH@Z", "behavior_review": "logic_matching/004BC310/coord-sa6be4b4e8-review-20260913T173000Z/attempt-01"},
     "004BC470": {"status": "matching", "symbol": "?get_file_name@RGE_Sound@@QAEPADXZ"},
     "004BC4F0": {"status": "matching", "symbol": "?stop@RGE_Sound@@QAEXXZ"},
     "004BC540": {"status": "matching", "symbol": "?is_playing@RGE_Sound@@QAEHXZ"}

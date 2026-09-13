@@ -783,11 +783,6 @@ long TTextPanel::action(TPanel* panel, long msg, unsigned long p1, unsigned long
 
 void TTextPanel::draw()
 {
-    short line;
-    short line_index = 0;
-    HDC dc;
-    void* old_font;
-
     this->need_redraw = 0;
     if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         return;
@@ -796,14 +791,14 @@ void TTextPanel::draw()
     this->draw_background();
     this->draw_setup(0);
 
-    dc = this->render_area->GetDc(s_pnl_txt__draw);
+    void* dc = this->render_area->GetDc(s_pnl_txt__draw);
     if (dc != 0) {
         SelectClipRgn(dc, this->clip_rgn);
-        old_font = SelectObject(dc, this->font);
+        void* old_font = SelectObject(dc, this->font);
         SetBkMode(dc, 1);
 
-        line = this->top_line;
-        while (line <= this->bot_line) {
+        for (short line = this->top_line, line_index = 0;
+             line <= this->bot_line; ++line, ++line_index) {
             if ((this->tab_stop != 0 && this->have_focus != 0) ||
                 this->mouse_captured != 0) {
                 this->draw_line(dc, line_index, line,
@@ -813,8 +808,6 @@ void TTextPanel::draw()
                 this->draw_line(dc, line_index, line,
                                 this->text_color1, this->text_color2);
             }
-            ++line;
-            ++line_index;
         }
 
         SelectObject(dc, old_font);

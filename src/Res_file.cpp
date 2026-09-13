@@ -207,57 +207,54 @@ int __cdecl RESFILE_locate_resource(
 }
 
 unsigned char* __cdecl RESFILE_load(
-    unsigned long type,
-    unsigned long id,
-    int& load_type,
-    int& data_size)
+    unsigned long rType,
+    unsigned long rId,
+    int& rLoadType,
+    int& rDataSize)
 {
-    int file_handle;
-    int data_offset;
-    int resource_size;
-    unsigned char* mapped_data;
-    unsigned char* data;
+    int infile;
+    int offset;
+    unsigned char* mapped_file;
+    int datalength;
     char error_string[100];
 
-    load_type = -1;
-    data_size = 0;
+    rLoadType = -1;
+    rDataSize = 0;
 
-    if (RESFILE_locate_resource(type, id, file_handle, data_offset,
-            mapped_data, resource_size) == 0) {
+    if (RESFILE_locate_resource(rType, rId, infile, offset,
+            mapped_file, datalength) == 0) {
         if (resource_missing_flag != 0) {
             sprintf(error_string,
                 "ERROR: res_read_bin, resource type %4.4c , id %d, not found",
-                type, id);
+                rType, rId);
             MessageBoxA(0, error_string, "RESOURCE ERROR", 0x30);
-            return 0;
         }
-    } else {
-        if (mapped_data != 0) {
-            load_type = 0;
-            data = mapped_data + data_offset;
-            data_size = resource_size;
-        } else {
-            load_type = 1;
-            data = (unsigned char*)malloc(resource_size);
-            data_size = resource_size;
-            if (data == 0) {
-                MessageBoxA(0, "Error: Out of memory in res_read_bin.",
-                    "RESOURCE ERROR", 0x30);
-                return 0;
-            }
-
-            lseek(file_handle, data_offset, 0);
-            if (read(file_handle, data, resource_size) != resource_size) {
-                MessageBoxA(0, "Error: unable to read resource",
-                    "RESOURCE ERROR", 0x30);
-                return 0;
-            }
-        }
-
-        return data;
+        return 0;
     }
 
-    return 0;
+    if (mapped_file != 0) {
+        rLoadType = 0;
+        rDataSize = datalength;
+        return mapped_file + offset;
+    }
+
+    rLoadType = 1;
+    unsigned char* data = (unsigned char*)malloc(datalength);
+    rDataSize = datalength;
+    if (data == 0) {
+        MessageBoxA(0, "Error: Out of memory in res_read_bin.",
+            "RESOURCE ERROR", 0x30);
+        return 0;
+    }
+
+    lseek(infile, offset, 0);
+    if (read(infile, data, datalength) != datalength) {
+        MessageBoxA(0, "Error: unable to read resource",
+            "RESOURCE ERROR", 0x30);
+        return 0;
+    }
+
+    return data;
 }
 
 int __cdecl RESFILE_Extract_to_File(
