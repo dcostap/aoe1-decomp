@@ -16,7 +16,7 @@
     "00401550": {"status": "matching", "symbol": "?set_state@RGE_Action_Attack@@MAEXE@Z"},
     "00401780": {"status": "scratch", "symbol": "?update@RGE_Action_Attack@@UAEEXZ"},
     "00401AD0": {"status": "matching", "symbol": "?work@RGE_Action_Attack@@UAEHPAVRGE_Static_Object@@MMM@Z"},
-    "00401B30": {"status": "scratch", "symbol": "?ready_to_attack@RGE_Action_Attack@@IAEHAAH@Z"},
+    "00401B30": {"status": "new_verified_logic", "symbol": "?ready_to_attack@RGE_Action_Attack@@IAEHAAH@Z", "behavior_review": "logic_matching/00401B30/review-coord-06-00401B30-20260913T034301Z/attempt-01"},
     "00401EC0": {"status": "matching", "symbol": "?do_attack@RGE_Action_Attack@@IAEXXZ"},
     "00401F00": {"status": "matching", "symbol": "?copy_obj_sprites@RGE_Action_Attack@@MAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z"}
   }

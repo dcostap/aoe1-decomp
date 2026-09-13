@@ -458,132 +458,125 @@ int RGE_Action_Attack::work(RGE_Static_Object* target, float x, float y,
     return 0;
 }
 
-int RGE_Action_Attack::ready_to_attack(int& rangeState)
+int RGE_Action_Attack::ready_to_attack(int& range_status)
 {
+    float distance;
+    float radius_x;
+    float radius_y;
+    float radius_distance;
+    float x_change;
+    float y_change;
+    float z_change;
+
     if (this->obj->turn_towards(this->target_obj, this->target_x,
-                                 this->target_y) == 0) {
+                                this->target_y) == 0) {
         return 0;
     }
 
-    float rangeDistance;
-    float y_change;
-    float z_change;
     if (this->target_obj == 0) {
-        rangeDistance = this->obj->distance_to_position(
+        distance = this->obj->distance_to_position(
             this->target_x, this->target_y, this->target_z);
-        if (rangeDistance < this->min_range) {
-            rangeState = 0;
-            goto range_too_close;
-        } else {
-            float radius = sqrt(this->obj->master_obj->radius_x *
-                                this->obj->master_obj->radius_x +
-                                this->obj->master_obj->radius_y *
-                                this->obj->master_obj->radius_y);
-            float max_distance = radius + this->range - DAT_0056e0cc;
-            if (rangeDistance > max_distance) {
-                rangeState = 2;
-                goto range_too_far;
-            } else {
-                goto range_ready;
-            }
-        }
-    } else {
-        if (this->target_obj->owner->id > 0) {
-            short group = this->target_obj->master_obj->object_group;
-            if (group != 3 && group != 27) {
-                unsigned char visibility = this->obj->owner->visible->get_visible(
-                    (int)this->target_obj->world_x,
-                    (int)this->target_obj->world_y);
-                if (visibility == 0) {
-                    this->set_state(13);
-                    return 0;
-                }
-                if (visibility == 0x80 &&
-                    this->target_obj->master_obj->fog_flag == 0) {
-                    this->set_state(13);
-                    return 0;
-                }
-            }
+        if (distance < this->min_range) {
+            range_status = 0;
+            goto too_close;
         }
 
-        if (this->target_obj->world_x == this->target_x &&
-            this->target_obj->world_y == this->target_y &&
-            this->target_obj->world_z == this->target_z) {
-            goto range_ready;
-        } else {
-            float x_change = this->target_obj->world_x - this->target_x;
-            z_change = this->target_obj->world_z - this->target_z;
-            y_change = this->target_obj->world_y - this->target_y;
-            if ((x_change <= 0.5f && x_change >= -0.5f) &&
-                (y_change <= 0.5f && y_change >= -0.5f) &&
-                (z_change <= 0.5f && z_change >= -0.5f)) {
-                goto range_ready;
-            } else {
-                rangeDistance =
-                    this->obj->distance_to_object(this->target_obj);
-                float radius = sqrt(this->obj->master_obj->radius_x *
-                                    this->obj->master_obj->radius_x +
-                                    this->obj->master_obj->radius_y *
-                                    this->obj->master_obj->radius_y);
-                float max_distance = radius + this->range - DAT_0056e0cc;
-                if (rangeDistance < this->min_range) {
-                    rangeState = 0;
-                    goto range_too_close;
-                } else if (rangeDistance <= max_distance) {
-                    this->target_x = this->target_obj->world_x;
-                    this->target_y = this->target_obj->world_y;
-                    this->target_z = this->target_obj->world_z;
-                    goto range_ready;
-                } else {
-                    rangeState = 2;
-                    goto range_too_far;
-                }
-            }
+        radius_x = this->obj->master_obj->radius_x;
+        radius_y = this->obj->master_obj->radius_y;
+        radius_distance =
+            (float)sqrt(radius_x * radius_x + radius_y * radius_y);
+        radius_distance =
+            radius_distance + this->range - DAT_0056e0cc;
+        if (distance <= radius_distance) {
+            goto ready;
+        }
+
+        range_status = 2;
+        goto too_far;
+    }
+
+    if (this->target_obj->owner->id > 0 &&
+        this->target_obj->master_obj->object_group != 3 &&
+        this->target_obj->master_obj->object_group != 0x1B) {
+        unsigned char visible = this->obj->owner->visible->get_visible(
+            (int)this->target_obj->world_x,
+            (int)this->target_obj->world_y);
+        if (visible == 0) {
+            this->set_state(0x0D);
+            return 0;
+        }
+        if (visible == 0x80 && this->target_obj->master_obj->fog_flag == 0) {
+            this->set_state(0x0D);
+            return 0;
         }
     }
 
-range_too_close:
-    if (rangeState == 0) {
+    if (this->target_obj->world_x == this->target_x &&
+        this->target_obj->world_y == this->target_y &&
+        this->target_obj->world_z == this->target_z) {
+        goto ready;
+    }
+
+    x_change = this->target_obj->world_x - this->target_x;
+    y_change = this->target_obj->world_y - this->target_y;
+    z_change = this->target_obj->world_z - this->target_z;
+
+    if (x_change <= 0.5f && x_change >= -0.5f &&
+        y_change <= 0.5f && y_change >= -0.5f &&
+        z_change <= 0.5f && z_change >= -0.5f) {
+        goto ready;
+    }
+
+    distance = this->obj->distance_to_object(this->target_obj);
+    radius_x = this->obj->master_obj->radius_x;
+    radius_y = this->obj->master_obj->radius_y;
+    radius_distance =
+        (float)sqrt(radius_x * radius_x + radius_y * radius_y);
+    radius_distance =
+        radius_distance + this->range - DAT_0056e0cc;
+
+    if (distance < this->min_range) {
+        range_status = 0;
+
+too_close:
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FE, 0, 0, 0);
         }
         if (this->obj->maximumSpeed() != 0.0) {
-            UnitAIModule* ai = this->obj->unitAI();
-            if (ai == 0) {
+            if (this->obj->unitAI() == 0) {
                 return 0;
             }
-            ai = this->obj->unitAI();
-            if (ai->currentOrder() != 0x2D5) {
+            if (this->obj->unitAI()->currentOrder() != 0x2D5) {
                 return 0;
             }
         }
-        this->set_state(13);
+        this->set_state(0x0D);
         return 0;
     }
 
-range_too_far:
-    if (rangeState == 2) {
-        if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
-        }
-        if (this->obj->maximumSpeed() != 0.0) {
-            UnitAIModule* ai = this->obj->unitAI();
-            if (ai == 0) {
-                this->set_state(4);
-                return 0;
-            }
-            ai = this->obj->unitAI();
-            if (ai->currentOrder() != 0x2D5) {
-                this->set_state(4);
-                return 0;
-            }
-        }
-        this->set_state(13);
-        return 0;
+    if (distance <= radius_distance) {
+        this->target_x = this->target_obj->world_x;
+        this->target_y = this->target_obj->world_y;
+        this->target_z = this->target_obj->world_z;
+        goto ready;
     }
+    range_status = 2;
 
-range_ready:
-    rangeState = 1;
+too_far:
+    if (this->subActionValue == 0) {
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
+    }
+    if (this->obj->maximumSpeed() == 0.0 ||
+        (this->obj->unitAI() != 0 &&
+         this->obj->unitAI()->currentOrder() == 0x2D5)) {
+        this->set_state(0x0D);
+    } else {
+        this->set_state(4);
+    }
+    return 0;
+
+ready:
+    range_status = 1;
     return this->obj->can_attack() != 0;
 }
 
