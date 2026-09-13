@@ -119,12 +119,12 @@ void RGE_Command::do_command(void* cmd)
     }
 }
 
-void RGE_Command::do_command_order(RGE_Command_Order* command)
+void RGE_Command::do_command_order(RGE_Command_Order* order)
 {
-    int unit_num = command->unit_num;
+    int unit_num = order->unit_num;
     RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(command) + sizeof(*command));
-    RGE_Static_Object* target = this->get_obj(command->target);
+        reinterpret_cast<unsigned char*>(order) + sizeof(*order));
+    RGE_Static_Object* target = this->get_obj(order->target);
 
     if (unit_num > 1) {
         float min_x = 10000.0f;
@@ -135,20 +135,22 @@ void RGE_Command::do_command_order(RGE_Command_Order* command)
         float total_y = 0.0f;
 
         if (unit_num > 0) {
-            int remaining = unit_num;
+            int count = unit_num;
             RGE_Obj_Info* unit = units;
             do {
                 RGE_Static_Object* object = this->get_obj(*unit);
                 if (object != 0) {
                     if (object->world_x < min_x) {
                         min_x = object->world_x;
-                    } else if (object->world_x > max_x) {
+                    }
+                    else if (object->world_x > max_x) {
                         max_x = object->world_x;
                     }
 
                     if (object->world_y < min_y) {
                         min_y = object->world_y;
-                    } else if (object->world_y > max_y) {
+                    }
+                    else if (object->world_y > max_y) {
                         max_y = object->world_y;
                     }
 
@@ -156,8 +158,8 @@ void RGE_Command::do_command_order(RGE_Command_Order* command)
                     total_y += object->world_y;
                 }
                 ++unit;
-                --remaining;
-            } while (remaining != 0);
+                --count;
+            } while (count != 0);
         }
 
         if (max_x - min_x <= DAT_0056f4d8 &&
@@ -165,10 +167,9 @@ void RGE_Command::do_command_order(RGE_Command_Order* command)
             total_x /= (float)unit_num;
             total_y /= (float)unit_num;
 
-            RGE_Obj_Info* unit;
             int index = 0;
             if (unit_num > 0) {
-                unit = units;
+                RGE_Obj_Info* unit = units;
                 do {
                     RGE_Static_Object* object = this->get_obj(*unit);
                     if (object != 0) {
@@ -178,39 +179,47 @@ void RGE_Command::do_command_order(RGE_Command_Order* command)
                         int other_index = 0;
                         RGE_Obj_Info* other_unit = units;
                         do {
-                            if (other_index != index)
+                            if (other_index != index) {
                                 object->addToPathingGroup(other_unit->id);
+                            }
                             ++other_index;
                             ++other_unit;
                         } while (other_index < unit_num);
 
-                        float adjusted_x =
-                            (object->world_x - total_x) + command->location_x;
-                        float adjusted_y =
-                            (object->world_y - total_y) + command->location_y;
+                        float x = (object->world_x - total_x) +
+                                  order->location_x;
+                        float y = (object->world_y - total_y) +
+                                  order->location_y;
 
-                        if (adjusted_x < DAT_0056f4e0) {
-                            adjusted_x = 1.0f;
-                        } else {
-                            float width = (float)object->owner->world->map->map_width;
-                            if (adjusted_x >= width)
-                                adjusted_x = width - DAT_0056f4e8;
+                        if (x < DAT_0056f4e0) {
+                            x = 1.0f;
+                        }
+                        else {
+                            float width =
+                                (float)object->owner->world->map->map_width;
+                            if (x >= width) {
+                                x = width - DAT_0056f4e8;
+                            }
                         }
 
-                        if (adjusted_y < DAT_0056f4e0) {
-                            adjusted_y = 1.0f;
-                        } else {
-                            float height = (float)object->owner->world->map->map_height;
-                            if (adjusted_y >= height)
-                                adjusted_y = height - DAT_0056f4e8;
+                        if (y < DAT_0056f4e0) {
+                            y = 1.0f;
+                        }
+                        else {
+                            float height =
+                                (float)object->owner->world->map->map_height;
+                            if (y >= height) {
+                                y = height - DAT_0056f4e8;
+                            }
                         }
 
                         if (target != 0 &&
                             (target->master_obj->radius_x > DAT_0056f4e0 ||
                              target->master_obj->radius_y > DAT_0056f4e0)) {
-                            object->do_command(target, adjusted_x, adjusted_y, 0);
-                        } else {
-                            object->do_command(0, adjusted_x, adjusted_y, 0);
+                            object->do_command(target, x, y, 0.0f);
+                        }
+                        else {
+                            object->do_command(0, x, y, 0.0f);
                         }
                     }
                     ++index;
@@ -233,14 +242,15 @@ void RGE_Command::do_command_order(RGE_Command_Order* command)
                 int other_index = 0;
                 RGE_Obj_Info* other_unit = units;
                 do {
-                    if (other_index != index)
+                    if (other_index != index) {
                         object->addToPathingGroup(other_unit->id);
+                    }
                     ++other_index;
                     ++other_unit;
                 } while (other_index < unit_num);
 
-                object->do_command(target, command->location_x,
-                                   command->location_y, 0);
+                object->do_command(target, order->location_x,
+                                   order->location_y, 0.0f);
             }
             ++index;
             ++unit;

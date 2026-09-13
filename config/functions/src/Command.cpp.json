@@ -12,7 +12,7 @@
     "00433DC0": {"status": "matching", "symbol": "?get_obj@RGE_Command@@IAEPAVRGE_Static_Object@@URGE_Obj_Info@@@Z"},
     "00433DE0": {"status": "matching", "symbol": "?do_commands@RGE_Command@@QAEXXZ"},
     "00433E20": {"status": "matching", "symbol": "?do_command@RGE_Command@@UAEXPAX@Z"},
-    "00433F20": {"status": "scratch", "symbol": "?do_command_order@RGE_Command@@IAEXPAURGE_Command_Order@@@Z"},
+    "00433F20": {"status": "new_verified_logic", "symbol": "?do_command_order@RGE_Command@@IAEXPAURGE_Command_Order@@@Z", "behavior_review": "logic_matching/00433F20/review-20260322T000006/attempt-01"},
     "00434290": {"status": "matching", "symbol": "?do_command_stop@RGE_Command@@IAEXPAURGE_Command_Stop@@@Z"},
     "004342E0": {"status": "matching", "symbol": "?do_command_pause@RGE_Command@@IAEXPAURGE_Command_Pause@@@Z"},
     "00434320": {"status": "matching", "symbol": "?do_command_work@RGE_Command@@IAEXPAURGE_Command_Order@@@Z"},
