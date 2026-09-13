@@ -161,40 +161,48 @@ void TribeSaveGameScreen::fillList() {
     }
 }
 
-long TribeSaveGameScreen::action(TPanel* panel, long msg,
-                                 unsigned long p3, unsigned long p4) {
+long TribeSaveGameScreen::action(TPanel* panel, long message,
+                                 unsigned long param_3,
+                                 unsigned long param_4) {
     char tempFileName[260];
-    char text[560];
+    char text[556];
+    uchar exist_flag;
+    char* directory;
+    char* line;
+    RGE_Prog_Info* prog_info;
+    Mode mode;
 
     if (panel != 0) {
-        char* panel_name = panel->panelName();
-        if (panel_name != 0 && strcmp(panel->panelName(), "Cancel Dialog") == 0) {
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "Cancel Dialog") == 0) {
             panel_system.destroyPanel("Cancel Dialog");
-            if (msg == 0) {
+            if (message == 0) {
                 if (this->modeValue == SaveGame) {
-                    char* dir = rge_base_game->prog_info->save_dir;
-                    sprintf(tempFileName + 4, "%s%s.gam",
-                            dir,
-                            this->list->currentLine());
+                    directory = rge_base_game->prog_info->save_dir;
+                    line = this->list->currentLine();
+                    sprintf(tempFileName, "%s%s.gam",
+                            directory, line);
                 } else {
-                    char* dir = rge_base_game->prog_info->scenario_dir;
-                    sprintf(tempFileName + 4, "%s%s.scn",
-                            dir,
-                            this->list->currentLine());
+                    directory = rge_base_game->prog_info->scenario_dir;
+                    line = this->list->currentLine();
+                    sprintf(tempFileName, "%s%s.scn",
+                            directory, line);
                 }
-                _unlink(tempFileName + 4);
-                Mode mode2 = this->modeValue;
-                RGE_Base_Game* game2 = rge_base_game;
-                if (mode2 == SaveGame) {
-                    sprintf(tempFileName + 4, "%s%s.gmx",
-                            game2->prog_info->save_dir,
-                            this->list->currentLine());
+                _unlink(tempFileName);
+
+                mode = this->modeValue;
+                prog_info = rge_base_game->prog_info;
+                if (mode == SaveGame) {
+                    directory = prog_info->save_dir;
+                    sprintf(tempFileName, "%s%s.gmx",
+                            directory, this->list->currentLine());
                 } else {
-                    sprintf(tempFileName + 4, "%s%s.scx",
-                            game2->prog_info->scenario_dir,
-                            this->list->currentLine());
+                    directory = prog_info->scenario_dir;
+                    sprintf(tempFileName, "%s%s.scx",
+                            directory, this->list->currentLine());
                 }
-                _unlink(tempFileName + 4);
+                _unlink(tempFileName);
+
                 this->list->delete_line(this->list->get_line());
                 this->input->set_text(this->list->currentLine());
                 if (this->list->currentLine()[0] == 0) {
@@ -204,25 +212,25 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg,
             return 1;
         }
 
-        if (panel == this->deleteButton && msg == 1 &&
+        if (panel == this->deleteButton && message == 1 &&
             this->list->currentLine()[0] != 0) {
-            this->get_string(0x24CA, tempFileName + 4, 0x100);
-            sprintf(text + 4, tempFileName + 4, this->list->currentLine());
-            this->popupYesNoDialog(text + 4, "Cancel Dialog", 0x1C2, 100);
+            this->get_string(0x24CA, tempFileName, 0x100);
+            sprintf(text, tempFileName, this->list->currentLine());
+            this->popupYesNoDialog(text, "Cancel Dialog", 0x1C2, 100);
         }
 
-        TListPanel* listPanel = this->list;
-        if (panel == listPanel && msg == 1) {
-            this->input->set_text(listPanel->currentLine());
-            return 1;
+        if (panel == this->list) {
+            if (message == 1) {
+                this->input->set_text(this->list->currentLine());
+                return 1;
+            }
         }
 
-        if ((panel == this->okButton && msg == 1) ||
-            (panel == this->input && msg == 0) ||
-            (panel == listPanel && msg == 3)) {
-            char* base = this->fileNameNoExt;
-            this->input->get_trimmed_str(base, 0x104);
-            if (strlen(base) == 0) {
+        if ((panel == this->okButton && message == 1) ||
+            (panel == this->input && message == 0) ||
+            (panel == this->list && message == 3)) {
+            this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+            if (strlen(this->fileNameNoExt) == 0) {
                 if (this->modeValue == SaveGame) {
                     this->popupOKDialog(0x24C6, 0, 0x1C2, 100);
                 } else {
@@ -231,62 +239,70 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg,
                 return 1;
             }
 
-            tempFileName[3] = 0;
+            exist_flag = 0;
             if (this->modeValue == SaveGame) {
-                sprintf(this->fileName, "%s.gam", base);
-                sprintf(tempFileName + 4, "%s%s",
+                sprintf(this->fileName, "%s.gam", this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s",
                         rge_base_game->prog_info->save_dir,
                         this->fileName);
             } else {
-                sprintf(this->fileName, "%s.scn", base);
-                sprintf(tempFileName + 4, "%s%s",
+                sprintf(this->fileName, "%s.scn", this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s",
                         rge_base_game->prog_info->scenario_dir,
                         this->fileName);
             }
-            FILE* fp = fopen(tempFileName + 4, "rb");
-            if (fp != 0) {
-                tempFileName[3] = 1;
-                fclose(fp);
+
+            FILE* file = fopen(tempFileName, "rb");
+            if (file != 0) {
+                exist_flag = 1;
+                fclose(file);
             }
+
             if (this->modeValue == SaveGame) {
-                sprintf(this->fileName, "%s.gmx", base);
-                sprintf(tempFileName + 4, "%s%s",
+                sprintf(this->fileName, "%s.gmx", this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s",
                         rge_base_game->prog_info->save_dir,
                         this->fileName);
             } else {
-                sprintf(this->fileName, "%s.scx", base);
-                sprintf(tempFileName + 4, "%s%s",
+                sprintf(this->fileName, "%s.scx", this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s",
                         rge_base_game->prog_info->scenario_dir,
                         this->fileName);
             }
-            if (tempFileName[3] == 0) {
-                fp = fopen(tempFileName + 4, "rb");
-                if (fp != 0) {
-                    tempFileName[3] = 1;
-                    fclose(fp);
+
+            if (exist_flag == 0) {
+                file = fopen(tempFileName, "rb");
+                if (file != 0) {
+                    exist_flag = 1;
+                    fclose(file);
                 }
-                if (tempFileName[3] == 0) {
-                    Mode mode = this->modeValue;
-                    if (mode == SaveGame) {
-                        if (!static_cast<TRIBE_Game*>(rge_base_game)->save_game(this->fileName)) {
-                            this->popupOKDialog(0x962, 0, 0x1C2, 100);
-                        }
-                    } else if (mode == SaveScenario) {
-                        if (!static_cast<TRIBE_Game*>(rge_base_game)->save_scenario(this->fileName)) {
-                            this->popupOKDialog(0x963, 0, 0x1C2, 100);
-                        }
-                    } else if (mode == SaveScenarioEdit) {
-                        this->save_for_scenario_editor();
+            }
+
+            if (exist_flag == 0) {
+                if (this->modeValue == SaveGame) {
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->
+                            save_game(this->fileName) == 0) {
+                        this->popupOKDialog(0x962, 0, 0x1C2, 100);
+                        return 1;
                     }
-                    return 1;
+                } else if (this->modeValue == SaveScenario) {
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->
+                            save_scenario(this->fileName) == 0) {
+                        this->popupOKDialog(0x963, 0, 0x1C2, 100);
+                        return 1;
+                    }
+                } else if (this->modeValue == SaveScenarioEdit) {
+                    this->save_for_scenario_editor();
                 }
+                return 1;
             }
+
             this->popupYesNoDialog(0x24C8, 0, 0x1C2, 100);
             return 1;
         }
 
-        if ((panel == this->cancelButton && msg == 1) ||
-            (panel == this->input && msg == 1)) {
+        if ((panel == this->cancelButton && message == 1) ||
+            (panel == this->input && message == 1)) {
             if (rge_base_game->singlePlayerGame() == 1 &&
                 rge_base_game->save_paused == 0) {
                 rge_base_game->set_paused(0, 0);
@@ -300,58 +316,55 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg,
             return 1;
         }
 
-        panel_name = panel->panelName();
-        if (panel_name != 0 && strcmp(panel->panelName(), "OKDialog") == 0) {
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "OKDialog") == 0) {
             panel_system.destroyPanel("OKDialog");
             this->set_curr_child(this->input);
             return 1;
         }
 
-        panel_name = panel->panelName();
-        if (panel_name != 0 && strcmp(panel->panelName(), "YesNoDialog") == 0) {
-            if (msg == 0) {
-                panel_system.destroyPanel("YesNoDialog");
-                Mode mode = this->modeValue;
-                if (mode == SaveGame) {
-                    this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                    sprintf(tempFileName + 4, "%s%s.gam",
-                            rge_base_game->prog_info->save_dir,
-                            this->fileNameNoExt);
-                    _unlink(tempFileName + 4);
-                    if (!static_cast<TRIBE_Game*>(rge_base_game)->save_game(this->fileName)) {
-                        this->popupOKDialog(0x962, 0, 0x1C2, 100);
-                    }
-                    return 1;
-                }
-                if (mode == SaveScenario) {
-                    this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                    sprintf(tempFileName + 4, "%s%s.scn",
-                            rge_base_game->prog_info->scenario_dir,
-                            this->fileNameNoExt);
-                    _unlink(tempFileName + 4);
-                    if (!static_cast<TRIBE_Game*>(rge_base_game)->save_scenario(this->fileName)) {
-                        this->popupOKDialog(0x963, 0, 0x1C2, 100);
-                    }
-                    return 1;
-                }
-                if (mode == SaveScenarioEdit) {
-                    this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                    sprintf(tempFileName + 4, "%s%s.scn",
-                            rge_base_game->prog_info->scenario_dir,
-                            this->fileNameNoExt);
-                    _unlink(tempFileName + 4);
-                    this->save_for_scenario_editor();
-                    return 1;
-                }
-            } else {
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "YesNoDialog") == 0) {
+            if (message != 0) {
                 panel_system.destroyPanel("YesNoDialog");
                 this->set_curr_child(this->input);
+                return 1;
+            }
+
+            panel_system.destroyPanel("YesNoDialog");
+            if (this->modeValue == SaveGame) {
+                this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+                sprintf(tempFileName, "%s%s.gam",
+                        rge_base_game->prog_info->save_dir,
+                        this->fileNameNoExt);
+                _unlink(tempFileName);
+                if (static_cast<TRIBE_Game*>(rge_base_game)->
+                        save_game(this->fileName) == 0) {
+                    this->popupOKDialog(0x962, 0, 0x1C2, 100);
+                }
+            } else if (this->modeValue == SaveScenario) {
+                this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+                sprintf(tempFileName, "%s%s.scn",
+                        rge_base_game->prog_info->scenario_dir,
+                        this->fileNameNoExt);
+                _unlink(tempFileName);
+                if (static_cast<TRIBE_Game*>(rge_base_game)->
+                        save_scenario(this->fileName) == 0) {
+                    this->popupOKDialog(0x963, 0, 0x1C2, 100);
+                }
+            } else if (this->modeValue == SaveScenarioEdit) {
+                this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
+                sprintf(tempFileName, "%s%s.scn",
+                        rge_base_game->prog_info->scenario_dir,
+                        this->fileNameNoExt);
+                _unlink(tempFileName);
+                this->save_for_scenario_editor();
             }
             return 1;
         }
     }
 
-    return TEasy_Panel::action(panel, msg, p3, p4);
+    return this->TEasy_Panel::action(panel, message, param_3, param_4);
 }
 
 void TribeSaveGameScreen::save_for_scenario_editor() {
