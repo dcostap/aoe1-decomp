@@ -521,184 +521,170 @@ long TRIBE_Map::reverse_cliff_direction(long dir)
     return result;
 }
 
-long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing,
-                               long other_facing)
+long TRIBE_Map::add_cliff_edge(long x, long y, long direction, long facing,
+                               long old_direction)
 {
     RGE_Static_Object* cliff = this->find_cliff(x, y);
     TRIBE_Cliff_Info cliff_info = this->get_cliff_info(cliff);
+    long possible_direction1 = 0;
+    long possible_facing1 = -1;
+    long possible_facing2 = -1;
+    long possible_direction2 = 0;
+    long result;
+    int valid;
 
-    long possible_facing2;
-    long possible_direction1;
-    long possible_facing1;
-    long possible_direction2;
-    possible_direction1 = 0;
-    possible_facing2 = -1;
-    possible_facing1 = -1;
-    possible_direction2 = 0;
-
-    long current_direction = cliff_info.info[facing];
-    if (current_direction != 0) {
-        if (existing == 0)
-            return current_direction;
-        if (existing == current_direction)
-            return existing;
+    if (cliff_info.info[direction] != 0) {
+        if (facing == 0)
+            return cliff_info.info[direction];
+        if (facing == cliff_info.info[direction])
+            return facing;
     }
 
     if (cliff != 0) {
-        long y_offset = -1;
-        do {
-            long x_offset = -1;
-            do {
-                RGE_Game_World* world = this->game_world;
-                world->players[world->curr_player]->diam_tile_list.add_node(
-                    y_offset + (long)cliff->world_x,
-                    x_offset + (long)cliff->world_y);
-                ++x_offset;
-            } while (x_offset < 2);
-            ++y_offset;
-        } while (y_offset < 2);
-
+        for (long i = -1; i < 2; ++i) {
+            for (long j = -1; j < 2; ++j) {
+                this->game_world->players[this->game_world->curr_player]
+                    ->diam_tile_list.add_node(i + (long)cliff->world_x,
+                                               j + (long)cliff->world_y);
+            }
+        }
         delete cliff;
     }
 
-    if (other_facing == facing)
-        other_facing = -1;
+    if (old_direction == direction)
+        old_direction = -1;
 
-    if (other_facing >= 0) {
-        long i = 0;
-        do {
-            if (i != other_facing) {
+    if (old_direction >= 0) {
+        for (long i = 0; i < 4; ++i) {
+            if (i != old_direction) {
                 this->remove_cliff_edge(x, y, i);
                 cliff_info.info[i] = 0;
             }
-            ++i;
-        } while (i < 4);
+        }
     } else {
         long count = 0;
-        long i = 0;
-        do {
-            if (cliff_info.info[i] != 0 && i != facing)
+        for (long i = 0; i < 4; ++i) {
+            if (cliff_info.info[i] != 0 && i != direction)
                 ++count;
-            ++i;
-        } while (i < 4);
+        }
 
         if (count == 2) {
-            i = 0;
-            do {
-                if (cliff_info.info[i] != 0 && i != facing) {
-                    if (possible_facing2 < 0) {
-                        possible_facing2 = i;
+            for (long i = 0; i < 4; ++i) {
+                if (cliff_info.info[i] != 0 && i != direction) {
+                    if (possible_facing1 < 0) {
+                        possible_facing1 = i;
                         possible_direction1 = cliff_info.info[i];
                     } else {
-                        possible_facing1 = i;
+                        possible_facing2 = i;
                         possible_direction2 = cliff_info.info[i];
                     }
                     cliff_info.info[i] = 0;
                 }
-                ++i;
-            } while (i < 4);
+            }
         }
     }
 
-    if (existing) {
-        cliff_info.info[facing] = existing;
-
-        if (possible_facing2 > -1) {
-            cliff_info.info[possible_facing2] = possible_direction1;
-            if (!this->check_cliff_valid(cliff_info)) {
-                cliff_info.info[possible_facing2] = 0;
-                this->remove_cliff_edge(x, y, possible_facing2);
-            }
-        }
+    if (facing != 0) {
+        result = facing;
+        cliff_info.info[direction] = facing;
 
         if (possible_facing1 > -1) {
-            cliff_info.info[possible_facing1] = possible_direction2;
+            cliff_info.info[possible_facing1] = possible_direction1;
             if (!this->check_cliff_valid(cliff_info)) {
                 cliff_info.info[possible_facing1] = 0;
                 this->remove_cliff_edge(x, y, possible_facing1);
             }
         }
 
+        if (possible_facing2 > -1) {
+            cliff_info.info[possible_facing2] = possible_direction2;
+            if (!this->check_cliff_valid(cliff_info)) {
+                cliff_info.info[possible_facing2] = 0;
+                this->remove_cliff_edge(x, y, possible_facing2);
+            }
+        }
+
         if (!this->check_cliff_valid(cliff_info)) {
-            long i = 0;
-            do {
-                if (i != facing && cliff_info.info[i] != 0) {
+            for (long i = 0; i < 4; ++i) {
+                if (i != direction && cliff_info.info[i] != 0) {
                     this->remove_cliff_edge(x, y, i);
                     cliff_info.info[i] = 0;
                 }
-                ++i;
-            } while (i < 4);
+            }
         }
     } else {
-        bool found = false;
-        existing = 1;
-        cliff_info.info[facing] = 1;
+        result = cliff_info.info[direction] = 1;
+        valid = 0;
 
-        if (possible_facing2 > -1) {
-            cliff_info.info[possible_facing2] = possible_direction1;
-            if (!this->check_cliff_valid(cliff_info))
-                cliff_info.info[possible_facing2] = 0;
-            else {
-                found = true;
+        if (possible_facing1 > -1) {
+            cliff_info.info[possible_facing1] = possible_direction1;
+            if (!this->check_cliff_valid(cliff_info)) {
+                cliff_info.info[possible_facing1] = 0;
+            } else {
+                valid = 1;
                 possible_direction1 = 0;
             }
         }
 
-        if (!found && possible_facing1 > -1) {
-            cliff_info.info[possible_facing1] = possible_direction2;
-            if (!this->check_cliff_valid(cliff_info))
-                cliff_info.info[possible_facing1] = 0;
-            else {
-                found = true;
-                possible_direction2 = 0;
-            }
-        }
-
-        if (!found && !this->check_cliff_valid(cliff_info)) {
-            cliff_info.info[facing] = -1;
-            existing = -1;
-            found = false;
-
+        if (!valid) {
+            valid = 0;
             if (possible_facing2 > -1) {
-                cliff_info.info[possible_facing2] = possible_direction1;
-                if (!this->check_cliff_valid(cliff_info))
+                cliff_info.info[possible_facing2] = possible_direction2;
+                if (!this->check_cliff_valid(cliff_info)) {
                     cliff_info.info[possible_facing2] = 0;
-                else {
-                    found = true;
-                    possible_direction1 = 0;
-                }
-            }
-
-            if (!found && possible_facing1 > -1) {
-                cliff_info.info[possible_facing1] = possible_direction2;
-                if (!this->check_cliff_valid(cliff_info))
-                    cliff_info.info[possible_facing1] = 0;
-                else {
-                    found = true;
+                } else {
+                    valid = 1;
                     possible_direction2 = 0;
                 }
             }
 
-            if (!found && !this->check_cliff_valid(cliff_info)) {
-                long i = 0;
-                do {
-                    if (i != facing && cliff_info.info[i] != 0) {
-                        this->remove_cliff_edge(x, y, i);
-                        cliff_info.info[i] = 0;
+            if (!valid && !this->check_cliff_valid(cliff_info)) {
+                result = cliff_info.info[direction] = -1;
+                valid = 0;
+
+                if (possible_facing1 > -1) {
+                    cliff_info.info[possible_facing1] = possible_direction1;
+                    if (!this->check_cliff_valid(cliff_info)) {
+                        cliff_info.info[possible_facing1] = 0;
+                    } else {
+                        valid = 1;
+                        possible_direction1 = 0;
                     }
-                    ++i;
-                } while (i < 4);
+                }
+
+                if (!valid) {
+                    valid = 0;
+                    if (possible_facing2 > -1) {
+                        cliff_info.info[possible_facing2] =
+                            possible_direction2;
+                        if (!this->check_cliff_valid(cliff_info)) {
+                            cliff_info.info[possible_facing2] = 0;
+                        } else {
+                            valid = 1;
+                            possible_direction2 = 0;
+                        }
+                    }
+
+                    if (!valid && !this->check_cliff_valid(cliff_info)) {
+                        for (long i = 0; i < 4; ++i) {
+                            if (i != direction && cliff_info.info[i] != 0) {
+                                this->remove_cliff_edge(x, y, i);
+                                cliff_info.info[i] = 0;
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        if (possible_direction1 != 0)
+            this->remove_cliff_edge(x, y, possible_facing1);
+        if (possible_direction2 != 0)
+            this->remove_cliff_edge(x, y, possible_facing2);
     }
 
-    if (possible_direction1 != 0)
-        this->remove_cliff_edge(x, y, possible_facing2);
-    if (possible_direction2 != 0)
-        this->remove_cliff_edge(x, y, possible_facing1);
-
     this->make_new_cliff(x, y, cliff_info);
-    return existing;
+    return result;
 }
 
 void TRIBE_Map::delete_cliff(long param_1, long param_2)
