@@ -6337,130 +6337,238 @@ next_resource:
 
 void TribeTacticalAIModule::updateGathererDistribution()
 {
-    int i;
     int gSTT;
     int gAction;
-    int local_4=0;
-    int* g;
-    int* distribution;
-    actualGathererDistribution[0]=0;
-    actualGathererDistribution[1]=0;
-    actualGathererDistribution[2]=0;
-    actualGathererDistribution[3]=0;
-    if (numberGatherersValue > 0) {
-        g = &gatherers[0].data1;
+    int i;
+    int local_4;
+    int bVar1;
+
+    for (i = 0; i < 4; ++i)
+        this->actualGathererDistribution[i] = 0;
+
+    local_4 = 0;
+    if (this->numberGatherersValue > 0) {
         do {
-            RGE_Static_Object* o=md->object(g[-1]);
-            if (o && o->unitAI()) {
-                gAction=o->unitAI()->currentAction();
-                gSTT=g[0];
-                g[3]=o->unitAI()->currentTarget();
-                if (gAction==0x261 && o->master_obj->id==0x103 && gSTT) {
-                    int gameID=o->id;
-                    for (i=0;i<this->unitsTaskedThisUpdate.numberValue && i<this->unitsTaskedThisUpdate.maximumSizeValue;i++)
-                        if (this->unitsTaskedThisUpdate.value[i]==gameID) break;
-                    if (i==this->unitsTaskedThisUpdate.numberValue || i==this->unitsTaskedThisUpdate.maximumSizeValue) { g[0]=0; }
+            RGE_Static_Object* object =
+                this->md->object(this->gatherers[local_4].id);
+            if (object != 0 && object->unitAI() != 0) {
+                gSTT = object->unitAI()->currentAction();
+                gAction = this->gatherers[local_4].data1;
+                this->gatherers[local_4].target =
+                    object->unitAI()->currentTarget();
+
+                if (gSTT == 0x261 && object->master_obj->id == 0x103 &&
+                    gAction != 0) {
+                    int taskedCount =
+                        this->unitsTaskedThisUpdate.numberValue;
+                    int objectID = object->id;
+                    int j = 0;
+                    int found = 0;
+                    if (taskedCount > 0) {
+                        do {
+                            if (this->unitsTaskedThisUpdate.maximumSizeValue <= j)
+                                break;
+                            if (this->unitsTaskedThisUpdate.value[j] ==
+                                objectID) {
+                                found = 1;
+                                break;
+                            }
+                            ++j;
+                        } while (j < taskedCount);
+                    }
+                    if (found == 0)
+                        this->gatherers[local_4].data1 = 0;
                 }
-                if (gSTT>=0 && gSTT<=3) {
-                    if (gAction==0x261 || gAction==0x265) ++actualGathererDistribution[gSTT];
+
+                if (gAction >= 0 && gAction <= 3) {
+                    if (gSTT == 0x261 || gSTT == 0x265) {
+                        this->actualGathererDistribution[gAction]++;
+                    }
                     else {
-                        for (i=0;i<this->unitsTaskedThisUpdate.numberValue && i<this->unitsTaskedThisUpdate.maximumSizeValue;i++) if (this->unitsTaskedThisUpdate.value[i]==g[-1]) { ++actualGathererDistribution[gSTT]; break; }
+                        int taskedCount =
+                            this->unitsTaskedThisUpdate.numberValue;
+                        int j = 0;
+                        if (taskedCount > 0) {
+                            do {
+                                if (this->unitsTaskedThisUpdate.maximumSizeValue <= j)
+                                    break;
+                                if (this->unitsTaskedThisUpdate.value[j] ==
+                                    this->gatherers[local_4].id) {
+                                    this->actualGathererDistribution[gAction]++;
+                                    break;
+                                }
+                                ++j;
+                            } while (j < taskedCount);
+                        }
                     }
                 }
             }
-            local_4++;
-            g += 6;
-        } while (local_4 < numberGatherersValue);
+            ++local_4;
+        } while (local_4 < this->numberGatherersValue);
     }
 
-    distribution=desiredGathererDistribution;
-    int special=0;
-    *distribution=0;
-    distribution[1]=0;
-    distribution[2]=0;
-    distribution[3]=0;
-    if (inAge(1)) {
-        if (this->sn[0xB5]==1) {
-            if (this->md->buildAI.readyToResearch(2,1) && this->md->informationAI.closestDropsiteValue[0]!=-1 && (this->md->resourceAI.resource(1)>120 || builtFirstGranary==1)) {
-                *distribution=desiredNumberGatherersValue;
-                g=&gatherers[0].data1;
-                for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
-                this->zoomingToNextAge=1;
-                special=1;
-            } else {
-                this->zoomingToNextAge=0;
-                distribution[1]=desiredNumberGatherersValue;
-                special=1;
-            }
-        } else this->zoomingToNextAge=0;
-    } else if (inAge(2)) {
-        if (this->sn[0xB6]==1) {
-            if (this->md->buildAI.readyToResearch(3,1) && (this->md->resourceAI.resource(1)>240 || (this->md->resourceAI.resource(1)>120 && this->md->informationAI.closestDropsiteValue[0]<20))) {
-                *distribution=desiredNumberGatherersValue;
-                g=&gatherers[0].data1;
-                for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
-                this->zoomingToNextAge=1;
-                special=1;
-            } else {
-                this->zoomingToNextAge=0;
-                distribution[1]=desiredNumberGatherersValue;
-                special=1;
-            }
-        } else this->zoomingToNextAge=0;
-    } else if (inAge(3)) {
-        if (this->sn[0xB7]==1) {
-            if (this->md->buildAI.readyToResearch(4,1)) {
-                *distribution=desiredNumberGatherersValue/2;
-                distribution[3]=distribution[0];
-                g=&gatherers[0].data1;
-                for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=3 && g[0]!=-1) g[1]=5;
-                this->zoomingToNextAge=1;
-                special=1;
-            } else {
-                *distribution=desiredNumberGatherersValue/3;
-                distribution[1]=distribution[0];
-                distribution[3]=distribution[0];
-                this->zoomingToNextAge=0;
-                special=1;
-            }
-        } else this->zoomingToNextAge=0;
-    } else this->zoomingToNextAge=0;
+    this->desiredGathererDistribution[0] = 0;
+    this->desiredGathererDistribution[1] = 0;
+    this->desiredGathererDistribution[2] = 0;
+    this->desiredGathererDistribution[3] = 0;
+    bVar1 = 0;
 
-    if (!special) {
-        desiredGathererDistribution[2]=(this->sn[0x77]+this->sn[0x9E])*desiredNumberGatherersValue/100;
-        desiredGathererDistribution[3]=(this->sn[0x76]+this->sn[0x9F])*desiredNumberGatherersValue/100;
-        desiredGathererDistribution[1]=(this->sn[0x78]+this->sn[0x9D])*desiredNumberGatherersValue/100;
-        desiredGathererDistribution[0]=(this->sn[0x75]+this->sn[0x9C])*desiredNumberGatherersValue/100;
+    if (this->inAge(1) != 0) {
+        if (this->sn[0xB5] == 1) {
+            if (this->md->buildAI.readyToResearch(2, 1) != 0 &&
+                this->md->informationAI.closestDropsiteValue[0] != -1 &&
+                (this->md->resourceAI.resource(1) > 0x78 ||
+                 this->builtFirstGranary == 1)) {
+                this->desiredGathererDistribution[0] =
+                    this->desiredNumberGatherersValue;
+                for (i = 0; i < this->numberGatherersValue; ++i) {
+                    if (this->gatherers[i].data1 != 0 &&
+                        this->gatherers[i].data1 != -1)
+                        this->gatherers[i].data2 = 5;
+                }
+                this->zoomingToNextAge = 1;
+                bVar1 = 1;
+            }
+            else {
+                int desired = this->desiredNumberGatherersValue;
+                this->zoomingToNextAge = 0;
+                this->desiredGathererDistribution[1] =
+                    desired;
+                bVar1 = 1;
+            }
+        }
+        else {
+            this->zoomingToNextAge = 0;
+        }
+    }
+    else if (this->inAge(2) != 0) {
+        if (this->sn[0xB6] == 1) {
+            if (this->md->buildAI.readyToResearch(3, 1) != 0 &&
+                (this->md->resourceAI.resource(1) > 0xF0 ||
+                 (this->md->resourceAI.resource(1) > 0x78 &&
+                  this->md->informationAI.closestDropsiteValue[0] < 0x14))) {
+                this->desiredGathererDistribution[0] =
+                    this->desiredNumberGatherersValue;
+                for (i = 0; i < this->numberGatherersValue; ++i) {
+                    if (this->gatherers[i].data1 != 0 &&
+                        this->gatherers[i].data1 != -1)
+                        this->gatherers[i].data2 = 5;
+                }
+                this->zoomingToNextAge = 1;
+                bVar1 = 1;
+            }
+            else {
+                int desired = this->desiredNumberGatherersValue;
+                this->zoomingToNextAge = 0;
+                this->desiredGathererDistribution[1] =
+                    desired;
+                bVar1 = 1;
+            }
+        }
+        else {
+            this->zoomingToNextAge = 0;
+        }
+    }
+    else if (this->inAge(3) != 0) {
+        if (this->sn[0xB7] == 1) {
+            if (this->md->buildAI.readyToResearch(4, 1) == 0) {
+                int third = this->desiredNumberGatherersValue / 3;
+                this->zoomingToNextAge = 0;
+                this->desiredGathererDistribution[0] = third;
+                this->desiredGathererDistribution[3] = third;
+                this->desiredGathererDistribution[1] = third;
+                bVar1 = 1;
+            }
+            else {
+                int half = this->desiredNumberGatherersValue / 2;
+                this->desiredGathererDistribution[0] = half;
+                this->desiredGathererDistribution[3] = half;
+                for (i = 0; i < this->numberGatherersValue; ++i) {
+                    if (this->gatherers[i].data1 != 0 &&
+                        this->gatherers[i].data1 != 3 &&
+                        this->gatherers[i].data1 != -1)
+                        this->gatherers[i].data2 = 5;
+                }
+                this->zoomingToNextAge = 1;
+                bVar1 = 1;
+            }
+        }
+        else {
+            this->zoomingToNextAge = 0;
+        }
     }
 
-    int sum=0;
-    distribution = desiredGathererDistribution;
-    for (i=4;i!=0;i--) { sum += *distribution; distribution++; }
-    int rem=desiredNumberGatherersValue-sum;
-    int negCount=0, negSum=0;
-    int* difference = resourceDifferenceValue;
-    for (i=4;i!=0;i--) {
-        if (*difference<0) { negSum -= *difference; negCount++; }
-        difference++;
+    if (bVar1 == 0) {
+        int desired2Percent = this->sn[0x77];
+        int desired2ExtraPercent = this->sn[0x9E];
+        int desired = this->desiredNumberGatherersValue;
+        int desired2Amount =
+            (desired2Percent + desired2ExtraPercent) * desired;
+
+        int desired3Percent = this->sn[0x76];
+        this->desiredGathererDistribution[2] = desired2Amount / 100;
+        int desired3ExtraPercent = this->sn[0x9F];
+        int desired3Amount =
+            (desired3Percent + desired3ExtraPercent) * desired;
+
+        int desired1Percent = this->sn[0x78];
+        this->desiredGathererDistribution[3] = desired3Amount / 100;
+        int desired1ExtraPercent = this->sn[0x9D];
+        int desired1Amount =
+            (desired1Percent + desired1ExtraPercent) * desired;
+
+        int desired0Percent = this->sn[0x75];
+        int desired1 = desired1Amount / 100;
+        int desired0ExtraPercent = this->sn[0x9C];
+        int desired0Amount =
+            (desired0Percent + desired0ExtraPercent) * desired;
+
+        this->desiredGathererDistribution[1] = desired1;
+        this->desiredGathererDistribution[0] = desired0Amount / 100;
     }
-    if (negCount>0) {
-        int count=negCount;
-        int* needed=neededResourceValue;
+
+    int desiredTotal = 0;
+    for (i = 0; i < 4; ++i)
+        desiredTotal += this->desiredGathererDistribution[i];
+
+    int remainder = this->desiredNumberGatherersValue - desiredTotal;
+    int deficitCount = 0;
+    int deficitTotal = 0;
+    for (i = 0; i < 4; ++i) {
+        if (this->resourceDifferenceValue[i] < 0) {
+            deficitTotal -= this->resourceDifferenceValue[i];
+            ++deficitCount;
+        }
+    }
+
+    if (deficitCount > 0) {
+        int* resource = this->neededResourceValue;
         do {
-            int idx=*needed++;
-            desiredGathererDistribution[idx] -= (resourceDifferenceValue[idx]*rem)/negSum;
-            count--;
-        } while (count!=0);
+            int resourceID = *resource++;
+            int difference = this->resourceDifferenceValue[resourceID];
+            int adjustment =
+                (difference * remainder) / deficitTotal;
+            this->desiredGathererDistribution[resourceID] -= adjustment;
+            --deficitCount;
+        } while (deficitCount != 0);
     }
-    sum=0;
-    distribution=desiredGathererDistribution;
-    for (i=4;i!=0;i--) { sum += *distribution; distribution++; }
-    rem=desiredNumberGatherersValue-sum;
-    int odd=rem;
-    if (odd<0) odd=-odd;
-    if (rem>0) {
-        int half=rem/2; int other=half; if (odd&1) other++;
-        desiredGathererDistribution[0]+=other; desiredGathererDistribution[1]+=half;
+
+    desiredTotal = 0;
+    for (i = 0; i < 4; ++i)
+        desiredTotal += this->desiredGathererDistribution[i];
+
+    remainder = this->desiredNumberGatherersValue - desiredTotal;
+    if (remainder > 0) {
+        int half = remainder / 2;
+        int first = half;
+        if ((remainder % 2) != 0)
+            ++first;
+        int firstDesired = this->desiredGathererDistribution[0];
+        int secondDesired = this->desiredGathererDistribution[1];
+        firstDesired += first;
+        secondDesired += half;
+        this->desiredGathererDistribution[0] = firstDesired;
+        this->desiredGathererDistribution[1] = secondDesired;
     }
 }
 

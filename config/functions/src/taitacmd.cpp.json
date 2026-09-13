@@ -121,7 +121,7 @@
     "004F8BE0": {"status": "matching", "symbol": "?busyWithAction@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F8C30": {"status": "matching", "symbol": "?displayCivilianDistribution@TribeTacticalAIModule@@QAEXXZ"},
     "004F8C40": {"status": "matching", "symbol": "?updateNeededResources@TribeTacticalAIModule@@QAEXXZ"},
-    "004F8E20": {"status": "scratch", "symbol": "?updateGathererDistribution@TribeTacticalAIModule@@QAEXXZ"},
+    "004F8E20": {"status": "new_verified_logic", "symbol": "?updateGathererDistribution@TribeTacticalAIModule@@QAEXXZ", "behavior_review": "logic_matching/004F8E20/coord-08-004F8E20-review-05/attempt-01"},
     "004F9380": {"status": "matching", "symbol": "?stopUnit@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F93D0": {"status": "matching", "symbol": "?moveUnit@TribeTacticalAIModule@@QAEHHMMH@Z"},
     "004F9420": {"status": "matching", "symbol": "?groupGatherUnit@TribeTacticalAIModule@@QAEHHHMMMMH@Z"},
