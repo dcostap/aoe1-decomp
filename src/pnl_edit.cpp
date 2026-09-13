@@ -399,135 +399,126 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2,
 }
 
 // pnl_edit.cpp lines 604-753.
-long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
-                              unsigned int wparam, long lparam)
+long TEditPanel::sub_wnd_proc(void* param_1, unsigned int param_2,
+                              unsigned int param_3, long param_4)
 {
-    unsigned long sel_start_before;
-    unsigned long sel_end_before;
-    unsigned long sel_start_after;
-    unsigned long sel_end_after;
-    int track_selection;
-    RECT rect;
+    if (this->edit_wnd != 0 && this->active != 0 && this->visible != 0 &&
+        this->hidden == 0) {
+        switch (param_2) {
+        case 0x0f:
+            InvalidateRect((HWND)param_1, 0, 1);
+            break;
 
-    if (this->edit_wnd == 0 || this->active == 0 ||
-        this->visible == 0 || this->hidden != 0) goto default_processing;
-
-    if (msg <= 0x14) {
-        if (msg != 0x14) {
-            if (msg == 0x0F) {
-                InvalidateRect((HWND)hwnd, 0, 1);
+        case 0x14:
+            if (this->brush != 0) {
+                RECT rect;
+                SelectObject((HDC)param_3, this->brush);
+                GetClientRect((HWND)param_1, &rect);
+                FillRect((HDC)param_3, &rect, this->brush);
+                return 1;
             }
-        } else if (this->brush != 0) {
-            HDC hdc = (HDC)wparam;
-            SelectObject(hdc, (HGDIOBJ)this->brush);
-            GetClientRect((HWND)hwnd, &rect);
-            FillRect(hdc, &rect, (HBRUSH)this->brush);
-            return 1;
-        }
-    } else if (msg <= 0x200) {
-        switch (msg) {
+            break;
+
+        case 0x100:
+            if (this->parent_panel != 0) {
+                if (this->parent_panel->wnd_proc(
+                        param_1, param_2, param_3, param_4) != 0) {
+                    return 0;
+                }
+
+                if (param_3 == 9) {
+                    int alt_down = GetKeyState(0x12) < 0;
+                    int control_down = GetKeyState(0x11) < 0;
+                    int shift_down = GetKeyState(0x10) < 0;
+                    DAT_0086b240 = 1;
+                    this->handle_key_down(9, (short)param_4, alt_down,
+                                          control_down, shift_down);
+                    DAT_0086b240 = 0;
+                    return 0;
+                }
+                if (param_3 == 0x0d) {
+                    this->parent_panel->action(this, 0, 0, 0);
+                    return 0;
+                }
+                if (param_3 == 0x1b) {
+                    if (this->parent_panel->action(this, 1, 0, 0) == 0) {
+                        SendMessageA(this->edit_wnd, 0xc7, 0, 0);
+                    }
+                    return 0;
+                }
+            } else if (param_3 == 0x1b) {
+                SendMessageA(this->edit_wnd, 0xc7, 0, 0);
+                return 0;
+            }
+            break;
+
+        case 0x101:
+            if (param_3 == 9) {
+                return 0;
+            }
+            break;
+
+        case 0x102:
+            if (this->verify_char(param_3) == 0) {
+                return 0;
+            }
+            break;
+
+        case 0x104:
+            if (this->imc == 0 || this->enable_ime == 0) {
+                SetFocus((HWND)this->render_area->Wnd);
+                PostMessageA((HWND)this->render_area->Wnd, param_2, param_3,
+                             param_4);
+            }
+            return 0;
+
         case 0x200:
             if (rge_base_game->windows_mouse == 0) {
                 MouseCursorInChildContol = 1;
                 rge_base_game->mouse_off();
             }
             break;
-        case 0x100:
-            if (this->parent_panel != 0) {
-                long handled = this->parent_panel->wnd_proc(
-                    hwnd, msg, wparam, lparam);
-                if (handled != 0) {
-                    return 0;
-                }
-                if (wparam == 9) {
-                    int alt_down = (GetKeyState(0x12) < 0);
-                    int ctrl_down = (GetKeyState(0x11) < 0);
-                    int shift_down = (GetKeyState(0x10) < 0);
-                    DAT_0086b240 = 1;
-                    this->handle_key_down(
-                        9, (short)lparam, alt_down, ctrl_down, shift_down);
-                    DAT_0086b240 = 0;
-                    return 0;
-                }
-                if (wparam == 0x0D) {
-                    this->parent_panel->action(this, 0, 0, 0);
-                    return 0;
-                }
-                if (wparam == 0x1B) {
-                    if (this->parent_panel->action(this, 1, 0, 0) == 0) {
-                        SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
-                    }
-                    return 0;
-                }
-            } else if (wparam == 0x1B) {
-                SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
-                return 0;
-            }
-            break;
-        case 0x101:
-            if (wparam == 9) {
-                return 0;
-            }
-            break;
-        case 0x102:
-            if (this->verify_char((int)wparam) == 0) {
-                return 0;
-            }
-            break;
-        case 0x104:
-            if (this->imc == 0 || this->enable_ime == 0) {
-                SetFocus((HWND)this->render_area->Wnd);
-                PostMessageA((HWND)this->render_area->Wnd, msg, wparam,
-                             lparam);
-            }
-            return 0;
-        default:
-            break;
         }
     }
 
-default_processing:
-    sel_start_before = 0;
-    sel_end_after = 0;
-    sel_start_after = 0;
-    sel_end_before = 0;
-    if (this->edit_wnd == 0 || msg == 0xB0) {
-        track_selection = 0;
-    } else {
-        track_selection = 1;
-        SendMessageA((HWND)this->edit_wnd, 0xB0,
-                     (unsigned int)&sel_start_before,
-                     (long)&sel_end_before);
+    unsigned long old_start = 0;
+    unsigned long old_end = 0;
+    unsigned long new_start = 0;
+    unsigned long new_end = 0;
+    int check_selection = 0;
+
+    if (this->edit_wnd != 0 && param_2 != 0xb0) {
+        check_selection = 1;
+        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&old_start,
+                     (long)&old_end);
     }
-    WNDPROC old_proc = this->old_sub_wnd_proc;
-    long ret = CallWindowProcA((FARPROC)old_proc, (HWND)hwnd, msg, wparam,
-                               lparam);
-    if (track_selection != 0) {
-        SendMessageA((HWND)this->edit_wnd, 0xB0,
-                     (unsigned int)&sel_start_after,
-                     (long)&sel_end_after);
-        if (sel_start_after != sel_start_before ||
-            sel_end_after != sel_end_before) {
-            InvalidateRect((HWND)this->edit_wnd, 0, 1);
-            UpdateWindow((HWND)this->edit_wnd);
+
+    long result = CallWindowProcA((FARPROC)this->old_sub_wnd_proc,
+                                  (HWND)param_1, param_2, param_3, param_4);
+
+    if (check_selection != 0) {
+        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&new_start,
+                     (long)&new_end);
+        if (new_start != old_start || new_end != old_end) {
+            InvalidateRect(this->edit_wnd, 0, 1);
+            UpdateWindow(this->edit_wnd);
         }
     }
-    if (msg == 0x302) {
+
+    if (param_2 == 0x302) {
         this->update_text();
     }
-    if (msg == 0x201 || msg == 0x202 || msg == 0x204 || msg == 0x205) {
-        unsigned long adjusted_lparam = (unsigned long)lparam;
-        unsigned long adjusted_x = (unsigned long)this->pnl_x +
-                                   (adjusted_lparam & 0xFFFF);
-        adjusted_lparam = (adjusted_lparam >> 16) +
-                          (unsigned long)this->pnl_y;
-        TPanel* cp = panel_system.currentPanel();
-        adjusted_lparam = ((adjusted_lparam & 0xFFFF) << 16) |
-                          (adjusted_x & 0xFFFF);
-        ret = cp->wnd_proc((void*)this->render_area->Wnd, msg, wparam,
-                           (long)adjusted_lparam);
+
+    if (param_2 == 0x201 || param_2 == 0x202 || param_2 == 0x204 ||
+        param_2 == 0x205) {
+        unsigned long x = this->pnl_x + ((unsigned long)param_4 & 0xffff);
+        unsigned long y = this->pnl_y + ((unsigned long)param_4 >> 16);
+        long position = (long)(((y & 0xffff) << 16) | (x & 0xffff));
+        result = panel_system.currentPanel()->wnd_proc(
+            this->render_area->Wnd, param_2, param_3, position);
     }
-    return ret;
+
+    return result;
 }
 
 // pnl_edit.cpp lines 760-853.
@@ -614,34 +605,36 @@ valid:
 void TEditPanel::draw()
 {
     this->need_redraw = 0;
-    if (this->visible == 0) return;
-    RECT r;
-    HGDIOBJ old_font;
-    this->draw_setup(0);
-    if (this->brush && this->active && this->have_focus) {
-        unsigned char c = (unsigned char)GetNearestPaletteIndex(
-            this->render_area->DrawSystem->Pal, this->back_color);
-        this->render_area->Clear(&this->clip_rect, c);
-    } else {
-        TPanel* bg = this->parent_panel;
-        if (bg) {
-            if (this->bevel_type >= 2 && this->bevel_type <= 7) {
-                bg->draw_rect2(&this->clip_rect);
-            } else if (bg->just_drawn == 0) {
-                bg->draw_rect(&this->clip_rect);
-            }
-        } else {
-            this->render_area->Clear(&this->clip_rect, this->color);
-        }
+    if (this->visible == 0) {
+        return;
     }
+
+    this->draw_setup(0);
+
+    if (this->brush != 0 && this->active != 0 && this->have_focus != 0) {
+        unsigned char color = (unsigned char)GetNearestPaletteIndex(
+            (HPALETTE)this->render_area->DrawSystem->Pal,
+            this->back_color);
+        this->render_area->Clear(&this->clip_rect, color);
+    } else if (this->parent_panel != 0) {
+        if (this->bevel_type >= 2 && this->bevel_type <= 7) {
+            this->parent_panel->draw_rect2(&this->clip_rect);
+        } else if (this->parent_panel->just_drawn == 0) {
+            this->parent_panel->draw_rect(&this->clip_rect);
+        }
+    } else {
+        this->render_area->Clear(&this->clip_rect, this->color);
+    }
+
     if (this->bevel_type != 0) {
-        if (this->render_area->Lock("pnl_edit::draw", 1)) {
+        if (this->render_area->Lock("pnl_edit::draw", 1) != 0) {
             switch (this->bevel_type) {
             case 1:
                 this->render_area->DrawRect(
                     this->pnl_x, this->pnl_y,
                     this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1, this->bevel_color1);
+                    this->pnl_y + this->pnl_hgt - 1,
+                    this->bevel_color1);
                 break;
             case 2:
                 this->render_area->DrawBevel(
@@ -695,31 +688,35 @@ void TEditPanel::draw()
         }
         this->render_area->Unlock("pnl_edit::draw");
     }
-    if (this->edit_wnd && this->active) {
-        if (this->have_focus) {
-            if (this->hidden) {
+
+    if (this->edit_wnd != 0 && this->active != 0) {
+        if (this->have_focus != 0) {
+            if (this->hidden != 0) {
                 ShowWindow(this->edit_wnd, 5);
                 InvalidateRect(this->edit_wnd, 0, 1);
                 this->hidden = 0;
-                this->draw_finish();
-                return;
             }
         } else {
-            if (!this->hidden) {
+            if (this->hidden == 0) {
                 ShowWindow(this->edit_wnd, 0);
                 this->hidden = 1;
             }
-            HDC dc = this->render_area->GetDc("pnl_edit::draw");
-            if (dc) {
-                SelectClipRgn(dc, this->clip_rgn);
-                old_font = SelectObject(dc, this->font);
+
+            HDC dc = (HDC)this->render_area->GetDc("pnl_edit::draw");
+            if (dc != 0) {
+                SelectClipRgn(dc, (HRGN)this->clip_rgn);
+                HGDIOBJ old_font = SelectObject(dc, this->font);
                 SetBkMode(dc, 1);
                 SetTextColor(dc, this->text_color2);
-                r.left = this->draw_rect.left - 1;
-                r.top = this->draw_rect.top + 1;
-                r.right = this->draw_rect.right - 1;
-                r.bottom = this->draw_rect.bottom + 1;
-                DrawTextExA(dc, this->text, -1, &r, this->draw_format, 0);
+
+                tagRECT rect;
+                rect.left = this->draw_rect.left - 1;
+                rect.top = this->draw_rect.top + 1;
+                rect.right = this->draw_rect.right - 1;
+                rect.bottom = this->draw_rect.bottom + 1;
+                DrawTextExA(dc, this->text, -1, &rect,
+                            this->draw_format, 0);
+
                 SetTextColor(dc, this->text_color1);
                 DrawTextExA(dc, this->text, -1, &this->draw_rect,
                             this->draw_format, 0);
@@ -729,6 +726,7 @@ void TEditPanel::draw()
             }
         }
     }
+
     this->draw_finish();
 }
 
