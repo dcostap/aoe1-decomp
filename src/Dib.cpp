@@ -366,107 +366,153 @@ void __cdecl GetDibDim(BITMAPINFO256* param_1, long& param_2, long& param_3, lon
     param_4 = -1;
 }
 
-long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, long param_4, long param_5,
-          long param_6, long param_7, long param_8, long param_9, BITMAPINFO256 *param_10,
-          uchar *param_11, TRANSINFO *param_12, long param_13, long param_14, long param_15,
-          long param_16, int param_17, int param_18, int param_19)
+long __cdecl TileDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits,
+    RECT* ClipRect, long DestX, long DestY, long DestWid, long DestHgt,
+    long BlockWid, long BlockHgt, BITMAPINFO256* SrcInfo, uchar* SrcBits,
+    TRANSINFO* TransInfo, long SrcX, long SrcY, long SrcWid, long SrcHgt,
+    int Trans, int Mirror, int Flip)
 {
-    int iVar1;
-    int iVar3;
-    int iVar7;
-    int iVar9;
-    int iVar11;
-    int iVar10;
-    int iVar12;
-    long lVar15;
-    long SrcBotHgt;
-    long SrcRtWid;
-    long DestBotHgt;
-    long SrcTopHgt;
-    long SrcLtWid;
-    long xscale = (param_15 << 8) / param_8;
-    long yscale = (param_16 << 8) / param_9;
+    long xScale = (SrcWid << 8) / BlockWid;
+    long yScale = (SrcHgt << 8) / BlockHgt;
 
-    if (param_13 < 0) param_13 += param_15;
-    if (param_14 < 0) param_14 += param_16;
-    while (param_13 >= param_15) param_13 -= param_15;
-    while (param_14 >= param_16) param_14 -= param_16;
-    DestBotHgt = param_15 - param_13;
-    SrcLtWid = param_16 - param_14;
-    iVar7 = param_15 - DestBotHgt;
-    iVar9 = param_13 - iVar7;
-    iVar11 = param_16 - SrcLtWid;
-    iVar10 = param_14 - iVar11;
-    iVar12 = ((DestBotHgt << 16) / xscale) >> 8;
-    SrcRtWid = param_8 - iVar12;
-    SrcBotHgt = ((SrcLtWid << 16) / yscale) >> 8;
-    SrcTopHgt = param_9 - SrcBotHgt;
-    if ((param_8 < param_6) || (param_9 < param_7)) {
-        int q = param_6;
-        param_6 = q / param_8;
-        if (param_6 * param_8 < q) ++param_6;
-        q = param_7;
-        param_7 = q / param_9;
-        if (param_7 * param_9 < q) ++param_7;
+    if (SrcX < 0)
+        SrcX += SrcWid;
+    if (SrcY < 0)
+        SrcY += SrcHgt;
+
+    while (SrcX >= SrcWid)
+        SrcX -= SrcWid;
+    while (SrcY >= SrcHgt)
+        SrcY -= SrcHgt;
+
+    long SrcRtWid = SrcWid - SrcX;
+    long SrcBotHgt = SrcHgt - SrcY;
+    long SrcLtWid = SrcWid - SrcRtWid;
+    long sxSkip = SrcX - SrcLtWid;
+    long SrcTopHgt = SrcHgt - SrcBotHgt;
+    long sySkip = SrcY - SrcTopHgt;
+
+    long DestLtWid = ((SrcRtWid << 16) / xScale) >> 8;
+    long DestRtWid = BlockWid - DestLtWid;
+    long DestTopHgt = ((SrcBotHgt << 16) / yScale) >> 8;
+    long DestBotHgt = BlockHgt - DestTopHgt;
+
+    long xBlocks;
+    long yBlocks;
+    if (BlockWid >= DestWid && BlockHgt >= DestHgt) {
+        xBlocks = 1;
+        yBlocks = 1;
     } else {
-        param_7 = 1;
-        param_6 = 1;
+        xBlocks = DestWid / BlockWid;
+        if (xBlocks * BlockWid < DestWid)
+            ++xBlocks;
+        yBlocks = DestHgt / BlockHgt;
+        if (yBlocks * BlockHgt < DestHgt)
+            ++yBlocks;
     }
-    if (param_17) {
-        iVar1 = param_18;
-        iVar3 = param_19;
-        if (0 < param_7) {
-            param_17 = param_7;
+
+    long yRemaining = yBlocks;
+    if (Trans != 0) {
+        if (yRemaining > 0) {
             do {
-                lVar15 = param_4;
-                if (0 < param_6) {
-                    param_18 = param_6;
+                long DestY1 = DestY + DestTopHgt;
+                long xRemaining = xBlocks;
+                long x = DestX;
+                if (xRemaining > 0) {
                     do {
-                        if (SrcBotHgt != 0) {
-                            if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcBotHgt,param_10,param_11,param_12,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3,0);
-                            if (SrcRtWid != 0) TransDibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5,SrcRtWid,SrcBotHgt,param_10,param_11,param_12,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3,0);
+                        if (DestTopHgt != 0) {
+                            if (DestLtWid != 0) {
+                                TransDibBlt(DestInfo, DestBits, ClipRect,
+                                    x, DestY, DestLtWid, DestTopHgt,
+                                    SrcInfo, SrcBits, TransInfo,
+                                    SrcX, SrcY, SrcRtWid, SrcBotHgt,
+                                    1, Mirror, Flip, 0);
+                            }
+                            if (DestRtWid != 0) {
+                                TransDibBlt(DestInfo, DestBits, ClipRect,
+                                    x + DestLtWid, DestY,
+                                    DestRtWid, DestTopHgt,
+                                    SrcInfo, SrcBits, TransInfo,
+                                    sxSkip, SrcY, SrcLtWid, SrcBotHgt,
+                                    1, Mirror, Flip, 0);
+                            }
                         }
-                        if (SrcTopHgt != 0) {
-                            if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5+SrcBotHgt,iVar12,SrcTopHgt,param_10,param_11,param_12,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3,0);
-                            if (SrcRtWid != 0) TransDibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5+SrcBotHgt,SrcRtWid,SrcTopHgt,param_10,param_11,param_12,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3,0);
+                        if (DestBotHgt != 0) {
+                            if (DestLtWid != 0) {
+                                TransDibBlt(DestInfo, DestBits, ClipRect,
+                                    x, DestY1, DestLtWid, DestBotHgt,
+                                    SrcInfo, SrcBits, TransInfo,
+                                    SrcX, sySkip, SrcRtWid, SrcTopHgt,
+                                    1, Mirror, Flip, 0);
+                            }
+                            if (DestRtWid != 0) {
+                                TransDibBlt(DestInfo, DestBits, ClipRect,
+                                    x + DestLtWid, DestY1,
+                                    DestRtWid, DestBotHgt,
+                                    SrcInfo, SrcBits, TransInfo,
+                                    sxSkip, sySkip, SrcLtWid, SrcTopHgt,
+                                    1, Mirror, Flip, 0);
+                            }
                         }
-                        lVar15 += param_8;
-                        --param_18;
-                    } while (param_18 != 0);
+                        x += BlockWid;
+                        --xRemaining;
+                    } while (xRemaining != 0);
                 }
-                param_5 += param_9;
-                --param_17;
-            } while (param_17 != 0);
+                DestY += BlockHgt;
+                --yRemaining;
+            } while (yRemaining != 0);
         }
-    } else {
-        iVar1 = param_18;
-        iVar3 = param_19;
-        long dest_y = param_5;
-        if (0 < param_7) {
-            param_17 = param_7;
-            do {
-                lVar15 = param_4;
-                if (0 < param_6) {
-                    param_19 = param_6;
-                    do {
-                        if (SrcBotHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y,iVar12,SrcBotHgt,param_10,param_11,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y,SrcRtWid,SrcBotHgt,param_10,param_11,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3);
+    } else if (yRemaining > 0) {
+        do {
+            long DestY1 = DestY + DestTopHgt;
+            long xRemaining = xBlocks;
+            long x = DestX;
+            if (xRemaining > 0) {
+                do {
+                    if (DestTopHgt != 0) {
+                        if (DestLtWid != 0) {
+                            DibBlt(DestInfo, DestBits, ClipRect,
+                                x, DestY, DestLtWid, DestTopHgt,
+                                SrcInfo, SrcBits,
+                                SrcX, SrcY, SrcRtWid, SrcBotHgt,
+                                1, Mirror, Flip);
                         }
-                        if (SrcTopHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y+SrcBotHgt,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y+SrcBotHgt,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3);
+                        if (DestRtWid != 0) {
+                            DibBlt(DestInfo, DestBits, ClipRect,
+                                x + DestLtWid, DestY,
+                                DestRtWid, DestTopHgt,
+                                SrcInfo, SrcBits,
+                                sxSkip, SrcY, SrcLtWid, SrcBotHgt,
+                                1, Mirror, Flip);
                         }
-                        lVar15 += param_8;
-                        --param_19;
-                    } while (param_19 != 0);
-                }
-                dest_y += param_9;
-                --param_17;
-            } while (param_17 != 0);
-        }
+                    }
+                    if (DestBotHgt != 0) {
+                        if (DestLtWid != 0) {
+                            DibBlt(DestInfo, DestBits, ClipRect,
+                                x, DestY1, DestLtWid, DestBotHgt,
+                                SrcInfo, SrcBits,
+                                SrcX, sySkip, SrcRtWid, SrcTopHgt,
+                                1, Mirror, Flip);
+                        }
+                        if (DestRtWid != 0) {
+                            DibBlt(DestInfo, DestBits, ClipRect,
+                                x + DestLtWid, DestY1,
+                                DestRtWid, DestBotHgt,
+                                SrcInfo, SrcBits,
+                                sxSkip, sySkip, SrcLtWid, SrcTopHgt,
+                                1, Mirror, Flip);
+                        }
+                    }
+                    x += BlockWid;
+                    --xRemaining;
+                } while (xRemaining != 0);
+            }
+            DestY += BlockHgt;
+            --yRemaining;
+        } while (yRemaining != 0);
     }
-    return param_7 * param_6;
+
+    return yBlocks * xBlocks;
 }
 
 int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
