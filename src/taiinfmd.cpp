@@ -759,150 +759,139 @@ void TribeInformationAIModule::blotExploredMap(int p1, int p2, int p3, int p4)
 }
 
 int TribeInformationAIModule::closestUnexploredTile(
-    int objectId, float x, float y, float* outX, float* outY)
+    int objectId, float startX, float startY, float* outX, float* outY)
 {
-    XYPoint cPoint;
-    RGE_Static_Object* obj;
-    RGE_Visible_Map* vMap;
+    RGE_Visible_Map* visible = this->md->player->visible;
+    RGE_Static_Object* object = this->md->player->world->object(objectId);
 
-    vMap = this->md->player->visible;
-    obj = this->md->player->world->object(objectId);
-
-    if (obj == 0)
+    if (object == 0)
         return 0;
 
-    int civilianObj = (obj->master_obj->object_group == 4);
-    uchar initialZone = obj->currentZone();
+    int civilian = object->master_obj->object_group == 4;
+    unsigned char initialZone = object->currentZone();
     int direction = debug_rand(
         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x397) % 4;
-
-    cPoint.x = (int)x;
-    cPoint.y = (int)y;
+    int x = (int)startX;
+    int y = (int)startY;
     int offLeft = 0;
     int offRight = 0;
     int offTop = 0;
     int offBottom = 0;
     int stepSize = 0;
-    float pathDistance;
-    int j;
-    int i;
 
-    for (;;) {
-        if (offLeft != 0 && offRight != 0 && offTop != 0 && offBottom != 0) {
-            this->setFullyExploredZone(objectId, 1);
-            return 0;
-        }
-
+    while (offLeft == 0 || offRight == 0 ||
+           offTop == 0 || offBottom == 0) {
         ++stepSize;
-        j = 0;
-        do {
-            i = 0;
+
+        for (int side = 0; side < 2; ++side) {
             direction = (direction + 1) % 4;
-            if (stepSize > 0) {
-                do {
+
+            for (int step = 0; step < stepSize; ++step) {
                 switch (direction) {
                 case 0:
-                    ++cPoint.y;
+                    ++y;
                     break;
                 case 1:
-                    ++cPoint.x;
+                    ++x;
                     break;
                 case 2:
-                    --cPoint.y;
+                    --y;
                     break;
                 case 3:
-                    --cPoint.x;
+                    --x;
                     break;
                 }
 
-                if (cPoint.x < 0) {
+                if (x < 0) {
                     offLeft = 1;
-                } else if (cPoint.x >= this->mapXSizeValue) {
+                } else if (x >= this->mapXSizeValue) {
                     offRight = 1;
-                } else if (cPoint.y < 0) {
+                } else if (y < 0) {
                     offTop = 1;
-                } else if (cPoint.y >= this->mapYSizeValue) {
+                } else if (y >= this->mapYSizeValue) {
                     offBottom = 1;
                 } else {
-                    uchar explored = (uchar)this->pathMap.lookupValue(
-                        cPoint.x, cPoint.y);
-                    uchar visibleValue = vMap->get_visible(cPoint.x, cPoint.y);
-                    if (visibleValue == 0x0f)
-                        goto skipTile;
-                    if (civilianObj == 1 && explored != 0xff)
-                        goto skipTile;
-                    if (civilianObj == 0 && explored != 0xff && explored != 2)
-                        goto skipTile;
-                    {
-                        if (obj->passableTile((float)cPoint.x,
-                                              (float)cPoint.y, 1) != 0 &&
-                            obj->lookupZone(cPoint.x, cPoint.y) == initialZone) {
-                            XYZPoint point;
-                            point.x = cPoint.x;
-                            point.y = cPoint.y;
-                            point.z = (int)obj->world_z;
-                            if (obj->canPath(
-                                    point, obj->master_obj->los - DAT_00575564,
-                                    -1, &pathDistance, 1, -1, -1) == 0) {
-                                this->pathMap.setValue(cPoint.x, cPoint.y, 1);
+                    char pathValue = (char)this->pathMap.lookupValue(x, y);
+                    unsigned char visibility = visible->get_visible(x, y);
 
-                                int bestScore = -1;
-                                int bestX = 0;
-                                int bestY = 0;
-                                int quadrantX;
-                                int quadrantY;
-                                QuadrantLog* quadrant = this->quadrantLog[0];
-                                for (quadrantX = 0; quadrantX < 4; ++quadrantX) {
-                                    for (quadrantY = 0; quadrantY < 4; ++quadrantY) {
-                                        int score = quadrant->numberExploredTiles;
-                                        score += debug_rand(
-                                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                            0x420) % 100;
-                                        score += quadrant->numberAttacksOnUs * 5 * 5;
-                                        if (bestScore == -1 || score < bestScore) {
-                                            bestScore = score;
-                                    bestX = this->mapXSizeValue * quadrantX / 4;
-                                    bestY = this->mapYSizeValue * quadrantY / 4;
-                                        }
-                                        ++quadrant;
+                    if (visibility != 0x0f &&
+                        (civilian == 0 || pathValue == -1) &&
+                        (civilian != 0 || pathValue == -1 ||
+                         pathValue == 2) &&
+                        object->passableTile((float)x, (float)y, 1) != 0 &&
+                        object->lookupZone(x, y) == initialZone) {
+                        XYZPoint point;
+                        float pathDistance;
+                        point.x = x;
+                        point.y = y;
+                        point.z = (int)object->world_z;
+
+                        if (object->canPath(
+                                point,
+                                object->master_obj->los - DAT_00575564,
+                                -1, &pathDistance, 1, -1, -1) == 0) {
+                            this->pathMap.setValue(x, y, 1);
+
+                            int bestValue = -1;
+                            int bestX = 0;
+                            int bestY = 0;
+
+                            for (int quadrantX = 0; quadrantX < 4;
+                                 ++quadrantX) {
+                                for (int quadrantY = 0; quadrantY < 4;
+                                     ++quadrantY) {
+                                    int value = this->quadrantLog
+                                        [quadrantX][quadrantY]
+                                            .numberExploredTiles;
+                                    value += debug_rand(
+                                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                        0x420) % 100;
+                                    value += this->quadrantLog
+                                        [quadrantX][quadrantY]
+                                            .numberAttacksOnUs * 25;
+
+                                    if (bestValue == -1 || bestValue > value) {
+                                        bestValue = value;
+                                        bestX = this->mapXSizeValue * quadrantX / 4;
+                                        bestY = this->mapYSizeValue * quadrantY / 4;
                                     }
                                 }
-
-                                int maxX = this->mapXSizeValue / 4 - 1 + bestX;
-                                int maxY = this->mapYSizeValue / 4 - 1 + bestY;
-                                int choice = debug_rand(
-                                    (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                    0x430) % 4;
-                                if (choice == 0) {
-                                    cPoint.x = bestX;
-                                    cPoint.y = bestY;
-                                } else if (choice == 1) {
-                                    cPoint.x = bestX;
-                                    cPoint.y = maxY;
-                                } else if (choice == 2) {
-                                    cPoint.x = maxX;
-                                    cPoint.y = maxY;
-                                } else {
-                                    cPoint.x = maxX;
-                                    cPoint.y = bestY;
-                                }
-                            } else {
-                                this->pathMap.setValue(cPoint.x, cPoint.y, 0);
                             }
-                            *outX = (float)cPoint.x;
-                            *outY = (float)cPoint.y;
-                            return 1;
+
+                            int maxX = bestX + this->mapXSizeValue / 4 - 1;
+                            int maxY = bestY + this->mapYSizeValue / 4 - 1;
+
+                            int corner = debug_rand(
+                                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                0x430) % 4;
+                            if (corner == 0) {
+                                x = bestX;
+                                y = bestY;
+                            } else if (corner == 1) {
+                                x = bestX;
+                                y = maxY;
+                            } else {
+                                x = maxX;
+                                if (corner == 2)
+                                    y = maxY;
+                                else
+                                    y = bestY;
+                            }
+                        } else {
+                            this->pathMap.setValue(x, y, 0);
                         }
+
+                        *outX = (float)x;
+                        *outY = (float)y;
+                        return 1;
                     }
-skipTile:
-                    ;
                 }
-                    ++i;
-                } while (i < stepSize);
             }
-            ++j;
-        } while (j < 2);
+        }
     }
+
+    this->setFullyExploredZone(objectId, 1);
+    return 0;
 }
 
 int TribeInformationAIModule::fullyExploredZone(int param_1) {
