@@ -30,7 +30,7 @@
     "0052EDF0": {"status": "matching", "symbol": "?load_world@TRIBE_World@@UAEEH@Z"},
     "0052EF30": {"status": "scratch", "symbol": "?new_game@TRIBE_World@@UAEEAAURGE_Player_Info@@H@Z"},
     "00530370": {"status": "matching", "symbol": "?new_scenario@TRIBE_World@@UAEEAAURGE_Player_Info@@H@Z"},
-    "005303F0": {"status": "scratch", "symbol": "?check_game_state@TRIBE_World@@UAEEXZ"},
+    "005303F0": {"status": "new_verified_logic", "symbol": "?check_game_state@TRIBE_World@@UAEEXZ", "behavior_review": "logic_matching/005303F0/coord-12-review-20260310T000000Z/attempt-01"},
     "00530A70": {"status": "matching", "symbol": "?get_achievement@TRIBE_World@@QAEJEPAPAD@Z"},
     "00530AC0": {"status": "matching", "symbol": "?send_cheat@TRIBE_World@@QAEXF@Z"},
     "00530AE0": {"status": "matching", "symbol": "?cheat@TRIBE_World@@QAEXFF@Z"},

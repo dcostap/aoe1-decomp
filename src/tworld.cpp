@@ -910,53 +910,46 @@ unsigned char TRIBE_World::new_scenario(RGE_Player_Info& info, int flags) {
 unsigned char TRIBE_World::check_game_state()
 {
     int i;
-    int player_count;
-    float held_time;
-    TRIBE_Player* p;
-    int j;
-    int local_1a0;
-    int player_team[9];
-    TRIBE_Player* team_player[9][9];
 
     if (this->game_state == 0) {
         if (this->victory_type == 2 && this->countdown_victory != 0 &&
-            this->countdown_clock >= one) {
-            if ((this->countdown_clock =
-                     this->countdown_clock - (this->world_time_delta_seconds + this->world_time_delta_seconds)) <
-                one) {
+            this->countdown_clock >= 1.0f) {
+            this->countdown_clock -= this->world_time_delta_seconds * 2.0f;
+            if (this->countdown_clock < 1.0f) {
                 long team_score[9];
                 for (i = 0; i < 9; ++i)
                     team_score[i] = -1;
+
                 for (i = 1; i < this->player_num; ++i) {
-                    team_score[i] = this->players[i]->victory_conditions->get_victory_points();
-                    player_count = 1;
+                    int player_count = 1;
+                    team_score[i] =
+                        this->players[i]->victory_conditions->get_victory_points();
+
                     if (this->players[i]->allied_victory != 0) {
-                        local_1a0 = 1;
-                        if (this->player_num > 1) {
-                            do {
-                                if (local_1a0 != i &&
-                                    this->players[i]->relation(local_1a0) == 0 &&
-                                    this->players[local_1a0]->relation(i) == 0 &&
-                                    this->players[local_1a0]->allied_victory != 0) {
-                                    team_score[i] += this->players[local_1a0]->victory_conditions->get_victory_points();
-                                    ++player_count;
-                                }
-                                ++local_1a0;
-                            } while (local_1a0 < this->player_num);
+                        for (int ally = 1; ally < this->player_num; ++ally) {
+                            if (ally != i &&
+                                this->players[i]->relation(ally) == 0 &&
+                                this->players[ally]->relation(i) == 0 &&
+                                this->players[ally]->allied_victory != 0) {
+                                team_score[i] += this->players[ally]
+                                    ->victory_conditions->get_victory_points();
+                                ++player_count;
+                            }
                         }
                     }
                     team_score[i] /= player_count;
                 }
-                TRIBE_Player* winner = 0;
-                int best = -1;
+
+                long high_score = -1;
+                RGE_Player* high_player = 0;
                 for (i = 1; i < this->player_num; ++i) {
-                    if (team_score[i] > best) {
-                    winner = static_cast<TRIBE_Player*>(this->players[i]);
-                        best = team_score[i];
+                    if (team_score[i] > high_score) {
+                        high_player = this->players[i];
+                        high_score = team_score[i];
                     }
                 }
-                if (winner != 0) {
-                    winner->win_game_now();
+                if (high_player != 0) {
+                    high_player->win_game_now();
                     this->game_end_condition = 0x67;
                 }
             }
@@ -964,31 +957,31 @@ unsigned char TRIBE_World::check_game_state()
 
         if (this->artifact_count > 0 || this->ruin_count > 0) {
             int team_size[9];
-            int team_count;
-            player_count = this->player_num;
-            if (player_count > 0) {
-                for (i = 0; i < player_count; ++i)
-                    team_size[i] = 0;
-                for (i = 0; i < player_count; ++i)
-                    player_team[i] = -1;
-            }
-            team_count = 0;
+            int player_team[9];
+            TRIBE_Player* team_player[9][9];
+
+            for (i = 0; i < this->player_num; ++i)
+                team_size[i] = 0;
+
+            for (i = 0; i < this->player_num; ++i)
+                player_team[i] = -1;
+
+            int team_count = 0;
             for (i = 1; i < this->player_num; ++i) {
                 if (player_team[i] == -1) {
                     player_team[i] = team_count;
-                    team_player[team_count][team_size[team_count]] = static_cast<TRIBE_Player*>(this->players[i]);
-                    ++team_size[team_count];
+                    team_player[team_count][team_size[team_count]++] =
+                        static_cast<TRIBE_Player*>(this->players[i]);
+
                     if (this->players[i]->allied_victory != 0) {
-                        local_1a0 = 1;
-                        for (; local_1a0 < this->player_num; ++local_1a0) {
-                            if (player_team[local_1a0] == -1 &&
-                                this->players[local_1a0]->allied_victory != 0 &&
-                                this->players[i]->relation(local_1a0) == 0 &&
-                                this->players[local_1a0]->relation(i) == 0) {
-                                player_team[local_1a0] = team_count;
-                                    team_player[team_count][team_size[team_count]] =
-                                        static_cast<TRIBE_Player*>(this->players[local_1a0]);
-                                ++team_size[team_count];
+                        for (int ally = 1; ally < this->player_num; ++ally) {
+                            if (player_team[ally] == -1 &&
+                                this->players[ally]->allied_victory != 0 &&
+                                this->players[i]->relation(ally) == 0 &&
+                                this->players[ally]->relation(i) == 0) {
+                                player_team[ally] = team_count;
+                                team_player[team_count][team_size[team_count]++] =
+                                    static_cast<TRIBE_Player*>(this->players[ally]);
                             }
                         }
                     }
@@ -998,44 +991,43 @@ unsigned char TRIBE_World::check_game_state()
 
             if (this->artifact_count > 0 && team_count > 0) {
                 for (i = 0; i < team_count; ++i) {
-                    int count = team_size[i];
                     int total = 0;
-                    for (j = 0; j < count; ++j)
-                        total += static_cast<int>(team_player[i][j]->attributes[7]);
+                    int player;
+                    for (player = 0; player < team_size[i]; ++player)
+                        total += static_cast<int>(
+                            team_player[i][player]->attributes[7]);
+
+                    TRIBE_Player* first_player = team_player[i][0];
                     if (total == this->artifact_count) {
-                        p = team_player[i][0];
-                        held_time = p->artifact_held_time;
-                        if (held_time == minus_one) {
-                            for (j = 0; j < count; ++j)
-                                team_player[i][j]->attributes[55] = 1.0f;
+                        float held_time = first_player->artifact_held_time;
+                        if (held_time == -1.0f) {
+                            for (player = 0; player < team_size[i]; ++player)
+                                team_player[i][player]->attributes[55] = 1.0f;
+
                             if (this->victory_type == 0) {
-                                for (j = 0; j < count; ++j)
-                                    team_player[i][j]->artifact_held_time = 2000.0f;
-                                rge_base_game->notification(0x72,
-                                    p->id, 0, 0, 0);
+                                for (player = 0; player < team_size[i]; ++player)
+                                    team_player[i][player]->artifact_held_time = 2000.0f;
+                                rge_base_game->notification(
+                                    0x72, first_player->id, 0, 0, 0);
                             }
-                        }
-                        else if (held_time >= one && this->victory_type == 0) {
-                            held_time = held_time - (this->world_time_delta_seconds + this->world_time_delta_seconds);
-                            for (j = 0; j < count; ++j)
-                                team_player[i][j]->artifact_held_time = held_time;
-                            if (held_time < one) {
-                                p->win_game_now();
+                        } else if (held_time >= 1.0f && this->victory_type == 0) {
+                            held_time -= this->world_time_delta_seconds * 2.0f;
+                            for (player = 0; player < team_size[i]; ++player)
+                                team_player[i][player]->artifact_held_time = held_time;
+                            if (held_time < 1.0f) {
+                                first_player->win_game_now();
                                 this->game_end_condition = 0x65;
                             }
                         }
-                    }
-                    else {
-                        p = team_player[i][0];
-                        if (p->artifact_held_time != -1.0f) {
-                            for (j = 0; j < count; ++j)
-                                team_player[i][j]->attributes[55] = 0.0f;
-                            if (this->victory_type == 0) {
-                                for (j = 0; j < count; ++j)
-                                    team_player[i][j]->artifact_held_time = -1.0f;
-                                rge_base_game->notification(0x73,
-                                    p->id, 0, 0, 0);
-                            }
+                    } else if (first_player->artifact_held_time != -1.0f) {
+                        for (player = 0; player < team_size[i]; ++player)
+                            team_player[i][player]->attributes[55] = 0.0f;
+
+                        if (this->victory_type == 0) {
+                            for (player = 0; player < team_size[i]; ++player)
+                                team_player[i][player]->artifact_held_time = -1.0f;
+                            rge_base_game->notification(
+                                0x73, first_player->id, 0, 0, 0);
                         }
                     }
                 }
@@ -1043,43 +1035,43 @@ unsigned char TRIBE_World::check_game_state()
 
             if (this->ruin_count > 0 && team_count > 0) {
                 for (i = 0; i < team_count; ++i) {
-                    int count = team_size[i];
                     int total = 0;
-                    for (j = 0; j < count; ++j)
-                        total += static_cast<int>(team_player[i][j]->attributes[14]);
+                    int player;
+                    for (player = 0; player < team_size[i]; ++player)
+                        total += static_cast<int>(
+                            team_player[i][player]->attributes[14]);
+
+                    TRIBE_Player* first_player = team_player[i][0];
                     if (total == this->ruin_count) {
-                        p = team_player[i][0];
-                        held_time = p->ruin_held_time;
-                        if (held_time == minus_one) {
-                            for (j = 0; j < count; ++j)
-                                team_player[i][j]->attributes[54] = 1.0f;
+                        float held_time = first_player->ruin_held_time;
+                        if (held_time == -1.0f) {
+                            for (player = 0; player < team_size[i]; ++player)
+                                team_player[i][player]->attributes[54] = 1.0f;
+
                             if (this->victory_type == 0) {
-                                for (j = 0; j < count; ++j)
-                                    team_player[i][j]->ruin_held_time = 2000.0f;
-                                RGE_Base_Game* game = rge_base_game;
-                                game->notification(0x74, p->id, 0, 0, 0);
+                                for (player = 0; player < team_size[i]; ++player)
+                                    team_player[i][player]->ruin_held_time = 2000.0f;
+                                rge_base_game->notification(
+                                    0x74, first_player->id, 0, 0, 0);
                             }
-                        }
-                        else if (held_time >= one && this->victory_type == 0) {
-                            held_time = held_time - (this->world_time_delta_seconds + this->world_time_delta_seconds);
-                            for (j = 0; j < count; ++j)
-                                team_player[i][j]->ruin_held_time = held_time;
-                            if (held_time < one) {
-                                p->win_game_now();
+                        } else if (held_time >= 1.0f && this->victory_type == 0) {
+                            held_time -= this->world_time_delta_seconds * 2.0f;
+                            for (player = 0; player < team_size[i]; ++player)
+                                team_player[i][player]->ruin_held_time = held_time;
+                            if (held_time < 1.0f) {
+                                first_player->win_game_now();
                                 this->game_end_condition = 0x66;
                             }
                         }
-                    }
-                    else {
-                        p = team_player[i][0];
-                        if (p->ruin_held_time != -1.0f) {
-                            for (j = 0; j < count; ++j)
-                                team_player[i][j]->attributes[54] = 0.0f;
-                            if (this->victory_type == 0) {
-                                for (j = 0; j < count; ++j)
-                                    team_player[i][j]->ruin_held_time = -1.0f;
-                                rge_base_game->notification(0x75, p->id, 0, 0, 0);
-                            }
+                    } else if (first_player->ruin_held_time != -1.0f) {
+                        for (player = 0; player < team_size[i]; ++player)
+                            team_player[i][player]->attributes[54] = 0.0f;
+
+                        if (this->victory_type == 0) {
+                            for (player = 0; player < team_size[i]; ++player)
+                                team_player[i][player]->ruin_held_time = -1.0f;
+                            rge_base_game->notification(
+                                0x75, first_player->id, 0, 0, 0);
                         }
                     }
                 }
