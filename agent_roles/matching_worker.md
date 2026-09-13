@@ -117,6 +117,11 @@ Check the complete function you work on, not only the current byte difference or
 Do this before code-generation tuning. Recheck affected behavior after each retained change.
 Do not treat existing source, previous reviews, or repeated matching passes as proof of correctness.
 
+In this workflow, `behavior-correct` means that the source matches all behavior
+encoded by the original assembly. Match it exactly, including bugs, unusual
+behavior, edge cases, faults, fault order, overflow, aliasing, and effect order.
+Do not improve, normalize, or sanitize original behavior.
+
 Use the original executable instructions as evidence. Use declarations and callee bodies to explain argument meanings and effects.
 Retrieve missing evidence with the function packet, ABI tools, focused disassembly, and relevant callee packets.
 Do not skip a check because the source compiles or looks plausible.

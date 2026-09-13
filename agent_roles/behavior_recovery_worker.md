@@ -17,6 +17,11 @@ Use these priorities:
 Do not tune source only to improve a byte score.
 Do not run an original or rebuilt game executable.
 
+In this workflow, `behavior-correct` means that the source matches all behavior
+encoded by the original assembly. Match it exactly, including bugs, unusual
+behavior, edge cases, faults, fault order, overflow, aliasing, and effect order.
+Do not improve, normalize, or sanitize original behavior.
+
 ## Reconstruction mode
 
 The target definition is absent.

@@ -28,6 +28,10 @@ You approve or reject the technical proposal, including the independent accepted
 The orchestrator retains final integration authority and makes approved registry updates.
 Matching and accepted drift are equal successes. Do not demand exact bytes after semantic approval.
 
+Treat `behavior-correct` as an exact match to all behavior encoded by the
+original assembly. This includes bugs, unusual behavior, edge cases, faults,
+fault order, overflow, aliasing, and effect order. Reject unintended repairs.
+
 ## Procedure
 
 1. Check the assignment, base, changed paths, and selected input identities.
