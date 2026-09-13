@@ -1005,20 +1005,23 @@ int TribeBuildAIModule::allBuilt(int param_1, int param_2)
 int TribeBuildAIModule::readyToResearch(int id, int ageResearch)
 {
     unsigned char rState;
+
     if (ageResearch == 1) {
-        if (id == 2)
+        if (id == 2) {
             rState = this->md->aiPlayer->researchState(0x65);
-        else
+        } else {
             rState = id;
-        if (id == 3)
+        }
+        if (id == 3) {
             rState = this->md->aiPlayer->researchState(0x66);
+        }
         if (id == 4) {
             rState = this->md->aiPlayer->researchState(0x67);
-            return rState == 1;
         }
     } else {
         rState = this->md->aiPlayer->researchState(id);
     }
+
     return rState == 1;
 }
 
