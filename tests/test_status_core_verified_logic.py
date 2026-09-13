@@ -207,6 +207,33 @@ class NewVerifiedLogicStatusTests(VerifiedLogicStatusTests):
             ],
         )
 
+    def test_behavior_review_reads_tracked_sparse_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            review = root / "logic_matching" / "00400000" / "review-a" / "attempt-01"
+            metadata = '{"state":"complete","mode":"review","verdict":"PERFECT"}\n'
+
+            def tracked_text(path: Path) -> str:
+                if path.name == "attempt.json":
+                    return metadata
+                if path.name == "commits.patch":
+                    return "review commit\n"
+                raise OSError(path)
+
+            with (
+                patch.object(status_core, "REPO_ROOT", root),
+                patch.object(status_core, "_repo_text", side_effect=tracked_text),
+            ):
+                paths = status_core.behavior_review_paths(
+                    {
+                        "behavior_review":
+                            "logic_matching/00400000/review-a/attempt-01"
+                    },
+                    "00400000",
+                )
+
+        self.assertEqual(paths, [review])
+
 
 if __name__ == "__main__":
     unittest.main()

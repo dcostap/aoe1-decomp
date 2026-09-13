@@ -235,14 +235,14 @@ def behavior_review_paths(entry: dict[str, object] | None, va: str) -> list[Path
         metadata = path / "attempt.json"
         commits = path / "commits.patch"
         try:
-            record = json.loads(metadata.read_text(encoding="utf-8"))
+            record = json.loads(_repo_text(metadata))
         except (OSError, ValueError, json.JSONDecodeError):
             return []
         if not (
             record.get("state") == "complete"
             and record.get("mode") == "review"
             and record.get("verdict") == "PERFECT"
-            and commits.is_file()
+            and _repo_file_exists(commits)
             and path.resolve().is_relative_to(expected_root)
         ):
             return []
@@ -253,6 +253,34 @@ def behavior_review_paths(entry: dict[str, object] | None, va: str) -> list[Path
 def behavior_review_path(entry: dict[str, object] | None, va: str) -> Path | None:
     paths = behavior_review_paths(entry, va)
     return paths[0] if paths else None
+
+
+def _repo_text(path: Path) -> str:
+    if path.is_file():
+        return path.read_text(encoding="utf-8")
+    relative = path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    result = subprocess.run(
+        ["git", "show", f"HEAD:{relative}"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    if result.returncode != 0:
+        raise OSError(f"tracked file is not available: {relative}")
+    return result.stdout
+
+
+def _repo_file_exists(path: Path) -> bool:
+    if path.is_file():
+        return True
+    try:
+        _repo_text(path)
+    except (OSError, ValueError):
+        return False
+    return True
 
 
 def enrich_status_rows(

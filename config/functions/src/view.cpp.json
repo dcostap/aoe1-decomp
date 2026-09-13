@@ -16,7 +16,7 @@
     "00533F70": {"status": "matching", "symbol": "?set_rect@RGE_View@@UAEXJJJJ@Z"},
     "00534100": {"status": "matching", "symbol": "?delete_surfaces@RGE_View@@QAEXXZ"},
     "00534130": {"status": "matching", "symbol": "?create_surfaces@RGE_View@@QAEHXZ"},
-    "00534340": {"status": "new_verified_logic", "symbol": "?calc_draw_vars@RGE_View@@IAEXXZ", "behavior_review": "logic_matching/00534340/review-01/attempt-01"},
+    "00534340": {"status": "new_verified_logic", "symbol": "?calc_draw_vars@RGE_View@@IAEXXZ"},
     "00534420": {"status": "matching", "symbol": "?set_redraw@RGE_View@@UAEXW4RedrawMode@TPanel@@@Z"},
     "00534440": {"status": "matching", "symbol": "?set_world@RGE_View@@QAEXPAVRGE_Game_World@@@Z"},
     "00534500": {"status": "matching", "symbol": "?set_player@RGE_View@@QAEXPAVRGE_Player@@@Z"},
