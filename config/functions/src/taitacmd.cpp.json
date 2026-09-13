@@ -156,7 +156,7 @@
     "004FD6D0": {"status": "matching", "symbol": "?numberUngroupedArtifacts@TribeTacticalAIModule@@QAEHXZ"},
     "004FD8D0": {"status": "matching", "symbol": "?displaySoldierGroups@TribeTacticalAIModule@@QAEXXZ"},
     "004FDE00": {"status": "scratch", "symbol": "?setupBoatGroups@TribeTacticalAIModule@@QAEXXZ"},
-    "004FE950": {"status": "scratch", "symbol": "?fillBoatGroups@TribeTacticalAIModule@@QAEXXZ"},
+    "004FE950": {"status": "new_verified_logic", "symbol": "?fillBoatGroups@TribeTacticalAIModule@@QAEXXZ", "behavior_review": ["logic_matching/004FE950/review-coord-13-round-01-a/attempt-01", "logic_matching/004FE950/review-coord-13-round-01-b/attempt-01"]},
     "004FF4E0": {"status": "matching", "symbol": "?numberUngroupedWarBoats@TribeTacticalAIModule@@QAEHXZ"},
     "004FF6E0": {"status": "accepted_drift", "symbol": "?numberExtraGroupedWarBoats@TribeTacticalAIModule@@QAEHXZ"},
     "004FF8E0": {"status": "matching", "symbol": "?numberUngroupedFishingBoats@TribeTacticalAIModule@@QAEHXZ"},
