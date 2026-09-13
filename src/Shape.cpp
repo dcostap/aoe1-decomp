@@ -2366,265 +2366,200 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     return 1;
 }
 
-byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
-                                     long clip_left, long clip_top,
-                                     long clip_right, long clip_bottom,
-                                     long p8, long p9)
+byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
+                                    long shape_y0, long clip_x0,
+                                    long clip_y0, long clip_x1,
+                                    long clip_y1, long dx, long dy)
 {
     long orientation = area->Orien;
-    long width = area->AlignedWidth();
-    width *= orientation;
-    Shape_Header* header = this->shape_header;
-    byte* src = (byte*)(header + 1);
-    long skip_rows;
-    long row;
-    long xpos;
-    long row_offset;
-    byte* save_buffer;
+    long width = area->AlignedWidth() * orientation;
+    byte* src = (byte*)(this->shape_header + 1);
+    long row = clip_y0;
+
     if (orientation < 1)
-        row_offset = (clip_top - area->Height + 1) * width;
-    else
-        row_offset = width * clip_top;
-    save_buffer = area->Bits + clip_left + row_offset;
-    byte dither;
-    byte state;
-    byte done;
-    byte b;
-    byte* end;
-    dither = (byte)(((char)p8 + (char)clip_left) & 1);
-    if (((p9 + clip_top) & 1U) != 0)
+        row = clip_y0 - area->Height + 1;
+
+    byte* save_buffer = area->Bits + clip_x0 + row * width;
+    byte dither = (byte)((dx + clip_x0) & 1);
+    if (((dy + clip_y0) & 1U) != 0)
         dither = (byte)(dither != 1);
 
-    row = y;
-    if (y < clip_top) {
-        skip_rows = clip_top - y;
-        row = y + skip_rows;
+    row = shape_y0;
+    if (shape_y0 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y0;
+        row += skip_rows;
         do {
-            done = 0;
+            byte done = 0;
             do {
-                y = (long)*src++;
-                if ((y & 1) == 1) {
-                    y >>= 1;
-                    if (y == 0)
-                        ++src;
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    command >>= 1;
+                    if (command != 0)
+                        src += command;
                     else
-                        src += (unsigned int)y;
+                        ++src;
                 } else {
-                    y >>= 1;
-                    if (y == 0)
+                    if ((command & 0xfe) == 0)
                         done = 1;
                     else
                         ++src;
                 }
             } while (done == 0);
-            --skip_rows;
-        } while (skip_rows != 0);
+        } while (--skip_rows != 0);
     }
 
+    if (row > clip_y1)
+        return 1;
+
     do {
-        if (row > clip_bottom)
-            return 1;
-
-        bool row_dither = (dither != 1);
+        byte next_dither = (byte)(dither != 1);
         byte* dst = save_buffer;
-        xpos = x;
+        long x = shape_x0;
+        byte state;
 
-        if (x < clip_left) {
+        if (x < clip_x0) {
             state = 0;
             do {
-                y = (long)*src++;
-                if ((y & 1) == 1) {
-                    y >>= 1;
-                    if (y == 0) {
-                        xpos += (unsigned int)*src;
-                        ++src;
-                        if (clip_left <= xpos) {
-                            if (clip_right < xpos) {
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        command = *src++;
+                        x += command;
+                        if (x >= clip_x0) {
+                            if (x > clip_x1) {
                                 state = 2;
                             } else {
                                 state = 1;
-                                b = (byte)((char)xpos - (char)clip_left);
-                                dst += b;
-                                if ((b & 1) != 0)
+                                byte count = (byte)(x - clip_x0);
+                                dst += count;
+                                if ((count & 1) != 0)
                                     dither = (byte)(dither != 1);
                             }
                         }
                     } else {
-                        xpos += y;
-                        if (clip_left < xpos) {
-                            if (clip_right < xpos) {
+                        x += command;
+                        if (x > clip_x0) {
+                            byte count;
+                            if (x > clip_x1) {
                                 state = 2;
-                                b = (byte)((char)clip_right -
-                                           (char)clip_left + 1);
-                                if (dither != 0) {
-                                    ++dst;
-                                    b = (byte)((char)clip_right -
-                                               (char)clip_left);
-                                }
-                                dither = (byte)(b & 1);
-                                end = dst + b;
-                                while (dst < end) {
-                                    *dst = 0;
-                                    dst += 2;
-                                }
-                                if (dither != 0)
-                                    --dst;
-                                src += (unsigned int)y;
-                                goto left_done;
+                                count = (byte)(clip_x1 - clip_x0 + 1);
                             } else {
                                 state = 1;
-                                b = (byte)((char)xpos - (char)clip_left);
-                                if (dither != 0) {
-                                    --b;
-                                    ++dst;
-                                }
-                                dither = (byte)(b & 1);
-                                end = dst + b;
-                                while (dst < end) {
-                                    *dst = 0;
-                                    dst += 2;
-                                }
-                                if (dither != 0)
-                                    --dst;
+                                count = (byte)(x - clip_x0);
                             }
+
+                            if (dither != 0) {
+                                --count;
+                                ++dst;
+                            }
+                            dither = (byte)(count & 1);
+                            byte* end = dst + count;
+                            while (dst < end) {
+                                *dst = 0;
+                                dst += 2;
+                            }
+                            if (dither != 0)
+                                --dst;
                         }
-                        src += (unsigned int)y;
+                        src += command;
                     }
                 } else {
-                    y >>= 1;
-                    if (y == 0) {
+                    command >>= 1;
+                    if (command == 0) {
                         state = 3;
                     } else {
-                        xpos += y;
-                        if (clip_left < xpos) {
-                            if (clip_right < xpos) {
+                        x += command;
+                        if (x > clip_x0) {
+                            byte count;
+                            if (x > clip_x1) {
                                 state = 2;
-                                b = (byte)((char)clip_right -
-                                           (char)clip_left + 1);
-                                if (dither != 0) {
-                                    ++dst;
-                                    b = (byte)((char)clip_right -
-                                               (char)clip_left);
-                                }
-                                dither = (byte)(b & 1);
-                                end = dst + b;
-                                while (dst < end) {
-                                    *dst = 0;
-                                    dst += 2;
-                                }
-                                if (dither != 0)
-                                    --dst;
+                                count = (byte)(clip_x1 - clip_x0 + 1);
                             } else {
                                 state = 1;
-                                b = (byte)((char)xpos - (char)clip_left);
-                                if (dither != 0) {
-                                    --b;
-                                    ++dst;
-                                }
-                                dither = (byte)(b & 1);
-                                end = dst + b;
-                                while (dst < end) {
-                                    *dst = 0;
-                                    dst += 2;
-                                }
-                                if (dither != 0)
-                                    --dst;
+                                count = (byte)(x - clip_x0);
                             }
+
+                            if (dither != 0) {
+                                --count;
+                                ++dst;
+                            }
+                            dither = (byte)(count & 1);
+                            byte* end = dst + count;
+                            while (dst < end) {
+                                *dst = 0;
+                                dst += 2;
+                            }
+                            if (dither != 0)
+                                --dst;
                         }
                         ++src;
                     }
                 }
-            left_done:
-                if (state != 0)
-                    break;
-            } while (true);
+            } while (state == 0);
         } else {
             state = 1;
         }
+
         --state;
         while (state == 0) {
-            y = (long)*src++;
-            if ((y & 1) == 1) {
-                y >>= 1;
-                if (y == 0) {
-                    b = *src;
-                    xpos += (unsigned int)b;
-                    if ((b & 1) != 0)
+            byte command = *src++;
+            if ((command & 1) == 1) {
+                command >>= 1;
+                if (command == 0) {
+                    command = *src++;
+                    x += command;
+                    if ((command & 1) != 0)
                         dither = (byte)(dither != 1);
-                    dst += b;
-                    ++src;
-                    if (clip_right < xpos)
+                    dst += command;
+                    if (x > clip_x1)
                         state = 1;
                 } else {
-                    xpos += y;
-                    if (clip_right < xpos) {
+                    x += command;
+                    byte count = command;
+                    if (x > clip_x1) {
                         state = 1;
-                        b = (byte)((char)clip_right - (char)xpos + 1 + y);
-                        if (dither != 0) {
-                            --b;
-                            ++dst;
-                        }
-                        dither = (byte)(b & 1);
-                        end = dst + b;
-                        while (dst < end) {
-                            *dst = 0;
-                            dst += 2;
-                        }
-                        if (dither != 0)
-                            --dst;
-                    } else {
-                        b = (byte)y;
-                        if (dither != 0) {
-                            --b;
-                            ++dst;
-                        }
-                        dither = (byte)(b & 1);
-                        end = dst + b;
-                        while (dst < end) {
-                            *dst = 0;
-                            dst += 2;
-                        }
-                        if (dither != 0)
-                            --dst;
+                        count = (byte)(clip_x1 - x + command + 1);
                     }
-                    src += (unsigned int)y;
+
+                    if (dither != 0) {
+                        --count;
+                        ++dst;
+                    }
+                    dither = (byte)(count & 1);
+                    byte* end = dst + count;
+                    while (dst < end) {
+                        *dst = 0;
+                        dst += 2;
+                    }
+                    if (dither != 0)
+                        --dst;
+                    src += command;
                 }
             } else {
-                y >>= 1;
-                if (y == 0) {
+                command >>= 1;
+                if (command == 0) {
                     state = 3;
                 } else {
-                    xpos += y;
-                    if (clip_right < xpos) {
+                    x += command;
+                    byte count = command;
+                    if (x > clip_x1) {
                         state = 1;
-                        b = (byte)((char)clip_right - (char)xpos + 1 + y);
-                        if (dither != 0) {
-                            --b;
-                            ++dst;
-                        }
-                        dither = (byte)(b & 1);
-                        end = dst + b;
-                        while (dst < end) {
-                            *dst = 0;
-                            dst += 2;
-                        }
-                        if (dither != 0)
-                            --dst;
-                    } else {
-                        b = (byte)y;
-                        if (dither != 0) {
-                            --b;
-                            ++dst;
-                        }
-                        dither = (byte)(b & 1);
-                        end = dst + b;
-                        while (dst < end) {
-                            *dst = 0;
-                            dst += 2;
-                        }
-                        if (dither != 0)
-                            --dst;
+                        count = (byte)(clip_x1 - x + command + 1);
                     }
+
+                    if (dither != 0) {
+                        --count;
+                        ++dst;
+                    }
+                    dither = (byte)(count & 1);
+                    byte* end = dst + count;
+                    while (dst < end) {
+                        *dst = 0;
+                        dst += 2;
+                    }
+                    if (dither != 0)
+                        --dst;
                     ++src;
                 }
             }
@@ -2632,16 +2567,15 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
 
         --state;
         while (state == 0) {
-            y = (long)*src++;
-            if ((y & 1) == 1) {
-                y >>= 1;
-                if (y == 0)
-                    ++src;
+            byte command = *src++;
+            if ((command & 1) == 1) {
+                command >>= 1;
+                if (command != 0)
+                    src += command;
                 else
-                    src += (unsigned int)y;
+                    ++src;
             } else {
-                y >>= 1;
-                if (y == 0)
+                if ((command & 0xfe) == 0)
                     state = 2;
                 else
                     ++src;
@@ -2650,8 +2584,8 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
 
         save_buffer += width;
         ++row;
-        dither = row_dither;
-    } while (true);
+        dither = next_dither;
+    } while (row <= clip_y1);
 
     return 1;
 }
