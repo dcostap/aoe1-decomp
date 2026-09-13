@@ -900,16 +900,17 @@ byte TShape::shape_draw_clipped(TDrawArea* draw_area, long shape_x1,
     return 1;
 }
 
-byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
-                                       long shape_y1, long shape_idx,
-                                       long clip_x0, long clip_y0,
-                                       long clip_x1, long clip_y1,
-                                       byte* table)
+byte TShape::shape_color_trans_clipped(
+    TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_num,
+    long clip_x0, long clip_y0, long clip_x1, long clip_y1,
+    byte* color_table)
 {
-    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
-    Shape_Payload* src = (Shape_Payload*)(this->shape_header + 1);
+    long orientation = draw_area->Orien;
+    long pitch = draw_area->AlignedWidth() * orientation;
+    byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
-    if (draw_area->Orien < 1)
+
+    if (orientation < 1)
         dst = draw_area->Bits +
               (clip_y0 - draw_area->Height + 1) * pitch + clip_x0;
     else
@@ -918,12 +919,12 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
     byte* save_buffer = dst;
 
     if (shape_y1 < clip_y0) {
-        long skip = clip_y0 - shape_y1;
-        shape_y1 += skip;
+        long skip_rows = clip_y0 - shape_y1;
+        shape_y1 += skip_rows;
         do {
             byte done = 0;
             do {
-                byte command = src++->value;
+                byte command = *src++;
                 if (command & 1) {
                     command >>= 1;
                     if (command)
@@ -937,174 +938,169 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                         ++src;
                 }
             } while (!done);
-        } while (--skip != 0);
+        } while (--skip_rows != 0);
     }
 
     if (shape_y1 > clip_y1)
         return 1;
-    long rows = clip_y1 - shape_y1 + 1;
 
+    long rows = clip_y1 - shape_y1 + 1;
     do {
         long xpos = shape_x1;
         byte state;
+
         if (xpos < clip_x0) {
             state = 0;
             do {
-                byte command = src++->value;
+                byte command = *src++;
                 if (command & 1) {
-                    command >>= 1;
-                    if (command == 0) {
-                        command = src++->value;
-                        xpos += command;
+                    byte count = command >> 1;
+                    if (count == 0) {
+                        xpos += *src++;
                         if (xpos >= clip_x0) {
-                            if (xpos > clip_x1)
+                            if (xpos > clip_x1) {
                                 state = 2;
-                            else {
+                            } else {
                                 state = 1;
                                 dst += xpos - clip_x0;
                             }
                         }
                     } else {
-                        xpos += command;
-                        if (xpos >= clip_x0) {
-                            if (xpos > clip_x1) {
-                                long cnt = clip_x1 - clip_x0 + 1;
-                                state = 2;
-                                src += clip_x0 - xpos + command;
-                                byte* end = dst + cnt;
-                                while (dst < end)
-                                    *dst++ = table[src++->value];
-                                src += command -
-                                       (clip_x0 - xpos + command) - cnt;
-                            } else {
-                                long cnt = xpos - clip_x0;
-                                state = 1;
-                                src += command - cnt;
-                                byte* end = dst + cnt;
-                                while (dst < end)
-                                    *dst++ = table[src++->value];
+                        xpos += count;
+                        if (xpos < clip_x0) {
+                            src += count;
+                        } else if (xpos > clip_x1) {
+                            long first = clip_x0 - xpos + count;
+                            long visible = clip_x1 - clip_x0 + 1;
+                            src += first;
+                            state = 2;
+                            byte* end = dst + visible;
+                            while (dst < end) {
+                                byte color = *src++;
+                                *dst++ = color_table[color];
                             }
+                            src += count - visible - first;
                         } else {
-                            src += command;
+                            long visible = xpos - clip_x0;
+                            src += count - visible;
+                            state = 1;
+                            byte* end = dst + visible;
+                            while (dst < end) {
+                                byte color = *src++;
+                                *dst++ = color_table[color];
+                            }
                         }
                     }
                 } else {
-                    command >>= 1;
-                    if (command == 0) {
+                    byte count = command >> 1;
+                    if (count == 0) {
                         state = 3;
                     } else {
-                        xpos += command;
+                        xpos += count;
                         if (xpos >= clip_x0) {
+                            long visible;
                             if (xpos > clip_x1) {
-                                long cnt = clip_x1 - clip_x0 + 1;
+                                visible = clip_x1 - clip_x0 + 1;
                                 state = 2;
-                                memset(dst, table[src->value], cnt);
-                                dst += cnt;
                             } else {
-                                long cnt = xpos - clip_x0;
+                                visible = xpos - clip_x0;
                                 state = 1;
-                                memset(dst, table[src->value], cnt);
-                                dst += cnt;
                             }
+                            memset(dst, color_table[*src], visible);
+                            dst += visible;
                         }
                         ++src;
                     }
                 }
-            } while (!state);
+            } while (state == 0);
         } else {
             state = 1;
         }
 
-        state--;
-        if (state == 0) {
-            do {
-                byte command = src++->value;
-                if (command & 1) {
-                    command >>= 1;
-                    if (command == 0) {
-                        command = src++->value;
-                        xpos += command;
-                        dst += command;
-                        if (xpos > clip_x1)
-                            state = 1;
-                    } else {
-                        xpos += command;
-                        if (xpos > clip_x1) {
-                            long cnt = command + clip_x1 - xpos + 1;
-                            state = 1;
-                            byte* end = dst + cnt;
-                            while (dst < end)
-                                *dst++ = table[src++->value];
-                            dst += command - cnt;
-                            src += command - cnt;
-                        } else {
-                            byte* end = dst + command;
-                            while (dst < end)
-                                *dst++ = table[src++->value];
-                        }
-                    }
+        --state;
+        while (state == 0) {
+            byte command = *src++;
+            if (command & 1) {
+                byte count = command >> 1;
+                if (count == 0) {
+                    count = *src++;
+                    xpos += count;
+                    dst += count;
+                    if (xpos > clip_x1)
+                        state = 1;
                 } else {
-                    command >>= 1;
-                    if (command == 0) {
-                        state = 3;
-                    } else {
-                        xpos += command;
-                        if (xpos > clip_x1) {
-                            long cnt = command + clip_x1 - xpos + 1;
-                            state = 1;
-                            memset(dst, table[src->value], cnt);
-                            dst += command;
-                        } else {
-                            memset(dst, table[src->value], command);
-                            dst += command;
-                        }
-                        ++src;
+                    xpos += count;
+                    long visible = count;
+                    if (xpos > clip_x1) {
+                        visible = clip_x1 - xpos + count + 1;
+                        state = 1;
                     }
+
+                    byte* end = dst + visible;
+                    while (dst < end) {
+                        byte color = *src++;
+                        *dst++ = color_table[color];
+                    }
+                    src += count - visible;
                 }
-            } while (!state);
+            } else {
+                byte count = command >> 1;
+                if (count == 0) {
+                    state = 3;
+                } else {
+                    xpos += count;
+                    long visible = count;
+                    if (xpos > clip_x1) {
+                        visible = clip_x1 - xpos + count + 1;
+                        state = 1;
+                    }
+                    memset(dst, color_table[*src], visible);
+                    dst += count;
+                    ++src;
+                }
+            }
         }
 
-        state--;
-        if (state == 0) {
-            do {
-                byte command = src++->value;
-                if ((command & 1) == 1) {
-                    command >>= 1;
-                    if (command)
-                        src += command;
-                    else
-                        ++src;
-                } else {
-                    if ((command & 0xfe) == 0)
-                        state = 2;
-                    else
-                        ++src;
-                }
-            } while (!state);
+        --state;
+        while (state == 0) {
+            byte command = *src++;
+            if (command & 1) {
+                command >>= 1;
+                if (command)
+                    src += command;
+                else
+                    ++src;
+            } else {
+                if ((command & 0xfe) == 0)
+                    state = 2;
+                else
+                    ++src;
+            }
         }
+
         save_buffer += pitch;
         dst = save_buffer;
     } while (--rows != 0);
+
     return 1;
 }
 
 byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
-                                   long shape_y1, long clip_x0, long clip_y0,
-                                   long clip_x1, long clip_y1, byte* table)
+                                  long shape_y1, long clip_x0, long clip_y0,
+                                  long clip_x1, long clip_y1, byte* table)
 {
-    byte command;
-    char state;
-    long width;
-    width = draw_area->AlignedWidth() * draw_area->Orien;
-    byte* buffer = (byte*)(this->shape_header + 1);
+    long orientation = draw_area->Orien;
+    long pitch = draw_area->AlignedWidth() * orientation;
+    byte* src = (byte*)(this->shape_header + 1);
+    byte* dst;
 
-    byte* save_buffer;
-    if (draw_area->Orien < 1) {
-        save_buffer = draw_area->Bits +
-                      (clip_y0 - draw_area->Height + 1) * width + clip_x0;
-    } else {
-        save_buffer = draw_area->Bits + clip_y0 * width + clip_x0;
-    }
+    if (orientation < 1)
+        dst = draw_area->Bits +
+              (clip_y0 - draw_area->Height + 1) * pitch + clip_x0;
+    else
+        dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
+
+    byte* save_buffer = dst;
 
     if (shape_y1 < clip_y0) {
         long skip_rows = clip_y0 - shape_y1;
@@ -1112,86 +1108,98 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
         do {
             byte done = 0;
             do {
-                command = *buffer++;
+                byte command = *src++;
                 if (command & 1) {
                     command >>= 1;
                     if (command)
-                        buffer += command;
+                        src += command;
                     else
-                        ++buffer;
+                        ++src;
                 } else {
-                    if ((command & 0xfe) != 0)
-                        ++buffer;
-                    else
+                    if ((command & 0xfe) == 0)
                         done = 1;
+                    else
+                        ++src;
                 }
             } while (!done);
         } while (--skip_rows != 0);
     }
 
     if (shape_y1 <= clip_y1) {
-        shape_y1 = clip_y1 - shape_y1 + 1;
+        long rows = clip_y1 - shape_y1 + 1;
         do {
-            byte* cur = save_buffer;
-            long sx = shape_x1;
-            if (shape_x1 < clip_x0) {
+            long xpos = shape_x1;
+            byte state;
+
+            if (xpos < clip_x0) {
                 state = 0;
                 do {
-                    command = *buffer++;
+                    byte command = *src++;
                     if (command & 1) {
                         command >>= 1;
                         if (command == 0) {
-                            command = *buffer++;
-                            sx += command;
-                            if (sx >= clip_x0) {
-                                if (sx > clip_x1)
+                            xpos += *src++;
+                            if (xpos >= clip_x0) {
+                                if (xpos > clip_x1) {
                                     state = 2;
-                                else {
+                                } else {
                                     state = 1;
-                                    cur += sx - clip_x0;
+                                    dst += xpos - clip_x0;
                                 }
                             }
                         } else {
-                            sx += command;
-                            if (sx >= clip_x0) {
-                                if (sx > clip_x1) {
+                            xpos += command;
+                            if (xpos >= clip_x0) {
+                                if (xpos > clip_x1) {
                                     state = 2;
-                                    byte* end = cur + (clip_x1 - clip_x0) + 1;
-                                    for (; cur < end; ++cur) {
-                                        *cur = table[*cur];
+                                    long count = clip_x1 - clip_x0 + 1;
+                                    byte* end = dst + count;
+                                    while (dst < end) {
+                                        byte value = *dst;
+                                        ++dst;
+                                        *(dst - 1) = table[value];
                                     }
                                 } else {
                                     state = 1;
-                                    byte* end = cur + (sx - clip_x0);
-                                    for (; cur < end; ++cur) {
-                                        *cur = table[*cur];
+                                    long count = xpos - clip_x0;
+                                    byte* end = dst + count;
+                                    while (dst < end) {
+                                        byte value = *dst;
+                                        ++dst;
+                                        *(dst - 1) = table[value];
                                     }
                                 }
                             }
-                            buffer += command;
+                            src += command;
                         }
                     } else {
                         command >>= 1;
-                        if (command == 0)
+                        if (command == 0) {
                             state = 3;
-                        else {
-                            sx += command;
-                            if (sx >= clip_x0) {
-                                if (sx > clip_x1) {
+                        } else {
+                            xpos += command;
+                            if (xpos >= clip_x0) {
+                                if (xpos > clip_x1) {
                                     state = 2;
-                                    byte* end = cur + (clip_x1 - clip_x0) + 1;
-                                    for (; cur < end; ++cur) {
-                                        *cur = table[*cur];
+                                    long count = clip_x1 - clip_x0 + 1;
+                                    byte* end = dst + count;
+                                    while (dst < end) {
+                                        byte value = *dst;
+                                        ++dst;
+                                        *(dst - 1) = table[value];
                                     }
                                 } else {
                                     state = 1;
-                                    byte* end = cur + (sx - clip_x0);
-                                    for (; cur < end; ++cur) {
-                                        *cur = table[*cur];
+                                    long count = xpos - clip_x0;
+                                    byte* end = dst + count;
+                                    while (dst < end) {
+                                        byte value = *dst;
+                                        ++dst;
+                                        *(dst - 1) = table[value];
                                     }
                                 }
                             }
-                            ++buffer;
+                            ++src;
                         }
                     }
                 } while (state == 0);
@@ -1201,76 +1209,86 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
 
             --state;
             while (state == 0) {
-                command = *buffer++;
+                byte command = *src++;
                 if (command & 1) {
                     command >>= 1;
                     if (command == 0) {
-                        command = *buffer++;
-                        sx += command;
-                        cur += command;
-                        if (sx > clip_x1)
+                        command = *src++;
+                        xpos += command;
+                        dst += command;
+                        if (xpos > clip_x1)
                             state = 1;
                     } else {
-                        sx += command;
-                        if (sx > clip_x1) {
+                        xpos += command;
+                        if (xpos > clip_x1) {
                             state = 1;
-                            byte* end = cur + command + clip_x1 - sx + 1;
-                            while (cur < end) {
-                                *cur = table[*cur];
-                                ++cur;
+                            long count = command + clip_x1 - xpos + 1;
+                            byte* end = dst + count;
+                            while (dst < end) {
+                                byte value = *dst;
+                                ++dst;
+                                *(dst - 1) = table[value];
                             }
                         } else {
-                            byte* end = cur + command;
-                            for (; cur < end; ++cur) {
-                                *cur = table[*cur];
+                            byte* end = dst + command;
+                            while (dst < end) {
+                                byte value = *dst;
+                                ++dst;
+                                *(dst - 1) = table[value];
                             }
                         }
-                        buffer += command;
+                        src += command;
                     }
                 } else {
                     command >>= 1;
-                    if (command == 0)
+                    if (command == 0) {
                         state = 3;
-                    else {
-                        sx += command;
-                        if (sx > clip_x1) {
+                    } else {
+                        xpos += command;
+                        if (xpos > clip_x1) {
                             state = 1;
-                            byte* end = cur + command + clip_x1 - sx + 1;
-                            while (cur < end) {
-                                *cur = table[*cur];
-                                ++cur;
+                            long count = command + clip_x1 - xpos + 1;
+                            byte* end = dst + count;
+                            while (dst < end) {
+                                byte value = *dst;
+                                ++dst;
+                                *(dst - 1) = table[value];
                             }
                         } else {
-                            byte* end = cur + command;
-                            for (; cur < end; ++cur) {
-                                *cur = table[*cur];
+                            byte* end = dst + command;
+                            while (dst < end) {
+                                byte value = *dst;
+                                ++dst;
+                                *(dst - 1) = table[value];
                             }
                         }
-                        ++buffer;
+                        ++src;
                     }
                 }
             }
 
             --state;
             while (state == 0) {
-                command = *buffer++;
+                byte command = *src++;
                 if (command & 1) {
                     command >>= 1;
-                    if (command != 0)
-                        buffer += command;
+                    if (command)
+                        src += command;
                     else
-                        ++buffer;
+                        ++src;
                 } else {
                     if ((command & 0xfe) == 0)
                         state = 2;
                     else
-                        ++buffer;
+                        ++src;
                 }
             }
 
-            save_buffer += width;
-        } while (--shape_y1 != 0);
+            save_buffer += pitch;
+            dst = save_buffer;
+        } while (--rows != 0);
     }
+
     return 1;
 }
 
