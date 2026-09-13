@@ -49,7 +49,7 @@
     "00538590": {"status": "matching", "symbol": "?get_tile_mask_num@RGE_View@@IAEHHHHHK@Z"},
     "00538710": {"status": "new_verified_logic", "symbol": "?draw_tile@RGE_View@@IAEHPAURGE_Tile@@EFFFFEHH@Z", "behavior_review": "logic_matching/00538710/review-20260913T051741Z-coord07/attempt-01"},
     "00538B80": {"status": "matching", "symbol": "?draw_terrain_shape@RGE_View@@IAEXHHPAVTShape@@HEEHH@Z"},
-    "00538D60": {"status": "scratch", "symbol": "?draw_terrain_obstruction_map@RGE_View@@IAEXHHPAVTShape@@HHH@Z"},
+    "00538D60": {"status": "new_verified_logic", "symbol": "?draw_terrain_obstruction_map@RGE_View@@IAEXHHPAVTShape@@HHH@Z", "behavior_review": "logic_matching/00538D60/coord-19-6eab0575e-00538D60-r01/attempt-01"},
     "00538E60": {"status": "matching", "symbol": "?Get_Cursor_Position@RGE_View@@QAEHAAUtagPOINT@@HH@Z"},
     "00538F00": {"status": "new_verified_logic", "symbol": "?Pick_Tile@RGE_View@@IAEHJJPAH0@Z", "behavior_review": "logic_matching/00538F00/review-01/attempt-01"},
     "00539030": {"status": "matching", "symbol": "?get_tile_bounding_coords@RGE_View@@IAEXHHAAH000@Z"},

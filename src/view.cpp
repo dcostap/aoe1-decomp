@@ -3291,37 +3291,38 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, unsign
 
 
 
-void RGE_View::draw_terrain_obstruction_map(
-    int x, int y, TShape* shape, int frame, int tile_x, int tile_y)
+void RGE_View::draw_terrain_obstruction_map(int x, int y, TShape* shape,
+                                             int frame, int col, int row)
 {
-    int outer;
-    int tile_x4 = tile_x * 4;
-    tile_y *= 4;
+    int tile_x4 = col * 4;
+    row *= 4;
 
     this->cur_render_area->CurSpanList = this->Terrain_Clip_Mask;
     shape->shape_draw(this->cur_render_area, x, y, frame, 0, 0);
 
-    TShape* obstruction_shape = rge_base_game->get_shape(0);
-    for (outer = 0; outer < 4; ++outer) {
-        int i = 0;
-        frame = tile_y + outer;
-        int x_offset = outer * 8;
-        int y_offset = outer * 4;
+    shape = rge_base_game->get_shape(0);
 
+    col = 0;
+    do {
+        int tile_x = 0;
+        int draw_x_offset = col * 8;
+        int draw_y_offset = col * 4;
         do {
-            int obstruction = pathSystem.obstruction(i + tile_x4, frame);
+            int obstruction =
+                pathSystem.obstruction(tile_x + tile_x4, col + row);
             if (obstruction > 0) {
-                obstruction_shape->shape_draw(this->cur_render_area,
-                    x + 2 + x_offset,
-                    y + 0x0D + y_offset,
+                shape->shape_draw(
+                    this->cur_render_area,
+                    x + 2 + draw_x_offset,
+                    y + 0x0d + draw_y_offset,
                     obstruction - 1, 0, 0);
             }
-            ++i;
-            x_offset += 8;
-            y_offset -= 4;
-        } while (i < 4);
-
-    }
+            ++tile_x;
+            draw_x_offset += 8;
+            draw_y_offset -= 4;
+        } while (tile_x < 4);
+        ++col;
+    } while (col < 4);
 }
 
 
