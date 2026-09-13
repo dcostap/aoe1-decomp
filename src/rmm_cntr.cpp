@@ -26,113 +26,150 @@ uchar RGE_RMM_Controller::generate()
     return RGE_Random_Map_Module::generate();
 }
 
-void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
-    long land_num)
+void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
+    long type, long number_of_players)
 {
-    // The land loop uses area as its anchor and advances 13 long values.
-    long* land = &info.land[0].area;
-    // Collision scans use x as their anchor and the same 13-long stride.
-    long* prior;
-    long radius;
+    long land_percent;
     long index;
-    uchar not_done;
-    long index2;
-    info.land_num = land_num;
+    long previous;
+    long x;
+    long y;
+    bool retry;
+
+    info.land_num = number_of_players;
+
     switch (type) {
     default:
         info.base_terrain = 0;
-        info.wall_1_avoidance_line = 0; info.wall_2_avoidance_line = 0;
-        radius = 0;
-        info.wall_3_avoidance_line = 0; info.wall_4_avoidance_line = 0;
-        info.wall_fade = 0; break;
+        info.wall_1_avoidance_line = 0;
+        info.wall_2_avoidance_line = 0;
+        info.wall_3_avoidance_line = 0;
+        info.wall_4_avoidance_line = 0;
+        info.wall_fade = 0;
+        land_percent = 0;
+        break;
     case 3:
         info.base_terrain = 1;
-        radius = 90;
-        info.wall_1_avoidance_line = 0; info.wall_2_avoidance_line = 0;
-        info.wall_3_avoidance_line = 0; info.wall_4_avoidance_line = 0;
-        info.wall_fade = 0; break;
+        info.wall_1_avoidance_line = 0;
+        info.wall_2_avoidance_line = 0;
+        info.wall_3_avoidance_line = 0;
+        info.wall_4_avoidance_line = 0;
+        info.wall_fade = 0;
+        land_percent = 90;
+        break;
     case 2:
         info.base_terrain = 1;
-        info.wall_1_avoidance_line = 4; info.wall_2_avoidance_line = 4;
-        radius = 70;
+        info.wall_1_avoidance_line = 4;
+        info.wall_2_avoidance_line = 4;
         info.wall_3_avoidance_line = this->map_width - 5;
         info.wall_4_avoidance_line = this->map_height - 5;
-        info.wall_fade = 34; break;
+        info.wall_fade = 34;
+        land_percent = 70;
+        break;
     case 1:
         info.base_terrain = 1;
-        info.wall_1_avoidance_line = 6; info.wall_2_avoidance_line = 6;
-        radius = 50;
+        info.wall_1_avoidance_line = 6;
+        info.wall_2_avoidance_line = 6;
         info.wall_3_avoidance_line = this->map_width - 7;
         info.wall_4_avoidance_line = this->map_height - 7;
-        info.wall_fade = 20; break;
+        info.wall_fade = 20;
+        land_percent = 50;
+        break;
     case 0:
         info.base_terrain = 1;
-        info.wall_1_avoidance_line = 8; info.wall_2_avoidance_line = 8;
-        radius = 30;
+        info.wall_1_avoidance_line = 8;
+        info.wall_2_avoidance_line = 8;
         info.wall_3_avoidance_line = this->map_width - 9;
         info.wall_4_avoidance_line = this->map_height - 9;
-        info.wall_fade = 20; break;
+        info.wall_fade = 20;
+        land_percent = 30;
     }
-    long land_tile_num = radius * this->map_width * this->map_height / 100;
-    float radius2 = (float)(this->map_width - 16) / sqrt((float)land_num) * 0.8;
-    float bound_square = radius2 * radius2;
-    long min_x = (long)(this->map_width / 2 - radius2 * 0.9);
-    long min_y = (long)(this->map_height / 2 - radius2 * 0.9);
-    long max_x = (long)(this->map_width / 2 + radius2 * 0.9);
-    long max_y = (long)(this->map_height / 2 + radius2 * 0.9);
-    if (min_x <= 8) min_x = 9;
-    if (min_y <= 8) min_y = 9;
-    if (max_x >= this->map_width - 9) max_x = this->map_width - 10;
-    if (max_y >= this->map_height - 9) max_y = this->map_height - 10;
+
+    long land_tile_num =
+        land_percent * this->map_height * this->map_width / 100;
+    float bound =
+        (float)(this->map_width - 16) / sqrt((float)number_of_players) * .8;
+    float bound_square = bound * bound;
+    long minimum_x = (long)(this->map_width / 2 - bound * .9);
+    long minimum_y = (long)(this->map_height / 2 - bound * .9);
+    long maximum_x = (long)(this->map_width / 2 - bound * -.9);
+    long maximum_y = (long)(this->map_height / 2 - bound * -.9);
+
+    if (minimum_x <= 8)
+        minimum_x = 9;
+    if (minimum_y <= 8)
+        minimum_y = 9;
+    if (maximum_x >= this->map_width - 9)
+        maximum_x = this->map_width - 10;
+    if (maximum_y >= this->map_height - 9)
+        maximum_y = this->map_height - 10;
+
     index = 0;
-    if (0 < land_num) {
+    if (0 < number_of_players) {
         do {
             switch (type) {
             case 2:
             case 3:
             case 4:
-                land[-4] = 0; *land = 3; land[-1] = 5;
-                *(uchar*)(land + 1) = 0; break;
+                info.land[index].terrain_type = 0;
+                info.land[index].area = 3;
+                info.land[index].base_size = 5;
+                info.land[index].zone = 0;
+                break;
             case 1:
-                land[-4] = 0; *land = 4;
-                goto set_land_defaults;
+                info.land[index].terrain_type = 0;
+                info.land[index].area = 4;
+                info.land[index].base_size = 5;
+                info.land[index].zone = (uchar)index;
+                break;
             case 0:
-                land[-4] = 0; *land = 7;
-set_land_defaults:
-                land[-1] = 5; *(uchar*)(land + 1) = (uchar)index; break;
+                info.land[index].terrain_type = 0;
+                info.land[index].area = 7;
+                info.land[index].base_size = 5;
+                info.land[index].zone = (uchar)index;
             }
-            long x;
-            long y;
+
             do {
-                not_done = 0;
-                x = debug_rand(s_rmm_cntr_path, 0xd1) * (this->map_width - 16) / 0x7fff + 8;
-                y = debug_rand(s_rmm_cntr_path, 0xd2) * (this->map_height - 16) / 0x7fff + 8;
-                if (x > min_x && x < max_x && y > min_y && y < max_y) not_done = 1;
-                else {
-                    index2 = 0;
-                    prior = &info.land[0].x;
+                retry = false;
+                x = debug_rand(s_rmm_cntr_path, 0xD1) *
+                    (this->map_width - 16) / 0x7FFF + 8;
+                y = debug_rand(s_rmm_cntr_path, 0xD2) *
+                    (this->map_height - 16) / 0x7FFF + 8;
+
+                if (x > minimum_x && x < maximum_x &&
+                    y > minimum_y && y < maximum_y) {
+                    retry = true;
+                } else {
+                    previous = 0;
                     if (0 < index) {
-                    do {
-                        long dx = x - prior[0];
-                        long dy = y - prior[1];
-                        if (dx < 0) dx = -dx;
-                        if (dy < 0) dy = -dy;
-                        if ((float)(dx * dx + dy * dy) <= bound_square) {
-                            if (!not_done && index2 == index - 1) { prior[1] = y; prior[0] = x; }
-                            not_done = 1;
-                        }
-                        prior += 13;
-                        ++index2;
-                    } while (index2 < index);
+                        do {
+                            long delta_x = x - info.land[previous].x;
+                            if (delta_x < 0)
+                                delta_x = -delta_x;
+                            long delta_y = y - info.land[previous].y;
+                            if (delta_y < 0)
+                                delta_y = -delta_y;
+                            if ((float)(delta_x * delta_x +
+                                delta_y * delta_y) <= bound_square) {
+                                if (!retry && previous == index - 1) {
+                                    info.land[previous].y = y;
+                                    info.land[previous].x = x;
+                                }
+                                retry = true;
+                            }
+                            ++previous;
+                        } while (previous < index);
                     }
                 }
-            } while (not_done);
-            land[-3] = x; land[-2] = y;
-            ((RGE_Land_Info_Line*)(land - 5))->land_size = land_tile_num / info.land_num;
+            } while (retry);
+
+            info.land[index].x = x;
+            info.land[index].y = y;
+            info.land[index].land_size = land_tile_num / info.land_num;
             ++index;
-            land += 13;
         } while (index < info.land_num);
     }
+
     new RGE_RMM_Land_Generator(this->map, this, &info);
 }
 
