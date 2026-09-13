@@ -403,149 +403,148 @@ byte TShape::shape_check(long x, long y, long frame)
 byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                         byte mode, byte* table)
 {
-    byte ret_num;
     long shape_y1;
-    long shape_x1;
+    byte ret_num = 0;
+    long clip_y0;
     tagRECT rect;
-    ret_num = 0;
 
     if (shape_num >= 0 &&
         this->Check_shape(shape_num, (char*)"RGL_shape_draw") == 0) {
         if (this->FShape != 0) {
             if (SDI_Capture_Info != 0) {
-                Shape_Info* info = (Shape_Info*)((char*)this->FShape +
-                                                 ((shape_num + 1) << 5));
-                SDI_List->AddDrawNode(this->FShape, info, SDI_Draw_Line,
-                                      x - info->Hotspot_X,
-                                      y - info->Hotspot_Y, fog_next_shape,
-                                      table, ASMGet_Color_Xform(),
-                                      SDI_Draw_Level, SDI_Object_ID);
+                Shape_Info* info = (Shape_Info*)(this->FShape + shape_num + 1);
+                SDI_List->AddDrawNode(
+                    this->FShape, info, SDI_Draw_Line,
+                    x - info->Hotspot_X, y - info->Hotspot_Y,
+                    fog_next_shape, table, ASMGet_Color_Xform(),
+                    SDI_Draw_Level, SDI_Object_ID);
                 return 1;
             }
 
-            TSpan_List_Manager* cur_span_list = td->CurSpanList;
-            int line_count;
-            if (td->SpanList->Num_Lines < cur_span_list->Num_Lines)
-                line_count = td->SpanList->Num_Lines - 1;
+            TSpan_List_Manager* span_list = td->SpanList;
+            int span_lines = span_list->Num_Lines;
+            TSpan_List_Manager* current = td->CurSpanList;
+            int current_lines = current->Num_Lines;
+            int end_line;
+            if (span_lines < current_lines)
+                end_line = span_lines - 1;
             else
-                line_count = cur_span_list->Num_Lines - 1;
-            ASMSet_Surface_Info(td->CurDisplayOffsets,
-                                cur_span_list->Line_Head_Ptrs,
-                                cur_span_list->Line_Tail_Ptrs,
-                                0, 0, cur_span_list->Max_Span_Px,
-                                line_count);
+                end_line = current_lines - 1;
+            ASMSet_Surface_Info(
+                td->CurDisplayOffsets, current->Line_Head_Ptrs,
+                current->Line_Tail_Ptrs, 0, 0, current->Max_Span_Px,
+                end_line);
             if (table != 0)
                 ASMSet_Xlate_Table(table);
 
-            Shape_Info* info = (Shape_Info*)((char*)this->FShape +
-                                             ((shape_num + 1) << 5));
-            ASMDraw_Sprite(this->FShape, x - info->Hotspot_X,
-                           y - info->Hotspot_Y, info->Width, info->Height,
-                           info->Shape_Data_Offsets,
-                           info->Shape_Outline_Offset, fog_next_shape);
-            ++ASM_Fast_Count;
+            Shape_Info* info = (Shape_Info*)(this->FShape + shape_num + 1);
+            ASMDraw_Sprite(
+                this->FShape, x - info->Hotspot_X, y - info->Hotspot_Y,
+                info->Width, info->Height, info->Shape_Data_Offsets,
+                info->Shape_Outline_Offset, fog_next_shape);
+            ASM_Fast_Count++;
             return 1;
-        } else {
-            rect = td->ClipRect;
-            if (this->shape != 0) {
-                Shape_Header* frame =
-                    (Shape_Header*)(this->shape +
-                                    this->offsets[shape_num].shape);
-                this->shape_header = frame;
+        }
 
-                long x0 = frame->xmin + x;
-                long y0 = frame->ymin + y;
-                shape_x1 = frame->xmax + x;
-                shape_y1 = frame->ymax + y;
-                long original_x0 = x0;
-                long original_y0 = y0;
-                long original_x1 = shape_x1;
-                long original_y1 = shape_y1;
+        rect = td->ClipRect;
+        if (this->shape != 0) {
+            this->shape_header =
+                (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
 
-                x = x0;
-                y = y0;
-                if (x < rect.left)
-                    x = rect.left;
-                if (y < rect.top)
-                    y = rect.top;
-                if (shape_x1 > rect.right)
-                    shape_x1 = rect.right;
-                if (shape_y1 > rect.bottom)
-                    shape_y1 = rect.bottom;
-                if (x < 0)
-                    x = 0;
-                if (y < 0)
-                    y = 0;
-                if (shape_x1 >= td->Width)
-                    shape_x1 = td->Width - 1;
-                if (shape_y1 >= td->Height)
-                    shape_y1 = td->Height - 1;
+            long shape_x0 = x + shape_header->xmin;
+            long raw_y0 = y + shape_header->ymin;
+            clip_y0 = raw_y0;
+            long shape_x1 = x + shape_header->xmax;
+            shape_y1 = y + shape_header->ymax;
+            long clipped_x1 = shape_x1;
+            long clipped_y1 = shape_y1;
+            x = shape_x0;
+            y = clipped_y1;
 
-                if (x <= shape_x1 && y <= shape_y1) {
-                    if (x == x0 && y == y0 &&
-                        shape_x1 == original_x1 && shape_y1 == original_y1) {
-                        switch ((unsigned char)mode) {
-                        case 2:
-                            if (table == 0) {
-                                long draw_x = original_x0;
-                                long draw_y = original_y0;
-                                ret_num = this->shape_draw_unclipped(
-                                    td, draw_x, draw_y, shape_num);
-                            } else {
-                                ret_num = this->shape_shadow_unclipped(
-                                    td, original_x0, original_y0, table);
-                            }
-                            break;
-                        case 1:
-                            if (table == 0) {
-                                long draw_x = original_x0;
-                                long draw_y = original_y0;
-                                ret_num = this->shape_draw_unclipped(
-                                    td, draw_x, draw_y, shape_num);
-                            } else {
-                                ret_num = this->shape_color_trans_unclipped(
-                                    td, original_x0, original_y0,
-                                    shape_num, table);
-                            }
-                            break;
-                        case 0: {
-                            ret_num = this->shape_draw_unclipped(
-                                td, original_x0, original_y0,
-                                shape_num);
-                            break;
-                        }
-                        default:
-                            break;
-                        }
-                        return ret_num;
-                    }
+            if (x < rect.left)
+                x = rect.left;
+            if (clip_y0 < rect.top)
+                clip_y0 = rect.top;
+            if (clipped_x1 > rect.right)
+                clipped_x1 = rect.right;
+            if (y > rect.bottom)
+                y = rect.bottom;
+            if (x < 0)
+                x = 0;
+            if (clip_y0 < 0)
+                clip_y0 = 0;
+            if (clipped_x1 >= td->Width)
+                clipped_x1 = td->Width - 1;
+            if (y >= td->Height)
+                y = td->Height - 1;
 
+            if (x <= clipped_x1 && clip_y0 <= y) {
+                if (x != shape_x0 || clip_y0 != raw_y0 ||
+                    clipped_x1 != shape_x1 || y != shape_y1) {
                     switch ((unsigned char)mode) {
                     case 2:
-                        if (table != 0)
-                            return this->shape_shadow_clipped(
-                                td, original_x0, original_y0, x, y,
-                                shape_x1, shape_y1, table);
+                        if (table != 0) {
+                            ret_num = this->shape_shadow_clipped(
+                                td, shape_x0, raw_y0, x, clip_y0,
+                                clipped_x1, y, table);
+                        } else {
+                            ret_num = this->shape_draw_clipped(
+                                td, shape_x0, raw_y0, x, clip_y0,
+                                clipped_x1, y);
+                        }
                         break;
                     case 1:
-                        if (table != 0)
-                            return this->shape_color_trans_clipped(
-                                td, original_x0, original_y0, shape_num,
-                                x, y, shape_x1, shape_y1, table);
+                        if (table != 0) {
+                            ret_num = this->shape_color_trans_clipped(
+                                td, shape_x0, raw_y0, shape_num, x,
+                                clip_y0, clipped_x1, y, table);
+                        } else {
+                            ret_num = this->shape_draw_clipped(
+                                td, shape_x0, raw_y0, x, clip_y0,
+                                clipped_x1, y);
+                        }
                         break;
                     case 0:
+                        ret_num = this->shape_draw_clipped(
+                            td, shape_x0, raw_y0, x, clip_y0,
+                            clipped_x1, y);
                         break;
                     default:
-                        return ret_num;
+                        break;
                     }
-                    return this->shape_draw_clipped(
-                        td, original_x0, original_y0, x, y, shape_x1,
-                        shape_y1);
+                    return ret_num;
                 }
+
+                switch ((unsigned char)mode) {
+                case 2:
+                    if (table == 0) {
+                        ret_num = this->shape_draw_unclipped(
+                            td, shape_x0, raw_y0, shape_num);
+                    } else {
+                        ret_num = this->shape_shadow_unclipped(
+                            td, shape_x0, raw_y0, table);
+                    }
+                    break;
+                case 1:
+                    if (table == 0) {
+                        ret_num = this->shape_draw_unclipped(
+                            td, shape_x0, raw_y0, shape_num);
+                    } else {
+                        ret_num = this->shape_color_trans_unclipped(
+                            td, shape_x0, raw_y0, shape_num, table);
+                    }
+                    break;
+                case 0:
+                    ret_num = this->shape_draw_unclipped(
+                        td, shape_x0, raw_y0, shape_num);
+                    break;
+                default:
+                    break;
+                }
+                return ret_num;
             }
         }
     }
-
     return ret_num;
 }
 

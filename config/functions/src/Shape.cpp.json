@@ -15,7 +15,7 @@
     "004B9040": {"status": "matching", "symbol": "?shape_count@TShape@@QAEJXZ"},
     "004B9070": {"status": "matching", "symbol": "?shape_minmax@TShape@@QAEEAAJ000J@Z"},
     "004B9140": {"status": "new_verified_logic", "symbol": "?shape_check@TShape@@QAEEJJJ@Z", "behavior_review": "logic_matching/004B9140/review-01/attempt-01"},
-    "004B9440": {"status": "scratch", "symbol": "?shape_draw@TShape@@QAEEPAVTDrawArea@@JJJEPAE@Z"},
+    "004B9440": {"status": "new_verified_logic", "symbol": "?shape_draw@TShape@@QAEEPAVTDrawArea@@JJJEPAE@Z", "behavior_review": "logic_matching/004B9440/coord-01-review-01/attempt-01"},
     "004B97F0": {"status": "matching", "symbol": "?shape_draw_unclipped@TShape@@AAEEPAVTDrawArea@@JJJ@Z"},
     "004B98E0": {"status": "accepted_drift", "symbol": "?shape_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"},
     "004B99F0": {"status": "accepted_drift", "symbol": "?shape_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
