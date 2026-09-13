@@ -147,6 +147,66 @@ class NewVerifiedLogicStatusTests(VerifiedLogicStatusTests):
         self.assertIn(self.status, common._FUNCTION_STATUSES)
         self.assertIn("verified_logic", common._FUNCTION_STATUSES)
 
+    def test_dual_behavior_review_requires_two_valid_records(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            reviews = []
+            for name in ("review-a", "review-b"):
+                review = root / "logic_matching" / "00400000" / name / "attempt-01"
+                review.mkdir(parents=True)
+                (review / "attempt.json").write_text(
+                    '{"state":"complete","mode":"review","verdict":"PERFECT"}\n',
+                    encoding="utf-8",
+                )
+                (review / "commits.patch").write_text("review commit\n", encoding="utf-8")
+                reviews.append(review.relative_to(root).as_posix())
+
+            with patch.object(status_core, "REPO_ROOT", root):
+                paths = status_core.behavior_review_paths(
+                    {"behavior_review": reviews}, "00400000"
+                )
+
+        self.assertEqual(len(paths), 2)
+
+    def test_registry_loader_preserves_behavior_review(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            registry = root / "config" / "functions" / "src" / "demo.cpp.json"
+            registry.parent.mkdir(parents=True)
+            registry.write_text(
+                """{
+  "schema": 1,
+  "pdb_source_path": "demo.cpp",
+  "build": {"flags": "default"},
+  "functions": {
+    "00400000": {
+      "status": "new_verified_logic",
+      "symbol": "?demo@@YAHXZ",
+      "behavior_review": ["logic_matching/00400000/review-a/attempt-01", "logic_matching/00400000/review-b/attempt-01"]
+    }
+  }
+}\n""",
+                encoding="utf-8",
+            )
+            common.load_function_modules.cache_clear()
+            try:
+                with (
+                    patch.object(common, "REPO_ROOT", root),
+                    patch.object(common, "FUNCTIONS_CONFIG_DIR", root / "config" / "functions"),
+                    patch.object(common, "FLAGS_DIR", root / "config" / "flags"),
+                ):
+                    modules = common.load_function_modules()
+            finally:
+                common.load_function_modules.cache_clear()
+
+        self.assertEqual(
+            modules[0]["functions"]["00400000"]["behavior_review"],
+            [
+                "logic_matching/00400000/review-a/attempt-01",
+                "logic_matching/00400000/review-b/attempt-01",
+            ],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

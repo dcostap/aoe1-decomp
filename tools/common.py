@@ -430,7 +430,7 @@ def load_function_modules() -> list[dict[str, object]]:
                 "flags_path": flags_path.relative_to(REPO_ROOT).as_posix(),
             }
 
-        functions: dict[str, dict[str, str]] = {}
+        functions: dict[str, dict[str, object]] = {}
         for raw_va, raw_entry in raw_functions.items():
             va = str(raw_va).upper()
             if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
@@ -462,6 +462,20 @@ def load_function_modules() -> list[dict[str, object]]:
             functions[va] = {"status": status}
             if symbol:
                 functions[va]["symbol"] = symbol
+            behavior_review = raw_entry.get("behavior_review")
+            if behavior_review is not None:
+                if isinstance(behavior_review, str):
+                    if not behavior_review.strip():
+                        raise ValueError(f"{label}: {va} has an empty behavior_review")
+                elif isinstance(behavior_review, list):
+                    if not behavior_review or not all(
+                        isinstance(value, str) and value.strip()
+                        for value in behavior_review
+                    ):
+                        raise ValueError(f"{label}: {va} has an invalid behavior_review list")
+                else:
+                    raise ValueError(f"{label}: {va} has an invalid behavior_review")
+                functions[va]["behavior_review"] = behavior_review
             if emission_source:
                 if not symbol:
                     raise ValueError(f"{label}: emitted function {va} needs a symbol")

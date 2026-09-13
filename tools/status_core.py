@@ -215,27 +215,44 @@ def _source_path_for_row(row: dict[str, str]) -> Path | None:
     return REPO_ROOT / raw_paths[0]
 
 
-def behavior_review_path(entry: dict[str, object] | None, va: str) -> Path | None:
+def behavior_review_paths(entry: dict[str, object] | None, va: str) -> list[Path]:
     if entry is None:
-        return None
-    raw = str(entry.get("behavior_review") or "").replace("\\", "/")
-    if not raw or raw.startswith("/") or ":" in raw or ".." in Path(raw).parts:
-        return None
-    path = REPO_ROOT / raw
-    if not path.resolve().is_relative_to(REPO_ROOT.resolve()):
-        return None
-    metadata = path / "attempt.json"
-    commits = path / "commits.patch"
-    try:
-        record = json.loads(metadata.read_text(encoding="utf-8"))
-    except (OSError, ValueError, json.JSONDecodeError):
-        return None
+        return []
+    raw_value = entry.get("behavior_review")
+    raw_paths = raw_value if isinstance(raw_value, list) else [raw_value]
+    if not raw_paths or any(not isinstance(raw, str) for raw in raw_paths):
+        return []
+
     expected_root = (REPO_ROOT / "logic_matching" / va.upper()).resolve()
-    if (record.get("state") == "complete" and record.get("mode") == "review"
-            and record.get("verdict") == "PERFECT" and commits.is_file()
-            and path.resolve().is_relative_to(expected_root)):
-        return path
-    return None
+    paths: list[Path] = []
+    for raw_value in raw_paths:
+        raw = raw_value.replace("\\", "/")
+        if not raw or raw.startswith("/") or ":" in raw or ".." in Path(raw).parts:
+            return []
+        path = REPO_ROOT / raw
+        if not path.resolve().is_relative_to(REPO_ROOT.resolve()):
+            return []
+        metadata = path / "attempt.json"
+        commits = path / "commits.patch"
+        try:
+            record = json.loads(metadata.read_text(encoding="utf-8"))
+        except (OSError, ValueError, json.JSONDecodeError):
+            return []
+        if not (
+            record.get("state") == "complete"
+            and record.get("mode") == "review"
+            and record.get("verdict") == "PERFECT"
+            and commits.is_file()
+            and path.resolve().is_relative_to(expected_root)
+        ):
+            return []
+        paths.append(path)
+    return paths
+
+
+def behavior_review_path(entry: dict[str, object] | None, va: str) -> Path | None:
+    paths = behavior_review_paths(entry, va)
+    return paths[0] if paths else None
 
 
 def enrich_status_rows(
