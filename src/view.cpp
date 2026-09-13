@@ -1993,393 +1993,396 @@ long RGE_View::view_function(unsigned char mode, unsigned char parm,
 extern const char s_C__msdev_work_age1_x1_view_cpp[];
 extern char s_view__view_function_terrain[];
 
-long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
-    RGE_Tile* tile;
-    short terrain_override;
-    Tile_FogEdge_Table* edge_table;
-    long screen_x;
-    unsigned long mask;
-    unsigned char reset_all_cyclic;
-    unsigned char terrain;
-    unsigned long MapVis;
-    unsigned char draw_as;
-    long screen_y;
-    long row;
-    int facet;
-    long scan;
-    long start_row;
-    long black_mask_num;
-    long screen_bottom;
-    long normal_draw;
-    long fog_mask_num;
-    VSpanMiniList* black_list;
-    long screen_right;
-    long fog_draw;
-    int clip_to;
-    long map_width;
-    long col;
-    long map_height;
-    Tile_BlackEdge_Table* black_edges;
+long RGE_View::view_function_terrain(unsigned char mode, tagRECT offset_rect)
+{
+    int start_col;
+    int start_row;
+    int cols_to_scan;
+    int rows_to_scan;
+    int map_width;
+    int map_height;
+    unsigned long explored_mask;
+    unsigned long visible_mask;
     int full_visibility;
-    unsigned long TileVisibleMask;
-    unsigned long TileExploredMask;
-    VSpanMiniList* fog_list;
-    long col_num;
-    long inner;
-    VSpanMiniList* normal_list;
-    long cols_2_scan;
-    unsigned long TileFoggedMask;
-    unsigned long row_index;
-    long rows_2_scan;
-    long terrain_index;
-    long gm;
-    Ov_Sprite_Draw_Rec* sprite;
-    Ov_Sprite_Draw_Rec* next_sprite;
-    unsigned char remove_sprite;
-    DClipInfo_List* list;
-    DClipInfo_List* future;
-    DClipInfo_List* prior;
-    DClipInfo_List* tmp;
-    DClipInfo_Node* node;
-    DClipInfo_Node* tail;
-    DClipInfo_Node* added;
-    DClipInfo_Node* future_node;
-    DClipInfo_Node* prior_node;
-    TSpan_List_Manager* clip;
-    Shape_Info* shape;
-    PanelNode* panel_node;
-    TPanel* panel;
-    long level;
-    int shadowing;
-    unsigned long shadow_flags;
-    unsigned long shadow_value;
-    long color;
-    long row_base;
-    unsigned char row_color;
-    long palette_color;
-    long x;
-    POINT pt;
-    RECT pr;
-    char text[128];
-    int text_id;
+    int current_region;
+    int row_num;
 
     if (this->DispSel_List_Size > 0) {
         this->update_display_selected_objects();
     }
 
-    col_num = this->start_map_col;
+    start_col = this->start_map_col;
     start_row = this->start_map_row;
-    cols_2_scan = this->max_col_num + 5;
-    rows_2_scan = this->max_row_num * 2 + 12;
+    cols_to_scan = this->max_col_num + 5;
+    rows_to_scan = this->max_row_num * 2 + 12;
     map_width = this->map->map_width;
     map_height = this->map->map_height;
     this->function_mode = mode;
 
-    for (terrain_index = 0; terrain_index < this->map->num_terrain; ++terrain_index) {
-        this->map->terrain_types[terrain_index].drawn = 0;
+    if (this->map->num_terrain > 0) {
+        int terrain_num = 0;
+        do {
+            this->map->terrain_types[terrain_num].drawn = 0;
+            terrain_num++;
+        } while (terrain_num < this->map->num_terrain);
     }
 
-    TileExploredMask = this->player->mutualExploredMask;
-    TileFoggedMask = this->player->mutualVisibleMask;
+    explored_mask = this->player->mutualExploredMask;
+    visible_mask = this->player->mutualVisibleMask;
     SDI_List = this->futur_objs;
     this->futur_objs->ReclaimAllNodes();
 
-    MapVis = (unsigned long)-1;
-    if (this->player->visible == 0 ||
-        (TileVisibleMask = 0, this->map->map_visible_flag != 0)) {
-        TileVisibleMask = 1;
+    current_region = -1;
+    if (this->player->visible == 0 || this->map->map_visible_flag != 0) {
+        full_visibility = 1;
+    } else {
+        full_visibility = 0;
     }
 
-    for (scan = 0; scan < rows_2_scan; ++scan) {
-        col = col_num;
-        row = start_row;
-        if (((scan & 3) == 3) && MouseSystem != 0) {
-            MouseSystem->Poll();
-        }
-        row_index = scan & 1;
-        if (row_index == 1 && this->Queued_Blits != 0) {
-            this->ProcessQueuedBlit(0);
-        }
+    row_num = 0;
+    if (rows_to_scan > 0) {
+        do {
+            int map_col = start_col;
+            int map_row = start_row;
+            int col_num = 0;
+            int odd_row;
 
-        for (inner = 0; inner < cols_2_scan; ++inner) {
-            if (row >= 0 && col >= 0) {
-                if (row >= map_height || col >= map_width) {
-                    inner = cols_2_scan;
-                } else {
-                    tile = &this->map->map_row_offset[row][col];
-                    screen_x = tile->screen_xpos - this->map_scr_x_offset;
-                    screen_y = tile->screen_ypos - this->map_scr_y_offset;
-                    screen_right = screen_x + this->tile_wid;
-                    screen_bottom =
-                        screen_y + this->map->tilesizes[tile->tile_type].height;
-                    mask = unified_map_offsets[row][col];
-
-                    if ((mask & TileFoggedMask) != 0) {
-                        draw_as = 0x0f;
-                    } else if ((mask & TileExploredMask) != 0 ||
-                               TileVisibleMask != 0) {
-                        draw_as = this->map->fog_flag ? 0x80 : 0x0f;
-                    } else {
-                        draw_as = 0;
-                        tile->last_drawn_as = 0;
-                        goto TileOffScreen;
-                    }
-
-                    if (screen_x <= this->render_rect.right &&
-                        screen_y <= this->render_rect.bottom &&
-                        screen_right > this->render_rect.left &&
-                        screen_bottom > this->render_rect.top) {
-                        terrain = tile->terrain_type;
-                        if (this->calc_draw_count != 0 &&
-                            terrain < this->map->num_terrain) {
-                            this->map->terrain_types[terrain].drawn++;
-                        }
-
-                        fog_mask_num = -1;
-                        black_mask_num = -1;
-                        full_visibility = 0;
-                        clip_to = 0;
-                        if (this->render_terrain_mode != 0 &&
-                            tile->last_drawn_as == draw_as) {
-                            if (draw_as == 0x0f) {
-                                if (this->map->fog_flag == 0) {
-                                    fog_mask_num = 0;
-                                } else {
-                                    fog_mask_num = this->get_tile_mask_num(
-                                        col, row, map_width, map_height,
-                                        TileFoggedMask);
-                                }
-                                if (tile->last_drawn_shape != fog_mask_num) {
-                                    goto TileOffScreen;
-                                }
-                            }
-                            if (draw_as == 0x0f || draw_as == 0x80) {
-                                if (TileVisibleMask == 0) {
-                                    black_mask_num = this->get_tile_mask_num(
-                                        col, row, map_width, map_height,
-                                        TileExploredMask);
-                                } else {
-                                    black_mask_num = 0;
-                                }
-                                if (tile->last_drawn_shape2 != black_mask_num) {
-                                    goto TileOffScreen;
-                                }
-                            }
-                            if (this->Limited_Render_Rect == 0) {
-                                goto TileOffScreen;
-                            }
-                            if (this->Use_Rect2 != 0 &&
-                                (this->Render_Rect2.right < screen_x ||
-                                 screen_right < this->Render_Rect2.left ||
-                                 this->Render_Rect2.bottom < screen_y ||
-                                 (full_visibility = 1,
-                                  screen_bottom < this->Render_Rect2.top))) {
-                                full_visibility = 0;
-                            }
-                            if (this->Render_Rect1.right < screen_x ||
-                                screen_right < this->Render_Rect1.left ||
-                                this->Render_Rect1.bottom < screen_y ||
-                                screen_bottom < this->Render_Rect1.top) {
-                                if (full_visibility == 0) {
-                                    goto TileOffScreen;
-                                }
-                                full_visibility = 0;
-                                clip_to = 2;
-                            } else {
-                                clip_to = 1;
-                            }
-                        }
-
-                        edge_table = this->Tile_Edge_Tables[tile->tile_type];
-                        black_edges = this->Black_Edge_Tables[tile->tile_type];
-                        if (this->map->fog_flag == 0) {
-                            fog_mask_num = 0;
-                        }
-                        if (TileVisibleMask != 0) {
-                            black_mask_num = 0;
-                        }
-                        if (fog_mask_num == -1) {
-                            if (draw_as == 0x0f) {
-                                fog_mask_num = this->get_tile_mask_num(
-                                    col, row, map_width, map_height,
-                                    TileFoggedMask);
-                            } else {
-                                fog_mask_num = 0;
-                            }
-                        }
-                        if (black_mask_num == -1) {
-                            if (draw_as != 0) {
-                                black_mask_num = this->get_tile_mask_num(
-                                    col, row, map_width, map_height,
-                                    TileExploredMask);
-                            } else {
-                                black_mask_num = 0;
-                            }
-                        }
-                        normal_list = edge_table[fog_mask_num].normal_draw;
-                        fog_list = edge_table[fog_mask_num].fog_draw;
-                        black_list = black_edges[black_mask_num].black_UNdraw;
-                        if (draw_as == 0x80) {
-                            fog_list = edge_table[0].normal_draw;
-                            normal_draw = 0;
-                            fog_draw = 1;
-                        } else {
-                            normal_draw = (normal_list != 0);
-                            fog_draw = (fog_list != 0);
-                        }
-                        if (black_mask_num < 1 || black_list == 0) {
-                            black_list = 0;
-                        }
-                        if (clip_to != (int)MapVis) {
-                            if (clip_to == 0) {
-                                this->Terrain_Clip_Mask->SetSpanRegions(
-                                    this->render_rect.left,
-                                    this->render_rect.top,
-                                    this->render_rect.right,
-                                    this->render_rect.bottom);
-                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(
-                                    this->render_rect.left,
-                                    this->render_rect.top,
-                                    this->render_rect.right,
-                                    this->render_rect.bottom);
-                            }
-                            if (clip_to == 1) {
-                                this->Terrain_Clip_Mask->SetSpanRegions(
-                                    this->Render_Rect1.left,
-                                    this->Render_Rect1.top,
-                                    this->Render_Rect1.right,
-                                    this->Render_Rect1.bottom);
-                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(
-                                    this->Render_Rect1.left,
-                                    this->Render_Rect1.top,
-                                    this->Render_Rect1.right,
-                                    this->Render_Rect1.bottom);
-                            }
-                            MapVis = clip_to;
-                            if (clip_to == 2) {
-                                this->Terrain_Clip_Mask->SetSpanRegions(
-                                    this->Render_Rect2.left,
-                                    this->Render_Rect2.top,
-                                    this->Render_Rect2.right,
-                                    this->Render_Rect2.bottom);
-                                this->Terrain_Fog_Clip_Mask->SetSpanRegions(
-                                    this->Render_Rect2.left,
-                                    this->Render_Rect2.top,
-                                    this->Render_Rect2.right,
-                                    this->Render_Rect2.bottom);
-                                MapVis = clip_to;
-                            }
-                        }
-                        if (normal_draw) {
-                            this->Terrain_Clip_Mask->AddMiniList(
-                                normal_list, screen_x, screen_y);
-                        }
-                        if (fog_draw) {
-                            this->Terrain_Fog_Clip_Mask->AddMiniList(
-                                fog_list, screen_x, screen_y);
-                        }
-                        if (black_list != 0) {
-                            if (normal_draw) {
-                                this->Terrain_Clip_Mask->SubtractMiniList(
-                                    black_list, screen_x, screen_y);
-                            }
-                            if (fog_draw) {
-                                this->Terrain_Fog_Clip_Mask->SubtractMiniList(
-                                    black_list, screen_x, screen_y);
-                            }
-                        }
-                        if (full_visibility != 0) {
-                            this->Terrain_Clip_Mask->SetSpanRegions(
-                                this->Render_Rect2.left, this->Render_Rect2.top,
-                                this->Render_Rect2.right,
-                                this->Render_Rect2.bottom);
-                            this->Terrain_Fog_Clip_Mask->SetSpanRegions(
-                                this->Render_Rect2.left, this->Render_Rect2.top,
-                                this->Render_Rect2.right,
-                                this->Render_Rect2.bottom);
-                            MapVis = 2;
-                            if (normal_draw) {
-                                this->Terrain_Clip_Mask->AddMiniList(
-                                    normal_list, screen_x, screen_y);
-                            }
-                            if (fog_draw) {
-                                this->Terrain_Fog_Clip_Mask->AddMiniList(
-                                    fog_list, screen_x, screen_y);
-                            }
-                            if (black_list != 0) {
-                                if (normal_draw) {
-                                    this->Terrain_Clip_Mask->SubtractMiniList(
-                                        black_list, screen_x, screen_y);
-                                }
-                                if (fog_draw) {
-                                    this->Terrain_Fog_Clip_Mask
-                                        ->SubtractMiniList(black_list, screen_x,
-                                                           screen_y);
-                                }
-                            }
-                        }
-                        {
-                            terrain_override = this->map->terrain_types[terrain]
-                                                   .terrain_to_draw;
-                            if (terrain_override != -1) {
-                                terrain = (unsigned char)terrain_override;
-                            }
-                        }
-                        tile->last_drawn_shape2 = (unsigned char)black_mask_num;
-                        tile->last_drawn_shape = (unsigned char)fog_mask_num;
-                        tile->last_drawn_as = draw_as;
-                        tile->draw_as = draw_as;
-                        tile->draw_attribute &= 0xbf;
-                        this->draw_tile(tile, terrain, (short)screen_x,
-                                        (short)screen_y, (short)col, (short)row,
-                                        draw_as, normal_draw, fog_draw);
-                        ++tiles_drawn;
-                    }
-
-                TileOffScreen:
-                    if (tile != 0 && (tile->draw_attribute & 0x40) == 0x40) {
-                        terrain = tile->terrain_type;
-                        terrain_override =
-                            this->map->terrain_types[terrain].terrain_to_draw;
-                        if (terrain_override != -1) {
-                            terrain = (unsigned char)terrain_override;
-                        }
-                        this->draw_tile(tile, terrain, (short)screen_x,
-                                        (short)screen_y, (short)col, (short)row,
-                                        draw_as, 1, 1);
-                        tile->draw_attribute &= 0xbf;
-                    }
-
-                    if (view_debug_Objects == 0 && tile != 0) {
-                        SDI_Capture_Info = 1;
-                        if (draw_as == 0) {
-                            this->futur_objs->SetCaptureLevel(0, 5);
-                        }
-                        if (draw_as != 0x0f) {
-                            fog_next_shape = 1;
-                        }
-                        tile->objects.draw(
-                            this->save_area1, (short)screen_x,
-                            (short)(tile->height * this->tile_half_hgt +
-                                    screen_y),
-                            draw_as == 0x80);
-                        this->futur_objs->SetCaptureLevel(0, 0x28);
-                        fog_next_shape = 0;
-                        SDI_Capture_Info = 0;
-                    }
-
-                    (void)MapVis;
-                }
+            if ((row_num & 3) == 3 && MouseSystem != 0) {
+                MouseSystem->Poll();
             }
-            ++col;
-            ++row;
-        }
 
-        if (row_index == 1) {
-            ++start_row;
-        } else {
-            --col_num;
-        }
+            odd_row = row_num & 1;
+            if (odd_row == 1 && this->Queued_Blits != 0) {
+                this->ProcessQueuedBlit(0);
+            }
+
+            if (cols_to_scan > 0) {
+                do {
+                    if (map_row >= 0 && map_col >= 0) {
+                        if (map_row >= map_height || map_col >= map_width) {
+                            col_num = cols_to_scan;
+                        } else {
+                            RGE_Map* current_map = this->map;
+                            RGE_Tile* tile =
+                                current_map->map_row_offset[map_row] + map_col;
+                            int tile_x = tile->screen_xpos - this->map_scr_x_offset;
+                            int tile_y = tile->screen_ypos - this->map_scr_y_offset;
+                            int tile_right = tile_x + this->tile_wid;
+                            int tile_bottom =
+                                tile_y + current_map->tilesizes[tile->tile_type].height;
+                            short draw_x = (short)tile_x;
+                            short draw_y = (short)tile_y;
+                            unsigned char map_vis;
+
+                            if ((unified_map_offsets[map_row][map_col] &
+                                 visible_mask) != 0) {
+                                map_vis = 0x0f;
+                            } else if ((unified_map_offsets[map_row][map_col] &
+                                        explored_mask) != 0 ||
+                                       full_visibility != 0) {
+                                map_vis = this->map->fog_flag != 0 ? 0x80 : 0x0f;
+                            } else {
+                                map_vis = 0;
+                                tile->last_drawn_as = 0;
+                            }
+
+                            if (map_vis != 0 &&
+                                tile_x <= this->render_rect.right &&
+                                tile_y <= this->render_rect.bottom &&
+                                tile_right > this->render_rect.left &&
+                                tile_bottom > this->render_rect.top) {
+                                unsigned char terrain_num = tile->terrain_type;
+                                int black_mask_num = -1;
+                                int fog_mask_num = -1;
+                                int region = 0;
+                                int draw_second_region = 0;
+
+                                if (this->calc_draw_count != 0 &&
+                                    (short)terrain_num < this->map->num_terrain) {
+                                    this->map->terrain_types[terrain_num].drawn++;
+                                }
+
+                                if (this->render_terrain_mode != 0 &&
+                                    tile->last_drawn_as == map_vis) {
+                                    if (map_vis == 0x0f) {
+                                        if (this->map->fog_flag == 0) {
+                                            black_mask_num = 0;
+                                        } else {
+                                            black_mask_num = this->get_tile_mask_num(
+                                                map_col, map_row, map_width,
+                                                map_height, visible_mask);
+                                        }
+                                        if ((int)tile->last_drawn_shape !=
+                                            black_mask_num) {
+                                            goto draw_this_tile;
+                                        }
+                                    }
+
+                                    if (map_vis == 0x0f || map_vis == 0x80) {
+                                        if (full_visibility == 0) {
+                                            fog_mask_num = this->get_tile_mask_num(
+                                                map_col, map_row, map_width,
+                                                map_height, explored_mask);
+                                        } else {
+                                            fog_mask_num = 0;
+                                        }
+                                        if ((int)tile->last_drawn_shape2 !=
+                                            fog_mask_num) {
+                                            goto draw_this_tile;
+                                        }
+                                    }
+
+                                    if (this->Limited_Render_Rect == 0) {
+                                        goto tile_off_screen;
+                                    }
+
+                                    if (this->Use_Rect2 != 0 &&
+                                        this->Render_Rect2.right >= tile_x &&
+                                        tile_right >= this->Render_Rect2.left &&
+                                        this->Render_Rect2.bottom >= tile_y &&
+                                        tile_bottom >= this->Render_Rect2.top) {
+                                        draw_second_region = 1;
+                                    }
+
+                                    if (this->Render_Rect1.right >= tile_x &&
+                                        tile_right >= this->Render_Rect1.left &&
+                                        this->Render_Rect1.bottom >= tile_y &&
+                                        tile_bottom >= this->Render_Rect1.top) {
+                                        region = 1;
+                                    } else {
+                                        if (draw_second_region == 0) {
+                                            goto tile_off_screen;
+                                        }
+                                        draw_second_region = 0;
+                                        region = 2;
+                                    }
+                                }
+
+draw_this_tile:
+                                {
+                                    Tile_FogEdge_Table* edge_table =
+                                        this->Tile_Edge_Tables[tile->tile_type];
+                                    Tile_BlackEdge_Table* black_table =
+                                        this->Black_Edge_Tables[tile->tile_type];
+                                    VSpanMiniList* normal_draw_data;
+                                    VSpanMiniList* fog_draw_data;
+                                    VSpanMiniList* black_draw_data;
+                                    int draw_normal;
+                                    int draw_fog;
+                                    int draw_black;
+
+                                    if (this->map->fog_flag == 0) {
+                                        black_mask_num = 0;
+                                    }
+                                    if (full_visibility != 0) {
+                                        fog_mask_num = 0;
+                                    }
+                                    if (black_mask_num == -1) {
+                                        if (map_vis == 0x0f) {
+                                            black_mask_num = this->get_tile_mask_num(
+                                                map_col, map_row, map_width,
+                                                map_height, visible_mask);
+                                        } else {
+                                            black_mask_num = 0;
+                                        }
+                                    }
+                                    if (fog_mask_num == -1) {
+                                        if (map_vis != 0) {
+                                            fog_mask_num = this->get_tile_mask_num(
+                                                map_col, map_row, map_width,
+                                                map_height, explored_mask);
+                                        } else {
+                                            fog_mask_num = 0;
+                                        }
+                                    }
+
+                                    normal_draw_data =
+                                        edge_table[black_mask_num].normal_draw;
+                                    fog_draw_data =
+                                        edge_table[black_mask_num].fog_draw;
+                                    black_draw_data =
+                                        black_table[fog_mask_num].black_UNdraw;
+
+                                    if (map_vis == 0x80) {
+                                        fog_draw_data = edge_table[0].normal_draw;
+                                        draw_fog = 1;
+                                        draw_normal = 0;
+                                    } else {
+                                        draw_normal = normal_draw_data != 0;
+                                        draw_fog = fog_draw_data != 0;
+                                    }
+
+                                    draw_black = fog_mask_num > 0 &&
+                                                 black_draw_data != 0;
+
+                                    if (region != current_region) {
+                                        if (region == 0) {
+                                            this->Terrain_Clip_Mask->SetSpanRegions(
+                                                this->render_rect.left,
+                                                this->render_rect.top,
+                                                this->render_rect.right,
+                                                this->render_rect.bottom);
+                                            this->Terrain_Fog_Clip_Mask->SetSpanRegions(
+                                                this->render_rect.left,
+                                                this->render_rect.top,
+                                                this->render_rect.right,
+                                                this->render_rect.bottom);
+                                        }
+                                        if (region == 1) {
+                                            this->Terrain_Clip_Mask->SetSpanRegions(
+                                                this->Render_Rect1.left,
+                                                this->Render_Rect1.top,
+                                                this->Render_Rect1.right,
+                                                this->Render_Rect1.bottom);
+                                            this->Terrain_Fog_Clip_Mask->SetSpanRegions(
+                                                this->Render_Rect1.left,
+                                                this->Render_Rect1.top,
+                                                this->Render_Rect1.right,
+                                                this->Render_Rect1.bottom);
+                                        }
+                                        current_region = region;
+                                        if (region == 2) {
+                                            this->Terrain_Clip_Mask->SetSpanRegions(
+                                                this->Render_Rect2.left,
+                                                this->Render_Rect2.top,
+                                                this->Render_Rect2.right,
+                                                this->Render_Rect2.bottom);
+                                            this->Terrain_Fog_Clip_Mask->SetSpanRegions(
+                                                this->Render_Rect2.left,
+                                                this->Render_Rect2.top,
+                                                this->Render_Rect2.right,
+                                                this->Render_Rect2.bottom);
+                                            current_region = region;
+                                        }
+                                    }
+
+                                    if (draw_normal != 0) {
+                                        this->Terrain_Clip_Mask->AddMiniList(
+                                            normal_draw_data, tile_x, tile_y);
+                                    }
+                                    if (draw_fog != 0) {
+                                        this->Terrain_Fog_Clip_Mask->AddMiniList(
+                                            fog_draw_data, tile_x, tile_y);
+                                    }
+                                    if (draw_black != 0) {
+                                        if (draw_normal != 0) {
+                                            this->Terrain_Clip_Mask->SubtractMiniList(
+                                                black_draw_data, tile_x, tile_y);
+                                        }
+                                        if (draw_fog != 0) {
+                                            this->Terrain_Fog_Clip_Mask->SubtractMiniList(
+                                                black_draw_data, tile_x, tile_y);
+                                        }
+                                    }
+
+                                    if (draw_second_region != 0) {
+                                        this->Terrain_Clip_Mask->SetSpanRegions(
+                                            this->Render_Rect2.left,
+                                            this->Render_Rect2.top,
+                                            this->Render_Rect2.right,
+                                            this->Render_Rect2.bottom);
+                                        this->Terrain_Fog_Clip_Mask->SetSpanRegions(
+                                            this->Render_Rect2.left,
+                                            this->Render_Rect2.top,
+                                            this->Render_Rect2.right,
+                                            this->Render_Rect2.bottom);
+                                        current_region = 2;
+
+                                        if (draw_normal != 0) {
+                                            this->Terrain_Clip_Mask->AddMiniList(
+                                                normal_draw_data, tile_x, tile_y);
+                                        }
+                                        if (draw_fog != 0) {
+                                            this->Terrain_Fog_Clip_Mask->AddMiniList(
+                                                fog_draw_data, tile_x, tile_y);
+                                        }
+                                        if (draw_black != 0) {
+                                            if (draw_normal != 0) {
+                                                this->Terrain_Clip_Mask->SubtractMiniList(
+                                                    black_draw_data, tile_x, tile_y);
+                                            }
+                                            if (draw_fog != 0) {
+                                                this->Terrain_Fog_Clip_Mask->SubtractMiniList(
+                                                    black_draw_data, tile_x, tile_y);
+                                            }
+                                        }
+                                    }
+
+                                    terrain_num = tile->terrain_type;
+                                    {
+                                        short terrain_to_draw =
+                                            this->map->terrain_types[terrain_num]
+                                                .terrain_to_draw;
+                                        if (terrain_to_draw != -1) {
+                                            terrain_num =
+                                                (unsigned char)terrain_to_draw;
+                                        }
+                                    }
+
+                                    tile->last_drawn_shape2 =
+                                        (unsigned char)fog_mask_num;
+                                    tile->last_drawn_shape =
+                                        (unsigned char)black_mask_num;
+                                    tile->last_drawn_as = map_vis;
+                                    tile->draw_as = map_vis;
+                                    tile->draw_attribute &= 0xbf;
+                                    this->draw_tile(
+                                        tile, terrain_num, draw_x, draw_y,
+                                        (short)map_col, (short)map_row, map_vis,
+                                        draw_normal, draw_fog);
+                                    tiles_drawn++;
+                                }
+                            }
+
+tile_off_screen:
+                            if (tile != 0 &&
+                                (tile->draw_attribute & 0x40) == 0x40) {
+                                unsigned char terrain_num = tile->terrain_type;
+                                short terrain_to_draw =
+                                    this->map->terrain_types[terrain_num]
+                                        .terrain_to_draw;
+                                if (terrain_to_draw != -1) {
+                                    terrain_num = (unsigned char)terrain_to_draw;
+                                }
+                                this->draw_tile(
+                                    tile, terrain_num, draw_x, draw_y,
+                                    (short)map_col, (short)map_row, map_vis, 1, 1);
+                                tile->draw_attribute &= 0xbf;
+                            }
+
+                            if (view_debug_Objects == 0 && tile != 0) {
+                                SDI_Capture_Info = 1;
+                                if (map_vis == 0) {
+                                    this->futur_objs->SetCaptureLevel(0, 5);
+                                }
+                                if (map_vis != 0x0f) {
+                                    fog_next_shape = 1;
+                                }
+                                tile->objects.draw(
+                                    this->save_area1, draw_x,
+                                    (short)(draw_y +
+                                            tile->height * this->tile_half_hgt),
+                                    map_vis == 0x80);
+                                this->futur_objs->SetCaptureLevel(0, 0x28);
+                                fog_next_shape = 0;
+                                SDI_Capture_Info = 0;
+                            }
+                        }
+                    }
+
+                    map_col++;
+                    map_row++;
+                    col_num++;
+                } while (col_num < cols_to_scan);
+            }
+
+            if (odd_row == 1) {
+                start_row++;
+            } else {
+                start_col--;
+            }
+            row_num++;
+        } while (row_num < rows_to_scan);
     }
 
     while (this->Queued_Blits != 0) {
@@ -2389,50 +2392,54 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
         MouseSystem->Poll();
     }
 
-    this->render_rect.left += rect.left;
-    this->render_rect.top += rect.top;
-    this->render_rect.right += rect.left;
-    this->render_rect.bottom += rect.top;
+    this->render_rect.left += offset_rect.left;
+    this->render_rect.top += offset_rect.top;
+    this->render_rect.right += offset_rect.left;
+    this->render_rect.bottom += offset_rect.top;
 
     SDI_Capture_Info = 1;
     if (this->scroll_action == 2) {
         this->futur_objs->AddGDINode(
             4, 0x14,
-            this->mouse_down_x - rect.left,
-            this->mouse_down_y - rect.top,
-            this->mouse_last_x - rect.left,
-            this->mouse_last_y - rect.top,
-            0, 0, 0, 0, 0, 0x28, 0xFF);
+            this->mouse_down_x - offset_rect.left,
+            this->mouse_down_y - offset_rect.top,
+            this->mouse_last_x - offset_rect.left,
+            this->mouse_last_y - offset_rect.top,
+            0, 0, 0, 0, 0x28, 0xff, 0);
     }
 
-    gm = rge_base_game->game_mode;
-    if (gm == 1 || (gm > 6 && gm <= 8)) {
-        this->draw_object_outline();
+    {
+        int game_mode = rge_base_game->game_mode;
+        if (game_mode == 1 || (game_mode > 6 && game_mode < 9)) {
+            this->draw_object_outline();
+        }
     }
-    if (gm == 0x15) {
+    if (rge_base_game->game_mode == 0x15) {
         this->draw_multi_object_outline();
     }
 
     {
-        reset_all_cyclic = 0;
-        if (this->extra_sprites != 0) {
-            unsigned long now = debug_timeGetTime(
-                const_cast<char*>(s_C__msdev_work_age1_x1_view_cpp), 0xE3E);
-            sprite = this->extra_sprites;
+        int reset_all_cyclic = 0;
+        Ov_Sprite_Draw_Rec* sprite = this->extra_sprites;
+        if (sprite != 0) {
+            unsigned long current_time = debug_timeGetTime(
+                (char*)s_C__msdev_work_age1_x1_view_cpp, 0xe3e);
             while (sprite != 0) {
-                remove_sprite = 0;
+                int remove_sprite = 0;
+
                 if (sprite->theShape != 0) {
                     if (sprite->LastDrawTime == 0) {
-                        sprite->LastDrawTime = now;
+                        sprite->LastDrawTime = current_time;
                     } else if ((sprite->displayfunction == 1 ||
                                 sprite->displayfunction == 2) &&
-                               now - sprite->LastDrawTime >=
+                               current_time - sprite->LastDrawTime >=
                                    sprite->DrawTimeInterval) {
-                        unsigned long elapsed = now - sprite->LastDrawTime;
+                        unsigned long elapsed =
+                            current_time - sprite->LastDrawTime;
                         do {
-                            ++sprite->thefacet;
-                            if (sprite->theShape->shape_count() <=
-                                sprite->thefacet) {
+                            sprite->thefacet++;
+                            if (sprite->thefacet >=
+                                sprite->theShape->shape_count()) {
                                 sprite->thefacet = 0;
                                 if (sprite->displayfunction == 2) {
                                     remove_sprite = 1;
@@ -2441,21 +2448,25 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                             }
                             elapsed -= sprite->DrawTimeInterval;
                             sprite->LastDrawTime += sprite->DrawTimeInterval;
-                        } while (sprite->DrawTimeInterval <= elapsed);
+                        } while (elapsed >= sprite->DrawTimeInterval);
                     }
-                    if (!remove_sprite) {
+
+                    if (remove_sprite == 0) {
                         SDI_Draw_Level = sprite->drawLevel;
                         SDI_Object_ID = -1;
-                        sprite->theShape->shape_draw(this->render_area,
+                        sprite->theShape->shape_draw(
+                            this->render_area,
                             sprite->world_x - this->map_scr_x_offset,
                             sprite->world_y - this->map_scr_y_offset,
-                            sprite->thefacet,
-                            sprite->flags,
+                            sprite->thefacet, (unsigned char)sprite->flags,
                             sprite->colortable);
                     }
                 }
-                if (remove_sprite) {
-                    next_sprite = sprite->next;
+
+                if (sprite->theShape == 0 || remove_sprite == 0) {
+                    sprite = sprite->next;
+                } else {
+                    Ov_Sprite_Draw_Rec* next = sprite->next;
                     if (sprite->prev != 0) {
                         sprite->prev->next = sprite->next;
                     }
@@ -2466,345 +2477,441 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                         this->extra_sprites = sprite->next;
                     }
                     delete sprite;
-                    sprite = next_sprite;
-                } else {
-                    sprite = sprite->next;
+                    sprite = next;
                 }
             }
         }
-        if (reset_all_cyclic) {
+
+        if (reset_all_cyclic != 0) {
             this->reset_cyclic_overlay_sprites();
         }
     }
 
     SDI_Capture_Info = 0;
-    this->render_rect.left -= rect.left;
-    this->render_rect.top -= rect.top;
-    this->render_rect.right -= rect.left;
-    this->render_rect.bottom -= rect.top;
+    this->render_rect.left -= offset_rect.left;
+    this->render_rect.top -= offset_rect.top;
+    this->render_rect.right -= offset_rect.left;
+    this->render_rect.bottom -= offset_rect.top;
 
     {
-        list = this->futur_objs;
-        for (long y = 0; y < list->YLine_Size; ++y) {
-            for (node = list->Draw_Clip_Nodes[y]; node != 0; node = node->Next) {
-                level = node->Draw_Level;
-                tail = list->Draw_Level_Tail[level];
-                if (tail == 0) {
-                    list->Draw_Level_Head[level] = node;
-                } else {
-                    tail->NextOnLevel = node;
+        int line = 0;
+        if (this->futur_objs->YLine_Size > 0) {
+            do {
+                DClipInfo_Node* node =
+                    this->futur_objs->Draw_Clip_Nodes[line];
+                while (node != 0) {
+                    int level = node->Draw_Level;
+                    DClipInfo_Node* tail =
+                        this->futur_objs->Draw_Level_Tail[level];
+                    if (tail == 0) {
+                        this->futur_objs->Draw_Level_Head[level] = node;
+                    } else {
+                        tail->NextOnLevel = node;
+                    }
+                    this->futur_objs->Draw_Level_Tail[level] = node;
+                    node = node->Next;
                 }
-                list->Draw_Level_Tail[level] = node;
-            }
+                line++;
+            } while (line < this->futur_objs->YLine_Size);
         }
     }
 
     Clip_draw = 0;
     Clip_remove = 0;
-    if (MapVis != 0) {
-        this->Terrain_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
+    if (current_region != 0) {
+        this->Terrain_Clip_Mask->SetSpanRegions(
+            this->render_rect.left, this->render_rect.top,
             this->render_rect.right, this->render_rect.bottom);
-        this->Terrain_Fog_Clip_Mask->SetSpanRegions(this->render_rect.left, this->render_rect.top,
+        this->Terrain_Fog_Clip_Mask->SetSpanRegions(
+            this->render_rect.left, this->render_rect.top,
             this->render_rect.right, this->render_rect.bottom);
     }
 
     {
-        list = this->futur_objs;
-        for (level = 0; level <= 5; ++level) {
-            for (node = list->Draw_Level_Head[level]; node != 0;
-                 node = node->NextOnLevel) {
+        int level = 0;
+        do {
+            DClipInfo_Node* node =
+                this->futur_objs->Draw_Level_Head[level];
+            while (node != 0) {
                 if (node->Node_Type == 0) {
-                    clip = this->Terrain_Clip_Mask;
-                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
-                        clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
-                        clip->Max_Span_Px, clip->Max_Line);
+                    Shape_Info* shape = node->Shape;
+
+                    ASMSet_Surface_Info(
+                        this->save_area1->CurDisplayOffsets,
+                        this->Terrain_Clip_Mask->Line_Head_Ptrs,
+                        this->Terrain_Clip_Mask->Line_Tail_Ptrs,
+                        this->Terrain_Clip_Mask->Min_Span_Px,
+                        this->Terrain_Clip_Mask->Min_Line,
+                        this->Terrain_Clip_Mask->Max_Span_Px,
+                        this->Terrain_Clip_Mask->Max_Line);
                     ASMSet_Color_Xform(node->Xform_Mask);
                     ASMSet_Xlate_Table(node->Color_Table);
-                    shape = node->Shape;
-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
-                        shape->Width, shape->Height, shape->Shape_Data_Offsets,
-                        shape->Shape_Outline_Offset, node->Draw_Flag & 0xFE);
-                    clip = this->Terrain_Fog_Clip_Mask;
-                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
-                        clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
-                        clip->Max_Span_Px, clip->Max_Line);
-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
-                        shape->Width, shape->Height, shape->Shape_Data_Offsets,
-                        shape->Shape_Outline_Offset, node->Draw_Flag | 1);
+                    ASMDraw_Sprite(
+                        node->Shape_Base, node->Draw_X, node->Draw_Y,
+                        shape->Width, shape->Height,
+                        shape->Shape_Data_Offsets,
+                        shape->Shape_Outline_Offset,
+                        node->Draw_Flag & 0xfe);
+
+                    ASMSet_Surface_Info(
+                        this->save_area1->CurDisplayOffsets,
+                        this->Terrain_Fog_Clip_Mask->Line_Head_Ptrs,
+                        this->Terrain_Fog_Clip_Mask->Line_Tail_Ptrs,
+                        this->Terrain_Fog_Clip_Mask->Min_Span_Px,
+                        this->Terrain_Fog_Clip_Mask->Min_Line,
+                        this->Terrain_Fog_Clip_Mask->Max_Span_Px,
+                        this->Terrain_Fog_Clip_Mask->Max_Line);
+                    ASMDraw_Sprite(
+                        node->Shape_Base, node->Draw_X, node->Draw_Y,
+                        shape->Width, shape->Height,
+                        shape->Shape_Data_Offsets,
+                        shape->Shape_Outline_Offset,
+                        node->Draw_Flag | 1);
                 }
+                node = node->NextOnLevel;
             }
-        }
+            level++;
+        } while (level <= 5);
     }
 
     if (MouseSystem != 0) {
         MouseSystem->Poll();
     }
+
     if (rge_base_game->prog_mode == 4 && this->have_focus != 0 &&
         MouseSystem->get_game_enable() != 0) {
-        unsigned long now = debug_timeGetTime(
-            const_cast<char*>(s_C__msdev_work_age1_x1_view_cpp), 0xF11);
-        if (this->Get_Cursor_Position(pt, -rect.left, -rect.top) != 0) {
-            int touched = 0;
-            if (this->pick_touched_object(this->futur_objs, pt.x, pt.y, 10, 0x28, touched) == 1) {
-                if (this->UC_ObjectTouched == 0 || this->UC_TouchedObj != touched) {
-                    this->UC_ObjectTouched = 1;
-                    if (this->UC_TouchedObj != touched) {
-                        this->UC_StartTime = now;
-                        this->UC_TouchedObj = touched;
-                        facet = 0;
-                        text_id = 0;
-                        if (this->player->get_mouse_pointer_action_vars(
-                                touched, facet, text_id) == 1) {
-                            MouseSystem->set_game_facet(facet);
-                            if (this->message_panel != 0 && rge_base_game->rollover != 0) {
-                                this->get_string(text_id, text, 0x7F);
-                                this->message_panel->show_message(
-                                    TMessagePanel::InfoMessage, text, 'p', 0,
-                                    0, 0, 0);
-                            }
-                        } else {
-                            MouseSystem->set_game_facet(0);
-                            if (this->message_panel != 0 && rge_base_game->rollover != 0) {
-                                this->message_panel->remove_message();
-                            }
+        unsigned long current_time = debug_timeGetTime(
+            (char*)s_C__msdev_work_age1_x1_view_cpp, 0xf11);
+        tagPOINT cursor;
+
+        if (this->Get_Cursor_Position(
+                cursor, -offset_rect.left, -offset_rect.top) != 0) {
+            int object_id;
+            int picked = this->pick_touched_object(
+                this->futur_objs, cursor.x, cursor.y, 10, 0x28,
+                object_id);
+            if (picked == 1) {
+                int old_object_id = this->UC_TouchedObj;
+                if (this->UC_ObjectTouched != 0 &&
+                    old_object_id == object_id) {
+                    goto no_mouse_process;
+                }
+
+                this->UC_ObjectTouched = 1;
+                if (old_object_id == object_id) {
+                    goto no_mouse_process;
+                }
+
+                this->UC_StartTime = current_time;
+                this->UC_TouchedObj = object_id;
+                {
+                    int cursor_facet = 0;
+                    int text_id = 0;
+                    if (this->player->get_mouse_pointer_action_vars(
+                            object_id, cursor_facet, text_id) == 1) {
+                        MouseSystem->set_game_facet(cursor_facet);
+                        if (this->message_panel != 0 &&
+                            rge_base_game->rollover != 0) {
+                            char text[128];
+                            this->get_string(text_id, text, 0x7f);
+                            this->message_panel->show_message(
+                                TMessagePanel::InfoMessage, text, 0x70, 0,
+                                0, 0, 0);
                         }
+                        goto no_mouse_process;
                     }
+                }
+
+                MouseSystem->set_game_facet(0);
+                if (this->message_panel != 0 &&
+                    rge_base_game->rollover != 0) {
+                    this->message_panel->remove_message();
                 }
             } else if (this->UC_ObjectTouched != 0) {
                 this->UC_ObjectTouched = 0;
                 this->UC_TouchedObj = 0x80000000;
                 MouseSystem->set_game_facet(0);
-                if (this->message_panel != 0 && rge_base_game->rollover != 0) {
+                if (this->message_panel != 0 &&
+                    rge_base_game->rollover != 0) {
                     this->message_panel->remove_message();
                 }
             }
         }
     }
 
-    for (panel_node = this->first_child_node; panel_node != 0;
-         panel_node = panel_node->next_node) {
-        panel = panel_node->panel;
-        if (panel->active != 0 && panel->need_redraw != TPanel::RedrawNone) {
-            panel->get_true_render_rect(pr);
-            long x1 = pr.left - rect.left;
-            long y1 = pr.top - rect.top;
-            long x2 = pr.right - rect.left;
-            long y2 = pr.bottom - rect.top;
-            if (x1 < 0) x1 = 0;
-            if (y1 < 0) y1 = 0;
-            added = this->futur_objs->AddGDINode(
-                3, y1, x1, y1, x2, y2, y1, 0, 0, 0, 0, 0x1E,
-                panel->display_changed_count);
-            if (added != 0) {
-                list = this->futur_objs;
-                tail = list->Draw_Level_Tail[0x1E];
-                if (tail == 0) {
-                    list->Draw_Level_Head[0x1E] = added;
-                } else {
-                    tail->NextOnLevel = added;
+no_mouse_process:
+    {
+        PanelNode* child_node = this->first_child_node;
+        while (child_node != 0) {
+            TPanel* child = child_node->panel;
+            if (child->active != 0 && child->need_redraw != 0) {
+                tagRECT child_rect;
+                DClipInfo_Node* new_node;
+                int left;
+                int top;
+                int right;
+                int bottom;
+
+                child->get_true_render_rect(child_rect);
+                left = child_rect.left - offset_rect.left;
+                top = child_rect.top - offset_rect.top;
+                right = child_rect.right - offset_rect.left;
+                bottom = child_rect.bottom - offset_rect.top;
+                if (left < 0) left = 0;
+                if (top < 0) top = 0;
+
+                new_node = this->futur_objs->AddGDINode(
+                    3, bottom, left, top, right, bottom,
+                    0, 0, 0, 0, 0x1e, child->display_changed_count, 0);
+                if (new_node != 0) {
+                    DClipInfo_Node* tail =
+                        this->futur_objs->Draw_Level_Tail[0x1e];
+                    if (tail == 0) {
+                        this->futur_objs->Draw_Level_Head[0x1e] = new_node;
+                    } else {
+                        tail->NextOnLevel = new_node;
+                    }
+                    this->futur_objs->Draw_Level_Tail[0x1e] = new_node;
                 }
-                list->Draw_Level_Tail[0x1E] = added;
             }
+            child_node = child_node->next_node;
         }
     }
 
     if (this->render_terrain_mode == 0) {
-        long y = 0;
+        int line = 0;
         if (this->save_area1->Height > 0) {
             do {
-                this->Master_Clip_Mask->AddSpan(0, this->save_area1->Width - 1, y);
-                ++y;
-            } while (y < this->save_area1->Height);
+                this->Master_Clip_Mask->AddSpan(
+                    0, this->save_area1->Width - 1, line);
+                line++;
+            } while (line < this->save_area1->Height);
         }
         this->prior_objs->ReclaimAllNodes();
     } else {
-        long y;
-        this->Master_Clip_Mask->Merge_n_Align(this->Terrain_Clip_Mask, this->Terrain_Fog_Clip_Mask);
-        Clip_draw = 0;
-        Clip_remove = 0;
+        this->Master_Clip_Mask->Merge_n_Align(
+            this->Terrain_Clip_Mask, this->Terrain_Fog_Clip_Mask);
+
         if (this->Limited_Render_Rect != 0) {
             if (this->Render_Rect1.left >= 0) {
-                y = this->Render_Rect1.top;
-                if (y <= this->Render_Rect1.bottom) {
+                int line = this->Render_Rect1.top;
+                if (line <= this->Render_Rect1.bottom) {
                     do {
                         this->Master_Clip_Mask->AddSpan(
-                            this->Render_Rect1.left, this->Render_Rect1.right, y);
-                        ++y;
-                    } while (y <= this->Render_Rect1.bottom);
+                            this->Render_Rect1.left,
+                            this->Render_Rect1.right, line);
+                        line++;
+                    } while (line <= this->Render_Rect1.bottom);
                 }
             }
-            if (this->Use_Rect2 != 0) {
-                if (this->Render_Rect2.left >= 0) {
-                    y = this->Render_Rect2.top;
-                    if (y <= this->Render_Rect2.bottom) {
-                        do {
-                            this->Master_Clip_Mask->AddSpan(
-                                this->Render_Rect2.left, this->Render_Rect2.right, y);
-                            ++y;
-                        } while (y <= this->Render_Rect2.bottom);
-                    }
+            if (this->Use_Rect2 != 0 && this->Render_Rect2.left >= 0) {
+                int line = this->Render_Rect2.top;
+                if (line <= this->Render_Rect2.bottom) {
+                    do {
+                        this->Master_Clip_Mask->AddSpan(
+                            this->Render_Rect2.left,
+                            this->Render_Rect2.right, line);
+                        line++;
+                    } while (line <= this->Render_Rect2.bottom);
                 }
             }
         }
 
-        future = this->futur_objs;
-        prior = this->prior_objs;
-        for (y = 0; y < future->YLine_Size; ++y) {
-            for (future_node = future->Draw_Clip_Nodes[y]; future_node != 0;
-                 future_node = future_node->Next) {
-                if (future_node->Draw_Level > 5) {
-                    bool different = true;
-                    prior_node = prior->Draw_Clip_Nodes[y];
-                    if (prior_node != 0) {
-                        do {
-                            different = true;
-                            long bytes = (future_node->Node_Type != 0) ? 0x34 : 0x24;
-                            if (memcmp(&future_node->Shape, &prior_node->Shape, bytes) == 0) {
-                                different = false;
-                                ++Clip_remove;
-                                prior_node->Node_Type = -1;
-                                goto future_match;
+        {
+            int line = 0;
+            if (this->futur_objs->YLine_Size > 0) {
+                do {
+                    DClipInfo_Node* new_node =
+                        this->futur_objs->Draw_Clip_Nodes[line];
+                    while (new_node != 0) {
+                        if (new_node->Draw_Level > 5) {
+                            DClipInfo_Node* old_node =
+                                this->prior_objs->Draw_Clip_Nodes[line];
+                            int add_node = 1;
+                            while (old_node != 0) {
+                                int compare_size =
+                                    new_node->Node_Type != 0 ? 0x34 : 0x24;
+                                if (memcmp(&new_node->Shape, &old_node->Shape,
+                                           compare_size) == 0) {
+                                    add_node = 0;
+                                    Clip_remove++;
+                                    old_node->Node_Type = -1;
+                                    break;
+                                }
+                                old_node = old_node->Next;
                             }
-                            prior_node = prior_node->Next;
-                        } while (prior_node != 0);
-                        different = true;
+
+                            if (add_node != 0) {
+                                if (new_node->Node_Type == 0) {
+                                    this->Master_Clip_Mask->AddShape_Align(
+                                        new_node->Shape_Base, new_node->Shape,
+                                        new_node->Draw_X, new_node->Draw_Y,
+                                        (new_node->Draw_Flag & 2) == 2);
+                                    Clip_draw++;
+                                } else {
+                                    this->Add_GDI_Clip_Mask(
+                                        new_node, this->Master_Clip_Mask);
+                                }
+                            }
+                        }
+                        new_node = new_node->Next;
                     }
-future_match:
-                    if (different) {
-                        if (future_node->Node_Type == 0) {
-                            this->Master_Clip_Mask->AddShape_Align(
-                                future_node->Shape_Base, future_node->Shape,
-                                future_node->Draw_X, future_node->Draw_Y,
-                                ((future_node->Draw_Flag & 2) == 2));
-                            ++Clip_draw;
-                        } else {
-                            this->Add_GDI_Clip_Mask(future_node, this->Master_Clip_Mask);
+
+                    {
+                        DClipInfo_Node* old_node =
+                            this->prior_objs->Draw_Clip_Nodes[line];
+                        while (old_node != 0) {
+                            if (old_node->Draw_Level > 5 &&
+                                old_node->Node_Type != -1) {
+                                DClipInfo_Node* new_node2 =
+                                    this->futur_objs->Draw_Clip_Nodes[line];
+                                int add_node = 1;
+                                while (new_node2 != 0) {
+                                    int compare_size =
+                                        old_node->Node_Type != 0 ? 0x34 : 0x24;
+                                    if (memcmp(&new_node2->Shape,
+                                               &old_node->Shape,
+                                               compare_size) == 0) {
+                                        add_node = 0;
+                                        break;
+                                    }
+                                    new_node2 = new_node2->Next;
+                                }
+
+                                if (add_node != 0) {
+                                    if (old_node->Node_Type == 0) {
+                                        this->Master_Clip_Mask->AddShape_Align(
+                                            old_node->Shape_Base,
+                                            old_node->Shape,
+                                            old_node->Draw_X,
+                                            old_node->Draw_Y,
+                                            (old_node->Draw_Flag & 2) == 2);
+                                        Clip_draw++;
+                                    } else {
+                                        this->Add_GDI_Clip_Mask(
+                                            old_node, this->Master_Clip_Mask);
+                                    }
+                                }
+                            }
+                            old_node = old_node->Next;
                         }
                     }
-                }
-            }
-            for (prior_node = prior->Draw_Clip_Nodes[y]; prior_node != 0;
-                 prior_node = prior_node->Next) {
-                if (prior_node->Draw_Level > 5 && prior_node->Node_Type != -1) {
-                    bool different = true;
-                    future_node = future->Draw_Clip_Nodes[y];
-                    while (future_node != 0) {
-                        long bytes = (prior_node->Node_Type != 0) ? 0x34 : 0x24;
-                        if (memcmp(&future_node->Shape, &prior_node->Shape, bytes) == 0) {
-                            different = false;
-                            break;
-                        }
-                        future_node = future_node->Next;
-                    }
-                    if (different) {
-                        if (prior_node->Node_Type == 0) {
-                            this->Master_Clip_Mask->AddShape_Align(
-                                prior_node->Shape_Base, prior_node->Shape,
-                                prior_node->Draw_X, prior_node->Draw_Y,
-                                ((prior_node->Draw_Flag & 2) == 2));
-                            ++Clip_draw;
-                        } else {
-                            this->Add_GDI_Clip_Mask(prior_node, this->Master_Clip_Mask);
-                        }
-                    }
-                }
+                    line++;
+                } while (line < this->futur_objs->YLine_Size);
             }
         }
     }
 
-    this->render_rect.left += rect.left;
-    this->render_rect.top += rect.top;
-    this->render_rect.right += rect.left;
-    this->render_rect.bottom += rect.top;
-    this->save_area1->PtrSpanCopy(this->render_area, this->render_rect.left, this->render_rect.top,
-                                  &this->save_area1->ClipRect,
-                                  (unsigned char**)this->Master_Clip_Mask->Line_Head_Ptrs);
+    this->render_rect.left += offset_rect.left;
+    this->render_rect.top += offset_rect.top;
+    this->render_rect.right += offset_rect.left;
+    this->render_rect.bottom += offset_rect.top;
+    this->save_area1->PtrSpanCopy(
+        this->render_area, this->render_rect.left, this->render_rect.top,
+        &this->save_area1->ClipRect,
+        (unsigned char**)this->Master_Clip_Mask->Line_Head_Ptrs);
     this->Update_Render_Pointers();
-    this->render_rect.left -= rect.left;
-    this->render_rect.top -= rect.top;
-    this->render_rect.right -= rect.left;
-    this->render_rect.bottom -= rect.top;
-    ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
-        this->Master_Clip_Mask->Line_Tail_Ptrs, this->Master_Clip_Mask->Min_Span_Px,
-        this->Master_Clip_Mask->Min_Line, this->Master_Clip_Mask->Max_Span_Px,
+    this->render_rect.left -= offset_rect.left;
+    this->render_rect.top -= offset_rect.top;
+    this->render_rect.right -= offset_rect.left;
+    this->render_rect.bottom -= offset_rect.top;
+
+    ASMSet_Surface_Info(
+        this->RenderOffsets,
+        this->Master_Clip_Mask->Line_Head_Ptrs,
+        this->Master_Clip_Mask->Line_Tail_Ptrs,
+        this->Master_Clip_Mask->Min_Span_Px,
+        this->Master_Clip_Mask->Min_Line,
+        this->Master_Clip_Mask->Max_Span_Px,
         this->Master_Clip_Mask->Max_Line);
-    this->save_area1->CurSpanList = this->Master_Clip_Mask;
+    this->render_area->CurSpanList = this->Master_Clip_Mask;
 
     {
-        list = this->futur_objs;
-        for (level = 6; level <= 40; ++level) {
-            for (node = list->Draw_Level_Head[level]; node != 0;
-                 node = node->NextOnLevel) {
+        int level = 6;
+        do {
+            DClipInfo_Node* node =
+                this->futur_objs->Draw_Level_Head[level];
+            while (node != 0) {
                 if (node->Node_Type == 0) {
-                    shadowing = 0;
-                    shadow_flags = node->Draw_Flag & 0xFFC;
+                    int reset_shadowing = 0;
+                    unsigned int shadow_flags = node->Draw_Flag & 0xffc;
                     if (shadow_flags != 0) {
                         if ((shadow_flags & 4) == 4) {
-                            ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
+                            ASMSet_Shadowing(
+                                0x00ffffff, 0, 0xffff00ff, 0);
                         }
                         if ((shadow_flags & 8) == 8) {
-                            shadow_value = shadow_flags >> 4;
-                            ASMSet_Shadowing(0xFF00FF00,
-                                (shadow_value << 16) | shadow_value,
-                                0x00FF00FF, shadow_value << 8);
+                            unsigned int shade =
+                                ((int)shadow_flags >> 4) & 0xff;
+                            unsigned int value = (shade << 16) | shade;
+                            ASMSet_Shadowing(
+                                0xff00ff00, value,
+                                0x00ff00ff, value << 8);
                         }
-                        shadowing = 1;
+                        reset_shadowing = 1;
                     }
+
                     ASMSet_Color_Xform(node->Xform_Mask);
                     ASMSet_Xlate_Table(node->Color_Table);
-                    shape = node->Shape;
-                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
-                                    shape->Width, shape->Height,
-                                    shape->Shape_Data_Offsets,
-                                    shape->Shape_Outline_Offset,
-                                    node->Draw_Flag & 3);
-                    if (shadowing) {
-                        ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
+                    ASMDraw_Sprite(
+                        node->Shape_Base, node->Draw_X, node->Draw_Y,
+                        node->Shape->Width, node->Shape->Height,
+                        node->Shape->Shape_Data_Offsets,
+                        node->Shape->Shape_Outline_Offset,
+                        node->Draw_Flag & 3);
+
+                    if (reset_shadowing != 0) {
+                        ASMSet_Shadowing(
+                            0x00ff00ff, 0, 0xff00ff00, 0);
                     }
                 } else {
                     this->Draw_GDI_Object(node, this->render_area);
                 }
+                node = node->NextOnLevel;
             }
-        }
+            level++;
+        } while (level <= 0x28);
     }
 
     if (view_debug_spans != 0 && this->render_terrain_mode != 0) {
-        color = frame_count % 0xDC + 0x10;
-        long y = 0;
+        int color = frame_count % 0xdc + 0x10;
+        int line = 0;
         if (this->render_area->Height > 0) {
             do {
-                this->render_area->DrawLine(0, y, this->render_area->Width - 1, y, color);
-                ++y;
-            } while (y < this->render_area->Height);
+                this->render_area->DrawLine(
+                    0, line, this->render_area->Width - 1, line,
+                    (unsigned char)color);
+                line++;
+            } while (line < this->render_area->Height);
         }
     }
 
     if (view_debug_palette != 0) {
-        row_base = 0;
-        long y = 0x20;
+        int row = 0;
+        int y = 0x20;
         do {
-            row_color = (unsigned char)(row_base * 0x10);
-            palette_color = 0;
-            x = 0;
+            unsigned char col = 0;
+            int x = 0;
             do {
-                this->render_area->FillRect(x, y, x + 0x1F, y + 0x0F,
-                                           (unsigned char)(palette_color + row_color));
+                this->render_area->FillRect(
+                    x, y, x + 0x1f, y + 0x0f,
+                    (unsigned char)(col + (unsigned char)row * 0x10));
                 x += 0x20;
-                ++palette_color;
+                col++;
             } while (x < 0x200);
             y += 0x10;
-            ++row_base;
+            row++;
         } while (y < 0x120);
     }
 
     this->render_area->Unlock(s_view__view_function_terrain);
     this->render_area->CurSpanList = this->render_area->SpanList;
-    {
-        tmp = this->prior_objs;
-        this->prior_objs = this->futur_objs;
-        this->futur_objs = tmp;
-    }
 
+    {
+        DClipInfo_List* temp = this->futur_objs;
+        this->futur_objs = this->prior_objs;
+        this->prior_objs = temp;
+    }
     return 0;
 }
 
