@@ -798,20 +798,20 @@ int TribeBuildAIModule::addTrainedUnit(int param1, int param2, int param3, int p
     return 1;
 }
 
-int TribeBuildAIModule::cancelTrainUnit(int param1, int param2, int param3, int param4)
+int TribeBuildAIModule::cancelTrainUnit(int p1, int p2, int p3, int p4)
 {
-    int type_id = *(int*)(*(int*)(*(int*)((char*)this->md + 0x0F0) + 0x3C) + 4);
-    this->logCommonHistory("Canceling training (WT=%ld) for item of type %ld", type_id, param2, param3);
+    int val = *(int*)(*(int*)(*(int*)((char*)this->md + 0xF0) + 0x3C) + 4);
+    this->logCommonHistory("Canceling training (WT=%ld) for item of type %d at building w/ gameID=%d.", val, p2, p3);
 
-    BuildItem* item = this->specificBuildListItem(param4);
+    BuildItem* item = (BuildItem*)this->specificBuildListItem(p4);
+
     if (item) {
-        this->logCommonHistory("  Setting build item #%d in progress to FALSE", item->uniqueID());
+        this->logCommonHistory("  Setting build item #%d in progress to FALSE.", item->uniqueID());
         item->setInProgress(0);
-        this->displayBuildList();
-        return 1;
+    } else {
+        this->logCommonHistory("  ERROR!  Invalid build item.");
     }
 
-    this->logCommonHistory("  ERROR!  Invalid build item.");
     this->displayBuildList();
     return 1;
 }

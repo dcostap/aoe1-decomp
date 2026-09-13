@@ -22,7 +22,7 @@
     "004D5270": {"status": "matching", "symbol": "?removeBuiltItem@TribeBuildAIModule@@QAEHH@Z"},
     "004D5310": {"status": "matching", "symbol": "?cancelBuildItem@TribeBuildAIModule@@QAEHHHHMMHH@Z"},
     "004D5590": {"status": "matching", "symbol": "?addTrainedUnit@TribeBuildAIModule@@QAEHHHHH@Z"},
-    "004D5600": {"status": "scratch", "symbol": "?cancelTrainUnit@TribeBuildAIModule@@QAEHHHHH@Z"},
+    "004D5600": {"status": "matching", "symbol": "?cancelTrainUnit@TribeBuildAIModule@@QAEHHHHH@Z", "behavior_review": "logic_matching/004D5600/coord-03-20260913T032001Z/attempt-01"},
     "004D5690": {"status": "matching", "symbol": "?addResearch@TribeBuildAIModule@@QAEHHHH@Z"},
     "004D56F0": {"status": "matching", "symbol": "?cancelResearch@TribeBuildAIModule@@QAEHHHHH@Z"},
     "004D5780": {"status": "matching", "symbol": "?isAgeResearch@TribeBuildAIModule@@QAEHH@Z"},
