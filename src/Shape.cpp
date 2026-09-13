@@ -1598,205 +1598,205 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
     return 1;
 }
 
-byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
-                                  long clip_top, long clip_left, long y,
-                                  long x, long clip_bottom)
+byte TShape::shape_mirror_clipped(TDrawArea* draw_area, long shape_x1,
+                                  long shape_y1, long clip_x0, long clip_y0,
+                                  long clip_x1, long clip_y1)
 {
-    long width = area->AlignedWidth() * area->Orien;
+    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
     byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
-    byte count;
-    if (area->Orien < 1)
-        dst = area->Bits +
-                      (y - area->Height + 1) * width + x + 1;
+
+    if (draw_area->Orien < 1)
+        dst = draw_area->Bits +
+              (clip_y0 - draw_area->Height + 1) * pitch + clip_x1 + 1;
     else
-        dst = area->Bits + y * width + x + 1;
+        dst = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
+
     byte* save_buffer = dst;
 
-    long row = clip_top;
-    if (clip_top < y) {
-        long skip = y - clip_top;
-        row += skip;
+    if (shape_y1 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y1;
+        shape_y1 += skip_rows;
         do {
             byte done = 0;
             do {
-                byte code = *src++;
-                if ((code & 1) == 1) {
-                    count = code >> 1;
-                    if (count)
-                        src += count;
+                byte command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command != 0)
+                        src += command;
                     else
                         ++src;
                 } else {
-                    count = code >> 1;
-                    if (count == 0)
+                    if ((command & 0xfe) == 0)
                         done = 1;
                     else
                         ++src;
                 }
             } while (!done);
-        } while (--skip != 0);
+        } while (--skip_rows != 0);
     }
 
-    if (row <= clip_bottom) {
-        long rows = clip_bottom - row + 1;
-        do {
-            long xpos = clip_right;
-            char state;
+    if (shape_y1 > clip_y1)
+        return 1;
 
-            if (xpos > x) {
-                state = 0;
-                while (state == 0) {
-                    byte code = *src++;
-                    if ((code & 1) == 1) {
-                        count = code >> 1;
-                        if (count == 0) {
-                            xpos -= *src++;
-                            if (xpos <= x) {
-                                if (xpos < clip_left)
-                                    state = 2;
-                                else {
-                                    state = 1;
-                                    dst += xpos - x;
-                                }
-                            }
-                        } else {
-                            xpos -= count;
-                            if (xpos <= x) {
-                                if (xpos < clip_left) {
-                                    unsigned int copy_count = x - clip_left + 1;
-                                    state = 2;
-                                    src += xpos - x + count - 1;
-                                    if ((unsigned char)copy_count > 0) {
-                                        copy_count &= 0xff;
-                                        while (copy_count != 0) {
-                                            *--dst = *src++;
-                                            --copy_count;
-                                        }
-                                    }
-                                    src += clip_left - xpos;
-                                } else {
-                                    state = 1;
-                                    unsigned int copy_count = x;
-                                    copy_count -= xpos;
-                                    src += count - copy_count;
-                                    if ((unsigned char)copy_count > 0) {
-                                        copy_count &= 0xff;
-                                        while (copy_count != 0) {
-                                            *--dst = *src++;
-                                            --copy_count;
-                                        }
-                                    }
-                                }
-                            } else {
-                                src += count;
-                            }
-                        }
-                    } else {
-                        count = code >> 1;
-                        if (count == 0) {
-                            state = 3;
-                        } else {
-                            xpos -= count;
-                            if (xpos <= x) {
-                                if (xpos < clip_left) {
-                                    long visible = x - clip_left + 1;
-                                    state = 2;
-                                    dst -= visible;
-                                    memset(dst, *src, visible);
-                                } else {
-                                    long visible = x - xpos;
-                                    state = 1;
-                                    dst -= visible;
-                                    memset(dst, *src, visible);
-                                }
-                            }
-                            ++src;
-                        }
-                    }
-                }
-            } else {
-                state = 1;
-            }
+    long rows = clip_y1 - shape_y1 + 1;
+    do {
+        long xpos = shape_x1;
+        byte state;
 
-            --state;
-            while (state == 0) {
+        if (xpos <= clip_x1) {
+            state = 1;
+        } else {
+            state = 0;
+            do {
                 byte command = *src++;
-                if ((command & 1) == 1) {
-                    count = command >> 1;
-                    if (count == 0) {
-                        byte skip_count = *src++;
-                        xpos -= skip_count;
-                        dst -= skip_count;
-                        if (xpos < clip_left)
-                            state = command & 1;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        command = *src++;
+                        xpos -= command;
+                        if (xpos <= clip_x1) {
+                            if (xpos < clip_x0) {
+                                state = 2;
+                            } else {
+                                state = 1;
+                                dst += xpos - clip_x1;
+                            }
+                        }
                     } else {
-                        xpos -= count;
-                        if (xpos < clip_left) {
-                            unsigned int visible = xpos;
-                            visible -= clip_left;
-                            visible += count;
-                            state = 1;
-                            if ((unsigned char)visible > 0) {
-                                visible &= 0xff;
-                                while (visible != 0) {
-                                    *--dst = *src++;
-                                    --visible;
+                        xpos -= command;
+                        if (xpos <= clip_x1) {
+                            if (xpos < clip_x0) {
+                                state = 2;
+                                long count = clip_x1 - clip_x0 + 1;
+                                src += xpos - clip_x1 + command - 1;
+                                unsigned int copy_count =
+                                    (unsigned char)count;
+                                if (copy_count != 0) {
+                                    do {
+                                        --dst;
+                                        *dst = *src++;
+                                    } while (--copy_count != 0);
+                                }
+                                src += clip_x0 - xpos;
+                            } else {
+                                state = 1;
+                                long count = clip_x1 - xpos;
+                                src += command - count;
+                                unsigned int copy_count =
+                                    (unsigned char)count;
+                                if (copy_count != 0) {
+                                    do {
+                                        --dst;
+                                        *dst = *src++;
+                                    } while (--copy_count != 0);
                                 }
                             }
-                            src += count - (xpos - clip_left + count);
                         } else {
-                            unsigned int copy_count = count;
-                            if (command != 0) {
-                                while (copy_count != 0) {
-                                    *--dst = *src++;
-                                    --copy_count;
-                                }
-                            }
+                            src += command;
                         }
                     }
                 } else {
-                    count = command >> 1;
-                    if (count == 0) {
+                    command >>= 1;
+                    if (command == 0) {
                         state = 3;
                     } else {
-                        xpos -= count;
-                        if (xpos < clip_left) {
-                            long visible = xpos - clip_left + count;
-                            state = 1;
-                            dst -= visible;
-                            memset(dst, *src, visible);
-                        } else {
+                        xpos -= command;
+                        if (xpos <= clip_x1) {
+                            long count;
+                            if (xpos < clip_x0) {
+                                state = 2;
+                                count = clip_x1 - clip_x0 + 1;
+                            } else {
+                                state = 1;
+                                count = clip_x1 - xpos;
+                            }
                             dst -= count;
                             memset(dst, *src, count);
                         }
                         ++src;
                     }
                 }
-            }
+            } while (state == 0);
+        }
 
-            --state;
-            while (state == 0) {
-                byte code = *src++;
-                if ((code & 1) == 1) {
-                    count = code >> 1;
-                    if (count)
-                        src += count;
-                    else
-                        ++src;
+        --state;
+        while (state == 0) {
+            byte command = *src++;
+            if (command & 1) {
+                command >>= 1;
+                if (command == 0) {
+                    command = *src++;
+                    xpos -= command;
+                    dst -= command;
+                    if (xpos < clip_x0)
+                        state = 1;
                 } else {
-                    count = code >> 1;
-                    if (count == 0)
-                        state = 2;
-                    else
-                        ++src;
+                    xpos -= command;
+                    if (xpos < clip_x0) {
+                        state = 1;
+                        long count = xpos - clip_x0 + command;
+                        unsigned int copy_count = (unsigned char)count;
+                        if (copy_count != 0) {
+                            do {
+                                --dst;
+                                *dst = *src++;
+                            } while (--copy_count != 0);
+                        }
+                        src += command - count;
+                    } else {
+                        long count = command;
+                        unsigned int copy_count = (unsigned char)count;
+                        if (copy_count != 0) {
+                            do {
+                                --dst;
+                                *dst = *src++;
+                            } while (--copy_count != 0);
+                        }
+                    }
+                }
+            } else {
+                command >>= 1;
+                if (command == 0) {
+                    state = 3;
+                } else {
+                    xpos -= command;
+                    long count;
+                    if (xpos < clip_x0) {
+                        state = 1;
+                        count = xpos - clip_x0 + command;
+                    } else {
+                        count = command;
+                    }
+                    dst -= count;
+                    memset(dst, *src, count);
+                    ++src;
                 }
             }
+        }
 
-            save_buffer += width;
-            dst = save_buffer;
-        } while (--rows);
-    }
+        --state;
+        while (state == 0) {
+            byte command = *src++;
+            if (command & 1) {
+                command >>= 1;
+                if (command != 0)
+                    src += command;
+                else
+                    ++src;
+            } else {
+                if ((command & 0xfe) == 0)
+                    state = 2;
+                else
+                    ++src;
+            }
+        }
+
+        save_buffer += pitch;
+        dst = save_buffer;
+    } while (--rows != 0);
+
     return 1;
 }
 
