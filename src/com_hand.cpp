@@ -1365,349 +1365,402 @@ typedef unsigned char uchar;
 
 
 
-int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
-                                                 ulong from, ulong to, int cached)
+int TCommunications_Handler::PreprocessMessages(unsigned long size, char* msg,
+                                                unsigned long from,
+                                                unsigned long to, int cached)
 {
-    static char* InContent;
-    static ulong InContentSize;
-    static uint dropcount;
-    char msg[256];
-    char msg_str[100];
-    MSGFORMAT_HEADER_GUARANTEED* header =
-        reinterpret_cast<MSGFORMAT_HEADER_GUARANTEED*>(message);
-    int player;
+    unsigned int player = 0;
     if (from != 0) {
-        player = this->PlayerOptions.LowPlayerNumber;
-        int high = this->PlayerOptions.HighPlayerNumber;
-        if (player <= high) {
-            for (; player <= high; ++player) {
-                if (this->PlayerOptions.dcoID[player] == from) {
-                    goto player_lookup_found;
+        unsigned int i = this->PlayerOptions.LowPlayerNumber;
+        unsigned int high = this->PlayerOptions.HighPlayerNumber;
+        if (static_cast<int>(i) <= static_cast<int>(high)) {
+            do {
+                if (this->PlayerOptions.dcoID[i] == from) {
+                    player = i;
+                    break;
                 }
-            }
+                ++i;
+            } while (static_cast<int>(i) <= static_cast<int>(high));
         }
     }
-    player = 0;
 
-player_lookup_found:
-    if (header->Command == 'I') {
+    if (*msg == 'I') {
         this->UnlinkToLevel(SERVICE_AVAILABLE);
         this->NotifyWindow(COMM_UPDATE_PLAYERS);
         this->NotifyWindow(COMM_PLAYER_KICKED);
         return 1;
     }
+
     if (player == 0) {
-        MSGFORMAT_ACKNOWLEDGE_GUARANTEED bad_ack;
         L->Log("Bad player # for ID=%d", from);
-        bad_ack.Serialno = header->Serialno;
-        unsigned long dco_self = local_player_dpid;
-        bad_ack.Command = 'A';
-        if (dco_self == 0) {
+
+        MSGFORMAT_ACKNOWLEDGE_GUARANTEED acknowledge;
+        acknowledge.Serialno = *reinterpret_cast<unsigned int*>(msg + 8);
+        acknowledge.Command = 'A';
+        if (local_player_dpid == 0) {
             L->Log("+++BAD DCOID=0 NO TX");
             return 0;
         }
-        IDirectPlay3* direct_play = direct_play_interface;
-        direct_play->Send(dco_self, from, 0, &bad_ack, sizeof(bad_ack));
-        this->TXPacketLength += sizeof(bad_ack);
+        direct_play_interface->Send(local_player_dpid, from, 0, &acknowledge,
+                                    8);
+        this->TXPacketLength += 8;
         return 0;
     }
+
     this->LastPlayerCommunication[player] =
         debug_timeGetTime(com_hand_source_path, 0x543);
-    int log_player;
+
+    unsigned int log_player = 0;
     if (from != 0) {
-        int i = this->PlayerOptions.LowPlayerNumber;
-        int high = this->PlayerOptions.HighPlayerNumber;
-        if (i <= high) {
-            for (; i <= high; ++i) {
+        unsigned int i = this->PlayerOptions.LowPlayerNumber;
+        unsigned int high = this->PlayerOptions.HighPlayerNumber;
+        if (static_cast<int>(i) <= static_cast<int>(high)) {
+            do {
                 if (this->PlayerOptions.dcoID[i] == from) {
                     log_player = i;
-                    goto second_player_found;
+                    break;
                 }
-            }
+                ++i;
+            } while (static_cast<int>(i) <= static_cast<int>(high));
         }
     }
-    log_player = 0;
 
-second_player_found:
+    unsigned int* serial = reinterpret_cast<unsigned int*>(msg + 8);
     L->Log("PREPRO-Byte0='%c' from=%d(%d)  ser#%d  timeGetTime=%d",
-           static_cast<int>(static_cast<signed char>(header->Command)),
-           log_player, from,
-           header->Serialno,
+           static_cast<int>(*msg), log_player, from, *serial,
            debug_timeGetTime(com_hand_source_path, 0x54D));
-    if (header->Command == 'K' &&
+
+    if (*msg == 'K' &&
         this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
-        MSGFORMAT_KILL_PLAYER* kill_message =
-            reinterpret_cast<MSGFORMAT_KILL_PLAYER*>(message + sizeof(*header));
-        L->Log("KILL Message recieved from %d to kill dcoID #%d ",
-               from, kill_message->dcoID);
-        if (header->Serialno == this->PlayerHighSerialNumber[player] + 1)
-            this->PlayerHighSerialNumber[player] = header->Serialno;
-        L->Log("  >TX KP ACK #%d %d (%d)", player, header->Serialno, 8);
-        this->TXAcknowledgeMessage(header->Serialno, player);
-        this->PlayerHighSerialNumber[kill_message->PlayerNo] =
-            kill_message->PlayerNo * 2000;
-        if (kill_message->dcoID == local_player_dpid) {
+        L->Log("KILL Message recieved from %d to kill dcoID #%d ", from,
+               *reinterpret_cast<unsigned long*>(msg + 16));
+        if (*serial == this->PlayerHighSerialNumber[player] + 1)
+            this->PlayerHighSerialNumber[player] = *serial;
+        L->Log("  >TX KP ACK #%d %d (%d)", player, *serial, 8);
+        this->TXAcknowledgeMessage(*serial, player);
+
+        unsigned int killed_player =
+            *reinterpret_cast<unsigned int*>(msg + 12);
+        this->PlayerHighSerialNumber[killed_player] = killed_player * 2000;
+        if (*reinterpret_cast<unsigned long*>(msg + 16) == local_player_dpid)
             this->NotifyWindow(COMM_PLAYER_KICKED);
-            return 1;
-        }
-    } else {
-    if (header->Command == 'C') {
-        MSGFORMAT_CHAT* chat = reinterpret_cast<MSGFORMAT_CHAT*>(message +
-            sizeof(*header));
-        if (this->RGE_Guaranteed_Delivery == 0)
-            chat = reinterpret_cast<MSGFORMAT_CHAT*>(message + 8);
-        if (chat->Pregame != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW) {
+        return 1;
+    }
+
+    if (*msg == 'C') {
+        MSGFORMAT_CHAT* chat_msg;
+        if (this->RGE_Guaranteed_Delivery != 0)
+            chat_msg = reinterpret_cast<MSGFORMAT_CHAT*>(msg + 12);
+        else
+            chat_msg = reinterpret_cast<MSGFORMAT_CHAT*>(msg + 8);
+
+        if (chat_msg->Pregame != 0 &&
+            this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW) {
             L->Log("DISCARD: ChtPregame=%d PgmState=%d  Msg=%s",
-                   chat->Pregame, this->PlayerOptions.ProgramState, chat->ChatMsg);
+                   chat_msg->Pregame, this->PlayerOptions.ProgramState,
+                   chat_msg->ChatMsg);
             return 0;
         }
-        L->Log("CHAT: ChtPregame=%d PgmState=%d  Msg=%s", chat->Pregame,
-               this->PlayerOptions.ProgramState, chat->ChatMsg);
+        L->Log("CHAT: ChtPregame=%d PgmState=%d  Msg=%s",
+               chat_msg->Pregame, this->PlayerOptions.ProgramState,
+               chat_msg->ChatMsg);
     }
 
-    if (header->Command == 'A') {
-        MSGFORMAT_ONTURN* acknowledge =
-            reinterpret_cast<MSGFORMAT_ONTURN*>(message + 4);
-        this->RXAcknowledgeStoredMessage(acknowledge->ExecuteOnTurn, player);
+    unsigned char command = static_cast<unsigned char>(*msg);
+    if (command == 'A') {
+        this->RXAcknowledgeStoredMessage(
+            *reinterpret_cast<unsigned int*>(msg + 4), player);
         this->PurgeAcknowledgedStoredMessages();
         return 1;
     }
 
-    if (header->Command == 'R') {
-        MSGFORMAT_SETREADYOPTIONS* ready_message =
-            reinterpret_cast<MSGFORMAT_SETREADYOPTIONS*>(message);
+    if (command == 'R') {
         L->Log("PLAYER READY MSG");
-        if (this->MeHost == 0)
-            return 1;
-        this->PlayerOptions.PlayerReady[player] = ready_message->Ready;
-        L->Log("Rcvd Ready=%d from player %d", ready_message->Ready, player);
-        this->PlayerOptions.User1[player] = ready_message->User1;
-        this->PlayerOptions.User2[player] = ready_message->User2;
-        this->PlayerOptions.User3[player] = ready_message->User3;
-        this->PlayerOptions.User4[player] = ready_message->User4;
-        this->PlayerOptions.User5[player] = ready_message->User5;
-        this->PlayerOptions.User6[player] = ready_message->User6;
-        this->PlayerOptions.User7[player] = ready_message->User7;
-        if (!this->IsPlayerHuman(player))
-            this->SetPlayerHumanity(player, ME_HUMAN);
-        if (this->CommunicationsVersionCode == ready_message->CommunicationsVersionCode)
-            L->Log("Communications versions for HOST and player %d match (%d)", player, this->CommunicationsVersionCode);
-        else {
-            this->NotifyWindowParam(COMM_PLAYER_SERVICE_ERROR, player);
-            sprintf(this->TBuff, "Player %d has a different Communications Version than you.", player);
+        if (this->MeHost != 0) {
+            this->PlayerOptions.PlayerReady[player] =
+                static_cast<unsigned char>(msg[1]);
+            L->Log("Rcvd Ready=%d from player %d",
+                   static_cast<unsigned char>(msg[1]), player);
+            this->PlayerOptions.User1[player] =
+                *reinterpret_cast<unsigned long*>(msg + 4);
+            this->PlayerOptions.User2[player] =
+                *reinterpret_cast<unsigned long*>(msg + 8);
+            this->PlayerOptions.User3[player] =
+                *reinterpret_cast<unsigned long*>(msg + 12);
+            this->PlayerOptions.User4[player] =
+                *reinterpret_cast<unsigned long*>(msg + 16);
+            this->PlayerOptions.User5[player] =
+                *reinterpret_cast<unsigned long*>(msg + 20);
+            this->PlayerOptions.User6[player] =
+                *reinterpret_cast<unsigned long*>(msg + 24);
+            this->PlayerOptions.User7[player] =
+                *reinterpret_cast<unsigned long*>(msg + 28);
+
+            if (!this->IsPlayerHuman(player))
+                this->SetPlayerHumanity(player, ME_HUMAN);
+
+            unsigned long local_version = this->CommunicationsVersionCode;
+            unsigned long version =
+                *reinterpret_cast<unsigned long*>(msg + 32);
+            if (local_version == version) {
+                L->Log("Communications versions for HOST and player %d match (%d)",
+                       player, local_version);
+            } else {
+                this->NotifyWindowParam(COMM_PLAYER_SERVICE_ERROR, player);
+                sprintf(this->TBuff,
+                        "Player %d has a different Communications Version",
+                        player);
+                L->Log(this->TBuff);
+            }
+
+            this->PlayerOptions.NeedsToBeSent = 1;
+            this->SendSharedData(0);
+            this->UpdatePlayer(player, 0);
+            sprintf(this->TBuff,
+                    " Plr Rdy: P1=%d P2=%d P3=%d P4=%d P5=%d P6=%d P7=%d P8=%d",
+                    this->PlayerOptions.PlayerReady[1],
+                    this->PlayerOptions.PlayerReady[2],
+                    this->PlayerOptions.PlayerReady[3],
+                    this->PlayerOptions.PlayerReady[4],
+                    this->PlayerOptions.PlayerReady[5],
+                    this->PlayerOptions.PlayerReady[6],
+                    this->PlayerOptions.PlayerReady[7],
+                    this->PlayerOptions.PlayerReady[8]);
             L->Log(this->TBuff);
+            this->NotifyWindow(COMM_UPDATE_PLAYERS);
         }
-        this->PlayerOptions.NeedsToBeSent = 1;
-        this->SendSharedData(0);
-        this->UpdatePlayer(player, 0);
-        sprintf(this->TBuff,
-                " Plr Rdy: P1=%d P2=%d P3=%d P4=%d P5=%d P6=%d P7=%d P8=%d ",
-                this->PlayerOptions.PlayerReady[1],
-                this->PlayerOptions.PlayerReady[2],
-                this->PlayerOptions.PlayerReady[3],
-                this->PlayerOptions.PlayerReady[4],
-                this->PlayerOptions.PlayerReady[5],
-                this->PlayerOptions.PlayerReady[6],
-                this->PlayerOptions.PlayerReady[7],
-                this->PlayerOptions.PlayerReady[8]);
-        L->Log(this->TBuff);
-        this->NotifyWindow(COMM_UPDATE_PLAYERS);
         return 1;
     }
 
-    if (header->Command == '1') {
-        MSGFORMAT_ALL_DONE done;
-        MSGFORMAT_LATENCY pong;
-        ulong turn = this->current_turn;
-        ulong initiated = header->ExecuteOnTurn;
-        done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
-        if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
+    if (command == '1') {
+        unsigned long turn = this->current_turn;
+        int multiplayer = this->Multiplayer;
+        unsigned long initiated =
+            *reinterpret_cast<unsigned long*>(msg + 4);
+        unsigned char turn_increment =
+            this->PlayerOptions.CommandTurnIncrement;
+        unsigned int done_turn = turn_increment + turn;
+
+        if (multiplayer != 0 &&
+            this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
-            if (turn > 6) {
+            MSGFORMAT_ALL_DONE done;
+            if (this->current_turn > 6) {
                 done.HighLatencyCenti = this->Speed->GetHighLatencyCenti();
-                done.FrameRateMsec = this->Speed->GetAvgFrameRate();
+                done.FrameRateMsec =
+                    static_cast<unsigned char>(this->Speed->GetAvgFrameRate());
                 this->Speed->SetPlayerTurnSpeed(this->Me, done.FrameRateMsec,
                                                 done.HighLatencyCenti);
             }
-            comm_last_sent_time = debug_timeGetTime(com_hand_source_path, 0xBF9);
+            comm_last_sent_time =
+                debug_timeGetTime(com_hand_source_path, 0xBF9);
             done.Command = 'D';
+            done.ExecuteOnTurn = done_turn;
             L->Log("  >TX DONE (%d)", 0x0C);
-            this->CommOut(0, 0x44, &done, 0x0C, 0);
+            this->CommOut(0, 'D', &done, 0x0C, 0);
         }
+
+        MSGFORMAT_LATENCY pong;
         pong.Command = '2';
         pong.Initiated = initiated;
-        pong.CurrentTurn = turn;
+        pong.CurrentTurn = this->current_turn;
         L->Log("  >TX PONG #%d (%d)", player, 0x0C);
-        long result = this->FastSend(this->PlayerOptions.dcoID[player],
-                                     &pong, 0x0C, 0, 0);
+        long result = this->FastSend(this->PlayerOptions.dcoID[player], &pong,
+                                     0x0C, 0, 0);
         this->Err->ShowReturn(result, "TX Ping");
         return 1;
     }
 
-    if (header->Command == '3') {
+    if (command == '3') {
         MSGFORMAT_LATENCY pong;
-        ulong turn = this->current_turn;
         pong.Command = '4';
-        pong.Initiated = header->ExecuteOnTurn;
-        pong.CurrentTurn = turn;
+        pong.Initiated = *reinterpret_cast<unsigned long*>(msg + 4);
+        pong.CurrentTurn = this->current_turn;
         L->Log("  >TX DEBUG PONG #%d (%d)", player, 0x0C);
-        long result = this->FastSend(this->PlayerOptions.dcoID[player],
-                                     &pong, 0x0C, 0, 0);
+        long result = this->FastSend(this->PlayerOptions.dcoID[player], &pong,
+                                     0x0C, 0, 0);
         this->Err->ShowReturn(result, "TX Debug Ping");
-        sprintf(msg, "Received debug ping from %s (#%d)",
+
+        char text[256];
+        sprintf(text, "Received debug ping from %s (#%d)",
                 this->GetPlayerName(player), player);
-        TChat* chat = this->Chat;
-        L->Log(msg);
-        chat->AddChatMsg("DEBUG", msg, 0);
+        L->Log(text);
+        this->Chat->AddChatMsg("DEBUG", text, 0);
         return 1;
     }
 
-    if (header->Command == '?') {
-        if (this->MeHost == 0)
-            return 1;
-        ulong missing_dco = header->ExecuteOnTurn;
-        unsigned int missing_player = 0;
-        if (missing_dco != 0) {
-            int i = this->PlayerOptions.LowPlayerNumber;
-            int high = this->PlayerOptions.HighPlayerNumber;
-            if (i <= high) {
-                do {
-                    if (this->PlayerOptions.dcoID[i] == missing_dco) {
-                        missing_player = i;
-                        break;
-                    }
-                    ++i;
-                } while (i <= high);
+    if (command == '?') {
+        if (this->MeHost != 0) {
+            unsigned long invalid_dco =
+                *reinterpret_cast<unsigned long*>(msg + 4);
+            unsigned int invalid_player = 0;
+            if (invalid_dco != 0) {
+                unsigned int i = this->PlayerOptions.LowPlayerNumber;
+                unsigned int high = this->PlayerOptions.HighPlayerNumber;
+                if (static_cast<int>(i) <= static_cast<int>(high)) {
+                    do {
+                        if (this->PlayerOptions.dcoID[i] == invalid_dco) {
+                            invalid_player = i;
+                            break;
+                        }
+                        ++i;
+                    } while (static_cast<int>(i) <=
+                             static_cast<int>(high));
+                }
+            }
+
+            if (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
+                sprintf(this->TBuff,
+                        " P#%d reported P#%d (dco=%d) was invalid ", player,
+                        invalid_player, invalid_dco);
+                L->Log(this->TBuff);
+                L->Log("Rcvd Missing Player report for player #%d, ID=%d from player %d",
+                       invalid_player,
+                       *reinterpret_cast<unsigned long*>(msg + 4), player);
+                this->PlayerOptions.PlayerReady[invalid_player] = 0;
+                this->PlayerOptions.InvalidPlayer[invalid_player] = 1;
+                this->PlayerOptions.NeedsToBeSent = 1;
+            } else {
+                L->Log("Rcvd MAX TX report for player #%d, ID=%d from player %d",
+                       invalid_player, invalid_dco, player);
+                this->Kick(invalid_player);
             }
         }
-        if (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
-            sprintf(this->TBuff,
-                    " P#%d reported P#%d (dco=%d) was invalid ",
-                    player, missing_player, missing_dco);
-            L->Log(this->TBuff);
-            L->Log("Rcvd Missing Player report for player #%d, ID=%d from player %d",
-                   missing_player, missing_dco, player);
-            this->PlayerOptions.PlayerReady[missing_player] = 0;
-            this->PlayerOptions.InvalidPlayer[missing_player] = 1;
-            this->PlayerOptions.NeedsToBeSent = 1;
-        } else {
-            L->Log("Rcvd MAX TX report for player #%d, ID=%d from player %d",
-                   missing_player, missing_dco, player);
-            this->Kick(missing_player);
-        }
         return 1;
     }
 
-    if (header->Command == '2') {
-        ulong elapsed = debug_timeGetTime(com_hand_source_path, 0x672) -
-                        header->ExecuteOnTurn;
-        ulong turn = this->current_turn;
-        MSGFORMAT_ALL_DONE done;
-        if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
+    if (command == '2') {
+        unsigned long now = debug_timeGetTime(com_hand_source_path, 0x672);
+        unsigned long initiated =
+            *reinterpret_cast<unsigned long*>(msg + 4);
+        unsigned char turn_increment =
+            this->PlayerOptions.CommandTurnIncrement;
+        unsigned long turn = this->current_turn;
+        unsigned int done_turn = turn_increment + turn;
+
+        if (this->Multiplayer != 0 &&
+            this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
-            if (turn > 6) {
+            MSGFORMAT_ALL_DONE done;
+            if (this->current_turn > 6) {
                 done.HighLatencyCenti = this->Speed->GetHighLatencyCenti();
-                done.FrameRateMsec = this->Speed->GetAvgFrameRate();
+                done.FrameRateMsec =
+                    static_cast<unsigned char>(this->Speed->GetAvgFrameRate());
                 this->Speed->SetPlayerTurnSpeed(this->Me, done.FrameRateMsec,
                                                 done.HighLatencyCenti);
             }
-            comm_last_sent_time = debug_timeGetTime(com_hand_source_path, 0xBF9);
+            comm_last_sent_time =
+                debug_timeGetTime(com_hand_source_path, 0xBF9);
             done.Command = 'D';
-            done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
+            done.ExecuteOnTurn = done_turn;
             L->Log("  >TX DONE (%d)", 0x0C);
-            this->CommOut(0, 0x44, &done, 0x0C, 0);
+            this->CommOut(0, 'D', &done, 0x0C, 0);
         }
-        this->Speed->SetActualLatency(player, elapsed);
+
+        this->Speed->SetActualLatency(player, now - initiated);
         return 1;
     }
 
-    if (header->Command == '4') {
-        ulong elapsed = debug_timeGetTime(com_hand_source_path, 0x68B) -
-                        header->ExecuteOnTurn;
-        char* name = this->GetPlayerName(player);
-        sprintf(msg, "%s #%d Debug ping - elapsed=%d", name, player, elapsed);
-        L->Log(msg);
-        this->Chat->AddChatMsg("DEBUG", msg, 0);
+    if (command == '4') {
+        unsigned long now = debug_timeGetTime(com_hand_source_path, 0x68B);
+        unsigned long elapsed =
+            now - *reinterpret_cast<unsigned long*>(msg + 4);
+        char text[256];
+        sprintf(text, "%s #%d Debug ping - elapsed=%d",
+                this->GetPlayerName(player), player, elapsed);
+        L->Log(text);
+        this->Chat->AddChatMsg("DEBUG", text, 0);
         return 1;
     }
 
-    if (header->Command == 'Y') {
+    if (command == 'Y') {
         if (this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
-            this->PlayerHighSerialNumber[player] = header->ExecuteOnTurn;
+            this->PlayerHighSerialNumber[player] =
+                *reinterpret_cast<unsigned int*>(msg + 4);
             this->ClearRXForPlayer(player);
             L->Log("NOSUCHSERIAL - Setting P#%d SER from %d to %d", player,
-                   this->PlayerHighSerialNumber[player], header->ExecuteOnTurn);
-            return 1;
+                   this->PlayerHighSerialNumber[player],
+                   *reinterpret_cast<unsigned int*>(msg + 4));
         }
+        return 1;
+    }
+
+    if (this->RGE_Guaranteed_Delivery == 0) {
+        this->LogRXMsg(*serial, player,
+                       *reinterpret_cast<unsigned long*>(msg + 4), command,
+                       static_cast<unsigned char>(msg[1]));
+        comm_receive_message = msg + 8;
+        comm_receive_base = size - 8;
     } else {
-    if (this->RGE_Guaranteed_Delivery != 0) {
-        if (this->IntentionallyDropPackets != 0 && this->current_turn > 6) {
-            ++dropcount;
-            if (dropcount > 8) {
-                rge_base_game->get_string(0x4BC, msg_str, 100);
-                sprintf(this->TBuff, msg_str, header->Serialno,
-                        static_cast<int>(static_cast<signed char>(header->Command)),
-                        static_cast<int>(static_cast<signed char>(header->Command)));
-                L->Log(this->TBuff);
-                dropcount = 0;
-                return 1;
-            }
-        }
-        if (header->Command == 'X') {
-            this->TXResendReply(header->ExecuteOnTurn, player);
-            return 1;
-        }
-        if (this->PlayerHighSerialNumber[player] == 0) {
-            L->Log("+++First contact with P#%d Next Serial Init to %d", player,
-                   header->Serialno);
-            this->PlayerHighSerialNumber[player] = header->Serialno - 1;
-        }
-        unsigned int next_serial = this->PlayerHighSerialNumber[player] + 1;
-        if (header->Serialno < next_serial) {
-            sprintf(this->TBuff,
-                    "GTD: RX Past Ser#%d rx. Expected %d from P#%d (acknowledged and discarded)",
-                    header->Serialno, next_serial, player);
+        if (this->IntentionallyDropPackets != 0 && this->current_turn > 6 &&
+            ++comm_drop_count > 8) {
+            char drop_format[100];
+            rge_base_game->get_string(0x4BC, drop_format, 100);
+            sprintf(this->TBuff, drop_format, *serial,
+                    static_cast<int>(*msg), static_cast<int>(*msg));
             L->Log(this->TBuff);
-            L->Log("  >TX R ACK #%d %d (%d)", player, header->Serialno, 8);
-            this->TXAcknowledgeMessage(header->Serialno, player);
+            comm_drop_count = 0;
             return 1;
         }
-        if (next_serial < header->Serialno) {
+
+        if (*msg == 'X') {
+            this->TXResendReply(
+                *reinterpret_cast<unsigned int*>(msg + 4), player);
+            return 1;
+        }
+
+        if (this->PlayerHighSerialNumber[player] == 0) {
+            L->Log("+++First contact with P#%d Next Serial Init to %d",
+                   player, *serial);
+            this->PlayerHighSerialNumber[player] = *serial - 1;
+        }
+
+        unsigned int next_serial =
+            this->PlayerHighSerialNumber[player] + 1;
+        if (*serial < next_serial) {
+            sprintf(this->TBuff,
+                    "GTD: RX Past Ser#%d rx. Expected %d from P#%d", *serial,
+                    next_serial, player);
+            L->Log(this->TBuff);
+            L->Log("  >TX R ACK #%d %d (%d)", player, *serial, 8);
+            this->TXAcknowledgeMessage(*serial, player);
+            return 1;
+        }
+
+        if (*serial > next_serial) {
             ++this->DroppedPacketCount;
             sprintf(this->TBuff, "GTD: RX Future Ser#%d rx from P#%d",
-                    header->Serialno, player);
+                    *serial, player);
             L->Log(this->TBuff);
-            this->StoreIncoming(header->Serialno, message, param_1, from, to);
-            L->Log("  >TX F ACK #%d %d (%d)", player, header->Serialno, 8);
-            this->TXAcknowledgeMessage(header->Serialno, player);
+            this->StoreIncoming(*serial, msg, size, from, to);
+            L->Log("  >TX F ACK #%d %d (%d)", player, *serial, 8);
+            this->TXAcknowledgeMessage(*serial, player);
             this->TXResendRequest(next_serial, player);
             return 1;
         }
+
         if (cached == 0) {
-            L->Log("  >TX N ACK #%d %d (%d)", player, header->Serialno, 8);
-            this->TXAcknowledgeMessage(header->Serialno, player);
+            L->Log("  >TX N ACK #%d %d (%d)", player, *serial, 8);
+            this->TXAcknowledgeMessage(*serial, player);
         }
-        InContentSize = param_1 - sizeof(*header);
-        this->PlayerHighSerialNumber[player] = header->Serialno;
-        InContent = message + sizeof(*header);
-    } else {
-        this->LogRXMsg(header->Serialno, player, header->ExecuteOnTurn,
-                       header->Command, header->Sequence);
-        InContentSize = param_1 - 8;
-        InContent = message + 8;
+        this->PlayerHighSerialNumber[player] = *serial;
+        comm_receive_message = msg + 12;
+        comm_receive_base = size - 12;
     }
-    L->Log(" PROCESS: Ser#%d  CMD=%d '%c' Seq=%d Turn=%d [ Size=%d dFrom=%d dRxID=%d ] ",
-           header->Serialno, static_cast<int>(header->Command),
-           static_cast<int>(header->Command), static_cast<int>(header->Sequence),
-           header->ExecuteOnTurn, param_1, from, to);
-    if (this->ShuttingDown == 0)
-        this->EvaluatePlayerMessage(param_1, player, header->ExecuteOnTurn,
-                                    header->Command, header->Sequence,
-                                    InContent, InContentSize,
-                                    from, to);
-    }
+
+    L->Log(" PROCESS: Ser#%d  CMD=%d '%c' Seq=%d Turn=%d Size=%d From=%d To=%d",
+           *serial, static_cast<unsigned char>(*msg),
+           static_cast<unsigned char>(*msg),
+           static_cast<unsigned char>(msg[1]),
+           *reinterpret_cast<unsigned long*>(msg + 4), size, from, to);
+    if (this->ShuttingDown == 0) {
+        this->EvaluatePlayerMessage(
+            size, player, *reinterpret_cast<unsigned long*>(msg + 4),
+            static_cast<unsigned char>(*msg),
+            static_cast<unsigned char>(msg[1]), comm_receive_message,
+            comm_receive_base, from, to);
     }
     return 1;
 }
