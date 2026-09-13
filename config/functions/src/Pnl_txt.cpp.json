@@ -34,7 +34,7 @@
     "0047D060": {"status": "matching", "symbol": "?scroll@TTextPanel@@QAEXEFH@Z"},
     "0047D120": {"status": "matching", "symbol": "?key_down_action@TTextPanel@@UAEJJFHHH@Z"},
     "0047D200": {"status": "matching", "symbol": "?action@TTextPanel@@UAEJPAVTPanel@@JKK@Z"},
-    "0047D2C0": {"status": "verified_logic", "symbol": "?draw@TTextPanel@@UAEXXZ"},
+    "0047D2C0": {"status": "scratch", "symbol": "?draw@TTextPanel@@UAEXXZ"},
     "0047D3D0": {"status": "matching", "symbol": "?draw_background@TTextPanel@@QAEXXZ"},
     "0047D570": {"status": "matching", "symbol": "?draw_border@TTextPanel@@QAEXXZ"},
     "0047D760": {"status": "matching", "symbol": "?draw_line@TTextPanel@@QAEXPAXFFKK@Z"},

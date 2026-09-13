@@ -12,7 +12,7 @@
     "00487930": {"status": "matching", "symbol": "?de_init@TRIBE_RMM_Database_Controller@@UAEEXZ"},
     "00487940": {"status": "matching", "symbol": "?add_land_module@TRIBE_RMM_Database_Controller@@MAEXE@Z"},
     "00487DD0": {"status": "new_verified_logic", "symbol": "?add_terrain_module@TRIBE_RMM_Database_Controller@@MAEXXZ", "behavior_review": "logic_matching/00487DD0/coord-03-20260913T034034Z/attempt-01"},
-    "00487FA0": {"status": "verified_logic", "symbol": "?add_object_module@TRIBE_RMM_Database_Controller@@MAEXXZ"},
+    "00487FA0": {"status": "scratch", "symbol": "?add_object_module@TRIBE_RMM_Database_Controller@@MAEXXZ"},
     "00488700": {"status": "matching", "symbol": "?add_elevation_module@TRIBE_RMM_Database_Controller@@MAEXXZ"},
     "004887A0": {"status": "matching", "symbol": "?add_shallows_module@TRIBE_RMM_Database_Controller@@IAEXXZ"},
     "00488870": {"status": "matching", "symbol": "?generate@TRIBE_RMM_Database_Controller@@UAEEXZ"}
