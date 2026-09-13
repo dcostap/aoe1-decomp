@@ -7,7 +7,7 @@
   },
   "functions": {
     "00466A20": {"status": "matching", "symbol": "??0TEasy_Panel@@QAE@PAD@Z"},
-    "00466A90": {"status": "scratch", "symbol": "?setup@TEasy_Panel@@QAEJPAVTDrawArea@@PAVTPanel@@PADJHJJJJH@Z"},
+    "00466A90": {"status": "new_verified_logic", "symbol": "?setup@TEasy_Panel@@QAEJPAVTDrawArea@@PAVTPanel@@PADJHJJJJH@Z", "behavior_review": "logic_matching/00466A90/coord-10-00466A90-review-02/attempt-01"},
     "00467100": {"status": "matching", "symbol": "??0TEasy_Panel@@QAE@XZ"},
     "00467150": {"status": "matching", "symbol": "?init_vars@TEasy_Panel@@IAEXXZ"},
     "00467250": {"status": "matching", "symbol": "??1TEasy_Panel@@UAE@XZ"},
