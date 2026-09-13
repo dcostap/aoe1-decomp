@@ -337,20 +337,16 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
 {
     long x;
     long y;
-    long raw_ok;
+    long chance_count = 0;
+    long clump_count;
+    long area;
+    long max_x = this->map_width - 1;
+    long max_y = this->map_height - 1;
+    float cost;
+    float chance;
     uchar done;
-    long clump_size;
-    long chance;
-    float local_chance;
-    long max_y;
-    long max_x;
-    float in_zone;
-    Map_Stack local_stack;
+    Map_Stack loc_stack;
     Map_Stack stack[99];
-
-    max_x = this->map_width - 1;
-    chance = 0;
-    max_y = this->map_height - 1;
 
     if (line.clumps > 0) {
         Map_Stack* stack_ptr = stack;
@@ -362,145 +358,156 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
         } while (count != 0);
     }
 
-    local_stack.next = 0;
-    local_stack.prev = 0;
-    this->link_stack_randomly(&local_stack);
+    loc_stack.next = 0;
+    loc_stack.prev = 0;
+    this->link_stack_randomly(&loc_stack);
 
-    clump_size = (long)sqrt((double)line.elevation_size / (double)line.clumps);
-    clump_size /= 2;
-    if (clump_size < 2) {
-        clump_size = 2;
+    area = (long)sqrt(
+        (double)line.elevation_size / (double)line.clumps);
+    area /= 2;
+    if (area < 2) {
+        area = 2;
     }
 
-    {
-        long i = 0;
-        while (i < line.clumps) {
-            Map_Stack* node = this->pop_stack(local_stack, y, x,
-                in_zone);
-            if (node == 0) {
+    clump_count = 0;
+    if (clump_count < line.clumps) {
+        Map_Stack* stack_ptr = stack;
+        do {
+            if (this->pop_stack(loc_stack, x, y, cost) == 0) {
                 break;
             }
 
-            if (this->search_map_rows[x][y] == 0
-                && this->check_start_elevation(y, x,
-                    (uchar)line.base_terrain_type,
-                    (uchar)line.base_elevation,
-                    (uchar)line.spacing) != 0) {
-                this->remove_area_from_lists(y, x, clump_size);
+            if (this->search_map_rows[y][x] == 0 &&
+                this->check_start_elevation(
+                    x, y, (uchar)line.base_terrain_type,
+                    (uchar)line.base_elevation, (uchar)line.spacing) != 0) {
+                this->remove_area_from_lists(x, y, area);
 
-                this->map_row_offset[x][y].height = line.elevation;
+                this->map_row_offset[y][x].height =
+                    (uchar)line.elevation;
 
-                if (y > 0) {
-                    this->push_stack(stack[i], y - 1, x, 0.0f, 0.0f);
-                }
                 if (x > 0) {
-                    this->push_stack(stack[i], y, x - 1, 0.0f, 0.0f);
+                    this->push_stack(*stack_ptr, x - 1, y,
+                                     0.0f, 0.0f);
                 }
-                if (y < max_x) {
-                    this->push_stack(stack[i], y + 1, x, 0.0f, 0.0f);
+                if (y > 0) {
+                    this->push_stack(*stack_ptr, x, y - 1,
+                                     0.0f, 0.0f);
                 }
-                if (x < max_y) {
-                    this->push_stack(stack[i], y, x + 1, 0.0f, 0.0f);
+                if (x < max_x) {
+                    this->push_stack(*stack_ptr, x + 1, y,
+                                     0.0f, 0.0f);
+                }
+                if (y < max_y) {
+                    this->push_stack(*stack_ptr, x, y + 1,
+                                     0.0f, 0.0f);
                 }
 
-                ++chance;
-                ++i;
+                ++chance_count;
+                ++clump_count;
+                ++stack_ptr;
             }
-        }
+        } while (clump_count < line.clumps);
     }
 
     do {
         done = 1;
         if (line.clumps > 0) {
             Map_Stack* stack_ptr = stack;
-            long phase_count = line.clumps;
+            long count = line.clumps;
             do {
-                if (chance < line.elevation_size) {
-                    Map_Stack* node = this->pop_stack(*stack_ptr, y, x,
-                        in_zone);
-                    if (node != 0) {
-                        done = 0;
-                        uchar* mark = &this->search_map_rows[x][y];
-                        long random_value = (debug_rand(
-                            "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0x171) * 100)
-                            / 0x7FFF;
-                        if (*mark <= random_value) {
-                            long base_elevation = line.base_elevation;
-                            RGE_Tile* tile = &this->map_row_offset[x][y];
-                            raw_ok = this->check_elevation(
-                                (uchar)line.elevation, y, x, line.spacing,
-                                (uchar)line.base_terrain_type,
-                                (uchar)base_elevation);
+                if (chance_count < line.elevation_size &&
+                    this->pop_stack(*stack_ptr, x, y, cost) != 0) {
+                    done = 0;
 
-                            if (tile->height
-                                == base_elevation
-                                && raw_ok > 0) {
-                                local_chance = this->fig_chance(
-                                    (uchar)raw_ok, y, x);
-                                tile->height = (uchar)line.elevation;
+                    uchar* modifier = &this->search_map_rows[y][x];
+                    long random_value =
+                        (debug_rand(
+                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+                             0x171) * 100) /
+                        0x7fff;
+                    if (*modifier <= random_value) {
+                        RGE_Tile* tile = &this->map_row_offset[y][x];
+                        uchar elevation_count = this->check_elevation(
+                            (uchar)line.elevation, x, y, line.spacing,
+                            (uchar)line.base_terrain_type,
+                            (uchar)line.base_elevation);
 
-                                if (y > 0) {
-                                    if (tile[-1].height
-                                        == base_elevation) {
-                                        clump_size = (debug_rand(
-                                            "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                            0x17D) * 100) / 0x7FFF;
-                                        this->push_stack(*stack_ptr, y - 1, x,
-                                            0.0f,
-                                            (float)clump_size + local_chance);
-                                    }
-                                }
-                                if (y < max_x) {
-                                    if (tile[1].height
-                                        == base_elevation) {
-                                        clump_size = (debug_rand(
-                                            "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                            0x17F) * 100) / 0x7FFF;
-                                        this->push_stack(*stack_ptr, y + 1, x,
-                                            0.0f,
-                                            (float)clump_size + local_chance);
-                                    }
-                                }
-                                if (x > 0) {
-                                    if (tile[-this->map_width].height
-                                        == base_elevation) {
-                                        clump_size = (debug_rand(
-                                            "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                            0x181) * 100) / 0x7FFF;
-                                        this->push_stack(*stack_ptr, y, x - 1,
-                                            0.0f,
-                                            (float)clump_size + local_chance);
-                                    }
-                                }
-                                if (x < max_y) {
-                                    if (tile[this->map_width].height
-                                        == base_elevation) {
-                                        clump_size = (debug_rand(
-                                            "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                            0x183) * 100) / 0x7FFF;
-                                        this->push_stack(*stack_ptr, y, x + 1,
-                                            0.0f,
-                                            (float)clump_size + local_chance);
-                                    }
-                                }
+                        if (tile->height == line.base_elevation &&
+                            elevation_count != 0) {
+                            chance = this->fig_chance(
+                                elevation_count, x, y);
+                            tile->height = (uchar)line.elevation;
 
-                                ++chance;
+                            if (x > 0 &&
+                                tile[-1].height ==
+                                    line.base_elevation) {
+                                long clump_size =
+                                    (debug_rand(
+                                         "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+                                         0x17d) * 100) /
+                                    0x7fff;
+                                this->push_stack(
+                                    *stack_ptr, x - 1, y, 0.0f,
+                                    (float)clump_size + chance);
                             }
-                        } else {
-                            *mark = 0x65;
+                            if (x < max_x &&
+                                tile[1].height ==
+                                    line.base_elevation) {
+                                long clump_size =
+                                    (debug_rand(
+                                         "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+                                         0x17f) * 100) /
+                                    0x7fff;
+                                this->push_stack(
+                                    *stack_ptr, x + 1, y, 0.0f,
+                                    (float)clump_size + chance);
+                            }
+                            if (y > 0 &&
+                                tile[-this->map_width].height ==
+                                    line.base_elevation) {
+                                long clump_size =
+                                    (debug_rand(
+                                         "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+                                         0x181) * 100) /
+                                    0x7fff;
+                                this->push_stack(
+                                    *stack_ptr, x, y - 1, 0.0f,
+                                    (float)clump_size + chance);
+                            }
+                            if (y < max_y &&
+                                tile[this->map_width].height ==
+                                    line.base_elevation) {
+                                long clump_size =
+                                    (debug_rand(
+                                         "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+                                         0x183) * 100) /
+                                    0x7fff;
+                                this->push_stack(
+                                    *stack_ptr, x, y + 1, 0.0f,
+                                    (float)clump_size + chance);
+                            }
+                            ++chance_count;
                         }
+                    } else {
+                        *modifier = 101;
                     }
                 }
                 ++stack_ptr;
-                --phase_count;
-            } while (phase_count != 0);
+                --count;
+            } while (count != 0);
         }
     } while (done == 0);
 
     if (line.clumps > 0) {
-        for (long i = 0; i < line.clumps; ++i) {
-            this->deinit_stack(stack[i]);
-        }
+        Map_Stack* stack_ptr = stack;
+        long count = line.clumps;
+        do {
+            this->deinit_stack(*stack_ptr);
+            ++stack_ptr;
+            --count;
+        } while (count != 0);
     }
+
     return 1;
 }
