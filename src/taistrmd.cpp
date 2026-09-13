@@ -945,193 +945,91 @@ extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
 
 
-int TribeStrategyAIModule::update(int parameter)
+int TribeStrategyAIModule::update(int)
 {
-    int i = 0;
-    RGE_Victory_Entry* victoryEntry;
-    unsigned int victoryCondition;
+    int i;
+    int result;
+    int ruleToStart;
+    int ruleToStop;
+    int bestResult;
+    int worstResult;
 
     this->victoryConditionChangeTimeout++;
     if (this->victoryConditionChangeTimeout >= 0) {
-        this->victoryConditionChangeTimeout = i;
-        victoryCondition = 0x0B;
-        victoryEntry = this->md->player->victory_conditions->condition_raw_info(i);
-        if (victoryEntry != 0) {
-            victoryCondition = victoryEntry->command;
-            if (victoryEntry->target_obj != 0) {
-                this->targetIDValue = victoryEntry->target_obj->id;
-                this->targetTypeValue = victoryEntry->target_obj->master_obj->id;
+        this->victoryConditionChangeTimeout = 0;
+
+        int victoryCondition = 11;
+        RGE_Victory_Entry* entry =
+            this->md->player->victory_conditions->condition_raw_info(0);
+        if (entry != 0) {
+            victoryCondition = entry->command;
+            if (entry->target_obj != 0) {
+                this->targetIDValue = entry->target_obj->id;
+                this->targetTypeValue = entry->target_obj->master_obj->id;
             }
-            if (victoryEntry->this_obj != 0) {
-                this->secondTargetIDValue = victoryEntry->this_obj->id;
-                this->secondTargetTypeValue = victoryEntry->this_obj->master_obj->id;
+            if (entry->this_obj != 0) {
+                this->secondTargetIDValue = entry->this_obj->id;
+                this->secondTargetTypeValue = entry->this_obj->master_obj->id;
             }
-            this->targetPoint1Value.x = victoryEntry->x0;
-            this->targetPoint1Value.y = victoryEntry->y0;
+            this->targetPoint1Value.x = entry->x0;
+            this->targetPoint1Value.y = entry->y0;
             this->targetPoint1Value.z = 1.0f;
-            this->targetPoint2Value.x = victoryEntry->x1;
-            this->targetPoint2Value.y = victoryEntry->y1;
+            this->targetPoint2Value.x = entry->x1;
+            this->targetPoint2Value.y = entry->y1;
             this->targetPoint2Value.z = 1.0f;
-            this->targetAttributeValue = victoryEntry->number;
-            this->targetNumberValue = victoryEntry->count;
+            this->targetAttributeValue = entry->number;
+            this->targetNumberValue = entry->count;
         }
-        if (victoryCondition != (unsigned int)this->currentVictoryConditionValue) {
+
+        if (victoryCondition != this->currentVictoryConditionValue)
             this->setVictoryCondition(victoryCondition);
-        }
     }
 
-    int result;
-    int bestResult;
-    int worstRuleResult;
-    int ruleResult;
-
-    result = -1;
     bestResult = 0;
-    worstRuleResult = -1;
-    if (i < this->idleRules.numberValue) {
-        ManagedArray<int>* idleRules = &this->idleRules;
-        do {
-            if (i > idleRules->maximumSizeValue - 1) {
-                idleRules->resize(i + 1);
-            }
-            ruleResult = this->vcRules.evaluateAsNonInProgress(
-                this->md->aiPlayer,
-                idleRules->value[i]);
-            if (ruleResult > bestResult) {
-                result = (*idleRules)[i];
-                bestResult = ruleResult;
-            }
-            ++i;
-        } while (i < this->idleRules.numberValue);
-    }
-
-    if (result != -1 &&
-        this->vcRules.execute(
-            this->md->aiPlayer,
-            this->currentVictoryConditionValue,
-            result) == 1) {
-        ManagedArray<int>* executingRules = &this->executingRules;
-        int executingCount = executingRules->numberValue;
-        i = 0;
-        if (executingCount > 0) {
-            while (i < executingCount && i < executingRules->maximumSizeValue) {
-                if (executingRules->value[i] == result) {
-                    goto remove_idle_rule;
-                }
-                ++i;
-            }
-        }
-        if (executingCount > executingRules->maximumSizeValue - 1) {
-            executingRules->resize(executingCount + 1);
-        }
-        executingRules->value[executingRules->numberValue] = result;
-        executingRules->numberValue++;
-
-remove_idle_rule:
-        int idleCount = this->idleRules.maximumSizeValue;
-        i = 0;
-        int* idleValue = this->idleRules.value;
-        while (i < idleCount) {
-            if (*idleValue == result) {
-                break;
-            }
-            ++i;
-            ++idleValue;
-        }
-        if (i < idleCount) {
-            if (i < idleCount - 1) {
-                do {
-                    this->idleRules.value[i] = this->idleRules.value[i + 1];
-                    ++i;
-                } while (i < this->idleRules.maximumSizeValue - 1);
-            }
-            this->idleRules.numberValue--;
-            if (this->idleRules.numberValue < 0) {
-                this->idleRules.numberValue = 0;
-            }
+    ruleToStart = -1;
+    for (i = 0; i < this->idleRules.numberValue; i++) {
+        result = this->vcRules.evaluateAsNonInProgress(
+            this->md->aiPlayer, this->idleRules[i]);
+        if (result > bestResult) {
+            ruleToStart = this->idleRules[i];
+            bestResult = result;
         }
     }
 
-    i = 0;
-    result = 0x65;
-    worstRuleResult = -1;
-    if (this->executingRules.numberValue > 0) {
-        ManagedArray<int>* executingRules = &this->executingRules;
-        do {
-            ruleResult = this->vcRules.evaluateAsInProgress(
-                this->md->aiPlayer,
-                (*executingRules)[i]);
-            if (ruleResult < result) {
-                if (i > this->executingRules.maximumSizeValue - 1) {
-                    executingRules->resize(i + 1);
-                }
-                worstRuleResult = executingRules->value[i];
-                result = ruleResult;
-            }
-            ++i;
-        } while (i < this->executingRules.numberValue);
+    if (ruleToStart != -1 &&
+        this->vcRules.execute(this->md->aiPlayer,
+                              this->currentVictoryConditionValue,
+                              ruleToStart) == 1) {
+        this->executingRules.add(ruleToStart);
+        this->idleRules.remove(ruleToStart);
     }
 
-    if (worstRuleResult != -1 &&
-        this->vcRules.stopExecution(this->md->aiPlayer, worstRuleResult) == 1) {
-        int executingSize = this->executingRules.maximumSizeValue;
-        i = 0;
-        int* executingValue = this->executingRules.value;
-        while (i < executingSize) {
-            if (*executingValue == worstRuleResult) {
-                break;
-            }
-            ++i;
-            ++executingValue;
+    ruleToStop = -1;
+    worstResult = 101;
+    for (i = 0; i < this->executingRules.numberValue; i++) {
+        result = this->vcRules.evaluateAsInProgress(
+            this->md->aiPlayer, this->executingRules[i]);
+        if (result < worstResult) {
+            ruleToStop = this->executingRules[i];
+            worstResult = result;
         }
-        if (i < executingSize) {
-            if (i < executingSize - 1) {
-                do {
-                    this->executingRules.value[i] = this->executingRules.value[i + 1];
-                    ++i;
-                } while (i < this->executingRules.maximumSizeValue - 1);
-            }
-            this->executingRules.numberValue--;
-            if (this->executingRules.numberValue < 0) {
-                this->executingRules.numberValue = 0;
-            }
-        }
-
-        ManagedArray<int>* idleRules = &this->idleRules;
-        int idleCount = idleRules->numberValue;
-        i = 0;
-        if (idleCount > 0) {
-            while (i < idleCount && i < idleRules->maximumSizeValue) {
-                if (idleRules->value[i] == worstRuleResult) {
-                    goto add_idle_rule;
-                }
-                ++i;
-            }
-        }
-        if (idleCount > idleRules->maximumSizeValue - 1) {
-            idleRules->resize(idleCount + 1);
-        }
-        idleRules->value[idleRules->numberValue] = worstRuleResult;
-        idleRules->numberValue++;
-
-add_idle_rule:
-        ;
     }
 
-    i = 0;
-    if (this->vcRuleSet.numberValue > 0) {
-        do {
-            ruleResult = this->vcRules.evaluateAsNonInProgress(
-                this->md->aiPlayer, this->vcRuleSet[i]);
-            if (ruleResult == -1) {
-                this->vcRules.execute(
-                    this->md->aiPlayer,
-                    this->currentVictoryConditionValue,
-                    this->vcRuleSet[i]);
-            }
-            ++i;
-        } while (i < this->vcRuleSet.numberValue);
+    if (ruleToStop != -1 &&
+        this->vcRules.stopExecution(this->md->aiPlayer, ruleToStop) == 1) {
+        this->executingRules.remove(ruleToStop);
+        this->idleRules.add(ruleToStop);
     }
+
+    for (i = 0; i < this->vcRuleSet.numberValue; i++) {
+        if (this->vcRules.evaluateAsNonInProgress(
+                this->md->aiPlayer, this->vcRuleSet[i]) == -1) {
+            this->vcRules.execute(this->md->aiPlayer,
+                                  this->currentVictoryConditionValue,
+                                  this->vcRuleSet[i]);
+        }
+    }
+
     return 1;
 }
 

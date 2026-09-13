@@ -19,7 +19,7 @@
     "004E9100": {"status": "matching", "symbol": "??0TribeStrategyAIModule@@QAE@PAXH@Z"},
     "004E9260": {"status": "matching", "symbol": "??0TribeStrategyAIModule@@QAE@HH@Z"},
     "004E9730": {"status": "matching", "symbol": "??1TribeStrategyAIModule@@UAE@XZ"},
-    "004E9820": {"status": "scratch", "symbol": "?update@TribeStrategyAIModule@@UAEHH@Z"},
+    "004E9820": {"status": "new_verified_logic", "symbol": "?update@TribeStrategyAIModule@@UAEHH@Z", "behavior_review": "logic_matching/004E9820/coord-12-review-20260310T000000Z/attempt-01"},
     "004E9D90": {"status": "matching", "symbol": "?setMainDecisionAI@TribeStrategyAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
     "004E9DA0": {"status": "matching", "symbol": "?save@TribeStrategyAIModule@@UAEHH@Z"},
     "004EA130": {"status": "matching", "symbol": "?ruleSetName@TribeStrategyAIModule@@QAEPADXZ"},
