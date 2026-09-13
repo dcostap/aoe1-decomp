@@ -131,7 +131,7 @@
     "004F9AD0": {"status": "matching", "symbol": "?taskBuilder@TribeTacticalAIModule@@QAEHHPAVBuildItem@@PAVConstructionItem@@K@Z"},
     "004F9E00": {"status": "matching", "symbol": "?taskBuilder@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Object@@@Z"},
     "004FA000": {"status": "matching", "symbol": "?taskRepairer@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Object@@@Z"},
-    "004FA170": {"status": "scratch", "symbol": "?taskGatherer@TribeTacticalAIModule@@QAEHHHHKPAH@Z"},
+    "004FA170": {"status": "new_verified_logic", "symbol": "?taskGatherer@TribeTacticalAIModule@@QAEHHHHKPAH@Z", "behavior_review": "logic_matching/004FA170/coord-08-004FA170-review-r3-20260913T110633Z/attempt-01"},
     "004FA820": {"status": "matching", "symbol": "?taskExplorer@TribeTacticalAIModule@@QAEHHH@Z"},
     "004FA940": {"status": "matching", "symbol": "?taskExplorer@TribeTacticalAIModule@@QAEHHMM@Z"},
     "004FAAA0": {"status": "matching", "symbol": "?taskExplorer@TribeTacticalAIModule@@QAEHHMMH@Z"},

@@ -6956,210 +6956,191 @@ dispatch:
 
 
 
-int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p5)
+int TribeTacticalAIModule::taskGatherer(int unitID, int resourceType,
+                                         int closeResource,
+                                         ulong /* startTime */,
+                                         int* triedTasking)
 {
-    RGE_Static_Object* rObjObj;
-    UnitData* gathererUnitData;
-    int resourceType;
-    int i;
-    int index;
-    float rYPos;
-    float rXPos;
-    int numStorage;
-    int maximumResourceDistance;
-    int exclusions[6];
-    RGE_Static_Object* gathererObj;
+    RGE_Static_Object* unit = this->md->object(unitID);
+    if (unit == 0)
+        return 0;
 
-    gathererObj = this->md->object(p1);
-    if (gathererObj == 0) return 0;
+    UnitData* oldGatherer = this->gatherer(unitID);
+    if (oldGatherer != 0 && oldGatherer->data2 > oldGatherer->data3)
+        resourceType = oldGatherer->data1;
 
-    gathererUnitData = this->gatherer(p1);
-    if (gathererUnitData != 0 &&
-        gathererUnitData->data2 > gathererUnitData->data3) {
-        resourceType = gathererUnitData->data1;
-    } else {
-        resourceType = p2;
-    }
-
-    i = -1;
-    index = 0;
-    rYPos = 0;
-    rXPos = 0;
+    int resourceID = -1;
+    float resourceX = 0.0f;
+    float resourceY = 0.0f;
+    int pathResourceID = 0;
+    int exclusions[4];
 
     if (resourceType == -1) {
-        int* neededResourceCursor = this->neededResourceValue;
-        for (index = 0; index < 4; index++, ++neededResourceCursor) {
-            resourceType = *neededResourceCursor;
-            if (p5 == 0 || p5[resourceType] != 1) {
-                numStorage = -1;
-                i = this->md->informationAI.gameIDOfResourceObject(
-                        resourceType, p1, rYPos, rXPos, numStorage, exclusions + 1, 0);
-                if (i != -1) {
-                    if (numStorage == -1)
-                        gathererObj->canPath(i, 1.0f, 0, 1, -1, -1);
-                    else
-                        gathererObj->canBidirectionPath(i, numStorage, 1.0f, 0, 1, -1, -1);
-                    break;
+        int i;
+        for (i = 0; i < 4; i++) {
+            resourceType = this->neededResourceValue[i];
+            if (triedTasking != 0 && triedTasking[resourceType] == 1)
+                continue;
+
+            pathResourceID = -1;
+            resourceID = this->md->informationAI.gameIDOfResourceObject(
+                resourceType, unitID, resourceX, resourceY, pathResourceID,
+                exclusions, 0);
+            if (resourceID != -1) {
+                if (pathResourceID == -1) {
+                    unit->canPath(resourceID, 1.0f, 0, 1, -1, -1);
                 }
+                else {
+                    unit->canBidirectionPath(resourceID, pathResourceID,
+                                             1.0f, 0, 1, -1, -1);
+                }
+                break;
             }
         }
-        if (i == -1) return 0;
+        if (resourceID == -1)
+            return 0;
     }
     else {
-        maximumResourceDistance = 0;
-        p5 = exclusions + 1;
-        for (; maximumResourceDistance < 3; ++maximumResourceDistance) {
-            numStorage = -1;
-            i = this->md->informationAI.gameIDOfResourceObject(
-                    resourceType, p1, rYPos, rXPos, numStorage, exclusions + 1, index);
-            if (i == -1) return 0;
-            int result = (numStorage == -1)
-                ? gathererObj->canPath(i, 1.0f, 0, 1, -1, -1)
-                : gathererObj->canBidirectionPath(i, numStorage, 1.0f, 0, 1, -1, -1);
-            if (result != 0) break;
-            if (resourceType == 0)
-                this->md->informationAI.setResourceObjectValid(resourceType, i, 2);
-            else
-                this->md->informationAI.setResourceObjectValid(resourceType, i, 0xF);
-            *p5 = i;
-            ++p5;
-            ++index;
-            i = -1;
-        }
-        if (i < 0) return 0;
-    }
+        int exclusionCount = 0;
+        do {
+            pathResourceID = -1;
+            resourceID = this->md->informationAI.gameIDOfResourceObject(
+                resourceType, unitID, resourceX, resourceY, pathResourceID,
+                exclusions, exclusionCount);
+            if (resourceID == -1)
+                return 0;
 
-    rObjObj = this->md->object(i);
-    if (rObjObj == 0) return 0;
-
-    if (this->sn[0xCD] != 1) goto tail;
-
-    if (resourceType == 0) {
-        if (this->builtFirstGranary == 1) {
-            if (this->builtFirstStoragePit != 1) goto tail;
-            if (rObjObj->master_obj->id == 0x3B) {
-                maximumResourceDistance = 0;
-                int granaries = 0;
-                int ng = this->numberAvailableGranaries(granaries, maximumResourceDistance);
-                if (maximumResourceDistance != 0 || ng < 1) goto tail;
-                exclusions[0] = this->sn[0xA3];
-                int d = (int)gathererObj->distance_to_object(rObjObj);
-                if (d <= exclusions[0] ||
-                    this->md->informationAI.closestDropsiteValue[0] == -1) goto tail;
-                int y = (int)rObjObj->world_y;
-                int x = (int)rObjObj->world_x;
-                if (this->md->informationAI.acceptablePotentialDropsiteArea(x, y) != 1) goto tail;
-                this->md->buildAI.insert(0x44, 1, -1);
-                goto tail;
-            } else {
-                short grp = rObjObj->master_obj->object_group;
-                if (grp == 0x1F || grp == 5 || grp == 0x21) goto tail;
-                maximumResourceDistance = 0;
-                int storagePits = 0;
-                int np = this->numberAvailableStoragePits(storagePits, maximumResourceDistance, 0);
-                if (maximumResourceDistance != 0 || np < 1) goto tail;
-                int d = (int)gathererObj->distance_to_object(rObjObj);
-                if (d < 0x10) {
-                    if (storagePits != 0) goto tail;
-                }
-                this->md->buildAI.insert(0x67, 1, -1);
-                goto tail;
+            int canPath;
+            if (pathResourceID == -1) {
+                canPath = unit->canPath(resourceID, 1.0f, 0, 1, -1, -1);
             }
-        }
-    }
-    if (this->builtFirstStoragePit != 1 || this->builtFirstGranary != 1) goto tail;
-    {
-        int np;
-        int storagePits;
-        int d;
-        maximumResourceDistance = 0;
-        storagePits = 0;
-        np = this->numberAvailableStoragePits(storagePits, maximumResourceDistance, resourceType);
-        if (maximumResourceDistance != 0 || np < 1) goto tail;
-        exclusions[0] = this->sn[rObjObj->attribute_type_held + 0xA3];
-        d = (int)gathererObj->distance_to_object(rObjObj);
-        if (d <= exclusions[0]) {
-            if (storagePits != 0) goto tail;
-        }
-        this->md->buildAI.insert(0x67, 1, -1);
-    }
-
-tail:
-    {
-        int bound = this->civilianExplorers.maximumSizeValue;
-        int j;
-        for (j = 0; j < bound; j++) {
-            if (this->civilianExplorers.value[j] == p1) break;
-        }
-        if (j < bound) {
-            if (j < bound - 1) {
-                do {
-                    this->civilianExplorers.value[j] = this->civilianExplorers.value[j + 1];
-                    j++;
-                } while (j < this->civilianExplorers.maximumSizeValue - 1);
+            else {
+                canPath = unit->canBidirectionPath(
+                    resourceID, pathResourceID, 1.0f, 0, 1, -1, -1);
             }
-            int n = this->civilianExplorers.numberValue - 1;
-            this->civilianExplorers.numberValue = n;
-            if (n < 0) this->civilianExplorers.numberValue = 0;
-        }
-    }
-
-    UnitData* ag = this->addGatherer(p1);
-    if (ag == 0) return 0;
-
-    this->actualGathererDistribution[resourceType] = this->actualGathererDistribution[resourceType] + 1;
-
-    {
-        int j;
-        for (j = 0; j < this->unitsTaskedThisUpdate.numberValue &&
-                     j < this->unitsTaskedThisUpdate.maximumSizeValue; j++) {
-            if (this->unitsTaskedThisUpdate.value[j] == p1) goto units_tasked;
-        }
-        this->unitsTaskedThisUpdate[this->unitsTaskedThisUpdate.numberValue] = p1;
-        this->unitsTaskedThisUpdate.numberValue++;
-    }
-
-units_tasked:
-    ag->data1 = resourceType;
-    int amount = this->requiredGatherAmount(resourceType);
-    if (p3 == 1) {
-        amount = 10;
-    } else if (this->sn[0xCB] == 1) {
-        if (rObjObj->master_obj->id == 0x3B) {
-            amount = (int)rObjObj->attribute_amount_held;
-        } else if (resourceType == 1) {
-            amount = 0x4B;
-        } else if (resourceType == 3) {
-            amount = 0x32;
-        } else if (resourceType == 2) {
-            amount = 0x32;
-        }
-    } else {
-        if (amount < this->sn[0x94]) amount = this->sn[0x94];
-        else if (amount > this->sn[0x95]) amount = this->sn[0x95];
-    }
-    if (this->zoomingToNextAge == 1) amount = 0x14;
-
-    ag->data2 = amount;
-    ag->data3 = 0;
-
-    this->md->aiPlayer->taskResourceGatherer(p1, i, rObjObj->owner->id, rYPos, rXPos);
-
-    if (rObjObj->master_obj->id == 0x30) {
-        this->taskElephantGatherers(p1, this->sn[0xCC] - 1, i);
-    }
-    if (rObjObj->master_obj->id == 0x32) {
-        ManagedArray<int>& farms = this->md->informationAI.farmsTaskedThisUpdate;
-        int fid = rObjObj->id;
-        int fj;
-        for (fj = 0; fj < farms.numberValue; fj++) {
-            if (fj >= farms.maximumSizeValue)
+            if (canPath != 0)
                 break;
-            if (farms.value[fj] == fid) return 1;
-        }
-        farms[farms.numberValue] = fid;
-        farms.numberValue++;
+
+            this->md->informationAI.setResourceObjectValid(
+                resourceType, resourceID, resourceType == 0 ? 2 : 15);
+            exclusions[exclusionCount] = resourceID;
+            exclusionCount++;
+            resourceID = -1;
+        } while (exclusionCount < 3);
+
+        if (resourceID < 0)
+            return 0;
     }
+
+    RGE_Static_Object* resource = this->md->object(resourceID);
+    if (resource == 0)
+        return 0;
+
+    if (this->sn[0xCD] == 1) {
+        if (resourceType == 0 && this->builtFirstGranary == 1) {
+            if (this->builtFirstStoragePit == 1) {
+                if (resource->master_obj->id == 0x3B) {
+                    int granaryCount = 0;
+                    int unbuiltGranaries = 0;
+                    int available = this->numberAvailableGranaries(
+                        granaryCount, unbuiltGranaries);
+                    if (unbuiltGranaries == 0 && available > 0) {
+                        int maximumDistance = this->sn[0xA3];
+                        if ((int)unit->distance_to_object(resource) >
+                                maximumDistance &&
+                            this->md->informationAI.closestDropsiteValue[0] !=
+                                -1 &&
+                            this->md->informationAI
+                                    .acceptablePotentialDropsiteArea(
+                                        (int)resource->world_x,
+                                        (int)resource->world_y) == 1) {
+                            this->md->buildAI.insert(0x44, 1, -1);
+                        }
+                    }
+                }
+                else if (resource->master_obj->object_group != 0x1F &&
+                         resource->master_obj->object_group != 5 &&
+                         resource->master_obj->object_group != 0x21) {
+                    int storagePitCount = 0;
+                    int unbuiltStoragePits = 0;
+                    int available = this->numberAvailableStoragePits(
+                        storagePitCount, unbuiltStoragePits, 0);
+                    if (unbuiltStoragePits == 0 && available > 0 &&
+                        ((int)unit->distance_to_object(resource) > 15 ||
+                         storagePitCount == 0)) {
+                        this->md->buildAI.insert(0x67, 1, -1);
+                    }
+                }
+            }
+        }
+        else if (this->builtFirstStoragePit == 1 &&
+                 this->builtFirstGranary == 1) {
+            int storagePitCount = 0;
+            int unbuiltStoragePits = 0;
+            int available = this->numberAvailableStoragePits(
+                storagePitCount, unbuiltStoragePits, resourceType);
+            if (unbuiltStoragePits == 0 && available > 0) {
+                int maximumDistance =
+                    this->sn[resource->attribute_type_held + 0xA3];
+                if ((int)unit->distance_to_object(resource) >
+                        maximumDistance ||
+                    storagePitCount == 0) {
+                    this->md->buildAI.insert(0x67, 1, -1);
+                }
+            }
+        }
+    }
+
+    this->civilianExplorers.remove(unitID);
+
+    UnitData* gathererData = this->addGatherer(unitID);
+    if (gathererData == 0)
+        return 0;
+
+    this->actualGathererDistribution[resourceType]++;
+    this->unitsTaskedThisUpdate.add(unitID);
+    gathererData->data1 = resourceType;
+
+    int amount = this->requiredGatherAmount(resourceType);
+    if (closeResource == 1) {
+        amount = 10;
+    }
+    else {
+        if (this->sn[0xCB] == 1) {
+            if (resource->master_obj->id == 0x3B)
+                amount = (int)resource->attribute_amount_held;
+            else if (resourceType == 1)
+                amount = 75;
+            else if (resourceType == 3)
+                amount = 50;
+            else if (resourceType == 2)
+                amount = 50;
+        }
+        else {
+            if (amount < this->sn[0x94])
+                amount = this->sn[0x94];
+            else if (amount > this->sn[0x95])
+                amount = this->sn[0x95];
+        }
+
+        if (this->zoomingToNextAge == 1)
+            amount = 20;
+    }
+
+    gathererData->data2 = amount;
+    gathererData->data3 = 0;
+
+    this->md->aiPlayer->taskResourceGatherer(
+        unitID, resourceID, (int)resource->owner->id, resourceX, resourceY);
+
+    if (resource->master_obj->id == 0x30) {
+        this->taskElephantGatherers(unitID, this->sn[0xCC] - 1,
+                                    resourceID);
+    }
+
+    if (resource->master_obj->id == 0x32)
+        this->md->informationAI.farmsTaskedThisUpdate.add(resource->id);
+
     return 1;
 }
 
