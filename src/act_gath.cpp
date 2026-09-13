@@ -7,6 +7,7 @@
 #include "../include/m_ac_obj.h"
 #include "../include/m_s_obj.h"
 #include "../include/move_obj.h"
+#include "../include/obj_list.h"
 #include "../include/player.h"
 #include "../include/rge_fio.h"
 #include "../include/sound.h"
@@ -97,18 +98,18 @@ void RGE_Action_Gather::first_in_stack(unsigned char param1) {
     this->set_state(3);
 }
 
-void RGE_Action_Gather::set_state(unsigned char param_1) {
-    RGE_Action_Move_To* move_to;
-
+void RGE_Action_Gather::set_state(unsigned char param1) {
     this->sub_actions->delete_list();
-    this->state = param_1;
+    this->state = param1;
 
-    switch (param_1) {
+    switch (param1) {
     case 3:
         this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          (int)0x202, 0x261L, (long)this->targetType, 0L);
+                          (int)0x202, 0x261L,
+                          (long)this->targetType, 0L);
         this->timer = -10.0f;
-        break;
+        this->obj->new_sprite(this->get_wait_sprite());
+        return;
 
     case 2:
         this->timer = 0.0f;
@@ -121,82 +122,77 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
         return;
 
     case 11:
-    case 15:
+    case 15: {
         this->timer = 0.0f;
-        move_to = new RGE_Action_Move_To(
-            this->obj,
-            this->target_x,
-            this->target_y,
-            this->target_z,
-            this->task->work_range,
-            this->get_move_sprite());
-        if (move_to == 0) {
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(
+            this->obj, this->target_x, this->target_y, this->target_z,
+            this->task->work_range, this->get_move_sprite());
+        if (action == 0) {
             this->set_state(13);
             return;
         }
-        move_to->setSubAction(1);
-        this->sub_actions->add_action(move_to);
+        action->setSubAction(1);
+        this->sub_actions->add_action(action);
         return;
+    }
 
-    case 4:
+    case 4: {
         this->timer = 0.0f;
         if (this->target_obj == 0) {
             this->set_state(13);
             return;
         }
+
         this->target_x = this->target_obj->world_x;
         this->target_y = this->target_obj->world_y;
         this->target_z = this->target_obj->world_z;
-        move_to = new RGE_Action_Move_To(
-            this->obj,
-            this->target_obj,
-            this->task->work_range,
+
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(
+            this->obj, this->target_obj, this->task->work_range,
             this->get_move_sprite());
-        goto gather_action_tail;
+        if (action == 0) {
+            this->set_state(13);
+            return;
+        }
+        this->sub_actions->add_action(action);
+        action->setSubAction(1);
+        return;
+    }
 
     case 6:
         this->timer = 0.0f;
         this->obj->new_sprite(this->get_move_sprite());
         return;
 
-    case 7: {
-        short facet;
+    case 7:
         this->timer = 0.0f;
-        facet = this->task->attribute_type;
-        if (this->obj->attribute_type_held != facet) {
-            this->obj->set_attribute(facet, 0);
+        if (this->obj->attribute_type_held != this->task->attribute_type) {
+            this->obj->set_attribute(this->task->attribute_type, 0.0f);
         }
         this->obj->new_sprite(this->task->work_sprite);
         if (this->task->work_sound != 0) {
             this->task->work_sound->play(1);
         }
         return;
-    }
 
     case 8:
         if (this->obj->attribute_amount_held > DAT_0056e278) {
             if (this->target_obj2 == 0) {
                 if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site != -1) {
                     if (this->obj->useSameZoneDropsite() == 1) {
-                        RGE_Static_Object* found_target =
+                        this->set_target_obj2(
                             this->obj->owner->objects->find_by_master_ids(
-                            ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
-                            ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                            this->obj->world_x,
-                            this->obj->world_y,
-                            1,
-                            2,
-                            (RGE_Static_Object*)this->obj);
-                        this->set_target_obj2(found_target);
+                                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
+                                ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
+                                this->obj->world_x, this->obj->world_y,
+                                1, 2, (RGE_Static_Object*)this->obj));
                     } else {
-                        this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                            ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
-                            ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                            this->obj->world_x,
-                            this->obj->world_y,
-                            1,
-                            2,
-                            0));
+                        this->set_target_obj2(
+                            this->obj->owner->objects->find_by_master_ids(
+                                ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
+                                ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
+                                this->obj->world_x, this->obj->world_y,
+                                1, 2, (RGE_Static_Object*)0));
                     }
                 } else {
                     this->set_target_obj2(0);
@@ -204,38 +200,28 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
             }
 
             if (this->target_obj2 != 0) {
-                move_to = new RGE_Action_Move_To(
-                    this->obj,
-                    this->target_obj2,
-                    this->task->work_range,
+                RGE_Action_Move_To* action = new RGE_Action_Move_To(
+                    this->obj, this->target_obj2, this->task->work_range,
                     this->get_move_sprite());
-                goto gather_action_tail;
+                if (action == 0) {
+                    this->set_state(13);
+                    return;
+                }
+                this->sub_actions->add_action(action);
+                action->setSubAction(1);
+                return;
             }
-            goto gather_no_target;
-        }
 
-        goto gather_depleted;
-
-gather_action_tail:
-        if (move_to == 0) {
+            this->obj->notify((int)this->obj->id, (int)this->obj->id,
+                              (int)0x203, 0x261L, 0L, 0L);
             this->set_state(13);
             return;
         }
-        this->sub_actions->add_action(move_to);
-        move_to->setSubAction(1);
-        return;
 
-gather_no_target:
-        this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          (int)0x203, 0x261L, 0L, 0L);
-        this->set_state(13);
-        return;
-
-gather_depleted:
         if (this->target_obj != 0 &&
             this->target_obj->attribute_amount_held <= DAT_0056e278 &&
             this->obj->keepGatheringWhenObjectIsOut(
-                this->target_obj->master_obj->id) == 0) {
+                (short)this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
         }
         this->set_state(3);
@@ -245,13 +231,12 @@ gather_depleted:
     case 13:
     case 14:
         this->timer = 0.0f;
-        break;
+        this->obj->new_sprite(this->get_wait_sprite());
+        return;
 
     default:
         return;
     }
-
-    this->obj->new_sprite(this->get_wait_sprite());
 }
 
 unsigned char RGE_Action_Gather::update() {
