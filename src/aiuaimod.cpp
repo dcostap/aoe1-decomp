@@ -1066,9 +1066,9 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup)
                             case AIPlayPhaseCommand::RetreatCommand:
                                 member->unitAI()->order(
                                     this->objectValue->id, 0x2C6, -1, -1,
-                                    (float)this->playStatus->originalPoint().xValue,
-                                    (float)this->playStatus->originalPoint().yValue,
-                                    (float)this->playStatus->originalPoint().zValue,
+                                    (float)this->playStatus->originalPointValue.xValue,
+                                    (float)this->playStatus->originalPointValue.yValue,
+                                    (float)this->playStatus->originalPointValue.zValue,
                                     1.0f, 1, 0, 100);
                                 break;
 
@@ -3043,629 +3043,745 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
 
 typedef unsigned long ulong;
 
-int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
-{
-    float targetX;
-
+int UnitAIModule::processNotify(NotifyEvent* event, ulong time) {
     switch (event->mType) {
     case 500:
-    case 527: {
+    case 0x20f:
         this->notifyCommander(event);
 
-        if (event->p2 <= 0) {
-            RGE_Static_Object* object = this->objectValue;
-            object->owner->notify(object->id, object->id, 0x209,
-                                  event->caller, 0, 0);
-            this->purgeNotifyQueue(param_2);
+        if (event->p2 < 1) {
+            this->objectValue->owner->notify(
+                this->objectValue->id, this->objectValue->id, 0x209,
+                event->caller, 0, 0);
+            this->purgeNotifyQueue(time);
             return 4;
         }
 
         if (this->attackingUnitsValue.numberValue == 0 ||
             this->objectValue->owner->computerPlayer() == 1) {
-            RGE_Static_Object* object = this->objectValue;
-            object->owner->notify(object->id, object->id, 0x201,
-                                  event->caller, 0, 0);
+            this->objectValue->owner->notify(
+                this->objectValue->id, this->objectValue->id, 0x201,
+                event->caller, 0, 0);
         }
 
-        int count = this->attackingUnitsValue.numberValue;
-        int i = 0;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == event->caller) {
-                goto skip_help;
-            }
-        }
-        if (this->objectValue->owner->computerPlayer() == 0 &&
-            this->currentTargetValue != event->caller) {
-            this->askForHelp(event->caller);
-        }
-
-    skip_help:
-        i = 0;
-        int caller = event->caller;
-        count = this->attackingUnitsValue.numberValue;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == caller) {
-                goto after_add;
-            }
-        }
-
-        if (this->attackingUnitsValue.numberValue >
-            this->attackingUnitsValue.maximumSizeValue - 1) {
-            int newMaximum = this->attackingUnitsValue.numberValue + 1;
-            int* newValue = (int*)operator new(newMaximum * 4);
-            if (newValue != 0) {
-                for (i = 0;
-                     i < this->attackingUnitsValue.maximumSizeValue &&
-                     i < newMaximum;
-                     ++i) {
-                    newValue[i] = this->attackingUnitsValue.value[i];
+        {
+            int i = 0;
+            while (i < this->attackingUnitsValue.numberValue &&
+                   i < this->attackingUnitsValue.maximumSizeValue) {
+                if (this->attackingUnitsValue.value[i] == event->caller) {
+                    goto caller_recorded;
                 }
-                operator delete(this->attackingUnitsValue.value);
-                this->attackingUnitsValue.value = newValue;
-                this->attackingUnitsValue.maximumSizeValue = newMaximum;
+                ++i;
+            }
+
+            if (this->objectValue->owner->computerPlayer() == 0 &&
+                this->currentTargetValue != event->caller) {
+                this->askForHelp(event->caller);
             }
         }
-        this->attackingUnitsValue.value[
-            this->attackingUnitsValue.numberValue] = caller;
-        this->attackingUnitsValue.numberValue++;
 
-    after_add:
+caller_recorded:
+        {
+            int caller = event->caller;
+            int i = 0;
+            while (i < this->attackingUnitsValue.numberValue &&
+                   i < this->attackingUnitsValue.maximumSizeValue) {
+                if (this->attackingUnitsValue.value[i] == caller) {
+                    goto attacker_recorded;
+                }
+                ++i;
+            }
+
+            if (this->attackingUnitsValue.maximumSizeValue - 1 <
+                this->attackingUnitsValue.numberValue) {
+                int newSize = this->attackingUnitsValue.numberValue + 1;
+                int* newValues =
+                    (int*)::operator new(newSize * sizeof(int));
+                if (newValues != 0) {
+                    int j = 0;
+                    while (j < this->attackingUnitsValue.maximumSizeValue &&
+                           j < newSize) {
+                        newValues[j] = this->attackingUnitsValue.value[j];
+                        ++j;
+                    }
+                    ::operator delete(this->attackingUnitsValue.value);
+                    this->attackingUnitsValue.value = newValues;
+                    this->attackingUnitsValue.maximumSizeValue = newSize;
+                }
+            }
+
+            this->attackingUnitsValue.value[
+                this->attackingUnitsValue.numberValue] = caller;
+            ++this->attackingUnitsValue.numberValue;
+        }
+
+attacker_recorded:
         this->objectValue->setUnderAttack(1);
-        if (this->currentOrderValue != 0x2D5 &&
+
+        if (this->currentOrderValue != 0x2d5 &&
             this->currentOrderValue != -1 &&
             this->objectValue->owner->computerPlayer() == 0) {
             return 2;
         }
-        if (this->currentOrderValue == 0x2D5) {
+        if (this->currentOrderValue == 0x2d5) {
             return 2;
         }
 
-        RGE_Static_Object* attacker = this->lookupObject(event->caller);
-        if (attacker == 0) {
-            return 2;
-        }
-        if (attacker->owner->id == this->objectValue->owner->id) {
-            return 2;
-        }
-        if (this->currentActionValue == 0x25B &&
-            this->runAwayFromAttackers(1) == 1) {
-            return 3;
-        }
-
-        RGE_Static_Object* target = 0;
-        if (this->currentTargetValue != -1) {
-            target = this->lookupObject(this->currentTargetValue);
-        }
-
-        if (target == 0) {
-            if (this->canAttackUnit(attacker) == 1) {
-                if (this->objectValue->inAttackRange(attacker) != 1) {
-                    if (this->objectValue->canPath(
-                            event->caller,
-                            this->objectValue->weaponRange(),
-                            0, 0, -1, -1) != 1) {
-                        goto no_target_failed;
-                    }
-                }
-                if (this->attackObject(event->caller, 1) == 1 &&
-                    this->currentOrderValue != 0x2BC) {
-                    this->currentOrderValue = -1;
-                    return 3;
-                }
-            } else {
-            no_target_failed:
-                if (this->currentActionValue != 0x262) {
-                    this->runAwayFromAttackers(1);
-                    return 3;
-                }
+        {
+            RGE_Static_Object* attacker = this->lookupObject(event->caller);
+            if (attacker == 0) {
+                return 2;
             }
-            return 3;
-        }
+            if (attacker->owner->id == this->objectValue->owner->id) {
+                return 2;
+            }
 
-        short objectGroup = target->master_obj->object_group;
-        if ((objectGroup == 3 || objectGroup == 0x1B) &&
-            target->master_obj->id != 0x4F &&
-            target->master_obj->id != 199 &&
-            target->master_obj->id != 0x45 &&
-            this->objectValue->owner->computerPlayer() == 0) {
-            if (this->canAttackUnit(attacker) == 1) {
-                if (this->objectValue->inAttackRange(attacker) == 1 ||
-                    this->objectValue->canPath(
-                        event->caller, this->objectValue->weaponRange(),
-                        0, 0, -1, -1) == 1) {
+            if (this->currentActionValue == 0x25b &&
+                this->runAwayFromAttackers(1) == 1) {
+                return 3;
+            }
+
+            RGE_Static_Object* target = 0;
+            if (this->currentTargetValue != -1) {
+                target = this->lookupObject(this->currentTargetValue);
+            }
+
+            if (target != 0) {
+                short group = target->master_obj->object_group;
+                if ((group == 3 || group == 0x1b) &&
+                    target->master_obj->id != 0x4f &&
+                    target->master_obj->id != 0xc7 &&
+                    target->master_obj->id != 0x45 &&
+                    this->objectValue->owner->computerPlayer() == 0) {
+                    if (this->canAttackUnit(attacker) != 1) {
+                        this->runAwayFromAttackers(1);
+                        return 3;
+                    }
+                    if (this->objectValue->inAttackRange(attacker) != 1 &&
+                        this->objectValue->canPath(
+                            event->caller, this->objectValue->weaponRange(),
+                            0, 0, -1, -1) != 1) {
+                        this->runAwayFromAttackers(1);
+                        return 3;
+                    }
+
                     this->attackObject(event->caller, 1);
                     return 3;
                 }
+
+                if (this->objectValue->owner->computerPlayer() != 1) {
+                    return 2;
+                }
+                if (target->master_obj->id == 0x114) {
+                    return 2;
+                }
+
+                float targetDamage = target->damageCapability();
+                float ownDamage = 0.0f;
+                if (targetDamage != DAT_0056ebc8) {
+                    ownDamage = this->objectValue->damageCapability(target);
+                }
+
+                if (this->canAttackUnit(attacker) == 1 &&
+                    ownDamage == DAT_0056ebc8) {
+                    if (this->objectValue->inAttackRange(attacker) != 1 &&
+                        this->objectValue->canPath(
+                            event->caller, this->objectValue->weaponRange(),
+                            0, 0, -1, -1) != 1) {
+                        goto compare_attacker;
+                    }
+                    this->attackObject(event->caller, 1);
+                }
+
+compare_attacker:
+                float targetThreat =
+                    target->damageCapability(this->objectValue);
+                if (targetThreat > DAT_0056ebc8) {
+                    targetThreat = target->hp / targetThreat;
+                } else {
+                    targetThreat = 25000.0f;
+                }
+
+                float attackerThreat =
+                    attacker->damageCapability(this->objectValue);
+                if (attackerThreat > DAT_0056ebc8) {
+                    attackerThreat = attacker->hp / attackerThreat;
+                } else {
+                    attackerThreat = 25000.0f;
+                }
+
+                if (this->canAttackUnit(attacker) != 1 ||
+                    !(attackerThreat < targetThreat)) {
+                    return 2;
+                }
+                if (this->objectValue->inAttackRange(attacker) != 1 &&
+                    this->objectValue->canPath(
+                        event->caller, this->objectValue->weaponRange(),
+                        0, 0, -1, -1) != 1) {
+                    return 2;
+                }
+                this->attackObject(event->caller, 1);
+                return 2;
             }
-            this->runAwayFromAttackers(1);
+
+            if (this->canAttackUnit(attacker) == 1) {
+                if (this->objectValue->inAttackRange(attacker) != 1 &&
+                    this->objectValue->canPath(
+                        event->caller, this->objectValue->weaponRange(),
+                        0, 0, -1, -1) != 1) {
+                    goto no_target_fallback;
+                }
+                if (this->attackObject(event->caller, 1) != 1) {
+                    return 3;
+                }
+                if (this->currentOrderValue != 0x2bc) {
+                    this->currentOrderValue = -1;
+                }
+                return 3;
+            }
+
+no_target_fallback:
+            if (this->currentActionValue != 0x262) {
+                this->runAwayFromAttackers(1);
+            }
             return 3;
         }
 
-        if (this->objectValue->owner->computerPlayer() != 1) {
-            return 2;
-        }
-        if (target->master_obj->id == 0x114) {
-            return 2;
-        }
+    // The original byte map routes mType 0x1fa to the block at 00418737.
+    case 0x1fa:
+        if (this->currentOrderValue == 0x2bc && event->p1 == 0x258) {
+            if (this->processIdle(0) != 5) {
+                return 2;
+            }
 
-        float targetDamage = target->damageCapability();
-        float objectDamage;
-        if (targetDamage == DAT_0056ebc8) {
-            objectDamage = 0.0f;
-        } else {
-            objectDamage = this->objectValue->damageCapability(target);
-        }
-
-        if (this->canAttackUnit(attacker) == 1 &&
-            objectDamage == DAT_0056ebc8) {
-            if (this->objectValue->inAttackRange(attacker) != 1) {
-                if (this->objectValue->canPath(
-                        event->caller,
-                        this->objectValue->weaponRange(),
-                        0, 0, -1, -1) != 1) {
-                    goto compare_capability;
+            if (this->currentOrderValue == 0x2d5 ||
+                this->objectValue->owner->computerPlayer() == 0) {
+                this->removeCurrentTarget();
+                if (actionFile != 0) {
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_aiuaimod_path, 0x128b);
                 }
-            }
-            this->attackObject(event->caller, 1);
-        }
-
-    compare_capability:
-        float targetCapability = target->damageCapability(this->objectValue);
-        float targetRatio;
-        if (targetCapability > DAT_0056ebc8) {
-            targetRatio = target->hp / targetCapability;
-        } else {
-            targetRatio = 25000.0f;
-        }
-
-        float attackerCapability = attacker->damageCapability(this->objectValue);
-        float attackerRatio;
-        if (attackerCapability > DAT_0056ebc8) {
-            attackerRatio = attacker->hp / attackerCapability;
-        } else {
-            attackerRatio = 25000.0f;
-        }
-
-        if (this->canAttackUnit(attacker) != 1 ||
-            attackerRatio >= targetRatio) {
-            return 2;
-        }
-        if (this->objectValue->inAttackRange(attacker) != 1) {
-            if (this->objectValue->canPath(
-                    event->caller,
-                    this->objectValue->weaponRange(),
-                    0, 0, -1, -1) != 1) {
-                return 2;
-            }
-        }
-        this->attackObject(event->caller, 1);
-        return 2;
-    }
-
-    case 508: {
-        RGE_Static_Object* target = this->lookupObject(this->currentTargetValue);
-        if (target != 0) {
-            uchar visible = this->visibleStatus(
-                this->objectValue->owner->visible,
-                (int)target->world_x, (int)target->world_y);
-            if (target->owner->id == 0) {
-                return 2;
-            }
-            if (visible == 0x0F) {
+                this->stopObject(0);
                 return 2;
             }
 
-            targetX = this->currentTargetXValue;
-            float targetY = this->currentTargetYValue;
-            float targetZ = this->currentTargetZValue;
-            int candidate = this->bestUnitToAttack(1, 0, 0);
-            if (candidate != -1 &&
-                candidate != this->currentTargetValue &&
-                this->attackObject(candidate, 1) == 1) {
-                this->currentOrderValue = -1;
-                return 3;
-            }
-            if (this->objectValue->owner->computerPlayer() == 0 &&
-                this->moveTo(targetX, targetY, targetZ, 0, 1) == 1) {
+            if (this->moveTo(this->currentTargetXValue,
+                             this->currentTargetYValue,
+                             this->currentTargetZValue,
+                             this->desiredTargetDistanceValue - DAT_0056ebf4,
+                             1) != 0) {
                 int oldOrder = this->currentOrderValue;
                 this->currentOrderValue = -1;
-                this->lastOrderValue = oldOrder;
                 this->currentOrderPriorityValue = -1;
-                return 3;
+                this->lastOrderValue = oldOrder;
+                return 2;
             }
-        }
-        this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1269);
-        this->stopObject(1);
-        this->notifyCommander(event);
-        return 2;
-    }
 
-    case 506: {
-        int order = this->currentOrderValue;
-        if (order == 700 && event->p1 == 600) {
-            if (this->processIdle(0) != 5) {
-                return 2;
-            }
-            if (this->currentOrderValue == 0x2D5 ||
-                this->objectValue->owner->computerPlayer() == 0) {
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x128B);
-                this->stopObject(0);
-                return 2;
-            }
-            if (this->moveTo(this->currentTargetXValue,
-                             this->currentTargetYValue,
-                             this->currentTargetZValue,
-                             this->desiredTargetDistanceValue - DAT_0056ebf4,
-                             1) == 0) {
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x129B);
-                this->stopObject(0);
-                return 2;
-            }
-            this->lastOrderValue = this->currentOrderValue;
-            this->currentOrderValue = -1;
-            this->currentOrderPriorityValue = -1;
-            return 2;
-        }
-        if (order != -1 && this->currentActionValue + 100 == order) {
             this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12AF);
-            this->stopObject(1);
-            return 2;
-        }
-        if (order == -1 && this->currentActionValue == event->p1) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12B7);
-            this->stopObject(1);
-            return 2;
-        }
-        if (order == 0x2D4 && event->p1 == 0x262) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12C0);
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x129b);
+            }
             this->stopObject(0);
             return 2;
         }
-        if (order == 0x2BD && event->p1 == 0x262) {
+
+        if (this->currentOrderValue != -1 &&
+            this->currentOrderValue == this->currentActionValue + 100) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x12af);
+            }
+            this->stopObject(1);
+            return 2;
+        }
+        if (this->currentOrderValue == -1 &&
+            this->currentActionValue == event->p1) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x12b7);
+            }
+            this->stopObject(1);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2d4 && event->p1 == 0x262) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x12c0);
+            }
+            this->stopObject(0);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2bd && event->p1 == 0x262) {
             this->setCurrentAction(-1);
             return 2;
         }
-        if (order != 0x2D5 || event->p1 != 600) {
+        if (this->currentOrderValue == 0x2d5 && event->p1 == 0x258) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x12cd);
+            }
+            this->stopObject(1);
             return 2;
         }
-        this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12CD);
-        this->stopObject(1);
         return 2;
-    }
 
-    case 505: {
-        int order = this->currentOrderValue;
-        if (order == 700 && event->p1 == 600) {
+    // The original byte map routes mType 0x1f9 to the block at 00418A26.
+    case 0x1f9:
+        if (this->currentOrderValue == 0x2bc && event->p1 == 0x258) {
             if (this->processIdle(0) != 5) {
                 return 2;
             }
-            if (this->currentOrderValue == 0x2D5 ||
+
+            if (this->currentOrderValue == 0x2d5 ||
                 this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12E9);
-                this->stopObject(1);
-                return 2;
-            }
-            if (this->moveTo(this->currentTargetXValue,
-                             this->currentTargetYValue,
-                             this->currentTargetZValue,
-                             this->desiredTargetDistanceValue - DAT_0056ebf4,
-                             1) == 0) {
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12F3);
-                this->stopObject(1);
-                return 2;
-            }
-            this->lastOrderValue = this->currentOrderValue;
-            this->currentOrderValue = this->currentOrderPriorityValue = -1;
-            return 2;
-        }
-        if (order != -1 && this->currentActionValue + 100 == order) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1304);
-            this->stopObject(1);
-            this->notifyCommander(event);
-            return 2;
-        }
-        if (order == -1 && this->currentActionValue == event->p1) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x130D);
-            this->stopObject(1);
-            this->notifyCommander(event);
-            return 2;
-        }
-        if (order == 0x2D4 && event->p1 == 0x262) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1317);
-            this->stopObject(0);
-            this->notifyCommander(event);
-            return 2;
-        }
-        if (order == 0x2BD && event->p1 == 0x262) {
-            this->setCurrentAction(-1);
-            return 2;
-        }
-        if (order != 0x2D5 || event->p1 != 600) {
-            return 2;
-        }
-        this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1325);
-        this->stopObject(1);
-        return 2;
-    }
-
-    case 507: {
-        int order = this->currentOrderValue;
-        if (order == 700 && event->p1 == 600) {
-            if (this->processIdle(0) != 5) {
-                return 2;
-            }
-            if (this->currentOrderValue == 0x2D5 ||
-                this->objectValue->owner->computerPlayer() == 0) {
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1341);
-                this->stopObject(1);
-                return 2;
-            }
-            if (this->moveTo(this->currentTargetXValue,
-                             this->currentTargetYValue,
-                             this->currentTargetZValue,
-                             this->desiredTargetDistanceValue - DAT_0056ebf4,
-                             1) == 0) {
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x134B);
-                this->stopObject(1);
-                return 2;
-            }
-            this->lastOrderValue = this->currentOrderValue;
-            this->currentOrderValue = this->currentOrderPriorityValue = -1;
-            return 2;
-        }
-        if (order != -1 && this->currentActionValue + 100 == order) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x135C);
-            this->stopObject(1);
-            this->notifyCommander(event);
-            return 2;
-        }
-        if (order == -1 && this->currentActionValue == event->p1) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1365);
-            this->stopObject(1);
-            this->notifyCommander(event);
-            return 2;
-        }
-        if (order == 0x2D4 && event->p1 == 0x262) {
-            this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x136F);
-            this->stopObject(0);
-            this->notifyCommander(event);
-            return 2;
-        }
-        if (order == 0x2BD && event->p1 == 0x262) {
-            this->setCurrentAction(-1);
-            return 2;
-        }
-        if (order != 0x2D5 || event->p1 != 600) {
-            return 2;
-        }
-        this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x137D);
-        this->stopObject(1);
-        return 2;
-    }
-
-    case 514: {
-        int action = this->currentActionValue;
-        if (action == 0x25D || action == 0x26F) {
-            int x;
-            int y;
-            if (this->closestUndiscoveredTile(&x, &y, 1) == 1) {
-                this->addToWaypointQueue(x, y);
-                if (this->explore(x, y, 1) == 0) {
-                    this->removeCurrentTarget();
-                    if (actionFile != 0)
-                        fprintf(actionFile, "#%d call stopObject %s %d\n",
-                                this->objectValue != 0 ? this->objectValue->id : -1,
-                                "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1396);
-                    this->stopObject(1);
-                    this->notifyCommander(event);
+                if (actionFile != 0) {
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_aiuaimod_path, 0x12e9);
                 }
-                this->currentActionValue = action;
-                return 3;
+                this->stopObject(1);
+                return 2;
             }
+
+            if (this->moveTo(this->currentTargetXValue,
+                             this->currentTargetYValue,
+                             this->currentTargetZValue,
+                             this->desiredTargetDistanceValue - DAT_0056ebf4,
+                             1) != 0) {
+                int oldOrder = this->currentOrderValue;
+                this->currentOrderValue = -1;
+                this->currentOrderPriorityValue = -1;
+                this->lastOrderValue = oldOrder;
+                return 2;
+            }
+
             this->removeCurrentTarget();
-            if (actionFile != 0)
-                fprintf(actionFile, "#%d call stopObject %s %d\n",
-                        this->objectValue != 0 ? this->objectValue->id : -1,
-                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13A6);
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x12f3);
+            }
+            this->stopObject(1);
+            return 2;
+        }
+
+        if (this->currentOrderValue != -1 &&
+            this->currentOrderValue == this->currentActionValue + 100) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x1304);
+            }
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
-        } else {
+        }
+        if (this->currentOrderValue == -1 &&
+            this->currentActionValue == event->p1) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x130d);
+            }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2d4 && event->p1 == 0x262) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x1317);
+            }
+            this->stopObject(0);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2bd && event->p1 == 0x262) {
+            this->setCurrentAction(-1);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2d5 && event->p1 == 0x258) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x1325);
+            }
+            this->stopObject(1);
+            return 2;
+        }
+        return 2;
+
+    case 0x1fb:
+        if (this->currentOrderValue == 0x2bc && event->p1 == 0x258) {
+            if (this->processIdle(0) != 5) {
+                return 2;
+            }
+
+            if (this->currentOrderValue == 0x2d5 ||
+                this->objectValue->owner->computerPlayer() == 0) {
+                this->removeCurrentTarget();
+                if (actionFile != 0) {
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_aiuaimod_path, 0x1341);
+                }
+                this->stopObject(1);
+                return 2;
+            }
+
+            if (this->moveTo(this->currentTargetXValue,
+                             this->currentTargetYValue,
+                             this->currentTargetZValue,
+                             this->desiredTargetDistanceValue - DAT_0056ebf4,
+                             1) != 0) {
+                int oldOrder = this->currentOrderValue;
+                this->currentOrderValue = -1;
+                this->currentOrderPriorityValue = -1;
+                this->lastOrderValue = oldOrder;
+                return 2;
+            }
+
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x134b);
+            }
+            this->stopObject(1);
+            return 2;
+        }
+
+        if (this->currentOrderValue != -1 &&
+            this->currentOrderValue == this->currentActionValue + 100) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x135c);
+            }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (this->currentOrderValue == -1 &&
+            this->currentActionValue == event->p1) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x1365);
+            }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2d4 && event->p1 == 0x262) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x136f);
+            }
+            this->stopObject(0);
+            this->notifyCommander(event);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2bd && event->p1 == 0x262) {
+            this->setCurrentAction(-1);
+            return 2;
+        }
+        if (this->currentOrderValue == 0x2d5 && event->p1 == 0x258) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x137d);
+            }
+            this->stopObject(1);
+            return 2;
+        }
+        return 2;
+
+    case 0x1fc:
+        {
+            RGE_Static_Object* target =
+                this->lookupObject(this->currentTargetValue);
+            if (target != 0) {
+                int y = (int)target->world_y;
+                int x = (int)target->world_x;
+                unsigned char visible = this->visibleStatus(
+                    this->objectValue->owner->visible, x, y);
+                if (target->owner->id != 0 && visible != 0x0f) {
+                    float targetZ = this->currentTargetZValue;
+                    float targetX = this->currentTargetXValue;
+                    float targetY = this->currentTargetYValue;
+                    int newTarget = this->bestUnitToAttack(1, 0, 0);
+                    if (newTarget != -1 &&
+                        newTarget != this->currentTargetValue &&
+                        this->attackObject(newTarget, 1) == 1) {
+                        this->currentOrderValue = -1;
+                        return 3;
+                    }
+
+                    if (this->objectValue->owner->computerPlayer() == 0 &&
+                        this->moveTo(targetX, targetY, targetZ, 0, 1) == 1) {
+                        int oldOrder = this->currentOrderValue;
+                        this->currentOrderValue = -1;
+                        this->lastOrderValue = oldOrder;
+                        this->currentOrderPriorityValue = -1;
+                        return 3;
+                    }
+                } else {
+                    return 2;
+                }
+            }
+
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x1269);
+            }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+
+    case 0x1fe:
+        this->objectValue->stopAction();
+        this->removeCurrentTarget();
+        if (actionFile != 0) {
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_aiuaimod_path,
+                    0x13f9);
+        }
+        this->stopObject(1);
+        return 2;
+
+    case 0x202:
+        {
+            int action = this->currentActionValue;
+            if (action == 0x25d || action == 0x26f) {
+                int x;
+                int y;
+                if (this->closestUndiscoveredTile(&x, &y, 1) == 1) {
+                    this->addToWaypointQueue(x, y);
+                    if (this->explore(x, y, 1) == 0) {
+                        this->removeCurrentTarget();
+                        if (actionFile != 0) {
+                            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                            fprintf(actionFile, str_fmt_stopObject, id,
+                                    str_aiuaimod_path, 0x1396);
+                        }
+                        this->stopObject(1);
+                        this->notifyCommander(event);
+                    }
+                    this->currentActionValue = action;
+                    return 3;
+                }
+
+                this->removeCurrentTarget();
+                if (actionFile != 0) {
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_aiuaimod_path, 0x13a6);
+                }
+                this->stopObject(1);
+                this->notifyCommander(event);
+                return 2;
+            }
+
             if (action != 0x261) {
                 return 2;
             }
-            int resourceType = this->currentTargetTypeValue;
-            if (resourceType == -1) {
-                resourceType = this->lastTargetTypeValue;
-            }
-            int losType = this->convertToLOSResourceType(resourceType);
-            int targetID;
-            if (losType != -1) {
-                targetID = this->closestResourceObject(losType, 0);
-            } else {
-                targetID = this->closestObject(resourceType, -1, -1, -1, 0);
-            }
-            if (targetID != -1) {
-                if (this->gatherObject(targetID, 1) == 1) {
-                    return 3;
-                }
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13CE);
-                this->stopObject(1);
-                this->notifyCommander(event);
-                return 2;
-            } else {
-                this->removeCurrentTarget();
-                if (actionFile != 0)
-                    fprintf(actionFile, "#%d call stopObject %s %d\n",
-                            this->objectValue != 0 ? this->objectValue->id : -1,
-                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13DA);
-                this->stopObject(1);
-                this->notifyCommander(event);
-                return 2;
-            }
-        }
-    }
 
-    case 523: {
+            int targetType = this->currentTargetTypeValue;
+            if (targetType == -1) {
+                targetType = this->lastTargetTypeValue;
+            }
+
+            int resourceType = this->convertToLOSResourceType(targetType);
+            int targetID;
+            if (resourceType == -1) {
+                targetID = this->closestObject(targetType, -1, -1, -1, 0);
+            } else {
+                targetID = this->closestResourceObject(resourceType, 0);
+            }
+
+            if (targetID == -1) {
+                this->removeCurrentTarget();
+                if (actionFile != 0) {
+                    int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                    fprintf(actionFile, str_fmt_stopObject, id,
+                            str_aiuaimod_path, 0x13da);
+                }
+                this->stopObject(1);
+                this->notifyCommander(event);
+                return 2;
+            }
+
+            if (this->gatherObject(targetID, 1) == 1) {
+                return 3;
+            }
+
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id = this->objectValue != 0 ? this->objectValue->id : -1;
+                fprintf(actionFile, str_fmt_stopObject, id,
+                        str_aiuaimod_path, 0x13ce);
+            }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
+        }
+
+    case 0x20b:
         this->objectValue->stopAction();
         this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13E7);
+        if (actionFile != 0) {
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_aiuaimod_path,
+                    0x13e7);
+        }
         this->stopObject(1);
-        this->purgeNotifyQueue(param_2);
+        this->purgeNotifyQueue(time);
         this->orderQueueSizeValue = 0;
-        RGE_Static_Object* commander =
-            this->lookupObject(this->objectValue->groupCommanderValue);
-        if (commander != 0) {
+        {
+            RGE_Static_Object* commander =
+                this->lookupObject(this->objectValue->groupCommanderValue);
+            if (commander == 0) {
+                return 2;
+            }
             commander->commanderRemoveFromGroup(this->objectValue->id);
         }
         return 2;
-    }
 
-    case 510:
-        this->objectValue->stopAction();
-        this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13F9);
-        this->stopObject(1);
-        return 2;
-
-    case 600: {
-        int count = this->attackingUnitsValue.numberValue;
-        int caller = event->caller;
-        int i = 0;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == caller) {
-                goto attacker_added;
-            }
-        }
-        if (this->attackingUnitsValue.numberValue >
-            this->attackingUnitsValue.maximumSizeValue - 1) {
-            int newMaximum = this->attackingUnitsValue.numberValue + 1;
-            int* newValue = (int*)operator new(newMaximum * 4);
-            if (newValue != 0) {
-                for (i = 0;
-                     i < this->attackingUnitsValue.maximumSizeValue &&
-                     i < newMaximum;
-                     ++i) {
-                    newValue[i] = this->attackingUnitsValue.value[i];
+    case 600:
+        {
+            int caller = event->caller;
+            int i = 0;
+            while (i < this->attackingUnitsValue.numberValue &&
+                   i < this->attackingUnitsValue.maximumSizeValue) {
+                if (this->attackingUnitsValue.value[i] == caller) {
+                    goto already_attacking;
                 }
-                operator delete(this->attackingUnitsValue.value);
-                this->attackingUnitsValue.value = newValue;
-                this->attackingUnitsValue.maximumSizeValue = newMaximum;
+                ++i;
             }
-        }
-        this->attackingUnitsValue.value[
-            this->attackingUnitsValue.numberValue] = caller;
-        this->attackingUnitsValue.numberValue++;
 
-    attacker_added:
+            if (this->attackingUnitsValue.maximumSizeValue - 1 <
+                this->attackingUnitsValue.numberValue) {
+                int newSize = this->attackingUnitsValue.numberValue + 1;
+                int* newValues =
+                    (int*)::operator new(newSize * sizeof(int));
+                if (newValues != 0) {
+                    int j = 0;
+                    while (j < this->attackingUnitsValue.maximumSizeValue &&
+                           j < newSize) {
+                        newValues[j] = this->attackingUnitsValue.value[j];
+                        ++j;
+                    }
+                    ::operator delete(this->attackingUnitsValue.value);
+                    this->attackingUnitsValue.value = newValues;
+                    this->attackingUnitsValue.maximumSizeValue = newSize;
+                }
+            }
+
+            this->attackingUnitsValue.value[
+                this->attackingUnitsValue.numberValue] = caller;
+            ++this->attackingUnitsValue.numberValue;
+        }
+
+already_attacking:
         this->objectValue->setUnderAttack(1);
         return 2;
-    }
 
-    case 699: {
-        int count = this->attackingUnitsValue.numberValue;
-        int i = 0;
-        for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
-            if (this->attackingUnitsValue.value[i] == event->caller) {
-                this->attackingUnitsValue.remove(event->caller);
+    case 699:
+        {
+            int count = this->attackingUnitsValue.numberValue;
+            int i = 0;
+            while (i < count &&
+                   i < this->attackingUnitsValue.maximumSizeValue) {
+                if (this->attackingUnitsValue.value[i] == event->caller) {
+                    goto remove_attacker;
+                }
+                ++i;
+            }
+            return 2;
+
+remove_attacker:
+            count = this->attackingUnitsValue.maximumSizeValue;
+            i = 0;
+            while (i < count) {
+                if (this->attackingUnitsValue.value[i] == event->caller) {
+                    break;
+                }
+                ++i;
+            }
+            if (i >= count) {
                 return 2;
             }
+            if (i < count - 1) {
+                do {
+                    this->attackingUnitsValue.value[i] =
+                        this->attackingUnitsValue.value[i + 1];
+                    ++i;
+                } while (i < count - 1);
+            }
+            --this->attackingUnitsValue.numberValue;
+            if (this->attackingUnitsValue.numberValue < 0) {
+                this->attackingUnitsValue.numberValue = 0;
+            }
+            return 2;
         }
+
+    case 0x1f6:
+    case 0x1f7:
+    case 0x1f8:
+    case 0x1fd:
+    case 0x1ff:
+    case 0x200:
+    case 0x203:
+    case 0x259:
+    case 0x25a:
+    case 0x25b:
+    case 0x25c:
+    case 0x25d:
+    case 0x25e:
+    case 0x25f:
+    case 0x260:
+    case 0x261:
+    case 0x262:
+    case 0x265:
+    case 0x266:
+    case 0x267:
+    case 0x268:
+    case 0x269:
         return 2;
-    }
 
     default:
         this->removeCurrentTarget();
-        if (actionFile != 0)
-            fprintf(actionFile, "#%d call stopObject %s %d\n",
-                    this->objectValue != 0 ? this->objectValue->id : -1,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1439);
+        if (actionFile != 0) {
+            int id = this->objectValue != 0 ? this->objectValue->id : -1;
+            fprintf(actionFile, str_fmt_stopObject, id, str_aiuaimod_path,
+                    0x1439);
+        }
         this->stopObject(1);
         this->notifyCommander(event);
         return 2;
