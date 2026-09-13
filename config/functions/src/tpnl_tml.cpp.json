@@ -28,7 +28,7 @@
     "0051FD90": {"status": "matching", "symbol": "?draw_special_events@Time_Line_Panel@@QAEXXZ"},
     "00520080": {"status": "matching", "symbol": "?draw_background@Time_Line_Panel@@QAEXXZ"},
     "00520220": {"status": "accepted_drift", "symbol": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ"},
-    "005204A0": {"status": "scratch", "symbol": "?draw_timeline@Time_Line_Panel@@QAEXXZ"},
+    "005204A0": {"status": "new_verified_logic", "symbol": "?draw_timeline@Time_Line_Panel@@QAEXXZ", "behavior_review": "logic_matching/005204A0/review-coord-04-005204A0-20260913T000002Z/attempt-01"},
     "00520AE0": {"status": "matching", "symbol": "?draw_icon@Time_Line_Panel@@QAEXPAUSpecial_Events@@FE@Z"},
     "00520D50": {"status": "matching", "symbol": "?draw_legend@Time_Line_Panel@@QAEXXZ"}
   }
