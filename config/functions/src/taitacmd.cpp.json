@@ -90,7 +90,7 @@
     "004F13F0": {"status": "new_verified_logic", "symbol": "?evaluateCivilianDistribution@TribeTacticalAIModule@@QAEXXZ", "behavior_review": "logic_matching/004F13F0/review-01/attempt-01"},
     "004F1600": {"status": "new_verified_logic", "symbol": "?taskCivilians@TribeTacticalAIModule@@QAEHKK@Z", "behavior_review": "logic_matching/004F1600/review-coord-13-round-02-a/attempt-01"},
     "004F1E10": {"status": "matching", "symbol": "?taskIdleSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
-    "004F21F0": {"status": "verified_logic", "symbol": "?taskActiveSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
+    "004F21F0": {"status": "new_verified_logic", "symbol": "?taskActiveSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
     "004F4760": {"status": "matching", "symbol": "?playTaskSoldiers@TribeTacticalAIModule@@QAEXKK@Z"},
     "004F4AA0": {"status": "new_verified_logic", "symbol": "?taskUngroupedSoldiers@TribeTacticalAIModule@@QAEXXZ", "behavior_review": "logic_matching/004F4AA0/review-01/attempt-01"},
     "004F4D90": {"status": "new_verified_logic", "symbol": "?taskBoats@TribeTacticalAIModule@@QAEXXZ", "behavior_review": ["logic_matching/004F4D90/review-coord-13-round-02-a/attempt-01", "logic_matching/004F4D90/review-coord-13-round-02-b/attempt-01"]},
