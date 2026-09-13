@@ -16,17 +16,16 @@
 
 extern int confirmed_close;
 
-TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_flag)
+TribeAchievementsScreen::TribeAchievementsScreen(char*, int end_game)
     : TScreenPanel("Achievements Screen")
 {
-    unsigned long color;
-    int tab_count;
-    TPanel* tabList[8];
-    char temptxt[50];
-    char str[100];
     char info_file[260];
-
-    memset(temptxt + 31, 0, sizeof(temptxt) - 31);
+    char str[100];
+    TPanel* tab_list[8];
+    long seconds;
+    long minutes = 0;
+    long hours = 0;
+    int i;
 
     this->title = 0;
     this->time = 0;
@@ -45,27 +44,24 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->instruction_bar = 0;
     this->win_loss_text_bar = 0;
     this->summary_text_bar = 0;
-    str[1] = 0;
-    this->end_game_flag = end_game_flag;
+    this->end_game_flag = end_game;
 
-    this->achievement_choice[0] = 0;
-    this->achievement_choice[1] = 0;
-    this->achievement_choice[2] = 0;
-    this->achievement_choice[3] = 0;
-    this->achievement_choice[4] = 0;
-
-    memset(this->title_bar, 0, sizeof(this->title_bar));
-    for (int player_slot = 0; player_slot < 8; ++player_slot) {
-        this->player_names[player_slot] = 0;
+    for (i = 0; i < 5; ++i) {
+        this->achievement_choice[i] = 0;
+    }
+    for (i = 0; i < 7; ++i) {
+        this->title_bar[i] = 0;
+    }
+    for (i = 0; i < 8; ++i) {
+        this->player_names[i] = 0;
         for (int column = 0; column < 7; ++column) {
-            this->statistics[player_slot][column] = 0;
+            this->statistics[i][column] = 0;
         }
     }
 
     long info_id;
     if (this->end_game_flag != 0) {
-        RGE_Player* player = rge_base_game->get_player();
-        if (player->game_status == 1) {
+        if (rge_base_game->get_player()->game_status == 1) {
             strcpy(info_file, "scr7");
             info_id = 0xC389;
         } else {
@@ -76,49 +72,54 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         strcpy(info_file, "scr10");
         info_id = 0xC38D;
     }
-    if (setup(rge_base_game->draw_area, info_file, info_id, 1) == 0) {
+
+    if (this->setup(rge_base_game->draw_area, info_file, info_id, 1) == 0) {
         this->error_code = 1;
         return;
     }
 
-    set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(0x280, 0x1E0);
 
-    long minutes = 0;
-    long hours = 0;
-    long seconds = rge_base_game->world->world_time / 1000;
-    if (seconds > 0x3B) {
+    seconds = rge_base_game->world->world_time / 1000;
+    if (seconds > 59) {
         minutes = seconds / 60;
         seconds -= minutes * 60;
-        if (minutes > 0x3B) {
+        if (minutes > 59) {
             hours = minutes / 60;
             minutes -= hours * 60;
         }
     }
     sprintf(str, "%02ld:%02ld:%02ld", hours, minutes, seconds);
 
-    create_text(this, &this->time, str + 4, 0x1E0, 10, 0x6E, 0x14, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->time, str, 0x1E0, 10, 0x6E, 0x14,
+                      0x0B, 0, 0, 0);
     this->time->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
-    create_text(this, &this->title, 0x269E, 0, 5, 0x280, 0x1E, 1, 1, 0, 0);
-    create_text(this, &this->summary_text, 0, 10, 0x23, 0x26C, 0x1E, 1, 1, 0, 0);
-    create_text(this, &this->instruction, 0x26DB, 10, 0x19A, 0x26C, 0x14, 0x0B, 1, 0, 0);
+    this->create_text(this, &this->title, 0x269E, 0, 5, 0x280, 0x1E,
+                      1, 1, 0, 0);
+    this->create_text(this, &this->summary_text, 0, 10, 0x23, 0x26C, 0x1E,
+                      1, 1, 0, 0);
+    this->create_text(this, &this->instruction, 0x26DB, 10, 0x19A, 0x26C,
+                      0x14, 0x0B, 1, 0, 0);
 
     if (this->end_game_flag != 0) {
         RGE_Player* player = rge_base_game->get_player();
-        char* message;
+        long message_id;
         if (player->game_status == 1) {
-            message = rge_base_game->world->scenario->Get_message(2);
+            message_id = 2;
         } else {
-            message = rge_base_game->world->scenario->Get_message(3);
+            message_id = 3;
         }
-        if (message != 0 && message[0] != 0) {
-            create_text(this, &this->win_loss_text, "", 10, 0x55,
-                        0x26C, 0x14A, 0x0B, 0, 0, 1);
+        char* message = rge_base_game->world->scenario->Get_message(message_id);
+        if (message != 0 && *message != '\0') {
+            this->create_text(this, &this->win_loss_text, "", 10, 0x55,
+                              0x26C, 0x14A, 0x0B, 0, 0, 1);
             if (this->win_loss_text != 0) {
-                create_auto_scrollbar(&this->win_loss_text_bar,
-                                      this->win_loss_text, 0x14);
+                this->create_auto_scrollbar(&this->win_loss_text_bar,
+                                            this->win_loss_text, 0x14);
                 this->win_loss_text->set_bevel_info(
-                    4, bevel_color1, bevel_color2, bevel_color3,
-                    bevel_color4, bevel_color5, bevel_color6);
+                    4, this->bevel_color1, this->bevel_color2,
+                    this->bevel_color3, this->bevel_color4,
+                    this->bevel_color5, this->bevel_color6);
                 this->win_loss_text->set_text(message);
             }
         }
@@ -127,25 +128,33 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->time_line->create_timeline(this, &this->time_line, 10, 0x55,
                                      0x26C, 0x14A, 0x0B, 9, 0x280, 0x1E0);
     this->time_line->set_bevel_info(
-        3, bevel_color1, bevel_color2, bevel_color3,
-        bevel_color4, bevel_color5, bevel_color6);
+        3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
+        this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->time_line->set_special_events("timeline.slp");
 
-    if (create_button(this, &this->close_button, 0x3EA, 0, 0, 0, 0, 0, 0, -1, -1) == 0) {
+    if (this->create_button(this, &this->close_button, 0x3EA, 0, 0, 0, 0,
+                            0, -1, -1, 0) == 0) {
         return;
     }
     this->close_button->set_active(1);
     this->close_button->set_positioning(
-        TPanel::PositionRightTop, 4, 4, 4, 4, 0x11, 0x11, 0x11,
-        0x11, 0, 0, 0, 0);
+        TPanel::PositionRightTop, 4, 4, 4, 4, 0x11, 0x11, 0x11, 0x11,
+        0, 0, 0, 0);
 
-    create_text(this, this->title_bar, 0, 0x62, 0x97, 200, 0x1E, 0x0B, 0, 0, 0);
-    create_text(this, this->title_bar + 1, 0, 0x98, 0x83, 200, 0x1E, 0x0B, 0, 0, 0);
-    create_text(this, this->title_bar + 2, 0, 0xD4, 0x6F, 0x91, 0x1E, 0x0B, 0, 0, 0);
-    create_text(this, this->title_bar + 3, 0, 0x104, 0x5B, 200, 0x1E, 0x0B, 1, 0, 0);
-    create_text(this, this->title_bar + 4, 0, 0x16C, 0x6F, 0x91, 0x1E, 0x0B, 0, 0, 0);
-    create_text(this, this->title_bar + 5, 0, 0x172, 0x83, 200, 0x1E, 0x0B, 0, 0, 0);
-    create_text(this, this->title_bar + 6, 0, 0x1A8, 0x97, 200, 0x1E, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->title_bar[0], 0, 0x62, 0x97, 0xC8,
+                      0x1E, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->title_bar[1], 0, 0x98, 0x83, 0xC8,
+                      0x1E, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->title_bar[2], 0, 0xD4, 0x6F, 0x91,
+                      0x1E, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->title_bar[3], 0, 0x104, 0x5B, 0xC8,
+                      0x1E, 0x0B, 1, 0, 0);
+    this->create_text(this, &this->title_bar[4], 0, 0x16C, 0x6F, 0x91,
+                      0x1E, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->title_bar[5], 0, 0x172, 0x83, 0xC8,
+                      0x1E, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->title_bar[6], 0, 0x1A8, 0x97, 0xC8,
+                      0x1E, 0x0B, 0, 0, 0);
     this->title_bar[4]->set_alignment(TTextPanel::AlignTop,
                                       TTextPanel::AlignRight);
     this->title_bar[5]->set_alignment(TTextPanel::AlignTop,
@@ -153,137 +162,149 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->title_bar[6]->set_alignment(TTextPanel::AlignTop,
                                       TTextPanel::AlignRight);
 
-    create_text(this, this->achievement_choice, 0, 100, 0x97, 0x82, 0xFA, 0x0B, 0, 0, 0);
-    create_text(this, this->achievement_choice + 1, 0, 0x9A, 0x83, 0x80, 0x112, 0x0B, 0, 0, 0);
-    create_text(this, this->achievement_choice + 2, 0, 0xD6, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
-    create_text(this, this->achievement_choice + 3, 0, 0x11A, 0x5B, 0x9C, 0x135, 0x0B, 0, 0, 0);
-    create_text(this, this->achievement_choice + 4, 0, 0x184, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[0], 0, 0x64, 0x97,
+                      0x82, 0xFA, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[1], 0, 0x9A, 0x83,
+                      0x80, 0x112, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[2], 0, 0xD6, 0x6F,
+                      0x79, 0x121, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[3], 0, 0x11A, 0x5B,
+                      0x9C, 0x135, 0x0B, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[4], 0, 0x184, 0x6F,
+                      0x79, 0x121, 0x0B, 0, 0, 0);
 
-    int player_index = 0;
     int y = 0xAB;
-    // The shipped loop creates eight player rows.
-    do {
-        char* name;
-        if (player_index + 1 < rge_base_game->world->player_num) {
-            RGE_Player* named_player =
-                rge_base_game->world->players[player_index + 1];
-            name = named_player->name;
+    for (i = 1; i < 9; ++i, y += 0x1E) {
+        char* player_name;
+        if (i < rge_base_game->world->player_num) {
+            player_name = rge_base_game->world->players[i]->name;
         } else {
-            name = 0;
+            player_name = 0;
         }
-        create_text(this, &this->player_names[player_index], name, 0x16, y,
-                    0x96, 0x1D,
-                    0x0B, 0, 1, 0);
-        create_text(this, &this->statistics[player_index][0], 0, 0xB2, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, &this->statistics[player_index][1], 0, 0xE7, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, &this->statistics[player_index][2], 0, 0x11B, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, &this->statistics[player_index][3], 0, 0x150, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, &this->statistics[player_index][4], 0, 0x185, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, &this->statistics[player_index][5], 0, 0x1BA, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, &this->statistics[player_index][6], 0, 0x1EE, y,
-                    0x33, 0x1D, 0x0B, 1, 1, 0);
 
-        if (player_index + 1 < rge_base_game->world->player_num) {
-            RGE_Player* player =
-                rge_base_game->world->players[player_index + 1];
+        this->create_text(this, &this->player_names[i - 1],
+                          player_name,
+                          0x16, y, 0x96, 0x1D, 0x0B, 0, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][0], 0,
+                          0xB2, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][1], 0,
+                          0xE7, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][2], 0,
+                          0x11B, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][3], 0,
+                          0x150, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][4], 0,
+                          0x185, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][5], 0,
+                          0x1BA, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][6], 0,
+                          0x1EE, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+
+        if (i < rge_base_game->world->player_num) {
+            RGE_Player* player = rge_base_game->world->players[i];
+            unsigned long color;
             switch (player->color_table->id) {
-            case 0: color = 0xC40000; break;
-            case 1: color = 200; break;
-            case 2: color = 0xEAEA; break;
-            case 3: color = 0x215A8C; break;
-            case 4: color = 0x80FF; break;
-            case 5: color = 0x8000; break;
-            case 6: color = 0x808080; break;
-            case 7: color = 0x808040; break;
-            default: color = 0xFFFFFF; break;
+            case 0:
+                color = 0xC40000;
+                break;
+            case 1:
+                color = 0xC8;
+                break;
+            case 2:
+                color = 0xEAEA;
+                break;
+            case 3:
+                color = 0x215A8C;
+                break;
+            case 4:
+                color = 0x80FF;
+                break;
+            case 5:
+                color = 0x8000;
+                break;
+            case 6:
+                color = 0x808080;
+                break;
+            case 7:
+                color = 0x808040;
+                break;
+            default:
+                color = 0xFFFFFF;
+                break;
             }
-            this->player_names[player_index]->set_text_color(color, 0);
+            this->player_names[i - 1]->set_text_color(color, 0);
             for (int column = 0; column < 7; ++column) {
-                this->statistics[player_index][column]->set_text_color(color, 0);
+                this->statistics[i - 1][column]->set_text_color(color, 0);
             }
         }
-
-        y += 0x1E;
-        ++player_index;
-    } while (player_index < 8);
-
-    // The shipped layout tests the non-null message arm first.
-    long ok_width;
-    long ok_x;
-    if (this->end_game_flag == 0 || rge_base_game->singlePlayerGame() == 0) {
-        create_button(this, &this->timelineButton, 0x26D8, 0, 100, 0x1B9,
-                      200, 0x1E, 0, 0, 0);
-        ok_width = 200;
-        ok_x = 0x154;
-    } else if (this->win_loss_text != 0) {
-        create_button(this, &this->aftermathButton, 0x26B2, 0, 5, 0x1B9,
-                      0x96, 0x1E, 0, 0, 0);
-        create_button(this, &this->timelineButton, 0x26D8, 0, 0xA5, 0x1B9,
-                      0x96, 0x1E, 0, 0, 0);
-        create_button(this, &this->restartButton, 0x269F, 0, 0x145, 0x1B9,
-                      0x96, 0x1E, 0, 0, 0);
-        ok_width = 0x96;
-        ok_x = 0x1E5;
-    } else {
-        create_button(this, &this->timelineButton, 0x26D8, 0, 0x14, 0x1B9,
-                      0xB4, 0x1E, 0, 0, 0);
-        create_button(this, &this->restartButton, 0x269F, 0, 0xE6, 0x1B9,
-                      0xB4, 0x1E, 0, 0, 0);
-        ok_width = 0xB4;
-        ok_x = 0x1B8;
     }
-    create_button(this, &this->okButton, 0x269C, 0, ok_x, 0x1B9,
-                  ok_width, 0x1E, 0, 0, 0);
-    create_button(this, &this->backButton, 0x26DA, 0, 200, 0x1B9,
-                  0xF0, 0x1E, 0, 0, 0);
+
+    long button_width;
+    long ok_x;
+    if (this->end_game_flag != 0 && rge_base_game->singlePlayerGame() != 0) {
+        if (this->win_loss_text != 0) {
+            this->create_button(this, &this->aftermathButton, 0x26B2, 0,
+                                5, 0x1B9, 0x96, 0x1E, 0, 0, 0);
+            this->create_button(this, &this->timelineButton, 0x26D8, 0,
+                                0xA5, 0x1B9, 0x96, 0x1E, 0, 0, 0);
+            this->create_button(this, &this->restartButton, 0x269F, 0,
+                                0x145, 0x1B9, 0x96, 0x1E, 0, 0, 0);
+            button_width = 0x96;
+            ok_x = 0x1E5;
+        } else {
+            this->create_button(this, &this->timelineButton, 0x26D8, 0,
+                                0x14, 0x1B9, 0xB4, 0x1E, 0, 0, 0);
+            this->create_button(this, &this->restartButton, 0x269F, 0,
+                                0xE6, 0x1B9, 0xB4, 0x1E, 0, 0, 0);
+            button_width = 0xB4;
+            ok_x = 0x1B8;
+        }
+    } else {
+        this->create_button(this, &this->timelineButton, 0x26D8, 0,
+                            0x64, 0x1B9, 0xC8, 0x1E, 0, 0, 0);
+        button_width = 0xC8;
+        ok_x = 0x154;
+    }
+    this->create_button(this, &this->okButton, 0x269C, 0, ok_x, 0x1B9,
+                        button_width, 0x1E, 0, 0, 0);
+    this->create_button(this, &this->backButton, 0x26DA, 0, 0xC8, 0x1B9,
+                        0xF0, 0x1E, 0, 0, 0);
     this->backButton->set_active(0);
     this->backButton->hotkey = 0x1B;
     this->backButton->hotkey_shift = 0;
-
-    create_button(this, &this->backButton2, 0x269C, 0, 200, 0x1B9,
-                  0xF0, 0x1E, 0, 0, 0);
+    this->create_button(this, &this->backButton2, 0x269C, 0, 0xC8, 0x1B9,
+                        0xF0, 0x1E, 0, 0, 0);
     this->backButton2->set_active(0);
     this->backButton2->hotkey = 0x1B;
     this->backButton2->hotkey_shift = 0;
     this->okButton->hotkey = 0x1B;
     this->okButton->hotkey_shift = 0;
 
-    RGE_Player* player = rge_base_game->get_player();
-    if (player->game_status == 1) {
+    if (rge_base_game->get_player()->game_status == 1) {
         this->win_decal = new TShape("viccheck.slp", 0xCB21);
     } else {
         this->win_decal = new TShape("defcheck.slp", 0xCB22);
     }
 
-    tab_count = 0;
+    int tab_count = 0;
     if (this->aftermathButton != 0) {
-        tabList[tab_count++] = this->aftermathButton;
+        tab_list[tab_count++] = this->aftermathButton;
     }
     if (this->timelineButton != 0) {
-        tabList[tab_count++] = this->timelineButton;
+        tab_list[tab_count++] = this->timelineButton;
     }
     if (this->restartButton != 0) {
-        tabList[tab_count++] = this->restartButton;
+        tab_list[tab_count++] = this->restartButton;
     }
-    tabList[tab_count++] = this->okButton;
-    set_tab_order(tabList, static_cast<short>(tab_count));
-    set_curr_child(this->okButton);
+    tab_list[tab_count++] = this->okButton;
+    this->set_tab_order(tab_list, static_cast<short>(tab_count));
+    this->set_curr_child(this->okButton);
     this->backButton->set_tab_order(static_cast<TPanel*>(0),
                                     static_cast<TPanel*>(0));
     this->backButton2->set_tab_order(static_cast<TPanel*>(0),
                                      static_cast<TPanel*>(0));
 
-    if (this->win_loss_text != 0) {
-        set_mode(5);
-    } else {
-        set_mode(0);
-    }
+    this->set_mode(this->win_loss_text != 0 ? 5 : 0);
 }
 
 TribeAchievementsScreen::~TribeAchievementsScreen()

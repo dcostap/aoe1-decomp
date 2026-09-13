@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "0048D530": {"status": "scratch", "symbol": "??0TribeAchievementsScreen@@QAE@PADH@Z"},
+    "0048D530": {"status": "new_verified_logic", "symbol": "??0TribeAchievementsScreen@@QAE@PADH@Z", "behavior_review": "logic_matching/0048D530/coord-18-0048D530-dual-review-01-20260913T053444Z/attempt-01"},
     "0048E210": {"status": "matching", "symbol": "??1TribeAchievementsScreen@@UAE@XZ"},
     "0048E400": {"status": "accepted_drift", "symbol": "?set_mode@TribeAchievementsScreen@@IAEXJ@Z"},
     "0048F0B0": {"status": "matching", "symbol": "?draw@TribeAchievementsScreen@@UAEXXZ"},
