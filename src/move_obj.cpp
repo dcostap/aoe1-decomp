@@ -727,166 +727,178 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
 
 
 
-int RGE_Moving_Object::doMove() {
-    Path* path;
-    Waypoint* waypoint;
-    int path_result;
-    float radiusDistance;
-    float goalDX;
+int RGE_Moving_Object::doMove()
+{
+    float distanceToGoal;
     float dY;
     float newDY;
+    float dX;
+    float distanceToWaypoint;
+    int waypointStatus;
+    int found;
+    int i;
+    int displayObjectID;
 
     this->setWaitingToMove(0);
 
-    goalDX = this->goalValue.x - this->world_x;
+    dX = this->goalValue.x - this->world_x;
     dY = this->goalValue.y - this->world_y;
-    if (goalDX < DAT_00570b48) {
-        goalDX = -goalDX;
+    if (dX < DAT_00570b48) {
+        dX = -dX;
     }
     if (dY < DAT_00570b48) {
         dY = -dY;
     }
 
-    radiusDistance =
-        goalDX - (this->targetRadiusX + this->master_obj->radius_x);
-    dY = dY - (this->master_obj->radius_y + this->targetRadiusY);
-    if (radiusDistance < DAT_00570b48) {
-        radiusDistance = 0.0f;
+    dX = dX - (this->targetRadiusX + this->master_obj->radius_x);
+    dY = dY - (this->targetRadiusY + this->master_obj->radius_y);
+    if (dX < DAT_00570b48) {
+        dX = 0.0f;
     }
     if (dY < DAT_00570b48) {
-        dY = 0.0f;
+        dY = DAT_00570b48;
     }
 
-    radiusDistance =
-        (float)sqrt(radiusDistance * radiusDistance + dY * dY);
+    distanceToGoal = (float)sqrt(dY * dY + dX * dX);
     if (this->actionRange > DAT_00570b98 &&
-        radiusDistance <= this->actionRange) {
+        distanceToGoal <= this->actionRange) {
         this->speed = 0.0f;
         this->rangeStatusValue = 1;
         this->removeAllUserDefinedWaypoints(0);
-        this->pathingGroupMembers.numberValue = 0;
+        this->pathingGroupMembers.zeroNumber();
         return 2;
     }
 
-    if (radiusDistance < DAT_00570b90) {
-        path = &this->pathValue;
-        newDY = radiusDistance;
-        if (path->currentWaypoint() != 0) {
-            waypoint = path->currentWaypoint();
-            newDY = waypoint->x - this->world_x;
-            waypoint = path->currentWaypoint();
+    if (distanceToGoal < DAT_00570b90) {
+        float trivialDistance = distanceToGoal;
+        Waypoint* waypoint = this->pathValue.currentWaypoint();
+        if (waypoint != 0) {
+            waypoint = this->pathValue.currentWaypoint();
+            dX = waypoint->x - this->world_x;
+            waypoint = this->pathValue.currentWaypoint();
             dY = waypoint->y - this->world_y;
-            newDY = (float)sqrt(dY * dY + newDY * newDY);
+            trivialDistance = (float)sqrt(dY * dY + dX * dX);
         }
-        if (newDY == DAT_00570b48) {
-            this->pathingGroupMembers.numberValue = 0;
+
+        if (trivialDistance == DAT_00570b48) {
+            this->pathingGroupMembers.zeroNumber();
             return 2;
         }
 
-        int result = this->doTrivialMove(this->goalValue.x, this->goalValue.y);
-        if (result == 5) {
+        int trivialResult =
+            this->doTrivialMove(this->goalValue.x, this->goalValue.y);
+        if (trivialResult == 5) {
             this->rangeStatusValue = 1;
             this->removeAllUserDefinedWaypoints(0);
-            this->pathingGroupMembers.numberValue = 0;
+            this->pathingGroupMembers.zeroNumber();
             return 2;
         }
-        if (result != 0) {
-            if (result == 1 || result == 6) {
-                this->speed = 0.0f;
-                this->rangeStatusValue = 2;
-                return 1;
-            }
-            if (result == 2 || result == 3 || result == 4) {
-                this->speed = 0.0f;
-                this->rangeStatusValue = 1;
-                this->removeAllUserDefinedWaypoints(0);
-                this->pathingGroupMembers.numberValue = 0;
-                return 2;
-            }
-        } else {
+        if (trivialResult == 0) {
             this->rangeStatusValue = 2;
             return 1;
         }
-    }
-
-    path = &this->pathValue;
-    path_result = 1;
-    newDY = (float)sqrt(this->master_obj->radius_x * this->master_obj->radius_x +
-                        this->master_obj->radius_y * this->master_obj->radius_y);
-    waypoint = path->currentWaypoint();
-    if (waypoint != 0) {
-        waypoint = path->currentWaypoint();
-        float dx = waypoint->x - this->world_x;
-        waypoint = path->currentWaypoint();
-        float dy = waypoint->y - this->world_y;
-        if ((float)sqrt(dy * dy + dx * dx) == DAT_00570b48) {
-            waypoint = path->currentWaypoint();
-            float y = waypoint->y;
-            waypoint = path->currentWaypoint();
-            if (pathSystem.passable(this, waypoint->x, y, path_result) != 0) {
-                this->teleport(path->currentWaypoint()->x,
-                               path->currentWaypoint()->y,
-                               path->currentWaypoint()->z);
-            }
-            path_result = path->moveToNextWaypoint();
-            this->closestDistanceToWaypoint = 100000.0f;
+        if (trivialResult == 1 || trivialResult == 6) {
+            this->speed = 0.0f;
+            this->rangeStatusValue = 2;
+            return 1;
         }
-    } else {
-        path_result = 0;
-    }
-
-    float distanceToGoal = 0.0f;
-    if (this->numberUserDefinedWaypointsValue > 1 &&
-        radiusDistance > DAT_00570ba0) {
-        unsigned char zone1 = this->lookupZone(this->userDefinedWaypoints[0].x,
-                                               this->userDefinedWaypoints[0].y);
-        unsigned char zone2 = this->lookupZone(this->userDefinedWaypoints[1].x,
-                                               this->userDefinedWaypoints[1].y);
-        if (zone1 == zone2) {
-            distanceToGoal = 3.0f;
-        }
-    }
-
-    if (path_result == 0) {
-        if (radiusDistance <= distanceToGoal + newDY + this->actionRange) {
+        if (trivialResult == 2 || trivialResult == 3 || trivialResult == 4) {
             this->speed = 0.0f;
             this->rangeStatusValue = 1;
             this->removeAllUserDefinedWaypoints(0);
-            this->pathingGroupMembers.numberValue = 0;
+            this->pathingGroupMembers.zeroNumber();
             return 2;
         }
-        int retry_success = 0;
-        while (retry_success == 0) {
+    }
+
+    distanceToWaypoint = (float)sqrt(
+        this->master_obj->radius_y * this->master_obj->radius_y +
+        this->master_obj->radius_x * this->master_obj->radius_x);
+    waypointStatus = 1;
+    Waypoint* waypoint = this->pathValue.currentWaypoint();
+    if (waypoint == 0) {
+        waypointStatus = 0;
+    } else {
+        waypoint = this->pathValue.currentWaypoint();
+        dX = waypoint->x - this->world_x;
+        waypoint = this->pathValue.currentWaypoint();
+        dY = waypoint->y - this->world_y;
+        if ((float)sqrt(dY * dY + dX * dX) == DAT_00570b48) {
+            waypointStatus = 1;
+            waypoint = this->pathValue.currentWaypoint();
+            dY = waypoint->y;
+            waypoint = this->pathValue.currentWaypoint();
+            waypointStatus = pathSystem.passable(this, waypoint->x, dY,
+                                                 waypointStatus);
+            if (waypointStatus != 0) {
+                waypoint = this->pathValue.currentWaypoint();
+                float waypointZ = waypoint->z;
+                waypoint = this->pathValue.currentWaypoint();
+                dY = waypoint->y;
+                waypoint = this->pathValue.currentWaypoint();
+                this->teleport(waypoint->x, dY, waypointZ);
+            }
+            waypointStatus = this->pathValue.moveToNextWaypoint();
+            this->closestDistanceToWaypoint = 100000.0f;
+        }
+    }
+
+    newDY = 0.0f;
+    if (this->numberUserDefinedWaypointsValue > 1 &&
+        distanceToGoal > DAT_00570ba0) {
+        unsigned char firstZone = this->lookupZone(
+            (int)this->userDefinedWaypoints[0].x,
+            (int)this->userDefinedWaypoints[0].y);
+        unsigned char secondZone = this->lookupZone(
+            (int)this->userDefinedWaypoints[1].x,
+            (int)this->userDefinedWaypoints[1].y);
+        if (firstZone == secondZone) {
+            newDY = 3.0f;
+        }
+    }
+
+    if (waypointStatus == 0) {
+        if (distanceToGoal <= newDY + distanceToWaypoint +
+                                this->actionRange) {
+            this->speed = 0.0f;
+            this->rangeStatusValue = 1;
+            this->removeAllUserDefinedWaypoints(0);
+            this->pathingGroupMembers.zeroNumber();
+            return 2;
+        }
+
+        int reachedWaypoint = 0;
+        do {
             this->removeUserDefinedWaypoint(0);
             if (this->numberUserDefinedWaypointsValue < 1) {
                 return 0;
             }
-            float retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
-            float retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
-            if (newDY + this->actionRange - DAT_00570ba8 <
-                (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx)) {
-                retry_success = 1;
+            dX = (float)this->userDefinedWaypoints->x - this->world_x;
+            dY = (float)this->userDefinedWaypoints->y - this->world_y;
+            if (distanceToWaypoint + this->actionRange - DAT_00570ba8 <
+                (float)sqrt(dY * dY + dX * dX)) {
+                reachedWaypoint = 1;
             }
-        }
+        } while (reachedWaypoint == 0);
 
-        int old_continue = this->continueCounter;
-        int next_continue = old_continue - 1;
-        this->continueCounter = next_continue;
-        if (next_continue < 1) {
+        int oldContinueCounter = this->continueCounter;
+        this->continueCounter = oldContinueCounter - 1;
+        if (this->continueCounter < 1) {
             this->speed = 0.0f;
             this->rangeStatusValue = 2;
-            if (this->numberUserDefinedWaypointsValue > 1) {
-                this->continueCounter = old_continue + 4;
-                return 1;
+            if (this->numberUserDefinedWaypointsValue < 2) {
+                return 0;
             }
-            return 0;
+            this->continueCounter = oldContinueCounter + 4;
+            return 1;
         }
 
         if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
             this->speed = 0.0f;
-            this->numberWaitDelays++;
+            ++this->numberWaitDelays;
             return 1;
         }
+
         this->owner->incrementPathingAttempts();
         this->startValue.x = this->world_x;
         this->startValue.y = this->world_y;
@@ -894,256 +906,255 @@ int RGE_Moving_Object::doMove() {
         this->numberWaitDelays = 0;
         pathSystem.incrementContinuePaths();
 
-        int found;
-        if (this->numberUserDefinedWaypointsValue < 1) {
-            found = pathSystem.findTilePath((int)this->startValue.x,
-                                            (int)this->startValue.y,
-                                            (int)this->goalValue.x,
-                                            (int)this->goalValue.y,
-                                            this, this->actionRange, this->targetIDValue,
-                                            1, (float*)0, 1, 1, 1, 1, -1, -1);
+        if (this->numberUserDefinedWaypointsValue > 0) {
+            found = pathSystem.findTilePath(
+                (int)this->startValue.x, (int)this->startValue.y,
+                this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
+                this, this->actionRange, this->targetIDValue,
+                1, (float*)0, 1, 1, 1, 1, -1, -1);
         } else {
-            found = pathSystem.findTilePath((int)this->startValue.x,
-                                            (int)this->startValue.y,
-                                            this->userDefinedWaypoints[0].x,
-                                            this->userDefinedWaypoints[0].y,
-                                            this, this->actionRange, this->targetIDValue,
-                                            1, (float*)0, 1, 1, 1, 1, -1, -1);
+            found = pathSystem.findTilePath(
+                (int)this->startValue.x, (int)this->startValue.y,
+                (int)this->goalValue.x, (int)this->goalValue.y, this,
+                this->actionRange, this->targetIDValue,
+                1, (float*)0, 1, 1, 1, 1, -1, -1);
         }
-        this->pathingGroupMembers.numberValue = 0;
 
+        this->pathingGroupMembers.zeroNumber();
         if (actionFile != 0) {
-            fprintf(actionFile,
-                    "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
+            fprintf(actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
                     this->owner->world->world_time, this->id,
                     this->startValue.x, this->startValue.y,
                     this->goalValue.x, this->goalValue.y);
-            path->initToStart();
-            int i = 0;
-            int n = path->numberOfWaypoints();
-            if (n > 0) {
-                do {
-                    fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
-                            path->currentWaypoint()->x,
-                            path->currentWaypoint()->y);
-                    i++;
-                    path->moveToNextWaypoint();
-                    n = path->numberOfWaypoints();
-                } while (i < n);
+            this->pathValue.initToStart();
+            i = 0;
+            while (i < this->pathValue.numberOfWaypoints()) {
+                fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
+                        this->pathValue.currentWaypoint()->x,
+                        this->pathValue.currentWaypoint()->y);
+                ++i;
+                this->pathValue.moveToNextWaypoint();
             }
             fprintf(actionFile, ".\n");
-            path->initToStart();
-            path->moveToNextWaypoint();
+            this->pathValue.initToStart();
+            this->pathValue.moveToNextWaypoint();
         }
 
-        if (found == 0 && path->numberOfWaypoints() == 1) {
-            if (pathSystem.passable(this,
-                                    (float)(floor((double)this->world_x) - DAT_00570b80),
-                                    (float)(floor((double)this->world_y) - DAT_00570b80),
-                                    1) == 0 ||
-                (this->world_x - (float)floor((double)this->world_x) == DAT_00570b90 &&
-                 this->world_y - (float)floor((double)this->world_y) == DAT_00570b90)) {
+        if (found == 0 && this->pathValue.numberOfWaypoints() == 1) {
+            if (pathSystem.passable(
+                    this, (float)floor((double)this->world_x) - DAT_00570b80,
+                    (float)floor((double)this->world_y) - DAT_00570b80, 1) == 0) {
                 this->speed = 0.0f;
                 this->rangeStatusValue = 2;
-                if (this->numberUserDefinedWaypointsValue > 1) {
-                    this->continueCounter += 5;
-                    return 1;
+                if (this->numberUserDefinedWaypointsValue < 2) {
+                    return 0;
                 }
-                return 0;
-            } else {
-                this->teleport(
-                    (float)(floor((double)this->world_x) - DAT_00570b80),
-                    (float)(floor((double)this->world_y) - DAT_00570b80),
-                    this->world_z);
-            }
-        }
-
-        int display_object_id = displayPathObjectID;
-        if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
-            path->initToStart();
-            int i = 0;
-            int n = path->numberOfWaypoints();
-            while (i < n) {
-                    this->owner->master_objects[display_object_id]->make_new_obj(
-                        this->owner, path->currentWaypoint()->x,
-                        path->currentWaypoint()->y, 1.0f);
-                ++i;
-                path->moveToNextWaypoint();
-                n = path->numberOfWaypoints();
-            }
-            path->initToStart();
-            path->moveToNextWaypoint();
-        }
-
-        path->initToStart();
-        path_result = path->moveToNextWaypoint();
-        if (path_result == 0) {
-            this->speed = 0.0f;
-            this->rangeStatusValue = 2;
-            if (this->numberUserDefinedWaypointsValue > 1) {
                 this->continueCounter += 5;
                 return 1;
             }
-            return 0;
+            if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
+                this->world_y - floor((double)this->world_y) == DAT_00570b90) {
+                this->speed = 0.0f;
+                this->rangeStatusValue = 2;
+                if (this->numberUserDefinedWaypointsValue < 2) {
+                    return 0;
+                }
+                this->continueCounter += 5;
+                return 1;
+            }
+            this->teleport(
+                (float)floor((double)this->world_x) - DAT_00570b80,
+                (float)floor((double)this->world_y) - DAT_00570b80,
+                this->world_z);
+        }
+
+        displayObjectID = displayPathObjectID;
+        if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
+            this->pathValue.initToStart();
+            i = 0;
+            while (i < this->pathValue.numberOfWaypoints()) {
+                RGE_Master_Static_Object* master =
+                    this->owner->master_objects[displayObjectID];
+                master->make_new_obj(this->owner,
+                                     this->pathValue.currentWaypoint()->x,
+                                     this->pathValue.currentWaypoint()->y, 1.0f);
+                ++i;
+                this->pathValue.moveToNextWaypoint();
+            }
+            this->pathValue.initToStart();
+            this->pathValue.moveToNextWaypoint();
+        }
+
+        this->pathValue.initToStart();
+        if (this->pathValue.moveToNextWaypoint() == 0) {
+            this->speed = 0.0f;
+            this->rangeStatusValue = 2;
+            if (this->numberUserDefinedWaypointsValue < 2) {
+                return 0;
+            }
+            this->continueCounter += 5;
+            return 1;
         }
         this->closestDistanceToWaypoint = 100000.0f;
     }
 
-    waypoint = path->currentWaypoint();
-    if (waypoint != 0) {
-        int result = this->doTrivialMove(path->currentWaypoint()->x,
-                                         path->currentWaypoint()->y);
-        if (result == 5) {
-            this->rangeStatusValue = 1;
-            this->removeAllUserDefinedWaypoints(0);
-            this->pathingGroupMembers.numberValue = 0;
-            return 2;
+    waypoint = this->pathValue.currentWaypoint();
+    if (waypoint == 0) {
+        this->speed = 0.0f;
+        this->rangeStatusValue = 2;
+        if (this->numberUserDefinedWaypointsValue < 2) {
+            return 0;
         }
-        if (result == 0) {
+        this->continueCounter += 5;
+        return 1;
+    }
+
+    waypoint = this->pathValue.currentWaypoint();
+    dY = waypoint->y;
+    waypoint = this->pathValue.currentWaypoint();
+    int trivialResult = this->doTrivialMove(waypoint->x, dY);
+    if (trivialResult == 5) {
+        this->rangeStatusValue = 1;
+        this->removeAllUserDefinedWaypoints(0);
+        this->pathingGroupMembers.zeroNumber();
+        return 2;
+    }
+    if (trivialResult == 0) {
+        this->rangeStatusValue = 2;
+        return 1;
+    }
+    if (trivialResult == 1) {
+        this->speed = 0.0f;
+        this->rangeStatusValue = 2;
+        return 1;
+    }
+    if (trivialResult == 2) {
+        if (this->pathValue.moveToNextWaypoint() != 0) {
             this->rangeStatusValue = 2;
             return 1;
         }
-        if (result == 1) {
-            this->speed = 0.0f;
-            this->rangeStatusValue = 2;
-            return 1;
-        }
-        if (result == 2) {
-            if (path->moveToNextWaypoint() != 0) {
-                this->rangeStatusValue = 2;
-                return 1;
-            }
 
-            int retry_success = 0;
-            while (retry_success == 0) {
-                this->removeUserDefinedWaypoint(0);
-                if (this->numberUserDefinedWaypointsValue < 1) {
-                    return 0;
-                }
-                float retry_dx = (float)this->userDefinedWaypoints[0].x - this->world_x;
-                float retry_dy = (float)this->userDefinedWaypoints[0].y - this->world_y;
-                if (newDY + this->actionRange - DAT_00570ba8 <
-                    (float)sqrt(retry_dy * retry_dy + retry_dx * retry_dx)) {
-                    retry_success = 1;
-                }
-            }
-
-            if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
-                this->speed = 0.0f;
-                this->numberWaitDelays++;
-                return 1;
-            }
-            this->owner->incrementPathingAttempts();
-            this->startValue.x = this->world_x;
-            this->startValue.y = this->world_y;
-            this->startValue.z = this->world_z;
-            this->numberWaitDelays = 0;
-            pathSystem.incrementContinuePaths();
-
-            int found;
+        int reachedWaypoint = 0;
+        do {
+            this->removeUserDefinedWaypoint(0);
             if (this->numberUserDefinedWaypointsValue < 1) {
-                found = pathSystem.findTilePath((int)this->startValue.x,
-                                                (int)this->startValue.y,
-                                                (int)this->goalValue.x,
-                                                (int)this->goalValue.y,
-                                                this, this->actionRange, this->targetIDValue,
-                                                1, (float*)0, 1, 1, 1, 1, -1, -1);
-            } else {
-                found = pathSystem.findTilePath((int)this->startValue.x,
-                                                (int)this->startValue.y,
-                                                this->userDefinedWaypoints[0].x,
-                                                this->userDefinedWaypoints[0].y,
-                                                this, this->actionRange, this->targetIDValue,
-                                                1, (float*)0, 1, 1, 1, 1, -1, -1);
+                return 0;
             }
-            this->pathingGroupMembers.numberValue = 0;
-
-            if (actionFile != 0) {
-                fprintf(actionFile,
-                        "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
-                        this->owner->world->world_time, this->id,
-                        this->startValue.x, this->startValue.y,
-                        this->goalValue.x, this->goalValue.y);
-                path->initToStart();
-                int i = 0;
-                int n = path->numberOfWaypoints();
-                if (n > 0) {
-                    do {
-                        fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
-                                path->currentWaypoint()->x,
-                                path->currentWaypoint()->y);
-                        i++;
-                        path->moveToNextWaypoint();
-                        n = path->numberOfWaypoints();
-                    } while (i < n);
-                }
-                fprintf(actionFile, ".\n");
-                path->initToStart();
-                path->moveToNextWaypoint();
+            dX = (float)this->userDefinedWaypoints->x - this->world_x;
+            dY = (float)this->userDefinedWaypoints->y - this->world_y;
+            if (distanceToWaypoint + this->actionRange - DAT_00570ba8 <
+                (float)sqrt(dY * dY + dX * dX)) {
+                reachedWaypoint = 1;
             }
+        } while (reachedWaypoint == 0);
 
-            if (found == 0 && path->numberOfWaypoints() == 1) {
-                if (pathSystem.passable(this,
-                                        (float)(floor((double)this->world_x) - DAT_00570b80),
-                                        (float)(floor((double)this->world_y) - DAT_00570b80),
-                                        1)) {
-                    if (this->world_x - (float)floor((double)this->world_x) == DAT_00570b90 &&
-                        this->world_y - (float)floor((double)this->world_y) == DAT_00570b90) {
-                        this->speed = 0.0f;
-                        this->rangeStatusValue = 2;
-                        if (this->numberUserDefinedWaypointsValue > 1) {
-                            this->continueCounter += 5;
-                            return 1;
-                        }
+        if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
+            this->speed = 0.0f;
+            ++this->numberWaitDelays;
+            return 1;
+        }
+
+        this->owner->incrementPathingAttempts();
+        this->startValue.x = this->world_x;
+        this->startValue.y = this->world_y;
+        this->startValue.z = this->world_z;
+        this->numberWaitDelays = 0;
+        pathSystem.incrementContinuePaths();
+
+        if (this->numberUserDefinedWaypointsValue > 0) {
+            found = pathSystem.findTilePath(
+                (int)this->startValue.x, (int)this->startValue.y,
+                this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
+                this, this->actionRange, this->targetIDValue,
+                1, (float*)0, 1, 1, 1, 1, -1, -1);
+        } else {
+            found = pathSystem.findTilePath(
+                (int)this->startValue.x, (int)this->startValue.y,
+                (int)this->goalValue.x, (int)this->goalValue.y, this,
+                this->actionRange, this->targetIDValue,
+                1, (float*)0, 1, 1, 1, 1, -1, -1);
+        }
+
+        this->pathingGroupMembers.zeroNumber();
+        if (actionFile != 0) {
+            fprintf(actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
+                    this->owner->world->world_time, this->id,
+                    this->startValue.x, this->startValue.y,
+                    this->goalValue.x, this->goalValue.y);
+            this->pathValue.initToStart();
+            i = 0;
+            while (i < this->pathValue.numberOfWaypoints()) {
+                fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
+                        this->pathValue.currentWaypoint()->x,
+                        this->pathValue.currentWaypoint()->y);
+                ++i;
+                this->pathValue.moveToNextWaypoint();
+            }
+            fprintf(actionFile, ".\n");
+            this->pathValue.initToStart();
+            this->pathValue.moveToNextWaypoint();
+        }
+
+        if (found == 0 && this->pathValue.numberOfWaypoints() == 1) {
+            if (pathSystem.passable(
+                    this, (float)floor((double)this->world_x) - DAT_00570b80,
+                    (float)floor((double)this->world_y) - DAT_00570b80, 1) != 0) {
+                if (this->world_x - floor((double)this->world_x) != DAT_00570b90 ||
+                    this->world_y - floor((double)this->world_y) != DAT_00570b90) {
+                    this->teleport(
+                        (float)floor((double)this->world_x) - DAT_00570b80,
+                        (float)floor((double)this->world_y) - DAT_00570b80,
+                        this->world_z);
+                } else {
+                    this->speed = 0.0f;
+                    this->rangeStatusValue = 2;
+                    if (this->numberUserDefinedWaypointsValue < 2) {
                         return 0;
                     }
-                    this->teleport(
-                        (float)(floor((double)this->world_x) - DAT_00570b80),
-                        (float)(floor((double)this->world_y) - DAT_00570b80),
-                        this->world_z);
-                }
-            }
-
-            int display_object_id = displayPathObjectID;
-            if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
-                path->initToStart();
-                int i = 0;
-                int n = path->numberOfWaypoints();
-                while (i < n) {
-                    this->owner->master_objects[display_object_id]->make_new_obj(
-                        this->owner, path->currentWaypoint()->x,
-                        path->currentWaypoint()->y, 1.0f);
-                    ++i;
-                    path->moveToNextWaypoint();
-                    n = path->numberOfWaypoints();
-                }
-                path->initToStart();
-                path->moveToNextWaypoint();
-            }
-
-            path->initToStart();
-            path_result = path->moveToNextWaypoint();
-            if (path_result == 0) {
-                this->speed = 0.0f;
-                this->rangeStatusValue = 2;
-                if (this->numberUserDefinedWaypointsValue > 1) {
                     this->continueCounter += 5;
                     return 1;
                 }
+            }
+        }
+
+        displayObjectID = displayPathObjectID;
+        if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
+            this->pathValue.initToStart();
+            i = 0;
+            while (i < this->pathValue.numberOfWaypoints()) {
+                RGE_Master_Static_Object* master =
+                    this->owner->master_objects[displayObjectID];
+                master->make_new_obj(this->owner,
+                                     this->pathValue.currentWaypoint()->x,
+                                     this->pathValue.currentWaypoint()->y, 1.0f);
+                ++i;
+                this->pathValue.moveToNextWaypoint();
+            }
+            this->pathValue.initToStart();
+            this->pathValue.moveToNextWaypoint();
+        }
+
+        this->pathValue.initToStart();
+        if (this->pathValue.moveToNextWaypoint() == 0) {
+            this->speed = 0.0f;
+            this->rangeStatusValue = 2;
+            if (this->numberUserDefinedWaypointsValue < 2) {
                 return 0;
             }
-            this->rangeStatusValue = 2;
+            this->continueCounter += 5;
             return 1;
         }
+        this->rangeStatusValue = 2;
+        return 1;
     }
 
     this->speed = 0.0f;
     this->rangeStatusValue = 2;
-    if (this->numberUserDefinedWaypointsValue > 1) {
-        this->continueCounter += 5;
-        return 1;
+    if (this->numberUserDefinedWaypointsValue < 2) {
+        return 0;
     }
-    return 0;
+    this->continueCounter += 5;
+    return 1;
 }
 
 
