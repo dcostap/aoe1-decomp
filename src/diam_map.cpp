@@ -483,190 +483,160 @@ void RGE_Diamond_Map::draw_explored_tiles() {
   }
 }
 
-void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3,
-                                unsigned char param_4) {
-  unsigned char color = 0;
-  RGE_Map_Tile_Row *row =
-      this->map_tile_rows + ((int)param_2 + (int)this->map_wid - (int)param_1);
-  --row;
-
-  if (row->draw == 0) {
+void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
+                                unsigned char color) {
+  RGE_Map_Tile_Row *tile_row =
+      this->map_tile_rows + this->map_wid + row - col - 1;
+  if (tile_row->draw == 0)
     return;
-  }
 
   RGE_Map *map = this->map;
-  RGE_Tile **tile_rows = map->map_row_offset;
-  RGE_Tile *tile = tile_rows[param_2] + param_1;
+  RGE_Tile **map_rows = map->map_row_offset;
+  RGE_Tile *tile = map_rows[row] + col;
 
   if (map->map_visible_flag == 0 &&
-      (this->player->mutualExploredMask &
-       unified_map_offsets[param_2][param_1]) == 0) {
+      (this->player->mutualExploredMask & unified_map_offsets[row][col]) == 0)
     return;
-  }
 
-  short max_coord = param_1;
-  if (param_2 < param_1) {
-    max_coord = param_2;
-  }
+  short min_coord = row;
+  if (col < row)
+    min_coord = col;
 
-  bool draw = false;
-  short x_offset;
-  if (!(row->ratio >= 1.0f)) {
-    float scaled = (float)max_coord * row->ratio;
-    x_offset = (short)scaled;
-    if (scaled - (float)x_offset < row->ratio) {
-      draw = true;
-    }
+  short draw_offset;
+  int draw = 0;
+  if (tile_row->ratio < 1.0f) {
+    float position = (float)min_coord * tile_row->ratio;
+    draw_offset = (short)position;
+    if (position - (float)draw_offset < tile_row->ratio)
+      draw = 1;
   } else {
-    x_offset = (short)((float)max_coord * row->draw_step);
-    draw = true;
+    draw_offset = (short)((float)min_coord * tile_row->draw_step);
+    draw = 1;
   }
 
-  if (!draw) {
+  if (draw == 0)
     return;
-  }
 
-  long x = (long)this->map_image_lines[row->image_line].start_x + x_offset;
-  long y = (long)this->map_image_start_y + (long)row->image_line;
-  unsigned char terrain = tile->terrain_type & 0x1F;
+  short image_line = tile_row->image_line;
+  long draw_x = this->map_image_lines[image_line].start_x + draw_offset;
+  long draw_y = this->map_image_start_y + image_line;
+  unsigned char terrain = tile->terrain_type;
 
-  if (param_3 == 0) {
-    if (param_4 > 0) {
-      color = param_4;
-    } else {
-      switch (tile->tile_type) {
-      case 0:
-        color = map->terrain_types[terrain].map_med_color;
-        break;
-      case 1:
-      case 4:
-      case 5:
-      case 7:
-      case 8:
-      case 9:
-      case 12:
-      case 13:
-      case 15:
-        color = map->terrain_types[terrain].map_low_color;
-        break;
-      case 2:
-      case 3:
-      case 6:
-      case 10:
-      case 11:
-      case 14:
-      case 16:
-        color = map->terrain_types[terrain].map_hi_color;
-        break;
+  if (selected != 0) {
+    draw_x += this->pnl_x;
+    draw_y += this->pnl_y;
+    short draw_wid = tile_row->draw_wid;
+    if (this->map_tile_draw_hgt == 1) {
+      if (draw_wid == 1) {
+        this->render_area->SetPixel(draw_x, draw_y, this->fog_color);
+      } else if (draw_wid == 2) {
+        this->render_area->SetPixel(draw_x, draw_y, this->fog_color);
+        this->render_area->SetPixel(draw_x + 1, draw_y, this->fog_color);
+      } else if (draw_wid > 0) {
+        do {
+          this->render_area->SetPixel(draw_x, draw_y, this->fog_color);
+          ++draw_x;
+          --draw_wid;
+        } while (draw_wid != 0);
       }
-    }
-
-    short scan_row = param_2 - 1;
-    param_2 += 2;
-    while (scan_row < param_2) {
-      if (scan_row > -1 && scan_row < this->map_hgt) {
-        short scan_col = param_1 - 1;
-        while (scan_col < param_1 + 2) {
-          if (scan_col <= -1 || scan_col >= this->map_wid) {
-            ++scan_col;
-          } else {
-            RGE_Object_Node *node = tile_rows[scan_row][scan_col].objects.list;
-            if (node == 0) {
-              ++scan_col;
-            } else {
-              for (; node != 0 &&
-                     node->node->master_obj->map_draw_level != 4;
-                   node = node->next) {
-              }
-              if (node != 0)
-                color = node->node->master_obj->map_color;
-              ++scan_col;
-            }
-          }
+    } else {
+      short draw_row = 0;
+      while (draw_row < this->map_tile_draw_hgt) {
+        short width = draw_wid;
+        long x = draw_x;
+        if (width > 0) {
+          do {
+            this->render_area->SetPixel(x, draw_y + draw_row,
+                                        this->fog_color);
+            ++x;
+            --width;
+          } while (width != 0);
         }
+        ++draw_row;
       }
-      ++scan_row;
     }
+    return;
+  }
 
-    short width = row->draw_wid;
-    if (this->map_tile_draw_hgt == 1) {
-      if (width == 1) {
-        this->save_area->SetPixel(x, y, color);
-        return;
-      }
-      if (width == 2) {
-        this->save_area->SetPixel(x, y, color);
-        this->save_area->SetPixel(x + 1, y, color);
-        return;
-      }
-      if (width > 0) {
-        int count = width;
-        do {
-          this->save_area->SetPixel(x, y, color);
-          ++x;
-          --count;
-        } while (count != 0);
-      }
-    } else {
-      short dy = 0;
-      if (this->map_tile_draw_hgt > 0) {
-        do {
-          if (width > 0) {
-            int count = width;
-            int px = x;
-            do {
-              this->save_area->SetPixel(px, y + dy, color);
-              ++px;
-              --count;
-            } while (count != 0);
-          }
-          ++dy;
-        } while (dy < this->map_tile_draw_hgt);
+  if (color == 0) {
+    switch (tile->tile_type) {
+    case 0:
+      color = map->terrain_types[terrain].map_med_color;
+      break;
+
+    case 1:
+    case 4:
+    case 5:
+    case 7:
+    case 8:
+    case 9:
+    case 12:
+    case 13:
+    case 15:
+      color = map->terrain_types[terrain].map_low_color;
+      break;
+
+    case 2:
+    case 3:
+    case 6:
+    case 10:
+    case 11:
+    case 14:
+    case 16:
+      color = map->terrain_types[terrain].map_hi_color;
+      break;
+    }
+  }
+
+  short check_row;
+  for (check_row = row - 1; check_row < row + 2; ++check_row) {
+    if (check_row < 0 || check_row >= this->map_hgt)
+      continue;
+
+    short check_col;
+    for (check_col = col - 1; check_col < col + 2; ++check_col) {
+      if (check_col < 0 || check_col >= this->map_wid)
+        continue;
+
+      RGE_Object_Node *node = map_rows[check_row][check_col].objects.list;
+      while (node != 0) {
+        if (node->node->master_obj->map_draw_level == 4) {
+          color = node->node->master_obj->map_color;
+          break;
+        }
+        node = node->next;
       }
     }
-    return;
-  } else {
-    x += this->pnl_x;
-    y += this->pnl_y;
-    short width = row->draw_wid;
-    if (this->map_tile_draw_hgt == 1) {
-      if (width == 1) {
-        this->render_area->SetPixel(x, y, this->fog_color);
-        return;
-      }
-      if (width == 2) {
-        this->render_area->SetPixel(x, y, this->fog_color);
-        this->render_area->SetPixel(x + 1, y, this->fog_color);
-        return;
-      }
-      if (width < 1) {
-        return;
-      }
-      int count = width;
+  }
+
+  short draw_wid = tile_row->draw_wid;
+  if (this->map_tile_draw_hgt == 1) {
+    if (draw_wid == 1) {
+      this->save_area->SetPixel(draw_x, draw_y, color);
+    } else if (draw_wid == 2) {
+      this->save_area->SetPixel(draw_x, draw_y, color);
+      this->save_area->SetPixel(draw_x + 1, draw_y, color);
+    } else if (draw_wid > 0) {
       do {
-        this->render_area->SetPixel(x, y, this->fog_color);
-        ++x;
-        --count;
-      } while (count != 0);
-      return;
+        this->save_area->SetPixel(draw_x, draw_y, color);
+        ++draw_x;
+        --draw_wid;
+      } while (draw_wid != 0);
     }
-    short dy = 0;
-    if (this->map_tile_draw_hgt < 1) {
-      return;
-    }
-    do {
+  } else {
+    short draw_row = 0;
+    while (draw_row < this->map_tile_draw_hgt) {
+      short width = draw_wid;
+      long x = draw_x;
       if (width > 0) {
-        int count = width;
-        int px = x;
         do {
-          this->render_area->SetPixel(px, y + dy, this->fog_color);
-          ++px;
-          --count;
-        } while (count != 0);
+          this->save_area->SetPixel(x, draw_y + draw_row, color);
+          ++x;
+          --width;
+        } while (width != 0);
       }
-      ++dy;
-    } while (dy < this->map_tile_draw_hgt);
-    return;
+      ++draw_row;
+    }
   }
 }
 
