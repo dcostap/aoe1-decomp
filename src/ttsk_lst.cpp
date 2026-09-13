@@ -11,125 +11,112 @@
 #include "../include/player.h"
 #include "../include/game_globals.h"
 
-RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1,
-                                            RGE_Static_Object* param_2,
-                                            float param_3, float param_4,
-                                            float param_5) {
-    short sVar2;
-    int sVar5, sVar7;
-    int iVar8;
+RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj,
+                                             RGE_Static_Object* target_obj,
+                                             float target_x, float target_y,
+                                             float target_z)
+{
+    short attribute_type = obj->attribute_type_held;
 
-    sVar2 = param_1->attribute_type_held;
-    if (sVar2 != -1 && param_1->attribute_amount_held > DAT_0057733c &&
-        param_2 != 0 && param_2->object_state == 2) {
-        short sVar1 = param_1->master_obj->object_group;
-        if (sVar1 == 4 || sVar1 == 0x15) {
-            sVar5 = -1;
-            sVar7 = -1;
-            if (sVar1 == 4) {
-                switch (sVar2) {
-                case 1:
-                case 2:
-                case 3:
-                case 0x0F:
-                case 0x11:
-                    sVar5 = 0x6D;
-                    sVar7 = 0x67;
-                    break;
-                case 0x10:
-                    sVar5 = 0x6D;
-                    sVar7 = 0x44;
-                }
-            } else if (sVar1 == 0x15) {
-                int value = sVar2;
-                if (value == 9 || value == 0x11)
-                    sVar5 = 0x2D;
+    if (attribute_type != -1 && obj->attribute_amount_held > 0.0f &&
+        target_obj != 0 && target_obj->object_state == 2 &&
+        (obj->master_obj->object_group == 4 ||
+         obj->master_obj->object_group == 0x15)) {
+        short object_id = -1;
+        short object_id2 = -1;
+        short object_group = obj->master_obj->object_group;
+
+        if (object_group == 4) {
+            switch (attribute_type) {
+            case 1:
+            case 2:
+            case 3:
+            case 0x0F:
+            case 0x11:
+                object_id = 0x6D;
+                object_id2 = 0x67;
+                break;
+
+            case 0x10:
+                object_id = 0x6D;
+                object_id2 = 0x44;
+                break;
             }
-            if ((param_2->master_obj->id == sVar5 ||
-                 param_2->master_obj->id == sVar7) &&
-                param_1->owner->id == param_2->owner->id) {
-                int count = this->list_num;
-                for (iVar8 = 0; iVar8 < count; iVar8++) {
-                    RGE_Task* task = this->list[iVar8];
-                    if (task->attribute_type == sVar2 &&
-                        (task->action_type == 5 ||
-                         task->action_type == 0x6E ||
-                         task->action_type == 0x6F)) {
-                        return task;
-                    }
-                }
+        }
+        else if (object_group == 0x15 &&
+                 (attribute_type == 9 || attribute_type == 0x11)) {
+            object_id = 0x2D;
+        }
+
+        if ((target_obj->master_obj->id == object_id ||
+             target_obj->master_obj->id == object_id2) &&
+            target_obj->owner->id == obj->owner->id) {
+            for (int i = 0; i < list_num; i++) {
+                RGE_Task* task = list[i];
+                if (task->attribute_type == attribute_type &&
+                    (task->action_type == 5 || task->action_type == 0x6E ||
+                     task->action_type == 0x6F))
+                    return task;
             }
         }
     }
 
-    if (param_2 != 0) {
-        if (param_1 != 0 && param_2->owner == param_1->owner &&
-            param_2->master_obj->master_type == 'P' &&
-            param_2->object_state == 0) {
-            int count = this->list_num;
-            for (iVar8 = 0; iVar8 < count; iVar8++) {
-                RGE_Task* task = this->list[iVar8];
+    if (target_obj != 0) {
+        if (obj != 0 && target_obj->owner == obj->owner &&
+            target_obj->master_obj->master_type == 0x50 &&
+            target_obj->object_state == 0) {
+            for (int i = 0; i < list_num; i++) {
+                RGE_Task* task = list[i];
                 if (task->action_type == 0x65)
                     return task;
             }
             return 0;
         }
-    }
 
-    if (param_2 != 0) {
-        if (param_2->owner == param_1->owner ||
-            ((iVar8 = param_1->owner->isAlly(param_2->owner->id)) != 0 &&
-             (iVar8 = param_2->owner->isAlly(param_1->owner->id)) != 0)) {
-            if (param_2->object_state < 3 &&
-                param_2->master_obj->unit_level == 7) {
-                int count = this->list_num;
-                for (iVar8 = 0; iVar8 < count; iVar8++) {
-                    RGE_Task* task = this->list[iVar8];
-                    if (task->action_type == 3)
-                        return task;
-                }
-                return 0;
+        if ((target_obj->owner == obj->owner ||
+             (obj->owner->isAlly(target_obj->owner->id) &&
+              target_obj->owner->isAlly(obj->owner->id))) &&
+            target_obj->object_state < 3 &&
+            target_obj->master_obj->unit_level == 7) {
+            for (int i = 0; i < list_num; i++) {
+                RGE_Task* task = list[i];
+                if (task->action_type == 3)
+                    return task;
             }
+            return 0;
         }
-    }
 
-    if (param_2 != 0) {
-        if (param_1 != 0) {
-            if (param_2->owner == param_1->owner ||
-                (iVar8 = param_1->owner->isAlly(param_2->owner->id)) != 0) {
-                if (param_2->master_obj->master_type == 'P' &&
-                    param_2->hp < (float)param_2->master_obj->hp &&
-                    param_2->object_state < 3 &&
-                    param_2->master_obj->id != 0x32) {
-                    int count = this->list_num;
-                    for (iVar8 = 0; iVar8 < count; iVar8++) {
-                        RGE_Task* task = this->list[iVar8];
-                        if (task->action_type == 0x6A &&
-                            (task->object_group == -1 ||
-                             task->object_group == 0)) {
-                            return task;
-                        }
-                    }
-                    return 0;
-                }
-            }
-        }
-    }
-
-    if (param_2 != 0 && param_1 != 0) {
-        if (param_2->owner == param_1->owner ||
-            ((iVar8 = param_1->owner->isAlly(param_2->owner->id)) != 0 &&
-             (iVar8 = param_2->owner->isAlly(param_1->owner->id)) != 0)) {
-            sVar2 = param_2->master_obj->object_group;
-            if ((sVar2 == 2 || sVar2 == 0x14 || sVar2 == 0x15 ||
-                 sVar2 == 0x16) &&
-                param_2->hp < (float)param_2->master_obj->hp &&
-                param_2->object_state < 3) {
-                int count = this->list_num;
-                for (iVar8 = 0; iVar8 < count; iVar8++) {
-                    RGE_Task* task = this->list[iVar8];
+        if (obj != 0 &&
+            (target_obj->owner == obj->owner ||
+             obj->owner->isAlly(target_obj->owner->id))) {
+            RGE_Master_Static_Object* master_obj = target_obj->master_obj;
+            if (master_obj->master_type == 0x50 &&
+                target_obj->hp < (float)master_obj->hp &&
+                target_obj->object_state < 3 && master_obj->id != 0x32) {
+                for (int i = 0; i < list_num; i++) {
+                    RGE_Task* task = list[i];
                     if (task->action_type == 0x6A &&
-                        task->object_group == sVar2)
+                        (task->object_group == -1 ||
+                         task->object_group == 0))
+                        return task;
+                }
+                return 0;
+            }
+        }
+
+        if (obj != 0 &&
+            (target_obj->owner == obj->owner ||
+             (obj->owner->isAlly(target_obj->owner->id) &&
+              target_obj->owner->isAlly(obj->owner->id)))) {
+            short object_group = target_obj->master_obj->object_group;
+            if ((object_group == 2 || object_group == 0x14 ||
+                 object_group == 0x15 || object_group == 0x16) &&
+                target_obj->hp < (float)target_obj->master_obj->hp &&
+                target_obj->object_state < 3) {
+                for (int i = 0; i < list_num; i++) {
+                    RGE_Task* task = list[i];
+                    if (task->action_type == 0x6A &&
+                        task->object_group == object_group)
                         return task;
                 }
                 return 0;
@@ -137,34 +124,36 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1,
         }
     }
 
-    if (param_1 != 0 && param_1->master_obj->object_group == 0x12) {
-        if (param_2 != 0) {
-            if (param_2->owner != param_1->owner &&
-                param_2->object_state < 3 && param_2->owner->id > 0 &&
-                param_1->owner->isAlly(param_2->owner->id) == 0 &&
-                param_2->master_obj->object_group != 1) {
-                int count = this->list_num;
-                for (iVar8 = 0; iVar8 < count; iVar8++) {
-                    RGE_Task* task = this->list[iVar8];
+    if (obj != 0 && obj->master_obj->object_group == 0x12) {
+        if (target_obj != 0) {
+            if (target_obj->owner != obj->owner &&
+                target_obj->object_state < 3 && target_obj->owner->id > 0 &&
+                !obj->owner->isAlly(target_obj->owner->id) &&
+                target_obj->master_obj->object_group != 1) {
+                for (int i = 0; i < list_num; i++) {
+                    RGE_Task* task = list[i];
                     if (task->action_type == 0x68)
                         return task;
                 }
                 return 0;
             }
-            if (param_2->owner == param_1->owner ||
-                param_1->owner->isAlly(param_2->owner->id) != 0) {
-                if (param_2->hp < (float)param_2->master_obj->hp &&
-                    param_2->object_state < 3) {
-                    sVar2 = param_2->master_obj->object_group;
-                    if (sVar2 != 0x15 && sVar2 != 2 && sVar2 != 0x14 &&
-                        sVar2 != 0x16 && sVar2 != 1 && sVar2 != 0x1B &&
-                        sVar2 != 3) {
-                        int count = this->list_num;
-                        for (iVar8 = 0; iVar8 < count; iVar8++) {
-                            RGE_Task* task = this->list[iVar8];
+
+            if (target_obj->owner == obj->owner ||
+                obj->owner->isAlly(target_obj->owner->id)) {
+                RGE_Master_Static_Object* master_obj = target_obj->master_obj;
+                if (target_obj->hp < (float)master_obj->hp &&
+                    target_obj->object_state < 3) {
+                    short object_group = master_obj->object_group;
+                    if (object_group != 0x15 && object_group != 2 &&
+                        object_group != 0x14 && object_group != 0x16 &&
+                        object_group != 1 && object_group != 0x1B &&
+                        object_group != 3) {
+                        for (int i = 0; i < list_num; i++) {
+                            RGE_Task* task = list[i];
                             if (task->action_type == 0x69)
                                 return task;
                         }
+                        return 0;
                     }
                 }
             }
@@ -172,8 +161,8 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1,
         return 0;
     }
 
-    return RGE_Task_List::get_target_task(param_1, param_2, param_3,
-                                          param_4, param_5);
+    return RGE_Task_List::get_target_task(obj, target_obj, target_x,
+                                           target_y, target_z);
 }
 
 int TRIBE_Task_List::is_attack_task(RGE_Task* task) {
