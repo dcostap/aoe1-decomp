@@ -107,7 +107,7 @@
     "00417860": {"status": "matching", "symbol": "?lookAround@UnitAIModule@@QAEXXZ"},
     "00417920": {"status": "matching", "symbol": "?hasOrderOnQueue@UnitAIModule@@QAEHH@Z"},
     "00417960": {"status": "matching", "symbol": "?askForHelp@UnitAIModule@@QAEXH@Z"},
-    "00417B50": {"status": "scratch", "symbol": "?processOrder@UnitAIModule@@MAEHPAUOrderEvent@@H@Z"},
+    "00417B50": {"status": "new_verified_logic", "symbol": "?processOrder@UnitAIModule@@MAEHPAUOrderEvent@@H@Z", "behavior_review": "logic_matching/00417B50/review-coord-09-00417B50-20260207T070002Z/attempt-01"},
     "004180C0": {"status": "scratch", "symbol": "?processNotify@UnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
     "00419510": {"status": "matching", "symbol": "?processGroupNotify@UnitAIModule@@MAEXPAUNotifyEvent@@@Z"},
     "004195F0": {"status": "matching", "symbol": "?processIdle@UnitAIModule@@MAEHH@Z"},

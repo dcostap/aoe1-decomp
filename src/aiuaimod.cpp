@@ -2888,205 +2888,234 @@ void UnitAIModule::askForHelp(int caller)
 
 
 int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
-    OrderEvent* order = param_1;
     int result = 0;
-
-    switch (order->orderType) {
-    case 0x2D6: {
+    switch (param_1->orderType) {
+    case 0x2d6: {
         result = 1;
-        if (this->objectValue->owner->world->playbook->play(
-                order->targetOwner) == 0) {
+        AIPlay* play = this->objectValue->owner->world->playbook->play(
+            param_1->targetOwner);
+        if (play == 0) {
             result = 0;
-        } else {
-            if (this->playStatus != 0) {
-                operator delete(this->playStatus);
-            }
+            break;
+        }
 
-            this->playStatus = new AIPlayStatus();
-            if (this->playStatus == 0) {
-                result = 0;
-            } else {
-                this->playStatus->playNumberValue = order->targetOwner;
-                this->playStatus->targetValue = order->target;
-                if (order->targetX != -1.0f) {
-                    int z = (int)order->targetZ;
-                    int y = (int)order->targetY;
-                    int x = (int)order->targetX;
-                    AIPlayStatus* status = this->playStatus;
-                    status->originalPointValue.xValue = x;
-                    status->originalPointValue.yValue = y;
-                    status->originalPointValue.zValue = z;
-                } else {
-                    int z = (int)this->objectValue->world_z;
-                    int y = (int)this->objectValue->world_y;
-                    int x = (int)this->objectValue->world_x;
-                    AIPlayStatus* status = this->playStatus;
-                    status->originalPointValue.xValue = x;
-                    status->originalPointValue.yValue = y;
-                    status->originalPointValue.zValue = z;
-                }
-            }
+        if (this->playStatus != 0)
+            operator delete(this->playStatus);
+
+        this->playStatus = new AIPlayStatus();
+        if (this->playStatus == 0) {
+            result = 0;
+            break;
+        }
+
+        this->playStatus->playNumberValue = param_1->targetOwner;
+        this->playStatus->targetValue = param_1->target;
+        if (*(unsigned int*)&param_1->targetX != 0xbf800000u) {
+            int z;
+            int y;
+            int x;
+            z = (int)param_1->targetZ;
+            y = (int)param_1->targetY;
+            x = (int)param_1->targetX;
+            AIPlayStatus* status = this->playStatus;
+            status->originalPointValue.xValue = x;
+            status->originalPointValue.yValue = y;
+            status->originalPointValue.zValue = z;
+        } else {
+            int z;
+            int y;
+            int x;
+            z = (int)this->objectValue->world_z;
+            y = (int)this->objectValue->world_y;
+            x = (int)this->objectValue->world_x;
+            AIPlayStatus* status = this->playStatus;
+            status->originalPointValue.xValue = x;
+            status->originalPointValue.yValue = y;
+            status->originalPointValue.zValue = z;
         }
         break;
     }
-    case 0x2D7:
+
+    case 0x2d7:
         if (this->playStatus != 0) {
             operator delete(this->playStatus);
             this->playStatus = 0;
         }
         result = 1;
         break;
-    case 0x2C2:
+
+    case 0x2c2:
         this->removeCurrentTarget();
         if (actionFile != 0) {
-            long object_id;
-            if (this->objectValue != 0) {
-                object_id = this->objectValue->id;
-            } else {
-                object_id = -1;
-            }
-            fprintf(actionFile, str_fmt_stopObject, object_id,
-                    str_aiuaimod_path, 0x105D);
+            int id;
+            if (this->objectValue != 0)
+                id = this->objectValue->id;
+            else
+                id = -1;
+            fprintf(actionFile, str_fmt_stopObject, id,
+                    str_aiuaimod_path, 0x105d);
+            this->stopObject(1);
+            result = 1;
+            break;
         }
-        this->stopObject(1);
-        result = 1;
+        goto stop_without_log;
+
+    case 0x2c6:
+        result = this->moveTo(param_1->targetX, param_1->targetY,
+                              param_1->targetZ, param_1->range, 1);
         break;
-    case 0x2C6:
-        {
-            // A local range keeps this distinct +0x90 call site.
-            const float range = param_1->range;
-            result = this->moveTo(param_1->targetX, param_1->targetY,
-                                  param_1->targetZ, range, 1);
-        }
+
+    case 0x2bc:
+        result = this->attackObject(param_1->target, 1);
         break;
-    case 0x2BC:
-        result = this->attackObject(order->target, 1);
+
+    case 0x2d9:
+        result = this->attackRoundupObject(param_1->target);
         break;
-    case 0x2D9:
-        result = this->attackRoundupObject(order->target);
-        break;
-    case 0x2BD:
-        if (order->target != -1) {
-            result = this->defendObject(order->target, order->range, 1);
+
+    case 0x2bd:
+        if (param_1->target == -1) {
+            result = this->defendPosition(param_1->targetX,
+                                          param_1->targetY,
+                                          param_1->range, 1);
         } else {
-            result = this->defendPosition(order->targetX, order->targetY,
-                                          order->range, 1);
+            result = this->defendObject(param_1->target,
+                                        param_1->range, 1);
         }
         break;
-    case 0x2CE:
-        result = this->repairObject(order->target, 1);
+
+    case 0x2ce:
+        result = this->repairObject(param_1->target, 1);
         break;
-    case 0x2D1:
-        result = this->unload(1, order->targetX, order->targetY);
+
+    case 0x2d1:
+        result = this->unload(1, param_1->targetX, param_1->targetY);
         break;
-    case 0x2D2:
-        result = this->seekAndDestroy(order->target,
-                                      (int)order->targetX,
-                                      (int)order->targetY, 1);
+
+    case 0x2d2:
+        result = this->seekAndDestroy(param_1->target,
+                                      (int)param_1->targetX,
+                                      (int)param_1->targetY, 1);
         break;
-    case 0x2D3:
-        result = this->exploreAndDestroy((int)order->targetX,
-                                         (int)order->targetY, 1);
+
+    case 0x2d3:
+        result = this->exploreAndDestroy((int)param_1->targetX,
+                                         (int)param_1->targetY, 1);
         break;
-    case 0x2C1:
-        result = this->explore((int)order->targetX,
-                               (int)order->targetY, 1);
+
+    case 0x2c1:
+        result = this->explore((int)param_1->targetX,
+                               (int)param_1->targetY, 1);
         break;
-    case 0x2BE:
-        result = this->buildObject(order->target, 1);
+
+    case 0x2be:
+        result = this->buildObject(param_1->target, 1);
         break;
-    case 0x2D4:
-        result = this->moveTo(order->targetX, order->targetY,
-                              order->targetZ, order->range, 1);
+
+    case 0x2d4:
+        result = this->moveTo(param_1->targetX, param_1->targetY,
+                              param_1->targetZ, param_1->range, 1);
         break;
-    case 0x2C8:
-        result = this->followObject(order->target, order->range, 1);
+
+    case 0x2c8:
+        result = this->followObject(param_1->target, param_1->range, 1);
         break;
-    case 0x2CD:
-        result = this->enterObject(order->target, 1);
+
+    case 0x2cd:
+        result = this->enterObject(param_1->target, 1);
         break;
-    case 0x2CA:
-        result = this->transportObject(order->targetX, order->targetY,
-                                       order->targetZ, 1);
+
+    case 0x2ca:
+        result = this->transportObject(param_1->targetX,
+                                       param_1->targetY,
+                                       param_1->targetZ, 1);
         break;
-    case 0x2D5:
+
+    case 0x2d5:
         this->removeCurrentTarget();
         if (actionFile != 0) {
-            long object_id;
-            if (this->objectValue != 0) {
-                object_id = this->objectValue->id;
-            } else {
-                object_id = -1;
-            }
-            fprintf(actionFile, str_fmt_stopObject, object_id,
-                    str_aiuaimod_path, 0x10E9);
+            int id;
+            if (this->objectValue != 0)
+                id = this->objectValue->id;
+            else
+                id = -1;
+            fprintf(actionFile, str_fmt_stopObject, id,
+                    str_aiuaimod_path, 0x10e9);
         }
+
+    stop_without_log:
         this->stopObject(1);
         result = 1;
         break;
-    case 0x2BF:
-        result = this->healObject(order->target, 1);
+
+    case 0x2bf:
+        result = this->healObject(param_1->target, 1);
         break;
-    case 0x2C0:
-        result = this->convertObject(order->target, 1);
+
+    case 0x2c0:
+        result = this->convertObject(param_1->target, 1);
         break;
-    case 0x2D8:
+
+    case 0x2d8:
         result = 1;
         this->currentActionValue = 0x274;
-        this->currentOrderValue = 0x2D8;
+        this->currentOrderValue = 0x2d8;
         break;
-    case 0x2C5:
-        result = this->gatherObject(order->target, 1);
+
+    case 0x2c5:
+        result = this->gatherObject(param_1->target, 1);
         break;
-    case 0x2C9:
-        result = this->huntObject(order->target, 1);
+
+    case 0x2c9:
+        result = this->huntObject(param_1->target, 1);
         break;
+
     default:
         break;
+
     }
 
     if (result == 1) {
-        if (order->orderType == 0x2C2) {
+        int orderType = param_1->orderType;
+        if (orderType == 0x2c2) {
             this->currentOrderValue = -1;
             this->currentOrderPriorityValue = -1;
         } else {
-            if (order->orderType == 0x2D9) {
+            if (orderType == 0x2d9) {
                 this->currentOrderValue = 700;
-            } else if (order->orderType == 700 &&
-                       this->objectValue->master_obj->id == 0x7D) {
+            } else if (orderType == 700 &&
+                       this->objectValue->master_obj->id == 0x7d) {
                 this->currentOrderValue = -1;
                 this->currentTargetValue = -1;
             } else {
-                this->currentOrderValue = order->orderType;
+                this->currentOrderValue = orderType;
             }
-            this->currentOrderPriorityValue = order->priority;
+            this->currentOrderPriorityValue = param_1->priority;
         }
     }
 
     if (param_2 >= 0 && param_2 < this->orderQueueSizeValue &&
         this->orderQueueValue != 0) {
-        int i = param_2;
-        if (i < this->orderQueueSizeValue - 1) {
+        if (param_2 < this->orderQueueSizeValue - 1) {
             do {
-                this->orderQueueValue[i].issuer =
-                    this->orderQueueValue[i + 1].issuer;
-                this->orderQueueValue[i].orderType =
-                    this->orderQueueValue[i + 1].orderType;
-                this->orderQueueValue[i].priority =
-                    this->orderQueueValue[i + 1].priority;
-                this->orderQueueValue[i].target =
-                    this->orderQueueValue[i + 1].target;
-                this->orderQueueValue[i].targetOwner =
-                    this->orderQueueValue[i + 1].targetOwner;
-                this->orderQueueValue[i].targetX =
-                    this->orderQueueValue[i + 1].targetX;
-                this->orderQueueValue[i].targetY =
-                    this->orderQueueValue[i + 1].targetY;
-                // The shipped shift omits the range dword at +0x20.
-                this->orderQueueValue[i].targetZ =
-                    this->orderQueueValue[i + 1].targetZ;
-                ++i;
-            } while (i < this->orderQueueSizeValue - 1);
+                this->orderQueueValue[param_2].issuer =
+                    this->orderQueueValue[param_2 + 1].issuer;
+                this->orderQueueValue[param_2].orderType =
+                    this->orderQueueValue[param_2 + 1].orderType;
+                this->orderQueueValue[param_2].priority =
+                    this->orderQueueValue[param_2 + 1].priority;
+                this->orderQueueValue[param_2].target =
+                    this->orderQueueValue[param_2 + 1].target;
+                this->orderQueueValue[param_2].targetOwner =
+                    this->orderQueueValue[param_2 + 1].targetOwner;
+                this->orderQueueValue[param_2].targetX =
+                    this->orderQueueValue[param_2 + 1].targetX;
+                this->orderQueueValue[param_2].targetY =
+                    this->orderQueueValue[param_2 + 1].targetY;
+                this->orderQueueValue[param_2].targetZ =
+                    this->orderQueueValue[param_2 + 1].targetZ;
+                ++param_2;
+            } while (param_2 < this->orderQueueSizeValue - 1);
         }
         --this->orderQueueSizeValue;
     }
