@@ -1525,43 +1525,39 @@ void RGE_Static_Object::rehook(void) {
 
 
 
-RGE_Static_Object* RGE_Static_Object::get_object_pointer(long id)
+RGE_Static_Object* RGE_Static_Object::get_object_pointer(long object_id)
 {
-    RGE_Static_Object* object = 0;
+    RGE_Static_Object* object;
+    unsigned char player_index;
 
-    if (id >= 0) {
-        object = this->owner->objects->find_by_id(id);
+    object = 0;
+    if (object_id >= 0) {
+        object = this->owner->objects->find_by_id(object_id);
         if (object == 0) {
-            object = this->owner->sleeping_objects->find_by_id(id);
+            object = this->owner->sleeping_objects->find_by_id(object_id);
             if (object == 0) {
-                object = this->owner->doppleganger_objects->find_by_id(id);
+                object = this->owner->doppleganger_objects->find_by_id(object_id);
                 if (object == 0) {
-                    long object_id = id;
-                    RGE_Player* player = this->owner;
-                    unsigned char player_index = 0;
-                    RGE_Game_World* world = player->world;
-                    if (world->player_num > 0) {
-                        short compare_index = 0;
-                        do {
-                            if (compare_index != player->id) {
-                                object = world->players[player_index]->objects->find_by_id(object_id);
-                                if (object != 0) {
-                                    return object;
-                                }
-                                object = this->owner->world->players[player_index]->sleeping_objects->find_by_id(object_id);
-                                if (object != 0) {
-                                    return object;
-                                }
-                                object = this->owner->world->players[player_index]->doppleganger_objects->find_by_id(object_id);
-                                if (object != 0) {
-                                    return object;
-                                }
+                    player_index = 0;
+                    while (player_index < this->owner->world->player_num) {
+                        if (player_index != this->owner->id) {
+                            object = this->owner->world->players[player_index]
+                                         ->objects->find_by_id(object_id);
+                            if (object != 0) {
+                                break;
                             }
-                            player = this->owner;
-                            ++player_index;
-                            compare_index = player_index;
-                            world = player->world;
-                        } while (compare_index < world->player_num);
+                            object = this->owner->world->players[player_index]
+                                         ->sleeping_objects->find_by_id(object_id);
+                            if (object != 0) {
+                                break;
+                            }
+                            object = this->owner->world->players[player_index]
+                                         ->doppleganger_objects->find_by_id(object_id);
+                            if (object != 0) {
+                                break;
+                            }
+                        }
+                        player_index++;
                     }
                 }
             }
