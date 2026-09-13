@@ -11,7 +11,7 @@
     "00521120": {"status": "matching", "symbol": "??0TRIBE_Game@@QAE@PAURGE_Prog_Info@@H@Z"},
     "005213A0": {"status": "matching", "symbol": "??1TRIBE_Game@@UAE@XZ"},
     "00521620": {"status": "matching", "symbol": "?close_game_screens@TRIBE_Game@@QAEXH@Z"},
-    "00521790": {"status": "scratch", "symbol": "?setup@TRIBE_Game@@MAEHXZ"},
+    "00521790": {"status": "new_verified_logic", "symbol": "?setup@TRIBE_Game@@MAEHXZ", "behavior_review": "logic_matching/00521790/coord-10-00521790-review-01/attempt-01"},
     "00521FA0": {"status": "matching", "symbol": "?setup_cmd_options@TRIBE_Game@@UAEHXZ"},
     "00522200": {"status": "matching", "symbol": "?setup_palette@TRIBE_Game@@MAEHXZ"},
     "005222C0": {"status": "matching", "symbol": "?setup_sounds@TRIBE_Game@@MAEHXZ"},

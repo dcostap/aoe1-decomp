@@ -338,174 +338,197 @@ void TRIBE_Game::close_game_screens(int destroyGameScreen)
 
 int TRIBE_Game::setup()
 {
-    HANDLE h;
-    int cmd;
+    char cmd_line[256];
+    char str[1024];
+    ICINFO ici;
+    WIN32_FIND_DATAA file_data;
     SYSTEMTIME file_time;
+    HANDLE file_handle;
+    char* option;
+    int result;
 
-    if (this->error_code)
+    if (this->error_code != 0) {
         return 0;
+    }
 
     if (strstr(this->prog_info->cmd_line, "makeres") != 0 ||
         strstr(this->prog_info->cmd_line, "Makeres") != 0 ||
         strstr(this->prog_info->cmd_line, "MAKERES") != 0) {
-        RESFILE_build_res_file("graphics.rm", "resource\\", this->prog_info->resource_dir);
-        RESFILE_build_res_file("sounds.rm", "resource\\", this->prog_info->resource_dir);
-        RESFILE_build_res_file("interfac.rm", "resource\\", this->prog_info->resource_dir);
+        RESFILE_build_res_file("graphics.rm", "resource\\",
+                               this->prog_info->resource_dir);
+        RESFILE_build_res_file("sounds.rm", "resource\\",
+                               this->prog_info->resource_dir);
+        RESFILE_build_res_file("interfac.rm", "resource\\",
+                               this->prog_info->resource_dir);
     }
-    RESFILE_open_new_resource_file("sounds.drs", "tribe", this->prog_info->resource_dir, 1);
-    RESFILE_open_new_resource_file("graphics.drs", "tribe", this->prog_info->resource_dir, 0);
-    RESFILE_open_new_resource_file("Interfac.drs", "tribe", this->prog_info->resource_dir, 0);
+
+    RESFILE_open_new_resource_file("sounds.drs", "tribe",
+                                   this->prog_info->resource_dir, 1);
+    RESFILE_open_new_resource_file("graphics.drs", "tribe",
+                                   this->prog_info->resource_dir, 0);
+    RESFILE_open_new_resource_file("Interfac.drs", "tribe",
+                                   this->prog_info->resource_dir, 0);
     RESFILE_open_new_resource_file("sounds.drs", "tribe", "data\\", 1);
     RESFILE_open_new_resource_file("graphics.drs", "tribe", "data\\", 0);
     RESFILE_open_new_resource_file("Terrain.drs", "tribe", "data\\", 0);
     RESFILE_open_new_resource_file("Border.drs", "tribe", "data\\", 0);
     RESFILE_open_new_resource_file("Interfac.drs", "tribe", "data\\", 0);
 
-    if (this->RGE_Base_Game::setup() == 0)
+    if (this->RGE_Base_Game::setup() == 0) {
         return 0;
+    }
 
-    WIN32_FIND_DATAA file_data;
-    char cmd_line[256];
-    char str[0x400];
-    ICINFO ici;
-    strncpy(&cmd_line[4], this->prog_info->cmd_line, 0xFF);
-    str[3] = 0;
-    CharUpperA(&cmd_line[4]);
+    strncpy(cmd_line, this->prog_info->cmd_line, 0xFF);
+    cmd_line[0xFF] = 0;
+    CharUpperA(cmd_line);
 
-    unsigned char* p = _mbsstr(reinterpret_cast<unsigned char*>(&cmd_line[4]),
-                               reinterpret_cast<const unsigned char*>("STRING="));
+    option = reinterpret_cast<char*>(_mbsstr(
+        reinterpret_cast<unsigned char*>(cmd_line),
+        reinterpret_cast<const unsigned char*>("STRING=")));
     char new_string_dll_name[100] = "languagex.dll";
-    if (p != 0) {
-        while (*p != '=') {
-            p = _mbsninc(p, 1);
+    if (option != 0) {
+        while (*option != '=') {
+            option = reinterpret_cast<char*>(_mbsninc(
+                reinterpret_cast<const unsigned char*>(option), 1));
         }
-        p = _mbsninc(p, 1);
+        option = reinterpret_cast<char*>(_mbsninc(
+            reinterpret_cast<const unsigned char*>(option), 1));
         new_string_dll_name[0] = 0;
-        while (!_ismbcspace(static_cast<unsigned char>(*p)) && *p) {
-            _mbsncat(reinterpret_cast<unsigned char*>(new_string_dll_name), p, 1);
-            p = _mbsninc(p, 1);
+        while (_ismbcspace(static_cast<unsigned char>(*option)) == 0 &&
+               *option != 0) {
+            _mbsncat(reinterpret_cast<unsigned char*>(new_string_dll_name),
+                     reinterpret_cast<const unsigned char*>(option), 1);
+            option = reinterpret_cast<char*>(_mbsninc(
+                reinterpret_cast<const unsigned char*>(option), 1));
         }
     }
+
     StringTableX = LoadLibraryA(new_string_dll_name);
-    if (!StringTableX) {
+    if (StringTableX == 0) {
         this->error_code = 1;
         return 0;
     }
 
     PALETTEENTRY pal_entries[7] = {
-        {0x17, 0x27, 0x7C, 0x00},
-        {0x27, 0x3F, 0x90, 0x00},
-        {0x3F, 0x5F, 0x9F, 0x00},
-        {0x57, 0x7B, 0xB4, 0x00},
-        {0x3F, 0x5F, 0xA0, 0x00},
-        {0x27, 0x3F, 0x91, 0x00},
-        {0x17, 0x27, 0x7B, 0x00}
+        { 0x17, 0x27, 0x7C, 0x00 },
+        { 0x27, 0x3F, 0x90, 0x00 },
+        { 0x3F, 0x5F, 0x9F, 0x00 },
+        { 0x57, 0x7B, 0xB4, 0x00 },
+        { 0x3F, 0x5F, 0xA0, 0x00 },
+        { 0x27, 0x3F, 0x91, 0x00 },
+        { 0x17, 0x27, 0x7B, 0x00 }
     };
     SetPaletteEntries(this->prog_palette, 0xF8, 7, pal_entries);
 
-    this->input_disabled_window = CreateWindowExA(0, "STATIC", "InputDisabledWindow", 0x40000000,
-                                       0, 0, 1, 1, this->prog_window, 0,
-                                       this->prog_info->instance, 0);
+    this->input_disabled_window = CreateWindowExA(
+        0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1,
+        this->prog_window, 0,
+        reinterpret_cast<HINSTANCE>(this->prog_info->instance), 0);
 
     video_codec_available = ICInfo(0x63646976, 0x31347669, &ici);
 
     if (this->check_prog_argument("LOBBY") != 0) {
-        new TRIBE_Screen_Status_Message("Status Screen", 0x4BF, "scr1", 0xC383);
+        new TRIBE_Screen_Status_Message("Status Screen", 0x4BF, "scr1",
+                                        0xC383);
         panel_system.setCurrentPanel("Status Screen", 0);
-        cmd = this->comm_handler->LaunchLobbyGame();
-        if (cmd == 1) {
+
+        result = this->comm_handler->LaunchLobbyGame();
+        if (result == 1) {
+            TribeMPSetupScreen* screen;
+
             this->setMultiplayerGame(1);
-            TribeMPSetupScreen* mp = new TribeMPSetupScreen;
-            if (mp && !mp->error_code)
-                goto setup_mp;
-            goto ret_zero;
-        } else if (cmd == -1) {
-            TRIBE_Screen_Main_Error* err = new TRIBE_Screen_Main_Error;
-            if (!err || err->error_code)
+            screen = new TribeMPSetupScreen;
+            if (screen == 0 || screen->error_code != 0) {
                 return 0;
-            err->set_text(0x96A);
+            }
+            panel_system.setCurrentPanel("MP Setup Screen", 0);
+            panel_system.destroyPanel("Status Screen");
+        } else if (result == -1) {
+            TRIBE_Screen_Main_Error* screen = new TRIBE_Screen_Main_Error;
+            if (screen == 0 || screen->error_code != 0) {
+                return 0;
+            }
+            screen->set_text(0x96A);
             panel_system.setCurrentPanel("Main Error Screen", 0);
             panel_system.destroyPanel("Status Screen");
-            goto setup_done;
         } else {
             this->close();
             return 1;
         }
+    } else {
+        result = this->comm_handler->LaunchLobbyGame();
+        if (result == 1) {
+            this->setMultiplayerGame(1);
+            new TribeMPSetupScreen;
+            panel_system.setCurrentPanel("MP Setup Screen", 0);
+            panel_system.destroyPanel("Status Screen");
+        } else {
+            if (this->startup_scenario[0] != 0) {
+                if (this->start_scenario(this->startup_scenario) == 0) {
+                    if (this->start_menu() == 0) {
+                        return 0;
+                    }
+                    TEasy_Panel* panel = static_cast<TEasy_Panel*>(
+                        panel_system.panel("Main Menu"));
+                    if (panel != 0) {
+                        panel->popupOKDialog(0x961, 0, 0x1C2, 100);
+                    }
+                }
+            } else if (this->startup_game[0] != 0) {
+                if (this->load_game(this->startup_game) == 0) {
+                    if (this->start_menu() == 0) {
+                        return 0;
+                    }
+                    TEasy_Panel* panel = static_cast<TEasy_Panel*>(
+                        panel_system.panel("Main Menu"));
+                    if (panel != 0) {
+                        panel->popupOKDialog(0x961, 0, 0x1C2, 100);
+                    }
+                }
+            } else if (this->prog_info->skip_startup == 0) {
+                this->start_video(0, "logo1");
+            } else {
+                if (this->start_menu() == 0) {
+                    return 0;
+                }
+            }
+        }
     }
-    goto normal_start;
 
-setup_done:
     this->set_interface_messages();
 
     run_log("------------------------------", 0);
     run_log("", 1);
 
-    h = FindFirstFileA(_pgmptr, &file_data);
-    if (h != INVALID_HANDLE_VALUE) {
-        memset(&file_time, 0, sizeof(file_time));
+    file_handle = FindFirstFileA(_pgmptr, &file_data);
+    if (file_handle != INVALID_HANDLE_VALUE) {
+        ZeroMemory(&file_time, sizeof(file_time));
         FileTimeToSystemTime(&file_data.ftLastWriteTime, &file_time);
-        sprintf(str, "program=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
-                _pgmptr, file_data.nFileSizeLow,
-                file_time.wMonth, file_time.wMonth, file_time.wYear,
-                file_time.wHour, file_time.wMinute, file_time.wSecond);
+        sprintf(str,
+                "program=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
+                _pgmptr, file_data.nFileSizeLow, file_time.wMonth,
+                file_time.wMonth, file_time.wYear, file_time.wHour,
+                file_time.wMinute, file_time.wSecond);
         run_log(str, 0);
-        FindClose(h);
+        FindClose(file_handle);
     }
 
-    h = FindFirstFileA(this->prog_info->game_data_file, &file_data);
-    if (h != INVALID_HANDLE_VALUE) {
-        memset(&file_time, 0, sizeof(file_time));
+    file_handle = FindFirstFileA(this->prog_info->game_data_file, &file_data);
+    if (file_handle != INVALID_HANDLE_VALUE) {
+        ZeroMemory(&file_time, sizeof(file_time));
         FileTimeToSystemTime(&file_data.ftLastWriteTime, &file_time);
         sprintf(str, "data=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
                 this->prog_info->game_data_file, file_data.nFileSizeLow,
                 file_time.wMonth, file_time.wMonth, file_time.wYear,
                 file_time.wHour, file_time.wMinute, file_time.wSecond);
         run_log(str, 0);
-        FindClose(h);
+        FindClose(file_handle);
     }
 
     sprintf(str, "options=%s", this->prog_info->cmd_line);
     run_log(str, 0);
 
     return 1;
-
-normal_start:
-    cmd = this->comm_handler->LaunchLobbyGame();
-    if (cmd == 1) {
-        this->setMultiplayerGame(1);
-        new TribeMPSetupScreen;
-        goto setup_mp;
-    }
-    if (this->startup_scenario[0]) {
-        cmd = this->start_scenario(this->startup_scenario);
-    } else if (this->startup_game[0]) {
-        cmd = this->load_game(this->startup_game);
-    } else if (!this->prog_info->skip_startup) {
-        this->start_video(0, "logo1");
-        goto setup_done;
-    } else {
-        if (this->start_menu() == 0)
-            return 0;
-        goto setup_done;
-    }
-    if (cmd == 0) {
-        if (this->start_menu() == 0)
-            return 0;
-        TEasy_Panel* q = static_cast<TEasy_Panel*>(
-            panel_system.panel("Main Menu"));
-        if (q)
-            q->popupOKDialog(0x961, 0, 0x1C2, 0x64);
-    }
-    goto setup_done;
-
-setup_mp:
-    panel_system.setCurrentPanel("MP Setup Screen", 0);
-    panel_system.destroyPanel("Status Screen");
-    goto setup_done;
-
-ret_zero:
-    return 0;
-
 }
 
 
