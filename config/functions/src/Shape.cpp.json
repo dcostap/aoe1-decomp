@@ -28,7 +28,7 @@
     "004BAAF0": {"status": "accepted_drift", "symbol": "?shape_mirror_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
     "004BAC00": {"status": "new_verified_logic", "symbol": "?shape_mirror_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z", "behavior_review": "logic_matching/004BAC00/coord-01-review-01/attempt-01"},
     "004BAF20": {"status": "new_verified_logic", "symbol": "?shape_mirror_color_trans_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJPAE@Z", "behavior_review": "logic_matching/004BAF20/coord-01-review-01/attempt-01"},
-    "004BB280": {"status": "scratch", "symbol": "?shape_mirror_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z"},
+    "004BB280": {"status": "new_verified_logic", "symbol": "?shape_mirror_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z", "behavior_review": "logic_matching/004BB280/coord-01-review-02/attempt-01"},
     "004BB5E0": {"status": "new_verified_logic", "symbol": "?shape_dither@TShape@@QAEEPAVTDrawArea@@JJJJJ@Z", "behavior_review": "logic_matching/004BB5E0/review-01/attempt-01"},
     "004BB770": {"status": "new_verified_logic", "symbol": "?shape_dithered_unclipped@TShape@@AAEEPAVTDrawArea@@JJJJ@Z", "behavior_review": "logic_matching/004BB770/review-01/attempt-01"},
     "004BB910": {"status": "scratch", "symbol": "?shape_dithered_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJJ@Z"}

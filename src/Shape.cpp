@@ -1360,7 +1360,7 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num,
                     case 2:
                         if (table != 0) {
                             ret_num = this->shape_mirror_shadow_clipped(
-                                td, shape_x1, clip_y0, x, clip_y0,
+                                td, shape_x1, raw_y0, x, clip_y0,
                                 clipped_x1, y, table);
                         } else {
                             ret_num = this->shape_mirror_clipped(
@@ -2013,42 +2013,32 @@ byte TShape::shape_mirror_shadow_clipped(
     TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0,
     long clip_y0, long clip_x1, long clip_y1, byte* table)
 {
-    byte command;
+    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+    byte* src = (byte*)(this->shape_header + 1);
+    byte* dst;
     byte count;
-    char state;
-    long width;
-    Shape_Header* header;
-    byte* src;
-    byte* save_buffer;
-    byte* buffer;
-    long xpos;
-    unsigned int transform_count;
-
-    width = draw_area->AlignedWidth();
-    width *= draw_area->Orien;
-    header = this->shape_header;
-    src = (byte*)(header + 1);
 
     if (draw_area->Orien < 1)
-        save_buffer = draw_area->Bits +
-                      (clip_y0 - draw_area->Height + 1) * width + clip_x1 + 1;
+        dst = draw_area->Bits +
+              (clip_y0 - draw_area->Height + 1) * pitch + clip_x1 + 1;
     else
-        save_buffer = draw_area->Bits + clip_y0 * width + clip_x1 + 1;
+        dst = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
+
+    byte* save_buffer = dst;
 
     if (shape_y1 < clip_y0) {
-        byte skip_count;
         long skip = clip_y0 - shape_y1;
         shape_y1 += skip;
         do {
             byte done = 0;
             do {
-                command = *src++;
+                byte command = *src++;
                 if ((command & 1) == 1) {
-                    skip_count = command >> 1;
-                    if (skip_count == 0)
-                        ++src;
+                    count = command >> 1;
+                    if (count)
+                        src += count;
                     else
-                        src += skip_count;
+                        ++src;
                 } else {
                     if ((command & 0xfe) == 0)
                         done = 1;
@@ -2059,56 +2049,114 @@ byte TShape::shape_mirror_shadow_clipped(
         } while (--skip != 0);
     }
 
-    if (shape_y1 > clip_y1)
-        return 1;
+    if (shape_y1 <= clip_y1) {
+        long rows = clip_y1 - shape_y1 + 1;
+        do {
+            long xpos = shape_x1;
+            char state;
 
-    shape_y1 = clip_y1 - shape_y1 + 1;
-    buffer = save_buffer;
-    do {
-        xpos = shape_x1;
-        if (clip_x1 < xpos) {
-            state = 0;
-            do {
-                command = *src++;
+            if (xpos > clip_x1) {
+                state = 0;
+                while (state == 0) {
+                    byte command = *src++;
+                    if ((command & 1) == 1) {
+                        count = command >> 1;
+                        if (count == 0) {
+                            xpos -= *src++;
+                            if (xpos <= clip_x1) {
+                                if (xpos < clip_x0)
+                                    state = 2;
+                                else {
+                                    state = 1;
+                                    dst += xpos - clip_x1;
+                                }
+                            }
+                        } else {
+                            xpos -= count;
+                            if (xpos <= clip_x1) {
+                                unsigned int transform_count;
+                                if (xpos < clip_x0) {
+                                    transform_count =
+                                        clip_x1 - clip_x0 + 1;
+                                    state = 2;
+                                } else {
+                                    transform_count = clip_x1 - xpos;
+                                    state = 1;
+                                }
+                                if ((byte)transform_count != 0) {
+                                    transform_count &= 0xff;
+                                    do {
+                                        --dst;
+                                        *dst = table[*dst];
+                                    } while (--transform_count != 0);
+                                }
+                            }
+                            src += count;
+                        }
+                    } else {
+                        count = command >> 1;
+                        if (count == 0) {
+                            state = 3;
+                        } else {
+                            xpos -= count;
+                            if (xpos <= clip_x1) {
+                                unsigned int transform_count;
+                                if (xpos < clip_x0) {
+                                    transform_count =
+                                        clip_x1 - clip_x0 + 1;
+                                    state = 2;
+                                } else {
+                                    transform_count = clip_x1 - xpos;
+                                    state = 1;
+                                }
+                                if ((byte)transform_count != 0) {
+                                    transform_count &= 0xff;
+                                    do {
+                                        --dst;
+                                        *dst = table[*dst];
+                                    } while (--transform_count != 0);
+                                }
+                            }
+                            ++src;
+                        }
+                    }
+                }
+            } else {
+                state = 1;
+            }
+
+            --state;
+            while (state == 0) {
+                byte command = *src++;
                 if ((command & 1) == 1) {
                     count = command >> 1;
                     if (count == 0) {
                         count = *src++;
                         xpos -= count;
-                        if (xpos <= clip_x1) {
-                            if (xpos < clip_x0)
-                                state = 2;
-                            else {
-                                buffer += xpos - clip_x1;
-                                state = 1;
-                            }
-                        }
+                        dst -= count;
+                        if (xpos < clip_x0)
+                            state = 1;
                     } else {
                         xpos -= count;
-                        src += count;
-                        if (xpos <= clip_x1) {
-                            if (xpos < clip_x0) {
-                                state = 2;
-                                transform_count = clip_x1 - clip_x0 + 1;
-                                if ((unsigned char)transform_count != 0) {
-                                    transform_count &= 0xff;
-                                    do {
-                                        --buffer;
-                                        *buffer = table[*buffer];
-                                    } while (--transform_count);
-                                }
-                            } else {
-                                state = 1;
-                                transform_count = clip_x1 - xpos;
-                                if ((unsigned char)transform_count != 0) {
-                                    transform_count &= 0xff;
-                                    do {
-                                        --buffer;
-                                        *buffer = table[*buffer];
-                                    } while (--transform_count);
-                                }
+                        if (xpos < clip_x0) {
+                            unsigned int transform_count =
+                                xpos - clip_x0 + count;
+                            state = 1;
+                            if ((byte)transform_count != 0) {
+                                transform_count &= 0xff;
+                                do {
+                                    --dst;
+                                    *dst = table[*dst];
+                                } while (--transform_count != 0);
                             }
+                        } else {
+                            unsigned int transform_count = count;
+                            do {
+                                --dst;
+                                *dst = table[*dst];
+                            } while (--transform_count != 0);
                         }
+                        src += count;
                     }
                 } else {
                     count = command >> 1;
@@ -2116,113 +2164,50 @@ byte TShape::shape_mirror_shadow_clipped(
                         state = 3;
                     } else {
                         xpos -= count;
-                        if (xpos <= clip_x1) {
-                            if (xpos < clip_x0) {
-                                state = 2;
-                                transform_count = clip_x1 - clip_x0 + 1;
-                            } else {
-                                state = 1;
-                                transform_count = clip_x1 - xpos;
-                            }
-                            if ((unsigned char)transform_count != 0) {
+                        if (xpos < clip_x0) {
+                            unsigned int transform_count =
+                                xpos - clip_x0 + count;
+                            state = 1;
+                            if ((byte)transform_count != 0) {
                                 transform_count &= 0xff;
                                 do {
-                                    --buffer;
-                                    *buffer = table[*buffer];
-                                } while (--transform_count);
+                                    --dst;
+                                    *dst = table[*dst];
+                                } while (--transform_count != 0);
                             }
+                        } else {
+                            unsigned int transform_count = count;
+                            do {
+                                --dst;
+                                *dst = table[*dst];
+                            } while (--transform_count != 0);
                         }
                         ++src;
                     }
                 }
-            } while (state == 0);
-        } else {
-            state = 1;
-        }
+            }
 
-        state--;
-        if (state == 0) {
-            do {
-            command = *src++;
-            if ((command & 1) == 1) {
-                count = command >> 1;
-                if (count == 0) {
-                    count = *src++;
-                    xpos -= count;
-                    buffer -= count;
-                    if (xpos < clip_x0)
-                        state = 1;
+            --state;
+            while (state == 0) {
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    count = command >> 1;
+                    if (count)
+                        src += count;
+                    else
+                        ++src;
                 } else {
-                    xpos -= count;
-                    src += count;
-                    if (xpos < clip_x0) {
-                        state = 1;
-                        transform_count = xpos - clip_x0 + count;
-                        if ((unsigned char)transform_count != 0) {
-                            transform_count &= 0xff;
-                            do {
-                                --buffer;
-                                *buffer = table[*buffer];
-                            } while (--transform_count);
-                        }
-                    } else {
-                        transform_count = count;
-                        if ((unsigned char)transform_count != 0) {
-                            transform_count &= 0xff;
-                            do {
-                                --buffer;
-                                *buffer = table[*buffer];
-                            } while (--transform_count);
-                        }
-                    }
-                }
-            } else {
-                count = command >> 1;
-                if (count == 0) {
-                    state = 3;
-                } else {
-                    xpos -= count;
-                    if (xpos < clip_x0) {
-                        state = 1;
-                        transform_count = xpos - clip_x0 + count;
-                    } else {
-                        transform_count = count;
-                    }
-                    if ((unsigned char)transform_count != 0) {
-                        transform_count &= 0xff;
-                        do {
-                            --buffer;
-                            *buffer = table[*buffer];
-                        } while (--transform_count);
-                    }
-                    ++src;
+                    if ((command & 0xfe) == 0)
+                        state = 2;
+                    else
+                        ++src;
                 }
             }
-            } while (state == 0);
-        }
 
-        state--;
-        if (state == 0) {
-            do {
-            command = *src++;
-            if ((command & 1) == 1) {
-                count = command >> 1;
-                if (count != 0)
-                    src += count;
-                else
-                    ++src;
-            } else {
-                if ((command & 0xfe) == 0)
-                    state = 2;
-                else
-                    ++src;
-            }
-            } while (state == 0);
-        }
-
-        save_buffer += width;
-        buffer = save_buffer;
-    } while (--shape_y1 != 0);
+            save_buffer += pitch;
+            dst = save_buffer;
+        } while (--rows != 0);
+    }
 
     return 1;
 }
