@@ -8,6 +8,6 @@
   "functions": {
     "0043B560": {"status": "matching", "symbol": "??0TribeConfigDialog@@QAE@W4Mode@0@PAVTScreenPanel@@@Z"},
     "0043C0C0": {"status": "matching", "symbol": "??1TribeConfigDialog@@UAE@XZ"},
-    "0043C2B0": {"status": "scratch", "symbol": "?action@TribeConfigDialog@@UAEJPAVTPanel@@JKK@Z"}
+    "0043C2B0": {"status": "new_verified_logic", "symbol": "?action@TribeConfigDialog@@UAEJPAVTPanel@@JKK@Z", "behavior_review": "logic_matching/0043C2B0/coord-10-0043C2B0-review-01/attempt-01"}
   }
 }

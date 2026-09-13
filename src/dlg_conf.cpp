@@ -432,202 +432,204 @@ TribeConfigDialog::~TribeConfigDialog()
 }
 
 long TribeConfigDialog::action(TPanel* panel, long event,
-    unsigned long param_3, unsigned long param_4)
+                               unsigned long param_3,
+                               unsigned long param_4)
 {
-    char msg[256];
-    float new_speed;
-    TSound_Driver* slider_sound;
-    if (panel == 0)
-        goto base_action;
-
-    if (panel == this->okButton && event == 1) {
+    if (panel != 0) {
+        if (panel == this->okButton && event == 1) {
             if (this->modeValue == InGame) {
-                if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
+                if (rge_base_game->singlePlayerGame() == 1 &&
+                    rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
-                if (this->mouseButton[0]->get_state() != 0) {
-                    rge_base_game->prog_info->interface_style = 2;
-                } else {
-                    rge_base_game->prog_info->interface_style = event;
-                }
-                static_cast<TRIBE_Game*>(rge_base_game)->set_interface_messages();
 
-                if (this->rolloverButton[0]->get_state() == 0) {
+                if (this->mouseButton[0]->get_state() != 0)
+                    rge_base_game->prog_info->interface_style = 2;
+                else
+                    rge_base_game->prog_info->interface_style = 1;
+                rge_base_game->set_interface_messages();
+
+                if (this->rolloverButton[0]->get_state() != 0)
+                    rge_base_game->rollover = 1;
+                else
                     rge_base_game->rollover = 0;
-                } else {
-                    rge_base_game->rollover = event;
-                }
 
                 if (rge_base_game->singlePlayerGame() != 0) {
                     if (this->pathFindingButton[0]->get_state() != 0) {
                         rge_base_game->setPathFinding(0);
-                        numberPathingIterations = 0x9C4;
+                        numberPathingIterations = 2500;
                     } else if (this->pathFindingButton[1]->get_state() != 0) {
-                        rge_base_game->setPathFinding(event);
+                        rge_base_game->setPathFinding(1);
                         numberPathingIterations = 5000;
                     } else if (this->pathFindingButton[2]->get_state() != 0) {
                         rge_base_game->setPathFinding(2);
-                        numberPathingIterations = 0x1D4C;
+                        numberPathingIterations = 7500;
                     }
                 }
 
                 if (rge_base_game->prog_mode != 5) {
-                    new_speed = 0.0f;
-                    if (this->speedButton[0]->get_state() != 0) {
-                        new_speed = 1.0f;
-                    } else if (this->speedButton[1]->get_state() != 0) {
-                        new_speed = 1.5f;
-                    } else if (this->speedButton[2]->get_state() != 0) {
-                        new_speed = 2.0f;
-                    }
+                    float new_speed = 0.0f;
 
-                    if (allow_user_commands != 0 && new_speed != 0.0f && new_speed != this->gameSpeed) {
+                    if (this->speedButton[0]->get_state() != 0)
+                        new_speed = 1.0f;
+                    else if (this->speedButton[1]->get_state() != 0)
+                        new_speed = 1.5f;
+                    else if (this->speedButton[2]->get_state() != 0)
+                        new_speed = 2.0f;
+
+                    if (allow_user_commands != 0 && new_speed != 0.0f &&
+                        new_speed != this->gameSpeed) {
                         if (rge_base_game->multiplayerGame() != 0) {
-                            sprintf(msg + 4, this->get_string(0xBF3),
-                                comm->GetPlayerName(comm->WhoAmI()));
-                            comm->SendChatMsgAll(msg + 4);
+                            char msg[256];
+                            sprintf(msg, this->get_string(0xBF3),
+                                    comm->GetPlayerName(comm->WhoAmI()));
+                            comm->SendChatMsgAll(msg);
                         }
-                        static_cast<TRIBE_Command*>(rge_base_game->world->commands)
+
+                        static_cast<TRIBE_Command*>(
+                            rge_base_game->world->commands)
                             ->command_game_speed(new_speed);
-                        if (rge_base_game->singlePlayerGame() != 0) {
+                        if (rge_base_game->singlePlayerGame() != 0)
                             rge_base_game->set_game_speed(new_speed);
-                        }
                     }
                 }
 
                 if (this->newMusicVolume != this->musicVolume) {
-                    RGE_Prog_Info* info = rge_base_game->prog_info;
-                    TMusic_System* music;
                     if (this->newMusicVolume >= 99) {
-                        if (info->use_music != 0) {
-                            info->use_music = 0;
+                        if (rge_base_game->prog_info->use_music != 0) {
+                            rge_base_game->prog_info->use_music = 0;
                             rge_base_game->shutdown_music_system();
                         }
-                    } else if (info->use_music == 0) {
-                        info->use_music = 1;
-                        Regs->RegSetInt(event, "Music Volume", this->newMusicVolume * 100);
+                    } else if (rge_base_game->prog_info->use_music == 0) {
+                        rge_base_game->prog_info->use_music = 1;
+                        Regs->RegSetInt(1, "Music Volume",
+                                        this->newMusicVolume * 100);
                         rge_base_game->setup_music_system();
-                        music = rge_base_game->music_system;
-                        if (music) {
-                            if (music->music_type == 1) {
-                                music->play_tracks(5, music->track_count, event, 0, 0);
-                            } else if (music->music_type == 2) {
-                                music->play_tracks(1, music->track_count, event, 0, 0);
+
+                        TMusic_System* music_system =
+                            rge_base_game->music_system;
+                        if (music_system != 0) {
+                            if (music_system->music_type == 1) {
+                                music_system->play_tracks(
+                                    5, music_system->track_count, 1, 0, 0);
+                            } else if (music_system->music_type == 2) {
+                                music_system->play_tracks(
+                                    1, music_system->track_count, 1, 0, 0);
                             }
                         }
                     }
 
                     if (rge_base_game->sound_system != 0) {
-                        rge_base_game->sound_system->set_volume(this->newSoundVolume * -100, event);
+                        rge_base_game->sound_system->set_volume(
+                            this->newSoundVolume * -100, 1);
                     }
                 }
 
                 long width;
                 long height;
-                if (this->sizeButton[0]->get_state() == 0) {
-                    if (this->sizeButton[1]->get_state() != 0) {
-                        width = 0x320;
-                        height = 0x258;
-                    } else if (this->sizeButton[2]->get_state() != 0) {
-                        width = 0x400;
-                        height = 0x300;
-                    } else {
-                        width = 0x280;
-                        height = 0x1E0;
-                    }
+                if (this->sizeButton[0]->get_state() != 0) {
+                    width = 640;
+                    height = 480;
+                } else if (this->sizeButton[1]->get_state() != 0) {
+                    width = 800;
+                    height = 600;
+                } else if (this->sizeButton[2]->get_state() != 0) {
+                    width = 1024;
+                    height = 768;
                 } else {
-                    width = 0x280;
-                    height = 0x1E0;
+                    width = 640;
+                    height = 480;
                 }
 
                 panel_system.setCurrentPanel("Game Screen", 0);
                 this->set_active(0);
                 this->prepare_for_close();
-                if (do_color_log == 0) {
+                if (do_color_log == 0)
                     rge_base_game->set_screen_size(width, height);
-                }
-                goto destroy;
+
+                panel_system.destroyPanel("Config Dialog");
+                return 1;
             }
         } else {
-            if (panel == this->speedButton[0] && event == 1) {
-                return event;
-            }
-            if (panel == this->speedButton[1] && event == 1) {
-                return event;
-            }
-            if (panel == this->speedButton[2] && event == 1) {
-                return event;
-            }
-            if (panel == this->sizeButton[0]) {
+            if (panel == this->speedButton[0] && event == 1)
                 return 1;
-            }
-            if (panel == this->sizeButton[1]) {
+            if (panel == this->speedButton[1] && event == 1)
                 return 1;
-            }
-            if (panel == this->sizeButton[2]) {
+            if (panel == this->speedButton[2] && event == 1)
                 return 1;
-            }
+
+            if (panel == this->sizeButton[0])
+                return 1;
+            if (panel == this->sizeButton[1])
+                return 1;
+            if (panel == this->sizeButton[2])
+                return 1;
+
             if (panel == this->musicSlider && event == 4) {
                 this->newMusicVolume = param_3;
-                TMusic_System* music = rge_base_game->music_system;
-                if (music == 0) {
-                    goto return_one;
+                if (rge_base_game->music_system != 0) {
+                    rge_base_game->music_system->set_volume(
+                        this->newMusicVolume * -100, 1);
+                    if (rge_base_game->sound_system != 0) {
+                        rge_base_game->sound_system->set_volume(
+                            this->newSoundVolume * -100, 1);
+                    }
                 }
-                music->set_volume(param_3 * -100, 1);
-                slider_sound = rge_base_game->sound_system;
-                if (slider_sound == 0) {
-                    goto return_one;
-                }
-                param_3 = this->newSoundVolume;
-                goto slider_sound_call;
+                return 1;
             }
+
             if (panel == this->soundSlider && event == 4) {
                 this->newSoundVolume = param_3;
-                slider_sound = rge_base_game->sound_system;
-                if (slider_sound == 0) {
-                    goto return_one;
+                if (rge_base_game->sound_system != 0) {
+                    rge_base_game->sound_system->set_volume(
+                        this->newSoundVolume * -100, 1);
                 }
-                goto slider_sound_call;
+                return 1;
             }
+
             if (panel == this->scrollSpeedSlider && event == 4) {
-                RGE_Prog_Info* info = rge_base_game->prog_info;
-                info->mouse_scroll_interval = param_3 + 10;
-                info->key_scroll_interval = param_3 + 10;
-                goto base_action;
+                rge_base_game->prog_info->mouse_scroll_interval = param_3 + 10;
+                rge_base_game->prog_info->key_scroll_interval = param_3 + 10;
+                return TPanel::action(panel, event, param_3, param_4);
             }
+
             if (panel == this->cancelButton && event == 1) {
                 if (rge_base_game->music_system != 0) {
-                    rge_base_game->music_system->set_volume(this->musicVolume * -100, 1);
+                    rge_base_game->music_system->set_volume(
+                        this->musicVolume * -100, 1);
                 }
                 if (rge_base_game->sound_system != 0) {
-                    rge_base_game->sound_system->set_volume(this->soundVolume * -100, 1);
+                    rge_base_game->sound_system->set_volume(
+                        this->soundVolume * -100, 1);
                 }
-                rge_base_game->prog_info->mouse_scroll_interval = this->scrollSpeed;
-                rge_base_game->prog_info->key_scroll_interval = this->scrollSpeed;
+
+                rge_base_game->prog_info->mouse_scroll_interval =
+                    this->scrollSpeed;
+                rge_base_game->prog_info->key_scroll_interval =
+                    this->scrollSpeed;
+
                 if (this->modeValue == InGame) {
-                    if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
+                    if (rge_base_game->singlePlayerGame() == 1 &&
+                        rge_base_game->save_paused == 0) {
                         rge_base_game->set_paused(0, 0);
                     }
                     panel_system.setCurrentPanel("Game Screen", 0);
                     this->set_active(0);
-                    goto destroy;
+                } else {
+                    panel_system.setCurrentPanel("Main Menu", 0);
                 }
-            } else {
-                goto base_action;
+
+                panel_system.destroyPanel("Config Dialog");
+                return 1;
             }
+        }
+
+        if (panel == this->okButton && event == 1) {
+            panel_system.setCurrentPanel("Main Menu", 0);
+            panel_system.destroyPanel("Config Dialog");
+            return 1;
+        }
     }
-    panel_system.setCurrentPanel("Main Menu", 0);
-    goto destroy;
 
-base_action:
     return TPanel::action(panel, event, param_3, param_4);
-
-slider_sound_call:
-    slider_sound->set_volume(param_3 * -100, 1);
-    return 1;
-
-destroy:
-    panel_system.destroyPanel("Config Dialog");
-return_one:
-    return 1;
 }
