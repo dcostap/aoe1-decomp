@@ -20,7 +20,7 @@
     "004D91A0": {"status": "matching", "symbol": "?tileUncovered@TribeInformationAIModule@@QAEHHH@Z"},
     "004D91F0": {"status": "matching", "symbol": "?setTileExplored@TribeInformationAIModule@@QAEXHH@Z"},
     "004D9230": {"status": "matching", "symbol": "?ownerOfGameID@TribeInformationAIModule@@QAEHH@Z"},
-    "004D9240": {"status": "scratch", "symbol": "?gameIDOfResourceObject@TribeInformationAIModule@@QAEHHHAAM0AAHPAHH@Z"},
+    "004D9240": {"status": "new_verified_logic", "symbol": "?gameIDOfResourceObject@TribeInformationAIModule@@QAEHHHAAM0AAHPAHH@Z", "behavior_review": "logic_matching/004D9240/review-20260322T000014/attempt-01"},
     "004D96B0": {"status": "matching", "symbol": "?gameIDsOfObjectType@TribeInformationAIModule@@QAEHHPAPAH0H@Z"},
     "004D9970": {"status": "matching", "symbol": "?gameIDsOwnedBy@TribeInformationAIModule@@QAEHHPAPAHH@Z"},
     "004D9A90": {"status": "matching", "symbol": "?numberGameIDsOwnedBy@TribeInformationAIModule@@QAEHHH@Z"},

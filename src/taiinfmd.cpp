@@ -949,121 +949,201 @@ int TribeInformationAIModule::ownerOfGameID(int p0) { return -1; }
 #include <stdlib.h>
 #include <string.h>
 
-int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId, float& outX, float& outY, int& outResourceId, int* exclude, int excludeCount)
+int TribeInformationAIModule::gameIDOfResourceObject(
+    int resourceType, int gathererID, float& outX, float& outY,
+    int& outResourceID, int* excluded, int excludedCount)
 {
-    unsigned char zone;
-    int gx;
-    int gy;
-    int boat;
-    ResourceMemory* bestObject;
-    int bestValue;
-    int score;
-    int fishingBoat;
-    int needUpdateDropsite;
-    int i;
-    bool excluded;
-    int j;
-    int* excludePtr;
-    int objectId;
-    RGE_Static_Object* obj;
-    int dx;
-    int dy;
-    short cls3;
-    short cls;
-    short cls2;
-    int k;
-    RGE_Static_Object* gatherer;
+    outResourceID = -1;
 
-    outResourceId = -1;
-    gatherer = this->md->object(gathererId);
-    if (gatherer) {
+    RGE_Static_Object* gatherer = this->md->object(gathererID);
+    if (gatherer != 0) {
+        unsigned char gathererZone = gatherer->currentZone();
+        int gathererX = (int)gatherer->world_x;
+        int gathererY = (int)gatherer->world_y;
+        int gathererIsBoat = this->isBoat(gatherer);
+        ResourceMemory* bestResource = 0;
+        int bestValue = -1;
+        int updateDropsites = 0;
+        int resourceOffset = 0;
+        int updateResourceDist = 0;
 
-    zone = gatherer->currentZone();
-    gx = (int)gatherer->world_x;
-    gy = (int)gatherer->world_y;
-    boat = this->isBoat(gatherer);
+        if (this->numResources[resourceType] > 0) {
+            do {
+                ResourceMemory* resource = (ResourceMemory*)
+                    ((char*)this->resources[resourceType] + resourceOffset);
+                unsigned char gone = resource->gone;
 
-    fishingBoat = boat;
-    bestValue = -1;
-    bestObject = 0;
-    needUpdateDropsite = 0;
+                if (gone != 1) {
+                    if (resource->valid != 0) {
+                        if (gone == 0)
+                            --resource->valid;
+                    } else {
+                        int excludedResource = 0;
+                        int excludeIndex = 0;
 
-    i = 0;
-    if (this->numResources[resType] > 0) {
-        do {
-            if (this->resources[resType][i].gone == 1) goto next;
-            if (this->resources[resType][i].valid != 0) {
-                if (this->resources[resType][i].gone != 0) goto next;
-                --this->resources[resType][i].valid;
-                goto next;
-            }
-            excluded = 0;
-            excludePtr = exclude;
-            for (j = 0; j < excludeCount; ++j, ++excludePtr) {
-                if (*excludePtr == this->resources[resType][i].id) { excluded = 1; break; }
-            }
-            if (excluded == 1) goto next;
-            obj = this->md->object(this->resources[resType][i].id);
-            if (!obj) {
-                this->resources[resType][i].gone = 1;
-                if (this->closestDropsiteResourceID[resType] ==
-                    this->resources[resType][i].id)
-                    needUpdateDropsite = 1;
-                goto next;
-            }
-            if (boat == 1) {
-                cls = obj->master_obj->object_group;
-                if (cls != 5 && cls != 0x1f && cls != 0x21) goto next;
-            }
-            if (boat == 0) {
-                cls2 = obj->master_obj->object_group;
-                if (cls2 == 5 || cls2 == 0x1f || cls2 == 0x21) goto next;
-            }
-            dx = gx - this->resources[resType][i].x;
-            dy = gy - this->resources[resType][i].y;
-            score = dx * dx + dy * dy + this->resources[resType][i].gatherValue * 10;
-            if (obj->master_obj->id == 0x3b) {
-                if (this->resources[resType][i].dropDistance > 0x14) goto next;
-                score += ((int)this->resources[resType][i].gatherAttempts) / 150;
-                if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 2) score += 200;
-            } else {
-                score += ((int)this->resources[resType][i].gatherAttempts) / 50;
-            }
-            if (bestObject && score >= bestValue) goto next;
-            cls3 = obj->master_obj->object_group;
-            if ((cls3 == 9 || cls3 == 10) && obj->object_state > 2 && obj->attribute_amount_held > DAT_00575568) score += 25;
-            if (this->withinXTilesOfEnemyTowncenter(obj, 25) == 1) goto next;
-            if (this->withinXTilesOfAttackOnPlayer(obj, 15, this->md->player->id) == 1) score += 500;
-            if (obj->master_obj->id == 0x32) {
-                if (obj->owner->id != this->md->player->id) goto next;
-                if (obj->object_state != 2) goto next;
-                if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
-                objectId = obj->id;
-                if (this->farmsTaskedThisUpdate.contains(objectId) == 1) goto next;
-            }
-            if (resType == 1 && this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
-            if ((resType == 3 || resType == 2) && this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 3) goto next;
-            if (obj->master_obj->id == 0x30 && obj->object_state == 2) {
-                int want = this->md->tacticalAI.strategicNumber(0xcc);
-                if (this->md->tacticalAI.actualGathererCountByRealResourceID(0) < want) goto next;
-            }
-            if (gatherer->lookupZone(this->resources[resType][i].x,
-                                     this->resources[resType][i].y) != zone) goto next;
-            if (bestObject && score >= bestValue) goto next;
-            bestObject = &this->resources[resType][i];
-            bestValue = score;
-            outX = obj->world_x;
-            outY = obj->world_y;
-next:
-            ++i;
-        } while (i < this->numResources[resType]);
-    }
+                        if (excludedCount > 0) {
+                            do {
+                                if (excluded[excludeIndex] == resource->id) {
+                                    excludedResource = 1;
+                                    break;
+                                }
+                                ++excludeIndex;
+                            } while (excludeIndex < excludedCount);
+                        }
 
-        if (needUpdateDropsite == 1) this->updateResourceDropsites(resType);
-        if (bestObject) {
-            bestObject->gatherAttempts++;
-            outResourceId = bestObject->dropsiteID;
-            return bestObject->id;
+                        if (excludedResource == 0) {
+                            RGE_Static_Object* object =
+                                this->md->object(resource->id);
+                            if (object == 0) {
+                                resource = (ResourceMemory*)
+                                    ((char*)this->resources[resourceType] +
+                                     resourceOffset);
+                                resource->gone = 1;
+                                resource = (ResourceMemory*)
+                                    ((char*)this->resources[resourceType] +
+                                     resourceOffset);
+                                if (this->closestDropsiteResourceID[resourceType] ==
+                                    resource->id) {
+                                    updateDropsites = 1;
+                                }
+                            } else {
+                                if (gathererIsBoat == 1) {
+                                    short group = object->master_obj->object_group;
+                                    if (group != 5 && group != 0x1f &&
+                                        group != 0x21) {
+                                        goto next_resource;
+                                    }
+                                }
+                                if (gathererIsBoat == 0) {
+                                    short group = object->master_obj->object_group;
+                                    if (group == 5 || group == 0x1f ||
+                                        group == 0x21) {
+                                        goto next_resource;
+                                    }
+                                }
+
+                                resource = (ResourceMemory*)
+                                    ((char*)this->resources[resourceType] +
+                                     resourceOffset);
+                                int value;
+                                int dx = gathererX - (int)resource->x;
+                                int dy = gathererY - (int)resource->y;
+                                value = dx * dx + dy * dy +
+                                        resource->gatherValue * 10;
+
+                                if (object->master_obj->id == 0x3b) {
+                                    if (resource->dropDistance > 0x14)
+                                        goto next_resource;
+                                    value += resource->gatherAttempts / 0x96;
+                                    if (this->md->tacticalAI
+                                            .numberGatherersWithTarget(object->id) > 2) {
+                                        value += 200;
+                                    }
+                                } else {
+                                    value += resource->gatherAttempts / 0x32;
+                                }
+
+                                if (bestResource != 0 && value >= bestValue)
+                                    goto next_resource;
+
+                                if ((object->master_obj->object_group == 9 ||
+                                     object->master_obj->object_group == 10) &&
+                                    object->object_state > 2 &&
+                                    object->attribute_amount_held > DAT_00575568) {
+                                    value += 0x19;
+                                }
+
+                                if (this->withinXTilesOfEnemyTowncenter(
+                                        object, 0x19) == 1) {
+                                    goto next_resource;
+                                }
+
+                                int attacked = this->withinXTilesOfAttackOnPlayer(
+                                    object, 0x0f, this->md->player->id);
+                                if (attacked == 1)
+                                    value += 0x1f4;
+
+                                if (object->master_obj->id == 0x32) {
+                                    if (object->owner->id != this->md->player->id ||
+                                        object->object_state != 2 ||
+                                        this->md->tacticalAI
+                                                .numberGatherersWithTarget(object->id) > 0) {
+                                        goto next_resource;
+                                    }
+
+                                    int farmIndex = 0;
+                                    int farmCount =
+                                        this->farmsTaskedThisUpdate.numberValue;
+                                    if (farmCount > 0) {
+                                        do {
+                                            if (farmIndex >= this->farmsTaskedThisUpdate
+                                                    .maximumSizeValue) {
+                                                break;
+                                            }
+                                            if (this->farmsTaskedThisUpdate
+                                                    .value[farmIndex] == object->id) {
+                                                goto next_resource;
+                                            }
+                                            ++farmIndex;
+                                        } while (farmIndex <
+                                                 this->farmsTaskedThisUpdate.numberValue);
+                                    }
+                                }
+
+                                if (resourceType == 1 &&
+                                    this->md->tacticalAI
+                                            .numberGatherersWithTarget(object->id) >= 1) {
+                                    goto next_resource;
+                                }
+                                if ((resourceType == 3 || resourceType == 2) &&
+                                    this->md->tacticalAI
+                                            .numberGatherersWithTarget(object->id) > 3) {
+                                    goto next_resource;
+                                }
+
+                                if (object->master_obj->id == 0x30 &&
+                                    object->object_state == 2) {
+                                    int desired = this->md->tacticalAI
+                                        .strategicNumber(0xcc);
+                                    int actual = this->md->tacticalAI
+                                        .actualGathererCountByRealResourceID(0);
+                                    if (actual < desired)
+                                        goto next_resource;
+                                }
+
+                                resource = (ResourceMemory*)
+                                    ((char*)this->resources[resourceType] +
+                                     resourceOffset);
+                                if (gathererZone ==
+                                        gatherer->lookupZone(resource->x,
+                                                             resource->y) &&
+                                    (bestResource == 0 || value < bestValue)) {
+                                    resource = (ResourceMemory*)
+                                        ((char*)this->resources[resourceType] +
+                                         resourceOffset);
+                                    bestResource = resource;
+                                    outX = object->world_x;
+                                    bestValue = value;
+                                    outY = object->world_y;
+                                }
+                            }
+                        }
+                    }
+                }
+
+next_resource:
+                ++updateResourceDist;
+                resourceOffset += sizeof(ResourceMemory);
+            } while (updateResourceDist < this->numResources[resourceType]);
+        }
+
+        if (updateDropsites == 1)
+            this->updateResourceDropsites(resourceType);
+
+        if (bestResource != 0) {
+            ++bestResource->gatherAttempts;
+            outResourceID = bestResource->dropsiteID;
+            return bestResource->id;
         }
     }
     return -1;
