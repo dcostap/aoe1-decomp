@@ -452,323 +452,319 @@ TribeDiplomacyDialog::~TribeDiplomacyDialog()
 }
 
 long TribeDiplomacyDialog::action(TPanel* panel, long event,
-                                  unsigned long param_3, unsigned long param_4)
+                                  unsigned long param_3,
+                                  unsigned long param_4)
 {
     char temp_str[256];
+    float cost;
 
-    if (panel != 0) {
-        if (event == 1) {
-            if (panel == this->okButton) {
-                TRIBE_Command* commands = static_cast<TRIBE_Command*>(
-                    rge_base_game->world->commands);
-                if (allow_user_commands != 0) {
-                    unsigned char allied =
-                        rge_base_game->get_player()->get_allied_victory();
-                    if (this->allianceButton->get_state() != allied) {
-                        commands->command_allied_victory(
-                            rge_base_game->get_player()->id,
-                            this->allianceButton->get_state());
+    if (panel == 0 || event != 1) {
+        return TPanel::action(panel, event, param_3, param_4);
+    }
+
+    if (panel == this->okButton) {
+        TRIBE_Command* commands =
+            static_cast<TRIBE_Command*>(rge_base_game->world->commands);
+
+        if (allow_user_commands != 0) {
+            unsigned char allied_victory =
+                rge_base_game->get_player()->get_allied_victory();
+            if (this->allianceButton->get_state() != allied_victory) {
+                int state = this->allianceButton->get_state();
+                commands->command_allied_victory(
+                    rge_base_game->get_player()->id,
+                    static_cast<unsigned char>(state));
+            }
+        }
+
+        RGE_Game_World* world = rge_base_game->world;
+        if (world->player_num - 1 > 0) {
+            int player_id = 1;
+            int row = 0;
+            do {
+                if (player_id != world->curr_player &&
+                    this->allyButton[row * 3] != 0) {
+                    unsigned char relation;
+                    if (this->allyButton[row * 3]->get_state() == 1) {
+                        relation = 0;
+                    } else if (this->allyButton[row * 3 + 1]->get_state() == 1) {
+                        relation = 1;
+                    } else {
+                        relation = 3;
                     }
-                }
 
-                int player_id = 1;
-                if (rge_base_game->world->player_num - 1 > 0) {
-                    for (int row = 0;
-                         row < rge_base_game->world->player_num - 1;
-                         ++row, ++player_id) {
-                        if (player_id != rge_base_game->world->curr_player &&
-                            this->allyButton[row * 3] != 0) {
-                            unsigned char relation;
-                            if (this->allyButton[row * 3]->get_state() == 1) {
-                                relation = 0;
-                            } else if (this->allyButton[row * 3 + 1]->get_state() != 1) {
-                                relation = 3;
-                            } else {
-                                relation = 1;
-                            }
+                    if (allow_user_commands != 0) {
+                        if (rge_base_game->get_player()->relation(player_id) !=
+                            relation) {
+                            commands->command_relation(
+                                rge_base_game->get_player()->id,
+                                static_cast<short>(player_id),
+                                static_cast<short>(relation));
+                        }
 
-                            if (allow_user_commands != 0) {
-                                if (rge_base_game->get_player()->relation(player_id) != relation) {
-                                    commands->command_relation(
-                                        rge_base_game->get_player()->id,
-                                        player_id,
-                                        relation);
-                                }
-
-                                if (this->goldTributeAmount[row] > 0.0f) {
-                                    static_cast<TRIBE_Player*>(
-                                        rge_base_game->get_player())
-                                        ->command_give_attribute(
-                                            player_id, 3,
-                                            this->goldTributeAmount[row],
-                                            rge_base_game->get_player()->attributes[0x2e]);
-                                }
-                                if (this->woodTributeAmount[row] > 0.0f) {
-                                    static_cast<TRIBE_Player*>(
-                                        rge_base_game->get_player())
-                                        ->command_give_attribute(
-                                            player_id, 1,
-                                            this->woodTributeAmount[row],
-                                            rge_base_game->get_player()->attributes[0x2e]);
-                                }
-                                if (this->foodTributeAmount[row] > 0.0f) {
-                                    static_cast<TRIBE_Player*>(
-                                        rge_base_game->get_player())
-                                        ->command_give_attribute(
-                                            player_id, 0,
-                                            this->foodTributeAmount[row],
-                                            rge_base_game->get_player()->attributes[0x2e]);
-                                }
-                                if (this->stoneTributeAmount[row] > 0.0f) {
-                                    static_cast<TRIBE_Player*>(
-                                        rge_base_game->get_player())
-                                        ->command_give_attribute(
-                                            player_id, 2,
-                                            this->stoneTributeAmount[row],
-                                            rge_base_game->get_player()->attributes[0x2e]);
-                                }
-                            }
+                        if (this->goldTributeAmount[row] > 0.0f) {
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                                rge_base_game->get_player());
+                            player->command_give_attribute(
+                                player_id, 3, this->goldTributeAmount[row],
+                                rge_base_game->get_player()->attributes[46]);
+                        }
+                        if (this->woodTributeAmount[row] > 0.0f) {
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                                rge_base_game->get_player());
+                            player->command_give_attribute(
+                                player_id, 1, this->woodTributeAmount[row],
+                                rge_base_game->get_player()->attributes[46]);
+                        }
+                        if (this->foodTributeAmount[row] > 0.0f) {
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                                rge_base_game->get_player());
+                            player->command_give_attribute(
+                                player_id, 0, this->foodTributeAmount[row],
+                                rge_base_game->get_player()->attributes[46]);
+                        }
+                        if (this->stoneTributeAmount[row] > 0.0f) {
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                                rge_base_game->get_player());
+                            player->command_give_attribute(
+                                player_id, 2, this->stoneTributeAmount[row],
+                                rge_base_game->get_player()->attributes[46]);
                         }
                     }
                 }
 
-                if (rge_base_game->singlePlayerGame() == 1 &&
-                    rge_base_game->save_paused == 0) {
-                    rge_base_game->set_paused(0, 0);
-                    panel_system.setCurrentPanel("Game Screen", 0);
-                    panel_system.destroyPanel("Diplomacy Dialog");
-                    return 1;
-                }
-                goto close_dialog;
+                ++row;
+                ++player_id;
+                world = rge_base_game->world;
+            } while (player_id < world->player_num);
+        }
+
+        if (rge_base_game->singlePlayerGame() == 1 &&
+            rge_base_game->save_paused == 0) {
+            rge_base_game->set_paused(0, 0);
+        }
+        panel_system.setCurrentPanel("Game Screen", 0);
+        panel_system.destroyPanel("Diplomacy Dialog");
+        return 1;
+    }
+
+    if (panel == this->cancelButton) {
+        if (rge_base_game->singlePlayerGame() == 1 &&
+            rge_base_game->save_paused == 0) {
+            rge_base_game->set_paused(0, 0);
+        }
+        panel_system.setCurrentPanel("Game Screen", 0);
+        panel_system.destroyPanel("Diplomacy Dialog");
+        return 1;
+    }
+
+    if (panel == this->help_button) {
+        this->setup_popup_help();
+        return 1;
+    }
+
+    if (panel == this->clearButton) {
+        this->foodTotal = 0.0f;
+        this->goldTotal = 0.0f;
+        this->stoneTotal = 0.0f;
+        this->woodTotal = 0.0f;
+
+        for (int i = 0; i < 8; ++i) {
+            if (this->goldTributeButton[i] != 0) {
+                this->goldTributeButton[i]->set_text(0, "");
             }
-
-            if (panel == this->cancelButton) {
-                if (rge_base_game->singlePlayerGame() == 1 &&
-                    rge_base_game->save_paused == 0) {
-                    rge_base_game->set_paused(0, 0);
-                }
-                goto close_dialog;
+            if (this->foodTributeButton[i] != 0) {
+                this->foodTributeButton[i]->set_text(0, "");
             }
-
-            if (panel == this->help_button) {
-                this->setup_popup_help();
-                return 1;
+            if (this->woodTributeButton[i] != 0) {
+                this->woodTributeButton[i]->set_text(0, "");
             }
+            if (this->stoneTributeButton[i] != 0) {
+                this->stoneTributeButton[i]->set_text(0, "");
+            }
+            this->goldTributeAmount[i] = 0.0f;
+            this->foodTributeAmount[i] = 0.0f;
+            this->stoneTributeAmount[i] = 0.0f;
+            this->woodTributeAmount[i] = 0.0f;
+        }
 
-            if (panel == this->clearButton) {
-                this->foodTotal = 0.0f;
-                this->goldTotal = 0.0f;
-                this->stoneTotal = 0.0f;
-                this->woodTotal = 0.0f;
+        sprintf(temp_str, "%ld", static_cast<long>(
+            rge_base_game->get_player()->attributes[3]));
+        this->playerGold->set_text(temp_str);
+        sprintf(temp_str, "%ld", static_cast<long>(
+            rge_base_game->get_player()->attributes[0]));
+        this->playerFood->set_text(temp_str);
+        sprintf(temp_str, "%ld", static_cast<long>(
+            rge_base_game->get_player()->attributes[1]));
+        this->playerWood->set_text(temp_str);
+        sprintf(temp_str, "%ld", static_cast<long>(
+            rge_base_game->get_player()->attributes[2]));
+        this->playerStone->set_text(temp_str);
 
-                for (int i = 0; i < 8; ++i) {
-                    if (this->goldTributeButton[i] != 0) {
-                        this->goldTributeButton[i]->set_text(0, "");
-                    }
-                    if (this->foodTributeButton[i] != 0) {
-                        this->foodTributeButton[i]->set_text(0, "");
-                    }
-                    if (this->woodTributeButton[i] != 0) {
-                        this->woodTributeButton[i]->set_text(0, "");
-                    }
-                    if (this->stoneTributeButton[i] != 0) {
-                        this->stoneTributeButton[i]->set_text(0, "");
-                    }
-                    this->goldTributeAmount[i] = 0.0f;
-                    this->foodTributeAmount[i] = 0.0f;
-                    this->stoneTributeAmount[i] = 0.0f;
-                    this->woodTributeAmount[i] = 0.0f;
+        this->check_gold();
+        this->check_wood();
+        this->check_stone();
+        this->check_food();
+        return 1;
+    }
+
+    cost = 0.0f;
+    if (rge_base_game->get_player()->attributes[46] > 0.0) {
+        cost = rge_base_game->get_player()->attributes[46];
+    }
+
+    int player_count = rge_base_game->world->player_num - 1;
+    for (int row = 0; row < player_count; ++row) {
+        if (panel == this->goldTributeButton[row]) {
+            if (this->check_gold() == 0) {
+                cost += 1.0f;
+                if (!(rge_base_game->get_player()->attributes[3] -
+                          this->goldTotal <
+                      cost * 100.0f)) {
+                    this->goldTributeAmount[row] += 100.0f;
+                    this->goldTotal += cost * 100.0f;
+                } else {
+                    float amount =
+                        (rge_base_game->get_player()->attributes[3] -
+                         this->goldTotal) /
+                        cost;
+                    this->goldTributeAmount[row] += amount;
+                    this->goldTotal += amount * cost;
                 }
 
-                sprintf(temp_str, "%ld",
-                        static_cast<long>(rge_base_game->get_player()->attributes[3]));
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    rge_base_game->get_player()->attributes[3] -
+                    this->goldTotal));
                 this->playerGold->set_text(temp_str);
-                sprintf(temp_str, "%ld",
-                        static_cast<long>(rge_base_game->get_player()->attributes[0]));
-                this->playerFood->set_text(temp_str);
-                sprintf(temp_str, "%ld",
-                        static_cast<long>(rge_base_game->get_player()->attributes[1]));
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    this->goldTributeAmount[row]));
+                this->goldTributeButton[row]->set_text(0, temp_str);
+            } else {
+                float available =
+                    rge_base_game->get_player()->attributes[3] - this->goldTotal;
+                if (!(available >= 0.0f)) {
+                    available = 0.0f;
+                }
+                sprintf(temp_str, "%ld", static_cast<long>(available));
+                this->playerGold->set_text(temp_str);
+            }
+            this->check_gold();
+            return 1;
+        }
+
+        if (panel == this->woodTributeButton[row]) {
+            if (this->check_wood() == 0) {
+                cost += 1.0f;
+                if (!(rge_base_game->get_player()->attributes[1] -
+                          this->woodTotal <
+                      cost * 100.0f)) {
+                    this->woodTributeAmount[row] += 100.0f;
+                    this->woodTotal += cost * 100.0f;
+                } else {
+                    float amount =
+                        (rge_base_game->get_player()->attributes[1] -
+                         this->woodTotal) /
+                        cost;
+                    this->woodTributeAmount[row] += amount;
+                    this->woodTotal += amount * cost;
+                }
+
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    rge_base_game->get_player()->attributes[1] -
+                    this->woodTotal));
                 this->playerWood->set_text(temp_str);
-                sprintf(temp_str, "%ld",
-                        static_cast<long>(rge_base_game->get_player()->attributes[2]));
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    this->woodTributeAmount[row]));
+                this->woodTributeButton[row]->set_text(0, temp_str);
+            } else {
+                float available =
+                    rge_base_game->get_player()->attributes[1] - this->woodTotal;
+                if (!(available >= 0.0f)) {
+                    available = 0.0f;
+                }
+                sprintf(temp_str, "%ld", static_cast<long>(available));
+                this->playerWood->set_text(temp_str);
+            }
+            this->check_wood();
+            return 1;
+        }
+
+        if (panel == this->foodTributeButton[row]) {
+            if (this->check_food() == 0) {
+                cost += 1.0f;
+                if (!(rge_base_game->get_player()->attributes[0] -
+                          this->foodTotal <
+                      cost * 100.0f)) {
+                    this->foodTributeAmount[row] += 100.0f;
+                    this->foodTotal += cost * 100.0f;
+                } else {
+                    float amount =
+                        (rge_base_game->get_player()->attributes[0] -
+                         this->foodTotal) /
+                        cost;
+                    this->foodTributeAmount[row] += amount;
+                    this->foodTotal += amount * cost;
+                }
+
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    rge_base_game->get_player()->attributes[0] -
+                    this->foodTotal));
+                this->playerFood->set_text(temp_str);
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    this->foodTributeAmount[row]));
+                this->foodTributeButton[row]->set_text(0, temp_str);
+            } else {
+                float available =
+                    rge_base_game->get_player()->attributes[0] - this->foodTotal;
+                if (!(available >= 0.0f)) {
+                    available = 0.0f;
+                }
+                sprintf(temp_str, "%ld", static_cast<long>(available));
+                this->playerFood->set_text(temp_str);
+            }
+            this->check_food();
+            return 1;
+        }
+
+        if (panel == this->stoneTributeButton[row]) {
+            if (this->check_stone() == 0) {
+                cost += 1.0f;
+                if (!(rge_base_game->get_player()->attributes[2] -
+                          this->stoneTotal <
+                      cost * 100.0f)) {
+                    this->stoneTributeAmount[row] += 100.0f;
+                    this->stoneTotal += cost * 100.0f;
+                } else {
+                    float amount =
+                        (rge_base_game->get_player()->attributes[2] -
+                         this->stoneTotal) /
+                        cost;
+                    this->stoneTributeAmount[row] += amount;
+                    this->stoneTotal += amount * cost;
+                }
+
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    rge_base_game->get_player()->attributes[2] -
+                    this->stoneTotal));
                 this->playerStone->set_text(temp_str);
-                this->check_gold();
-                this->check_wood();
-                this->check_stone();
-                this->check_food();
-                return 1;
+                sprintf(temp_str, "%ld", static_cast<long>(
+                    this->stoneTributeAmount[row]));
+                this->stoneTributeButton[row]->set_text(0, temp_str);
+            } else {
+                float available =
+                    rge_base_game->get_player()->attributes[2] - this->stoneTotal;
+                if (!(available >= 0.0f)) {
+                    available = 0.0f;
+                }
+                sprintf(temp_str, "%ld", static_cast<long>(available));
+                this->playerStone->set_text(temp_str);
             }
-
-            float cost = 0.0f;
-            if (rge_base_game->get_player()->attributes[0x2e] > 0.0) {
-                cost = rge_base_game->get_player()->attributes[0x2e];
-            }
-
-            int player_count = rge_base_game->world->player_num - 1;
-            for (int index = 0; index < player_count; ++index) {
-                int player_id = index + 1;
-
-                if (panel == this->goldTributeButton[index]) {
-                    if (this->check_gold() == 0) {
-                        cost += 1.0f;
-                        if (rge_base_game->get_player()->attributes[3] -
-                                this->goldTotal >= cost * 100.0f) {
-                            this->goldTributeAmount[index] += 100.0f;
-                            this->goldTotal += cost * 100.0f;
-                        } else {
-                            float amount =
-                                (rge_base_game->get_player()->attributes[3] -
-                                 this->goldTotal) / cost;
-                            this->goldTributeAmount[index] =
-                                amount + this->goldTributeAmount[index];
-                            this->goldTotal = amount * cost + this->goldTotal;
-                        }
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(
-                                    rge_base_game->get_player()->attributes[3] -
-                                    this->goldTotal));
-                        this->playerGold->set_text(temp_str);
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(this->goldTributeAmount[index]));
-                        this->goldTributeButton[index]->set_text(0, temp_str);
-                        this->check_gold();
-                        return 1;
-                    }
-                    float remaining =
-                        rge_base_game->get_player()->attributes[3] -
-                        this->goldTotal;
-                    if (remaining < 0.0f) {
-                        remaining = 0.0f;
-                    }
-                    sprintf(temp_str, "%ld", static_cast<long>(remaining));
-                    this->playerGold->set_text(temp_str);
-                    this->check_gold();
-                    return 1;
-                }
-
-                if (panel == this->woodTributeButton[index]) {
-                    if (this->check_wood() == 0) {
-                        cost += 1.0f;
-                        if (rge_base_game->get_player()->attributes[1] -
-                                this->woodTotal >= cost * 100.0f) {
-                            this->woodTributeAmount[index] += 100.0f;
-                            this->woodTotal += cost * 100.0f;
-                        } else {
-                            float amount =
-                                (rge_base_game->get_player()->attributes[1] -
-                                 this->woodTotal) / cost;
-                            this->woodTributeAmount[index] =
-                                amount + this->woodTributeAmount[index];
-                            this->woodTotal = amount * cost + this->woodTotal;
-                        }
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(
-                                    rge_base_game->get_player()->attributes[1] -
-                                    this->woodTotal));
-                        this->playerWood->set_text(temp_str);
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(this->woodTributeAmount[index]));
-                        this->woodTributeButton[index]->set_text(0, temp_str);
-                        this->check_wood();
-                        return 1;
-                    }
-                    float remaining =
-                        rge_base_game->get_player()->attributes[1] -
-                        this->woodTotal;
-                    if (remaining < 0.0f) {
-                        remaining = 0.0f;
-                    }
-                    sprintf(temp_str, "%ld", static_cast<long>(remaining));
-                    this->playerWood->set_text(temp_str);
-                    this->check_wood();
-                    return 1;
-                }
-
-                if (panel == this->foodTributeButton[index]) {
-                    if (this->check_food() == 0) {
-                        cost += 1.0f;
-                        if (rge_base_game->get_player()->attributes[0] -
-                                this->foodTotal >= cost * 100.0f) {
-                            this->foodTributeAmount[index] += 100.0f;
-                            this->foodTotal += cost * 100.0f;
-                        } else {
-                            float amount =
-                                (rge_base_game->get_player()->attributes[0] -
-                                 this->foodTotal) / cost;
-                            this->foodTributeAmount[index] =
-                                amount + this->foodTributeAmount[index];
-                            this->foodTotal = amount * cost + this->foodTotal;
-                        }
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(
-                                    rge_base_game->get_player()->attributes[0] -
-                                    this->foodTotal));
-                        this->playerFood->set_text(temp_str);
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(this->foodTributeAmount[index]));
-                        this->foodTributeButton[index]->set_text(0, temp_str);
-                        this->check_food();
-                        return 1;
-                    }
-                    float remaining =
-                        rge_base_game->get_player()->attributes[0] -
-                        this->foodTotal;
-                    if (remaining < 0.0f) {
-                        remaining = 0.0f;
-                    }
-                    sprintf(temp_str, "%ld", static_cast<long>(remaining));
-                    this->playerFood->set_text(temp_str);
-                    this->check_food();
-                    return 1;
-                }
-
-                if (panel == this->stoneTributeButton[index]) {
-                    if (this->check_stone() == 0) {
-                        cost += 1.0f;
-                        if (rge_base_game->get_player()->attributes[2] -
-                                this->stoneTotal >= cost * 100.0f) {
-                            this->stoneTributeAmount[index] += 100.0f;
-                            this->stoneTotal += cost * 100.0f;
-                        } else {
-                            float amount =
-                                (rge_base_game->get_player()->attributes[2] -
-                                 this->stoneTotal) / cost;
-                            this->stoneTributeAmount[index] =
-                                amount + this->stoneTributeAmount[index];
-                            this->stoneTotal = amount * cost + this->stoneTotal;
-                        }
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(
-                                    rge_base_game->get_player()->attributes[2] -
-                                    this->stoneTotal));
-                        this->playerStone->set_text(temp_str);
-                        sprintf(temp_str, "%ld",
-                                static_cast<long>(this->stoneTributeAmount[index]));
-                        this->stoneTributeButton[index]->set_text(0, temp_str);
-                        this->check_stone();
-                        return 1;
-                    }
-                    float remaining =
-                        rge_base_game->get_player()->attributes[2] -
-                        this->stoneTotal;
-                    if (remaining < 0.0f) {
-                        remaining = 0.0f;
-                    }
-                    sprintf(temp_str, "%ld", static_cast<long>(remaining));
-                    this->playerStone->set_text(temp_str);
-                    this->check_stone();
-                    return 1;
-                }
-            }
+            this->check_stone();
+            return 1;
         }
     }
 
     return TPanel::action(panel, event, param_3, param_4);
-
-close_dialog:
-    panel_system.setCurrentPanel("Game Screen", 0);
-    panel_system.destroyPanel("Diplomacy Dialog");
-    return 1;
 }
 
 int TribeDiplomacyDialog::check_gold()
