@@ -11070,25 +11070,25 @@ int TribeTacticalAIModule::numberGatherersWithTarget(int targetId) {
 
 void TribeTacticalAIModule::checkStaleAttackGroups()
 {
-    int number;
-    int desired;
+    TacticalAIGroup* group;
+    TacticalAIGroup* sentinel;
+    int numberUnits;
+    int desiredNumberUnits;
+    int missing;
 
     if (this->attackEnabledValue != 0) {
-        TacticalAIGroup* group = this->groups.next;
-        TacticalAIGroup* sentinel = &this->groups;
-
+        group = this->groups.next;
+        sentinel = &this->groups;
         while (group != sentinel && group != 0) {
             if (group->type() == 100 && group->inUse() != 1) {
-                number = group->numberUnits();
-                desired = group->desiredNumberUnits();
-                int difference = desired - number;
-                if (difference > 0) {
-                    if (difference > 5) {
-                        difference = 5;
-                    }
-                    if (difference <=
-                        (int)(this->md->player->world->world_time -
-                              group->lastAddedUnitTimeValue) / 60000) {
+                numberUnits = group->numberUnits();
+                desiredNumberUnits = group->desiredNumberUnits();
+                missing = desiredNumberUnits - numberUnits;
+                if (missing > 0) {
+                    if (missing > 5)
+                        missing = 5;
+                    if ((int)(this->md->player->world->world_time -
+                              group->lastAddedUnitTimeValue) / 60000 >= missing) {
                         group->setDesiredNumberUnits(group->numberUnits());
                     }
                 }

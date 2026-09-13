@@ -219,7 +219,7 @@
     "00503070": {"status": "accepted_drift", "symbol": "?taskElephantGatherers@TribeTacticalAIModule@@QAEXHHH@Z"},
     "005032E0": {"status": "matching", "symbol": "?checkTradeBoats@TribeTacticalAIModule@@QAEXXZ"},
     "00503480": {"status": "matching", "symbol": "?numberGatherersWithTarget@TribeTacticalAIModule@@QAEHH@Z"},
-    "005034B0": {"status": "scratch", "symbol": "?checkStaleAttackGroups@TribeTacticalAIModule@@QAEXXZ"},
+    "005034B0": {"status": "new_verified_logic", "symbol": "?checkStaleAttackGroups@TribeTacticalAIModule@@QAEXXZ", "behavior_review": "logic_matching/005034B0/review-20260913-123313Z/attempt-01"},
     "00503580": {"status": "matching", "symbol": "?numberWaterExplorers@TribeTacticalAIModule@@QAEHXZ"},
     "00503600": {"status": "matching", "symbol": "?saveTheTown@TribeTacticalAIModule@@QAEXH@Z"}
   }
