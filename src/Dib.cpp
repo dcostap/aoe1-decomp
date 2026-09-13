@@ -1340,144 +1340,146 @@ extern "C" static void __cdecl memmove(unsigned char* d, unsigned char* s,
 
 }
 
-void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
-    int transparent, int zero)
+void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
+    int TransLogic, int ZeroIsTrans)
 {
-    BYTE* lpBits;
-    int nDibColors = 0;
-    BYTE ZeroIndex = 0;
-    DWORD SizeImage;
-    int nPalColors;
-    RGBQUAD* lpRgb;
+    unsigned long SizeImage;
     PALETTEENTRY pe;
+    int nDibColors = 0;
+    unsigned char xlat[256];
+    int HitEnd;
+    int nPalColors;
+    unsigned char ZeroIndex = 0;
+    unsigned char* lpBits;
     int ZeroBlue;
-    BYTE TransIndex = 0;
-    int HitEnd = 0;
-    BYTE xlat[256];
-    int i;
+    unsigned char TransIndex = 0;
+    RGBQUAD* lpRgb;
 
-    if (hbm != 0 && bih != 0) {
-        lpRgb = DibColors(bih);
-        GetObjectA(hbm, 4, &nDibColors);
-        if (bih->biClrUsed == 0 && bih->biBitCount <= 8)
-            nPalColors = 1 << bih->biBitCount;
+    if (hpal == 0 || pdib == 0)
+        return;
+
+    lpRgb = DibColors(pdib);
+    GetObjectA((HGDIOBJ)hpal, sizeof(nDibColors), &nDibColors);
+    nPalColors = DibNumColors(pdib);
+    SizeImage = DibSizeImage(pdib);
+
+    if (pdib->biCompression == BI_BITFIELDS)
+        lpBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+    else
+        lpBits = (unsigned char*)pdib + pdib->biSize + pdib->biClrUsed *
+            sizeof(RGBQUAD);
+
+    if (TransLogic) {
+        if (ZeroIsTrans)
+            TransIndex = 0;
         else
-            nPalColors = bih->biClrUsed;
-        SizeImage = bih->biSizeImage;
-        if (!SizeImage) {
-            DWORD bitCountValue = bih->biBitCount;
-            SizeImage = ((((DWORD)bih->biWidth * bitCountValue + 31) >> 3) &
-                0x1ffffffc) * bih->biHeight;
-        }
-        if (bih->biCompression == 3)
-            lpBits = (BYTE*)bih + bih->biSize + 12;
-        else
-            lpBits = (BYTE*)(DibColors(bih) + bih->biClrUsed);
+            TransIndex = lpBits[((pdib->biWidth + 3) & ~3) *
+                (pdib->biHeight - 1)];
 
-        if (transparent) {
-            if (zero)
-                TransIndex = 0;
-            else
-                TransIndex = lpBits[((bih->biWidth + 3) & ~3) *
-                    (bih->biHeight - 1)];
+        int ZeroRed = lpRgb->rgbRed;
+        int ZeroGreen = lpRgb->rgbGreen;
+        ZeroBlue = lpRgb->rgbBlue;
+        HitEnd = 0;
+        int Increment = 1;
 
-            int r = lpRgb->rgbRed, g = lpRgb->rgbGreen;
-            ZeroBlue = lpRgb->rgbBlue;
-            int dir = 1;
-            HitEnd = 0;
-            do {
-                r += dir;
-                g += dir;
-                ZeroBlue += dir;
-                if (r > 255 || g > 255 || ZeroBlue > 255 ||
-                    r < 0 || g < 0 || ZeroBlue < 0) {
-                    if (HitEnd)
-                        break;
-                    dir = -1;
-                    r = lpRgb->rgbRed;
-                    g = lpRgb->rgbGreen;
-                    ZeroBlue = lpRgb->rgbBlue;
-                    HitEnd = 1;
-                }
-                ZeroIndex = (BYTE)GetNearestPaletteIndex(hbm,
-                    RGB(r, g, ZeroBlue));
-            } while (ZeroIndex == 0);
-        }
-        i = 0;
-        if (0 < nPalColors) {
-            BYTE* p = (BYTE*)lpRgb + 2;
-            for (; i < nPalColors; i++, p += 4) {
-                if (transparent) {
-                    if (i == (BYTE)TransIndex) {
-                        xlat[i] = 0;
-                    } else {
-                        BYTE v = (BYTE)GetNearestPaletteIndex(hbm,
-                            RGB(p[0], p[-1], p[-2]));
-                        xlat[i] = v;
-                        if (v == 0) xlat[i] = ZeroIndex;
-                    }
-                } else {
-                    xlat[i] = (BYTE)GetNearestPaletteIndex(hbm,
-                        RGB(p[0], p[-1], p[-2]));
-                }
+        do {
+            ZeroRed += Increment;
+            ZeroGreen += Increment;
+            ZeroBlue += Increment;
+            if (ZeroRed > 255 || ZeroGreen > 255 || ZeroBlue > 255 ||
+                ZeroRed < 0 || ZeroGreen < 0 || ZeroBlue < 0) {
+                if (HitEnd)
+                    break;
+                Increment = -1;
+                ZeroRed = lpRgb->rgbRed;
+                ZeroGreen = lpRgb->rgbGreen;
+                ZeroBlue = lpRgb->rgbBlue;
+                HitEnd = 1;
             }
-        }
-        bih->biClrUsed = nDibColors;
-        if (nDibColors > nPalColors) {
-            void* (__stdcall *getHandle)(const void*) = GlobalHandle;
-            GlobalUnlock(getHandle(bih));
-            GlobalLock(GlobalReAlloc(getHandle(bih),
-                bih->biSize + nDibColors * 4 + SizeImage, 0));
+            ZeroIndex = (unsigned char)GetNearestPaletteIndex((HPALETTE)hpal,
+                RGB(ZeroRed, ZeroGreen, ZeroBlue));
+        } while (ZeroIndex == 0);
+    }
 
-            memmove((bih->biCompression == 3) ?
-                (BYTE*)bih + bih->biSize + 12 :
-                (BYTE*)bih + bih->biSize + bih->biClrUsed * 4,
-                lpBits, SizeImage);
-            if (bih->biCompression == 3)
-                lpBits = (BYTE*)bih + bih->biSize + 12;
-            else
-                lpBits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
-        } else if (nDibColors < nPalColors) {
-            memcpy((bih->biCompression == 3) ?
-                (BYTE*)bih + bih->biSize + 12 :
-                (BYTE*)bih + bih->biSize + bih->biClrUsed * 4,
-                lpBits, SizeImage);
-            void* (__stdcall *getHandle)(const void*) = GlobalHandle;
-            GlobalUnlock(getHandle(bih));
-            GlobalLock(GlobalReAlloc(getHandle(bih),
-                bih->biSize + nDibColors * 4 + SizeImage, 0));
-            if (bih->biCompression == 3)
-                lpBits = (BYTE*)bih + bih->biSize + 12;
-            else
-                lpBits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
+    int i;
+    for (i = 0; i < nPalColors; ++i) {
+        if (TransLogic) {
+            if (i == TransIndex) {
+                xlat[i] = 0;
+            } else {
+                xlat[i] = (unsigned char)GetNearestPaletteIndex(
+                    (HPALETTE)hpal,
+                    RGB(lpRgb[i].rgbRed, lpRgb[i].rgbGreen,
+                        lpRgb[i].rgbBlue));
+                if (xlat[i] == 0)
+                    xlat[i] = ZeroIndex;
+            }
+        } else {
+            xlat[i] = (unsigned char)GetNearestPaletteIndex((HPALETTE)hpal,
+                RGB(lpRgb[i].rgbRed, lpRgb[i].rgbGreen, lpRgb[i].rgbBlue));
         }
-        switch (bih->biCompression) {
-        case 0:
-            if (bih->biBitCount == 8)
-                xlatClut8(lpBits, SizeImage, xlat);
-            else
-                xlatClut4(lpBits, SizeImage, xlat);
-            break;
-        case 1:
-            xlatRle8(lpBits, SizeImage, xlat);
-            break;
-        case 2:
-            xlatRle4(lpBits, SizeImage, xlat);
-            break;
-        }
-        i = 0;
-        if (0 < nDibColors) {
-            BYTE* p = (BYTE*)lpRgb + 1;
-            do {
-                GetPaletteEntries(hbm, i, 1, &pe);
-                ++i;
-                p[1] = pe.peRed;
-                p[0] = pe.peGreen;
-                p[-1] = pe.peBlue;
-                p[2] = 0;
-                p += 4;
-            } while (i < nDibColors);
-        }
+    }
+
+    pdib->biClrUsed = nDibColors;
+    if (nDibColors > nPalColors) {
+        GlobalUnlock(GlobalHandle(pdib));
+        GlobalLock(GlobalReAlloc(GlobalHandle(pdib),
+            pdib->biSize + nDibColors * sizeof(RGBQUAD) + SizeImage, 0));
+
+        unsigned char* NewBits;
+        if (pdib->biCompression == BI_BITFIELDS)
+            NewBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+        else
+            NewBits = (unsigned char*)pdib + pdib->biSize +
+                pdib->biClrUsed * sizeof(RGBQUAD);
+        memmove(NewBits, lpBits, SizeImage);
+
+        if (pdib->biCompression == BI_BITFIELDS)
+            lpBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+        else
+            lpBits = (unsigned char*)pdib + pdib->biSize +
+                pdib->biClrUsed * sizeof(RGBQUAD);
+    } else if (nDibColors < nPalColors) {
+        unsigned char* NewBits;
+        if (pdib->biCompression == BI_BITFIELDS)
+            NewBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+        else
+            NewBits = (unsigned char*)pdib + pdib->biSize +
+                nDibColors * sizeof(RGBQUAD);
+        memcpy(NewBits, lpBits, SizeImage);
+
+        GlobalUnlock(GlobalHandle(pdib));
+        GlobalLock(GlobalReAlloc(GlobalHandle(pdib),
+            pdib->biSize + nDibColors * sizeof(RGBQUAD) + SizeImage, 0));
+
+        if (pdib->biCompression == BI_BITFIELDS)
+            lpBits = (unsigned char*)pdib + pdib->biSize + 3 * sizeof(DWORD);
+        else
+            lpBits = (unsigned char*)pdib + pdib->biSize +
+                pdib->biClrUsed * sizeof(RGBQUAD);
+    }
+
+    switch (pdib->biCompression) {
+    case BI_RGB:
+        if (pdib->biBitCount == 8)
+            xlatClut8(lpBits, SizeImage, xlat);
+        else
+            xlatClut4(lpBits, SizeImage, xlat);
+        break;
+    case BI_RLE8:
+        xlatRle8(lpBits, SizeImage, xlat);
+        break;
+    case BI_RLE4:
+        xlatRle4(lpBits, SizeImage, xlat);
+        break;
+    }
+
+    for (i = 0; i < nDibColors; ++i) {
+        GetPaletteEntries((HPALETTE)hpal, i, 1, &pe);
+        lpRgb[i].rgbRed = pe.peRed;
+        lpRgb[i].rgbGreen = pe.peGreen;
+        lpRgb[i].rgbBlue = pe.peBlue;
+        lpRgb[i].rgbReserved = 0;
     }
 }
 
