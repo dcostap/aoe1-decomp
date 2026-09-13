@@ -7820,46 +7820,39 @@ void TribeTacticalAIModule::setupSoldierGroups()
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
 
-void TribeTacticalAIModule::fillSoldierGroups() {
+void TribeTacticalAIModule::fillSoldierGroups()
+{
     int bestUnit;
     TacticalAIGroup* bestGroup;
 
     this->numberUngroupedSoldiers();
     this->numberExtraGroupedSoldiers();
 
-    {
-        TacticalAIGroup* group = this->groups.next;
-        while (group != &this->groups) {
-            if (group == 0) {
-                break;
+    TacticalAIGroup* group = this->groups.next;
+    while (group != &this->groups && group != 0) {
+        if ((group->type() == 100 || group->type() == 101 ||
+             group->type() == 102) &&
+            group->commander() == -1) {
+            int ungrouped = this->numberUngroupedSoldiers();
+            if (group->numberUnits() > 0) {
+                int commander = this->selectBestCommander(group);
+                group->setSpecificCommander(commander, this->md);
+                if (group->action() == 0 || group->action() == 1)
+                    this->setAllGroupLocations(group);
             }
-            if ((group->type() == 100 || group->type() == 101 || group->type() == 102) &&
-                group->commander() == -1) {
-                int ungrouped = this->numberUngroupedSoldiers();
-                if (group->numberUnits() > 0) {
-                    int commander = this->selectBestCommander(group);
-                    group->setSpecificCommander(commander, this->md);
-                    if (group->action() == 0 || group->action() == 1) {
-                        this->setAllGroupLocations(group);
-                    }
-                }
-                else {
-                    if (ungrouped == 0) {
-                        this->numberExtraGroupedSoldiers();
-                    }
-                    if (this->workingArea.numberValue == 0) {
-                        return;
-                    }
-                    int commander = this->selectBestCommander(this->workingArea);
-                    group->addUnit(commander, this->md);
-                    group->setSpecificCommander(commander, this->md);
-                    if (group->action() == 0 || group->action() == 1) {
-                        this->setAllGroupLocations(group);
-                    }
-                }
+            else {
+                if (ungrouped == 0)
+                    this->numberExtraGroupedSoldiers();
+                if (this->workingArea.numberValue == 0)
+                    return;
+                int commander = this->selectBestCommander(this->workingArea);
+                group->addUnit(commander, this->md);
+                group->setSpecificCommander(commander, this->md);
+                if (group->action() == 0 || group->action() == 1)
+                    this->setAllGroupLocations(group);
             }
-            group = group->next;
         }
+        group = group->next;
     }
 
     if (this->sn[0x28] == 0) {
@@ -7871,179 +7864,150 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                     int desired = bestGroup->desiredNumberUnits();
                     int number = bestGroup->numberUnits();
                     if (number < desired) {
-                        if (bestGroup->inUse() != 1) {
-                            int groupZone = -1;
-                            int groupCommander = bestGroup->commander();
-                            RGE_Static_Object* groupObject = this->md->object(groupCommander);
-                            if (groupObject != 0) {
-                                groupZone = groupObject->currentZone();
+                        if (bestGroup->inUse() == 1) {
+                            bestGroup = bestGroup->next;
+                            continue;
+                        }
+
+                        int groupZone = -1;
+                        RGE_Static_Object* commander =
+                            this->md->object(bestGroup->commander());
+                        if (commander != 0)
+                            groupZone = commander->currentZone();
+
+                        int ungrouped = this->numberUngroupedSoldiers();
+                        desired = bestGroup->desiredNumberUnits();
+                        number = bestGroup->numberUnits();
+                        int missing = desired - number;
+
+                        if (ungrouped <= missing) {
+                            int i = 0;
+                            if (this->workingArea.numberValue > 0) {
+                                do {
+                                    RGE_Static_Object* object =
+                                        this->md->object(this->workingArea[i]);
+                                    if (object != 0 &&
+                                        groupZone == object->currentZone()) {
+                                        bestGroup->addUnit(
+                                            this->workingArea[i], this->md);
+                                    }
+                                    ++i;
+                                } while (i < this->workingArea.numberValue);
                             }
-                            int ungrouped = this->numberUngroupedSoldiers();
+                        }
+                        else {
                             desired = bestGroup->desiredNumberUnits();
                             number = bestGroup->numberUnits();
-                            int missing = desired - number;
-                            if (ungrouped <= missing) {
-                                int i = 0;
-                                if (this->workingArea.numberValue > 0) {
-                                    do {
-                                        RGE_Static_Object* object =
-                                            this->md->object(this->workingArea[i]);
-                                        if (object != 0 &&
-                                            object->currentZone() == groupZone) {
-                                            bestGroup->addUnit(this->workingArea[i], this->md);
-                                        }
-                                        ++i;
-                                    } while (i < this->workingArea.numberValue);
-                                }
-                            }
-
-                            if (ungrouped > missing) {
-                                int desiredAgain = bestGroup->desiredNumberUnits();
-                                int numberAgain = bestGroup->numberUnits();
-                                if (numberAgain < desiredAgain) {
+                            if (number < desired) {
                                 do {
                                     int i = 0;
-                                    float bestDistance = -1.0f;
                                     int bestUnitID = -1;
+                                    float bestDistance = -1.0f;
                                     if (this->workingArea.numberValue > 0) {
                                         do {
                                             RGE_Static_Object* object =
-                                                this->md->object(this->workingArea[i]);
+                                                this->md->object(
+                                                    this->workingArea[i]);
                                             if (object != 0 &&
-                                                object->currentZone() == groupZone) {
-                                                float distance = object->distance_to_position(
-                                                    bestGroup->gatherLocation().x,
-                                                    bestGroup->gatherLocation().y,
-                                                    bestGroup->gatherLocation().z);
-                                                if (bestDistance == -1.0f || distance < bestDistance) {
-                                                    bestUnitID = this->workingArea[i];
+                                                groupZone ==
+                                                    object->currentZone()) {
+                                                float distance =
+                                                    object->distance_to_position(
+                                                        bestGroup->gatherLocation().x,
+                                                        bestGroup->gatherLocation().y,
+                                                        bestGroup->gatherLocation().z);
+                                                if (bestDistance ==
+                                                        DAT_00575758 ||
+                                                    distance < bestDistance) {
+                                                    bestUnitID =
+                                                        this->workingArea[i];
                                                     bestDistance = distance;
                                                 }
                                             }
                                             ++i;
-                                        } while (i < this->workingArea.numberValue);
+                                        } while (i <
+                                                 this->workingArea.numberValue);
                                     }
-                                    if (bestUnitID == -1) {
+                                    if (bestUnitID == -1)
                                         break;
-                                    }
                                     bestGroup->addUnit(bestUnitID, this->md);
+                                    this->workingArea.remove(bestUnitID);
+                                    desired = bestGroup->desiredNumberUnits();
+                                    number = bestGroup->numberUnits();
+                                } while (number < desired);
+                            }
+                        }
 
-                                    int max = this->workingArea.maximumSizeValue;
-                                    int removeIndex = 0;
-                                    if (max > 0) {
-                                        int* value = this->workingArea.value;
-                                        do {
-                                            if (*value == bestUnitID) {
-                                                break;
-                                            }
-                                            ++removeIndex;
-                                            ++value;
-                                        } while (removeIndex < max);
-                                    }
-                                    if (removeIndex < max) {
-                                        if (removeIndex < max - 1) {
-                                            do {
-                                                ++removeIndex;
-                                                this->workingArea.value[removeIndex - 1] =
-                                                    this->workingArea.value[removeIndex];
-                                            } while (removeIndex < max - 1);
-                                        }
-                                        int count = this->workingArea.numberValue - 1;
-                                        this->workingArea.numberValue = count;
-                                        if (count < 0) {
-                                            this->workingArea.numberValue = 0;
-                                        }
-                                    }
+                        desired = bestGroup->desiredNumberUnits();
+                        number = bestGroup->numberUnits();
+                        if (number < desired) {
+                            int extra = this->numberExtraGroupedSoldiers();
+                            desired = bestGroup->desiredNumberUnits();
+                            number = bestGroup->numberUnits();
+                            missing = desired - number;
 
-                                    desiredAgain = bestGroup->desiredNumberUnits();
-                                    numberAgain = bestGroup->numberUnits();
-                            } while (numberAgain < desiredAgain);
+                            if (extra <= missing) {
+                                int i = 0;
+                                if (this->workingArea.numberValue > 0) {
+                                    do {
+                                        RGE_Static_Object* object =
+                                            this->md->object(
+                                                this->workingArea[i]);
+                                        if (object != 0 &&
+                                            groupZone ==
+                                                object->currentZone()) {
+                                            this->removeFromGroup(
+                                                this->workingArea[i]);
+                                            bestGroup->addUnit(
+                                                this->workingArea[i], this->md);
+                                        }
+                                        ++i;
+                                    } while (i <
+                                             this->workingArea.numberValue);
                                 }
                             }
-
-                            int desiredAfter = bestGroup->desiredNumberUnits();
-                            int numberAfter = bestGroup->numberUnits();
-                            if (numberAfter < desiredAfter) {
-                                int extra = this->numberExtraGroupedSoldiers();
-                                int desiredExtra = bestGroup->desiredNumberUnits();
-                                int numberExtra = bestGroup->numberUnits();
-                                int missingExtra = desiredExtra - numberExtra;
-                                if (missingExtra < extra) {
-                                    int desiredNearest = bestGroup->desiredNumberUnits();
-                                    int numberNearest = bestGroup->numberUnits();
-                                    if (numberNearest < desiredNearest) {
+                            else {
+                                desired = bestGroup->desiredNumberUnits();
+                                number = bestGroup->numberUnits();
+                                if (number < desired) {
                                     do {
                                         int i = 0;
-                                        float bestDistance = -1.0f;
                                         int bestUnitID = -1;
+                                        float bestDistance = -1.0f;
                                         if (this->workingArea.numberValue > 0) {
                                             do {
                                                 RGE_Static_Object* object =
-                                                    this->md->object(this->workingArea[i]);
+                                                    this->md->object(
+                                                        this->workingArea[i]);
                                                 if (object != 0 &&
-                                                    object->currentZone() == groupZone) {
-                                                    float distance = object->distance_to_position(
-                                                        bestGroup->gatherLocation().x,
-                                                        bestGroup->gatherLocation().y,
-                                                        bestGroup->gatherLocation().z);
-                                                    if (bestDistance == -1.0f || distance < bestDistance) {
-                                                        bestUnitID = this->workingArea[i];
+                                                    groupZone ==
+                                                        object->currentZone()) {
+                                                    float distance =
+                                                        object->distance_to_position(
+                                                            bestGroup->gatherLocation().x,
+                                                            bestGroup->gatherLocation().y,
+                                                            bestGroup->gatherLocation().z);
+                                                    if (bestDistance ==
+                                                            DAT_00575758 ||
+                                                        distance <
+                                                            bestDistance) {
+                                                        bestUnitID =
+                                                            this->workingArea[i];
                                                         bestDistance = distance;
                                                     }
                                                 }
                                                 ++i;
                                             } while (i < this->workingArea.numberValue);
                                         }
-                                        if (bestUnitID == -1) {
+                                        if (bestUnitID == -1)
                                             break;
-                                        }
                                         this->removeFromGroup(bestUnitID);
                                         bestGroup->addUnit(bestUnitID, this->md);
-
-                                        int max = this->workingArea.maximumSizeValue;
-                                        int removeIndex = 0;
-                                        if (max > 0) {
-                                            int* value = this->workingArea.value;
-                                            do {
-                                                if (*value == bestUnitID) {
-                                                    break;
-                                                }
-                                                ++removeIndex;
-                                                ++value;
-                                            } while (removeIndex < max);
-                                        }
-                                        if (removeIndex < max) {
-                                            if (removeIndex < max - 1) {
-                                                do {
-                                                    ++removeIndex;
-                                                    this->workingArea.value[removeIndex - 1] =
-                                                        this->workingArea.value[removeIndex];
-                                                } while (removeIndex < max - 1);
-                                            }
-                                            int count = this->workingArea.numberValue - 1;
-                                            this->workingArea.numberValue = count;
-                                            if (count < 0) {
-                                                this->workingArea.numberValue = 0;
-                                            }
-                                        }
-                                        desiredNearest = bestGroup->desiredNumberUnits();
-                                    } while (bestGroup->numberUnits() < desiredNearest);
-                                    }
-                                }
-                                else {
-                                    int i = 0;
-                                    if (this->workingArea.numberValue > 0) {
-                                        do {
-                                            RGE_Static_Object* object =
-                                                this->md->object(this->workingArea[i]);
-                                            if (object != 0 &&
-                                                object->currentZone() == groupZone) {
-                                                this->removeFromGroup(this->workingArea[i]);
-                                                bestGroup->addUnit(this->workingArea[i], this->md);
-                                            }
-                                            ++i;
-                                        } while (i < this->workingArea.numberValue);
-                                    }
+                                        this->workingArea.remove(bestUnitID);
+                                        desired =
+                                            bestGroup->desiredNumberUnits();
+                                        number = bestGroup->numberUnits();
+                                    } while (number < desired);
                                 }
                             }
                         }
@@ -8052,106 +8016,87 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                 bestGroup = bestGroup->next;
             }
             ++bestUnit;
-        } while (bestUnit <= 0x66);
+        } while (bestUnit <= 102);
     }
 
-    if (this->numberUngroupedSoldiers() != 0 && this->workingArea.numberValue > 0) {
-        TacticalAIGroup* group;
-        int i = 0;
-        do {
-            RGE_Static_Object* object = this->md->object(this->workingArea[i]);
-            if (object != 0) {
-                unsigned char unitZone = object->currentZone();
-                int unit;
-                bestGroup = 0;
-                int bestDifference = 0;
-                group = this->groups.next;
-                while (group != &this->groups) {
-                    if (group == 0) {
-                        break;
+    if (this->numberUngroupedSoldiers() == 0)
+        return;
+    if (this->workingArea.numberValue <= 0)
+        return;
+
+    int i = 0;
+    do {
+        RGE_Static_Object* object = this->md->object(this->workingArea[i]);
+        if (object != 0) {
+            unsigned char unitZone = object->currentZone();
+            int bestDifference = 0;
+            bestGroup = 0;
+            group = this->groups.next;
+
+            while (group != &this->groups && group != 0) {
+                if ((group->type() == 100 || group->type() == 101 ||
+                     group->type() == 102) &&
+                    group->inUse() != 1) {
+                    RGE_Static_Object* groupCommander =
+                        this->md->object(group->commander());
+                    if (groupCommander != 0 &&
+                        groupCommander->currentZone() == unitZone) {
+                        int desired = group->desiredNumberUnits();
+                        int number = group->numberUnits();
+                        if (number < desired &&
+                            (group->action() == 1 || group->action() == 0)) {
+                            desired = group->desiredNumberUnits();
+                            number = group->numberUnits();
+                            int difference = desired - number;
+                            if (bestGroup == 0 ||
+                                difference > bestDifference) {
+                                bestGroup = group;
+                                bestDifference = difference;
+                            }
+                        }
                     }
+                }
+                group = group->next;
+            }
+
+            if (bestGroup == 0) {
+                group = this->groups.next;
+                bestDifference = 0;
+                while (group != &this->groups && group != 0) {
                     if ((group->type() == 100 || group->type() == 101 ||
                          group->type() == 102) &&
-                        group->inUse() != 1) {
-                        int commander = group->commander();
-                        RGE_Static_Object* commanderObject = this->md->object(commander);
-                        if (commanderObject != 0 &&
-                            commanderObject->currentZone() == unitZone) {
+                        group->inUse() != 1 &&
+                        (group->action() == 1 || group->action() == 0) &&
+                        (group->type() != 100 ||
+                         group->numberUnits() < this->sn[0x1a]) &&
+                        (group->type() != 101 ||
+                         group->numberUnits() < this->sn[0x1c]) &&
+                        (group->type() != 102 ||
+                         group->numberUnits() < this->sn[0x2c])) {
+                        RGE_Static_Object* groupCommander =
+                            this->md->object(group->commander());
+                        if (groupCommander != 0 &&
+                            groupCommander->currentZone() == unitZone) {
                             int desired = group->desiredNumberUnits();
                             int number = group->numberUnits();
-                            if (number < desired &&
-                                (group->action() == 1 || group->action() == 0)) {
-                                int desiredAgain = group->desiredNumberUnits();
-                                int numberAgain = group->numberUnits();
-                                int difference = numberAgain - desiredAgain;
-                                if (bestGroup == 0 || difference < bestDifference) {
-                                    bestGroup = group;
-                                    bestDifference = difference;
-                                }
+                            int difference = number - desired;
+                            if (bestGroup == 0 ||
+                                difference < bestDifference) {
+                                bestGroup = group;
+                                bestDifference = difference;
                             }
                         }
                     }
                     group = group->next;
                 }
-
-                if (bestGroup == 0) {
-                    TacticalAIGroup* candidate = this->groups.next;
-                    bestGroup = 0;
-                    bestDifference = 0;
-                    while (candidate != &this->groups) {
-                        if (candidate == 0) {
-                            break;
-                        }
-                        if ((candidate->type() == 100 || candidate->type() == 101 ||
-                             candidate->type() == 102) &&
-                            candidate->inUse() != 1 &&
-                            (candidate->action() == 1 || candidate->action() == 0)) {
-                            int type = candidate->type();
-                            if (type == 100 &&
-                                candidate->numberUnits() >= this->sn[0x1A]) {
-                                candidate = candidate->next;
-                                continue;
-                            }
-                            type = candidate->type();
-                            if (type == 101 &&
-                                candidate->numberUnits() >= this->sn[0x1C]) {
-                                candidate = candidate->next;
-                                continue;
-                            }
-                            type = candidate->type();
-                            if (type == 102 &&
-                                candidate->numberUnits() >= this->sn[0x2C]) {
-                                candidate = candidate->next;
-                                continue;
-                            }
-                            int commander = candidate->commander();
-                            RGE_Static_Object* commanderObject = this->md->object(commander);
-                            if (commanderObject != 0 &&
-                                commanderObject->currentZone() == unitZone) {
-                                int desired = candidate->desiredNumberUnits();
-                                int number = candidate->numberUnits();
-                                int difference = number - desired;
-                                if (bestGroup == 0 || difference < bestDifference) {
-                                    bestGroup = candidate;
-                                    bestDifference = difference;
-                                }
-                            }
-                        }
-                        candidate = candidate->next;
-                    }
-                    if (bestGroup == 0) {
-                        return;
-                    }
-                    unit = this->workingArea[i];
-                }
-                else {
-                    unit = this->workingArea[i];
-                }
-                bestGroup->addUnit(unit, this->md);
+                if (bestGroup == 0)
+                    return;
             }
-            ++i;
-        } while (i < this->workingArea.numberValue);
-    }
+
+            bestGroup->addUnit(this->workingArea[i], this->md);
+        }
+        ++i;
+    } while (i < this->workingArea.numberValue);
 }
 
 

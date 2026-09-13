@@ -150,7 +150,7 @@
     "004FBB30": {"status": "matching", "symbol": "?removeFromTaskLists@TribeTacticalAIModule@@QAEXH@Z"},
     "004FBC10": {"status": "matching", "symbol": "?calculatePriority@TribeTacticalAIModule@@QAEHM@Z"},
     "004FBC30": {"status": "new_verified_logic", "symbol": "?setupSoldierGroups@TribeTacticalAIModule@@QAEXXZ", "behavior_review": ["logic_matching/004FBC30/review-coord-13-round-01-a/attempt-01", "logic_matching/004FBC30/review-coord-13-round-01-b/attempt-01"]},
-    "004FC500": {"status": "scratch", "symbol": "?fillSoldierGroups@TribeTacticalAIModule@@QAEXXZ"},
+    "004FC500": {"status": "new_verified_logic", "symbol": "?fillSoldierGroups@TribeTacticalAIModule@@QAEXXZ", "behavior_review": ["logic_matching/004FC500/coord-19-94056a4d2-004FC500-r02-a/attempt-01", "logic_matching/004FC500/coord-19-94056a4d2-004FC500-r02-b/attempt-01"]},
     "004FD2F0": {"status": "matching", "symbol": "?numberUngroupedSoldiers@TribeTacticalAIModule@@QAEHXZ"},
     "004FD4F0": {"status": "accepted_drift", "symbol": "?numberExtraGroupedSoldiers@TribeTacticalAIModule@@QAEHXZ"},
     "004FD6D0": {"status": "matching", "symbol": "?numberUngroupedArtifacts@TribeTacticalAIModule@@QAEHXZ"},
