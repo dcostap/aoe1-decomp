@@ -978,200 +978,144 @@ foundTrigger:
 
 // aiuaimod.cpp
 //
-int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
+int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup)
 {
     RGE_Static_Object* target;
     AIPlay* play;
     AIPlayPhase* phase;
-    AIPlayPhaseCommand* command;
     int i;
-    int a;
-    RGE_Static_Object* member;
 
-    if (this->playStatus == 0) {
+    if (this->playStatus == 0)
         return 0;
-    }
 
-    int playNumber = this->playStatus->playNumberValue;
-    play = this->objectValue->owner->world->playbook->play(playNumber);
-    if (play == 0) {
+    play = this->objectValue->owner->world->playbook->play(
+        this->playStatus->playNumberValue);
+    if (play == 0)
         return 0;
-    }
 
-    if (param_1 == 0xFE) {
+    if (newPhase == 0xFE) {
         operator delete(this->playStatus);
         this->playStatus = 0;
         return 1;
     }
 
-    phase = play->phase(param_1);
-    if (phase == 0) {
+    phase = play->phase(newPhase);
+    if (phase == 0)
         return 0;
-    }
 
     target = this->lookupObject(this->playStatus->targetValue);
-    if (target == 0) {
+    if (target == 0)
         return 0;
-    }
 
-    this->playStatus->currentPhaseValue = (unsigned char)param_1;
-
+    this->playStatus->currentPhaseValue = (unsigned char)newPhase;
     i = 0;
     do {
-        command = phase->command(i);
+        AIPlayPhaseCommand* command = phase->command(i);
         if (command != 0 && command->type() != 0) {
-            if ((command->type() == 6 || command->type() == 7) &&
-                param_2 == 0) {
-                switch (command->type()) {
-                case 6:
+            if ((command->type() == AIPlayPhaseCommand::ResetHitPointsCommand ||
+                 command->type() == AIPlayPhaseCommand::ResetAliveCountCommand) &&
+                pickup == 0) {
+                if (command->type() == AIPlayPhaseCommand::ResetHitPointsCommand) {
                     this->playStatus->resetHitPoints(
                         command->group(), this->objectValue->owner->world);
-                    break;
-                case 7:
+                } else {
                     this->playStatus->removeDeadUnits(
                         command->group(), this->objectValue->owner->world);
-                    break;
                 }
             } else {
-                a = 0;
+                int a = 0;
                 if (this->objectValue->groupMembers.numberValue > 0) {
                     do {
-                        if (a > this->objectValue->groupMembers.maximumSizeValue - 1) {
-                            this->objectValue->groupMembers.resize(a + 1);
-                        }
-                        member = this->lookupObject(
-                            this->objectValue->groupMembers.value[a]);
-                        if (member != 0 && member->unitAI() != 0) {
-                            param_1 = command->group();
-                            if (this->playStatus->group(member->id) !=
-                                (unsigned char)param_1) {
-                                goto next_member;
-                            }
-                            if (param_2 == 1 &&
-                                member->unitAI()->currentAction() != -1) {
-                                goto next_member;
-                            }
-                            int orderAction;
-                            int orderTargetOwner;
-                            float orderX;
-                            float orderY;
-                            float orderZ;
-                            UnitAIModule* memberAI;
-
+                        RGE_Static_Object* member = this->lookupObject(
+                            this->objectValue->groupMembers[a]);
+                        if (member != 0 && member->unitAI() != 0 &&
+                            this->playStatus->group(member->id) == command->group() &&
+                            (pickup != 1 || member->unitAI()->currentAction() == -1)) {
                             switch (command->type()) {
-                            case 1: {
+                            case AIPlayPhaseCommand::MoveCommand: {
                                 int distance = (int)member->distance_to_position(
                                     (float)command->value1() + target->world_x,
                                     (float)command->value2() + target->world_y,
                                     (float)command->value3() + target->world_z);
-                                unsigned char currentPhase =
-                                    this->playStatus->currentPhaseValue;
                                 if (distance > play->gatherTolerance(
-                                        command->group(),
-                                        currentPhase)) {
-                                    int commandX = command->value1();
-                                    int commandZ = command->value3();
-                                    int commandY = command->value2();
-                                    memberAI = member->unitAI();
-                                    orderAction = 0x2C6;
-                                    param_1 = -1;
-                                    orderTargetOwner = -1;
-                                    orderZ = (float)commandZ + target->world_z;
-                                    orderY = (float)commandY + target->world_y;
-                                    orderX = (float)commandX + target->world_x;
-                                    break;
+                                                   command->group(),
+                                                   this->playStatus->currentPhaseValue)) {
+                                    member->unitAI()->order(
+                                        this->objectValue->id, 0x2C6, -1, -1,
+                                        (float)command->value1() + target->world_x,
+                                        (float)command->value2() + target->world_y,
+                                        (float)command->value3() + target->world_z,
+                                        1.0f, 1, 0, 100);
                                 }
-                                goto next_member;
-                            }
-                            case 2: {
-                                memberAI = member->unitAI();
-                                int targetOwnerId = target->owner->id;
-                                int targetId = target->id;
-                                orderAction = 0x2BC;
-                                orderTargetOwner = targetOwnerId;
-                                param_1 = targetId;
-                                orderX = -1.0f;
-                                orderY = -1.0f;
-                                orderZ = -1.0f;
                                 break;
                             }
-                            case 3:
-                                param_1 = this->playStatus->savedAttackerValue;
-                                memberAI = member->unitAI();
-                                orderAction = 0x2BC;
-                                orderTargetOwner = -1;
-                                orderX = -1.0f;
-                                orderY = -1.0f;
-                                orderZ = -1.0f;
+
+                            case AIPlayPhaseCommand::AttackCommand:
+                                member->unitAI()->order(
+                                    this->objectValue->id, 700, target->id,
+                                    target->owner->id, -1.0f, -1.0f, -1.0f,
+                                    1.0f, 1, 0, 100);
                                 break;
-                            case 4: {
-                                int pointX = this->playStatus->originalPointValue.xValue;
-                                int pointY = this->playStatus->originalPointValue.yValue;
-                                int pointZ = this->playStatus->originalPointValue.zValue;
-                                orderAction = 0x2C6;
-                                param_1 = -1;
-                                orderTargetOwner = -1;
-                                memberAI = member->unitAI();
-                                orderX = (float)pointX;
-                                orderY = (float)pointY;
-                                orderZ = (float)pointZ;
+
+                            case AIPlayPhaseCommand::AttackSavedTargetCommand: {
+                                int targetID =
+                                    this->playStatus->savedAttackerValue;
+                                member->unitAI()->order(
+                                    this->objectValue->id, 700,
+                                    targetID, -1,
+                                    -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
                                 break;
                             }
-                            case 5: {
-                                param_1 = -1;
+
+                            case AIPlayPhaseCommand::RetreatCommand:
+                                member->unitAI()->order(
+                                    this->objectValue->id, 0x2C6, -1, -1,
+                                    (float)this->playStatus->originalPoint().xValue,
+                                    (float)this->playStatus->originalPoint().yValue,
+                                    (float)this->playStatus->originalPoint().zValue,
+                                    1.0f, 1, 0, 100);
+                                break;
+
+                            case AIPlayPhaseCommand::HealCommand: {
+                                int targetID = -1;
                                 int groupingIndex = 0;
-                                while (groupingIndex < 50) {
+                                do {
                                     AIPlayStatus::GroupingStruct* grouping =
                                         &this->playStatus->groupings[groupingIndex];
-                                    if (command->value1() == grouping->groupID) {
-                                        RGE_Static_Object* found =
+                                    if (grouping->groupID == command->value1()) {
+                                        RGE_Static_Object* healTarget =
                                             this->lookupObject(grouping->id);
-                                        if (found != 0) {
-                                            RGE_Master_Static_Object* master =
-                                                found->master_obj;
-                                            if ((int)found->hp + 1 < master->hp) {
-                                                param_1 = found->id;
+                                        if (healTarget != 0) {
+                                            RGE_Master_Static_Object* volatile master =
+                                                healTarget->master_obj;
+                                            if ((int)healTarget->hp + 1 < master->hp) {
+                                                targetID = healTarget->id;
                                                 break;
                                             }
                                         }
                                     }
-                                    groupingIndex++;
+                                    ++groupingIndex;
+                                } while (groupingIndex < 50);
+
+                                if (targetID != -1) {
+                                    member->unitAI()->order(
+                                        this->objectValue->id, 0x2BF, targetID, -1,
+                                        -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
                                 }
-                                if (param_1 == -1) {
-                                    goto next_member;
-                                }
-                                memberAI = member->unitAI();
-                                orderAction = 0x2BF;
-                                orderTargetOwner = -1;
-                                orderX = -1.0f;
-                                orderY = -1.0f;
-                                orderZ = -1.0f;
                                 break;
-                            }
-                            case 8: {
-                                int commandX = command->value1();
-                                int commandZ = command->value3();
-                                int commandY = command->value2();
-                                memberAI = member->unitAI();
-                                orderAction = 0x2D8;
-                                param_1 = -1;
-                                orderTargetOwner = -1;
-                                orderZ = (float)commandZ + target->world_z;
-                                orderY = (float)commandY + target->world_y;
-                                orderX = (float)commandX + target->world_x;
-                                break;
-                            }
-                            default:
-                                goto next_member;
                             }
 
-                            memberAI->order(
-                                this->objectValue->id, orderAction, param_1,
-                                orderTargetOwner, orderX, orderY, orderZ,
-                                1.0f, 1, 0, 100);
+                            case AIPlayPhaseCommand::WaitCommand:
+                                member->unitAI()->order(
+                                    this->objectValue->id, 0x2D8, -1, -1,
+                                    (float)command->value1() + target->world_x,
+                                    (float)command->value2() + target->world_y,
+                                    (float)command->value3() + target->world_z,
+                                    1.0f, 1, 0, 100);
+                                break;
+                            }
                         }
 
-                    next_member:
                         ++a;
                     } while (a < this->objectValue->groupMembers.numberValue);
                 }
@@ -1183,7 +1127,6 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 
     return 1;
 }
-
 int UnitAIModule::order(int p1, int p2, int p3, int p4, float p5, float p6, float p7, float p8, int p9, int p10, int p11)
 {
     if (this->objectValue->object_state <= 2) {
