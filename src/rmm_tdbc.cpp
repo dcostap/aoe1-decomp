@@ -219,51 +219,59 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
 
 void TRIBE_RMM_Database_Controller::add_terrain_module()
 {
-    long land_tiles = this->map_info.maps[this->map_type].land_info.grown_land_percent *
-        this->map_height * this->map_width / 100;
+    long land_tile_num =
+        this->map_info.maps[this->map_type].land_info.grown_land_percent *
+        this->map_width * this->map_height / 100;
+
     this->RGE_RMM_Database_Controller::add_terrain_module();
 
-    float scale = (float)land_tiles * 0.00005f;
+    float tile_ratio = (float)land_tile_num * DAT_00571f28;
     for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
-        RGE_Terrain_Info_Line& terrain = this->terrain_info.terrain[i];
-        if (terrain.terrain_type != 6 && scale > 1.0f)
-            terrain.clumps = (long)((float)terrain.clumps * scale);
+        if (this->terrain_info.terrain[i].terrain_type != 6) {
+            if (tile_ratio > DAT_00571f30)
+                this->terrain_info.terrain[i].clumps = (long)
+                    ((float)this->terrain_info.terrain[i].clumps * tile_ratio);
+        }
     }
 
     if (debug_rand(s_rmm_tdbc_path, 0x154) < 0x1fff) {
         for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
-            if (this->terrain_info.terrain[i].terrain_type == 0x0d) {
+            if (this->terrain_info.terrain[i].terrain_type == 13) {
                 this->terrain_info.terrain[i].terrain_size *= 3;
                 this->terrain_info.terrain[i].clumps *= 3;
                 this->terrain_info.terrain[i].avoid_hot_spots = 2;
             }
-            else if (this->terrain_info.terrain[i].terrain_type == 0x14) {
+            else if (this->terrain_info.terrain[i].terrain_type == 20) {
                 this->terrain_info.terrain[i].terrain_size /= 2;
                 this->terrain_info.terrain[i].clumps /= 2;
             }
-            else if (this->terrain_info.terrain[i].terrain_type == 0x13) {
+            else if (this->terrain_info.terrain[i].terrain_type == 19) {
                 this->terrain_info.terrain[i].terrain_size /= 2;
                 this->terrain_info.terrain[i].clumps /= 2;
             }
-            else if (this->terrain_info.terrain[i].terrain_type == 0x0a) {
+            else if (this->terrain_info.terrain[i].terrain_type == 10) {
                 this->terrain_info.terrain[i].terrain_size /= 2;
                 this->terrain_info.terrain[i].clumps /= 2;
                 this->terrain_info.terrain[i].avoid_hot_spots = 2;
             }
             else if (this->terrain_info.terrain[i].terrain_type == 6) {
-                this->terrain_info.terrain[i].terrain_size +=
-                    this->terrain_info.terrain[i].terrain_size;
+                this->terrain_info.terrain[i].terrain_size *= 2;
                 this->terrain_info.terrain[i].avoid_hot_spots = 0;
             }
         }
     }
     else {
         for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
-            RGE_Terrain_Info_Line& terrain = this->terrain_info.terrain[i];
-            if (terrain.terrain_type == 6) terrain.avoid_hot_spots = 0;
-            else if (terrain.terrain_type == 0x0a || terrain.terrain_type == 0x0d) terrain.avoid_hot_spots = 2;
+            if (this->terrain_info.terrain[i].terrain_type == 6)
+                this->terrain_info.terrain[i].avoid_hot_spots = 0;
+            else {
+                if (this->terrain_info.terrain[i].terrain_type == 10 ||
+                    this->terrain_info.terrain[i].terrain_type == 13)
+                    this->terrain_info.terrain[i].avoid_hot_spots = 2;
+            }
         }
     }
+
     L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 0x180));
 }
 
