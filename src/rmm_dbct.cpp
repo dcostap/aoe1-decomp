@@ -14,6 +14,7 @@
 #include "../include/rge_fio.h"
 #include <math.h>
 #include <new.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 extern int __cdecl debug_rand(char* file, int line);
@@ -34,27 +35,21 @@ static char s_calc_land_end[] =
     "********Random Map calc land end, rand:";
 
 RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
-    char* land_file, char* terrain_file, char* object_file,
-    char* map_file)
+    char* land_file, char* terrain_file, char* object_file, char* map_file)
     : RGE_Random_Map_Module(0, 0, 0)
 {
-    RGE_Land_Data* land_data;
-    RGE_Terrain_Data* terrain_data;
-    RGE_Object_Data* object_data;
-    int map_index;
-    int entry_index;
-    long terrain_count;
-    long object_count;
-    long object_type_count;
+    FILE* infile;
+    long map_id;
+    long land_record_count;
+    long terrain_record_count;
+    long object_record_count;
     long terrain_type;
+    long zone;
     long placement_type;
-    long land_percent;
-    long player_land;
+    long amount_of_land_used_percent;
+    long by_player_flag;
     long group_flag;
     long scale_flag;
-    unsigned char scale[4];
-    long index1 = 0;
-    FILE* infile;
 
     this->world = 0;
     this->map_type = -1;
@@ -66,15 +61,8 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
         if (this->map_info.map_num > 0) {
             this->map_info.maps = (RGE_Map_Data_Entry*)calloc(
                 this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
-            if (this->map_info.map_num > 0) {
-                index1 = 0;
-                do {
-                    fscanf(infile, "%d", &this->map_info.maps[index1].map_id);
-                    ++index1;
-                } while (index1 < this->map_info.map_num);
-                fclose(infile);
-                goto map_database_loaded;
-            }
+            for (long index = 0; index < this->map_info.map_num; ++index)
+                fscanf(infile, "%d", &this->map_info.maps[index].map_id);
         }
         else {
             this->map_info.maps = 0;
@@ -82,159 +70,139 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
         fclose(infile);
     }
     else {
-        this->map_info.maps = 0;
-        this->map_info.map_num = 0;
-    }
-
-map_database_loaded:
-    if (this->map_info.map_num > 0) {
-        infile = fopen(land_file, "r");
-        if (infile != 0) {
-            fscanf(infile, "%d", &terrain_count);
-            index1 = 0;
-            if (index1 < terrain_count) {
-                do {
-                    fscanf(infile, "%d", &map_index);
-                    land_data = &this->map_info.maps[map_index].land_info;
-                    fscanf(infile, "%d %d %d %d %d %d %d %d %d",
-                           &land_data->land_num,
-                           &land_data->map_edge_buffer[0],
-                           &land_data->map_edge_buffer[1],
-                           &land_data->map_edge_buffer[2],
-                           &land_data->map_edge_buffer[3],
-                           &land_data->map_edge_fade,
-                           &land_data->land_placement_edge,
-                           &land_data->base_terrain,
-                           &land_data->grown_land_percent);
-                    if (land_data->land_num > 0) {
-                        land_data->land = (RGE_Land_Data_Entry*)calloc(
-                            land_data->land_num,
-                            sizeof(RGE_Land_Data_Entry));
-                        entry_index = 0;
-                        if (entry_index < land_data->land_num) {
-                            do {
-                                RGE_Land_Data_Entry& land =
-                                    land_data->land[entry_index];
-                                fscanf(infile,
-                                       "%d %d %d %d %d %d %d %d %d %d %d %d",
-                                       &land.land_id,
-                                       &terrain_type,
-                                       &land.land_avoidance_tiles,
-                                       &land.base_square_radius,
-                                       &placement_type,
-                                       &land_percent,
-                                       &land.x,
-                                       &land.y,
-                                       &player_land,
-                                       &group_flag,
-                                       &land.radius,
-                                       &land.fade);
-                                land.terrain_type = (uchar)terrain_type;
-                                land.zone = (uchar)placement_type;
-                                land.placement_type = (uchar)land_percent;
-                                land.amount_of_land_used_percent =
-                                    (uchar)player_land;
-                                land.by_player_flag = (uchar)group_flag;
-                                land.clumpiness_factor = 8;
-                                ++entry_index;
-                            } while (entry_index < land_data->land_num);
-                        }
-                    }
-                    else {
-                        land_data->land = 0;
-                    }
-                    ++index1;
-                } while (index1 < terrain_count);
-            }
-            fclose(infile);
-        }
-
-        infile = fopen(terrain_file, "r");
-        if (infile != 0) {
-            fscanf(infile, "%d", &object_count);
-            index1 = 0;
-            if (index1 < object_count) {
-                do {
-                    fscanf(infile, "%d", &map_index);
-                    terrain_data = &this->map_info.maps[map_index].terrain_info;
-                    fscanf(infile, "%d", &terrain_data->terrain_num);
-                    if (terrain_data->terrain_num <= 0) {
-                        terrain_data->terrain = 0;
-                    }
-                    else {
-                        terrain_data->terrain = (RGE_Terrain_Data_Entry*)calloc(
-                            terrain_data->terrain_num,
-                            sizeof(RGE_Terrain_Data_Entry));
-                        for (entry_index = 0;
-                             entry_index < terrain_data->terrain_num;
-                             ++entry_index) {
-                            RGE_Terrain_Data_Entry* terrain =
-                                &terrain_data->terrain[entry_index];
-                            fscanf(infile, "%d %d %d %d %d",
-                                   &terrain->terrain_percent,
-                                   &terrain->terrain_type,
-                                   &terrain->clumps,
-                                   &terrain->spacing,
-                                   &terrain->base_terrain_type);
-                            terrain->clumpiness_factor = 0x14;
-                        }
-                    }
-                    ++index1;
-                } while (index1 < object_count);
-            }
-            fclose(infile);
-        }
-
-        infile = fopen(object_file, "r");
-        if (infile != 0) {
-            fscanf(infile, "%d", &object_type_count);
-            index1 = 0;
-            if (index1 < object_type_count) {
-                do {
-                    fscanf(infile, "%d", &map_index);
-                    object_data = &this->map_info.maps[map_index].object_info;
-                    fscanf(infile, "%d", &object_data->object_num);
-                    if (object_data->object_num <= 0) {
-                        object_data->objects = 0;
-                    }
-                    else {
-                        object_data->objects = (RGE_Object_Data_Entry*)calloc(
-                            object_data->object_num,
-                            sizeof(RGE_Object_Data_Entry));
-                        entry_index = 0;
-                        if (entry_index < object_data->object_num) {
-                            do {
-                                fscanf(infile,
-                                       "%d %d %d %d %d %d %d %d %d %d %d %d",
-                                       &object_data->objects[entry_index].obj_id,
-                                       &object_data->objects[entry_index].terrain,
-                                       &scale_flag,
-                                       scale,
-                                       &object_data->objects[entry_index].object_number_per_group,
-                                       &object_data->objects[entry_index].object_number_varience,
-                                       &object_data->objects[entry_index].number_of_groups,
-                                       &object_data->objects[entry_index].group_area,
-                                       &object_data->objects[entry_index].player_id,
-                                       &object_data->objects[entry_index].land_id,
-                                       &object_data->objects[entry_index].land_inner_radius,
-                                       &object_data->objects[entry_index].land_outer_radius);
-                                object_data->objects[entry_index].group_flag =
-                                    (uchar)scale_flag;
-                                object_data->objects[entry_index].scale_flag =
-                                    scale[0];
-                                ++entry_index;
-                            } while (entry_index < object_data->object_num);
-                        }
-                    }
-                    ++index1;
-                } while (index1 < object_type_count);
-            }
-            fclose(infile);
-        }
-    }
-    else {
         this->map_info.map_num = 0;
         this->map_info.maps = 0;
+    }
+
+    if (this->map_info.map_num <= 0) {
+        this->map_info.map_num = 0;
+        this->map_info.maps = 0;
+        return;
+    }
+
+    infile = fopen(land_file, "r");
+    if (infile != 0) {
+        fscanf(infile, "%d", &land_record_count);
+        for (long index = 0; index < land_record_count; ++index) {
+            fscanf(infile, "%d", &map_id);
+            RGE_Land_Data* data =
+                &this->map_info.maps[map_id].land_info;
+            fscanf(infile, "%d %d %d %d %d %d %d %d %d",
+                &data->land_num,
+                &data->map_edge_buffer[0],
+                &data->map_edge_buffer[1],
+                &data->map_edge_buffer[2],
+                &data->map_edge_buffer[3],
+                &data->map_edge_fade,
+                &data->land_placement_edge,
+                &data->base_terrain,
+                &data->grown_land_percent);
+
+            if (data->land_num > 0) {
+                data->land = (RGE_Land_Data_Entry*)calloc(
+                    data->land_num, sizeof(RGE_Land_Data_Entry));
+                for (long land_index = 0;
+                     land_index < data->land_num; ++land_index) {
+                    RGE_Land_Data_Entry* land = &data->land[land_index];
+                    fscanf(infile,
+                        "%d %d %d %d %d %d %d %d %d %d %d %d",
+                        &land->land_id,
+                        &terrain_type,
+                        &land->land_avoidance_tiles,
+                        &land->base_square_radius,
+                        &zone,
+                        &placement_type,
+                        &land->x,
+                        &land->y,
+                        &amount_of_land_used_percent,
+                        &by_player_flag,
+                        &land->radius,
+                        &land->fade);
+                    land->terrain_type = (uchar)terrain_type;
+                    land->zone = (uchar)zone;
+                    land->placement_type = (uchar)placement_type;
+                    land->amount_of_land_used_percent =
+                        (uchar)amount_of_land_used_percent;
+                    land->by_player_flag = (uchar)by_player_flag;
+                    land->clumpiness_factor = 8;
+                }
+            }
+            else {
+                data->land = 0;
+            }
+        }
+        fclose(infile);
+    }
+
+    infile = fopen(terrain_file, "r");
+    if (infile != 0) {
+        fscanf(infile, "%d", &terrain_record_count);
+        for (long index = 0; index < terrain_record_count; ++index) {
+            fscanf(infile, "%d", &map_id);
+            RGE_Terrain_Data* data =
+                &this->map_info.maps[map_id].terrain_info;
+            fscanf(infile, "%d", &data->terrain_num);
+            if (data->terrain_num > 0) {
+                data->terrain = (RGE_Terrain_Data_Entry*)calloc(
+                    data->terrain_num, sizeof(RGE_Terrain_Data_Entry));
+                for (long terrain_index = 0;
+                     terrain_index < data->terrain_num; ++terrain_index) {
+                    RGE_Terrain_Data_Entry* terrain =
+                        &data->terrain[terrain_index];
+                    fscanf(infile, "%d %d %d %d %d",
+                        &terrain->terrain_percent,
+                        &terrain->terrain_type,
+                        &terrain->clumps,
+                        &terrain->spacing,
+                        &terrain->base_terrain_type);
+                    terrain->clumpiness_factor = 20;
+                }
+            }
+            else {
+                data->terrain = 0;
+            }
+        }
+        fclose(infile);
+    }
+
+    infile = fopen(object_file, "r");
+    if (infile != 0) {
+        fscanf(infile, "%d", &object_record_count);
+        for (long index = 0; index < object_record_count; ++index) {
+            fscanf(infile, "%d", &map_id);
+            RGE_Object_Data* data =
+                &this->map_info.maps[map_id].object_info;
+            fscanf(infile, "%d", &data->object_num);
+            if (data->object_num > 0) {
+                data->objects = (RGE_Object_Data_Entry*)calloc(
+                    data->object_num, sizeof(RGE_Object_Data_Entry));
+                for (long object_index = 0;
+                     object_index < data->object_num; ++object_index) {
+                    RGE_Object_Data_Entry* object =
+                        &data->objects[object_index];
+                    fscanf(infile,
+                        "%d %d %d %d %d %d %d %d %d %d %d %d",
+                        &object->obj_id,
+                        &object->terrain,
+                        &group_flag,
+                        &scale_flag,
+                        &object->object_number_per_group,
+                        &object->object_number_varience,
+                        &object->number_of_groups,
+                        &object->group_area,
+                        &object->player_id,
+                        &object->land_id,
+                        &object->land_inner_radius,
+                        &object->land_outer_radius);
+                    object->group_flag = (uchar)group_flag;
+                    object->scale_flag = (uchar)scale_flag;
+                }
+            }
+            else {
+                data->objects = 0;
+            }
+        }
+        fclose(infile);
     }
 }
 
@@ -556,268 +524,257 @@ void RGE_RMM_Database_Controller::calc_land_start(
     L->Log(s_calc_land_end);
 }
 
-void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
+void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions)
 {
-    long group_index;
-    long map_land_index;
-    long land_index;
-    long group_count;
-    long land_area;
-    long placement_edge;
-    long team;
-    long candidate;
-    long other_team;
-    long start_land;
-    long team_size[8];
-    long player_teams[9];
-    long land_teams[9];
-    long distances[8][8];
-    long map_width = this->map_width;
-    long map_height = this->map_height;
-    long* distance_row;
-    RGE_Land_Info_Line* distance_land;
-
-    RGE_Land_Data* land_data =
+    RGE_Land_Data* map_land =
         &this->map_info.maps[this->map_type].land_info;
-    land_area = land_data->grown_land_percent * map_width *
-        map_height / 100;
-    placement_edge = land_data->land_placement_edge;
+    long land_tile_num = map_land->grown_land_percent * this->map_width *
+        this->map_height / 100;
+    long placement_edge = map_land->land_placement_edge;
+    long index;
+    long index2 = 0;
 
     this->land_info.land_num = 0;
-    for (map_land_index = 0; map_land_index < land_data->land_num;
-         ++map_land_index) {
-        if (land_data->land[map_land_index].by_player_flag != 0)
+    for (index = 0; index < map_land->land_num; ++index) {
+        if (map_land->land[index].by_player_flag != 0)
             this->land_info.land_num += this->number_of_players;
         else
             ++this->land_info.land_num;
     }
 
-    this->land_info.base_terrain = (uchar)land_data->base_terrain;
-    this->land_info.wall_1_avoidance_line = land_data->map_edge_buffer[0];
-    this->land_info.wall_2_avoidance_line = land_data->map_edge_buffer[1];
-    this->land_info.wall_3_avoidance_line = this->map_width -
-        land_data->map_edge_buffer[2];
-    this->land_info.wall_4_avoidance_line = this->map_height -
-        land_data->map_edge_buffer[3];
-    this->land_info.wall_fade = (uchar)land_data->map_edge_fade;
+    this->land_info.base_terrain = (uchar)map_land->base_terrain;
+    this->land_info.wall_1_avoidance_line = map_land->map_edge_buffer[0];
+    this->land_info.wall_2_avoidance_line = map_land->map_edge_buffer[1];
+    this->land_info.wall_3_avoidance_line =
+        this->map_width - map_land->map_edge_buffer[2];
+    this->land_info.wall_4_avoidance_line =
+        this->map_height - map_land->map_edge_buffer[3];
+    this->land_info.wall_fade = (uchar)map_land->map_edge_fade;
 
-    land_index = 0;
-    for (map_land_index = 0; map_land_index < land_data->land_num;
-         ++map_land_index) {
-        if (land_data->land[map_land_index].by_player_flag != 0) {
-            this->calc_land_start(land_index, placement_edge,
-                                  this->number_of_players,
-                                  &land_data->land[map_land_index]);
-            for (group_index = 0; group_index < this->number_of_players;
-                 ++group_index) {
-                RGE_Land_Info_Line& land = this->land_info.land[land_index];
-                land.terrain_type =
-                    land_data->land[map_land_index].terrain_type;
-                land.area =
-                    land_data->land[map_land_index].land_avoidance_tiles;
-                land.base_size =
-                    land_data->land[map_land_index].base_square_radius;
-                if (land_data->land[map_land_index].by_player_flag == 1)
-                    land.zone = land_data->land[map_land_index].zone;
+    for (index = 0; index < map_land->land_num; ++index) {
+        RGE_Land_Data_Entry* source = &map_land->land[index];
+        if (source->by_player_flag != 0) {
+            this->calc_land_start(index2,
+                                  placement_edge,
+                                  this->number_of_players, source);
+            for (long player = 0;
+                 player < this->number_of_players; ++player) {
+                RGE_Land_Info_Line* land =
+                    &this->land_info.land[index2];
+                land->terrain_type = source->terrain_type;
+                land->area = source->land_avoidance_tiles;
+                land->base_size = source->base_square_radius;
+                if (source->by_player_flag == 1)
+                    land->zone = source->zone;
                 else
-                    land.zone = (uchar)group_index;
-                land.land_size =
-                    land_data->land[map_land_index].amount_of_land_used_percent *
-                    land_area / (this->number_of_players * 100);
-                land.clumpiness_factor =
-                    land_data->land[map_land_index].clumpiness_factor;
-                land.wall_1_avoidance_line =
+                    land->zone = (uchar)player;
+                land->land_size = source->amount_of_land_used_percent *
+                    land_tile_num / (this->number_of_players * 100);
+                land->clumpiness_factor = source->clumpiness_factor;
+                land->wall_1_avoidance_line =
                     this->land_info.wall_1_avoidance_line;
-                land.wall_2_avoidance_line =
+                land->wall_2_avoidance_line =
                     this->land_info.wall_2_avoidance_line;
-                land.wall_3_avoidance_line =
+                land->wall_3_avoidance_line =
                     this->land_info.wall_3_avoidance_line;
-                land.wall_4_avoidance_line =
+                land->wall_4_avoidance_line =
                     this->land_info.wall_4_avoidance_line;
-                land.wall_fade = this->land_info.wall_fade;
-                ++land_index;
+                land->wall_fade = this->land_info.wall_fade;
+                ++index2;
             }
         }
         else {
-            RGE_Land_Info_Line& land = this->land_info.land[land_index];
-            land.terrain_type =
-                land_data->land[map_land_index].terrain_type;
-            land.area =
-                land_data->land[map_land_index].land_avoidance_tiles;
-            land.base_size =
-                land_data->land[map_land_index].base_square_radius;
-            land.zone = land_data->land[map_land_index].zone;
-            this->calc_land_start(
-                land_index, placement_edge, 1,
-                &land_data->land[map_land_index]);
-            land.land_size =
-                land_data->land[map_land_index].amount_of_land_used_percent *
-                land_area / 100;
-            land.clumpiness_factor =
-                land_data->land[map_land_index].clumpiness_factor;
-            land.wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
-            land.wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
-            land.wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
-            land.wall_4_avoidance_line = this->land_info.wall_4_avoidance_line;
-            land.wall_fade = this->land_info.wall_fade;
-            ++land_index;
+            RGE_Land_Info_Line* land =
+                &this->land_info.land[index2];
+            land->terrain_type = source->terrain_type;
+            land->area = source->land_avoidance_tiles;
+            land->base_size = source->base_square_radius;
+            land->zone = source->zone;
+            this->calc_land_start(index2,
+                                  placement_edge,
+                                  1, source);
+            land->land_size = source->amount_of_land_used_percent *
+                land_tile_num / 100;
+            land->clumpiness_factor = source->clumpiness_factor;
+            land->wall_1_avoidance_line =
+                this->land_info.wall_1_avoidance_line;
+            land->wall_2_avoidance_line =
+                this->land_info.wall_2_avoidance_line;
+            land->wall_3_avoidance_line =
+                this->land_info.wall_3_avoidance_line;
+            land->wall_4_avoidance_line =
+                this->land_info.wall_4_avoidance_line;
+            land->wall_fade = this->land_info.wall_fade;
+            ++index2;
         }
     }
 
-    if (group_players == 0)
+    if (fixed_positions == 0)
         return;
 
-    distance_row = distances[0] + 1;
-    distance_land = this->land_info.land;
-    group_count = this->land_info.land_num;
-    for (land_index = 0; land_index < group_count; ++land_index) {
-        RGE_Land_Info_Line* scan_land = this->land_info.land;
-        long* size = team_size;
-        long remaining = group_count;
-        if (remaining > 0) {
-            do {
-                ++size;
-                long delta_x = distance_land->x - scan_land->x;
-                long delta_y = distance_land->y - scan_land->y;
-                *size = delta_x * delta_x + delta_y * delta_y;
-                --remaining;
-                ++scan_land;
-            } while (remaining != 0);
+    long d2[8];
+    long distances[8][8];
+    long index1;
+    long swap;
+    long start_land;
+    long other_land = land_tile_num;
+
+    for (index1 = 0; index1 < this->land_info.land_num; ++index1) {
+        for (index = 0; index < this->land_info.land_num; ++index) {
+            long dx = this->land_info.land[index1].x -
+                this->land_info.land[index].x;
+            long dy = this->land_info.land[index1].y -
+                this->land_info.land[index].y;
+            d2[index] = dx * dx + dy * dy;
         }
-        for (candidate = 0; candidate < group_count; ++candidate)
-            distance_row[candidate] = candidate;
+        for (index = 0; index < this->land_info.land_num; ++index)
+            distances[index1][index] = index;
+
         do {
-            uchar ordered = 1;
-            for (candidate = 1; candidate < group_count; ++candidate) {
-                if (team_size[candidate] > team_size[candidate + 1]) {
-                    long distance = team_size[candidate];
-                    long member = distance_row[candidate - 1];
-                    team_size[candidate] = team_size[candidate + 1];
-                    team_size[candidate + 1] = distance;
-                    distance_row[candidate - 1] =
-                        distance_row[candidate];
-                    distance_row[candidate] = member;
-                    ordered = 0;
+            index2 = 1;
+            for (index = 1; index < this->land_info.land_num; ++index) {
+                if (d2[index - 1] > d2[index]) {
+                    swap = d2[index - 1];
+                    d2[index - 1] = d2[index];
+                    d2[index] = swap;
+                    swap = distances[index1][index - 1];
+                    distances[index1][index - 1] =
+                        distances[index1][index];
+                    distances[index1][index] = swap;
+                    index2 = 0;
                 }
             }
-            if (ordered)
-                break;
-        } while (1);
-        ++distance_land;
-        distance_row += 8;
+        } while (index2 == 0);
     }
 
-    for (land_index = 0; land_index < group_count; ++land_index)
-        player_teams[land_index + 1] = -1;
+    long player_teams[8];
+    long team_size[8];
+    long current_team = 0;
+    for (index = 0; index < this->land_info.land_num; ++index)
+        player_teams[index] = -1;
 
-    team = 0;
-    for (land_index = 0; land_index < group_count; ++land_index) {
-        if (player_teams[land_index + 1] == -1) {
-            player_teams[land_index + 1] = team;
-            team_size[land_index + 1] = 1;
-            for (candidate = 0; candidate < group_count; ++candidate) {
-                if (this->world->players[land_index + 1]->relation(
-                        candidate + 1) == 0) {
-                    player_teams[candidate + 1] = team;
-                    ++team_size[land_index + 1];
+    for (index = 0; index < this->land_info.land_num; ++index) {
+        if (player_teams[index] == -1) {
+            player_teams[index] = current_team;
+            team_size[current_team] = 1;
+            for (index1 = 0;
+                 index1 < this->land_info.land_num; ++index1) {
+                if (this->world->players[index + 1]->relation(index1 + 1) ==
+                    0) {
+                    player_teams[index1] = current_team;
+                    ++team_size[current_team];
                 }
             }
-            ++team;
+            ++current_team;
         }
     }
 
-    for (land_index = 0; land_index < group_count; ++land_index)
-        land_teams[land_index + 1] = -1;
+    long land_claimed[8];
+    for (index = 0; index < this->land_info.land_num; ++index)
+        land_claimed[index] = -1;
 
-    for (group_index = 0; group_index < team; ++group_index) {
-        long group_land = 0;
-        while (group_land < group_count && land_teams[group_land + 1] != -1)
-            ++group_land;
+    for (index1 = 0; index1 < current_team; ++index1) {
+        for (index = 0;
+             index < this->land_info.land_num && land_claimed[index] != -1;
+             ++index) {
+        }
 
-        long members = team_size[group_land + 1];
-        long placed = 0;
-        while (placed < members) {
-            for (candidate = 0; candidate < members; ++candidate) {
-                long next_land = distances[group_land][candidate + 1];
-                if (land_teams[next_land + 1] == -1) {
-                    land_teams[next_land + 1] = group_index;
+        long edge = 0;
+        long land_wanted = team_size[index1];
+        while (edge < team_size[index1]) {
+            for (index2 = 0; index2 < land_wanted; ++index2) {
+                long candidate = distances[index][index2];
+                if (land_claimed[candidate] == -1) {
+                    land_claimed[candidate] = index1;
+                    break;
+                }
+            }
+            if (index2 < land_wanted) {
+                ++edge;
+                continue;
+            }
+
+            if (land_wanted < this->land_info.land_num)
+                ++land_wanted;
+
+            for (index2 = this->land_info.land_num - 1;
+                 index2 >= 0; --index2) {
+                long candidate = distances[index][index2];
+                if (land_claimed[candidate] == -1) {
+                    start_land = candidate;
                     break;
                 }
             }
 
-            if (candidate == members) {
-                if (members < group_count)
-                    ++members;
-                start_land = distances[group_land][group_count];
-                for (candidate = group_count - 1; candidate >= 0; --candidate) {
-                    long next_land = distances[group_land][candidate + 1];
-                    if (land_teams[next_land + 1] == -1) {
-                        start_land = next_land;
-                        break;
-                    }
-                }
-                other_team = -1;
-                land_index = start_land;
-                for (candidate = 0; candidate < group_count; ++candidate) {
-                    long next_land = distances[start_land][candidate + 1];
-                    if (land_teams[next_land + 1] != group_index &&
-                        land_teams[next_land + 1] >= 0) {
-                        other_team = land_teams[next_land + 1];
-                        land_index = next_land;
-                        for (long nearest = 0;
-                             nearest < members; ++nearest) {
-                            long member = distances[group_land][nearest + 1];
-                            if (land_teams[member + 1] == other_team) {
-                                land_index = member;
-                                break;
-                            }
+            long other_team = -1;
+            for (long candidate_index = 0;
+                 candidate_index < this->land_info.land_num;
+                 ++candidate_index) {
+                long candidate =
+                    distances[start_land][candidate_index];
+                if (land_claimed[candidate] != index1 &&
+                    land_claimed[candidate] > -1) {
+                    other_team = land_claimed[candidate];
+                    other_land = candidate;
+                    for (long wanted_index = 0;
+                         wanted_index < land_wanted; ++wanted_index) {
+                        candidate = distances[index][wanted_index];
+                        if (land_claimed[candidate] == other_team) {
+                            other_team = land_claimed[candidate];
+                            other_land = candidate;
+                            break;
                         }
-                        break;
                     }
+                    break;
                 }
-                land_teams[start_land + 1] = other_team;
-                land_teams[land_index + 1] = -1;
-                for (candidate = group_count - 1; candidate >= 0; --candidate) {
-                    long next_land = distances[other_team][candidate + 1];
-                    if (land_teams[next_land + 1] == other_team) {
-                        for (long nearest = 0; nearest < group_count; ++nearest) {
-                            long member = distances[start_land][nearest + 1];
-                            if (land_teams[member + 1] == -1 &&
-                                member != land_index) {
-                                land_teams[next_land + 1] = -1;
-                                land_teams[member + 1] = other_team;
-                                break;
-                            }
+            }
+
+            land_claimed[start_land] = other_team;
+            land_claimed[other_land] = -1;
+
+            for (index2 = this->land_info.land_num - 1;
+                 index2 >= 0; --index2) {
+                long candidate = distances[other_team][index2];
+                if (land_claimed[candidate] == other_team) {
+                    for (long wanted_index = 0;
+                         wanted_index < this->land_info.land_num;
+                         ++wanted_index) {
+                        long replacement =
+                            distances[start_land][wanted_index];
+                        if (land_claimed[replacement] == -1 &&
+                            replacement != other_land) {
+                            land_claimed[candidate] = -1;
+                            land_claimed[replacement] = other_team;
+                            break;
                         }
                     }
                 }
             }
-            ++placed;
         }
     }
 
-    for (land_index = 0; land_index < group_count; ++land_index)
-        team_size[land_index + 1] = -1;
-
-    for (group_index = 0; group_index < group_count; ++group_index) {
-        for (land_index = 0; land_index < group_count; ++land_index) {
-            if (team_size[land_index + 1] == -1 &&
-                player_teams[land_index + 1] == land_teams[group_index + 1]) {
-                team_size[land_index + 1] = group_index;
+    long player_hash[8];
+    for (index = 0; index < this->land_info.land_num; ++index)
+        player_hash[index] = -1;
+    for (index = 0; index < this->land_info.land_num; ++index) {
+        for (index1 = 0; index1 < this->land_info.land_num; ++index1) {
+            if (player_hash[index1] == -1 &&
+                player_teams[index1] == land_claimed[index]) {
+                player_hash[index1] = index;
                 break;
             }
         }
     }
 
-    for (land_index = 0; land_index < group_count; ++land_index) {
-        player_teams[land_index + 1] =
-            this->land_info.land[team_size[land_index + 1]].x;
-        land_teams[land_index + 1] =
-            this->land_info.land[team_size[land_index + 1]].y;
+    long tx[8];
+    long ty[8];
+    for (index = 0; index < this->land_info.land_num; ++index) {
+        tx[index] = this->land_info.land[player_hash[index]].x;
+        ty[index] = this->land_info.land[player_hash[index]].y;
     }
-    for (land_index = 0; land_index < group_count; ++land_index) {
-        this->land_info.land[land_index].x = player_teams[land_index + 1];
-        this->land_info.land[land_index].y = land_teams[land_index + 1];
+    for (index = 0; index < this->land_info.land_num; ++index) {
+        this->land_info.land[index].x = tx[index];
+        this->land_info.land[index].y = ty[index];
     }
 }
 

@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00482B70": {"status": "scratch", "symbol": "??0RGE_RMM_Database_Controller@@QAE@PAD000@Z"},
+    "00482B70": {"status": "new_verified_logic", "symbol": "??0RGE_RMM_Database_Controller@@QAE@PAD000@Z", "behavior_review": "logic_matching/00482B70/coord-03-20260913T042020Z/attempt-01"},
     "00483020": {"status": "matching", "symbol": "??0RGE_RMM_Database_Controller@@QAE@H@Z"},
     "00483200": {"status": "matching", "symbol": "??1RGE_RMM_Database_Controller@@QAE@XZ"},
     "004832E0": {"status": "matching", "symbol": "?save@RGE_RMM_Database_Controller@@QAEEH@Z"},
@@ -14,7 +14,7 @@
     "00483540": {"status": "matching", "symbol": "?init@RGE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z"},
     "004835A0": {"status": "matching", "symbol": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ"},
     "00483600": {"status": "new_verified_logic", "symbol": "?calc_land_start@RGE_RMM_Database_Controller@@IAEXJJJPAURGE_Land_Data_Entry@@@Z", "behavior_review": "logic_matching/00483600/coord-03-20260913T040347Z/attempt-01"},
-    "00483A20": {"status": "scratch", "symbol": "?add_land_module@RGE_RMM_Database_Controller@@MAEXE@Z"},
+    "00483A20": {"status": "new_verified_logic", "symbol": "?add_land_module@RGE_RMM_Database_Controller@@MAEXE@Z", "behavior_review": "logic_matching/00483A20/coord-03-20260913T044028Z/attempt-01"},
     "00484160": {"status": "new_verified_logic", "symbol": "?add_terrain_module@RGE_RMM_Database_Controller@@MAEXXZ", "behavior_review": "logic_matching/00484160/review-01/attempt-01"},
     "00484320": {"status": "accepted_drift", "symbol": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"},
     "00484470": {"status": "new_verified_logic", "symbol": "?add_elevation_module@RGE_RMM_Database_Controller@@MAEXXZ", "behavior_review": "logic_matching/00484470/coord-03-20260913T035125Z/attempt-01"}
