@@ -152,6 +152,10 @@ Preserve every review result. Never replace or omit one side of a round.
 If consecutive rounds repeat the same conflicting source set without new
 evidence, report a concrete blocker. Do not create an unchanged review cycle.
 
+The blocker report must name each preserved review attempt and source hash.
+State the unresolved source or behavior choice and the evidence already
+checked. The root uses this report to update the existing function note.
+
 In dual-review mode, `COMPLETE` also requires both final `PERFECT` attempts,
 identical source hashes, successful final compilation, clean reviewer
 workspaces, and a validated integration patch for the approved source.

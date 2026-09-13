@@ -284,6 +284,20 @@ For a scratch improvement, run one authoritative target check.
 For an exact promotion, review source policy and run one authoritative target check.
 For accepted drift, repeat the complete independent semantic review.
 
+For a blocked behavior recovery, keep the registry status as `scratch`.
+Preserve every candidate and review bundle under `logic_matching/<VA>/`.
+Update the existing `decomp_notes/functions/<bucket>/<VA>.md` note with:
+
+- each final candidate source hash and review path;
+- the unresolved source or behavior choice;
+- the evidence already checked; and
+- the condition that permits a new review.
+
+Commit the note and its linked bundles together. A future matching or resolver
+assignment must name the function note and linked review paths. Keep a new
+independent reconstruction blind until it submits its first candidate. Do not
+start another review of the same candidates without new evidence.
+
 After approval, treat accepted drift as a completed result. Do not schedule
 metric-only matching work for it. Reopen it only when new source or behavior
 evidence can improve the model.
