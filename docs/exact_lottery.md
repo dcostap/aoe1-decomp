@@ -95,7 +95,11 @@ Workers do not decide exactness.
 ## Mechanical selection
 
 The orchestrator runs the authoritative function checker after each completed
-variant.
+variant. A sparse blind wave can omit the checker by design. Keep that variant
+immutable. Clone its committed state into a separate sibling check workspace.
+Copy the complete root-supplied `tools/` directory into only the check
+workspace, then run the checker there. Do not expose checker files or output to
+the blind worker.
 
 The first valid `MATCH 0.0000%` wins.
 The orchestrator then stops all remaining workers immediately.

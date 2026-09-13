@@ -35,7 +35,13 @@ Keep the assigned workspace when safe. Never overwrite completed work.
 ## Exactness check
 
 After a worker stops, confirm a clean committed state.
-Run the assigned authoritative `check_function.py` command in that workspace.
+Sparse blind workspaces can omit `check_function.py` by design. Do not report a
+blocker for that omission. Keep the blind workspace immutable. Create a sibling
+check clone from its committed state. Overlay the root-supplied complete
+`tools/` directory into only that check clone. Run the assigned authoritative
+`check_function.py` command there. Never show its files or output to the blind
+worker.
+
 A worker claim does not establish a match.
 
 Accept a hit only when the checker reports all these facts:
