@@ -2684,20 +2684,16 @@ static const char s_build_file_format[] = "%s.bld";
 
 int TribeTacticalAIModule::doSomething()
 {
-    unsigned long startTime;
-    unsigned long availableTime;
-    int incUpdateArea;
-    unsigned long updateAreaStartTime;
-    unsigned long currentTime;
-    char tempName[256];
+    unsigned long availableTime =
+        this->md->player->world->availableComputerPlayerUpdateTime;
+    unsigned long startTime = debug_timeGetTime(s_file, 0x99c);
 
-    availableTime = this->md->player->world->availableComputerPlayerUpdateTime;
-    startTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x99C);
-
-    if (availableTime > 0) {
+    if (availableTime != 0) {
+        unsigned long currentTime;
         do {
-            updateAreaStartTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x99F);
-            incUpdateArea = 1;
+            unsigned long updateAreaStartTime =
+                debug_timeGetTime(s_file, 0x99f);
+            int incUpdateArea = 1;
 
             switch (this->updateArea) {
             case 0:
@@ -2716,33 +2712,29 @@ int TribeTacticalAIModule::doSomething()
 
             case 2:
                 this->taskCivilians(startTime, availableTime);
-                if (this->nextCivilianToTaskValue != -1) {
+                if (this->nextCivilianToTaskValue != -1)
                     incUpdateArea = 0;
-                }
                 break;
 
             case 3:
-                if (this->boats.numberValue > 0) {
+                if (this->boats.numberValue > 0)
                     this->setupBoatGroups();
-                }
                 break;
 
             case 4:
-                if (this->boats.numberValue > 0) {
+                if (this->boats.numberValue > 0)
                     this->fillBoatGroups();
-                }
                 break;
 
             case 5:
-                if (this->boats.numberValue > 0) {
+                if (this->boats.numberValue > 0)
                     this->taskBoats();
-                }
                 break;
 
             case 6:
-                if (this->boats.numberValue > 0 || this->soldiers.numberValue > 0) {
+                if (this->boats.numberValue > 0 ||
+                    this->soldiers.numberValue > 0)
                     this->fillSoldierGroups();
-                }
                 break;
 
             case 7:
@@ -2750,9 +2742,8 @@ int TribeTacticalAIModule::doSomething()
                     this->soldiers.numberValue > 0 ||
                     this->artifacts.numberValue > 0) {
                     this->taskIdleSoldiers(startTime, availableTime);
-                    if (this->nextIdleSoldierGroupToTaskValue != -1) {
+                    if (this->nextIdleSoldierGroupToTaskValue != -1)
                         incUpdateArea = 0;
-                    }
                 }
                 break;
 
@@ -2761,62 +2752,55 @@ int TribeTacticalAIModule::doSomething()
                     this->soldiers.numberValue > 0 ||
                     this->artifacts.numberValue > 0) {
                     this->taskActiveSoldiers(startTime, availableTime);
-                    if (this->nextActiveSoldierGroupToTaskValue != -1) {
+                    if (this->nextActiveSoldierGroupToTaskValue != -1)
                         incUpdateArea = 0;
-                    }
                 }
                 break;
 
             case 9:
-                if (this->soldiers.numberValue > 0) {
+                if (this->soldiers.numberValue > 0)
                     this->playTaskSoldiers(startTime, availableTime);
-                }
                 break;
 
             case 10: {
-                RGE_Static_Object* object =
-                    this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+                RGE_Static_Object* object = this->md->object(
+                    -1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
                 if (object != 0) {
-                    int distance = this->md->informationAI.withinXTilesOfObject(
-                        object, 0x14, 0x4F, 0xC7, 0x45, 0x116);
-                    if (distance != -1) {
-                        this->saveTheTown(distance);
-                    }
+                    int id = this->md->informationAI.withinXTilesOfObject(
+                        object, 0x14, 0x4f, 0xc7, 0x45, 0x116);
+                    if (id != -1)
+                        this->saveTheTown(id);
                 }
                 break;
             }
 
-            case 11: {
+            case 11:
                 this->numberBuildUpdatesSkipped++;
                 if (this->md->buildAI.buildListLength() > 0 &&
                     this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(1);
-                    if (item != 0) {
+                    if (item != 0)
                         this->taskResearch(item);
-                    }
                 }
                 break;
-            }
 
-            case 12: {
-                if (this->md->player->attributes[0x0B] <
-                    this->md->player->attributes[0x20]) {
-                    if (this->md->buildAI.buildListLength() > 0 &&
-                        this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
-                        BuildItem* item = this->md->buildAI.nextBuildableItem(2);
-                        if (item != 0) {
-                            this->taskTrain(item);
-                        }
-                    }
+            case 12:
+                if (this->md->player->attributes[11] <
+                        this->md->player->attributes[32] &&
+                    this->md->buildAI.buildListLength() > 0 &&
+                    this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
+                    BuildItem* item = this->md->buildAI.nextBuildableItem(2);
+                    if (item != 0)
+                        this->taskTrain(item);
                 }
                 break;
-            }
 
-            case 13: {
+            case 13:
                 if (this->md->buildAI.buildListLength() > 0 &&
                     this->numberBuildUpdatesSkipped >= this->sn[0x65]) {
                     BuildItem* item = this->md->buildAI.nextBuildableItem(3);
                     if (item != 0) {
+                        char tempName[256];
                         sprintf(tempName, s_build_file_format, item->name());
                         this->md->buildAI.loadBuildList(
                             tempName, this->md->aiPlayer);
@@ -2826,174 +2810,156 @@ int TribeTacticalAIModule::doSomething()
                     this->numberBuildUpdatesSkipped = 0;
                 }
                 break;
-            }
 
-            case 14: {
-                if (this->initialExplorationSatisfied() != 0) {
-                    if (this->md->numberObjectsWithAction(0x25A) < this->sn[4] ||
-                        this->wonderInProgressValue != 0 ||
-                        this->wonderBuiltValue != 0) {
-                        RGE_Static_Object* object =
-                            this->md->object(-1, -1, -1, -1, -1, -1, -1, -1, 0, -1);
-                        if (object != 0) {
-                            RGE_Static_Object* wonder = this->md->object(
-                                -1, -1, -1, 0x25A, -1, object->id, -1, -1, -1, -1);
-                            if (this->wonderInProgressValue != 0 || wonder == 0) {
-                                XYPoint position;
-                                position.x = (int)object->world_x;
-                                position.y = (int)object->world_y;
-                                int id = this->civilian(position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
-                                if (id != -1) {
-                                    if (this->taskBuilder(id, object) == 1) {
-                                        this->lastBuildTime =
-                                            this->md->player->world->world_time;
-                                    }
-                                }
+            case 14:
+                if (this->initialExplorationSatisfied() != 0 &&
+                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     this->wonderInProgressValue != 0 ||
+                     this->wonderBuiltValue != 0)) {
+                    RGE_Static_Object* object = this->md->object(
+                        -1, -1, -1, -1, -1, -1, -1, -1, 0, -1);
+                    if (object != 0) {
+                        RGE_Static_Object* builder = this->md->object(
+                            -1, -1, -1, 0x25a, -1, (int)object->id,
+                            -1, -1, -1, -1);
+                        if (this->wonderInProgressValue != 0 || builder == 0) {
+                            XYPoint position;
+                            position.x = (int)object->world_x;
+                            position.y = (int)object->world_y;
+                            int civilian = this->civilian(
+                                position, 1, 0x2be, 0x2ce, 0x2bc, 0);
+                            if (civilian != -1 &&
+                                this->taskBuilder(civilian, object) == 1) {
+                                this->lastBuildTime =
+                                    this->md->player->world->world_time;
                             }
                         }
                     }
                 }
                 break;
-            }
 
-            case 15: {
-                if (this->initialExplorationSatisfied() != 0) {
-                    if (this->md->numberObjectsWithAction(0x25A) < this->sn[4] ||
-                        this->wonderInProgressValue != 0 ||
-                        this->wonderBuiltValue != 0) {
-                        RGE_Static_Object* object;
-                        if (this->wonderBuiltValue == 1) {
-                            object = this->md->mostDamaged(3, 0x114);
-                        } else {
-                            object = this->md->mostDamaged(3, -1);
-                        }
-                        if (object != 0 && object->object_state == 2) {
-                            RGE_Static_Object* existing = this->md->object(
-                                -1, -1, -1, 0x26A, -1, object->id, -1, -1, -1, -1);
-                            if (existing == 0) {
-                                XYPoint position;
-                                position.x = (int)object->world_x;
-                                position.y = (int)object->world_y;
-                                int id = this->civilian(position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
-                                if (id != -1) {
-                                    this->taskRepairer(id, object);
-                                }
-                            }
-                        }
+            case 15:
+                if (this->initialExplorationSatisfied() != 0 &&
+                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     this->wonderInProgressValue != 0 ||
+                     this->wonderBuiltValue != 0)) {
+                    int type = this->wonderBuiltValue == 1 ? 0x114 : -1;
+                    RGE_Static_Object* object = this->md->mostDamaged(3, type);
+                    if (object != 0 && object->object_state == 2 &&
+                        this->md->object(-1, -1, -1, 0x26a, -1,
+                                         (int)object->id, -1, -1, -1,
+                                         -1) == 0) {
+                        XYPoint position;
+                        position.x = (int)object->world_x;
+                        position.y = (int)object->world_y;
+                        int civilian = this->civilian(
+                            position, 1, 0x2be, 0x2ce, 0x2bc, 0);
+                        if (civilian != -1)
+                            this->taskRepairer(civilian, object);
                     }
                 }
                 break;
-            }
 
-            case 16: {
-                if (this->initialExplorationSatisfied() != 0) {
-                    if (this->md->numberObjectsWithAction(0x25A) < this->sn[4] ||
-                        this->wonderInProgressValue != 0 ||
-                        this->wonderBuiltValue != 0) {
-                        RGE_Static_Object* object = this->md->mostDamaged(0x1B, -1);
-                        if (object != 0 && object->object_state == 2) {
-                            RGE_Static_Object* existing = this->md->object(
-                                -1, -1, -1, 0x26A, -1, object->id, -1, -1, -1, -1);
-                            if (existing == 0) {
-                                XYPoint position;
-                                position.x = (int)object->world_x;
-                                position.y = (int)object->world_y;
-                                int id = this->civilian(position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
-                                if (id != -1) {
-                                    this->taskRepairer(id, object);
-                                }
-                            }
-                        }
+            case 16:
+                if (this->initialExplorationSatisfied() != 0 &&
+                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     this->wonderInProgressValue != 0 ||
+                     this->wonderBuiltValue != 0)) {
+                    RGE_Static_Object* object =
+                        this->md->mostDamaged(0x1b, -1);
+                    if (object != 0 && object->object_state == 2 &&
+                        this->md->object(-1, -1, -1, 0x26a, -1,
+                                         (int)object->id, -1, -1, -1,
+                                         -1) == 0) {
+                        XYPoint position;
+                        position.x = (int)object->world_x;
+                        position.y = (int)object->world_y;
+                        int civilian = this->civilian(
+                            position, 1, 0x2be, 0x2ce, 0x2bc, 0);
+                        if (civilian != -1)
+                            this->taskRepairer(civilian, object);
                     }
                 }
                 break;
-            }
 
-            case 17: {
-                if (this->initialExplorationSatisfied() != 0) {
-                    if ((this->md->numberObjectsWithAction(0x25A) < this->sn[4] ||
-                         this->wonderInProgressValue != 0 ||
-                         this->wonderBuiltValue != 0) &&
-                        this->wonderInProgressValue == 0) {
-                        BuildItem* item = this->md->buildAI.nextBuildableItem(0);
-                        if (item != 0 &&
-                            this->taskBuilder(-1, item, 0, startTime) == 1) {
-                            this->lastBuildTime =
-                                this->md->player->world->world_time;
-                        }
+            case 17:
+                if (this->initialExplorationSatisfied() != 0 &&
+                    (this->md->numberObjectsWithAction(0x25a) < this->sn[4] ||
+                     (this->wonderInProgressValue == 0 &&
+                      this->wonderBuiltValue != 0)) &&
+                    this->wonderInProgressValue == 0) {
+                    BuildItem* item = this->md->buildAI.nextBuildableItem(0);
+                    if (item != 0 &&
+                        this->taskBuilder(-1, item, 0, startTime) == 1) {
+                        this->lastBuildTime =
+                            this->md->player->world->world_time;
                     }
                 }
                 break;
-            }
 
-            case 18: {
+            case 18:
                 if (this->placementStateValue.active == 1) {
                     ConstructionItem* construction =
                         this->md->constructionAI.placeStructure(
                             this->placementStateValue.buildItem,
                             this->placementStateValue.builderID,
-                            this->placementStateValue,
-                            startTime);
-                    if (construction != 0) {
-                        if (this->taskBuilder(this->placementStateValue.builderID,
-                                              this->placementStateValue.buildItem,
-                                              construction, startTime) == 1) {
-                            this->lastBuildTime =
-                                this->md->player->world->world_time;
-                        }
+                            this->placementStateValue, startTime);
+                    if (construction != 0 &&
+                        this->taskBuilder(
+                            this->placementStateValue.builderID,
+                            this->placementStateValue.buildItem,
+                            construction, startTime) == 1) {
+                        this->lastBuildTime =
+                            this->md->player->world->world_time;
                     }
-                    if (this->placementStateValue.active == 1) {
+                    if (this->placementStateValue.active == 1)
                         incUpdateArea = 0;
-                    }
                 }
                 break;
-            }
 
-            case 19: {
+            case 19:
                 this->evaluateOpenTasks();
-                int i = 0;
-                int* difference = this->resourceDifferenceValue;
-                for (; i < 4; ++i, ++difference) {
-                    if (*difference > 0 &&
-                        this->md->resourceAI.resource(i) + *difference < 0) {
+                { int i; for (i = 0; i < 4; i++) {
+                    if (this->resourceDifferenceValue[i] > 0 &&
+                        this->md->resourceAI.resource(i) +
+                                this->resourceDifferenceValue[i] < 0) {
                         this->updateNeededResources();
                         break;
                     }
-                }
+                } }
                 this->checkForCoopTributeDemand();
                 this->checkForCoopTributeGift();
                 this->checkForASAPAgeResearch();
                 this->checkTradeBoats();
                 this->checkStaleAttackGroups();
                 break;
-            }
 
             case 20: {
-                int resource = this->md->informationAI.closestDropsiteResID(0);
-                RGE_Static_Object* object = this->md->object(resource);
-                if (object == 0) {
+                int id = this->md->informationAI.closestDropsiteResID(0);
+                if (this->md->object(id) == 0)
                     this->md->informationAI.updateResourceDropsites(0);
-                }
                 break;
             }
 
-            case 21:
+            case 21: {
                 this->evaluateBuildListInsertions();
-                // Wrap as unsigned, then use signed age division.
-                if (5 < (int)(this->md->player->world->world_time -
-                              this->lastBuildTime) / 60000) {
-                    this->md->buildAI.unskipBuildList(this->builtFirstStoragePit,
-                                                       this->builtFirstGranary);
-                    this->lastBuildTime = this->md->player->world->world_time;
+                if ((int)(this->md->player->world->world_time -
+                          this->lastBuildTime) / 60000 > 5) {
+                    this->md->buildAI.unskipBuildList(
+                        this->builtFirstStoragePit,
+                        this->builtFirstGranary);
+                    this->lastBuildTime =
+                        this->md->player->world->world_time;
                 }
 
-                currentTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xB92);
+                currentTime = debug_timeGetTime(s_file, 0xb92);
                 this->md->player->world->useComputerPlayerUpdateTime(
                     currentTime - startTime);
 
                 this->lastUpdateAreaTimeValue =
                     currentTime - updateAreaStartTime;
-                this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+                this->updateAreaAverageTotal +=
+                    this->lastUpdateAreaTimeValue;
                 this->updateAreaAverageCount++;
                 if (this->updateAreaAverageCount >= 20) {
                     this->averageUpdateAreaTimeValue =
@@ -3002,19 +2968,17 @@ int TribeTacticalAIModule::doSomething()
                     this->updateAreaAverageTotal = 0;
                     this->updateAreaAverageCount = 0;
                 }
-
                 this->updateArea = 0;
                 this->md->player->world->selectNextComputerPlayer(3);
                 return 1;
-
-            default:
-                break;
+            }
             }
 
-            currentTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xBAA);
+            currentTime = debug_timeGetTime(s_file, 0xbaa);
             this->lastUpdateAreaTimeValue =
                 currentTime - updateAreaStartTime;
-            this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
+            this->updateAreaAverageTotal +=
+                this->lastUpdateAreaTimeValue;
             this->updateAreaAverageCount++;
             if (this->updateAreaAverageCount >= 20) {
                 this->averageUpdateAreaTimeValue =
@@ -3022,15 +2986,13 @@ int TribeTacticalAIModule::doSomething()
                 this->updateAreaAverageTotal = 0;
                 this->updateAreaAverageCount = 0;
             }
-
-            if (incUpdateArea != 0) {
+            if (incUpdateArea != 0)
                 this->updateArea++;
-            }
         } while (currentTime - startTime < availableTime);
     }
 
-    currentTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xBC9);
-    this->md->player->world->useComputerPlayerUpdateTime(currentTime - startTime);
+    unsigned long endTime = debug_timeGetTime(s_file, 0xbc9);
+    this->md->player->world->useComputerPlayerUpdateTime(endTime - startTime);
     return 1;
 }
 

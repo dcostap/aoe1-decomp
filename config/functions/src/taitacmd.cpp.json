@@ -83,7 +83,7 @@
     "004EF4D0": {"status": "matching", "symbol": "?setMainDecisionAI@TribeTacticalAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
     "004EF4E0": {"status": "scratch", "symbol": "?save@TribeTacticalAIModule@@UAEHH@Z"},
     "004F0180": {"status": "matching", "symbol": "?logGroupDebug@TribeTacticalAIModule@@QAAXHPADZZ"},
-    "004F0190": {"status": "scratch", "symbol": "?doSomething@TribeTacticalAIModule@@QAEHXZ"},
+    "004F0190": {"status": "new_verified_logic", "symbol": "?doSomething@TribeTacticalAIModule@@QAEHXZ", "behavior_review": ["logic_matching/004F0190/review-coord-13-round-02-a/attempt-01", "logic_matching/004F0190/review-coord-13-round-02-b/attempt-01"]},
     "004F0BC0": {"status": "matching", "symbol": "?clearArea@TribeTacticalAIModule@@QAEHHMMMM@Z"},
     "004F0D70": {"status": "new_verified_logic", "symbol": "?addObject@TribeTacticalAIModule@@QAEXPAVRGE_Static_Object@@@Z", "behavior_review": "logic_matching/004F0D70/review-01/attempt-01"},
     "004F1090": {"status": "matching", "symbol": "?removeObject@TribeTacticalAIModule@@QAEXH@Z"},
