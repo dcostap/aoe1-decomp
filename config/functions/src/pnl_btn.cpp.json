@@ -41,7 +41,7 @@
     "00472830": {"status": "matching", "symbol": "?get_id2@TButtonPanel@@QAEJXZ"},
     "00472840": {"status": "matching", "symbol": "?get_text@TButtonPanel@@QAEHFPAPAD0@Z"},
     "00472880": {"status": "matching", "symbol": "?get_text_color@TButtonPanel@@QAEXFPAK0@Z"},
-    "004728C0": {"status": "scratch", "symbol": "?draw@TButtonPanel@@UAEXXZ"},
+    "004728C0": {"status": "new_verified_logic", "symbol": "?draw@TButtonPanel@@UAEXXZ", "behavior_review": "logic_matching/004728C0/coord-15-004728C0-review-02A/attempt-02A"},
     "00473120": {"status": "matching", "symbol": "?handle_mouse_down@TButtonPanel@@UAEJEJJHH@Z"},
     "00473180": {"status": "matching", "symbol": "?mouse_left_dbl_click_action@TButtonPanel@@UAEJJJHH@Z"},
     "00473190": {"status": "matching", "symbol": "?mouse_left_down_action@TButtonPanel@@UAEJJJHH@Z"},

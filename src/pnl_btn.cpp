@@ -440,225 +440,233 @@ __declspec(dllimport) int __stdcall TextOutA(void* hdc, int x, int y, const char
 
 
 
-void TButtonPanel::draw()
-{
-    long x_min, y_min, x_max, y_max;
-    int text_len;
+void TButtonPanel::draw() {
+    long x;
+    long y;
+    long calc_x;
+    long x_min;
+    long x_max;
+    long y_min;
+    long y_max;
+    void* old_font;
+    SIZE text_size;
+    short text_length;
     char* text;
-    long x, y;
-    long calc_x, calc_y;
 
-    if (this->render_area == 0 || this->visible == 0 || this->active == 0 ||
-        this->drawTypeValue == 1) {
-        this->need_redraw = 0;
+    if (render_area == 0 || visible == 0 || active == 0 ||
+        drawTypeValue == DrawClear) {
+        need_redraw = 0;
         return;
     }
 
-    if (this->drawTypeValue == 5) {
-        this->render_area->Clear(&this->clip_rect, this->color);
-    } else {
-        TPanel* parent = this->parent_panel;
-        if (parent != 0) {
-            if (this->bevel_type >= 2 && this->bevel_type <= 4) {
-                parent->draw_rect2(&this->clip_rect);
-            } else if (parent->just_drawn == 0) {
-                parent->draw_rect(&this->clip_rect);
-            }
+    if (drawTypeValue == DrawFillAndText) {
+        render_area->Clear(&clip_rect, color);
+    } else if (parent_panel != 0) {
+        if (bevel_type >= 2 && bevel_type <= 4) {
+            parent_panel->draw_rect2(&clip_rect);
+        } else if (parent_panel->just_drawn == 0) {
+            parent_panel->draw_rect(&clip_rect);
         }
     }
 
-    this->draw_setup(0);
+    draw_setup(0);
 
-    if (this->drawTypeValue == 2 || this->drawTypeValue == 4 ||
-        this->drawTypeValue == 6) {
-        if (this->render_area->Lock(s_pnl_btn_draw, 1) != 0) {
-            if (this->pic[this->cur_state] != 0) {
-                if (this->auto_pic_pos != 0) {
-                    this->pic[this->cur_state]->shape_minmax(
-                        x_min, y_min, x_max, y_max,
-                        this->pic_index[this->cur_state]);
-                    this->pic_x = (short)((this->pnl_wid / 2) -
-                                          (((x_max - x_min) + 1) / 2) - x_min);
-                    this->pic_y = (short)((this->pnl_hgt / 2) -
-                                          (((y_max - y_min) + 1) / 2) - y_min);
+    if (drawTypeValue == DrawPicture ||
+        drawTypeValue == DrawPictureAndText ||
+        drawTypeValue == DrawBevelPicture) {
+        if (render_area->Lock(s_pnl_btn_draw, 1) != 0) {
+            if (pic[cur_state] != 0) {
+                if (auto_pic_pos != 0) {
+                    pic[cur_state]->shape_minmax(
+                        x_min, y_min, x_max, y_max, pic_index[cur_state]);
+                    pic_x = (short)(pnl_wid / 2 -
+                                    (x_max - x_min + 1) / 2 - x_min);
+                    pic_y = (short)(pnl_hgt / 2 -
+                                    (y_max - y_min + 1) / 2 - y_min);
                 }
-                y = this->pic_y + this->pnl_y;
-                x = this->pic_x + this->pnl_x;
-                if (((this->draw_reverse == 0) && (this->is_down != 0)) ||
-                    ((this->draw_reverse != 0) && (this->is_down == 0))) {
-                    x = x + 1;
-                    y = y - 1;
+
+                x = pic_x + pnl_x;
+                y = pic_y + pnl_y;
+                if ((draw_reverse == 0 && is_down != 0) ||
+                    (draw_reverse != 0 && is_down == 0)) {
+                    ++x;
+                    --y;
                 }
-                this->pic[this->cur_state]->shape_draw(
-                    this->render_area, x, y,
-                    this->pic_index[this->cur_state], 0, 0);
+                pic[cur_state]->shape_draw(
+                    render_area, x, y, pic_index[cur_state], 0, 0);
             }
-            this->render_area->Unlock(s_pnl_btn_draw);
+            render_area->Unlock(s_pnl_btn_draw);
         }
     }
 
-    if (this->drawTypeValue == 3 || this->drawTypeValue == 4 ||
-        this->drawTypeValue == 5) {
-        void* dc = this->render_area->GetDc(s_pnl_btn_draw);
+    if (drawTypeValue == DrawText ||
+        drawTypeValue == DrawPictureAndText ||
+        drawTypeValue == DrawFillAndText) {
+        void* dc = render_area->GetDc(s_pnl_btn_draw);
         if (dc != 0) {
-            SelectClipRgn(dc, this->clip_rgn);
-            void* old_font = SelectObject(dc, this->font);
+            SelectClipRgn(dc, clip_rgn);
+            old_font = SelectObject(dc, font);
             SetBkMode(dc, 1);
 
-            calc_x = this->text_x;
+            calc_x = text_x;
             if (calc_x == -1) {
-                calc_x = this->pnl_wid / 2;
+                calc_x = pnl_wid / 2;
             }
-            calc_y = this->text_y;
-            if (calc_y == -1) {
-                calc_y = this->pnl_hgt / 2;
+            y = text_y;
+            if (y == -1) {
+                y = pnl_hgt / 2;
             }
 
-            if (this->text1[this->cur_state] != 0) {
-                text = this->text1[this->cur_state];
-            } else {
-                text = this->text1[0];
+            text = text1[cur_state];
+            if (text == 0) {
+                text = text1[0];
             }
             if (text != 0) {
-                text_len = (short)strlen(text);
-                tagSIZE text_size;
-                GetTextExtentPoint32A(dc, text, text_len, &text_size);
-                x = (calc_x - text_size.cx / 2) + this->pnl_x;
-                if (this->text2[this->cur_state] != 0) {
-                    y = (calc_y - this->font_hgt) + this->pnl_y;
+                text_length = (short)strlen(text);
+                GetTextExtentPoint32A(dc, text, text_length, &text_size);
+                long text_x_pos = calc_x - text_size.cx / 2 + pnl_x;
+                long text_y_pos;
+                if (text2[cur_state] != 0) {
+                    text_y_pos = y - font_hgt + pnl_y;
                 } else {
-                    y = (calc_y - this->font_hgt / 2) + this->pnl_y;
-                }
-                if (this->draw_reverse == 0) {
-                    if (this->is_down != 0) {
-                        x = x + 1;
-                        y = y - 1;
-                    }
-                } else if (this->is_down == 0) {
-                    x = x + 1;
-                    y = y - 1;
-                }
-                if (this->have_focus != 0) {
-                    SetTextColor(dc, this->highlight_text_color2[this->cur_state]);
-                    TextOutA(dc, x - 1, y + 1, text, text_len);
-                    SetTextColor(dc, this->highlight_text_color1[this->cur_state]);
-                    TextOutA(dc, x, y, text, text_len);
-                } else {
-                    SetTextColor(dc, this->text_color2[this->cur_state]);
-                    TextOutA(dc, x - 1, y + 1, text, text_len);
-                    SetTextColor(dc, this->text_color1[this->cur_state]);
-                    TextOutA(dc, x, y, text, text_len);
+                    text_y_pos = y - font_hgt / 2 + pnl_y;
                 }
 
-                if (this->text2[this->cur_state] != 0) {
-                    text = this->text2[this->cur_state];
+                if ((draw_reverse == 0 && is_down != 0) ||
+                    (draw_reverse != 0 && is_down == 0)) {
+                    ++text_x_pos;
+                    --text_y_pos;
+                }
+
+                if (have_focus == 0) {
+                    SetTextColor(dc, text_color2[cur_state]);
+                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
+                             text_length);
+                    SetTextColor(dc, text_color1[cur_state]);
+                    TextOutA(dc, text_x_pos, text_y_pos, text, text_length);
                 } else {
-                    text = this->text2[0];
+                    SetTextColor(dc, highlight_text_color2[cur_state]);
+                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
+                             text_length);
+                    SetTextColor(dc, highlight_text_color1[cur_state]);
+                    TextOutA(dc, text_x_pos, text_y_pos, text, text_length);
+                }
+
+                text = text2[cur_state];
+                if (text == 0) {
+                    text = text2[0];
                 }
                 if (text != 0) {
-                    text_len = (short)strlen(text);
-                    GetTextExtentPoint32A(dc, text, text_len, &text_size);
-                    x = (calc_x - text_size.cx / 2) + this->pnl_x;
-                    y = calc_y + this->pnl_y;
-                    if (this->draw_reverse == 0) {
-                        if (this->is_down != 0) {
-                            x = x + 1;
-                            y = y - 1;
-                        }
-                    } else if (this->is_down == 0) {
-                        x = x + 1;
-                        y = y - 1;
+                    text_length = (short)strlen(text);
+                    GetTextExtentPoint32A(dc, text, text_length, &text_size);
+                    text_x_pos = calc_x - text_size.cx / 2 + pnl_x;
+                    text_y_pos = y + pnl_y;
+
+                    if ((draw_reverse == 0 && is_down != 0) ||
+                        (draw_reverse != 0 && is_down == 0)) {
+                        ++text_x_pos;
+                        --text_y_pos;
                     }
-                    if (this->have_focus != 0) {
-                        SetTextColor(dc, this->highlight_text_color2[this->cur_state]);
-                        TextOutA(dc, x - 1, y + 1, text, text_len);
-                        SetTextColor(dc, this->highlight_text_color1[this->cur_state]);
-                        TextOutA(dc, x, y, text, text_len);
+
+                    if (have_focus == 0) {
+                        SetTextColor(dc, text_color2[cur_state]);
+                        TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
+                                 text_length);
+                        SetTextColor(dc, text_color1[cur_state]);
+                        TextOutA(dc, text_x_pos, text_y_pos, text,
+                                 text_length);
                     } else {
-                        SetTextColor(dc, this->text_color2[this->cur_state]);
-                        TextOutA(dc, x - 1, y + 1, text, text_len);
-                        SetTextColor(dc, this->text_color1[this->cur_state]);
-                        TextOutA(dc, x, y, text, text_len);
+                        SetTextColor(dc, highlight_text_color2[cur_state]);
+                        TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
+                                 text_length);
+                        SetTextColor(dc, highlight_text_color1[cur_state]);
+                        TextOutA(dc, text_x_pos, text_y_pos, text,
+                                 text_length);
                     }
                 }
             }
+
             SelectObject(dc, old_font);
             SelectClipRgn(dc, 0);
-            this->render_area->ReleaseDc(s_pnl_btn_draw);
+            render_area->ReleaseDc(s_pnl_btn_draw);
         }
     }
 
-    if (this->drawTypeValue == 3 || this->drawTypeValue == 4 ||
-        this->drawTypeValue == 5 || this->drawTypeValue == 6) {
-        if (this->render_area->Lock(s_pnl_btn_draw2, 1) != 0) {
-            if (this->disabled != 0) {
-                this->render_area->DrawRect(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color6);
-                this->render_area->DrawRect(this->pnl_x + 1, this->pnl_y + 1,
-                        this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2,
-                        this->bevel_color1);
-            } else if (((this->draw_reverse == 0) && (this->is_down != 0)) ||
-                       ((this->draw_reverse != 0) && (this->is_down == 0))) {
-                switch (this->bevel_type) {
+    if (drawTypeValue == DrawText ||
+        drawTypeValue == DrawPictureAndText ||
+        drawTypeValue == DrawFillAndText ||
+        drawTypeValue == DrawBevelPicture) {
+        if (render_area->Lock(s_pnl_btn_draw2, 1) != 0) {
+            if (disabled != 0) {
+                render_area->DrawRect(
+                    pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                    pnl_y + pnl_hgt - 1, bevel_color6);
+                render_area->DrawRect(
+                    pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2,
+                    pnl_y + pnl_hgt - 2, bevel_color1);
+            } else if ((draw_reverse == 0 && is_down == 0) ||
+                       (draw_reverse != 0 && is_down != 0)) {
+                switch (bevel_type) {
                 case 1:
-                    this->render_area->DrawRect(this->pnl_x + 1, this->pnl_y + 1,
-                        this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2, 0xFF);
+                    render_area->DrawVertLine(
+                        pnl_x + pnl_wid - 1, pnl_y + 1, pnl_hgt - 1, 0);
+                    render_area->DrawHorzLine(
+                        pnl_x + 1, pnl_y + pnl_hgt - 1, pnl_wid - 1, 0);
+                    render_area->DrawRect(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 2,
+                        pnl_y + pnl_hgt - 2, 0xFF);
                     break;
                 case 2:
-                    this->render_area->DrawBevel(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color6, this->bevel_color1);
+                    render_area->DrawBevel(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                        pnl_y + pnl_hgt - 1, bevel_color1, bevel_color6);
                     break;
                 case 3:
-                    this->render_area->DrawBevel21(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color6, this->bevel_color5,
-                        this->bevel_color2, this->bevel_color1);
+                    render_area->DrawBevel2(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                        pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
+                        bevel_color5, bevel_color6);
                     break;
                 case 4:
-                    this->render_area->DrawBevel32(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color6, this->bevel_color5, this->bevel_color4,
-                        this->bevel_color3, this->bevel_color2, this->bevel_color1);
+                    render_area->DrawBevel3(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                        pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
+                        bevel_color3, bevel_color4, bevel_color5,
+                        bevel_color6);
                     break;
                 }
             } else {
-                switch (this->bevel_type) {
+                switch (bevel_type) {
                 case 1:
-                    this->render_area->DrawVertLine(
-                        this->pnl_x + this->pnl_wid - 1,
-                        this->pnl_y + 1, this->pnl_hgt - 1, 0);
-                    this->render_area->DrawHorzLine(
-                        this->pnl_x + 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->pnl_wid - 1, 0);
-                    this->render_area->DrawRect(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2, 0xFF);
+                    render_area->DrawRect(
+                        pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2,
+                        pnl_y + pnl_hgt - 2, 0xFF);
                     break;
                 case 2:
-                    this->render_area->DrawBevel(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color1, this->bevel_color6);
+                    render_area->DrawBevel(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                        pnl_y + pnl_hgt - 1, bevel_color6, bevel_color1);
                     break;
                 case 3:
-                    this->render_area->DrawBevel2(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color3, this->bevel_color4,
-                        this->bevel_color5, this->bevel_color6);
+                    render_area->DrawBevel21(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                        pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
+                        bevel_color2, bevel_color1);
                     break;
                 case 4:
-                    this->render_area->DrawBevel3(this->pnl_x, this->pnl_y,
-                        this->pnl_x + this->pnl_wid - 1, this->pnl_y + this->pnl_hgt - 1,
-                        this->bevel_color1, this->bevel_color2, this->bevel_color3,
-                        this->bevel_color4, this->bevel_color5, this->bevel_color6);
+                    render_area->DrawBevel32(
+                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                        pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
+                        bevel_color4, bevel_color3, bevel_color2,
+                        bevel_color1);
                     break;
                 }
             }
-            this->render_area->Unlock(s_pnl_btn_draw2);
+            render_area->Unlock(s_pnl_btn_draw2);
         }
     }
 
-    this->draw_finish();
+    draw_finish();
 }
 
 // 00473120_handle_mouse_down.cpp
