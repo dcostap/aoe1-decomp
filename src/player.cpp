@@ -104,17 +104,18 @@ RGE_Player::RGE_Player(int file, RGE_Game_World* world_arg,
     this->checksum = 0;
 }
 
-RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
+RGE_Player::RGE_Player(RGE_Game_World* world_arg,
+                       RGE_Master_Player* master_player,
                        unsigned char player_id, char* player_name,
-                       unsigned char master_id, unsigned char is_computer)
+                       unsigned char master_player_id,
+                       unsigned char make_visible)
     : computerPlayerValue(0), pathingAttemptCapValue(5),
-      pathingDelayCapValue(10), tile_list(400), diam_tile_list(400)
-{
+      pathingDelayCapValue(10), tile_list(400), diam_tile_list(400) {
     this->pathingAttemptCapValue = pathingCapValue;
-    this->master_player_id = master_id;
+    this->master_player_id = master_player_id;
     this->type = 0;
-    this->world = world;
-    this->id = (short)player_id;
+    this->world = world_arg;
+    this->id = player_id;
     this->reset_selected();
 
     this->name = 0;
@@ -122,24 +123,18 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
         getstring(&this->name, player_name);
     }
 
-    this->relations = (unsigned char*)calloc(1, (int)this->world->player_num);
-    for (int i = 0; i < 9; ++i) {
-        this->unitDiplomacy[i] = -1;
-    }
-
-    short relation_index = 0;
-    if (this->world->player_num > 0) {
-        do {
-            this->relations[relation_index] = 1;
-            if (relation_index == this->id) {
-                this->unitDiplomacy[relation_index] = 1;
-            } else if (relation_index == 0) {
-                this->unitDiplomacy[0] = 0;
-            } else {
-                this->unitDiplomacy[relation_index] = 3;
-            }
-            ++relation_index;
-        } while (relation_index < this->world->player_num);
+    this->relations = (unsigned char*)calloc(
+        1, (int)this->world->player_num);
+    memset(this->unitDiplomacy, -1, sizeof(this->unitDiplomacy));
+    for (short i = 0; i < this->world->player_num; ++i) {
+        this->relations[i] = 1;
+        if (i == this->id) {
+            this->unitDiplomacy[i] = 1;
+        } else if (i == 0) {
+            this->unitDiplomacy[0] = 0;
+        } else {
+            this->unitDiplomacy[i] = 3;
+        }
     }
 
     this->mutualExploredMask = 0;
@@ -148,28 +143,24 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
     this->allied_LOS_Enable = 0;
     this->allied_victory = 0;
 
-    this->master_object_num = master->master_object_num;
+    this->master_object_num = master_player->master_object_num;
     if (this->master_object_num > 0) {
         this->master_objects = (RGE_Master_Static_Object**)calloc(
             (int)this->master_object_num, 4);
-        short master_index = 0;
-        if (this->master_object_num > 0) {
-            do {
-                if (master->master_objects[master_index] != 0) {
-                    this->master_objects[master_index] =
-                        master->master_objects[master_index]->make_new_master();
-                }
-                ++master_index;
-            } while (master_index < this->master_object_num);
+        for (short i = 0; i < this->master_object_num; ++i) {
+            if (master_player->master_objects[i] != 0) {
+                this->master_objects[i] =
+                    master_player->master_objects[i]->make_new_master();
+            }
         }
     }
 
-    if (is_computer != 0) {
+    if (make_visible != 0) {
         this->objects = new RGE_Object_List;
         this->sleeping_objects = new RGE_Object_List;
         this->doppleganger_objects = new RGE_Object_List;
         this->new_victory();
-        this->visible = new RGE_Visible_Map(world->map, this);
+        this->visible = new RGE_Visible_Map(world_arg->map, this);
     } else {
         this->objects = 0;
         this->sleeping_objects = 0;
@@ -178,30 +169,29 @@ RGE_Player::RGE_Player(RGE_Game_World* world, RGE_Master_Player* master,
         this->visible = 0;
     }
 
-    this->doppleganger_creator = new RGE_Doppleganger_Creator(this, 100);
+    this->doppleganger_creator =
+        new RGE_Doppleganger_Creator(this, 100);
 
-    this->attribute_num = master->attribute_num;
+    this->attribute_num = master_player->attribute_num;
     if (this->attribute_num > 0) {
         this->attributes = (float*)calloc((int)this->attribute_num, 4);
-        memcpy(this->attributes, master->attributes,
+        memcpy(this->attributes, master_player->attributes,
                (int)this->attribute_num * 4);
     } else {
         this->attributes = 0;
     }
+    this->culture = master_player->culture;
 
-    this->culture = master->culture;
-    this->set_view_loc(
-        (float)(this->world->map->map_width / 2),
-        (float)(this->world->map->map_height / 2));
-    this->set_map_loc(
-        (short)(this->world->map->map_width / 2),
-        (short)(this->world->map->map_height / 2));
+    this->set_view_loc((float)(this->world->map->map_width / 2),
+                       (float)(this->world->map->map_height / 2));
+    this->set_map_loc((short)(this->world->map->map_width / 2),
+                      (short)(this->world->map->map_height / 2));
 
     this->game_status = 0;
     this->resigned = 0;
     this->color_table = 0;
-    this->tribe_effect = master->tribe_effect;
-    if (is_computer != 0 && this->tribe_effect >= 0) {
+    this->tribe_effect = (long)master_player->tribe_effect;
+    if (make_visible != 0 && this->tribe_effect >= 0) {
         this->world->effects->do_effect((short)this->tribe_effect, this);
     }
 
