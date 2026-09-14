@@ -118,6 +118,8 @@ python tools/build_executable.py
 The executable links. This does not prove complete source recovery or game behavior.
 See `docs/executable_build.md` for inputs, reports, and remaining requirements.
 See `docs/reference_validation.md` for linked checks and unresolved emission audits.
+See `docs/linked_image_diff.md` for whole-file differences and partial address-aware comparisons.
+See `docs/image_dependency_audit.md` for static constant, reference, and initial-data checks.
 See `docs/reference_builds.md` for older-build searches and named disassembly.
 
 For one-command builds, shared assets, windowed play, and menu comparisons, see [the runtime harness](docs/runtime_harness.md).

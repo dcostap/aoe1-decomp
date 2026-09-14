@@ -11,11 +11,14 @@ import function_compare  # noqa: E402
 
 
 @pytest.mark.parametrize('unknown_targets', [[], [{'reason': 'missing original identity'}]])
-def test_grouped_compare_uses_resolved_parent_extent(monkeypatch, unknown_targets) -> None:
+@pytest.mark.parametrize('dependency_fails', [False, True])
+def test_grouped_compare_uses_resolved_parent_extent(monkeypatch, unknown_targets, dependency_fails) -> None:
     symbol = SimpleNamespace(name="?target@@YAXXZ", index=1, section_number=1)
     section = SimpleNamespace(data=b"\x90" * 10, relocations=[])
     obj = SimpleNamespace(symbols=[])
     observed = {}
+    monkeypatch.setattr(function_compare, 'compare_object_dependencies',
+                        lambda *args: {'counts': {'fail': 1} if dependency_fails else {'unknown': 1}})
 
     monkeypatch.setattr(
         function_compare,
@@ -75,4 +78,5 @@ def test_grouped_compare_uses_resolved_parent_extent(monkeypatch, unknown_target
     assert result["original_size"] == 10
     assert result["rebuilt_size"] == 10
     assert result["boundary_escape_offsets"] == []
-    assert result["result"] == ('MISMATCH' if unknown_targets else 'MATCH')
+    assert result['instruction_result'] == ('MISMATCH' if unknown_targets else 'MATCH')
+    assert result["result"] == ('MISMATCH' if unknown_targets or dependency_fails else 'MATCH')

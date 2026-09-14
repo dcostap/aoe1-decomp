@@ -6,6 +6,10 @@ Keep three results separate:
 2. Actual linked function and storage destinations.
 3. Reviewed initial bytes and pointer fields.
 
+Normal local and grouped checks also inspect supported numeric operands in the complete compiled object.
+They report instruction agreement separately from dependency results. A proved constant difference blocks `MATCH`.
+Unknown external storage still requires the linked checks in `image_dependency_audit.md`.
+
 No current tool proves complete game behavior or complete storage coverage.
 
 ## Strict local direct targets
@@ -22,7 +26,7 @@ Missing or conflicting original symbols produce explicit unknown results and pre
 Nonzero direct-call relocation addends also require more evidence.
 External transfers without COFF symbol relocations cannot establish exactness.
 
-Storage relocations remain explicit coverage gaps in local reports.
+Unsupported storage relocations remain explicit coverage gaps in local reports.
 Their address-byte comparison does not prove storage ownership or initial values.
 Use the linked audits for those separate checks.
 

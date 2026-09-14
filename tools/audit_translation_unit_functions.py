@@ -164,7 +164,11 @@ def classify(
             action = "review_for_promotion"
             reason = "A non-matching function now produces an exact result."
     elif result == "MISMATCH":
-        if relocation_unknowns:
+        if (comparison.get('dependencies') or {}).get('counts', {}).get('fail'):
+            category = 'matching_regression' if matching_here else 'dependency_difference'
+            action = 'review_referenced_numeric_values'
+            reason = 'Referenced numeric bytes differ, even if the instruction bytes agree.'
+        elif relocation_unknowns:
             category = "reference_evidence_gap"
             action = "establish_original_target_identity"
             reason = "Direct target evidence is incomplete; exactness is not proved. Other byte differences can also remain."
@@ -302,6 +306,8 @@ def compile_and_compare_group(
             assert isinstance(owner, dict)
             comparison: dict[str, object] = {
                 "result": result["result"],
+                "instruction_result": result.get("instruction_result", result["result"]),
+                "dependencies": result.get("dependencies", {}),
                 "diff_bytes": result["diff_bytes"],
                 "diff_percent": result["diff_percent"],
                 "edit_diff_bytes": result["edit_diff_bytes"],
@@ -378,6 +384,8 @@ def compile_and_compare_group(
                 "previous_result": status.get("diff_result") or "UNKNOWN",
                 "previous_diff_bytes": status.get("diff_bytes") or "",
                 "grouped_result": comparison["result"],
+                "instruction_result": comparison.get("instruction_result", "UNKNOWN"),
+                "dependencies": comparison.get("dependencies", {}),
                 "grouped_diff_bytes": comparison["diff_bytes"],
                 "grouped_diff_percent": comparison["diff_percent"],
                 "grouped_edit_diff_bytes": comparison["edit_diff_bytes"],

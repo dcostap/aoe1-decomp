@@ -50,7 +50,8 @@ def decode(pe, va, size):
                 signature[offset + ins.imm_offset:offset + ins.imm_offset + ins.imm_size] = bytes(ins.imm_size)
         for field, width in ((ins.disp_offset, ins.disp_size), (ins.imm_offset, ins.imm_size)):
             absolute_memory = field == ins.disp_offset and any(
-                op.type == X86_OP_MEM and op.mem.base == 0 and op.mem.index == 0
+                op.type == X86_OP_MEM and op.mem.base == 0
+                and (op.mem.index == 0 or (ins.mnemonic == 'jmp' and op.mem.scale == 4))
                 and op.mem.segment == 0 for op in ins.operands)
             if width == 4 and (absolute_memory or ins.address + field in relocations):
                 position = offset + field

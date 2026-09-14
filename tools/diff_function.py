@@ -1032,6 +1032,19 @@ def main() -> None:
         and not relocation_validation.get("target_unknowns")
         and owner_symbol_mismatch is None
     )
+    from coff import load_coff_object
+    from extract_obj_function import select_exact_function_symbol
+    from object_dependencies import compare_object_dependencies, summary as dependency_summary
+    object_path = Path(str(rebuilt_meta.get('object') or ''))
+    if object_path.is_file():
+        obj = load_coff_object(object_path)
+        owner = select_exact_function_symbol(obj, str((rebuilt_meta.get('symbol') or {}).get('name') or ''))
+        dependencies = compare_object_dependencies(obj, owner, original_bytes, rebuilt_bytes, va,
+                                                   masked_original == masked_rebuilt)
+    else:
+        dependencies = dependency_summary([dict(result='unknown', reason='complete object is unavailable')])
+    instruction_result = 'MATCH' if exact else 'MISMATCH'
+    exact = exact and not dependencies['counts'].get('fail')
     mismatch_classification = classify_mismatch(
         original_instructions,
         rebuilt_instructions,
@@ -1080,7 +1093,9 @@ def main() -> None:
         "relocation_target_mismatches": actionable_target_mismatches,
         "relocation_target_unknowns": relocation_validation.get("target_unknowns", []),
         "storage_reference_checks": relocation_validation.get("data_references", []),
-        "validation_scope": "Function bytes, owner, boundary, and direct symbols. Linked storage and initial data require separate checks.",
+        "instruction_result": instruction_result,
+        "dependencies": dependencies,
+        "validation_scope": "Function bytes, owner, boundary, direct symbols, and supported object-local numeric operands. Linked storage and initial data require separate checks.",
         "validation_fingerprint": validation_fingerprint(),
         "owning_symbol_validation": owner_symbol_validation,
         "rebuilt_extraction": rebuilt_meta,
@@ -1171,6 +1186,12 @@ def main() -> None:
         summary.append(_format_changed_ranges("Assembly-closer ranges", improved_ranges))
         summary.append(_format_changed_ranges("Assembly-farther ranges", regressed_ranges))
 
+    summary.append(f"Instructions and direct symbols: {instruction_result}")
+    summary.append(f"Numeric dependencies: {dependencies['result'].upper()} {dependencies['counts']}")
+    summary.append('Linked globals and tables: UNKNOWN (run audit_image_dependencies.py)')
+    for row in dependencies['rows']:
+        if row['result'] == 'fail':
+            summary.append(f"  Constant +{row['offset']:X}: {row['original_hex']} -> {row['rebuilt_hex']}")
     summary.append(f"Result: {'MATCH' if exact else 'MISMATCH'}")
     if mismatch is not None:
         summary.append(f"First strict mismatch: +{mismatch:04X} (VA {va + mismatch:08X})")

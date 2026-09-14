@@ -37,6 +37,7 @@ def parse_args() -> argparse.Namespace:
             "This is the authoritative local exactness check. MATCH requires positional byte\n"
             "equality, the original reachable boundary, a provable owning function symbol,\n"
             "and known direct-control symbol identity.\n"
+            "Supported object-local numeric dependencies must also agree. Unknown linked data stays separate.\n"
             "A completed MISMATCH normally exits with status 1; inspect the report.\n"
             "\n"
             "The default build path uses fingerprinted cache entries. Diagnostic-only reuse\n"

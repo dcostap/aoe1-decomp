@@ -25,6 +25,7 @@ from extract_obj_function import (
     select_record_function_symbol,
 )
 from function_diagnostics import compatible_relocation_masks, owning_function_symbol_validation
+from object_dependencies import compare_object_dependencies
 
 
 def _configured_symbol(module: dict[str, object], va: int) -> str:
@@ -129,11 +130,16 @@ def compare_object_function(
         and not extent["has_code_overflow"]
         and (owner_match or not require_owner)
     )
+    dependencies = compare_object_dependencies(obj, symbol, original, rebuilt, va, masked_original == masked_rebuilt)
+    instruction_result = "MATCH" if exact else "MISMATCH"
+    exact = exact and not dependencies['counts'].get('fail')
     return {
         "va": f"{va:08X}",
         "name": record["name"],
         "symbol": symbol.name,
         "result": "MATCH" if exact else "MISMATCH",
+        "instruction_result": instruction_result,
+        "dependencies": dependencies,
         "diff_bytes": metrics["diff_bytes"],
         "diff_percent": metrics["diff_percent"],
         "edit_diff_bytes": metrics.get("edit_diff_bytes", metrics["diff_bytes"]),

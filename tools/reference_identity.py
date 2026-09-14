@@ -72,7 +72,8 @@ def check_direct_identity(target: int, actual: str) -> dict:
 @lru_cache(maxsize=1)
 def validation_fingerprint() -> str:
     """Invalidate old code-check reports when checks or original evidence change."""
-    names = ['tools/reference_identity.py', 'tools/function_diagnostics.py',
+    names = ['tools/dependency_values.py', 'tools/object_dependencies.py', 'tools/audit_image_dependencies.py',
+             'tools/reference_identity.py', 'tools/function_diagnostics.py',
              'tools/function_compare.py', 'tools/extract_obj_function.py',
              'tools/extract_original_function.py', 'tools/common.py', 'tools/coff.py',
              'tools/original_fpo.py', 'inventory/original_executable_fpo.txt',
