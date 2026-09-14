@@ -125,6 +125,33 @@ def test_prepare_locates_unambiguous_definition_without_orchestrator_source_revi
     assert br.load_json(wave / "wave.json")["removal"]["start_line"] == 2
 
 
+def test_current_source_candidate_is_unchanged_compiled_and_not_an_agent(repo, tmp_path):
+    def compile_input(workspace, target, **kwargs):
+        if kwargs.get('blank_target') is False:
+            assert (workspace/'src/sample.cpp').read_bytes() == SOURCE
+            br.write_files(workspace, {'build/manifests/build_sample.json': b'{"returncode":0}\n'})
+        return {'compiler_files': {}}
+    args = argparse.Namespace(repo=repo, destination=tmp_path/'seed', base='HEAD', va=VA,
+        start_line=None, end_line=None, store=tmp_path/'store', wave_name='seed-current', current_source=True)
+    with patch.object(br, 'preflight', side_effect=compile_input):
+        wave = br.prepare(args)
+    meta, files = br.load_input(wave)
+    attempt = wave/'current-source'
+    result = br.load_json(attempt/'attempt.json')
+    assert result['mode'] == 'current-source' and result['state'] == 'complete'
+    assert result['model'] is None and result['agent_id'] is None and result['thinking'] is None
+    assert result['source_origin']['commit'] == meta['main_base']
+    assert b'BEHAVIOR_RECOVERY_UNIMPLEMENTED' in files['src/sample.cpp']
+    assert not br.git(args.destination, 'status', '--porcelain').strip()
+    reviewer = tmp_path/'reviewer'
+    with patch.object(br, 'preflight', return_value={'compiler_files': {}}):
+        review_wave = br.review(argparse.Namespace(repo=repo, attempt=[attempt], destination=reviewer,
+                                                  store=tmp_path/'store', wave_name='review-current'))
+    br.git(reviewer, 'apply', '--index', 'deliverables/delivery-01/source.patch')
+    assert (reviewer/'src/sample.cpp').read_bytes() == SOURCE
+    assert br.load_json(review_wave/'wave.json')['mode'] == 'review'
+
+
 def test_locator_uses_decompiler_parameter_count_for_overloads():
     source = (b"int sample(int x)\n{\n    return x;\n}\n"
               b"int sample(int x, int y)\n{\n    return x + y;\n}\n")

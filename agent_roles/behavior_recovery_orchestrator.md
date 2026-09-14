@@ -97,6 +97,13 @@ Do not use byte output to select the review parent.
 
 ## First review
 
+When the user requests review of current source, skip reconstruction agents.
+Use `prepare --current-source` with the committed base and a fresh seed workspace.
+The tool archives the unchanged implementation as `current-source/` after compilation.
+Its metadata identifies committed source, not an agent or a semantic approval.
+Pass that archive to `review`. The normal review and dual-review rules still apply.
+Do not rewrite the current implementation before this first review.
+
 After all reconstruction deliveries arrive, prepare one fresh reviewer workspace with all complete attempts:
 
 ```text

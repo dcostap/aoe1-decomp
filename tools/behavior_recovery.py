@@ -526,7 +526,7 @@ def target_from_files(files, va):
                 flags=f"config/flags/{build['flags']}.rsp")
 
 
-def preflight(workspace, target):
+def preflight(workspace, target, *, blank_target=None):
     for tool in ("build_function.py", "extract_original_function.py", "extract_obj_function.py", "query_abi.py"):
         run([sys.executable, f"tools/{tool}", "--help"], cwd=workspace)
     result = run([sys.executable, "tools/build_function.py", "--va", target["va"], "--force"],
@@ -534,7 +534,9 @@ def preflight(workspace, target):
     marker = f"BEHAVIOR_RECOVERY_UNIMPLEMENTED_{target['va']}"
     source = (workspace / target["source"]).read_bytes()
     output = (result.stdout + result.stderr).decode("utf-8", "replace")
-    if load_json(workspace / "assignment.json")["blank_target"]:
+    if blank_target is None:
+        blank_target = load_json(workspace / "assignment.json")["blank_target"]
+    if blank_target:
         if marker.encode() not in source or not result.returncode or marker not in output:
             raise ValueError(f"Blank-target compile must stop at its explicit marker:\n{output}")
     elif result.returncode:
@@ -566,6 +568,8 @@ def prepare(args):
     if wave.exists():
         raise ValueError(f"Wave already exists: {wave}")
     files, target = export_input(root, base, va)
+    current_source = bool(getattr(args, "current_source", False))
+    original_source = files[target["source"]]
     if (args.start_line is None) != (args.end_line is None):
         raise ValueError("Supply both target line values or neither")
     if args.start_line is None:
@@ -578,7 +582,8 @@ def prepare(args):
     files[target["source"]], removed_hash = blank_function(
         files[target["source"]], args.start_line, args.end_line, va, target["name"])
     removal = dict(start_line=args.start_line, end_line=args.end_line, sha256=removed_hash)
-    assignment = dict(mode="reconstruct", blank_target=True, target=target,
+    mode = "current-source" if current_source else "reconstruct"
+    assignment = dict(mode=mode, blank_target=True, target=target,
                       compile_command=["python", "tools/build_function.py", "--va", va, "--force"])
     files["assignment.json"] = json_bytes(assignment)
     _, evidence = split_evidence(files)
@@ -586,7 +591,7 @@ def prepare(args):
     commit = init_workspace(destination, files, date.isoformat(), evidence_root=root)
     prerequisites = preflight(destination, target)
     payload = input_zip(files)
-    meta = dict(schema=3, va=va, main_base=base, mode="reconstruct", target=target,
+    meta = dict(schema=3, va=va, main_base=base, mode=mode, target=target,
                 created=date.isoformat(), prepared_commit=commit,
                 prepared_tree=git(destination, "rev-parse", "HEAD^{tree}").decode().strip(),
                 parent_attempts=[], removal=removal, input_sha256=sha(payload),
@@ -596,6 +601,16 @@ def prepare(args):
     (wave / "input.zip").write_bytes(payload)
     (wave / "wave.json").write_bytes(json_bytes(meta))
     print(f"Wave: {wave}\nWorkspace: {destination}\nBaseline: {commit}")
+    if current_source:
+        # Supply the committed source mechanically. This is not an agent delivery or approval.
+        inside(destination, target["source"]).write_bytes(original_source)
+        preflight(destination, target, blank_target=False)
+        git(destination, "add", "--", target["source"])
+        git(destination, "commit", "-m", f"Supply current source for {va} review", "-m",
+            f"Main commit: {base}\nSource: {target['source']}\n"
+            "The supplied source is unchanged. No reconstruction or semantic approval was performed.")
+        collect(argparse.Namespace(repo=root, wave=wave, workspace=destination, attempt="current-source",
+                                   agent_id=None, model=None, thinking=None, incomplete=False))
     return wave
 
 
@@ -1035,6 +1050,9 @@ def collect(args):
                    state="incomplete" if args.incomplete else "complete", dirty=bool(dirty),
                    choice=choice, verdict=verdict,
                    files={name: sha(data) for name, data in collected.items()})
+    if meta["mode"] == "current-source":
+        attempt["source_origin"] = dict(kind="committed-source", commit=meta["main_base"],
+                                        source=meta["target"]["source"])
     collected["attempt.json"] = json_bytes(attempt)
     output.mkdir(parents=True, exist_ok=False)
     write_files(output, collected)
@@ -1049,6 +1067,8 @@ def parser():
     prep = sub.add_parser("prepare", help="Export one blank reconstruction wave and its first workspace")
     prep.add_argument("--va", required=True)
     prep.add_argument("--base", default="HEAD")
+    prep.add_argument("--current-source", action="store_true",
+                      help="Archive the unchanged committed implementation as a compiled review candidate; no reconstruction agent")
     prep.add_argument("--start-line", type=int, help="Fallback first definition line when automatic lookup is ambiguous")
     prep.add_argument("--end-line", type=int, help="Fallback last definition line when automatic lookup is ambiguous")
     prep.add_argument("--destination", type=Path, required=True)
