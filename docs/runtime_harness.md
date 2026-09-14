@@ -242,6 +242,9 @@ Gameplay, audio, cinematics, and full-process state remain outside this group.
 
 ## Current limits and next work
 
+The separate [gameplay replay mode](behavior_replay.md) compares selected typed state and complete debug RNG traces.
+It does not remove gameplay guards from the menu test group.
+
 - No full input recorder or general replay format exists yet. The UI group uses bounded input scripts.
 - Private desktops hide windows without skipping rendering. A renderer with no Windows desktop dependency does not exist yet.
 - No process restore exists yet. Large concurrent batches still need resource measurements.

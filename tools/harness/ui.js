@@ -4,6 +4,7 @@ const user = Process.getModuleByName('user32.dll');
 const sleep = new NativeFunction(Process.getModuleByName('kernel32.dll').getExportByName('Sleep'),
     'void', ['uint'], 'stdcall');
 for (const name of ['forbidStart', 'forbidLoad', 'forbidScenario', 'forbidEditor']) {
+    if (cfg.replay && name === 'forbidStart') continue;
     Interceptor.attach(target(name), {onEnter() {
         send({kind: 'forbidden-gameplay', boundary: name});
         // Stop before the original body. The controller kills this owned process.
@@ -67,7 +68,7 @@ Interceptor.attach(user.getExportByName('DispatchMessageA'), {
             if (receipt[1] === 0x101) keys.delete(receipt[2]);
             updateKeyboardState();
             send({kind: 'ui-input-consumed', step: ui.index, message: receipt[1], value: receipt[2],
-                window: receipt[0], parameter: receipt[3]});
+                window: receipt[0], parameter: receipt[3], updates:cfg.replay ? replayState.updates : undefined});
         }
     },
     onLeave() {
@@ -173,7 +174,7 @@ function applyInput(step) {
 let phase = 'input', stable = 0, previousCount = -1;
 Interceptor.attach(target('idle'), {
     onLeave() {
-        if (ui.done || phase === 'failed' || !gameWindow || this.threadId !== gameThread || count < 8) return;
+        if (cfg.replay || ui.done || phase === 'failed' || !gameWindow || this.threadId !== gameThread || count < 8) return;
         if (this.returnAddress.compare(run) < 0 || this.returnAddress.compare(run.add(0xd0)) >= 0) return;
         if (pending.length) return;
         if (count !== previousCount) { previousCount = count; stable = 0; return; }

@@ -19,7 +19,7 @@ import registry_state
 from ui_fixture import validate_steps
 
 
-def hook_config(exe: Path, manifest: dict, ui=False):
+def hook_config(exe: Path, manifest: dict, ui=False, probes=()):
     image = exe.read_bytes()
     if hashlib.sha256(image).hexdigest() != manifest['selected_exe_sha256']:
         raise ValueError('Runtime EXE hash changed.')
@@ -47,6 +47,11 @@ def hook_config(exe: Path, manifest: dict, ui=False):
                     raise ValueError(f'Ambiguous UI identity: {module}:{name}')
                 va, symbol = matches[0]
                 addresses[key], ui_symbols[key] = int(va, 16), symbol
+    for probe in probes:
+        registry = json.loads((TOOLS.parent / f"config/functions/src/{probe['module']}.cpp.json").read_text())
+        symbol = registry['functions'][probe['va']]['symbol']
+        key = 'probe_' + probe['name']
+        addresses[key], ui_symbols[key] = int(probe['va'], 16), symbol
     if manifest['selected_exe_sha256'] != ORIGINAL_SHA256:
         selected = Path(manifest['selected_exe'])
         report = json.loads(selected.with_name('report.json').read_text())
@@ -154,10 +159,15 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     ui = scenario.get('ui', False)
     if ui:
         validate_steps(scenario.get('steps'))
-    config = hook_config(runtime / 'empiresx.exe', manifest, ui)
+    replay = scenario.get('replay')
+    if 'replay' in scenario:
+        from behavior import validate_replay
+        validate_replay(scenario)
+    config = hook_config(runtime / 'empiresx.exe', manifest, ui, replay['probes'] if replay else ())
+    config['replay'] = replay
     config['actions'] = scenario.get('actions', [])
     config['uiSteps'] = scenario.get('steps', [])
-    config['maxFrames'] = 480 if ui else 120
+    config['maxFrames'] = 40 if replay else (480 if ui else 120)
     config['clockMode'] = clock
     for action in config['actions']:
         if not 1 <= action['after_paint'] <= 120 or not 1 <= action['key'] <= 255:
@@ -168,7 +178,11 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     if ui:
         template += '\n' + Path(__file__).with_name('offline.js').read_text()
         template += '\n' + Path(__file__).with_name('ui.js').read_text()
+    if replay:
+        template += '\n' + Path(__file__).with_name('replay.js').read_text()
     events, frames, errors = [], [], []
+    rng_digest, rng_records, rng_sites = hashlib.sha256(), 0, {}
+    rng_file = (output / 'rng.bin').open('wb') if replay else None
     lock = threading.Lock()
     stopped = threading.Event()
     finished = threading.Event()
@@ -199,10 +213,29 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             raise ValueError('Game did not inherit the private desktop. Refusing to resume it.')
         script = session.create_script(source)
         def message(msg, data):
+            nonlocal rng_records
             with lock:
                 try:
                     if msg['type'] == 'send':
                         row = msg['payload']
+                        if row.get('kind') == 'replay-rng-site':
+                            if row['id'] in rng_sites:
+                                raise ValueError('Duplicate RNG site ID.')
+                            rng_sites[row['id']] = row['site']
+                            encoded = json.dumps(row['site'], sort_keys=True, separators=(',', ':')).encode()
+                            rng_digest.update(b'S' + struct.pack('<I', len(encoded)) + encoded)
+                        if row.get('kind') == 'replay-rng-batch':
+                            if len(data) != row['records'] * 8:
+                                raise ValueError('Invalid RNG batch length.')
+                            rng_file.write(data)
+                            # Hash complete records. Batch boundaries do not affect the digest.
+                            for index in range(0, len(data), 8):
+                                rng_digest.update(b'R' + data[index:index+8])
+                            rng_records += row['records']
+                            row['through_record'] = rng_records
+                        if row.get('kind') == 'behavior-state':
+                            row['rng_sha256'] = rng_digest.hexdigest()
+                            row['rng_count'] = rng_records
                         events.append(row)
                         if row.get('kind') == 'ui-native-frame':
                             from PIL import Image
@@ -211,8 +244,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                             image.save(output / name)
                             row['file'] = name
                             row['rgb_sha256'] = hashlib.sha256(image.tobytes()).hexdigest()
-                        if row.get('kind') == 'ui-done':
+                        if row.get('kind') in ('ui-done', 'replay-done', 'replay-error'):
                             finished.set()
+                        if row.get('kind') == 'replay-error':
+                            errors.append(row)
                         if row.get('kind') in ('ui-error', 'forbidden-gameplay'):
                             errors.append(row)
                             finished.set()
@@ -241,7 +276,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             raise ValueError(f'Instrumentation did not initialize: {errors}')
         device.resume(pid)
         finished.wait(seconds)
-        if any(row.get('kind') == 'forbidden-gameplay' for row in events):
+        terminal = next((row for row in events if row.get('kind') in ('replay-done', 'replay-error')), None)
+        if terminal:
+            status = terminal['status']  # The terminal boundary parks the game thread until cleanup.
+        elif any(row.get('kind') == 'forbidden-gameplay' for row in events):
             pass  # The blocked game thread cannot advance. Kill it without requesting RPC state.
         elif not stopped.is_set():
             status = script.exports_sync.status()
@@ -252,7 +290,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             loaded_graphics = [row for row in status['modules'] if row['name'].lower() == 'ddraw.dll']
             if len(loaded_graphics) != 1 or Path(loaded_graphics[0]['path']).resolve() != (runtime / 'ddraw.dll'):
                 errors.append({'error': 'The pinned runtime graphics DLL was not loaded.'})
-            if status['count'] > config['maxFrames']:
+            if not replay and status['count'] > config['maxFrames']:
                 errors.append({'error': 'Frame limit reached; final capture would be incomplete.'})
             if status['posted'] != len(config['actions']):
                 errors.append({'error': 'Not all fixture inputs reached their Paint boundary.'})
@@ -263,10 +301,20 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             if consumed != expected:
                 if not ui:
                     errors.append({'error': 'Consumed keys differ from the fixture.', 'consumed': consumed})
-            if ui and not status.get('ui', {}).get('done'):
+            if ui and not replay and not status.get('ui', {}).get('done'):
                 errors.append({'error': 'UI steps did not complete.', 'ui': status.get('ui')})
         else:
             errors.append({'error': 'Game exited before the capture deadline.'})
+        if replay and not any(row.get('kind') == 'replay-done' for row in events):
+            errors.append({'error': 'Replay did not reach its terminal boundary.'})
+        if replay and status:
+            if status['registryRedirects'] != 3 or status['mutexRedirects'] != 1:
+                errors.append({'error': 'Replay isolation checks failed.'})
+            graphics = [m for m in status['modules'] if m['name'].lower() == 'ddraw.dll']
+            if len(graphics) != 1 or Path(graphics[0]['path']).resolve() != runtime / 'ddraw.dll':
+                errors.append({'error': 'Replay did not load its pinned graphics DLL.'})
+            if status['rngCount'] != rng_records:
+                errors.append({'error': 'Replay RNG trace is incomplete.'})
     finally:
         if pid is not None:
             try:
@@ -280,6 +328,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                 pass
         if registry_base is not None:
             registry_state.cleanup(registry_base)
+        if rng_file:
+            rng_file.close()
         changed_assets = [row['path'] for row in manifest['copied_files_before_exe_replacement']
                           if row['method'] == 'hardlink' and
                           digest(Path(manifest['source_directory']) / row['path']) != row['sha256']]
@@ -308,7 +358,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                       'arguments': arguments, 'fixture': scenario, 'clock': clock, 'duration': time.monotonic()-started,
                       'frida_version': frida.__version__, 'status': status,
                       'frames': frames, 'events': events, 'errors': errors,
-                      'scope': 'Menu surface and RNG observations; not full process determinism'}
+                      'rng_recording': ({'file':'rng.bin', 'records':rng_records, 'sites':rng_sites,
+                                         'sha256':digest(output / 'rng.bin')} if replay else None),
+                      'scope': ('Selected typed state at function boundaries; not full process determinism' if replay else
+                                'Menu surface and RNG observations; not full process determinism')}
             (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(f'Capture: {output}\nFrames: {len(frames)}; errors: {len(errors)}')
     return 0 if frames and not errors else 1

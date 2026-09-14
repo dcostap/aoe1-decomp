@@ -128,7 +128,10 @@ game.cmd build
 game.cmd rebuilt
 game.cmd original
 game.cmd test-captures --list
+game.cmd replay
 ```
+
+The experimental [gameplay replay](docs/behavior_replay.md) compares typed state and complete debug RNG traces, not only images.
 
 Prepare a complete runtime copy with the older control workflow:
 

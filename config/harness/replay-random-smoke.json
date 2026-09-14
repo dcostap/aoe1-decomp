@@ -1,0 +1,38 @@
+{
+  "name": "random-game-smoke",
+  "ui": true,
+  "steps": [
+    {"name":"single", "type":"click", "before":"Main Menu", "x":320, "y":198},
+    {"name":"random", "type":"click", "before":"Single Player Menu", "x":320, "y":138},
+    {"name":"start", "type":"click", "before":"MP Setup Screen", "x":170, "y":455},
+    {"name":"pan-right", "type":"move", "before":"Game Screen", "after_updates":5, "x":638, "y":240},
+    {"name":"stop-pan", "type":"move", "before":"Game Screen", "after_updates":15, "x":320, "y":240}
+  ],
+  "replay": {
+    "schema": 1,
+    "updates": 30,
+    "update_probe": "world_update",
+    "probes": [
+      {"name":"random_map", "module":"world", "va":"00542D10", "phase":"both", "fields":{
+        "random_seed":[120,"u32"], "object_count":[140,"i32"]
+      }},
+      {"name":"gaia", "module":"tworld", "va":"0052E920", "phase":"both", "fields":{
+        "random_seed":[120,"u32"], "object_count":[140,"i32"]
+      }},
+      {"name":"players", "module":"tworld", "va":"0052E990", "phase":"both", "fields":{
+        "random_seed":[120,"u32"], "object_count":[140,"i32"]
+      }},
+      {"name":"camera", "module":"player", "va":"004704C0", "phase":"leave", "fields":{
+        "player_id":[74,"i16"], "view_x":[276,"f32"], "view_y":[280,"f32"]
+      }},
+      {"name":"world_new", "module":"world", "va":"00542750", "phase":"both", "arguments":{"seed":[4,"u32"]}, "fields":{
+        "world_time":[4,"u32"], "player_count":[60,"i16"], "random_seed":[120,"u32"], "object_count":[140,"i32"]
+      }},
+      {"name":"world_update", "module":"world", "va":"00542ED0", "phase":"both", "fields":{
+        "world_time":[4,"u32"], "old_world_time":[8,"u32"], "world_time_delta":[12,"u32"],
+        "game_speed":[24,"f32"], "game_state":[29,"u8"], "player_count":[60,"i16"],
+        "random_seed":[120,"u32"], "object_count":[140,"i32"]
+      }}
+    ]
+  }
+}

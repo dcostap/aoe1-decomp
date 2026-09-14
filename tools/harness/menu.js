@@ -79,6 +79,7 @@ if (cfg.clockMode === 'calls') {
 function rng(row) {
     rngCount++;
     if (rngTrace.length < 10000) rngTrace.push(row);
+    if (cfg.replay) replayRng(row);
 }
 Interceptor.attach(target('srand'), {
     onEnter(args) { rng({kind: 'srand', file: args[0].readCString(), line: args[1].toInt32(), seed: args[2].toUInt32()}); }

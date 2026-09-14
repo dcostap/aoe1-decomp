@@ -174,6 +174,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("setup", help="Install pinned graphics and isolated instrumentation dependencies")
+    p = subs.add_parser('replay', help='Compare repeated original and rebuilt gameplay replays')
+    p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
+    p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
+    p.add_argument('--runs', type=int, default=3, help='Runs per executable; at least three')
+    p = subs.add_parser('replay-repeat', help='Check one executable in parallel private processes')
+    p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
+    p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
+    p.add_argument('--runs', type=int, default=10)
+    p.add_argument('--jobs', type=int, default=10)
+    p.add_argument('--seconds', type=float, default=120)
     p = subs.add_parser('test-captures', help='Run the game UI main menu tests on private desktops')
     p.add_argument('--list', action='store_true')
     p.add_argument('--case', action='append', default=[], help='Test ID or wildcard; may be repeated')
@@ -208,6 +218,31 @@ def main():
         p.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     try:
+        if args.command == 'replay-repeat':
+            output = ROOT / 'build/runtime' / ('replay-repeat-' + stamp())
+            command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/replay_repeat.py'),
+                       '--fixture', str(args.fixture.resolve()), '--output', str(output),
+                       '--runs', str(args.runs), '--jobs', str(args.jobs), '--seconds', str(args.seconds), '--target', args.target]
+            return subprocess.run(command, cwd=ROOT).returncode
+        if args.command == 'replay':
+            if not 1 <= args.seconds <= 300 or not 3 <= args.runs <= 30:
+                raise ValueError('Use a 1..300 second deadline and 3..30 runs per executable.')
+            output = ROOT / 'build/runtime' / ('replay-' + stamp())
+            command = [str(ROOT / 'build/harness-env/Scripts/python.exe'),
+                       str(ROOT / 'tools/harness/replay.py'), '--fixture', str(args.fixture.resolve()),
+                       '--seconds', str(args.seconds), '--runs', str(args.runs), '--output', str(output)]
+            code = run_worker(command, output.with_suffix('.log'), 2 * args.runs * (args.seconds + 30) + 60, False)
+            report_path = output / 'report.json'
+            if report_path.exists():
+                result = json.loads(report_path.read_text())
+                for name in ('original_repeat', 'rebuilt_repeat'):
+                    print(f"{name}: {'PASS' if result[name]['passed'] else 'FAIL'}")
+                print(f"Comparison: {result['classification']}")
+                difference = result['cross_build'].get('first_difference') or {}
+                for field in difference.get('fields', []):
+                    print(f"  {field['field']}: original={field['left']} rebuilt={field['right']}")
+            print(f'Replay report: {output / "report.json"}')
+            return code
         if args.command == 'test-captures':
             sys.path.insert(0, str(ROOT / 'tools/harness'))
             from suite import load_suite
