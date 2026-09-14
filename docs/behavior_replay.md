@@ -2,6 +2,33 @@
 
 This experimental mode compares game behavior beyond pixels. It does not replace the menu capture suite.
 
+## Standard gameplay parity suite
+
+```cmd
+game.cmd test-parity
+```
+
+Use this command for gameplay parity checks. It runs the short script and the accepted human recording.
+Both cases run three fresh originals and three fresh rebuilt games.
+The human case uses `config/harness/human-accepted-20260914.json`. Its 324 messages remain unchanged.
+The suite checks its pinned SHA256 before it starts any game.
+The historical `source_report` path records provenance. Replay does not need that old report.
+
+The human case records the full RNG stream with the read-only RNG observer.
+It compares inputs, clocks, camera observations, terminal observations, RNG records, and captured RGB hashes.
+It checks repeatability within each executable before comparing the executables.
+It retains every timing and frame difference. It does not align simulation states or apply tolerances.
+Observer neutrality and complete hidden-state equivalence remain unproved.
+
+Reports and videos remain under `build/runtime/`. The suite report uses `build/runtime/parity-*/report.json`.
+Only exact equality of the checked observations returns zero. Missing evidence or observed differences return one.
+A failure does not by itself prove a game-code defect. Original repeatability can also fail.
+The human case still runs when the short script finds differences.
+
+`python -m pytest -q` checks the fixture and suite routing without starting games.
+`game.cmd test-parity --check-fixtures` checks the permanent recording without starting games.
+The commands below are focused checks, not substitutes for the standard suite.
+
 ## Run a short replay
 
 ```cmd
@@ -37,7 +64,8 @@ It checks typed observations, actual input delivery, and complete RNG recordings
 Use `--fixture` to supply a script or saved recording. Use `--jobs` to limit concurrent workers.
 The current bounds are thirty runs and ten concurrent workers per command.
 Starting and ending times in the report show worker overlap.
-These batches test repeatability within one executable. The normal replay command checks both executables and compares them.
+These batches test repeatability within one executable. The focused `replay` command checks both executables.
+Use `test-parity` for the full gameplay suite, including the accepted human recording.
 
 ## Capture the full game window
 

@@ -8,3 +8,4 @@ decomp_notes/candidates/**/*.patch -whitespace
 logic_matching/** -text
 logic_matching/**/*.patch -whitespace
 logic_matching/**/*.zip -diff
+config/harness/human-accepted-20260914.json -text

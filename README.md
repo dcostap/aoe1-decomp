@@ -130,10 +130,11 @@ game.cmd build
 game.cmd rebuilt
 game.cmd original
 game.cmd test-captures --list
-game.cmd replay
+game.cmd test-parity
 ```
 
-The experimental [gameplay replay](docs/behavior_replay.md) compares typed state and complete debug RNG traces, not only images.
+The standard [gameplay parity suite](docs/behavior_replay.md) includes the accepted 324-message human recording.
+It compares typed observations, complete debug RNG traces, and images. Use `replay` only for a focused short-script check.
 
 Prepare a complete runtime copy with the older control workflow:
 

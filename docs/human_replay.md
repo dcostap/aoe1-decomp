@@ -31,6 +31,27 @@ Keep that first session short. More gameplay coverage comes after input replay q
 The command prints paths for `recording.json`, `report.json`, and `video.mp4`.
 Keep the whole recording directory and its referenced runtime capture directory.
 
+## Permanent regression case
+
+The accepted recording is now `config/harness/human-accepted-20260914.json`.
+It preserves all 324 messages and the original file SHA256:
+`a320c5d68b8b6f2e49d5d9963e60bc3455c177deac2909d5795ab19e02510e4d`.
+The copy does not replace or change the historical recording.
+
+Run `game.cmd test-parity` for the standard gameplay parity suite.
+This command always includes the accepted recording. It needs no recording path.
+See [the suite contract](behavior_replay.md#standard-gameplay-parity-suite) for checks and failure rules.
+
+The first standard run completed on 2026-09-14:
+`build/runtime/parity-20260914T230838502031Z/report.json`.
+The short script passed. All six human runs preserved the 324 messages and their game boundaries.
+The human comparison failed. Clock and RGB differences remain visible, including differences between original runs.
+Two rebuilt runs matched the complete original RNG stream of 1,224,935 records.
+The other rebuilt run first differed at RNG index 1,221,307: equal value 13910, but different callers.
+It ended after 329 updates; the original ended after 330.
+These observations do not establish the cause or prove a game-code defect.
+The suite returned one. It did not treat completed captures as a parity pass.
+
 ## Replay the recording
 
 Use the printed recording path:

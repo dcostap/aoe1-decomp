@@ -182,6 +182,8 @@ def main():
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
+    p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the accepted human recording')
+    p.add_argument('--check-fixtures', action='store_true', help='Validate the permanent fixture without running games')
     p = subs.add_parser('replay', help='Compare repeated original and rebuilt gameplay replays')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
@@ -226,6 +228,11 @@ def main():
         p.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     try:
+        if args.command == 'test-parity':
+            command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/parity_suite.py')]
+            if args.check_fixtures:
+                command.append('--check-fixtures')
+            return subprocess.run(command, cwd=ROOT).returncode
         if args.command in ('record-original','replay-original','replay-rebuilt'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
             command += (['--record','--seconds',str(args.seconds)] if args.command == 'record-original' else
