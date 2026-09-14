@@ -27,6 +27,7 @@ class TRIBE_Screen_Game;
 
 class TRIBE_Game : public RGE_Base_Game {
     friend class TRIBE_Screen_Game;
+    friend class TRIBE_Panel_Object;
 
 public:
     using RGE_Base_Game::get_string;

@@ -12,6 +12,7 @@
 #include "../include/action.h"
 #include "../include/act_list.h"
 #include "../include/basegame.h"
+#include "../include/tribegam.h"
 #include "../include/game_globals.h"
 #include "../include/obj_list.h"
 #include "../include/victory.h"
@@ -280,7 +281,7 @@ void TRIBE_Panel_Object::draw()
         if (str[0] == 0)
             strcpy(str, this->game_obj->master_obj->name);
 
-        if (rge_base_game->display_selected_ids != 0)
+        if (static_cast<TRIBE_Game*>(rge_base_game)->show_object_id != 0)
             sprintf(name, "%d-%s", this->game_obj->id, str);
         else
             sprintf(name, "%s", str);
@@ -319,7 +320,9 @@ void TRIBE_Panel_Object::draw()
         }
 
         this->game_obj->get_armor(cur_val, orig_val);
-        if (cur_val > 0) {
+        if (cur_val > 0 ||
+            this->game_obj->master_obj->unit_level == 4 ||
+            this->game_obj->master_obj->unit_level == 6) {
             this->draw_item(row, 8, ValueTypeBonus, orig_val, cur_val);
             ++row;
         }
@@ -330,7 +333,8 @@ void TRIBE_Panel_Object::draw()
             ++row;
         }
 
-        if (level == 4 || level == 6) {
+        if (this->game_obj->master_obj->unit_level == 4 ||
+            this->game_obj->master_obj->unit_level == 6) {
             this->game_obj->get_weapon_range(cur_fval, orig_fval);
             if (cur_fval > DAT_00576dac) {
                 this->draw_item(row, 6, ValueTypeBonus,
@@ -339,7 +343,7 @@ void TRIBE_Panel_Object::draw()
             }
         }
 
-        if (level == 6) {
+        if (this->game_obj->master_obj->unit_level == 6) {
             this->draw_item(row, 9, ValueTypePercent,
                             (int)(this->game_obj->attribute_amount_held -
                                   DAT_00576D84), 0);
@@ -350,6 +354,7 @@ void TRIBE_Panel_Object::draw()
             goto finish;
         }
 
+        level = this->game_obj->master_obj->unit_level;
         if (level == 7) {
             this->draw_item(
                 row, 4, ValueTypeCompare,
@@ -407,7 +412,7 @@ void TRIBE_Panel_Object::draw()
             return;
         }
 
-        if ((int)this->game_obj->attribute_amount_held < 1) {
+        if ((int)(this->game_obj->attribute_amount_held - DAT_00576D84) < 1) {
             goto finish;
         }
 
@@ -503,12 +508,11 @@ void TRIBE_Panel_Object::draw()
             }
 
             if (this->game_obj->owner == this->player) {
-                if (this->game_obj->object_state == 0) {
+                if (bldg_obj->object_state == 0) {
                     progress = bldg_obj->get_construction_progress();
-                }
-
-                if (this->game_obj->object_state == 0 ||
-                    work_type == 0x67 || work_type == 0x66) {
+                    this->draw_item(row, 9, ValueTypePercent, progress, 0);
+                    ++row;
+                } else if (work_type == 0x67 || work_type == 0x66) {
                     this->draw_item(row, 9, ValueTypePercent, progress, 0);
                     ++row;
                 } else {
@@ -557,13 +561,8 @@ void TRIBE_Panel_Object::draw()
             }
 
             if (show_resource) {
-                short resource_type = this->game_obj->attribute_type_held;
-                if (this->game_obj->master_obj->id == 0x2d) {
-                    resource_type = 9;
-                }
-
                 int item_type;
-                switch (resource_type) {
+                switch (this->game_obj->attribute_type_held) {
                 case 0:
                 case 0x0f:
                 case 0x10:
@@ -593,8 +592,7 @@ void TRIBE_Panel_Object::draw()
                         (int)(this->game_obj->owner->attributes[9] -
                               DAT_00576D84),
                         0);
-                }
-                if (this->game_obj->master_obj->id != 0x2d) {
+                } else {
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->attribute_amount_held -
@@ -608,24 +606,23 @@ void TRIBE_Panel_Object::draw()
 resource_done:
         if (this->game_obj->master_obj->id == 0x2d &&
             this->game_obj->owner != this->player) {
-            RGE_Player* current_player = rge_base_game->get_player();
-            RGE_Static_Object* nearby = current_player->objects->find_by_master_id(
-                0x2d,
-                this->game_obj->world_x,
-                this->game_obj->world_y,
-                1,
-                2,
-                this->game_obj);
+            RGE_Static_Object* nearby =
+                rge_base_game->get_player()->objects->find_by_master_id(
+                    0x2d,
+                    this->game_obj->world_x,
+                    this->game_obj->world_y,
+                    1,
+                    2,
+                    this->game_obj);
 
             if (nearby != 0) {
                 dx = nearby->world_x - this->game_obj->world_x;
                 float dy = nearby->world_y - this->game_obj->world_y;
-                float distance = dx * dx + dy * dy;
-                distance *= DAT_00576d88;
-                distance *= DAT_00576d8c;
+                float distance = DAT_00576d8c *
+                    ((dx * dx + dy * dy) * DAT_00576d88);
                 if (this->player->master_player_id == 0x0f)
-                    distance += 1.0f;
-                if (distance < DAT_00576d98)
+                    distance += distance;
+                if (!(distance >= DAT_00576d98))
                     distance = DAT_00576da0;
                 distance *= DAT_00576da4;
                 if (distance > DAT_00576da8)
