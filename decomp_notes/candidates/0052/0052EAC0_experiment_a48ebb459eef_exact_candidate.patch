@@ -1,0 +1,22 @@
+# Experiment a48ebb459eefd21b3cd91c0404f310b8150243cc7e0358778b20414a28b37e36
+# Base d995725dcfc9e5b32add7751cf3ad5b1bd344efb
+diff --git a/src/tworld.cpp b/src/tworld.cpp
+index 5685eda75..93432ecd3 100644
+--- a/src/tworld.cpp
++++ b/src/tworld.cpp
+@@ -300,10 +300,11 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
+         float radius_x = master->radius_x;
+         float radius_y = master->radius_y;
+         if (radius_x > 0.0f || radius_y > 0.0f) {
+-            short x_min = static_cast<short>(x - 0.5f);
+-            short y_min = static_cast<short>(y - 0.5f);
+-            short x_max = static_cast<short>(x + 0.5f);
+-            short y_max = static_cast<short>(y + 0.5f);
++            // Original 0057755C/00577560 hold +3.0/-3.0, not half a tile.
++            short x_min = static_cast<short>(x - 3.0f);
++            short y_min = static_cast<short>(y - 3.0f);
++            short x_max = static_cast<short>(x + 3.0f);
++            short y_max = static_cast<short>(y + 3.0f);
+             if (x_min < 0)
+                 x_min = 0;
+             if (x_max >= map->map_width)

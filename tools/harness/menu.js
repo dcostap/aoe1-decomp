@@ -149,11 +149,13 @@ Interceptor.attach(paint, {
             if (method(pal, 4, ['pointer', 'uint', 'uint', 'uint', 'pointer'])(pal, 0, 0, 256, palette) !== 0)
                 throw new Error('GetEntries failed');
             count++;
-            if (count > cfg.maxFrames) return;
+            const checkpoint = cfg.replay ? replayCaptureDue() : null;
+            if (count > cfg.maxFrames && !checkpoint) return;
             const data = new Uint8Array(pitch * height + 1024);
             data.set(new Uint8Array(pixels.readByteArray(pitch * height)));
             data.set(new Uint8Array(palette.readByteArray(1024)), pitch * height);
             send({kind: 'frame', count, width, height, pitch, bits, panel: currentPanelName()}, data.buffer);
+            if (checkpoint) replayCapture(checkpoint);
         } catch (error) {
             if (++failures <= 5) send({kind: 'capture-error', error: String(error)});
         }

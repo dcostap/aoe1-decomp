@@ -482,7 +482,9 @@ void RGE_RMM_Database_Controller::calc_land_start(
                     }
                     else {
                         index2 = start;
-                        prior = land_ptr;
+                        // Original 00483825 resets the scan to the first land,
+                        // not the current output record (004838FE).
+                        prior = &this->land_info.land[start].y;
                         if (start < index) {
                             do {
                                 dx = x - prior[-1];

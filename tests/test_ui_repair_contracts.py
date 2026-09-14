@@ -25,3 +25,11 @@ def test_list_key_labels_match_original_switch_data():
         r'case\s+(0x[0-9A-Fa-f]+):\s*this->scroll_cur_line\((\d+),\s*0,\s*1\)', function)}
     # Original selector 00478828 and pointer table 00478808; not covered by local code equality.
     assert labels == {0x28:2, 0x26:3, 0x22:4, 0x21:5, 0x24:6, 0x23:7}
+
+
+def test_game_screen_label_buttons_use_text_drawing():
+    source = (ROOT/'src/scr_game.cpp').read_text()
+    # Original constructor passes 3 at 00494678, 0049472E, and 0049479C.
+    # The loop configures three buttons; the two later calls configure S and ?.
+    assert source.count('setDrawType(TButtonPanel::DrawText)') == 3
+    assert 'setDrawType(TButtonPanel::DrawPicture)' not in source

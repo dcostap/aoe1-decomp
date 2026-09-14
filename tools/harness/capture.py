@@ -308,6 +308,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         if replay and not any(row.get('kind') == 'replay-done' for row in events):
             errors.append({'error': 'Replay did not reach its terminal boundary.'})
         if replay and status:
+            expected_captures = replay.get('captures', [])
+            captured = status.get('ui', {}).get('checkpoints', [])
+            if [row.get('name') for row in captured] != [row['name'] for row in expected_captures]:
+                errors.append({'error': 'Replay capture checkpoints are incomplete.'})
             if status['registryRedirects'] != 3 or status['mutexRedirects'] != 1:
                 errors.append({'error': 'Replay isolation checks failed.'})
             graphics = [m for m in status['modules'] if m['name'].lower() == 'ddraw.dll']

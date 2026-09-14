@@ -238,6 +238,16 @@ def main():
                 for name in ('original_repeat', 'rebuilt_repeat'):
                     print(f"{name}: {'PASS' if result[name]['passed'] else 'FAIL'}")
                 print(f"Comparison: {result['classification']}")
+                cross = result['cross_build']
+                if 'state_passed' in cross:
+                    print(f"State/input/RNG: {'PASS' if cross['state_passed'] else 'FAIL'}")
+                visual = cross.get('captures', {})
+                for checkpoint in visual.get('checkpoints', []):
+                    print(f"Capture {checkpoint['name']}: {'PASS' if checkpoint['passed'] else 'FAIL'}")
+                    if checkpoint.get('side_by_side'):
+                        print(f"  {checkpoint['side_by_side']}")
+                if visual.get('error'):
+                    print(f"Capture error: {visual['error']}")
                 difference = result['cross_build'].get('first_difference') or {}
                 for field in difference.get('fields', []):
                     print(f"  {field['field']}: original={field['left']} rebuilt={field['right']}")

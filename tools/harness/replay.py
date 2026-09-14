@@ -13,6 +13,7 @@ from game import ROOT, stage
 from capture import capture
 from behavior import first_difference, observations, validate_replay
 from linker_map import parse_symbols
+from replay_capture import compare_captures
 
 
 def recording_contract(report):
@@ -111,7 +112,7 @@ def first_rng_difference(left_path, right_path):
             index += 1
 
 
-def compare_pair(left_path, right_path, left, right):
+def compare_pair(left_path, right_path, left, right, capture_output=None):
     if left is None or right is None:
         return {'passed':False, 'classification':'incomplete'}
     result = compare_reports(left, right)
@@ -126,6 +127,15 @@ def compare_pair(left_path, right_path, left, right):
         elif result['passed']:
             result['classification'] = 'rng-divergence'
         result['passed'] = False
+    result['state_passed'] = result['passed']
+    visual = compare_captures(left_path, right_path, left, right, capture_output)
+    result['captures'] = visual
+    if not visual['passed']:
+        if 'error' in visual:
+            result['classification'] = 'invalid-capture'
+        elif result['passed']:
+            result['classification'] = 'capture-divergence'
+        result['passed'] = False
     return result
 
 
@@ -136,7 +146,7 @@ def repeat_group(paths, reports):
 
 def batch_classification(original, rebuilt, cross):
     failures = [row['classification'] for group in (original, rebuilt) for row in group['comparisons'] if not row['passed']]
-    if any(value in ('incomplete', 'invalid-rng-recording', 'incompatible') for value in failures):
+    if any(value in ('incomplete', 'invalid-rng-recording', 'invalid-capture', 'incompatible') for value in failures):
         return 'incomplete-or-incompatible'
     if not original['passed'] and not rebuilt['passed']:
         return 'both-not-repeatable'
@@ -175,10 +185,10 @@ def run(fixture, output, seconds, runs=3):
         print(f'{target}: capture exit {code}', flush=True)
     result = {'schema':2, 'runs_per_executable':runs, 'targets':targets, 'capture_exit_codes':codes,
               'captures':[str(path) for path in paths], 'passed':False,
-              'scope':'Configured fields and full debug RNG sequence at selected function boundaries; not all game state'}
+              'scope':'Configured fields, full debug RNG sequence, and requested game-client captures; not all game state'}
     result['original_repeat'] = repeat_group(paths[:runs], reports[:runs])
     result['rebuilt_repeat'] = repeat_group(paths[runs:], reports[runs:])
-    result['cross_build'] = compare_pair(paths[0], paths[runs], reports[0], reports[runs])
+    result['cross_build'] = compare_pair(paths[0], paths[runs], reports[0], reports[runs], output / 'captures')
     result['classification'] = batch_classification(result['original_repeat'], result['rebuilt_repeat'], result['cross_build'])
     result['passed'] = all(result[key]['passed'] for key in ('original_repeat', 'rebuilt_repeat', 'cross_build')) and not any(codes)
     if any(codes):

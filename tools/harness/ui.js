@@ -267,7 +267,7 @@ function nativeEdit(panel, row) {
         if (old.isNull()) throw new Error('Cannot select edit capture bitmap');
         sendWindow(hwnd, 0x318, dc, ptr(12)); // WM_PRINTCLIENT: client and background, without blinking caret.
         flushGdi();
-        send({kind:'ui-native-frame', step:ui.index, path:row.path,
+        send({kind:'ui-native-frame', step:cfg.replay ? ui.checkpoints.length : ui.index, path:row.path,
             rect:[point.readS32(),point.add(4).readS32(),width,height]}, bits.readPointer().readByteArray(width*height*4));
     } finally {
         if (!old.isNull()) selectObject(dc, old);

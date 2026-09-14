@@ -242,7 +242,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[16]->set_help_info(0x1d4dc, -1);
 
     for (i = 12; i < 15; ++i) {
-        this->button_panel[i]->setDrawType(TButtonPanel::DrawPicture);
+        this->button_panel[i]->setDrawType(TButtonPanel::DrawText);
         this->button_panel[i]->tribe_button_type = 3;
         this->button_panel[i]->set_text(
             0, rge_base_game->get_string2(0x66,
@@ -255,11 +255,11 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     if (rge_base_game->singlePlayerGame() == 1) {
         this->button_panel[12]->set_active(0);
     }
-    this->button_panel[15]->setDrawType(TButtonPanel::DrawPicture);
+    this->button_panel[15]->setDrawType(TButtonPanel::DrawText);
     this->button_panel[15]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[15]->tribe_button_type = 3;
     this->button_panel[15]->set_text(0, 0x0FA9L);
-    this->button_panel[16]->setDrawType(TButtonPanel::DrawPicture);
+    this->button_panel[16]->setDrawType(TButtonPanel::DrawText);
     this->button_panel[16]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[16]->tribe_button_type = 3;
     this->button_panel[16]->set_text(0, 0x1023L);

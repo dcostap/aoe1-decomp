@@ -300,10 +300,11 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
         float radius_x = master->radius_x;
         float radius_y = master->radius_y;
         if (radius_x > 0.0f || radius_y > 0.0f) {
-            short x_min = static_cast<short>(x - 0.5f);
-            short y_min = static_cast<short>(y - 0.5f);
-            short x_max = static_cast<short>(x + 0.5f);
-            short y_max = static_cast<short>(y + 0.5f);
+            // Original 0057755C/00577560 hold +3.0/-3.0, not half a tile.
+            short x_min = static_cast<short>(x - 3.0f);
+            short y_min = static_cast<short>(y - 3.0f);
+            short x_max = static_cast<short>(x + 3.0f);
+            short y_max = static_cast<short>(y + 3.0f);
             if (x_min < 0)
                 x_min = 0;
             if (x_max >= map->map_width)

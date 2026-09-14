@@ -63,7 +63,7 @@ def run(fixture, output, runs, jobs, seconds, target='original'):
         row['comparison'] = comparison
     result = {'schema':1, 'target':target, 'runs':runs, 'jobs':jobs, 'captures':rows,
               'passed':all(row['comparison']['passed'] for row in rows),
-              'scope':'Repeatability of configured state, actual input delivery, and complete debug RNG sequence'}
+              'scope':'Repeatability of configured state, input delivery, full RNG sequence, and requested game-client captures'}
     (output/'report.json').write_text(json.dumps(result, indent=2) + '\n')
     print(f"{target} repeatability: {'PASS' if result['passed'] else 'FAIL'}\nReport: {output/'report.json'}", flush=True)
     return 0 if result['passed'] else 1

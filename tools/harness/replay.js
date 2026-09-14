@@ -32,6 +32,25 @@ function replayStop(error) {
         replay:replayState, status:rpc.exports.status()});
     sleep(0xffffffff);
 }
+function replayCaptureDue() {
+    const checkpoint = (cfg.replay.captures || [])[ui.checkpoints.length];
+    return checkpoint && replayState.updates >= checkpoint.after_updates ? checkpoint : null;
+}
+function replayCapture(description) {
+    try {
+        const next = cfg.replay.captures[ui.checkpoints.length + 1];
+        if (next && replayState.updates >= next.after_updates)
+            throw new Error('More than one capture boundary passed before Paint');
+        const tree = controls();
+        const checkpoint = {name:description.name, after_updates:description.after_updates,
+            updates:replayState.updates, input:replayState.input, frame:count,
+            boundary:'Paint-entry', panel:currentPanelName(), controls:tree};
+        ui.checkpoints.push(checkpoint);
+        send({kind:'replay-checkpoint', checkpoint});
+        if (ui.checkpoints.length === cfg.replay.captures.length)
+            replayStop(replayState.input !== cfg.uiSteps.length || pending.length ? 'Replay ended before all inputs' : null);
+    } catch (error) { replayStop(String(error)); }
+}
 function readProbeFields(receiver, description) {
     const fields = {};
     for (const [name, [offset, type]] of Object.entries(description || {})) {
@@ -72,7 +91,9 @@ for (const probe of cfg.replay.probes) {
             try {
                 if (probe.name === cfg.replay.update_probe) replayState.updates++;
                 if (probe.phase !== 'enter') probeState(probe, 'leave', this);
-                if (replayState.updates >= cfg.replay.updates) {
+                if (replayState.updates >= 1000 && (cfg.replay.captures || []).length)
+                    replayStop('No terminal Paint before the update limit');
+                if (replayState.updates >= cfg.replay.updates && !(cfg.replay.captures || []).length) {
                     replayStop(replayState.input !== cfg.uiSteps.length || pending.length ? 'Replay ended before all inputs' : null);
                 }
             } catch (error) { replayStop(String(error)); }

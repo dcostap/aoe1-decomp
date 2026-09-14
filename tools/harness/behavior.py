@@ -45,6 +45,22 @@ def validate_replay(scenario):
                 raise ValueError('Unsupported field offset or type.')
     if replay.get('update_probe') not in names:
         raise ValueError('The update probe must exist.')
+    captures = replay.get('captures', [])
+    if not isinstance(captures, list) or len(captures) > 32:
+        raise ValueError('Replay supports at most 32 capture checkpoints.')
+    capture_names, previous = set(), -1
+    for checkpoint in captures:
+        if not isinstance(checkpoint, dict):
+            raise ValueError('Capture checkpoints must be objects.')
+        name, boundary = checkpoint.get('name'), checkpoint.get('after_updates')
+        if not isinstance(name, str) or not name.isidentifier() or len(name) > 80 or name in capture_names:
+            raise ValueError('Capture names must be short, unique identifiers.')
+        if type(boundary) is not int or not previous < boundary <= replay['updates']:
+            raise ValueError('Capture boundaries must increase within the replay update limit.')
+        capture_names.add(name)
+        previous = boundary
+    if captures and previous != replay['updates']:
+        raise ValueError('The final capture must use the terminal update boundary.')
     for step in scenario['steps']:
         if not isinstance(step.get('before'), str) or not step['before']:
             raise ValueError('Each replay input requires a source panel.')

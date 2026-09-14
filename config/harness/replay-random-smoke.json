@@ -12,6 +12,11 @@
     "schema": 1,
     "updates": 30,
     "update_probe": "world_update",
+    "captures": [
+      {"name":"game_started", "after_updates":1},
+      {"name":"camera_pan", "after_updates":10},
+      {"name":"final", "after_updates":30}
+    ],
     "probes": [
       {"name":"random_map", "module":"world", "va":"00542D10", "phase":"both", "fields":{
         "random_seed":[120,"u32"], "object_count":[140,"i32"]

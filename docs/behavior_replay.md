@@ -10,7 +10,8 @@ game.cmd replay
 
 The default script opens Single Player, selects Random Map, and starts the game.
 It moves the cursor to the right edge after five world-update calls, then moves it back after fifteen.
-The process stops after thirty world-update calls. These calls are not necessarily thirty simulation ticks.
+The default process stops at the first Paint boundary after thirty world-update calls.
+These calls are not necessarily thirty simulation ticks.
 
 Each batch runs three fresh originals and three rebuilt games on a private desktop.
 Use `--runs N` to increase the count per executable. The minimum is three.
@@ -19,14 +20,15 @@ No original state or RNG result enters rebuilt execution. Both programs use the 
 The existing menu suite still blocks gameplay. Replay permits only new-game startup; saved games and editor startup remain blocked.
 
 The command prints a directory under `build/runtime/replay-*/`.
-It returns zero only when both original repeat and cross-build comparisons pass.
+It returns zero only when both repeatability groups and the cross-build comparison pass.
+Requested capture checks must pass too.
 A known rebuilt difference returns one. An incomplete or non-repeatable run also returns one, with a separate report classification.
 
 ## Stress repeatability in parallel
 
 ```cmd
-game.cmd replay-repeat --target original --runs 10 --jobs 10
-game.cmd replay-repeat --target rebuilt --runs 10 --jobs 10
+game.cmd replay-repeat --target original --runs 10
+game.cmd replay-repeat --target rebuilt --runs 10
 ```
 
 Each worker owns a separate runtime, private desktop, registry copy, and process job.
@@ -36,6 +38,46 @@ Use `--fixture` to supply a script or saved recording. Use `--jobs` to limit con
 The current bounds are thirty runs and ten concurrent workers per command.
 Starting and ending times in the report show worker overlap.
 These batches test repeatability within one executable. The normal replay command checks both executables and compares them.
+
+## Capture the full game window
+
+The default replay captures the game client at updates 1, 10, and 30.
+Each image includes the full game surface and visible native edit controls.
+It excludes the Windows title bar, window borders, and desktop.
+Capture uses the same private-desktop surface reader as the menu suite.
+
+Add named checkpoints under `replay.captures`:
+
+```json
+"captures": [
+  {"name":"game_started", "after_updates":1},
+  {"name":"camera_pan", "after_updates":10},
+  {"name":"final", "after_updates":30}
+]
+```
+
+Capture occurs at the first Paint entry after the requested update count.
+At this boundary, the game surface is ready for presentation.
+The report records the actual update count and delivered-input count.
+Both counts must agree between runs. Equal pixels at different boundaries do not pass.
+Passing two requested boundaries before one Paint causes failure, not a merged checkpoint.
+The final checkpoint must use the replay's terminal update count.
+Without capture checkpoints, the process retains the earlier update-return stop behavior.
+
+The report checks state, inputs, and RNG separately from captures.
+Capture comparison runs even when state checks fail.
+Missing images, changed image hashes, and invalid image dimensions fail the capture check.
+Repeatability checks include every requested image for each executable.
+
+Cross-build images appear under the batch's `captures/` directory.
+Each checkpoint includes `side-by-side.png` and, for equal dimensions, `difference.png`.
+The original appears on the left. The rebuilt game appears on the right.
+The difference image shows raw channel differences without masks or tolerance.
+Capture equality means exact RGB pixels and image dimensions, not equality of unused palette entries.
+
+These images check visible results that selected memory fields can miss.
+Equal images do not prove that hidden state agrees.
+Both checks must pass; neither replaces the other.
 
 ## Replay a saved recording
 
@@ -62,6 +104,7 @@ The reusable components are:
 - Raw field bytes, including exact float representations.
 - Complete debug RNG records and SHA256 prefixes at observation points.
 - Input-message parameters and the update count when the game dispatches them.
+- Full game-client images at requested Paint checkpoints.
 - A first-difference report with both observations and native stack addresses.
 
 The default schema lives in `config/harness/replay-random-smoke.json`.
@@ -95,7 +138,7 @@ For multiple objects, include an identity field. The camera probe includes the p
 
 ## Evidence files
 
-- `scenario.json`: the frozen script used by all three runs.
+- `scenario.json`: the frozen script used by every run.
 - `recording.json`: scripted inputs, actual receipts, and starting contract.
 - `report.json`: original-repeat result, cross-build result, first difference, and capture paths.
 - Each capture's `report.json`: observations, input history, exceptions, module information, and errors.
@@ -124,10 +167,13 @@ Captures use isolated registry copies, fresh runtimes, and the existing test-onl
 
 Limits include 1,000 update calls, 10,000 observations, ten million RNG records, and a 300-second process deadline.
 Reaching an observation or RNG limit fails the replay. It cannot produce a truncated success.
-Replay saves only the first forty Paint surfaces as auxiliary evidence. It does not compare gameplay pixels in this mode.
+Replay saves the first forty Paint surfaces as auxiliary evidence.
+It also saves and compares every requested checkpoint, including checkpoints after that frame limit.
+The default replay checks three images. The schema permits at most 32 checkpoints.
 
-The current stop boundary parks the owned game thread and then kills the process.
+The stop boundary parks the owned game thread and then kills the process.
 There is no interactive pause inspector, process restore, automatic write tracing, or general input recorder yet.
 Selected fields can agree while unchecked state differs. Passing this profile does not prove full gameplay equivalence.
 
 See `decomp_notes/behavior_replay_20260914.md` for qualification and the first observed setup difference.
+See `decomp_notes/replay_capture_20260914.md` for capture qualification and the remaining differences.
