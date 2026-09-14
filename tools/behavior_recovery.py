@@ -398,6 +398,25 @@ def decompiler_parameter_count(packet, name):
     return decompiler_parameter_details(packet, name)[0]
 
 
+def registry_declaration(symbol, name):
+    """Resolve overload routing from the registry ABI when decompiler types disagree."""
+    tool = shutil.which("llvm-undname")
+    if tool is None:
+        return None
+    result = run([tool, symbol], cwd=ROOT, check=False)
+    if result.returncode:
+        return None
+    pattern = re.compile(rb"\b((?:[A-Za-z_]\w*::)*" + re.escape(name.encode()) + rb")\s*\(")
+    matches = list(pattern.finditer(result.stdout))
+    if len(matches) != 1:
+        return None
+    match = matches[0]
+    count, pointers = parameter_details(result.stdout, match.end() - 1)
+    if result.stdout[match.end():].split(b")", 1)[0].strip() == b"void":
+        count, pointers = 0, ()
+    return match[1].decode(), count, pointers
+
+
 def locate_function_range(data, name, expected_parameters=None, expected_pointers=None):
     def erase(match):
         return bytes(10 if byte == 10 else 13 if byte == 13 else 32 for byte in match.group())
@@ -577,8 +596,14 @@ def prepare(args):
         if parameter_count is not None and target.get("calling_convention") == "__thiscall":
             parameter_count -= 1
             parameter_pointers = parameter_pointers[1:]
-        args.start_line, args.end_line = locate_function_range(
-            files[target["source"]], target["name"], parameter_count, parameter_pointers)
+        try:
+            args.start_line, args.end_line = locate_function_range(
+                files[target["source"]], target["name"], parameter_count, parameter_pointers)
+        except ValueError:
+            declaration = registry_declaration(target["symbol"], target["name"])
+            if declaration is None:
+                raise
+            args.start_line, args.end_line = locate_function_range(files[target["source"]], *declaration)
     files[target["source"]], removed_hash = blank_function(
         files[target["source"]], args.start_line, args.end_line, va, target["name"])
     removal = dict(start_line=args.start_line, end_line=args.end_line, sha256=removed_hash)

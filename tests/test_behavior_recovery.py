@@ -160,6 +160,16 @@ def test_locator_uses_decompiler_parameter_count_for_overloads():
     assert br.locate_function_range(source, "sample", 2) == (5, 8)
 
 
+def test_registry_declaration_routes_qualified_overload():
+    output=b'?setup@Panel@@...\npublic: int __thiscall Panel::setup(int *, long)\n'
+    with patch.object(br.shutil, 'which', return_value='llvm-undname'), patch.object(
+            br, 'run', return_value=SimpleNamespace(returncode=0, stdout=output)):
+        declaration=br.registry_declaration('?setup@Panel@@...', 'setup')
+    assert declaration == ('Panel::setup', 2, (True, False))
+    source=b'int Other::setup(int *p, long n) {return 0;}\nint Panel::setup(int *p, long n) {return 1;}\n'
+    assert br.locate_function_range(source,*declaration)==(2,2)
+
+
 def test_source_comes_from_base_not_dirty_main(repo, tmp_path):
     (repo / "include/sample.h").write_bytes(b"uncommitted declaration\n")
     _, worker = prepare(repo, tmp_path)
