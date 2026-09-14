@@ -2992,7 +2992,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
         if (this->maxNumberObjectsValue - 1 < id) {
             newMax = this->maxNumberObjectsValue * 2;
             if (newMax < id) {
-                newMax = (float)id * 1.5f;
+                newMax = (float)id * 1.1f;
             }
             newList = new RGE_Static_Object*[newMax];
             if (newList == 0) return 0;
@@ -3026,7 +3026,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
         if (this->maxNumberNegativeObjectsValue - 1 < slot) {
             newMax = this->maxNumberNegativeObjectsValue * 2;
             if (newMax < slot) {
-                newMax = (float)slot * 1.5f;
+                newMax = (float)slot * 1.1f;
             }
             newList = new RGE_Static_Object*[newMax];
             if (newList == 0) return 0;

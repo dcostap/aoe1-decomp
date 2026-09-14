@@ -2364,18 +2364,18 @@ void RGE_Moving_Object::rotate(long angleDeg) {
     float rotation;
 
     sprite = this->sprite;
-    rotation = (float)(((double)angleDeg * 6.283185307179586) /
+    rotation = (float)(((double)angleDeg * 6.2831853) /
                        (double)sprite->facet_num) + this->angle;
 
     if (rotation < 0.0f) {
         do {
-            rotation += 6.283185f;
+            rotation += 6.2831853f;
         } while (rotation < 0.0f);
     }
-    if (rotation >= 6.283185307179586) {
+    if (rotation >= 6.2831853) {
         do {
-            rotation -= 6.283185f;
-        } while (rotation >= 6.283185307179586);
+            rotation -= 6.2831853f;
+        } while (rotation >= 6.2831853);
     }
 
     this->new_angle(rotation);

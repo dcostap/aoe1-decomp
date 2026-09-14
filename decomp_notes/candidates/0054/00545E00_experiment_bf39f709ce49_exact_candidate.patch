@@ -1,0 +1,24 @@
+# Experiment bf39f709ce49b81223fd64d3934eb78685b85b0c392e0296184f1fd7d7de5faf
+# Base 07ff7cbd8bef0dfa5407c1637452c95f7b41f2f2
+diff --git a/src/world.cpp b/src/world.cpp
+index e3a04b372..871ac3413 100644
+--- a/src/world.cpp
++++ b/src/world.cpp
+@@ -2992,7 +2992,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
+         if (this->maxNumberObjectsValue - 1 < id) {
+             newMax = this->maxNumberObjectsValue * 2;
+             if (newMax < id) {
+-                newMax = (float)id * 1.5f;
++                newMax = (float)id * 1.1f;
+             }
+             newList = new RGE_Static_Object*[newMax];
+             if (newList == 0) return 0;
+@@ -3026,7 +3026,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
+         if (this->maxNumberNegativeObjectsValue - 1 < slot) {
+             newMax = this->maxNumberNegativeObjectsValue * 2;
+             if (newMax < slot) {
+-                newMax = (float)slot * 1.5f;
++                newMax = (float)slot * 1.1f;
+             }
+             newList = new RGE_Static_Object*[newMax];
+             if (newList == 0) return 0;

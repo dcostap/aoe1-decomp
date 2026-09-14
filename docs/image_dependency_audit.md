@@ -84,3 +84,16 @@ Two optional tests use hash-pinned preserved builds.
 They check the historical minimap, map-point, and clearance constant defects.
 The old build has nine failed reads across four functions. The repaired build removes those nine failures.
 The tests skip these two cases if their local build files are unavailable.
+
+`tests/test_image_dependency_repairs.py` checks the original numeric bytes and both repaired switch mappings.
+Set `AOE_DEPENDENCY_BUILD` to a fresh build directory to check its linked data too.
+
+```text
+AOE_DEPENDENCY_BUILD=build/executable/RUN python -m pytest -q tests/test_image_dependency_repairs.py
+```
+
+This Bash command checks all eight constant reads, both case maps, and the nine historical numeric reads.
+The case tests read actual tables and resolve direct drawing helpers independently.
+They retain the unsigned guards, no-effect cases, and separate game-mode-one branch.
+An absent or unaligned supported check cannot pass these tests.
+The tests do not execute the game or prove rendering parity.

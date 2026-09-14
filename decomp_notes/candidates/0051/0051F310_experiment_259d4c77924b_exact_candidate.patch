@@ -1,0 +1,15 @@
+# Experiment 259d4c77924bd10bfbfc8d74b310a76a60bba6230da9d38171660c9f08d7d2d5
+# Base 07ff7cbd8bef0dfa5407c1637452c95f7b41f2f2
+diff --git a/src/tpnl_tml.cpp b/src/tpnl_tml.cpp
+index 244aba0c4..b72cfe7d1 100644
+--- a/src/tpnl_tml.cpp
++++ b/src/tpnl_tml.cpp
+@@ -414,7 +414,7 @@ void Time_Line_Panel::init_timeline()
+     } else {
+         this->pop_reading_rate =
+             static_cast<long>(
+-                static_cast<float>(this->num_entries_page - 1) * 0.1f);
++                static_cast<float>(this->num_entries_page - 1) * (1.0f / 12.0f));
+     }
+ }
+ 

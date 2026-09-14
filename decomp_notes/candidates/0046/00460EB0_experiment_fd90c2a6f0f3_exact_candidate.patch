@@ -1,0 +1,30 @@
+# Experiment fd90c2a6f0f345ee7ec871bad6bb822d3c2e429fb629f8fb325fe50d57232274
+# Base 07ff7cbd8bef0dfa5407c1637452c95f7b41f2f2
+diff --git a/src/move_obj.cpp b/src/move_obj.cpp
+index 34973915d..eaba02c4f 100644
+--- a/src/move_obj.cpp
++++ b/src/move_obj.cpp
+@@ -2364,18 +2364,18 @@ void RGE_Moving_Object::rotate(long angleDeg) {
+     float rotation;
+ 
+     sprite = this->sprite;
+-    rotation = (float)(((double)angleDeg * 6.283185307179586) /
++    rotation = (float)(((double)angleDeg * 6.2831853) /
+                        (double)sprite->facet_num) + this->angle;
+ 
+     if (rotation < 0.0f) {
+         do {
+-            rotation += 6.283185f;
++            rotation += 6.2831853f;
+         } while (rotation < 0.0f);
+     }
+-    if (rotation >= 6.283185307179586) {
++    if (rotation >= 6.2831853) {
+         do {
+-            rotation -= 6.283185f;
+-        } while (rotation >= 6.283185307179586);
++            rotation -= 6.2831853f;
++        } while (rotation >= 6.2831853);
+     }
+ 
+     this->new_angle(rotation);

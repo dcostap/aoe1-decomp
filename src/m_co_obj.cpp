@@ -477,6 +477,9 @@ void RGE_Master_Combat_Object::modify_percent(float value,
                                                 unsigned char attribute)
 {
     switch (attribute) {
+    case 8:
+    case 9:
+        break;
     case 6:
         turn_speed = (float)((double)value * (double)turn_speed);
         break;

@@ -628,8 +628,8 @@ void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, shor
     if (ot > 3) return;
     switch (ot) {
     case 0: this->draw_frame(param_1, param_2, param_3); return;
-    case 2: case 3: this->draw_frame_3d_cube_front(param_1,param_2,param_3); return;
-    case 1: this->draw_frame_3d_square_front(param_1,param_2,param_3); return;
+    case 1: this->draw_frame_3d_cube_front(param_1,param_2,param_3); return;
+    case 2: case 3: this->draw_frame_3d_square_front(param_1,param_2,param_3); return;
     }
 }
 

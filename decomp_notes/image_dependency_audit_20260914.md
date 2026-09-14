@@ -134,3 +134,9 @@ The linked audit returns one because its 13 dependency differences remain unreso
 That return code is an audit finding, not a tool execution failure.
 The staged whitespace check passes.
 Unrelated registry edits and behavior-review files remain outside this change.
+
+## Source repair follow-up
+
+See `decomp_notes/image_dependency_repair_20260914.md` for the scoped repair and fresh validation.
+The repair restores eight constant reads and five switch entries in five natural source owners.
+The earlier build and all audit findings above remain unchanged as historical evidence.

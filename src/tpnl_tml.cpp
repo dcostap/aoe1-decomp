@@ -414,7 +414,7 @@ void Time_Line_Panel::init_timeline()
     } else {
         this->pop_reading_rate =
             static_cast<long>(
-                static_cast<float>(this->num_entries_page - 1) * 0.1f);
+                static_cast<float>(this->num_entries_page - 1) * (1.0f / 12.0f));
     }
 }
 
