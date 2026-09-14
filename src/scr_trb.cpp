@@ -96,7 +96,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
                 secondHeight * this->pnl_hgt * 0x73 / 0x1E0,
             this->pnl_wid * 200 / 0x280,
             this->pnl_hgt * 0x6E / 0x1E0,
-            TButtonPanel::DrawPicture, buttonSound,
+            TButtonPanel::DrawText, buttonSound,
             TButtonPanel::NotifyAction, 0);
         (*button)->set_text_info(this->tribeName(i), font->font,
                                  font->font_wid, font->font_hgt, -1, -1);
@@ -138,7 +138,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 400 / 0x1E0,
         this->pnl_wid * 0x78 / 0x280,
         this->pnl_hgt * 0x1E / 0x1E0,
-        TButtonPanel::DrawPicture, buttonSound,
+        TButtonPanel::DrawText, buttonSound,
         TButtonPanel::NotifyAction, 0);
     this->okButton->set_text_info("Previous Screen", font->font,
                                   font->font_wid, font->font_hgt, -1, -1);
@@ -154,7 +154,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 0x1B8 / 0x1E0,
         this->pnl_wid * 0x78 / 0x280,
         this->pnl_hgt * 0x1E / 0x1E0,
-        TButtonPanel::DrawPicture, buttonSound,
+        TButtonPanel::DrawText, buttonSound,
         TButtonPanel::NotifyAction, 0);
     this->cancelButton->set_text_info("Cancel", font->font,
                                       font->font_wid, font->font_hgt, -1, -1);

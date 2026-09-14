@@ -70,7 +70,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
         else {
             this->game_mode_button->setup(
                 this->render_area, this, 0, 0, 0x32, 0x1E,
-                TButtonPanel::DrawPicture, sound,
+                TButtonPanel::DrawText, sound,
                 TButtonPanel::NotifyAction, 0);
             this->game_mode_button->set_text_info(
                 text_game, font, font_width, font_height, -1, -1);
@@ -83,7 +83,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
             else {
                 this->object_mode_button->setup(
                     this->render_area, this, 0x34, 0, 0x32, 0x1E,
-                    TButtonPanel::DrawPicture, sound,
+                    TButtonPanel::DrawText, sound,
                     TButtonPanel::NotifyAction, 0);
                 this->object_mode_button->set_text_info(
                     text_object, font, font_width, font_height, -1, -1);
@@ -96,7 +96,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                 else {
                     this->move_mode_button->setup(
                         this->render_area, this, 0x68, 0, 0x32, 0x1E,
-                        TButtonPanel::DrawPicture, sound,
+                        TButtonPanel::DrawText, sound,
                         TButtonPanel::NotifyAction, 0);
                     this->move_mode_button->set_text_info(
                         text_move, font, font_width, font_height, -1, -1);
@@ -109,7 +109,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                     else {
                         this->delete_mode_button->setup(
                             this->render_area, this, 0x9C, 0, 0x32, 0x1E,
-                            TButtonPanel::DrawPicture, sound,
+                            TButtonPanel::DrawText, sound,
                             TButtonPanel::NotifyAction, 0);
                         this->delete_mode_button->set_text_info(
                             text_delete, font, font_width, font_height, -1, -1);
@@ -122,7 +122,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                         else {
                             this->terrain_mode_button->setup(
                                 this->render_area, this, 0xD0, 0, 0x32, 0x1E,
-                                TButtonPanel::DrawPicture, sound,
+                                TButtonPanel::DrawText, sound,
                                 TButtonPanel::NotifyAction, 0);
                             this->terrain_mode_button->set_text_info(
                                 text_terrain, font, font_width, font_height,
@@ -138,7 +138,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                             else {
                                 this->elevation_mode_button->setup(
                                     this->render_area, this, 0x104, 0, 0x32,
-                                    0x1E, TButtonPanel::DrawPicture, sound,
+                                    0x1E, TButtonPanel::DrawText, sound,
                                     TButtonPanel::NotifyAction, 0);
                                 this->elevation_mode_button->set_text_info(
                                     text_elevation, font, font_width,
@@ -175,7 +175,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                                 else {
                                     this->command_button->setup(
                                         this->render_area, this, 0x13A, 0,
-                                        0x32, 0x1E, TButtonPanel::DrawPicture,
+                                        0x32, 0x1E, TButtonPanel::DrawText,
                                         sound, TButtonPanel::NotifyAction, 0);
                                     this->command_button->set_text_info(
                                         text_command, font, font_width,

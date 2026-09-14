@@ -8,6 +8,10 @@ These dependencies are preserved code, not recovered source.
 
 ## Runtime setup
 
+For the shared-asset build, windowed launch, and menu capture commands, see [runtime harness](runtime_harness.md).
+Use `game.cmd build`, then `game.cmd rebuilt` or `game.cmd original`.
+The older complete-copy commands below remain available as a control.
+
 Use the complete local runtime under `runtime/`.
 It contains the full release files with the beta `empiresx.exe` in place.
 The folder is local and ignored by Git, except for `runtime/README.md`.

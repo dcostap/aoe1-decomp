@@ -86,6 +86,19 @@ def test_crt_aliases_are_target_scoped():
     assert identity.check_direct_identity(0x54B9A0, '_strstr')['result'] == 'pass'
 
 
+def test_codec_import_thunk_keeps_exact_identity():
+    assert identity.check_direct_identity(0x54B1A4, '_ICInfo@12')['result'] == 'pass'
+    assert identity.check_direct_identity(0x54B1A4, '_ICInfo@8')['result'] == 'fail'
+    assert identity.check_direct_identity(0x54B1A4, '_MCIWndCreateA')['result'] == 'fail'
+    original = bytes.fromhex('e8 65 96 02 00')
+    rebuilt = bytes.fromhex('e8 00 00 00 00')
+    a, b, result = compatible_relocation_masks(original, rebuilt,
+        [dict(offset=1, width=4, symbol_name='_ICInfo@12')], 0x521B3A)
+    assert a == b
+    assert not result['target_unknowns']
+    assert not result['target_mismatches']
+
+
 def test_reviewed_game_and_drawing_targets_keep_exact_names():
     for va, name in [
         (0x444850, '?PtrClear@TDrawArea@@QAEXPAUtagRECT@@H@Z'),

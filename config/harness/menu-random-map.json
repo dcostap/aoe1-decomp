@@ -1,0 +1,8 @@
+{
+  "name": "main-menu-to-random-map-settings",
+  "expected_panel": "MP Setup Screen",
+  "actions": [
+    {"after_paint": 8, "key": 13},
+    {"after_paint": 14, "key": 13}
+  ]
+}

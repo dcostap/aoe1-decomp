@@ -120,7 +120,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
     }
 
     this->set_ideal_size(wid_in, hgt_in);
-    if (info_file_name_in != 0) {
+    if (full_screen != 0) {
         this->set_positioning((TPanel::PositionMode)1,
                               0, 0, 0, 0, 0, 0, 0, 0,
                               0, 0, 0, 0);
@@ -171,6 +171,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
                "%s %d   "
                "%s %d   "
                "%s %d %d %d %d %d %d   "
+               "%s %d %d %d   "
                "%s %d %d %d   "
                "%s %d %d %d   "
                "%s %d %d %d   "
@@ -836,7 +837,7 @@ int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, ch
         }
 
         if ((*out)->setup(this->render_area, panel, sx, sy, sw, sh,
-                          TButtonPanel::DrawPicture, sound,
+                          TButtonPanel::DrawText, sound,
                           TButtonPanel::NotifyAction, user) != 0) {
             (*out)->set_sound_number(sound_id);
             RGE_Font* font;
@@ -902,7 +903,7 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
                 RGE_Font* f = rge_base_game->get_font(0);
                 (*out)->set_text_info(s_space, f->font, f->font_wid, f->font_hgt, -1, -1);
                 (*out)->set_text(1, s_X);
-                (*out)->setDrawType(TButtonPanel::DrawPicture);
+                (*out)->setDrawType(TButtonPanel::DrawText);
             }
             if (this->use_bevels) {
                 (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
@@ -942,7 +943,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
         }
 
         if ((*out)->setup(this->render_area, parent, sx, sy, sw, sh,
-                          TButtonPanel::DrawText, sound,
+                          TButtonPanel::DrawPicture, sound,
                           TButtonPanel::NotifyAction, param8)) {
             (*out)->set_sound_number(sound_id);
 
@@ -953,7 +954,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
             }
             else {
                 RGE_Font* font;
-                (*out)->setDrawType(TButtonPanel::DrawPicture);
+                (*out)->setDrawType(TButtonPanel::DrawText);
                 font = rge_base_game->get_font(0);
                 (*out)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
                 (*out)->set_text(1, s_X);

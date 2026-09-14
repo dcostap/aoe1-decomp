@@ -1,0 +1,39 @@
+# Experiment 4da33512f5bae21c324aa107537171360e912ae1241fdf682e3e008215b8b2cc
+# Base 44d296b30a9b2307b00c4b38f344bc3705dc4219
+diff --git a/config/reviewed_reference_identities.json b/config/reviewed_reference_identities.json
+index 40c6632ff..674cda77f 100644
+--- a/config/reviewed_reference_identities.json
++++ b/config/reviewed_reference_identities.json
+@@ -62,6 +62,7 @@
+     "0054B192": {"symbol": "_ImmReleaseContext@8", "aliases": []},
+     "0054B198": {"symbol": "_ImmNotifyIME@16", "aliases": []},
+     "0054B19E": {"symbol": "_ImmGetContext@4", "aliases": []},
++    "0054B1A4": {"symbol": "_ICInfo@12", "aliases": []},
+     "0054B1AA": {"symbol": "_MCIWndCreateA", "aliases": []},
+     "0054D6E0": {"symbol": "??_L@YGXPAXIHP6EX0@Z1@Z", "aliases": []},
+     "0054D780": {"symbol": "??_M@YGXPAXIHP6EX0@Z@Z", "aliases": []},
+diff --git a/src/pnl_lst.cpp b/src/pnl_lst.cpp
+index 357636dc8..98b25fc2a 100644
+--- a/src/pnl_lst.cpp
++++ b/src/pnl_lst.cpp
+@@ -183,16 +183,16 @@ long TListPanel::key_down_action(long vk, short param_2, int param_3, int param_
+     case 0x26:
+         this->scroll_cur_line(3, 0, 1);
+         return 1;
+-    case 0x23:
++    case 0x22:
+         this->scroll_cur_line(4, 0, 1);
+         return 1;
+-    case 0x24:
++    case 0x21:
+         this->scroll_cur_line(5, 0, 1);
+         return 1;
+-    case 0x21:
++    case 0x24:
+         this->scroll_cur_line(6, 0, 1);
+         return 1;
+-    case 0x22:
++    case 0x23:
+         this->scroll_cur_line(7, 0, 1);
+         return 1;
+     case 0x0D:

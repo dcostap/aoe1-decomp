@@ -91,7 +91,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
         pnl_hgt * 0x1AE / 0x1E0,
         pnl_wid * 300 / 0x280,
         pnl_hgt * 0x28 / 0x1E0,
-        TButtonPanel::DrawPicture, sound, TButtonPanel::NotifyAction, 0);
+        TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0);
     okButton->set_text_info("OK", font->font, font->font_wid, font->font_hgt,
                             -1, -1);
 

@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 from pathlib import Path
 
@@ -11,13 +12,17 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = ROOT / "runtime"
 ORIGINAL_SHA256 = "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90"
 COMPAT_LAYER = "DWM8And16BitMitigation"
+# Large input-only formats. Profiles, saves, scenarios, EXEs, and DLLs stay private.
+SHARED_EXTENSIONS = {".drs", ".wav", ".avi"}
 
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def prepare(source: Path, exe: Path, output: Path) -> dict:
+def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy") -> dict:
+    if assets not in ("copy", "hardlink"):
+        raise ValueError("Asset mode must be copy or hardlink.")
     source, exe, output = source.resolve(), exe.resolve(), output.resolve()
     runtime_root = (ROOT / "build/runtime").resolve()
     if not output.is_relative_to(runtime_root) or output == runtime_root:
@@ -40,10 +45,20 @@ def prepare(source: Path, exe: Path, output: Path) -> dict:
     def copy_verified(src, dst):
         src, dst = Path(src), Path(dst)
         expected = digest(src)
-        shutil.copy2(src, dst)
+        method = "copy"
+        if assets == "hardlink" and src.suffix.lower() in SHARED_EXTENSIONS:
+            try:
+                os.link(src, dst)
+                method = "hardlink"
+            except OSError:
+                # Different volumes and filesystems can reject hard links.
+                shutil.copy2(src, dst)
+        else:
+            shutil.copy2(src, dst)
         if digest(dst) != expected:
             raise ValueError(f"Copy verification failed: {src}")
-        files.append({"path": src.relative_to(source).as_posix(), "sha256": expected})
+        files.append({"path": src.relative_to(source).as_posix(), "sha256": expected,
+                      "method": method, "size": src.stat().st_size})
         return str(dst)
 
     shutil.copytree(source, output, copy_function=copy_verified)
@@ -63,6 +78,8 @@ def prepare(source: Path, exe: Path, output: Path) -> dict:
         "output_directory": str(output), "compat_layer": COMPAT_LAYER,
         "copied_files_before_exe_replacement": sorted(files, key=lambda row: row["path"]),
         "launcher": "Launch.cmd", "game_arguments": [],
+        "asset_mode": assets,
+        "shared_bytes": sum(row["size"] for row in files if row["method"] == "hardlink"),
     }
     (output / "runtime_manifest.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return report
@@ -76,9 +93,11 @@ def main() -> int:
     )
     parser.add_argument("--exe", required=True, type=Path, help="Original or rebuilt expansion EXE to test")
     parser.add_argument("--output", required=True, type=Path, help="New directory under build/runtime")
+    parser.add_argument("--assets", choices=("copy", "hardlink"), default="copy",
+                        help="Share input-only DRS/WAV/AVI files. Never edit linked assets in place.")
     args = parser.parse_args()
     try:
-        report = prepare(args.source, args.exe, args.output)
+        report = prepare(args.source, args.exe, args.output, assets=args.assets)
     except (OSError, ValueError) as error:
         parser.exit(1, f"Runtime preparation failed: {error}\n")
     print(json.dumps({key: value for key, value in report.items()

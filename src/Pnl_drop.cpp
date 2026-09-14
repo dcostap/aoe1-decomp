@@ -706,8 +706,8 @@ long TDropDownButtonPanel::handle_mouse_move(long x, long y, int ctrl_key, int s
 
         if (this->drop_down_panel->scbar_panel->is_inside(x, y) != 0) {
             this->handle_mouse_up(1, x, y, ctrl_key, shift_key);
-            long list_hit_x = this->drop_down_panel->list_panel->width() +
-                              this->drop_down_panel->list_panel->xPosition() - 1;
+            long list_hit_x = this->drop_down_panel->list_panel->width();
+            list_hit_x += this->drop_down_panel->list_panel->xPosition() - 1;
             return this->drop_down_panel->list_panel->handle_mouse_down(
                 1, list_hit_x, y, ctrl_key, shift_key);
         }

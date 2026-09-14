@@ -183,16 +183,16 @@ long TListPanel::key_down_action(long vk, short param_2, int param_3, int param_
     case 0x26:
         this->scroll_cur_line(3, 0, 1);
         return 1;
-    case 0x23:
+    case 0x22:
         this->scroll_cur_line(4, 0, 1);
         return 1;
-    case 0x24:
+    case 0x21:
         this->scroll_cur_line(5, 0, 1);
         return 1;
-    case 0x21:
+    case 0x24:
         this->scroll_cur_line(6, 0, 1);
         return 1;
-    case 0x22:
+    case 0x23:
         this->scroll_cur_line(7, 0, 1);
         return 1;
     case 0x0D:

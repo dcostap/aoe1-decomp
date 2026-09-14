@@ -1,0 +1,337 @@
+{
+  "name": "game UI main menu tests",
+  "routes": {
+    "main": [{"name":"main-menu","panel":"Main Menu"}],
+    "single": [{"name":"open-single","type":"click","x":320,"y":198,"panel":"Single Player Menu"}],
+    "random": [
+      {"name":"open-single","type":"click","x":320,"y":198,"panel":"Single Player Menu"},
+      {"name":"open-random","type":"click","x":320,"y":138,"panel":"MP Setup Screen"}
+    ],
+    "settings": [
+      {"name":"open-single","type":"click","x":320,"y":198,"panel":"Single Player Menu"},
+      {"name":"open-random","type":"click","x":320,"y":138,"panel":"MP Setup Screen"},
+      {"name":"open-settings","type":"click","x":520,"y":65,"panel":"Game Settings Screen"}
+    ],
+    "editor": [{"name":"open-builder","type":"click","x":320,"y":348,"panel":"Scenario Editor Menu"}],
+    "campaign": [
+      {"name":"open-single","type":"click","x":320,"y":198,"panel":"Single Player Menu"},
+      {"name":"open-name","type":"click","x":320,"y":188,"panel":"New Name Dialog"},
+      {"name":"enter-name","type":"text","text":"Harness","check":[{"kind":"edit","equals":{"text":"Harness"}}]},
+      {"name":"open-campaigns","type":"key","key":13,"panel":"Campaign Selection Screen"}
+    ]
+  },
+  "cases": [
+    {"id":"multiplayer-offline-lobby","route":"main","description":"Browse the offline lobby and edit a game title; cancel without creating a session", "steps":[
+      {"name":"offline-multiplayer","type":"click","x":320,"y":248,"panel":"MP Startup Screen"},
+      {"name":"offline-name-home","type":"key","key":36},
+      {"name":"offline-name-select","type":"key","key":35,"modifiers":[16]},
+      {"name":"offline-name","type":"text","text":"Harness"},
+      {"name":"offline-lobby","type":"click","x":180,"y":455,"panel":"Join Screen"},
+      {"name":"offline-create-dialog","type":"click","x":320,"y":455,"panel":"Create Dialog"},
+      {"name":"offline-title-home","type":"key","key":36},
+      {"name":"offline-title-select","type":"key","key":35,"modifiers":[16]},
+      {"name":"offline-title","type":"text","text":"UIHarness","check":[{"kind":"edit","equals":{"text":"UIHarness"}}]},
+      {"name":"offline-create-cancel","type":"key","key":27,"panel":"Join Screen"},
+      {"name":"offline-lobby-cancel","type":"key","key":27,"panel":"MP Startup Screen"},
+      {"name":"offline-menu-cancel","type":"click","x":450,"y":455,"panel":"Main Menu"}
+    ]},
+    {"id":"main-buttons","route":"main","description":"Hover, press, drag away, cancel release, and keyboard focus", "steps":[
+      {"name":"hover-single","type":"move","x":320,"y":198},
+      {"name":"press-single","type":"down","x":320,"y":198,"check":[{"kind":"button","text":"Single Player","equals":{"down":1}}]},
+      {"name":"drag-out","type":"move","x":20,"y":100,"check":[{"kind":"button","text":"Single Player","equals":{"down":0}}]},
+      {"name":"release-outside","type":"up","x":20,"y":100,"panel":"Main Menu"},
+      {"name":"tab-multiplayer","type":"key","key":9,"check":[{"kind":"button","text":"Multiplayer","equals":{"focus":1}}]},
+      {"name":"tab-help","type":"key","key":9},
+      {"name":"tab-builder","type":"key","key":9},
+      {"name":"tab-exit","type":"key","key":9},
+      {"name":"tab-wrap","type":"key","key":9,"check":[{"kind":"button","text":"Single Player","equals":{"focus":1}}]}
+    ]},
+    {"id":"main-help","route":"main","description":"Open Help confirmation without launching external WinHelp", "steps":[
+      {"name":"help-dialog","type":"click","x":320,"y":298,"panel":"Confirm Dialog"}
+    ]},
+    {"id":"single-return","route":"single","description":"Cancel Single Player and reopen it with Enter", "steps":[
+      {"name":"cancel","type":"click","x":320,"y":388,"panel":"Main Menu"},
+      {"name":"enter","type":"key","key":13,"panel":"Single Player Menu"},
+      {"name":"escape","type":"key","key":27,"panel":"Main Menu"}
+    ]},
+    {"id":"multiplayer-startup","route":"main","description":"Connection selection and player-name entry; no network connection", "steps":[
+      {"name":"open-multiplayer","type":"click","x":320,"y":248,"panel":"MP Startup Screen"},
+      {"name":"player-name-home","type":"key","key":36},
+      {"name":"player-name-select","type":"key","key":35,"modifiers":[16]},
+      {"name":"type-name","type":"text","text":"Harness","check":[{"kind":"edit","equals":{"text":"Harness"}}]},
+      {"name":"delete-character","type":"text","text":"\b","check":[{"kind":"edit","equals":{"text":"Harnes"}}]},
+      {"name":"focus-providers","type":"key","key":9},
+      {"name":"provider-down","type":"key","key":40},
+      {"name":"provider-up","type":"key","key":38},
+      {"name":"return-main","type":"key","key":27,"panel":"Main Menu"}
+    ]},
+    {"id":"campaign-entry","route":"single","description":"Inspect the campaign player selection or new-name dialog", "steps":[
+      {"name":"campaign","type":"click","x":320,"y":188},
+      {"name":"cancel-campaign","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"scenario-selection","route":"single","description":"Scenario list selection and scrolling, without loading a map", "steps":[
+      {"name":"scenarios","type":"click","x":320,"y":288,"panel":"Select Scenario Screen"},
+      {"name":"list-down","type":"key","key":40},
+      {"name":"list-page-down","type":"key","key":34},
+      {"name":"list-page-up","type":"key","key":33},
+      {"name":"list-end","type":"key","key":35},
+      {"name":"list-home","type":"key","key":36},
+      {"name":"cancel-scenario","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"saved-game-selection","route":"single","description":"Saved-game list and cancel; never load a saved game", "steps":[
+      {"name":"saved-games","type":"click","x":320,"y":338,"panel":"Load Saved Game Screen"},
+      {"name":"saved-down","type":"key","key":40},
+      {"name":"saved-tab","type":"key","key":9},
+      {"name":"cancel-saved","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"death-match-settings","route":"single","description":"Death Match setup, settings, and return without starting", "steps":[
+      {"name":"death-match","type":"click","x":320,"y":238,"panel":"MP Setup Screen"},
+      {"name":"death-settings","type":"click","x":520,"y":65,"panel":"Game Settings Screen"},
+      {"name":"cancel-settings","type":"key","key":27,"panel":"MP Setup Screen"},
+      {"name":"cancel-death","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"random-player-controls","route":"random","description":"Civilization dropdown, player count, color and team buttons", "steps":[
+      {"name":"civilization-open","type":"click","x":180,"y":96,"check":[{"kind":"drop","at":[200,96],"equals":{"mode":2}}]},
+      {"name":"civilization-end","type":"key","key":35},
+      {"name":"civilization-cancel","type":"key","key":27},
+      {"name":"civilization-dismiss","type":"click","x":415,"y":300,"panel":"MP Setup Screen"},
+      {"name":"civilization-reopen","type":"click","x":180,"y":96},
+      {"name":"civilization-select","type":"click","x":210,"y":119,"check":[{"kind":"drop","at":[200,96],"equals":{"mode":1,"value":0}}]},
+      {"name":"color-change","type":"click","x":325,"y":96,"check":[{"kind":"button","text":"2","at":[325,96],"equals":{"value":1}}]},
+      {"name":"team-change","type":"click","x":395,"y":96,"check":[{"kind":"button","at":[395,96],"equals":{"value":1}}]},
+      {"name":"player-count-open","type":"click","x":92,"y":334},
+      {"name":"player-count-down","type":"key","key":40},
+      {"name":"player-count-select","type":"key","key":13,"check":[{"kind":"drop","at":[50,334],"equals":{"value":3,"mode":1}},{"kind":"drop","at":[200,192],"equals":{"active":1}}]},
+      {"name":"cancel-random","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"settings-map-size","route":"settings","description":"Open, mouse-select, reopen, highlight and dismiss Map Size", "steps":[
+      {"name":"size-open","type":"click","x":191,"y":248,"check":[{"kind":"drop","at":[50,248],"equals":{"mode":2}}]},
+      {"name":"size-hover","type":"move","x":60,"y":269},
+      {"name":"size-select","type":"click","x":60,"y":269,"check":[{"kind":"drop","at":[50,248],"equals":{"mode":1,"value":0}}]},
+      {"name":"size-reopen","type":"click","x":191,"y":248},
+      {"name":"size-end","type":"key","key":35},
+      {"name":"size-escape","type":"key","key":27,"check":[{"kind":"drop","at":[50,248],"equals":{"mode":2,"value":0}}]},
+      {"name":"size-dismiss","type":"click","x":610,"y":200,"panel":"Game Settings Screen","check":[{"kind":"drop","at":[50,248],"equals":{"mode":1,"value":0}}]},
+      {"name":"settings-cancel","type":"click","x":460,"y":455,"panel":"MP Setup Screen"}
+    ]},
+    {"id":"settings-checkboxes","route":"settings","description":"Toggle all three checkboxes twice and check stored values", "steps":[
+      {"name":"fixed-off","type":"click","x":25,"y":375,"check":[{"kind":"button","at":[25,375],"equals":{"value":0}}]},
+      {"name":"fixed-on","type":"click","x":25,"y":375,"check":[{"kind":"button","at":[25,375],"equals":{"value":1}}]},
+      {"name":"tech-on","type":"click","x":235,"y":375,"check":[{"kind":"button","at":[235,375],"equals":{"value":1}}]},
+      {"name":"tech-off","type":"click","x":235,"y":375,"check":[{"kind":"button","at":[235,375],"equals":{"value":0}}]},
+      {"name":"reveal-on","type":"click","x":445,"y":375,"check":[{"kind":"button","at":[445,375],"equals":{"value":1}}]},
+      {"name":"reveal-off","type":"click","x":445,"y":375,"check":[{"kind":"button","at":[445,375],"equals":{"value":0}}]},
+      {"name":"settings-ok","type":"click","x":180,"y":455,"panel":"MP Setup Screen"}
+    ]},
+    {"id":"builder-menu","route":"editor","description":"Inspect builder buttons and cancel without creating a scenario", "steps":[
+      {"name":"builder-tab","type":"key","key":9},
+      {"name":"builder-return","type":"key","key":27,"panel":"Main Menu"}
+    ]},
+    {"id":"builder-open-scenario","route":"editor","description":"Open existing-scenario selection, inspect list, and cancel", "steps":[
+      {"name":"builder-open-tab","type":"key","key":9},
+      {"name":"open-scenarios","type":"key","key":13,"panel":"Scenario Editor Open"},
+      {"name":"scenario-list-down","type":"key","key":40},
+      {"name":"scenario-list-end","type":"key","key":35},
+      {"name":"cancel-open","type":"key","key":27,"panel":"Scenario Editor Menu"}
+    ]},
+    {"id":"campaign-editor","route":"editor","description":"Campaign metadata editor, filename input and cancel; no map editor", "steps":[
+      {"name":"builder-tab-one","type":"key","key":9},
+      {"name":"builder-tab-two","type":"key","key":9},
+      {"name":"campaign-editor-open","type":"key","key":13,"panel":"Campaign Editor Screen"},
+      {"name":"filename-text","type":"text","text":"Harness","check":[{"kind":"edit","equals":{"text":"Harness"}}]},
+      {"name":"filename-backspace","type":"text","text":"\b","check":[{"kind":"edit","equals":{"text":"Harnes"}}]},
+      {"name":"filename-invalid","type":"text","text":":/\\","check":[{"kind":"edit","equals":{"text":"Harnes"}}]},
+      {"name":"cancel-editor","type":"click","x":450,"y":460,"panel":"Scenario Editor Menu"}
+    ]},
+    {"id":"main-exit-button","route":"main","description":"Exit hover and press, then drag away without quitting", "steps":[
+      {"name":"hover-exit","type":"move","x":320,"y":398},
+      {"name":"press-exit","type":"down","x":320,"y":398,"check":[{"kind":"button","text":"Exit","equals":{"down":1}}]},
+      {"name":"drag-exit","type":"move","x":20,"y":100},
+      {"name":"release-exit","type":"up","x":20,"y":100,"panel":"Main Menu"}
+    ]},
+    {"id":"main-credits","route":"main","description":"Hidden credits shortcut and return", "steps":[
+      {"name":"credits","type":"key","key":67,"modifiers":[17],"panel":"Credits Screen"},
+      {"name":"leave-credits","type":"key","key":27,"panel":"Main Menu"}
+    ]},
+    {"id":"campaign-name-edit","route":"single","description":"Empty-name validation, typing, selection, deletion, and cancel", "steps":[
+      {"name":"name-dialog","type":"click","x":320,"y":188,"panel":"New Name Dialog"},
+      {"name":"empty-submit","type":"key","key":13,"panel":"New Name Dialog"},
+      {"name":"name-text","type":"text","text":"Harness","check":[{"kind":"edit","equals":{"text":"Harness"}}]},
+      {"name":"name-home","type":"key","key":36},
+      {"name":"name-select","type":"key","key":35,"modifiers":[16],"check":[{"kind":"edit","equals":{"selection":[0,7]}}]},
+      {"name":"name-replace","type":"text","text":"UI","check":[{"kind":"edit","equals":{"text":"UI"}}]},
+      {"name":"name-backspace","type":"text","text":"\b","check":[{"kind":"edit","equals":{"text":"U"}}]},
+      {"name":"name-cancel","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"campaign-selection","route":"campaign","description":"Campaign and mission lists, then player selection; never start a mission", "steps":[
+      {"name":"campaign-down","type":"key","key":40},
+      {"name":"campaign-end","type":"key","key":35},
+      {"name":"campaign-home","type":"key","key":36},
+      {"name":"mission-focus","type":"key","key":9},
+      {"name":"mission-down","type":"key","key":40},
+      {"name":"mission-end","type":"key","key":35},
+      {"name":"back-to-players","type":"key","key":27,"panel":"Name Selection Screen"},
+      {"name":"players-cancel","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"scenario-mouse-scroll","route":"single","description":"Mouse selection, scrollbar arrows, and scrollbar dragging", "steps":[
+      {"name":"scenario-browser","type":"click","x":320,"y":288,"panel":"Select Scenario Screen"},
+      {"name":"scenario-click","type":"click","x":100,"y":105},
+      {"name":"scroll-arrow","type":"click","x":610,"y":323,"check":[{"kind":"list","at":[100,100],"equals":{"top":1}}]},
+      {"name":"scroll-thumb-down","type":"down","x":610,"y":110},
+      {"name":"scroll-thumb-drag","type":"move","x":610,"y":230,"check":[{"kind":"list","at":[100,100],"equals":{"top":8}}]},
+      {"name":"scroll-thumb-up","type":"up","x":610,"y":230},
+      {"name":"scroll-home","type":"key","key":36},
+      {"name":"browser-cancel","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"saved-delete-confirmation","route":"single","description":"Open saved-game deletion confirmation and decline", "steps":[
+      {"name":"saved-browser","type":"click","x":320,"y":338,"panel":"Load Saved Game Screen"},
+      {"name":"saved-ok-focus","type":"key","key":9},
+      {"name":"saved-delete-focus","type":"key","key":9},
+      {"name":"delete-confirmation","type":"key","key":13,"panel":"Cancel Dialog"},
+      {"name":"decline-delete","type":"key","key":27,"panel":"Load Saved Game Screen","check":[{"kind":"list","equals":{"lines":1}}]},
+      {"name":"saved-browser-cancel","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"settings-map-type","route":"settings","description":"Map Type list, keyboard selection, outside dismissal and OK persistence", "steps":[
+      {"name":"type-open","type":"click","x":391,"y":248,"check":[{"kind":"drop","at":[250,248],"equals":{"mode":2}}]},
+      {"name":"type-end","type":"key","key":35},
+      {"name":"type-home","type":"key","key":36},
+      {"name":"type-select","type":"key","key":13,"check":[{"kind":"drop","at":[250,248],"equals":{"mode":1,"value":0}}]},
+      {"name":"type-ok","type":"click","x":180,"y":455,"panel":"MP Setup Screen"},
+      {"name":"type-reopen-settings","type":"click","x":520,"y":65,"panel":"Game Settings Screen","check":[{"kind":"drop","at":[250,248],"equals":{"value":0}}]}
+    ]},
+    {"id":"settings-age","route":"settings","description":"Starting Age dropdown and selection", "steps":[
+      {"name":"age-open","type":"click","x":391,"y":296,"check":[{"kind":"drop","at":[250,296],"equals":{"mode":2}}]},
+      {"name":"age-home","type":"key","key":36},
+      {"name":"age-down","type":"key","key":40},
+      {"name":"age-select","type":"key","key":13,"check":[{"kind":"drop","at":[250,296],"equals":{"mode":1,"value":1}}]}
+    ]},
+    {"id":"settings-resources","route":"settings","description":"Resources dropdown and selection", "steps":[
+      {"name":"resources-open","type":"click","x":391,"y":344,"check":[{"kind":"drop","at":[250,344],"equals":{"mode":2}}]},
+      {"name":"resources-end","type":"key","key":35},
+      {"name":"resources-select","type":"key","key":13,"check":[{"kind":"drop","at":[250,344],"equals":{"mode":1,"value":2}}]}
+    ]},
+    {"id":"settings-difficulty","route":"settings","description":"Difficulty dropdown and selection", "steps":[
+      {"name":"difficulty-open","type":"click","x":591,"y":296,"check":[{"kind":"drop","at":[450,296],"equals":{"mode":2}}]},
+      {"name":"difficulty-home","type":"key","key":36},
+      {"name":"difficulty-select","type":"key","key":13,"check":[{"kind":"drop","at":[450,296],"equals":{"mode":1,"value":0}}]}
+    ]},
+    {"id":"settings-path-finding","route":"settings","description":"Path Finding dropdown and selection", "steps":[
+      {"name":"path-open","type":"click","x":591,"y":344,"check":[{"kind":"drop","at":[450,344],"equals":{"mode":2}}]},
+      {"name":"path-home","type":"key","key":36},
+      {"name":"path-select","type":"key","key":13,"check":[{"kind":"drop","at":[450,344],"equals":{"mode":1,"value":0}}]}
+    ]},
+    {"id":"settings-victory-time","route":"settings","description":"Timed victory reveals its duration control", "steps":[
+      {"name":"victory-open","type":"click","x":191,"y":296},
+      {"name":"victory-home","type":"key","key":36},
+      {"name":"victory-down-one","type":"key","key":40},
+      {"name":"victory-down-two","type":"key","key":40},
+      {"name":"victory-time","type":"key","key":13,"check":[{"kind":"drop","at":[50,296],"equals":{"value":2}}]},
+      {"name":"time-open","type":"click","x":191,"y":344,"check":[{"kind":"drop","at":[50,344],"active_only":true,"equals":{"mode":2}}]},
+      {"name":"time-home","type":"key","key":36},
+      {"name":"time-select","type":"key","key":13,"check":[{"kind":"drop","at":[50,344],"active_only":true,"equals":{"mode":1,"value":0}}]}
+    ]},
+    {"id":"settings-victory-score","route":"settings","description":"Score victory reveals its amount control; scroll and select", "steps":[
+      {"name":"score-victory-open","type":"click","x":191,"y":296},
+      {"name":"score-victory-end","type":"key","key":35},
+      {"name":"score-victory-select","type":"key","key":13,"check":[{"kind":"drop","at":[50,296],"equals":{"value":3}}]},
+      {"name":"score-amount-open","type":"click","x":191,"y":344,"check":[{"kind":"drop","at":[50,344],"active_only":true,"equals":{"mode":2}}]},
+      {"name":"score-amount-end","type":"key","key":35},
+      {"name":"score-amount-home","type":"key","key":36},
+      {"name":"score-amount-select","type":"key","key":13,"check":[{"kind":"drop","at":[50,344],"active_only":true,"equals":{"mode":1,"value":0}}]}
+    ]},
+    {"id":"settings-cancel-persistence","route":"settings","description":"Cancel a Map Size change and verify the previous value returns", "steps":[
+      {"name":"cancel-size-open","type":"click","x":191,"y":248},
+      {"name":"cancel-size-home","type":"key","key":36},
+      {"name":"cancel-size-select","type":"key","key":13,"check":[{"kind":"drop","at":[50,248],"equals":{"value":0}}]},
+      {"name":"cancel-size-settings","type":"click","x":460,"y":455,"panel":"MP Setup Screen"},
+      {"name":"cancel-size-reopen","type":"click","x":520,"y":65,"panel":"Game Settings Screen","check":[{"kind":"drop","at":[50,248],"equals":{"value":3}}]}
+    ]},
+    {"id":"scenario-setup","route":"single","description":"Scenario metadata setup and disabled map controls; never load its map", "steps":[
+      {"name":"scenario-list","type":"click","x":320,"y":288,"panel":"Select Scenario Screen"},
+      {"name":"scenario-ok-focus","type":"key","key":9},
+      {"name":"scenario-setup-open","type":"key","key":13,"panel":"MP Setup Screen"},
+      {"name":"scenario-settings-open","type":"click","x":520,"y":65,"panel":"Game Settings Screen"},
+      {"name":"scenario-size-disabled","type":"click","x":191,"y":248,"panel":"Game Settings Screen"},
+      {"name":"scenario-settings-return","type":"key","key":27,"panel":"MP Setup Screen"}
+    ]},
+    {"id":"random-disabled-slot","route":"random","description":"An inactive player civilization does not open a dropdown", "steps":[
+      {"name":"inactive-civilization","type":"click","x":180,"y":192,"panel":"MP Setup Screen","check":[{"kind":"drop","at":[200,192],"equals":{"active":0,"mode":1}}]}
+    ]},
+    {"id":"campaign-editor-order","route":"editor","description":"Add scenario references, reorder them, remove one, and cancel without saving", "steps":[
+      {"name":"order-tab-one","type":"key","key":9},
+      {"name":"order-tab-two","type":"key","key":9},
+      {"name":"order-editor-open","type":"key","key":13,"panel":"Campaign Editor Screen"},
+      {"name":"source-first","type":"click","x":100,"y":132},
+      {"name":"add-first","type":"click","x":360,"y":275,"check":[{"kind":"list","at":[100,320],"equals":{"lines":1}}]},
+      {"name":"source-second","type":"click","x":100,"y":155},
+      {"name":"add-second","type":"click","x":360,"y":275,"check":[{"kind":"list","at":[100,320],"equals":{"lines":2}}]},
+      {"name":"target-first","type":"click","x":100,"y":312},
+      {"name":"move-down","type":"click","x":575,"y":355},
+      {"name":"move-up","type":"click","x":575,"y":315},
+      {"name":"remove-scenario","type":"click","x":540,"y":275,"check":[{"kind":"list","at":[100,320],"equals":{"lines":1}}]},
+      {"name":"order-cancel","type":"click","x":450,"y":460,"panel":"Scenario Editor Menu"}
+    ]},
+    {"id":"campaign-filename-dropdown","route":"editor","description":"Inspect existing campaign filenames without opening a map", "steps":[
+      {"name":"filename-tab-one","type":"key","key":9},
+      {"name":"filename-tab-two","type":"key","key":9},
+      {"name":"filename-editor-open","type":"key","key":13,"panel":"Campaign Editor Screen"},
+      {"name":"filename-dropdown","type":"click","x":391,"y":75,"check":[{"kind":"drop","at":[200,75],"equals":{"mode":2}}]},
+      {"name":"filename-list-end","type":"key","key":35},
+      {"name":"filename-list-dismiss","type":"click","x":620,"y":280,"panel":"Campaign Editor Screen"},
+      {"name":"filename-dropdown-cancel","type":"click","x":450,"y":460,"panel":"Scenario Editor Menu"}
+    ]},
+    {"id":"campaign-player-buttons","route":"campaign","description":"New-player and remove-player dialogs; cancel both", "steps":[
+      {"name":"player-menu","type":"key","key":27,"panel":"Name Selection Screen"},
+      {"name":"new-player-dialog","type":"click","x":490,"y":115,"panel":"New Name Dialog"},
+      {"name":"cancel-new-player","type":"key","key":27,"panel":"Name Selection Screen"},
+      {"name":"remove-player-dialog","type":"click","x":490,"y":155,"panel":"YesNoDialog"},
+      {"name":"cancel-remove-player","type":"key","key":27,"panel":"Name Selection Screen","check":[{"kind":"list","equals":{"lines":1}}]},
+      {"name":"leave-player-menu","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"campaign-name-mouse","route":"single","description":"Place a native text caret, drag-select text, replace it, and cancel", "steps":[
+      {"name":"mouse-name-dialog","type":"click","x":320,"y":188,"panel":"New Name Dialog"},
+      {"name":"mouse-name-text","type":"text","text":"Harness","check":[{"kind":"edit","equals":{"text":"Harness"}}]},
+      {"name":"mouse-name-down","type":"down","x":112,"y":246},
+      {"name":"mouse-name-drag","type":"move","x":210,"y":246},
+      {"name":"mouse-name-up","type":"up","x":210,"y":246},
+      {"name":"mouse-name-replace","type":"text","text":"UI","check":[{"kind":"edit","equals":{"text":"UI"}}]},
+      {"name":"mouse-name-cancel","type":"key","key":27,"panel":"Single Player Menu"}
+    ]},
+    {"id":"campaign-editor-save","route":"editor","description":"Save a private campaign package and close the metadata editor; never start a map", "files_exist":["campaign/UIHarness.cpx"], "steps":[
+      {"name":"save-tab-one","type":"key","key":9},
+      {"name":"save-tab-two","type":"key","key":9},
+      {"name":"save-editor-open","type":"key","key":13,"panel":"Campaign Editor Screen"},
+      {"name":"save-filename","type":"text","text":"UIHarness","check":[{"kind":"edit","equals":{"text":"UIHarness"}}]},
+      {"name":"save-source","type":"click","x":100,"y":132},
+      {"name":"save-add","type":"click","x":360,"y":275,"check":[{"kind":"list","at":[100,320],"equals":{"lines":1}}]},
+      {"name":"save-campaign","type":"click","x":520,"y":75,"panel":"Campaign Editor Screen"},
+      {"name":"save-close","type":"click","x":180,"y":460,"panel":"Scenario Editor Menu"}
+    ]},
+    {"id":"multiplayer-name-validation","route":"main","description":"Reject an empty multiplayer name, close the error, and enter a valid name", "steps":[
+      {"name":"validation-multiplayer","type":"click","x":320,"y":248,"panel":"MP Startup Screen"},
+      {"name":"validation-home","type":"key","key":36},
+      {"name":"validation-select","type":"key","key":35,"modifiers":[16]},
+      {"name":"validation-clear","type":"text","text":"\b","check":[{"kind":"edit","equals":{"text":""}}]},
+      {"name":"validation-submit","type":"click","x":180,"y":455,"panel":"Name Error"},
+      {"name":"validation-dismiss","type":"key","key":13,"panel":"MP Startup Screen"},
+      {"name":"validation-name","type":"text","text":"Harness","check":[{"kind":"edit","equals":{"text":"Harness"}}]},
+      {"name":"validation-cancel","type":"click","x":450,"y":455,"panel":"Main Menu"}
+    ]},
+    {"id":"random-context-help","route":"random","description":"Enter context-help mode, inspect player-count help, and dismiss it", "steps":[
+      {"name":"context-help-mode","type":"click","x":615,"y":455,"panel":"MP Setup Screen"},
+      {"name":"context-help-open","type":"click","x":92,"y":334,"panel":"Help Dialog"},
+      {"name":"context-help-dismiss","type":"key","key":27,"panel":"MP Setup Screen"}
+    ]},
+    {"id":"guard-new-game","route":"random","description":"Safety test: block Start Game before its original body executes", "expect_blocked":"forbidStart", "steps":[
+      {"name":"blocked-start","type":"click","x":180,"y":455}
+    ]},
+    {"id":"guard-load-game","route":"single","description":"Safety test: block saved-game loading before its original body executes", "expect_blocked":"forbidLoad", "steps":[
+      {"name":"guard-saved-list","type":"click","x":320,"y":338,"panel":"Load Saved Game Screen"},
+      {"name":"guard-saved-tab","type":"key","key":9},
+      {"name":"blocked-load","type":"key","key":13}
+    ]},
+    {"id":"guard-map-editor","route":"editor","description":"Safety test: block actual map editor creation before its original body executes", "expect_blocked":"forbidEditor", "steps":[
+      {"name":"blocked-editor","type":"key","key":13}
+    ]}
+  ]
+}

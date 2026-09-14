@@ -1,0 +1,11 @@
+{
+  "name": "main-menu-to-game-settings",
+  "expected_panel": "Game Settings Screen",
+  "actions": [
+    {"after_paint": 8, "key": 13},
+    {"after_paint": 14, "key": 13},
+    {"after_paint": 19, "key": 9},
+    {"after_paint": 19, "key": 9},
+    {"after_paint": 19, "key": 13}
+  ]
+}

@@ -65,3 +65,34 @@ def test_reject_wrong_installed_exe(inputs):
 
 def test_default_source_is_root_runtime():
     assert prepare_runtime.DEFAULT_SOURCE == prepare_runtime.ROOT / "runtime"
+
+
+def test_hardlinks_only_share_large_input_formats(inputs):
+    source, exe, output = inputs
+    (source / "data/graphics.drs").write_bytes(b"graphics")
+    (source / "data/aoe.ply").write_bytes(b"profile")
+    report = prepare_runtime.prepare(source, exe, output, assets="hardlink")
+    assert (source / "data/graphics.drs").samefile(output / "data/graphics.drs")
+    assert not (source / "data/aoe.ply").samefile(output / "data/aoe.ply")
+    assert not (source / "empiresx.exe").samefile(output / "empiresx.exe")
+    assert report["shared_bytes"] == len(b"graphics")
+    # Replacing an asset must remove the link first, never overwrite its content.
+    (output / "data/graphics.drs").unlink()
+    (output / "data/graphics.drs").write_bytes(b"override")
+    assert (source / "data/graphics.drs").read_bytes() == b"graphics"
+
+
+def test_hardlink_failure_falls_back_to_copy(inputs, monkeypatch):
+    source, exe, output = inputs
+    (source / "data/graphics.drs").write_bytes(b"graphics")
+    def fail(*args):
+        raise OSError("Different filesystem")
+    monkeypatch.setattr(prepare_runtime.os, "link", fail)
+    report = prepare_runtime.prepare(source, exe, output, assets="hardlink")
+    assert report["shared_bytes"] == 0
+    assert (output / "data/graphics.drs").read_bytes() == b"graphics"
+
+
+def test_unknown_asset_mode_rejected(inputs):
+    with pytest.raises(ValueError, match="Asset mode"):
+        prepare_runtime.prepare(*inputs, assets="overlay")

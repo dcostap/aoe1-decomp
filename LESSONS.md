@@ -576,6 +576,9 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - Old panel class size and nested vptr surfaces can control broad field drift.
 - Recover proven base and derived boundaries before body tuning.
 - A compressed key or button jump table often comes from grouped switch cases.
+- Changing case labels can leave every local instruction byte unchanged while changing the external selector table.
+- Decode linked selector and pointer tables before using local equality to approve switch behavior.
+- A format-string change can also leave local code unchanged. Check conversions against both output arguments and original string data.
 - Positive arrow-key guards can preserve one shared success tail.
 
 ## Packed streams, serialization, and local buffers

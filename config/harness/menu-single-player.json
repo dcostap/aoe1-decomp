@@ -1,0 +1,5 @@
+{
+  "name": "main-menu-to-single-player",
+  "expected_panel": "Single Player Menu",
+  "actions": [{"after_paint": 8, "key": 13}]
+}

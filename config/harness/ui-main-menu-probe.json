@@ -1,0 +1,13 @@
+{
+  "name": "main-menu-interactions-probe",
+  "ui": true,
+  "steps": [
+    {"name": "main", "panel": "Main Menu"},
+    {"name": "hover-single", "type": "move", "x": 320, "y": 198},
+    {"name": "press-single", "type": "down", "x": 320, "y": 198},
+    {"name": "drag-out", "type": "move", "x": 20, "y": 100},
+    {"name": "cancel-press", "type": "up", "x": 20, "y": 100, "panel": "Main Menu"},
+    {"name": "single-player", "type": "click", "x": 320, "y": 198, "panel": "Single Player Menu"},
+    {"name": "random-map", "type": "click", "x": 320, "y": 138, "panel": "MP Setup Screen"}
+  ]
+}

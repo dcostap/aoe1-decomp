@@ -1,0 +1,42 @@
+# Experiment 5c29701a87179d7732d0862ebd8bb9754611bee8a833461b1f6876363334cd3c
+# Base 44d296b30a9b2307b00c4b38f344bc3705dc4219
+diff --git a/src/Panel_ez.cpp b/src/Panel_ez.cpp
+index ea0737348..7fd6beac4 100644
+--- a/src/Panel_ez.cpp
++++ b/src/Panel_ez.cpp
+@@ -836,7 +836,7 @@ int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, ch
+         }
+ 
+         if ((*out)->setup(this->render_area, panel, sx, sy, sw, sh,
+-                          TButtonPanel::DrawPicture, sound,
++                          TButtonPanel::DrawText, sound,
+                           TButtonPanel::NotifyAction, user) != 0) {
+             (*out)->set_sound_number(sound_id);
+             RGE_Font* font;
+@@ -902,7 +902,7 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
+                 RGE_Font* f = rge_base_game->get_font(0);
+                 (*out)->set_text_info(s_space, f->font, f->font_wid, f->font_hgt, -1, -1);
+                 (*out)->set_text(1, s_X);
+-                (*out)->setDrawType(TButtonPanel::DrawPicture);
++                (*out)->setDrawType(TButtonPanel::DrawText);
+             }
+             if (this->use_bevels) {
+                 (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
+@@ -942,7 +942,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
+         }
+ 
+         if ((*out)->setup(this->render_area, parent, sx, sy, sw, sh,
+-                          TButtonPanel::DrawText, sound,
++                          TButtonPanel::DrawPicture, sound,
+                           TButtonPanel::NotifyAction, param8)) {
+             (*out)->set_sound_number(sound_id);
+ 
+@@ -953,7 +953,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
+             }
+             else {
+                 RGE_Font* font;
+-                (*out)->setDrawType(TButtonPanel::DrawPicture);
++                (*out)->setDrawType(TButtonPanel::DrawText);
+                 font = rge_base_game->get_font(0);
+                 (*out)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
+                 (*out)->set_text(1, s_X);

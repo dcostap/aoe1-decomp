@@ -1,0 +1,15 @@
+# Experiment 9944a64c9aa203622396330e3dadbe7596979f6b33f717ac2e2f22d60053b13a
+# Base 44d296b30a9b2307b00c4b38f344bc3705dc4219
+diff --git a/src/scr_end.cpp b/src/scr_end.cpp
+index 02f7a1e1d..7994fd5f1 100644
+--- a/src/scr_end.cpp
++++ b/src/scr_end.cpp
+@@ -91,7 +91,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
+         pnl_hgt * 0x1AE / 0x1E0,
+         pnl_wid * 300 / 0x280,
+         pnl_hgt * 0x28 / 0x1E0,
+-        TButtonPanel::DrawPicture, sound, TButtonPanel::NotifyAction, 0);
++        TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0);
+     okButton->set_text_info("OK", font->font, font->font_wid, font->font_hgt,
+                             -1, -1);
+ 

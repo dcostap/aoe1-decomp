@@ -1,0 +1,14 @@
+# Experiment 2fbbaae8f09950b79bea3f5067785bc82769befe1f68b48129afc205565498cb
+# Base 44d296b30a9b2307b00c4b38f344bc3705dc4219
+diff --git a/config/reviewed_reference_identities.json b/config/reviewed_reference_identities.json
+index 40c6632ff..674cda77f 100644
+--- a/config/reviewed_reference_identities.json
++++ b/config/reviewed_reference_identities.json
+@@ -62,6 +62,7 @@
+     "0054B192": {"symbol": "_ImmReleaseContext@8", "aliases": []},
+     "0054B198": {"symbol": "_ImmNotifyIME@16", "aliases": []},
+     "0054B19E": {"symbol": "_ImmGetContext@4", "aliases": []},
++    "0054B1A4": {"symbol": "_ICInfo@12", "aliases": []},
+     "0054B1AA": {"symbol": "_MCIWndCreateA", "aliases": []},
+     "0054D6E0": {"symbol": "??_L@YGXPAXIHP6EX0@Z1@Z", "aliases": []},
+     "0054D780": {"symbol": "??_M@YGXPAXIHP6EX0@Z@Z", "aliases": []},

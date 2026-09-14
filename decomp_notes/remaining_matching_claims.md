@@ -1,5 +1,23 @@
 # Remaining matching claims
 
+## ICInfo identity closure: 2026-09-13
+
+Original call `00521B3A` has bytes `E8 65 96 02 00` and targets `0054B1A4`.
+The target has bytes `FF 25 B4 A7 88 00` and jumps through IAT slot `0088A7B4`.
+The original PE import directory assigns this slot to `MSVFW32.dll!ICInfo`.
+The preserved original PDB public dump independently contains these records:
+
+```text
+S_PUB32: [0001:0014A1A4], Flags: 00000000, _ICInfo@12
+S_PUB32: [0005:000007B4], Flags: 00000000, __imp__ICInfo@12
+```
+
+The original section bases map these records to the thunk and IAT slot above.
+Add only `_ICInfo@12` at `0054B1A4`, with no aliases.
+Existing EXE and PDB hash checks remain active.
+This proves target identity, not the external DLL implementation.
+See `audit_repair_20260913.md` for validation and preserved experiment records.
+
 ## Reference-gap closure: 2026-09-11
 
 The `00405850` direct-target gap recorded below is now resolved.

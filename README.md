@@ -120,7 +120,17 @@ See `docs/executable_build.md` for inputs, reports, and remaining requirements.
 See `docs/reference_validation.md` for linked checks and unresolved emission audits.
 See `docs/reference_builds.md` for older-build searches and named disassembly.
 
-Prepare a runtime copy for a rebuilt executable:
+For one-command builds, shared assets, windowed play, and menu comparisons, see [the runtime harness](docs/runtime_harness.md).
+
+```bat
+game.cmd setup
+game.cmd build
+game.cmd rebuilt
+game.cmd original
+game.cmd test-captures --list
+```
+
+Prepare a complete runtime copy with the older control workflow:
 
 ```text
 python tools/prepare_runtime.py --exe build/executable/<run>/empiresx.exe --output build/runtime/installed_beta/rebuilt
