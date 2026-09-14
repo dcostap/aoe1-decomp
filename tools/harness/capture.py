@@ -173,7 +173,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     probes = replay['probes'] if replay else ([{'name':'human_world','module':'world','va':'00542ED0'},
         {'name':'human_camera','module':'player','va':'004704C0'}] if human else ())
     observe = bool(human and human.get('observe'))
-    if observe and not human.get('rng_only'):
+    if observe and human.get('combat'):
+        probes += [{'name':'observer_attack','module':'com_obj','va':'00430230'},
+                   {'name':'observer_attack_update','module':'act_atak','va':'00401780'},
+                   {'name':'observer_sprite_add','module':'asp_list','va':'0041A910'},
+                   {'name':'observer_actor_update','module':'act_obj','va':'00406A70'}]
+    elif observe and not human.get('rng_only'):
         probes += [{'name':'observer_add','module':'world','va':'00545E00'},
                    {'name':'observer_remove','module':'world','va':'00545FD0'},
                    {'name':'observer_pick','module':'diam_map','va':'00438530'}]
@@ -397,7 +402,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                 summaries = [row for row in events if row.get('kind') == 'observer-summary']
                 if len(summaries) != 1 or summaries[0]['records'] != rng_records or status['rngCount'] != rng_records:
                     errors.append({'error':'Full human RNG trace is incomplete.'})
-                observed = [row for row in events if row.get('kind') in ('observer-world','observer-object','observer-pick','observer-camera')]
+                observed = [row for row in events if row.get('kind') in ('observer-world','observer-object','observer-pick','observer-camera','observer-combat','observer-attack-update','observer-sprite','observer-villager')]
                 if len(summaries) != 1 or summaries[0]['events'] != len(observed) or any(
                         row.get('sequence') != index+1 or not 0 <= row.get('rng_count',-1) <= rng_records
                         for index,row in enumerate(observed)):

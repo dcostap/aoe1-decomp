@@ -25,6 +25,21 @@ def test_valid_record_and_replay():
     validate_session({'schema':1,'mode':'record','duration_ms':1000})
 
 
+@pytest.mark.parametrize('settings',[{'combat':True},{'observe':True,'combat':True,'rng_only':True},
+                                    {'observe':True,'combat':1}])
+def test_combat_requires_boolean_replay_observers_without_rng_only(settings):
+    data=session();data.update(settings)
+    with pytest.raises(ValueError,match='Combat diagnostics'):
+        validate_session(data)
+
+
+def test_combat_mode_does_not_change_recorded_inputs():
+    data=session();before=copy.deepcopy(data['events'])
+    data.update(observe=True,combat=True)
+    validate_session(data)
+    assert data['events']==before
+
+
 def test_rebuilt_requires_explicit_replay_target():
     data=session(); data['target']='rebuilt'
     validate_session(data)

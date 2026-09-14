@@ -29,6 +29,9 @@ def validate_session(session):
         raise ValueError('Additional read-only observers require replay mode.')
     if type(session.get('rng_only',False)) is not bool or (session.get('rng_only') and not session.get('observe')):
         raise ValueError('RNG-only diagnostics require observers.')
+    if type(session.get('combat',False)) is not bool or (session.get('combat') and
+            (not session.get('observe') or session.get('rng_only'))):
+        raise ValueError('Combat diagnostics require observers without RNG-only mode.')
     if not integer(session.get('duration_ms'), 1, 190000):
         raise ValueError('Recorded terminal boundary exceeds 190 seconds.')
     if session['mode'] == 'replay' and (not isinstance(session.get('contract'),dict) or session['contract'].get('original_sha256') != ORIGINAL_SHA256 or session['contract'].get('policy') != POLICY):
@@ -167,11 +170,12 @@ def main():
     parser.add_argument('--target',choices=('original','rebuilt'),default='original')
     parser.add_argument('--observe',action='store_true',help='Add full RNG and focused read-only diagnostics during replay')
     parser.add_argument('--rng-only',action='store_true',help='Keep only full RNG diagnostics; requires --observe')
+    parser.add_argument('--combat',action='store_true',help='Use focused combat diagnostics instead of broad state hooks; requires --observe')
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
     parser.add_argument('--cursor-check',action='store_true',help='Private stationary-cursor and normal-close check; requires smoke')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe)) or (args.rng_only and not args.observe):
+    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
         parser.error('Use 1..180 seconds, 1..3 runs, and smoke only with record.')
     output = args.output or ROOT/'build/runtime'/('human-'+stamp())
     output.mkdir(parents=True, exist_ok=False)
@@ -198,7 +202,7 @@ def main():
             recording = load_recording(args.recording)
             session = {'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],
                        'events':recording['events'],'contract':recording['contract'],'target':args.target,
-                       'observe':args.observe,'rng_only':args.rng_only}
+                       'observe':args.observe,'rng_only':args.rng_only,'combat':args.combat}
             first = None
             for _ in range(args.runs):
                 report = run_session(result['runs'],session,False)

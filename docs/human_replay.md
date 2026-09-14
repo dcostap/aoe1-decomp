@@ -77,12 +77,17 @@ The comparison's `complete` flag means all comparisons ran, not that the executa
 
 `human_session.py --observe` adds full debug RNG tracing and focused state observations during replay.
 Add `--rng-only` to omit the additional state hooks. Neither option can record a new human session.
+Alternatively, add `--combat` for the focused civilization-effect investigation. It cannot accompany `--rng-only`.
+This mode targets the accepted recording's attack updates, sprite changes, and villager 4969.
+It also records clock-advance counts. Its observation ranges appear in the report's `observer-ready` event.
 Use the tool's `--help` output for the complete command syntax.
 
 These diagnostics remain experimental and disabled by default.
 The first original checks changed clock values and RNG totals, although input boundaries and camera positions stayed equal.
 They did not establish observer neutrality. Do not use those runs alone to prove another game-code defect.
 See `decomp_notes/human_rebuilt_replay_20260914.md` for the preserved checks.
+See `decomp_notes/human_rng_investigation_20260914.md` for the later timing and civilization-effect findings.
+Use `rng_investigate.py --help` for diagnostic comparisons. The tool requires equal observer scripts and modes.
 
 The optional script does not change recorded inputs or replay controls. It does not replace game outputs.
 The report records separate control-script, observer-script, and full injected-script hashes.

@@ -25,24 +25,26 @@ def test_observer_does_not_change_control_script_fingerprint():
 
 
 @pytest.mark.skipif(shutil.which('node') is None,reason='Node is required for the JavaScript observer unit test')
-@pytest.mark.parametrize('rng_only',[True,False])
-def test_rng_observer_preserves_control_and_flushes_complete_records(rng_only):
+@pytest.mark.parametrize(('rng_only','combat','hook_count'),[(True,False,0),(False,False,5),(False,True,4)])
+def test_rng_observer_preserves_control_and_flushes_complete_records(rng_only,combat,hook_count):
     program=r"""
 const vm=require('vm'),fs=require('fs');
 let calls=0,stops=0; const messages=[],hooks=[];
-const ctx={cfg:{human:{rng_only:process.argv[2]==='true'}},rng:()=>calls++,humanStop:()=>stops++,human:{turn:1,updates:2,input:3},ticks:1010,
+const ctx={cfg:{human:{rng_only:process.argv[2]==='true',combat:process.argv[3]==='true'}},rng:()=>calls++,humanStop:()=>stops++,human:{turn:1,updates:2,input:3},ticks:1010,
+  humanAdvance:amount=>ctx.ticks+=amount,
   target:n=>n,Interceptor:{attach:n=>hooks.push(n)},send:(row,data)=>messages.push({row,bytes:data?Array.from(new Uint8Array(data)):null})};
 vm.createContext(ctx); vm.runInContext(fs.readFileSync(process.argv[1],'utf8'),ctx);
 ctx.rng({kind:'srand',file:'C:/A.cpp',line:1,seed:7});
 for(let n=0;n<4100;n++)ctx.rng({kind:'rand',file:'C:/A.cpp',line:2,value:n});
 if(!ctx.cfg.human.rng_only)for(let n=0;n<259;n++)ctx.observed('observer-world',{phase:'test'});
 ctx.humanStop(null);
-console.log(JSON.stringify({calls,stops,messages,hooks}));
+ctx.humanAdvance(1);ctx.humanAdvance(20);
+console.log(JSON.stringify({calls,stops,messages,hooks,ticks:ctx.ticks}));
 """
-    result=subprocess.run(['node','-e',program,str(ROOT/'tools/harness/human_observe.js'),json.dumps(rng_only)],check=True,capture_output=True,text=True)
+    result=subprocess.run(['node','-e',program,str(ROOT/'tools/harness/human_observe.js'),json.dumps(rng_only),json.dumps(combat)],check=True,capture_output=True,text=True)
     data=json.loads(result.stdout)
     assert data['calls']==4101 and data['stops']==1
-    assert len(data['hooks'])==(0 if rng_only else 5)
+    assert len(data['hooks'])==hook_count and data['ticks']==1031
     batches=[row for row in data['messages'] if row['row']['kind']=='replay-rng-batch']
     assert sum(row['row']['records'] for row in batches)==4101
     assert all(len(row['bytes'])==row['row']['records']*8 for row in batches)

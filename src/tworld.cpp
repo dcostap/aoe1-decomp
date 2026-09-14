@@ -782,7 +782,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(this->scenario)->GetScenarioOption(2)) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(this->players[i]->culture,
+            this->effects->do_effect(static_cast<short>(this->players[i]->tribe_effect),
                 static_cast<TRIBE_Player*>(this->players[i]));
         }
     } else {
