@@ -838,13 +838,15 @@ void Time_Line_Panel::draw_special_events()
                                  + event->X_line_pos,
                              this->yPosition() + 8 + this->axis_font_hgt,
                              event->text1, strlen(event->text1));
+                    size_t text_length2 = strlen(event->text2);
+                    long text_y2 = this->yPosition();
+                    text_y2 += this->height();
                     TextOutA(this->render_area->DrawDc,
                              x_offset - (strlen(event->text2) >> 1)
                                  * this->axis_font_wid
                                  + event->X_line_pos,
-                             this->yPosition() + this->height()
-                                 - this->axis_font_hgt * 2 - 7,
-                             event->text2, strlen(event->text2));
+                             text_y2 - this->axis_font_hgt * 2 - 7,
+                             event->text2, text_length2);
                     break;
                 }
                 case 6:

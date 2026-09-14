@@ -1562,10 +1562,9 @@ long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
         this->updateSummary();
 
         if (!comm->IsHost()) {
-            int me = comm->WhoAmI();
             if (this->sent_cd_status != 0 &&
                 this->myScenarioChecksum == this->saveScenarioChecksum &&
-                comm->IsPlayerReady(me) == this->i_am_ready) {
+                comm->IsPlayerReady(comm->WhoAmI()) == this->i_am_ready) {
                 return 1;
             }
 

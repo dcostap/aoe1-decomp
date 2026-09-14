@@ -25,7 +25,7 @@
     "0051F600": {"status": "new_verified_logic", "symbol": "?calculate_icon_location@Time_Line_Panel@@QAEHPAUSpecial_Events@@FE@Z", "behavior_review": "logic_matching/0051F600/review-coord-04-0051F600-20260913T000001Z/attempt-01"},
     "0051FA30": {"status": "matching", "symbol": "?draw@Time_Line_Panel@@UAEXXZ"},
     "0051FA90": {"status": "matching", "symbol": "?draw_axis@Time_Line_Panel@@QAEXXZ"},
-    "0051FD90": {"status": "scratch", "symbol": "?draw_special_events@Time_Line_Panel@@QAEXXZ"},
+    "0051FD90": {"status": "new_verified_logic", "symbol": "?draw_special_events@Time_Line_Panel@@QAEXXZ", "behavior_review": "logic_matching/0051FD90/current-review-20260914-r02/review-02-a"},
     "00520080": {"status": "matching", "symbol": "?draw_background@Time_Line_Panel@@QAEXXZ"},
     "00520220": {"status": "accepted_drift", "symbol": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ"},
     "005204A0": {"status": "new_verified_logic", "symbol": "?draw_timeline@Time_Line_Panel@@QAEXXZ", "behavior_review": "logic_matching/005204A0/review-coord-04-005204A0-20260913T000002Z/attempt-01"},

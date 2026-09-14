@@ -16,7 +16,7 @@
     "004A27A0": {"status": "accepted_drift", "symbol": "?calcRandomPositions@TribeMPSetupScreen@@IAEXXZ"},
     "004A2910": {"status": "matching", "symbol": "?showNetInfo@TribeMPSetupScreen@@IAEXXZ"},
     "004A2BA0": {"status": "matching", "symbol": "?cancelScreen@TribeMPSetupScreen@@IAEXH@Z"},
-    "004A2D50": {"status": "scratch", "symbol": "?handle_user_command@TribeMPSetupScreen@@UAEJIJ@Z"},
+    "004A2D50": {"status": "new_verified_logic", "symbol": "?handle_user_command@TribeMPSetupScreen@@UAEJIJ@Z", "behavior_review": "logic_matching/004A2D50/current-review-20260914-r02/review-02-a"},
     "004A37C0": {"status": "matching", "symbol": "?handle_timer_command@TribeMPSetupScreen@@UAEJIJ@Z"},
     "004A37D0": {"status": "matching", "symbol": "?fillPlayers@TribeMPSetupScreen@@QAEXXZ"},
     "004A4100": {"status": "matching", "symbol": "?fillChat@TribeMPSetupScreen@@IAEXH@Z"},
