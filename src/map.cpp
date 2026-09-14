@@ -2756,6 +2756,6 @@ void RGE_Map::get_point(short& out_x, short& out_y,
 {
     out_x = (short)((int)((param_4 + param_3) * this->tile_half_width) +
                     param_6);
-    out_y = (short)((int)((param_4 - 0.5f - param_3 - param_5) *
+    out_y = (short)((int)((param_4 + 1.0f - param_3 - param_5) *
                           this->tile_half_height) + param_7 - 0x10);
 }

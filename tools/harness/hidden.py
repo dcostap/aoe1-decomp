@@ -1,4 +1,4 @@
-"""Run a worker on a private Windows desktop. Never switch the user's desktop."""
+"""Run an owned worker on a private desktop, or explicitly permit the current desktop. Never switch desktops."""
 from __future__ import annotations
 
 import argparse
@@ -45,7 +45,7 @@ def bind(dll, name, result, args):
     return function
 
 
-def run(command, cwd: Path, log: Path, timeout: float):
+def run(command, cwd: Path, log: Path, timeout: float, visible=False):
     if log.exists() or log.with_suffix('.json').exists():
         raise ValueError('Hidden worker log already exists. Use a new path.')
     kernel = C.WinDLL('kernel32', use_last_error=True)
@@ -77,13 +77,13 @@ def run(command, cwd: Path, log: Path, timeout: float):
             close_desktop(handle)
     identity = uuid.uuid4().hex
     name = 'AoE1Harness-' + identity
-    desktop = create_desktop(name, None, None, 0, 0x01ff, None)
-    if not desktop:
+    desktop = None if visible else create_desktop(name, None, None, 0, 0x01ff, None)
+    if not visible and not desktop:
         raise C.WinError(C.get_last_error())
     job = None
     process = PROCESS_INFORMATION()
     started = time.monotonic()
-    report = {'desktop': name, 'command': command, 'switched_desktop': False,
+    report = {'desktop': None if visible else name, 'visible':visible, 'command': command, 'switched_desktop': False,
               'log': str(log.resolve()), 'returncode': None,
               'input_desktop_before': input_desktop()}
     try:
@@ -93,6 +93,8 @@ def run(command, cwd: Path, log: Path, timeout: float):
         if not job or not set_job(job, 9, C.byref(limits), C.sizeof(limits)):
             raise C.WinError(C.get_last_error())
         environment = dict(os.environ, AOE1_HARNESS_DESKTOP=name, AOE1_HARNESS_RUN_ID=identity)
+        if visible:
+            environment.pop('AOE1_HARNESS_DESKTOP',None)
         block = C.create_unicode_buffer('\0'.join(f'{k}={v}' for k, v in sorted(environment.items())) + '\0\0')
         log.parent.mkdir(parents=True, exist_ok=True)
         with log.open('xb') as stream, open(os.devnull, 'rb') as stdin:
@@ -100,7 +102,7 @@ def run(command, cwd: Path, log: Path, timeout: float):
             os.set_handle_inheritable(out_handle, True)
             os.set_handle_inheritable(in_handle, True)
             startup = STARTUPINFO()
-            startup.cb, startup.lpDesktop, startup.dwFlags = C.sizeof(startup), name, 0x100
+            startup.cb, startup.lpDesktop, startup.dwFlags = C.sizeof(startup), None if visible else name, 0x100
             startup.hStdInput, startup.hStdOutput, startup.hStdError = in_handle, out_handle, out_handle
             line = C.create_unicode_buffer(subprocess.list2cmdline(command))
             if not create(command[0], line, None, None, True, 0x08000404, block, str(cwd),
@@ -131,13 +133,14 @@ def run(command, cwd: Path, log: Path, timeout: float):
         for handle in (process.hThread, process.hProcess):
             if handle:
                 close(handle)
-        close_desktop(desktop)
+        if desktop:
+            close_desktop(desktop)
         import registry_state
         registry_state.cleanup('Software\\AoE1Harness\\' + identity)
         report['duration'] = time.monotonic() - started
         report['input_desktop_after'] = input_desktop()
         log.with_suffix('.json').write_text(json.dumps(report, indent=2) + '\n')
-        print(f'Hidden worker: {log}')
+        print(f'{"Visible" if visible else "Hidden"} worker: {log}')
 
 
 def main():

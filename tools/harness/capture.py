@@ -160,11 +160,26 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     if ui:
         validate_steps(scenario.get('steps'))
     replay = scenario.get('replay')
+    human = scenario.get('human')
+    if human:
+        from human_session import validate_session
+        validate_session(human)
+        original_target = human.get('target','original') == 'original'
+        if replay or ui or (manifest['selected_exe_sha256'] == ORIGINAL_SHA256) != original_target or clock != 'calls':
+            raise ValueError('Human recording requires the selected executable and controlled-clock profile.')
     if 'replay' in scenario:
         from behavior import validate_replay
         validate_replay(scenario)
-    config = hook_config(runtime / 'empiresx.exe', manifest, ui, replay['probes'] if replay else ())
+    probes = replay['probes'] if replay else ([{'name':'human_world','module':'world','va':'00542ED0'},
+        {'name':'human_camera','module':'player','va':'004704C0'}] if human else ())
+    observe = bool(human and human.get('observe'))
+    if observe and not human.get('rng_only'):
+        probes += [{'name':'observer_add','module':'world','va':'00545E00'},
+                   {'name':'observer_remove','module':'world','va':'00545FD0'},
+                   {'name':'observer_pick','module':'diam_map','va':'00438530'}]
+    config = hook_config(runtime / 'empiresx.exe', manifest, ui or bool(human), probes)
     config['replay'] = replay
+    config['human'] = human
     config['actions'] = scenario.get('actions', [])
     config['uiSteps'] = scenario.get('steps', [])
     config['maxFrames'] = 40 if replay else (480 if ui else 120)
@@ -180,9 +195,21 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         template += '\n' + Path(__file__).with_name('ui.js').read_text()
     if replay:
         template += '\n' + Path(__file__).with_name('replay.js').read_text()
+    if human:
+        template += '\n' + Path(__file__).with_name('offline.js').read_text()
+        template += '\n' + Path(__file__).with_name('human.js').read_text()
+    observer = Path(__file__).with_name('human_observe.js').read_text() if observe else ''
+    video = None
+    video_report = None
+    video_origin = None
+    video_finalized = False
+    native_frames = []
+    if human:
+        from game_video import GameVideo
+        video = GameVideo(output, fps=20)
     events, frames, errors = [], [], []
     rng_digest, rng_records, rng_sites = hashlib.sha256(), 0, {}
-    rng_file = (output / 'rng.bin').open('wb') if replay else None
+    rng_file = (output / 'rng.bin').open('wb') if replay or observe else None
     lock = threading.Lock()
     stopped = threading.Event()
     finished = threading.Event()
@@ -195,14 +222,26 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     registry_base = None
     registry_snapshot = None
     process_desktop = None
+    game_job = None
     try:
         registry_base, registry_snapshot = registry_state.create()
+        if human and human.get('contract'):
+            from human_session import session_contract
+            actual = session_contract({'clock':clock, 'script_sha256':hashlib.sha256(template.encode()).hexdigest(),
+                'registry_inputs':registry_snapshot, 'arguments':arguments, 'frida_version':frida.__version__, 'manifest':manifest})
+            if actual != human['contract']:
+                raise ValueError('Recording starting contract differs; refusing to launch replay.')
         config['registryBase'] = registry_base
         source = template.replace('__CONFIG__', json.dumps(config))
+        if observer:
+            source += '\n' + observer
         (output / 'instrumentation.js').write_text(source)
         (output / 'capture-tool.py').write_bytes(Path(__file__).read_bytes())
         pid = device.spawn([str(runtime / 'empiresx.exe'), *arguments], cwd=str(runtime),
                            env=dict(os.environ, __COMPAT_LAYER=''))
+        if human:
+            from human_session import GameJob
+            game_job = GameJob(pid)
         session = device.attach(pid)
         session.on('detached', lambda *args: (stopped.set(), finished.set()))
         desktop_probe = session.create_script(Path(__file__).with_name('desktop.js').read_text())
@@ -213,11 +252,19 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             raise ValueError('Game did not inherit the private desktop. Refusing to resume it.')
         script = session.create_script(source)
         def message(msg, data):
-            nonlocal rng_records
+            nonlocal rng_records, video_origin
             with lock:
+                if human and video_finalized:
+                    return
                 try:
                     if msg['type'] == 'send':
                         row = msg['payload']
+                        if row.get('kind') == 'observer-events':
+                            batch = row['events']
+                            if not isinstance(batch,list) or not 1 <= len(batch) <= 128:
+                                raise ValueError('Invalid diagnostic event batch.')
+                            events.extend(batch)
+                            return
                         if row.get('kind') == 'replay-rng-site':
                             if row['id'] in rng_sites:
                                 raise ValueError('Duplicate RNG site ID.')
@@ -237,6 +284,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                             row['rng_sha256'] = rng_digest.hexdigest()
                             row['rng_count'] = rng_records
                         events.append(row)
+                        if row.get('kind') == 'human-native-frame':
+                            native_frames.append({'rect':row['rect'], 'bgrx':bytes(data)})
+                        if row.get('kind') == 'human-done':
+                            if row.get('error'):
+                                errors.append(row)
+                            finished.set()
                         if row.get('kind') == 'ui-native-frame':
                             from PIL import Image
                             name = f"native-{row['step']:03d}-{len(events):04d}.png"
@@ -252,9 +305,18 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                             errors.append(row)
                             finished.set()
                         if row.get('kind') == 'frame':
-                            frames.append(save_frame(output, row, data))
+                            if human:
+                                if video_origin is None:
+                                    video_origin = row['time_ms']
+                                video.add(dict(row, time_ms=row['time_ms']-video_origin, overlays=list(native_frames)), data)
+                                native_frames.clear()
+                                frames.append(row)
+                            else:
+                                frames.append(save_frame(output, row, data))
                         elif row.get('kind') == 'capture-error':
                             errors.append(row)
+                            if human:
+                                finished.set()
                         elif row.get('kind') == 'exception':
                             # Log first-chance MSVC exceptions without treating a caught throw as a crash.
                             # The handler returns false; Windows still handles or terminates the process.
@@ -262,8 +324,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                                 errors.append(row)
                     else:
                         errors.append(msg)
+                        if human:
+                            finished.set()
                 except Exception as error:
                     errors.append({'error': str(error)})
+                    if human:
+                        finished.set()
         script.on('message', message)
         script.load()
         if not any(row.get('kind') == 'ready' for row in events):
@@ -276,11 +342,13 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             raise ValueError(f'Instrumentation did not initialize: {errors}')
         device.resume(pid)
         finished.wait(seconds)
-        terminal = next((row for row in events if row.get('kind') in ('replay-done', 'replay-error')), None)
+        terminal = next((row for row in events if row.get('kind') in ('replay-done', 'replay-error', 'human-done')), None)
         if terminal:
             status = terminal['status']  # The terminal boundary parks the game thread until cleanup.
         elif any(row.get('kind') == 'forbidden-gameplay' for row in events):
             pass  # The blocked game thread cannot advance. Kill it without requesting RPC state.
+        elif human:
+            errors.append({'error':'Human session stopped before its terminal Paint boundary.'})
         elif not stopped.is_set():
             status = script.exports_sync.status()
             if status['registryRedirects'] != 3:
@@ -319,7 +387,24 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                 errors.append({'error': 'Replay did not load its pinned graphics DLL.'})
             if status['rngCount'] != rng_records:
                 errors.append({'error': 'Replay RNG trace is incomplete.'})
+        if human and status:
+            if status['registryRedirects'] != 3 or status['mutexRedirects'] != 1:
+                errors.append({'error':'Human session isolation checks failed.'})
+            graphics = [m for m in status['modules'] if m['name'].lower() == 'ddraw.dll']
+            if len(graphics) != 1 or Path(graphics[0]['path']).resolve() != runtime / 'ddraw.dll':
+                errors.append({'error':'Human session did not load its pinned graphics DLL.'})
+            if observe:
+                summaries = [row for row in events if row.get('kind') == 'observer-summary']
+                if len(summaries) != 1 or summaries[0]['records'] != rng_records or status['rngCount'] != rng_records:
+                    errors.append({'error':'Full human RNG trace is incomplete.'})
+                observed = [row for row in events if row.get('kind') in ('observer-world','observer-object','observer-pick','observer-camera')]
+                if len(summaries) != 1 or summaries[0]['events'] != len(observed) or any(
+                        row.get('sequence') != index+1 or not 0 <= row.get('rng_count',-1) <= rng_records
+                        for index,row in enumerate(observed)):
+                    errors.append({'error':'Human diagnostic event trace is incomplete.'})
     finally:
+        if game_job:
+            game_job.close()
         if pid is not None:
             try:
                 device.kill(pid)
@@ -334,6 +419,13 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             registry_state.cleanup(registry_base)
         if rng_file:
             rng_file.close()
+        if video:
+            with lock:
+                video_finalized = True
+                try:
+                    video_report = video.close()
+                except Exception as error:
+                    errors.append({'error':'Video finalization failed: ' + str(error)})
         changed_assets = [row['path'] for row in manifest['copied_files_before_exe_replacement']
                           if row['method'] == 'hardlink' and
                           digest(Path(manifest['source_directory']) / row['path']) != row['sha256']]
@@ -357,13 +449,17 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                     checkpoint['rgb_sha256'] = hashlib.sha256(image.tobytes()).hexdigest()
             report = {'schema': 1, 'runtime': str(runtime), 'manifest': manifest, 'hook': config,
                       'script_sha256': hashlib.sha256(template.encode()).hexdigest(),
+                      'observer_sha256':hashlib.sha256(observer.encode()).hexdigest() if observer else None,
+                      'instrumentation_sha256':digest(output/'instrumentation.js') if (output/'instrumentation.js').exists() else None,
                       'registry_inputs': registry_snapshot, 'shared_assets_unchanged': not changed_assets,
                       'desktop': process_desktop,
                       'arguments': arguments, 'fixture': scenario, 'clock': clock, 'duration': time.monotonic()-started,
                       'frida_version': frida.__version__, 'status': status,
                       'frames': frames, 'events': events, 'errors': errors,
+                      'video': video_report,
+                      'video_origin_time_ms': video_origin,
                       'rng_recording': ({'file':'rng.bin', 'records':rng_records, 'sites':rng_sites,
-                                         'sha256':digest(output / 'rng.bin')} if replay else None),
+                                         'sha256':digest(output / 'rng.bin')} if replay or observe else None),
                       'scope': ('Selected typed state at function boundaries; not full process determinism' if replay else
                                 'Menu surface and RNG observations; not full process determinism')}
             (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')

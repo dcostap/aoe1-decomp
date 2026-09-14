@@ -490,6 +490,9 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - Trace the x87 stack and exact operands. Preserve original odd formulas and bugs.
 - Repeated loads, asymmetric subtraction, or transposed axes can be intentional output.
 - Float and double literals select different loads and comparisons.
+- VC5 can emit addition as `fsub` from a negative literal.
+- Read the literal bytes. The opcode alone does not establish the source operator.
+- A local MATCH does not validate linked literal values. Check original and rebuilt data bytes.
 - One function can intentionally mix float and double operations.
 - `test ah,1`, `test ah,40h`, and `test ah,41h` test different x87 conditions.
 - Infer the predicate from operand order and actual x87 stack state.

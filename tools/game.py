@@ -174,6 +174,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("setup", help="Install pinned graphics and isolated instrumentation dependencies")
+    p = subs.add_parser('record-original', help='Record original gameplay with video; F10 or window close saves')
+    p.add_argument('--seconds',type=int,default=60,help='Maximum controlled recording duration, at most 180 seconds')
+    p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
+    p.add_argument('recording',type=Path)
+    p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
+    p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
+    p.add_argument('recording',type=Path)
+    p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
     p = subs.add_parser('replay', help='Compare repeated original and rebuilt gameplay replays')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
@@ -218,6 +226,12 @@ def main():
         p.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     try:
+        if args.command in ('record-original','replay-original','replay-rebuilt'):
+            command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
+            command += (['--record','--seconds',str(args.seconds)] if args.command == 'record-original' else
+                        ['--recording',str(args.recording.resolve()),'--runs',str(args.runs),
+                         '--target','rebuilt' if args.command == 'replay-rebuilt' else 'original'])
+            return subprocess.run(command,cwd=ROOT).returncode
         if args.command == 'replay-repeat':
             output = ROOT / 'build/runtime' / ('replay-repeat-' + stamp())
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/replay_repeat.py'),

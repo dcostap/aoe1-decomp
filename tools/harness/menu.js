@@ -73,7 +73,7 @@ let rngCount = 0;
 let rngTrace = [];
 let clockCallback = null;
 if (cfg.clockMode === 'calls') {
-    clockCallback = new NativeCallback(() => (++ticks) >>> 0, 'uint', ['pointer', 'int'], 'mscdecl');
+    clockCallback = new NativeCallback(() => cfg.human ? humanClock() : (++ticks) >>> 0, 'uint', ['pointer', 'int'], 'mscdecl');
     Interceptor.replace(target('clock'), clockCallback);
 }
 function rng(row) {
@@ -150,11 +150,14 @@ Interceptor.attach(paint, {
                 throw new Error('GetEntries failed');
             count++;
             const checkpoint = cfg.replay ? replayCaptureDue() : null;
-            if (count > cfg.maxFrames && !checkpoint) return;
+            if (cfg.human ? !humanFrameDue() : (count > cfg.maxFrames && !checkpoint)) return;
             const data = new Uint8Array(pitch * height + 1024);
             data.set(new Uint8Array(pixels.readByteArray(pitch * height)));
             data.set(new Uint8Array(palette.readByteArray(1024)), pitch * height);
-            send({kind: 'frame', count, width, height, pitch, bits, panel: currentPanelName()}, data.buffer);
+            if (cfg.human) humanNativeFrames();
+            send({kind: 'frame', count, width, height, pitch, bits, panel: currentPanelName(),
+                ...(cfg.human ? {time_ms:ticks - 1000} : {})}, data.buffer);
+            if (cfg.human) humanAfterFrame();
             if (checkpoint) replayCapture(checkpoint);
         } catch (error) {
             if (++failures <= 5) send({kind: 'capture-error', error: String(error)});

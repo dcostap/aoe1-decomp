@@ -1016,7 +1016,7 @@ void RGE_Diamond_Map::start_scroll_view(long x, long y) {
     this->capture_mouse();
 
     this->scrolling = 1;
-    this->player->set_view_loc((float)xs - 0.5f, (float)ys - 0.5f);
+    this->player->set_view_loc((float)xs + 0.5f, (float)ys + 0.5f);
 
     this->set_redraw(TPanel::RedrawNormal);
 
@@ -1034,7 +1034,7 @@ void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
   short out_2;
   RGE_Tile *tile;
   if (this->pick_tile(param_1, param_2, &out_1, &out_2, &tile) != 0) {
-    this->player->set_view_loc((float)out_1 - 0.5f, (float)out_2 - 0.5f);
+    this->player->set_view_loc((float)out_1 + 0.5f, (float)out_2 + 0.5f);
 
     this->set_redraw(TPanel::RedrawNormal);
 

@@ -90,7 +90,8 @@ The recording contains the script, delivered-message receipts, and the starting 
 Replay checks the contract and input delivery again. It does not restore old registry settings automatically.
 The harness profile, assets, registry inputs, and graphics inputs must remain compatible.
 
-This first recorder captures scripted inputs. It is not a recorder for arbitrary human play.
+This mode captures scripted inputs. A separate original-only profile now records human play and produces videos.
+See [human recording and replay](human_replay.md) for its commands, input policy, and limits.
 
 `--seconds 90` sets each process's wall-clock deadline. It does not set simulated game duration.
 
@@ -172,7 +173,8 @@ It also saves and compares every requested checkpoint, including checkpoints aft
 The default replay checks three images. The schema permits at most 32 checkpoints.
 
 The stop boundary parks the owned game thread and then kills the process.
-There is no interactive pause inspector, process restore, automatic write tracing, or general input recorder yet.
+There is no interactive pause inspector, process restore, or automatic write tracing.
+The separate human recorder supports a bounded set of received Windows input messages.
 Selected fields can agree while unchecked state differs. Passing this profile does not prove full gameplay equivalence.
 
 See `decomp_notes/behavior_replay_20260914.md` for qualification and the first observed setup difference.
