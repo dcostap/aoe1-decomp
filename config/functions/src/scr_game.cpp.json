@@ -35,7 +35,7 @@
     "004995D0": {"status": "matching", "symbol": "?show_ai@TRIBE_Screen_Game@@QAEXPAD00000@Z"},
     "00499680": {"status": "matching", "symbol": "?show_message@TRIBE_Screen_Game@@QAEXW4MessageType@TMessagePanel@@PADEE@Z"},
     "004996B0": {"status": "matching", "symbol": "?reset_buttons@TRIBE_Screen_Game@@QAEXXZ"},
-    "004996C0": {"status": "scratch", "symbol": "?setup_buttons@TRIBE_Screen_Game@@QAEXXZ"},
+    "004996C0": {"status": "new_verified_logic", "symbol": "?setup_buttons@TRIBE_Screen_Game@@QAEXXZ", "behavior_review": "logic_matching/004996C0/current-review-20260914-r04/review-04-a"},
     "0049A8A0": {"status": "matching", "symbol": "?disable_unused_buttons@TRIBE_Screen_Game@@QAEXXZ"},
     "0049A8F0": {"status": "matching", "symbol": "?calc_text_msg@TRIBE_Screen_Game@@IAEPADPADPAUItem_Avail@@JJ@Z"},
     "0049AB10": {"status": "matching", "symbol": "?calc_button_loc@TRIBE_Screen_Game@@IAEFE@Z"},

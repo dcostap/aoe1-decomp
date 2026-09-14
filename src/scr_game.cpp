@@ -2571,10 +2571,10 @@ void TRIBE_Screen_Game::setup_buttons()
             }
         }
 
-        for (short i2 = 0; i2 < building_count; ++i2) {
-            Item_Avail* item = &this->bldg_list[i2];
+        for (short i2 = 0; i2 < this->item_cnt; ++i2) {
+            short item_id = this->bldg_list[i2].id;
             RGE_Master_Static_Object* base_master =
-                player->master_objects[item->id];
+                player->master_objects[item_id];
             TRIBE_Master_Building_Object* master =
                 static_cast<TRIBE_Master_Building_Object*>(base_master);
             unsigned char button_location =
@@ -2596,9 +2596,10 @@ void TRIBE_Screen_Game::setup_buttons()
             }
 
             rge_base_game->get_string(master->string_id, name + 4, 0x200);
-            this->calc_text_msg(msg_str + 4, item, 0x13,
+            this->calc_text_msg(msg_str + 4, &this->bldg_list[i2], 0x13,
                                 master->string_id2);
             short index = this->calc_button_loc(button_location);
+            Item_Avail* item = &this->bldg_list[i2];
             this->set_button(this->button_bldg_pics[culture], index,
                              static_cast<short>(master->building_facet + item->pict),
                              0x13, item->id,
@@ -2690,7 +2691,7 @@ void TRIBE_Screen_Game::setup_buttons()
 
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
@@ -2795,6 +2796,12 @@ void TRIBE_Screen_Game::setup_buttons()
                     final_type = 6;
                     set_final_button = 1;
                     continue_setup = 0;
+                } else if (object_state > 2) {
+                    final_pic = this->more_cancel_pic;
+                    final_frame = this->unselect_frame;
+                    final_type = 6;
+                    set_final_button = 1;
+                    continue_setup = 0;
                 } else if ((object_state == 2) &&
                            ((work_type == 0x67) ||
                             ((work_type == 0x66) &&
@@ -2812,11 +2819,11 @@ void TRIBE_Screen_Game::setup_buttons()
                     short make_count;
                     player->interface_tech_avail(&this->tech_list,
                                                  &tech_count_local,
-                                                 building->master_obj->id);
+                                                 this->game_obj->master_obj->id);
                     player->interface_item_avail(&this->make_list,
                                                  &make_count,
-                                                 building->master_obj->id);
-                    this->start_item = make_count + tech_count_local;
+                                                 this->game_obj->master_obj->id);
+                    this->item_cnt = make_count + tech_count_local;
 
                     bool show_queue =
                         (production_queues_is_use != 0) &&
@@ -2826,34 +2833,38 @@ void TRIBE_Screen_Game::setup_buttons()
                     }
 
                     for (short i3 = 0; i3 < make_count; ++i3) {
-                        Item_Avail* item = &this->make_list[i3];
+                        short item_id = this->make_list[i3].id;
                         RGE_Master_Static_Object* base_master =
-                            player->master_objects[item->id];
+                            player->master_objects[item_id];
                         TRIBE_Master_Combat_Object* master =
                             static_cast<TRIBE_Master_Combat_Object*>(base_master);
                         int queued = 0;
 
                         if (show_queue) {
-                            Production_Queue_Record* queue =
-                                building->production_queue;
                             short queue_count =
                                 building->production_queue_count;
-                            do {
-                                if (queue->master_id == master->id) {
-                                    queued += queue->unit_count;
-                                }
-                                ++queue;
-                                --queue_count;
-                            } while (queue_count != 0);
+                            if (queue_count > 0) {
+                                Production_Queue_Record* queue =
+                                    building->production_queue;
+                                do {
+                                    if (queue->master_id == master->id) {
+                                        queued += queue->unit_count;
+                                    }
+                                    ++queue;
+                                    --queue_count;
+                                } while (queue_count != 0);
+                            }
                         }
 
                         if ((!show_queue) || (queued > 0)) {
                             rge_base_game->get_string(master->string_id,
                                                       name + 4, 0x200);
-                            this->calc_text_msg(msg_str + 4, item, 0x12,
+                            this->calc_text_msg(msg_str + 4,
+                                                &this->make_list[i3], 0x12,
                                                 master->string_id2);
                             short index = this->calc_button_loc(
                                 master->button_location);
+                            Item_Avail* item = &this->make_list[i3];
                             this->set_button(this->button_unit_pic, index,
                                              item->pict, 0x12, item->id,
                                              master->string_id2 + 100000,
@@ -2918,24 +2929,31 @@ void TRIBE_Screen_Game::setup_buttons()
                         }
 
                         for (int i4 = 0; i4 < tech_count_local; ++i4) {
-                            Item_Avail* item = &this->tech_list[i4];
+                            short item_id = this->tech_list[i4].id;
                             short string_id =
-                                player->tech_tree->get_string_id(item->id);
+                                player->tech_tree->get_string_id(item_id);
                             rge_base_game->get_string(string_id, name + 4,
                                                       0x200);
                             short string_id2 =
-                                player->tech_tree->get_string_id2(item->id);
-                            this->calc_text_msg(msg_str + 4, item, 0x11,
-                                                string_id2);
+                                player->tech_tree->get_string_id2(
+                                    this->tech_list[i4].id);
+                            this->calc_text_msg(msg_str + 4,
+                                                &this->tech_list[i4],
+                                                0x11, string_id2);
                             unsigned char button_location =
-                                player->tech_tree->get_button_location(item->id);
+                                player->tech_tree->get_button_location(
+                                    this->tech_list[i4].id);
                             short index = this->calc_button_loc(button_location);
+                            Item_Avail* item = &this->tech_list[i4];
+                            unsigned char* color_table =
+                                player->color_table->table;
+                            long hotkey =
+                                player->tech_tree->get_hotkey(item->id);
                             this->set_button(this->button_tech_pic, index,
                                              item->pict, 0x11, item->id,
                                              item->help_string_id,
                                              item->help_page_id,
-                                             player->tech_tree->get_hotkey(item->id),
-                                             player->color_table->table,
+                                             hotkey, color_table,
                                              name + 4, msg_str + 4,
                                              tech_disabled);
                         }
@@ -2996,7 +3014,8 @@ void TRIBE_Screen_Game::setup_buttons()
                 }
 
                 int group;
-                if (special_selection && all_known) {
+                bool special_known = special_selection && all_known;
+                if (special_known) {
                     group = player->is_group_selected(4);
                     if (group != 0) {
                         this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
@@ -3015,13 +3034,15 @@ void TRIBE_Screen_Game::setup_buttons()
                 }
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0,
+                                     special_known ? 0x1D4E3 : 0x4E43,
+                                     -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
                 final_pic = this->more_cancel_pic;
                 final_frame = this->unselect_frame;
-                final_type = 0x0B;
+                final_type = special_known ? 6 : 0x0B;
                 set_final_button = 1;
             }
         } else {
