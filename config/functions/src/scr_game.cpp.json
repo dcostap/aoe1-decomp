@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00493D60": {"status": "scratch", "symbol": "??0TRIBE_Screen_Game@@QAE@XZ"},
+    "00493D60": {"status": "new_verified_logic", "symbol": "??0TRIBE_Screen_Game@@QAE@XZ", "behavior_review": "logic_matching/00493D60/current-review-20260914-r01/review-01-a"},
     "004954A0": {"status": "matching", "symbol": "??1TRIBE_Screen_Game@@UAE@XZ"},
     "004959A0": {"status": "matching", "symbol": "?set_redraw@TRIBE_Screen_Game@@UAEXW4RedrawMode@TPanel@@@Z"},
     "004959B0": {"status": "matching", "symbol": "?set_overlapped_redraw@TRIBE_Screen_Game@@UAEXPAVTPanel@@0W4RedrawMode@2@@Z"},

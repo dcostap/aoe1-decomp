@@ -66,7 +66,7 @@
     "00410150": {"status": "matching", "symbol": "?resetHitPoints@AIPlayStatus@@QAEXHPAVRGE_Game_World@@@Z"},
     "004101B0": {"status": "matching", "symbol": "??0AIPlayBook@@QAE@XZ"},
     "004101F0": {"status": "matching", "symbol": "??1AIPlayBook@@UAE@XZ"},
-    "00410220": {"status": "scratch", "symbol": "?loadPlays@AIPlayBook@@QAEHPAD@Z"},
+    "00410220": {"status": "new_verified_logic", "symbol": "?loadPlays@AIPlayBook@@QAEHPAD@Z", "behavior_review": "logic_matching/00410220/current-review-20260914-r01/review-01-a"},
     "00411340": {"status": "matching", "symbol": "?play@AIPlayBook@@QAEPAVAIPlay@@H@Z"},
     "00411370": {"status": "matching", "symbol": "?play@AIPlayBook@@QAEPAVAIPlay@@PAD@Z"},
     "00411400": {"status": "matching", "symbol": "?playNumber@AIPlayBook@@QAEHPAD@Z"},
