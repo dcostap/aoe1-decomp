@@ -12,18 +12,18 @@ public:
     char stateNameValue[6][30]; // +0x10C
 
     virtual ~EmotionalAIModule();
-    virtual int save(int);
+    virtual int save(int outfile);
 
-    EmotionalAIModule(void*, int);
-    EmotionalAIModule(int, int);
-    void setMainDecisionAI(MainDecisionAIModule*);
-    char* stateName(int);
-    int state(int) const;
-    void setState(int, int);
-    void incrementState(int, int);
-    void decrementState(int, int);
+    EmotionalAIModule(void* pW, int playerID);
+    EmotionalAIModule(int playerID, int infile);
+    void setMainDecisionAI(MainDecisionAIModule* m);
+    char* stateName(int s);
+    int state(int s) const;
+    void setState(int s, int value);
+    void incrementState(int s, int delta);
+    void decrementState(int s, int delta);
     int overallState() const;
-    void setOverallState(int);
+    void setOverallState(int s);
     int defaultState() const;
 };
 

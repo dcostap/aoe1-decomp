@@ -5,7 +5,7 @@
 
 class InformationAIModule : public AIModule {
 public:
-    InformationAIModule(void* param1, int param2);
+    InformationAIModule(void* pW, int playerID);
     virtual ~InformationAIModule();
 };
 

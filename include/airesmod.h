@@ -8,14 +8,13 @@ class MainDecisionAIModule;
 
 class ResourceAIModule : public AIModule {
 public:
-    ResourceAIModule(void* owner, int player, int resourceCount,
-                     int initialValue, int minimumValue, int maximumValue);
+    ResourceAIModule(void* pW, int playerID, int n, int iV, int minV, int maxV);
     virtual ~ResourceAIModule();
-    virtual int processMessage(AIModuleMessage*);
-    virtual int update(int);
-    virtual void setCallbackMessage(AIModuleMessage*);
+    virtual int processMessage(AIModuleMessage* m);
+    virtual int update(int timeLimit);
+    virtual void setCallbackMessage(AIModuleMessage* m);
 protected:
-    virtual int filterOutMessage(AIModuleMessage*);
+    virtual int filterOutMessage(AIModuleMessage* m);
 
 public:
     MainDecisionAIModule* md;
@@ -26,24 +25,24 @@ public:
     int** resourceTypesValue;
     int* numberResourceTypesValue;
 
-    void setMainDecisionAI(MainDecisionAIModule* decisionAI);
+    void setMainDecisionAI(MainDecisionAIModule* m);
     int numberResources() const;
-    int resource(int) const;
-    int resourcesAvailable(ResourceItem*);
-    int unavailableResource(ResourceItem*);
-    int minValueOfResource(int) const;
-    int maxValueOfResource(int) const;
-    void setResource(int, int);
-    void setResources(ResourceItem*);
-    void incrementResource(int, int);
-    void incrementResources(ResourceItem*);
-    void decrementResource(int, int);
-    void decrementResources(ResourceItem*);
-    void setResourceMin(int, int);
-    void setResourceMax(int, int);
-    void addResourceType(int resourceIndex, int type);
-    int isResourceType(int resourceIndex, int type);
-    int numberResourceTypes(int resourceIndex);
+    int resource(int n) const;
+    int resourcesAvailable(ResourceItem* ri);
+    int unavailableResource(ResourceItem* ri);
+    int minValueOfResource(int n) const;
+    int maxValueOfResource(int n) const;
+    void setResource(int n, int v);
+    void setResources(ResourceItem* ri);
+    void incrementResource(int n, int v);
+    void incrementResources(ResourceItem* ri);
+    void decrementResource(int n, int v);
+    void decrementResources(ResourceItem* ri);
+    void setResourceMin(int n, int v);
+    void setResourceMax(int n, int v);
+    void addResourceType(int r, int t);
+    int isResourceType(int r, int t);
+    int numberResourceTypes(int r);
     int lowestResourceType() const;
 };
 
