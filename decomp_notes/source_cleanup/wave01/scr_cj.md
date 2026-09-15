@@ -94,5 +94,5 @@ Existing shared mappings `IDS_BUTTON_OK` (`0x0FA1`, text `OK`) and `IDS_BUTTON_C
 - The opening brace now shares the initializer-list line:
   `: TDialogPanel("Create Dialog") {`.
 - No statement, declaration, initializer, source order, or behavior changed.
-- Correction commit: copy the full hash from Git delivery output.
+- Correction commit: `81e922ce1a56d570661ffe3d6b63eae7a67f9154`.
 - Compilation, matching, audits, and tests were not run.
