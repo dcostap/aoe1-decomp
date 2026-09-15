@@ -1,5 +1,22 @@
 # Cleanup wave 02 root review
 
+## Owner 10: correction review and report fixes
+
+Root read the complete 1,582-line correction diff for `29613ee064d6e99cd4cea0ac2d53e5832ef1cb15`.
+The imported resource header equals root commit `8c56055b7feee1526f296bd306036a4c34f38041`.
+Source substitutions retain arithmetic, casts, calls, and extra formatting arguments.
+Root checked the original instruction chains for `dlg_conf::val`, `dlg_dip::a`, and the four renamed `dlg_msg` locals.
+
+Owner 10 resumed in run 3 for report corrections only:
+
+- Separate worker header-import commits from the actual root approval commit.
+- Identify `QuitAndLoadDialog` and related strings as panel names, not resource selectors.
+  `src/Panel_ez.cpp` passes these strings to `TMessageDialog` construction.
+- Correct the `dlg_msg::index` citation: `0043FEAD` compares; `0043FEAF` stores the updated index.
+
+The group remains outside main until root reviews those corrections.
+No compilation, builds, matching checks, audits, tests, or games ran.
+
 ## Latest review: Owners 08 and 11
 
 Root read all 922 lines of Owner 08's correction diff and the changed reports.
