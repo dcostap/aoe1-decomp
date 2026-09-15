@@ -166,7 +166,8 @@ The current source candidate is commit
 `c5660f2b948e1201790d96c104d3b6a99be3eec8`. It restores the original
 resolution brace form and its baseline physical lines. Two blank lines keep
 the resolution declaration and return at baseline lines 173 and 175. It does
-not revert recovered names, CRT macros, or unrelated formatting.
+not revert recovered names, CRT macros, or unrelated formatting. Its source
+SHA256 is `1405e5fb2c47eacb717638d2e58dd106cb8615f137b119e82261d82236eb0922`.
 
 Requested isolated root experiment, not run: compile only this candidate
 `src/flics.cpp` with the pinned VC5 toolchain and `config/flags/default.rsp`.
