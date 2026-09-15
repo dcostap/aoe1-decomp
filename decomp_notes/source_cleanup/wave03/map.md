@@ -4,7 +4,8 @@
 
 - Module: `src/map.cpp`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commit: `312a3a1d3`
+- Source commits: `312a3a1d3`, `e64f320a6`
+- Final source commit: `e64f320a6`
 - Initial report commit: `99f0fc6f4`
 - Final report commit: this report correction commit.
 - Branch: `cleanup/staging-20260915-137`
@@ -209,7 +210,8 @@ This avoids forced stack-slot mapping.
   It does not reshape the two-byte temporary.
 - `scenario_load` keeps the existing long `y` loop temporary and the `int i` conversion temporary.
   PDB records also include short `y` and int `x` stack symbols.
-  The source does not change those types or force an alias.
+  The source keeps the inferred `map_height` temporary.
+  It does not change those types or force an alias.
 - `preclean_elevation`, `clean_elevation`, and `clean_terrain` keep descriptive directional flags.
   PDB `place*` and `offset*` records cover optimized and reused slots.
   The source restores `change_flag`, `pass_index`, `index1`, and `index2` where direct.
