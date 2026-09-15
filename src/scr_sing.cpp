@@ -10,6 +10,7 @@
 #include "../include/gameinfo.h"
 #include "../include/pnl_btn.h"
 #include "../include/pnl_lst.h"
+#include "../include/resource_ids.h"
 #include <stdlib.h>
 
 TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
@@ -27,7 +28,7 @@ TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
 
     set_ideal_size(0x280, 0x1E0);
 
-    if (create_text(this, &title, 0x2404, 0x14, 0x14, 600,
+    if (create_text(this, &title, IDS_MENU_SINGLE_PLAYER_TITLE, 0x14, 0x14, 600,
                     0x1E, 1, 1, 0, 0)) {
         for (int id = 0x76, i = 0; id < 0x1A2; id += 0x32, i++) {
             if (!create_button(this, &button[i], "", 0,
@@ -35,19 +36,19 @@ TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
                 return;
         }
 
-        if (create_button(this, &close_button, 0x3EA, 0, 0, 0, 0,
+        if (create_button(this, &close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0,
                           0, -1, -1, 0)) {
             close_button->set_active(1);
             close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4,
                                           4, 0x11, 0x11, 0x11, 0x11,
                                           0, 0, 0, 0);
 
-            button[0]->set_text(0, 0x240A);
-            button[1]->set_text(0, 0x2408);
-            button[2]->set_text(0, 0x240B);
-            button[3]->set_text(0, 0x2405);
-            button[4]->set_text(0, 0x2407);
-            button[5]->set_text(0, 0x2409);
+            button[0]->set_text(0, IDS_MENU_RANDOM_MAP);
+            button[1]->set_text(0, IDS_MENU_CAMPAIGN);
+            button[2]->set_text(0, IDS_MENU_DEATH_MATCH);
+            button[3]->set_text(0, IDS_MENU_SCENARIO);
+            button[4]->set_text(0, IDS_MENU_SAVED_GAME);
+            button[5]->set_text(0, IDS_MENU_SINGLE_PLAYER_CANCEL);
 
             // Keep one local receiver for the two hotkey stores.
             TButtonPanel* cancel = button[5];
