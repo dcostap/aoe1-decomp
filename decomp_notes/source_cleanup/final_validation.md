@@ -98,6 +98,16 @@ Restore baseline name bindings and distinct declarations. Do not add scopes to b
 Root will review repairs and rerun validation. No failed output will be removed.
 Runtime tests cannot validate this failed build. They await a fresh linked executable.
 
+## Building terrain mismatch: preexisting finding
+
+Owner 15 reports identical preserved-baseline and fresh object section payloads for both building terrain functions.
+The original references approximately `0.01f`; the baseline source uses `10.0f` in four boundary calculations.
+The proposed repair is preserved at `a3df10dbb731d5947f7f4c4ced4ac26dafcae09d` and is not integrated.
+Root inspected its four operand replacements. They change baseline program behavior, unlike a cleanup repair.
+Keep this finding separate from cleanup-induced drift and retain the unchanged baseline during comparison.
+Root requested precise relocation and referenced-data evidence, since section-payload equality alone does not prove dependency equality.
+The matching claims remain failed; no status was relabeled and no check was weakened.
+
 ## Fresh linked dependency failures
 
 The second-build dependency audit reports 7,758 passes, two failures, and 47,025 unknowns.
