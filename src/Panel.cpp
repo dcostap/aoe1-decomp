@@ -93,10 +93,10 @@ TPanel* TPanelSystem::modalPanel() const {
     return this->modal_panel;
 }
 
-TPanel* TPanelSystem::panel(char* name) {
+TPanel* TPanelSystem::panel(char* n) {
     PanelNode* node;
 
-    node = findPanelNode(name);
+    node = findPanelNode(n);
     if (node != 0) {
         return node->panel;
     }
@@ -107,36 +107,36 @@ int TPanelSystem::numberActivePanels() const {
     return this->number_active_panels;
 }
 
-int TPanelSystem::addPanel(TPanel* panel, int make_current, int mode) {
+int TPanelSystem::addPanel(TPanel* p, int makeCurrent, int makeModal) {
     PanelNode* node;
 
-    node = findPanelNode(panel->panelName());
+    node = findPanelNode(p->panelName());
     if (node == 0) {
         node = (PanelNode*)calloc(1, 0x0C);
         if (node == 0) {
             return 0;
         }
-        node->panel = panel;
-        panel->setPreviousPanel(0);
+        node->panel = p;
+        p->setPreviousPanel(0);
         node->prev_node = panel_list->prev_node;
         node->next_node = panel_list;
         panel_list->prev_node = node;
         node->prev_node->next_node = node;
         number_active_panels = number_active_panels + 1;
     }
-    if (make_current != 0) {
-        setCurrentPanel(panel, mode);
+    if (makeCurrent != 0) {
+        setCurrentPanel(p, makeModal);
     }
     return 1;
 }
 
-int TPanelSystem::removePanel(char* name) {
+int TPanelSystem::removePanel(char* n) {
     PanelNode* node;
 
-    if (name == 0) {
+    if (n == 0) {
         return 0;
     }
-    node = findPanelNode(name);
+    node = findPanelNode(n);
     if (node == 0) {
         return 0;
     }
@@ -147,23 +147,23 @@ int TPanelSystem::removePanel(char* name) {
     return 1;
 }
 
-int TPanelSystem::setCurrentPanel(char* name, int mode) {
+int TPanelSystem::setCurrentPanel(char* n, int makeModal) {
     PanelNode* node;
 
-    node = findPanelNode(name);
+    node = findPanelNode(n);
     if (node != 0) {
         if (mouse_owner != 0) {
             mouse_owner->release_mouse();
         }
         modal_panel = 0;
         keyboard_owner = 0;
-        setCurrentPanel(node->panel, mode);
+        setCurrentPanel(node->panel, makeModal);
         return 1;
     }
     return 0;
 }
 
-int TPanelSystem::restorePreviousPanel(int destroy_current) {
+int TPanelSystem::restorePreviousPanel(int destroyOldCurrentPanel) {
     TPanel* previous;
     TPanel* current;
 
@@ -175,7 +175,7 @@ int TPanelSystem::restorePreviousPanel(int destroy_current) {
         return 0;
     }
     current = current_panel;
-    if (destroy_current == 0) {
+    if (destroyOldCurrentPanel == 0) {
         previous->setPreviousPanel(current);
     } else {
         if (previous->previousPanel() == current) {
@@ -190,17 +190,17 @@ int TPanelSystem::restorePreviousPanel(int destroy_current) {
     return 1;
 }
 
-void TPanelSystem::setMouseOwner(TPanel* v) {
-    this->mouse_owner = v;
+void TPanelSystem::setMouseOwner(TPanel* p) {
+    this->mouse_owner = p;
 }
 
-void TPanelSystem::setKeyboardOwner(TPanel* v) {
-    this->keyboard_owner = v;
+void TPanelSystem::setKeyboardOwner(TPanel* p) {
+    this->keyboard_owner = p;
 }
 
-void TPanelSystem::setModalPanel(TPanel* panel) {
-    if (modal_panel != 0 && panel != 0) {
-        panel->setPreviousModalPanel(modal_panel);
+void TPanelSystem::setModalPanel(TPanel* p) {
+    if (modal_panel != 0 && p != 0) {
+        p->setPreviousModalPanel(modal_panel);
     }
     if (modal_panel == 0) {
         TPanel* previous = previous_current_child;
@@ -211,18 +211,18 @@ void TPanelSystem::setModalPanel(TPanel* panel) {
         modal_panel->parent_panel->set_curr_child(previous_current_child);
     }
     previous_current_child = 0;
-    modal_panel = panel;
-    if (panel != 0 && panel != current_panel) {
+    modal_panel = p;
+    if (p != 0 && p != current_panel) {
         TPanel* parent;
 
-        parent = panel->parent_panel;
+        parent = p->parent_panel;
         if (parent != 0) {
             previous_current_child = parent->curr_child;
-            parent->set_curr_child(panel);
+            parent->set_curr_child(p);
             return;
         }
         previous_current_child = 0;
-        panel->set_focus(1);
+        p->set_focus(1);
     }
 }
 
@@ -253,13 +253,13 @@ int TPanelSystem::restorePreviousModalPanel(void) {
     return 1;
 }
 
-int TPanelSystem::destroyPanel(char* name) {
+int TPanelSystem::destroyPanel(char* n) {
     PanelNode* node;
 
-    if (name == 0) {
+    if (n == 0) {
         return 0;
     }
-    node = findPanelNode(name);
+    node = findPanelNode(n);
     if (node == 0) {
         return 0;
     }
@@ -285,13 +285,13 @@ int TPanelSystem::destroyPanel(char* name) {
     return 1;
 }
 
-int TPanelSystem::inSystem(char* name) {
-    return findPanelNode(name) != 0;
+int TPanelSystem::inSystem(char* n) {
+    return findPanelNode(n) != 0;
 }
 
-int TPanelSystem::inSystem(TPanel* panel) {
-    if (panel != 0) {
-        if (findPanelNode(panel->panelName()) != 0) {
+int TPanelSystem::inSystem(TPanel* p) {
+    if (p != 0) {
+        if (findPanelNode(p->panelName()) != 0) {
             return 1;
         }
     }
@@ -306,19 +306,19 @@ int TPanelSystem::setup(void) {
     panel_list->panel = 0;
     panel_list->prev_node = panel_list;
     panel_list->next_node = panel_list;
-    save_back_color = GetSysColor(5);
-    save_text_color = GetSysColor(8);
+    save_back_color = GetSysColor(COLOR_WINDOW);
+    save_text_color = GetSysColor(COLOR_WINDOWTEXT);
     saved_colors = 1;
     return 1;
 }
 
-PanelNode* TPanelSystem::findPanelNode(char* name) {
+PanelNode* TPanelSystem::findPanelNode(char* n) {
     TPanelSystem* self;
     char* target;
     PanelNode* node;
 
     self = this;
-    target = name;
+    target = n;
     if (target == 0) {
         return 0;
     }
@@ -332,33 +332,32 @@ PanelNode* TPanelSystem::findPanelNode(char* name) {
     return 0;
 }
 
-void TPanelSystem::setCurrentPanel(TPanel* panel, int mode) {
-    panel->setPreviousPanel(current_panel);
+void TPanelSystem::setCurrentPanel(TPanel* p, int makeModal) {
+    p->setPreviousPanel(current_panel);
     if (current_panel != 0) {
         current_panel->set_focus(0);
     }
-    current_panel = panel;
-    panel->set_focus(1);
+    current_panel = p;
+    p->set_focus(1);
     current_panel->set_redraw(TPanel::RedrawImmediate);
     UpdateWindow(AppWnd);
-    if (mode != 0) {
+    if (makeModal != 0) {
         setCurrentPanelModal();
     }
 }
 
-void* TPanelSystem::get_palette(char* param_1, long param_2)
-{
-    char file_name[260];
+void* TPanelSystem::get_palette(char* file_name, long res_id) {
+    char file_name2[260];
 
-    if (param_1 == 0) {
-        file_name[0] = 0;
+    if (file_name == 0) {
+        file_name2[0] = 0;
     } else {
-        if (strchr(param_1, '.') == 0) {
-            sprintf(file_name, "%s.pal", param_1);
+        if (strchr(file_name, '.') == 0) {
+            sprintf(file_name2, "%s.pal", file_name);
         } else {
-            strcpy(file_name, param_1);
+            strcpy(file_name2, file_name);
         }
-        strupr(file_name);
+        strupr(file_name2);
     }
 
     int found = -1;
@@ -366,8 +365,8 @@ void* TPanelSystem::get_palette(char* param_1, long param_2)
 
     for (i = 0; i < 10; i++) {
         if (this->palette[i] != 0) {
-            if ((param_2 != -1 && this->palette_id[i] == param_2) ||
-                strcmp(this->palette_file[i], file_name) == 0) {
+            if ((res_id != -1 && this->palette_id[i] == res_id) ||
+                strcmp(this->palette_file[i], file_name2) == 0) {
                 this->palette_use_count[i]++;
                 return this->palette[i];
             }
@@ -378,20 +377,20 @@ void* TPanelSystem::get_palette(char* param_1, long param_2)
 
     if (found == -1) return 0;
 
-    this->palette[found] = ReadPalette(file_name, param_2, 1);
+    this->palette[found] = ReadPalette(file_name2, res_id, 1);
     if (this->palette[found] == 0) return 0;
 
     this->palette_use_count[found]++;
-    strcpy(this->palette_file[found], file_name);
-    this->palette_id[found] = param_2;
+    strcpy(this->palette_file[found], file_name2);
+    this->palette_id[found] = res_id;
     return this->palette[found];
 }
 
-void TPanelSystem::release_palette(void* target_palette) {
+void TPanelSystem::release_palette(void* pal) {
     int i;
 
     for (i = 0; i < 10; i++) {
-        if (palette[i] == target_palette) {
+        if (palette[i] == pal) {
             palette_use_count[i]--;
             if (palette_use_count[i] == 0) {
                 DeleteObject(palette[i]);
@@ -482,12 +481,12 @@ void TPanelSystem::restore_system_colors(void) {
     unsigned long colors[2];
 
     if (saved_colors != 0) {
-        if (GetSysColor(5) == save_back_color && GetSysColor(8) == save_text_color) {
+        if (GetSysColor(COLOR_WINDOW) == save_back_color && GetSysColor(COLOR_WINDOWTEXT) == save_text_color) {
             return;
         }
         colors[0] = save_back_color;
-        elems[0] = 5;
-        elems[1] = 8;
+        elems[0] = COLOR_WINDOW;
+        elems[1] = COLOR_WINDOWTEXT;
         colors[1] = save_text_color;
         SetSysColors(2, elems, colors);
     }
@@ -510,7 +509,7 @@ void TPanelSystem::set_restore(void) {
 TPanel::TPanel(char* name)
     : previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0),
       pnl_wid(0), pnl_hgt(0), panel_name(0), render_area(0), position_mode(0),
-      need_redraw(2), curr_child(0), parent_panel(0), left_panel(0),
+      need_redraw(TPanel::RedrawImmediate), curr_child(0), parent_panel(0), left_panel(0),
       top_panel(0), right_panel(0), bottom_panel(0), node(0),
       first_child_node(0), last_child_node(0), tab_prev_panel(0),
       tab_next_panel(0), mouse_captured(0), active(1), visible(0), tab_stop(0),
@@ -538,7 +537,7 @@ TPanel::TPanel(char* name)
 TPanel::TPanel(void)
     : previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0),
       pnl_wid(0), pnl_hgt(0), panel_name(0), render_area(0), position_mode(0),
-      need_redraw(2), curr_child(0), parent_panel(0), left_panel(0),
+      need_redraw(TPanel::RedrawImmediate), curr_child(0), parent_panel(0), left_panel(0),
       top_panel(0), right_panel(0), bottom_panel(0), node(0),
       first_child_node(0), last_child_node(0), tab_prev_panel(0),
       tab_next_panel(0), mouse_captured(0), active(1), visible(0), tab_stop(0),
@@ -588,25 +587,25 @@ TPanel::~TPanel() {
     }
 }
 
-long TPanel::setup(TDrawArea* area, TPanel* parent, long left, long top, long width, long height, unsigned char value) {
-    render_area = area;
-    parent_panel = parent;
+long TPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, unsigned char color_in) {
+    render_area = render_area_in;
+    parent_panel = parent_panel_in;
     if (position_mode == 0) {
-        left_border = left;
-        top_border = top;
-        min_wid = width;
-        max_wid = width;
+        left_border = x_in;
+        top_border = y_in;
+        min_wid = wid_in;
+        max_wid = wid_in;
         right_border = 0;
         bottom_border = 0;
-        min_hgt = height;
-        max_hgt = height;
+        min_hgt = hgt_in;
+        max_hgt = hgt_in;
     }
-    if (area != 0) {
-        handle_size(area->Width, area->Height);
+    if (render_area_in != 0) {
+        handle_size(render_area_in->Width, render_area_in->Height);
     } else {
         handle_size(0, 0);
     }
-    set_color((unsigned char)value);
+    set_color((unsigned char)color_in);
     mouse_captured = 0;
     if (node == 0) {
         node = (PanelNode*)calloc(1, 0xC);
@@ -623,83 +622,82 @@ long TPanel::setup(TDrawArea* area, TPanel* parent, long left, long top, long wi
     return 1;
 }
 
-void TPanel::add_panel_node(PanelNode* node, PanelNode* sibling, int after) {
-    if (sibling == 0) {
-        sibling = first_child_node;
-        if (sibling == 0) {
-            node->prev_node = sibling;
-            node->next_node = sibling;
+void TPanel::add_panel_node(PanelNode* node_in, PanelNode* by_node, int add_after) {
+    if (by_node == 0) {
+        by_node = first_child_node;
+        if (by_node == 0) {
+            node_in->prev_node = by_node;
+            node_in->next_node = by_node;
             goto done;
         }
-        while (sibling->next_node != 0) {
-            sibling = sibling->next_node;
+        while (by_node->next_node != 0) {
+            by_node = by_node->next_node;
         }
-        sibling->next_node = node;
-        node->prev_node = sibling;
-        node->next_node = 0;
+        by_node->next_node = node_in;
+        node_in->prev_node = by_node;
+        node_in->next_node = 0;
         goto done;
     }
-    if (after != 0) {
-        node->prev_node = sibling;
-        node->next_node = sibling->next_node;
-        sibling->next_node = node;
-        if (node->next_node != 0) {
-            node->next_node->prev_node = node;
+    if (add_after != 0) {
+        node_in->prev_node = by_node;
+        node_in->next_node = by_node->next_node;
+        by_node->next_node = node_in;
+        if (node_in->next_node != 0) {
+            node_in->next_node->prev_node = node_in;
         }
     } else {
-        node->prev_node = sibling->prev_node;
-        node->next_node = sibling;
-        sibling->prev_node = node;
-        if (node->prev_node != 0) {
-            node->prev_node->next_node = node;
+        node_in->prev_node = by_node->prev_node;
+        node_in->next_node = by_node;
+        by_node->prev_node = node_in;
+        if (node_in->prev_node != 0) {
+            node_in->prev_node->next_node = node_in;
         }
     }
 done:
-    if (node->prev_node == 0) {
-        first_child_node = node;
+    if (node_in->prev_node == 0) {
+        first_child_node = node_in;
     }
-    if (node->next_node == 0) {
-        last_child_node = node;
+    if (node_in->next_node == 0) {
+        last_child_node = node_in;
     }
 }
 
-void TPanel::remove_panel_node(PanelNode* node) {
-    if (node == first_child_node) {
-        first_child_node = node->next_node;
+void TPanel::remove_panel_node(PanelNode* node_in) {
+    if (node_in == first_child_node) {
+        first_child_node = node_in->next_node;
     }
-    if (node == last_child_node) {
-        last_child_node = node->prev_node;
+    if (node_in == last_child_node) {
+        last_child_node = node_in->prev_node;
     }
-    if (node->prev_node != 0) {
-        node->prev_node->next_node = node->next_node;
+    if (node_in->prev_node != 0) {
+        node_in->prev_node->next_node = node_in->next_node;
     }
-    if (node->next_node != 0) {
-        node->next_node->prev_node = node->prev_node;
+    if (node_in->next_node != 0) {
+        node_in->next_node->prev_node = node_in->prev_node;
     }
-    node->prev_node = 0;
-    node->next_node = 0;
-    if (curr_child == node->panel) {
+    node_in->prev_node = 0;
+    node_in->next_node = 0;
+    if (curr_child == node_in->panel) {
         curr_child = 0;
     }
 }
 
-void TPanel::set_rect(long left, long top, long width, long height)
-{
-    pnl_wid = width;
-    pnl_hgt = height;
-    long right = left + width - 1;
-    long bottom = top + height - 1;
+void TPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
+    pnl_wid = wid_in;
+    pnl_hgt = hgt_in;
+    long right = x_in + wid_in - 1;
+    long bottom = y_in + hgt_in - 1;
 
-    pnl_x = left;
-    pnl_y = top;
+    pnl_x = x_in;
+    pnl_y = y_in;
 
-    render_rect.left = left;
-    render_rect.top = top;
+    render_rect.left = x_in;
+    render_rect.top = y_in;
     render_rect.right = right;
     render_rect.bottom = bottom;
 
-    clip_rect.left = left;
-    clip_rect.top = top;
+    clip_rect.left = x_in;
+    clip_rect.top = y_in;
     clip_rect.right = right;
     clip_rect.bottom = bottom;
 
@@ -753,22 +751,22 @@ void TPanel::set_rect(long left, long top, long width, long height)
     }
 }
 
-void TPanel::set_rect(tagRECT rect) {
-    set_rect(rect.left, rect.top, (rect.right - rect.left) + 1, (rect.bottom - rect.top) + 1);
+void TPanel::set_rect(tagRECT rect_in) {
+    set_rect(rect_in.left, rect_in.top, (rect_in.right - rect_in.left) + 1, (rect_in.bottom - rect_in.top) + 1);
 }
 
-void TPanel::set_color(unsigned char color) {
-    this->color = color;
+void TPanel::set_color(unsigned char color_in) {
+    this->color = color_in;
     if (active != 0) {
         set_redraw(TPanel::RedrawImmediate);
     }
 }
 
-void TPanel::set_active(int is_active) {
-    if (active != is_active) {
-        active = is_active;
-        if (is_active != 0) {
-        set_redraw(TPanel::RedrawNormal);
+void TPanel::set_active(int active_in) {
+    if (active != active_in) {
+        active = active_in;
+        if (active_in != 0) {
+            set_redraw(TPanel::RedrawNormal);
             return;
         }
         release_mouse();
@@ -778,24 +776,23 @@ void TPanel::set_active(int is_active) {
     }
 }
 
-void TPanel::set_positioning(TPanel::PositionMode p1, long p2, long p3, long p4,
-                             long p5, long p6, long p7, long p8,
-                             long p9, TPanel* p10, TPanel* p11,
-                             TPanel* p12, TPanel* p13)
-{
-    position_mode = p1;
-    left_border = p2;
-    top_border = p3;
-    right_border = p4;
-    bottom_border = p5;
-    min_wid = p6;
-    max_wid = p7;
-    min_hgt = p8;
-    max_hgt = p9;
-    left_panel = p10;
-    top_panel = p11;
-    right_panel = p12;
-    bottom_panel = p13;
+void TPanel::set_positioning(TPanel::PositionMode position_mode_in, long left_border_in, long top_border_in, long right_border_in,
+                             long bottom_border_in, long min_wid_in, long max_wid_in, long min_hgt_in,
+                             long max_hgt_in, TPanel* left_panel_in, TPanel* top_panel_in,
+                             TPanel* right_panel_in, TPanel* bottom_panel_in) {
+    position_mode = position_mode_in;
+    left_border = left_border_in;
+    top_border = top_border_in;
+    right_border = right_border_in;
+    bottom_border = bottom_border_in;
+    min_wid = min_wid_in;
+    max_wid = max_wid_in;
+    min_hgt = min_hgt_in;
+    max_hgt = max_hgt_in;
+    left_panel = left_panel_in;
+    top_panel = top_panel_in;
+    right_panel = right_panel_in;
+    bottom_panel = bottom_panel_in;
 
     if (render_area != 0) {
         handle_size(render_area->Width, render_area->Height);
@@ -808,87 +805,83 @@ void TPanel::set_positioning(TPanel::PositionMode p1, long p2, long p3, long p4,
     }
 }
 
-void TPanel::set_fixed_position(long left, long top, long right, long bottom) {
-    set_positioning(TPanel::PositionFixed, left, top, 0, 0, right, right, bottom, bottom, 0, 0, 0, 0);
+void TPanel::set_fixed_position(long left_border_in, long top_border_in, long wid_in, long hgt_in) {
+    set_positioning(TPanel::PositionFixed, left_border_in, top_border_in, 0, 0, wid_in, wid_in, hgt_in, hgt_in, 0, 0, 0, 0);
 }
 
-void TPanel::set_redraw(TPanel::RedrawMode mode) {
-    if (mode == 1 && need_redraw == 2) {
+void TPanel::set_redraw(TPanel::RedrawMode redraw_mode) {
+    if (redraw_mode == TPanel::RedrawNormal && need_redraw == TPanel::RedrawImmediate) {
         return;
     }
-    need_redraw = mode;
-    if (mode != 0 && render_area != 0 && visible != 0 && active != 0) {
+    need_redraw = redraw_mode;
+    if (redraw_mode != 0 && render_area != 0 && visible != 0 && active != 0) {
         InvalidateRect(render_area->Wnd, &clip_rect, 0);
     }
 }
 
-void TPanel::set_overlapped_redraw(TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3)
-{
-    tagRECT p1_rect = param_1->clip_rect;
-    int p1_left = p1_rect.left;
-    int p1_top = p1_rect.top;
-    int p1_right = p1_rect.right;
-    int p1_bottom = p1_rect.bottom;
+void TPanel::set_overlapped_redraw(TPanel* redraw_panel, TPanel* calling_panel, TPanel::RedrawMode redraw_mode) {
+    tagRECT this_rect = redraw_panel->clip_rect;
+    int this_left = this_rect.left;
+    int this_top = this_rect.top;
+    int this_right = this_rect.right;
+    int this_bottom = this_rect.bottom;
 
-    PanelNode* node = first_child_node;
-    if (node == 0) return;
+    PanelNode* temp_node = first_child_node;
+    if (temp_node == 0) return;
 
     do {
-        TPanel* panel = node->panel;
-        if (panel != param_1 && panel != param_2 && panel->z_order > param_1->z_order) {
-            tagRECT n_rect = panel->clip_rect;
-            int n_left = n_rect.left;
-            int n_top = n_rect.top;
-            int n_right = n_rect.right;
-            int n_bottom = n_rect.bottom;
+        TPanel* panel = temp_node->panel;
+        if (panel != redraw_panel && panel != calling_panel && panel->z_order > redraw_panel->z_order) {
+            tagRECT panel_rect = panel->clip_rect;
+            int panel_left = panel_rect.left;
+            int panel_top = panel_rect.top;
+            int panel_right = panel_rect.right;
+            int panel_bottom = panel_rect.bottom;
 
-            if ((((n_left < p1_left || n_left > p1_right) &&
-                  (n_right < p1_left || n_right > p1_right)) &&
-                 (n_left >= p1_left || n_right <= p1_right)) ||
-                (((n_top < p1_top || n_top > p1_bottom) &&
-                  (n_bottom < p1_top || n_bottom > p1_bottom)) &&
-                 (n_top >= p1_top || n_bottom <= p1_bottom)))
-            {
-                if ((((p1_left >= n_left && p1_left <= n_right) ||
-                      (p1_right >= n_left && p1_right <= n_right)) ||
-                     (p1_left < n_left && p1_right > n_right)) &&
-                    (((p1_top >= n_top && p1_top <= n_bottom) ||
-                      (p1_bottom >= n_top && p1_bottom <= n_bottom)) ||
-                     (p1_top < n_top && p1_bottom > n_bottom)))
-                {
-                    panel->set_redraw(param_3);
+            if ((((panel_left < this_left || panel_left > this_right) &&
+                  (panel_right < this_left || panel_right > this_right)) &&
+                 (panel_left >= this_left || panel_right <= this_right)) ||
+                (((panel_top < this_top || panel_top > this_bottom) &&
+                  (panel_bottom < this_top || panel_bottom > this_bottom)) &&
+                  (panel_top >= this_top || panel_bottom <= this_bottom))) {
+                if ((((this_left >= panel_left && this_left <= panel_right) ||
+                      (this_right >= panel_left && this_right <= panel_right)) ||
+                     (this_left < panel_left && this_right > panel_right)) &&
+                    (((this_top >= panel_top && this_top <= panel_bottom) ||
+                      (this_bottom >= panel_top && this_bottom <= panel_bottom)) ||
+                     (this_top < panel_top && this_bottom > panel_bottom))) {
+                    panel->set_redraw(redraw_mode);
                 }
             } else {
-                    panel->set_redraw(param_3);
+                panel->set_redraw(redraw_mode);
             }
         }
-        node = node->next_node;
-    } while (node != 0);
+        temp_node = temp_node->next_node;
+    } while (temp_node != 0);
 }
 
-void TPanel::set_any_overlapping_redraw(TPanel* param_1, TPanel::RedrawMode param_2)
-{
-    tagRECT this_rect = param_1->clip_rect;
+void TPanel::set_any_overlapping_redraw(TPanel* redraw_panel, TPanel::RedrawMode redraw_mode) {
+    tagRECT this_rect = redraw_panel->clip_rect;
     PanelNode* temp_node = this->first_child_node;
 
     while (temp_node != 0) {
         TPanel* panel = temp_node->panel;
-        if (panel != param_1) {
+        if (panel != redraw_panel) {
             tagRECT panel_rect = panel->clip_rect;
 
             if (((((panel_rect.left < this_rect.left) ||
-                  (panel_rect.left > this_rect.right)) &&
-                 ((panel_rect.right < this_rect.left) ||
-                  (panel_rect.right > this_rect.right))) &&
-                ((panel_rect.left >= this_rect.left) ||
-                 (panel_rect.right <= this_rect.right))) ||
+                   (panel_rect.left > this_rect.right)) &&
+                  ((panel_rect.right < this_rect.left) ||
+                   (panel_rect.right > this_rect.right))) &&
+                 ((panel_rect.left >= this_rect.left) ||
+                  (panel_rect.right <= this_rect.right))) ||
                 (((panel_rect.top < this_rect.top) ||
                   (panel_rect.top > this_rect.bottom)) &&
                  (((panel_rect.bottom < this_rect.top) ||
                    (panel_rect.bottom > this_rect.bottom)) &&
                   ((panel_rect.top >= this_rect.top) ||
                    (panel_rect.bottom <= this_rect.bottom))))) {
-                    if (((((this_rect.left >= panel_rect.left) &&
+                if (((((this_rect.left >= panel_rect.left) &&
                        (this_rect.left <= panel_rect.right)) ||
                       ((this_rect.right >= panel_rect.left) &&
                        (this_rect.right <= panel_rect.right))) ||
@@ -900,10 +893,10 @@ void TPanel::set_any_overlapping_redraw(TPanel* param_1, TPanel::RedrawMode para
                       (this_rect.bottom <= panel_rect.bottom)) ||
                      ((this_rect.top < panel_rect.top) &&
                       (this_rect.bottom > panel_rect.bottom)))) {
-                    panel->set_redraw(param_2);
+                    panel->set_redraw(redraw_mode);
                 }
             } else {
-                panel->set_redraw(param_2);
+                panel->set_redraw(redraw_mode);
             }
         }
         temp_node = temp_node->next_node;
@@ -937,17 +930,17 @@ void TPanel::draw_rect(tagRECT* rect) {
     clip_rect = save_rect;
 }
 
-void TPanel::draw_offset(long x, long y, tagRECT* rect) {
+void TPanel::draw_offset(long x_offset, long y_offset, tagRECT* rect) {
     tagRECT save_rect;
 
-    pnl_x = pnl_x + x;
-    pnl_y = pnl_y + y;
+    pnl_x = pnl_x + x_offset;
+    pnl_y = pnl_y + y_offset;
     save_rect = clip_rect;
     clip_rect = *rect;
     draw();
     clip_rect = save_rect;
-    pnl_x = pnl_x - x;
-    pnl_y = pnl_y - y;
+    pnl_x = pnl_x - x_offset;
+    pnl_y = pnl_y - y_offset;
 }
 
 void TPanel::draw_rect2(tagRECT* rect) {
@@ -956,9 +949,9 @@ void TPanel::draw_rect2(tagRECT* rect) {
     draw_rect2_flag = 0;
 }
 
-void TPanel::draw_offset2(long x, long y, tagRECT* rect) {
+void TPanel::draw_offset2(long x_offset, long y_offset, tagRECT* rect) {
     draw_rect2_flag = 1;
-    draw_offset(x, y, rect);
+    draw_offset(x_offset, y_offset, rect);
     draw_rect2_flag = 0;
 }
 
@@ -996,8 +989,7 @@ void TPanel::paint(void) {
     }
 }
 
-long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam)
-{
+long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     POINT point;
     TPanel* target;
     int ctrl_key;
@@ -1009,12 +1001,12 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
         return 0;
     }
 
-    if (msg <= 0x206) {
-        if (msg < 0x200) {
+    if (msg <= WM_RBUTTONDBLCLK) {
+        if (msg < WM_MOUSEFIRST) {
             switch (msg) {
-            case 0x100:
-            case 0x102:
-            case 0x104:
+            case WM_KEYDOWN:
+            case WM_CHAR:
+            case WM_SYSKEYDOWN:
                 break;
             default:
                 goto child_input;
@@ -1039,19 +1031,19 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
             }
 
             switch (msg) {
-            case 0x200:
+            case WM_MOUSEMOVE:
                 return target->handle_mouse_move(point.x, point.y, ctrl_key, shift_key);
-            case 0x201:
+            case WM_LBUTTONDOWN:
                 return target->handle_mouse_down(1, point.x, point.y, ctrl_key, shift_key);
-            case 0x202:
+            case WM_LBUTTONUP:
                 return target->handle_mouse_up(1, point.x, point.y, ctrl_key, shift_key);
-            case 0x203:
+            case WM_LBUTTONDBLCLK:
                 return target->handle_mouse_dbl_click(1, point.x, point.y, ctrl_key, shift_key);
-            case 0x204:
+            case WM_RBUTTONDOWN:
                 return target->handle_mouse_down(2, point.x, point.y, ctrl_key, shift_key);
-            case 0x205:
+            case WM_RBUTTONUP:
                 return target->handle_mouse_up(2, point.x, point.y, ctrl_key, shift_key);
-            case 0x206:
+            case WM_RBUTTONDBLCLK:
                 return target->handle_mouse_dbl_click(2, point.x, point.y, ctrl_key, shift_key);
             }
         }
@@ -1071,12 +1063,12 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
             target = this;
         }
 
-        if (msg != 0x100 && msg != 0x104) {
+        if (msg != WM_KEYDOWN && msg != WM_SYSKEYDOWN) {
             return target->handle_char(wParam, (short)lParam);
         }
-        int alt = GetKeyState(0x12) < 0;
-        ctrl_key = GetKeyState(0x11) < 0;
-        shift_key = GetKeyState(0x10) < 0;
+        int alt = GetKeyState(VK_MENU) < 0;
+        ctrl_key = GetKeyState(VK_CONTROL) < 0;
+        shift_key = GetKeyState(VK_SHIFT) < 0;
         return target->handle_key_down(wParam, (short)lParam, alt, ctrl_key, shift_key);
     }
 
@@ -1090,16 +1082,16 @@ child_input:
         node = node->prev_node;
     }
 
-    if (msg <= 0x400) {
+    if (msg <= WM_USER) {
         switch (msg) {
-        case 0x111:
+        case WM_COMMAND:
             return this->handle_command(wParam, lParam);
-        case 0x400:
+        case WM_USER:
             return this->handle_user_command(wParam, lParam);
-        case 0x113:
+        case WM_TIMER:
             return this->handle_timer_command(wParam, lParam);
-        case 0x114:
-        case 0x115:
+        case WM_HSCROLL:
+        case WM_VSCROLL:
             return this->handle_scroll((long)(wParam & 0xFFFF), (long)(wParam >> 16));
         }
     }
@@ -1124,7 +1116,7 @@ long TPanel::handle_idle(void) {
 
     node = last_child_node;
     while (node != 0) {
-                result = node->panel->handle_idle();
+        result = node->panel->handle_idle();
         if (result != 0) {
             return result;
         }
@@ -1302,7 +1294,7 @@ long TPanel::handle_paint() {
     return 0;
 }
 
-long TPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
+long TPanel::handle_key_down(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     PanelNode* node;
     long result;
     TPanel* target;
@@ -1313,20 +1305,20 @@ long TPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
 
     node = last_child_node;
     while (node != 0) {
-        result = node->panel->handle_key_down(key, ch, a3, a4, a5);
+        result = node->panel->handle_key_down(key, count, alt_key, ctrl_key, shift_key);
         if (result != 0) {
             return result;
         }
         node = node->prev_node;
     }
 
-    result = key_down_action(key, ch, a3, a4, a5);
+    result = key_down_action(key, count, alt_key, ctrl_key, shift_key);
     if (result != 0) {
         return result;
     }
 
-    if (a3 == 0 && a4 == 0 && key == 9 && tab_stop != 0 && parent_panel != 0) {
-        if (a5 != 0) {
+    if (alt_key == 0 && ctrl_key == 0 && key == VK_TAB && tab_stop != 0 && parent_panel != 0) {
+        if (shift_key != 0) {
             target = tab_prev_panel;
         } else {
             target = tab_next_panel;
@@ -1340,7 +1332,7 @@ long TPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
     return 0;
 }
 
-long TPanel::handle_char(long key, short ch) {
+long TPanel::handle_char(long key, short count) {
     PanelNode* node;
     long result;
 
@@ -1349,42 +1341,41 @@ long TPanel::handle_char(long key, short ch) {
     }
     node = last_child_node;
     while (node != 0) {
-        result = node->panel->handle_char(key, ch);
+        result = node->panel->handle_char(key, count);
         if (result != 0) {
             return result;
         }
         node = node->prev_node;
     }
-    return char_action(key, ch);
+    return char_action(key, count);
 }
 
-long TPanel::handle_command(unsigned int, long) {
+long TPanel::handle_command(unsigned int wParam, long lParam) {
     return 0;
 }
 
-long TPanel::handle_user_command(unsigned int, long) {
+long TPanel::handle_user_command(unsigned int wParam, long lParam) {
     return 0;
 }
 
-long TPanel::handle_timer_command(unsigned int, long) {
+long TPanel::handle_timer_command(unsigned int wParam, long lParam) {
     return 0;
 }
 
-long TPanel::handle_scroll(long, long) {
+long TPanel::handle_scroll(long scroll_cmd, long line_num) {
     return 0;
 }
 
-long TPanel::handle_mouse_down(unsigned char param_1, long param_2, long param_3, int param_4, int param_5)
-{
+long TPanel::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     if (this->active == 0)
         return 0;
 
     if (this->mouse_captured == 0) {
-        if (this->is_inside(param_2, param_3) == 0)
+        if (this->is_inside(x, y) == 0)
             return 0;
 
         for (PanelNode* node = this->last_child_node; node != 0; node = node->prev_node) {
-            long result = node->panel->handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
+            long result = node->panel->handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
             if (result != 0)
                 return result;
         }
@@ -1392,11 +1383,11 @@ long TPanel::handle_mouse_down(unsigned char param_1, long param_2, long param_3
         if (this->handle_mouse_input == 0)
             return 0;
 
-        this->mouse_down_button = param_1;
-        this->mouse_down_x = param_2;
-        this->mouse_down_y = param_3;
-        this->mouse_down_ctrl = param_4;
-        this->mouse_down_shift = param_5;
+        this->mouse_down_button = mouse_button_in;
+        this->mouse_down_x = x;
+        this->mouse_down_y = y;
+        this->mouse_down_ctrl = ctrl_key;
+        this->mouse_down_shift = shift_key;
         this->mouse_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x72C);
         this->mouse_action = 1;
 
@@ -1409,24 +1400,23 @@ long TPanel::handle_mouse_down(unsigned char param_1, long param_2, long param_3
         return 0;
 
     if (this->mouse_down_button == 1) {
-        this->mouse_left_down_action(param_2, param_3, param_4, param_5);
+        this->mouse_left_down_action(x, y, ctrl_key, shift_key);
     } else {
-        this->mouse_right_down_action(param_2, param_3, param_4, param_5);
+        this->mouse_right_down_action(x, y, ctrl_key, shift_key);
     }
     return 1;
 }
 
-long TPanel::handle_mouse_move(long param_1, long param_2, int param_3, int param_4)
-{
+long TPanel::handle_mouse_move(long x, long y, int ctrl_key, int shift_key) {
     if (this->active == 0)
         return 0;
 
     if (this->mouse_captured == 0) {
-        if (this->is_inside(param_1, param_2) == 0)
+        if (this->is_inside(x, y) == 0)
             return 0;
 
         for (PanelNode* node = this->last_child_node; node != 0; node = node->prev_node) {
-            long result = node->panel->handle_mouse_move(param_1, param_2, param_3, param_4);
+            long result = node->panel->handle_mouse_move(x, y, ctrl_key, shift_key);
             if (result != 0)
                 return result;
         }
@@ -1434,7 +1424,7 @@ long TPanel::handle_mouse_move(long param_1, long param_2, int param_3, int para
         if (this->handle_mouse_input == 0)
             return 0;
 
-        return this->mouse_move_action(param_1, param_2, param_3, param_4);
+        return this->mouse_move_action(x, y, ctrl_key, shift_key);
     }
 
     if (this->handle_mouse_input == 0)
@@ -1442,39 +1432,38 @@ long TPanel::handle_mouse_move(long param_1, long param_2, int param_3, int para
 
     if (this->mouse_action == 1 || this->mouse_action == 2) {
         if (this->mouse_down_button == 1) {
-            if (abs(param_1 - this->mouse_down_x) <= this->mouse_move_tolerance &&
-                abs(param_2 - this->mouse_down_y) <= this->mouse_move_tolerance)
+            if (abs(x - this->mouse_down_x) <= this->mouse_move_tolerance &&
+                abs(y - this->mouse_down_y) <= this->mouse_move_tolerance)
                 return 1;
         } else {
-            if (abs(param_1 - this->mouse_down_x) <= 10 &&
-                abs(param_2 - this->mouse_down_y) <= 10)
+            if (abs(x - this->mouse_down_x) <= 10 &&
+                abs(y - this->mouse_down_y) <= 10)
                 return 1;
         }
     }
 
     this->mouse_action = 3;
     if (this->mouse_down_button == 1) {
-        this->mouse_left_move_action(param_1, param_2, param_3, param_4);
+        this->mouse_left_move_action(x, y, ctrl_key, shift_key);
     } else if (this->mouse_down_button == 2) {
-        this->mouse_right_move_action(param_1, param_2, param_3, param_4);
+        this->mouse_right_move_action(x, y, ctrl_key, shift_key);
     } else {
-        this->mouse_move_action(param_1, param_2, param_3, param_4);
+        this->mouse_move_action(x, y, ctrl_key, shift_key);
     }
     return 1;
 }
 
-long TPanel::handle_mouse_up(unsigned char param_1, long param_2, long param_3,
-                             int param_4, int param_5)
-{
+long TPanel::handle_mouse_up(unsigned char mouse_button_in, long x, long y,
+                             int ctrl_key, int shift_key) {
     if (this->active == 0)
         return 0;
 
     if (this->mouse_captured == 0) {
-        if (this->is_inside(param_2, param_3) == 0)
+        if (this->is_inside(x, y) == 0)
             return 0;
 
         for (PanelNode* node = this->last_child_node; node != 0; node = node->prev_node) {
-            long result = node->panel->handle_mouse_up(param_1, param_2, param_3, param_4, param_5);
+            long result = node->panel->handle_mouse_up(mouse_button_in, x, y, ctrl_key, shift_key);
             if (result != 0)
                 return result;
         }
@@ -1484,14 +1473,14 @@ long TPanel::handle_mouse_up(unsigned char param_1, long param_2, long param_3,
 
         long result;
         if (this->mouse_down_button == 1)
-            result = this->mouse_left_up_action(param_2, param_3, param_4, param_5);
+            result = this->mouse_left_up_action(x, y, ctrl_key, shift_key);
         else
-            result = this->mouse_right_up_action(param_2, param_3, param_4, param_5);
+            result = this->mouse_right_up_action(x, y, ctrl_key, shift_key);
 
         if (result != 0)
             return 0;
 
-        if (param_1 == this->mouse_down_button) {
+        if (mouse_button_in == this->mouse_down_button) {
             this->mouse_down_button = 0;
             this->mouse_action = 0;
         }
@@ -1502,19 +1491,18 @@ long TPanel::handle_mouse_up(unsigned char param_1, long param_2, long param_3,
     return 0;
 }
 
-long TPanel::handle_mouse_dbl_click(unsigned char param_1, long param_2, long param_3,
-                                    int param_4, int param_5)
-{
+long TPanel::handle_mouse_dbl_click(unsigned char mouse_button_in, long x, long y,
+                                    int ctrl_key, int shift_key) {
     if (!active)
         return 0;
 
     if (!mouse_captured) {
-        if (!is_inside(param_2, param_3))
+        if (!is_inside(x, y))
             return 0;
 
         for (PanelNode* node = last_child_node; node; node = node->prev_node) {
             long child_result = node->panel->handle_mouse_dbl_click(
-                param_1, param_2, param_3, param_4, param_5);
+                mouse_button_in, x, y, ctrl_key, shift_key);
             if (child_result)
                 return child_result;
         }
@@ -1524,53 +1512,53 @@ long TPanel::handle_mouse_dbl_click(unsigned char param_1, long param_2, long pa
         return 0;
 
     long result;
-    if (param_1 == 1)
-        result = mouse_left_dbl_click_action(param_2, param_3, param_4, param_5);
+    if (mouse_button_in == 1)
+        result = mouse_left_dbl_click_action(x, y, ctrl_key, shift_key);
     else
-        result = mouse_right_dbl_click_action(param_2, param_3, param_4, param_5);
+        result = mouse_right_dbl_click_action(x, y, ctrl_key, shift_key);
 
     if (!result) {
-        handle_mouse_down(param_1, param_2, param_3, param_4, param_5);
+        handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
         return 1;
     }
 
     return result;
 }
 
-long TPanel::action(TPanel* panel, long a2, unsigned long a3, unsigned long a4) {
+long TPanel::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     if (parent_panel != 0) {
-        return parent_panel->action(panel, a2, a3, a4);
+        return parent_panel->action(from_panel, action_in, action_val1, action_val2);
     }
     return 0;
 }
 
-void TPanel::get_mouse_info(unsigned int keys, long packed_pos, tagPOINT& pt, int& focus_flag, int& capture_flag) {
+void TPanel::get_mouse_info(unsigned int wParam, long lParam, tagPOINT& point, int& ctrl_key, int& shift_key) {
     int x;
     int y;
 
-    x = ((unsigned int)packed_pos) & 0xFFFF;
-    y = ((unsigned int)packed_pos) >> 16;
-    pt.x = x;
-    pt.y = y;
+    x = ((unsigned int)lParam) & 0xFFFF;
+    y = ((unsigned int)lParam) >> 16;
+    point.x = x;
+    point.y = y;
     if (x > 60000) {
-        pt.x = x - 0x10000;
+        point.x = x - 0x10000;
     }
     if (y > 60000) {
-        pt.y = y - 0x10000;
+        point.y = y - 0x10000;
     }
-    focus_flag = keys & 8;
-    capture_flag = keys & 4;
+    ctrl_key = wParam & MK_CONTROL;
+    shift_key = wParam & MK_SHIFT;
 }
 
-void TPanel::get_mouse_pos(tagPOINT& pt) {
-    GetCursorPos(&pt);
+void TPanel::get_mouse_pos(tagPOINT& point) {
+    GetCursorPos(&point);
     if (render_area->DrawSystem->ScreenMode != 2) {
-        ScreenToClient(render_area->Wnd, &pt);
-        if (pt.x > 60000) {
-            pt.x += -0x10000;
+        ScreenToClient(render_area->Wnd, &point);
+        if (point.x > 60000) {
+            point.x += -0x10000;
         }
-        if (pt.y > 60000) {
-            pt.y += -0x10000;
+        if (point.y > 60000) {
+            point.y += -0x10000;
         }
     }
 }
@@ -1656,24 +1644,24 @@ int TPanel::bound_point(long& x, long& y) {
     return bounded;
 }
 
-void TPanel::set_curr_child(TPanel* child) {
+void TPanel::set_curr_child(TPanel* curr_child_in) {
     TPanel* old_child;
 
     old_child = curr_child;
-    if (child != old_child) {
+    if (curr_child_in != old_child) {
         if (old_child != 0 && have_focus != 0) {
-        old_child->set_focus(0);
+            old_child->set_focus(0);
         }
-        curr_child = child;
-        if (child != 0 && have_focus != 0) {
-        child->set_focus(1);
+        curr_child = curr_child_in;
+        if (curr_child_in != 0 && have_focus != 0) {
+            curr_child_in->set_focus(1);
         }
     }
 }
 
-void TPanel::set_focus(int focus) {
-    if (focus != have_focus) {
-        have_focus = focus;
+void TPanel::set_focus(int have_focus_in) {
+    if (have_focus_in != have_focus) {
+        have_focus = have_focus_in;
         set_redraw(TPanel::RedrawNormal);
         if (curr_child != 0) {
             curr_child->set_focus(have_focus);
@@ -1685,15 +1673,15 @@ int TPanel::get_focus() {
     return this->have_focus;
 }
 
-void TPanel::set_z_order(unsigned char mode, short order) {
+void TPanel::set_z_order(unsigned char z_order_type, short z_order_in) {
     if (this->parent_panel != 0) {
-        this->parent_panel->set_child_z_order(this, mode, order);
+        this->parent_panel->set_child_z_order(this, z_order_type, z_order_in);
         return;
     }
 
-    switch ((int)mode) {
+    switch ((int)z_order_type) {
     case 0:
-        this->z_order = order;
+        this->z_order = z_order_in;
         break;
     case 1:
         this->z_order = 0;
@@ -1704,20 +1692,19 @@ void TPanel::set_z_order(unsigned char mode, short order) {
     }
 }
 
-void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
-{
+void TPanel::set_child_z_order(TPanel* child_panel, unsigned char z_order_type, short z_order_in) {
     PanelNode* node;
     PanelNode* found_node;
     TPanel* old_curr;
 
-    switch (mode) {
+    switch (z_order_type) {
     case 0: {
         PanelNode* start = this->first_child_node;
         int found = 0;
         for (PanelNode* scan = start;
              scan != 0;
              scan = scan->next_node) {
-            if (scan->panel->z_order == (int)order) {
+            if (scan->panel->z_order == (int)z_order_in) {
                 found = 1;
                 break;
             }
@@ -1725,7 +1712,7 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
         if (found) {
             PanelNode* update = this->first_child_node;
             if (update != 0) {
-                int ord = (int)order;
+                int ord = (int)z_order_in;
                 do {
                     TPanel* p = update->panel;
                     int z = p->z_order;
@@ -1736,7 +1723,7 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
                 } while (update != 0);
             }
         }
-        child->z_order = (int)order;
+        child_panel->z_order = (int)z_order_in;
         break;
     }
     case 1: {
@@ -1745,13 +1732,13 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
         if (node != 0) {
             do {
                 TPanel* p = node->panel;
-                if (p != child && p->z_order > (int)v) {
+                if (p != child_panel && p->z_order > (int)v) {
                     v = (short)p->z_order;
                 }
                 node = node->next_node;
             } while (node != 0);
         }
-        child->z_order = (int)v + 1;
+        child_panel->z_order = (int)v + 1;
         break;
     }
     case 2: {
@@ -1760,13 +1747,13 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
         if (node != 0) {
             do {
                 TPanel* p = node->panel;
-                if (p != child && p->z_order < (int)v) {
+                if (p != child_panel && p->z_order < (int)v) {
                     v = (short)p->z_order;
                 }
                 node = node->next_node;
             } while (node != 0);
         }
-        child->z_order = (int)v - 1;
+        child_panel->z_order = (int)v - 1;
         break;
     }
     default:
@@ -1778,7 +1765,7 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
     found_node = 0;
     this->curr_child = 0;
     for (; node != 0; node = node->next_node) {
-        if (node->panel == child) {
+        if (node->panel == child_panel) {
             found_node = node;
             this->remove_panel_node(node);
             break;
@@ -1789,7 +1776,7 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
         int inserted = 0;
         node = this->first_child_node;
         for (; node != 0; node = node->next_node) {
-            if (node->panel->z_order > child->z_order) {
+            if (node->panel->z_order > child_panel->z_order) {
                 this->add_panel_node(found_node, node, 0);
                 inserted = 1;
                 break;
@@ -1802,11 +1789,11 @@ void TPanel::set_child_z_order(TPanel* child, unsigned char mode, short order)
     this->curr_child = old_curr;
 }
 
-void TPanel::set_tab_order(TPanel** panels, short count) {
+void TPanel::set_tab_order(TPanel** panel_list, short panel_count) {
     int i;
     int total;
 
-    total = (int)count;
+    total = (int)panel_count;
     i = 0;
     if (0 < total) {
         do {
@@ -1814,24 +1801,24 @@ void TPanel::set_tab_order(TPanel** panels, short count) {
             TPanel* next;
 
             if (i == 0) {
-                prev = panels[total - 1];
+                prev = panel_list[total - 1];
             } else {
-                prev = panels[i - 1];
+                prev = panel_list[i - 1];
             }
             if (i == total - 1) {
-                next = panels[0];
+                next = panel_list[0];
             } else {
-                next = panels[i + 1];
+                next = panel_list[i + 1];
             }
-            panels[i]->set_tab_order(prev, next);
+            panel_list[i]->set_tab_order(prev, next);
             i++;
         } while (i < total);
     }
 }
 
-void TPanel::set_tab_order(TPanel* param1, TPanel* param2) {
-    tab_prev_panel = param1;
-    tab_next_panel = param2;
+void TPanel::set_tab_order(TPanel* prev_panel, TPanel* next_panel) {
+    tab_prev_panel = prev_panel;
+    tab_next_panel = next_panel;
     tab_stop = 1;
 }
 
@@ -1839,35 +1826,35 @@ TPanel* TPanel::previousPanel() const {
     return previous_panel;
 }
 
-void TPanel::setPreviousPanel(TPanel* v) {
-    this->previous_panel = v;
+void TPanel::setPreviousPanel(TPanel* p) {
+    this->previous_panel = p;
 }
 
 TPanel* TPanel::previousModalPanel() const {
     return this->previous_modal_panel;
 }
 
-void TPanel::setPreviousModalPanel(TPanel* v) {
-    this->previous_modal_panel = v;
+void TPanel::setPreviousModalPanel(TPanel* p) {
+    this->previous_modal_panel = p;
 }
 
 char* TPanel::panelName() const {
     return this->panel_name;
 }
 
-void TPanel::setPanelName(char* name) {
-    if (name != 0 && strlen(name) != 0) {
+void TPanel::setPanelName(char* v) {
+    if (v != 0 && strlen(v) != 0) {
         char* old = panel_name;
         unsigned int name_length;
         if (old == 0) goto alloc;
-        name_length = strlen(name);
+        name_length = strlen(v);
         if (strlen(old) >= name_length) goto copy;
         if (panel_name == 0) goto alloc;
         free(panel_name);
 alloc:
-        panel_name = (char*)malloc(strlen(name) + 1);
+        panel_name = (char*)malloc(strlen(v) + 1);
 copy:
-        strcpy(panel_name, name);
+        strcpy(panel_name, v);
     } else {
         if (panel_name != 0) {
             free(panel_name);
@@ -1900,24 +1887,24 @@ tagRECT TPanel::clipRectangle(void) const {
     return clip_rect;
 }
 
-void TPanel::setClipRectangle(tagRECT rect) {
-    this->clip_rect = rect;
+void TPanel::setClipRectangle(tagRECT r) {
+    this->clip_rect = r;
 }
 
 void TPanel::delete_panel(TPanel** panel) {
     if (*panel != 0) {
-    delete *panel;
+        delete *panel;
         *panel = 0;
     }
 }
 
-int TPanel::get_string(int string_id, char* buffer, int length) {
-    rge_base_game->get_string(string_id, buffer, length);
-    return buffer[0] != 0;
+int TPanel::get_string(int text_id, char* str, int size) {
+    rge_base_game->get_string(text_id, str, size);
+    return str[0] != 0;
 }
 
-char* TPanel::get_string(int string_id) {
-    get_string(string_id, DAT_0062E670, 0x200);
+char* TPanel::get_string(int text_id) {
+    get_string(text_id, DAT_0062E670, 0x200);
     return DAT_0062E670;
 }
 
@@ -1929,12 +1916,12 @@ long TPanel::get_help_page() {
     return this->help_page_id;
 }
 
-void TPanel::set_help_info(long a, long b) {
-    this->help_string_id = a;
-    this->help_page_id = b;
+void TPanel::set_help_info(long string, long page) {
+    this->help_string_id = string;
+    this->help_page_id = page;
 }
 
-unsigned char TPanel::get_help_info(char*& out_str, long& out_page, long x, long y) {
+unsigned char TPanel::get_help_info(char*& string, long& page, long x, long y) {
     PanelNode* node;
 
     if (active == 0) {
@@ -1945,14 +1932,14 @@ unsigned char TPanel::get_help_info(char*& out_str, long& out_page, long x, long
     }
     node = last_child_node;
     while (node != 0) {
-        if (node->panel->get_help_info(out_str, out_page, x, y)) {
+        if (node->panel->get_help_info(string, page, x, y)) {
             return 1;
         }
         node = node->prev_node;
     }
     if (help_string_id >= 0) {
-        strcpy(out_str, get_string(help_string_id));
-        out_page = help_page_id;
+        strcpy(string, get_string(help_string_id));
+        page = help_page_id;
         return 1;
     }
     return 0;
@@ -1993,9 +1980,9 @@ void TPanel::handle_reactivate(void) {
     }
 }
 
-void TPanel::get_true_render_rect(tagRECT& rect) {
-    rect.left = render_rect.left;
-    rect.top = render_rect.top;
-    rect.right = render_rect.right;
-    rect.bottom = render_rect.bottom;
+void TPanel::get_true_render_rect(tagRECT& drawRect) {
+    drawRect.left = render_rect.left;
+    drawRect.top = render_rect.top;
+    drawRect.right = render_rect.right;
+    drawRect.bottom = render_rect.bottom;
 }
