@@ -109,6 +109,18 @@ Do not dismiss this as harmless arithmetic commutation: call order is part of th
 Report: `build/source-cleanup-20260915/final-validation/dependencies-r2/checks.csv`.
 No linked-equivalence pass is established while these failures remain.
 
+## Second function sweep
+
+All 225 groups compiled. The sweep includes 5,426 normal functions and 4,965 exact targets.
+It reports 4,961 matching results and four matching regressions.
+Other categories: 208 accepted-drift observations, 177 new-verified-logic observations,
+50 relocation problems, 18 boundary problems, and eight grouped matches needing review.
+
+The earlier three failures remain. The newly compiled `taiinfmd` adds `004E1260 loadLearnInfo` as a matching failure.
+That row also had prior state `UNKNOWN`. Root resumed the original worker for preserved-baseline comparison.
+Job `bg-77` reruns ownership against this fully compiled report, with output `owners-r2.json` and `owners-r2.txt`.
+The compilation failures are resolved in this run; matching and linked failures are not resolved.
+
 ## First function sweep
 
 The sweep includes 4,942 normal functions: 4,537 exact targets and 405 other configured functions.
