@@ -49,11 +49,13 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 - Replaced `0x0FA1` with existing `IDS_BUTTON_OK` and `0x0FA2` with existing `IDS_BUTTON_CANCEL` in button creation calls. The macros expand to the same numeric values.
 - No new constant was defined.
 - No source comment was added. The module has no comment need that is stronger than the existing code evidence.
-- All other numeric IDs remain unchanged, including the join-screen `0x25A0` through `0x25AD` IDs.
+- The eleven proved join-screen IDs now use shared resource macros. Their numeric values remain unchanged.
 
 ## Resource mapping request
 
-The source keeps the join-screen IDs numeric until the root header owner reviews the proposed shared names. These are new cleanup names, not recovered original macro names. The requested resource type is `RT_STRING` for every entry.
+Shared resource commit `c9ba20d160541d928b5d9e55e1d02dce5a784e0c` adds the reviewed macros to `include/resource_ids.h`. The source now applies all eleven proved mappings below. These are new cleanup names, not recovered original macro names. The requested resource type is `RT_STRING` for every entry.
+
+This worker cherry-picked the shared commit locally as `ce7c965ff82f640183c8e7207f7a6d3cbb26d923` (`Add reviewed screen resource names without changing resource data`). The owner must not include that worker-local header commit in the module commit set. The owner should use the shared commit `c9ba20d160541d928b5d9e55e1d02dce5a784e0c` separately.
 
 The call path is established by the source: `TEasy_Panel::create_text`, `create_button`, `popupOKDialog`, and `TPanel::get_string` use the virtual string lookup. `TRIBE_Game::get_string` tries `languagex.dll` first, then `RGE_Base_Game::get_string` falls back to `language.dll`. The inspected files are:
 
@@ -95,4 +97,14 @@ Existing shared mappings `IDS_BUTTON_OK` (`0x0FA1`, text `OK`) and `IDS_BUTTON_C
   `: TDialogPanel("Create Dialog") {`.
 - No statement, declaration, initializer, source order, or behavior changed.
 - Correction commit: `81e922ce1a56d570661ffe3d6b63eae7a67f9154`.
+- Compilation, matching, audits, and tests were not run.
+
+## Shared-resource application round
+
+- Cherry-picked reviewed shared commit `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`.
+- The worker-local cherry-pick is `ce7c965ff82f640183c8e7207f7a6d3cbb26d923`. It changes only `include/resource_ids.h` and is not a module commit for owner integration.
+- Applied the eleven proved resource substitutions in `src/scr_cj.cpp`: `0x25A0`, `0x25A1`, `0x25A2`, `0x25A3`, `0x25A4`, `0x25A6`, `0x25A8`, `0x25A9`, `0x25AA`, `0x25AB`, and `0x25AD`.
+- The source keeps the same numeric values, lookup calls, argument order, and fallback behavior.
+- The 1TBS constructor correction remains in place.
+- Module commit for this application round: copy the full hash from Git delivery output.
 - Compilation, matching, audits, and tests were not run.
