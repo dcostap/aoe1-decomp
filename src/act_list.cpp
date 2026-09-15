@@ -16,8 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-RGE_Action_List::RGE_Action_List(RGE_Action_Object* object) {
-    this->obj = object;
+RGE_Action_List::RGE_Action_List(RGE_Action_Object* obj_in) {
+    this->obj = obj_in;
     this->list = 0;
 }
 
@@ -25,7 +25,7 @@ RGE_Action_List::~RGE_Action_List() {
     delete_list();
 }
 
-void RGE_Action_List::load(int file) {
+void RGE_Action_List::load(int infile) {
     RGE_Action* action;
     RGE_Action_Node* node;
     RGE_Action_Node* tail;
@@ -37,12 +37,12 @@ void RGE_Action_List::load(int file) {
 
     tail = 0;
     while (true) {
-        rge_read(file, &action_type, 2);
+        rge_read(infile, &action_type, 2);
         if (action_type == 0) {
             break;
         }
 
-        action = this->create_action(file, action_type);
+        action = this->create_action(infile, action_type);
         node = static_cast<RGE_Action_Node*>(
             calloc(1, sizeof(RGE_Action_Node)));
         node->action = action;
@@ -66,17 +66,17 @@ void RGE_Action_List::rehook() {
     }
 }
 
-void RGE_Action_List::save(int file) {
+void RGE_Action_List::save(int outfile) {
     RGE_Action_Node* node;
     int zero;
 
     node = this->list;
     while (node != 0) {
-        node->action->save(file);
+        node->action->save(outfile);
         node = node->next;
     }
     zero = 0;
-    rge_write(file, &zero, 2);
+    rge_write(outfile, &zero, 2);
 }
 
 void RGE_Action_List::delete_list() {
@@ -85,29 +85,29 @@ void RGE_Action_List::delete_list() {
     }
 }
 
-RGE_Action* RGE_Action_List::create_action(int file, short type) {
-    switch (type) {
+RGE_Action* RGE_Action_List::create_action(int infile, short action_type) {
+    switch (action_type) {
     case 9:
-        return new RGE_Action_Attack(file, this->obj);
+        return new RGE_Action_Attack(infile, this->obj);
     case 10:
-        return new RGE_Action_Bird(file, this->obj);
+        return new RGE_Action_Bird(infile, this->obj);
     case 4:
-        return new RGE_Action_Explore(file, this->obj);
+        return new RGE_Action_Explore(infile, this->obj);
     case 5:
-        return new RGE_Action_Gather(file, this->obj);
+        return new RGE_Action_Gather(infile, this->obj);
     case 8:
-        return new RGE_Action_Missile(file, this->obj);
+        return new RGE_Action_Missile(infile, this->obj);
     case 1:
-        return new RGE_Action_Move_To(file, this->obj);
+        return new RGE_Action_Move_To(infile, this->obj);
     case 21:
-        return new RGE_Action_Make(file, this->obj);
+        return new RGE_Action_Make(infile, this->obj);
     default:
         return 0;
     }
 }
 
 RGE_Action* RGE_Action_List::create_task_action(
-    RGE_Task* task, RGE_Static_Object* target, float x, float y, float z) {
+    RGE_Task* task, RGE_Static_Object* target_obj, float target_x, float target_y, float target_z) {
     RGE_Action_Bird* bird_action;
     RGE_Action_Attack* attack_action;
     RGE_Action_Explore* explore_action;
@@ -116,7 +116,7 @@ RGE_Action* RGE_Action_List::create_task_action(
 
     switch (task->action_type) {
     case 10:
-        bird_action = new RGE_Action_Bird(this->obj, task, x, y, z);
+        bird_action = new RGE_Action_Bird(this->obj, task, target_x, target_y, target_z);
         if (bird_action == 0) {
             return 0;
         }
@@ -125,17 +125,19 @@ RGE_Action* RGE_Action_List::create_task_action(
     case 7:
         if (this->obj->unitAI() != 0) {
             this->obj->unitAI()->setCurrentAction(600);
-            if (target != 0) {
+            if (target_obj != 0) {
                 this->obj->unitAI()->setCurrentTarget(
-                    target->id, target->world_x, target->world_y, target->world_z);
+                    target_obj->id, target_obj->world_x, target_obj->world_y,
+                    target_obj->world_z);
             } else {
-                this->obj->unitAI()->setCurrentTarget(-1, x, y, z);
+                this->obj->unitAI()->setCurrentTarget(
+                    -1, target_x, target_y, target_z);
             }
         }
 
-        if (target != 0) {
+        if (target_obj != 0) {
             attack_action = new RGE_Action_Attack(
-                this->obj, target, task->move_sprite, task->work_sprite, 0,
+                this->obj, target_obj, task->move_sprite, task->work_sprite, 0,
                 task->work_range,
                 static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
                     ->minimum_weapon_range,
@@ -145,7 +147,8 @@ RGE_Action* RGE_Action_List::create_task_action(
                     ->fire_missile_at_frame);
         } else {
             attack_action = new RGE_Action_Attack(
-                this->obj, x, y, z, task->move_sprite, task->work_sprite, 0,
+                this->obj, target_x, target_y, target_z, task->move_sprite,
+                task->work_sprite, 0,
                 task->work_range,
                 static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
                     ->minimum_weapon_range,
@@ -160,17 +163,17 @@ RGE_Action* RGE_Action_List::create_task_action(
         return attack_action;
 
     case 4:
-        explore_action = new RGE_Action_Explore(this->obj, task, x, y, z);
+        explore_action = new RGE_Action_Explore(this->obj, task, target_x, target_y, target_z);
         if (explore_action == 0) {
             return 0;
         }
         return explore_action;
 
     case 5:
-        if (target != 0) {
-            gather_action = new RGE_Action_Gather(this->obj, task, target);
+        if (target_obj != 0) {
+            gather_action = new RGE_Action_Gather(this->obj, task, target_obj);
         } else {
-            gather_action = new RGE_Action_Gather(this->obj, task, x, y, z);
+            gather_action = new RGE_Action_Gather(this->obj, task, target_x, target_y, target_z);
         }
         if (gather_action == 0) {
             return 0;
@@ -351,31 +354,31 @@ int RGE_Action_List::action_stop() {
 }
 
 int RGE_Action_List::action_move_to(
-    RGE_Static_Object* object, float x, float y, float z) {
+    RGE_Static_Object* obj_in, float x, float y, float z) {
     if (this->list != 0) {
-        return this->list->action->move_to(object, x, y, z);
+        return this->list->action->move_to(obj_in, x, y, z);
     }
     return 0;
 }
 
 int RGE_Action_List::action_work(
-    RGE_Static_Object* object, float x, float y, float z) {
+    RGE_Static_Object* obj_in, float x, float y, float z) {
     if (this->list != 0) {
-        return this->list->action->work(object, x, y, z);
+        return this->list->action->work(obj_in, x, y, z);
     }
     return 0;
 }
 
-int RGE_Action_List::attack_response(RGE_Static_Object* object) {
+int RGE_Action_List::attack_response(RGE_Static_Object* attacker) {
     if (this->list != 0) {
-        return this->list->action->attack_response(object) & 0xff;
+        return this->list->action->attack_response(attacker) & 0xff;
     }
     return 0;
 }
 
-int RGE_Action_List::relation_response(long value, unsigned char relation) {
+int RGE_Action_List::relation_response(long player_id, unsigned char relation) {
     if (this->list != 0) {
-        return this->list->action->relation_response(value, relation) & 0xff;
+        return this->list->action->relation_response(player_id, relation) & 0xff;
     }
     return 0;
 }
@@ -394,69 +397,69 @@ RGE_Task* RGE_Action_List::get_task() {
     return 0;
 }
 
-void RGE_Action_List::copy_obj(RGE_Master_Action_Object* object) {
+void RGE_Action_List::copy_obj(RGE_Master_Action_Object* source) {
     RGE_Action_Node* node = this->list;
     while (node != 0) {
-        node->action->copy_obj(object);
+        node->action->copy_obj(source);
         node = node->next;
     }
 }
 
 void RGE_Action_List::copy_obj_sprites(
-    RGE_Master_Action_Object* object, RGE_Task* source, RGE_Task* dest) {
+    RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task) {
     RGE_Action_Node* node = this->list;
     while (node != 0) {
-        node->action->copy_obj_sprites(object, source, dest);
+        node->action->copy_obj_sprites(source, task, new_task);
         node = node->next;
     }
 }
 
-void RGE_Action_List::get_action_name(char* dest) {
+void RGE_Action_List::get_action_name(char* action_name) {
     const char* name;
 
     if (this->list == 0) {
         name = "None";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     }
 
     switch (this->list->action->action_type) {
     case 1:
         name = "MoveTo";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 4:
         name = "Explore";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 5:
         name = "Gather";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 8:
         name = "Missile";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 9:
         name = "Attack";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 10:
         name = "Bird";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 20:
         name = "RunAway";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     case 21:
         name = "Make";
-        strcpy(dest, name);
+        strcpy(action_name, name);
         return;
     default:
         name = "Unknown";
         break;
     }
 
-    strcpy(dest, name);
+    strcpy(action_name, name);
 }
