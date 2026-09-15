@@ -4,7 +4,7 @@
 
 - Module: `src/dlg_menu.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source head commit: `0abf8b997ccc16a0888fefbbfdfae9f2836afe0b`
+- Source head commit: `89164609b53506a51edc3473a2bf3bfe92479ea1`
 - Assigned report: `decomp_notes/source_cleanup/wave02/dlg_menu.md`
 - Changed files: `src/dlg_menu.cpp`, this report
 - Header owner: owner 10 owns `include/dlg_menu.h`. This worker did not edit it.
@@ -115,7 +115,8 @@ format arguments, and buffer contracts remain unchanged.
 Parameter renames affect names only. They do not change types, calling
 conventions, layouts, symbol identity, call targets, or evaluation order.
 `IDS_MENU_HELP` expands to the existing literal `0x23F5`; it introduces no
-object or storage. The signature wrap was changed to 1TBS presentation only.
+object or storage. Signature wrapping and definition brace placement changed
+for 1TBS presentation only.
 No helper, layout, cast, control-flow, declaration scope, or initialization
 point was changed. The unresolved local mappings above remain possible code
 review points.
