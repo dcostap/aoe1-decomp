@@ -26,105 +26,105 @@ extern float DAT_00570628;
 extern float DAT_0057062c;
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(
-    RGE_Master_Static_Object* object, int do_setup) {
+    RGE_Master_Static_Object* other_object, int do_setup) {
     if (do_setup != 0) {
-        setup(object);
+        setup(other_object);
     }
 }
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(
-    int value, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) {
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) {
     if (do_setup) {
-        setup(value, sprites, sounds);
+        setup(infile, sprites, sounds);
     }
 }
 
 RGE_Master_Static_Object::RGE_Master_Static_Object(
-    _iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds,
-    short value, int doSetup) {
-    if (doSetup != 0) {
-        this->setup(file, sprites, sounds, value);
+    _iobuf* infile, RGE_Sprite** sprites, RGE_Sound** sounds,
+    short in_id, int do_setup) {
+    if (do_setup != 0) {
+        this->setup(infile, sprites, sounds, in_id);
     }
 }
 
-int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
+int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* other_object) {
     master_type = 0x0A;
-    recyclable = src->recyclable;
-    string_id = src->string_id;
-    string_id2 = src->string_id2;
-    id = src->id;
+    recyclable = other_object->recyclable;
+    string_id = other_object->string_id;
+    string_id2 = other_object->string_id2;
+    id = other_object->id;
     copy_id = id;
-    object_group = src->object_group;
-    sprite = src->sprite;
-    death_sprite = src->death_sprite;
-    undead_sprite = src->undead_sprite;
-    undead_flag = src->undead_flag;
-    hp = src->hp;
-    los = src->los;
-    obj_max = src->obj_max;
-    radius_x = src->radius_x;
-    radius_y = src->radius_y;
-    radius_z = src->radius_z;
-    created_sound = src->created_sound;
-    death_spawn_obj_id = src->death_spawn_obj_id;
-    sort_number = src->sort_number;
-    can_be_built_on = src->can_be_built_on;
-    button_pict = src->button_pict;
-    hide_in_scenario_editor = src->hide_in_scenario_editor;
-    portrait_pict = src->portrait_pict;
-    available = src->available;
-    tile_req1 = src->tile_req1;
-    tile_req2 = src->tile_req2;
-    center_tile_req1 = src->center_tile_req1;
-    center_tile_req2 = src->center_tile_req2;
-    construction_radius_x = src->construction_radius_x;
-    construction_radius_y = src->construction_radius_y;
-    elevation_flag = src->elevation_flag;
-    fog_flag = src->fog_flag;
-    terrain = src->terrain;
-    movement_type = src->movement_type;
-    attribute_max_amount = src->attribute_max_amount;
-    attribute_rot = src->attribute_rot;
-    area_effect_object_level = src->area_effect_object_level;
-    combat_level = src->combat_level;
-    select_level = src->select_level;
-    map_draw_level = src->map_draw_level;
-    unit_level = src->unit_level;
-    multiple_attribute_mod = src->multiple_attribute_mod;
-    selected_sound = src->selected_sound;
-    death_sound = src->death_sound;
-    attack_reaction = src->attack_reaction;
-    convert_terrain_flag = src->convert_terrain_flag;
-    map_color = src->map_color;
-    help_string_id = src->help_string_id;
-    help_page_id = src->help_page_id;
-    hotkey_id = src->hotkey_id;
-    track_as_resource = src->track_as_resource;
-    create_doppleganger_on_death = src->create_doppleganger_on_death;
-    resource_group = src->resource_group;
-    draw_flag = src->draw_flag;
-    draw_color = src->draw_color;
-    outline_radius_x = src->outline_radius_x;
-    outline_radius_y = src->outline_radius_y;
-    outline_radius_z = src->outline_radius_z;
+    object_group = other_object->object_group;
+    sprite = other_object->sprite;
+    death_sprite = other_object->death_sprite;
+    undead_sprite = other_object->undead_sprite;
+    undead_flag = other_object->undead_flag;
+    hp = other_object->hp;
+    los = other_object->los;
+    obj_max = other_object->obj_max;
+    radius_x = other_object->radius_x;
+    radius_y = other_object->radius_y;
+    radius_z = other_object->radius_z;
+    created_sound = other_object->created_sound;
+    death_spawn_obj_id = other_object->death_spawn_obj_id;
+    sort_number = other_object->sort_number;
+    can_be_built_on = other_object->can_be_built_on;
+    button_pict = other_object->button_pict;
+    hide_in_scenario_editor = other_object->hide_in_scenario_editor;
+    portrait_pict = other_object->portrait_pict;
+    available = other_object->available;
+    tile_req1 = other_object->tile_req1;
+    tile_req2 = other_object->tile_req2;
+    center_tile_req1 = other_object->center_tile_req1;
+    center_tile_req2 = other_object->center_tile_req2;
+    construction_radius_x = other_object->construction_radius_x;
+    construction_radius_y = other_object->construction_radius_y;
+    elevation_flag = other_object->elevation_flag;
+    fog_flag = other_object->fog_flag;
+    terrain = other_object->terrain;
+    movement_type = other_object->movement_type;
+    attribute_max_amount = other_object->attribute_max_amount;
+    attribute_rot = other_object->attribute_rot;
+    area_effect_object_level = other_object->area_effect_object_level;
+    combat_level = other_object->combat_level;
+    select_level = other_object->select_level;
+    map_draw_level = other_object->map_draw_level;
+    unit_level = other_object->unit_level;
+    multiple_attribute_mod = other_object->multiple_attribute_mod;
+    selected_sound = other_object->selected_sound;
+    death_sound = other_object->death_sound;
+    attack_reaction = other_object->attack_reaction;
+    convert_terrain_flag = other_object->convert_terrain_flag;
+    map_color = other_object->map_color;
+    help_string_id = other_object->help_string_id;
+    help_page_id = other_object->help_page_id;
+    hotkey_id = other_object->hotkey_id;
+    track_as_resource = other_object->track_as_resource;
+    create_doppleganger_on_death = other_object->create_doppleganger_on_death;
+    resource_group = other_object->resource_group;
+    draw_flag = other_object->draw_flag;
+    draw_color = other_object->draw_color;
+    outline_radius_x = other_object->outline_radius_x;
+    outline_radius_y = other_object->outline_radius_y;
+    outline_radius_z = other_object->outline_radius_z;
 
     for (short i = 0; i < 3; i++) {
-        attribute_type_held[i] = src->attribute_type_held[i];
-        attribute_amount_held[i] = src->attribute_amount_held[i];
-        attribute_flag[i] = src->attribute_flag[i];
+        attribute_type_held[i] = other_object->attribute_type_held[i];
+        attribute_amount_held[i] = other_object->attribute_amount_held[i];
+        attribute_flag[i] = other_object->attribute_flag[i];
     }
 
     {
-        damage_sprite_num = src->damage_sprite_num;
+        damage_sprite_num = other_object->damage_sprite_num;
         if (damage_sprite_num > 0) {
             damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
                 calloc(damage_sprite_num, 8));
             short i = 0;
             if (damage_sprite_num > 0) {
                 do {
-                    damage_sprites[i].sprite = src->damage_sprites[i].sprite;
-                    damage_sprites[i].damage_percent = src->damage_sprites[i].damage_percent;
-                    damage_sprites[i].flag = src->damage_sprites[i].flag;
+                    damage_sprites[i].sprite = other_object->damage_sprites[i].sprite;
+                    damage_sprites[i].damage_percent = other_object->damage_sprites[i].damage_percent;
+                    damage_sprites[i].flag = other_object->damage_sprites[i].flag;
                     i++;
                 } while (i < (short)damage_sprite_num);
             }
@@ -134,37 +134,37 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     }
 
     name = 0;
-    getstring(&name, src->name);
+    getstring(&name, other_object->name);
     return 1;
 }
 
 int RGE_Master_Static_Object::setup(
-    int handle, RGE_Sprite** sprites, RGE_Sound** sounds) {
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
+    short temp_damage_sprite;
+    short selected_sound_num;
     short death_sound_num;
     short created_sound_num;
     short sprite_num;
     short death_sprite_num;
     short undead_sprite_num;
-    short death_sprite_index;
-    short undead_sprite_index;
-    short name_length;
+    short name_size;
     unsigned char* attribute_flags;
     float* attribute_amounts;
     short* attribute_types;
     int count;
-    int file_handle = handle;
+    int file_handle = infile;
     RGE_Sound* sound_value;
     RGE_Sprite* sprite_value;
 
     this->master_type = 10;
-    rge_read(file_handle, &name_length, 2);
+    rge_read(file_handle, &name_size, 2);
     rge_read(file_handle, &this->id, 2);
     rge_read(file_handle, &this->string_id, 2);
     rge_read(file_handle, &this->string_id2, 2);
     rge_read(file_handle, &this->object_group, 2);
+    rge_read(file_handle, &sprite_num, 2);
+    rge_read(file_handle, &death_sprite_num, 2);
     rge_read(file_handle, &undead_sprite_num, 2);
-    rge_read(file_handle, &death_sprite_index, 2);
-    rge_read(file_handle, &undead_sprite_index, 2);
     rge_read(file_handle, &this->undead_flag, 1);
     rge_read(file_handle, &this->hp, 2);
     rge_read(file_handle, &this->los, 4);
@@ -172,7 +172,7 @@ int RGE_Master_Static_Object::setup(
     rge_read(file_handle, &this->radius_x, 4);
     rge_read(file_handle, &this->radius_y, 4);
     rge_read(file_handle, &this->radius_z, 4);
-    rge_read(file_handle, &death_sprite_num, 2);
+    rge_read(file_handle, &created_sound_num, 2);
     rge_read(file_handle, &this->death_spawn_obj_id, 2);
     rge_read(file_handle, &this->sort_number, 1);
     rge_read(file_handle, &this->can_be_built_on, 1);
@@ -242,12 +242,12 @@ int RGE_Master_Static_Object::setup(
         short i = 0;
         if (this->damage_sprite_num > 0) {
             do {
-                rge_read(file_handle, &death_sound_num, 2);
+                rge_read(file_handle, &temp_damage_sprite, 2);
                 rge_read(file_handle, &this->damage_sprites[i].damage_percent, 2);
                 rge_read(file_handle, &this->damage_sprites[i].flag, 1);
                 RGE_Sprite* damage_sprite;
-                if (death_sound_num >= 0) {
-                    damage_sprite = sprites[death_sound_num];
+                if (temp_damage_sprite >= 0) {
+                    damage_sprite = sprites[temp_damage_sprite];
                 } else {
                     damage_sprite = 0;
                 }
@@ -259,14 +259,14 @@ int RGE_Master_Static_Object::setup(
         this->damage_sprites = 0;
     }
 
-    rge_read(file_handle, &created_sound_num, 2);
-    rge_read(file_handle, &sprite_num, 2);
+    rge_read(file_handle, &selected_sound_num, 2);
+    rge_read(file_handle, &death_sound_num, 2);
     rge_read(file_handle, &this->attack_reaction, 1);
     rge_read(file_handle, &this->convert_terrain_flag, 1);
 
-    if (name_length > 0) {
-        this->name = static_cast<char*>(calloc(name_length, 1));
-        rge_read(file_handle, this->name, name_length);
+    if (name_size > 0) {
+        this->name = static_cast<char*>(calloc(name_size, 1));
+        rge_read(file_handle, this->name, name_size);
     } else {
         this->name = 0;
     }
@@ -275,22 +275,22 @@ int RGE_Master_Static_Object::setup(
         rge_read(file_handle, &this->copy_id, 2);
     }
 
-    if (created_sound_num >= 0) sound_value = sounds[created_sound_num];
+    if (selected_sound_num >= 0) sound_value = sounds[selected_sound_num];
     else sound_value = 0;
     this->selected_sound = sound_value;
-    if (sprite_num >= 0) sound_value = sounds[sprite_num];
+    if (death_sound_num >= 0) sound_value = sounds[death_sound_num];
     else sound_value = 0;
     this->death_sound = sound_value;
-    if (death_sprite_num >= 0) sound_value = sounds[death_sprite_num];
+    if (created_sound_num >= 0) sound_value = sounds[created_sound_num];
     else sound_value = 0;
     this->created_sound = sound_value;
-    if (undead_sprite_num >= 0) sprite_value = sprites[undead_sprite_num];
+    if (sprite_num >= 0) sprite_value = sprites[sprite_num];
     else sprite_value = 0;
     this->sprite = sprite_value;
-    if (death_sprite_index >= 0) sprite_value = sprites[death_sprite_index];
+    if (death_sprite_num >= 0) sprite_value = sprites[death_sprite_num];
     else sprite_value = 0;
     this->death_sprite = sprite_value;
-    if (undead_sprite_index >= 0) sprite_value = sprites[undead_sprite_index];
+    if (undead_sprite_num >= 0) sprite_value = sprites[undead_sprite_num];
     else sprite_value = 0;
     this->undead_sprite = sprite_value;
 
@@ -298,7 +298,7 @@ int RGE_Master_Static_Object::setup(
 }
 
 int RGE_Master_Static_Object::setup(
-    FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short value) {
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     short temp_area_effect_object_level;
     short temp_combat_level;
     short temp_damage_sprite;
@@ -337,10 +337,10 @@ int RGE_Master_Static_Object::setup(
     char temp_name[120];
 
     this->master_type = 10;
-    this->id = value;
+    this->id = in_id;
 
     fscanf(
-        file,
+        infile,
         "%s %hd %hd %hd %hd %hd %hd %hd %hd %f "
         "%hd %f %f %f %hd %hd %hd %hd %hd %hd "
         "%hd %hd %hd %hd %hd %f %f %hd %hd %hd "
@@ -371,7 +371,7 @@ int RGE_Master_Static_Object::setup(
     unsigned char* attribute_flag = this->attribute_flag;
     int attribute_count = 3;
     do {
-        fscanf(file, "%hd %f %hd", attribute_type, attribute_amount,
+        fscanf(infile, "%hd %f %hd", attribute_type, attribute_amount,
                &temp_selected_sound);
         *attribute_flag = static_cast<unsigned char>(temp_selected_sound);
         ++attribute_type;
@@ -380,7 +380,7 @@ int RGE_Master_Static_Object::setup(
         --attribute_count;
     } while (attribute_count != 0);
 
-    fscanf(file, "%hd", temp_name);
+    fscanf(infile, "%hd", temp_name);
     this->damage_sprite_num = static_cast<unsigned char>(temp_name[0]);
     if (this->damage_sprite_num == 0) {
         this->damage_sprites = 0;
@@ -391,7 +391,7 @@ int RGE_Master_Static_Object::setup(
         short index = 0;
         if (this->damage_sprite_num != 0) {
             do {
-                fscanf(file, "%hd %hd %hd", &temp_flag, local_82,
+                fscanf(infile, "%hd %hd %hd", &temp_flag, local_82,
                        &temp_death_sound);
 
                 RGE_Sprite* damage_sprite;
@@ -411,7 +411,7 @@ int RGE_Master_Static_Object::setup(
         }
     }
 
-    fscanf(file, "%hd %hd %hd %hd", &temp_death_sprite, &temp_sprite,
+    fscanf(infile, "%hd %hd %hd %hd", &temp_death_sprite, &temp_sprite,
            &temp_convert_terrain_flag, &temp_map_color);
 
     if (temp_death_sprite < 0) {
@@ -516,125 +516,125 @@ RGE_Master_Static_Object::~RGE_Master_Static_Object() {
 }
 
 RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(
-    RGE_Player* player, float x, float y, float z) {
+    RGE_Player* owner, float x, float y, float z) {
     if (recyclable) {
-        RGE_Static_Object* recycled = player->world->recycle_object_in_to_game(master_type);
+        RGE_Static_Object* recycled = owner->world->recycle_object_in_to_game(master_type);
         if (recycled) {
-            recycled->recycle_in_to_game(this, player, x, y, z);
+            recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
         }
     }
 
-    return new RGE_Static_Object(this, player, x, y, z, 1);
+    return new RGE_Static_Object(this, owner, x, y, z, 1);
 }
 
 RGE_Master_Static_Object* RGE_Master_Static_Object::make_new_master(void) {
     return new RGE_Master_Static_Object(this, 1);
 }
 
-void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
-    short id_val = id;
-    short copy_id_val = copy_id;
-    unsigned char available_val = available;
-    short hide_val = hide_in_scenario_editor;
+void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
+    short object_type2 = id;
+    short copy_id2 = copy_id;
+    unsigned char available2 = available;
+    short hide_in_scenario_editor2 = hide_in_scenario_editor;
     char** name_ptr = &name;
 
     if (*name_ptr != 0) {
         free(*name_ptr);
     }
 
-    master_type = src->master_type;
-    *name_ptr = src->name;
-    string_id = src->string_id;
-    string_id2 = src->string_id2;
-    id = src->id;
-    copy_id = src->copy_id;
-    object_group = src->object_group;
-    sprite = src->sprite;
-    death_sprite = src->death_sprite;
-    undead_sprite = src->undead_sprite;
-    undead_flag = src->undead_flag;
-    hp = src->hp;
-    los = src->los;
-    obj_max = src->obj_max;
-    radius_x = src->radius_x;
-    radius_y = src->radius_y;
-    radius_z = src->radius_z;
-    selected_sound = src->selected_sound;
-    created_sound = src->created_sound;
-    death_sound = src->death_sound;
-    death_spawn_obj_id = src->death_spawn_obj_id;
-    sort_number = src->sort_number;
-    can_be_built_on = src->can_be_built_on;
-    button_pict = src->button_pict;
-    hide_in_scenario_editor = src->hide_in_scenario_editor;
-    portrait_pict = src->portrait_pict;
-    available = src->available;
-    tile_req1 = src->tile_req1;
-    tile_req2 = src->tile_req2;
-    center_tile_req1 = src->center_tile_req1;
-    center_tile_req2 = src->center_tile_req2;
-    construction_radius_x = src->construction_radius_x;
-    construction_radius_y = src->construction_radius_y;
-    elevation_flag = src->elevation_flag;
-    fog_flag = src->fog_flag;
-    terrain = src->terrain;
-    movement_type = src->movement_type;
+    master_type = source->master_type;
+    *name_ptr = source->name;
+    string_id = source->string_id;
+    string_id2 = source->string_id2;
+    id = source->id;
+    copy_id = source->copy_id;
+    object_group = source->object_group;
+    sprite = source->sprite;
+    death_sprite = source->death_sprite;
+    undead_sprite = source->undead_sprite;
+    undead_flag = source->undead_flag;
+    hp = source->hp;
+    los = source->los;
+    obj_max = source->obj_max;
+    radius_x = source->radius_x;
+    radius_y = source->radius_y;
+    radius_z = source->radius_z;
+    selected_sound = source->selected_sound;
+    created_sound = source->created_sound;
+    death_sound = source->death_sound;
+    death_spawn_obj_id = source->death_spawn_obj_id;
+    sort_number = source->sort_number;
+    can_be_built_on = source->can_be_built_on;
+    button_pict = source->button_pict;
+    hide_in_scenario_editor = source->hide_in_scenario_editor;
+    portrait_pict = source->portrait_pict;
+    available = source->available;
+    tile_req1 = source->tile_req1;
+    tile_req2 = source->tile_req2;
+    center_tile_req1 = source->center_tile_req1;
+    center_tile_req2 = source->center_tile_req2;
+    construction_radius_x = source->construction_radius_x;
+    construction_radius_y = source->construction_radius_y;
+    elevation_flag = source->elevation_flag;
+    fog_flag = source->fog_flag;
+    terrain = source->terrain;
+    movement_type = source->movement_type;
 
     {
         unsigned int type_index = 0;
         do {
-            attribute_type_held[type_index] = src->attribute_type_held[type_index];
+            attribute_type_held[type_index] = source->attribute_type_held[type_index];
             type_index++;
         } while (type_index < 3);
 
         unsigned int amount_index = 0;
         do {
-            attribute_amount_held[amount_index] = src->attribute_amount_held[amount_index];
+            attribute_amount_held[amount_index] = source->attribute_amount_held[amount_index];
             amount_index++;
         } while (amount_index < 3);
     }
 
-    attribute_max_amount = src->attribute_max_amount;
-    attribute_rot = src->attribute_rot;
-    multiple_attribute_mod = src->multiple_attribute_mod;
+    attribute_max_amount = source->attribute_max_amount;
+    attribute_rot = source->attribute_rot;
+    multiple_attribute_mod = source->multiple_attribute_mod;
 
     {
         unsigned int flag_index = 0;
         do {
-            attribute_flag[flag_index] = src->attribute_flag[flag_index];
+            attribute_flag[flag_index] = source->attribute_flag[flag_index];
             flag_index++;
         } while (flag_index < 3);
     }
 
-    area_effect_object_level = src->area_effect_object_level;
-    combat_level = src->combat_level;
-    select_level = src->select_level;
-    map_draw_level = src->map_draw_level;
-    unit_level = src->unit_level;
-    map_color = src->map_color;
-    attack_reaction = src->attack_reaction;
-    convert_terrain_flag = src->convert_terrain_flag;
-    damage_sprite_num = src->damage_sprite_num;
-    damage_sprites = src->damage_sprites;
-    help_string_id = src->help_string_id;
-    help_page_id = src->help_page_id;
-    hotkey_id = src->hotkey_id;
-    recyclable = src->recyclable;
-    track_as_resource = src->track_as_resource;
-    create_doppleganger_on_death = src->create_doppleganger_on_death;
-    resource_group = src->resource_group;
-    draw_flag = src->draw_flag;
-    draw_color = src->draw_color;
-    outline_radius_x = src->outline_radius_x;
-    outline_radius_y = src->outline_radius_y;
-    outline_radius_z = src->outline_radius_z;
+    area_effect_object_level = source->area_effect_object_level;
+    combat_level = source->combat_level;
+    select_level = source->select_level;
+    map_draw_level = source->map_draw_level;
+    unit_level = source->unit_level;
+    map_color = source->map_color;
+    attack_reaction = source->attack_reaction;
+    convert_terrain_flag = source->convert_terrain_flag;
+    damage_sprite_num = source->damage_sprite_num;
+    damage_sprites = source->damage_sprites;
+    help_string_id = source->help_string_id;
+    help_page_id = source->help_page_id;
+    hotkey_id = source->hotkey_id;
+    recyclable = source->recyclable;
+    track_as_resource = source->track_as_resource;
+    create_doppleganger_on_death = source->create_doppleganger_on_death;
+    resource_group = source->resource_group;
+    draw_flag = source->draw_flag;
+    draw_color = source->draw_color;
+    outline_radius_x = source->outline_radius_x;
+    outline_radius_y = source->outline_radius_y;
+    outline_radius_z = source->outline_radius_z;
 
-    if (src->hide_in_scenario_editor == 1) {
-        copy_id = copy_id_val;
+    if (source->hide_in_scenario_editor == 1) {
+        copy_id = copy_id2;
     }
-    hide_in_scenario_editor = (unsigned char)hide_val;
-    src->hide_in_scenario_editor = 1;
+    hide_in_scenario_editor = (unsigned char)hide_in_scenario_editor2;
+    source->hide_in_scenario_editor = 1;
 
     if (damage_sprite_num > 0) {
         damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
@@ -642,9 +642,9 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
         int i = 0;
         if (damage_sprite_num > 0) {
             do {
-                damage_sprites[i].sprite = src->damage_sprites[i].sprite;
-                damage_sprites[i].damage_percent = src->damage_sprites[i].damage_percent;
-                damage_sprites[i].flag = src->damage_sprites[i].flag;
+                damage_sprites[i].sprite = source->damage_sprites[i].sprite;
+                damage_sprites[i].damage_percent = source->damage_sprites[i].damage_percent;
+                damage_sprites[i].flag = source->damage_sprites[i].flag;
                 i++;
             } while (i < (unsigned char)damage_sprite_num);
         }
@@ -653,81 +653,81 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     }
 
     *name_ptr = 0;
-    getstring(name_ptr, src->name);
-    id = id_val;
-    available = available_val;
+    getstring(name_ptr, source->name);
+    id = object_type2;
+    available = available2;
 }
 
-void RGE_Master_Static_Object::modify(float value, unsigned char op) {
-    switch (op) {
+void RGE_Master_Static_Object::modify(float amount, unsigned char flag) {
+    switch (flag) {
         case 0:
-            hp = (short)(long)value;
+            hp = (short)(long)amount;
             break;
         case 1:
-            los = value;
+            los = amount;
             break;
         case 2:
-            obj_max = (unsigned char)(long)value;
+            obj_max = (unsigned char)(long)amount;
             break;
         case 3:
-            radius_x = value;
+            radius_x = amount;
             break;
         case 4:
-            radius_y = value;
+            radius_y = amount;
             break;
         case 14:
-            attribute_max_amount = (short)(long)value;
+            attribute_max_amount = (short)(long)amount;
             break;
     }
 }
 
-void RGE_Master_Static_Object::modify_delta(float value, unsigned char op) {
-    switch (op) {
+void RGE_Master_Static_Object::modify_delta(float amount, unsigned char flag) {
+    switch (flag) {
         case 0:
-            hp += (short)(long)value;
+            hp += (short)(long)amount;
             break;
         case 1:
-            los = (float)((double)value + (double)los);
+            los = (float)((double)amount + (double)los);
             break;
         case 2:
-            obj_max += (unsigned char)(long)value;
+            obj_max += (unsigned char)(long)amount;
             break;
         case 3:
-            radius_x = (float)((double)value + (double)radius_x);
+            radius_x = (float)((double)amount + (double)radius_x);
             break;
         case 4:
-            radius_y = (float)((double)value + (double)radius_y);
+            radius_y = (float)((double)amount + (double)radius_y);
             break;
         case 14:
-            attribute_max_amount += (short)(long)value;
+            attribute_max_amount += (short)(long)amount;
             break;
     }
 }
 
-void RGE_Master_Static_Object::modify_percent(float value, unsigned char op) {
-    switch (op) {
+void RGE_Master_Static_Object::modify_percent(float amount, unsigned char flag) {
+    switch (flag) {
         case 0:
-            hp = (short)((float)hp * value);
+            hp = (short)((float)hp * amount);
             break;
         case 1:
-            los = (float)((double)value * (double)los);
+            los = (float)((double)amount * (double)los);
             break;
         case 2:
-            obj_max = (unsigned char)((float)obj_max * value);
+            obj_max = (unsigned char)((float)obj_max * amount);
             break;
         case 3:
-            radius_x = (float)((double)value * (double)radius_x);
+            radius_x = (float)((double)amount * (double)radius_x);
             break;
         case 4:
-            radius_y = (float)((double)value * (double)radius_y);
+            radius_y = (float)((double)amount * (double)radius_y);
             break;
         case 14:
-            attribute_max_amount = (short)((float)attribute_max_amount * value);
+            attribute_max_amount = (short)((float)attribute_max_amount * amount);
             break;
     }
 }
 
-void RGE_Master_Static_Object::save(int fd) {
+void RGE_Master_Static_Object::save(int outfile) {
     RGE_Master_Static_Object* self = this;
     short name_size = 0;
     short temp_death_sprite = -1;
@@ -757,111 +757,111 @@ void RGE_Master_Static_Object::save(int fd) {
     name_size = (short)strlen(name);
     if (name_size > 0) name_size++;
 
-    rge_write(fd, (void*)(&self->master_type), 1);
-    rge_write(fd, (void*)(&name_size), 2);
-    rge_write(fd, (void*)(&self->id), 2);
-    rge_write(fd, (void*)(&self->string_id), 2);
-    rge_write(fd, (void*)(&self->string_id2), 2);
-    rge_write(fd, (void*)(&self->object_group), 2);
-    rge_write(fd, (void*)(&temp_death_sprite), 2);
-    rge_write(fd, (void*)(&temp_undead_sprite), 2);
-    rge_write(fd, (void*)(&created_sound_num), 2);
-    rge_write(fd, (void*)(&self->undead_flag), 1);
-    rge_write(fd, (void*)(&self->hp), 2);
-    rge_write(fd, (void*)(&self->los), 4);
-    rge_write(fd, (void*)(&self->obj_max), 1);
-    rge_write(fd, (void*)(&self->radius_x), 4);
-    rge_write(fd, (void*)(&self->radius_y), 4);
-    rge_write(fd, (void*)(&self->radius_z), 4);
-    rge_write(fd, (void*)(&temp_sprite), 2);
-    rge_write(fd, (void*)(&self->death_spawn_obj_id), 2);
-    rge_write(fd, (void*)(&self->sort_number), 1);
-    rge_write(fd, (void*)(&self->can_be_built_on), 1);
-    rge_write(fd, (void*)(&self->button_pict), 2);
-    rge_write(fd, (void*)(&self->hide_in_scenario_editor), 1);
-    rge_write(fd, (void*)(&self->portrait_pict), 2);
-    rge_write(fd, (void*)(&self->available), 1);
-    rge_write(fd, (void*)(&self->tile_req1), 2);
-    rge_write(fd, (void*)(&self->tile_req2), 2);
-    rge_write(fd, (void*)(&self->center_tile_req1), 2);
-    rge_write(fd, (void*)(&self->center_tile_req2), 2);
-    rge_write(fd, (void*)(&self->construction_radius_x), 4);
-    rge_write(fd, (void*)(&self->construction_radius_y), 4);
-    rge_write(fd, (void*)(&self->elevation_flag), 1);
-    rge_write(fd, (void*)(&self->fog_flag), 1);
-    rge_write(fd, (void*)(&self->terrain), 2);
-    rge_write(fd, (void*)(&self->movement_type), 1);
-    rge_write(fd, (void*)(&self->attribute_max_amount), 2);
-    rge_write(fd, (void*)(&self->attribute_rot), 4);
-    rge_write(fd, (void*)(&self->area_effect_object_level), 1);
-    rge_write(fd, (void*)(&self->combat_level), 1);
-    rge_write(fd, (void*)(&self->select_level), 1);
-    rge_write(fd, (void*)(&self->map_draw_level), 1);
-    rge_write(fd, (void*)(&self->unit_level), 1);
-    rge_write(fd, (void*)(&self->multiple_attribute_mod), 4);
-    rge_write(fd, (void*)(&self->map_color), 1);
-    rge_write(fd, (void*)(&self->help_string_id), 4);
-    rge_write(fd, (void*)(&self->help_page_id), 4);
-    rge_write(fd, (void*)(&self->hotkey_id), 4);
-    rge_write(fd, (void*)(&self->recyclable), 1);
-    rge_write(fd, (void*)(&self->track_as_resource), 1);
-    rge_write(fd, (void*)(&self->create_doppleganger_on_death), 1);
-    rge_write(fd, (void*)(&self->resource_group), 1);
-    rge_write(fd, (void*)(&self->draw_flag), 1);
-    rge_write(fd, (void*)(&self->draw_color), 1);
-    rge_write(fd, (void*)(&self->outline_radius_x), 4);
-    rge_write(fd, (void*)(&self->outline_radius_y), 4);
-    rge_write(fd, (void*)(&self->outline_radius_z), 4);
+    rge_write(outfile, (void*)(&self->master_type), 1);
+    rge_write(outfile, (void*)(&name_size), 2);
+    rge_write(outfile, (void*)(&self->id), 2);
+    rge_write(outfile, (void*)(&self->string_id), 2);
+    rge_write(outfile, (void*)(&self->string_id2), 2);
+    rge_write(outfile, (void*)(&self->object_group), 2);
+    rge_write(outfile, (void*)(&temp_death_sprite), 2);
+    rge_write(outfile, (void*)(&temp_undead_sprite), 2);
+    rge_write(outfile, (void*)(&created_sound_num), 2);
+    rge_write(outfile, (void*)(&self->undead_flag), 1);
+    rge_write(outfile, (void*)(&self->hp), 2);
+    rge_write(outfile, (void*)(&self->los), 4);
+    rge_write(outfile, (void*)(&self->obj_max), 1);
+    rge_write(outfile, (void*)(&self->radius_x), 4);
+    rge_write(outfile, (void*)(&self->radius_y), 4);
+    rge_write(outfile, (void*)(&self->radius_z), 4);
+    rge_write(outfile, (void*)(&temp_sprite), 2);
+    rge_write(outfile, (void*)(&self->death_spawn_obj_id), 2);
+    rge_write(outfile, (void*)(&self->sort_number), 1);
+    rge_write(outfile, (void*)(&self->can_be_built_on), 1);
+    rge_write(outfile, (void*)(&self->button_pict), 2);
+    rge_write(outfile, (void*)(&self->hide_in_scenario_editor), 1);
+    rge_write(outfile, (void*)(&self->portrait_pict), 2);
+    rge_write(outfile, (void*)(&self->available), 1);
+    rge_write(outfile, (void*)(&self->tile_req1), 2);
+    rge_write(outfile, (void*)(&self->tile_req2), 2);
+    rge_write(outfile, (void*)(&self->center_tile_req1), 2);
+    rge_write(outfile, (void*)(&self->center_tile_req2), 2);
+    rge_write(outfile, (void*)(&self->construction_radius_x), 4);
+    rge_write(outfile, (void*)(&self->construction_radius_y), 4);
+    rge_write(outfile, (void*)(&self->elevation_flag), 1);
+    rge_write(outfile, (void*)(&self->fog_flag), 1);
+    rge_write(outfile, (void*)(&self->terrain), 2);
+    rge_write(outfile, (void*)(&self->movement_type), 1);
+    rge_write(outfile, (void*)(&self->attribute_max_amount), 2);
+    rge_write(outfile, (void*)(&self->attribute_rot), 4);
+    rge_write(outfile, (void*)(&self->area_effect_object_level), 1);
+    rge_write(outfile, (void*)(&self->combat_level), 1);
+    rge_write(outfile, (void*)(&self->select_level), 1);
+    rge_write(outfile, (void*)(&self->map_draw_level), 1);
+    rge_write(outfile, (void*)(&self->unit_level), 1);
+    rge_write(outfile, (void*)(&self->multiple_attribute_mod), 4);
+    rge_write(outfile, (void*)(&self->map_color), 1);
+    rge_write(outfile, (void*)(&self->help_string_id), 4);
+    rge_write(outfile, (void*)(&self->help_page_id), 4);
+    rge_write(outfile, (void*)(&self->hotkey_id), 4);
+    rge_write(outfile, (void*)(&self->recyclable), 1);
+    rge_write(outfile, (void*)(&self->track_as_resource), 1);
+    rge_write(outfile, (void*)(&self->create_doppleganger_on_death), 1);
+    rge_write(outfile, (void*)(&self->resource_group), 1);
+    rge_write(outfile, (void*)(&self->draw_flag), 1);
+    rge_write(outfile, (void*)(&self->draw_color), 1);
+    rge_write(outfile, (void*)(&self->outline_radius_x), 4);
+    rge_write(outfile, (void*)(&self->outline_radius_y), 4);
+    rge_write(outfile, (void*)(&self->outline_radius_z), 4);
 
     unsigned char* soundPtr = self->attribute_flag;
     float* selectedProb = self->attribute_amount_held;
     short* selected = self->attribute_type_held;
     int i = 3;
     do {
-        rge_write(fd, (void*)(selected), 2);
-        rge_write(fd, (void*)(selectedProb), 4);
-        rge_write(fd, (void*)(soundPtr), 1);
+        rge_write(outfile, (void*)(selected), 2);
+        rge_write(outfile, (void*)(selectedProb), 4);
+        rge_write(outfile, (void*)(soundPtr), 1);
         selected++;
         selectedProb++;
         soundPtr++;
         --i;
     } while (i);
 
-    rge_write(fd, (void*)(&self->damage_sprite_num), 1);
+    rge_write(outfile, (void*)(&self->damage_sprite_num), 1);
     if (0 < self->damage_sprite_num) {
         short j = 0;
         if (self->damage_sprite_num > 0) {
             do {
-                rge_write(fd, (void*)(&self->damage_sprites[j].sprite->id), 2);
+                rge_write(outfile, (void*)(&self->damage_sprites[j].sprite->id), 2);
                 // The beta save stream writes two bytes here.
-                rge_write(fd, (void*)(&self->damage_sprites[j].damage_percent), 2);
-                rge_write(fd, (void*)(&self->damage_sprites[j].flag), 1);
+                rge_write(outfile, (void*)(&self->damage_sprites[j].damage_percent), 2);
+                rge_write(outfile, (void*)(&self->damage_sprites[j].flag), 1);
                 j++;
             } while (j < (short)self->damage_sprite_num);
         }
     }
 
-    rge_write(fd, (void*)(&death_sound_num), 2);
-    rge_write(fd, (void*)(&selected_sound_num), 2);
-    rge_write(fd, (void*)(&self->attack_reaction), 1);
-    rge_write(fd, (void*)(&self->convert_terrain_flag), 1);
+    rge_write(outfile, (void*)(&death_sound_num), 2);
+    rge_write(outfile, (void*)(&selected_sound_num), 2);
+    rge_write(outfile, (void*)(&self->attack_reaction), 1);
+    rge_write(outfile, (void*)(&self->convert_terrain_flag), 1);
     if (name_size != 0) {
-        rge_write(fd, (void*)(self->name),  name_size);
+        rge_write(outfile, (void*)(self->name),  name_size);
     }
-    rge_write(fd, (void*)(&self->copy_id), 2);
+    rge_write(outfile, (void*)(&self->copy_id), 2);
 }
 
 unsigned char RGE_Master_Static_Object::check_placement(
-    RGE_Player* player, float x, float y, int* blocking_object,
-    unsigned char check_visible, unsigned char check_elevation,
-    unsigned char, unsigned char use_construction_radius,
-    unsigned char allow_build_on, unsigned char check_objects) {
+    RGE_Player* player, float col, float row, int* obstructionObject,
+    unsigned char check_vis, unsigned char check_flat,
+    unsigned char check_overlay, unsigned char construction_radius_flag,
+    unsigned char can_be_built_on_flag, unsigned char check_objects) {
     float* terrain_table = player->world->terrains[this->terrain];
     RGE_Map* map = player->world->map;
     float radius_x;
     float radius_y;
 
-    if (use_construction_radius != 0) {
+    if (construction_radius_flag != 0) {
         radius_x = this->construction_radius_x;
         radius_y = this->construction_radius_y;
     } else {
@@ -869,10 +869,10 @@ unsigned char RGE_Master_Static_Object::check_placement(
         radius_y = this->radius_y;
     }
 
-    float min_x_value = x - radius_x;
-    float max_x_value = x + radius_x - DAT_0057061c;
-    float min_y_value = y - radius_y;
-    float max_y_value = y + radius_y - DAT_0057061c;
+    float min_x_value = col - radius_x;
+    float max_x_value = col + radius_x - DAT_0057061c;
+    float min_y_value = row - radius_y;
+    float max_y_value = row + radius_y - DAT_0057061c;
 
     if (!(min_x_value >= DAT_00570620) ||
         !(max_x_value < (float)map->map_width) ||
@@ -881,105 +881,105 @@ unsigned char RGE_Master_Static_Object::check_placement(
         return 7;
     }
 
-    short min_x = (short)(long)min_x_value;
-    short max_x = (short)(long)max_x_value;
-    short min_y = (short)(long)min_y_value;
-    short max_y = (short)(long)max_y_value;
-    short edge_min_x = min_x;
-    short edge_max_x = max_x;
-    short edge_min_y = min_y;
-    short edge_max_y = max_y;
+    short x1 = (short)(long)min_x_value;
+    short x2 = (short)(long)max_x_value;
+    short y1 = (short)(long)min_y_value;
+    short y2 = (short)(long)max_y_value;
+    short edge_x1 = x1;
+    short edge_x2 = x2;
+    short edge_y1 = y1;
+    short edge_y2 = y2;
 
     if (this->center_tile_req1 >= 0 || this->center_tile_req2 >= 0) {
-        short center_y = (short)(long)y;
-        short center_x = (short)(long)x;
+        short center_y = (short)(long)row;
+        short center_x = (short)(long)col;
         short center_terrain =
             map->map_row_offset[center_y][center_x].terrain_type;
         if (center_terrain != this->center_tile_req1 &&
             center_terrain != this->center_tile_req2) {
             return 1;
         }
-        edge_min_x = center_x;
-        edge_max_x = center_x;
-        edge_min_y = center_y;
-        edge_max_y = center_y;
+        edge_x1 = center_x;
+        edge_x2 = center_x;
+        edge_y1 = center_y;
+        edge_y2 = center_y;
     }
 
     if (this->tile_req1 >= 0 || this->tile_req2 >= 0) {
-        unsigned char found_tile_req1 = 0;
-        unsigned char found_tile_req2 = 0;
-        short edge = (short)(edge_min_y - 1);
-        if (edge >= 0 && edge_min_x <= edge_max_x) {
-            RGE_Tile* tile = map->map_row_offset[edge] + edge_min_x;
-            int count = (int)edge_max_x - (int)edge_min_x + 1;
+        unsigned char req_terr1 = 0;
+        unsigned char req_terr2 = 0;
+        short edge = (short)(edge_y1 - 1);
+        if (edge >= 0 && edge_x1 <= edge_x2) {
+            RGE_Tile* tile = map->map_row_offset[edge] + edge_x1;
+            int count = (int)edge_x2 - (int)edge_x1 + 1;
             do {
                 short terrain = tile->terrain_type;
-                if (terrain == this->tile_req1) found_tile_req1 = 1;
-                if (terrain == this->tile_req2) found_tile_req2 = 1;
+                if (terrain == this->tile_req1) req_terr1 = 1;
+                if (terrain == this->tile_req2) req_terr2 = 1;
                 ++tile;
                 --count;
             } while (count != 0);
         }
 
-        edge = (short)(edge_max_x + 1);
-        if (edge < map->map_width && edge_min_y <= edge_max_y) {
-            RGE_Tile** row = map->map_row_offset + edge_min_y;
-            int count = (int)edge_max_y - (int)edge_min_y + 1;
+        edge = (short)(edge_x2 + 1);
+        if (edge < map->map_width && edge_y1 <= edge_y2) {
+            RGE_Tile** row = map->map_row_offset + edge_y1;
+            int count = (int)edge_y2 - (int)edge_y1 + 1;
             do {
                 short terrain = (*row)[edge].terrain_type;
-                if (terrain == this->tile_req1) found_tile_req1 = 1;
-                if (terrain == this->tile_req2) found_tile_req2 = 1;
+                if (terrain == this->tile_req1) req_terr1 = 1;
+                if (terrain == this->tile_req2) req_terr2 = 1;
                 ++row;
                 --count;
             } while (count != 0);
         }
 
-        edge = (short)(edge_max_y + 1);
-        if (edge < map->map_height && edge_min_x <= edge_max_x) {
-            RGE_Tile* tile = map->map_row_offset[edge] + edge_max_x;
-            int count = (int)edge_max_x - (int)edge_min_x + 1;
+        edge = (short)(edge_y2 + 1);
+        if (edge < map->map_height && edge_x1 <= edge_x2) {
+            RGE_Tile* tile = map->map_row_offset[edge] + edge_x2;
+            int count = (int)edge_x2 - (int)edge_x1 + 1;
             do {
                 short terrain = tile->terrain_type;
-                if (terrain == this->tile_req1) found_tile_req1 = 1;
-                if (terrain == this->tile_req2) found_tile_req2 = 1;
+                if (terrain == this->tile_req1) req_terr1 = 1;
+                if (terrain == this->tile_req2) req_terr2 = 1;
                 --tile;
                 --count;
             } while (count != 0);
         }
 
-        edge = (short)(edge_min_x - 1);
-        if (edge >= 0 && edge_min_y <= edge_max_y) {
-            RGE_Tile** row = map->map_row_offset + edge_max_y;
-            int count = (int)edge_max_y - (int)edge_min_y + 1;
+        edge = (short)(edge_x1 - 1);
+        if (edge >= 0 && edge_y1 <= edge_y2) {
+            RGE_Tile** row = map->map_row_offset + edge_y2;
+            int count = (int)edge_y2 - (int)edge_y1 + 1;
             do {
                 short terrain = (*row)[edge].terrain_type;
-                if (terrain == this->tile_req1) found_tile_req1 = 1;
-                if (terrain == this->tile_req2) found_tile_req2 = 1;
+                if (terrain == this->tile_req1) req_terr1 = 1;
+                if (terrain == this->tile_req2) req_terr2 = 1;
                 --row;
                 --count;
             } while (count != 0);
         }
 
-        if (found_tile_req1 == 0 && found_tile_req2 == 0) {
+        if (req_terr1 == 0 && req_terr2 == 0) {
             return 1;
         }
     }
 
-    unsigned char visible = 0;
-    for (short tile_x = min_x; tile_x <= max_x; tile_x++) {
-        for (short tile_y = min_y; tile_y <= max_y; tile_y++) {
-            RGE_Tile* tile = &map->map_row_offset[tile_y][tile_x];
+    unsigned char part_vis = 0;
+    for (short x_index = x1; x_index <= x2; x_index++) {
+        for (short y_index = y1; y_index <= y2; y_index++) {
+            RGE_Tile* tile = &map->map_row_offset[y_index][x_index];
             if (!(terrain_table[tile->terrain_type] > DAT_00570618)) {
                 return 2;
             }
 
-            if (check_visible != 0 &&
+            if (check_vis != 0 &&
                 (rge_base_game->prog_mode == 7 ||
-                 player->visible->get_visible(tile_x, tile_y) != 0)) {
-                visible = 1;
+                 player->visible->get_visible(x_index, y_index) != 0)) {
+                part_vis = 1;
             }
 
-            if (check_elevation != 0) {
+            if (check_flat != 0) {
                 unsigned char tile_type = tile->tile_type;
                 if (this->elevation_flag == 1) {
                     if (tile_type != 0 && tile_type != 5 && tile_type != 7 &&
@@ -993,7 +993,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
         }
     }
 
-    if (check_visible == 1 && visible == 0) {
+    if (check_vis == 1 && part_vis == 0) {
         return 5;
     }
 
@@ -1001,10 +1001,10 @@ unsigned char RGE_Master_Static_Object::check_placement(
         return 0;
     }
 
-    short object_min_x = (short)(long)(x - DAT_00570628);
-    short object_min_y = (short)(long)(y - DAT_00570628);
-    short object_max_x = (short)(long)(x - DAT_0057062c);
-    short object_max_y = (short)(long)(y - DAT_0057062c);
+    short object_min_x = (short)(long)(col - DAT_00570628);
+    short object_min_y = (short)(long)(row - DAT_00570628);
+    short object_max_x = (short)(long)(col - DAT_0057062c);
+    short object_max_y = (short)(long)(row - DAT_0057062c);
 
     if (object_min_x < 0) object_min_x = 0;
     if (object_max_x >= map->map_width) {
@@ -1016,19 +1016,19 @@ unsigned char RGE_Master_Static_Object::check_placement(
     }
 
     if (check_objects != 0 &&
-        (allow_build_on != 0 || this->radius_z > DAT_00570620) &&
+        (can_be_built_on_flag != 0 || this->radius_z > DAT_00570620) &&
         object_min_y <= object_max_y) {
-        for (short tile_y = object_min_y;
-             tile_y <= object_max_y; tile_y++) {
+        for (short y_index = object_min_y;
+             y_index <= object_max_y; y_index++) {
             RGE_Tile* tile =
-                &map->map_row_offset[tile_y][object_min_x];
-            for (short tile_x = object_min_x;
-                 tile_x <= object_max_x; tile_x++, tile++) {
+                &map->map_row_offset[y_index][object_min_x];
+            for (short x_index = object_min_x;
+                 x_index <= object_max_x; x_index++, tile++) {
                 RGE_Object_Node* object_node = tile->objects.list;
                 while (object_node != 0) {
                     RGE_Static_Object* object = object_node->node;
                     if (object->object_state < 7 &&
-                        (allow_build_on == 0 ||
+                        (can_be_built_on_flag == 0 ||
                          object->master_obj->can_be_built_on != 1 ||
                          this->can_be_built_on != 0)) {
                         RGE_Master_Static_Object* master = object->master_obj;
@@ -1041,8 +1041,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
                               this->radius_z > DAT_00570620) ||
                              (!(object_radius_z > DAT_00570620) &&
                               !(this->radius_z > DAT_00570620)))) {
-                            float distance_y = object->world_y - y;
-                            float distance_x = object->world_x - x;
+                            float distance_y = object->world_y - row;
+                            float distance_x = object->world_x - col;
                             if (distance_y < DAT_00570618) {
                                 distance_y = -distance_y;
                             }
@@ -1051,8 +1051,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
                             }
                             if (!(distance_x >= object_radius_x + radius_x) &&
                                 !(distance_y >= object_radius_y + radius_y)) {
-                                if (blocking_object != 0) {
-                                    *blocking_object = object->id;
+                                if (obstructionObject != 0) {
+                                    *obstructionObject = object->id;
                                 }
                                 return 6;
                             }
@@ -1067,118 +1067,118 @@ unsigned char RGE_Master_Static_Object::check_placement(
     return 0;
 }
 
-void RGE_Master_Static_Object::make_available(unsigned char v) {
-    this->available = v;
+void RGE_Master_Static_Object::make_available(unsigned char on_off_flag) {
+    this->available = on_off_flag;
 }
 
 unsigned char RGE_Master_Static_Object::alignment(
-    float& x, float& y, RGE_Game_World* world, unsigned char align) {
-    float left = x - this->radius_x;
-    float top = y - this->radius_y;
-    float right = x + this->radius_x;
-    float bottom = y + this->radius_y;
-    float map_width = (float)world->map->map_width - 0.00001f;
-    float map_height = (float)world->map->map_height - 0.00001f;
+    float& col, float& row, RGE_Game_World* world, unsigned char center_flag) {
+    float dx1 = col - this->radius_x;
+    float dy1 = row - this->radius_y;
+    float dx2 = col + this->radius_x;
+    float dy2 = row + this->radius_y;
+    float map_w = (float)world->map->map_width - 0.00001f;
+    float map_h = (float)world->map->map_height - 0.00001f;
     float aligned_x;
     float aligned_y;
 
-    if (left < 0.0f) {
-        left = -left;
-        right += left;
-        x += left;
-        left = 0.0f;
+    if (dx1 < 0.0f) {
+        dx1 = -dx1;
+        dx2 += dx1;
+        col += dx1;
+        dx1 = 0.0f;
     }
-    if (top < 0.0f) {
-        top = -top;
-        bottom += top;
-        y += top;
-        top = 0.0f;
+    if (dy1 < 0.0f) {
+        dy1 = -dy1;
+        dy2 += dy1;
+        row += dy1;
+        dy1 = 0.0f;
     }
-    if (right >= map_width) {
-        left += map_width - right;
-        x += map_width - right;
-        right = map_width;
+    if (dx2 >= map_w) {
+        dx1 += map_w - dx2;
+        col += map_w - dx2;
+        dx2 = map_w;
     }
-    if (bottom >= map_height) {
-        top += map_height - bottom;
-        y += map_height - bottom;
-        bottom = map_height;
+    if (dy2 >= map_h) {
+        dy1 += map_h - dy2;
+        row += map_h - dy2;
+        dy2 = map_h;
     }
 
-    if (align != 0) {
-        if (left < 0.0f) left = -left;
-        if (top < 0.0f) top = -top;
-        if (right < 0.0f) right = -right;
-        if (bottom < 0.0f) bottom = -bottom;
+    if (center_flag != 0) {
+        if (dx1 < 0.0f) dx1 = -dx1;
+        if (dy1 < 0.0f) dy1 = -dy1;
+        if (dx2 < 0.0f) dx2 = -dx2;
+        if (dy2 < 0.0f) dy2 = -dy2;
 
-        left -= (short)left;
-        top -= (short)top;
-        right = 1.0f - (right - (short)right);
-        bottom = 1.0f - (bottom - (short)bottom);
+        dx1 -= (short)dx1;
+        dy1 -= (short)dy1;
+        dx2 = 1.0f - (dx2 - (short)dx2);
+        dy2 = 1.0f - (dy2 - (short)dy2);
 
-        if (left + right >= 1.0f) {
-            if (left > right) {
-                aligned_x = x + (1.0f - left);
+        if (dx1 + dx2 >= 1.0f) {
+            if (dx1 > dx2) {
+                aligned_x = col + (1.0f - dx1);
             } else {
-                aligned_x = x - (1.0f - right);
+                aligned_x = col - (1.0f - dx2);
             }
         } else {
-            aligned_x = x;
+            aligned_x = col;
         }
 
-        if (top + bottom >= 1.0f) {
-            if (top > bottom) {
-                aligned_y = y + (1.0f - top);
+        if (dy1 + dy2 >= 1.0f) {
+            if (dy1 > dy2) {
+                aligned_y = row + (1.0f - dy1);
             } else {
-                aligned_y = y - (1.0f - bottom);
+                aligned_y = row - (1.0f - dy2);
             }
         } else {
-            aligned_y = y;
+            aligned_y = row;
         }
 
-        x = aligned_x;
-        y = aligned_y;
+        col = aligned_x;
+        row = aligned_y;
     }
     return 1;
 }
 
 unsigned char RGE_Master_Static_Object::alignment_box(
-    RGE_Game_World* world, float x, float y,
+    RGE_Game_World* world, float col, float row,
     short& x1, short& y1, short& x2, short& y2,
     short& x3, short& y3, short& x4, short& y4) {
     short tile_x;
     short tile_y;
-    float x_offset;
-    float y_offset;
-    tile_x = (short)x;
-    tile_y = (short)y;
-    x_offset = x - (float)tile_x + this->radius_x;
-    y_offset = y - (float)tile_y + this->radius_y;
+    float tx;
+    float ty;
+    tile_x = (short)col;
+    tile_y = (short)row;
+    tx = col - (float)tile_x + this->radius_x;
+    ty = row - (float)tile_y + this->radius_y;
     short tile_half_width = world->map->tile_half_width;
     short tile_half_height = world->map->tile_half_height;
 
-    x1 = (short)((x_offset + y_offset) * tile_half_width);
-    y1 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
-    x_offset -= 2.0f * this->radius_x;
-    x2 = (short)((x_offset + y_offset) * tile_half_width);
-    y2 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
-    y_offset -= 2.0f * this->radius_y;
-    x3 = (short)((x_offset + y_offset) * tile_half_width);
-    y3 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
-    x_offset += (this->radius_x + this->radius_x);
-    x4 = (short)((x_offset + y_offset) * tile_half_width);
-    y4 = (short)((y_offset + 1.0 - x_offset) * tile_half_height);
+    x1 = (short)((tx + ty) * tile_half_width);
+    y1 = (short)((ty + 1.0 - tx) * tile_half_height);
+    tx -= 2.0f * this->radius_x;
+    x2 = (short)((tx + ty) * tile_half_width);
+    y2 = (short)((ty + 1.0 - tx) * tile_half_height);
+    ty -= 2.0f * this->radius_y;
+    x3 = (short)((tx + ty) * tile_half_width);
+    y3 = (short)((ty + 1.0 - tx) * tile_half_height);
+    tx += (this->radius_x + this->radius_x);
+    x4 = (short)((tx + ty) * tile_half_width);
+    y4 = (short)((ty + 1.0 - tx) * tile_half_height);
     return 1;
 }
 
 void RGE_Master_Static_Object::draw(
-    TDrawArea* draw_area, short x, short y, RGE_Color_Table* color_table,
-    long param_5, long param_6, int param_7, unsigned char param_8) {
+    TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color,
+    long facet, long frame, int draw_frame, unsigned char frame_color) {
     if (this->sprite != 0) {
-        this->sprite->draw(param_5, param_6, (int)x, (int)y, (int)x, (int)y,
-                           color_table, draw_area, 10);
+        this->sprite->draw(facet, frame, (int)x, (int)y, (int)x, (int)y,
+                           player_color, render_area, 10);
 
-        if (param_7 != 0) {
+        if (draw_frame != 0) {
             // The executable reads world before outline radii.
             RGE_Map* map = rge_base_game->world->map;
             float rx1 = this->outline_radius_x;
@@ -1199,7 +1199,7 @@ void RGE_Master_Static_Object::draw(
             map->get_point(x4, y4, rx1, -ry1, 0.0f, x, y);
 
             SDI_List->AddGDINode(1, (int)y, x1, y1, x2, y2, x3, y3, x4, y4,
-                                 10, (int)(param_8 & 0xFF), SDI_Object_ID);
+                                 10, (int)(frame_color & 0xFF), SDI_Object_ID);
         }
     }
 }
@@ -1217,10 +1217,10 @@ long RGE_Master_Static_Object::get_hotkey() {
 }
 
 long RGE_Master_Static_Object::calc_base_damage_ability(
-    RGE_Master_Combat_Object* param) {
+    RGE_Master_Combat_Object* attacker) {
     float total = 0.0f;
-    int count = param->weapon_num;
-    RGE_Armor_Weapon_Info* weapon = param->weapon;
+    int count = attacker->weapon_num;
+    RGE_Armor_Weapon_Info* weapon = attacker->weapon;
     if (count > 0) {
         do {
             float fval = (float)weapon->value;
