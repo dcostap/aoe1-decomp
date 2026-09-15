@@ -955,9 +955,9 @@ void RGE_Scenario::Set_message(char* str, long message) {
         hints = message_copy;
         break;
     case 2:
+        //! @bug When win_message is non-null, replacement leaks the old allocation because the original condition frees only null.
         if (win_message == 0) {
-            //! @bug The original calls free(0) when win_message is null.
-            //! Preserve this no-op call.
+            //! Preserve the original free(0) no-op call.
             free(0);
         }
         win_message = message_copy;

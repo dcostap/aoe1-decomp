@@ -7,7 +7,7 @@
 - Header read only: `include/scenario.h`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Source commit: `cd138ad8ff071550dd4cc712602d6e902b0451e9`
-- Report delivery commit: recorded by Git after this report is committed
+- Report delivery commit: `22dd8c8762fe0b0539da53f7bdb55963e13de15e`
 - Changed files in the source commit:
   - `src/scenario.cpp`
 - Changed files in the report commit:
@@ -60,6 +60,35 @@ I assigned these cleanup names where the PDB gave no safe source mapping:
 These are cleanup names, not claims about original source spelling.
 The loop declarations, types, scopes, storage, and statement order remain unchanged.
 
+### Header declaration-name request for owner 26
+
+Owner 26 should update `include/scenario.h` parameter names only.
+Keep every type, parameter order, virtual slot, and ABI signature unchanged.
+The requested declaration names are:
+
+- `RGE_Scenario_Header(RGE_Scenario*)`: `scenario_info`.
+- `RGE_Scenario_Header(int)`: `infile`.
+- `RGE_Scenario_Header::save(int)`: `outfile`.
+- `RGE_Scenario(RGE_Game_World*)`: `w`.
+- `RGE_Scenario(int, RGE_Game_World*)`: `infile`, `w`.
+- `RGE_Scenario::save(int)`: `outfile`.
+- `Set_scenario_name`, `Set_description`, `Set_Cine_PreGame`, `Set_Cine_Victory`, `Set_Cine_Loss`, and `Set_Mission_Bmp`: `str`.
+- `Set_BuildList`, `Set_CityPlan`, and `Set_player_AI`: `which_player`, `str`, `WithExtension`.
+- `Set_Version`: `ver`.
+- `Set_player_Type`: `which`, `t`.
+- `Set_player_Civ`: `which`, `c`.
+- `Set_player_Active`: `which`, `val`.
+- `SetPlayerName`: `which`, `Name`.
+- `Get_BuildList`, `Get_CityPlan`, and `Get_player_AI`: `which_player`, `WithExtension`.
+- `GetPlayerPosture`, `GetPlayerName`, `Get_player_Type`, `Get_player_Civ`, and `Get_player_Active`: `which`.
+- `Set_conquest_victory`: `flag`.
+- `add_description`: `new_text`.
+- `Set_message`: `str`, `message`.
+- `Get_message`: `message`.
+
+The non-registry protected `get_object_pointer` record also reliably gives `obj_ID`.
+Owner 26 can rename its header parameter from `object_id` to `obj_ID` in the same declaration-only change.
+
 ## Constants and comments
 
 I read the pinned VC5 headers before replacing numeric SDK values.
@@ -80,17 +109,35 @@ No behavior repair or structural rewrite was made.
 ## Resource evidence and shared-file request
 
 `InitializeTextValues`, `Get_BuildList`, `Get_CityPlan`, and `Get_player_AI` call the virtual `rge_base_game->get_string` path.
-`RGE_Base_Game::get_string` loads the base string table from `language.dll`.
-The game override can load `languagex.dll` first and then fall back to the base path.
+The code passes bare DLL names to `LoadLibraryA`; the inspected file paths do not prove which file a running process loads.
+The two staged runtime DLLs below are not called original files because their provenance is not proven here.
+The XPack path below is part of the repo-local original corpus.
 
-The resource inspection used the original runtime files and reported:
+The resource inspection results are:
 
-| Module | Type | Language | ID | Payload | Proven role |
+| DLL provenance | Exact absolute path | SHA256 | Language | `0x2775` | `0x277B` |
 | --- | --- | --- | --- | --- | --- |
-| `runtime/language.dll` | `RT_STRING` | `0x0409` | `0x2775` | `" <None> "` | None sentinel for scenario text and file names |
-| `runtime/language.dll` | `RT_STRING` | `0x0409` | `0x277B` | `"Random"` | Random default and file-name sentinel |
+| Staged runtime file | `C:\Projects\my_decomps\aoe1_attempt3\runtime\language.dll` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `0x0409` | Exact text `" <None> "` | Exact text `"Random"` |
+| Staged runtime file | `C:\Projects\my_decomps\aoe1_attempt3\runtime\languagex.dll` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | No language entry for either requested ID | Missing; no empty slot | Missing; no empty slot |
+| Repo-local original corpus XPack file | `C:\Projects\my_decomps\aoe1_attempt3\orig\original_full_game_files_rise_of_romes_beta_17_7_1998\XPack\languagex.dll` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | `0x0409` occurs in its RT_STRING rows; neither requested ID has an entry | Missing; no empty slot | Missing; no empty slot |
 
-Both IDs are missing from `runtime/languagex.dll` and the original XPack `languagex.dll` inspected for this task.
+The two text entries have resource type `RT_STRING` and language `0x0409`.
+The missing results mean that the requested IDs have no resource row.
+They do not mean that a present row has empty text.
+
+`RGE_Base_Game` sets the base DLL name to `language.dll` and loads it into `StringTable`.
+Its `get_string` calls `LoadStringA(StringTable, ...)` and writes an empty buffer on failure.
+`TRIBE_Game` defaults the override DLL name to `languagex.dll`.
+Its `STRING=` command option can replace that name before it loads `StringTableX`.
+`TRIBE_Game::get_string` calls `LoadStringA(StringTableX, ...)` first.
+When that lookup fails, it calls `RGE_Base_Game::get_string`, which uses `StringTable` as the fallback.
+Therefore the inspected languagex misses fall back to the base language lookup when the game override is active.
+
+The IDs are used as follows:
+
+- `0x2775` returns the padded `" <None> "` sentinel for scenario text and file names.
+- `0x277B` returns `"Random"` as the default and file-name sentinel.
+
 The payload does not prove original macro names.
 
 The shared header owner should add these new cleanup names to `include/resource_ids.h`:
