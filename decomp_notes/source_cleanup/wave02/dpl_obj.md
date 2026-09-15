@@ -4,7 +4,7 @@
 
 - Module: `src/dpl_obj.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `fe8f045787e24b1b0e3d71093bd20e7772015111`
+- Final source commit: `924bfa7b9fa0f715818a7af51fee8d12d0c74a2c`
 - Changed files: `src/dpl_obj.cpp` and this report.
 - Header request: none. Owner 09 retains `include/dpl_obj.h`.
 
@@ -81,8 +81,10 @@ constraint that a short comment would explain better than the recovered names.
 
 ## Code-generation and behavior notes
 
-The edit changes parameter and local identifiers only. It keeps types, casts,
-expression order, scopes, calls, literals, and storage operations unchanged.
+The edit changes parameter and local identifiers and source formatting. It applies
+1TBS to every function definition. It joins short parameter lists where useful.
+It keeps types, casts, expression order, scopes, calls, literals, and storage
+operations unchanged.
 It does not change layouts, declarations in headers, or symbol identity.
 
 The registry lists `00441BB0` and `004421F0` as `accepted_drift`. Existing module
