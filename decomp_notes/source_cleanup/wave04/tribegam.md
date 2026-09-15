@@ -5,6 +5,7 @@
 - Source owner: `src/tribegam.cpp`.
 - Cleanup note: `decomp_notes/source_cleanup/wave04/tribegam.md`.
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`.
+- Source commit: `934bc31f8521b39f468a3c22af8fd1c653d68b99`.
 - Assigned registry: `config/functions/src/tribegam.cpp.json`.
 - Assigned function count: 118.
 - Source PDB path: `C:\\msdev\\work\\age1_x1\\tribegam.cpp`.
@@ -281,6 +282,70 @@ header commit before compiling this source. This worker did not edit
 `include/resource_ids.h` is root-owned. It already contains every resource
 macro used here. No new resource macro request is needed. Root must keep this
 existing header available when it integrates `src/tribegam.cpp`.
+
+### Header parameter-label request
+
+The owner of `include/tribegam.h` should update only the parameter labels in
+the following `TRIBE_Game` declarations. Keep each type, order, overload, and
+calling convention unchanged. These labels match the PDB-backed source names.
+The request excludes free procedures and excludes methods whose PDB labels did
+not change.
+
+| Method | Exact requested parameter labels |
+| --- | --- |
+| `TRIBE_Game::TRIBE_Game` | `prog_info_in`, `do_setup` |
+| `TRIBE_Game::close_game_screens` | `close_main_game_screen` |
+| `TRIBE_Game::set_game_mode` | `new_mode`, `new_sub_mode` |
+| `TRIBE_Game::set_player` | `new_player_id` |
+| `TRIBE_Game::set_save_game_name` | `file_name` |
+| `TRIBE_Game::set_load_game_name` | `file_name` |
+| `TRIBE_Game::get_string` | `string_id`, `str`, `max_len` |
+| `TRIBE_Game::get_string2` | `string_type`, `id`, `id2`, `str`, `max_len` |
+| `TRIBE_Game::new_scenario_header(int)` | `infile` |
+| `TRIBE_Game::new_scenario_header(RGE_Scenario*)` | `scenario_info` |
+| `TRIBE_Game::new_scenario_info` | `infile` |
+| `TRIBE_Game::show_error_message` | `error_code_in` |
+| `TRIBE_Game::show_status_message(char*)` | `messageIn`, `info_file`, `info_id` |
+| `TRIBE_Game::show_status_message(int)` | `string_id`, `info_file`, `info_id` |
+| `TRIBE_Game::start_video` | `video_num`, `video_file` |
+| `TRIBE_Game::stop_video` | `goto_next_video` |
+| `TRIBE_Game::save_game` | `fileName` |
+| `TRIBE_Game::save_scenario` | `fileName` |
+| `TRIBE_Game::notification` | `notify_type`, `val1`, `val2`, `val3`, `val4` |
+| `TRIBE_Game::start_game` | `skip_startup_screens` |
+| `TRIBE_Game::test_scenario` | `scenario_file` |
+| `TRIBE_Game::start_scenario` | `scenario_file` |
+| `TRIBE_Game::load_game` | `fileName` |
+| `TRIBE_Game::processCheatCode` | `playerID`, `text` |
+| `TRIBE_Game::start_scenario_editor` | `scenario_name_in`, `is_multi_player_in` |
+| `TRIBE_Game::get_tribe_options` | `options` |
+| `TRIBE_Game::setMapSize` | `v` |
+| `TRIBE_Game::setMapType` | `v` |
+| `TRIBE_Game::setAnimals` | `v` |
+| `TRIBE_Game::setPredators` | `v` |
+| `TRIBE_Game::setVictoryType` | `victory_type_in`, `amount_in` |
+| `TRIBE_Game::civilization` | `player_num` |
+| `TRIBE_Game::setCivilization` | `player_num`, `civilization` |
+| `TRIBE_Game::scenarioPlayer` | `player_num` |
+| `TRIBE_Game::setScenarioPlayer` | `player_num`, `scenario_player` |
+| `TRIBE_Game::playerColor` | `player_num` |
+| `TRIBE_Game::setPlayerColor` | `player_num`, `color` |
+| `TRIBE_Game::computerName` | `player_num` |
+| `TRIBE_Game::setComputerName` | `player_num`, `val` |
+| `TRIBE_Game::wnd_proc` | `wnd`, `msg`, `wparam`, `lparam` |
+| `TRIBE_Game::handle_query_new_palette` | `wnd`, `msg`, `wparam`, `lparam` |
+| `TRIBE_Game::handle_activate` | `wnd`, `msg`, `wparam`, `lparam` |
+| `TRIBE_Game::action_user_command` | `val1`, `val2` |
+| `TRIBE_Game::action_key_down` | `key`, `repeat_count`, `ctrl_key`, `alt_key`, `shift_key` |
+| `TRIBE_Game::get_achievement_info` | `achievement`, `info` |
+| `TRIBE_Game::randomComputerName` | `civ` |
+| `TRIBE_Game::video_wnd_proc` | `hwnd`, `msg`, `wParam`, `lParam` |
+| `TRIBE_Game::SetClickTables` | `RC`, `RCS`, `LC`, `LCS` |
+
+Keep the mixed spellings exactly as shown. In particular, use lowercase
+`wparam` and `lparam` for `wnd_proc`, `handle_query_new_palette`, and
+`handle_activate`; use `wParam` and `lParam` for `video_wnd_proc`; and use
+uppercase `RC`, `RCS`, `LC`, and `LCS` for `SetClickTables`.
 
 ## Code-generation and preservation effects
 
