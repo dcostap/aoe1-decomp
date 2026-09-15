@@ -129,6 +129,14 @@ Original address `005749F0` contains `0ad7233c`, approximately `0.01f`.
 Original references occur at `004C926E`, `004C9290`, `004C939E`, and `004C93C0`.
 This evidence establishes that these two mismatches predate cleanup. The separate proposed repair remains uncompiled and unverified.
 
+## Flic resolution drift investigation
+
+Owner 20 confirmed baseline bytes `0fbf41100fbf4912c1e0100bc1c3` versus fresh bytes `0fbf41120fbf4910c1e1000bc1c3`.
+The compiled load order changed although the resolution expression retained its tokens.
+The proposed operand-swap experiment is preserved at `e131991a70833bb256e1f20e6e5e5d972a152577` and is not integrated.
+Root requested a cause-focused correction that retains baseline expression order, rather than an uncompiled scheduling workaround.
+The worker will inspect baseline physical-line formatting and compiland changes before proposing the next repair.
+
 ## Fresh linked dependency failures
 
 The second-build dependency audit reports 7,758 passes, two failures, and 47,025 unknowns.
