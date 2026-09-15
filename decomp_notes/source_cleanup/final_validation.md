@@ -161,6 +161,10 @@ The repair removes that include and restores four original seek literals, keepin
 Its isolated resolution bytes equal the preserved baseline. Main validation must confirm the result.
 The report also notes two changed `delta_flc` bytes. Root requested further investigation of that drift.
 Its `new_verified_logic` status does not exempt it from baseline-output preservation.
+Focused job `bg-85` passed: all 14 exact flics targets match after the include repair.
+The resolution matching regression is resolved in this object check.
+The remaining `new_verified_logic` observation does not prove baseline equality for `delta_flc`; its investigation continues.
+Report: `build/source-cleanup-20260915/final-validation/flics-repair/report.json`.
 
 ## Fresh linked dependency failures
 
