@@ -1,5 +1,27 @@
 # Cleanup wave 03 root review
 
+## Owner 19: reviewed resource definitions
+
+Reviewer `sa-e5a8d4d2` read all 3,182 diff lines and all 25 changed files at `fea021a8b9836eb0fc357a5a210041828162a328`.
+The reviewer found no blocking source change and inspected the resource lookup paths and DLL payloads.
+Root approved ten shared names in `include/resource_ids.h`:
+
+- `0x232A`: `IDS_SELECT_OBJECT_TITLE`.
+- `0x1D4ED`–`0x1D4F0`: inventory food, wood, gold, and stone help format names.
+  The exact prefix is `IDS_HELP_INVENTORY_`; each name ends with `_FORMAT`.
+- `0x2B2A`: `IDS_POPULATION_PREFIX`.
+- `0x2C24`: `IDS_COUNTDOWN_YEARS_FORMAT`, covering both countdown call paths and the years unit.
+- `0x2C25`–`0x2C27`: wonder, artifacts, and ruins years format names.
+
+The inventory help IDs are missing from all three checked DLLs; their formatting roles are proved by callers.
+The population prefix exists only in the two expansion files.
+The other requested strings exist in the base DLL and are missing from both expansion files.
+No requested ID produced an empty-slot result. Extraction is under `build/source-cleanup-20260915/reviewer-owner19/`.
+
+Before integration, the same workers must apply the definitions and correct the two reported presentation issues.
+These issues are misleading `spnl_obj.cpp` indentation and the obsolete `tpnl_inv` citation into `dlg_dip.cpp`.
+No source validation ran.
+
 ## Owner 20: blocking resource-type change
 
 Reviewer `sa-5806ac65` read the complete 5,411-line diff and all nine reports.
