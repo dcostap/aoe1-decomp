@@ -16,8 +16,7 @@ extern float save_game_version;
 
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1)
-{
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x66;
     rge_read(infile, &this->obj_id, 2);
     rge_read(infile, &this->work_done, 4);
@@ -34,8 +33,7 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in,
                                              short id,
                                              int uniqueID,
                                              unsigned char paid)
-    : RGE_Action(obj_in, 1)
-{
+    : RGE_Action(obj_in, 1) {
     this->unique_id = uniqueID;
     this->action_type = 0x66;
     this->obj_id = id;
