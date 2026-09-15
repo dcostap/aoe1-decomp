@@ -702,10 +702,10 @@ void TPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     clip_rect.bottom = bottom;
 
     if (parent_panel != 0 && clip_to_parent != 0) {
-        if (left < parent_panel->clip_rect.left) {
+        if (x_in < parent_panel->clip_rect.left) {
             clip_rect.left = parent_panel->clip_rect.left;
         }
-        if (top < parent_panel->clip_rect.top) {
+        if (y_in < parent_panel->clip_rect.top) {
             clip_rect.top = parent_panel->clip_rect.top;
         }
         if (right > parent_panel->clip_rect.right) {
