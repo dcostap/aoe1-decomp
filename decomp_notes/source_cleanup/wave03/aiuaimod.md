@@ -8,7 +8,7 @@
 - Scoped records reviewed: 117
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Base source blob: `ea4500e9068e5eaa82f129423a1a1c892e9962ce`
-- Source blob after cleanup: `83ce798e8edcd37a997b71037262ce0a38a52fab`
+- Source blob after cleanup: `ec4093cc4c7461999e5da673f550bb4c36b46888`
 
 The source changes restore procedure-scoped names. They do not change calls, literals, casts, types, statement order, or control flow.
 
@@ -92,7 +92,7 @@ Per the cleanup assignment, compilation, builds, matching, audits, tests, and ga
 ## Correction delivery
 
 - Initial cleanup delivery: `9902c3216ddbb33372653f2e39170cbb2b49a754`.
-- Formatting correction delivery: recorded in the correction commit history after this report update.
+- Formatting correction delivery: `28c0ec957c7200a0e443d8a0e119a34dcbdcd26e`.
 
 The correction places opening braces on the definition line throughout this source. It covers `update`, `updateGroup`, `selectNewPlayPhase`, `order`, both `notify` overloads, `search`, `bestUnitToAttack`, action wrappers, movement helpers, `lookAround`, `askForHelp`, `processGroupNotify`, `processMisc`, both queue overloads, and `purgeNotifyQueue`. Existing standalone scope braces remain unchanged. No brace was added or removed.
 
