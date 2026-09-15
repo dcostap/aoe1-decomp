@@ -60,13 +60,11 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
     }
     if (this->view == 0) {
         this->error_code = 1;
-    }
-    else {
+    } else {
         this->game_mode_button = new TButtonPanel;
         if (this->game_mode_button == 0) {
             this->error_code = 1;
-        }
-        else {
+        } else {
             this->game_mode_button->setup(
                 this->render_area, this, 0, 0, 0x32, 0x1E,
                 TButtonPanel::DrawText, sound,
@@ -78,8 +76,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
             this->object_mode_button = new TButtonPanel;
             if (this->object_mode_button == 0) {
                 this->error_code = 1;
-            }
-            else {
+            } else {
                 this->object_mode_button->setup(
                     this->render_area, this, 0x34, 0, 0x32, 0x1E,
                     TButtonPanel::DrawText, sound,
@@ -91,8 +88,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                 this->move_mode_button = new TButtonPanel;
                 if (this->move_mode_button == 0) {
                     this->error_code = 1;
-                }
-                else {
+                } else {
                     this->move_mode_button->setup(
                         this->render_area, this, 0x68, 0, 0x32, 0x1E,
                         TButtonPanel::DrawText, sound,
@@ -104,8 +100,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                     this->delete_mode_button = new TButtonPanel;
                     if (this->delete_mode_button == 0) {
                         this->error_code = 1;
-                    }
-                    else {
+                    } else {
                         this->delete_mode_button->setup(
                             this->render_area, this, 0x9C, 0, 0x32, 0x1E,
                             TButtonPanel::DrawText, sound,
@@ -117,8 +112,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                         this->terrain_mode_button = new TButtonPanel;
                         if (this->terrain_mode_button == 0) {
                             this->error_code = 1;
-                        }
-                        else {
+                        } else {
                             this->terrain_mode_button->setup(
                                 this->render_area, this, 0xD0, 0, 0x32, 0x1E,
                                 TButtonPanel::DrawText, sound,
@@ -133,8 +127,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                             this->elevation_mode_button = new TButtonPanel;
                             if (this->elevation_mode_button == 0) {
                                 this->error_code = 1;
-                            }
-                            else {
+                            } else {
                                 this->elevation_mode_button->setup(
                                     this->render_area, this, 0x104, 0, 0x32,
                                     0x1E, TButtonPanel::DrawText, sound,
@@ -170,8 +163,7 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
                                 this->command_button = new TButtonPanel;
                                 if (this->command_button == 0) {
                                     this->error_code = 1;
-                                }
-                                else {
+                                } else {
                                     this->command_button->setup(
                                         this->render_area, this, 0x13A, 0,
                                         0x32, 0x1E, TButtonPanel::DrawText,
@@ -206,8 +198,7 @@ RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box() {
     delete this->command_button;
 }
 
-long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in,
-                                unsigned long action_val1, unsigned long action_val2) {
+long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     if (from_panel != 0) {
         if ((from_panel == this->game_mode_button) && (action_in == 1)) {
             rge_base_game->set_game_mode(0, 0);
@@ -227,8 +218,7 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in,
                 }
             }
             return 1;
-        }
-        else {
+        } else {
             if ((from_panel == this->move_mode_button) && (action_in == 1)) {
                 rge_base_game->set_game_mode(0x12, 0);
                 return 1;
@@ -245,13 +235,11 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in,
                 if (rge_base_game->prog_mode == 4) {
                     rge_base_game->set_prog_mode(6);
                     rge_base_game->world->temp_pause = 1;
-                }
-                else {
+                } else {
                     rge_base_game->set_prog_mode(4);
                     return 1;
                 }
-            }
-            else {
+            } else {
                 if (from_panel != this->dialog) {
                     return 0;
                 }
@@ -271,9 +259,7 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in,
                                                 rge_base_game->game_mode);
                         return 1;
                     }
-                }
-                else if (strcmp(this->dialog->panelName(),
-                                "Terrain List Dialog") == 0) {
+                } else if (strcmp(this->dialog->panelName(), "Terrain List Dialog") == 0) {
                     if (action_in == 1) {
                         rge_base_game->terrain_id =
                             static_cast<RGE_Dialog_List*>(this->dialog)->get_list_id();
@@ -294,8 +280,7 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in,
     return 0;
 }
 
-long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key,
-                                         int ctrl_key, int shift_key) {
+long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     long x1;
     long y1;
     long x2;
@@ -319,11 +304,9 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short count, int alt_key,
                 unsigned char draw_level;
                 if (object->sprite_list != 0) {
                     draw_level = object->sprite_list->get_lowest_draw_level();
-                }
-                else if (object->sprite != 0) {
+                } else if (object->sprite != 0) {
                     draw_level = object->sprite->get_lowest_draw_level();
-                }
-                else {
+                } else {
                     draw_level = 0x14;
                 }
 
