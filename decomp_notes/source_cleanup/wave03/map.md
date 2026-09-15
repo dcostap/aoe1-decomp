@@ -4,10 +4,10 @@
 
 - Module: `src/map.cpp`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`, `e203c682ef21333de6d86b2283262d63fbb5c596`, `673598b4d2b677635ff2c7c003ba3dbc830ecf76`
-- Final source commit: `673598b4d2b677635ff2c7c003ba3dbc830ecf76`
+- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`, `e203c682ef21333de6d86b2283262d63fbb5c596`, `673598b4d2b677635ff2c7c003ba3dbc830ecf76`, `6a63d459c10a9cff2dcfad9f9161e2c9812602a9`
+- Final source commit: `6a63d459c10a9cff2dcfad9f9161e2c9812602a9`
 - Initial report commit: `99f0fc6f4131bfc5028fb51cc5cdad3503980b59`
-- Report correction commit before this update: `6cc3489525953fbf3f167d3c909aa364643f8075`
+- Report correction commit before this update: `a96a6b75532bfc56fda16ea39269684876e87b55`
 - Final report commit: this report correction commit.
 - Branch: `cleanup/staging-20260915-137`
 - Changed files: `src/map.cpp`; this report.
@@ -17,8 +17,10 @@ The vector-deleting destructor at `00455080` is compiler-generated.
 It is not an assigned normal function.
 
 The name-cleanup source commits change names only.
-The final source commit changes whitespace only.
-No expression, control flow, call, type, storage, data value, or ABI symbol changed.
+The formatting source commits change whitespace only.
+The latest correction restores omitted local declarations and alias reads.
+It also applies two PDB-backed local names.
+No function boundary, ABI symbol, or member layout changed.
 `include/map.h` was read and was not changed.
 
 ## Correction history
@@ -31,6 +33,7 @@ No expression, control flow, call, type, storage, data value, or ABI symbol chan
 - `823efaa9326ff318b22e6a024053ad2cdcaa95cd`: applied the first 1TBS format and corrected indentation.
 - `e203c682ef21333de6d86b2283262d63fbb5c596`: restored `Type* name`, `Type& name`, and `(Type*)` style and rewrapped long lines.
 - `673598b4d2b677635ff2c7c003ba3dbc830ecf76`: joined the short `clean_terrain` call on one line.
+- `6a63d459c10a9cff2dcfad9f9161e2c9812602a9`: restored the five reviewed map source items listed below.
 
 The formatting commits change whitespace only.
 They use the module's `Type* name`, `Type& name`, and `(Type*)` presentation.
@@ -38,6 +41,30 @@ Short signatures and calls stay on one line.
 Long `fscanf` lists, `debug_rand` expressions, and declarations use readable wraps.
 The formatting does not add or remove braces.
 It does not change scopes or non-whitespace tokens.
+
+## Reviewer corrections
+
+Earlier claims that the cleanup was nonstructural and complete were inaccurate.
+The corrections below restore source evidence without changing function boundaries,
+ABI symbols, member layout, or behavior.
+
+- `scenario_load` now has `int iVar3 = infile;` before its local map values.
+  All five `rge_read` calls use `iVar3`, as in baseline line 523 and the
+  `00455FF0_scenario_load` packet.
+- `get_border_type` now has ten `unsigned char` declarations.
+  Their type positions are seven bytes, three ints, and three bytes.
+  The final restored declaration is `ter_top_rgt_unused`; the active
+  `ter_top_rgt` name remains the cleaned east-neighbor name.
+  This restores the baseline declaration order at lines 2542-2554.
+- The terrain loader uses one format-string literal:
+  `"%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd"`.
+  It does not use adjacent string literals.
+- `place_terrain_object` uses `obj_owner` for its parameter and all local
+  reads. `inventory/pdb/scoped_symbols.json` records `obj_owner` at `00458C90`
+  with stack offset `+0x4`, lines 172868-172886.
+- `get_terrain` uses `unsigned char type` for the terrain byte local.
+  Packet `00459400_get_terrain.txt` shows the byte store at `0045941F` to
+  `[esp+0c]`, which is the local PDB maps to `type`.
 
 ## Evidence
 
@@ -259,9 +286,10 @@ It keeps the original `0x1f`, `0x0f`, `0x10`, and map-size operations.
 
 ## Code generation, type, layout, and symbol review
 
-The changes rename identifiers and remove decompiler-only names.
-They do not change types, declarations that affect storage, member order, evaluation order,
-control flow, calls, relocations, function boundaries, or ABI symbols.
+The name cleanup renames identifiers and removes decompiler-only names.
+The latest correction restores source-local declarations and alias reads.
+It does not change types, member order, evaluation order, control flow, call targets,
+relocations, function boundaries, or ABI symbols.
 The `TileWid`, `TileHgt`, `ElevHgt`, and `FillFlag` spellings preserve PDB case.
 The `passabilty` spelling preserves the PDB misspelling.
 No inline assembly or wrapper was added.
@@ -270,7 +298,7 @@ No inline assembly or wrapper was added.
 
 The complete base-to-head diff was reviewed.
 It contains only `src/map.cpp` and this report.
-The source diff contains the earlier name cleanup and the whitespace-only formatting passes.
+The source diff contains the earlier name cleanup, formatting passes, and listed evidence corrections.
 The report contains the evidence, correction history, and declaration-only header request.
 No `include/map.h` edit is present.
 No build, compiler, check, match, test, or game run was used for this review.
