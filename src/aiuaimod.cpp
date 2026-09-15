@@ -1458,8 +1458,8 @@ int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
                 }
                 if (this->objectValue->inAttackRange(target) != 1 &&
                     this->objectValue->canPath(
-                    this->currentTargetValue,
-                        this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
+                            this->currentTargetValue,
+                            this->objectValue->weaponRange(), 0, 0, -1, -1) != 1) {
                     goto skipCurrentTarget;
                 }
             }
@@ -1511,7 +1511,7 @@ skipCurrentTarget:
             }
             if (this->objectValue->canPath(
                     closestEnemyID,
-                        this->objectValue->weaponRange(), 0, 0, -1, -1) == 1) {
+                    this->objectValue->weaponRange(), 0, 0, -1, -1) == 1) {
                 return closestEnemyID;
             }
         }
@@ -1542,7 +1542,7 @@ skipCurrentTarget:
                         (quickCheck != 1 || this->objectValue->inAttackRange(target) != 0)) {
                         if (quickCheck == 0 && this->objectValue->inAttackRange(target) == 0 &&
                             this->objectValue->canPath(
-                                VisibleUnitList[i][j].object_id,
+                                    VisibleUnitList[i][j].object_id,
                                     this->objectValue->weaponRange(), 0, 0, -1, -1) == 0) {
                             goto skipTarget;
                         }
