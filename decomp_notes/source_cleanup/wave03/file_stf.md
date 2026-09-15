@@ -19,8 +19,8 @@ unchanged.
 
 The source now uses the original procedure-scoped PDB names where the stack
 home and type match. It also uses 1TBS braces for all function definitions.
-It keeps all statements, expressions, types, casts, calls, literals, and
-member accesses unchanged.
+It keeps all statement structure, expression order, types, casts, calls,
+literals, and member accesses unchanged.
 
 Recovered names:
 
@@ -44,6 +44,9 @@ The source did not change the `filename` local in `updateDirectory`.
 The registry is `config/functions/src/file_stf.cpp.json`. Its 22 entries all
 have status `matching` and map to the symbols below. The selected packet for
 each entry is under `inventory/functions/0044/`.
+
+The registry file has SHA-256
+`bffb5e6686129c3c7b94d3f2125662ed610afa90ddc5505cc3d4e5351ca7dc9c`.
 
 The scoped PDB index is `inventory/pdb/scoped_symbols.json`. It has SHA-256
 `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`. The PDB
