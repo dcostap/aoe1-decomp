@@ -20,15 +20,22 @@ Root owns all other headers. This includes `include/resource_ids.h` and `include
   - `727e0dc3aafccda192d514b899a28cd6717ac082`
   - `d6018f536bdb9b7621236146353e29b5bde632b4`
   - `6e0f8a4214b86d2bb92b988464fda0866ca4e60f`
+  - `a9300ec0fb82482786bcb9c141e8ddb89b94b9f8`
+  - `a52aaab259056d4282c0f1cca9d5a02e2cfdac27`
 - Integration commits:
   - `40db2f54d242a32c1fdc6e24f728c39976cdd548`
   - `fe193f20d994e9f006ece83619e4fbc917acc494`
   - `bad612dcbff3a3f2933a764e536d14375d881ae7`
+  - `a6bc52d9f63a1d10520cc649578c9b8cd93ed714`
+  - `c3f136e5ccf9e8e0f0954688830392970f586b76`
 - Review result: approved and integrated.
 - Findings: the source restores all PDB parameter names. `WM_USER` replaces its proved `0x400` value.
 - Correction: the first report assigned `chat.h` to root. It also called `0x17D5` a message ID.
 - Correction result: the report now assigns the header to owner 22. It identifies `0x17D5` as the `WM_USER` `wParam` payload.
+- Final correction: the source now uses `CHAT_RECEIVED` for that payload.
 - Header action: `include/chat.h` now uses the recovered declaration names.
+- Header action: it defines `CHAT_RECEIVED` as `0x17D5`.
+- Name status: `CHAT_RECEIVED` is a new cleanup name, not a recovered original.
 
 ### `src/color.cpp`
 
@@ -54,14 +61,17 @@ Root owns all other headers. This includes `include/resource_ids.h` and `include
 - Worker commits:
   - `ccee99a6bc723ba0fbf3a88f3a96113b54bc6858`
   - `0e51a7b4ec2d063da282d013c2c5b28d624ddbc2`
+  - `87fd94653a6f4f64251d4d7d1f4da3508637ad87`
 - Integration commits:
   - `64232484ab17d5919d5b07973bd6a3b454d72d0a`
   - `14d5fbb46065f55ec358a8ba438ceb7b5272a25e`
+  - `c7c44831b8a2ba8fe0511c10e4ce33fe9e4198be`
 - Review result: approved and integrated.
 - Findings: the source restores `c1`, `c2`, and `pos`.
 - Constant evidence: pinned `DDRAW.H` defines `DDBLT_WAIT` and `DDBLT_COLORFILL`.
 - The source replaces `0x1000400` with their OR expression.
 - Header action: both owned declarations of `color_log` now use the recovered names.
+- Final correction: the report now records the integrated header state and owner 22 ownership.
 
 ### `src/debuglog.cpp`
 
@@ -97,15 +107,20 @@ Root owns all other headers. This includes `include/resource_ids.h` and `include
   - `c7d9d73085173f70013142b79122ee1d6324e306`
   - `119e835436c184d69a0dd85d9bb0851b3ba0ad2b`
   - `f53b8a83feb7dd6af4db1559428cf08f6e8855e4`
+  - `dc70b8b5f47e17ee6c3997c6902ad9de78f2bba1`
 - Integration commits:
   - `9fb7bc774f6bdff60c5d245695850f0717c52fe6`
   - `fa0723a449c0f9bc3c22cbced31513dbb2a27064`
   - `fe9f1212adedefa031ec422117211e367f2793eb`
+  - `5d03840297674be0a55ce5fd4b3cc8b0184faf63`
 - Review result: approved and integrated.
 - Findings: all 22 registry functions received PDB review. The source restores all reliable names and uses 1TBS.
 - Evidence-tool incident: the worker started `generate_function_registry_inventory.py` after reading its help.
 - The tool called an internal translation-unit validator and failed before output.
-- The worker stopped this path and recorded the incident. No generated report or tracked change resulted.
+- The exact cwd was the slot-196 worktree root. The retained session has no event timestamp or exit-code line.
+- The retained traceback is in the module report and `build/file_stf_evidence/registry_inventory_incident.txt`.
+- The missing inventory caused failure before output or compilation.
+- The worker stopped this path and did not rerun the tool. No generated report or tracked change resulted.
 - Header action: `include/file_stf.h` now uses the recovered declaration names.
 
 ### `src/mystring.cpp`
@@ -115,15 +130,18 @@ Root owns all other headers. This includes `include/resource_ids.h` and `include
   - `ec9343cfb6a4d2874c1399789aba470a747aed9c`
   - `98ca0160b64133b83ea500455c68e2ffe2ecffbb`
   - `bb03357de68666c19a80a0514273cb34b0fc57fa`
+  - `7dd60c817502ec30b25199331cc068c860fb732d`
 - Integration commits:
   - `b7b4dacf438452ad12714141a486bb3eddc906cf`
   - `eaa480e8537625179a5336179d001b329f1fb2b6`
   - `296f21adce56f0fb0015f96670e22e6ab41ec01d`
+  - `14572926ac2c1d69edba6f94f5255abd3a703f50`
 - Review result: approved and integrated.
 - Findings: all four functions received PDB review. The source restores all PDB parameter names.
 - The `last_length` record reuses the `last` stack slot. Source lines and uses support the current declaration mapping.
 - The source keeps its existing unsigned type.
 - Header action: `include/mystring.h` now uses the recovered declaration names.
+- Final correction: the report now records owner 22 and the actual prior report commit.
 
 ### `src/registry.cpp`
 
@@ -141,22 +159,26 @@ Root owns all other headers. This includes `include/resource_ids.h` and `include
 
 ## Header commit
 
-Header changes are in integration commit:
+Header changes are in these integration commits:
 
 - `6a52ca5eb3509b958a883c34523930f42ca04570`
+- `c0ce37473c32dfd6511e884ea1ead7dace6b5cce`
 
-The changes affect parameter spelling and formatting only. They do not change types, order, layout, or ABI symbols.
+The first commit changes parameter spelling and formatting only.
+The second commit defines `CHAT_RECEIVED` as `0x17D5`.
+The macro keeps the literal value and expression type at each use.
 
 ## Shared requests
 
-Root should review a shared name for chat notification payload `0x17D5`.
+Owner 22 resolved the shared chat notification name as `CHAT_RECEIVED`.
 
 Evidence:
 
-- `TChat::AddChatMsg` posts `WM_USER` with `0x17D5` in `wParam`.
+- `TChat::AddChatMsg` posts `WM_USER` with this value in `wParam`.
 - `src/scr_mps.cpp` and `src/tribegam.cpp` dispatch that payload.
 
-The integrated source keeps the value numeric. This request does not block delivery.
+Root will coordinate consumer substitutions in `scr_mps.cpp` and `tribegam.cpp`.
+Those consumer changes are outside owner 22 scope.
 
 No resource-ID request is open. None of these modules performs a resource lookup.
 
