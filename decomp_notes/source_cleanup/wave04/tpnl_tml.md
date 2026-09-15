@@ -7,8 +7,9 @@
 - Branch: `cleanup/staging-20260915-250`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Source cleanup commit: `320ebf88394be8a8f5c032c6f1b72e7d9cfd4032`.
-- Correction commit: returned separately. This report cannot contain its own
-  commit hash without self-reference.
+- Resource correction commit: `a37f59faf13f56e3ecf610b084f6b4f8dac0aec9`.
+- Reviewer correction commit: returned separately. This report cannot contain
+  its own commit hash without self-reference.
 - Changed files:
   - `src/tpnl_tml.cpp`
   - `decomp_notes/source_cleanup/wave04/tpnl_tml.md`
@@ -20,10 +21,21 @@ The source owns 25 handwritten `Time_Line_Panel` procedures in PDB order.
 The compiler-generated scalar-deleting destructor at `0051E770` remains outside
 this source owner and was not edited.
 
-The cleanup restores supported PDB parameter and local names. It records three
-proven language IDs for a future shared-header mapping. It also applies 1TBS
-brace placement and readable wrapping. It does not change statements, types,
-scopes, storage, calls, control flow, or source order.
+The cleanup restores supported PDB parameter names. It records three approved
+language-ID mappings. It also applies 1TBS brace placement and readable
+wrapping. It does not change statements, types, scopes, storage, calls,
+control flow, or source order.
+
+## Correction history
+
+- Initial source cleanup commit:
+  `320ebf88394be8a8f5c032c6f1b72e7d9cfd4032`.
+- Resource mapping correction commit:
+  `a37f59faf13f56e3ecf610b084f6b4f8dac0aec9`.
+- Reviewer correction base: integrated head
+  `180836230c0c7275581e3489e391546c0c320552`.
+- The current reviewer correction commit is returned separately. This report
+  cannot contain its own commit hash without self-reference.
 
 ## Evidence and hashes
 
@@ -57,8 +69,10 @@ The base source SHA-256 is
 `d18e69dfde64eb38fed1929b93ab12ac360e3be8ce38c61f6a02278cb1e1d1f4`.
 The pre-correction source SHA-256 is
 `84775fd96cde18ebf00b37914f7bcbf7bc299340e0bb3c56fe6d52e9616d5b2d`.
-The corrected source SHA-256 is
+The previous corrected source SHA-256 is
 `9b1b1987325be11f6f1cfe522dc8b4afa85ca1329b4964a9634fd9c712da776e`.
+The reviewer-corrected source SHA-256 is
+`145fdf495d4ac78ff1135aa28981801547a1db574fda08a26904f593c42a37c6`.
 
 ## Original-name recovery
 
@@ -85,18 +99,42 @@ member receiver is recorded in `ecx`. The recovered parameter names are:
 The other 11 procedures have no source parameters. Their declarations and
 bodies remain in their original order.
 
-The cleanup also uses these PDB-backed local names where their source scopes
-map safely: `temp_start_txt_x1`, `temp_start_x`, `temp_start_y`,
-`error_correction_drop_time_slice_rate`, `time_slice_cntr`,
-`error_correction_time_slice_thickness`, `temp_pop_num`, `next_pop_total`,
-`float_remainder`, `y_line_segment_length`, `num_intermediate_slices`,
-`special_event_flag`, `cntr2`, `cntr_droped_slice_rate`, and `temp_color`.
+### Supported mappings retained
+
+The parameter mappings in the table above are supported by direct PDB records.
+They remain in the source. The source retains existing local names when the
+PDB type, scope, or use does not prove a distinct declaration.
 
 Several PDB records reuse stack homes or show type aliases. I did not add a
-new declaration or force a reused home into a different scope. Existing
-`start_x`, `start_text_y`, `population`, `player_population`, and other
-unmapped locals remain descriptive. The source retains their existing types,
-initialization points, and storage duration.
+new declaration or force a reused home into a different scope. The source
+retains the baseline names, types, initialization points, and storage duration.
+
+### Forced mappings restored to baseline
+
+The reviewer found these earlier local mappings unsupported. The correction
+restores each baseline descriptive identifier and all of its uses:
+
+| Procedure | Earlier forced mapping | Restored baseline name |
+| --- | --- | --- |
+| `calculate_icon_location` | `result` -> `temp_start_txt_x1` | `result` |
+| `calculate_icon_location` | `start_y` -> `temp_start_x` | `start_y` |
+| `calculate_icon_location` | `start_text_x` -> `temp_start_y` | `start_text_x` |
+| `draw_timeline` | `time_slice_counter` -> `time_slice_cntr` | `time_slice_counter` |
+| `draw_timeline` | `pop_sample_counter` -> `pop_sample_cntr` | `pop_sample_counter` |
+| `draw_timeline` | `dropped_slice_counter` -> `error_correction_drop_time_slice_rate` | `dropped_slice_counter` |
+| `draw_timeline` | `pop_total` -> `temp_pop_num` | `pop_total` |
+| `draw_timeline` | `special_event` -> `error_correction_time_slice_thickness` | `special_event` |
+| `draw_timeline` | `time_slice` -> `next_pop_total` | `time_slice` |
+| `draw_timeline` | `next_pop_total` -> `float_remainder` | `next_pop_total` |
+| `draw_timeline` | `next_time_slice` -> `y_line_segment_length` | `next_time_slice` |
+| `draw_timeline` | `time_slice_thickness` -> `num_intermediate_slices` | `time_slice_thickness` |
+| `draw_timeline` | `interpolation_counter` -> `special_event_flag` | `interpolation_counter` |
+| `draw_timeline` | `y_line_total` -> `cntr2` | `y_line_total` |
+| `draw_timeline` | `segment_remainder` -> `cntr_droped_slice_rate` | `segment_remainder` |
+| `draw_timeline` | `population` -> `temp_color` | `population` |
+
+The earlier mapping list also included PDB local names that had no reliable
+declaration mapping. None of those names remains forced in these functions.
 
 No public function, class, member, global, ABI symbol, layout, or calling
 convention changed.
@@ -122,12 +160,12 @@ All three records use language `0x0409`:
 | `0x106B` | `Bronze Age` | `IDS_HELP_AGE_BRONZE` | Age-event label in `draw_icon` case `1`. |
 | `0x106C` | `Iron Age` | `IDS_HELP_AGE_IRON` | Age-event label in `draw_icon` case `2`. |
 
-The proposed names are new cleanup names. They are not defined in this
-worktree or the integration base. Root owns `include/resource_ids.h`.
-Request that root review one shared mapping for these three IDs. Keep the
-numeric literals until root provides approved definitions. The current source
-keeps each numeric value, lookup call, buffer size, lookup order, localization,
-and failure path.
+Root approved the existing names for these exact three IDs in
+`include/resource_ids.h` at commit
+`bf943f3339643ee5beca7dd74e98b4cb729e48d3`. The approval covers no other
+resource substitution. The current source uses those three macros and keeps
+each numeric value, lookup call, buffer size, lookup order, localization, and
+failure path.
 
 For comparison, the inspected expansion file is:
 
@@ -144,9 +182,9 @@ The extraction records are exact `RT_STRING` results. They do not prove the
 runtime loader path by themselves. The `draw_icon` call site and base
 `TPanel::get_string` path establish the use here.
 
-### Outstanding root mapping request
+### Root approval
 
-Root owns `include/resource_ids.h`. Please review one shared mapping for the
+The approval evidence is under `main reviewer-owner28/`. It covers the
 following base-language `RT_STRING` lookups:
 
 - Lookup path: `Time_Line_Panel::draw_icon` calls `TPanel::get_string`, which
@@ -154,12 +192,12 @@ following base-language `RT_STRING` lookups:
 - DLL: `language.dll`, SHA-256
   `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
 - Language: `0x0409`.
-- `0x106A`: `Tool Age`; proposed name `IDS_HELP_AGE_TOOL`.
-- `0x106B`: `Bronze Age`; proposed name `IDS_HELP_AGE_BRONZE`.
-- `0x106C`: `Iron Age`; proposed name `IDS_HELP_AGE_IRON`.
+- `0x106A`: `Tool Age`; existing name `IDS_HELP_AGE_TOOL`.
+- `0x106B`: `Bronze Age`; existing name `IDS_HELP_AGE_BRONZE`.
+- `0x106C`: `Iron Age`; existing name `IDS_HELP_AGE_IRON`.
 
-The current source keeps all three numeric literals. This request does not
-edit the shared header or claim that these names are approved.
+The source adds no new resource name. This worker did not edit the shared
+header or change any other resource ID.
 
 ## Header request
 
@@ -205,10 +243,9 @@ convention, symbol, or layout.
 
 ## Code-generation and validation status
 
-The source diff changes identifiers, whitespace, wrapping, and brace
-placement. It restores the three numeric resource literals. It does not
-change executable expressions, field offsets, calls, control flow, or source
-order.
+The source diff changes supported identifiers, approved resource macro
+spellings, whitespace, wrapping, and brace placement. It does not change
+executable expressions, field offsets, calls, control flow, or source order.
 
 Compilation, builds, compiler checks, audits, validation, matching checks, and
 tests were not run. No executable comparison or runtime harness was run. The

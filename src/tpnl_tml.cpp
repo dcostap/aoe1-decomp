@@ -8,6 +8,7 @@
 #include "../include/tplayer.h"
 #include "../include/t_histry.h"
 #include "../include/color.h"
+#include "../include/resource_ids.h"
 #include <new.h>
 #include <stdio.h>
 #include <string.h>
@@ -476,25 +477,25 @@ void Time_Line_Panel::record_special_event(
 
 int Time_Line_Panel::calculate_icon_location(
     Special_Events* event_ptr, short icon_number, unsigned char history_type) {
-    int temp_start_txt_x1 = 1;
+    int result = 1;
     long start_x = 0;
-    long temp_start_x = 0;
-    long temp_start_y = 0;
+    long start_y = 0;
+    long start_text_x = 0;
     long start_text_y = 0;
 
     event_ptr->icon_flag = 0;
 
     if (this->special_events_pic == 0) {
-        temp_start_txt_x1 = 0;
+        result = 0;
     }
     if (this->special_events_pic->shape_count() == 0) {
-        temp_start_txt_x1 = 0;
+        result = 0;
     }
     if (this->special_events_pic->shape_count() < icon_number) {
-        temp_start_txt_x1 = 0;
+        result = 0;
     }
 
-    if (temp_start_txt_x1 != 0) {
+    if (result != 0) {
         short width;
         short height;
         this->special_events_pic->shape_bounds(icon_number, width, height);
@@ -506,24 +507,24 @@ int Time_Line_Panel::calculate_icon_location(
         }
     }
 
-    if (temp_start_txt_x1 != 0) {
+    if (result != 0) {
         if (this->special_events_pic_hgt >
             event_ptr->intermediate_y_line_segment) {
-            temp_start_txt_x1 = 0;
+            result = 0;
         }
         long half_width = this->special_events_pic_wid / 2;
         if (event_ptr->X_line_pos + half_width >
             this->X_start_line_pos + this->X_line_max_width) {
-            temp_start_txt_x1 = 0;
+            result = 0;
         }
         long icon_start_x = event_ptr->X_line_pos - half_width;
         if (icon_start_x < this->X_start_line_pos) {
-            temp_start_txt_x1 = 0;
+            result = 0;
         }
 
-        if (temp_start_txt_x1 != 0) {
+        if (result != 0) {
             start_x = icon_start_x;
-            temp_start_x = event_ptr->Y_line_pos * 2
+            start_y = event_ptr->Y_line_pos * 2
                 + event_ptr->intermediate_y_line_segment / 2
                 - this->special_events_pic_hgt / 2;
         }
@@ -535,9 +536,9 @@ int Time_Line_Panel::calculate_icon_location(
         long text_width = this->body_font_wid * event_ptr->text_length1;
         if (event_ptr->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            temp_start_y = event_ptr->X_line_pos + 2;
+            start_text_x = event_ptr->X_line_pos + 2;
         } else {
-            temp_start_y = this->X_start_line_pos
+            start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 3;
         }
 
@@ -559,9 +560,9 @@ int Time_Line_Panel::calculate_icon_location(
         long text_width = this->body_font_wid * event_ptr->text_length1;
         if (event_ptr->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            temp_start_y = event_ptr->X_line_pos + 2;
+            start_text_x = event_ptr->X_line_pos + 2;
         } else {
-            temp_start_y = this->X_start_line_pos
+            start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 8;
         }
 
@@ -580,9 +581,9 @@ int Time_Line_Panel::calculate_icon_location(
         long text_width = this->body_font_wid * event_ptr->text_length1;
         if (event_ptr->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            temp_start_y = event_ptr->X_line_pos + 2;
+            start_text_x = event_ptr->X_line_pos + 2;
         } else {
-            temp_start_y = this->X_start_line_pos
+            start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 3;
         }
 
@@ -612,14 +613,14 @@ int Time_Line_Panel::calculate_icon_location(
             event_ptr->text_length1 = 2;
         }
 
-        if (temp_start_x + this->body_font_hgt
+        if (start_y + this->body_font_hgt
                 + this->special_events_pic_hgt + 1 >
             this->Y_start_line_pos + this->Y_line_max_length) {
-            temp_start_x = this->Y_start_line_pos + this->Y_line_max_length
+            start_y = this->Y_start_line_pos + this->Y_line_max_length
                 - this->body_font_hgt - this->special_events_pic_hgt - 1;
         }
-        temp_start_y = start_x;
-        start_text_y = temp_start_x + this->special_events_pic_hgt + 1;
+        start_text_x = start_x;
+        start_text_y = start_y + this->special_events_pic_hgt + 1;
         break;
     }
 
@@ -636,26 +637,26 @@ int Time_Line_Panel::calculate_icon_location(
             event_ptr->text_length1 = 5;
         }
 
-        if (temp_start_x + this->body_font_hgt
+        if (start_y + this->body_font_hgt
                 + this->special_events_pic_hgt + 1 >
             this->Y_start_line_pos + this->Y_line_max_length) {
-            temp_start_x = this->Y_start_line_pos + this->Y_line_max_length
+            start_y = this->Y_start_line_pos + this->Y_line_max_length
                 - this->body_font_hgt - this->special_events_pic_hgt - 1;
         }
-        temp_start_y = start_x;
-        start_text_y = temp_start_x + this->special_events_pic_hgt + 1;
+        start_text_x = start_x;
+        start_text_y = start_y + this->special_events_pic_hgt + 1;
         break;
     }
     }
 
     event_ptr->start_x = start_x;
-    event_ptr->start_txt_x1 = temp_start_y;
-    event_ptr->start_y = temp_start_x;
+    event_ptr->start_txt_x1 = start_text_x;
+    event_ptr->start_y = start_y;
     event_ptr->start_txt_y1 = start_text_y;
-    if (temp_start_txt_x1 != 0) {
+    if (result != 0) {
         event_ptr->icon_flag = 1;
     }
-    return temp_start_txt_x1;
+    return result;
 }
 
 void Time_Line_Panel::draw(void) {
@@ -1011,23 +1012,23 @@ void Time_Line_Panel::draw_timeline() {
     if (this->render_area->Lock("tpnl_tml::draw_timeline", 1) != 0) {
         long pop_label_counter = 0;
         long time_slice_thickness_error = 0;
-        long time_slice_cntr = 0;
-        long pop_sample_cntr = 0;
+        long time_slice_counter = 0;
+        long pop_sample_counter = 0;
         long displayed_slice_counter = 0;
-        long next_pop_total = 0;
+        long time_slice = 0;
 
         this->X_line_pos = this->X_start_line_pos;
 
         if (this->num_history_entries > 0) {
-            long error_correction_drop_time_slice_rate = 1;
+            long dropped_slice_counter = 1;
 
             do {
                 if (displayed_slice_counter >= this->num_entries_page) {
                     break;
                 }
 
-                float temp_pop_num = 0.0f;
-                int error_correction_time_slice_thickness = 0;
+                float pop_total = 0.0f;
+                int special_event = 0;
                 RGE_Game_World* world = rge_base_game->world;
                 int player_index = 0;
 
@@ -1036,51 +1037,51 @@ void Time_Line_Panel::draw_timeline() {
                         TRIBE_Player* player = static_cast<TRIBE_Player*>(
                             world->players[player_index + 1]);
                         float population = static_cast<float>(
-                            player->history->get_history_entry(0, next_pop_total));
+                            player->history->get_history_entry(0, time_slice));
                         unsigned char event;
                         player = static_cast<TRIBE_Player*>(
                             rge_base_game->world->players[player_index + 1]);
-                        if (player->history->get_history_event(next_pop_total,
+                        if (player->history->get_history_event(time_slice,
                                                                event) != 0) {
-                            error_correction_time_slice_thickness = 1;
+                            special_event = 1;
                         }
-                        temp_pop_num += population;
+                        pop_total += population;
                         player_index++;
                         world = rge_base_game->world;
                     } while (player_index <
                              static_cast<int>(world->player_num) - 1);
                 }
 
-                if (temp_pop_num == 0.0f) {
+                if (pop_total == 0.0f) {
                     return;
                 }
 
                 long base_drop_rate =
                     static_cast<long>(this->time_slice_drop_rate);
                 long drop_limit = static_cast<long>(
-                    static_cast<float>(error_correction_drop_time_slice_rate) *
+                    static_cast<float>(dropped_slice_counter) *
                     this->time_slice_drop_rate);
-                drop_limit += (1 - error_correction_drop_time_slice_rate) * base_drop_rate;
-                drop_limit -= time_slice_cntr;
+                drop_limit += (1 - dropped_slice_counter) * base_drop_rate;
+                drop_limit -= time_slice_counter;
 
                 if (this->drop_flag != 0 &&
-                    error_correction_time_slice_thickness == 0 &&
-                    pop_sample_cntr >= drop_limit &&
-                    error_correction_drop_time_slice_rate - 1 < this->total_slices_to_drop) {
-                    error_correction_drop_time_slice_rate++;
-                    pop_sample_cntr = 0;
+                    special_event == 0 &&
+                    pop_sample_counter >= drop_limit &&
+                    dropped_slice_counter - 1 < this->total_slices_to_drop) {
+                    dropped_slice_counter++;
+                    pop_sample_counter = 0;
                     if (drop_limit > base_drop_rate) {
-                        time_slice_cntr++;
+                        time_slice_counter++;
                     }
                 } else {
-                    pop_sample_cntr++;
+                    pop_sample_counter++;
                     displayed_slice_counter++;
 
-                    float float_remainder;
-                    if (next_pop_total == this->num_entries_page - 1) {
-                        float_remainder = temp_pop_num;
+                    float next_pop_total;
+                    if (time_slice == this->num_entries_page - 1) {
+                        next_pop_total = pop_total;
                     } else {
-                        float_remainder = 0.0f;
+                        next_pop_total = 0.0f;
                         world = rge_base_game->world;
                         player_index = 0;
                         if (static_cast<int>(world->player_num) - 1 > 0) {
@@ -1088,56 +1089,56 @@ void Time_Line_Panel::draw_timeline() {
                                 TRIBE_Player* player =
                                     static_cast<TRIBE_Player*>(
                                         world->players[player_index + 1]);
-                                float_remainder += static_cast<float>(
+                                next_pop_total += static_cast<float>(
                                     player->history->get_history_entry(
-                                        0, next_pop_total + 1));
+                                        0, time_slice + 1));
                                 player_index++;
                                 world = rge_base_game->world;
                             } while (player_index <
                                      static_cast<int>(world->player_num) - 1);
                         }
-                        if (float_remainder == 0.0f) {
+                        if (next_pop_total == 0.0f) {
                             return;
                         }
                     }
 
                     if (pop_label_counter == this->pop_reading_rate - 1 ||
-                        next_pop_total == 0) {
+                        time_slice == 0) {
                         this->add_pop_total_special_event(
-                            next_pop_total, static_cast<long>(temp_pop_num),
+                            time_slice, static_cast<long>(pop_total),
                             this->X_line_pos, 1);
                         pop_label_counter = 0;
                     } else {
                         pop_label_counter++;
                     }
 
-                    long y_line_segment_length = next_pop_total + 1;
-                    long num_intermediate_slices = static_cast<long>(
-                        static_cast<float>(y_line_segment_length) *
+                    long next_time_slice = time_slice + 1;
+                    long time_slice_thickness = static_cast<long>(
+                        static_cast<float>(next_time_slice) *
                         this->bar_thickness);
                     long base_thickness =
                         static_cast<long>(this->bar_thickness);
-                    long regular_position = base_thickness * y_line_segment_length;
+                    long regular_position = base_thickness * next_time_slice;
 
                     if (regular_position <
-                        num_intermediate_slices - time_slice_thickness_error) {
-                        num_intermediate_slices =
-                            num_intermediate_slices -
+                        time_slice_thickness - time_slice_thickness_error) {
+                        time_slice_thickness =
+                            time_slice_thickness -
                             time_slice_thickness_error - regular_position +
                             base_thickness;
                         time_slice_thickness_error++;
                     } else {
-                        num_intermediate_slices = base_thickness;
+                        time_slice_thickness = base_thickness;
                     }
 
                     long intermediate_x_pos = 0;
-                    long special_event_flag = 0;
+                    long interpolation_counter = 0;
 
-                    if (num_intermediate_slices > 0) {
+                    if (time_slice_thickness > 0) {
                         do {
                             this->Y_line_pos = this->Y_start_line_pos;
-                            long cntr2 = 0;
-                            volatile float cntr_droped_slice_rate = 0.0f;
+                            long y_line_total = 0;
+                            volatile float segment_remainder = 0.0f;
                             world = rge_base_game->world;
                             player_index = 0;
 
@@ -1168,13 +1169,13 @@ void Time_Line_Panel::draw_timeline() {
                                     player = static_cast<TRIBE_Player*>(
                                         rge_base_game->world->players[
                                             player_index + 1]);
-                                    unsigned char temp_color =
+                                    unsigned char population =
                                         player->history->get_history_entry(
-                                        0, next_pop_total);
+                                        0, time_slice);
                                     float player_population =
-                                        static_cast<float>(temp_color);
+                                        static_cast<float>(population);
                                     long segment = static_cast<long>(
-                                        player_population / temp_pop_num *
+                                        player_population / pop_total *
                                         static_cast<float>(
                                             this->Y_line_max_length));
 
@@ -1185,7 +1186,7 @@ void Time_Line_Panel::draw_timeline() {
 
                                     if (this->bar_thickness != 1.0f) {
                                         float next_population;
-                                        if (next_pop_total ==
+                                        if (time_slice ==
                                             this->num_entries_page - 1) {
                                             next_population =
                                                 player_population;
@@ -1200,13 +1201,13 @@ void Time_Line_Panel::draw_timeline() {
                                                     player->history
                                                         ->get_history_entry(
                                                             0,
-                                                            y_line_segment_length));
+                                                            next_time_slice));
                                         }
 
                                         long next_segment =
                                             static_cast<long>(
                                                 next_population /
-                                                float_remainder *
+                                                next_pop_total *
                                                 static_cast<float>(
                                                     this->Y_line_max_length));
                                         long segment_change =
@@ -1216,7 +1217,7 @@ void Time_Line_Panel::draw_timeline() {
                                             static_cast<float>(
                                                 segment_change) *
                                                 (static_cast<float>(
-                                                     special_event_flag) /
+                                                     interpolation_counter) /
                                                  this->bar_thickness);
                                         segment = static_cast<long>(
                                             interpolated_segment);
@@ -1226,12 +1227,12 @@ void Time_Line_Panel::draw_timeline() {
                                             segment = 1;
                                         }
 
-                                        cntr_droped_slice_rate =
-                                            (cntr_droped_slice_rate +
+                                        segment_remainder =
+                                            (segment_remainder +
                                              interpolated_segment) -
                                             static_cast<float>(segment);
-                                        if (cntr_droped_slice_rate > 1.0) {
-                                            cntr_droped_slice_rate -= 1.0f;
+                                        if (segment_remainder > 1.0) {
+                                            segment_remainder -= 1.0f;
                                             segment++;
                                         }
                                     }
@@ -1240,15 +1241,15 @@ void Time_Line_Panel::draw_timeline() {
                                         static_cast<int>(
                                             rge_base_game->world->player_num) -
                                             2) {
-                                        if (segment + cntr2 >
+                                        if (segment + y_line_total >
                                             this->Y_line_max_length) {
                                             segment = this->Y_line_max_length -
-                                                      cntr2;
+                                                      y_line_total;
                                         }
-                                        if (segment + cntr2 <
+                                        if (segment + y_line_total <
                                             this->Y_line_max_length) {
                                             segment = this->Y_line_max_length -
-                                                      cntr2;
+                                                      y_line_total;
                                         }
                                     }
 
@@ -1264,12 +1265,12 @@ void Time_Line_Panel::draw_timeline() {
                                             static_cast<unsigned char>(
                                                 player_index + 1),
                                             player->history, player_color,
-                                            next_pop_total, this->X_line_pos,
+                                            time_slice, this->X_line_pos,
                                             this->Y_line_pos, segment);
                                     }
 
                                     this->Y_line_pos += segment;
-                                    cntr2 += segment;
+                                    y_line_total += segment;
                                     player_index++;
                                     world = rge_base_game->world;
                                 } while (player_index <
@@ -1278,15 +1279,15 @@ void Time_Line_Panel::draw_timeline() {
                             }
 
                             intermediate_x_pos++;
-                            special_event_flag++;
+                            interpolation_counter++;
                             this->X_line_pos++;
                         } while (intermediate_x_pos <
-                                 num_intermediate_slices);
+                                 time_slice_thickness);
                     }
                 }
 
-                next_pop_total++;
-            } while (next_pop_total < this->num_history_entries);
+                time_slice++;
+            } while (time_slice < this->num_history_entries);
         }
     }
 
@@ -1307,13 +1308,13 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
 
     switch (event_ptr->event) {
     case 0:
-        if (this->get_string(0x106a, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_TOOL, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 1:
-        if (this->get_string(0x106b, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_BRONZE, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 2:
-        if (this->get_string(0x106c, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_IRON, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 8:
         sprintf(temp_str + 4, "%ld/%1d", event_ptr->integer_value_1, event_ptr->integer_value_2);
