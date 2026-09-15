@@ -11,6 +11,7 @@
 - Report correction commit: `0adf5675caeeb2df4edf1c223235f6321776378a`
 - Correction-hash record commit: `b08bf0343d663cc66c26e8d04e12900c6da39a02`
 - Hotkey-payload correction commit: `2c102c6dc0fa08035493388370fc6faa8a9617dd`
+- Approved resource substitution commit: `f8db2f87f`
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
@@ -128,11 +129,15 @@ source owner and the prior accepted-drift limits. The score comparator keeps
 its original stack argument order: `arg1` is cast to `b`, and `arg2` is cast to
 `a`, as in the existing comparator body.
 
-## Resource-ID requests
+## Resource-ID review and approved substitutions
 
-No resource macro was applied because root owns `include/resource_ids.h`. The
-following names are requests for root review. They are new cleanup names, not
-original macro names. Numeric expressions and lookup calls remain unchanged.
+This section first records the worker requests. Root later approved the
+payload-backed names in `include/resource_ids.h` at commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. The source now uses those approved
+macros. Root owns the shared header, so this worker did not edit it.
+
+The approved names are cleanup names, not original macro names. Numeric
+expressions and lookup calls remain unchanged.
 
 `TRIBE_Game::get_string` first calls `LoadStringA` on `StringTableX` and then
 falls back to `RGE_Base_Game::get_string`. The runtime files checked were:
@@ -192,7 +197,7 @@ entries.
 | `0x0BE5` | `Click an area to attack ground.` | Attack-ground status message | `IDS_MESSAGE_ATTACK_GROUND` |
 | `0x0BEC` | `Click the building or boat to repair.` | Repair-command status message | `IDS_MESSAGE_REPAIR` |
 | `0x0BED` | `Click where you want the transport to unload.` | Unload-command status message | `IDS_MESSAGE_UNLOAD` |
-| `0x0BF3` | `Game speed changed.` | Multiplayer speed-change message | `IDS_MESSAGE_GAME_SPEED_CHANGED` |
+| `0x0BF3` | `Game speed changed.` | Multiplayer speed-change message | `IDS_GAME_SPEED_CHANGED` |
 | `0x0BF4` | `Game paused/unpaused.` | Multiplayer pause message | `IDS_MESSAGE_GAME_PAUSED` |
 | `0x0BFE` | `You cannot chat after you have resigned or been defeated.` | Chat restriction error | `IDS_ERROR_CHAT_AFTER_DEFEAT` |
 | `0x2329` | `GAME PAUSED` | Pause overlay | `IDS_GAME_PAUSED` |
@@ -242,11 +247,64 @@ accepts the help-resource namespace.
 The proposed help names remain new cleanup names. The source call sites prove
 their button roles, but the checked language DLLs provide no text for them.
 
+### Root approval and runtime evidence
+
+Root approved the payload-backed names in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. The approved header adds the
+score labels, hotkeys, age labels, command messages, overlay labels, and panel
+help names used below. The source applies these approved names in commit
+`f8db2f87f` and includes `../include/resource_ids.h`.
+
+The source substitutions are:
+
+- `0x1023` and `0x1024`: `IDS_SCORE_BUTTON_LABEL` and
+  `IDS_SCORE_BUTTON_MESSAGE`.
+- `0x1037`–`0x103B`, `0x103D`–`0x103F`, and `0x1048`–`0x104E`: the matching
+  `IDS_HOTKEY_*` names. The source keeps `i +
+  IDS_HOTKEY_SELECT_BUILDING_BASE` for the `0x1040` range.
+- `0x1069`–`0x106C`: the four `IDS_HELP_AGE_*` names.
+- `0x0BE0`–`0x0BE5`, `0x0BEC`, `0x0BED`, and `0x0BF4`: the matching
+  `IDS_MESSAGE_*` names.
+- `0x0BF3` uses the existing `IDS_GAME_SPEED_CHANGED` name.
+- `0x0BFE`, `0x2329`, `0x232E`, `0x4E25`, `0x4E33`, `0x4E35`, and `0x4E43`:
+  the approved error, overlay, and panel-help names.
+
+The source keeps `0x0FA9` numeric. It also keeps the purpose-only missing-help
+IDs numeric. No macro is requested for the empty and unused `0x103C` slot.
+
+The resource evidence uses language `0x0409` (`1033`) and these absolute
+inputs:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`, SHA256
+  `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`, SHA256
+  `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA256
+  `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
+
+The staged base language file contains the exact texts in the base-language
+table. The pinned original tree has no base language file, so the staged base
+file is the base payload evidence.
+
+The staged runtime expansion has empty slots at `0x1023`, `0x1024`, and
+`0x1040`–`0x104E`; it also has empty slots at `0x242D`–`0x242F` and at
+`0x2800`, `0x2801`, `0x2802`, and `0x2804`. The original expansion has the
+same empty slots except that `0x242D`–`0x242F` are missing. Both expansion
+files supply `Roman`, `Carthaginian`, `Macedonian`, and `Palmyran` at
+`0x2806`–`0x2809`. The base slots for those four IDs are empty.
+
+`TRIBE_Game::get_string` checks the expansion string table first and falls
+back to the base game string lookup when the expansion result is missing or
+empty. Thus the approved empty expansion slots use the staged base strings,
+while the expansion civilization strings at `0x2806`–`0x2809` take priority.
+Missing and empty entries do not supply invented text.
+
 ## Constants, comments, and output risk
 
 - No new comments were added.
 - No numeric constant was changed.
-- No resource macro was defined or applied in this worker tree.
+- Root defined the approved resource macros. This worker applied them only in
+  `src/scr_game.cpp`.
 - No declaration type, cast, class layout, calling convention, ABI symbol,
   call target, relocation expression, control-flow statement, or source order
   was intentionally changed.
@@ -269,8 +327,9 @@ their button roles, but the checked language DLLs provide no text for them.
 1. Owner 21 should review parameter names for `include/scr_game.h` from the
    definitions listed above. Keep declarations unnamed if the owner finds a
    reason to defer them.
-2. Root should review the base-language ID requests before editing
-   `include/resource_ids.h`. Preserve `0x1040 + i` as a contiguous range.
+2. Root approved the base-language ID requests in
+   `include/resource_ids.h`. The source preserves the `i +
+   IDS_HOTKEY_SELECT_BUILDING_BASE` range.
 3. Root should decide whether the missing RT_STRING help IDs belong in the
    shared base-language namespace or a separate help-resource namespace.
 4. Root should review the unresolved `temp_value` and `low_fps_player` PDB
