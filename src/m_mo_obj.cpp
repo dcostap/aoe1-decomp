@@ -48,19 +48,18 @@ int RGE_Master_Moving_Object::setup(RGE_Master_Moving_Object* other_object) {
     return 1;
 }
 
-int RGE_Master_Moving_Object::setup(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
+int RGE_Master_Moving_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Animated_Object::setup(infile, sprites, sounds);
 
-    short temp_run_sprite;
-    short temp_move_sprite;
+    short move_sprite_id;
+    short run_sprite_id;
     RGE_Sprite* selected_move;
     RGE_Sprite* selected_run;
 
     master_type = 0x1E;
 
-    rge_read(infile, &temp_run_sprite, 2);
-    rge_read(infile, &temp_move_sprite, 2);
+    rge_read(infile, &move_sprite_id, 2);
+    rge_read(infile, &run_sprite_id, 2);
     rge_read(infile, &turn_speed, 4);
     rge_read(infile, &size_class, 1);
     rge_read(infile, &obj_trail_id, 2);
@@ -68,15 +67,15 @@ int RGE_Master_Moving_Object::setup(
     rge_read(infile, &obj_trail_spacing, 4);
     rge_read(infile, &move_algorithem, 1);
 
-    if (temp_run_sprite >= 0) {
-        selected_move = sprites[temp_run_sprite];
+    if (move_sprite_id >= 0) {
+        selected_move = sprites[move_sprite_id];
     } else {
         selected_move = 0;
     }
     move_sprite = selected_move;
 
-    if (temp_move_sprite >= 0) {
-        selected_run = sprites[temp_move_sprite];
+    if (run_sprite_id >= 0) {
+        selected_run = sprites[run_sprite_id];
     } else {
         selected_run = 0;
     }
@@ -85,12 +84,11 @@ int RGE_Master_Moving_Object::setup(
     return 1;
 }
 
-int RGE_Master_Moving_Object::setup(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
+int RGE_Master_Moving_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     RGE_Master_Animated_Object::setup(infile, sprites, sounds, in_id);
 
-    short temp_run_sprite;
-    short temp_move_sprite;
+    short move_sprite_id;
+    short run_sprite_id;
     short temp_size_class;
     short temp_obj_trail_options;
     short temp_move_algorithem;
@@ -100,7 +98,7 @@ int RGE_Master_Moving_Object::setup(
     master_type = 0x1E;
 
     fscanf(infile, "%hd %hd %f %hd %hd %hd %f %hd",
-           &temp_run_sprite, &temp_move_sprite, &turn_speed,
+           &move_sprite_id, &run_sprite_id, &turn_speed,
            &temp_size_class, &obj_trail_id, &temp_obj_trail_options,
            &obj_trail_spacing, &temp_move_algorithem);
 
@@ -108,15 +106,15 @@ int RGE_Master_Moving_Object::setup(
     move_algorithem = (unsigned char)temp_move_algorithem;
     obj_trail_options = (unsigned char)temp_obj_trail_options;
 
-    if (temp_run_sprite >= 0) {
-        selected_move = sprites[temp_run_sprite];
+    if (move_sprite_id >= 0) {
+        selected_move = sprites[move_sprite_id];
     } else {
         selected_move = 0;
     }
     move_sprite = selected_move;
 
-    if (temp_move_sprite >= 0) {
-        selected_run = sprites[temp_move_sprite];
+    if (run_sprite_id >= 0) {
+        selected_run = sprites[run_sprite_id];
     } else {
         selected_run = 0;
     }
@@ -169,8 +167,7 @@ void RGE_Master_Moving_Object::modify(float amount, unsigned char flag) {
     turn_speed = amount;
 }
 
-void RGE_Master_Moving_Object::modify_delta(
-    float amount, unsigned char flag) {
+void RGE_Master_Moving_Object::modify_delta(float amount, unsigned char flag) {
     if (flag != 6) {
         RGE_Master_Animated_Object::modify_delta(amount, flag);
         return;
@@ -178,8 +175,7 @@ void RGE_Master_Moving_Object::modify_delta(
     turn_speed += amount;
 }
 
-void RGE_Master_Moving_Object::modify_percent(
-    float amount, unsigned char flag) {
+void RGE_Master_Moving_Object::modify_percent(float amount, unsigned char flag) {
     if (flag != 6) {
         RGE_Master_Animated_Object::modify_percent(amount, flag);
         return;
@@ -188,25 +184,25 @@ void RGE_Master_Moving_Object::modify_percent(
 }
 
 void RGE_Master_Moving_Object::save(int outfile) {
-    short temp_run_sprite;
-    short temp_move_sprite;
+    short move_sprite_id;
+    short run_sprite_id;
 
     if (move_sprite) {
-        temp_run_sprite = move_sprite->id;
+        move_sprite_id = move_sprite->id;
     } else {
-        temp_run_sprite = -1;
+        move_sprite_id = -1;
     }
 
     if (run_sprite) {
-        temp_move_sprite = run_sprite->id;
+        run_sprite_id = run_sprite->id;
     } else {
-        temp_move_sprite = -1;
+        run_sprite_id = -1;
     }
 
     RGE_Master_Animated_Object::save(outfile);
 
-    rge_write(outfile, &temp_run_sprite, 2);
-    rge_write(outfile, &temp_move_sprite, 2);
+    rge_write(outfile, &move_sprite_id, 2);
+    rge_write(outfile, &run_sprite_id, 2);
     rge_write(outfile, &turn_speed, 4);
     rge_write(outfile, &size_class, 1);
     rge_write(outfile, &obj_trail_id, 2);
