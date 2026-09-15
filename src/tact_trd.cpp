@@ -17,8 +17,7 @@
 #include "../include/obj_list.h"
 
 TRIBE_Action_Trade::TRIBE_Action_Trade(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1)
-{
+    : RGE_Action(infile, obj_in, 1) {
     rge_read(infile, &this->pick_up_x, 4);
     rge_read(infile, &this->pick_up_y, 4);
     this->action_type = 0x6F;
@@ -27,8 +26,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(int infile, RGE_Action_Object* obj_in)
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
                                        RGE_Task* task_in,
                                        RGE_Static_Object* target_obj_in)
-    : RGE_Action(obj_in, 1)
-{
+    : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 0x6F;
     this->set_target_obj(target_obj_in);
@@ -42,8 +40,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
                                        RGE_Task* task_in,
                                        float x, float y, float z)
-    : RGE_Action(obj_in, 1)
-{
+    : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 0x6F;
     *(int*)&this->target_x = *(int*)&x;
@@ -53,15 +50,13 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
     *(int*)&this->target_z = *(int*)&z;
 }
 
-void TRIBE_Action_Trade::save(int outfile)
-{
+void TRIBE_Action_Trade::save(int outfile) {
     RGE_Action::save(outfile);
     rge_write(outfile, &this->pick_up_x, 4);
     rge_write(outfile, &this->pick_up_y, 4);
 }
 
-void TRIBE_Action_Trade::first_in_stack(unsigned char first_time)
-{
+void TRIBE_Action_Trade::first_in_stack(unsigned char first_time) {
     if (this->obj->attribute_type_held != 0 &&
         this->obj->attribute_type_held != 2 &&
         this->obj->attribute_type_held != 1) {
@@ -78,8 +73,7 @@ void TRIBE_Action_Trade::first_in_stack(unsigned char first_time)
     this->set_state(3);
 }
 
-void TRIBE_Action_Trade::set_state(unsigned char new_state)
-{
+void TRIBE_Action_Trade::set_state(unsigned char new_state) {
     this->sub_actions->delete_list();
     this->state = new_state;
 
@@ -213,8 +207,7 @@ void TRIBE_Action_Trade::set_state(unsigned char new_state)
 // The original frame is eight bytes plus ESI and EDI.
 extern double DAT_00575350;
 
-unsigned char TRIBE_Action_Trade::update()
-{
+unsigned char TRIBE_Action_Trade::update() {
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
@@ -445,8 +438,7 @@ unsigned char TRIBE_Action_Trade::update()
     }
 }
 
-RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
-{
+RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void) {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
 
@@ -462,8 +454,7 @@ RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
     return task->move_sprite;
 }
 
-RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void)
-{
+RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void) {
     TRIBE_Action_Trade* action = this;
     RGE_Task* task = action->task;
     short task_facet = task->attribute_type;
@@ -476,14 +467,12 @@ RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void)
     return action->obj->master_obj->sprite;
 }
 
-int TRIBE_Action_Trade::stop()
-{
+int TRIBE_Action_Trade::stop() {
     this->set_state(2);
     return 1;
 }
 
-int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj_in, float x, float y, float z)
-{
+int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
             if (obj_in->master_obj->id ==
@@ -507,8 +496,7 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj_in, float x, float y, flo
     return 1;
 }
 
-int TRIBE_Action_Trade::work(RGE_Static_Object* obj_in, float x, float y, float z)
-{
+int TRIBE_Action_Trade::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in == this->target_obj) {
             if (this->state == 4 || this->state == 6 || this->state == 7) {
