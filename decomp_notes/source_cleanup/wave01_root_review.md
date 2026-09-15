@@ -88,3 +88,24 @@ Sixteen wave modules are now integrated: eight action modules and eight random-m
 The eight screen modules remain with owner 03 for corrections and resource substitutions.
 No new modules are assigned. No compilation, matching, audits, tests, builds, or games ran during this intake.
 All integrated cleanup remains reviewed and unvalidated against the preserved pre-cleanup build.
+
+## Owner 03: second intake
+
+Delivered head: `a531f0475335977b8f2748e48bd1caa065978805`.
+Root read the complete 1,508-line correction diff, including every changed report.
+The 64 shared resource definitions match the root header exactly.
+Source substitutions retain the reviewed resource values and lookup contexts.
+The save-title expression retains its operand order. The settings header adds parameter names only.
+
+The owner corrected expansion provenance and the Help notice role.
+The campaign worker recorded the incorrect pilot citation and reported no writes to that worktree.
+Root compared the campaign source and report against the worker's final commit; both match the integrated copies.
+Thus, the reported add/add conflict did not omit content from the corrected worker report.
+
+Root accepted these corrections, but returned two small items through owner run 3:
+
+- Join two newly wrapped short campaign error-dialog calls.
+- Correct the main-screen report field that labels the root resource commit as a worker-local commit.
+
+No other source changes or new assignments are requested. Screen integration awaits those complete correction commits.
+No compilation, matching, audits, tests, builds, or games ran during this intake.
