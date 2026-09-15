@@ -56,7 +56,7 @@ Owner 22 remains held; this resume authorization covers the two stopped owners o
 | 19 | Tribe panels | Launched | `sa-cdd1c097` |
 | 20 | Audio and image support | Resumed, run 2 | `sa-704a4bba` |
 | 21 | Game and editor screens | Resumed, run 2 | `sa-2b87499f` |
-| 22 | Text and file support | Held for RAM use | Not launched |
+| 22 | Text and file support | Launched under expanded authorization | `sa-a84c69b1` |
 
 No compilation, builds, matching, audits, tests, or games ran during assignment and preparation.
 The same full-diff review and unchanged-output requirements remain active.
@@ -65,3 +65,12 @@ Root resumed owner 20 after counting 32 active agents: eight owners and 24 worke
 Root then checked again before resuming owner 21: eight owners and 22 workers, or 30 total.
 Both owners received instructions to restart failed workers, including RAM failures, without resetting trees or duplicating running workers.
 Owner 22 remains held.
+
+## Expanded authorization
+
+The user subsequently authorized more owners for uncovered files.
+Root launched Owner 22 after checking all nine trees remained clean at the preparation base.
+The capacity check found five active owners and five active workers before launch.
+Available disk space was approximately 88 GiB.
+This authorization supersedes the earlier Owner 22 hold.
+Root reinforced the ban on validation commands and deletion of incident evidence.

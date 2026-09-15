@@ -1,5 +1,22 @@
 # Cleanup wave 03 root review
 
+## Delegated review queue
+
+The user authorized three concurrent read-only reviewers using `openai-codex-secondary/gpt-5.6-sol`, medium thinking.
+Root retains correction handling and integration responsibility.
+Batch: `batch-15d38b15`.
+
+| Group | Reviewer | Exact head |
+| --- | --- | --- |
+| Owner 17 | `sa-33ff58a2` | `315dd545ea22c89c4bfedff7da6c8d69a7b1b93a` |
+| Owner 19 | `sa-e5a8d4d2` | `fea021a8b9836eb0fc357a5a210041828162a328` |
+| Owner 20 | `sa-5806ac65` | `5b9d313b31819f8228623339e733ff1b25f2558e` |
+
+Each reviewer must read the complete diff and reports and inspect relevant original evidence.
+Owner 19's reviewer also evaluates its shared resource requests without editing the header.
+Owner 15 delivered `0d72737ebab2a2e084ce4d5ee63eca45a697141a`.
+Its complete 10,442-line diff is `build/source-cleanup-20260915/owner15-review.diff`; review assignment remains queued.
+
 ## Owner 13: intake and prohibited-command incident
 
 Delivered group head: `b7eab59996b20bd0cdddc73cb2eb48ab24a1e823`.

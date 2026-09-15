@@ -31,6 +31,17 @@ Do not change layouts, ABI, types, macro values, or runtime behavior to make par
 
 ## Owner review
 
+### Delegated integration review
+
+The user authorized up to three concurrent review agents for completed groups.
+Use `openai-codex-secondary/gpt-5.6-sol` with medium thinking.
+These read-only reviewers are separate from the ten editing-owner slots.
+Each reviewer reads the complete group diff, reports, and relevant original evidence.
+Root can use this review instead of personally reading the complete group diff.
+Root handles findings, correction requests, shared declarations, and final integration.
+Reviewers cannot edit tracked files, delegate, or run prohibited validation commands.
+Preserve their exact reviewed hashes, findings, and recommendations in the integration ledger.
+
 Read all source-cleanup guides before assigning work. Give each worker exact paths, base, evidence paths, and scope.
 No owner or worker may compile, build, run matching checks, audits, tests, or games in this phase.
 Evidence extraction and full Git diff review are allowed. Run repository tools with `--help` before use.
