@@ -12,6 +12,12 @@
 - This report is the assigned durable report for the module.
 - `include/act_tran.h` was read but not edited.
 
+Commit list:
+
+- `1549b93267a6ec34736e11638b5ba4dded936254` — Recover act_tran parameter names.
+- `34e1373c909b001d7b5686453d6419fdd7c8fbfd` — Document act_tran cleanup evidence.
+- `d6392b32e8f9f90d5b260d93275888dd90fab1ef` — Keep act_tran signatures on one line.
+
 The source change restores PDB parameter names and applies 1TBS braces to
 function definitions. It does not change expressions, calls, constants, types,
 storage, declaration scope, or source order.
