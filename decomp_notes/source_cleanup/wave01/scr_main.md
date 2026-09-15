@@ -6,13 +6,15 @@
 - Header read-only: `include/scr_main.h`
 - Branch: `cleanup/staging-20260915-24`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Source cleanup commit: `e522439b9e165e6da621ed722c6834fc8fcce6eb`
+- Source cleanup commit: `752601e741d0327c863e78db2e474fd7ee69bdd8`
+- Shared header commit, worker-local cherry-pick only: `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`
 - Changed paths:
   - `src/scr_main.cpp`
   - `decomp_notes/source_cleanup/wave01/scr_main.md`
 
-The source commit changes only the assigned source file. This report is the
-second commit and documents the source commit above.
+The source commit changes only the assigned source file. The shared header
+commit is separate and must be excluded from module commits for integration.
+This report documents the source commit above.
 
 ## Scope and evidence
 
@@ -72,13 +74,18 @@ source order changed.
 
 The source now reuses the existing `IDS_BUTTON_OK` macro for numeric ID
 `0x0FA1`. The macro is already defined in `include/resource_ids.h` with the
-same value and effective type. No new constant was added by this worker.
+same value and effective type. The approved shared header commit adds the
+fifteen other macros listed below. All fifteen proved uses now use those
+macros in the source.
 
-The following new shared resource mappings are requested. The proposed names
-are cleanup names, not recovered original macro names. The source keeps these
-numeric uses until the shared header owner reviews the requests.
+The following shared resource mappings are applied. The names are cleanup
+names, not recovered original macro names. The source keeps each resource
+value, lookup, and fallback path unchanged.
 
-All requests use these lookup facts:
+The worker cherry-picked the shared header commit locally. That cherry-pick
+changes only `include/resource_ids.h` and is not a module commit.
+
+All mappings use these lookup facts:
 
 - Base DLL: `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`
 - Base SHA-256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
@@ -91,7 +98,7 @@ All requests use these lookup facts:
 - Lookup path: `TRIBE_Game::get_string` tries `languagex.dll` first, then falls back to `language.dll`.
 - The base lookup clears the destination when the ID is missing.
 
-| ID | Proposed macro | Purpose evidence | Base text | Expansion text | Pinned XPack text |
+| ID | Applied macro | Purpose evidence | Base text | Expansion text | Pinned XPack text |
 | --- | --- | --- | --- | --- | --- |
 | `0x23F2` | `IDS_MENU_SINGLE_PLAYER` | Main-menu button `button[0]` starts single-player flow. | `Single Player` | Missing; falls back to base. | Missing. |
 | `0x23F3` | `IDS_MENU_MULTIPLAYER` | Main-menu button `button[1]` starts multiplayer flow. | `Multiplayer` | Missing; falls back to base. | Missing. |
@@ -154,8 +161,8 @@ local behavior without speculation.
 
 The cleanup restores PDB identifier spellings and joins short function
 signatures. It does not remove aliases, casts, temporaries, calls, or unusual
-forms. It does not change literal values, storage, declaration scope, source
-order, lookup order, or resource fallback behavior.
+forms. It preserves resource values, storage, declaration scope, source order,
+lookup order, and resource fallback behavior.
 
 Identifier changes can alter debug names and line records. The existing resource
 macro expands to the original `0x0FA1` integer value. Compiler output,
@@ -173,6 +180,9 @@ invoke a compiler, build command, matcher, audit, test suite, or game.
 ## Commits
 
 - Base: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Source cleanup: `e522439b9e165e6da621ed722c6834fc8fcce6eb`
+- Earlier source cleanup: `e522439b9e165e6da621ed722c6834fc8fcce6eb`
+- Earlier report correction: `c011e3364582540dc8129742fb57fe3d4c3cf24e`
+- Shared header cherry-pick: `ac3ccdedc8b2f4ee50f949205f7e35293cd8da52` (worker-local; exclude from module commits)
+- Applied source cleanup: `752601e741d0327c863e78db2e474fd7ee69bdd8`
 - Report: committed separately after this source commit; its full hash is
   recorded in the handoff response.
