@@ -1,5 +1,12 @@
 # Cleanup wave 03 root review
 
+## Owner 16: correction review resumed
+
+Owner 16 delivered corrected head `fa9d0014ec5cd16dfe6d545c54816eb68d4611dd`.
+The complete 276-line diff is `build/source-cleanup-20260915/owner16-corrections.diff`.
+Original reviewer `sa-63de0de9` resumed to check all five findings and the changed reports.
+The group remains unmerged until that review completes. Validation remains deferred.
+
 ## Owner 22: corrected and integrated
 
 Root read the full seven-file correction diff to `a9509d501035039ca7fb4e3a33d4f78843d44f7c`.
