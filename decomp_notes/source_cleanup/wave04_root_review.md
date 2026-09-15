@@ -1,5 +1,14 @@
 # Cleanup wave 04 root review
 
+## Owner 24: final reports approved
+
+Root read the complete three-report diff to `c3d77f3540ad04c7cfd3097ffdb9998a27beb909`.
+The reports now identify the executable oracle correctly and record the corrected PDB reference size.
+No source or header changed in this correction. No review blocker remains.
+The original 8,915-line source review remains in effect. Validation remains deferred.
+Root merged the group as `a51b167a20ab13ad0d80d3f52df5048154c79415`.
+Main contains 200 assigned modules plus the pilot: 201 of 225, approximately 89.3%.
+
 ## Owner 24: source approved; report corrections requested
 
 Reviewer `sa-5e58304d` read all 8,915 lines and all reports. No source or header blocker remains.
