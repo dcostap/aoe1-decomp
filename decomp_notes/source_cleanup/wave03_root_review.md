@@ -1,5 +1,26 @@
 # Cleanup wave 03 root review
 
+## Owner 19: resource-substitution review
+
+Corrected head: `b02bf34c8a0ef850b9f73b04cf6dcc73df87e3c2`.
+The complete 890-line correction diff is `build/source-cleanup-20260915/owner19-corrections.diff`.
+Original reviewer `sa-e5a8d4d2` resumed to review all substitutions and report corrections.
+Integration remains pending that result.
+
+## Owner 22: approval and coordinated notification name
+
+Reviewer `sa-44e3d2ca` read all 3,104 diff lines and reviewed all 118 registered functions.
+No source blocker was found at `fe40ac36843104fe78e0b3285e721f08823a8e76`.
+The reviewer approved `CHAT_RECEIVED` as a new cleanup name for notification payload `0x17D5` in `chat.h`.
+All three consumers already include that header: `Chat.cpp`, `scr_mps.cpp`, and `tribegam.cpp`.
+Root resumed Owner 22 to add the macro, update its source, and send the header commit for the other owners.
+
+The same workers must correct the `mystring` header-owner/report-hash metadata and stale `colorlog` header description.
+The file evidence tool incident needs surviving command and stderr details, without a rerun.
+The reviewer inspected the tool path: missing inventory failed before output writes, compilation, or object checks.
+This does not make that prohibited validator call an authorized cleanup operation.
+All source changes remain unvalidated.
+
 ## Owner 13: corrected and integrated
 
 Root read the complete final correction diff to `47af24f3f592189500684abc225a8f0c6ed13e79`.
