@@ -4,7 +4,7 @@
 
 - Module: `src/scr_ach.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `8c9d4f5906e9e3fad85af1f3602100285744da61`
+- Final source commit: `575575b0b6f8e7774bb68d45eedfb0737be8bce7`
 - Changed files:
   - `src/scr_ach.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_ach.md`
@@ -176,8 +176,8 @@ No string name is proposed for this binary resource namespace.
 ## Comments and presentation
 
 Function definitions now use one true brace style.
-Short four-parameter definitions stay on one line.
-The five-parameter mouse definition wraps only for readability.
+Short handler signatures and calls stay on one line.
+Longer calls keep aligned continuation indentation.
 
 The source comment now states that mode 3 reads victory IDs 16 and 15.
 The packet call order supports this statement.
@@ -229,12 +229,14 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
   The constructor now follows one true brace style.
 - Owner review required absolute main-root evidence paths.
   The PDB, packets, executable, DLLs, and extraction files now use them.
+- Root review required compact short handler signatures and calls.
+  The source now keeps short calls on one line and aligns remaining continuations.
 - Resource payloads, hashes, and conclusions did not change.
 
 ## Validation
 
 The permitted source and Git review checks ran.
-`git diff --check` passed before report creation.
+The latest correction pass included `git diff --check` and a full diff review.
 
 Compilation was not run.
 Matching was not run.
