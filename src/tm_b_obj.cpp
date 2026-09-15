@@ -58,15 +58,15 @@ int TRIBE_Master_Building_Object::setup(
 
 int TRIBE_Master_Building_Object::setup(
     int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
-    short sound_num;
-    short sprite_num;
+    short sprite_id;
+    short sound_id;
     RGE_Sprite* selected_sprite;
     RGE_Sound* selected_sound;
 
     TRIBE_Master_Combat_Object::setup(infile, sprites, sounds);
     this->master_type = 0x50;
 
-    rge_read(infile, &sound_num, 2);
+    rge_read(infile, &sprite_id, 2);
     rge_read(infile, &this->building_connect_flag, 1);
     rge_read(infile, &this->building_facet, 2);
     rge_read(infile, &this->build_and_go_away, 1);
@@ -74,17 +74,17 @@ int TRIBE_Master_Building_Object::setup(
     rge_read(infile, &this->on_build_make_tile, 2);
     rge_read(infile, &this->on_build_make_overlay, 2);
     rge_read(infile, &this->on_build_make_tech, 2);
-    rge_read(infile, &sprite_num, 2);
+    rge_read(infile, &sound_id, 2);
 
-    if (sound_num > -1) {
-        selected_sprite = sprites[sound_num];
+    if (sprite_id > -1) {
+        selected_sprite = sprites[sprite_id];
     } else {
         selected_sprite = 0;
     }
     this->construction_sprite = selected_sprite;
 
-    if (sprite_num > -1) {
-        selected_sound = sounds[sprite_num];
+    if (sound_id > -1) {
+        selected_sound = sounds[sound_id];
     } else {
         selected_sound = 0;
     }
