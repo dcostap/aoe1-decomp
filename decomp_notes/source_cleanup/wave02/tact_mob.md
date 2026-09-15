@@ -6,9 +6,11 @@
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
 - Initial source cleanup commit from `git rev-parse`: `0b7483156fe27d2b1cd99563ed4f9683d981e7c2`.
 - Initial report commit from `git rev-parse`: `32b47ecab6a9c2cd5a536ac93825f12c00dae410`.
-- Brace correction commit from `git rev-parse`: `1b504117b115d37b2b96a9e384df681b78a88684`.
-- The report correction commit follows the brace correction commit.
-- Commit history: base, source cleanup, initial report, brace correction, report correction.
+- Constructor-brace correction commit from `git rev-parse`: `1b504117b115d37b2b96a9e384df681b78a88684`.
+- Signature-formatting correction commit from `git rev-parse`: `961f50326cbd0f18f95f33ae680c98bd84c4d48b`.
+- The report correction commit follows the signature-formatting correction commit.
+- Commit history: base, source cleanup, initial report, constructor-brace
+  correction, signature-formatting correction, report correction.
 - Changed files in this delivery: `src/tact_mob.cpp` and this report.
 - Branch: `cleanup/staging-20260915-44`.
 - Header read but not changed: `include/tact_mob.h`.
@@ -142,10 +144,11 @@ or resource-ID request is open.
 
 ## Code generation and risk notes
 
-The edits rename parameters and locals and move five function braces to 1TBS
-form. The two constructor braces now share their initializer-list lines. The
-full source has no other function-definition brace on a separate line. These
-edits do not change types, declaration scope, storage, evaluation order,
+The edits rename parameters and locals, move five function braces to 1TBS form,
+and join the value-constructor parameter list onto one line. The two constructor
+braces now share their initializer-list lines. The full source has no other
+function-definition brace on a separate line. These edits do not change types,
+declaration scope, storage, evaluation order,
 control flow, calls, literals, relocations, function boundaries, or ABI symbols.
 The value-constructor initializer still passes the same object. The placement
 radius expressions and output store keep their original order.
@@ -158,7 +161,7 @@ or revalidate any status.
 ## Validation
 
 I ran `git diff --check` before the brace correction and reviewed the complete
-source diff. After the correction, I reviewed the correction diff and the full
-source brace placement with Git.
+source diff. After each correction, I reviewed the correction diff and the full
+cumulative source diff with Git.
 Compilation, matching, audits, and tests were not run.
 No build, compiler check, game, or runtime harness was run.
