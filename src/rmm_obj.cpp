@@ -440,7 +440,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
         long count = object->number_of_groups;
         while (this->pop_stack(obj_stack, y, min_x0, zone) != 0 &&
                count > 0) {
-            if (land_zone ==
+            if ((unsigned char)land_zone ==
                     map_zone->get_zone_info(y, min_x0) &&
                 (object->terrain < 0 ||
                  (this->map_row_offset[min_x0][y].terrain_type & 0x1f) ==
