@@ -8,7 +8,10 @@
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`.
 - Base source blob from Git: `526ce6f6f9fce20a65910a13f98133357bff6c9c`.
 - Final source blob from Git: `0c7557dc8dff29ee877fbba9de0f5ff6dc2690a5`.
-- Final commit: see the delivery record for the full Git hash.
+- Source/report commit (reviewed): `fba05245c8bb77870ec4f1e7e532316a5129823f`.
+- Report-correction commit: this follow-up commit records the source/report
+  commit above; its full hash is returned separately to avoid a
+  self-referential hash.
 - Changed files:
   - `src/trig.cpp`
   - `decomp_notes/source_cleanup/wave04/trig.md`
