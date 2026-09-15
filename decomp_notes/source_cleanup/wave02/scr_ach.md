@@ -4,7 +4,7 @@
 
 - Module: `src/scr_ach.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `7f952f638fd0b1878b080638cb609f2df9d8f6c0`
+- Final source commit: `8c9d4f5906e9e3fad85af1f3602100285744da61`
 - Changed files:
   - `src/scr_ach.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_ach.md`
