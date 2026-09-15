@@ -5,6 +5,8 @@ import pytest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools/harness'))
 from human_compare import compare_rows, video_grid
+from human_session import (execution_plan, ORIGINAL_SHA256, V1_POLICY, V2_POLICY,
+                           V1_TEMPLATE_SHA256, V2_TEMPLATE_SHA256, V1_TO_V2_UPGRADE)
 
 
 def frame(index,time,character):
@@ -47,7 +49,11 @@ def test_full_rng_comparison_is_not_limited_to_status_prefix(tmp_path,monkeypatc
         folder.mkdir()
         data=struct.pack('<II',0,value)
         (folder/'rng.bin').write_bytes(data)
-        report={'fixture':{'human':{'mode':'replay','duration_ms':1000,'events':[],'contract':{}}},
+        scenario={'mode':'replay','schema':1,'duration_ms':1000,'events':[],
+                  'contract':{'original_sha256':ORIGINAL_SHA256,'policy':V2_POLICY,
+                              'script_sha256':V2_TEMPLATE_SHA256}}
+        report={'fixture':{'human':scenario},'script_sha256':V2_TEMPLATE_SHA256,
+                'human_control':execution_plan(scenario),
                 'video':{'fps':20},'video_origin_time_ms':0,'events':[],
                 'status':{'rngTrace':[],'rngCount':1,'human':{'turn':0,'updates':0,'time_ms':0,'world':{}}},
                 'rng_recording':{'file':'rng.bin','records':1,'sha256':hashlib.sha256(data).hexdigest(),
@@ -59,6 +65,29 @@ def test_full_rng_comparison_is_not_limited_to_status_prefix(tmp_path,monkeypatc
     assert result['rng_prefix']['equal']
     assert result['rng_trace_complete']==[True,True]
     assert result['full_rng']['equal']==(right_value==7)
+    assert result['control_identity']['classification']=='same-policy'
     (tmp_path/'right/rng.bin').write_bytes(b'changed')
     with pytest.raises(ValueError,match='hash or length'):
         human_compare.compare_captures(*captures)
+
+
+def test_explicit_upgrade_identity_is_visible_and_strict(monkeypatch):
+    import human_compare
+    monkeypatch.setattr(human_compare,'session_contract',lambda report:{})
+    scenario={'mode':'replay','schema':1,'duration_ms':1000,'events':[],
+              'contract':{'original_sha256':ORIGINAL_SHA256,'policy':V1_POLICY,
+                          'script_sha256':V1_TEMPLATE_SHA256},
+              'recording_sha256':'1'*64,'upgrade_rule':V1_TO_V2_UPGRADE}
+    def capture():
+        report={'fixture':{'human':scenario},'script_sha256':V2_TEMPLATE_SHA256,
+                'human_control':execution_plan(scenario),'video':{'fps':20},'video_origin_time_ms':0,
+                'events':[],'status':{'rngTrace':[],'rngCount':0,
+                'human':{'turn':0,'updates':0,'time_ms':0,'world':{}}}}
+        return {'path':'capture','report':report,'grid':[]}
+    left,right=capture(),capture()
+    result=human_compare.compare_captures(left,right)
+    assert result['control_identity']['same_policy_replay'] is False
+    assert result['control_identity']['classification']=='explicit-v1-to-v2-upgrade'
+    right['report']['human_control']['upgrade_rule']='unknown'
+    with pytest.raises(ValueError,match='control identity'):
+        human_compare.compare_captures(left,right)

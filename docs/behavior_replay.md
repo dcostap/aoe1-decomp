@@ -13,6 +13,8 @@ Both cases run three fresh originals and three fresh rebuilt games.
 The human case uses `config/harness/human-accepted-20260914.json`. Its 324 messages remain unchanged.
 The suite checks its pinned SHA256 before it starts any game.
 The historical `source_report` path records provenance. Replay does not need that old report.
+This case uses its frozen v1 control template and exact recorded script hash.
+The suite rejects a v1-to-v2 scheduler upgrade or a missing control-policy record.
 
 The human case records the full RNG stream with the read-only RNG observer.
 It compares inputs, clocks, camera observations, terminal observations, RNG records, and captured RGB hashes.

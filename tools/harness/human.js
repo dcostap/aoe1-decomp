@@ -32,14 +32,17 @@ const setKeys = ha(hu, 'SetKeyboardState', 'int', ['pointer']);
 const invalidate = ha(hu, 'InvalidateRect', 'int', ['pointer','pointer','int']);
 let pumping = false;
 function pumpReplay() {
-    if (!isReplay || pumping || human.stopped) return;
+    if (!isReplay || pumping || human.stopped || waiting.length) return;
+    if (human.posted >= events.length || human.turn < events[human.posted].turn) return;
     pumping = true;
     try {
-        while (human.posted < events.length && human.turn >= events[human.posted].turn) {
-            const event = events[human.posted], hwnd = resolveRoute(event.route);
-            waiting.push({hwnd, event}); human.posted++;
-            if (!post(hwnd,event.message,event.value,event.parameter)) throw new Error('Cannot post recorded input');
+        const event = events[human.posted], pending = {hwnd:resolveRoute(event.route), event};
+        waiting.push(pending);
+        if (!post(pending.hwnd,event.message,event.value,event.parameter)) {
+            waiting.pop();
+            throw new Error('Cannot post recorded input');
         }
+        human.posted++;
     } finally { pumping = false; }
 }
 function windowClass(hwnd) {
@@ -152,6 +155,7 @@ const activeDispatch = new Set();
 for (const name of ['DispatchMessageA','DispatchMessageW']) {
     Interceptor.attach(hu.getExportByName(name), {
         onEnter(args) {
+            this.delivered = null;
             this.dispatchKey = this.threadId + ':' + args[0].toString();
             this.outer = !activeDispatch.has(this.dispatchKey);
             if (!this.outer) return;
@@ -169,18 +173,28 @@ for (const name of ['DispatchMessageA','DispatchMessageW']) {
                 if (![0x100,0x101,0x102,0x103,0x104,0x105,0x106,0x107,0x200,0x201,0x202,0x203,0x204,0x205,0x206,0x207,0x208,0x209].includes(message))
                     throw new Error('Unsupported input message: ' + message);
                 const expected = waiting[0];
-                if (isReplay && (!expected || !hwnd.equals(expected.hwnd) || message !== expected.event.message || value !== expected.event.value || parameter !== expected.event.parameter)) {
+                if (isReplay && (!expected || expected.dispatching || !hwnd.equals(expected.hwnd) || message !== expected.event.message || value !== expected.event.value || parameter !== expected.event.parameter)) {
                     msg.add(4).writeU32(0); human.dropped++; return;
                 }
+                if (isReplay) expected.dispatching = true;
                 const row = {kind:'human-input', index:human.input, time_ms:ticks-1000,
                     turn:human.turn, updates:human.updates, panel:currentPanelName(), route:route(hwnd), message, value, parameter};
                 if (isReplay) row.expected_time_ms = expected.event.time_ms;
                 syncInput(hwnd, message, value, parameter);
-                send(row); human.input++; if (isReplay) waiting.shift();
+                send(row); human.input++; if (isReplay) this.delivered = expected;
                 if (human.input > 100000) throw new Error('Input recording limit reached');
             } catch (error) { humanStop(String(error)); }
         },
-        onLeave() { if (this.outer) activeDispatch.delete(this.dispatchKey); }
+        onLeave() {
+            if (!this.outer) return;
+            activeDispatch.delete(this.dispatchKey);
+            if (!isReplay || !this.delivered || human.stopped) return;
+            try {
+                if (waiting[0] !== this.delivered) throw new Error('Recorded input dispatch identity changed');
+                waiting.shift();
+                pumpReplay();
+            } catch (error) { humanStop(String(error)); }
+        }
     });
 }
 function humanFrameDue() {

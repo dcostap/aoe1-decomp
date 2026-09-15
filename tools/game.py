@@ -179,9 +179,13 @@ def main():
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
+    p.add_argument('--upgrade-v1-to-v2',action='store_true',
+                   help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
+    p.add_argument('--upgrade-v1-to-v2',action='store_true',
+                   help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the accepted human recording')
     p.add_argument('--check-fixtures', action='store_true', help='Validate the permanent fixture without running games')
     p = subs.add_parser('replay', help='Compare repeated original and rebuilt gameplay replays')
@@ -238,6 +242,8 @@ def main():
             command += (['--record','--seconds',str(args.seconds)] if args.command == 'record-original' else
                         ['--recording',str(args.recording.resolve()),'--runs',str(args.runs),
                          '--target','rebuilt' if args.command == 'replay-rebuilt' else 'original'])
+            if args.command != 'record-original' and args.upgrade_v1_to_v2:
+                command.append('--upgrade-v1-to-v2')
             return subprocess.run(command,cwd=ROOT).returncode
         if args.command == 'replay-repeat':
             output = ROOT / 'build/runtime' / ('replay-repeat-' + stamp())

@@ -64,3 +64,29 @@ The process tracker had reset. The diagnostic agent had stopped without a final 
 The diagnostic agent resumed from its saved context.
 The complete suite reports made a duplicate gameplay run unnecessary at that point.
 The cause of the PowerShell crashes remains unknown.
+
+## Versioned scheduler repair
+
+V2 posts one message and retains its pending identity until the matching dispatch returns.
+It then resolves the next route. Missing routes still fail; the scheduler adds no retry or clock adjustment.
+The frozen V1 template retains SHA256 `6312fbd5ebb7d82dd91abe775e8c4c15c538743f276dba03ab61bbb8a1043db4`.
+The old accepted input continues to select V1.
+V2 uses SHA256 `1112a4ab54fef13f766d20da7fc1815b20f43aa844bbfdde23ce14eeabc862f4`.
+Existing V1 input requires the explicit `--upgrade-v1-to-v2` diagnostic option to use V2.
+That option verifies the full original contract and reports both identities without changing the recording.
+Standard parity rejects upgraded captures. Generic comparisons label the different execution policy.
+
+The first original diagnostic run completed all 1,361 inputs with no dropped messages.
+Every input message and game boundary matches the recording. Clock boundaries still differ.
+Report: `build/runtime/human-20260915T075924132214Z/report.json`.
+Capture: `build/runtime/original-20260915T075924146229Z/capture/report.json`.
+This demonstrates successful route handling, not same-policy or complete gameplay equivalence.
+The full Python suite passed 762 tests and 31 subtests with the final linked-image fixture.
+Test report: `build/scheduler-v2-full-tests.xml`.
+
+The old-input comparison video is:
+`build/runtime/old-recording-final-repairs-comparison/original-rebuilt-difference.mp4`.
+It contains 1,206 frames at 20 FPS, with dimensions 1920 by 512.
+The video uses the first reported pair, not the equal pair.
+One black end frame marks the shorter rebuilt video. No existing game frame is masked or omitted.
+Its difference panel compares decoded video pixels. Raw capture hashes remain the exact comparison evidence.

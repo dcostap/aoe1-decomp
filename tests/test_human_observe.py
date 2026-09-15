@@ -19,7 +19,7 @@ def test_observers_cannot_change_recording_mode():
 def test_observer_does_not_change_control_script_fingerprint():
     code=(ROOT/'tools/harness/capture.py').read_text()
     assert "source += '\\n' + observer" in code
-    assert "'script_sha256': hashlib.sha256(template.encode()).hexdigest()" in code
+    assert "'script_sha256': template_sha256" in code
     assert "'observer_sha256':hashlib.sha256(observer.encode()).hexdigest()" in code
     assert "status['rngCount'] != rng_records" in code
 

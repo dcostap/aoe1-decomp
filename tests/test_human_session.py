@@ -1,4 +1,6 @@
 import copy
+import hashlib
+import io
 import json
 from pathlib import Path
 import sys
@@ -7,7 +9,11 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools/harness'))
-from human_session import validate_session, compare_inputs, load_recording, ORIGINAL_SHA256, POLICY
+import human_session as human_session_module
+from human_session import (validate_session, compare_inputs, execution_plan, load_recording,
+                           load_recording_with_sha256, verify_starting_contract,
+                           template_sha256, ORIGINAL_SHA256, POLICY, V1_POLICY, V2_POLICY,
+                           V1_TEMPLATE_SHA256, V2_TEMPLATE_SHA256, V1_TO_V2_UPGRADE)
 
 
 def event():
@@ -17,12 +23,83 @@ def event():
 
 def session():
     return {'schema':1,'mode':'replay','duration_ms':1000,'events':[event()],
-            'contract':{'original_sha256':ORIGINAL_SHA256,'policy':POLICY}}
+            'contract':{'original_sha256':ORIGINAL_SHA256,'policy':POLICY,
+                        'script_sha256':template_sha256(POLICY)}}
 
 
 def test_valid_record_and_replay():
     validate_session(session())
     validate_session({'schema':1,'mode':'record','duration_ms':1000})
+
+
+def test_frozen_v1_and_current_v2_template_hashes():
+    harness = ROOT/'tools/harness'
+    legacy = (harness/'human-v1-template.js').read_bytes()
+    current = '\n'.join((harness/name).read_text() for name in ('menu.js','offline.js','human.js')).encode()
+    assert hashlib.sha256(legacy).hexdigest() == V1_TEMPLATE_SHA256
+    assert hashlib.sha256(current).hexdigest() == V2_TEMPLATE_SHA256
+
+
+def test_preserved_candidate_recording_and_explicit_upgrade_plan():
+    path=ROOT/'config/harness/human-candidate-20260915.json'
+    recording,source_sha256=load_recording_with_sha256(path)
+    assert source_sha256 == '60c04e651b19d144cd033ffcc5ed2bdff1bfe75629b036f493d8db497e4b832e'
+    assert recording['policy'] == V1_POLICY and len(recording['events']) == 1361
+    data={'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],'events':recording['events'],
+          'contract':recording['contract'],'recording_sha256':source_sha256,
+          'upgrade_rule':V1_TO_V2_UPGRADE}
+    before=copy.deepcopy(data['contract']),copy.deepcopy(data['events'])
+    plan=execution_plan(data)
+    assert plan == {'recorded_policy':V1_POLICY,'recorded_script_sha256':V1_TEMPLATE_SHA256,
+                    'executed_policy':V2_POLICY,'executed_script_sha256':V2_TEMPLATE_SHA256,
+                    'upgrade_rule':V1_TO_V2_UPGRADE,'recording_sha256':data['recording_sha256'],
+                    'same_policy_replay':False}
+    assert (data['contract'],data['events']) == before
+
+
+def test_upgrade_verifies_complete_recorded_starting_contract():
+    path=ROOT/'config/harness/human-candidate-20260915.json'
+    recording=load_recording(path)
+    contract=recording['contract']
+    session={'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],'events':recording['events'],
+             'contract':contract,'recording_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+             'upgrade_rule':V1_TO_V2_UPGRADE}
+    report={'clock':contract['clock'],'registry_inputs':copy.deepcopy(contract['registry_inputs']),
+            'arguments':copy.deepcopy(contract['arguments']),'frida_version':contract['frida_version'],
+            'manifest':{'copied_files_before_exe_replacement':[
+                {'path':name,'sha256':value} for name,value in contract['assets'].items()],
+                **copy.deepcopy(contract['graphics'])}}
+    assert verify_starting_contract(session,report)['same_policy_replay'] is False
+    for field in ('clock','registry_inputs','arguments','frida_version'):
+        changed=copy.deepcopy(report)
+        changed[field]=None
+        with pytest.raises(ValueError,match='starting contract differs'):
+            verify_starting_contract(session,changed)
+    changed=copy.deepcopy(report)
+    changed['manifest']['copied_files_before_exe_replacement'][0]['sha256']='changed'
+    with pytest.raises(ValueError,match='starting contract differs'):
+        verify_starting_contract(session,changed)
+    changed=copy.deepcopy(report)
+    changed['manifest']['graphics_sha256']='changed'
+    with pytest.raises(ValueError,match='starting contract differs'):
+        verify_starting_contract(session,changed)
+
+
+@pytest.mark.parametrize('change', ['policy','hash','upgrade','missing_recording_hash'])
+def test_unknown_or_incomplete_upgrade_pair_fails(change):
+    data=session()
+    data['contract'].update(policy=V1_POLICY,script_sha256=V1_TEMPLATE_SHA256)
+    data.update(upgrade_rule=V1_TO_V2_UPGRADE,recording_sha256='1'*64)
+    if change == 'policy':
+        data['contract'].update(policy='unknown',script_sha256=V1_TEMPLATE_SHA256)
+    elif change == 'hash':
+        data['contract']['script_sha256']='0'*64
+    elif change == 'upgrade':
+        data['upgrade_rule']='unknown'
+    else:
+        del data['recording_sha256']
+    with pytest.raises(ValueError):
+        validate_session(data)
 
 
 @pytest.mark.parametrize('settings',[{'combat':True},{'observe':True,'combat':True,'rng_only':True},
@@ -122,6 +199,24 @@ def test_bad_recording_header(tmp_path,data):
     with pytest.raises(ValueError): load_recording(path)
 
 
+def test_recording_read_stays_bounded_if_file_grows(monkeypatch):
+    requested=[]
+    class Stream(io.BytesIO):
+        def read(self,size=-1):
+            requested.append(size)
+            return super().read(size)
+    class GrowingPath:
+        def stat(self):
+            return type('Stat',(),{'st_size':1})()
+        def open(self,mode):
+            assert mode == 'rb'
+            return Stream(b'x'*9)
+    monkeypatch.setattr(human_session_module,'MAX_RECORDING_BYTES',8)
+    with pytest.raises(ValueError,match='size limit'):
+        human_session_module.load_recording_with_sha256(GrowingPath())
+    assert requested == [9]
+
+
 def test_new_profile_keeps_existing_menu_guard():
     code=(ROOT/'tools/harness/ui.js').read_text()
     assert "if (cfg.replay && name === 'forbidStart') continue;" in code
@@ -143,3 +238,14 @@ def test_normal_close_requests_terminal_frame_before_destruction():
     close=code.split("human.stop_reason = 'window-close';",1)[1].split('return;',1)[0]
     assert 'args[1] = ptr(0)' in close
     assert 'invalidate(gameWindow,NULL,0)' in close
+
+
+def test_game_command_routes_explicit_scheduler_upgrade(monkeypatch):
+    import game
+    calls=[]
+    monkeypatch.setattr(sys,'argv',['game.py','replay-original',
+        str(ROOT/'config/harness/human-candidate-20260915.json'),'--runs','1','--upgrade-v1-to-v2'])
+    monkeypatch.setattr(game.subprocess,'run',lambda command,**kwargs:
+                        calls.append(command) or type('Result',(),{'returncode':0})())
+    assert game.main() == 0
+    assert '--upgrade-v1-to-v2' in calls[0]

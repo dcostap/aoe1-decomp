@@ -2,6 +2,7 @@
 import argparse
 import ctypes as C
 from ctypes import wintypes as W
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -12,7 +13,21 @@ from game import ROOT, stage, stamp, run_worker
 from prepare_runtime import ORIGINAL_SHA256
 
 MESSAGES = {*range(0x100,0x108),*range(0x200,0x20a)}
-POLICY = 'human-idle20-clock1-paced-v1-message-driven-polling'
+V1_POLICY = 'human-idle20-clock1-paced-v1-message-driven-polling'
+V2_POLICY = 'human-idle20-clock1-paced-v2-serialized-message-driven-polling'
+POLICY = V2_POLICY
+V1_TEMPLATE_SHA256 = '6312fbd5ebb7d82dd91abe775e8c4c15c538743f276dba03ab61bbb8a1043db4'
+V2_TEMPLATE_SHA256 = '1112a4ab54fef13f766d20da7fc1815b20f43aa844bbfdde23ce14eeabc862f4'
+V1_TO_V2_UPGRADE = 'v1-to-v2-serialized-dispatch-20260915'
+MAX_RECORDING_BYTES = 32*1024*1024
+
+
+def template_sha256(policy):
+    if policy == V1_POLICY:
+        return V1_TEMPLATE_SHA256
+    if policy == V2_POLICY:
+        return V2_TEMPLATE_SHA256
+    raise ValueError('Unknown human input policy.')
 
 
 def integer(value, minimum, maximum):
@@ -34,8 +49,26 @@ def validate_session(session):
         raise ValueError('Combat diagnostics require observers without RNG-only mode.')
     if not integer(session.get('duration_ms'), 1, 190000):
         raise ValueError('Recorded terminal boundary exceeds 190 seconds.')
-    if session['mode'] == 'replay' and (not isinstance(session.get('contract'),dict) or session['contract'].get('original_sha256') != ORIGINAL_SHA256 or session['contract'].get('policy') != POLICY):
-        raise ValueError('A replay requires its original starting contract.')
+    upgrade = session.get('upgrade_rule')
+    if upgrade is not None and upgrade != V1_TO_V2_UPGRADE:
+        raise ValueError('Unknown human replay upgrade rule.')
+    if session['mode'] == 'record' and upgrade is not None:
+        raise ValueError('A recording cannot use a replay upgrade rule.')
+    if session['mode'] == 'replay':
+        contract = session.get('contract')
+        if not isinstance(contract,dict) or contract.get('original_sha256') != ORIGINAL_SHA256:
+            raise ValueError('A replay requires its original starting contract.')
+        policy = contract.get('policy')
+        if policy not in (V1_POLICY,V2_POLICY) or contract.get('script_sha256') != template_sha256(policy):
+            raise ValueError('Unknown human replay policy or control-script hash.')
+        if upgrade is not None and policy != V1_POLICY:
+            raise ValueError('The scheduler upgrade requires the exact v1 policy and script hash.')
+        recording_sha = session.get('recording_sha256')
+        if recording_sha is not None and (not isinstance(recording_sha,str) or len(recording_sha) != 64 or
+                any(c not in '0123456789abcdef' for c in recording_sha)):
+            raise ValueError('Invalid source recording SHA256.')
+        if upgrade is not None and recording_sha is None:
+            raise ValueError('The scheduler upgrade requires the unchanged recording SHA256.')
     events = session.get('events', [])
     if not isinstance(events, list) or len(events) > 100000:
         raise ValueError('Invalid input event count.')
@@ -70,21 +103,59 @@ def validate_session(session):
                 raise ValueError('Invalid child-window identity.')
 
 
-def load_recording(path):
-    if path.stat().st_size > 32*1024*1024:
+def load_recording_with_sha256(path):
+    if path.stat().st_size > MAX_RECORDING_BYTES:
         raise ValueError('Recording exceeds the size limit.')
-    recording = json.loads(path.read_text())
-    if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') != POLICY:
+    with path.open('rb') as stream:
+        data = stream.read(MAX_RECORDING_BYTES + 1)
+    if len(data) > MAX_RECORDING_BYTES:
+        raise ValueError('Recording exceeds the size limit.')
+    recording = json.loads(data)
+    if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY):
         raise ValueError('Unsupported original recording contract.')
     if not all(key in recording for key in ('duration_ms','events','contract')):
         raise ValueError('Recording is missing required fields.')
+    if not isinstance(recording['contract'],dict) or recording['policy'] != recording['contract'].get('policy'):
+        raise ValueError('Recording policy differs from its starting contract.')
     validate_session({'schema':1,'mode':'replay', **{key:recording[key] for key in ('duration_ms','events','contract')}})
-    return recording
+    return recording, hashlib.sha256(data).hexdigest()
 
 
-def session_contract(report):
+def load_recording(path):
+    return load_recording_with_sha256(path)[0]
+
+
+def execution_plan(session):
+    validate_session(session)
+    if session['mode'] == 'record':
+        return {'recorded_policy':None, 'recorded_script_sha256':None,
+                'executed_policy':V2_POLICY, 'executed_script_sha256':V2_TEMPLATE_SHA256,
+                'upgrade_rule':None, 'recording_sha256':None, 'same_policy_replay':None}
+    contract = session['contract']
+    upgrade = session.get('upgrade_rule')
+    executed_policy = V2_POLICY if upgrade else contract['policy']
+    return {'recorded_policy':contract['policy'], 'recorded_script_sha256':contract['script_sha256'],
+            'executed_policy':executed_policy, 'executed_script_sha256':template_sha256(executed_policy),
+            'upgrade_rule':upgrade, 'recording_sha256':session.get('recording_sha256'),
+            'same_policy_replay':upgrade is None}
+
+
+def session_contract(report, policy=None):
     from replay import recording_contract
-    return dict(recording_contract(report), policy=POLICY, original_sha256=ORIGINAL_SHA256)
+    if policy is None:
+        policy = (report.get('human_control') or {}).get('executed_policy')
+    if policy is None:
+        policy = (((report.get('fixture') or {}).get('human') or {}).get('contract') or {}).get('policy', POLICY)
+    return dict(recording_contract(report), policy=policy, original_sha256=ORIGINAL_SHA256)
+
+
+def verify_starting_contract(session, report):
+    plan = execution_plan(session)
+    actual = session_contract({**report, 'script_sha256':plan['recorded_script_sha256']},
+                              policy=plan['recorded_policy'])
+    if actual != session['contract']:
+        raise ValueError('Recording starting contract differs; refusing to launch replay.')
+    return plan
 
 
 def inputs(report):
@@ -154,7 +225,8 @@ def run_session(output, session, visible):
     if not path.exists():
         raise ValueError(f'No capture report. Inspect {runtime}.')
     report = json.loads(path.read_text())
-    output.append({'capture':str(path), 'video':report.get('video'), 'returncode':code})
+    output.append({'capture':str(path), 'video':report.get('video'), 'returncode':code,
+                   'human_control':report.get('human_control')})
     if code or report['errors'] or not (report.get('status') or {}).get('human', {}).get('stopped'):
         raise ValueError(f'Session is incomplete. Inspect {path}.')
     return report
@@ -171,11 +243,13 @@ def main():
     parser.add_argument('--observe',action='store_true',help='Add full RNG and focused read-only diagnostics during replay')
     parser.add_argument('--rng-only',action='store_true',help='Keep only full RNG diagnostics; requires --observe')
     parser.add_argument('--combat',action='store_true',help='Use focused combat diagnostics instead of broad state hooks; requires --observe')
+    parser.add_argument('--upgrade-v1-to-v2',action='store_true',
+                        help='Diagnostic only: replay an exact v1 recording with the serialized v2 scheduler')
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
     parser.add_argument('--cursor-check',action='store_true',help='Private stationary-cursor and normal-close check; requires smoke')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
-    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
+    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe or args.upgrade_v1_to_v2)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
         parser.error('Use 1..180 seconds, 1..3 runs, and smoke only with record.')
     output = args.output or ROOT/'build/runtime'/('human-'+stamp())
     output.mkdir(parents=True, exist_ok=False)
@@ -199,10 +273,13 @@ def main():
             (output/'recording.json').write_text(json.dumps(recording,indent=2)+'\n')
             print(f'Recording: {output / "recording.json"}')
         else:
-            recording = load_recording(args.recording)
+            recording, recording_sha256 = load_recording_with_sha256(args.recording)
             session = {'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],
                        'events':recording['events'],'contract':recording['contract'],'target':args.target,
-                       'observe':args.observe,'rng_only':args.rng_only,'combat':args.combat}
+                       'observe':args.observe,'rng_only':args.rng_only,'combat':args.combat,
+                       'recording_sha256':recording_sha256,
+                       'upgrade_rule':V1_TO_V2_UPGRADE if args.upgrade_v1_to_v2 else None}
+            result['human_control'] = execution_plan(session)
             first = None
             for _ in range(args.runs):
                 report = run_session(result['runs'],session,False)

@@ -161,9 +161,11 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         validate_steps(scenario.get('steps'))
     replay = scenario.get('replay')
     human = scenario.get('human')
+    human_control = None
     if human:
-        from human_session import validate_session
+        from human_session import V1_POLICY, execution_plan, validate_session
         validate_session(human)
+        human_control = execution_plan(human)
         original_target = human.get('target','original') == 'original'
         if replay or ui or (manifest['selected_exe_sha256'] == ORIGINAL_SHA256) != original_target or clock != 'calls':
             raise ValueError('Human recording requires the selected executable and controlled-clock profile.')
@@ -185,6 +187,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     config = hook_config(runtime / 'empiresx.exe', manifest, ui or bool(human), probes)
     config['replay'] = replay
     config['human'] = human
+    config['humanControl'] = human_control
     config['actions'] = scenario.get('actions', [])
     config['uiSteps'] = scenario.get('steps', [])
     config['maxFrames'] = 40 if replay else (480 if ui else 120)
@@ -194,15 +197,26 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             raise ValueError('Fixture action is outside the supported range.')
     output = runtime / 'capture'
     output.mkdir(exist_ok=False)
-    template = (Path(__file__).with_name('menu.js')).read_text()
-    if ui:
-        template += '\n' + Path(__file__).with_name('offline.js').read_text()
-        template += '\n' + Path(__file__).with_name('ui.js').read_text()
-    if replay:
-        template += '\n' + Path(__file__).with_name('replay.js').read_text()
-    if human:
-        template += '\n' + Path(__file__).with_name('offline.js').read_text()
-        template += '\n' + Path(__file__).with_name('human.js').read_text()
+    legacy_template = None
+    if human and human_control['recorded_policy'] == V1_POLICY:
+        legacy_template = Path(__file__).with_name('human-v1-template.js').read_text()
+        if hashlib.sha256(legacy_template.encode()).hexdigest() != human_control['recorded_script_sha256']:
+            raise ValueError('Frozen v1 human control template changed.')
+    if human and human_control['executed_policy'] == V1_POLICY:
+        template = legacy_template
+    else:
+        template = (Path(__file__).with_name('menu.js')).read_text()
+        if ui:
+            template += '\n' + Path(__file__).with_name('offline.js').read_text()
+            template += '\n' + Path(__file__).with_name('ui.js').read_text()
+        if replay:
+            template += '\n' + Path(__file__).with_name('replay.js').read_text()
+        if human:
+            template += '\n' + Path(__file__).with_name('offline.js').read_text()
+            template += '\n' + Path(__file__).with_name('human.js').read_text()
+    template_sha256 = hashlib.sha256(template.encode()).hexdigest()
+    if human and template_sha256 != human_control['executed_script_sha256']:
+        raise ValueError('Selected human control template differs from its policy hash.')
     observer = Path(__file__).with_name('human_observe.js').read_text() if observe else ''
     video = None
     video_report = None
@@ -231,11 +245,9 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     try:
         registry_base, registry_snapshot = registry_state.create()
         if human and human.get('contract'):
-            from human_session import session_contract
-            actual = session_contract({'clock':clock, 'script_sha256':hashlib.sha256(template.encode()).hexdigest(),
-                'registry_inputs':registry_snapshot, 'arguments':arguments, 'frida_version':frida.__version__, 'manifest':manifest})
-            if actual != human['contract']:
-                raise ValueError('Recording starting contract differs; refusing to launch replay.')
+            from human_session import verify_starting_contract
+            verify_starting_contract(human, {'clock':clock, 'registry_inputs':registry_snapshot,
+                'arguments':arguments, 'frida_version':frida.__version__, 'manifest':manifest})
         config['registryBase'] = registry_base
         source = template.replace('__CONFIG__', json.dumps(config))
         if observer:
@@ -453,7 +465,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                     checkpoint['composite'] = name
                     checkpoint['rgb_sha256'] = hashlib.sha256(image.tobytes()).hexdigest()
             report = {'schema': 1, 'runtime': str(runtime), 'manifest': manifest, 'hook': config,
-                      'script_sha256': hashlib.sha256(template.encode()).hexdigest(),
+                      'script_sha256': template_sha256, 'human_control':human_control,
                       'observer_sha256':hashlib.sha256(observer.encode()).hexdigest() if observer else None,
                       'instrumentation_sha256':digest(output/'instrumentation.js') if (output/'instrumentation.js').exists() else None,
                       'registry_inputs': registry_snapshot, 'shared_assets_unchanged': not changed_assets,

@@ -13,6 +13,8 @@ def test_permanent_recording_is_the_unchanged_accepted_input():
     recording = suite.accepted_recording()
     assert len(recording['events']) == 324
     assert recording['automated_smoke'] is False
+    assert recording['contract']['policy'] == 'human-idle20-clock1-paced-v1-message-driven-polling'
+    assert recording['contract']['script_sha256'] == '6312fbd5ebb7d82dd91abe775e8c4c15c538743f276dba03ab61bbb8a1043db4'
 
 
 def test_changed_recording_is_rejected(tmp_path):
@@ -65,6 +67,7 @@ def test_standard_suite_runs_human_case_after_scripted_failure(tmp_path, monkeyp
         assert command[command.index('--target') + 1] == target
         assert command[command.index('--recording') + 1] == str(suite.RECORDING)
         assert '--observe' in command and '--rng-only' in command
+        assert '--upgrade-v1-to-v2' not in command
         assert command[command.index('--runs') + 1] == '3'
     assert result['complete'] is True and result['passed'] is False
 
@@ -74,12 +77,19 @@ def test_missing_capture_cannot_pass(tmp_path):
     assert result['complete'] is False and result['passed'] is False
 
 
-@pytest.mark.parametrize('change', [None, 'clock', 'recording', 'observer'])
+@pytest.mark.parametrize('change', [None, 'clock', 'recording', 'observer', 'upgrade'])
 def test_human_case_checks_recording_fidelity_and_observer(monkeypatch, change):
     recording = suite.accepted_recording()
     session = {key: copy.deepcopy(recording[key]) for key in ('duration_ms', 'events', 'contract')}
     session.update(observe=True, rng_only=True, combat=False)
+    control={'recorded_policy':recording['contract']['policy'],
+             'recorded_script_sha256':recording['contract']['script_sha256'],
+             'executed_policy':recording['contract']['policy'],
+             'executed_script_sha256':recording['contract']['script_sha256'],
+             'upgrade_rule':None,'recording_sha256':suite.RECORDING_SHA256,'same_policy_replay':True}
     capture = {'report': {'fixture': {'human': session},
+                          'script_sha256':recording['contract']['script_sha256'],
+                          'human_control':control,
                           'events': [dict(event, kind='human-input') for event in recording['events']]}}
     captures = [copy.deepcopy(capture) for _ in range(6)]
     if change == 'clock':
@@ -88,6 +98,10 @@ def test_human_case_checks_recording_fidelity_and_observer(monkeypatch, change):
         captures[0]['report']['fixture']['human']['duration_ms'] += 1
     elif change == 'observer':
         captures[0]['report']['fixture']['human']['rng_only'] = False
+    elif change == 'upgrade':
+        captures[0]['report']['human_control'].update(
+            executed_policy='human-idle20-clock1-paced-v2-serialized-message-driven-polling',
+            upgrade_rule='v1-to-v2-serialized-dispatch-20260915',same_policy_replay=False)
     monkeypatch.setattr(suite, 'load_batch', lambda path, original: captures[:3] if original else captures[3:])
     monkeypatch.setattr(suite, 'compare_captures', lambda *args: matching_comparison())
     result = suite.human_result(Path('original'), Path('rebuilt'), recording)

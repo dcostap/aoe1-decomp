@@ -88,6 +88,19 @@ The accepted recording does not need to change when selecting the other executab
 Use its `--help` output for command syntax.
 It checks within-executable variation before reporting cross-build input, camera, counter, RNG-prefix, and video differences.
 
+Use this explicit diagnostic for an existing v1 recording that needs the serialized scheduler:
+
+```cmd
+game.cmd replay-original config/harness/human-candidate-20260915.json --runs 1 --upgrade-v1-to-v2
+```
+
+The command first checks the complete v1 starting contract against the frozen v1 control template.
+It then uses the v2 scheduler without changing the recording.
+The report records both policies, both template hashes, the upgrade rule, and the recording hash.
+It also records `same_policy_replay` as false.
+The standard parity suite rejects upgraded captures.
+The generic human comparison labels them as an explicit v1-to-v2 upgrade comparison.
+
 The default profile saves only the first 10,000 RNG observations, plus the total count.
 An equal prefix is not a complete RNG match. The comparison reports this limit explicitly.
 Video comparison uses recorded pre-encode RGB hashes, with no pixel tolerance or masks.
@@ -155,14 +168,28 @@ The clock starts at 1000 milliseconds.
 It advances 20 milliseconds at each main-loop idle return and one millisecond per debug-clock call.
 The harness paces that clock against wall time. Slow execution does not skip controlled time.
 Idle advancement prevents the clock from stopping in static menus.
-Both recording and replay use the same policy. Neither replaces RNG values or restores original game state.
+New recordings use the serialized v2 policy.
+A normal replay uses its recorded policy. Neither replaces RNG values or restores original game state.
 
 Recording captures queued mouse movement, button transitions, double-clicks, keyboard transitions, and character messages.
 Both modes derive game cursor and key polling from received messages, not unrelated desktop input.
 Cursor polling uses the pinned graphics wrapper's logical game coordinates, not desktop coordinates.
 This normalized polling model does not reproduce every Windows keyboard-state feature.
 
-Replay posts recorded Windows messages in groups at recorded idle-return boundaries, including nested idle calls during mouse handling.
+The v2 scheduler keeps one recorded message in flight.
+It resolves the next window after the exact prior `DispatchMessage` call returns.
+This permits a prior handler to create, destroy, or replace a native child control.
+It does not retry a missing or ambiguous route.
+
+The accepted 2026-09-14 recording keeps its frozen v1 grouped scheduler and exact template hash.
+This compatibility path keeps its existing message ordering.
+
+Input can run in a nested modal message loop.
+The v2 scheduler releases input after the matching nested dispatch returns.
+An unrelated nested dispatch or A/W forwarding call cannot release it.
+The recording does not store dispatch depth, so replay does not prove equal modal-loop nesting.
+
+Replay schedules messages at recorded idle-return boundaries, including nested idle calls during mouse handling.
 The normal game loop dispatches them through Windows. The harness checks receipts without calling game command functions directly.
 Replay suppresses automatic character translation because the recording already contains character messages.
 
@@ -172,6 +199,7 @@ Input records have explicit size, count, route, and time limits. Limit failures 
 
 The starting contract checks assets, graphics configuration, registry inputs, instrumentation, and the original executable.
 An incompatible contract stops replay before the game resumes. The harness does not silently update the contract.
+An explicit v1-to-v2 upgrade retains the recorded contract and reports the different executed policy.
 
 ## Video files
 

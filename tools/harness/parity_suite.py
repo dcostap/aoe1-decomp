@@ -49,12 +49,23 @@ def human_result(original_path, rebuilt_path, recording):
         rebuilt = load_batch(rebuilt_path, False)
         result['recording_fidelity'] = []
         for capture in original + rebuilt:
-            session = capture['report']['fixture']['human']
+            report = capture['report']
+            session = report['fixture']['human']
             if session.get('observe') is not True or session.get('rng_only') is not True or session.get('combat'):
                 raise ValueError('The standard human case requires the full RNG-only observer.')
+            control = report.get('human_control')
+            if (not isinstance(control,dict) or control.get('same_policy_replay') is not True or
+                    control.get('upgrade_rule') is not None or
+                    control.get('recorded_policy') != recording['contract']['policy'] or
+                    control.get('executed_policy') != recording['contract']['policy'] or
+                    control.get('recorded_script_sha256') != recording['contract']['script_sha256'] or
+                    control.get('executed_script_sha256') != recording['contract']['script_sha256'] or
+                    control.get('recording_sha256') != RECORDING_SHA256 or
+                    report.get('script_sha256') != recording['contract']['script_sha256']):
+                raise ValueError('The standard human case requires an exact same-policy control script.')
             if any(session[key] != recording[key] for key in ('duration_ms', 'events', 'contract')):
                 raise ValueError('Capture does not use the accepted recording.')
-            result['recording_fidelity'].append(compare_inputs(recording['events'], inputs(capture['report'])))
+            result['recording_fidelity'].append(compare_inputs(recording['events'], inputs(report)))
         for name, left, others in (
                 ('original_repeat', original[0], original[1:]),
                 ('rebuilt_repeat', rebuilt[0], rebuilt[1:]),

@@ -1,10 +1,10 @@
-"""Compare human replay reports without treating timing drift as proof of a game-code defect."""
+"""Compare human replay reports and report their control-policy identity."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
-from human_session import compare_inputs, inputs, session_contract
+from human_session import compare_inputs, execution_plan, inputs, session_contract
 
 
 def compare_rows(left, right):
@@ -67,8 +67,25 @@ def rng_prefix(report):
     return [dict(row,file=row['file'].replace('/','\\').lower()) for row in report['status']['rngTrace']]
 
 
+def control_identity(report):
+    scenario = report['fixture']['human']
+    expected = execution_plan(scenario)
+    control = report.get('human_control')
+    if control is None:
+        if scenario.get('upgrade_rule') is not None or report.get('script_sha256') != expected['executed_script_sha256']:
+            raise ValueError('Legacy capture control identity is incomplete.')
+        return dict(expected, identity_source='legacy-same-policy-inferred')
+    if control != expected or report.get('script_sha256') != expected['executed_script_sha256']:
+        raise ValueError('Capture control identity differs from its replay request.')
+    return dict(control, identity_source='reported')
+
+
 def compare_captures(left,right):
     a,b = left['report'],right['report']
+    controls = [control_identity(report) for report in (a,b)]
+    comparable = [{key:value for key,value in control.items() if key != 'identity_source'} for control in controls]
+    if comparable[0] != comparable[1]:
+        raise ValueError('Capture control identities differ.')
     if session_contract(a) != session_contract(b):
         raise ValueError('Capture starting contracts differ.')
     scenarios = [r['fixture']['human'] for r in (a,b)]
@@ -94,7 +111,11 @@ def compare_captures(left,right):
         if any(r['rng_recording']['records'] != r['status']['rngCount'] for r in (a,b)):
             raise ValueError('Full RNG record counts differ from terminal counters.')
         full_rng = {'equal':difference is None,'first_difference':difference}
+    same_policy = all(control['same_policy_replay'] is True for control in controls)
     return {'left':left['path'],'right':right['path'],
+            'control_identity':{'left':controls[0],'right':controls[1],
+                                'same_policy_replay':same_policy,
+                                'classification':'same-policy' if same_policy else 'explicit-v1-to-v2-upgrade'},
             'inputs':compare_inputs(inputs(a),inputs(b)),
             'camera_values':compare_rows([r['camera'] for r in cameras[0]],[r['camera'] for r in cameras[1]]),
             'camera_receipts':compare_rows(cameras[0],cameras[1]),
@@ -128,13 +149,17 @@ def main():
     args = parser.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     result = {'schema':1,'complete':False,
-              'scope':'Inputs, camera values, terminal counters, RNG prefix, full RNG when available, and video hashes. Not full hidden-state equivalence. Observer neutrality requires a separate original comparison.'}
+              'scope':'Control-policy identity, inputs, camera values, terminal counters, RNG, and video hashes. Not full hidden-state equivalence. Observer neutrality requires a separate original comparison.'}
     try:
         original = load_batch(args.original,True)
         rebuilt = load_batch(args.rebuilt,False)
         result['original_repeat'] = [compare_captures(original[0],row) for row in original[1:]]
         result['rebuilt_repeat'] = [compare_captures(rebuilt[0],row) for row in rebuilt[1:]]
         result['cross_build'] = [compare_captures(original[0],row) for row in rebuilt]
+        comparisons = [row for name in ('original_repeat','rebuilt_repeat','cross_build') for row in result[name]]
+        result['same_policy_replay'] = all(row['control_identity']['same_policy_replay'] for row in comparisons)
+        result['classification'] = ('same-policy-comparison' if result['same_policy_replay'] else
+                                    'explicit-v1-to-v2-upgrade-comparison')
         result['complete'] = True
     except (OSError,ValueError,KeyError) as error:
         result['error'] = str(error)
