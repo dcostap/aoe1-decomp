@@ -31,6 +31,13 @@ The tools' help output was read before use.
 A passing registry check is not a build, matching, or gameplay result.
 Record every failed, skipped, unknown, or unavailable check. Do not weaken checks or discard incident evidence.
 
+## Terrain repair review
+
+Root read the complete correction diff to `844478cc9dcbee7d76fe7fad87065aff3c26bd17`.
+The source restores baseline parameter name `p2` and its two bound calculations.
+The existing local `y` remains separate. No scope, declaration, type, or initialization changed.
+This addresses C2082 by source review; successful recompilation remains unproved.
+
 ## First build failures
 
 Preserved report: `build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
