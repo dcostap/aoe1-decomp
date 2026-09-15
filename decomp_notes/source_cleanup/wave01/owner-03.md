@@ -4,8 +4,9 @@
 
 - Branch: `cleanup/staging-20260915-03`
 - Base: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Reviewed integration head before this ledger: `2fdfc17c35a4ed868558ef3263b939df3ea75f0c`
-- Scope: eight screen modules and seven changed owner headers.
+- Initial handoff integration head: `2fdfc17c35a4ed868558ef3263b939df3ea75f0c`
+- Corrected integration head before this ledger update: `be32a0e3515bcaa8500bd176acda4c95fe77c56b`
+- Scope: eight screen modules and eight authorized headers.
 - Status: reviewed and integrated, but unvalidated.
 
 I read each complete worker diff and report. I also reviewed the complete combined diff.
@@ -14,14 +15,14 @@ I read each complete worker diff and report. I also reviewed the complete combin
 
 | Module | Worker | Worker final head | Review result |
 | --- | --- | --- | --- |
-| `src/scr_save.cpp` | `sa-351566d9` | `41547cd394bf15c6ebf2c32ca8049023a605be65` | Approved and integrated. |
-| `src/scr_name.cpp` | `sa-04ef409c` | `5345cb57e024f094e4e78c389e0c05850cbda1d7` | Approved and integrated. |
+| `src/scr_save.cpp` | `sa-351566d9` | `df6d631d5029eab12edce4fec1fa07aae39fdbf7` | Approved and integrated. |
+| `src/scr_name.cpp` | `sa-04ef409c` | `328b549864abf609df551f8c48def819c462e110` | Approved after resource evidence correction. |
 | `src/scr_set.cpp` | `sa-5b54177e` | `8ae5d1d955aedd612417c0b94f33145c6d42b14c` | Approved after one correction. |
-| `src/scr_sing.cpp` | `sa-793768e4` | `9ff38c23120dcaab2e0a6fe07dd164a133d8664a` | Approved and integrated. |
-| `src/scr_main.cpp` | `sa-6a51283f` | `9ae4196600d6f9e9ab5fa83ea3a92c9aa9fe397d` | Approved and integrated. |
-| `src/scr_cam.cpp` | `sa-5767a2a6` | `bd19a2106944ac8ee01b12f49c48f9fb3f14e154` | Approved and integrated. |
-| `src/scr_cams.cpp` | `sa-97873e72` | `3771819773edb9f87c20f3726e22301bf81a8773` | Approved after two corrections. |
-| `src/scr_cj.cpp` | `sa-f122e345` | `12b9a6f64846a35238fac4e8549c0a3fd2fbf759` | Approved and integrated. |
+| `src/scr_sing.cpp` | `sa-793768e4` | `3f8e9fc369ceb826dcfae88741d4d2c8ff69a653` | Approved and integrated. |
+| `src/scr_main.cpp` | `sa-6a51283f` | `a09efcf4e41a051e36ee84d4e54dbcd7fbc31a9a` | Approved after mapping correction. |
+| `src/scr_cam.cpp` | `sa-5767a2a6` | `806336fd34685422a38760dcbeda457e55ff7e7d` | Approved after evidence correction. |
+| `src/scr_cams.cpp` | `sa-97873e72` | `69b52be28d591c669407ca2f36913e9b10551167` | Approved after three corrections. |
+| `src/scr_cj.cpp` | `sa-f122e345` | `50dcb4fcba7ebce307f0becff401b99b1b5e3037` | Approved after brace correction. |
 
 Each worker started at the group base above. Each worker changed only its source and module report.
 
@@ -53,6 +54,32 @@ The first `scr_cams` source renamed three uncertain `startGame` locals. Packet e
 
 Round two restored `scen`, `first_human`, and `first_color`. The report records the rejected mapping.
 
+Root review found one unnecessary `scr_cams` call wrap. The same worker restored the call to one line.
+
+Root review found one remaining `scr_cj` constructor brace. The same worker applied 1TBS.
+
+The `scr_main` worker traced `0x1D4F7` through `TMessageDialog::setup`.
+The report now proposes `IDS_HELP_NOTICE` for displayed notice text.
+
+The `scr_cam` report first cited old pilot extraction artifacts. The same worker re-extracted data under slot 25.
+
+The corrected report keeps the old citation in its correction record. The worker did not edit the pilot worktree.
+
+The `scr_name` report incorrectly said its help text was unknown. The same worker recorded the base DLL text.
+
+Six workers applied the reviewed shared resource mappings. Their worker-local header cherry-picks were not integrated.
+
+Excluded worker-local shared-header commits:
+
+| Module | Excluded commit |
+| --- | --- |
+| `scr_save` | `c79bf91c115c5ae13769847e24444d92b7214dc4` |
+| `scr_name` | `08253bca4342fefa97129a115b95bd36c97438ef` |
+| `scr_sing` | `90059e0b3cccac0e76bc94adfffd52ba42882554` |
+| `scr_main` | `ac3ccdedc8b2f4ee50f949205f7e35293cd8da52` |
+| `scr_cam` | `b2fabf8d2e4834afa166ba35f9148b286a33a50d` |
+| `scr_cj` | `ce7c965ff82f640183c8e7207f7a6d3cbb26d923` |
+
 ## Integrated commits
 
 | Local commit | Module or purpose |
@@ -77,10 +104,29 @@ Round two restored `scen`, `first_human`, and `first_color`. The report records 
 | `f6acd6c6869954fc6b276ccc58e2d88c0a45537b` | `scr_cams` report and formatting correction |
 | `8abf8359c916416ab99bf77468db41dc26742531` | `scr_cams` uncertain-name correction |
 | `2fdfc17c35a4ed868558ef3263b939df3ea75f0c` | Owner header parameter names |
+| `cea8702d67fd5dfca54ee652e42455a350ae6e22` | Extended-owner settings header names |
+| `14d031ccd9c7a454c2052bc0c08baa158a1464eb` | `scr_cams` call formatting correction |
+| `2f804efcdcd5a39deb87c94d976cf83348f5cb96` | `scr_cj` constructor 1TBS correction |
+| `e7d3905d058907ac547b352e63836dac3b560981` | `scr_cj` correction record |
+| `4d070e0fc816564ea0974c5aa78c0ecd15943e76` | `scr_main` help-notice mapping correction |
+| `b4ee11acacf8f2f7f620b2fc5a98e135b565f800` | `scr_cam` extraction provenance correction |
+| `fdd449d0a14dd1ba91326282f6f818918b21db60` | Root-reviewed shared resource definitions |
+| `ec1d79d939471e37c30e5e038d947b4fe41d28cd` | `scr_sing` resource substitutions |
+| `825594a8489de66fbac949e6be5eeaaaf5846bf5` | `scr_sing` resource report |
+| `74b0e47f97abc2fcd104ad99e22895cfa1c78871` | `scr_save` resource substitutions |
+| `54daa9366b353dc1fbfc516d636ee8b97dd45fb3` | `scr_save` resource report |
+| `b20c9cfcfc1f0af708ef7fe6aa04cc25a74071f3` | `scr_cj` resource substitutions and report |
+| `ec90e2f8f2b3d197421ad47f16fbd9717365a952` | `scr_cj` resource commit record |
+| `7d8dd7939e5d1e96e52ea5c20230549a858de1c6` | `scr_cam` resource substitutions |
+| `22d6f6f4106b1bf605d3f8922ff64d7bbb6cd480` | `scr_cam` resource report |
+| `e33bbe0afadede9d9bc65b0e704babf410d06010` | `scr_main` resource substitutions |
+| `326fdea4ce43820c020f01a4ec90f4e86eb075cc` | `scr_main` resource report |
+| `fe6c99a0f18ddde55d50efad386d9d2d5805c447` | `scr_name` resource substitutions and report |
+| `be32a0e3515bcaa8500bd176acda4c95fe77c56b` | `scr_name` resource evidence correction |
 
 ## Owner header changes
 
-Commit `2fdfc17c35a4ed868558ef3263b939df3ea75f0c` changes only parameter names.
+Commits `2fdfc17c35a4ed868558ef3263b939df3ea75f0c` and `cea8702d67fd5dfca54ee652e42455a350ae6e22` change only parameter names.
 
 Changed headers:
 
@@ -91,14 +137,16 @@ Changed headers:
 - `include/scr_cam.h`
 - `include/scr_cams.h`
 - `include/scr_cj.h`
+- `include/scr_set_screen.h`
 
 The names match the procedure-scoped PDB records. Types, order, virtual slots, and layouts stay unchanged.
 
-`include/scr_set.h` needed no change. It only includes the root-owned screen declaration.
+`include/scr_set.h` needed no change. Root extended ownership for `include/scr_set_screen.h` only.
 
-## Root-owned header request
+## Extended owner header change
 
-Update `include/scr_set_screen.h` with these PDB names:
+Root extended owner 03 ownership to `include/scr_set_screen.h`.
+Commit `cea8702d67fd5dfca54ee652e42455a350ae6e22` adds these PDB names:
 
 ```cpp
 virtual long handle_user_command(unsigned int wParam, long lParam);
@@ -107,11 +155,15 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 
 PDB VAs `004B5C70` and `004B5CB0` prove these names and types.
 
-## Root-owned resource requests
+## Shared resource mappings
 
-Root retains `include/resource_ids.h`. No pending resource change blocks this group.
+Root retains `include/resource_ids.h`.
+Root commit `c9ba20d160541d928b5d9e55e1d02dce5a784e0c` added 64 distinct definitions.
 
-All requests below use `RT_STRING` and language `0x0409`.
+The group cherry-pick is `fdd449d0a14dd1ba91326282f6f818918b21db60`.
+Six module workers applied their reviewed mappings. No listed mapping remains pending.
+
+All mappings below use `RT_STRING` and language `0x0409`.
 
 The base file is `runtime/language.dll`.
 Its SHA-256 is `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
@@ -121,13 +173,15 @@ Its SHA-256 is `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39
 
 The pinned XPack file SHA-256 is `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 
-The requested IDs are missing from both expansion files. The runtime path falls back to the base file.
+Most requested IDs are missing from both expansion files. Some `scr_main` IDs have empty or overridden expansion entries.
 
-Module reports record exact base text, missing or empty status, call purpose, and format tokens.
+Each module table below states its expansion provenance. Module reports record exact text, purpose, and format tokens.
 
 ### `scr_save`
 
-| Value | Proposed macro | Proven role |
+All requested IDs are missing from both checked expansion files. Runtime lookup falls back to the base file.
+
+| Value | Applied macro | Proven role |
 | --- | --- | --- |
 | `0x24C3` | `IDS_SAVE_GAME_TITLE_BASE` | Save-screen title range base. |
 | `0x24C6` | `IDS_ERROR_SAVE_GAME_NAME_REQUIRED` | Empty save-game name error. |
@@ -140,7 +194,9 @@ Module reports record exact base text, missing or empty status, call purpose, an
 
 ### `scr_name`
 
-| Value | Proposed macro | Proven role |
+All requested IDs are missing from both checked expansion files. Runtime lookup falls back to the base file.
+
+| Value | Applied macro | Proven role |
 | --- | --- | --- |
 | `0x29FE` | `IDS_SELECT_PLAYER_TITLE` | Screen title. |
 | `0x29FF` | `IDS_PLAYER_NAME_LABEL` | Player-name label. |
@@ -156,7 +212,9 @@ Module reports record exact base text, missing or empty status, call purpose, an
 
 ### `scr_sing`
 
-| Value | Proposed macro | Proven role |
+All requested IDs are missing from both checked expansion files. Runtime lookup falls back to the base file.
+
+| Value | Applied macro | Proven role |
 | --- | --- | --- |
 | `0x03EA` | `IDS_BUTTON_CLOSE` | Close control. |
 | `0x2404` | `IDS_MENU_SINGLE_PLAYER_TITLE` | Screen title. |
@@ -169,27 +227,29 @@ Module reports record exact base text, missing or empty status, call purpose, an
 
 ### `scr_main`
 
-| Value | Proposed macro | Proven role |
-| --- | --- | --- |
-| `0x23F2` | `IDS_MENU_SINGLE_PLAYER` | Single-player route. |
-| `0x23F3` | `IDS_MENU_MULTIPLAYER` | Multiplayer route. |
-| `0x23F5` | `IDS_MENU_HELP` | Help route. |
-| `0x23F6` | `IDS_MENU_SCENARIO_BUILDER` | Scenario-builder route. |
-| `0x23F7` | `IDS_MENU_EXIT` | Exit route. |
-| `0x2419` | `IDS_PRODUCT_TITLE` | Product title. |
-| `0x241B` | `IDS_COPYRIGHT_PREFIX` | Copyright prefix. |
-| `0x241C` | `IDS_COPYRIGHT_SUFFIX` | Copyright suffix. |
-| `0x2424` | `IDS_COPYRIGHT_SEPARATOR` | Copyright separator. |
-| `0x2425` | `IDS_COPYRIGHT_WARNING` | Copyright warning. |
-| `0x03EA` | `IDS_BUTTON_CLOSE` | Close control. |
-| `0x07D7` | `IDS_ERROR_LOAD_GAME_DATA` | Data-load error. |
-| `0x07D8` | `IDS_ERROR_INSERT_CD_SINGLE_PLAYER` | Single-player CD error. |
-| `0x07DA` | `IDS_ERROR_INSERT_CD_SCENARIO_BUILDER` | Scenario-builder CD error. |
-| `0x1D4F7` | `IDS_HELP_DIALOG_TITLE` | Help-dialog title role; text missing. |
+| Value | Applied macro | Proven role | Runtime expansion | Pinned expansion |
+| --- | --- | --- | --- | --- |
+| `0x23F2` | `IDS_MENU_SINGLE_PLAYER` | Single-player route. | Missing | Missing |
+| `0x23F3` | `IDS_MENU_MULTIPLAYER` | Multiplayer route. | Missing | Missing |
+| `0x23F5` | `IDS_MENU_HELP` | Help route. | Missing | Missing |
+| `0x23F6` | `IDS_MENU_SCENARIO_BUILDER` | Scenario-builder route. | Missing | Missing |
+| `0x23F7` | `IDS_MENU_EXIT` | Exit route. | Missing | Missing |
+| `0x2419` | `IDS_PRODUCT_TITLE` | Product title. | Override text | Override text |
+| `0x241B` | `IDS_COPYRIGHT_PREFIX` | Copyright prefix. | Empty | Empty |
+| `0x241C` | `IDS_COPYRIGHT_SUFFIX` | Copyright suffix. | Override text | Override text |
+| `0x2424` | `IDS_COPYRIGHT_SEPARATOR` | Copyright separator. | Empty | Missing |
+| `0x2425` | `IDS_COPYRIGHT_WARNING` | Copyright warning. | Empty | Missing |
+| `0x03EA` | `IDS_BUTTON_CLOSE` | Close control. | Missing | Missing |
+| `0x07D7` | `IDS_ERROR_LOAD_GAME_DATA` | Data-load error. | Empty | Missing |
+| `0x07D8` | `IDS_ERROR_INSERT_CD_SINGLE_PLAYER` | Single-player CD error. | Empty | Missing |
+| `0x07DA` | `IDS_ERROR_INSERT_CD_SCENARIO_BUILDER` | Scenario-builder CD error. | Empty | Missing |
+| `0x1D4F7` | `IDS_HELP_NOTICE` | Displayed help notice; exact text unknown. | Missing | Missing |
 
 ### `scr_cam`
 
-| Value | Proposed macro | Proven role |
+All requested IDs are missing from both checked expansion files. Runtime lookup falls back to the base file.
+
+| Value | Applied macro | Proven role |
 | --- | --- | --- |
 | `0x2BC1` | `IDS_CAMPAIGN_EDITOR_TITLE` | Editor title. |
 | `0x2BC2` | `IDS_CAMPAIGN_FILENAME_LABEL` | Filename label. |
@@ -207,7 +267,9 @@ Module reports record exact base text, missing or empty status, call purpose, an
 
 ### `scr_cj`
 
-| Value | Proposed macro | Proven role |
+All requested IDs are missing from both checked expansion files. Runtime lookup falls back to the base file.
+
+| Value | Applied macro | Proven role |
 | --- | --- | --- |
 | `0x25A0` | `IDS_MULTIPLAYER_JOIN` | Join button. |
 | `0x25A1` | `IDS_MULTIPLAYER_SHOW_GAMES` | Show-games button. |
@@ -221,7 +283,7 @@ Module reports record exact base text, missing or empty status, call purpose, an
 | `0x25AB` | `IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS` | Empty-list instructions. |
 | `0x25AD` | `IDS_MULTIPLAYER_UNABLE_TO_CREATE_GAME` | Create-failure message. |
 
-`scr_set` and `scr_cams` request no new resource definitions.
+`scr_set` and `scr_cams` needed no new resource definitions.
 
 ## Validation
 
