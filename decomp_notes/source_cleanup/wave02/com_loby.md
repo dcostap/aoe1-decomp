@@ -12,7 +12,7 @@
 - Changed files: `src/com_loby.cpp` and this report.
 - Header changes: none. Owner 12 owns `include/com_loby.h`.
 
-The source cleanup covers all 14 registry functions:
+The source cleanup covers all 13 registry functions:
 `0042F290`, `0042F300`, `0042F330`, `0042F370`, `0042F3A0`, `0042F430`,
 `0042F640`, `0042F660`, `0042F680`, `0042F6B0`, `0042F6C0`, `0042F6D0`,
 and `0042F830`.
