@@ -7,7 +7,8 @@
 - Branch: `cleanup/staging-20260915-202`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Source cleanup commit: `8f3614a40c104690b286f317826bf243819ef24d`
-- Final source commit: `8f3614a40c104690b286f317826bf243819ef24d`
+- Formatting correction commit: `0f3b3ba8c8a7f4494b884f237f8e9909db9a428b`
+- Final source commit: `0f3b3ba8c8a7f4494b884f237f8e9909db9a428b`
 - Changed files: `src/drawarea.cpp` and this report
 - Registry: `config/functions/src/drawarea.cpp.json` (read only)
 
@@ -18,6 +19,15 @@ calls, literals, or source order.
 
 The report commit is separate from the source commit. Its hash is returned
 with delivery because a report cannot contain its own final hash.
+
+## Correction history
+
+Full diff review found next-line opening braces in function definitions and
+control blocks. Commit `0f3b3ba8c8a7f4494b884f237f8e9909db9a428b` applies 1TBS
+throughout this source. It moves existing braces only, joins applicable
+`else` clauses, joins the two-parameter callback definition, and joins the
+three-parameter `ModifyPalette` definition. It does not add or remove braces,
+move statements, or change expressions.
 
 ## Evidence inspected
 
