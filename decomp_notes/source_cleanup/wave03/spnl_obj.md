@@ -69,6 +69,19 @@ void set_master_info(RGE_Master_Static_Object* master_game_object_in,
                      TRIBE_Player* master_player_in);
 ```
 
+## Root correction request
+
+The root correction request flagged misleading indentation near source lines
+222 and 227. The three `draw_item` calls in that block now share the same
+block indentation, and their continued arguments use matching hanging
+indentation. The correction changes whitespace only.
+
+I reviewed the evidence under
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/`:
+`base.json`, `pinned-x.json`, and `runtime-x.json`. These files record
+resource-string extraction results. They add no resource-ID or cross-group
+request for this module.
+
 ## Code-generation and ABI notes
 
 The edits rename parameters and one PDB-recorded local, and adjust whitespace
