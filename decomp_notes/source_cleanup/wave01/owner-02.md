@@ -8,6 +8,7 @@
 - Header commit: `cdb2470f4f9dcda760793e842020884f920ec7a9`
 - Reviewed correction head: `a9dabbc1d0a52636fd9b640d6ee57494b083ab62`
 - Header presentation commit: `a9dabbc1d0a52636fd9b640d6ee57494b083ab62`
+- Post-cleanup repair head before ledger: `fa9727cc6264f67b2021505377a05aa26d584fcb`
 - Modules: `rmm_base`, `rmm_clif`, `rmm_cntr`, `rmm_elev`, `rmm_land`, `rmm_obj`, `rmm_shal`, and `rmm_terr`
 
 I reviewed each complete worker diff against the shared base. I also read each module report.
@@ -25,7 +26,7 @@ Compilation, matching, audits, tests, builds, and games were not run.
 | `src/rmm_land.cpp` | `sa-b1ccc29d` | `ad338a7faf75ffdfff8fec846133b4aa8da3fa44` | `38591776df3cf2177ea7aca0249a9d2d80e59a4d` | `651604367eacbec0c17de64fe715efd5e9436d25`, `d92b82c30a070a345f5fe2a4f49024bc0bd6d417` | Approved and integrated; unvalidated |
 | `src/rmm_obj.cpp` | `sa-0b537a41` | `ad338a7faf75ffdfff8fec846133b4aa8da3fa44` | `15b4c6ad7eae5e27c069be6e5bf6d294770de522` | `cb5f7945bafbf387038468039d0199e3ae07e2e4`, `58dcae336adb01160902c3855e50df72a4946827`, `abeba13c0c821a5905a2f72c702e2ef48c122f91`, `cd44c656a03cd76e46a29ef6c5dd753e2ea3d062` | Approved after root cast correction; unvalidated |
 | `src/rmm_shal.cpp` | `sa-f172b75c` | `ad338a7faf75ffdfff8fec846133b4aa8da3fa44` | `2790ddf4252700094398b27d8cfaf2cfbee789d2` | `51499230314067e91eac9f3d13e5947ea4b41c46`, `6bf2fcd3e3773e441974c0308d3740c5d4ae07de`, `321716ff37c60c817a9e756d1cac9b1940857b79`, `4e957293c9bb4200e0f14d36f57f030d66ba3bfa` | Approved after one correction; unvalidated |
-| `src/rmm_terr.cpp` | `sa-bc1a630e` | `ad338a7faf75ffdfff8fec846133b4aa8da3fa44` | `3ca5e06ffe8248bc6ea1529b7f63e6a53270289c` | `dc0e1cb1aae21362d7d2c345a821f6eee07ed244`, `5aa5b3c9296045a580ea0acb6c917696d2535b2b`, `4fcda3683f07f87ef8a171234929a381b375ba80`, `119cf87a8009a04c6d33fd0ccd090267a9855ec6` | Approved after root presentation correction; unvalidated |
+| `src/rmm_terr.cpp` | `sa-bc1a630e` | `ad338a7faf75ffdfff8fec846133b4aa8da3fa44` | `1170258aac5a0b3c93dfa5ebbe45b28b2645fcb0` | `dc0e1cb1aae21362d7d2c345a821f6eee07ed244`, `5aa5b3c9296045a580ea0acb6c917696d2535b2b`, `4fcda3683f07f87ef8a171234929a381b375ba80`, `119cf87a8009a04c6d33fd0ccd090267a9855ec6`, `f8cd88efa681b574f7b39f8edf88efb924fce90c`, `fa9727cc6264f67b2021505377a05aa26d584fcb` | Repaired after fresh-build finding; root validation pending |
 
 ## Review findings
 
@@ -57,6 +58,20 @@ I joined three short declarations in the assigned headers.
 I compared normalized source tokens against the shared base.
 All eight source files now retain the baseline non-identifier token sequence.
 This check ignores comments and identifier spelling, but retains keywords, casts, literals, operators, and punctuation.
+
+## Post-cleanup validation repair
+
+Root supplied the fresh main build report at
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+It reports C2082 at `src/rmm_terr.cpp:313` for formal parameter `y`.
+The recovered parameter name collided with the existing loop local under VC5.
+
+Worker `sa-bc1a630e` compared the source with pre-cleanup commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341` and the PDB records.
+Commit `f8cd88efa681b574f7b39f8edf88efb924fce90c` restores baseline parameter name `p2`.
+It changes three identifier uses only and keeps the existing local `y`.
+Commit `fa9727cc6264f67b2021505377a05aa26d584fcb` records the repair evidence.
+Root owns the next compile and validation checks.
 
 ## Header changes
 
