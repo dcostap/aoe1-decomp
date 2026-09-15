@@ -7,7 +7,7 @@
 - Source candidate before the declaration correction pass:
   `76180ec12a9cf731a9ddb5135f2caefdab780fd7`
 - Source SHA-256 after the declaration correction pass:
-  `65ccead13d7317069e9a39569cf211f28d23d05a22a5a90f2763d15764a4ca7e`
+  `85642cd8c47620a609a6fe9c59432075df6b217aadede157dc6a88567beff511`
 - Changed files:
   - `src/taiinfmd.cpp`
   - `decomp_notes/source_cleanup/wave03/taiinfmd.md`
@@ -22,9 +22,9 @@ The correction pass compared the cleanup source with base commit
 It restored declaration shape where the cleanup had removed aliases or changed storage use.
 
 - Restored the constructor's temporary declarations and reused parameter storage.
-- Restored the destructor's separate unit-history file handle.
+- Restored the destructor's separate unit-history file handle and assignment.
 - Restored `update` output-slot declarations.
-- Restored `save`'s separate output handle and value temporary.
+- Restored `save`'s separate output handle, temporary, and parameter reuse.
 - Restored `objectMemory` pointer and index aliases.
 - Restored `loadLearnInfo` count and item-value aliases.
 - Restored the accumulator parameter in `higherPriorityObjectToDefend`.
@@ -34,6 +34,19 @@ It restored declaration shape where the cleanup had removed aliases or changed s
 Only names supported by a direct PDB record remain recovered names. Other declarations retain
 the source spelling from the base source. The pass did not change statements, scopes, calls,
 casts, literals, storage types, or initialization order.
+
+## Reviewer rejection and second correction
+
+The integration review at `70d4611304b93c9e0d67aff0b1194b54a84d25fb` rejected six forms.
+This pass corrected them on the source branch. The earlier history above now records the final
+form, not the rejected form.
+
+- `setupWalls` now has `centerX` and `centerY` parameters, with separate `x` and `y` locals.
+- `save` now reuses `outfile` for the list counts and string length.
+- The destructor now assigns `file` to `local_14` before its first file test.
+- `update` now retains the explicit `RGE_Visible_Map*` cast.
+- `unexploredPlayerLocation` now overwrites the low byte of `uID` and separately initializes `i`.
+- `dropsitesWithinRequiredDistance` now declares `a` before its separate initialization.
 
 ## Scope and coverage
 

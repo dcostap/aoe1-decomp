@@ -396,6 +396,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 
     if (this->saveLearnInformationValue == 1) {
         int file = rge_open(this->learnFileName, 0x8301, 0x180);
+        local_14 = file;
         if (file != -1) {
             rge_write(file, &this->mapXSizeValue, 4);
             rge_write(file, &this->mapYSizeValue, 4);
@@ -551,7 +552,7 @@ int TribeInformationAIModule::update(int timeLimit) {
                 row = list->row;
                 col = list->col;
 
-                visibleStatus = vMap->get_visible(col, row);
+                visibleStatus = ((RGE_Visible_Map*)vMap)->get_visible(col, row);
 
                 // Terrain type from tile bytes
                 {
@@ -656,41 +657,41 @@ int TribeInformationAIModule::save(int outfile) {
     for (int c = 0; c < this->maxAttackMemories; c++)
         rge_write(saved_handle, (char*)this->attackMemories + c * 0x18, 0x18);
 
-    tempInt = this->importantObjects.numberValue;
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = this->importantObjects.numberValue;
+    rge_write(saved_handle, &outfile, 4);
     for (int d = 0; d < this->importantObjects.numberValue; d++) {
-        tempInt = this->importantObjects[d];
-        rge_write(saved_handle, &tempInt, 4);
+        outfile = this->importantObjects[d];
+        rge_write(saved_handle, &outfile, 4);
     }
-    tempInt = this->importantUnits.numberValue;
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = this->importantUnits.numberValue;
+    rge_write(saved_handle, &outfile, 4);
     for (int e = 0; e < this->importantUnits.numberValue; e++) {
-        tempInt = this->importantUnits[e];
-        rge_write(saved_handle, &tempInt, 4);
+        outfile = this->importantUnits[e];
+        rge_write(saved_handle, &outfile, 4);
     }
-    tempInt = this->importantMiscs.numberValue;
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = this->importantMiscs.numberValue;
+    rge_write(saved_handle, &outfile, 4);
     for (int f = 0; f < this->importantMiscs.numberValue; f++) {
-        tempInt = this->importantMiscs[f];
-        rge_write(saved_handle, &tempInt, 4);
+        outfile = this->importantMiscs[f];
+        rge_write(saved_handle, &outfile, 4);
     }
-    tempInt = this->itemsToDefend.numberValue;
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = this->itemsToDefend.numberValue;
+    rge_write(saved_handle, &outfile, 4);
     for (int g = 0; g < this->itemsToDefend.numberValue; g++) {
-        tempInt = this->itemsToDefend[g];
-        rge_write(saved_handle, &tempInt, 4);
+        outfile = this->itemsToDefend[g];
+        rge_write(saved_handle, &outfile, 4);
     }
-    tempInt = this->playerBuildings.numberValue;
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = this->playerBuildings.numberValue;
+    rge_write(saved_handle, &outfile, 4);
     for (int h = 0; h < this->playerBuildings.numberValue; h++) {
-        tempInt = this->playerBuildings[h];
-        rge_write(saved_handle, &tempInt, 4);
+        outfile = this->playerBuildings[h];
+        rge_write(saved_handle, &outfile, 4);
     }
-    tempInt = this->playerObjects.numberValue;
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = this->playerObjects.numberValue;
+    rge_write(saved_handle, &outfile, 4);
     for (int w = 0; w < this->playerObjects.numberValue; w++) {
-        tempInt = this->playerObjects[w];
-        rge_write(saved_handle, &tempInt, 4);
+        outfile = this->playerObjects[w];
+        rge_write(saved_handle, &outfile, 4);
     }
 
     this->pathMap.save(saved_handle);
@@ -704,8 +705,8 @@ int TribeInformationAIModule::save(int outfile) {
     }
     rge_write(saved_handle, &this->saveLearnInformationValue, 4);
 
-    tempInt = strlen(this->learnFileName);
-    rge_write(saved_handle, &tempInt, 4);
+    outfile = strlen(this->learnFileName);
+    rge_write(saved_handle, &outfile, 4);
     rge_write(saved_handle, this->learnFileName, strlen(this->learnFileName));
 
     rge_write(saved_handle, this->fullyExploredZoneValue, 0xFF);
@@ -4548,37 +4549,40 @@ ret_zero_late:
 }
 
 void TribeInformationAIModule::setupWalls(
-    int x, int y, int minimumDistance, int maximumDistance,
-    int pattern, int numberGates, int gateSize, int townWalls) {
-    if (townWalls == 1 && numberGates > 0) {
+    int centerX, int centerY, int minimumDistance, int maximumDistance,
+    int wallShape, int numberGates, int gateSize, int setupGates) {
+    int x;
+    int y;
+
+    if (setupGates == 1 && numberGates > 0) {
         this->numberGatesValue = numberGates;
 
         int gate = debug_rand(
             (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1731) % 4;
         int halfGateSize = gateSize / 2;
 
-        this->minGatePosition[gate].x = x - halfGateSize;
-        this->minGatePosition[gate].y = y - maximumDistance * 2;
-        this->maxGatePosition[gate].x = x + halfGateSize;
-        this->maxGatePosition[gate].y = y;
+        this->minGatePosition[gate].x = centerX - halfGateSize;
+        this->minGatePosition[gate].y = centerY - maximumDistance * 2;
+        this->maxGatePosition[gate].x = centerX + halfGateSize;
+        this->maxGatePosition[gate].y = centerY;
 
         gate = (gate + 1) % 4;
-        this->minGatePosition[gate].x = x - halfGateSize;
-        this->minGatePosition[gate].y = y;
-        this->maxGatePosition[gate].x = x + halfGateSize;
-        this->maxGatePosition[gate].y = y + maximumDistance * 2;
+        this->minGatePosition[gate].x = centerX - halfGateSize;
+        this->minGatePosition[gate].y = centerY;
+        this->maxGatePosition[gate].x = centerX + halfGateSize;
+        this->maxGatePosition[gate].y = centerY + maximumDistance * 2;
 
         gate = (gate + 1) % 4;
-        this->minGatePosition[gate].x = x;
-        this->minGatePosition[gate].y = y - halfGateSize;
-        this->maxGatePosition[gate].x = x + maximumDistance * 2;
-        this->maxGatePosition[gate].y = y + halfGateSize;
+        this->minGatePosition[gate].x = centerX;
+        this->minGatePosition[gate].y = centerY - halfGateSize;
+        this->maxGatePosition[gate].x = centerX + maximumDistance * 2;
+        this->maxGatePosition[gate].y = centerY + halfGateSize;
 
         gate = (gate + 1) % 4;
-        this->minGatePosition[gate].x = x - maximumDistance * 2;
-        this->minGatePosition[gate].y = y - halfGateSize;
-        this->maxGatePosition[gate].x = x;
-        this->maxGatePosition[gate].y = y + halfGateSize;
+        this->minGatePosition[gate].x = centerX - maximumDistance * 2;
+        this->minGatePosition[gate].y = centerY - halfGateSize;
+        this->maxGatePosition[gate].x = centerX;
+        this->maxGatePosition[gate].y = centerY + halfGateSize;
 
         int gatesLeft = numberGates;
         XYPoint* maximumGate = this->maxGatePosition;
@@ -4590,19 +4594,19 @@ void TribeInformationAIModule::setupWalls(
         } while (gatesLeft != 0);
     }
 
-    if (pattern == 0) {
-        pattern = debug_rand(
+    if (wallShape == 0) {
+        wallShape = debug_rand(
             (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x176a) % 3;
     }
 
-    if (pattern == 1) {
+    if (wallShape == 1) {
         if (minimumDistance > maximumDistance)
             return;
 
-        int minimumX = x - minimumDistance;
-        int minimumY = y - minimumDistance;
-        int maximumX = x + minimumDistance;
-        int maximumY = y + minimumDistance;
+        int minimumX = centerX - minimumDistance;
+        int minimumY = centerY - minimumDistance;
+        int maximumX = centerX + minimumDistance;
+        int maximumY = centerY + minimumDistance;
         unsigned int rings =
             (unsigned int)(maximumDistance - minimumDistance + 3) / 3;
 
@@ -4652,16 +4656,16 @@ void TribeInformationAIModule::setupWalls(
         return;
     }
 
-    if (pattern == 2) {
+    if (wallShape == 2) {
         if (minimumDistance > maximumDistance)
             return;
 
         int distance = minimumDistance;
         int sideLength = minimumDistance * 2;
-        int farMinimum = y - minimumDistance;
+        int farMinimum = centerY - minimumDistance;
         int minimum = farMinimum;
-        int maximum = y + minimumDistance;
-        int centerDifference = x - y;
+        int maximum = centerY + minimumDistance;
+        int centerDifference = centerX - centerY;
         int rings = maximumDistance - minimumDistance + 1;
 
         do {
@@ -4674,8 +4678,8 @@ void TribeInformationAIModule::setupWalls(
             farMinimumPoint.y = farMinimum;
             this->mapBound(farMinimumPoint);
 
-            farMaximumPoint.x = y + distance + centerDifference;
-            farMaximumPoint.y = y + distance;
+            farMaximumPoint.x = centerY + distance + centerDifference;
+            farMaximumPoint.y = centerY + distance;
             this->mapBound(farMaximumPoint);
 
             minimumPoint.x = minimum + centerDifference;
@@ -4820,16 +4824,16 @@ void TribeInformationAIModule::setupWalls(
         return;
     }
 
-    if (pattern == 3) {
+    if (wallShape == 3) {
         int halfDistance = minimumDistance / 2;
         if (halfDistance > maximumDistance)
             return;
 
-        int farMinimum = y - minimumDistance;
-        int farMaximum = y + minimumDistance;
-        int innerCenter = y;
-        int innerMaximum = y + halfDistance;
-        int centerDifference = x - y;
+        int farMinimum = centerY - minimumDistance;
+        int farMaximum = centerY + minimumDistance;
+        int innerCenter = centerY;
+        int innerMaximum = centerY + halfDistance;
+        int centerDifference = centerX - centerY;
         int rings = maximumDistance - halfDistance + 1;
 
         do {
@@ -5163,12 +5167,13 @@ void TribeInformationAIModule::setSaveLearnInformation(int v) {
 int TribeInformationAIModule::unexploredPlayerLocation(int uID, XYPoint& rPoint) {
     RGE_Static_Object* obj = (RGE_Static_Object*)this->md->object(uID);
     if (uID != 0) {
-        unsigned char requiredZone = obj->currentZone();
+        *(uchar*)&uID = obj->currentZone();
         int bestDistance;
         ObjectMemory* best;
+        int i;
         best = 0;
         bestDistance = -1;
-        int i = 0;
+        i = 0;
 
         if (this->maxImportantObjectMemory > 0) {
             do {
@@ -5183,7 +5188,7 @@ int TribeInformationAIModule::unexploredPlayerLocation(int uID, XYPoint& rPoint)
                             if (obj->lookupZone(
                                     this->importantObjectMemory[i].x,
                                     this->importantObjectMemory[i].y) ==
-                                requiredZone) {
+                                (uchar)uID) {
                                 int dist = (int)obj->distance_to_position(
                                     (float)this->importantObjectMemory[i].x,
                                     (float)this->importantObjectMemory[i].y,
@@ -6300,7 +6305,8 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     numDS = 0;
     totalApplicable = 0;
     ManagedArray_int dropsites;
-    int a = 0;
+    int a;
+    a = 0;
 
     if (this->numResources[rType] > 0) {
         do {
