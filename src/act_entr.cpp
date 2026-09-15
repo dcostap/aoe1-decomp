@@ -8,35 +8,31 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-RGE_Action_Enter::RGE_Action_Enter(int file, RGE_Action_Object* object)
-    : RGE_Action(file, object, 1)
-{
+RGE_Action_Enter::RGE_Action_Enter(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 3;
 }
 
-RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* object,
-                                   RGE_Task* task,
-                                   RGE_Static_Object* target)
-    : RGE_Action(object, 1)
-{
+RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
     XYPoint start;
     XYPoint dest;
-    XYPoint result;
+    XYPoint rVal;
     RGE_Action* action;
 
     this->action_type = 3;
-    this->task = task;
-    this->set_target_obj(target);
-    if (target == 0) {
+    this->task = task_in;
+    this->set_target_obj(target_obj_in);
+    if (target_obj_in == 0) {
         return;
     }
 
-    this->target_x = target->world_x;
-    this->target_y = target->world_y;
-    this->target_z = target->world_z;
+    this->target_x = target_obj_in->world_x;
+    this->target_y = target_obj_in->world_y;
+    this->target_z = target_obj_in->world_z;
 
-    if (target->actionState() == 2) {
-        if (target->more_room() == 1) {
+    if (target_obj_in->actionState() == 2) {
+        if (target_obj_in->more_room() == 1) {
             if (this->obj->owner->computerPlayer() == 0) {
                 goto line_path;
             }
@@ -47,18 +43,18 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* object,
         }
     }
 
-    if (target->actionState() == 11) {
+    if (target_obj_in->actionState() == 11) {
         RGE_Action_Object* target_action =
-            static_cast<RGE_Action_Object*>(target);
+            static_cast<RGE_Action_Object*>(target_obj_in);
         action = target_action->actions->get_action();
         if (action->target2ID == 0) {
             goto line_path;
         }
     }
 
-    if (target->actionState() == 11) {
+    if (target_obj_in->actionState() == 11) {
         RGE_Action_Object* target_action =
-            static_cast<RGE_Action_Object*>(target);
+            static_cast<RGE_Action_Object*>(target_obj_in);
         action = target_action->actions->get_action();
         this->target_x = action->targetX();
         action = target_action->actions->get_action();
@@ -68,41 +64,38 @@ RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* object,
     return;
 
 line_path:
-    dest.x = (int)object->world_x;
-    dest.y = (int)object->world_y;
-    start.x = (int)target->world_x;
-    start.y = (int)target->world_y;
+    dest.x = (int)obj_in->world_x;
+    dest.y = (int)obj_in->world_y;
+    start.x = (int)target_obj_in->world_x;
+    start.y = (int)target_obj_in->world_y;
 
-    if (object->firstTileAlongLine(dest, start, result, 2, 2, 1) == 1) {
-        this->target_x = (float)result.x + 0.5f;
-        this->target_y = (float)result.y + 0.5f;
-        target->moveTo((float)result.x, (float)result.y, target->world_z,
-                       0.5f, 1);
+    if (obj_in->firstTileAlongLine(dest, start, rVal, 2, 2, 1) == 1) {
+        this->target_x = (float)rVal.x + 0.5f;
+        this->target_y = (float)rVal.y + 0.5f;
+        target_obj_in->moveTo((float)rVal.x, (float)rVal.y,
+                              target_obj_in->world_z, 0.5f, 1);
     } else {
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        target->moveTo(object->world_x, object->world_y, target->world_z,
-                       0.5f, 1);
+        this->target_x = target_obj_in->world_x;
+        this->target_y = target_obj_in->world_y;
+        target_obj_in->moveTo(obj_in->world_x, obj_in->world_y,
+                              target_obj_in->world_z, 0.5f, 1);
     }
 }
 
-RGE_Action_Enter::~RGE_Action_Enter()
-{
+RGE_Action_Enter::~RGE_Action_Enter() {
 }
 
-void RGE_Action_Enter::first_in_stack(unsigned char value)
-{
+void RGE_Action_Enter::first_in_stack(unsigned char first_time) {
     this->set_state(4);
 }
 
-void RGE_Action_Enter::set_state(unsigned char value)
-{
+void RGE_Action_Enter::set_state(unsigned char new_state) {
     RGE_Action_Move_To* move_to;
 
     this->sub_actions->delete_list();
-    this->state = value;
+    this->state = new_state;
 
-    switch (value) {
+    switch (new_state) {
     case 4:
         move_to = new RGE_Action_Move_To(
             this->obj,
@@ -135,8 +128,7 @@ void RGE_Action_Enter::set_state(unsigned char value)
     }
 }
 
-unsigned char RGE_Action_Enter::update()
-{
+unsigned char RGE_Action_Enter::update() {
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
         goto target_lost;
@@ -200,17 +192,17 @@ unsigned char RGE_Action_Enter::update()
             if (this->target_obj->actionState() == 2) {
                 XYPoint dest;
                 XYPoint start;
-                XYPoint result;
+                XYPoint rVal;
 
                 dest.x = (int)this->obj->world_x;
                 dest.y = (int)this->obj->world_y;
                 start.x = (int)this->target_obj->world_x;
                 start.y = (int)this->target_obj->world_y;
 
-                if (this->obj->firstTileAlongLine(dest, start, result, 2, 2,
+                if (this->obj->firstTileAlongLine(dest, start, rVal, 2, 2,
                                                   1) == 1) {
-                    float x = (float)result.x + 0.5f;
-                    float y = (float)result.y + 0.5f;
+                    float x = (float)rVal.x + 0.5f;
+                    float y = (float)rVal.y + 0.5f;
 
                     if (this->target_x == x && this->target_y == y) {
                         this->target_x = this->target_obj->world_x;
@@ -222,7 +214,7 @@ unsigned char RGE_Action_Enter::update()
                     this->target_x = x;
                     this->target_y = y;
                     this->target_obj->moveTo(
-                        (float)result.x, (float)result.y,
+                        (float)rVal.x, (float)rVal.y,
                         this->target_obj->world_z, 0.0f, 1);
                 } else {
                     this->target_x = this->target_obj->world_x;

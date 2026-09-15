@@ -10,18 +10,14 @@
 extern float DAT_0056e6c8;
 extern float DAT_0056e6cc;
 
-RGE_Action_Transport::RGE_Action_Transport(int id, RGE_Action_Object* object)
-    : RGE_Action(id, object, 1)
-{
+RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x0C;
 }
 
-RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* object,
-                                           RGE_Task* task,
-                                           float x, float y, float z)
-    : RGE_Action(object, 1)
-{
-    this->task = task;
+RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x0C;
     this->target_x = x;
     this->target_y = y;
@@ -30,23 +26,21 @@ RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* object,
 
 // member. The original uses callee cleanup with ret 4. The FPU comparisons
 // use a relocated zero constant instead of the original hardcoded address.
-void RGE_Action_Transport::first_in_stack(unsigned char param_1)
-{
-    if (param_1 != 0 && this->target_x >= 0.0f && this->target_y >= 0.0f) {
+void RGE_Action_Transport::first_in_stack(unsigned char first_time) {
+    if (first_time != 0 && this->target_x >= 0.0f && this->target_y >= 0.0f) {
         this->set_state(0x0B);
         return;
     }
     this->set_state(2);
 }
 
-void RGE_Action_Transport::set_state(unsigned char param_1)
-{
+void RGE_Action_Transport::set_state(unsigned char new_state) {
     RGE_Action_Move_To* move_to;
 
     this->sub_actions->delete_list();
-    this->state = param_1;
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 4:
     case 0x0B:
         if (this->task != 0) {
@@ -87,8 +81,7 @@ void RGE_Action_Transport::set_state(unsigned char param_1)
     }
 }
 
-unsigned char RGE_Action_Transport::update(void)
-{
+unsigned char RGE_Action_Transport::update(void) {
     switch (this->state) {
     case 4: {
         unsigned char result = this->sub_actions->update();
@@ -174,15 +167,12 @@ unsigned char RGE_Action_Transport::update(void)
     return 0;
 }
 
-int RGE_Action_Transport::stop()
-{
+int RGE_Action_Transport::stop() {
     this->set_state(2);
     return 1;
 }
 
-int RGE_Action_Transport::move_to(RGE_Static_Object* object,
-                                  float x, float y, float z)
-{
+int RGE_Action_Transport::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target2ID = 0;
@@ -191,9 +181,7 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* object,
     return 1;
 }
 
-int RGE_Action_Transport::work(RGE_Static_Object* object,
-                               float x, float y, float z)
-{
+int RGE_Action_Transport::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target2ID = 1;
 
     int zone = (int)this->obj->lookupZone((int)x, (int)y);
@@ -216,7 +204,7 @@ int RGE_Action_Transport::work(RGE_Static_Object* object,
         this->target_x = x;
         this->target_y = y;
         this->target_z = z;
-        if (object != this->obj) {
+        if (obj_in != this->obj) {
             this->set_state(0x0B);
             return 1;
         }
@@ -225,8 +213,7 @@ int RGE_Action_Transport::work(RGE_Static_Object* object,
     return 1;
 }
 
-int RGE_Action_Transport::next_to_drop_off_terrain(void)
-{
+int RGE_Action_Transport::next_to_drop_off_terrain(void) {
     if (this->task != 0 && this->task->terrain_id == -1) {
         return 1;
     }
@@ -278,8 +265,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void)
     return 0;
 }
 
-int RGE_Action_Transport::targetZone(void)
-{
+int RGE_Action_Transport::targetZone(void) {
     if (*(int*)&this->target_x != 0xBF800000) {
         return (int)this->obj->lookupZone(
                    (int)this->target_x,

@@ -15,27 +15,22 @@
 
 extern int __cdecl debug_rand(char*, int);
 
-RGE_Action_Bird::RGE_Action_Bird(int param_1, RGE_Action_Object* param_2)
-    : RGE_Action(param_1, param_2, 1) {
+RGE_Action_Bird::RGE_Action_Bird(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 10;
 }
 
-RGE_Action_Bird::RGE_Action_Bird(
-    RGE_Action_Object* param_1,
-    RGE_Task* param_2,
-    float param_3,
-    float param_4,
-    float param_5)
-    : RGE_Action(param_1, 1) {
-    this->task = param_2;
+RGE_Action_Bird::RGE_Action_Bird(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 10;
-    this->target_x = param_3;
-    this->target_y = param_4;
-    this->target_z = param_5;
+    this->target_x = x;
+    this->target_y = y;
+    this->target_z = z;
 }
 
-void RGE_Action_Bird::first_in_stack(unsigned char param_1) {
-    if (param_1) {
+void RGE_Action_Bird::first_in_stack(unsigned char first_time) {
+    if (first_time) {
         RGE_Action_Object* obj;
 
         obj = this->obj;
@@ -47,11 +42,11 @@ void RGE_Action_Bird::first_in_stack(unsigned char param_1) {
     this->set_state(3);
 }
 
-void RGE_Action_Bird::set_state(unsigned char param_1) {
+void RGE_Action_Bird::set_state(unsigned char new_state) {
     RGE_Sprite* sprite;
 
-    this->state = param_1;
-    switch (param_1) {
+    this->state = new_state;
+    switch (new_state) {
     case 6:
         this->timer = (float)((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\act_bird.cpp", 0x4C) * 10) / 0x7FFF + 5);
         sprite = this->task->work_sprite;
