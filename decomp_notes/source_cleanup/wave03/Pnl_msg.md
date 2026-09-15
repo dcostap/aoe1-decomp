@@ -66,7 +66,7 @@ recovered come from the matching procedure-scoped PDB record.
 | `00479590` | `draw` | Recovered locals `old_font`, `paletteColor`, `ts`, `y`, `x`, `wid`, `hgt`, `font_rgb`, and `rect`. The source now uses `paletteColor`, `x`, and `y`. |
 | `00479A10` | `get_true_render_rect` | Recovered parameter `drawRect`. |
 | `00479A80` | `handle_idle` | PDB has only `this`. No local mapping was forced. |
-| `00479AE0` | `render_to_image_buffer` | Recovered locals `old_font`, `paletteColor`, `ts`, `y`, `x`, `wid`, `hgt`, `Display_hgt`, `font_rgb`, `back_rgb`, and `rect`. The source now uses `paletteColor`, `x`, `y`, and `Display_hgt`. |
+| `00479AE0` | `render_to_image_buffer` | Recovered locals `old_font`, `paletteColor`, `ts`, `y`, `x`, `wid`, `hgt`, `Display_hgt`, `font_rgb`, `back_rgb`, and `rect`. The source now uses `paletteColor`, `x`, `y`, and `Display_hgt`. The PDB types `Display_hgt` as `int`; the source keeps its existing `long` declaration. |
 | `0047A190` | `set_font` | Recovered parameters `font_in`, `font_wid_in`, and `font_hgt_in`. |
 
 All listed PDB records include the owning `TMessagePanel` type and the `this`
@@ -79,6 +79,10 @@ The current source retains names with no reliable PDB declaration mapping:
 `image_rect`, `used_x`, `used_y`, `used_w`, `tight`, `text`, `info`, `frame`,
 `width`, and `frame_info`. These names use existing descriptive spelling. No
 new local name was invented in this change.
+
+The `Display_hgt` name maps to the text-height local by its PDB name and use.
+Its PDB type is `int`, while the existing source declaration is `long`. This
+cleanup keeps the source type and does not force a type change.
 
 The three header-owned inline functions have these PDB parameter names:
 
