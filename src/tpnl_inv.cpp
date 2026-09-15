@@ -11,11 +11,8 @@ extern const char s_fmt_ld[];
 // No current canonical owner header declares this C helper.
 extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
-TRIBE_Panel_Inven::TRIBE_Panel_Inven(
-    TDrawArea* area, TPanel* parent, void* font_, TRIBE_Player* player_)
-    : TPanel()
-{
-    this->font = font_;
+TRIBE_Panel_Inven::TRIBE_Panel_Inven(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, TRIBE_Player* player_in) : TPanel() {
+    this->font = font_in;
     this->save_attr_num = 0;
     this->save_attr = 0;
     this->pics = 0;
@@ -25,17 +22,16 @@ TRIBE_Panel_Inven::TRIBE_Panel_Inven(
     this->idle_interval = 500;
     this->font_color = 0xFFFFFF;
 
-    if (this->setup(area, parent, 0, 0, 0, 0, 0) == 0) {
+    if (this->setup(render_area_in, parent_panel_in, 0, 0, 0, 0, 0) == 0) {
         this->error_code = 1;
     } else {
-        this->set_player(player_);
+        this->set_player(player_in);
     }
 }
 
-void TRIBE_Panel_Inven::set_text_color(unsigned long color1,
-                                       unsigned long color2) {
-    this->font_color = color1;
-    this->back_color = color2;
+void TRIBE_Panel_Inven::set_text_color(unsigned long font_color_in, unsigned long back_color_in) {
+    this->font_color = font_color_in;
+    this->back_color = back_color_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
@@ -75,7 +71,7 @@ void TRIBE_Panel_Inven::draw() {
     this->draw_setup(0);
     if (this->render_area->GetDc(s_tpnl_inv_draw) != 0) {
         void* old_font = SelectObject(this->render_area->DrawDc, this->font);
-        SetBkMode(this->render_area->DrawDc, 1);
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
 
         long x = this->pnl_x + 0x20;
         long y = this->pnl_y + 2;
@@ -153,8 +149,8 @@ long TRIBE_Panel_Inven::handle_idle() {
     return 0;
 }
 
-void TRIBE_Panel_Inven::set_player(TRIBE_Player* player) {
-    this->player = player;
+void TRIBE_Panel_Inven::set_player(TRIBE_Player* player_in) {
+    this->player = player_in;
     this->save_info();
     this->set_redraw(TPanel::RedrawNormal);
 }
@@ -174,9 +170,7 @@ void TRIBE_Panel_Inven::save_info() {
         this->save_attr[i] = (short)(int)this->player->attributes[i];
 }
 
-unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str,
-                                               long& out_val,
-                                               long x, long y) {
+unsigned char TRIBE_Panel_Inven::get_help_info(char*& string, long& page, long x, long y) {
     if (this->active == 0)
         return 0;
 
@@ -184,21 +178,21 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str,
         return 0;
 
     if (x < this->pnl_x + 0x37) {
-        sprintf(out_str, this->get_string(0x1D4EE),
+        sprintf(string, this->get_string(0x1D4EE),
                 (int)this->player->attributes[1]);
-        out_val = -1;
+        page = -1;
     } else if (x < this->pnl_x + 0x6E) {
-        sprintf(out_str, this->get_string(0x1D4ED),
+        sprintf(string, this->get_string(0x1D4ED),
                 (int)this->player->attributes[0]);
-        out_val = -1;
+        page = -1;
     } else if (x < this->pnl_x + 0xA5) {
-        sprintf(out_str, this->get_string(0x1D4EF),
+        sprintf(string, this->get_string(0x1D4EF),
                 (int)this->player->attributes[3]);
-        out_val = -1;
+        page = -1;
     } else {
-        sprintf(out_str, this->get_string(0x1D4F0),
+        sprintf(string, this->get_string(0x1D4F0),
                 (int)this->player->attributes[2]);
-        out_val = -1;
+        page = -1;
     }
 
     return 1;
