@@ -7,7 +7,7 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Cleanup commit: `fcf4ac9da7d74531e4012e0b60bf06047e83f329`
 - Source correction commit: `d12cc4a7c2a7b0bdf26df0df6d4d61db2b87ec35`
-- Report correction commit: copy the full hash from Git after commit.
+- Report correction commit: `0adf5675caeeb2df4edf1c223235f6321776378a`
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
