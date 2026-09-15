@@ -97,8 +97,9 @@ Every function has a matching scoped-symbol record. Each record has `this` in
 | `00452040` | 227-244 | `outfile: int` | `temp_run_sprite` at `-0x4`; `temp_move_sprite` at `-0x8` |
 
 The `00451C10` and `00451D10` local records reuse stack slots that also hold
-incoming parameters. I mapped the two sprite temporaries by serialized field
-order and the matching names in `save`. I did not change declaration order.
+incoming parameters. Their optimized homes do not prove a source declaration
+mapping for the sprite pair. The source keeps the prior descriptive names
+`move_sprite_id` and `run_sprite_id`. Declaration order is unchanged.
 
 ## Name recovery
 
@@ -111,20 +112,20 @@ The following names are recovered originals from the PDB:
 - `player` to `owner` in `make_new_obj`.
 - `value` to `amount` and `attribute` to `flag` in all three modifier methods.
 - `file` to `outfile` in `save`.
-- `move_sprite_id` to `temp_run_sprite` and `run_sprite_id` to
-  `temp_move_sprite` in both setup paths and `save`.
 - `size_class_out` to `temp_size_class`.
 - `obj_trail_options_out` to `temp_obj_trail_options`.
 - `move_algorithem_out` to `temp_move_algorithem`.
+
+The PDB sprite names remain unresolved. The source keeps the prior descriptive
+names `move_sprite_id` and `run_sprite_id`.
 
 The PDB does not record the `selected_move`, `selected_run`, or
 `moving_source` locals. These are existing inferred snake_case names. I left
 them unchanged because their original mappings are not proved.
 
-The sprite temporary names look reversed against the destination fields. This
-is supported by the PDB records and by `save`, where `temp_run_sprite` stores
-the move-sprite ID and `temp_move_sprite` stores the run-sprite ID. I preserved
-that recovered spelling and behavior.
+The exact save instruction chain proves the sprite roles and serialized order,
+not the PDB declaration mapping. The source keeps the prior descriptive names
+`move_sprite_id` and `run_sprite_id`.
 
 ## Constants, resources, and comments
 
