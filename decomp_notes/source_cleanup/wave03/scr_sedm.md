@@ -5,7 +5,7 @@
 - Module: `src/scr_sedm.cpp`
 - Branch: `cleanup/staging-20260915-185`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source-cleanup commit: `e749f5516dc100bf3d06f20475a453c2dacaae36`
+- Final source-cleanup commit: `583dd22308e40f66a78eb00d1d4ba291d7d141ea`
 - Changed files:
   - `src/scr_sedm.cpp`
   - `decomp_notes/source_cleanup/wave03/scr_sedm.md`
@@ -26,6 +26,34 @@ or initializer lines. It changed no token, statement, scope, or behavior.
 
 This report update records that correction. No compiler, build, matching check,
 audit, validation, test, or game was run.
+
+## Follow-up correction record: approved resource macros
+
+Root approved the payload-backed resource mappings in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. I read the approved header at
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-181/include/resource_ids.h`.
+This root approval is separate from the worker's PE extraction evidence below.
+The extraction records the resource payload and lookup status. The root commit
+approves the shared macro names and ownership.
+
+The source now uses these approved macros:
+
+| ID | Approved macro | Source use |
+| --- | --- | --- |
+| `0x242D` | `IDS_SCENARIO_EDITOR_TITLE` | `create_text` title argument |
+| `0x242E` | `IDS_SCENARIO_MENU_CREATE_SCENARIO` | `button[0]->set_text` caption |
+| `0x242F` | `IDS_BUTTON_EDIT_SCENARIO` | `button[1]->set_text` caption |
+| `0x2430` | `IDS_SCENARIO_EDITOR_CANCEL` | `button[3]->set_text` caption |
+| `0x2431` | `IDS_MENU_CAMPAIGN_EDITOR` | `button[2]->set_text` caption |
+
+For `0x242E`, the source uses the approved existing
+`IDS_SCENARIO_MENU_CREATE_SCENARIO` name. It does not use the rejected duplicate
+proposal `IDS_BUTTON_CREATE_SCENARIO`.
+
+Commit `583dd22308e40f66a78eb00d1d4ba291d7d141ea` changed only these five
+resource expressions. It preserved argument types, casts, buffers, order,
+lookup calls, and source structure. Each approved macro retains its original
+integer value and adds no object storage.
 
 ## Scope and evidence
 
@@ -172,30 +200,29 @@ expansion fallback for this checked path.
 | ID | Call-site purpose | Base runtime text, language `0x0409` | Runtime expansion status, language `0x0409` | Pinned XPack expansion status, language `0x0409` | Name status |
 | --- | --- | --- | --- | --- | --- |
 | `0x03EA` | Close-button caption passed to long `create_button` | `X` | Missing | Missing | Existing `IDS_BUTTON_CLOSE` applied |
-| `0x242D` | Scenario-editor menu title passed to `create_text` | `Scenario Builder` | Empty string | Missing | Request `IDS_SCENARIO_EDITOR_TITLE` |
-| `0x242E` | Create-scenario button caption passed to `set_text` | `Create Scenario` | Empty string | Missing | Request `IDS_BUTTON_CREATE_SCENARIO` |
-| `0x242F` | Edit-scenario button caption passed to `set_text` | `Edit Scenario` | Empty string | Missing | Request `IDS_BUTTON_EDIT_SCENARIO` |
-| `0x2430` | Cancel button caption passed to `set_text` | `Cancel` | Missing | Missing | Request `IDS_SCENARIO_EDITOR_CANCEL` |
-| `0x2431` | Campaign-editor button caption passed to `set_text` | `Campaign Editor` | Missing | Missing | Request `IDS_MENU_CAMPAIGN_EDITOR` |
+| `0x242D` | Scenario-editor menu title passed to `create_text` | `Scenario Builder` | Empty string | Missing | Approved `IDS_SCENARIO_EDITOR_TITLE` applied |
+| `0x242E` | Create-scenario button caption passed to `set_text` | `Create Scenario` | Empty string | Missing | Approved `IDS_SCENARIO_MENU_CREATE_SCENARIO` applied |
+| `0x242F` | Edit-scenario button caption passed to `set_text` | `Edit Scenario` | Empty string | Missing | Approved `IDS_BUTTON_EDIT_SCENARIO` applied |
+| `0x2430` | Cancel button caption passed to `set_text` | `Cancel` | Missing | Missing | Approved `IDS_SCENARIO_EDITOR_CANCEL` applied |
+| `0x2431` | Campaign-editor button caption passed to `set_text` | `Campaign Editor` | Missing | Missing | Approved `IDS_MENU_CAMPAIGN_EDITOR` applied |
 
 `IDS_BUTTON_CLOSE` is an existing cleanup name in the root-owned
 `include/resource_ids.h`. It is not an original macro name. The other five
-names are new cleanup names. They are requests only. The source leaves those
-five numeric literals unchanged until root adds the shared declarations.
-
-Proposed root-owned declarations are:
+names are cleanup names approved by root. No original macro spelling is
+claimed. Root approved these declarations in
+`f5b7d6668f785b97811119493bea0e04403d1d10`:
 
 ```cpp
-#define IDS_SCENARIO_EDITOR_TITLE   0x242D
-#define IDS_BUTTON_CREATE_SCENARIO  0x242E
-#define IDS_BUTTON_EDIT_SCENARIO    0x242F
-#define IDS_SCENARIO_EDITOR_CANCEL  0x2430
-#define IDS_MENU_CAMPAIGN_EDITOR    0x2431
+#define IDS_SCENARIO_EDITOR_TITLE          0x242D
+#define IDS_SCENARIO_MENU_CREATE_SCENARIO  0x242E
+#define IDS_BUTTON_EDIT_SCENARIO           0x242F
+#define IDS_SCENARIO_EDITOR_CANCEL         0x2430
+#define IDS_MENU_CAMPAIGN_EDITOR           0x2431
 ```
 
 The numeric values and effective integer type match the current expressions.
-The proposed names describe the call-site roles. No original macro spelling is
-claimed.
+The approved names describe the call-site roles. The `0x242E` name is shared
+with the scenario-menu domain. No original macro spelling is claimed.
 
 The other numeric values in the source are geometry, panel setup, positioning,
 or action values. This report does not assign resource names to them.
@@ -212,9 +239,8 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 This request preserves the function name, types, order, virtual slot, and ABI.
 It is not required for the source definition to compile. No header was edited.
 
-Root should add the five proposed resource macros to
-`include/resource_ids.h` if it accepts their roles. The source currently keeps
-their literals because the shared declarations do not yet exist.
+Root approved the five resource macros. No further resource declaration request
+remains for these IDs.
 
 ## Risk and unresolved items
 
@@ -230,9 +256,8 @@ their literals because the shared declarations do not yet exist.
   statement or alter control flow.
 - No uncertain local mapping remains hidden. The PDB has no local names for
   the existing constructor, destructor, and action locals.
-- The proposed five resource names remain unresolved until root reviews and
-  adds the shared declarations. Their text is known in the base DLL, but no
-  original macro names are known.
+- The approved five resource names are cleanup names, not recovered original
+  macro names. Their text and lookup statuses remain those recorded above.
 - `0xC386`, geometry values, positioning values, and action value `1` remain
   numeric because this task did not prove shared symbolic meanings for them.
 
@@ -249,5 +274,6 @@ The result is reviewed but unvalidated.
 - Initial source cleanup: `9649a6df2ff1ff8be90ae9acc5a546746b026cbb`
 - Final source-format correction and first report version: `67137c7ae8e5d06f3c1f7610150b132ebd350920`
 - 1TBS opening-brace correction: `e749f5516dc100bf3d06f20475a453c2dacaae36`
+- Approved resource macro substitutions: `583dd22308e40f66a78eb00d1d4ba291d7d141ea`
 - Report-only correction: committed after this source tree; its full hash is
   recorded in the handoff response.
