@@ -31,11 +31,11 @@ public:
     long effect_num;
 
     virtual ~RGE_Effects();
-    virtual void save(int fd);
-    virtual void do_effect(short effect_id, RGE_Player* player);
+    virtual void save(int outfile);
+    virtual void do_effect(short current_effect, RGE_Player* player);
 
-    RGE_Effects(int fd);
-    RGE_Effects(char* path);
+    RGE_Effects(int infile);
+    RGE_Effects(char* effect_file);
 };
 
 typedef char effects_object_size_check[

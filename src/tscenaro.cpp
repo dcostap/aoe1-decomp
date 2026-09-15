@@ -15,19 +15,19 @@ extern void rge_read_uncompressed(int file, void* data, int size);
 extern void rge_write_uncompressed(int file, void* data, int size);
 #include "../include/rge_fio.h"
 
-TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
-    : RGE_Scenario_Header(scenario) {
-    any_sp_victory = scenario->any_sp_victory();
-    active_player_count = scenario->active_player_count();
+TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario_info)
+    : RGE_Scenario_Header(scenario_info) {
+    any_sp_victory = scenario_info->any_sp_victory();
+    active_player_count = scenario_info->active_player_count();
 }
 
-TRIBE_Scenario_Header::TRIBE_Scenario_Header(int file)
-    : RGE_Scenario_Header(file) {
+TRIBE_Scenario_Header::TRIBE_Scenario_Header(int infile)
+    : RGE_Scenario_Header(infile) {
     any_sp_victory = 0;
     active_player_count = 0;
     if (error_code == 0) {
-        rge_read_uncompressed(file, &any_sp_victory, 4);
-        rge_read_uncompressed(file, &active_player_count, 4);
+        rge_read_uncompressed(infile, &any_sp_victory, 4);
+        rge_read_uncompressed(infile, &active_player_count, 4);
     }
 }
 
@@ -35,14 +35,14 @@ long TRIBE_Scenario_Header::get_size() {
     return RGE_Scenario_Header::get_size() + 8;
 }
 
-void TRIBE_Scenario_Header::save(int file) {
-    RGE_Scenario_Header::save(file);
-    rge_write_uncompressed(file, &this->any_sp_victory, 4);
-    rge_write_uncompressed(file, &this->active_player_count, 4);
+void TRIBE_Scenario_Header::save(int outfile) {
+    RGE_Scenario_Header::save(outfile);
+    rge_write_uncompressed(outfile, &this->any_sp_victory, 4);
+    rge_write_uncompressed(outfile, &this->active_player_count, 4);
 }
 
-T_Scenario::T_Scenario(RGE_Game_World* world)
-    : RGE_Scenario(world) {
+T_Scenario::T_Scenario(RGE_Game_World* w)
+    : RGE_Scenario(w) {
     InitializePlayerValues();
     InitializeVictoryValues();
     InitializeFriendlinessValues();
@@ -57,8 +57,8 @@ T_Scenario::T_Scenario(RGE_Game_World* world)
     ClearDisabledTechnologies();
 }
 
-T_Scenario::T_Scenario(int file, RGE_Game_World* world) : RGE_Scenario(file, world) {
-    int dummy = 0;
+T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) {
+    int checksum = 0;
     InitializeVictoryValues();
     InitializeFriendlinessValues();
     ClearDisabledTechnologies();
@@ -82,67 +82,67 @@ T_Scenario::T_Scenario(int file, RGE_Game_World* world) : RGE_Scenario(file, wor
 
     if (old_version) {
         int i;
-        for (i = 0; i < 16; ++i) rge_read(file, player_name[i], 0x100);
+        for (i = 0; i < 16; ++i) rge_read(infile, player_name[i], 0x100);
     }
 
     if (Version > DAT_00577318) {
         int i;
-        for (i = 0; i < 16; ++i) rge_read(file, &player_info[i], 0x10);
+        for (i = 0; i < 16; ++i) rge_read(infile, &player_info[i], 0x10);
     } else {
         int i;
         for (i = 0; i < 16; ++i) {
-            rge_read(file, &PlActive[i], 4);
-            rge_read(file, &player_info[i], 0x10);
-            rge_read(file, &PlType[i], 4);
-            rge_read(file, &PlCivilization[i], 4);
-            rge_read(file, &PlayerPosture[i], 4);
+            rge_read(infile, &PlActive[i], 4);
+            rge_read(infile, &player_info[i], 0x10);
+            rge_read(infile, &PlType[i], 4);
+            rge_read(infile, &PlCivilization[i], 4);
+            rge_read(infile, &PlayerPosture[i], 4);
         }
     }
 
     if (Version > DAT_0057731c) {
-        rge_read(file, &dummy, 4);
+        rge_read(infile, &checksum, 4);
     }
 
-    rge_read(file, &victory, 0x18);
-    rge_read(file, &victory_all_flag, 4);
+    rge_read(infile, &victory, 0x18);
+    rge_read(infile, &victory_all_flag, 4);
 
     if (Version >= DAT_00577318) {
-        rge_read(file, &mp_victory_type, 4);
-        rge_read(file, &victory_score, 4);
-        rge_read(file, &victory_time, 4);
+        rge_read(infile, &mp_victory_type, 4);
+        rge_read(infile, &victory_score, 4);
+        rge_read(infile, &victory_time, 4);
     } else {
         mp_victory_type = 4;
         victory_score = 900;
         victory_time = 9000;
     }
 
-    rge_read(file, Opponent, 0x400);
-    for (int p = 0; p < 16; ++p) rge_read(file, sp_victory[p], sizeof(sp_victory[p]));
+    rge_read(infile, Opponent, 0x400);
+    for (int p = 0; p < 16; ++p) rge_read(infile, sp_victory[p], sizeof(sp_victory[p]));
 
-    if (Version > DAT_0057731c) rge_read(file, &dummy, 4);
+    if (Version > DAT_0057731c) rge_read(infile, &checksum, 4);
 
     if (*(int*)&Version == 0x3f8147ae) {
-        for (int j = 0; j < 16; ++j) rge_read(file, AlliedVictory, 0x40);
+        for (int j = 0; j < 16; ++j) rge_read(infile, AlliedVictory, 0x40);
     }
-    if (Version >= DAT_0057731c) rge_read(file, AlliedVictory, 0x40);
-    if (Version > DAT_00577320) rge_read(file, DisabledTechnology, 0x500);
+    if (Version >= DAT_0057731c) rge_read(infile, AlliedVictory, 0x40);
+    if (Version > DAT_00577320) rge_read(infile, DisabledTechnology, 0x500);
 
     if (Version > DAT_00577324) {
         if (Version < DAT_00577328) {
-            rge_read(file, ScenarioOptions, 4);
+            rge_read(infile, ScenarioOptions, 4);
             ScenarioOptions[1] = 0;
             ScenarioOptions[2] = 0;
         } else {
-            rge_read(file, ScenarioOptions, 0x0c);
+            rge_read(infile, ScenarioOptions, 0x0c);
         }
     }
-    if (Version > DAT_0057732c) rge_read(file, PlayerAge, 0x40);
-    if (Version > DAT_0057731c) rge_read(file, &dummy, 4);
+    if (Version > DAT_0057732c) rge_read(infile, PlayerAge, 0x40);
+    if (Version > DAT_0057731c) rge_read(infile, &checksum, 4);
 
     victory.MP_Conquest = victory_conquest;
 }
 
-void T_Scenario::save(int file) {
+void T_Scenario::save(int outfile) {
     int checksum;
     Player_Start_Info* player;
     SP_Victory_Info (*sp_player)[12];
@@ -150,38 +150,37 @@ void T_Scenario::save(int file) {
 
     checksum = -99;
     WriteDisabledTechnologiesToMainSystem();
-    RGE_Scenario::save(file);
+    RGE_Scenario::save(outfile);
 
     player = player_info;
     for (i = 0x10; i != 0; --i) {
-        rge_write(file, player, 0x10);
+        rge_write(outfile, player, 0x10);
         ++player;
     }
 
-    rge_write(file, &checksum, 4);
-    rge_write(file, &victory, 0x18);
-    rge_write(file, &victory_all_flag, 4);
-    rge_write(file, &mp_victory_type, 4);
-    rge_write(file, &victory_score, 4);
-    rge_write(file, &victory_time, 4);
-    rge_write(file, Opponent, 0x400);
+    rge_write(outfile, &checksum, 4);
+    rge_write(outfile, &victory, 0x18);
+    rge_write(outfile, &victory_all_flag, 4);
+    rge_write(outfile, &mp_victory_type, 4);
+    rge_write(outfile, &victory_score, 4);
+    rge_write(outfile, &victory_time, 4);
+    rge_write(outfile, Opponent, 0x400);
 
     sp_player = sp_victory;
     for (i = 0x10; i != 0; --i) {
-        rge_write(file, sp_player, 0x2D0);
+        rge_write(outfile, sp_player, 0x2D0);
         ++sp_player;
     }
 
-    rge_write(file, &checksum, 4);
-    rge_write(file, AlliedVictory, 0x40);
-    rge_write(file, DisabledTechnology, 0x500);
-    rge_write(file, ScenarioOptions, 0x0C);
-    rge_write(file, PlayerAge, 0x40);
-    rge_write(file, &checksum, 4);
+    rge_write(outfile, &checksum, 4);
+    rge_write(outfile, AlliedVictory, 0x40);
+    rge_write(outfile, DisabledTechnology, 0x500);
+    rge_write(outfile, ScenarioOptions, 0x0C);
+    rge_write(outfile, PlayerAge, 0x40);
+    rge_write(outfile, &checksum, 4);
 }
 
-void T_Scenario::InitializePlayerValues()
-{
+void T_Scenario::InitializePlayerValues() {
     for (int i = 0; i < 16; ++i) {
         Player_Start_Info* info = &this->player_info[i];
         memset(info, 0, sizeof(*info));
@@ -216,45 +215,45 @@ void T_Scenario::InitializeAIInformation() {
     } while (player < 16);
 }
 
-void T_Scenario::Set_victory_all_flag(int v) {
-    if (v < 0) v = 0;
-    if (v > 1) v = 1;
-    this->victory_all_flag = v;
+void T_Scenario::Set_victory_all_flag(int i) {
+    if (i < 0) i = 0;
+    if (i > 1) i = 1;
+    this->victory_all_flag = i;
 }
 
 int T_Scenario::Get_victory_all_flag() {
     return this->victory_all_flag;
 }
 
-void T_Scenario::SetMPVictory(int v) {
-    this->mp_victory_type = v;
-    if (v != 4) this->victory_conquest = 1;
+void T_Scenario::SetMPVictory(int i) {
+    this->mp_victory_type = i;
+    if (i != 4) this->victory_conquest = 1;
 }
 
 int T_Scenario::GetMPVictory() {
     return this->mp_victory_type;
 }
 
-void T_Scenario::SetVictoryScore(int v) {
-    this->victory_score = v;
+void T_Scenario::SetVictoryScore(int i) {
+    this->victory_score = i;
 }
 
 int T_Scenario::GetVictoryScore() {
     return this->victory_score;
 }
 
-void T_Scenario::SetVictoryTime(int v) {
-    this->victory_time = v;
+void T_Scenario::SetVictoryTime(int i) {
+    this->victory_time = i;
 }
 
 int T_Scenario::GetVictoryTime() {
     return this->victory_time;
 }
 
-void T_Scenario::SetSPWhich(int v) {
-    if (v < 0) v = 0;
-    if (v > 16) v = 15;
-    this->which_player = v;
+void T_Scenario::SetSPWhich(int i) {
+    if (i < 0) i = 0;
+    if (i > 16) i = 15;
+    this->which_player = i;
 }
 
 int T_Scenario::GetSPWhich() {
@@ -278,8 +277,8 @@ void T_Scenario::InitializeVictoryValues() {
     }
 }
 
-void T_Scenario::ClearSPVictoryCondition(int sp_index) {
-    memset(&this->sp_victory[this->which_player][sp_index], 0, sizeof(SP_Victory_Info));
+void T_Scenario::ClearSPVictoryCondition(int which) {
+    memset(&this->sp_victory[this->which_player][which], 0, sizeof(SP_Victory_Info));
 }
 
 void T_Scenario::InitializeFriendlinessValues() {
@@ -290,50 +289,50 @@ void T_Scenario::InitializeFriendlinessValues() {
     }
 }
 
-void T_Scenario::Set_player_attitude(int player, int target, int attitude) {
+void T_Scenario::Set_player_attitude(int which, int opponent, int attitude) {
     if (((attitude == 1) || (attitude == 3) || (attitude == 0)) &&
-        ((player >= 0) && (player < 0x10) && (target >= 0) && (target < 0x10))) {
-        this->Opponent[player].Attitude[target] = attitude;
+        ((which >= 0) && (which < 0x10) && (opponent >= 0) && (opponent < 0x10))) {
+        this->Opponent[which].Attitude[opponent] = attitude;
     }
 }
 
-int T_Scenario::Get_player_attitude(int param_1, int param_2) {
-    if (param_1 < 0 || param_1 >= 16)
+int T_Scenario::Get_player_attitude(int which, int opponent) {
+    if (which < 0 || which >= 16)
         return -1;
-    if (param_2 < 0 || param_2 >= 16)
+    if (opponent < 0 || opponent >= 16)
         return -1;
-    return this->Opponent[param_1].Attitude[param_2];
+    return this->Opponent[which].Attitude[opponent];
 }
 
-void T_Scenario::Set_player_Gold(int param_1, int param_2) {
-    if (param_1 < 0 || param_1 >= 16)
+void T_Scenario::Set_player_Gold(int which, int g) {
+    if (which < 0 || which >= 16)
         return;
-    this->player_info[param_1].Gold = param_2;
+    this->player_info[which].Gold = g;
 }
 
-void T_Scenario::Set_player_Wood(int index, int val) {
-    if (index < 0 || index >= 16) return;
-    this->player_info[index].Wood = val;
+void T_Scenario::Set_player_Wood(int which, int w) {
+    if (which < 0 || which >= 16) return;
+    this->player_info[which].Wood = w;
 }
 
-void T_Scenario::Set_player_Food(int index, int val) {
-    if (index < 0 || index >= 16) return;
-    this->player_info[index].Food = val;
+void T_Scenario::Set_player_Food(int which, int f) {
+    if (which < 0 || which >= 16) return;
+    this->player_info[which].Food = f;
 }
 
-void T_Scenario::Set_player_Stone(int index, int val) {
-    if (index < 0 || index >= 16) return;
-    this->player_info[index].Stone = val;
+void T_Scenario::Set_player_Stone(int which, int s) {
+    if (which < 0 || which >= 16) return;
+    this->player_info[which].Stone = s;
 }
 
-void T_Scenario::Set_player_Info(int player, Player_Start_Info* info) {
-    if ((player >= 0) && (player < 16)) {
-        this->player_info[player] = *info;
+void T_Scenario::Set_player_Info(int which, Player_Start_Info* i) {
+    if ((which >= 0) && (which < 16)) {
+        this->player_info[which] = *i;
     }
 }
 
-void T_Scenario::Set_Multi_Conquest(int param) {
-    if (param) {
+void T_Scenario::Set_Multi_Conquest(int c) {
+    if (c) {
         this->victory.MP_Conquest = 1;
         this->Set_conquest_victory(1);
     } else {
@@ -342,115 +341,115 @@ void T_Scenario::Set_Multi_Conquest(int param) {
     }
 }
 
-void T_Scenario::Set_Multi_Ruins(int v) {
-    this->victory.MP_Ruins = v;
+void T_Scenario::Set_Multi_Ruins(int r) {
+    this->victory.MP_Ruins = r;
 }
 
-void T_Scenario::Set_Multi_Artifacts(int v) {
-    this->victory.MP_Artifacts = v;
+void T_Scenario::Set_Multi_Artifacts(int a) {
+    this->victory.MP_Artifacts = a;
 }
 
-void T_Scenario::Set_Multi_Discoveries(int v) {
-    this->victory.MP_Discoveries = v;
+void T_Scenario::Set_Multi_Discoveries(int d) {
+    this->victory.MP_Discoveries = d;
 }
 
-void T_Scenario::Set_Multi_Exploration(int v) {
-    this->victory.MP_Exploration = v;
+void T_Scenario::Set_Multi_Exploration(int e) {
+    this->victory.MP_Exploration = e;
 }
 
-void T_Scenario::Set_Multi_Gold(int v) {
-    this->victory.MP_Gold = v;
+void T_Scenario::Set_Multi_Gold(int g) {
+    this->victory.MP_Gold = g;
 }
 
-void T_Scenario::SetSPRectangle(int sp_index, float x1, float y1, float x2, float y2) {
-    this->sp_victory[this->which_player][sp_index].x1 = x1;
-    this->sp_victory[this->which_player][sp_index].y1 = y1;
-    this->sp_victory[this->which_player][sp_index].x2 = x2;
-    this->sp_victory[this->which_player][sp_index].y2 = y2;
+void T_Scenario::SetSPRectangle(int VicID, float x1, float y1, float x2, float y2) {
+    this->sp_victory[this->which_player][VicID].x1 = x1;
+    this->sp_victory[this->which_player][VicID].y1 = y1;
+    this->sp_victory[this->which_player][VicID].x2 = x2;
+    this->sp_victory[this->which_player][VicID].y2 = y2;
 }
 
-void T_Scenario::SetSPObjectType(int sp_index, int value) {
-    this->sp_victory[this->which_player][sp_index].ObjType = value;
+void T_Scenario::SetSPObjectType(int VicID, int ObjType) {
+    this->sp_victory[this->which_player][VicID].ObjType = ObjType;
 }
 
-void T_Scenario::SetSPPlayerID(int sp_index, int value) {
-    this->sp_victory[this->which_player][sp_index].PlayerID = value;
+void T_Scenario::SetSPPlayerID(int VicID, int PlayerID) {
+    this->sp_victory[this->which_player][VicID].PlayerID = PlayerID;
 }
 
-void T_Scenario::SetSPAllFlag(int sp_index, int value) {
-    this->sp_victory[this->which_player][sp_index].AllFlag = value;
+void T_Scenario::SetSPAllFlag(int VicID, int AllFlag) {
+    this->sp_victory[this->which_player][VicID].AllFlag = AllFlag;
 }
 
-void T_Scenario::SetSPAttribType(int sp_index, int value) {
-    this->sp_victory[this->which_player][sp_index].AttribType = value;
+void T_Scenario::SetSPAttribType(int VicID, int AttribType) {
+    this->sp_victory[this->which_player][VicID].AttribType = AttribType;
 }
 
-void T_Scenario::SetSPVictoryType(int sp_index, int value) {
-    this->sp_victory[this->which_player][sp_index].VictoryType = value;
+void T_Scenario::SetSPVictoryType(int VicID, int VictoryType) {
+    this->sp_victory[this->which_player][VicID].VictoryType = VictoryType;
 }
 
-void T_Scenario::SetSPObject(int index, RGE_Static_Object* object) {
-    if (object != 0) {
-        this->sp_victory[this->which_player][index].obj_ID =
-            this->get_object_ID(object) + 1;
+void T_Scenario::SetSPObject(int VicID, RGE_Static_Object* obj) {
+    if (obj != 0) {
+        this->sp_victory[this->which_player][VicID].obj_ID =
+            this->get_object_ID(obj) + 1;
     }
 }
 
-void T_Scenario::SetSPDestObjectID(int index, RGE_Static_Object* object) {
-    if (object != 0) {
-        this->sp_victory[this->which_player][index].dest_obj_ID =
-            this->get_object_ID(object) + 1;
+void T_Scenario::SetSPDestObjectID(int VicID, RGE_Static_Object* dest_obj) {
+    if (dest_obj != 0) {
+        this->sp_victory[this->which_player][VicID].dest_obj_ID =
+            this->get_object_ID(dest_obj) + 1;
     }
 }
 
-void T_Scenario::SetSPAmount(int sp_index, int value) {
-    this->sp_victory[this->which_player][sp_index].Amount = value;
+void T_Scenario::SetSPAmount(int VicID, int Amount) {
+    this->sp_victory[this->which_player][VicID].Amount = Amount;
 }
 
-void T_Scenario::SetPlayerAlliedVictory(int i, int v) {
-    this->AlliedVictory[i] = v;
+void T_Scenario::SetPlayerAlliedVictory(int which, int OnOff) {
+    this->AlliedVictory[which] = OnOff;
 }
 
-void T_Scenario::SetDisabledTechnology(int param1, int param2, int param3) {
-    DisabledTechnology[param1][param2] = param3;
+void T_Scenario::SetDisabledTechnology(int PlayerId, int which, int tf) {
+    DisabledTechnology[PlayerId][which] = tf;
 }
 
-void T_Scenario::SetScenarioOption(int i, int v) {
-    this->ScenarioOptions[i] = v;
+void T_Scenario::SetScenarioOption(int option, int value) {
+    this->ScenarioOptions[option] = value;
 }
 
-void T_Scenario::SetPlayerAge(int i, int v) {
-    this->PlayerAge[i] = v;
+void T_Scenario::SetPlayerAge(int which, int val) {
+    this->PlayerAge[which] = val;
 }
 
-int T_Scenario::Get_player_Gold(int param_1) {
-    if (param_1 < 0 || param_1 >= 16)
+int T_Scenario::Get_player_Gold(int which) {
+    if (which < 0 || which >= 16)
         return 0;
-    return this->player_info[param_1].Gold;
+    return this->player_info[which].Gold;
 }
 
-int T_Scenario::Get_player_Wood(int param_1) {
-    if (param_1 < 0 || param_1 >= 16)
+int T_Scenario::Get_player_Wood(int which) {
+    if (which < 0 || which >= 16)
         return 0;
-    return this->player_info[param_1].Wood;
+    return this->player_info[which].Wood;
 }
 
-int T_Scenario::Get_player_Food(int param_1) {
-    if (param_1 < 0 || param_1 >= 16)
+int T_Scenario::Get_player_Food(int which) {
+    if (which < 0 || which >= 16)
         return 0;
-    return this->player_info[param_1].Food;
+    return this->player_info[which].Food;
 }
 
-int T_Scenario::Get_player_Stone(int param_1) {
-    if (param_1 < 0 || param_1 >= 16)
+int T_Scenario::Get_player_Stone(int which) {
+    if (which < 0 || which >= 16)
         return 0;
-    return this->player_info[param_1].Stone;
+    return this->player_info[which].Stone;
 }
 
-Player_Start_Info* T_Scenario::Get_player_Info(int param_1) {
-    if (param_1 < 0 || param_1 >= 16)
+Player_Start_Info* T_Scenario::Get_player_Info(int which) {
+    if (which < 0 || which >= 16)
         return 0;
-    return &this->player_info[param_1];
+    return &this->player_info[which];
 }
 
 int T_Scenario::Get_Multi_Conquest() {
@@ -477,59 +476,59 @@ int T_Scenario::Get_Multi_Gold() {
     return this->victory.MP_Gold;
 }
 
-void T_Scenario::GetSPRectangle(int sp_index, float* x1, float* y1, float* x2, float* y2) {
-    *x1 = this->sp_victory[this->which_player][sp_index].x1;
-    *y1 = this->sp_victory[this->which_player][sp_index].y1;
-    *x2 = this->sp_victory[this->which_player][sp_index].x2;
-    *y2 = this->sp_victory[this->which_player][sp_index].y2;
+void T_Scenario::GetSPRectangle(int VicID, float* x1, float* y1, float* x2, float* y2) {
+    *x1 = this->sp_victory[this->which_player][VicID].x1;
+    *y1 = this->sp_victory[this->which_player][VicID].y1;
+    *x2 = this->sp_victory[this->which_player][VicID].x2;
+    *y2 = this->sp_victory[this->which_player][VicID].y2;
 }
 
-int T_Scenario::GetSPObjectType(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].ObjType;
+int T_Scenario::GetSPObjectType(int VicID) {
+    return this->sp_victory[this->which_player][VicID].ObjType;
 }
 
-int T_Scenario::GetSPPlayerID(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].PlayerID;
+int T_Scenario::GetSPPlayerID(int VicID) {
+    return this->sp_victory[this->which_player][VicID].PlayerID;
 }
 
-int T_Scenario::GetSPAllFlag(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].AllFlag;
+int T_Scenario::GetSPAllFlag(int VicID) {
+    return this->sp_victory[this->which_player][VicID].AllFlag;
 }
 
-int T_Scenario::GetSPAttribType(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].AttribType;
+int T_Scenario::GetSPAttribType(int VicID) {
+    return this->sp_victory[this->which_player][VicID].AttribType;
 }
 
-int T_Scenario::GetSPAmount(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].Amount;
+int T_Scenario::GetSPAmount(int VicID) {
+    return this->sp_victory[this->which_player][VicID].Amount;
 }
 
-int T_Scenario::GetSPVictoryType(int sp_index) {
-    return this->sp_victory[this->which_player][sp_index].VictoryType;
+int T_Scenario::GetSPVictoryType(int VicID) {
+    return this->sp_victory[this->which_player][VicID].VictoryType;
 }
 
-RGE_Static_Object* T_Scenario::GetSPDestObjectID(int sp_index) {
-    return this->get_object_pointer(this->sp_victory[this->which_player][sp_index].dest_obj_ID);
+RGE_Static_Object* T_Scenario::GetSPDestObjectID(int VicID) {
+    return this->get_object_pointer(this->sp_victory[this->which_player][VicID].dest_obj_ID);
 }
 
-RGE_Static_Object* T_Scenario::GetSPObject(int sp_index) {
-    return this->get_object_pointer(this->sp_victory[this->which_player][sp_index].obj_ID);
+RGE_Static_Object* T_Scenario::GetSPObject(int VicID) {
+    return this->get_object_pointer(this->sp_victory[this->which_player][VicID].obj_ID);
 }
 
-int T_Scenario::GetPlayerAlliedVictory(int idx) {
-    return this->AlliedVictory[idx];
+int T_Scenario::GetPlayerAlliedVictory(int which) {
+    return this->AlliedVictory[which];
 }
 
-int T_Scenario::GetDisabledTechnology(int player, int index) {
-    return this->DisabledTechnology[player][index];
+int T_Scenario::GetDisabledTechnology(int PlayerId, int which) {
+    return this->DisabledTechnology[PlayerId][which];
 }
 
-int T_Scenario::GetScenarioOption(int idx) {
-    return this->ScenarioOptions[idx];
+int T_Scenario::GetScenarioOption(int option) {
+    return this->ScenarioOptions[option];
 }
 
-int T_Scenario::GetPlayerAge(int idx) {
-    return this->PlayerAge[idx];
+int T_Scenario::GetPlayerAge(int which) {
+    return this->PlayerAge[which];
 }
 
 void T_Scenario::update() {
@@ -569,8 +568,8 @@ void T_Scenario::SaveAttributesIntoPlayers() {
     }
 }
 
-void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
-    if (save_attrs != 0) {
+void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
+    if (SaveAttributes != 0) {
         this->SaveAttributesIntoPlayers();
     }
 
@@ -633,20 +632,20 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
         }
     }
 
-    int row = 0;
+    int j = 0;
     world = this->world;
     if ((int)world->player_num - 1 <= 0) {
         return;
     }
 
-    save_attrs = 0x72;
+    SaveAttributes = 0x72;
     do {
         TRIBE_Victory_Conditions* conditions =
             static_cast<TRIBE_Victory_Conditions*>(
-                this->world->players[row + 1]->victory_conditions);
-        int condition_index = 0;
+                this->world->players[j + 1]->victory_conditions);
+        int i = 0;
         do {
-            SP_Victory_Info* condition = &this->sp_victory[row][condition_index];
+            SP_Victory_Info* condition = &this->sp_victory[j][i];
             // The shipped record walk is anchored at AttribType.
             int* attribute_field = &condition->AttribType;
             int type = attribute_field[-2];
@@ -684,14 +683,14 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
                         conditions->add_bring(
                             1,
                             this->get_object_pointer(condition->obj_ID),
-                            this->sp_victory[row][condition_index].x1,
+                            this->sp_victory[j][i].x1,
                             condition->y1, condition->x2, condition->y2);
                     }
                 } else if (type == 2) {
                     if (condition->x2 > DAT_00577330) {
                         conditions->add_create(
                             1, condition->ObjType, condition->Amount,
-                            this->sp_victory[row][condition_index].x1,
+                            this->sp_victory[j][i].x1,
                             condition->y1, condition->x2, condition->y2, 0);
                     } else {
                         conditions->add_create(1, condition->ObjType,
@@ -720,22 +719,22 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
                     }
                 }
             }
-            ++condition_index;
-        } while (condition_index < 12);
+            ++i;
+        } while (i < 12);
 
-        save_attrs += 12;
-        ++row;
+        SaveAttributes += 12;
+        ++j;
         world = this->world;
-    } while (row < (int)world->player_num - 1);
+    } while (j < (int)world->player_num - 1);
 }
 
 void T_Scenario::rehook() {
 }
 
-RGE_Static_Object* T_Scenario::get_object_pointer(int index) {
+RGE_Static_Object* T_Scenario::get_object_pointer(int obj_ID) {
     RGE_Static_Object* result = 0;
-    if (index > 0) {
-        result = this->world->object(index - 1);
+    if (obj_ID > 0) {
+        result = this->world->object(obj_ID - 1);
     }
     return result;
 }
@@ -744,8 +743,7 @@ int T_Scenario::get_object_ID(RGE_Static_Object* obj) {
     return obj->id;
 }
 
-void T_Scenario::WriteDisabledTechnologiesToMainSystem()
-{
+void T_Scenario::WriteDisabledTechnologiesToMainSystem() {
     RGE_Game_World* world = this->world;
     if (world == 0)
         return;
@@ -804,8 +802,7 @@ int T_Scenario::any_sp_victory() {
     return 0;
 }
 
-void T_Scenario::set_player_tech(TRIBE_Player* player)
-{
+void T_Scenario::set_player_tech(TRIBE_Player* player) {
     int i = player->id;
     i--;
     if (i < 0) {

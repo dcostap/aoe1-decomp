@@ -15,89 +15,96 @@ static char s_terrain_log[] = "Random Map terrain initilization, rand: %d";
 static char s_object_log[] = "Random Map object initilization, rand: %d";
 static char s_shallows_log[] = "Random Map shallows initilization, rand: %d";
 
-TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(
-    char* terrain_file, char* object_file, char* terrain_type_file,
-    char* map_file)
-    : RGE_RMM_Database_Controller(terrain_file, object_file,
-                                  terrain_type_file, map_file)
-{
+TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* land_file, char* terrain_file, char* object_file, char* map_file)
+    : RGE_RMM_Database_Controller(land_file, terrain_file, object_file,
+                                  map_file) {
 }
 
-TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int file)
-    : RGE_RMM_Database_Controller(file)
-{
+TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int infile)
+    : RGE_RMM_Database_Controller(infile) {
 }
 
-uchar TRIBE_RMM_Database_Controller::init(
-    RGE_Map* map, RGE_Game_World* world, uchar map_type, long players,
-    uchar value)
-{
-    RGE_Cliffs_Info cliffs;
+uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_world, uchar type, long player_num, uchar fixed_position) {
+    RGE_Cliffs_Info cliff_info;
 
-    value = (uchar)(((TRIBE_Game*)rge_base_game)->randomizePositions() == 0);
+    fixed_position =
+        (uchar)(((TRIBE_Game*)rge_base_game)->randomizePositions() == 0);
     this->RGE_RMM_Database_Controller::init(
-        map, world, map_type, players, value);
+        in_map, in_world, type, player_num, fixed_position);
 
     if (debug_rand(s_rmm_tdbc_path, 0x40) > 0x1fff) {
-        long base_size;
-        long variance;
+        long base_cliff_size;
+        long base_cliff_length;
         long width = this->map_width;
-        if (width <= 0x48) { base_size = 3; variance = 10; }
-        else if (width <= 0x60) { base_size = 4; variance = 12; }
-        else if (width <= 0x78) { base_size = 6; variance = 14; }
-        else if (width <= 0x90) { base_size = 8; variance = 16; }
-        else if (width <= 0xc8) { base_size = 18; variance = 20; }
-        else if (width <= 0xfa) { base_size = 28; variance = 20; }
+        if (width <= 0x48) {
+            base_cliff_size = 3;
+            base_cliff_length = 10;
+        } else if (width <= 0x60) {
+            base_cliff_size = 4;
+            base_cliff_length = 12;
+        } else if (width <= 0x78) {
+            base_cliff_size = 6;
+            base_cliff_length = 14;
+        } else if (width <= 0x90) {
+            base_cliff_size = 8;
+            base_cliff_length = 16;
+        } else if (width <= 0xc8) {
+            base_cliff_size = 18;
+            base_cliff_length = 20;
+        } else if (width <= 0xfa) {
+            base_cliff_size = 28;
+            base_cliff_length = 20;
+        }
 
         switch (this->map_type) {
-        case 0: base_size = 0; variance = 0; break;
-        case 1: base_size -= 5; variance -= 6; break;
-        case 2: base_size -= 3; variance -= 2; break;
+        case 0: base_cliff_size = 0; base_cliff_length = 0; break;
+        case 1: base_cliff_size -= 5; base_cliff_length -= 6; break;
+        case 2: base_cliff_size -= 3; base_cliff_length -= 2; break;
         case 5:
         case 6:
-        case 8: variance -= 4; break;
+        case 8: base_cliff_length -= 4; break;
         }
-        if (variance < 3)
-            variance = 3;
+        if (base_cliff_length < 3)
+            base_cliff_length = 3;
 
-        cliffs.number_of_cliffs = base_size;
-        cliffs.number_of_cliffs_variance = 2;
-        cliffs.cliff_terrain_spacing = 2;
-        cliffs.cliff_to_cliff_spacing = 2;
-        if (variance - 3 <= 0)
-            cliffs.cliff_size_variance = 0;
+        cliff_info.number_of_cliffs = base_cliff_size;
+        cliff_info.number_of_cliffs_variance = 2;
+        cliff_info.cliff_terrain_spacing = 2;
+        cliff_info.cliff_to_cliff_spacing = 2;
+        if (base_cliff_length - 3 <= 0)
+            cliff_info.cliff_size_variance = 0;
         else
-            cliffs.cliff_size_variance = (variance - 3) / 2;
-        cliffs.average_cliff_size = variance - cliffs.cliff_size_variance;
+            cliff_info.cliff_size_variance = (base_cliff_length - 3) / 2;
+        cliff_info.average_cliff_size =
+            base_cliff_length - cliff_info.cliff_size_variance;
 
         long count = this->terrain_info.hot_spot_num;
-        cliffs.hot_spot_num = count;
+        cliff_info.hot_spot_num = count;
         if (count > 0) {
             for (long index = 0; index < count; ++index) {
-                cliffs.hot_spots[index].x =
+                cliff_info.hot_spots[index].x =
                     this->terrain_info.hot_spots[index].x;
-                cliffs.hot_spots[index].y =
+                cliff_info.hot_spots[index].y =
                     this->terrain_info.hot_spots[index].y;
-                cliffs.hot_spots[index].radius =
+                cliff_info.hot_spots[index].radius =
                     this->terrain_info.hot_spots[index].radius;
             }
         }
 
-        if (cliffs.average_cliff_size > 0 && cliffs.number_of_cliffs > 0) {
-            new RGE_RMM_Cliffs_Generator(this->map, this, cliffs);
+        if (cliff_info.average_cliff_size > 0 &&
+            cliff_info.number_of_cliffs > 0) {
+            new RGE_RMM_Cliffs_Generator(this->map, this, cliff_info);
         }
     }
     return 1;
 }
 
-uchar TRIBE_RMM_Database_Controller::de_init()
-{
+uchar TRIBE_RMM_Database_Controller::de_init() {
     this->RGE_RMM_Database_Controller::de_init();
     return 1;
 }
 
-void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
-{
+void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
     long original_edge =
         this->map_info.maps[this->map_type].land_info.land_placement_edge;
     if ((this->map_type == 5 || this->map_type == 8) &&
@@ -108,7 +115,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
             edge + 25;
     }
 
-    this->RGE_RMM_Database_Controller::add_land_module(value);
+    this->RGE_RMM_Database_Controller::add_land_module(fixed_positions);
     this->map_info.maps[this->map_type].land_info.land_placement_edge =
         original_edge;
 
@@ -144,8 +151,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
                 this->land_info.land[i].wall_1_avoidance_line = minus_one;
                 this->land_info.land[i].wall_3_avoidance_line = this->map_width;
             }
-        }
-        else {
+        } else {
             this->land_info.wall_2_avoidance_line = minus_one;
             this->land_info.wall_4_avoidance_line = this->map_height;
             for (int i = 0; i < this->land_info.land_num; ++i) {
@@ -160,27 +166,23 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
             if (debug_rand(s_rmm_tdbc_path, 0xf7) < 0x3fff) {
                 for (int i = 0; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = 0;
-            }
-            else {
+            } else {
                 for (int i = 0; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = (uchar)i;
             }
             if (debug_rand(s_rmm_tdbc_path, 0xff) < 0x3fff) {
                 for (int i = 1; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = 1;
-            }
-            else {
+            } else {
                 for (int i = 1; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = (uchar)i;
             }
             this->add_shallows_module();
-        }
-        else if (this->map_type == 4) {
+        } else if (this->map_type == 4) {
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].zone = 0;
             this->land_info.base_terrain = 0;
-        }
-        else if (this->map_type >= 5) {
+        } else if (this->map_type >= 5) {
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].zone = 0;
         }
@@ -217,8 +219,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
     L->Log(s_land_log, debug_rand(s_rmm_tdbc_path, 0x137));
 }
 
-void TRIBE_RMM_Database_Controller::add_terrain_module()
-{
+void TRIBE_RMM_Database_Controller::add_terrain_module() {
     long land_tile_num =
         this->map_info.maps[this->map_type].land_info.grown_land_percent *
         this->map_width * this->map_height / 100;
@@ -240,27 +241,22 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
                 this->terrain_info.terrain[i].terrain_size *= 3;
                 this->terrain_info.terrain[i].clumps *= 3;
                 this->terrain_info.terrain[i].avoid_hot_spots = 2;
-            }
-            else if (this->terrain_info.terrain[i].terrain_type == 20) {
+            } else if (this->terrain_info.terrain[i].terrain_type == 20) {
                 this->terrain_info.terrain[i].terrain_size /= 2;
                 this->terrain_info.terrain[i].clumps /= 2;
-            }
-            else if (this->terrain_info.terrain[i].terrain_type == 19) {
+            } else if (this->terrain_info.terrain[i].terrain_type == 19) {
                 this->terrain_info.terrain[i].terrain_size /= 2;
                 this->terrain_info.terrain[i].clumps /= 2;
-            }
-            else if (this->terrain_info.terrain[i].terrain_type == 10) {
+            } else if (this->terrain_info.terrain[i].terrain_type == 10) {
                 this->terrain_info.terrain[i].terrain_size /= 2;
                 this->terrain_info.terrain[i].clumps /= 2;
                 this->terrain_info.terrain[i].avoid_hot_spots = 2;
-            }
-            else if (this->terrain_info.terrain[i].terrain_type == 6) {
+            } else if (this->terrain_info.terrain[i].terrain_type == 6) {
                 this->terrain_info.terrain[i].terrain_size *= 2;
                 this->terrain_info.terrain[i].avoid_hot_spots = 0;
             }
         }
-    }
-    else {
+    } else {
         for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
             if (this->terrain_info.terrain[i].terrain_type == 6)
                 this->terrain_info.terrain[i].avoid_hot_spots = 0;
@@ -275,8 +271,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module()
     L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 0x180));
 }
 
-void TRIBE_RMM_Database_Controller::add_object_module()
-{
+void TRIBE_RMM_Database_Controller::add_object_module() {
     int index;
 
     this->RGE_RMM_Database_Controller::add_object_module();
@@ -356,12 +351,12 @@ void TRIBE_RMM_Database_Controller::add_object_module()
             this->land_info.land[index + this->land_info.land_num].wall_fade =
                 this->land_info.wall_fade;
 
-            long attempts = 0;
+            long index1 = 0;
             long x;
             long y;
             uchar done;
             do {
-                ++attempts;
+                ++index1;
                 done = 1;
                 x = debug_rand(s_rmm_tdbc_path, 0x1de) *
                     (this->map_width - 16) / 0x7fff + 8;
@@ -376,9 +371,9 @@ void TRIBE_RMM_Database_Controller::add_object_module()
                     if (dx * dx + dy * dy < 400)
                         done = 0;
                 }
-            } while (done == 0 && attempts < 1000);
+            } while (done == 0 && index1 < 1000);
 
-            if (attempts >= 1000)
+            if (index1 >= 1000)
                 count = index;
 
             this->land_info.land[index + this->land_info.land_num].x = x;
@@ -432,8 +427,7 @@ void TRIBE_RMM_Database_Controller::add_object_module()
                 object.object_exclusion_zone = 12;
                 break;
             }
-        }
-        else if (object.land_id == -2) {
+        } else if (object.land_id == -2) {
             switch (object.obj_id) {
             case 0x41:
                 object.object_exclusion_zone = this->map->map_width / 8;
@@ -452,8 +446,7 @@ void TRIBE_RMM_Database_Controller::add_object_module()
     L->Log(s_object_log, debug_rand(s_rmm_tdbc_path, 0x236));
 }
 
-void TRIBE_RMM_Database_Controller::add_elevation_module()
-{
+void TRIBE_RMM_Database_Controller::add_elevation_module() {
     this->RGE_RMM_Database_Controller::add_elevation_module();
     int random = debug_rand(s_rmm_tdbc_path, 0x243);
     float scale = (DAT_00571f4c - (float)random * DAT_00571f48) * DAT_00571f50;
@@ -464,26 +457,24 @@ void TRIBE_RMM_Database_Controller::add_elevation_module()
     L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 0x24b));
 }
 
-void TRIBE_RMM_Database_Controller::add_shallows_module()
-{
-    RGE_Shallows_Info shallows;
-    shallows.shallows_num = this->land_info.land_num;
-    for (int i = 0; i < shallows.shallows_num; ++i) {
-        shallows.shallows[i].x = this->land_info.land[i].x;
-        shallows.shallows[i].y = this->land_info.land[i].y;
+void TRIBE_RMM_Database_Controller::add_shallows_module() {
+    RGE_Shallows_Info shallows_info;
+    shallows_info.shallows_num = this->land_info.land_num;
+    for (int i = 0; i < shallows_info.shallows_num; ++i) {
+        shallows_info.shallows[i].x = this->land_info.land[i].x;
+        shallows_info.shallows[i].y = this->land_info.land[i].y;
     }
-    new RGE_RMM_Shallows_Generator(this->map, this, &shallows);
+    new RGE_RMM_Shallows_Generator(this->map, this, &shallows_info);
     L->Log(s_shallows_log, debug_rand(s_rmm_tdbc_path, 0x25f));
 }
 
-uchar TRIBE_RMM_Database_Controller::generate()
-{
-    uchar result = this->RGE_RMM_Database_Controller::generate();
+uchar TRIBE_RMM_Database_Controller::generate() {
+    uchar ret_num = this->RGE_RMM_Database_Controller::generate();
     for (int row = 0; row < this->map_height; ++row) {
         for (int column = 0; column < this->map_width; ++column) {
             if (this->map_row_offset[row][column].terrain_type == 0x10)
                 this->map_row_offset[row][column].terrain_type = 0;
         }
     }
-    return result;
+    return ret_num;
 }

@@ -50,11 +50,11 @@ struct SP_Victory_Info {
 
 class T_Scenario : public RGE_Scenario {
 private:
-    virtual RGE_Static_Object* get_object_pointer(int);
+    virtual RGE_Static_Object* get_object_pointer(int obj_ID);
 
 public:
     virtual void rehook();
-    virtual void save(int);
+    virtual void save(int outfile);
 
     Player_Start_Info player_info[16];
     Victory_Info victory;
@@ -71,25 +71,25 @@ public:
     int victory_score;
     int victory_time;
 
-    T_Scenario(RGE_Game_World*);
-    T_Scenario(int, RGE_Game_World*);
+    T_Scenario(RGE_Game_World* w);
+    T_Scenario(int infile, RGE_Game_World* w);
 
-    void ClearSPVictoryCondition(int);
-    int GetDisabledTechnology(int, int);
+    void ClearSPVictoryCondition(int which);
+    int GetDisabledTechnology(int PlayerId, int which);
     int GetMPVictory();
-    int GetPlayerAge(int);
-    int GetPlayerAlliedVictory(int);
-    int GetSPAllFlag(int);
-    int GetSPAmount(int);
-    int GetSPAttribType(int);
-    RGE_Static_Object* GetSPDestObjectID(int);
-    RGE_Static_Object* GetSPObject(int);
-    int GetSPObjectType(int);
-    int GetSPPlayerID(int);
-    void GetSPRectangle(int, float*, float*, float*, float*);
-    int GetSPVictoryType(int);
+    int GetPlayerAge(int which);
+    int GetPlayerAlliedVictory(int which);
+    int GetSPAllFlag(int VicID);
+    int GetSPAmount(int VicID);
+    int GetSPAttribType(int VicID);
+    RGE_Static_Object* GetSPDestObjectID(int VicID);
+    RGE_Static_Object* GetSPObject(int VicID);
+    int GetSPObjectType(int VicID);
+    int GetSPPlayerID(int VicID);
+    void GetSPRectangle(int VicID, float* x1, float* y1, float* x2, float* y2);
+    int GetSPVictoryType(int VicID);
     int GetSPWhich();
-    int GetScenarioOption(int);
+    int GetScenarioOption(int option);
     int GetVictoryScore();
     int GetVictoryTime();
     int Get_Multi_Artifacts();
@@ -98,56 +98,56 @@ public:
     int Get_Multi_Exploration();
     int Get_Multi_Gold();
     int Get_Multi_Ruins();
-    int Get_player_Food(int);
-    int Get_player_Gold(int);
-    Player_Start_Info* Get_player_Info(int);
-    int Get_player_Stone(int);
-    int Get_player_Wood(int);
-    int Get_player_attitude(int, int);
+    int Get_player_Food(int which);
+    int Get_player_Gold(int which);
+    Player_Start_Info* Get_player_Info(int which);
+    int Get_player_Stone(int which);
+    int Get_player_Wood(int which);
+    int Get_player_attitude(int which, int opponent);
     int Get_victory_all_flag();
     void InitializeAIInformation();
     void InitializeFriendlinessValues();
     void InitializePlayerValues();
     void InitializeVictoryValues();
-    void Save_victory_conditions_into_players(int);
-    void SetDisabledTechnology(int, int, int);
-    void SetMPVictory(int);
-    void SetPlayerAge(int, int);
-    void SetPlayerAlliedVictory(int, int);
-    void SetSPAllFlag(int, int);
-    void SetSPAmount(int, int);
-    void SetSPAttribType(int, int);
-    void SetSPDestObjectID(int, RGE_Static_Object*);
-    void SetSPObject(int, RGE_Static_Object*);
-    void SetSPObjectType(int, int);
-    void SetSPPlayerID(int, int);
-    void SetSPRectangle(int, float, float, float, float);
-    void SetSPVictoryType(int, int);
-    void SetSPWhich(int);
-    void SetScenarioOption(int, int);
-    void SetVictoryScore(int);
-    void SetVictoryTime(int);
-    void Set_Multi_Artifacts(int);
-    void Set_Multi_Conquest(int);
-    void Set_Multi_Discoveries(int);
-    void Set_Multi_Exploration(int);
-    void Set_Multi_Gold(int);
-    void Set_Multi_Ruins(int);
-    void Set_player_Food(int, int);
-    void Set_player_Gold(int, int);
-    void Set_player_Info(int, Player_Start_Info*);
-    void Set_player_Stone(int, int);
-    void Set_player_Wood(int, int);
-    void Set_player_attitude(int, int, int);
-    void Set_victory_all_flag(int);
+    void Save_victory_conditions_into_players(int SaveAttributes);
+    void SetDisabledTechnology(int PlayerId, int which, int tf);
+    void SetMPVictory(int i);
+    void SetPlayerAge(int which, int val);
+    void SetPlayerAlliedVictory(int which, int OnOff);
+    void SetSPAllFlag(int VicID, int AllFlag);
+    void SetSPAmount(int VicID, int Amount);
+    void SetSPAttribType(int VicID, int AttribType);
+    void SetSPDestObjectID(int VicID, RGE_Static_Object* dest_obj);
+    void SetSPObject(int VicID, RGE_Static_Object* obj);
+    void SetSPObjectType(int VicID, int ObjType);
+    void SetSPPlayerID(int VicID, int PlayerID);
+    void SetSPRectangle(int VicID, float x1, float y1, float x2, float y2);
+    void SetSPVictoryType(int VicID, int VictoryType);
+    void SetSPWhich(int i);
+    void SetScenarioOption(int option, int value);
+    void SetVictoryScore(int i);
+    void SetVictoryTime(int i);
+    void Set_Multi_Artifacts(int a);
+    void Set_Multi_Conquest(int c);
+    void Set_Multi_Discoveries(int d);
+    void Set_Multi_Exploration(int e);
+    void Set_Multi_Gold(int g);
+    void Set_Multi_Ruins(int r);
+    void Set_player_Food(int which, int f);
+    void Set_player_Gold(int which, int g);
+    void Set_player_Info(int which, Player_Start_Info* i);
+    void Set_player_Stone(int which, int s);
+    void Set_player_Wood(int which, int w);
+    void Set_player_attitude(int which, int opponent, int attitude);
+    void Set_victory_all_flag(int i);
     int any_sp_victory();
-    void set_player_tech(TRIBE_Player*);
+    void set_player_tech(TRIBE_Player* player);
     void update();
 
 private:
     void ClearDisabledTechnologies();
     void SaveAttributesIntoPlayers();
-    int get_object_ID(RGE_Static_Object*);
+    int get_object_ID(RGE_Static_Object* obj);
     void WriteDisabledTechnologiesToMainSystem();
 };
 
@@ -156,10 +156,10 @@ public:
     int any_sp_victory;
     int active_player_count;
 
-    TRIBE_Scenario_Header(T_Scenario*);
-    TRIBE_Scenario_Header(int);
+    TRIBE_Scenario_Header(T_Scenario* scenario_info);
+    TRIBE_Scenario_Header(int infile);
     virtual long get_size();
-    virtual void save(int);
+    virtual void save(int outfile);
 };
 
 typedef char t_scenario_size_check[
