@@ -7,7 +7,7 @@
 
 class TRIBE_Action_List : public RGE_Action_List {
 public:
-    TRIBE_Action_List(RGE_Action_Object*);
+    TRIBE_Action_List(RGE_Action_Object* obj_in);
 };
 
 class TRIBE_Action : public RGE_Action {
