@@ -14,10 +14,10 @@ protected:
 
 public:
     AIPlayGroup();
-    unsigned char minimum(int index) const;
-    void setMinimum(int index, int value);
-    unsigned char maximum(int index) const;
-    void setMaximum(int index, int value);
+    unsigned char minimum(int n) const;
+    void setMinimum(int n, int v);
+    unsigned char maximum(int n) const;
+    void setMaximum(int n, int v);
 
 protected:
     void initialize();

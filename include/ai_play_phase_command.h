@@ -24,10 +24,8 @@ protected:
 
 public:
     AIPlayPhaseCommand();
-    AIPlayPhaseCommand(unsigned char group, unsigned char type, int value1,
-                       int value2, int value3);
-    AIPlayPhaseCommand(unsigned char group, char* type, int value1,
-                       int value2, int value3);
+    AIPlayPhaseCommand(unsigned char g, unsigned char t, int v1, int v2, int v3);
+    AIPlayPhaseCommand(unsigned char g, char* t, int v1, int v2, int v3);
 
     unsigned char group() const { return this->groupValue; }
     void setGroup(unsigned char value) { this->groupValue = value; }
@@ -43,8 +41,8 @@ public:
     char* nameType() const;
 
 protected:
-    unsigned char convertToIntType(char* name) const;
-    char* convertToNameType(unsigned char type) const;
+    unsigned char convertToIntType(char* t) const;
+    char* convertToNameType(unsigned char t) const;
 };
 
 typedef char ai_play_phase_command_size_check[

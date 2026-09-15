@@ -28,12 +28,8 @@ protected:
 
 public:
     AIPlayPhaseTrigger();
-    AIPlayPhaseTrigger(unsigned char type, int value1, int value2,
-                       unsigned char phase, unsigned char nextPhase,
-                       int randomness);
-    AIPlayPhaseTrigger(char* type, int value1, int value2,
-                       unsigned char phase, unsigned char nextPhase,
-                       int randomness);
+    AIPlayPhaseTrigger(unsigned char t, int v1, int v2, unsigned char p, unsigned char n, int r);
+    AIPlayPhaseTrigger(char* t, int v1, int v2, unsigned char p, unsigned char n, int r);
 
     unsigned char type() const { return this->typeValue; }
     void setType(unsigned char value) { this->typeValue = value; }
@@ -51,8 +47,8 @@ public:
     char* nameType() const;
 
 protected:
-    unsigned char convertToIntType(char* name) const;
-    char* convertToNameType(unsigned char type) const;
+    unsigned char convertToIntType(char* t) const;
+    char* convertToNameType(unsigned char t) const;
 };
 
 typedef char ai_play_phase_trigger_size_check[

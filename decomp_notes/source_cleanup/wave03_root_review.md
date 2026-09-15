@@ -1,5 +1,25 @@
 # Cleanup wave 03 root review
 
+## Owner 13: source approval and shared declarations
+
+Reviewer `sa-fcb5c825` approved the complete source/owned-header diff at `0e7a7d77e70b68069ff692a762887a8b3a5f6499`.
+The reviewer also read the final report delta to `b41a7b3eccda9d05c1bec9bce3e2b011347e82b6`.
+No source blocker was found. The prohibited commands did not supply validation evidence.
+
+Root applied the approved declaration names in `aiplaybook.h`, `ai_play_phase_command.h`, `ai_play_phase_trigger.h`, `ai_play_phase.h`, and `ai_play_group.h`.
+Only parameter names and wrapping changed. Types, inline bodies, layouts, and method signatures remain unchanged.
+The reviewer checked these requests against the recovered `aipbook.cpp` declarations and PDB evidence.
+
+Owner 13 resumed for a stale `aiuaimod` blob citation, an ownership-only source comment, and narrower incident wording.
+The complete group remains unmerged until those small corrections return.
+
+## Owner 22: delegated review started
+
+Delivered head: `fe40ac36843104fe78e0b3285e721f08823a8e76`.
+The complete 3,104-line diff is `build/source-cleanup-20260915/owner22-review.diff`.
+Reviewer `sa-44e3d2ca` handles source review, the chat notification request, and the reported internal-validator incident.
+The group remains unmerged and unvalidated.
+
 ## Owner 16: delegated review started
 
 Delivered head: `71a6c8c56b8891e235f120a437be575c7b19d71b`.

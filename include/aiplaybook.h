@@ -8,10 +8,10 @@ class RGE_Static_Object;
 class AIPlayBook {
 public:
     virtual ~AIPlayBook();
-    virtual int convertTargetNameToIntType(char* name) const;
-    virtual int convertTargetCharacteristicNameToIntType(char* name) const;
-    virtual int convertUnitNameToIntType(char* name) const;
-    virtual int convertUnitToIntType(RGE_Static_Object* object) const;
+    virtual int convertTargetNameToIntType(char* t) const;
+    virtual int convertTargetCharacteristicNameToIntType(char* t) const;
+    virtual int convertUnitNameToIntType(char* t) const;
+    virtual int convertUnitToIntType(RGE_Static_Object* obj) const;
 
     int numberPlaysValue;                // +0x04
     char nameValue[65];                  // +0x08
@@ -19,7 +19,7 @@ public:
 
     AIPlayBook();
     int loadPlays(char* filename);
-    AIPlay* play(int index);
+    AIPlay* play(int n);
     AIPlay* play(char* name);
     int playNumber(char* name);
 };

@@ -17,10 +17,10 @@ protected:
 
 public:
     AIPlayPhase();
-    AIPlayPhaseCommand* command(int index);
-    AIPlayPhaseTrigger* trigger(int index);
-    int addCommand(AIPlayPhaseCommand& commandValue);
-    int addTrigger(AIPlayPhaseTrigger& triggerValue);
+    AIPlayPhaseCommand* command(int v);
+    AIPlayPhaseTrigger* trigger(int v);
+    int addCommand(AIPlayPhaseCommand& c);
+    int addTrigger(AIPlayPhaseTrigger& t);
 
 protected:
     void initialize();
