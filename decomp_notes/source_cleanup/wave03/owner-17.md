@@ -50,3 +50,24 @@ The reports also keep existing matching and behavior limits visible.
 
 Compilation, matching checks, audits, tests, and games were not run.
 The group remains reviewed but unvalidated until the final validation stage.
+
+## Post-cleanup validation repair
+
+Before repair, `src/Pnl_txt.cpp` matched the integrated root source.
+Both files had SHA256 `de0816b03e3f021267d2b97174190cddd7fb7f8c69664d163edd00548989d486`.
+
+The fresh root build report is
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+Its first `Pnl_txt.cpp` diagnostic reported an extra closing token before `else`.
+
+Worker `sa-f1126b1a` resumed with its cleanup context.
+Worker commit `5e6168ce5878a6c5ab99307f36953a9969b848cd` removes only the extra `}` and updates the module report.
+Integration commit `ddfc3672bcb3ad93695c13b4c2552ab3cebdfd0c` contains the complete repair.
+
+The worker compared the complete source diff with pre-cleanup commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341`.
+It found no other instance of the same token-loss pattern.
+
+The owner reviewed the complete two-file repair diff.
+No source scope, control flow, declaration, type, or storage changed.
+Root owns post-repair compilation and full validation.
