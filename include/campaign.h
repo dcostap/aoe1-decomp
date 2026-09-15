@@ -28,16 +28,15 @@ public:
     RGE_Scenario_Offset* scenario_offsets;
     char filename[255];
 
-    RGE_Campaign(char* filename);
-    RGE_Campaign(char* filename, char* name, long count,
-                 char** names, char** filenames);
+    RGE_Campaign(char* in_filename);
+    RGE_Campaign(char* campaign_filename, char* campaign_name, long scenario_num, char** scenarios, char** scenarios_name);
     ~RGE_Campaign();
     void create_file();
-    int open_scenario(long index);
+    int open_scenario(long scenario);
     char* get_name();
     long scenario_number();
-    long scenario_info(char*** list);
-    char* get_scenario_name(long index);
+    long scenario_info(char*** scenario_names);
+    char* get_scenario_name(long num);
 };
 
 typedef char campaign_size_check[(sizeof(RGE_Campaign) == 0x20C) ? 1 : -1];

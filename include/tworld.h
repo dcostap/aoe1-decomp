@@ -92,39 +92,37 @@ public:
     virtual ~TRIBE_World();
 
 protected:
-    virtual void logStatus(FILE*, int);
+    virtual void logStatus(FILE* out, int firstTime);
 
 public:
     // Override declarations follow inherited vtable slot order. Only
-    virtual unsigned char data_load_world(FILE*);
-    virtual void data_load_players_type(short, short, FILE*);
-    virtual void data_load_map(char*, char*, char*, char*, short, short, short,
-                               RGE_Sound**, char*);
-    virtual unsigned char init_player_type(int, short, unsigned char);
-    virtual void load_player(int, unsigned char, short);
-    virtual void map_init(int, TSound_Driver*);
-    virtual void effects_init(int);
-    virtual void command_init(int, TCommunications_Handler*);
-    virtual void world_init(int, TSound_Driver*, TCommunications_Handler*);
+    virtual unsigned char data_load_world(FILE* infile);
+    virtual void data_load_players_type(short id, short type, FILE* infile);
+    virtual void data_load_map(char* border_file, char* overlay_file, char* terrain_file, char* map_file, short tile_width, short tile_height, short elev_height, RGE_Sound** sounds, char* terr_obj_file);
+    virtual unsigned char init_player_type(int infile, short index, unsigned char type);
+    virtual void load_player(int infile, unsigned char type, short index);
+    virtual void map_init(int infile, TSound_Driver* sound_dvr);
+    virtual void effects_init(int infile);
+    virtual void command_init(int infile, TCommunications_Handler* com_hand);
+    virtual void world_init(int infile, TSound_Driver* sound_dvr, TCommunications_Handler* com_hand);
     virtual void setup_gaia();
-    virtual void setup_players(RGE_Player_Info&);
-    virtual void save(int);
-    virtual void scenario_make_player(short, unsigned char, unsigned char,
-                                      unsigned char, char*);
-    virtual unsigned char init(char*, TSound_Driver*, TCommunications_Handler*);
+    virtual void setup_players(RGE_Player_Info& info);
+    virtual void save(int outfile);
+    virtual void scenario_make_player(short index, unsigned char player_type, unsigned char info_type, unsigned char master_player_id, char* name);
+    virtual unsigned char init(char* base_name, TSound_Driver* sound_dvr, TCommunications_Handler* com_hand);
     virtual unsigned char check_game_state();
-    virtual unsigned char load_world(int);
-    virtual unsigned char new_game(RGE_Player_Info&, int);
-    virtual unsigned char new_scenario(RGE_Player_Info&, int);
-    virtual void base_save(int);
-    virtual void scenario_init(int, RGE_Game_World*);
-    virtual void scenario_init(RGE_Game_World*);
+    virtual unsigned char load_world(int infile1);
+    virtual unsigned char new_game(RGE_Player_Info& info, int myPlayerNum);
+    virtual unsigned char new_scenario(RGE_Player_Info& info, int random_seed_in);
+    virtual void base_save(int outfile);
+    virtual void scenario_init(int infile, RGE_Game_World* world);
+    virtual void scenario_init(RGE_Game_World* world);
 
-    void check_destructables(short, short, float, float, unsigned char);
-    long get_achievement(unsigned char, char**);
-    void send_cheat(short);
-    void cheat(short, short);
-    void fill_in_score(TRIBE_Zone_High_Score_Info&, long);
+    void check_destructables(short player_id, short obj_id, float col, float row, unsigned char delete_flag);
+    long get_achievement(unsigned char achievement, char** info);
+    void send_cheat(short cheat_code);
+    void cheat(short player, short cheat_code);
+    void fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_group);
     void send_zone_score_info();
 };
 

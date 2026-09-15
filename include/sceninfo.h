@@ -19,12 +19,12 @@ public:
     long scenario_num;
     RGE_Scenario_File_Entry* scenarios;
 
-    RGE_Scenario_File_Info(char* path);
+    RGE_Scenario_File_Info(char* in_filename);
     ~RGE_Scenario_File_Info();
     void save();
     void reload_scenarios();
-    char* get_scenario_name(long index);
-    RGE_Scenario_Header* get_scenario_info(long index);
+    char* get_scenario_name(long id);
+    RGE_Scenario_Header* get_scenario_info(long id);
 };
 
 typedef char rge_scenario_file_info_size_check[
