@@ -1230,6 +1230,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
                     object->die_die_die();
                 node = node->next;
             }
+        }
             break;
         case 102:
             this->players[player]->win_game_now();
