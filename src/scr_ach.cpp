@@ -114,8 +114,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
             this->create_text(this, &this->win_loss_text, "", 10, 0x55,
                               0x26C, 0x14A, 0x0B, 0, 0, 1);
             if (this->win_loss_text != 0) {
-                this->create_auto_scrollbar(&this->win_loss_text_bar,
-                                            this->win_loss_text, 0x14);
+                this->create_auto_scrollbar(&this->win_loss_text_bar, this->win_loss_text, 0x14);
                 this->win_loss_text->set_bevel_info(
                     4, this->bevel_color1, this->bevel_color2,
                     this->bevel_color3, this->bevel_color4,
@@ -155,12 +154,9 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
                       0x1E, 0x0B, 0, 0, 0);
     this->create_text(this, &this->title_bar[6], 0, 0x1A8, 0x97, 0xC8,
                       0x1E, 0x0B, 0, 0, 0);
-    this->title_bar[4]->set_alignment(TTextPanel::AlignTop,
-                                      TTextPanel::AlignRight);
-    this->title_bar[5]->set_alignment(TTextPanel::AlignTop,
-                                      TTextPanel::AlignRight);
-    this->title_bar[6]->set_alignment(TTextPanel::AlignTop,
-                                      TTextPanel::AlignRight);
+    this->title_bar[4]->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
+    this->title_bar[5]->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
+    this->title_bar[6]->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
 
     this->create_text(this, &this->achievement_choice[0], 0, 0x64, 0x97,
                       0x82, 0xFA, 0x0B, 0, 0, 0);
@@ -299,10 +295,8 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     tabList[tab_count++] = this->okButton;
     this->set_tab_order(tabList, static_cast<short>(tab_count));
     this->set_curr_child(this->okButton);
-    this->backButton->set_tab_order(static_cast<TPanel*>(0),
-                                    static_cast<TPanel*>(0));
-    this->backButton2->set_tab_order(static_cast<TPanel*>(0),
-                                     static_cast<TPanel*>(0));
+    this->backButton->set_tab_order(static_cast<TPanel*>(0), static_cast<TPanel*>(0));
+    this->backButton2->set_tab_order(static_cast<TPanel*>(0), static_cast<TPanel*>(0));
 
     this->set_mode(this->win_loss_text != 0 ? 5 : 0);
 }
@@ -472,14 +466,12 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
-                    this->statistics[player_index][4]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][4]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
-                    this->statistics[player_index][5]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][5]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][5]->set_text("");
                 }
@@ -514,17 +506,14 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][0]->set_text(temptxt);
                 itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
                 this->statistics[player_index][1]->set_text(temptxt);
-                itoa(static_cast<long>(
-                         player->attributes[19] - player->attributes[11]),
-                     temptxt, 10);
+                itoa(static_cast<long>(player->attributes[19] - player->attributes[11]), temptxt, 10);
                 this->statistics[player_index][2]->set_text(temptxt);
 
                 itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(3) > 0) {
-                    this->statistics[player_index][4]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][4]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
@@ -562,8 +551,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][1]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(6) > 0) {
-                    this->statistics[player_index][2]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][2]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][2]->set_text("");
                 }
@@ -572,8 +560,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(8) > 0) {
-                    this->statistics[player_index][4]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][4]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
@@ -612,8 +599,7 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 this->statistics[player_index][0]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(11) > 0) {
-                    this->statistics[player_index][1]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][1]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][1]->set_text("");
                 }
@@ -659,20 +645,17 @@ void TribeAchievementsScreen::set_mode(long new_mode) {
                 itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
                 this->statistics[player_index][0]->set_text(temptxt);
                 if (player->victory_conditions->get_victory_points_id(18) > 0) {
-                    this->statistics[player_index][1]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][1]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][1]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(19) > 0) {
-                    this->statistics[player_index][2]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][2]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][2]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(20) > 0) {
-                    this->statistics[player_index][3]->set_text(
-                        static_cast<long>(0xFA3));
+                    this->statistics[player_index][3]->set_text(static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][3]->set_text("");
                 }
@@ -760,8 +743,7 @@ void TribeAchievementsScreen::draw() {
     }
 }
 
-long TribeAchievementsScreen::handle_mouse_down(unsigned char mouse_button_in, long x,
-                                                long y, int ctrl_key, int shift_key) {
+long TribeAchievementsScreen::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     long result = TEasy_Panel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
     if (current_mode == 0) {
         if (achievement_choice[0]->is_inside(x, y)) {
