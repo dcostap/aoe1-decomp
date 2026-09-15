@@ -28,7 +28,7 @@ void GetDXVersion( unsigned long* pdwDXVersion, unsigned long* pdwDXPlatform ) {
     pDDraw2 = 0;
     pSurf = 0;
     pSurf3 = 0;
-    osVer.dwOSVersionInfoSize = sizeof(osVer);
+    osVer.dwOSVersionInfoSize = 0x94;
 
     if (!GetVersionExA( &osVer )) {
         *pdwDXVersion = 0;
