@@ -158,7 +158,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         if (i < 4) {
             this->button_bldg_pics[i] = new TShape(str, i + 0xc610);
         }
-        } else {
+        else {
             this->button_bldg_pics[i] = new TShape(str, 0xcf0d);
         }
         if (this->button_bldg_pics[i] == 0 || !(this->button_bldg_pics[i])->is_loaded()) {
@@ -404,7 +404,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
             this->age_panel->set_active(0);
         }
     }
-    } else {
+    else {
         this->fps_panel->set_active(0);
         this->inven_panel->set_active(1);
         if (do_color_log == 0) {
@@ -423,7 +423,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         }
         if (num_game_players == 0) num_game_players = 1;
     }
-    } else {
+    else {
         num_game_players = this->world->player_num - 1;
     }
     for (i = 0; i < num_game_players; i++) {
@@ -3924,7 +3924,7 @@ void TRIBE_Screen_Game::command_comm_info() {
     if (rge_base_game->do_show_comm != 0) {
         rge_base_game->do_show_comm = 0;
     }
-    } else {
+    else {
         RGE_Base_Game* game;
         rge_base_game->do_show_timings = 0;
         game = rge_base_game;
