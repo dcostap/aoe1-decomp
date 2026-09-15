@@ -38,6 +38,10 @@ Generated code, program data, relocations, and call targets remain unvalidated.
 
 ## Pending deliveries
 
+- Owner 20: `5b9d313b31819f8228623339e733ff1b25f2558e`.
+  Root saved the complete 5,411-line diff as `build/source-cleanup-20260915/owner20-review.diff`.
+  Complete root review remains pending. The owner reports no shared requests or prohibited commands.
+
 - Owner 17: `315dd545ea22c89c4bfedff7da6c8d69a7b1b93a`.
   Root saved the complete 8,322-line diff as `build/source-cleanup-20260915/owner17-review.diff`.
   Complete root review has not started.
