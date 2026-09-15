@@ -7,11 +7,25 @@
 - Branch: `cleanup/staging-20260915-19`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Previous source commit: `cccb50ecbb00fdf39c3cfad336f0094b3c3dec31`
-- Final source commit: `0d8b67a7c8b68126eac5a92eedc30afc784cfe1a`
+- Brace correction source commit: `0d8b67a7c8b68126eac5a92eedc30afc784cfe1a`
+- Final source commit: `25579e091164faef36172c6c4b016291d9c23672`
 - Changed files in the source commit: `src/rmm_terr.cpp`
 - The follow-up report commit contains this report only.
 
 The header `include/rmm_terrain_generator.h` was read and was not edited.
+
+## Post-cleanup validation repair
+
+The supplied fresh main build report was:
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+It reported C2082 at `src/rmm_terr.cpp:313` for formal parameter `y`.
+
+I compared the integrated source with pre-cleanup commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341` and the procedure PDB records.
+The repair source commit is `25579e091164faef36172c6c4b016291d9c23672`.
+It restores the baseline formal name `p2` in
+`remove_area_from_lists`. The existing local `y` remains distinct.
+The repair changes no scope, local, type, storage, order, or behavior.
 
 ## Correction round
 
@@ -62,8 +76,10 @@ The following names match the procedure-scoped PDB records.
   became recovered `loc_stack` and `base_terrain_type`. The PDB local
   `max_y` was already present.
 - `00488F90` `remove_area_from_lists`: parameters `p1`, `p2`, and `p3`
-  became recovered `x`, `y`, and `spacing`. The PDB loop records remain
-  unresolved because they reuse argument slots.
+  remain distinct as `x`, `p2`, and `spacing`. The PDB `x` and `spacing`
+  records support the first and third parameters. The PDB `y` record shares
+  the local slot used by the existing `y` loop variable, so the baseline
+  `p2` name remains. The PDB loop records remain unresolved.
 - `00489030` `base_terrain_generate`: parameter `line` became recovered
   `info_line`. The adjacent coordinate output `chance` became recovered
   `y`.
@@ -83,9 +99,9 @@ name for this compiler temporary.
 - `00488B90` has PDB records named `y1`, `x1`, and `count` in reused stack
   slots. The current typed scan uses clipped-bound and row-pointer locals.
   I did not force those records onto different types or scopes.
-- `00488F90` has PDB `y1`, `x1`, and `y_index` records in reused argument
-  slots. The current typed loop keeps its existing descriptive bounds and
-  does not force those mappings.
+- `00488F90` has PDB `y`, `y1`, `x1`, and `y_index` records in reused
+  argument slots. The current typed loop keeps its existing descriptive
+  bounds and baseline `p2` parameter name. It does not force those mappings.
 - `00489030` has a PDB `chance` record sharing a slot with the fairness-count
   record. The current `cost` output has a different declaration role, so it
   remains unresolved. The source keeps its existing type and storage.
