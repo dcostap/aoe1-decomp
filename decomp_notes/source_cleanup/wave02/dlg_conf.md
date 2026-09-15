@@ -4,7 +4,8 @@
 
 - Module: `src/dlg_conf.cpp`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Resource approval commit: `3caba12fa62d4d07a0626fcb9f77e3425b9181ff` (`include/resource_ids.h`)
+- Worker-local resource import provenance: `3caba12fa62d4d07a0626fcb9f77e3425b9181ff` (`include/resource_ids.h`)
+- Root resource approval commit: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Final source commit from `git rev-parse`: `4bb1f30e5b844c4ea0c51cc29308ca22f2825333`
 - Branch: `cleanup/staging-20260915-84`
 - Changed files: `src/dlg_conf.cpp`; this report.
@@ -205,8 +206,10 @@ Recovered original spellings from the PDB are:
 
 The source already used `string_id`, `new_speed`, and `msg`. The other recovered
 names replace readable or generated substitutes. The approved `IDS_*` names
-come from the shared header commit recorded above. They are cleanup names, not
-recovered original macro names.
+come from the root resource approval commit
+`8c56055b7feee1526f296bd306036a4c34f38041`. They are cleanup names, not
+recovered original macro names. The worker-local import commit records
+provenance only.
 
 Existing inferred names retained without original-name evidence are `i`, `y`,
 `speed`, `music_system`, `sound_system`, `screen_width`, `cancel_button`,
@@ -235,11 +238,12 @@ Owner 10 has no declaration request for `include/dlg_conf.h`. Its declarations
 are unnamed, and the definition uses the recovered PDB parameter spellings
 without changing the public interface.
 
-The approved definitions are present in `include/resource_ids.h` from commit
-`3caba12fa62d4d07a0626fcb9f77e3425b9181ff`. The source uses all approved
-`dlg_conf` macros. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL`
-definitions cover `0x0FA1` and `0x0FA2`. No separate `Medium` or `High` path
-finding macro is requested.
+The approved definitions are present in `include/resource_ids.h` from root
+approval commit `8c56055b7feee1526f296bd306036a4c34f38041`. The worker-local
+import commit `3caba12fa62d4d07a0626fcb9f77e3425b9181ff` records local
+provenance only. The source uses all approved `dlg_conf` macros. The existing
+`IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` definitions cover `0x0FA1` and
+`0x0FA2`. No separate `Medium` or `High` path finding macro is requested.
 
 No other shared request is open. No header was edited in this commit sequence.
 
