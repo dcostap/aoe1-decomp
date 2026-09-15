@@ -9,8 +9,8 @@ ResourceItem::ResourceItem()
     }
 }
 
-ResourceItem::ResourceItem(int count)
-    : next(0), prev(0), numberValue(count) {
+ResourceItem::ResourceItem(int n)
+    : next(0), prev(0), numberValue(n) {
     int i = 0;
 
     while (i < numberValue) {
@@ -30,15 +30,15 @@ ResourceItem::ResourceItem(int count)
     }
 }
 
-ResourceItem::ResourceItem(int count, int* values)
-    : next(0), prev(0), numberValue(count) {
+ResourceItem::ResourceItem(int n, int* v)
+    : next(0), prev(0), numberValue(n) {
     int i = 0;
 
     while (i < numberValue) {
         if (i >= 8) {
             return;
         }
-        valueValue[i] = values[i];
+        valueValue[i] = v[i];
         sortedValue[i] = -1;
         sortedIndexValue[i] = -1;
         i = i + 1;
@@ -51,41 +51,41 @@ ResourceItem::ResourceItem(int count, int* values)
     }
 }
 
-ResourceItem::ResourceItem(const ResourceItem& source)
-    : next(0), prev(0), numberValue(source.numberValue) {
+ResourceItem::ResourceItem(const ResourceItem& ri)
+    : next(0), prev(0), numberValue(ri.numberValue) {
     for (int i = 0; i < numberValue && i < 8; ++i) {
-        valueValue[i] = source.valueValue[i];
-        sortedValue[i] = source.sortedValue[i];
-        sortedIndexValue[i] = source.sortedIndexValue[i];
+        valueValue[i] = ri.valueValue[i];
+        sortedValue[i] = ri.sortedValue[i];
+        sortedIndexValue[i] = ri.sortedIndexValue[i];
     }
 }
 
-ResourceItem::ResourceItem(ResourceItem* source)
-    : next(0), prev(0), numberValue(source->numberValue) {
+ResourceItem::ResourceItem(ResourceItem* ri)
+    : next(0), prev(0), numberValue(ri->numberValue) {
     for (int i = 0; i < numberValue && i < 8; ++i) {
-        valueValue[i] = source->valueValue[i];
-        sortedValue[i] = source->sortedValue[i];
-        sortedIndexValue[i] = source->sortedIndexValue[i];
+        valueValue[i] = ri->valueValue[i];
+        sortedValue[i] = ri->sortedValue[i];
+        sortedIndexValue[i] = ri->sortedIndexValue[i];
     }
 }
 
 ResourceItem::~ResourceItem() {}
 
-ResourceItem& ResourceItem::operator+=(const ResourceItem& source) {
-    if (numberValue == source.numberValue) {
+ResourceItem& ResourceItem::operator+=(const ResourceItem& ri) {
+    if (numberValue == ri.numberValue) {
         for (int i = 0; i < numberValue; ++i) {
-            valueValue[i] += source.valueValue[i];
+            valueValue[i] += ri.valueValue[i];
         }
     }
     return *this;
 }
 
-int operator==(const ResourceItem& left, const ResourceItem& right) {
-    const ResourceItem& lhs = left;
+int operator==(const ResourceItem& one, const ResourceItem& two) {
+    const ResourceItem& lhs = one;
     int count = lhs.numberValue;
-    if (count == right.numberValue) {
+    if (count == two.numberValue) {
         for (int i = 0; i < count; ++i) {
-            if (lhs.valueValue[i] != right.valueValue[i]) {
+            if (lhs.valueValue[i] != two.valueValue[i]) {
                 goto not_equal;
             }
         }
@@ -97,10 +97,10 @@ not_equal:
     return 0;
 }
 
-int operator!=(const ResourceItem& left, const ResourceItem& right) {
-    if (left.numberValue == right.numberValue) {
-        for (int i = 0; i < left.numberValue; ++i) {
-            if (left.valueValue[i] != right.valueValue[i]) {
+int operator!=(const ResourceItem& one, const ResourceItem& two) {
+    if (one.numberValue == two.numberValue) {
+        for (int i = 0; i < one.numberValue; ++i) {
+            if (one.valueValue[i] != two.valueValue[i]) {
                 goto not_equal;
             }
         }
@@ -112,28 +112,28 @@ not_equal:
     return 1;
 }
 
-int ResourceItem::value(int index) const {
-    if (index < 0 || index >= numberValue) {
+int ResourceItem::value(int n) const {
+    if (n < 0 || n >= numberValue) {
         return -1;
     }
-    return valueValue[index];
+    return valueValue[n];
 }
 
-void ResourceItem::setValue(int index, int value) {
-    if (index >= 0 && index < numberValue) {
-        valueValue[index] = value;
+void ResourceItem::setValue(int n, int v) {
+    if (n >= 0 && n < numberValue) {
+        valueValue[n] = v;
     }
 }
 
-void ResourceItem::incrementValue(int index, int value) {
-    if (index >= 0 && index < numberValue) {
-        valueValue[index] += value;
+void ResourceItem::incrementValue(int n, int v) {
+    if (n >= 0 && n < numberValue) {
+        valueValue[n] += v;
     }
 }
 
-void ResourceItem::setAllValues(int value) {
+void ResourceItem::setAllValues(int v) {
     for (int i = 0; i < 8; ++i) {
-        valueValue[i] = value;
+        valueValue[i] = v;
     }
 }
 
@@ -141,12 +141,12 @@ int ResourceItem::number() const {
     return numberValue;
 }
 
-int ResourceItem::largestValueIndex(int index) {
-    if (numberValue < index) {
+int ResourceItem::largestValueIndex(int num) {
+    if (numberValue < num) {
         return -1;
     }
     if (sortLarge() == 1) {
-        return sortedIndexValue[index - 1];
+        return sortedIndexValue[num - 1];
     }
     return -1;
 }
