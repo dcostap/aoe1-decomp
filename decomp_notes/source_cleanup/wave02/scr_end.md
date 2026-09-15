@@ -117,8 +117,8 @@ Shared-file provenance and request:
   `include/resource_ids.h` at
   `bdb8bc1afb50e9e28b76d09fe731855eafa66460` (`bdb8bc1af`). The source substitution is in
   worker commit `58c4d027aee629338711daea2d788dbc36965a34`.
-- Owner 11 owns `include/scr_end.h`. No header edit is required. The source
-  parameter names can change without changing its unnamed declaration or ABI.
+- Owner 11 owns `include/scr_end.h`. No header edit is required because its
+  declaration already matches the source names and ABI.
 
 ## Possible code-generation effects
 
