@@ -6,7 +6,7 @@
 - Worker slot: 165.
 - Branch: `cleanup/staging-20260915-165`.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit: `3a348ac7acf01966fbf208085de2a299a9835c2c`.
+- Final source commit: `41efa7d4c061352bac05eaf0941b28fc047f67f8`.
 - Final report commit: this report commit. Git output supplies its full hash.
 - Changed files:
   - `src/rpnl_tim.cpp`.
@@ -16,9 +16,10 @@
 - Registry flags: `gx`.
 - Read-only header: `include/rpnl_tim.h`.
 
-The source commit changes PDB-supported identifier names, two verified GDI mode
-constants, and presentation. It keeps types, scopes, declarations, storage,
-calls, literals, source order, and control flow unchanged.
+The source commit changes PDB-supported identifier names, one approved resource
+macro use, two verified GDI mode constants, and presentation. It keeps types,
+scopes, declarations, storage, calls, effective values, source order, and
+control flow unchanged.
 
 ## Evidence checked
 
@@ -40,6 +41,7 @@ Other evidence included:
 - `orig/ghidra_decomp/rpnl_tim.cpp.asm`.
 - `orig/ghidra_decomp/rpnl_tim.cpp.decomp`.
 - `include/rpnl_tim.h` and its included reviewed declarations.
+- `include/resource_ids.h` from the reviewed worker import.
 - `decomp_notes/rpnl_tim.md`.
 
 The original executable reference is
@@ -107,15 +109,20 @@ symbols for the matching `SetBkMode` calls. Their effective values and types
 remain unchanged.
 
 No other numeric constant was added, removed, or changed. Existing redraw,
-color, geometry, sentinel, buffer-size, and timer values remain numeric. No
-comment was added. Existing calls, casts, string contents, and lookup order
+color, geometry, sentinel, buffer-size, and timer values remain numeric. The
+resource literal changed to the approved macro only. No comment was added.
+Existing calls, formatting arguments, buffers, fallback, and lookup order
 remain unchanged.
 
 The source looks up resource ID `0x2C24` through `TPanel::get_string(int)`.
-The result formats one per-player countdown line. The proposed shared cleanup
-name is `IDS_COUNTDOWN_TIMER_FORMAT`. This is a new descriptive name, not a
-recovered original macro. The source keeps the numeric ID until the root header
-owner reviews and adds that definition.
+The result formats one per-player countdown line. Root approved the shared
+cleanup name `IDS_COUNTDOWN_YEARS_FORMAT`. This is a new descriptive name, not
+a recovered original macro. The source now uses that macro.
+
+Root approval commit `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340` added the
+mapping. Worker import commit `07fc1ff4eeaef85d757f8a563f8ef1160dfe7b74`
+imported the reviewed `include/resource_ids.h` into this branch. The worker did
+not edit that header.
 
 Resource evidence for `0x2C24`:
 
@@ -155,14 +162,14 @@ RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in, void* font_in);
 This request changes parameter names only. It does not change the interface,
 types, order, or ABI.
 
-The root header owner may add this descriptive resource definition after review:
+The approved definition is now present in the imported header:
 
 ```cpp
-#define IDS_COUNTDOWN_TIMER_FORMAT 0x2C24
+#define IDS_COUNTDOWN_YEARS_FORMAT 0x2C24
 ```
 
-Both requests are non-blocking. The source keeps `0x2C24` until its shared
-mapping is approved. The PDB `player_num` type spelling and the one-to-many
+The constructor-name request remains non-blocking. The resource mapping is
+approved and imported. The PDB `player_num` type spelling and the one-to-many
 mapping of the PDB `str` record remain unresolved source questions. No layout,
 ABI, global, or other shared declaration request is open.
 
