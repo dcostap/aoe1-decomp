@@ -209,6 +209,27 @@ All uses preserve the base language namespace and expansion-first fallback.
 `dlg_list` needed no new shared definition.
 No shared resource request remains pending.
 
+## Report-only correction history
+
+Root confirmed the complete source correction diff. Root then requested two
+report-only corrections. The same affected workers corrected the reports.
+
+Each report now separates root approval
+`8c56055b7feee1526f296bd306036a4c34f38041` from its worker-local import
+commit. The `dlg_menu` report now identifies the adjacent strings as dialog
+panel names. The `dlg_msg` report now records `0043FEAD` as the comparison and
+`0043FEAF` as the store.
+
+| Module | Worker final report head | Integrated report commit |
+| --- | --- | --- |
+| `dlg_abt` | `b4ab8705433c90be053447e6d7c5ec4147d75c3d` | `bce18760d4aa85d69dd9a7924a26f09e92034443` |
+| `dlg_conf` | `4741fc2a9dda2d3c406c48e19deeede180b9d9d5` | `0d9e0663c0e17fcfd1cb0f5422eb502038968e05` |
+| `dlg_dip` | `0e46df11dd2be9eb91f456e388cc4398cf654ff8` | `7ce42334ed6b0dd218d2dd675339606013464fbb` |
+| `dlg_help` | `fe0cd547eb4cda536c6f8e9a72f1d460e9bcbce9` | `ce9a76fda6045d0a20682ed9f593c1229b4dd5ef` |
+| `dlg_menu` | `5b983f7bb623d14a3afb393fd7d7059e2d3a6b63` | `f7101de691cb803416c14d332dfb9552e2d0949c` |
+| `dlg_msg` | `60f781599a8e1009e8ba2ad45a3b90ec55debdd5` | `7ed4715f6f77898336f7bbcb4ce559ee682d8d3f`, `99ecd363fcc2ab55088bf3fc9982c97f12ee39d4` |
+| `dlg_sedm` | `5aaf64d424c1213619316c65dfa3a95f655bbf05` | `883b6ff5d50f93398213ac75ad36f8b39e390a55` |
+
 ## Validation status
 
 Compilation, matching, audits, and tests were not run.
