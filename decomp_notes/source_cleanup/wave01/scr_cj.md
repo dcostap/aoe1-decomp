@@ -6,7 +6,7 @@
 - Header read: `include/scr_cj.h` (not edited)
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Source cleanup commit: `441a3579803fb8d6a8d6e00b71fef0422ec1bf7f`
-- Report commit: the commit that adds this report; copy its full head hash from Git delivery output.
+- Report commit: `80b2c28ae3dfb82c38fccf3e4d71e59d615a42f4`.
 - Changed files: `src/scr_cj.cpp`, `decomp_notes/source_cleanup/wave01/scr_cj.md`
 
 The source commit restores procedure-scoped PDB names and uses existing button resource macros. It does not change declarations, types, storage, control flow, call order, data, or resource numbers.
