@@ -6,7 +6,7 @@
 - Header: `include/scr_sedo.h`
 - PDB source: `C:\\msdev\\work\\age1_x1\\scr_sedo.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `0fff4f5e95f094dd31ce9439f0ec2bb6c54a15a9`
+- Final source commit: `cc350e5cbab2079d151ef0c88b5c0299e765445f`
 - Report path: `decomp_notes/source_cleanup/wave03/scr_sedo.md`
 - Changed worker files: `src/scr_sedo.cpp` and this report.
 
@@ -102,6 +102,25 @@ Their source names remain descriptive. No reused slot receives a forced name.
 
 ## Resource identifiers
 
+### Root approval
+
+Root approved the payload-backed shared declarations in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. The approved header was read at:
+
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-181/include/resource_ids.h`
+
+The approved declarations are:
+
+```cpp
+#define IDS_SCENARIO_OPEN_TITLE 0x24CD
+#define IDS_ERROR_CANNOT_LOAD_SCENARIO 0x24CF
+```
+
+This approval is shared-header evidence. It is separate from the worker's
+resource extraction evidence below. The worker did not edit the shared header.
+
+### Worker evidence
+
 The source now includes the existing `include/resource_ids.h` and reuses these
 approved names:
 
@@ -112,16 +131,14 @@ approved names:
 | `IDS_BUTTON_DELETE` | `0x24C9` | Delete button caption | `Delete` |
 | `IDS_CONFIRM_DELETE_FILE` | `0x24CA` | Delete confirmation format string | `Are you sure you want to delete the file \n'%s'?` |
 
-The source keeps these two IDs numeric and requests shared declarations from
-the root owner of `include/resource_ids.h`:
+The source now uses the root-approved names for these two IDs:
 
 ```cpp
-#define IDS_SELECT_SCENARIO_TITLE       0x24CD
-#define IDS_ERROR_CANNOT_LOAD_SCENARIO  0x24CF
+#define IDS_SCENARIO_OPEN_TITLE 0x24CD
+#define IDS_ERROR_CANNOT_LOAD_SCENARIO 0x24CF
 ```
 
-These are new cleanup names. No original macro name is claimed. The proposed
-uses are:
+These are new cleanup names. No original macro name is claimed. Their uses are:
 
 - `0x24CD`: title passed to `create_text` in the scenario-open constructor.
 - `0x24CF`: failure message passed to `popupOKDialog` when neither scenario
@@ -220,15 +237,8 @@ normal procedures. This cleanup did not validate that claim.
 
 ## Shared-file requests and open questions
 
-Request these additions from the root owner of `include/resource_ids.h`:
-
-```cpp
-#define IDS_SELECT_SCENARIO_TITLE       0x24CD
-#define IDS_ERROR_CANNOT_LOAD_SCENARIO  0x24CF
-```
-
-The request includes the base-resource hash, language, exact text, lookup path,
-and call-site purpose above. Do not add local duplicate definitions.
+Root approval covers the `0x24CD` and `0x24CF` declarations. Do not add local
+duplicate definitions.
 
 Request the group owner of `include/scr_sedo.h` to apply this declaration-only
 change:
