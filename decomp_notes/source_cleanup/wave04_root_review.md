@@ -1,5 +1,15 @@
 # Cleanup wave 04 root review
 
+## Owner 27: source approved; provenance correction remains
+
+Reviewer `sa-32cff643` read all 475 correction lines and approved the source and imported headers.
+Diff SHA256: `f7f57979a349881f52b2fe89eb3a0863bfcdf7442139fc11be20856808400951`.
+The original 12,498-line review remains applicable.
+Root returned one report-only correction to the same worker and owner.
+Separate resource approval `bf943f3339643ee5beca7dd74e98b4cb729e48d3` from import `3f5867e84cda53a3103593a0e74f952a3f0798b7`.
+Both supply header blob `3670c49563f971137b89644d4a0069796cf3d2af`; they are distinct provenance steps.
+No source or header change is requested. Integration waits for the corrected reports.
+
 ## Owner 27: correction review started
 
 Corrected head: `332ab7bcd59f316425a9a75b3013f8d7c2bf26c1`.
