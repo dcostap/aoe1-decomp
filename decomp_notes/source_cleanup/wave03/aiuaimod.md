@@ -88,3 +88,12 @@ No shared declaration or resource request is open. No question blocks this repor
 ## Validation
 
 Per the cleanup assignment, compilation, builds, matching, audits, tests, and game launch were not run. Review used direct PDB inspection, original evidence inspection, Git diff review, and `git diff --check` only.
+
+## Correction delivery
+
+- Initial cleanup delivery: `9902c3216ddbb33372653f2e39170cbb2b49a754`.
+- Formatting correction delivery: recorded in the correction commit history after this report update.
+
+The correction places opening braces on the definition line throughout this source. It covers `update`, `updateGroup`, `selectNewPlayPhase`, `order`, both `notify` overloads, `search`, `bestUnitToAttack`, action wrappers, movement helpers, `lookAround`, `askForHelp`, `processGroupNotify`, `processMisc`, both queue overloads, and `purgeNotifyQueue`. Existing standalone scope braces remain unchanged. No brace was added or removed.
+
+The correction changed formatting only. Git diff review found no name, logic, comment, type, declaration, scope, or statement-order change. `git diff --check` passed. No compiler, build, matching, audit, test, or game command ran.

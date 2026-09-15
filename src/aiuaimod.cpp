@@ -482,8 +482,7 @@ int UnitAIModule::numberAttackingUnits() const {
 }
 
 
-int UnitAIModule::update(unsigned long uTime)
-{
+int UnitAIModule::update(unsigned long uTime) {
     int haveGameAction;
 
     if (this->objectValue->object_state > 2) {
@@ -678,8 +677,7 @@ int UnitAIModule::update(unsigned long uTime)
 
 
 
-void UnitAIModule::updateGroup(unsigned long uTime)
-{
+void UnitAIModule::updateGroup(unsigned long uTime) {
     AIPlay* play;
     RGE_Static_Object* target;
     RGE_Static_Object* member;
@@ -974,8 +972,7 @@ void UnitAIModule::updateGroup(unsigned long uTime)
 
 // aiuaimod.cpp
 //
-int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup)
-{
+int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup) {
     RGE_Static_Object* target;
     AIPlay* play;
     AIPlayPhase* phase;
@@ -1125,8 +1122,7 @@ int UnitAIModule::selectNewPlayPhase(int newPhase, int pickup)
 }
 int UnitAIModule::order(int issuer, int orderType, int target, int targetOwner,
                         float targetX, float targetY, float targetZ, float range,
-                        int immediate, int inFront, int priority)
-{
+                        int immediate, int inFront, int priority) {
     if (this->objectValue->object_state <= 2) {
         if (immediate == 0) {
             this->addToOrderQueue(issuer, orderType, target, targetOwner,
@@ -1175,8 +1171,7 @@ int UnitAIModule::order(int issuer, int orderType, int target, int targetOwner,
 
 
 int UnitAIModule::notify(int callerID, int recipientID, int mType, long p1,
-                         long p2, long p3)
-{
+                         long p2, long p3) {
     if (objectValue->object_state != 2)
         return 0;
 
@@ -1226,8 +1221,7 @@ int UnitAIModule::notifyCommander(NotifyEvent* nEvent) {
 
 // aiuaimod.cpp
 int UnitAIModule::notifyCommander(int callerID, int recipientID, int mType,
-                                  long p1, long p2, long p3)
-{
+                                  long p1, long p2, long p3) {
     NotifyEvent nEvent;
 
     if (this->objectValue->inGroup() == 1) {
@@ -1259,8 +1253,7 @@ int UnitAIModule::notifyCommander(int callerID, int recipientID, int mType,
 // aiuaimod.cpp
 // Direct typed visible-unit calls preserve the original call order.
 
-void UnitAIModule::search()
-{
+void UnitAIModule::search() {
     RGE_Static_Object* obj;
     RGE_Master_Static_Object* master;
     int range;
@@ -1333,8 +1326,7 @@ int UnitAIModule::actionRequiresLiveTarget(int aID) {
 // `UnitAIModule::update` is a separate owner at 00413AB0-0041400B.
 
 int UnitAIModule::bestUnitToAttack(int allowWallAttacks, int quickCheck,
-                                   float* threatSlot)
-{
+                                   float* threatSlot) {
     float numberMovingTargets;
     int numberDamagingUnits;
     int largestThreatIsBuilding;
@@ -2068,8 +2060,7 @@ int UnitAIModule::convertObject(int targetID, int unconditional) {
 // UnitAIModule::healObject — action wrapper
 
 
-int UnitAIModule::healObject(int targetID, int unconditional)
-{
+int UnitAIModule::healObject(int targetID, int unconditional) {
     if (unconditional || this->currentActionValue != 0x25B) {
         RGE_Static_Object* unit = this->objectValue;
         if (unit->heal(targetID, unconditional) == 1) {
@@ -2112,8 +2103,7 @@ int UnitAIModule::gatherObject(int targetID, int unconditional) {
 // UnitAIModule::healObject — action wrapper
 
 
-int UnitAIModule::repairObject(int targetID, int unconditional)
-{
+int UnitAIModule::repairObject(int targetID, int unconditional) {
     if (unconditional || this->currentActionValue != 0x26A) {
         RGE_Static_Object* unit = this->objectValue;
         if (unit->repair(targetID, unconditional) == 1) {
@@ -2150,8 +2140,7 @@ int UnitAIModule::buildObject(int targetID, int unconditional) {
     return 0;
 }
 
-int UnitAIModule::tradeWithObject(int targetID, int unconditional)
-{
+int UnitAIModule::tradeWithObject(int targetID, int unconditional) {
     if (unconditional != 0 || this->currentActionValue != 0x267) {
         int r = this->objectValue->trade(targetID, unconditional);
         if (r == 1) {
@@ -2179,8 +2168,7 @@ int UnitAIModule::tradeWithObject(int targetID, int unconditional)
 
 
 
-int UnitAIModule::explore(int tX, int tY, int unconditional)
-{
+int UnitAIModule::explore(int tX, int tY, int unconditional) {
     if (unconditional != 0 || this->currentActionValue == -1) {
         if (this->objectValue->explore(tX, tY, unconditional) == 1) {
             this->setCurrentAction(0x25D);
@@ -2218,8 +2206,7 @@ int UnitAIModule::transportObject(float tX, float tY, float tZ, int unconditiona
 // aiuaimod.cpp lines 3364-3381
 
 
-int UnitAIModule::unload(int unconditional, float x, float y)
-{
+int UnitAIModule::unload(int unconditional, float x, float y) {
     if (unconditional || this->currentActionValue == -1) {
         RGE_Static_Object* obj = this->objectValue;
         if (obj->unload(unconditional, x, y, obj->world_z) == 1) {
@@ -2289,8 +2276,7 @@ int UnitAIModule::moveTo(float targetX, float targetY, float targetZ,
 
 // aiuaimod.cpp lines 3453-3514.
 int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ,
-                                int unconditional)
-{
+                                int unconditional) {
     if (unconditional != 0 || this->currentActionValue == -1) {
         if (targetX < DAT_0056ebc8) {
             targetX = 0.0f;
@@ -2355,8 +2341,7 @@ int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ,
 }
 
 int UnitAIModule::intelligentEvasiveMoveTo(
-    float targetX, float targetY, float targetZ, int goCloser, int unconditional)
-{
+    float targetX, float targetY, float targetZ, int goCloser, int unconditional) {
     if (unconditional == 0 && this->currentActionValue != -1) {
         return 0;
     }
@@ -2718,8 +2703,7 @@ void UnitAIModule::setPlayStatus(AIPlayStatus* ps) {
 
 int __cdecl debug_rand(char* file, int line);
 
-void UnitAIModule::lookAround()
-{
+void UnitAIModule::lookAround() {
     RGE_Game_World* world;
     int ownerID;
 
@@ -2763,8 +2747,7 @@ int UnitAIModule::hasOrderOnQueue(int orderNumber) {
 // The source scans the two canonical visible-unit result buckets.
 
 
-void UnitAIModule::askForHelp(int unitToAttack)
-{
+void UnitAIModule::askForHelp(int unitToAttack) {
     RGE_Static_Object* callerObject = this->lookupObject(unitToAttack);
     if (callerObject != 0) {
         this->search();
@@ -3815,8 +3798,7 @@ remove_attacker:
 // The source uses the canonical play and phase providers.
 
 
-void UnitAIModule::processGroupNotify(NotifyEvent* nEvent)
-{
+void UnitAIModule::processGroupNotify(NotifyEvent* nEvent) {
     AIPlay* play;
     AIPlayPhase* phase;
 
@@ -3864,8 +3846,7 @@ int UnitAIModule::processIdle(int doSearch) {
 }
 
 
-int UnitAIModule::processMisc()
-{
+int UnitAIModule::processMisc() {
     int invalidValue = -1;
     int order;
 
@@ -4151,8 +4132,7 @@ int UnitAIModule::addToOrderQueue(OrderEvent* oEvent, int inFront) {
 int UnitAIModule::addToOrderQueue(int issuer, int orderType, int target,
                                   int targetOwner, float targetX, float targetY,
                                   float targetZ, float range, int inFront,
-                                  int priority)
-{
+                                  int priority) {
     if (this->orderQueueMaxSizeValue == this->orderQueueSizeValue) {
         OrderEvent* newQueue =
             (OrderEvent*)operator new(this->orderQueueMaxSizeValue * 0x48);
@@ -4260,8 +4240,7 @@ int UnitAIModule::addToNotifyQueue(NotifyEvent* nEvent) {
 
 
 int UnitAIModule::addToNotifyQueue(int callerID, int recipientID, int mType,
-                                   long p1, long p2, long p3)
-{
+                                   long p1, long p2, long p3) {
     if (this->notifyQueueMaxSizeValue == this->notifyQueueSizeValue) {
         NotifyEvent* newQueue =
             (NotifyEvent*)operator new(this->notifyQueueMaxSizeValue * 0x30);
@@ -4307,8 +4286,7 @@ int UnitAIModule::addToNotifyQueue(int callerID, int recipientID, int mType,
 
 
 
-void UnitAIModule::purgeNotifyQueue(unsigned long uTime)
-{
+void UnitAIModule::purgeNotifyQueue(unsigned long uTime) {
     int i = 0;
     int count = this->notifyQueueSizeValue;
     if (count > 0) {
