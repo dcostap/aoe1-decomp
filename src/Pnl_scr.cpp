@@ -15,17 +15,12 @@ TScreenPanel::TScreenPanel(char* name) : TEasy_Panel(name) {
 TScreenPanel::~TScreenPanel() {
 }
 
-long TScreenPanel::setup(TDrawArea* render_area_in, char* info_file_name,
-                         long resource_file_id, int allow_shadow_area_in) {
-    return TEasy_Panel::setup(render_area_in, 0, info_file_name, resource_file_id, 1, 0, 0, 0, 0,
-                              allow_shadow_area_in) != 0;
+long TScreenPanel::setup(TDrawArea* render_area_in, char* info_file_name, long resource_file_id, int allow_shadow_area_in) {
+    return TEasy_Panel::setup(render_area_in, 0, info_file_name, resource_file_id, 1, 0, 0, 0, 0, allow_shadow_area_in) != 0;
 }
 
-long TScreenPanel::setup(TDrawArea* render_area_in, char* palette_file,
-                         long pal_res_id, unsigned char color_in,
-                         int allow_shadow_area_in) {
-    return TEasy_Panel::setup(render_area_in, 0, 0, -1, 1, 0, 0, 0, 0,
-                              allow_shadow_area_in) != 0;
+long TScreenPanel::setup(TDrawArea* render_area_in, char* palette_file, long pal_res_id, unsigned char color_in, int allow_shadow_area_in) {
+    return TEasy_Panel::setup(render_area_in, 0, 0, -1, 1, 0, 0, 0, 0, allow_shadow_area_in) != 0;
 }
 
 void TScreenPanel::draw() {
