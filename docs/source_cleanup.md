@@ -1,13 +1,14 @@
 # Source-cleanup wave
 
-Approved for the September 15 pilot. This document does not authorize additional worker launches by itself.
+Approved for the September 15 cleanup. Assignments authorize launches; this guide does not assign files by itself.
 
 ## Active launch contract
 
 - Worker model: `openai-codex-secondary/gpt-5.6-luna`.
 - Thinking level: `xhigh`.
-- Later wave limit: ten active workers.
-- Current pilot limit: one worker. Do not start the larger wave before pilot review and user direction.
+- Owner model: `openai-codex-secondary/gpt-5.6-sol`, thinking `medium`.
+- Maximum ten active owners, with eight active workers per owner. No separate total subagent-slot limit applies.
+- Initial expanded wave: three owners, each assigned eight modules.
 - Each worker has a separate worktree and an explicit source/header assignment.
 - Do not run builds, compiler checks, audits, or tests until the final validation stage.
 - Evidence inspection, resource extraction, source fingerprinting, and Git diff review remain permitted preparation and review work.
@@ -67,7 +68,7 @@ Each assignment must give:
 - Shared declarations already prepared for the wave.
 - The exact model, thinking level, and worker instructions.
 
-Workers must not launch nested agents or games.
+Source workers must not launch nested agents or games. Assigned owners may launch their own source workers.
 They must not run compilers, matching tools, audits, or tests during this wave.
 The user has chosen one final validation stage after integration.
 Do not substitute default matching-workflow requirements for this explicit cleanup procedure.
@@ -289,14 +290,15 @@ Each tracked file needs one editing owner during the wave.
 A source module's worker does not automatically own every header it includes.
 Header ownership must be explicit, even when the header has a similar name.
 
-A worker can own a TU together with one or more headers.
-Do not run cleanup workers for dependent TUs while that worker changes their shared header.
-Account for transitive includes, not only direct includes.
-If a worker discovers an unplanned shared-header change, stop that change and ask the orchestrator to adjust assignments.
+Each header has one editing owner, normally its assigned group owner. Source workers read headers and submit change requests.
+Reading a shared header does not lock dependent TUs. Independent cleanup can proceed from a recorded common base.
+Only work that requires a pending declaration change must wait for that change.
+Header owners must preserve types, layouts, values, and interfaces under this wave's unchanged-output requirement.
+Before integration, inspect combined header and source changes for name collisions and macro effects.
+Distribute reviewed header commits to workers that need them; do not reset active worktrees or discard their edits.
+Route cross-group header requests through the root orchestrator. Never create competing definitions or edit another owner's header.
 
-Review and integrate the header owner's full change before launching the dependent workers.
-Create their worktrees from the updated integration commit so they see the agreed declarations.
-This scheduling rule avoids collisions without requiring a separate worker for every header.
+See [hierarchical orchestration](source_cleanup_owners.md) for group assignments, reviews, and integration.
 
 Workers must not edit another worktree or the main integration tree.
 Read shared original evidence without modifying it.

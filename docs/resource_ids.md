@@ -90,7 +90,8 @@ Do not merge IDs solely because their numbers or English strings match.
 Different roles can require different names even when their text is equal.
 
 Keep one definition for each named ID within its resource namespace.
-The orchestrator assigns header ownership and schedules dependent TUs after that owner's changes.
+The orchestrator assigns one header owner. Reading that header does not block independent source cleanup.
+Changes that require new definitions wait for the owner's reviewed commit; unrelated changes can proceed.
 Use an existing suitable resource header if one is found.
 Otherwise, the proposed shared header is `include/resource_ids.h`, grouped by resource domain.
 Do not let workers create competing headers or duplicate definitions.
