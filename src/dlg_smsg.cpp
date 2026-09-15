@@ -16,10 +16,11 @@
 #include "../include/game_globals.h"
 #include "../include/scr_game.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 #include <string.h>
 
 
-TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
+TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
     : TDialogPanel("Send Message Dialog")
 {
     int humanity;
@@ -28,17 +29,17 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     int id;
     char temp_str[100];
 
-    int n;
+    int i;
     title = 0;
-    for (n = 0; n < 8; ++n) {
-        playerName[n] = 0;
-        playerCivilization[n] = 0;
-        checkButton[n] = 0;
-        commPlayers[n] = 0;
+    for (i = 0; i < 8; ++i) {
+        playerName[i] = 0;
+        playerCivilization[i] = 0;
+        checkButton[i] = 0;
+        commPlayers[i] = 0;
     }
-    for (n = 0; n < 3; ++n) {
-        radioTitle[n] = 0;
-        radioButton[n] = 0;
+    for (i = 0; i < 3; ++i) {
+        radioTitle[i] = 0;
+        radioButton[i] = 0;
     }
     chatInput = 0;
     chatTitle = 0;
@@ -49,115 +50,113 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     if ((backgroundPics = new TShape("dlg_plbn.shp", 0xC63A)) == 0)
         return;
     else {
-        if (!setup(parent->renderArea(), parent, 0x208, 0x1D1,
-                   parent->get_popup_info_file(), parent->get_popup_info_id(), 1))
+        if (!setup(parentPanel->renderArea(), parentPanel, 0x208, 0x1D1,
+                   parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(), 1))
             return;
 
-    if (!create_text(this, &title, 0x2667, 5, 10,
-                     this->pnl_wid - 0x28, 0x1E, 1, 1, 1, 0))
-        return;
+        if (!create_text(this, &title, 0x2667, 5, 10,
+                         this->pnl_wid - 0x28, 0x1E, 1, 1, 1, 0))
+            return;
 
-    humanity = 1;
-    world = rge_base_game->world;
-    int y = 0x28;
-    int row = 0;
-    do {
-        id = rge_base_game->playerID(humanity);
-        if (id != 0) {
-            int special = 0;
-            if (world->players[id]->game_status == 2) {
-                special = 1;
-            }
-            else if (rge_base_game->multiplayerGame()) {
-                world_humanity = 0;
-                int j = 1;
-                int count = rge_base_game->numberPlayers();
-                if (j <= count) {
-                    do {
-                        if (rge_base_game->playerID(j) == id) {
-                            int h = comm->GetPlayerHumanity(j);
-                            if (h == 2 || h == 4)
-                                world_humanity = h;
-                        }
-                        ++j;
-                        count = rge_base_game->numberPlayers();
-                    } while (j <= count);
-                }
-                if (world_humanity != 2 && world_humanity != 4)
+        humanity = 1;
+        world = rge_base_game->world;
+        int y = 0x28;
+        int row = 0;
+        do {
+            id = rge_base_game->playerID(humanity);
+            if (id != 0) {
+                int special = 0;
+                if (world->players[id]->game_status == 2) {
                     special = 1;
-            }
-
-            int font = special ? 8 : 11;
-            if (!create_text(this, &playerName[row],
-                             comm->GetPlayerName(humanity), 0x32, y, 0xBE, 0x1E,
-                             font, 0, 1, 0))
-                return;
-
-            rge_base_game->get_string2(0x69, world->players[id]->master_player_id,
-                                       0, temp_str, 100);
-            if (!create_text(this, &playerCivilization[row],
-                             temp_str, 0x104, y, 0x78, 0x1E, 0x0B, 0, 1, 0))
-                return;
-
-            if (humanity != comm->WhoAmI()) {
-                int h = comm->GetPlayerHumanity(humanity);
-                if (h == 2 || comm->GetPlayerHumanity(humanity) == 4) {
-                    if (!create_check_box(this, &checkButton[row], 10, y, 0x1E, 0x1E, 0, 0))
-                        return;
-                    checkButton[row]->set_help_info(0x767F, -1);
-                    if (chat->inChatGroup(humanity) != 0)
-                        checkButton[row]->set_state(1);
-                    else
-                        checkButton[row]->set_state(0);
+                } else if (rge_base_game->multiplayerGame()) {
+                    world_humanity = 0;
+                    int j = 1;
+                    int count = rge_base_game->numberPlayers();
+                    if (j <= count) {
+                        do {
+                            if (rge_base_game->playerID(j) == id) {
+                                int h = comm->GetPlayerHumanity(j);
+                                if (h == 2 || h == 4)
+                                    world_humanity = h;
+                            }
+                            ++j;
+                            count = rge_base_game->numberPlayers();
+                        } while (j <= count);
+                    }
+                    if (world_humanity != 2 && world_humanity != 4)
+                        special = 1;
                 }
+
+                int font = special ? 8 : 11;
+                if (!create_text(this, &playerName[row],
+                                 comm->GetPlayerName(humanity), 0x32, y, 0xBE, 0x1E,
+                                 font, 0, 1, 0))
+                    return;
+
+                rge_base_game->get_string2(0x69, world->players[id]->master_player_id,
+                                           0, temp_str, 100);
+                if (!create_text(this, &playerCivilization[row],
+                                 temp_str, 0x104, y, 0x78, 0x1E, 0x0B, 0, 1, 0))
+                    return;
+
+                if (humanity != comm->WhoAmI()) {
+                    int h = comm->GetPlayerHumanity(humanity);
+                    if (h == 2 || comm->GetPlayerHumanity(humanity) == 4) {
+                        if (!create_check_box(this, &checkButton[row], 10, y, 0x1E, 0x1E, 0, 0))
+                            return;
+                        checkButton[row]->set_help_info(0x767F, -1);
+                        if (chat->inChatGroup(humanity) != 0)
+                            checkButton[row]->set_state(1);
+                        else
+                            checkButton[row]->set_state(0);
+                    }
+                }
+                commPlayers[row] = humanity;
+                ++row;
+                y += 0x1E;
             }
-            commPlayers[row] = humanity;
-            ++row;
-            y += 0x1E;
-        }
-        ++humanity;
-    } while (humanity < 9);
+            ++humanity;
+        } while (humanity < 9);
 
-    if (!create_text(this, &chatTitle, 0x2668, 10, 0x13B, 0x78, 0x1E, 4, 1, 1, 0))
-        return;
-    if (!create_edit(this, &chatInput, "", 0x41, TEditPanel::FormatText, 0x82,
-                     0x13B, 0x17C, 0x17, 0x0B, 1, 0))
-        return;
-    chatInput->set_help_info(0x767A, -1);
+        if (!create_text(this, &chatTitle, 0x2668, 10, 0x13B, 0x78, 0x1E, 4, 1, 1, 0))
+            return;
+        if (!create_edit(this, &chatInput, "", 0x41, TEditPanel::FormatText, 0x82,
+                         0x13B, 0x17C, 0x17, 0x0B, 1, 0))
+            return;
+        chatInput->set_help_info(0x767A, -1);
 
-    if (!create_radio_button(this, &radioButton[0], 0x2D, 0x15E, 0x1E, 0x1E, 0, 0)) return;
-    if (!create_radio_button(this, &radioButton[1], 0x113, 0x15E, 0x1E, 0x1E, 0, 0)) return;
-    if (!create_radio_button(this, &radioButton[2], 0x2D, 0x181, 0x1E, 0x1E, 0, 0)) return;
-    if (!create_radio_button(this, &radioButton[3], 0x113, 0x181, 0x1E, 0x1E, 0, 0)) return;
+        if (!create_radio_button(this, &radioButton[0], 0x2D, 0x15E, 0x1E, 0x1E, 0, 0)) return;
+        if (!create_radio_button(this, &radioButton[1], 0x113, 0x15E, 0x1E, 0x1E, 0, 0)) return;
+        if (!create_radio_button(this, &radioButton[2], 0x2D, 0x181, 0x1E, 0x1E, 0, 0)) return;
+        if (!create_radio_button(this, &radioButton[3], 0x113, 0x181, 0x1E, 0x1E, 0, 0)) return;
 
-    if (!create_text(this, &radioTitle[0], 0x2669, 0x4B, 0x15E, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
-    radioTitle[0]->set_help_info(-1, -1);
-    if (!create_text(this, &radioTitle[1], 0x266A, 0x131, 0x15E, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
-    radioTitle[1]->set_help_info(-1, -1);
-    if (!create_text(this, &radioTitle[2], 0x266B, 0x4B, 0x181, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
-    radioTitle[2]->set_help_info(-1, -1);
-    if (!create_text(this, &radioTitle[3], 0x266E, 0x131, 0x181, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
-    radioTitle[3]->set_help_info(-1, -1);
+        if (!create_text(this, &radioTitle[0], 0x2669, 0x4B, 0x15E, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
+        radioTitle[0]->set_help_info(-1, -1);
+        if (!create_text(this, &radioTitle[1], 0x266A, 0x131, 0x15E, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
+        radioTitle[1]->set_help_info(-1, -1);
+        if (!create_text(this, &radioTitle[2], 0x266B, 0x4B, 0x181, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
+        radioTitle[2]->set_help_info(-1, -1);
+        if (!create_text(this, &radioTitle[3], 0x266E, 0x131, 0x181, 0xC8, 0x1E, 0x0B, 0, 1, 0)) return;
+        radioTitle[3]->set_help_info(-1, -1);
 
-    for (n = 0; n < 4; ++n)
-        radioButton[n]->set_radio_info(radioButton, 4);
-    radioButton[3]->set_state(1);
-    radioButton[0]->set_help_info(0x767B, -1);
-    radioButton[1]->set_help_info(0x767C, -1);
-    radioButton[2]->set_help_info(0x767D, -1);
-    radioButton[3]->set_help_info(0x767E, -1);
+        for (i = 0; i < 4; ++i)
+            radioButton[i]->set_radio_info(radioButton, 4);
+        radioButton[3]->set_state(1);
+        radioButton[0]->set_help_info(0x767B, -1);
+        radioButton[1]->set_help_info(0x767C, -1);
+        radioButton[2]->set_help_info(0x767D, -1);
+        radioButton[3]->set_help_info(0x767E, -1);
 
-    if (!create_button(this, &okButton, 0x266C, 0, 100, 0x1A9, 0x12C, 0x1E, 0, 0, 0))
-        return;
-    okButton->set_help_info(0x7531, -1);
-    okButton->hotkey = 0x1B;
-    okButton->hotkey_shift = 0;
+        if (!create_button(this, &okButton, 0x266C, 0, 100, 0x1A9, 0x12C, 0x1E, 0, 0, 0))
+            return;
+        okButton->set_help_info(IDS_HELP_OK, -1);
+        okButton->hotkey = 0x1B;
+        okButton->hotkey_shift = 0;
         set_curr_child(chatInput);
     }
 }
 
-TribeSendMessageDialog::~TribeSendMessageDialog()
-{
+TribeSendMessageDialog::~TribeSendMessageDialog() {
     this->delete_panel((TPanel**)&this->title);
 
     int i;
@@ -180,145 +179,133 @@ TribeSendMessageDialog::~TribeSendMessageDialog()
     delete this->backgroundPics;
 }
 
-long TribeSendMessageDialog::action(TPanel* panel, long code,
-                                    unsigned long a, unsigned long b)
-{
+long TribeSendMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     char save_msg[66];
 
-    if (panel != 0) {
-    if (panel == this->chatInput) {
-        if (code == 0) {
-            TRIBE_Screen_Game *screen = static_cast<TRIBE_Screen_Game *>(this->parent_panel);
+    if (fromPanel != 0) {
+        if (fromPanel == this->chatInput) {
+            if (actionIn == 0) {
+                TRIBE_Screen_Game *screen = static_cast<TRIBE_Screen_Game *>(this->parent_panel);
 
-            if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
-                save_msg[0] = 0;
-            else
-                strcpy(save_msg, this->chatInput->currentLine());
+                if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
+                    save_msg[0] = 0;
+                else
+                    strcpy(save_msg, this->chatInput->currentLine());
 
-            if (save_msg[0] == 0)
-                goto done;
+                if (save_msg[0] == 0)
+                    goto done;
 
-            if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) == 0) {
-                if (rge_base_game->multiplayerGame() != 0) {
-                    if (rge_base_game->prog_mode != 5) {
-                        comm->SendGroupChatMsg(save_msg);
-                        L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
+                if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) == 0) {
+                    if (rge_base_game->multiplayerGame() != 0) {
+                        if (rge_base_game->prog_mode != 5) {
+                            comm->SendGroupChatMsg(save_msg);
+                            L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
+                        }
+                    } else {
+                        rge_base_game->play_sound(2);
+                        screen->display_system_message(save_msg);
                     }
-                } else {
-                    rge_base_game->play_sound(2);
-                    screen->display_system_message(save_msg);
                 }
+
+                this->chatInput->set_text("");
+                return 1;
+            }
+        } else {
+            if (fromPanel == this->okButton) {
+                if (actionIn != 1) {
+                    goto check_buttons_return;
+                }
+
+                this->checkButtons();
+                TRIBE_Screen_Game *screen = static_cast<TRIBE_Screen_Game *>(this->parent_panel);
+
+                if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
+                    save_msg[0] = 0;
+                else
+                    strcpy(save_msg, this->chatInput->currentLine());
+
+                panel_system.setCurrentPanel("Game Screen", 0);
+                panel_system.destroyPanel("Send Message Dialog");
+
+                if (save_msg[0] == 0)
+                    goto done;
+
+                if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) != 0)
+                    goto done;
+
+                if (rge_base_game->multiplayerGame() != 0) {
+                    if (rge_base_game->prog_mode == 5)
+                        goto done;
+                    comm->SendGroupChatMsg(save_msg);
+                    L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
+                    return 1;
+                }
+
+                rge_base_game->play_sound(2);
+                screen->display_system_message(save_msg);
+                return 1;
             }
 
-            this->chatInput->set_text("");
-            return 1;
+            if (fromPanel == this->help_button) {
+                this->setup_popup_help();
+                return 1;
+            }
+
+            if (fromPanel == this->checkButton[0] || fromPanel == this->checkButton[1] ||
+                fromPanel == this->checkButton[2] || fromPanel == this->checkButton[3] ||
+                fromPanel == this->checkButton[4] || fromPanel == this->checkButton[5] ||
+                fromPanel == this->checkButton[6] || fromPanel == this->checkButton[7]) {
+                this->radioButton[0]->set_state(0);
+                this->radioButton[1]->set_state(0);
+                this->radioButton[2]->set_state(0);
+                this->radioButton[3]->set_state(1);
+            } else if (fromPanel == this->radioButton[0]) {
+                RGE_Player *player = rge_base_game->world->players[rge_base_game->world->curr_player];
+                int i = 0;
+                do {
+                    if (this->checkButton[i] != 0) {
+                        int player_id = rge_base_game->playerID(this->commPlayers[i]);
+                        if (player_id == player->id || player->isAlly(player_id))
+                            this->checkButton[i]->set_state(1);
+                        else
+                            this->checkButton[i]->set_state(0);
+                    }
+                    ++i;
+                } while (i < 8);
+            } else if (fromPanel == this->radioButton[1]) {
+                RGE_Player *player = rge_base_game->world->players[rge_base_game->world->curr_player];
+                int i = 0;
+                do {
+                    if (this->checkButton[i] != 0) {
+                        int player_id = rge_base_game->playerID(this->commPlayers[i]);
+                        if (player_id == player->id || player->isEnemy(player_id) == 0)
+                            this->checkButton[i]->set_state(0);
+                        else
+                            this->checkButton[i]->set_state(1);
+                    }
+                    ++i;
+                } while (i < 8);
+            } else if (fromPanel == this->radioButton[2]) {
+                if (actionIn == 1) {
+                    int i = 0;
+                    do {
+                        if (this->checkButton[i] != 0)
+                            this->checkButton[i]->set_state(1);
+                        ++i;
+                    } while (i < 8);
+                }
+            } else if (fromPanel == this->radioButton[3]) {
+                // The original fourth-button branch is intentionally empty.
+            }
+
+        check_buttons_return:
+            this->checkButtons();
         }
-    }
-
-    else {
-    if (panel == this->okButton) {
-        if (code != 1) {
-            goto check_buttons_return;
-        }
-
-        this->checkButtons();
-        TRIBE_Screen_Game *screen = static_cast<TRIBE_Screen_Game *>(this->parent_panel);
-
-        if (this->chatInput->currentLine() == 0 || *this->chatInput->currentLine() == 0)
-            save_msg[0] = 0;
-        else
-            strcpy(save_msg, this->chatInput->currentLine());
-
-        panel_system.setCurrentPanel("Game Screen", 0);
-        panel_system.destroyPanel("Send Message Dialog");
-
-        if (save_msg[0] == 0)
-            goto done;
-
-        if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) != 0)
-            goto done;
-
-        if (rge_base_game->multiplayerGame() != 0) {
-            if (rge_base_game->prog_mode == 5)
-                goto done;
-            comm->SendGroupChatMsg(save_msg);
-            L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
-            return 1;
-        }
-
-        rge_base_game->play_sound(2);
-        screen->display_system_message(save_msg);
+    done:
         return 1;
     }
 
-    if (panel == this->help_button) {
-        this->setup_popup_help();
-        return 1;
-    }
-
-    if (panel == this->checkButton[0] || panel == this->checkButton[1] ||
-        panel == this->checkButton[2] || panel == this->checkButton[3] ||
-        panel == this->checkButton[4] || panel == this->checkButton[5] ||
-        panel == this->checkButton[6] || panel == this->checkButton[7]) {
-        this->radioButton[0]->set_state(0);
-        this->radioButton[1]->set_state(0);
-        this->radioButton[2]->set_state(0);
-        this->radioButton[3]->set_state(1);
-    }
-
-    else if (panel == this->radioButton[0]) {
-        RGE_Player *player = rge_base_game->world->players[rge_base_game->world->curr_player];
-        int i = 0;
-        do {
-            if (this->checkButton[i] != 0) {
-                int player_id = rge_base_game->playerID(this->commPlayers[i]);
-                if (player_id == player->id || player->isAlly(player_id))
-                    this->checkButton[i]->set_state(1);
-                else
-                    this->checkButton[i]->set_state(0);
-            }
-            ++i;
-        } while (i < 8);
-    }
-
-    else if (panel == this->radioButton[1]) {
-        RGE_Player *player = rge_base_game->world->players[rge_base_game->world->curr_player];
-        int i = 0;
-        do {
-            if (this->checkButton[i] != 0) {
-                int player_id = rge_base_game->playerID(this->commPlayers[i]);
-                if (player_id == player->id || player->isEnemy(player_id) == 0)
-                    this->checkButton[i]->set_state(0);
-                else
-                    this->checkButton[i]->set_state(1);
-            }
-            ++i;
-        } while (i < 8);
-    }
-
-    else if (panel == this->radioButton[2]) {
-        if (code == 1) {
-            int i = 0;
-            do {
-                if (this->checkButton[i] != 0)
-                    this->checkButton[i]->set_state(1);
-                ++i;
-            } while (i < 8);
-        }
-    }
-
-    // preserve the shipped fourth-button read.
-    else if (panel == this->radioButton[3]) {
-    }
-
-check_buttons_return:
-    this->checkButtons();
-    }
-done:
-    return 1;
-    }
-
-    return TPanel::action(panel, code, a, b);
+    return TPanel::action(fromPanel, actionIn, a1, a2);
 }
 
 void TribeSendMessageDialog::checkButtons(void) {
@@ -364,13 +351,13 @@ void TribeSendMessageDialog::draw() {
     }
 }
 
-TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parent,
-                                                         Mode mode)
-    : TDialogPanel("Send Quick Message Dialog"), modeValue(mode)
+TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPanel,
+                                                         Mode m)
+    : TDialogPanel("Send Quick Message Dialog"), modeValue(m)
 {
-    if (!this->setup(parent->renderArea(), parent, 0x21C, 0x23,
-                     parent->get_popup_info_file(),
-                     parent->get_popup_info_id(), 1)) {
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 0x21C, 0x23,
+                     parentPanel->get_popup_info_file(),
+                     parentPanel->get_popup_info_id(), 1)) {
         return;
     }
 
@@ -398,13 +385,11 @@ TribeSendQuickMessageDialog::~TribeSendQuickMessageDialog() {
     delete this->chatTitle;
 }
 
-long TribeSendQuickMessageDialog::action(TPanel* panel, long code,
-                                         unsigned long a, unsigned long b)
-{
+long TribeSendQuickMessageDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     char save_msg[66];
 
-    if (panel != 0 && panel == this->chatInput) {
-        if (code == 0) {
+    if (fromPanel != 0 && fromPanel == this->chatInput) {
+        if (actionIn == 0) {
             char* line = this->chatInput->currentLine();
             if (line != 0 && *this->chatInput->currentLine() != 0) {
                 TRIBE_Screen_Game* screen =
@@ -429,8 +414,7 @@ long TribeSendQuickMessageDialog::action(TPanel* panel, long code,
                 screen->display_system_message(save_msg);
                 return 1;
             }
-        }
-        else if (code != 1)
+        } else if (actionIn != 1)
             goto base_action;
 
         panel_system.setCurrentPanel("Game Screen", 0);
@@ -444,16 +428,15 @@ success:
     return 1;
 
 base_action:
-    return TEasy_Panel::action(panel, code, a, b);
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-long TribeSendQuickMessageDialog::handle_mouse_down(unsigned char button,
-                                                     long x, long y,
-                                                     int flags, int area) {
+long TribeSendQuickMessageDialog::handle_mouse_down(unsigned char mouse_button_in, long x, long y,
+                                                     int ctrl_key, int shift_key) {
     if (this->is_inside(x, y) == 0) {
         this->action(this->chatInput, 1, 0, 0);
         return 1;
     }
 
-    return TEasy_Panel::handle_mouse_down(button, x, y, flags, area);
+    return TEasy_Panel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
 }
