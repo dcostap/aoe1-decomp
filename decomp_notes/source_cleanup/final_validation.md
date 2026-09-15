@@ -155,6 +155,12 @@ Its listing still loads height first. Restoring physical lines alone did not rec
 Output: `build/source-cleanup-20260915/final-validation/flics-lines-experiment/`.
 The candidate remains unmerged. Root authorized the same worker to isolate the cause with targeted VC5 experiments.
 Experiments must use new output directories and preserve operand order, all artifacts, and the rejected history.
+Targeted experiments isolated the explicit `stdio.h` include as the scheduling trigger.
+Root reviewed all 221 repair-diff lines at `092f5a8f566eb811bd6068aa90b1c3b8abcd3a66`.
+The repair removes that include and restores four original seek literals, keeping resolution operands unchanged.
+Its isolated resolution bytes equal the preserved baseline. Main validation must confirm the result.
+The report also notes two changed `delta_flc` bytes. Root requested further investigation of that drift.
+Its `new_verified_logic` status does not exempt it from baseline-output preservation.
 
 ## Fresh linked dependency failures
 
