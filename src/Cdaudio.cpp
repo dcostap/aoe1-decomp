@@ -16,12 +16,12 @@ CCDAudio::~CCDAudio(void) {
     Close();
 }
 
-unsigned long CCDAudio::Open(void* wnd) {
+unsigned long CCDAudio::Open(void* Wnd) {
     unsigned long result;
     MCI_SET_PARMS mciSetInfo;
     MCI_OPEN_PARMS mciOpenParms;
 
-    this->m_Wnd = wnd;
+    this->m_Wnd = Wnd;
     if (this->m_bOpened != 0) {
         Close();
     }
@@ -55,12 +55,12 @@ unsigned long CCDAudio::Stop(void) {
     return DisplayErrorMsg(mciSendCommandA(m_nDeviceID, 0x808, 2, 0));
 }
 
-unsigned long CCDAudio::Play(unsigned char track) {
+unsigned long CCDAudio::Play(unsigned char nTrack) {
     unsigned int devID;
 
     devID = m_nDeviceID;
-    m_mciPlayParms.dwFrom = track;
-    m_mciPlayParms.dwTo = (unsigned char)(track + 1);
+    m_mciPlayParms.dwFrom = nTrack;
+    m_mciPlayParms.dwTo = (unsigned char)(nTrack + 1);
     m_mciPlayParms.dwCallback = (unsigned long)m_Wnd;
     return DisplayErrorMsg(
         mciSendCommandA(devID, 0x806, 0x0D, (DWORD)&m_mciPlayParms));
@@ -79,47 +79,47 @@ unsigned long CCDAudio::Eject(void) {
     return DisplayErrorMsg(mciSendCommandA(m_nDeviceID, 0x80D, 0x100, 0));
 }
 
-unsigned long CCDAudio::GetNumberOfTracks(unsigned char& track_count) {
+unsigned long CCDAudio::GetNumberOfTracks(unsigned char& nNumTracks) {
     unsigned long result;
     tagMCI_STATUS_PARMS mciStatusInfo;
 
     mciStatusInfo.dwItem = 3;
     result = mciSendCommandA(this->m_nDeviceID, 0x814, 0x102,
                              (DWORD)&mciStatusInfo);
-    track_count = (unsigned char)mciStatusInfo.dwReturn;
+    nNumTracks = (unsigned char)mciStatusInfo.dwReturn;
     return DisplayErrorMsg(result);
 }
 
-unsigned long CCDAudio::IsMediaPresent(int& present) {
+unsigned long CCDAudio::IsMediaPresent(int& bPresent) {
     unsigned long result;
     tagMCI_STATUS_PARMS mciStatusParms;
 
     mciStatusParms.dwItem = 5;
     result = mciSendCommandA(this->m_nDeviceID, 0x814, 0x102,
                              (DWORD)&mciStatusParms);
-    present = mciStatusParms.dwReturn != 0;
+    bPresent = mciStatusParms.dwReturn != 0;
     return DisplayErrorMsg(result);
 }
 
-unsigned long CCDAudio::IsPlaying(int& playing) {
+unsigned long CCDAudio::IsPlaying(int& bPlaying) {
     unsigned long result;
     tagMCI_STATUS_PARMS mciStatusParms;
 
     mciStatusParms.dwItem = 4;
     result = mciSendCommandA(this->m_nDeviceID, 0x814, 0x102,
                              (DWORD)&mciStatusParms);
-    playing = mciStatusParms.dwReturn == 0x20E;
-    if (playing != 0) {
+    bPlaying = mciStatusParms.dwReturn == 0x20E;
+    if (bPlaying != 0) {
         mciStatusParms.dwItem = 8;
         result = mciSendCommandA(this->m_nDeviceID, 0x814, 0x102,
                                  (DWORD)&mciStatusParms);
-        playing = mciStatusParms.dwReturn;
+        bPlaying = mciStatusParms.dwReturn;
     }
     return DisplayErrorMsg(result);
 }
 
-unsigned long CCDAudio::GetLength(unsigned char& minutes,
-                                  unsigned char& seconds) {
+unsigned long CCDAudio::GetLength(unsigned char& nMinutes,
+                                  unsigned char& nSeconds) {
     unsigned long result;
     tagMCI_STATUS_PARMS mciStatusParms;
     unsigned short item;
@@ -128,33 +128,33 @@ unsigned long CCDAudio::GetLength(unsigned char& minutes,
     result = mciSendCommandA(this->m_nDeviceID, 0x814, 0x102,
                              (DWORD)&mciStatusParms);
     item = (unsigned short)mciStatusParms.dwReturn;
-    minutes = (unsigned char)item;
-    seconds = (unsigned char)(item >> 8);
+    nMinutes = (unsigned char)item;
+    nSeconds = (unsigned char)(item >> 8);
     return DisplayErrorMsg(result);
 }
 
-unsigned long CCDAudio::GetTrackLength(unsigned char track,
-                                       unsigned char& minutes,
-                                       unsigned char& seconds) {
+unsigned long CCDAudio::GetTrackLength(unsigned char nTrack,
+                                       unsigned char& nMinutes,
+                                       unsigned char& nSeconds) {
     tagMCI_STATUS_PARMS mciStatusParms;
     unsigned int track_local;
     unsigned long result;
     unsigned short item;
 
-    track_local = track & 0xFF;
+    track_local = nTrack & 0xFF;
     mciStatusParms.dwItem = 1;
     mciStatusParms.dwTrack = track_local;
     result = mciSendCommandA(this->m_nDeviceID, 0x814, 0x112,
                              (DWORD)&mciStatusParms);
     item = (unsigned short)mciStatusParms.dwReturn;
-    minutes = (unsigned char)item;
-    seconds = (unsigned char)(item >> 8);
+    nMinutes = (unsigned char)item;
+    nSeconds = (unsigned char)(item >> 8);
     return DisplayErrorMsg(result);
 }
 
-unsigned long CCDAudio::GetPosition(unsigned char& minutes,
-                                    unsigned char& seconds,
-                                    unsigned char& frames) {
+unsigned long CCDAudio::GetPosition(unsigned char& nTrack,
+                                    unsigned char& nMinutes,
+                                    unsigned char& nSeconds) {
     tagMCI_STATUS_PARMS mciStatusParms;
     unsigned long result;
     unsigned long item;
@@ -165,19 +165,19 @@ unsigned long CCDAudio::GetPosition(unsigned char& minutes,
                              (DWORD)&mciStatusParms);
     item = mciStatusParms.dwReturn;
     time = (unsigned short)item;
-    minutes = (unsigned char)time;
-    seconds = (unsigned char)(time >> 8);
-    frames = (unsigned char)(item >> 16);
+    nTrack = (unsigned char)time;
+    nMinutes = (unsigned char)(time >> 8);
+    nSeconds = (unsigned char)(item >> 16);
     return DisplayErrorMsg(result);
 }
 
-unsigned long CCDAudio::DisplayErrorMsg(unsigned long error) {
+unsigned long CCDAudio::DisplayErrorMsg(unsigned long dwError) {
     char szErrorMsg[256];
 
-    if (error != 0) {
-        if (mciGetErrorStringA(error, szErrorMsg, 0x100) == 0) {
+    if (dwError != 0) {
+        if (mciGetErrorStringA(dwError, szErrorMsg, 0x100) == 0) {
             strcpy(szErrorMsg, "Unknown Error");
         }
     }
-    return error;
+    return dwError;
 }
