@@ -92,8 +92,7 @@ void TRIBE_Map::data_load_random_map(int infile) {
     this->random_map = new TRIBE_RMM_Database_Controller(infile);
 }
 
-void TRIBE_Map::load_random_map(char* rmm_map_file, char* rmm_land_file,
-                                char* rmm_terr_file, char* rmm_obj_file) {
+void TRIBE_Map::load_random_map(char* rmm_map_file, char* rmm_land_file, char* rmm_terr_file, char* rmm_obj_file) {
     TRIBE_RMM_Database_Controller* ctrl = new TRIBE_RMM_Database_Controller(rmm_land_file, rmm_terr_file, rmm_obj_file, rmm_map_file);
     this->random_map = ctrl;
 }
@@ -204,8 +203,7 @@ void TRIBE_Map::change_terrain(short map_col, short map_row,
     }
 }
 
-unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size,
-                                          unsigned char terrain_id) {
+unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size, unsigned char terrain_id) {
     long rad = brush_size;
     long x1 = x - rad;
     long end_x = x + rad;
@@ -697,8 +695,7 @@ void TRIBE_Map::delete_cliff(long x, long y) {
     }
 }
 
-unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char cliff_id,
-                                        unsigned char delete_cliff_flag) {
+unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char cliff_id, unsigned char delete_cliff_flag) {
     int cliff_x = x / 3;
     int cliff_y = y / 3;
 

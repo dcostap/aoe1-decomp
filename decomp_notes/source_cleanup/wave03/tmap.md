@@ -3,11 +3,19 @@
 ## Delivery
 
 - Module: `src/tmap.cpp`.
-- Header owner: `include/tmap.h`; read only. No header request.
+- Header owner: `include/tmap.h`; read only. A declaration-name request is
+  recorded below; no header edit is included in this task.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final code commit: `bfff338e220a3b8fcd0ad8bd62a4f04578fafc1e`.
+- Final code commit: `d8b5e8cc95981016674b785e13fa8c2ae308190d`.
 - Changed files: `src/tmap.cpp` and this report.
 - Source order, declarations, types, storage, calls, and executable statements remain unchanged.
+
+## Correction history
+
+- Owner review correction: recorded the complete `include/tmap.h`
+  declaration-name request as declaration-only and ABI-neutral. Joined the
+  readable random-map constructor and terrain-setting calls. No tokens, casts,
+  call targets, argument order, or executable statements changed.
 
 ## Original-name inspection
 
@@ -63,6 +71,65 @@ cleanup names that are not original names.
 The mixed spellings are intentional. This includes `TileWid`, `TileHgt`,
 `ElevHgt`, `r`, `d`, `l`, `u`, `place2` through `place8`, and `til`.
 
+## `include/tmap.h` declaration-name request
+
+Owner 16 should add the following parameter names to the existing declarations
+in `include/tmap.h`. This is a declaration-only request. Parameter names do
+not change the function type, calling convention, vtable, object layout, or
+ABI. No header edit is included in this cleanup commit.
+
+```cpp
+TRIBE_Map(int infile, RGE_Sound** sound, unsigned char setup);
+TRIBE_Map(char* border_tbl, char* overlay_tbl, char* terrain_tbl,
+          char* map_tbl, short TileWid, short TileHgt, short ElevHgt,
+          RGE_Sound** sound);
+virtual ~TRIBE_Map();
+virtual void data_load_random_map(int infile);
+virtual void load_random_map(char* rmm_map_file, char* rmm_land_file,
+                             char* rmm_terr_file, char* rmm_obj_file);
+virtual unsigned char do_terrain_brush(long x, long y, long brush_size,
+                                       unsigned char terrain_id);
+virtual unsigned char do_terrain_brush_stroke(
+    long x1, long y1, long x2, long y2, long brush_size,
+    unsigned char terrain_id);
+virtual unsigned char do_elevation_brush_stroke(
+    long x1, long y1, long x2, long y2, long brush_size,
+    unsigned char elevation_height);
+virtual unsigned char do_cliff_brush(long x, long y, unsigned char cliff_id,
+                                     unsigned char delete_cliff_flag);
+virtual unsigned char do_cliff_brush_stroke(
+    long x1, long y1, long x2, long y2, unsigned char cliff_id,
+    unsigned char delete_cliff);
+virtual void map_generate(RGE_Player* owner, RGE_Game_World* gworld,
+                          RGE_Player_Info* player_info,
+                          unsigned char* zone_terrain);
+void map_generate(RGE_Player_Info* player_info);
+virtual void save(int outfile);
+virtual void delete_cliff(long x, long y);
+
+void check_tile_for_forest_change(short x, short y, RGE_Game_World* world);
+void change_terrain(short map_col, short map_row,
+                    unsigned char new_terrain, RGE_Game_World* world);
+void setup_cliff_type(long r, long d, long l, long u, long id, long facet,
+                      long id2, long facet2, float offset_x, float offset_y);
+RGE_Static_Object* find_cliff(long x, long y);
+TRIBE_Cliff_Info get_cliff_info(RGE_Static_Object* cliff);
+unsigned char check_cliff_valid(TRIBE_Cliff_Info info);
+RGE_Static_Object* make_new_cliff(long x, long y, TRIBE_Cliff_Info info);
+void remove_cliff_edge(long x, long y, long direction);
+long reverse_cliff_direction(long direction);
+long add_cliff_edge(long x, long y, long direction, long facing,
+                    long save_direction);
+unsigned char water(unsigned char terrain);
+void clean_borders(long x1, long y1, long x2, long y2,
+                   unsigned char terrain_id);
+unsigned char do_terrain_brush_check(long x, long y);
+void tribe_clean_elevation(long x1, long y1, long x2, long y2);
+void tribe_clean_terrain(long x1, long y1, long x2, long y2,
+                         unsigned char check_terrain,
+                         unsigned char replacement_terrain);
+```
+
 ## New names and unresolved mappings
 
 - `info_index`, `cliff_index`, and `master_obj_id` are new cleanup names.
@@ -97,8 +164,9 @@ formatting. They do not change an expression, type, scope, declaration order,
 call target, literal, layout, storage duration, or symbol name. The corrected
 comment is based on the original packet and does not change behavior.
 
-The source uses only the existing `TRIBE_Map` and shared declarations. No
-header, registry, resource mapping, or ABI request is pending.
+The source uses only the existing `TRIBE_Map` and shared declarations. The
+header request above is declaration-only and ABI-neutral. No header edit,
+registry change, or resource mapping is included.
 
 ## Unresolved questions
 
@@ -107,7 +175,8 @@ header, registry, resource mapping, or ABI request is pending.
 - `setup_cliff_type` has no PDB local records. `info_index` and `cliff_index`
   are new names and should not be treated as recovered source names.
 - The existing `TRIBE_Map` header still owns unnamed declaration parameters.
-  No header edit is required for definition-only PDB name recovery.
+  Owner 16 should apply the declaration-name request above in a separate
+  header-owned cleanup. The request does not change ABI.
 
 ## Validation status
 
