@@ -5,9 +5,12 @@
 - Module: `src/scr_save.cpp`
 - Header read: `include/scr_save.h`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Source commit: `ec17792d1c38eaa239fa871d49a30c139dba2126`
+- Earlier source commit: `ec17792d1c38eaa239fa871d49a30c139dba2126`
+- Resource source commit: `d9679c782de075b40b7552839f320276852ddb38`
+- Shared header commit: original `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`; worker-local cherry-pick `c79bf91c115c5ae13769847e24444d92b7214dc4`.
 - Final report commit: the commit that adds this file; copy its full hash from Git.
-- Changed files: `src/scr_save.cpp` and this report only.
+- Module changes: `src/scr_save.cpp` and this report only.
+- The worker-local shared-header cherry-pick changed `include/resource_ids.h`. Exclude that commit from module integration. Root owns the shared header.
 - `include/scr_save.h` was not changed. It remains owned by the screens group owner.
 
 The source cleanup restores names from the procedure-scoped PDB. It reuses existing resource macros. It does not change types, layouts, calls, control flow, storage, or source order.
@@ -62,9 +65,9 @@ The source now includes `include/resource_ids.h` and reuses these existing macro
 
 These replacements preserve the exact literal values and effective argument types. No resource macro was defined in this worktree.
 
-## Pending resource mapping requests
+## Applied shared resource mappings
 
-The root owner owns `include/resource_ids.h`. The source keeps these values numeric until the shared definitions are reviewed. Each request uses the actual runtime lookup path.
+The root owner approved shared commit `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`. Its worker-local cherry-pick is `c79bf91c115c5ae13769847e24444d92b7214dc4`. The source now uses all eight approved macros below. The shared header commit is not part of the module commit set.
 
 Lookup path: `TRIBE_Game::get_string` first calls `LoadStringA` on `StringTableX`, normally `runtime/languagex.dll`. On failure, it calls `RGE_Base_Game::get_string`, which uses the base `runtime/language.dll`. The runtime hashes are:
 
@@ -74,40 +77,40 @@ Lookup path: `TRIBE_Game::get_string` first calls `LoadStringA` on `StringTableX
 
 All listed runtime strings use resource type `RT_STRING`, language `0x0409` (English, language ID `1033`). `languagex.dll` and the checked original XPack `languagex.dll` have no entries for these IDs. The exact text comes from the base runtime `language.dll`.
 
-1. Proposed `IDS_SAVE_GAME_TITLE_BASE` for numeric `0x24C3`.
-   - The constructor uses `0x24C3 + (mode != SaveGame)`.
+1. Applied `IDS_SAVE_GAME_TITLE_BASE` for numeric `0x24C3`.
+   - The constructor uses `(this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE`.
    - The contiguous range is `0x24C3` = `Save Game`, `0x24C4` = `Save Scenario`, and `0x24C5` = `Return to Game`.
-   - The call uses `0x24C3` and `0x24C4`; preserve the arithmetic range.
+   - The macro preserves the `0x24C3` and `0x24C4` arithmetic range.
    - Purpose: save-screen title selected by mode.
-2. Proposed `IDS_ERROR_SAVE_GAME_NAME_REQUIRED` for `0x24C6`.
+2. Applied `IDS_ERROR_SAVE_GAME_NAME_REQUIRED` for `0x24C6`.
    - Text: `You must enter a name to save the game.`
    - Purpose: empty save-game name dialog.
-3. Proposed `IDS_ERROR_SAVE_SCENARIO_NAME_REQUIRED` for `0x24C7`.
+3. Applied `IDS_ERROR_SAVE_SCENARIO_NAME_REQUIRED` for `0x24C7`.
    - Text: `You must enter a name to save the scenario.`
    - Purpose: empty save-scenario name dialog.
-4. Proposed `IDS_CONFIRM_OVERWRITE_FILE` for `0x24C8`.
+4. Applied `IDS_CONFIRM_OVERWRITE_FILE` for `0x24C8`.
    - Text: `That file exists. Overwrite it?`
    - Purpose: overwrite confirmation dialog.
-5. Proposed `IDS_HELP_SELECT_SAVED_GAME` for `0x7671`.
+5. Applied `IDS_HELP_SELECT_SAVED_GAME` for `0x7671`.
    - Text: `Select a saved game.`
    - Purpose: save-screen list help.
-6. Proposed `IDS_ERROR_CANNOT_SAVE_GAME` for `0x0962`.
+6. Applied `IDS_ERROR_CANNOT_SAVE_GAME` for `0x0962`.
    - Text: `The game could not be saved. Free some disk space, and then try again.`
    - Purpose: save-game failure dialog.
-7. Proposed `IDS_ERROR_CANNOT_SAVE_SCENARIO` for `0x0963`.
+7. Applied `IDS_ERROR_CANNOT_SAVE_SCENARIO` for `0x0963`.
    - Text: `The scenario could not be saved. Free some disk space, and then try again.`
    - Purpose: save-scenario failure dialog, including the scenario-editor helper.
-8. Proposed `IDS_STATUS_SAVING_SCENARIO` for `0x0450`.
+8. Applied `IDS_STATUS_SAVING_SCENARIO` for `0x0450`.
    - Text: `Saving scenario...`
    - Purpose: scenario-save status message.
 
-No lookup, fallback, format token, buffer size, or call order changed. The delete-confirmation text at `0x24CA` contains the `%s` token and uses the existing `IDS_CONFIRM_DELETE_FILE` macro. The source keeps the original format-string call.
+No lookup, fallback, format token, buffer size, or call order changed. The save-title expression preserves `(this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE` token order. The delete-confirmation text at `0x24CA` contains the `%s` token and uses the existing `IDS_CONFIRM_DELETE_FILE` macro. The source keeps the original format-string call.
 
 ## Constants and comments
 
 - No new comments were added. Existing source comments were not changed.
 - Reused existing resource macros only. No numeric constant was changed.
-- The remaining numeric values are dimensions, panel flags, popup parameters, file buffer limits, modes, hotkeys, or pending resource mappings. Their meanings were not changed or guessed.
+- The remaining numeric values are dimensions, panel flags, popup parameters, file buffer limits, modes, or hotkeys. Their meanings were not changed or guessed.
 - No header, ABI declaration, class layout, enum value, or registry entry was changed.
 
 ## Proposed header edits
