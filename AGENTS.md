@@ -10,6 +10,9 @@ The assigning prompt or assigned task(s) define your role and instructions. If n
 
 There are extra reusable documents that contain specific instructions. Read the documents if clearly related to your role. They are in `agent_roles`.
 
+For source-cleanup assignments, read `docs/source_cleanup.md`, `docs/source_comments.md`, and `docs/resource_ids.md`.
+Use that workflow rather than the default matching-worker procedure.
+
 ## Universal correctness rules
 
 - The project is function-first and evidence-first.
