@@ -5,7 +5,8 @@
 - Group branch: `cleanup/staging-20260915-91`
 - Common base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Initial reviewed group head: `ad4e8c9b917e77b44b12c04fe87b46e762421355`
-- Correction review head before this ledger update: `9daf9fe7a64a05dde6cff1e529128f9482fa219b`
+- Name and presentation correction head: `9daf9fe7a64a05dde6cff1e529128f9482fa219b`
+- Resource correction head before this ledger update: `9f73136837dba0d27f93ef249ac74ee1d9296023`
 - Sources: `src/scr_ach.cpp`, `src/scr_cred.cpp`, `src/scr_end.cpp`, `src/scr_info.cpp`, `src/scr_mp.cpp`, `src/scr_mps.cpp`, `src/scr_stms.cpp`, and `src/scr_trb.cpp`
 - Headers: `include/scr_ach.h`, `include/scr_cred.h`, `include/scr_end.h`, `include/scr_info.h`, `include/scr_mp.h`, `include/scr_mps.h`, `include/scr_stms.h`, and `include/scr_trb.h`
 - Module reports: the eight matching files under `decomp_notes/source_cleanup/wave02/`
@@ -47,6 +48,36 @@ initial integration. The correction chains remain separate commits.
 
 The matching header presentation correction is
 `9daf9fe7a64a05dde6cff1e529128f9482fa219b`.
+
+## Approved resource integration
+
+Root approved the owner 11 resource definitions in
+`027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only
+`include/resource_ids.h` in
+`bdb8bc1afb50e9e28b76d09fe731855eafa66460`.
+
+Owner 22 approved `CHAT_RECEIVED` in
+`c0ce37473c32dfd6511e884ea1ead7dace6b5cce`. Owner 11 imported only
+`include/chat.h` in `7bdb70a283f4eb9679c321593bd44158bb678f5c`.
+
+The workers changed source tokens and module reports. They did not define the
+shared macros.
+
+| Module | Final worker head | Worker resource commits | Integrated resource commits |
+| --- | --- | --- | --- |
+| `scr_ach` | `15354b9ef33ce54a0eb52068fe29c0aed93374a9` | `cd4f978da5d1e358cc4882dbfb4922574e41686d`, `c73a0dc0629148a69a2f7de2dba6d7f281f66ef3`, `15354b9ef33ce54a0eb52068fe29c0aed93374a9` | `eeecddea02c359a40ce461bade3d4979e463b17e`, `2ec6cc6aa789e5a5ebd2fdce745691960eb7069d`, `faa0578b4e56d70b7955094bd1ca5335f0c8e521` |
+| `scr_end` | `7236b824a98d5ed8f5a6728493a8f76d619ce923` | `58c4d027aee629338711daea2d788dbc36965a34`, `578c73de528cab42997ccaa772f3c61443688c62`, `d853cfa472ffc7e510d405e94f1afef779b0e1b7`, `7236b824a98d5ed8f5a6728493a8f76d619ce923` | `026571171ba826faa0fd440f8feecfbf0c307473`, `371a2b4b294a31e4397935583e50a337d6f45683`, `2a1de5cde3941f566174c0acf049437a48435bd0`, `b1176cd4f3fcd14cf744878299e43746fe67bef6` |
+| `scr_mp` | `7c7ec06b48f092f7ac13713810c3d64ea453efb4` | `4d8093aad58008af81d2772dbd3f289903b3fde1`, `2e7bbbc86b4d9f478d9ed1b23c5383f895997210`, `d09089fcf744127174d5b809ac5f519139e6f6a5`, `6b8ff0914b497ff709accbaaa9021df5698846a4`, `f45b87661fc332ac102962b1c3858b16edd35241`, `7c7ec06b48f092f7ac13713810c3d64ea453efb4` | `8f7835b6626ac5f5739b783673b7132d07e9b6c7`, `22eb7d23fb6368c0b238ccd9b35e6826dbe9ba92`, `1d4a76cf7dfe51c2bae92511166d5b5b59cc9ec2`, `09b7c4b4dba99bdfb9cf94390f9421c4307a13b2`, `d6d775b2fa04a85fe6f6acef969289aae049b71b`, `60891bd05bdd435170773f75c6d2b19cd04fccd5` |
+| `scr_mps` | `9f709bfbd277282229c6fa21ac9eee891cda7b68` | `fde8c5eba4496a503f4b863a4e3c482a099b5fb6`, `44ae44096d4af1933ac22787793c9c6e8b70f989`, `8b915504627ce36abb85260162af36e3570aa346`, `82548f3643f61e2e49a69eb9cc8688dd5df4c2cd`, `18c6226a5b7fe1f1fdc6f6bd7dd17d0025e6c734`, `7055f9aaf33d4d7e0b1d354a36932de41f81acb0`, `9f709bfbd277282229c6fa21ac9eee891cda7b68` | `bcdd7b05b257f3792212881734354fb14332b629`, `b2b39b7b775e8eb0346c45efd79b27070098bd63`, `28a87d55fb29c5f01ebbb6cec282d2147548f238`, `d6aa2c9fd1d216f6523d4aeeaf40fc55840a1750`, `f94df2520dd299d86a3e86b872786cdaffd96741`, `c5284990b1cbcf0694a15e36248fd15461e27b2b`, `9f73136837dba0d27f93ef249ac74ee1d9296023` |
+
+The root reviewer extraction is under
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
+Runtime base resources supply all approved string payloads. Both checked
+expansions miss them. The pinned original set has no base language file.
+
+Runtime base `Interfac.drs` supplies the three approved binary layouts. The
+checked expansion archives miss them. The source keeps binary type
+`0x62696E61`.
 
 ## Review findings and corrections
 
@@ -97,10 +128,10 @@ The following mappings remain unresolved and unchanged:
   union despite narrower, reused, or instruction-unproved PDB records.
 - `scr_stms` and `scr_trb`: unrecorded readable locals remain unchanged.
 
-## Shared resource requests
+## Approved shared resources
 
-Root owns `include/resource_ids.h`. No worker added a new shared definition.
-All names below are new descriptive cleanup names unless marked existing.
+Root owns `include/resource_ids.h`. No worker added a shared definition.
+All names below are approved descriptive cleanup names unless marked existing.
 
 Common resource evidence:
 
@@ -111,8 +142,8 @@ Common resource evidence:
 - Original expansion: `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`,
   SHA256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 - Language: `0x0409`.
-- The checked expansion files miss all requested IDs. They do not contain
-  empty slots for these requests. The runtime base file supplies the text.
+- The checked expansion files miss all approved IDs. They do not contain
+  empty slots for these IDs. The runtime base file supplies the text.
 - `TRIBE_Game::get_string` checks the expansion table before base fallback.
   The `scr_mp` panel helper path resolves these IDs from the base table.
 
@@ -121,7 +152,7 @@ Common resource evidence:
 The call sites use these IDs for screen text, buttons, results, and headings.
 `scr_end` independently confirms the `0x269E` title role.
 
-| ID | Requested name | Base text or purpose |
+| ID | Approved name | Base text or purpose |
 | --- | --- | --- |
 | `0x0C1D` | `IDS_CONFIRM_QUIT_GAME` | `Are you sure you want to quit this game?` |
 | `0x0FA3` | `IDS_BUTTON_YES` | `Yes` |
@@ -164,12 +195,13 @@ The call sites use these IDs for screen text, buttons, results, and headings.
 | `0x26DC` | `IDS_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` | `All Artifacts/Ruins.` |
 
 `IDS_BUTTON_CLOSE` for `0x03EA` already exists and is reused.
-The binary `RESFILE` IDs `0xC389`, `0xC38A`, and `0xC38D` remain a separate,
-unresolved namespace request.
+The approved binary names are `RESID_ACHIEVEMENTS_END_WIN_LAYOUT` for `0xC389`,
+`RESID_ACHIEVEMENTS_END_OTHER_LAYOUT` for `0xC38A`, and
+`RESID_ACHIEVEMENTS_IN_GAME_LAYOUT` for `0xC38D`.
 
 ### Multiplayer startup screen
 
-| ID | Requested name | Base text |
+| ID | Approved name | Base text |
 | --- | --- | --- |
 | `0x258B` | `IDS_MULTIPLAYER_CONNECTION_TITLE` | `Multiplayer Connection` |
 | `0x258C` | `IDS_MULTIPLAYER_NAME_LABEL` | `Name` |
@@ -186,7 +218,7 @@ The module also reuses existing `IDS_BUTTON_OK`, `IDS_BUTTON_CANCEL`,
 
 ### Multiplayer setup screens
 
-| ID | Requested name | Base text |
+| ID | Approved name | Base text |
 | --- | --- | --- |
 | `0x0FA9` | `IDS_BUTTON_HELP` | `?` |
 | `0x238C` | `IDS_HOST_NAME_FORMAT` | `Host name: %s` |
@@ -226,6 +258,9 @@ version-message payloads and per-call purpose.
 
 I ran evidence extraction, SHA256 checks, full worker-diff review, combined
 source/header review, and `git diff --check`.
+
+For the resource substitution pass, I ran only Git review and
+`git diff --check`. I imported only the two approved headers.
 
 Compilation, matching, audits, tests, builds, and games were not run.
 Generated code, data, relocations, and call targets remain unvalidated.
