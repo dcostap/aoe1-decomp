@@ -5,6 +5,7 @@
 - Module: `src/teffects.cpp`
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit from `git rev-parse`: `829abf45ec73d95397b05e9a6944f4ca5621d197`
+- Report commit from `git rev-parse`: `e76f8f8c7be80a1eeb58af465cd4e35064d0e786`
 - Changed files: `src/teffects.cpp`; this report.
 - Branch: `cleanup/staging-20260915-241`
 - The source commit contains only the assigned source change.
