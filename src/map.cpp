@@ -966,8 +966,7 @@ void RGE_Map::clean_terrain(long x1, long y1, long x2, long y2, unsigned char re
                         }
 
                         if (fix) {
-                            this->set_terrain(this->game_world, col, row, replacement_terrain, 0,
-                                              0);
+                            this->set_terrain(this->game_world, col, row, replacement_terrain, 0, 0);
                             change_flag = 1;
                         }
                     }
