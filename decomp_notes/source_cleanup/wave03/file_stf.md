@@ -127,14 +127,52 @@ added.
 
 ## Evidence-tool incident
 
-After running its required `--help`, this worker attempted:
+After running its required `--help`, this worker attempted the following
+evidence command. The retained session output has no event timestamp.
 
 `python tools/generate_function_registry_inventory.py --format json --output build/file_stf_evidence/registry_inventory.json`
 
-The tool failed before writing output because this lean worktree has no
-`inventory/all_functions.csv`. Its startup called the internal translation-unit
-validation routine. No report or audit result was produced, and no tracked file
-changed. The failed attempt is recorded here; no further registry tool was run.
+- Timestamp: unknown. The retained output has no timestamp. The evidence
+  directory was created at `2026-09-15T20:09:35Z`, but that is not treated as
+  the incident timestamp.
+- Exact cwd: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-196`
+  (`C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196`).
+- Exit code: unknown. The retained tool result has no separate exit-code line.
+- Requested output: `build/file_stf_evidence/registry_inventory.json`.
+- Retained output: `build/file_stf_evidence/registry_inventory_incident.txt`.
+
+Retained stderr was:
+
+```text
+Traceback (most recent call last):
+  File "C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196\tools\generate_function_registry_inventory.py", line 622, in <module>
+    main()
+  File "C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196\tools\generate_function_registry_inventory.py", line 608, in main
+    inventory = build_function_registry_inventory(require_fresh_build=args.strict)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196\tools\generate_function_registry_inventory.py", line 343, in build_function_registry_inventory
+    manifest_issues = validate_translation_units(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196\tools\validate_translation_units.py", line 166, in validate_translation_units
+    records = _function_records()
+              ^^^^^^^^^^^^^^^^^^^
+  File "C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196\tools\validate_translation_units.py", line 67, in _function_records
+    return {row["va"].upper(): row for row in load_functions()}
+                                              ^^^^^^^^^^^^^^^^^^
+  File "C:\Projects\my_decomps\aoe1_attempt3\build\source-cleanup-20260915\wave-worktrees\slot-196\tools\common.py", line 51, in load_functions
+    with (INVENTORY_DIR / "all_functions.csv").open("r", encoding="utf-8", newline="") as handle:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python312\Lib\pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline, opener=self._opener)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Projects\\my_decomps\\aoe1_attempt3\\build\\source-cleanup-20260915\\wave-worktrees\\slot-196\\inventory\\all_functions.csv'
+```
+
+The reviewer confirms that the requested output could not be written. The
+inventory file was missing before the write. The failure occurred before any
+compiler or build action, so it could not compile. The startup called the
+internal translation-unit validation routine, but it produced no validation
+report. This worker did not rerun the tool or that validator.
 
 ## Validation limits
 
