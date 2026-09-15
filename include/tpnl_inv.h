@@ -20,17 +20,16 @@ public:
     unsigned long font_color;
     unsigned long back_color;
 
-    TRIBE_Panel_Inven(TDrawArea*, TPanel*, void*, TRIBE_Player*);
+    TRIBE_Panel_Inven(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in, TRIBE_Player* player_in);
     virtual ~TRIBE_Panel_Inven();
-    virtual unsigned char get_help_info(char*& out_str, long& out_val,
-                                        long x, long y);
-    void set_text_color(unsigned long color1, unsigned long color2);
+    virtual unsigned char get_help_info(char*& string, long& page, long x, long y);
+    void set_text_color(unsigned long font_color_in, unsigned long back_color_in);
     virtual void draw();
     virtual long handle_idle();
 protected:
     void save_info();
 public:
-    void set_player(TRIBE_Player*);
+    void set_player(TRIBE_Player* player_in);
 };
 
 typedef char tpnl_inv_panel_size_check[

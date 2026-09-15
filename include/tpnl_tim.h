@@ -32,15 +32,15 @@ public:
     int LastIBWidth;
     int LastIBHeight;
 
-    TRIBE_Panel_Time(TDrawArea*, TPanel*);
+    TRIBE_Panel_Time(TDrawArea* render_area_in, TPanel* parent_in);
     virtual ~TRIBE_Panel_Time();
-    void set_rect(long, long, long, long);
+    void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
     void startup();
-    void set_clock_type(int, int);
+    void set_clock_type(int clock_type_in, int player_id_in);
     int get_clock_type();
     int get_player_id();
     virtual void draw();
-    virtual void get_true_render_rect(tagRECT&);
+    virtual void get_true_render_rect(tagRECT& drawRect);
     virtual long handle_idle();
 
 protected:

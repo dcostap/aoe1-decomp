@@ -1,9 +1,10 @@
 #include "../include/tpnl_pop.h"
+#include "../include/resource_ids.h"
 #include "../include/tribegam.h"
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
 
-TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent) {
+TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* render_area_in, TPanel* parent_in) {
     RGE_Font* f;
 
     this->handle_mouse_input = 0;
@@ -24,7 +25,7 @@ TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent) {
     this->LastIBHeight = -1;
     this->ImageTextActive = 0;
     this->image_clip_region = 0;
-    if (TPanel::setup(area, parent, 0, 0, 0, 0, 0) == 0) {
+    if (TPanel::setup(render_area_in, parent_in, 0, 0, 0, 0, 0) == 0) {
         this->error_code = 1;
     }
 }
@@ -43,13 +44,12 @@ TRIBE_Panel_Pop::~TRIBE_Panel_Pop() {
     }
 }
 
-void TRIBE_Panel_Pop::set_rect(long param_1, long param_2, long param_3,
-                               long param_4) {
-    TPanel::set_rect(param_1, param_2, param_3, param_4);
+void TRIBE_Panel_Pop::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
+    TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
 
     if (this->pnl_wid > this->LastIBWidth) goto need_realloc;
     if (this->pnl_hgt > this->LastIBHeight) goto need_realloc;
-    if (param_1 + this->LastIBWidth >= this->render_area->Width) goto need_realloc;
+    if (x_in + this->LastIBWidth >= this->render_area->Width) goto need_realloc;
     goto skip_realloc;
 
 need_realloc:
@@ -96,7 +96,8 @@ skip_realloc:
 
 void TRIBE_Panel_Pop::startup() {
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
-    TRIBE_Player* p = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+    TRIBE_Player* p =
+        static_cast<TRIBE_Player*>(rge_base_game->get_player());
     this->player = p;
 
     this->pop = static_cast<int>(p->attributes[0xB]);
@@ -187,8 +188,8 @@ void TRIBE_Panel_Pop::draw() {
     if (this->render_area->GetDc("tpnl_tim::draw") != 0) {
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
         old_font = SelectObject(this->render_area->DrawDc, this->font);
-        SetBkMode(this->render_area->DrawDc, 1);
-        sprintf(str, "%s%ld/%ld", this->get_string(0x2B2A),
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
+        sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX),
                 this->pop, this->max_pop);
 
         SetTextColor(this->render_area->DrawDc, this->color2);
@@ -202,13 +203,13 @@ void TRIBE_Panel_Pop::draw() {
         width -= 2;
         height -= 2;
         SetRect(&rect, left - 1, top - 1, width + left - 2, height + top - 2);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
         SetRect(&rect, left - 1, top + 1, width + left - 2, height + top);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
         SetRect(&rect, left + 1, top - 1, width + left, height + top - 2);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
         SetRect(&rect, left + 1, top + 1, width + left, height + top);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
 
         if (this->mode == 1) {
             SetTextColor(this->ImageBuffer->DrawDc, this->color3);
@@ -217,7 +218,7 @@ void TRIBE_Panel_Pop::draw() {
         }
 
         SetRect(&rect, left, top, width + left - 1, height + top - 1);
-        DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->render_area->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
 
         SelectObject(this->render_area->DrawDc, old_font);
         SelectClipRgn(this->render_area->DrawDc, 0);
@@ -228,12 +229,12 @@ finish:
     this->draw_finish();
 }
 
-void TRIBE_Panel_Pop::get_true_render_rect(RECT& rect) {
+void TRIBE_Panel_Pop::get_true_render_rect(RECT& drawRect) {
     if (this->ImageBuffer && this->render_area && this->visible &&
         this->active) {
-        rect = this->UsedScreenRect;
+        drawRect = this->UsedScreenRect;
     } else {
-        rect = this->render_rect;
+        drawRect = this->render_rect;
     }
 }
 
@@ -259,9 +260,9 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
-    SetBkMode(this->ImageBuffer->DrawDc, 1);
+    SetBkMode(this->ImageBuffer->DrawDc, TRANSPARENT);
 
-    sprintf(str, "%s%ld/%ld", this->get_string(0x2B2A), this->pop,
+    sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop,
             this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
 
@@ -270,13 +271,13 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
         const int height = this->pnl_hgt - 1;
 
         SetRect(&rect, 0, 0, width - 2, height - 2);
-        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
         SetRect(&rect, 0, 2, width - 2, height);
-        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
         SetRect(&rect, 2, 0, width, height - 2);
-        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
         SetRect(&rect, 2, 2, width, height);
-        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
 
         if (this->mode == 1) {
             SetTextColor(this->ImageBuffer->DrawDc, this->color3);
@@ -285,7 +286,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
         }
 
         SetRect(&rect, 1, 1, width - 1, height - 1);
-        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, DT_CENTER | DT_SINGLELINE);
     }
 
     SelectObject(this->ImageBuffer->DrawDc, old_font);

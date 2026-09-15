@@ -18,38 +18,33 @@
 
 // spnl_obj.cpp lines 48-52.
 TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(
-    TDrawArea* draw_area, TPanel* panel, void* font, long font_width,
-    long font_height, TShape* unit_pictures, TShape** building_pictures,
-    TRIBE_Player* player)
-    : TRIBE_Panel_Object(draw_area, panel, font, font_width, font_height,
-                         unit_pictures, building_pictures, player)
-{
+    TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in,
+    long font_wid_in, long font_hgt_in, TShape* unit_pics_in,
+    TShape** bldg_pics_in, TRIBE_Player* player_in)
+    : TRIBE_Panel_Object(render_area_in, parent_panel_in, font_in, font_wid_in,
+                         font_hgt_in, unit_pics_in, bldg_pics_in, player_in) {
     master_game_obj = 0;
     master_culture_id = 0;
 }
 
 // spnl_obj.cpp line 58.
-TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object()
-{
+TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object() {
 }
 
 // spnl_obj.cpp lines 63-70.
-void TRIBE_Scenario_Editor_Panel_Object::set_master_info(
-    RGE_Master_Static_Object* master, TRIBE_Player* player)
-{
-    master_game_obj = master;
-    this->player = player;
-    if (player == 0) {
+void TRIBE_Scenario_Editor_Panel_Object::set_master_info(RGE_Master_Static_Object* master_game_object_in, TRIBE_Player* master_player_in) {
+    master_game_obj = master_game_object_in;
+    this->player = master_player_in;
+    if (master_player_in == 0) {
         master_culture_id = 0;
         return;
     }
-    master_culture_id = player->culture;
+    master_culture_id = master_player_in->culture;
 }
 
 // spnl_obj.cpp lines 78-325.
 // The building facet belongs to the building-master extension.
-void TRIBE_Scenario_Editor_Panel_Object::draw()
-{
+void TRIBE_Scenario_Editor_Panel_Object::draw() {
     int text_flag;
     long min_x;
     long min_y;
@@ -220,22 +215,16 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
 
                 if (unit_level == 2) {
                     draw_item(0, 7, ValueTypeBonus,
-                              static_cast<RGE_Master_Combat_Object*>(master)
-                                  ->orig_weapon,
-                              static_cast<RGE_Master_Combat_Object*>(master)
-                                  ->orig_weapon);
-            draw_item(1, 8, ValueTypeBonus,
-                              static_cast<RGE_Master_Combat_Object*>(
-                                  master_game_obj)->orig_armor,
-                              static_cast<RGE_Master_Combat_Object*>(
-                                  master_game_obj)->orig_armor);
-            draw_item(2, 6, ValueTypeBonus,
+                              static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon,
+                              static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon);
+                    draw_item(1, 8, ValueTypeBonus,
+                              static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor,
+                              static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor);
+                    draw_item(2, 6, ValueTypeBonus,
                               static_cast<int>(
-                                  static_cast<RGE_Master_Combat_Object*>(
-                                      master_game_obj)->weapon_range),
+                                  static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range),
                               static_cast<int>(
-                                  static_cast<RGE_Master_Combat_Object*>(
-                                      master_game_obj)->weapon_range));
+                                  static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range));
                     draw_finish();
                     return;
                 }
@@ -283,53 +272,49 @@ draw_finish:
 }
 
 // spnl_obj.cpp lines 333-382.
-void TRIBE_Scenario_Editor_Panel_Object::draw_item(
-    int item_index, int picture, ValueType value_type, int value,
-    int comparison_value)
-{
-    char value_string[20];
+void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, int val1, int val2) {
+    char val_str[20];
 
-    if (item_pic != 0 && picture != -1) {
+    if (item_pic != 0 && pic_index != -1) {
         if (render_area->Lock(0, 1) != 0) {
             item_pic->shape_draw(render_area, pnl_x + 0x3C,
-                                 pnl_y + item_index * 9 * 2 + 0x1E, picture,
+                                 pnl_y + row * 9 * 2 + 0x1E, pic_index,
                                  0, 0);
             render_area->Unlock(0);
         }
     }
 
-    switch (value_type) {
+    switch (val_type) {
     case ValueTypeNumber:
-        sprintf(value_string, "%d", value);
+        sprintf(val_str, "%d", val1);
         break;
     case ValueTypeBonus:
-        if (comparison_value > value)
-            sprintf(value_string, "%d+%d", value,
-                    comparison_value - value);
+        if (val2 > val1)
+            sprintf(val_str, "%d+%d", val1, val2 - val1);
         else
-            sprintf(value_string, "%d", value);
+            sprintf(val_str, "%d", val1);
         break;
     case ValueTypeCompare:
-        sprintf(value_string, "%d/%d", value, comparison_value);
+        sprintf(val_str, "%d/%d", val1, val2);
         break;
     case ValueTypePercent:
-        sprintf(value_string, "%d%%", value);
+        sprintf(val_str, "%d%%", val1);
         break;
     default:
-        value_string[0] = 0;
+        val_str[0] = 0;
     }
 
-    if (value_string[0] != 0) {
+    if (val_str[0] != 0) {
         if (render_area->GetDc(0) != 0) {
             SetBkMode(render_area->DrawDc, 1);
             SetTextColor(render_area->DrawDc, 0xFFFFFF);
             SelectClipRgn(render_area->DrawDc, (HRGN)clip_rgn);
             HGDIOBJ old_font =
                 SelectObject(render_area->DrawDc, (HGDIOBJ)font);
-            int length = strlen(value_string);
+            int length = strlen(val_str);
 
             TextOutA(render_area->DrawDc, pnl_x + 0x64,
-                     pnl_y + item_index * 9 * 2 + 0x20, value_string, length);
+                     pnl_y + row * 9 * 2 + 0x20, val_str, length);
 
             SelectObject(render_area->DrawDc, old_font);
             SelectClipRgn(render_area->DrawDc, 0);
@@ -339,9 +324,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(
 }
 
 // spnl_obj.cpp lines 390-397.
-long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(
-    long x, long y, int ctrl, int shift)
-{
+long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     this->release_mouse();
     if (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
         rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) {
@@ -351,8 +334,7 @@ long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(
 }
 
 // spnl_obj.cpp lines 406-423.
-long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor()
-{
+long TRIBE_Scenario_Editor_Panel_Object::get_pierce_armor() {
     RGE_Master_Static_Object* master = master_game_obj;
     if (master == 0)
         return 0;

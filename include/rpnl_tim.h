@@ -13,7 +13,7 @@ public:
     long old_time;
     long real_time;
 
-    RGE_Panel_Time(TDrawArea*, TPanel*, void*);
+    RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in, void* font_in);
     virtual ~RGE_Panel_Time();
     virtual void draw();
     virtual long handle_idle();

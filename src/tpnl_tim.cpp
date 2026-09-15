@@ -1,11 +1,11 @@
 #include "../include/tpnl_tim.h"
 #include "../include/color.h"
+#include "../include/resource_ids.h"
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
 
-TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* draw_area, TPanel* parent)
-    : TPanel()
-{
+TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* render_area_in, TPanel* parent_in)
+    : TPanel() {
     this->handle_mouse_input = 0;
     this->font = rge_base_game->get_font(0xB)->font;
     this->color1 = 0xFFFFFF;
@@ -26,13 +26,12 @@ TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* draw_area, TPanel* parent)
     this->LastIBHeight = -1;
     this->ImageTextActive = 0;
     this->image_clip_region = 0;
-    if (!this->setup(draw_area, parent, 0, 0, 0, 0, 0)) {
+    if (!this->setup(render_area_in, parent_in, 0, 0, 0, 0, 0)) {
         this->error_code = 1;
     }
 }
 
-TRIBE_Panel_Time::~TRIBE_Panel_Time()
-{
+TRIBE_Panel_Time::~TRIBE_Panel_Time() {
     TDrawArea* image_buffer;
 
     if (this->image_clip_region != 0) {
@@ -47,15 +46,14 @@ TRIBE_Panel_Time::~TRIBE_Panel_Time()
     }
 }
 
-void TRIBE_Panel_Time::set_rect(long x, long y, long width, long height)
-{
+void TRIBE_Panel_Time::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     TDrawArea* image_buffer;
 
-    this->TPanel::set_rect(x, y, width, height);
+    this->TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
 
     if (this->pnl_wid <= this->LastIBWidth) {
         if (this->pnl_hgt <= this->LastIBHeight) {
-            if (x + this->LastIBWidth < this->render_area->Width) {
+            if (x_in + this->LastIBWidth < this->render_area->Width) {
                 goto skip_recreate;
             }
         }
@@ -98,29 +96,27 @@ skip_recreate:
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TRIBE_Panel_Time::startup()
-{
+void TRIBE_Panel_Time::startup() {
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
     this->start_real_time = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 0x92);
 }
 
-void TRIBE_Panel_Time::set_clock_type(int clock_type, int player_id)
-{
-    if (this->clock_type == clock_type) {
+void TRIBE_Panel_Time::set_clock_type(int clock_type_in, int player_id_in) {
+    if (this->clock_type == clock_type_in) {
         if (this->player == 0) {
             return;
         }
-        if (this->player->id == player_id) {
+        if (this->player->id == player_id_in) {
             return;
         }
     }
 
-    this->clock_type = clock_type;
+    this->clock_type = clock_type_in;
 
-    if (player_id > 0) {
+    if (player_id_in > 0) {
         this->player = static_cast<TRIBE_Player*>(
-            this->world->players[player_id]);
+            this->world->players[player_id_in]);
     } else {
         this->player = 0;
     }
@@ -169,13 +165,13 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type, int player_id)
         this->color2 = 0;
     }
 
-    if (clock_type == 1 || clock_type == 2) {
+    if (clock_type_in == 1 || clock_type_in == 2) {
         this->clock_format = 1;
     } else {
         this->clock_format = 2;
     }
 
-    if (clock_type == 0) {
+    if (clock_type_in == 0) {
         this->set_active(0);
     } else {
         this->set_active(1);
@@ -185,21 +181,18 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type, int player_id)
     this->handle_idle();
 }
 
-int TRIBE_Panel_Time::get_clock_type()
-{
+int TRIBE_Panel_Time::get_clock_type() {
     return this->clock_type;
 }
 
-int TRIBE_Panel_Time::get_player_id()
-{
+int TRIBE_Panel_Time::get_player_id() {
     if (this->player != 0) {
         return this->player->id;
     }
     return 0;
 }
 
-void TRIBE_Panel_Time::draw()
-{
+void TRIBE_Panel_Time::draw() {
     void* old_font;
     char str[256];
     tagRECT rect;
@@ -248,7 +241,7 @@ void TRIBE_Panel_Time::draw()
 
     SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
     old_font = SelectObject(this->render_area->DrawDc, this->font);
-    SetBkMode(this->render_area->DrawDc, 1);
+    SetBkMode(this->render_area->DrawDc, TRANSPARENT);
 
     if (this->clock_format == 1) {
         int seconds = this->game_time;
@@ -267,24 +260,24 @@ void TRIBE_Panel_Time::draw()
             sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds,
                     game_speed);
         }
-        text_flags = 0x20;
+        text_flags = DT_SINGLELINE;
     } else {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
         case 4:
-            sprintf(str, this->get_string(0x2C25), rounded_time);
+            sprintf(str, this->get_string(IDS_WONDER_YEARS_FORMAT), rounded_time);
             break;
         case 5:
-            sprintf(str, this->get_string(0x2C26), rounded_time);
+            sprintf(str, this->get_string(IDS_ARTIFACTS_YEARS_FORMAT), rounded_time);
             break;
         case 6:
-            sprintf(str, this->get_string(0x2C27), rounded_time);
+            sprintf(str, this->get_string(IDS_RUINS_YEARS_FORMAT), rounded_time);
             break;
         default:
-            sprintf(str, this->get_string(0x2C24), rounded_time);
+            sprintf(str, this->get_string(IDS_COUNTDOWN_YEARS_FORMAT), rounded_time);
             break;
         }
-        text_flags = 0x22;
+        text_flags = DT_SINGLELINE | DT_RIGHT;
     }
 
     SetTextColor(this->render_area->DrawDc, this->color2);
@@ -323,18 +316,16 @@ finish:
     this->draw_finish();
 }
 
-void TRIBE_Panel_Time::get_true_render_rect(tagRECT& rect)
-{
+void TRIBE_Panel_Time::get_true_render_rect(tagRECT& drawRect) {
     if (this->ImageBuffer != 0 && this->render_area != 0 &&
         this->visible != 0 && this->active != 0) {
-        rect = this->UsedScreenRect;
+        drawRect = this->UsedScreenRect;
         return;
     }
-    rect = this->render_rect;
+    drawRect = this->render_rect;
 }
 
-long TRIBE_Panel_Time::handle_idle()
-{
+long TRIBE_Panel_Time::handle_idle() {
     this->TPanel::handle_idle();
 
     switch (this->clock_type) {
@@ -386,8 +377,7 @@ long TRIBE_Panel_Time::handle_idle()
     return 0;
 }
 
-int TRIBE_Panel_Time::render_to_image_buffer()
-{
+int TRIBE_Panel_Time::render_to_image_buffer() {
     tagRECT rect;
     void* old_font;
     char str[256];
@@ -403,7 +393,7 @@ int TRIBE_Panel_Time::render_to_image_buffer()
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
-    SetBkMode(this->ImageBuffer->DrawDc, 1);
+    SetBkMode(this->ImageBuffer->DrawDc, TRANSPARENT);
 
     if (this->clock_format == 1) {
         int seconds = this->game_time;
@@ -422,24 +412,24 @@ int TRIBE_Panel_Time::render_to_image_buffer()
             sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes,
                     seconds, game_speed);
         }
-        text_flags = 0x20;
+        text_flags = DT_SINGLELINE;
     } else {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
         case 4:
-            sprintf(str, this->get_string(0x2C25), rounded_time);
+            sprintf(str, this->get_string(IDS_WONDER_YEARS_FORMAT), rounded_time);
             break;
         case 5:
-            sprintf(str, this->get_string(0x2C26), rounded_time);
+            sprintf(str, this->get_string(IDS_ARTIFACTS_YEARS_FORMAT), rounded_time);
             break;
         case 6:
-            sprintf(str, this->get_string(0x2C27), rounded_time);
+            sprintf(str, this->get_string(IDS_RUINS_YEARS_FORMAT), rounded_time);
             break;
         default:
-            sprintf(str, this->get_string(0x2C24), rounded_time);
+            sprintf(str, this->get_string(IDS_COUNTDOWN_YEARS_FORMAT), rounded_time);
             break;
         }
-        text_flags = 0x22;
+        text_flags = DT_SINGLELINE | DT_RIGHT;
     }
 
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);

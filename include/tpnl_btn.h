@@ -22,13 +22,13 @@ protected:
     int in_use;
 
 public:
-    TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, void*, long, long,
-                       TShape*);
+    TRIBE_Panel_Button(TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in,
+                       void* font_in, long font_wid_in, long font_hgt_in, TShape* border_pic_in);
     virtual void draw();
-    void set_text_msg(char*);
-    virtual int is_inside(long, long);
-    void set_display_garrison(int);
-    void set_garrison_number(int);
+    void set_text_msg(char* text_msg_in);
+    virtual int is_inside(long x, long y);
+    void set_display_garrison(int value);
+    void set_garrison_number(int value);
     int get_garrison_number();
 };
 
