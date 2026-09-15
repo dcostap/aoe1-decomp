@@ -5,11 +5,11 @@
 
 class TRIBE_Effects : public RGE_Effects {
 public:
-    virtual void do_effect(short effect_id, RGE_Player* player);
+    virtual void do_effect(short current_effect, RGE_Player* player);
 
-    TRIBE_Effects(int file);
-    TRIBE_Effects(char* path);
-    void do_tech_effect(short effect_id, RGE_Player* player);
+    TRIBE_Effects(int infile);
+    TRIBE_Effects(char* effect_file);
+    void do_tech_effect(short current_effect, RGE_Player* player);
 };
 
 typedef char teffects_tribe_effects_size_check[

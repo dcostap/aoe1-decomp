@@ -96,9 +96,9 @@ class TRIBE_Screen_Wait;
 class TRIBE_Screen_Disconnect;
 void __cdecl color_log(unsigned char, unsigned char, int);
 
-unsigned long __cdecl debug_timeGetTime(char*, int);
-int __cdecl debug_rand(char*, int);
-void __cdecl debug_srand(char*, int, unsigned int);
+unsigned long __cdecl debug_timeGetTime(char* source_name, int source_line);
+int __cdecl debug_rand(char* source_name, int source_line);
+void __cdecl debug_srand(char* source_name, int source_line, unsigned int seed);
 
 struct RGE_Font {
     void* font;
@@ -236,22 +236,22 @@ public:
 
     virtual ~RGE_Base_Game();
     virtual int run();
-    virtual LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
+    virtual LRESULT CALLBACK wnd_proc(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
     virtual void set_prog_mode(int value) { this->prog_mode = value; }
-    virtual void set_game_mode(int, int);
-    virtual void set_player(short);
+    virtual void set_game_mode(int new_mode, int new_sub_mode);
+    virtual void set_player(short new_player_id);
     virtual int get_error_code();
     // VC5 reverses this adjacent overload group in the vtable.
-    virtual char* get_string(long);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string2(int, long, long, char*, int);
+    virtual char* get_string(long text_id);
+    virtual char* get_string(long string_id, char* str, int max_len);
+    virtual char* get_string(int string_type, long id, char* str, int max_len);
+    virtual char* get_string2(int string_type, long id, long id2, char* str, int max_len);
     virtual TPanel* get_view_panel() { return 0; }
     virtual TPanel* get_map_panel() { return 0; }
     // VC5 reverses this adjacent overload pair in the vtable.
-    virtual RGE_Scenario_Header* new_scenario_header(int);
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
-    virtual RGE_Scenario* new_scenario_info(int);
+    virtual RGE_Scenario_Header* new_scenario_header(int infile);
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario_info);
+    virtual RGE_Scenario* new_scenario_info(int infile);
     virtual void notification(int, long, long, long, long) {}
     virtual int reset_comm();
     virtual void send_game_options();
@@ -285,20 +285,20 @@ protected:
     virtual RGE_Game_World* create_world();
     virtual int handle_message(tagMSG*) { return 1; }
     virtual int handle_idle();
-    virtual int handle_mouse_move(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_key_down(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_user_command(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_command(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_music_done(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_paint(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_activate(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_init_menu(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_exit_menu(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_size(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_palette_changed(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_query_new_palette(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_close(HWND, UINT, WPARAM, LPARAM);
-    virtual int handle_destroy(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_mouse_move(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_user_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_music_done(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_paint(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_init_menu(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_exit_menu(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_size(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_close(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
+    virtual int handle_destroy(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam);
     virtual int action_update() { return 1; }
     virtual int action_mouse_move(long, long, int, int, int, int) { return 1; }
     virtual int action_key_down(unsigned long, int, int, int, int) { return 1; }
@@ -324,45 +324,45 @@ protected:
     virtual void set_interface_messages();
 
 public:
-    RGE_Base_Game(RGE_Prog_Info*, int);
+    RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup);
 protected:
     int check_expiration();
     int check_multi_copies();
 public:
-    int check_for_cd(int);
+    int check_for_cd(int num_players);
     void close();
-    int create_dialog(TPanel**, TPanel*);
-    void delete_dialog(TPanel**);
-    unsigned char check_prog_argument(char*);
-    void add_to_timing(int, unsigned long);
+    int create_dialog(TPanel** dialog_ptr, TPanel* new_dialog);
+    void delete_dialog(TPanel** dialog_ptr);
+    unsigned char check_prog_argument(char* argument);
+    void add_to_timing(int id, unsigned long time);
     int multiplayerGame() const;
     int randomGame() const;
     int campaignGame() const;
     int singlePlayerGame() const;
     int gameDeveloperMode() const;
-    int playerTeam(int);
-    int playerID(int);
+    int playerTeam(int player_num);
+    int playerID(int player_index);
     int difficulty();
     int campaign_open_scenario();
     float get_game_speed();
-    void write_scenario_header(int);
-    void get_campaign_info(long&, long&, long&);
-    unsigned char set_campaign_info(long, long, long);
+    void write_scenario_header(int outfile);
+    void get_campaign_info(long& campaign, long& campaign_player, long& campaign_scenario);
+    unsigned char set_campaign_info(long campaign, long campaign_player, long campaign_scenario);
     void set_campaign_win();
-    unsigned long get_accum_time(int);
+    unsigned long get_accum_time(int id);
     int get_paused();
-    void set_paused(int paused, int non_user_pause);
+    void set_paused(int paused_in, int non_user_pause_in);
     RGE_Player* get_player();
-    void get_mouse_pos(tagPOINT&);
-    RGE_Font* get_font(int);
+    void get_mouse_pos(tagPOINT& point);
+    RGE_Font* get_font(int font_id);
     void setScenarioGame(int);
-    void setVersion(float);
-    void setScenarioName(char*);
+    void setVersion(float val);
+    void setScenarioName(char* n);
     void setCampaignGame(int);
     void setSavedGame(int);
     void setSinglePlayerGame(int);
     void setMultiplayerGame(int);
-    void setMapSize(int, int, int);
+    void setMapSize(int x, int y, int z);
     void setAllowCheatCodes(int);
     void setCheatNotification(int);
     void setFullVisibility(int);
@@ -370,53 +370,53 @@ public:
     void setColoredChat(int);
     void setNumberPlayers(int);
     void setGameDeveloperMode(int);
-    void setPlayerHasCD(int, int);
-    void setPlayerVersion(int, unsigned char);
-    void setPlayerCDAndVersion(int, unsigned char);
-    void setDifficulty(int);
-    void setPlayerTeam(int, int);
-    void setPathFinding(unsigned char);
-    void setMpPathFinding(unsigned char);
-    unsigned char GetWorldChecksums(long&, long&, long&);
-    long GetChecksum(long);
-    void reset_countdown_timer(long);
-    void set_countdown_timer(long, long);
-    void get_countdown_timer(long, long&);
-    TShape* get_shape(int);
-    TDigital* get_sound(int);
+    void setPlayerHasCD(int player_num, int has_cd);
+    void setPlayerVersion(int player_num, unsigned char player_version);
+    void setPlayerCDAndVersion(int player_num, unsigned char val);
+    void setDifficulty(int difficulty);
+    void setPlayerTeam(int player_num, int team);
+    void setPathFinding(unsigned char val);
+    void setMpPathFinding(unsigned char val);
+    unsigned char GetWorldChecksums(long& new_checksum, long& new_position_checksum, long& new_action_checksum);
+    long GetChecksum(long player);
+    void reset_countdown_timer(long in_countdown_player_id);
+    void set_countdown_timer(long in_countdown_player_id, long in_countdown_timer);
+    void get_countdown_timer(long out_countdown_player_id, long& out_countdown_timer);
+    TShape* get_shape(int shape_id);
+    TDigital* get_sound(int sound_id);
     void increment_view_update_count();
     void mouse_off();
     void mouse_on();
-    void set_mouse_cursor(HCURSOR);
-    void set_mouse_facet(long);
+    void set_mouse_cursor(HCURSOR val);
+    void set_mouse_facet(long facet);
     void draw_window();
     void set_render_all();
 
     void reset_timings();
     void increment_world_update_count();
-    void set_last_single_time(int, unsigned long);
-    unsigned long get_last_time(int);
-    unsigned long get_last_single_time(int);
-    unsigned long get_max_time(int);
-    unsigned long get_last_max_time(int);
+    void set_last_single_time(int id, unsigned long time);
+    unsigned long get_last_time(int id);
+    unsigned long get_last_single_time(int id);
+    unsigned long get_max_time(int id);
+    unsigned long get_last_max_time(int id);
     unsigned long get_last_world_update_count();
     unsigned long get_last_view_update_count();
     unsigned long get_world_update_count();
     unsigned long get_view_update_count();
-    RGE_Scenario* get_scenario_info(char*, int);
-    RGE_Scenario_Header* get_scenario_header(char*, int);
+    RGE_Scenario* get_scenario_info(char* scenario_file, int from_campaign);
+    RGE_Scenario_Header* get_scenario_header(char* scenario_file, int from_campaign);
 
 protected:
-    HFONT make_font(HDC, long, int);
-    HFONT make_font(HDC, char*, int, int, int);
+    HFONT make_font(HDC dc, long string_id, int strike_out);
+    HFONT make_font(HDC dc, char* face_name, int point_size, int wgt, int strike_out);
     int check_paint();
     void clear_window();
 
 public:
     void request_pause();
-    void get_mouse_info(WPARAM, LPARAM, tagPOINT&, int&, int&, int&, int&);
-    void set_windows_mouse(int);
-    void set_game_options(RGE_Game_Options*);
+    void get_mouse_info(WPARAM wparam, LPARAM lparam, tagPOINT& point, int& left_btn, int& right_btn, int& ctrl_key, int& shift_key);
+    void set_windows_mouse(int val);
+    void set_game_options(RGE_Game_Options* options);
     void get_game_options(RGE_Game_Options*);
     float version() const;
     int scenarioGame() const;
@@ -430,30 +430,30 @@ public:
     int fullVisibility() const;
     int fogOfWar() const;
     int coloredChat() const;
-    int playerHasCD(int);
-    unsigned char playerVersion(int);
-    char* playerVersionString(int);
-    unsigned char playerCDAndVersion(int);
+    int playerHasCD(int player_num);
+    unsigned char playerVersion(int player_num);
+    char* playerVersionString(int player_num);
+    unsigned char playerCDAndVersion(int player_num);
     int numberPlayers() const;
     unsigned char pathFinding();
     unsigned char mpPathFinding();
     void find_campaigns();
-    void set_map_visible(unsigned char);
-    void set_map_fog(unsigned char);
+    void set_map_visible(unsigned char flag);
+    void set_map_fog(unsigned char flag);
     void turn_world_sound_off();
     long GetWorldChecksum();
     void set_screen_size(long, long);
-    long get_scenario_checksum(char*);
-    unsigned char check_scenario_checksum(char*, long);
-    void dump_memory_usage(char*);
-    void setPlayerID(int, int);
-    int play_video(char*);
+    long get_scenario_checksum(char* scenario_file);
+    unsigned char check_scenario_checksum(char* scenario, long checksum);
+    void dump_memory_usage(char* file_name);
+    void setPlayerID(int player_index, int player_id);
+    int play_video(char* file_name);
     void close_video();
     void handle_video_notify();
-    int play_sound(int);
-    void set_game_speed(float);
+    int play_sound(int sound_id);
+    void set_game_speed(float val);
     int get_single_player_difficulty();
-    void set_single_player_difficulty(int);
+    void set_single_player_difficulty(int val);
     void reload_scenarios_info();
 
 protected:

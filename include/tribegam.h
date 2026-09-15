@@ -96,12 +96,12 @@ public:
     };
 
     virtual ~TRIBE_Game();
-    virtual long __stdcall wnd_proc(void* window, unsigned int message,
+    virtual long __stdcall wnd_proc(void* wnd, unsigned int msg,
                                     unsigned int wparam, long lparam);
-    TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game);
+    TRIBE_Game(RGE_Prog_Info* prog_info_in, int do_setup);
     virtual int setup_cmd_options();
 
-    void close_game_screens(int destroy_game_screen);
+    void close_game_screens(int close_main_game_screen);
 
 protected:
     virtual int setup();
@@ -111,126 +111,125 @@ protected:
     virtual RGE_Game_World* create_world();
 
 public:
-    virtual void set_game_mode(int mode, int sub_mode);
-    virtual void set_player(short player);
-    void set_save_game_name(char* name);
-    void set_load_game_name(char* name);
+    virtual void set_game_mode(int new_mode, int new_sub_mode);
+    virtual void set_player(short new_player_id);
+    void set_save_game_name(char* file_name);
+    void set_load_game_name(char* file_name);
     char* get_save_game_name();
     char* get_load_game_name();
-    virtual char* get_string(long id, char* buffer, int length);
-    virtual char* get_string2(int id, long p2, long p3, char* buffer,
-                              int length);
+    virtual char* get_string(long string_id, char* str, int max_len);
+    virtual char* get_string2(int string_type, long id, long id2, char* str,
+                              int max_len);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
-    long video_wnd_proc(void* window, unsigned int message,
-                        unsigned int wparam, long lparam);
-    virtual RGE_Scenario_Header* new_scenario_header(int scenario);
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario);
-    virtual RGE_Scenario* new_scenario_info(int scenario);
-    void show_error_message(int id);
-    void show_status_message(char* text, char* format, long value);
-    void show_status_message(int id, char* format, long value);
+    long video_wnd_proc(void* hwnd, unsigned int msg,
+                        unsigned int wParam, long lParam);
+    virtual RGE_Scenario_Header* new_scenario_header(int infile);
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario* scenario_info);
+    virtual RGE_Scenario* new_scenario_info(int infile);
+    void show_error_message(int error_code_in);
+    void show_status_message(char* messageIn, char* info_file, long info_id);
+    void show_status_message(int string_id, char* info_file, long info_id);
     void close_status_message();
     int setup_video_system();
-    int start_video(int mode, char* file);
+    int start_video(int video_num, char* video_file);
     void shutdown_video_system();
     char* game_over_msg();
-    void stop_video(unsigned char mode);
+    void stop_video(unsigned char goto_next_video);
     int start_campaign_menu();
     int start_menu();
     void quit_game();
     void restart_game();
     int load_db_files();
     int load_game_data();
-    int save_game(char* name);
-    int save_scenario(char* name);
+    int save_game(char* fileName);
+    int save_scenario(char* fileName);
     virtual void calc_timing_text();
     virtual void show_timings();
     virtual void show_comm();
     virtual void show_ai();
-    int start_game(int mode);
-    int test_scenario(char* name);
-    int start_scenario(char* name);
-    int load_game(char* name);
+    int start_game(int skip_startup_screens);
+    int test_scenario(char* scenario_file);
+    int start_scenario(char* scenario_file);
+    int load_game(char* fileName);
     RGE_Game_World* createGameWorld();
     void do_game_over();
 
 protected:
-    int create_game(int mode);
+    int create_game(int not_used);
 
 public:
     int create_game_screen();
-    virtual int processCheatCode(int player, char* code);
+    virtual int processCheatCode(int playerID, char* text);
 
 protected:
     void let_game_begin();
 
 public:
-    int start_scenario_editor(char* scenario_filename, int mode);
+    int start_scenario_editor(char* scenario_name_in, int is_multi_player_in);
     virtual void send_game_options();
     virtual void receive_game_options();
     void set_tribe_options(TRIBE_Game_Options* options);
     void get_tribe_options(TRIBE_Game_Options* options);
     MapSize mapSize() const;
-    void setMapSize(MapSize value);
+    void setMapSize(MapSize v);
     MapType mapType() const;
-    void setMapType(MapType value);
+    void setMapType(MapType v);
     int animals() const;
     int predators() const;
-    void setAnimals(int value);
-    void setPredators(int value);
+    void setAnimals(int v);
+    void setPredators(int v);
     VictoryType victoryType() const;
     int victoryAmount() const;
-    void setVictoryType(VictoryType type, int amount);
-    int civilization(int player);
-    void setCivilization(int player, int civilization);
-    int scenarioPlayer(int player);
-    void setScenarioPlayer(int player, int value);
-    int playerColor(int player);
-    void setPlayerColor(int player, int color);
-    int computerName(int player);
-    void setComputerName(int player, int value);
+    void setVictoryType(VictoryType victory_type_in, int amount_in);
+    int civilization(int player_num);
+    void setCivilization(int player_num, int civilization);
+    int scenarioPlayer(int player_num);
+    void setScenarioPlayer(int player_num, int scenario_player);
+    int playerColor(int player_num);
+    void setPlayerColor(int player_num, int color);
+    int computerName(int player_num);
+    void setComputerName(int player_num, int val);
     int allowTrading();
     int longCombat();
-    void setAllowTrading(int value);
-    void setLongCombat(int value);
+    void setAllowTrading(int val);
+    void setLongCombat(int val);
     int randomizePositions();
-    void setRandomizePositions(int value);
+    void setRandomizePositions(int val);
     int fullTechTree();
-    void setFullTechTree(int value);
+    void setFullTechTree(int val);
     ResourceLevel resourceLevel();
-    void setResourceLevel(ResourceLevel value);
+    void setResourceLevel(ResourceLevel val);
     Age startingAge();
-    void setStartingAge(Age value);
+    void setStartingAge(Age val);
     int startingUnits();
-    void setStartingUnits(int value);
+    void setStartingUnits(int val);
     unsigned char deathMatch();
-    void setDeathMatch(unsigned char value);
+    void setDeathMatch(unsigned char val);
     unsigned char popLimit();
-    void setPopLimit(unsigned char value);
-    void setQuickStartGame(unsigned char value);
+    void setPopLimit(unsigned char val);
+    void setQuickStartGame(unsigned char val);
     unsigned char quickStartGame();
     int randomStartValue();
-    void setRandomStartValue(int value);
+    void setRandomStartValue(int val);
     void resetRandomComputerName();
-    int randomComputerName(int civilization);
-    void SetClickTables(MouseClickInfo* right, int right_count,
-                        MouseClickInfo* left, int left_count);
+    int randomComputerName(int civ);
+    void SetClickTables(MouseClickInfo* RC, int RCS,
+                        MouseClickInfo* LC, int LCS);
     virtual int action_close();
-    virtual int action_key_down(unsigned long key, int param_2, int param_3,
-                                int param_4, int param_5);
+    virtual int action_key_down(unsigned long key, int repeat_count, int ctrl_key,
+                                int alt_key, int shift_key);
     virtual void set_interface_messages();
     void disconnect_multiplayer_game();
     virtual int handle_idle();
-    virtual int handle_query_new_palette(void* window, unsigned int message,
+    virtual int handle_query_new_palette(void* wnd, unsigned int msg,
                                          unsigned int wparam, long lparam);
-    virtual int handle_activate(void* window, unsigned int message,
+    virtual int handle_activate(void* wnd, unsigned int msg,
                                 unsigned int wparam, long lparam);
-    virtual int action_user_command(unsigned long param_1,
-                                    unsigned long param_2);
+    virtual int action_user_command(unsigned long val1, unsigned long val2);
     void add_notification_loc(long x, long y);
-    virtual void notification(int type, long a, long b, long c, long d);
-    long get_achievement_info(unsigned char param_1, char** param_2);
+    virtual void notification(int notify_type, long val1, long val2, long val3, long val4);
+    long get_achievement_info(unsigned char achievement, char** info);
     void goto_notification_loc();
     virtual char* gameSummary();
 
