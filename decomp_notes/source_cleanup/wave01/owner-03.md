@@ -6,6 +6,7 @@
 - Base: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Initial handoff integration head: `2fdfc17c35a4ed868558ef3263b939df3ea75f0c`
 - Corrected integration head before this ledger update: `be32a0e3515bcaa8500bd176acda4c95fe77c56b`
+- Final correction head before this ledger update: `981b03543aaaf9676430c9575c221df197da73d4`
 - Scope: eight screen modules and eight authorized headers.
 - Status: reviewed and integrated, but unvalidated.
 
@@ -19,8 +20,8 @@ I read each complete worker diff and report. I also reviewed the complete combin
 | `src/scr_name.cpp` | `sa-04ef409c` | `328b549864abf609df551f8c48def819c462e110` | Approved after resource evidence correction. |
 | `src/scr_set.cpp` | `sa-5b54177e` | `8ae5d1d955aedd612417c0b94f33145c6d42b14c` | Approved after one correction. |
 | `src/scr_sing.cpp` | `sa-793768e4` | `3f8e9fc369ceb826dcfae88741d4d2c8ff69a653` | Approved and integrated. |
-| `src/scr_main.cpp` | `sa-6a51283f` | `a09efcf4e41a051e36ee84d4e54dbcd7fbc31a9a` | Approved after mapping correction. |
-| `src/scr_cam.cpp` | `sa-5767a2a6` | `806336fd34685422a38760dcbeda457e55ff7e7d` | Approved after evidence correction. |
+| `src/scr_main.cpp` | `sa-6a51283f` | `9e71ee521984e7a87bcf9c78848ec1b99532cadf` | Approved after mapping and provenance corrections. |
+| `src/scr_cam.cpp` | `sa-5767a2a6` | `6d991da549f0d50b754b6446be16a6860e49d9ff` | Approved after evidence and formatting corrections. |
 | `src/scr_cams.cpp` | `sa-97873e72` | `69b52be28d591c669407ca2f36913e9b10551167` | Approved after three corrections. |
 | `src/scr_cj.cpp` | `sa-f122e345` | `50dcb4fcba7ebce307f0becff401b99b1b5e3037` | Approved after brace correction. |
 
@@ -68,6 +69,12 @@ The corrected report keeps the old citation in its correction record. The worker
 The `scr_name` report incorrectly said its help text was unknown. The same worker recorded the base DLL text.
 
 Six workers applied the reviewed shared resource mappings. Their worker-local header cherry-picks were not integrated.
+
+Final root review found two short `scr_cam` calls that the resource pass wrapped.
+The same worker restored both calls to one line.
+
+Final root review found an incorrect top commit label in `scr_main.md`.
+The same worker distinguished the root commit from the worker-local cherry-pick.
 
 Excluded worker-local shared-header commits:
 
@@ -123,6 +130,9 @@ Excluded worker-local shared-header commits:
 | `326fdea4ce43820c020f01a4ec90f4e86eb075cc` | `scr_main` resource report |
 | `fe6c99a0f18ddde55d50efad386d9d2d5805c447` | `scr_name` resource substitutions and report |
 | `be32a0e3515bcaa8500bd176acda4c95fe77c56b` | `scr_name` resource evidence correction |
+| `044b2398dd25079a0da79bb9ec0ee16287cdb7d7` | `scr_main` shared-commit provenance correction |
+| `a1fc267b64788799287b8c6a3b2c0c513dc1827` | `scr_cam` final call formatting |
+| `981b03543aaaf9676430c9575c221df197da73d4` | `scr_cam` final correction record |
 
 ## Owner header changes
 
