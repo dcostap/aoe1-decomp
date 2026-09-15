@@ -1186,7 +1186,7 @@ int TribeMPSetupScreen::startGame() {
 
 
 void TribeMPSetupScreen::calcRandomPositions() {
-    int pos;
+    int selected_position;
     int position_used[9];
     int human_players = 0;
     int i = 0;
@@ -1231,7 +1231,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
                                 ++j;
                                 ++position;
                             } else {
-                                pos = j;
+                                selected_position = j;
                                 break;
                             }
                         } while (j < count);
@@ -1250,13 +1250,13 @@ void TribeMPSetupScreen::calcRandomPositions() {
                             new_position = 0;
                         }
                         if (position_used[new_position + 1] == -1) {
-                            pos = new_position;
+                            selected_position = new_position;
                             break;
                         }
                     }
 
-                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(player, pos);
-                    position_used[pos + 1] = player;
+                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(player, selected_position);
+                    position_used[selected_position + 1] = player;
                 }
         }
     }
@@ -2355,11 +2355,11 @@ void TribeMPSetupScreen::setupTabOrder() {
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     int first_any_civ;
     int first_any_color;
-    int first_any_player;
+    int first_any_color_index;
     if (rge_base_game->scenarioGame() != 0) {
         first_any_civ = -1;
         first_any_color = -1;
-        first_any_player = -1;
+        first_any_color_index = -1;
 
         if (this->scenarioInfo != 0) {
             int player_count = 0;
@@ -2380,7 +2380,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                         first_any_civ = scenario_player;
                         first_any_color =
                             this->scenarioInfo->Get_player_Civ(scenario_player);
-                        first_any_player = scenario_player + 1;
+                        first_any_color_index = scenario_player + 1;
                     }
                     ++player_count;
                 }
@@ -2416,7 +2416,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, first_any_civ);
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(0, first_any_color);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                0, first_any_player);
+                0, first_any_color_index);
         }
     } else {
         int player = 0;
