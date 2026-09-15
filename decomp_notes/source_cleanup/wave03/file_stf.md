@@ -5,7 +5,7 @@
 - Module: `src/file_stf.cpp`
 - Branch: `cleanup/staging-20260915-196`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: pending
+- Final source commit: `c7d9d73085173f70013142b79122ee1d6324e306`
 - Changed files:
   - `src/file_stf.cpp`
   - `decomp_notes/source_cleanup/wave03/file_stf.md`
