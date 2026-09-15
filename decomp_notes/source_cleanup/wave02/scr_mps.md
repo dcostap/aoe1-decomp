@@ -5,7 +5,7 @@
 - Module: `src/scr_mps.cpp`
 - Header owner: owner 11 owns `include/scr_mps.h`; this worker did not edit it.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `913677d4e6fb0d1f831d5de47fd8247e51cf43c6`
+- Final source commit: `fde8c5eba4496a503f4b863a4e3c482a099b5fb6`
 - Changed files in the source commit: `src/scr_mps.cpp`
 - This report is the only file in the follow-up report commit.
 - Temporary evidence is under `build/evidence/` and is not tracked.
@@ -29,6 +29,12 @@
   unmapped `local_4` slot for that value. The packet `first_any_player` label
   has no instruction use.
 - Corrected the full eight-pointer readiness push sequence after owner review.
+- Root approved the requested resource definitions in root commit
+  `027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+- Owner 11 imported only `include/resource_ids.h` at integration commit
+  `bdb8bc1af`. This worker did not edit the header.
+- Replaced every approved numeric string ID with its exact header macro in the
+  source substitution commit `fde8c5eba4496a503f4b863a4e3c482a099b5fb6`.
 
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
@@ -153,7 +159,8 @@ mapped `file_info2` declaration. I did not rewrite the union.
 
 ## Resource and constant evidence
 
-The source now uses existing reviewed definitions for these unchanged values:
+The source uses exact macros from the root-approved resource header for the
+IDs in this report. Earlier source work already used these definitions:
 
 - `IDS_BUTTON_CANCEL` for `0x0FA2`.
 - `IDS_BUTTON_CLOSE` for `0x03EA`.
@@ -164,9 +171,16 @@ has missing historical text. The role is established by
 `decomp_notes/source_cleanup/scr_load_help_ids.md` and repeated button call
 sites.
 
-The source does not define new resource macros. `include/resource_ids.h` is
-root-owned. The following new descriptive names are requested from root.
-They remain numeric in this source until root reviews the declarations.
+Root approved the remaining names and definitions in root commit
+`027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-91/include/resource_ids.h`
+at integration commit `bdb8bc1af`. This worker changed only
+`src/scr_mps.cpp`; the worker substitution provenance is source commit
+`fde8c5eba4496a503f4b863a4e3c482a099b5fb6`.
+
+The following table records the approved names and values. The source now
+uses the exact macro in each row. The worker preserved each literal's call,
+buffer, format argument, fallback, and arithmetic context.
 Every row uses this lookup path: `TRIBE_Game::get_string` checks the loaded
 `StringTableX` expansion module first, then calls
 `RGE_Base_Game::get_string` for the base `StringTable` module. The base lookup
@@ -223,8 +237,10 @@ Resource extraction outputs are `build/evidence/request_base.json`,
 
 ## Shared-file requests
 
-- Root owns `include/resource_ids.h`. Add the requested names only after review
-  of the table above. Keep the numeric values unchanged.
+- Root approved the resource names and values in
+  `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only
+  `include/resource_ids.h` at `bdb8bc1af`. This worker did not edit that
+  header.
 - Owner 11 owns `include/scr_mps.h`. No declaration change is required. The
   header has unnamed parameters, so source-only parameter recovery preserves
   the existing ABI declaration.
@@ -232,11 +248,13 @@ Resource extraction outputs are `build/evidence/request_base.json`,
 
 ## Code-generation and behavior limits
 
-The source changes rename identifiers and replace three literals with existing
-macros that expand to the same values. They do not change signatures, types,
-scopes, evaluation order, calls, control flow, storage sizes, class layout, or
-symbol identity. The source keeps the existing `position_used[9]` declaration
-and `file_scratch` union despite narrower or reused PDB records.
+The source changes rename identifiers and replace approved numeric string IDs
+with exact macros that expand to the same values. They do not change
+signatures, types, scopes, evaluation order, calls, control flow, storage
+sizes, class layout, or symbol identity. The source keeps the existing
+`position_used[9]` declaration and `file_scratch` union despite narrower or
+reused PDB records. The `handleKickedPlayer` expression remains
+`IDS_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0)`.
 
 Formatting moved selected opening braces and changed no executable statement.
 It can change debug line records. No compiler output claim is made.
@@ -248,3 +266,7 @@ narrowing casts and resource lookup order.
 Evidence extraction, PDB review, resource extraction, SHA256 checks, and full
 Git diff review were run. Compilation, matching, audits, and tests were not
 run. No build, game, or runtime command was run.
+
+For the approved resource substitution, only Git review and `git diff --check`
+were run. No compiler, build, validation, matching, audit, test, game, or
+deletion command was run.
