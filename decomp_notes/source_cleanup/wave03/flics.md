@@ -8,6 +8,7 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Final source-cleanup commit: `983605284d47d07e749cf2fedfc6e51f17db0c8f`.
 - Post-cleanup repair commit: `ffb87e4c2886668aba720bcf7a61e3a500ffde15`.
+- Delta follow-up commit: `7ea3f393408decdeaeee40b0b428706a7943e4dd`.
 - Changed files:
   - `src/flics.cpp`.
   - `decomp_notes/source_cleanup/wave03/flics.md`.
@@ -89,11 +90,11 @@ I read the pinned VC5 headers before replacing the file-I/O literals:
 - `C:/Program Files (x86)/DevStudio/VC/Include/STDIO.H:209-211` defines
   `SEEK_CUR` as `1`, `SEEK_END` as `2`, and `SEEK_SET` as `0`.
 
-The accepted source keeps `_O_BINARY` for the binary open mode. It restores
-the original numeric `lseek` origins after the isolated compile proved that
-the `stdio.h` include changed VC5 code generation. The values are `2` for
-`SEEK_END` and `0` for `SEEK_SET`. No resource lookup or resource ID exists in
-this module. No shared constant or resource declaration was added.
+The final source keeps the original numeric `0x8000` open mode and numeric
+`lseek` origins. The isolated compiles proved that the `stdio.h` and `fcntl.h`
+includes changed VC5 code generation. The origins are `2` for `SEEK_END` and
+`0` for `SEEK_SET`. No resource lookup or resource ID exists in this module.
+No shared constant or resource declaration was added.
 
 I retained the existing comments that explain the complete FLIC header copy,
 the draw-area store order, and the separate palette-chunk path. I added no
@@ -187,14 +188,14 @@ The candidate logs and listings are preserved at:
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-literals-lines/output/compile.json`.
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-literals-cleaned-resolution/output/compile.json`.
 
-The object comparison also finds two changed bytes in `delta_flc`. Its prior
-status was `new_verified_logic`, not `matching`, so this is not a new
-matching regression. This repair does not change that function.
+The first repair's object comparison also found two changed bytes in
+`delta_flc`. Its prior status was `new_verified_logic`, but baseline equality
+still applies. The follow-up investigation below repairs those bytes.
 
-The accepted source repair is commit
+The first source repair is commit
 `ffb87e4c2886668aba720bcf7a61e3a500ffde15`. It removes the `stdio.h` include
-and restores the four original seek literals. It keeps `fcntl.h`, `_O_BINARY`,
-the recovered names, and the existing module formatting. Its source SHA256 is
+and restores the four original seek literals. The later follow-up removes the
+remaining `fcntl.h` and `_O_BINARY` changes. The first repair source SHA256 is
 `6d65ba3e183a3c84076aa0e7aaaaeaf8e948e55364c02221aafc938566af56ca`.
 The accepted candidate's isolated object is
 `2958f1a51c1ba3e8f36d55317450b4eff2ad57d2f59f8a214438723d7155a9ac`.
@@ -205,15 +206,121 @@ not part of the accepted source because it changed operand and read order.
 
 No full build, broad audit, matching sweep, test, or game run was performed.
 
+## `delta_flc` follow-up investigation
+
+The accepted resolution repair left two changed `delta_flc` bytes. Baseline
+equality applies to this function despite its former `new_verified_logic`
+status.
+
+The preserved baseline object is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/flics.obj`.
+Its SHA256 is
+`766653c06ace7fba825a70373c97784ed217fb12e98c5c24fc33e1e3519b8ae6`.
+The accepted repaired object is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-literals-cleaned-resolution/output/flics.obj`.
+Its SHA256 is
+`2958f1a51c1ba3e8f36d55317450b4eff2ad57d2f59f8a214438723d7155a9ac`.
+
+Both objects place `delta_flc` in the `.text` COMDAT section `SECT18`.
+The section starts at raw file offset `0xD90`, has size `0x190` bytes, and
+has no relocation or line-number entries. The symbol value is zero in both
+objects. The complete section SHA256 values are:
+
+- Baseline: `f2170d184fe85ab983ddc4bf335e1117c30c05eed70a4e3a133b727f32c08c49`.
+- Accepted repair: `6b78930f4deab82468b6e3a6caaf7d3405131ec6074ac69f56cec5526ba15b9c`.
+
+Only two of the 400 section bytes differ:
+
+| Offset | Baseline | Accepted repair | Instruction effect |
+| --- | --- | --- | --- |
+| Section `0x73`; file `0xE03` | `94` | `98` | First field displacement |
+| Section `0x79`; file `0xE09` | `98` | `94` | Second field displacement |
+
+At section offset `0x71`, baseline code loads
+`[eax+0x94]` into `ecx`, then `[eax+0x98]` into `esi`. The accepted repair
+loads `[eax+0x98]` into `ecx`, then `[eax+0x94]` into `esi`. These are the
+`flic_width` and `window_buffer` fields. The source expression is unchanged.
+The accepted code changes the field read and possible fault order.
+
+The exact 16-byte windows at section offset `0x70` are:
+
+- Baseline: `1E 8B 88 94 00 00 00 8B B0 98 00 00 00 88 5C 31`.
+- Accepted repair: `1E 8B 88 98 00 00 00 8B B0 94 00 00 00 88 5C 31`.
+
+All other code bytes are equal. All internal branch bytes and targets are
+equal. `delta_flc` has no calls and no relocation targets. The complete raw
+bytes and disassembly are preserved in:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/initial-inspection/baseline-dump.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/initial-inspection/candidate-dump.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/initial-inspection/baseline-disasm.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/initial-inspection/candidate-disasm.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/delta-comparison.txt`.
+
+The comparison artifact SHA256 is
+`c81758b65f189ef01b338a23512260b07100d00df85d659d0bf1d84b4ffe879c`.
+
+I compiled minimal, pinned VC5 candidates in new flics-only directories. The
+result below records the `delta_flc` section result.
+
+| Candidate | Isolated change | Source SHA256 | Object SHA256 | Delta result |
+| --- | --- | --- | --- | --- |
+| `accepted-repro` | Accepted repair control | `6d65ba3e183a3c84076aa0e7aaaaeaf8e948e55364c02221aafc938566af56ca` | `981801224cf482cd67b3d0a51f790c95025f6363a67a0e25dc9daed7e9a11d71` | Swapped |
+| `delta-brace` | Restore only `delta_flc` brace | `a3ac8b60ac90635b11000ff7db4326bbe10086d269479b6c34520089cbcf276d` | `8e4f665a4d5a4cd8f2900febcae20ece7639e96ffabf1088e0c2112ea04ca08` | Swapped |
+| `cleanup-braces` | Restore all function braces | `3688ac969a7b78078895312ebe64382ca56fc81a544cfdc7d64b094474e5a0a4` | `a540cd902c916e59159e078bc267e04740bf81c605053419df78312c0053e483` | Swapped |
+| `cleanup-names` | Restore cleanup names | `c4b8767b55e7f2bd05a0537d30d02a5aea6dd5fb0e1d4bb6c356f036021384ee` | `5b531322549d19d8f62912556fcd99e40bcb2bffa976e78aa945f0939d995dc1` | Swapped |
+| `baseline-fcntl` | Add `fcntl.h` and `_O_BINARY` | `ce2f9e2a84136ce0233968696b9d0bd411631b66b9b508ae804a25dadb047099` | `4e47b039d68d3d4513e0b3899755800ef93f9d740a578c2d407d28ed65e6c085` | Swapped |
+| `baseline-fcntl-format` | Add fcntl changes and cleanup braces | `c4b8767b55e7f2bd05a0537d30d02a5aea6dd5fb0e1d4bb6c356f036021384ee` | `6363876533c49846d3c3b6a9cb96587bc19b4f2b146fd1f70749a4a107427c50` | Swapped |
+| `baseline-fcntl-names` | Add fcntl changes and recovered names | `43e07eb91b2a7c23f714df52d5b29610e8adc32565258c369f62d6501f3987bb` | `b60bba6cd413bc3e46a038bafb163792a500b1c800c55c265bdeebf69b8536ee` | Swapped |
+| `fcntl-include-literal` | Add `fcntl.h` only; keep `0x8000` | `16be4cbafe41a8f897a14e3ffb413685db3ea2bc22e693a1071dacfa6cf661bb` | `e16d623140632ddac90036985e34eea54a3a4159e6b656710342ae4ca956d4cf` | Swapped |
+| `no-fcntl` | Remove `fcntl.h`; restore `0x8000` | `32fbd052849a744fd1bed1a399175c99182ee537cf43673cfabf05f4c462f845` | `ec4e6613b527536b473c3ae51afa831ad6846a61003b47630cb785dbb3526b07` | Baseline |
+
+The brace and name candidates did not fix `delta_flc`. A baseline source with
+`fcntl.h` also did not match. The `fcntl-include-literal` candidate proves
+that the header, not the `_O_BINARY` value, triggers the swap. Removing the
+header and restoring the original literal fixes the two bytes.
+
+The full compiler logs for these candidates are preserved at:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/accepted-repro/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/delta-brace/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/cleanup-braces/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/cleanup-names/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/baseline-fcntl/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/baseline-fcntl-format/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/baseline-fcntl-names/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/fcntl-include-literal/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/no-fcntl/output/compile.json`.
+
+The `no-fcntl` delta section SHA256 is
+`f2170d184fe85ab983ddc4bf335e1117c30c05eed70a4e3a133b727f32c08c49`.
+Its `resolution` bytes also remain baseline-exact. A raw `.text` comparison
+found all 15 flics function sections byte-equal to the preserved baseline.
+The whole object still differs in symbols, debug records, and its timestamp.
+The follow-up object dump and disassembly are preserved in:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/no-fcntl/dump.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/no-fcntl/disasm.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/fcntl-include-literal/dump.txt`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/fcntl-include-literal/disasm.txt`.
+
+The follow-up source is commit
+`7ea3f393408decdeaeee40b0b428706a7943e4dd`. It removes `fcntl.h` and
+restores `open`'s original `0x8000` argument. It preserves source expression,
+evaluation order, read order, and fault order. Its tracked source SHA256 is
+`32fbd052849a744fd1bed1a399175c99182ee537cf43673cfabf05f4c462f845`.
+Its compile log is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/delta-flc-experiments/no-fcntl/output/compile.json`.
+
 ## Code-generation and review limits
 
 The source edits change identifiers, brace placement, includes, and macro
-spellings only. The accepted repair removes `stdio.h` and restores the four
-original seek literals. It keeps the original resolution expression and
-operand order. It does not change public symbols, function boundaries, casts,
-storage, field layout, calls, or decoder state. `_O_BINARY` remains equal to
-`0x8000`. The rejected operand-swap experiment is not part of the accepted
-source.
+spellings only. The final repairs remove the `stdio.h` and `fcntl.h` includes
+and restore the original numeric file-mode and seek arguments. They keep the
+original resolution and decoder expressions and operand order. They do not
+change public symbols, function boundaries, casts, storage, field layout,
+calls, or decoder state. The rejected operand-swap experiment is not part of
+the accepted source.
 The PDB/source type differences listed above remain intentionally unresolved.
 
 I reviewed the complete source diff against the base and ran `git diff --check`.
