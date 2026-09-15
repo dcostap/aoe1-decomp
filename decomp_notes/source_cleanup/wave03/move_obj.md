@@ -5,7 +5,9 @@
 - Module: `src/move_obj.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `819293c71043fd471befad2dbfc7d3f86395d19e`
+- Source correction commit: `d9571240fb921b11820edc5d4b93203da2ba2f7d`
 - Final report commit: `be26cbf860b59dc718fecb84402284206ddb67d1`
+- Correction report commit: this report commit; record its full hash from Git output
 - Branch: `cleanup/staging-20260915-129`
 - Changed files:
   - `src/move_obj.cpp`
@@ -68,6 +70,17 @@ Two sparse `//! @bug` comments record behavior proven by original packets:
   `0046038D` and `0046039E`.
 
 The comments do not change either behavior.
+
+The correction restores four accurate evidence notes from the base source:
+
+- The direct `new_angle` assignment preserves its bit-copy store and direct
+  symbol.
+- The `findPath` constant guard and unreachable cleanup arm remain in the
+  executable.
+- The natural `findTilePath` casts preserve the `__ftol` x87 `ST0` input.
+- The floor results are cast before subtracting the float tile bias.
+
+The original packets and PDB evidence support these constraints.
 
 ## Code-generation and ownership notes
 
