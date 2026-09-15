@@ -5,8 +5,8 @@
 - Module: `src/taitacmd.cpp`.
 - Common base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Previous source-cleanup commit: `a593951d6517d85078efd5a9d70c6300f22a9db5`.
-- Correction source commit: `2b9bd67624c4c302b583f4cb57c00846266bac74`.
-- Final source commit: `2b9bd67624c4c302b583f4cb57c00846266bac74`.
+- Correction source commit: `5e97abf3f031c24918d3d285c8459ea83999057a`.
+- Final source commit: `5e97abf3f031c24918d3d285c8459ea83999057a`.
 - The final report commit follows this source commit and changes this report only.
 
 ## Changed files
@@ -290,16 +290,52 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 - This correction recovers the supported parameter spellings `t` in `TacticalAIGroup::task` and `outfile` in `TribeTacticalAIModule::save`.
 - The PDB stack records in the coverage table are the complete local and parameter evidence for every assigned procedure.
 
+### Direct parameter comparison
+
+- The source definitions were compared with all 216 registry and PDB procedure rows.
+- Every direct PDB parameter now uses its supported source spelling. No reliable direct parameter mismatch remains.
+- The following source declarations were corrected in this second pass:
+
+| Procedure VA | Recovered direct parameter names |
+| --- | --- |
+| `004F7590` | `priority`, `flag`, `zeroWorkingArea` |
+| `004F7E80` | `checkGroup` |
+| `004F81A0` | `checkGroup`, `point`, `closestToPoint` |
+| `004F8570` | `point`, `closestToPoint`, `a1`, `a2`, `a3`, `useFarmers` |
+| `004F9470`, `004F95B0` | `unitID`; `unitID`, `startTime` |
+| `004F9AD0`, `004F9E00`, `004FA000` | `builder`, `newBuilding`, `ci`, `startTime`; `builder`, `building`; `builder`, `building` |
+| `004FA170` | `id`, `resourceType`, `limitedTaskLimit`, `startTime`, `triedTasking` |
+| `004FAAA0` | `eID`, `x`, `y`, `civilian` |
+| `004FB500`, `004FB520` | `defender`, `targetID`; `defender`, `x`, `y` |
+| `004FB550`, `004FB710` | `trainItem`; `researchItem` |
+| `004FB9E0`, `004FBB30`, `004FBC10` | `unitID`, `x`, `y`; `gID`; `distance` |
+| `00500260`, `00500320`, `005003A0` | `initID`; `gID`; `tID` |
+| `00500420`, `005004C0`, `00500670` | `gID`, `type`, `action`, `targetID`; `type`, `action`, `distance`, `point`, `zone`; `type`, `distance`, `point` |
+| `005007B0`, `00500850`, `005008A0` | `uID`, `gID`; `uID`; `uID` |
+| `00500BA0`, `00500CC0`, `00500DE0` | `g`; `g`; `iMap` |
+| `00501190`, `00501260`, `00501430` | `temp`; `temp`; `attacker`, `victim` |
+| `005015E0`, `00501620`, `00501660` | `recipient`, `x`, `y`; `cID`; `type` |
+| `00501690`, `005018F0`, `00501A80`, `00501AB0` | `uID`, `rPoint`; `id`; `id`; `rType` |
+| `00501AF0`, `00501B50`, `00501B90`, `00501C70` | `unitID`, `attributeID`, `amount`; `unitID`; `numStoragePits`, `numUnbuiltStoragePits`, `rType`; `numGranaries`, `numUnbuiltGranaries` |
+| `00501D70`, `005020A0` | `type`, `number`, `position`; `temp` |
+| `00502D50`, `00502F30` | `playerToAttack`, `x`, `y`; `caller`, `playerToAttack`, `x`, `y` |
+| `00502FC0`, `00502FF0`, `00503020`, `00503040` | `n`; `n`; `n`; `n` |
+| `00503480`, `00503600` | `targetID`; `idToKill` |
+
+- Existing matching parameter names remain in the complete coverage table above.
+
 ## Unresolved declaration mappings
 
 - The load constructor still has generated local spellings `iVar1`, `piVar2`, `pTVar5`, `iVar6`, `tempInt`, and `local_2c` where PDB records overlap or reuse stack slots. `tempUD` is recovered. No alias or extra local was added.
 - Positive-offset PDB records that overlay locals are not treated as proof of a distinct C++ declaration. The full stack record list above preserves that uncertainty.
-- Coverage review found no other reliable parameter or local name left unchanged for convenience. The remaining constructor mappings are uncertain because the records reuse or overlay storage.
+- Remaining positive-offset local mappings are uncertain when their slots are reused after the direct parameters. This includes records such as `trainBuilding`, `researchBuilding`, `priority`, `distance`, `count`, and `bestDistance` where the PDB does not prove a separate source declaration.
+- Coverage review found no other reliable parameter name left unchanged for convenience. The remaining unresolved mappings are local-slot cases, not direct parameters.
 
 ## Recovered versus invented names
 
 - Recovered names are listed in the evidence table and match a PDB parameter or local record, or a direct original-packet label.
 - The first constructor's local names `value` and `i` are descriptive names, not PDB recoveries. The PDB exposes no local record for `004ED1C0`.
+- `groupDistance` is a scope-only local spelling. It avoids shadowing the recovered `distance` parameter in `bestGroup` and `readyAndIdleGroup`.
 - No new gameplay name, resource name, constant, field, class, function, or storage object was invented.
 - Existing descriptive spellings remain where no direct declaration mapping was safe.
 
@@ -314,7 +350,7 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 
 - Applied 1TBS brace placement and consistent four-space indentation throughout `src/taitacmd.cpp`.
 - The earlier formatting correction changed whitespace and brace placement only. It preserved declarations, statements, scopes, macro continuations, names, constants, casts, calls, and evaluation order.
-- This second correction changes only the supported parameter identifiers and their uses. It does not change formatting, statements, constants, casts, calls, or evaluation order.
+- This second correction changes only the supported parameter identifiers and their uses, plus two scope-only local spellings needed to avoid parameter shadowing. It does not change formatting, statements, constants, casts, calls, or evaluation order.
 - The load constructor no longer uses its former two-space indentation.
 
 ## Code-generation and ownership risks
@@ -338,7 +374,7 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 3. This correction expands the report, records all 216 registered procedures, and formats the source with 1TBS and four-space indentation.
 4. The first correction source commit is `ce810adbb5d020a2788c5800018a20470701d4f9`. Report-only follow-up commits recorded that delivery report.
 5. This second correction recovers the reliable PDB parameter names `t` and `outfile`, updates all uses in their owning functions, and does not change formatting.
-6. The second-correction source commit is `2b9bd67624c4c302b583f4cb57c00846266bac74`; a report-only follow-up commit records this updated report.
+6. The second-correction source commit is `5e97abf3f031c24918d3d285c8459ea83999057a`; a report-only follow-up commit records this updated report.
 
 ## Required validation statement
 
