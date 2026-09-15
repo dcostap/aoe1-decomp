@@ -6,17 +6,13 @@
 extern "C" char* strcpy(char*, const char*);
 
 // The constructor is the EH-framed context anchor for this module.
-THelpDialog::THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel,
-                         long help_string_id, long in_help_page_id, long x,
-                         long y)
+THelpDialog::THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, long help_string_id, long in_help_page_id, long x, long y)
     : TDialogPanel("Help Dialog") {
     char* text = this->get_string(help_string_id);
     this->setup_help(parentPanel, in_parent_panel, text, in_help_page_id, x, y);
 }
 
-THelpDialog::THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel,
-                         char* in_help_string, long in_help_page_id, long x,
-                         long y)
+THelpDialog::THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, char* in_help_string, long in_help_page_id, long x, long y)
     : TDialogPanel("Help Dialog") {
     this->setup_help(parentPanel, in_parent_panel, in_help_string,
                      in_help_page_id, x, y);
@@ -90,7 +86,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     if (rge_base_game->singlePlayerGame() && in_help_page_id >= 0) {
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
-            this->create_button(this, &this->encyclopedia_button, 0x243D, 0,
+            this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0,
                                 0x19,
                                 line_height * rge_text_font->font_hgt + 0x14,
                                 0x78, 0x19, 0x0B, 0, 0);
@@ -120,8 +116,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     this->set_tab_order(tabList, tab_count);
 }
 
-long THelpDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
-                         unsigned long a2) {
+long THelpDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     int help_page_id = this->help_page_id;
 
     if (actionIn == 1) {
@@ -145,8 +140,7 @@ long THelpDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
     return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-long THelpDialog::handle_mouse_down(unsigned char mouse_button_in, long x,
-                                    long y, int ctrl_key, int shift_key) {
+long THelpDialog::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     if (this->is_inside(x, y) == 0) {
         this->action(this->ok_button, 1, 0, 0);
         return 1;
