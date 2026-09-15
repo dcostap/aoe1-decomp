@@ -4,8 +4,9 @@
 
 - Module: `src/taiinfmd.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source candidate commit: pending
-- Report follow-up commit: pending
+- Source candidate commit: `6f5f7658a86743c3c9dc9d826a40b1d224f4f348`
+- Source SHA-256 at the source candidate commit:
+  `c0287cb38946ec1c567049affdcd0664f30ab2bfa370000fe7e59eac69b1d031`
 - Changed files:
   - `src/taiinfmd.cpp`
   - `decomp_notes/source_cleanup/wave03/taiinfmd.md`
