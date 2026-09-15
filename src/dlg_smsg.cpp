@@ -21,8 +21,7 @@
 
 
 TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
-    : TDialogPanel("Send Message Dialog")
-{
+    : TDialogPanel("Send Message Dialog") {
     int humanity;
     int world_humanity;
     RGE_Game_World* world;
@@ -353,8 +352,7 @@ void TribeSendMessageDialog::draw() {
 
 TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPanel,
                                                          Mode m)
-    : TDialogPanel("Send Quick Message Dialog"), modeValue(m)
-{
+    : TDialogPanel("Send Quick Message Dialog"), modeValue(m) {
     if (!this->setup(parentPanel->renderArea(), parentPanel, 0x21C, 0x23,
                      parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
