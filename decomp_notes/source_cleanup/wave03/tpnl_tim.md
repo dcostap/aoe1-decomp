@@ -10,6 +10,7 @@
   - `src/tpnl_tim.cpp`
   - `decomp_notes/source_cleanup/wave03/tpnl_tim.md`
 - The matching header `include/tpnl_tim.h` was read only.
+- The header owner must apply the recovered declaration names listed below.
 - The source keeps the original function order and ABI declarations.
 
 ## Source changes
@@ -55,6 +56,20 @@ They define `DT_SINGLELINE` as `0x20` and `DT_RIGHT` as `0x2` in
 `WINUSER.H:4878-4891`. These replacements keep the original values and int use.
 
 No source comments were added. No new source identifiers were invented.
+
+## Owner-header request
+
+Request to the owner of `include/tpnl_tim.h`:
+
+```cpp
+TRIBE_Panel_Time(TDrawArea* render_area_in, TPanel* parent_in);
+void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
+void set_clock_type(int clock_type_in, int player_id_in);
+virtual void get_true_render_rect(tagRECT& drawRect);
+```
+
+These parameter names come from the procedure-scoped PDB records. The request
+changes names only. It does not change types, qualifiers, layouts, or symbols.
 
 ## Systematic PDB coverage
 
@@ -107,9 +122,9 @@ The inspected base runtime resource is:
 
 The checked expansion resources are:
 
-- `runtime/languagex.dll`, SHA256
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`, SHA256
   `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
-- pinned original `orig/.../XPack/languagex.dll`, SHA256
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA256
   `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
 
 Both expansion files report missing IDs for the requested language `0x0409`.
@@ -123,9 +138,12 @@ The base runtime file supplies these fallback strings:
 | `0x2C26` | `Artifacts: %d Years` | missing in both `languagex.dll` files | artifact timer |
 | `0x2C27` | `Ruins: %d Years` | missing in both `languagex.dll` files | ruin timer |
 
-The runtime language file is staged runtime evidence, not the pinned original
-base-language file. The pinned original tree contains only the XPack language
-module for this lookup. This provenance remains unresolved for the base DLL.
+The IDs form one logical game string namespace. The game checks the expansion
+resource first and uses the base resource as fallback.
+
+The runtime language file is staged evidence, not the pinned original base DLL.
+The pinned original tree contains only the XPack language module for this
+lookup. This provenance remains unresolved for the base DLL.
 
 Request to the root owner of `include/resource_ids.h`:
 
@@ -137,16 +155,16 @@ Request to the root owner of `include/resource_ids.h`:
 ```
 
 These are new cleanup names, not recovered macro names. I left the source IDs
-numeric until the shared definitions receive review. The IDs retain the base
-language namespace and their formatted-message role.
+numeric until the shared definitions receive review. The names describe the
+shared game string namespace and their formatted-message role.
 
 ## Unresolved items and scope requests
 
 - No unresolved named PDB declaration mapping remains for the 11 source-backed
   functions.
 - Optimized temporaries and EH slots remain unnamed. I did not map them.
-- The base-language provenance remains unresolved, as noted above.
-- No header change is requested in `include/tpnl_tim.h`; its parameters are unnamed.
+- The base DLL provenance remains unresolved, as noted above.
+- The `include/tpnl_tim.h` owner must apply the declaration-name request above.
 - Add the four resource macros only through the root-owned
   `include/resource_ids.h`.
 
