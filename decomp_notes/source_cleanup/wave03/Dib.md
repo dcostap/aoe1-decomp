@@ -4,7 +4,7 @@
 
 - Module: `src/Dib.cpp`.
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit from `git rev-parse`: `559e1492c9ad3a8d15d1dbd24b1512fab69f0c48`.
+- Final source commit from `git rev-parse`: `0789a3591bb8a64f5f162e70c8a696297f36b554`.
 - Branch: `cleanup/staging-20260915-179`.
 - Changed files: `src/Dib.cpp`; this report.
 - Registry: `config/functions/src/Dib.cpp.json`; build flags `default`.
@@ -14,6 +14,10 @@ The cleanup covers all 28 procedures in the registry. It restores names from
 procedure-scoped PDB records. It replaces four opaque Win32 values with pinned
 SDK symbols. It does not change function symbols, types, storage, control flow,
 declaration order, call targets, or resource lookup behavior.
+
+The follow-up source commit applies 1TBS opening-brace placement throughout
+`src/Dib.cpp`. It changes brace placement only. It does not add or remove
+braces, move statements, or change executable tokens.
 
 The PDB source is `C:\\msdev\\work\\age1_x1\\Dib.cpp`. Every PDB record uses
 `.\\Release\\Dib.obj`. The original executable remains the behavior oracle:
@@ -108,6 +112,31 @@ needed.
   record. Further recovery needs source or stronger ABI evidence.
 - The current `CreateIdentityPalette` union and source-array overrun model needs
   separate structural review. This cleanup does not reshape it.
-- No shared header request is needed. No resource-ID definition is requested.
+- Header request to owner 20: align `include/dib.h` declaration parameter names
+  with the PDB-backed definitions. Keep all types, signatures, and ABI details.
+  Requested names are listed below; this worker did not edit the header.
+  `DibBlt`: `DestInfo`, `DestBits`, `ClipRect`, `DestX`, `DestY`, `DestWid`,
+  `DestHgt`, `SrcInfo`, `SrcBits`, `SrcX`, `SrcY`, `SrcWid`, `SrcHgt`,
+  `Clip`, `Mirror`, `Flip`.
+  `TransDibBlt`: the same first nine names, then `TransInfo`, `SrcX`, `SrcY`,
+  `SrcWid`, `SrcHgt`, `Clip`, `Mirror`, `Flip`, `TransColor`.
+  `ClipDibBlt`: `DestInfo`, `ClipRect`, `DestX`, `DestY`, `DestWid`, `DestHgt`,
+  `SrcX`, `SrcY`, `SrcWid`, `SrcHgt`, `Mirror`, `Flip`.
+  `GetDibDim`: `Info`, `TotWid`, `TotHgt`, `Orien`.
+  `TileDibBlt`: `DestInfo`, `DestBits`, `ClipRect`, `DestX`, `DestY`, `DestWid`,
+  `DestHgt`, `BlockWid`, `BlockHgt`, `SrcInfo`, `SrcBits`, `TransInfo`,
+  `SrcX`, `SrcY`, `SrcWid`, `SrcHgt`, `Trans`, `Mirror`, `Flip`.
+  `DibCheckTrans`: `DibInfo`, `TransInfo`, `DibBits`.
+  `GetPaletteFromDib`: `FileName`, `MakeIdentity`. `ReadPalette`: `FileName`,
+  `ResourceId`, `MakeIdentity`. `DibOpenFile` and `ReadDibBits`: `szFile`.
+  `DibWriteClipped`: `pDIB`, `szFile`, `x`, `y`, `w`, `h`.
+  `DibWriteFile`: `pdib`, `szFile`. `DibCreatePalette`: `pdib`.
+  `DibReadBitmapInfo`: `fh`. `DibFromBitmap`: `hbm`, `biStyle`, `biBits`,
+  `hpal`, `wUsage`. `DibSetUsage`: `pdib`, `hpal`, `wUsage`.
+  `DibDraw`: `hdc`, `x`, `y`, `dx`, `dy`, `pdib`, `x0`, `y0`, `dx0`, `dy0`,
+  `rop`, `wUsage`. `DibCopy`: `pdib`. `DibCreate`: `bits`, `dx`, `dy`.
+  `DibMapToPalette`: `pdib`, `hpal`, `TransLogic`, `ZeroIsTrans`.
+  `CreateIdentityPalette` and `CopyPalette`: `hpal`. `DibFree`: `pdib`.
+  No resource-ID definition is requested.
 
 Compilation, matching, audits, and tests were not run.
