@@ -8,7 +8,12 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Final source commit: `0fff4f5e95f094dd31ce9439f0ec2bb6c54a15a9`
 - Report path: `decomp_notes/source_cleanup/wave03/scr_sedo.md`
-- Changed files: `src/scr_sedo.cpp`, `include/scr_sedo.h`, and this report.
+- Changed worker files: `src/scr_sedo.cpp` and this report.
+
+The header correction commit `b249684deea3ff2fb648ad376804ba5ea770b763`
+restored `include/scr_sedo.h` to the common-base content. The header is not a
+delivered worker file. The declaration-name change remains a group-owner
+request below.
 
 The source module remains the sole owner of the four normal PDB procedures in
 source order. The registry and source-module configuration were not changed.
@@ -43,14 +48,15 @@ Evidence sources:
 
 ### Recovered original names
 
-The action procedure now uses the PDB parameter names exactly:
+The action definition now uses the PDB parameter names exactly:
 
 ```cpp
 long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
 ```
 
-The declaration in `include/scr_sedo.h` uses the same names. These names come
-from the four stack records at `+0x4`, `+0x8`, `+0xc`, and `+0x10`.
+The four names come from the stack records at `+0x4`, `+0x8`, `+0xc`, and
+`+0x10`. The assigned header keeps its common-base unnamed declaration.
+The group owner should apply the declaration-name request below.
 
 The action path buffer now uses `fileName`. The PDB records `fileName` at
 `-0x33c` and shows its six path-buffer uses. The source keeps the existing
@@ -132,21 +138,21 @@ The resource lookup path is established by the current source owners:
 
 The inspected staged base resource was:
 
-- File: `build/runtime/original-20260914T230838850570Z/language.dll`
+- File: `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/language.dll`
 - SHA256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
 - Resource type: `RT_STRING`
 - Language: `0x0409` (`1033`)
 
 The staged expansion resource was:
 
-- File: `build/runtime/original-20260914T230838850570Z/languagex.dll`
+- File: `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/languagex.dll`
 - SHA256: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
 - Result: IDs `0x0FA1`, `0x0FA2`, `0x24C9`, `0x24CA`, `0x24CD`, and `0x24CF`
   were missing.
 
 The checked pinned XPack expansion resource was:
 
-- File: `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`
+- File: `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`
 - SHA256: `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
 - Result: the checked IDs were missing.
 
@@ -156,7 +162,7 @@ staged file:
 - `0x0FA1`: `OK`.
 - `0x0FA2`: `Cancel`.
 - `0x24C9`: `Delete`.
-- `0x24CA`: `Are you sure you want to delete the file \n  '%s'?`.
+- `0x24CA`: `Are you sure you want to delete the file \n'%s'?`.
 - `0x24CD`: `Select Scenario`.
 - `0x24CF`: `Cannot load that scenario.`.
 
@@ -223,6 +229,16 @@ Request these additions from the root owner of `include/resource_ids.h`:
 
 The request includes the base-resource hash, language, exact text, lookup path,
 and call-site purpose above. Do not add local duplicate definitions.
+
+Request the group owner of `include/scr_sedo.h` to apply this declaration-only
+change:
+
+```cpp
+virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+```
+
+The declaration request is supported by the `004B38A0` PDB stack records. It
+does not change types, calling convention, symbol identity, or class layout.
 
 The constructor `from_panel` PDB record and the action `str`/`of` shared stack
 offset remain documented uncertainties. This cleanup does not change their
