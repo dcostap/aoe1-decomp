@@ -13,8 +13,6 @@
 #include "../include/taimdmd.h"
 #include <string.h>
 
-// This file owns the TribeBuildAIModule virtual surface.
-
 TribeBuildAIModule::TribeBuildAIModule(void* pW, int pID)
     : BuildAIModule(pW, pID), md(0) {
 }

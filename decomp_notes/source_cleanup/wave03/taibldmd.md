@@ -13,7 +13,8 @@ Delivery history:
 
 1. Source cleanup: `67db444c5c8c35c1e93b85efbd0ee366562547e7`.
 2. First report: `07066d21dee5bed973851e7d536028991c751a02`.
-3. This commit corrects the report and is the final report commit.
+3. Report-history correction: `f2c233ce47ff8c98070ae6d6cf726f80dc4132f6`.
+4. This correction removes the ownership-only comment and updates the report.
 
 The source owner remains `src/taibldmd.cpp`. The header owner remains
 `include/taibldmd.h`. This cleanup did not edit the header or any other source
@@ -112,14 +113,14 @@ new constant or enum was added.
 This module has no resource lookup. No resource ID mapping or resource header
 request applies.
 
-The source comment before the first constructor now states file ownership:
-`This file owns the TribeBuildAIModule virtual surface.` It replaces a malformed
-ownership note. The source owner and registry provide the supporting evidence.
-No behavior claim was added to the source.
+The ownership-only comment described in the prior report was removed. File
+ownership remains established by the source owner and registry. No behavior
+comment was added.
 
 ## Code generation and scope review
 
 The source changes names, whitespace, line wrapping, and brace placement only.
+This correction also removes one ownership-only comment.
 They do not change types, declaration order, declaration scope, storage
 duration, evaluation order, control flow, casts, calls, literals, function
 boundaries, layout, relocations, or ABI symbols.
