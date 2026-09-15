@@ -7,7 +7,7 @@
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Final cleanup commit: `09b834b0424fafd7c2ff0a9075379b8d1c205592`
 - Formatting correction base: `23b2f3cfaed4f0ea61b204661d4ebb06c034a4ed`
-- Formatting correction commit: recorded after this correction commit.
+- Formatting correction commit: `760be242b1eb808ee7b2f95f815d1b37540dbf24`
 - Changed files:
   - `src/m_s_obj.cpp`
   - `decomp_notes/source_cleanup/wave02/m_s_obj.md`
