@@ -105,10 +105,13 @@ I checked ID `0x269E` in each resource input:
 | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | ID missing; no empty slot reported |
 | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | ID missing; no empty slot reported |
 
-The runtime expansion file is therefore an override source that misses this
-ID, and the runtime base file supplies the English fallback. The original
-expansion reference also misses the ID. Missing blocks are distinct from empty
-slots here; the extraction reported a missing ID, not an empty slot.
+Reviewer extraction directory:
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
+The title string payload comes from the runtime base file. Both checked
+expansions miss this ID: the runtime expansion and the pinned original
+expansion reference. The pinned original set has no base language file.
+Missing blocks are distinct from empty slots here; the extraction reported a
+missing ID, not an empty slot.
 
 Shared-file provenance and request:
 
