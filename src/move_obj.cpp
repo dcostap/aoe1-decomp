@@ -2219,6 +2219,8 @@ void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* source2) {
     if (sprite != 0) {
         this->new_sprite(sprite);
     }
+    // The sprite call at 00460D99 is virtual. The final call at 00460D9F
+    // directly targets RGE_Static_Object::copy_obj at 004C4FB0.
     RGE_Static_Object::copy_obj(source2);
 }
 
@@ -2301,6 +2303,8 @@ long RGE_Moving_Object::get_waypoint_checksum() {
     int i = 0;
     if (path->numberOfWaypoints() > 0) {
         do {
+            // Keep currentWaypoint calls at 00460F72 and 00460F7B. The binary
+            // uses y(first) + x(second) + temp at 00460F80, 00460F83, and 00460F88.
             Waypoint* yWaypoint = path->currentWaypoint();
             Waypoint* xWaypoint = path->currentWaypoint();
             float waypointSum = yWaypoint->y + xWaypoint->x;
