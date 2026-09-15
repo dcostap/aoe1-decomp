@@ -51,8 +51,7 @@ int RGE_Master_Action_Object::setup(RGE_Master_Action_Object* other_object) {
     return 1;
 }
 
-int RGE_Master_Action_Object::setup(int infile, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds) {
+int RGE_Master_Action_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     short command_sound_num;
     short move_sound_num;
     RGE_Sound* selected_sound;
@@ -95,8 +94,7 @@ int RGE_Master_Action_Object::setup(int infile, RGE_Sprite** sprites,
     return 1;
 }
 
-int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds, short in_id) {
+int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     short temp_task_by_group;
     short temp_command_sound;
     short temp_move_sound;
@@ -221,8 +219,7 @@ void RGE_Master_Action_Object::modify(float amount, unsigned char flag) {
     work_rate = amount;
 }
 
-void RGE_Master_Action_Object::modify_delta(float amount,
-                                            unsigned char flag) {
+void RGE_Master_Action_Object::modify_delta(float amount, unsigned char flag) {
     if (flag != 0x0D) {
         RGE_Master_Moving_Object::modify_delta(amount, flag);
     } else {
@@ -230,8 +227,7 @@ void RGE_Master_Action_Object::modify_delta(float amount,
     }
 }
 
-void RGE_Master_Action_Object::modify_percent(float amount,
-                                              unsigned char flag) {
+void RGE_Master_Action_Object::modify_percent(float amount, unsigned char flag) {
     if (flag != 0x0D) {
         RGE_Master_Moving_Object::modify_percent(amount, flag);
         return;
