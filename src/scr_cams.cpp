@@ -1,5 +1,6 @@
 
 #include "../include/scr_cams.h"
+#include "../include/resource_ids.h"
 #include "../include/scr_name.h"
 #include "../include/pnl_btn.h"
 #include "../include/pnl_lst.h"
@@ -64,14 +65,15 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                         difficultyDrop->set_line(
                                             difficultyDrop->get_line(
                                                 rge_base_game->difficulty()));
-                                        if (create_button(this, &okButton, 0x0FA1,
-                                                          0, 0x46, 0x1B8,
-                                                          0x0F0, 0x1E, 0, 0,
-                                                          0)) {
+                                        if (create_button(this, &okButton,
+                                                          IDS_BUTTON_OK, 0,
+                                                          0x46, 0x1B8, 0x0F0,
+                                                          0x1E, 0, 0, 0)) {
                                             if (create_button(this, &cancelButton,
-                                                              0x0FA2, 0, 0x14A,
-                                                              0x1B8, 0x0F0,
-                                                              0x1E, 0, 0, 0)) {
+                                                              IDS_BUTTON_CANCEL,
+                                                              0, 0x14A, 0x1B8,
+                                                              0x0F0, 0x1E, 0, 0,
+                                                              0)) {
                                                 TButtonPanel* cancel =
                                                     cancelButton;
                                                 cancel->hotkey = 0x1B;
@@ -161,39 +163,39 @@ long TRIBE_Screen_Campaign_Selection::handle_idle()
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Campaign_Selection::action(TPanel* panel, long code,
-                                             unsigned long p3,
-                                             unsigned long p4)
+long TRIBE_Screen_Campaign_Selection::action(TPanel* fromPanel, long actionIn,
+                                             unsigned long a1,
+                                             unsigned long a2)
 {
-    if (panel != 0 && campaignsLoaded != 0) {
+    if (fromPanel != 0 && campaignsLoaded != 0) {
         TPanel* ok = okButton;
-        if (panel == ok && code == 1) {
+        if (fromPanel == ok && actionIn == 1) {
             startGame();
             return 1;
         }
-        if (panel == cancelButton && code == 1) {
+        if (fromPanel == cancelButton && actionIn == 1) {
             rge_base_game->disable_input();
             new TRIBE_Screen_Name;
             panel_system.setCurrentPanel("Name Selection Screen", 0);
             panel_system.destroyPanel("Campaign Selection Screen");
             return 1;
         }
-        if (panel == close_button && code == 1) {
+        if (fromPanel == close_button && actionIn == 1) {
             rge_base_game->close();
             return 1;
         }
-        if (panel == campaignList && code == 1) {
+        if (fromPanel == campaignList && actionIn == 1) {
             RGE_Game_Info* info = rge_base_game->player_game_info;
             info->set_current_campaign(campaignList->get_id());
             fillScenarios();
             return 1;
         }
-        if (panel == scenarioList && code == 3) {
+        if (fromPanel == scenarioList && actionIn == 3) {
             action(ok, 1, 0, 0);
             return 1;
         }
     }
-    return TEasy_Panel::action(panel, code, p3, p4);
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
 void TRIBE_Screen_Campaign_Selection::fillCampaigns()
@@ -202,8 +204,8 @@ void TRIBE_Screen_Campaign_Selection::fillCampaigns()
 
     RGE_Game_Info* info = rge_base_game->player_game_info;
     char** campaigns = 0;
-    long current;
-    long count = info->get_campaign_list(&campaigns, current);
+    long currentCampaign;
+    long count = info->get_campaign_list(&campaigns, currentCampaign);
 
     if (count != 0) {
         campaignList->sorted = 1;
@@ -213,7 +215,7 @@ void TRIBE_Screen_Campaign_Selection::fillCampaigns()
                 campaignList->append_line(campaigns[i], i);
             }
         }
-        campaignList->set_line(campaignList->get_line(current));
+        campaignList->set_line(campaignList->get_line(currentCampaign));
         {
             int i;
             for (i = 0; i < count; i++) {
@@ -289,17 +291,17 @@ void TRIBE_Screen_Campaign_Selection::startGame()
         TRIBE_Game::DefaultAge);
     static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
 
-    int first_human = -1;
-    int first_color = 0;
-    RGE_Scenario* scen = rge_base_game->get_scenario_info(0, 1);
-    if (scen == 0) {
+    int first_any_color = 0;
+    int first_any_color_index = -1;
+    RGE_Scenario* scenario_info = rge_base_game->get_scenario_info(0, 1);
+    if (scenario_info == 0) {
         this->popupOKDialog(0x9ca, 0, 0x1c2, 100);
         return;
     }
 
     player_count = 0;
     for (int i = 0; i < 9; ++i) {
-        if (scen->Get_player_Active(i)) {
+        if (scenario_info->Get_player_Active(i)) {
             static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
                 player_count, i);
             int color = i + 1;
@@ -307,24 +309,25 @@ void TRIBE_Screen_Campaign_Selection::startGame()
                                                                     color);
             rge_base_game->setPlayerTeam(player_count, 1);
             ++player_count;
-            if (first_human == -1 && scen->Get_player_Type(i) == 1) {
-                first_human = i;
-                first_color = color;
+            if (first_any_color_index == -1 &&
+                scenario_info->Get_player_Type(i) == 1) {
+                first_any_color_index = i;
+                first_any_color = color;
             }
         }
     }
 
-    delete scen;
+    delete scenario_info;
     if (player_count == 0) {
         return;
     }
     rge_base_game->setNumberPlayers(player_count);
 
-    if (first_human != -1) {
+    if (first_any_color_index != -1) {
         int j;
         for (j = 1; j < player_count; ++j) {
             if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(j) ==
-                first_human) {
+                first_any_color_index) {
                 static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
                     j, static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0));
                 static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
@@ -333,8 +336,9 @@ void TRIBE_Screen_Campaign_Selection::startGame()
             }
         }
         static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0,
-                                                                   first_human);
-        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_color);
+                                                                   first_any_color_index);
+        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0,
+                                                                  first_any_color);
     }
 
     comm->SetPlayerHumanity(1, ME_HUMAN);
