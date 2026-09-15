@@ -7,6 +7,7 @@
 - Report: `decomp_notes/source_cleanup/wave03/flics.md`.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Final source-cleanup commit: `983605284d47d07e749cf2fedfc6e51f17db0c8f`.
+- Post-cleanup repair commit: `ffb87e4c2886668aba720bcf7a61e3a500ffde15`.
 - Changed files:
   - `src/flics.cpp`.
   - `decomp_notes/source_cleanup/wave03/flics.md`.
@@ -88,10 +89,11 @@ I read the pinned VC5 headers before replacing the file-I/O literals:
 - `C:/Program Files (x86)/DevStudio/VC/Include/STDIO.H:209-211` defines
   `SEEK_CUR` as `1`, `SEEK_END` as `2`, and `SEEK_SET` as `0`.
 
-The source now uses `_O_BINARY` for the binary open mode and `SEEK_END` or
-`SEEK_SET` for the existing `lseek` origins. The macro values preserve the
-original arguments. No resource lookup or resource ID exists in this module.
-No shared constant or resource declaration was added.
+The accepted source keeps `_O_BINARY` for the binary open mode. It restores
+the original numeric `lseek` origins after the isolated compile proved that
+the `stdio.h` include changed VC5 code generation. The values are `2` for
+`SEEK_END` and `0` for `SEEK_SET`. No resource lookup or resource ID exists in
+this module. No shared constant or resource declaration was added.
 
 I retained the existing comments that explain the complete FLIC header copy,
 the draw-area store order, and the separate palette-chunk path. I added no
@@ -140,54 +142,80 @@ It changed the surrounding compiland through names, braces, source lines, and
 CRT macros. The same cleaned source produced the fresh byte order in a second
 object. Older pre-cleanup objects produced the baseline byte order.
 
-The baseline source places the resolution declaration at line 173, its brace
-at line 174, and its return at line 175. The cleaned source placed the
-declaration and brace at line 171 and the return at line 172. The palette
-closing brace moved from line 171 to line 169. Two added CRT include lines
-and four earlier joined braces caused the net two-line shift.
+The root baseline-line experiment did not fix the drift. Its compile log is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/flics-lines-experiment/compile.json`.
+Its listing is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/flics-lines-experiment/flics.cod`.
+It used candidate commit `c5660f2b948e1201790d96c104d3b6a99be3eec8`, with
+source SHA256 `1405e5fb2c47eacb717638d2e58dd106cb8615f137b119e82261d82236eb0922`.
+Lines 718-725 show the same height-first bytes as the fresh object.
 
-The recovered renames do not occur in `resolution`. The `_O_BINARY` and
-`SEEK_*` macros occur in earlier functions and do not occur in `resolution`.
-The assigned header stayed unchanged. Existing evidence therefore identifies
-the changed source context as the trigger for VC5's code-generation choice,
-but does not isolate one rename, include, macro, or brace without compiling
-intermediate candidates.
+I then compiled isolated candidates with the pinned VC5 toolchain, using new
+directories and `config/flags/default.rsp` each time. The candidates changed
+only source copies in the build area.
+
+| Candidate | Pre-resolution change | Resolution bytes | Source SHA256 | Object SHA256 |
+| --- | --- | --- | --- | --- |
+| `baseline-current-headers` | Exact baseline source | `0fbf41100fbf4912c1e0100bc1c3` | `9f8b2449475155db4049aa08677f883460032a0cf0fa9e7eb1e8bfa1ac28c98d` | `afcfe62e4b77b6c0ae4e3ab7d611608646504e3de0511552c8c93ee0bcb127cb` |
+| `includes-only` | Add `fcntl.h` and `stdio.h` | `0fbf41120fbf4910c1e1000bc1c3` | `e8dfd65377633bdeb797371c14cefd036ac721127d69c1edc2c06ed5dc033a19` | `6553cf106121e00b5e242079fa35b378c4484e74099f317077bdf38571ebb257` |
+| `names-braces` | Restore names and braces only | `0fbf41100fbf4912c1e0100bc1c3` | `77c3d4f7712437c30507d2a8eee92cad2e53df8cb15330fef9950c3401221596` | `01a5ff3f44d5ec40fa3d52cd150d78cfa334790075982db0a3fdd06de87943b1` |
+| `includes-macros` | Add headers and seek macros | `0fbf41120fbf4910c1e1000bc1c3` | `15224c4730007beea58cbace68114cd6bed174b8358dfbe84161042dcd8b8fab` | `8728b5c2a7eb49e467d83d8ad0bea2dfc614c7084c838a44931cf50930372488` |
+| `full-preceding` | Restore all preceding cleanup changes | `0fbf41120fbf4910c1e1000bc1c3` | `8221461a823fa991528ac6e012810c1fee257456f18efeff6750fe902d8ded51` | `57a5d57d1345339430076f6d258f31f8ea896fb6853b6b78fe2c7edb25ab416d` |
+| `fcntl-only` | Add `fcntl.h` only | `0fbf41100fbf4912c1e0100bc1c3` | `16be4cbafe41a8f897a14e3ffb413685db3ea2bc22e693a1071dacfa6cf661bb` | `a0e360c1ee0bd353b44e4b83b12871be78891d67095a474faaedad59ae65de7c` |
+| `stdio-only` | Add `stdio.h` only | `0fbf41120fbf4910c1e1000bc1c3` | `3bb6d1e8331acedc09053ff3ae3641581765b04e77b364bd138e355f893a4051` | `a34c20fee68d06a57c7c108273b0b8ac921000a6fa8695720f7726dd08bb125d` |
+| `remove-stdio-literals` | Remove `stdio.h`; use seek literals | `0fbf41100fbf4912c1e0100bc1c3` | `d6a6e5046c148eef55672587c846874c57c2dad9f7c334a83c1bf1f3b906d6f6` | `07b98b2fe241ca0c54de154bd190a86ce155a7a9f13c2e6b591943dff8debb3d` |
+| `remove-stdio-local-macros` | Remove `stdio.h`; define local seek macros | `0fbf41100fbf4912c1e0100bc1c3` | `6b89e7eec0d267a99970b3ffb9ce0c342462fab9667179c040b413c0409e7015` | `e46e7ab7fb56bb4ae64b60269cb9e1944a3cf60ef120d81586b134b1f3347140` |
+| `remove-stdio-literals-lines` | Remove `stdio.h`; restore seek literals and baseline lines | `0fbf41100fbf4912c1e0100bc1c3` | `60965663b21744873aa3de18be76d669f92feba258cf09e254a2b86c7fa6aab7` | `4029285697fc3c2b41efc1c56e7b756a451fd5474311d15debffcbff1f53ba17` |
+| `remove-stdio-literals-cleaned-resolution` | Remove `stdio.h`; restore seek literals | `0fbf41100fbf4912c1e0100bc1c3` | `6d65ba3e183a3c84076aa0e7aaaaeaf8e948e55364c02221aafc938566af56ca` | `2958f1a51c1ba3e8f36d55317450b4eff2ad57d2f59f8a214438723d7155a9ac` |
+
+The `stdio-only` and `fcntl-only` candidates isolate the cause to the
+explicit VC5 `stdio.h` include. The macro uses are not the cause by
+themselves. The recovered renames and brace changes are not the cause in the
+tested combinations.
+
+The candidate logs and listings are preserved at:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/baseline-current-headers/output-rerun/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/includes-only/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/names-braces/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/includes-macros/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/full-preceding/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/fcntl-only/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/stdio-only/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-literals/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-local-macros/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-literals-lines/output/compile.json`.
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/flics-cause-experiments/remove-stdio-literals-cleaned-resolution/output/compile.json`.
 
 The object comparison also finds two changed bytes in `delta_flc`. Its prior
 status was `new_verified_logic`, not `matching`, so this is not a new
 matching regression. This repair does not change that function.
 
+The accepted source repair is commit
+`ffb87e4c2886668aba720bcf7a61e3a500ffde15`. It removes the `stdio.h` include
+and restores the four original seek literals. It keeps `fcntl.h`, `_O_BINARY`,
+the recovered names, and the existing module formatting. Its source SHA256 is
+`6d65ba3e183a3c84076aa0e7aaaaeaf8e948e55364c02221aafc938566af56ca`.
+The accepted candidate's isolated object is
+`2958f1a51c1ba3e8f36d55317450b4eff2ad57d2f59f8a214438723d7155a9ac`.
+
 The prior commutative-OR experiment is commit
-`dee72a75fe4885309a67715731d978566c439d70`. It is rejected because it
-changed operand and read order. The current source restores the original
-resolution expression tokens and order.
+`dee72a75fe4885309a67715731d978566c439d70`. It remains in history but is
+not part of the accepted source because it changed operand and read order.
 
-The current source candidate is commit
-`c5660f2b948e1201790d96c104d3b6a99be3eec8`. It restores the original
-resolution brace form and its baseline physical lines. Two blank lines keep
-the resolution declaration and return at baseline lines 173 and 175. It does
-not revert recovered names, CRT macros, or unrelated formatting. Its source
-SHA256 is `1405e5fb2c47eacb717638d2e58dd106cb8615f137b119e82261d82236eb0922`.
-
-Requested isolated root experiment, not run: compile only this candidate
-`src/flics.cpp` with the pinned VC5 toolchain and `config/flags/default.rsp`.
-Compare symbol `?resolution@RGE_Flic_Player@@QAEJXZ` with the preserved
-baseline object. Check all 15 flics sections and the known `delta_flc` drift.
-Do not run a full build, audit, matching sweep, test, or game.
-
-No post-candidate compiler, build, audit, matching check, test, or game run
-was allowed. The candidate therefore remains unvalidated by a new object.
+No full build, broad audit, matching sweep, test, or game run was performed.
 
 ## Code-generation and review limits
 
 The source edits change identifiers, brace placement, includes, and macro
-spellings only. The rejected experiment is not part of the accepted source.
-The accepted candidate restores the original resolution expression, brace
-form, and physical lines. It does not change public symbols, function
-boundaries, casts, storage, field layout, calls, or decoder state.
-`_O_BINARY`, `SEEK_END`, and `SEEK_SET` expand to the original numeric values.
+spellings only. The accepted repair removes `stdio.h` and restores the four
+original seek literals. It keeps the original resolution expression and
+operand order. It does not change public symbols, function boundaries, casts,
+storage, field layout, calls, or decoder state. `_O_BINARY` remains equal to
+`0x8000`. The rejected operand-swap experiment is not part of the accepted
+source.
 The PDB/source type differences listed above remain intentionally unresolved.
 
 I reviewed the complete source diff against the base and ran `git diff --check`.
-I did not run a compiler, build, matching check, audit, test, or game.
-Compilation, matching, audits, and tests were not run.
+I ran only the listed isolated flics compiler experiments. I did not run a
+full build, broad matching check, audit, test, or game.
