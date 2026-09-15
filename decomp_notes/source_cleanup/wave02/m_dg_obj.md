@@ -137,8 +137,31 @@ No change is requested from the owner of `include/m_dg_obj.h`. The header keeps
 unnamed declarations, and the cleaned definition names are valid without a
 header change. No resource or shared declaration request is pending.
 
+## Root formatting correction
+
+Root requested a formatting review for every touched `setup`, `copy_obj`,
+`modify`, `modify_delta`, and `modify_percent` definition. This module has the
+three touched `setup` definitions and one touched `copy_obj` definition. It has
+no `modify`, `modify_delta`, or `modify_percent` definition.
+
+Each of the three `setup` signatures and the `copy_obj` signature now stays on
+one line. The continuation indentation in those definitions is no longer
+needed. The source keeps all tokens, types, scopes, expressions, calls,
+literals, and behavior.
+
+The previous source commit was
+`f1a3e7fad9bb22b5d8c5ad46bfc635d67f2fbc57`. The source correction commit is
+`fa571d2b598dbe95574cf8e7caa2c92ab625f97a`. The base commit remains
+`ef1c4d2e33bac077e7e4e21598f1c18722a721c6`. The correction changed only
+whitespace in `src/m_dg_obj.cpp`. The follow-up report correction commit
+contains this report only.
+
+I reviewed the complete base-to-head diff after the correction. It contains
+only the assigned source and report paths. No other source definition changed.
+
 ## Validation status
 
-I reviewed the complete source diff and ran `git diff --check`.
+I reviewed the complete source diff and ran `git diff --check` for the
+correction.
 Compilation, matching, audits, and tests were not run. Builds and game commands
 were also not run, as required for this cleanup phase.
