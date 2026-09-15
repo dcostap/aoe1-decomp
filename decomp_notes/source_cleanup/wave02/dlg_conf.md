@@ -4,7 +4,8 @@
 
 - Module: `src/dlg_conf.cpp`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit from `git rev-parse`: `0580398dc0aef51fa019add9cb0a7a96c09eb528`
+- Resource approval commit: `3caba12fa62d4d07a0626fcb9f77e3425b9181ff` (`include/resource_ids.h`)
+- Final source commit from `git rev-parse`: `4bb1f30e5b844c4ea0c51cc29308ca22f2825333`
 - Branch: `cleanup/staging-20260915-84`
 - Changed files: `src/dlg_conf.cpp`; this report.
 - Registry: `config/functions/src/dlg_conf.cpp.json`; build flags `gx`.
@@ -15,8 +16,8 @@ The cleanup covers all three handwritten procedures in the source registry:
 and second procedures `matching`. It marks the action procedure
 `new_verified_logic`. The cleanup does not change those statuses.
 
-The source changes recover procedure-scoped PDB names, reuse the existing OK
-and Cancel resource macros, and apply 1TBS braces to the three definitions.
+The source changes recover procedure-scoped PDB names, substitute all approved
+dialog resource macros, and apply 1TBS braces to the three definitions.
 They do not change types, storage, declaration order, control flow, calls,
 literal values, or ABI symbols.
 
@@ -71,9 +72,19 @@ handwritten declaration or source body here. No rename was possible.
 The constructor PDB has three names at stack offset `+0x8`: the parameter
 `parentPanel`, local `string_id`, and local `val`. This is optimized stack-slot
 reuse, not one source object. The source keeps the three declarations separate.
-The `val` mapping is supported by its `unsigned char` type and its use with the
-`pathFinding` and `mpPathFinding` return values. No declaration, type, scope, or
-storage mapping was changed.
+The `val` mapping has direct instruction and type evidence beyond the reused
+home. In packet `0043B560_TribeConfigDialog.txt`, `0043BFC6` calls
+`RGE_Base_Game::mpPathFinding`, and `0043BFCD` calls
+`RGE_Base_Game::pathFinding`; both return `uchar` in `AL`. The original
+instructions then compare `AL` at `0043BFD2`, store it as one byte at
+`0043BFD4` (`MOV byte ptr [ESP + param_1],AL`), reload it at `0043BFDA`,
+mask it with `AND EDX,0xff` at `0043BFDE`, and use it as the
+`pathFindingButton` index at `0043BFE4` before
+`TButtonPanel::set_radio_button` at `0043BFEB`. The scoped PDB record names
+that declaration `val` and gives it type `T_UCHAR(0020)`, `unsigned char`.
+This byte store, byte-producing calls, narrow mask, and indexed use prove the
+declaration mapping. No declaration, type, scope, or storage mapping was
+changed.
 
 The constructor's other existing locals are `i`, `y`, `speed`,
 `music_system`, `sound_system`, `screen_width`, and `cancel_button`. The scoped
@@ -88,10 +99,11 @@ macros `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` for numeric IDs `0x0FA1` and
 `0x0FA2`. The macros expand to the same integer literals. Their runtime text
 is `OK` and `Cancel`.
 
-All other resource IDs remain numeric. The following request is for the root
-owner of `include/resource_ids.h`. Each row records the numeric ID, exact
-text, file hash, language, lookup path, purpose, and proposed cleanup name.
-The text uses `\\n` for the embedded newline in the resource payload.
+The source keeps `IDS_PATH_FINDING_OPTION_BASE + i` for the contiguous path
+finding range. It does not use separate names for the `Medium` or `High`
+entries. The following table records the numeric ID, exact text, file hash,
+language, lookup path, purpose, and approved cleanup name or expression. The
+text uses `\\n` for the embedded newline in the resource payload.
 
 The primary extraction is:
 
@@ -104,12 +116,15 @@ The primary extraction is:
 `TRIBE_Game::get_string` first tries `StringTableX`, then calls
 `RGE_Base_Game::get_string`. `src/tribegam.cpp` records this fallback at lines
 812-818. The `create_text` and `create_button` packet evidence shows that these
-dialog calls pass IDs through `TPanel::get_string`. The current expansion input
-`runtime/languagex.dll` has no string slots:
+dialog calls pass IDs through `TPanel::get_string`. The targeted extraction of
+the current expansion input `runtime/languagex.dll` has no matching entry for
+any requested ID. This targeted result does not prove that the DLL has no other
+string slots:
 
 - SHA256: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
 - Evidence output: `build/dlg_conf_languagex.json`
-- Result: every requested ID is missing; the `strings` list is empty.
+- Result: every requested ID is missing from this extraction. Other string
+  slots were not part of this requested-ID result.
 
 The pinned original expansion file also has no matching entries in its full
 string listing:
@@ -128,7 +143,7 @@ Every row below uses this source-evidence tuple: file
 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, and
 language `0x0409` / `1033`.
 
-| ID | Exact text in `runtime/language.dll` | File SHA256 and language | Lookup path | Purpose | Proposed cleanup name |
+| ID | Exact text in `runtime/language.dll` | File SHA256 and language | Lookup path | Purpose | Approved cleanup name or expression |
 | --- | --- | --- | --- | --- | --- |
 | `0x24D7` | `Game Settings` | as above | `create_text` -> `TRIBE_Game::get_string` | Configuration dialog title | `IDS_GAME_SETTINGS_TITLE` |
 | `0x24D8` | `Normal` | as above | `create_text` -> `TRIBE_Game::get_string` | Normal game-speed option | `IDS_GAME_SPEED_NORMAL` |
@@ -154,15 +169,16 @@ language `0x0409` / `1033`.
 | `0x24F2` | `Slow` | as above | `create_text` -> `TRIBE_Game::get_string` | Slow scroll-speed option | `IDS_SCROLL_SPEED_SLOW` |
 | `0x260D` | `Path Finding` | as above | `create_text` -> `TRIBE_Game::get_string` | Path-finding group title | `IDS_PATH_FINDING_TITLE` |
 | `0x260E` | `Default` | as above | `create_text` -> `TRIBE_Game::get_string` | First entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_BASE` |
-| `0x260F` | `Medium` | as above | `create_text` -> `TRIBE_Game::get_string` | Second entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_MEDIUM` |
-| `0x2610` | `High` | as above | `create_text` -> `TRIBE_Game::get_string` | Third entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_HIGH` |
+| `0x260F` | `Medium` | as above | `create_text` -> `TRIBE_Game::get_string` | Second entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_BASE + 1` |
+| `0x2610` | `High` | as above | `create_text` -> `TRIBE_Game::get_string` | Third entry in the contiguous path-finding range | `IDS_PATH_FINDING_OPTION_BASE + 2` |
 | `0x0BF3` | `Game speed changed.` | as above | `get_string` -> `TRIBE_Game::get_string` | Multiplayer game-speed notification text | `IDS_GAME_SPEED_CHANGED` |
 
-The source preserves the contiguous expression `0x260E + i`. The proposed
-`IDS_PATH_FINDING_OPTION_BASE` name records the range owner. It must not be
-used to expand the lookup into a switch or table.
+The source preserves the contiguous expression
+`IDS_PATH_FINDING_OPTION_BASE + i`. The approved base name records the range
+owner. Separate `Medium` and `High` macros are omitted. They are not used or
+requested. The expression must not expand into a switch or table.
 
-No new resource macro was defined in this worker. The proposed names are
+No new resource macro was defined in this worker. The approved names are
 cleanup names, not recovered original macro names. PDB records do not recover
 preprocessor macro names.
 
@@ -188,9 +204,9 @@ Recovered original spellings from the PDB are:
 - `this`
 
 The source already used `string_id`, `new_speed`, and `msg`. The other recovered
-names replace readable or generated substitutes. The proposed `IDS_*` names
-are new descriptive cleanup names. They are not in the source until the root
-owner reviews and adds shared definitions.
+names replace readable or generated substitutes. The approved `IDS_*` names
+come from the shared header commit recorded above. They are cleanup names, not
+recovered original macro names.
 
 Existing inferred names retained without original-name evidence are `i`, `y`,
 `speed`, `music_system`, `sound_system`, `screen_width`, `cancel_button`,
@@ -204,10 +220,10 @@ expression order, casts, calls, control flow, layouts, function boundaries,
 virtual slots, relocations, or ABI symbols. The explicit `this->` expressions
 remain unchanged.
 
-The OK and Cancel macro replacements preserve the original integer values and
-types. The include adds only reviewed preprocessor definitions. Brace changes
-apply 1TBS without adding or removing scopes. The `val` rename preserves the
-existing `unsigned char` declaration and its narrow comparison.
+The approved resource macro replacements preserve the original integer values
+and types. The include uses only reviewed preprocessor definitions. Brace
+changes apply 1TBS without adding or removing scopes. The `val` rename
+preserves the existing `unsigned char` declaration and its narrow comparison.
 
 No helper, wrapper, structural rewrite, layout change, assembly, or generated
 inventory change was made. I reviewed the complete source diff against the
@@ -219,9 +235,11 @@ Owner 10 has no declaration request for `include/dlg_conf.h`. Its declarations
 are unnamed, and the definition uses the recovered PDB parameter spellings
 without changing the public interface.
 
-The root owner of `include/resource_ids.h` should review and add the 27 proposed
-IDs in the resource table. The existing `IDS_BUTTON_OK` and
-`IDS_BUTTON_CANCEL` definitions already cover `0x0FA1` and `0x0FA2`.
+The approved definitions are present in `include/resource_ids.h` from commit
+`3caba12fa62d4d07a0626fcb9f77e3425b9181ff`. The source uses all approved
+`dlg_conf` macros. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL`
+definitions cover `0x0FA1` and `0x0FA2`. No separate `Medium` or `High` path
+finding macro is requested.
 
 No other shared request is open. No header was edited in this commit sequence.
 
