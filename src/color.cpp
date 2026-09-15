@@ -12,11 +12,7 @@ extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern "C" long __cdecl _ftol();
 extern char s_C__msdev_work_age1_x1_color_cpp[];
 
-void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1,
-                                   tagPALETTEENTRY* palette2,
-                                   tagPALETTEENTRY color, long amount,
-                                   int ignore_color1, int ignore_color2)
-{
+void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1, tagPALETTEENTRY* palette2, tagPALETTEENTRY color, long amount, int ignore_color1, int ignore_color2) {
     long index1;
     long intense[3];
 
@@ -59,10 +55,7 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* palette1,
     }
 }
 
-void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
-                              float fade_time, unsigned char fade_type,
-                              tagPALETTEENTRY* palette, int first, int last)
-{
+void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float fade_time, unsigned char direction, tagPALETTEENTRY* new_palette, int ignore_color1, int ignore_color2) {
     float delta_time;
     bool done;
     long old_time;
@@ -83,11 +76,11 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
         palette2[i].peFlags = 0;
     }
 
-    if (palette == 0) {
-        draw_area->GetPalette(palette1);
+    if (new_palette == 0) {
+        surface->GetPalette(palette1);
     } else {
         tagPALETTEENTRY* target = palette1;
-        tagPALETTEENTRY* source = palette;
+        tagPALETTEENTRY* source = new_palette;
         for (int j = 0; j < 256; j++) {
             target->peRed = source->peRed;
             target->peBlue = source->peBlue;
@@ -101,7 +94,7 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
     old_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 0x69);
     fade_time2 = fade_time * fade_time;
 
-    if (fade_type == 1) {
+    if (direction == 1) {
         do {
             long pct;
             long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 0x70);
@@ -115,8 +108,8 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
                 pct = 100;
                 done = 1;
             }
-            RGE_translate_palette(palette1, palette2, fade_color, pct, first, last);
-            draw_area->SetPalette(palette2);
+            RGE_translate_palette(palette1, palette2, color, pct, ignore_color1, ignore_color2);
+            surface->SetPalette(palette2);
         } while (!done);
     } else {
         do {
@@ -132,25 +125,24 @@ void __cdecl RGE_fade_palette(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
                 pct = 0;
                 done = 1;
             }
-            RGE_translate_palette(palette1, palette2, fade_color, pct, first, last);
-            draw_area->SetPalette(palette2);
+            RGE_translate_palette(palette1, palette2, color, pct, ignore_color1, ignore_color2);
+            surface->SetPalette(palette2);
         } while (!done);
     }
 }
 
-RGE_Color_Table::RGE_Color_Table(int fd)
-{
+RGE_Color_Table::RGE_Color_Table(int infile) {
     struct ColorFileScratch {
         char prefix[2];
         short temp_color;
         char tempname[300];
     } scratch;
 
-    rge_read(fd, this->color_table_name, 0x1E);
-    rge_read(fd, &this->id, 2);
-    rge_read(fd, &this->resource_id, 2);
-    rge_read(fd, &this->map_color, 1);
-    rge_read(fd, &this->type, 1);
+    rge_read(infile, this->color_table_name, 0x1E);
+    rge_read(infile, &this->id, 2);
+    rge_read(infile, &this->resource_id, 2);
+    rge_read(infile, &this->map_color, 1);
+    rge_read(infile, &this->type, 1);
 
     sprintf(scratch.tempname, "data\\%s", this->color_table_name);
 
@@ -164,16 +156,15 @@ RGE_Color_Table::RGE_Color_Table(int fd)
     }
 }
 
-RGE_Color_Table::RGE_Color_Table(FILE* file, short id_val)
-{
+RGE_Color_Table::RGE_Color_Table(FILE* infile, short id_val) {
     char* file_name = 0;
     this->id = id_val;
     memset(this->table, 0, 256);
 
-    fscanf(file, "%hd %s %hd %hd", &this->resource_id, this->color_table_name,
-           &id_val, &file);
+    fscanf(infile, "%hd %s %hd %hd", &this->resource_id, this->color_table_name,
+           &id_val, &infile);
     this->map_color = (unsigned char)id_val;
-    this->type = (unsigned char)file;
+    this->type = (unsigned char)infile;
     addstring(&file_name, this->color_table_name, ".col");
     strcpy(this->color_table_name, file_name);
     if (file_name != 0) {
@@ -181,8 +172,7 @@ RGE_Color_Table::RGE_Color_Table(FILE* file, short id_val)
     }
 }
 
-RGE_Color_Table::RGE_Color_Table(char* name)
-{
+RGE_Color_Table::RGE_Color_Table(char* filename) {
     short temp_color;
     char tempname[300];
 
@@ -190,7 +180,7 @@ RGE_Color_Table::RGE_Color_Table(char* name)
     this->map_color = 0;
     this->type = 0;
     memset(this->table, 0, 256);
-    strcpy(this->color_table_name, name);
+    strcpy(this->color_table_name, filename);
     strcat(this->color_table_name, ".col");
 
     sprintf(tempname, "data\\%s", this->color_table_name);
@@ -204,37 +194,34 @@ RGE_Color_Table::RGE_Color_Table(char* name)
     }
 }
 
-RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
-                                 tagPALETTEENTRY* base_color,
-                                 tagPALETTEENTRY* palette_source)
-{
+RGE_Color_Table::RGE_Color_Table(TDrawArea* surface, long amount, tagPALETTEENTRY* in_color, tagPALETTEENTRY* palette1) {
     long temp_color;
     tagPALETTEENTRY palette[256];
     tagPALETTEENTRY temp_palette[256];
     tagPALETTEENTRY color;
-    long index;
+    long index1;
 
-    if (palette_source == 0) {
-        area->GetPalette(palette);
+    if (palette1 == 0) {
+        surface->GetPalette(palette);
     } else {
         for (int i = 0; i < 256; i++) {
-            palette[i].peRed = palette_source[i].peRed;
-            palette[i].peGreen = palette_source[i].peGreen;
-            palette[i].peBlue = palette_source[i].peBlue;
-            palette[i].peFlags = palette_source[i].peFlags;
+            palette[i].peRed = palette1[i].peRed;
+            palette[i].peGreen = palette1[i].peGreen;
+            palette[i].peBlue = palette1[i].peBlue;
+            palette[i].peFlags = palette1[i].peFlags;
         }
     }
 
-    if (base_color == 0) {
+    if (in_color == 0) {
         color.peRed = 0;
         color.peBlue = 0;
         color.peGreen = 0;
         color.peFlags = 0;
     } else {
-        color.peRed = base_color->peRed;
-        color.peBlue = base_color->peBlue;
-        color.peGreen = base_color->peGreen;
-        color.peFlags = base_color->peFlags;
+        color.peRed = in_color->peRed;
+        color.peBlue = in_color->peBlue;
+        color.peGreen = in_color->peGreen;
+        color.peFlags = in_color->peFlags;
     }
 
     this->resource_id = 0;
@@ -244,14 +231,14 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
 
     RGE_translate_palette(palette, temp_palette, color, amount, -1, -1);
 
-    index = 0;
+    index1 = 0;
     do {
         temp_color = 0;
         int i = 0;
         int best_distance = 20000;
-        int red = temp_palette[index].peRed;
-        int green = temp_palette[index].peGreen;
-        int blue = temp_palette[index].peBlue;
+        int red = temp_palette[index1].peRed;
+        int green = temp_palette[index1].peGreen;
+        int blue = temp_palette[index1].peBlue;
 
         for (; i <= 0xff; i++) {
             int red_difference = red - palette[i].peRed;
@@ -266,20 +253,18 @@ RGE_Color_Table::RGE_Color_Table(TDrawArea* area, long amount,
             }
         }
 
-        this->table[index] = (unsigned char)temp_color;
-        index++;
-    } while (index <= 0xff);
+        this->table[index1] = (unsigned char)temp_color;
+        index1++;
+    } while (index1 <= 0xff);
 }
 
-RGE_Color_Table::~RGE_Color_Table()
-{
+RGE_Color_Table::~RGE_Color_Table() {
 }
 
-void RGE_Color_Table::save(int param1)
-{
-    rge_write(param1, this->color_table_name, 0x1E);
-    rge_write(param1, &this->id, 2);
-    rge_write(param1, &this->resource_id, 2);
-    rge_write(param1, &this->map_color, 1);
-    rge_write(param1, &this->type, 1);
+void RGE_Color_Table::save(int outfile) {
+    rge_write(outfile, this->color_table_name, 0x1E);
+    rge_write(outfile, &this->id, 2);
+    rge_write(outfile, &this->resource_id, 2);
+    rge_write(outfile, &this->map_color, 1);
+    rge_write(outfile, &this->type, 1);
 }
