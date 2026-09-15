@@ -230,6 +230,25 @@ panel names. The `dlg_msg` report now records `0043FEAD` as the comparison and
 | `dlg_msg` | `60f781599a8e1009e8ba2ad45a3b90ec55debdd5` | `7ed4715f6f77898336f7bbcb4ce559ee682d8d3f`, `99ecd363fcc2ab55088bf3fc9982c97f12ee39d4` |
 | `dlg_sedm` | `5aaf64d424c1213619316c65dfa3a95f655bbf05` | `883b6ff5d50f93398213ac75ad36f8b39e390a55` |
 
+## Linked validation repair
+
+The post-cleanup linked dependency audit reported two reciprocal call-target
+failures in `THelpDialog::setup_help` at relative instructions 246 and 255.
+The preserved baseline binds these positions to `width` and `xPosition`.
+The fresh object binds them to `xPosition` and `width`.
+
+The cleanup had renamed the baseline local `x` to recovered PDB name
+`dialog_x`. The source expression and its call order stayed textually equal.
+Existing probe evidence also showed that reversing the sum did not repair the
+relocation order. The worker restored only the baseline local spelling `x`.
+Types, scopes, calls, expressions, and control flow remain unchanged.
+
+The worker repair commit is
+`4cf7d67790b4b4393b38aab8ca4b693cc7b19405`.
+The integrated repair commit is
+`e2f4da23723f70aea480b7440be958e49488dfb8`.
+Root owns compilation and linked validation after this repair.
+
 ## Validation status
 
 Compilation, matching, audits, and tests were not run.
