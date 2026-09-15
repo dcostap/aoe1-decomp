@@ -22,8 +22,7 @@ ConstructionAIModule::ConstructionAIModule(void* pW, int playerID)
       zReferencePointValue(-1.0f),
       mapXSizeValue(-1),
       mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(PlacementOk)
-{
+      lastPlacementReturnCodeValue(PlacementOk) {
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;
     this->randomConstructionLots.next = &this->randomConstructionLots;
@@ -44,8 +43,7 @@ ConstructionAIModule::ConstructionAIModule(int playerID, int infile)
       zReferencePointValue(-1.0f),
       mapXSizeValue(-1),
       mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(PlacementOk)
-{
+      lastPlacementReturnCodeValue(PlacementOk) {
     char name[257];
     IntFloat x;
     int i;
