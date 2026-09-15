@@ -12,29 +12,29 @@
 #include "../include/rge_fio.h"
 #include "../include/command_waypoint.h"
 
-RGE_Action_Move_To::RGE_Action_Move_To(int handle, RGE_Action_Object* object)
-    : RGE_Action(handle, object, 1) {
+RGE_Action_Move_To::RGE_Action_Move_To(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     action_type = 1;
-    rge_read(handle, &range, 4);
+    rge_read(infile, &range, 4);
 }
 
 //     RGE_Action_Object*, float, float, float, float, RGE_Sprite*)
 RGE_Action_Move_To::RGE_Action_Move_To(
-    RGE_Action_Object* object, float x, float y, float z, float range_value,
-    RGE_Sprite* sprite_value)
-    : RGE_Action(object, 1) {
+    RGE_Action_Object* obj_in, float x, float y, float z, float range_in,
+    RGE_Sprite* sprite_in)
+    : RGE_Action(obj_in, 1) {
     action_type = 1;
     target_x = x;
     target_y = y;
     target_z = z;
-    range = range_value;
-    sprite = sprite_value;
+    range = range_in;
+    sprite = sprite_in;
 
-    if (range_value <= 0.0f) {
+    if (range_in <= 0.0f) {
         range = 0.4f;
     }
 
-    if (sprite_value == 0) {
+    if (sprite_in == 0) {
         RGE_Master_Action_Object* master =
             static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
         if (master->move_sprite == 0) {
@@ -47,26 +47,26 @@ RGE_Action_Move_To::RGE_Action_Move_To(
 
 //     RGE_Action_Object*, RGE_Static_Object*, float, RGE_Sprite*)
 RGE_Action_Move_To::RGE_Action_Move_To(
-    RGE_Action_Object* object, RGE_Static_Object* target,
-    float range_value, RGE_Sprite* sprite_value)
-    : RGE_Action(object, 1) {
+    RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in,
+    float range_in, RGE_Sprite* sprite_in)
+    : RGE_Action(obj_in, 1) {
     action_type = 1;
-    set_target_obj(target);
+    set_target_obj(target_obj_in);
 
-    if (target != 0) {
-        target_x = target->world_x;
-        target_y = target->world_y;
-        target_z = target->world_z;
+    if (target_obj_in != 0) {
+        target_x = target_obj_in->world_x;
+        target_y = target_obj_in->world_y;
+        target_z = target_obj_in->world_z;
     }
 
-    range = range_value;
-    sprite = sprite_value;
+    range = range_in;
+    sprite = sprite_in;
 
-    if (range_value <= 0.0f) {
+    if (range_in <= 0.0f) {
         range = 0.4f;
     }
 
-    if (sprite_value == 0) {
+    if (sprite_in == 0) {
         RGE_Master_Action_Object* master =
             static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
         if (master->move_sprite == 0) {
@@ -87,7 +87,7 @@ void RGE_Action_Move_To::save(int outfile) {
     rge_write(outfile, &this->range, 4);
 }
 
-void RGE_Action_Move_To::first_in_stack(unsigned char param_1) {
+void RGE_Action_Move_To::first_in_stack(unsigned char first_time) {
     if (this->target_obj != 0) {
         if (this->obj->inRange(this->target_obj, this->range) != 0) {
             this->set_state(1);
@@ -103,10 +103,10 @@ void RGE_Action_Move_To::first_in_stack(unsigned char param_1) {
     this->set_state(3);
 }
 
-void RGE_Action_Move_To::set_state(unsigned char param_1) {
-    this->state = param_1;
+void RGE_Action_Move_To::set_state(unsigned char new_state) {
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 4:
         this->obj->new_sprite(this->sprite);
         return;
@@ -189,9 +189,9 @@ unsigned char RGE_Action_Move_To::update() {
         int move_result;
         if (this->target_obj != 0) {
             float x_diff = this->target_x - this->target_obj->world_x;
-            float y_diff = this->target_y - this->target_obj->world_y;
-            if (x_diff < -1.0 || x_diff > 1.0 || y_diff < -1.0 ||
-                y_diff > 1.0) {
+            float yDiff = this->target_y - this->target_obj->world_y;
+            if (x_diff < -1.0 || x_diff > 1.0 || yDiff < -1.0 ||
+                yDiff > 1.0) {
                 goto reached_target;
             }
         }
@@ -204,9 +204,9 @@ unsigned char RGE_Action_Move_To::update() {
         if (move_result == 2) {
             if (this->target_obj != 0) {
                 float x_diff = this->target_x - this->target_obj->world_x;
-                float y_diff = this->target_y - this->target_obj->world_y;
-                if (x_diff < -1.0 || x_diff > 1.0 || y_diff < -1.0 ||
-                    y_diff > 1.0) {
+                float yDiff = this->target_y - this->target_obj->world_y;
+                if (x_diff < -1.0 || x_diff > 1.0 || yDiff < -1.0 ||
+                    yDiff > 1.0) {
                     goto reached_target;
                 }
             }
