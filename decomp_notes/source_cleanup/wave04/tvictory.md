@@ -5,7 +5,8 @@
 - Module: `src/tvictory.cpp`
 - Branch: `cleanup/staging-20260915-243`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: pending until the source commit is created.
+- Final source commit: `f8d77b08c8d4e319be1cddc8bc5cc0d0cfc15610`.
+- Report correction commit: follows this source commit.
 - Changed files:
   - `src/tvictory.cpp`
   - `decomp_notes/source_cleanup/wave04/tvictory.md`
