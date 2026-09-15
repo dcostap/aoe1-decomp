@@ -5,7 +5,8 @@
 - Module: `src/Scr_sels.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `f4c24344757acbb864d7deef11aad91759946e4a`
-- Final report commit: `df983109a9635d1dad1543fc686d2bd5435dd4fa`
+- Scenario-ID follow-up commit: `43d87a91f0eb0b1d8070c7df1b588880bbd26d56`
+- Final report commit: `43d87a91f0eb0b1d8070c7df1b588880bbd26d56`
 - Branch: `cleanup/staging-20260915-187`
 - Changed files:
   - `src/Scr_sels.cpp`
@@ -83,15 +84,26 @@ I left this occurrence numeric because this call targets a scrollbar, not a Canc
 The numeric equality does not prove that `IDS_HELP_CANCEL` describes this use.
 The original value and call stay unchanged.
 
-The following IDs have strong role and text evidence, but no shared name exists yet.
-I did not define local macros or edit the root-owned resource header.
-The root owner can review these proposed names:
+## Root-approved scenario IDs
 
-| ID | Proposed cleanup name | Proven source role | Language payload |
+The worker evidence established the roles and text shown below.
+At that time, no shared name existed in this worktree.
+
+Root approved the payload-backed mappings in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`.
+I read the approved `include/resource_ids.h` from the root owner's worktree:
+
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-181/include/resource_ids.h`
+
+This follow-up uses the exact approved macro names.
+The root-owned header remains unedited in this worker worktree.
+It must be integrated with the approved root commit.
+
+| ID | Approved cleanup name | Proven source role | Language payload |
 | --- | --- | --- | --- |
 | `0x25FA` | `IDS_SCENARIO_SELECTION_TITLE` | Screen title passed to `create_text` | `Scenarios` |
 | `0x25FD` | `IDS_SCENARIO_LIST_LOADING` | Initial text passed to the scenario list | `Loading list of scenarios...` |
-| `0x25FE` | `IDS_SELECT_SCENARIO_TITLE` | Scenario-list title passed to `create_text` | `Select Scenario` |
+| `0x25FE` | `IDS_SCENARIO_LIST_TITLE` | Scenario-list title passed to `create_text` | `Select Scenario` |
 | `0x25FF` | `IDS_SCENARIO_PLAYERS_TITLE` | Player-count column title | `Players` |
 | `0x2600` | `IDS_SCENARIO_INSTRUCTIONS_TITLE` | Mission-text title | `Scenario Instructions` |
 
@@ -117,25 +129,28 @@ The checked base runtime file is `runtime/language.dll`.
 - SHA-256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
 - Resource type: `RT_STRING`
 - Language: `0x0409` (`1033`)
-- It contains all five proposed IDs and the `0x03EA`, `0x0FA1`, and `0x0FA2` entries.
+- It contains all five approved scenario IDs and the `0x03EA`, `0x0FA1`, and `0x0FA2` entries.
 - It does not contain `0x7531` or `0x7532`.
 
 The checked runtime expansion file is `runtime/languagex.dll`.
 
 - SHA-256: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
 - Resource type: `RT_STRING`
-- The five proposed IDs and both help IDs are missing.
+- The five approved scenario IDs and both help IDs are missing.
 
 The pinned original expansion reference is `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`.
 
 - SHA-256: `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
 - Resource type: `RT_STRING`
-- The five proposed IDs and both help IDs are missing.
+- The five approved scenario IDs and both help IDs are missing.
 
 `RGE_Base_Game` sets the base DLL name to `language.dll` and loads it into `StringTable`.
 `TRIBE_Game::get_string` checks `StringTableX` first, then uses the base lookup.
-The checked runtime expansion therefore falls back to the checked runtime base for the proposed IDs.
+The checked runtime expansion therefore falls back to the checked runtime base for the approved scenario IDs.
 The help text remains missing in all checked files.
+
+These staged runtime-base and expansion statuses are worker evidence.
+Root approval changed only the source names, not the resource files or their findings.
 
 The original function packet also records the same `language.dll` payloads at the five constructor call sites.
 The packet records `0x7531` and `0x7532` as help IDs.
@@ -144,6 +159,7 @@ The packet records `0x7531` and `0x7532` as help IDs.
 
 - Added the existing shared resource-ID header include.
 - Replaced proven button and help literals with existing shared names.
+- Replaced `0x25FA`, `0x25FD`, `0x25FE`, `0x25FF`, and `0x2600` with the root-approved scenario macros.
 - Recovered the four `action` parameter names from the PDB.
 - Applied 1TBS to the constructor and `fillScenarios` definitions.
 - Kept the `action` signature and opening brace on one line.
@@ -167,9 +183,10 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 This worker did not edit that unassigned header.
 The declaration types and order already match the source definition.
 
-The root owner of `include/resource_ids.h` should review the five proposed mappings above.
+Root approved the five scenario mappings in
+`f5b7d6668f785b97811119493bea0e04403d1d10`.
+The integration must use that root-owned header commit.
 Do not add duplicate names for `0x25FA` through `0x2600`.
-The source keeps those five values numeric until a shared mapping is approved.
 
 The purpose of the `0x7532` mission-scrollbar help assignment remains unresolved.
 The source preserves it as numeric.
