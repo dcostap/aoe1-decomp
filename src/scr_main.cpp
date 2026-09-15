@@ -10,12 +10,13 @@
 #include "../include/scr_sing.h"
 #include "../include/scr_mp.h"
 #include "../include/scr_sedm.h"
+#include "../include/resource_ids.h"
 #include <string.h>
 
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     : TScreenPanel("Main Menu") {
     RECT rect;
-    TPanel* tab_list[5];
+    TPanel* tabList[5];
     char temp_str[0x200];
     int diff;
     int i;
@@ -123,12 +124,12 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     this->set_ideal_size(0x280, 0x1E0);
 
-    TPanel** tab_dst = tab_list;
+    TPanel** tab_dst = tabList;
     TButtonPanel** tab_src = this->button;
     for (i = 5; i != 0; --i) {
         *tab_dst++ = *tab_src++;
     }
-    this->set_tab_order(tab_list, 5);
+    this->set_tab_order(tabList, 5);
     this->set_curr_child(this->button[0]);
 }
 
@@ -157,10 +158,8 @@ long TRIBE_Screen_Main_Menu::handle_idle() {
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Main_Menu::key_down_action(long key, short param_2,
-                                             int param_3, int param_4,
-                                             int param_5) {
-    if (param_4 != 0) {
+long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
+    if (ctrl_key != 0) {
         switch (key) {
         case 0x4C:
             {
@@ -183,22 +182,21 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short param_2,
     return 0;
 }
 
-long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
-                                    unsigned long p3, unsigned long p4) {
+long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     long result;
 
-    if (panel != 0) {
-        if (panel->panelName() != 0 &&
-            strcmp(panel->panelName(), "Confirm Dialog") == 0 &&
-            event == 0) {
+    if (fromPanel != 0) {
+        if (fromPanel->panelName() != 0 &&
+            strcmp(fromPanel->panelName(), "Confirm Dialog") == 0 &&
+            actionIn == 0) {
             panel_system.destroyPanel("Confirm Dialog");
-            WinHelpA(rge_base_game->prog_window, "empires.hlp", 3, event);
+            WinHelpA(rge_base_game->prog_window, "empires.hlp", 3, actionIn);
             result = 1;
             goto done;
         }
 
-        if (event == 1) {
-            if (panel == this->button[0]) {
+        if (actionIn == 1) {
+            if (fromPanel == this->button[0]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
                         this->popupOKDialog(0x7D8, 0, 0x1C2, 100);
@@ -216,7 +214,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                 goto done;
             }
 
-            if (panel == this->button[1]) {
+            if (fromPanel == this->button[1]) {
                 rge_base_game->disable_input();
                 new TribeMPStartupScreen;
                 panel_system.setCurrentPanel("MP Startup Screen", 0);
@@ -225,13 +223,13 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                 goto done;
             }
 
-            if (panel == this->button[2]) {
+            if (fromPanel == this->button[2]) {
                 this->popupOKDialog(0x1D4F7, "Confirm Dialog", 0x1C2, 100);
                 result = 1;
                 goto done;
             }
 
-            if (panel == this->button[3]) {
+            if (fromPanel == this->button[3]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
                         this->popupOKDialog(0x7DA, 0, 0x1C2, 100);
@@ -249,7 +247,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                 goto done;
             }
 
-            if (panel == this->button[4]) {
+            if (fromPanel == this->button[4]) {
                 rge_base_game->close();
                 result = 1;
                 goto done;
@@ -257,7 +255,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
         }
     }
 
-    result = this->TEasy_Panel::action(panel, event, p3, p4);
+    result = this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 
 done:
     return result;
@@ -277,7 +275,7 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
 
     this->create_text(this, &this->message, "", 0x28, 0x28,
                       0x230, 0x190, 4, 1, 1, 1);
-    this->create_button(this, &this->cancel_button, 0xFA1, 0,
+    this->create_button(this, &this->cancel_button, IDS_BUTTON_OK, 0,
                         0xC8, 0x1B8, 0xF0, 0x1E, 0, 0, 0);
 
     if (this->create_button(this, &this->close_button, 0x3EA, 0,
@@ -294,22 +292,20 @@ TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error() {
     this->delete_panel((TPanel**)&this->cancel_button);
 }
 
-void TRIBE_Screen_Main_Error::set_text(char* param) {
-    this->message->set_text(param);
+void TRIBE_Screen_Main_Error::set_text(char* message_in) {
+    this->message->set_text(message_in);
 }
 
-void TRIBE_Screen_Main_Error::set_text(long param) {
-    this->message->set_text(param);
+void TRIBE_Screen_Main_Error::set_text(long message_in) {
+    this->message->set_text(message_in);
 }
 
-long TRIBE_Screen_Main_Error::action(TPanel* param_1, long param_2,
-                                     unsigned long param_3,
-                                     unsigned long param_4) {
+long TRIBE_Screen_Main_Error::action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2) {
     TPanel* panel;
     long state;
 
-    panel = param_1;
-    state = param_2;
+    panel = from_panel;
+    state = action_in;
 
     if (panel == 0) {
         goto call_parent;
@@ -326,7 +322,7 @@ long TRIBE_Screen_Main_Error::action(TPanel* param_1, long param_2,
     }
 
 call_parent:
-    return this->TEasy_Panel::action(panel, state, param_3, param_4);
+    return this->TEasy_Panel::action(panel, state, val1, val2);
 }
 
 long TRIBE_Screen_Main_Error::handle_idle() {
