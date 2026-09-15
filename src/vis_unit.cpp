@@ -1,4 +1,3 @@
-
 #include "../include/vis_unit.h"
 #include "../include/map.h"
 #include "../include/world.h"
@@ -17,15 +16,14 @@ extern double DAT_005776d8;
 extern void rge_read(int handle, void* buffer, int size);
 extern void rge_write(int handle, void* buffer, int size);
 
-Visible_Unit_Manager::Visible_Unit_Manager(int player_count, int category_count)
-{
+Visible_Unit_Manager::Visible_Unit_Manager(int Num_Players, int Num_Categories) {
     int i;
 
-    this->Player_Count = player_count;
-    this->Category_Count = category_count + 1;
+    this->Player_Count = Num_Players;
+    this->Category_Count = Num_Categories + 1;
     this->distanceTable = 0;
     this->PlayerDataPtrs =
-        (VISIBLE_UNIT_PTR**)calloc(player_count, 4);
+        (VISIBLE_UNIT_PTR**)calloc(Num_Players, 4);
 
     for (i = 0; i < this->Player_Count; i++) {
         this->PlayerDataPtrs[i] =
@@ -50,8 +48,7 @@ Visible_Unit_Manager::Visible_Unit_Manager(int player_count, int category_count)
     VisibleUnitManager = this;
 }
 
-Visible_Unit_Manager::~Visible_Unit_Manager()
-{
+Visible_Unit_Manager::~Visible_Unit_Manager() {
     int i;
 
     if (this->PlayerDataPtrs != 0) {
@@ -83,8 +80,7 @@ Visible_Unit_Manager::~Visible_Unit_Manager()
     VisibleUnitManager = 0;
 }
 
-void Visible_Unit_Manager::Build_Distance_Table()
-{
+void Visible_Unit_Manager::Build_Distance_Table() {
     if (this->distanceTable != 0) {
         free(this->distanceTable);
     }
@@ -132,27 +128,27 @@ void Visible_Unit_Manager::Build_Distance_Table()
 }
 
 void Visible_Unit_Manager::Update_Unit_Info(
-    int object_id, int player, int x, int y, int category,
-    unsigned long old_mask, unsigned long new_mask,
-    VISIBLE_UNIT_REC** refs)
-{
-    unsigned long mask = (new_mask ^ old_mask) & 0xffff;
+    int Object_Id, int player_id, int Xpos, int Ypos, int Category,
+    unsigned long PriorUnifiedMap, unsigned long NewUnifiedMap,
+    VISIBLE_UNIT_REC** ObjectPtrs) {
+    unsigned long ChangedMask =
+        (NewUnifiedMap ^ PriorUnifiedMap) & 0xffff;
 
-    if (category < this->Category_Count) {
+    if (Category < this->Category_Count) {
         int r = 0;
         if (this->Player_Count > 0) {
-            int i = 0x194 - (int)refs;
+            int i = 0x194 - (int)ObjectPtrs;
 
             do {
-                if (mask == 0) {
+                if (ChangedMask == 0) {
                     return;
                 }
 
-                if ((mask & 1) == 1) {
+                if ((ChangedMask & 1) == 1) {
                     VISIBLE_UNIT_PTR* list =
-                        this->PlayerDataPtrs[r] + category;
+                        this->PlayerDataPtrs[r] + Category;
 
-                    if ((new_mask & 1) == 1) {
+                    if ((NewUnifiedMap & 1) == 1) {
                         if (list->used == list->list_size) {
                             short list_size = list->list_size;
                             VISIBLE_UNIT_REC* new_list =
@@ -170,7 +166,8 @@ void Visible_Unit_Manager::Update_Unit_Info(
                                     VIS_UNIT_objectsValue[record->object_id];
                                 if (object != 0) {
                                     *(VISIBLE_UNIT_REC **)(
-                                        (int)object + i + (int)refs) = record;
+                                        (int)object + i + (int)ObjectPtrs) =
+                                        record;
                                 }
                                 ++j;
                                 ++record;
@@ -181,14 +178,14 @@ void Visible_Unit_Manager::Update_Unit_Info(
                         VISIBLE_UNIT_REC* record =
                             list->unit_list + index;
                         record->distance = 0;
-                        record->object_id = object_id;
-                        record->player = (unsigned char)player;
-                        record->pos_x = (unsigned char)x;
-                        record->pos_y = (unsigned char)y;
+                        record->object_id = Object_Id;
+                        record->player = (unsigned char)player_id;
+                        record->pos_x = (unsigned char)Xpos;
+                        record->pos_y = (unsigned char)Ypos;
                         list->used++;
-                        *refs = record;
+                        *ObjectPtrs = record;
                     } else {
-                        VISIBLE_UNIT_REC* record = *refs;
+                        VISIBLE_UNIT_REC* record = *ObjectPtrs;
                         VISIBLE_UNIT_REC* last_record =
                             list->unit_list + list->used - 1;
 
@@ -199,18 +196,19 @@ void Visible_Unit_Manager::Update_Unit_Info(
                                 VIS_UNIT_objectsValue[record->object_id];
                             if (object != 0) {
                                 *(VISIBLE_UNIT_REC **)(
-                                    (int)object + i + (int)refs) = record;
+                                    (int)object + i + (int)ObjectPtrs) =
+                                    record;
                             }
                         }
 
-                        *refs = 0;
+                        *ObjectPtrs = 0;
                         list->used--;
                     }
                 }
 
-                ++refs;
-                new_mask >>= 1;
-                mask >>= 1;
+                ++ObjectPtrs;
+                NewUnifiedMap >>= 1;
+                ChangedMask >>= 1;
                 ++r;
             } while (r < this->Player_Count);
         }
@@ -218,20 +216,19 @@ void Visible_Unit_Manager::Update_Unit_Info(
 }
 
 int Visible_Unit_Manager::GetVisibleUnits(
-    int x, int y, int distance, int player,
-    int* categories, int category_count, int* player_map)
-{
+    int Xpos, int Ypos, int LOS, int player,
+    int* DesiredTypes, int DesiredCount, int* PlayerListMap) {
     int found = 0;
 
-    if (category_count <= 0 || player >= this->Player_Count) {
+    if (DesiredCount <= 0 || player >= this->Player_Count) {
         return 0;
     }
-    if (distance > 15) {
-        distance = 15;
+    if (LOS > 15) {
+        LOS = 15;
     }
 
-    VISIBLE_UNIT_PTR* player_data = this->PlayerDataPtrs[player];
-    unsigned char* distance_table = this->distanceTable;
+    VISIBLE_UNIT_PTR* PDP = this->PlayerDataPtrs[player];
+    unsigned char* distTbl = this->distanceTable;
 
     VisibleUnitList_Size[0] = 0;
     VisibleUnitList_Size[1] = 0;
@@ -239,54 +236,54 @@ int Visible_Unit_Manager::GetVisibleUnits(
     VisibleUnitList_Size[3] = 0;
     VisibleUnitList_Size[4] = 0;
 
-    int min_x = x - distance;
-    int max_x = x + distance;
-    int min_y = y - distance;
-    int max_y = y + distance;
+    int x1 = Xpos - LOS;
+    int x2 = Xpos + LOS;
+    int y1 = Ypos - LOS;
+    int y2 = Ypos + LOS;
 
     do {
-        VISIBLE_UNIT_PTR* bucket = &player_data[*categories++];
+        VISIBLE_UNIT_PTR* bucket = &PDP[*DesiredTypes++];
         VISIBLE_UNIT_REC* record = bucket->unit_list;
         int count = *(int*)&bucket->used & 0xffff;
 
         for (; count != 0; record++, count--) {
             int record_x = record->pos_x;
-            if (record_x > max_x) {
+            if (record_x > x2) {
                 continue;
             }
 
             int dx;
-            if (record_x < x) {
-                if (record_x < min_x) {
+            if (record_x < Xpos) {
+                if (record_x < x1) {
                     continue;
                 }
-                dx = x - record_x;
+                dx = Xpos - record_x;
             } else {
-                dx = record_x - x;
+                dx = record_x - Xpos;
             }
 
             int record_y = record->pos_y;
-            if (record_y > max_y) {
+            if (record_y > y2) {
                 continue;
             }
 
             int dy;
-            if (record_y < y) {
-                if (record_y < min_y) {
+            if (record_y < Ypos) {
+                if (record_y < y1) {
                     continue;
                 }
-                dy = y - record_y;
+                dy = Ypos - record_y;
             } else {
-                dy = record_y - y;
+                dy = record_y - Ypos;
             }
 
             int unit_distance =
-                distance_table[(dy & 15) * 16 + (dx & 15)];
-            if (unit_distance > distance) {
+                distTbl[(dy & 15) * 16 + (dx & 15)];
+            if (unit_distance > LOS) {
                 continue;
             }
 
-            int list = player_map[record->player];
+            int list = PlayerListMap[record->player];
             int list_size = VisibleUnitList_Size[list];
             if (list_size >= 0x100) {
                 continue;
@@ -300,18 +297,17 @@ int Visible_Unit_Manager::GetVisibleUnits(
             found++;
             *result = saved;
         }
-        category_count--;
-    } while (category_count != 0);
+        DesiredCount--;
+    } while (DesiredCount != 0);
 
     return found;
 }
-Visible_Resource_Manager::Visible_Resource_Manager(
-    RGE_Player* owner, int count)
-{
-    this->num_visible_resource_lists = count;
-    if (count > 0) {
+
+Visible_Resource_Manager::Visible_Resource_Manager(RGE_Player* list_owner, int num_lists) {
+    this->num_visible_resource_lists = num_lists;
+    if (num_lists > 0) {
         this->VR_List =
-            (VISIBLE_RESOURCE_REC**)calloc(count, 4);
+            (VISIBLE_RESOURCE_REC**)calloc(num_lists, 4);
         this->VR_ListSize =
             (int*)calloc(this->num_visible_resource_lists, 4);
         this->VR_ListUsed =
@@ -331,14 +327,12 @@ Visible_Resource_Manager::Visible_Resource_Manager(
         this->VR_ListSize = 0;
         this->VR_ListUsed = 0;
     }
-    this->owner = owner;
+    this->owner = list_owner;
 }
 
-Visible_Resource_Manager::Visible_Resource_Manager(
-    int handle, RGE_Player* owner)
-{
+Visible_Resource_Manager::Visible_Resource_Manager(int infile, RGE_Player* list_owner) {
     if (save_game_version >= DAT_005776c8) {
-        rge_read(handle, &this->num_visible_resource_lists, 4);
+        rge_read(infile, &this->num_visible_resource_lists, 4);
     } else {
         this->num_visible_resource_lists = 5;
     }
@@ -354,8 +348,8 @@ Visible_Resource_Manager::Visible_Resource_Manager(
         int i = 0;
         if (this->num_visible_resource_lists > 0) {
             do {
-                rge_read(handle, this->VR_ListSize + i, 4);
-                rge_read(handle, this->VR_ListUsed + i, 4);
+                rge_read(infile, this->VR_ListSize + i, 4);
+                rge_read(infile, this->VR_ListUsed + i, 4);
                 this->VR_List[i] =
                     (VISIBLE_RESOURCE_REC*)malloc(
                         this->VR_ListSize[i] << 3);
@@ -363,7 +357,7 @@ Visible_Resource_Manager::Visible_Resource_Manager(
             } while (i < this->num_visible_resource_lists);
         }
 
-        int saved_handle = handle;
+        int saved_handle = infile;
         i = 0;
         if (this->num_visible_resource_lists > 0) {
             do {
@@ -379,11 +373,10 @@ Visible_Resource_Manager::Visible_Resource_Manager(
         this->VR_ListSize = 0;
         this->VR_ListUsed = 0;
     }
-    this->owner = owner;
+    this->owner = list_owner;
 }
 
-Visible_Resource_Manager::~Visible_Resource_Manager()
-{
+Visible_Resource_Manager::~Visible_Resource_Manager() {
     int i;
 
     for (i = 0; i < this->num_visible_resource_lists; i++) {
@@ -403,14 +396,13 @@ Visible_Resource_Manager::~Visible_Resource_Manager()
     }
 }
 
-void Visible_Resource_Manager::save(int handle)
-{
-    rge_write(handle, &this->num_visible_resource_lists, 4);
+void Visible_Resource_Manager::save(int outfile) {
+    rge_write(outfile, &this->num_visible_resource_lists, 4);
     int i = 0;
     if (this->num_visible_resource_lists > 0) {
         do {
-            rge_write(handle, this->VR_ListSize + i, 4);
-            rge_write(handle, this->VR_ListUsed + i, 4);
+            rge_write(outfile, this->VR_ListSize + i, 4);
+            rge_write(outfile, this->VR_ListUsed + i, 4);
             i++;
         } while (i < this->num_visible_resource_lists);
     }
@@ -419,7 +411,7 @@ void Visible_Resource_Manager::save(int handle)
     if (this->num_visible_resource_lists > 0) {
         do {
             if (this->VR_ListUsed[i] > 0) {
-                rge_write(handle, this->VR_List[i],
+                rge_write(outfile, this->VR_List[i],
                           this->VR_ListUsed[i] << 3);
             }
             i++;
@@ -427,18 +419,17 @@ void Visible_Resource_Manager::save(int handle)
     }
 }
 
-void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* list)
-{
+void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* tile_list) {
     int size;
-    RGE_Tile_List_Node* tile_list;
+    RGE_Tile_List_Node* thelist;
 
-    list->get_list_info(tile_list, size);
+    tile_list->get_list_info(thelist, size);
     if (size > 0 && this->num_visible_resource_lists != 0) {
-        RGE_Tile** rows = this->owner->world->map->map_row_offset;
-        for (int i = 0; i < size; i++, tile_list++) {
-            RGE_Tile_List_Node* current_tile = tile_list;
+        RGE_Tile** TileOffsets = this->owner->world->map->map_row_offset;
+        for (int i = 0; i < size; i++, thelist++) {
+            RGE_Tile_List_Node* current_tile = thelist;
             RGE_Tile* tile =
-                &rows[current_tile->row][current_tile->col];
+                &TileOffsets[current_tile->row][current_tile->col];
             int count = tile->objects.number_of_objects;
             if (count > 0) {
                 RGE_Object_Node* node = tile->objects.list;
@@ -460,60 +451,58 @@ void Visible_Resource_Manager::Process_New_Tiles(RGE_Tile_List* list)
     }
 }
 
-void Visible_Resource_Manager::AddResource(int object_id, int type)
-{
-    RGE_Static_Object* object;
+void Visible_Resource_Manager::AddResource(int Obj_Id, int ObjGroup) {
+    RGE_Static_Object* o;
     int n;
 
     if (this->num_visible_resource_lists != 0) {
-        object = VIS_UNIT_objectsValue[object_id];
-        if (object != 0) {
-            n = this->VR_ListSize[type];
-            if (this->VR_ListUsed[type] == n) {
+        o = VIS_UNIT_objectsValue[Obj_Id];
+        if (o != 0) {
+            n = this->VR_ListSize[ObjGroup];
+            if (this->VR_ListUsed[ObjGroup] == n) {
                 n = n + n;
                 VISIBLE_RESOURCE_REC* new_list =
                     (VISIBLE_RESOURCE_REC*)malloc(n * 8);
-                memcpy(new_list, this->VR_List[type],
-                       this->VR_ListSize[type] << 3);
-                free(this->VR_List[type]);
-                this->VR_List[type] = new_list;
-                this->VR_ListSize[type] = n;
+                memcpy(new_list, this->VR_List[ObjGroup],
+                       this->VR_ListSize[ObjGroup] << 3);
+                free(this->VR_List[ObjGroup]);
+                this->VR_List[ObjGroup] = new_list;
+                this->VR_ListSize[ObjGroup] = n;
             }
 
-            VISIBLE_RESOURCE_REC* record =
-                this->VR_List[type] + this->VR_ListUsed[type];
-            int x = object->world_x;
-            int y = object->world_y;
-            record->object_id = object_id;
-            record->distance = 0;
-            record->zone = 0;
-            record->pos_x = (unsigned char)x;
-            record->pos_y = (unsigned char)y;
-            this->VR_ListUsed[type]++;
+            VISIBLE_RESOURCE_REC* p =
+                this->VR_List[ObjGroup] + this->VR_ListUsed[ObjGroup];
+            int Xpos = o->world_x;
+            int y = o->world_y;
+            p->object_id = Obj_Id;
+            p->distance = 0;
+            p->zone = 0;
+            p->pos_x = (unsigned char)Xpos;
+            p->pos_y = (unsigned char)y;
+            this->VR_ListUsed[ObjGroup]++;
         }
     }
 }
 
-int Visible_Resource_Manager::Remove_Resource(int object_id, int type)
-{
+int Visible_Resource_Manager::Remove_Resource(int Obj_Id, int ObjGroup) {
     if (this->num_visible_resource_lists == 0) {
         return 0;
     }
 
-    int last = this->VR_ListUsed[type];
+    int last = this->VR_ListUsed[ObjGroup];
     if (last == 0) {
         return 0;
     }
 
     --last;
-    VISIBLE_RESOURCE_REC* list = this->VR_List[type];
+    VISIBLE_RESOURCE_REC* list = this->VR_List[ObjGroup];
 
     for (int i = 0; i <= last; i++) {
-        if (list[i].object_id == object_id) {
+        if (list[i].object_id == Obj_Id) {
             if (i < last) {
                 list[i] = list[last];
             }
-            this->VR_ListUsed[type]--;
+            this->VR_ListUsed[ObjGroup]--;
             return 1;
         }
     }
@@ -521,9 +510,7 @@ int Visible_Resource_Manager::Remove_Resource(int object_id, int type)
     return 0;
 }
 
-VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
-    int Xpos, int Ypos, int Zone, int ResType, int* excList, int elSize)
-{
+VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int Xpos, int Ypos, int Zone, int ResType, int* excList, int elSize) {
     if (ResType >= 0 && this->num_visible_resource_lists != 0 &&
         ResType < this->num_visible_resource_lists) {
         int count = this->VR_ListUsed[ResType];
@@ -532,31 +519,31 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
             VISIBLE_RESOURCE_REC* c = 0;
             VISIBLE_RESOURCE_REC* record = this->VR_List[ResType];
             while (count > 0) {
-                int dx;
-                int dy;
+                int xd;
+                int yd;
                 int Reject = 0;
                 int record_x = record->pos_x;
                 int record_y = record->pos_y;
                 if (record_x > Xpos) {
-                    dx = record_x - Xpos;
+                    xd = record_x - Xpos;
                 } else {
-                    dx = Xpos - record_x;
+                    xd = Xpos - record_x;
                 }
                 if (record_y > Ypos) {
-                    dy = record_y - Ypos;
+                    yd = record_y - Ypos;
                 } else {
-                    dy = Ypos - record_y;
+                    yd = Ypos - record_y;
                 }
 
                 int distance;
-                if (dx > dy) {
+                if (xd > yd) {
                     distance =
-                        (dx - (int)(DAT_005776d8 -
-                                    dy * DAT_005776d0)) - dy;
+                        (xd - (int)(DAT_005776d8 -
+                                    yd * DAT_005776d0)) - yd;
                 } else {
                     distance =
-                        (dy - (int)(DAT_005776d8 -
-                                    dx * DAT_005776d0)) - dx;
+                        (yd - (int)(DAT_005776d8 -
+                                    xd * DAT_005776d0)) - xd;
                 }
 
                 if (distance < bestdist) {

@@ -21,14 +21,14 @@ static const char print_row[] = "R%03d: ";
 static const char print_row_end[] = ":R%03d\n";
 static const char print_row_end_last[] = ":R%03d\n\n";
 
-InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue)
-    : xSizeValue(xSize),
+InfluenceMap::InfluenceMap(int x, int y, unsigned char initialValue)
+    : xSizeValue(x),
       xReferencePointValue(0),
       yReferencePointValue(0) {
-    this->ySizeValue = ySize;
-    int total = ySize * xSize;
+    this->ySizeValue = y;
+    int total = y * x;
     this->valueValue = (unsigned char*)::operator new(total);
-    memset(this->valueValue, fillValue, total);
+    memset(this->valueValue, initialValue, total);
     this->rowValue = (unsigned char**)::operator new(this->ySizeValue * 4);
     if (this->rowValue) {
         int i = 0;
@@ -43,12 +43,12 @@ InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue)
     }
 }
 
-InfluenceMap::InfluenceMap(int fd) {
+InfluenceMap::InfluenceMap(int infile) {
     this->xSizeValue = -1;
     this->ySizeValue = -1;
     this->xReferencePointValue = 0;
     this->yReferencePointValue = 0;
-    this->load(fd);
+    this->load(infile);
 }
 
 InfluenceMap::~InfluenceMap() {
@@ -60,43 +60,42 @@ InfluenceMap::~InfluenceMap() {
     }
 }
 
-int InfluenceMap::initialize(unsigned char value) {
-    memset(this->valueValue, value, this->xSizeValue * this->ySizeValue);
+int InfluenceMap::initialize(unsigned char initialValue) {
+    memset(this->valueValue, initialValue, this->xSizeValue * this->ySizeValue);
     return 1;
 }
 
-void InfluenceMap::save(int fd) {
-    rge_write(fd, &xSizeValue, 4);
-    rge_write(fd, &ySizeValue, 4);
-    rge_write(fd, &xReferencePointValue, 4);
-    rge_write(fd, &yReferencePointValue, 4);
-    rge_write(fd, &unchangeableLimitValue, 1);
+void InfluenceMap::save(int outfile) {
+    rge_write(outfile, &xSizeValue, 4);
+    rge_write(outfile, &ySizeValue, 4);
+    rge_write(outfile, &xReferencePointValue, 4);
+    rge_write(outfile, &yReferencePointValue, 4);
+    rge_write(outfile, &unchangeableLimitValue, 1);
 
-    for (int i = 0; i < ySizeValue; i++) {
-        for (int j = 0; j < xSizeValue; j++) {
-            rge_write(fd, rowValue[i] + j, 1);
+    for (int j = 0; j < ySizeValue; j++) {
+        for (int i = 0; i < xSizeValue; i++) {
+            rge_write(outfile, rowValue[j] + i, 1);
         }
     }
 }
 
-void InfluenceMap::load(int fd) {
-    rge_read(fd, &xSizeValue, 4);
-    rge_read(fd, &ySizeValue, 4);
-    rge_read(fd, &xReferencePointValue, 4);
-    rge_read(fd, &yReferencePointValue, 4);
-    rge_read(fd, &unchangeableLimitValue, 1);
+void InfluenceMap::load(int infile) {
+    rge_read(infile, &xSizeValue, 4);
+    rge_read(infile, &ySizeValue, 4);
+    rge_read(infile, &xReferencePointValue, 4);
+    rge_read(infile, &yReferencePointValue, 4);
+    rge_read(infile, &unchangeableLimitValue, 1);
 
-    for (int i = 0; i < ySizeValue; i++) {
-        for (int j = 0; j < xSizeValue; j++) {
-            unsigned char b;
-            rge_read(fd, &b, 1);
-            rowValue[i][j] = b;
+    for (int j = 0; j < ySizeValue; j++) {
+        for (int i = 0; i < xSizeValue; i++) {
+            unsigned char tempBYTE;
+            rge_read(infile, &tempBYTE, 1);
+            rowValue[j][i] = tempBYTE;
         }
     }
 }
 
-void InfluenceMap::printToFile(char* filename)
-{
+void InfluenceMap::printToFile(char* filename) {
     if (filename != 0) {
         FILE* f = fopen(filename, print_mode);
         if (f != 0) {
@@ -134,14 +133,14 @@ void InfluenceMap::printToFile(char* filename)
             }
             fprintf(f, print_newline);
 
-            int r = 0;
+            int j = 0;
             if (this->ySizeValue > 0) {
                 do {
-                    fprintf(f, print_row, r);
+                    fprintf(f, print_row, j);
                     i = 0;
                     if (this->xSizeValue > 0) {
                         do {
-                            int val = this->rowValue[r][i];
+                            int val = this->rowValue[j][i];
                             if (i % 5 == 0) {
                                 fprintf(f, print_spaced_number, val);
                             } else {
@@ -150,14 +149,14 @@ void InfluenceMap::printToFile(char* filename)
                             i++;
                         } while (i < this->xSizeValue);
                     }
-                    int next = r + 1;
+                    int next = j + 1;
                     if (next % 5 == 0) {
-                        fprintf(f, print_row_end_last, r);
+                        fprintf(f, print_row_end_last, j);
                     } else {
-                        fprintf(f, print_row_end, r);
+                        fprintf(f, print_row_end, j);
                     }
-                    r = next;
-                } while (r < this->ySizeValue);
+                    j = next;
+                } while (j < this->ySizeValue);
             }
 
             fprintf(f, print_indent);
@@ -201,37 +200,36 @@ int InfluenceMap::lookupValue(int x, int y) {
                        [x - this->xReferencePointValue];
 }
 
-int InfluenceMap::setValue(int x, int y, unsigned char value) {
+int InfluenceMap::setValue(int x, int y, unsigned char v) {
     x -= this->xReferencePointValue;
     y -= this->yReferencePointValue;
     if (x < 0 || y < 0 || x >= this->xSizeValue || y >= this->ySizeValue) {
         return 0;
     }
-    this->rowValue[y][x] = value;
+    this->rowValue[y][x] = v;
     return 1;
 }
 
-int InfluenceMap::setValue(int x1, int y1, int x2, int y2,
-                           unsigned char value)
-{
-    x1 -= this->xReferencePointValue;
-    x2 -= this->xReferencePointValue;
-    y1 -= this->yReferencePointValue;
-    y2 -= this->yReferencePointValue;
+int InfluenceMap::setValue(int minX, int minY, int maxX, int maxY,
+                           unsigned char v) {
+    minX -= this->xReferencePointValue;
+    maxX -= this->xReferencePointValue;
+    minY -= this->yReferencePointValue;
+    maxY -= this->yReferencePointValue;
 
-    if (x1 < 0 || y1 < 0 || x1 >= this->xSizeValue || y1 >= this->ySizeValue ||
-        x2 < 0 || y2 < 0 || x2 >= this->xSizeValue || y2 >= this->ySizeValue)
+    if (minX < 0 || minY < 0 || minX >= this->xSizeValue || minY >= this->ySizeValue ||
+        maxX < 0 || maxY < 0 || maxX >= this->xSizeValue || maxY >= this->ySizeValue)
         return 0;
 
-    for (int y = y1; y <= y2; y++) {
-        for (int x = x1; x <= x2; x++) {
-            this->rowValue[y][x] = value;
+    for (int j = minY; j <= maxY; j++) {
+        for (int x = minX; x <= maxX; x++) {
+            this->rowValue[j][x] = v;
         }
     }
     return 1;
 }
 
-int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
+int InfluenceMap::incrementValue(int x, int y, unsigned char v) {
     int rx = x - this->xReferencePointValue;
     int ry = y - this->yReferencePointValue;
 
@@ -241,7 +239,7 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     if (this->rowValue[ry][rx] >= this->unchangeableLimitValue)
         return 1;
 
-    int sum = (int)(unsigned char)this->rowValue[ry][rx] + (int)(unsigned char)value;
+    int sum = (int)(unsigned char)this->rowValue[ry][rx] + (int)(unsigned char)v;
     if (sum >= (int)(unsigned char)this->unchangeableLimitValue) {
         this->rowValue[ry][rx] = (unsigned char)((int)(unsigned char)this->unchangeableLimitValue - 1);
         return 1;
@@ -250,41 +248,40 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     return 1;
 }
 
-int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
-                                 unsigned char amount)
-{
-    x1 -= this->xReferencePointValue;
-    x2 -= this->xReferencePointValue;
-    y1 -= this->yReferencePointValue;
-    y2 -= this->yReferencePointValue;
+int InfluenceMap::incrementValue(int minX, int minY, int maxX, int maxY,
+                                 unsigned char v) {
+    minX -= this->xReferencePointValue;
+    maxX -= this->xReferencePointValue;
+    minY -= this->yReferencePointValue;
+    maxY -= this->yReferencePointValue;
 
-    if (x1 < 0)
-        x1 = 0;
-    else if (x1 >= this->xSizeValue)
-        x1 = this->xSizeValue - 1;
-
-    // the shipped code compares y coordinates with xSizeValue.
-    if (y1 < 0)
-        y1 = 0;
-    else if (y1 >= this->xSizeValue)
-        y1 = this->xSizeValue - 1;
-
-    if (x2 < 0)
-        x2 = 0;
-    else if (x2 >= this->xSizeValue)
-        x2 = this->xSizeValue - 1;
+    if (minX < 0)
+        minX = 0;
+    else if (minX >= this->xSizeValue)
+        minX = this->xSizeValue - 1;
 
     // the shipped code compares y coordinates with xSizeValue.
-    if (y2 < 0)
-        y2 = 0;
-    else if (y2 >= this->xSizeValue)
-        y2 = this->xSizeValue - 1;
+    if (minY < 0)
+        minY = 0;
+    else if (minY >= this->xSizeValue)
+        minY = this->xSizeValue - 1;
 
-    if (y1 <= y2) {
-        for (int y = y1; y <= y2; y++) {
-            for (int x = x1; x <= x2; x++) {
+    if (maxX < 0)
+        maxX = 0;
+    else if (maxX >= this->xSizeValue)
+        maxX = this->xSizeValue - 1;
+
+    // the shipped code compares y coordinates with xSizeValue.
+    if (maxY < 0)
+        maxY = 0;
+    else if (maxY >= this->xSizeValue)
+        maxY = this->xSizeValue - 1;
+
+    if (minY <= maxY) {
+        for (int y = minY; y <= maxY; y++) {
+            for (int x = minX; x <= maxX; x++) {
                 if (this->rowValue[y][x] < this->unchangeableLimitValue) {
-                    int value = (int)this->rowValue[y][x] + (int)amount;
+                    int value = (int)this->rowValue[y][x] + (int)v;
                     if (value >= this->unchangeableLimitValue)
                         this->rowValue[y][x] = this->unchangeableLimitValue - 1;
                     else
@@ -297,7 +294,7 @@ int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
     return 1;
 }
 
-int InfluenceMap::decrementValue(int x, int y, unsigned char amount) {
+int InfluenceMap::decrementValue(int x, int y, unsigned char v) {
     int tx = x - xReferencePointValue;
     int ty = y - yReferencePointValue;
 
@@ -311,7 +308,7 @@ int InfluenceMap::decrementValue(int x, int y, unsigned char amount) {
         return 1;
     }
 
-    int diff = (int)*cell - (int)amount;
+    int diff = (int)*cell - (int)v;
     if (diff < 0) {
         *cell = 0;
     } else {
@@ -321,41 +318,40 @@ int InfluenceMap::decrementValue(int x, int y, unsigned char amount) {
     return 1;
 }
 
-int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
-                                 unsigned char amount)
-{
-    x1 -= this->xReferencePointValue;
-    x2 -= this->xReferencePointValue;
-    y1 -= this->yReferencePointValue;
-    y2 -= this->yReferencePointValue;
+int InfluenceMap::decrementValue(int minX, int minY, int maxX, int maxY,
+                                 unsigned char v) {
+    minX -= this->xReferencePointValue;
+    maxX -= this->xReferencePointValue;
+    minY -= this->yReferencePointValue;
+    maxY -= this->yReferencePointValue;
 
-    if (x1 < 0)
-        x1 = 0;
-    else if (x1 >= this->xSizeValue)
-        x1 = this->xSizeValue - 1;
-
-    // the shipped code compares y coordinates with xSizeValue.
-    if (y1 < 0)
-        y1 = 0;
-    else if (y1 >= this->xSizeValue)
-        y1 = this->xSizeValue - 1;
-
-    if (x2 < 0)
-        x2 = 0;
-    else if (x2 >= this->xSizeValue)
-        x2 = this->xSizeValue - 1;
+    if (minX < 0)
+        minX = 0;
+    else if (minX >= this->xSizeValue)
+        minX = this->xSizeValue - 1;
 
     // the shipped code compares y coordinates with xSizeValue.
-    if (y2 < 0)
-        y2 = 0;
-    else if (y2 >= this->xSizeValue)
-        y2 = this->xSizeValue - 1;
+    if (minY < 0)
+        minY = 0;
+    else if (minY >= this->xSizeValue)
+        minY = this->xSizeValue - 1;
 
-    if (y1 <= y2) {
-        for (int y = y1; y <= y2; y++) {
-            for (int x = x1; x <= x2; x++) {
+    if (maxX < 0)
+        maxX = 0;
+    else if (maxX >= this->xSizeValue)
+        maxX = this->xSizeValue - 1;
+
+    // the shipped code compares y coordinates with xSizeValue.
+    if (maxY < 0)
+        maxY = 0;
+    else if (maxY >= this->xSizeValue)
+        maxY = this->xSizeValue - 1;
+
+    if (minY <= maxY) {
+        for (int y = minY; y <= maxY; y++) {
+            for (int x = minX; x <= maxX; x++) {
                 if (this->rowValue[y][x] < this->unchangeableLimitValue) {
-                    int value = (int)this->rowValue[y][x] - (int)amount;
+                    int value = (int)this->rowValue[y][x] - (int)v;
                     if (value < 0)
                         this->rowValue[y][x] = 0;
                     else
@@ -368,21 +364,20 @@ int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
     return 1;
 }
 
-int InfluenceMap::setCoverageCount(const XYPoint& from, const XYPoint& to,
-                                   int threshold)
-{
+int InfluenceMap::setCoverageCount(const XYPoint& min, const XYPoint& max,
+                                   int valueLevel) {
     this->coverageCountValue = 0;
 
-    if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
-        from.y >= this->ySizeValue || to.x < 0 || to.y < 0 ||
-        to.x >= this->xSizeValue || to.y >= this->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
+        min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
+        max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
 
-    for (int x = from.x; x <= to.x; x++) {
-        for (int y = from.y; y <= to.y; y++) {
+    for (int x = min.x; x <= max.x; x++) {
+        for (int y = min.y; y <= max.y; y++) {
             int xr = x - this->xReferencePointValue;
-            if (this->rowValue[y - this->yReferencePointValue][xr] >= threshold) {
+            if (this->rowValue[y - this->yReferencePointValue][xr] >= valueLevel) {
                 this->coverageCountValue++;
             }
         }
@@ -391,29 +386,29 @@ int InfluenceMap::setCoverageCount(const XYPoint& from, const XYPoint& to,
     return this->coverageCountValue;
 }
 
-int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
-                                     int minimum, int edgeHorizontal,
-                                     int edgeVertical, int allDirections)
-{
+int InfluenceMap::setConnectionCount(
+    const XYPoint& min, const XYPoint& max, int valueLevel,
+    int countOrthogonalEdgesAsConnections, int countDiagonalEdgesAsConnections,
+    int countDiagonalConnections) {
     InfluenceMap* self = this;
 
     self->connectionCountValue = 0;
 
-    if (from.x < 0 || from.y < 0 || from.x >= self->xSizeValue ||
-        from.y >= self->ySizeValue || to.x < 0 || to.y < 0 ||
-        to.x >= self->xSizeValue || to.y >= self->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= self->xSizeValue ||
+        min.y >= self->ySizeValue || max.x < 0 || max.y < 0 ||
+        max.x >= self->xSizeValue || max.y >= self->ySizeValue) {
         return 0;
     }
 
-    for (int x = from.x; x <= to.x; ++x) {
-        int y = from.y;
-        if (y <= to.y) {
+    for (int i = min.x; i <= max.x; ++i) {
+        int j = min.y;
+        if (j <= max.y) {
             unsigned char** rows = self->rowValue;
-            int xOffset = x - self->xReferencePointValue;
+            int xOffset = i - self->xReferencePointValue;
             do {
-                if (rows[y - self->yReferencePointValue][xOffset] >= minimum) {
-                    int neighborX = x;
-                    int neighborY = y;
+                if (rows[j - self->yReferencePointValue][xOffset] >= valueLevel) {
+                    int neighborX = i;
+                    int neighborY = j;
 
                     for (int direction = 0; direction < 8; ++direction) {
                         switch (direction) {
@@ -438,24 +433,24 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                             break;
                         }
 
-                        if (allDirections || (direction % 2) != 0) {
+                        if (countDiagonalConnections || (direction % 2) != 0) {
                             if (neighborX >= 0 && neighborX < self->xSizeValue &&
                                 neighborY >= 0 && neighborY < self->ySizeValue) {
                                 if (rows[neighborY - self->yReferencePointValue]
-                                               [neighborX - self->xReferencePointValue] >= minimum) {
+                                           [neighborX - self->xReferencePointValue] >= valueLevel) {
                                     ++self->connectionCountValue;
                                 }
-                            } else if ((edgeHorizontal == 1 &&
+                            } else if ((countOrthogonalEdgesAsConnections == 1 &&
                                         (direction % 2) == 1) ||
-                                       (edgeVertical == 1 &&
+                                       (countDiagonalEdgesAsConnections == 1 &&
                                         (direction % 2) == 0)) {
                                 ++self->connectionCountValue;
                             }
                         }
                     }
                 }
-                ++y;
-            } while (y <= to.y);
+                ++j;
+            } while (j <= max.y);
         }
     }
 
@@ -464,8 +459,7 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
 
 int InfluenceMap::coverageIncluding(const XYPoint& min, const XYPoint& max,
                                     unsigned char valueLevel,
-                                    unsigned char newValueLevel)
-{
+                                    unsigned char newValueLevel) {
     int rVal = this->coverageCountValue;
 
     if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
@@ -496,8 +490,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                                        unsigned char newValueLevel,
                                        int countOrthogonalEdgesAsConnections,
                                        int countDiagonalEdgesAsConnections,
-                                       int countDiagonalConnections)
-{
+                                       int countDiagonalConnections) {
     int rVal = this->connectionCountValue;
     int i;
     int j;
@@ -605,9 +598,9 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
     return rVal;
 }
 
-void InfluenceMap::setUnchangeableLimit(unsigned char value) {
-    if (value > 0)
-        this->unchangeableLimitValue = value;
+void InfluenceMap::setUnchangeableLimit(unsigned char uL) {
+    if (uL > 0)
+        this->unchangeableLimitValue = uL;
 }
 
 int InfluenceMap::maxValue() {

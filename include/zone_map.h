@@ -22,21 +22,20 @@ public:
     long terrain_passability_rules_num;
     RGE_Map* map;
 
-    RGE_Zone_Map(int file, RGE_Map* map);
-    RGE_Zone_Map(RGE_Map* map, float* terrain_info, long terrain_info_num);
+    RGE_Zone_Map(int infile, RGE_Map* new_map);
+    RGE_Zone_Map(RGE_Map* new_map, float* new_terrain_rules, long new_terrain_rules_num);
     ~RGE_Zone_Map();
-    void save(int file);
+    void save(int outfile);
     uchar do_zone_map();
-    RGE_Zone_Map* check_info(float* terrain_info, long terrain_info_num);
+    RGE_Zone_Map* check_info(float* new_terrain_rules, long new_terrain_rules_num);
     uchar get_zone_info(long x, long y);
-    int withinRange(XYPoint point, XYPoint from, float range);
-    int withinRange(uchar zone, XYPoint from, float range);
+    int withinRange(XYPoint start, XYPoint goal, float range);
+    int withinRange(uchar startZone, XYPoint goal, float range);
     int numberTilesInZone(uchar zone);
-    int findClosestPointInTerrainType(XYPoint point, XYPoint& out,
-                                      int a, int b, int c);
+    int findClosestPointInTerrainType(XYPoint p, XYPoint& rVal, int type1, int type2, int range);
 
 private:
-    void do_zone_map_area(long x, long y, uchar passable, uchar zone);
+    void do_zone_map_area(long x, long y, uchar group, uchar zone);
 };
 
 class RGE_Zone_Map_List {
@@ -45,14 +44,13 @@ public:
     long zone_map_num;
     RGE_Map* map;
 
-    RGE_Zone_Map_List(int file, RGE_Map* map);
-    RGE_Zone_Map_List(RGE_Map* map);
+    RGE_Zone_Map_List(int infile, RGE_Map* in_map);
+    RGE_Zone_Map_List(RGE_Map* in_map);
     ~RGE_Zone_Map_List();
-    void save(int file);
-    long create_zone_map(float* terrain_info, long terrain_info_num);
-    RGE_Zone_Map* get_zone_map(float* terrain_info, long terrain_info_num,
-                               int& zone_map_index);
-    RGE_Zone_Map* get_zone_map(long index);
+    void save(int outfile);
+    long create_zone_map(float* new_terrain_rules, long new_terrain_rules_num);
+    RGE_Zone_Map* get_zone_map(float* new_terrain_rules, long new_terrain_rules_num, int& zoneMapIndex);
+    RGE_Zone_Map* get_zone_map(long id);
     void delete_zone_maps();
 };
 
