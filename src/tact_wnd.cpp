@@ -12,7 +12,7 @@
 #include "../include/stat_obj.h"
 #include "../include/world.h"
 
-static const float wonder_time_limit = 2000.0f;
+static const float LIMIT = 2000.0f;
 
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
@@ -167,7 +167,7 @@ void TRIBE_Action_Wonder::set_state(unsigned char new_state) {
 unsigned char TRIBE_Action_Wonder::update() {
     switch (this->state) {
     case 6:
-        if (this->timer >= wonder_time_limit) return 0;
+        if (this->timer >= LIMIT) return 0;
 
         {
             float time_delta = this->obj->owner->world->world_time_delta_seconds;
@@ -178,9 +178,9 @@ unsigned char TRIBE_Action_Wonder::update() {
             }
 
             int player_id = this->obj->owner->id;
-            rge_base_game->set_countdown_timer(player_id, (int)(wonder_time_limit - this->timer));
+            rge_base_game->set_countdown_timer(player_id, (int)(LIMIT - this->timer));
 
-            if (this->timer >= wonder_time_limit) {
+            if (this->timer >= LIMIT) {
                 RGE_Player* owner = this->obj->owner;
                 owner->win_game_now();
                 rge_base_game->world->game_end_condition = 100;

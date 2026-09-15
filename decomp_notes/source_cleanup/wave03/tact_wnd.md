@@ -5,8 +5,9 @@
 - Module: `src/tact_wnd.cpp`.
 - PDB source: `C:\\msdev\\work\\age1_x1\\tact_wnd.cpp`.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit: `1aa46a4526f1e468e831d2552c08e43329a77314`.
-- The report commit follows the source commit. Its full hash is in the final handoff.
+- Initial source commit: `1aa46a4526f1e468e831d2552c08e43329a77314`.
+- Initial report commit: `1bd74c08be703207a9c636edfbeac0af54760187`.
+- This correction commit follows. Its full hash is in the final handoff.
 - Changed files:
   - `src/tact_wnd.cpp`.
   - `decomp_notes/source_cleanup/wave03/tact_wnd.md`.
@@ -40,8 +41,8 @@ The action methods replaced `value`.
 The PDB has no local records for `update`.
 I retained its existing declaration structure and used cleanup names
 `time_delta`, `player_id`, and `owner` for its readable local mappings.
-The static cleanup name `wonder_time_limit` replaces the existing `LIMIT` name.
-The PDB has no record for that static name.
+The file-scope static `LIMIT` name remains unchanged.
+The PDB has no reliable original name for that static.
 
 The destructor's `world`, `player_num`, `current`, `i`, `found`, `owner`,
 `node`, `action`, and `master` names are descriptive cleanup names.
@@ -100,7 +101,8 @@ The preserved executable and baseline object were available at these paths:
 
 ## Constants and resources
 
-`wonder_time_limit` is a new cleanup name for the existing `2000.0f` limit.
+The file-scope static `LIMIT` remains `2000.0f`.
+No reliable original PDB name supports a rename, so `LIMIT` stays unchanged.
 The original decompiler packet tests the timer against `2000.0`.
 The global inventory records the same value at `005753D8`.
 The value and floating-point type remain unchanged.
