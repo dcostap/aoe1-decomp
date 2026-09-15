@@ -37,52 +37,24 @@ extern int logDebugID;
 extern FILE* debugOut;
 extern char STR_STAT_OBJ[];
 
-
-
-
-
-RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup)
-    : sprite(0),
-      old_sprite(0),
-      unitAIValue(0),
-      groupCommanderValue(-1),
-      zoneMapIndex(-1),
-      groupRangeValue(5.0f),
-      inObstructionMapValue(0),
-      lastInObstructionMapValue(0),
-      underAttackValue(0)
-{
+RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z,
+                                     int do_setup)
+    : sprite(0), old_sprite(0), unitAIValue(0), groupCommanderValue(-1), zoneMapIndex(-1), groupRangeValue(5.0f),
+      inObstructionMapValue(0), lastInObstructionMapValue(0), underAttackValue(0) {
     this->player_object_node = 0;
     if (do_setup != 0) {
         this->setup(tobj, obj_owner, x, y, z);
     }
 }
 
-
-
-
-
-
 RGE_Static_Object::RGE_Static_Object(int infile, RGE_Game_World* gworld, int do_setup)
-    : sprite(0),
-      old_sprite(0),
-      unitAIValue(0),
-      groupCommanderValue(-1),
-      zoneMapIndex(-1),
-      groupRangeValue(5.0f),
-      inObstructionMapValue(0),
-      lastInObstructionMapValue(0),
-      underAttackValue(0)
-{
+    : sprite(0), old_sprite(0), unitAIValue(0), groupCommanderValue(-1), zoneMapIndex(-1), groupRangeValue(5.0f),
+      inObstructionMapValue(0), lastInObstructionMapValue(0), underAttackValue(0) {
     this->player_object_node = 0;
     if (do_setup != 0) {
         this->setup(infile, gworld);
     }
 }
-
-
-
-
 
 RGE_Static_Object::~RGE_Static_Object() {
     this->remove_visible_resource();
@@ -106,8 +78,7 @@ RGE_Static_Object::~RGE_Static_Object() {
             this->owner->unselect_one_object(this);
         }
 
-        this->owner->removeObject(this, this->sleep_flag, this->dopple_flag,
-                                  this->player_object_node);
+        this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
 
         this->owner = 0;
     }
@@ -148,12 +119,8 @@ RGE_Static_Object::~RGE_Static_Object() {
     }
 }
 
-
-
-
-
-void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z)
-{
+void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y,
+                                           float z) {
     this->old_sprite = 0;
     this->unitAIValue = 0;
     this->underAttackValue = 0;
@@ -210,13 +177,9 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_P
     debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x18D, seed);
 }
 
-
-
-
 void RGE_Static_Object::recycle_out_of_game() {
     if (this->master_obj->recyclable != 0 &&
-        this->owner->world->recycle_object_out_of_game(
-            this->master_obj->master_type, this) != 0) {
+        this->owner->world->recycle_object_out_of_game(this->master_obj->master_type, this) != 0) {
         if (this->object_state < 3) {
             this->take_attribute_from_owner();
         }
@@ -230,9 +193,7 @@ void RGE_Static_Object::recycle_out_of_game() {
             if ((this->selected & 1) != 0) {
                 this->owner->unselect_one_object(this);
             }
-            this->owner->removeObject(this, this->sleep_flag,
-                                      this->dopple_flag,
-                                      this->player_object_node);
+            this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
             this->owner = 0;
         }
         if (this->tile != 0) {
@@ -264,13 +225,9 @@ void RGE_Static_Object::recycle_out_of_game() {
     }
 }
 
-
 // setup is a protected virtual member in the shipped symbol.
 
-
-
-int RGE_Static_Object::setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z)
-{
+int RGE_Static_Object::setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     int old_debug;
     int seed;
     this->type = 10;
@@ -328,9 +285,7 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_own
     return 1;
 }
 
-
 // this loader entry is a protected virtual setup member.
-
 
 int RGE_Static_Object::setup(int infile, RGE_Game_World* gworld) {
     long long_val;
@@ -440,8 +395,6 @@ int RGE_Static_Object::setup(int infile, RGE_Game_World* gworld) {
     return 1;
 }
 
-
-
 void RGE_Static_Object::change_unique_id() {
     this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
 
@@ -453,21 +406,15 @@ void RGE_Static_Object::change_unique_id() {
     this->player_object_node = this->owner->addObject(this, this->sleep_flag, this->dopple_flag);
 }
 
-
-
 RGE_Object_List* RGE_Static_Object::create_object_list(void) {
     return new RGE_Object_List;
 }
-
-
 
 RGE_Active_Sprite_List* RGE_Static_Object::create_sprite_list(void) {
     return new RGE_Active_Sprite_List(this);
 }
 
-
-void RGE_Static_Object::get_starting_attribute()
-{
+void RGE_Static_Object::get_starting_attribute() {
     RGE_Master_Static_Object* master;
     unsigned char* attr_flag;
     short* attr_type;
@@ -493,9 +440,6 @@ void RGE_Static_Object::get_starting_attribute()
     } while (count != 0);
 }
 
-
-
-
 void RGE_Static_Object::give_attribute_to_owner(void) {
     for (int i = 0; i < 3; ++i) {
         RGE_Master_Static_Object* master = this->master_obj;
@@ -503,15 +447,11 @@ void RGE_Static_Object::give_attribute_to_owner(void) {
         if (status >= 1 && status <= 2) {
             short attr_id = master->attribute_type_held[i];
             if (attr_id >= 0) {
-                this->owner->add_attribute_num(
-                    attr_id, master->attribute_amount_held[i], 0);
+                this->owner->add_attribute_num(attr_id, master->attribute_amount_held[i], 0);
             }
         }
     }
 }
-
-
-
 
 void RGE_Static_Object::take_attribute_from_owner(void) {
     for (int i = 0; i < 3; ++i) {
@@ -519,25 +459,17 @@ void RGE_Static_Object::take_attribute_from_owner(void) {
         if (master->attribute_flag[i] == 2) {
             short attr = master->attribute_type_held[i];
             if (attr >= 0) {
-                this->owner->add_attribute_num(
-                    attr, -master->attribute_amount_held[i], 0);
+                this->owner->add_attribute_num(attr, -master->attribute_amount_held[i], 0);
             }
         }
     }
 }
 
-
-
-
-
-void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y,
-                             RGE_Color_Table* draw_color)
-{
+void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y, RGE_Color_Table* draw_color) {
     SDI_Object_ID = this->id;
 
     if (this->type == 0x19) {
-        RGE_Doppleganger_Object* dopple =
-            static_cast<RGE_Doppleganger_Object*>(this);
+        RGE_Doppleganger_Object* dopple = static_cast<RGE_Doppleganger_Object*>(this);
 
         if ((dopple->CantSeeBits & (1 << this->owner->world->curr_player)) != 0) {
             SDI_Object_ID = -1;
@@ -552,39 +484,27 @@ void RGE_Static_Object::draw(TDrawArea* render_area, short x, short y,
     }
 
     if (this->tile != 0 && this->object_state < 7) {
-        if (this->selected != 0 ||
-            rge_base_game->outline_type == 3 ||
-            ((this->master_obj->draw_flag & 1) == 1 &&
-             rge_base_game->prog_mode == 7)) {
+        if (this->selected != 0 || rge_base_game->outline_type == 3 ||
+            ((this->master_obj->draw_flag & 1) == 1 && rge_base_game->prog_mode == 7)) {
             this->capture_frame(render_area, x, y);
         }
 
         SDI_Draw_Line = (int)y + (int)this->shadow_y_offset;
-        this->sprite_list->draw(
-            this->facet,
-            this->screen_x_offset + x,
-            this->screen_y_offset + y,
-            this->shadow_x_offset + x,
-            y + this->shadow_y_offset,
-            draw_color,
-            render_area);
+        this->sprite_list->draw(this->facet, this->screen_x_offset + x, this->screen_y_offset + y,
+                                this->shadow_x_offset + x, y + this->shadow_y_offset, draw_color, render_area);
     }
 
     SDI_Object_ID = -1;
 }
 
-
 void RGE_Static_Object::shadow_draw(TDrawArea* render_area, short x, short y, unsigned char flag) {
     if (this->tile != 0 && this->object_state < 7) {
-        this->sprite_list->shadow_draw(this->facet, this->shadow_x_offset + x, this->shadow_y_offset + y, this->owner->color_table, render_area, flag);
+        this->sprite_list->shadow_draw(this->facet, this->shadow_x_offset + x, this->shadow_y_offset + y,
+                                       this->owner->color_table, render_area, flag);
     }
 }
 
-
-
-
-void RGE_Static_Object::normal_draw(TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::normal_draw(TDrawArea* render_area, short x, short y) {
     if (this->tile == 0) {
         return;
     }
@@ -603,37 +523,37 @@ void RGE_Static_Object::normal_draw(TDrawArea* render_area, short x, short y)
         this->draw_back_frame(render_area, x, y);
     }
 
-    this->sprite_list->normal_draw(
-        this->facet,
-        (short)((int)(short)this->screen_x_offset + (int)x),
-        (short)((int)(short)this->screen_y_offset + (int)y),
-        this->owner->color_table,
-        render_area
-    );
+    this->sprite_list->normal_draw(this->facet, (short)((int)(short)this->screen_x_offset + (int)x),
+                                   (short)((int)(short)this->screen_y_offset + (int)y), this->owner->color_table,
+                                   render_area);
 
     if (is_selected) {
         this->draw_front_frame(render_area, x, y);
     }
 }
 
-
-
-
 void RGE_Static_Object::draw_front_frame(TDrawArea* render_area, short x, short y) {
     int game_mode = rge_base_game->game_mode;
-    if (game_mode == 1) { this->draw_frame_3d_cube_front(render_area, x, y); return; }
+    if (game_mode == 1) {
+        this->draw_frame_3d_cube_front(render_area, x, y);
+        return;
+    }
     unsigned int outline_type = rge_base_game->outline_type;
-    if (outline_type > 3) return;
+    if (outline_type > 3)
+        return;
     switch (outline_type) {
-    case 0: this->draw_frame(render_area, x, y); return;
-    case 1: this->draw_frame_3d_cube_front(render_area, x, y); return;
-    case 2: case 3: this->draw_frame_3d_square_front(render_area, x, y); return;
+    case 0:
+        this->draw_frame(render_area, x, y);
+        return;
+    case 1:
+        this->draw_frame_3d_cube_front(render_area, x, y);
+        return;
+    case 2:
+    case 3:
+        this->draw_frame_3d_square_front(render_area, x, y);
+        return;
     }
 }
-
-
-
-
 
 void RGE_Static_Object::draw_back_frame(TDrawArea* render_area, short x, short y) {
     if (rge_base_game->game_mode == 1) {
@@ -655,9 +575,6 @@ void RGE_Static_Object::draw_back_frame(TDrawArea* render_area, short x, short y
         return;
     }
 }
-
-
-
 
 void RGE_Static_Object::capture_frame(TDrawArea* render_area, short x, short y) {
     if (SDI_Capture_Info) {
@@ -681,14 +598,7 @@ void RGE_Static_Object::capture_frame(TDrawArea* render_area, short x, short y) 
     }
 }
 
-
-
-
-
-
-void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
-                                             short x, short y)
-{
+void RGE_Static_Object::capture_square_frame(TDrawArea* render_area, short x, short y) {
     short min_y;
     short min_x;
     int y0;
@@ -704,9 +614,8 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
             x1 = x + min_x - 1 + this->screen_x_offset;
             y1 = y + min_y - 1 + this->screen_y_offset;
             y0 = y + max_y + 1 + this->screen_y_offset;
-            SDI_List->AddGDINode(4, y0, x1, y1,
-                                 x + max_x + this->screen_x_offset + 1, y0,
-                                 0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
+            SDI_List->AddGDINode(4, y0, x1, y1, x + max_x + this->screen_x_offset + 1, y0, 0, 0, 0, 0, 10, 0xff,
+                                 SDI_Object_ID);
 
             if (this->object_state <= 2) {
                 int health = (int)this->hp;
@@ -724,27 +633,16 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
                         health = x2 - 1;
                     }
 
-                    SDI_List->AddGDINode(2, y0, x1, y1, x2,
-                                         y2, health, 0,
-                                         health + 1, 0, 20, 0xff,
-                                         SDI_Object_ID);
+                    SDI_List->AddGDINode(2, y0, x1, y1, x2, y2, health, 0, health + 1, 0, 20, 0xff, SDI_Object_ID);
                 }
             }
         }
     }
 }
 
-
-
 void RGE_Static_Object::capture_frame_3d_cube(TDrawArea* render_area, short x, short y) {}
 
-
-
-
-
-void RGE_Static_Object::capture_frame_3d_square(
-    TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::capture_frame_3d_square(TDrawArea* render_area, short x, short y) {
     RGE_Master_Static_Object* master = this->master_obj;
     RGE_Map* map = this->owner->world->map;
     float radius_x;
@@ -761,14 +659,12 @@ void RGE_Static_Object::capture_frame_3d_square(
     }
 
     unsigned char draw_color;
-    if (startLoggingAI == 1 &&
-        this->groupCommanderValue == this->id && this->id >= 0) {
+    if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
         draw_color = 0;
     } else if ((this->selected & 1) == 0) {
         if (rge_base_game->outline_type == 3) {
             draw_color = 0x74;
-        } else if ((master->draw_flag & 1) == 1 &&
-                   rge_base_game->prog_mode == 7) {
+        } else if ((master->draw_flag & 1) == 1 && rge_base_game->prog_mode == 7) {
             draw_color = master->draw_color;
         } else {
             draw_color = 0xff;
@@ -800,30 +696,23 @@ void RGE_Static_Object::capture_frame_3d_square(
     map->get_point(x3, y3, -radius_x, radius_y, 0.0f, x, y);
     map->get_point(x4, y4, -radius_x, -radius_y, 0.0f, x, y);
 
-    SDI_List->AddGDINode(1, y, x1, y1, x2, y2, x3, y3, x4, y4,
-                         10, draw_color, SDI_Object_ID);
+    SDI_List->AddGDINode(1, y, x1, y1, x2, y2, x3, y3, x4, y4, 10, draw_color, SDI_Object_ID);
 
-    if (this->selected != 0 && this->selected_group > 0 &&
-        this->selected_group < 10 &&
+    if (this->selected != 0 && this->selected_group > 0 && this->selected_group < 10 &&
         this->owner->id == this->owner->world->curr_player) {
         TShape* group_num_shape = rge_base_game->get_shape(0);
         if (group_num_shape != 0) {
-            Shape_Info* shape_info =
-                (Shape_Info*)group_num_shape->FShape + this->selected_group;
-            SDI_List->AddDrawNode(group_num_shape->FShape, shape_info, y,
-                                  x4 - 6, y4 - 8, 0, 0, 0, 0x1e,
-                                  SDI_Object_ID);
+            Shape_Info* shape_info = (Shape_Info*)group_num_shape->FShape + this->selected_group;
+            SDI_List->AddDrawNode(group_num_shape->FShape, shape_info, y, x4 - 6, y4 - 8, 0, 0, 0, 0x1e, SDI_Object_ID);
         }
     }
 
-    if ((this->selected & 1) == 1 &&
-        (this->master_obj->draw_flag & 2) == 0) {
+    if ((this->selected & 1) == 1 && (this->master_obj->draw_flag & 2) == 0) {
         int cur_hp = (int)this->hp;
         if (cur_hp > 0) {
             short bar_x;
             short bar_y;
-            map->get_point(bar_x, bar_y, radius_x, -radius_y,
-                           radius_z, x, y);
+            map->get_point(bar_x, bar_y, radius_x, -radius_y, radius_z, x, y);
 
             if (cur_hp < 1) {
                 cur_hp = 0;
@@ -862,10 +751,8 @@ void RGE_Static_Object::capture_frame_3d_square(
                     has_empty = 1;
                 }
 
-                SDI_List->AddGDINode(2, y, left, top, right, bottom,
-                                     filled_right, has_filled, empty_left,
-                                     has_empty, 0x1e, draw_color,
-                                     SDI_Object_ID);
+                SDI_List->AddGDINode(2, y, left, top, right, bottom, filled_right, has_filled, empty_left, has_empty,
+                                     0x1e, draw_color, SDI_Object_ID);
             }
         }
     }
@@ -904,36 +791,24 @@ void RGE_Static_Object::capture_frame_3d_square(
 
         if (object_id < 0) {
             x2 += 7;
-            SDI_List->AddGDINode(4, y, x2 + 1, y2 + 3, x2 + 5,
-                                 y2 + 3, 0, 0, 0, 0, 0x1e, 0x97,
-                                 SDI_Object_ID);
+            SDI_List->AddGDINode(4, y, x2 + 1, y2 + 3, x2 + 5, y2 + 3, 0, 0, 0, 0, 0x1e, 0x97, SDI_Object_ID);
         }
 
         for (int i = first_digit; i < 5; ++i) {
             x2 += 7;
             if (digits[i] == 0) {
-                SDI_List->AddGDINode(4, y, x2 + 1, y2, x2 + 5,
-                                     y2 + 5, 0, 0, 0, 0, 0x1e, 0xff,
-                                     SDI_Object_ID);
+                SDI_List->AddGDINode(4, y, x2 + 1, y2, x2 + 5, y2 + 5, 0, 0, 0, 0, 0x1e, 0xff, SDI_Object_ID);
             } else {
-                Shape_Info* shape_info =
-                    (Shape_Info*)number_shape->FShape + digits[i];
-                SDI_List->AddDrawNode(number_shape->FShape, shape_info, y,
-                                      x2, y2, 0, 0, 0, 0x1e,
-                                      SDI_Object_ID);
+                Shape_Info* shape_info = (Shape_Info*)number_shape->FShape + digits[i];
+                SDI_List->AddDrawNode(number_shape->FShape, shape_info, y, x2, y2, 0, 0, 0, 0x1e, SDI_Object_ID);
             }
         }
     }
 }
 
+static char stat_obj_square_back_tag[] = "stat_obj::draw_frame_3d_square_back";
 
-
-
-static char stat_obj_square_back_tag[] =
-    "stat_obj::draw_frame_3d_square_back";
-
-void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* render_area, short x, short y) {
     RGE_Map* map;
     float negative_rx1;
     TPanel* view;
@@ -952,8 +827,7 @@ void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* render_area, short 
         render_area->Unlock(stat_obj_square_back_tag);
         if (render_area->GetDc(stat_obj_square_back_tag) != 0) {
             SelectClipRgn(render_area->DrawDc, view->clip_rgn);
-            if (startLoggingAI == 1 &&
-                this->groupCommanderValue == this->id && this->id >= 0) {
+            if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
                 SelectObject(render_area->DrawDc, GetStockObject(7));
             } else {
                 SelectObject(render_area->DrawDc, GetStockObject(6));
@@ -978,14 +852,9 @@ void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* render_area, short 
     }
 }
 
-
-
-
 static char tag[] = "stat_obj::draw_frame_3d_square_front";
 
-void RGE_Static_Object::draw_frame_3d_square_front(
-    TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::draw_frame_3d_square_front(TDrawArea* render_area, short x, short y) {
     short y1;
     short x1;
     short y2;
@@ -1006,24 +875,19 @@ void RGE_Static_Object::draw_frame_3d_square_front(
         y += this->screen_y_offset;
         if (render_area->GetDc(tag) != 0) {
             SelectClipRgn(render_area->DrawDc, view_panel->clip_rgn);
-            if (startLoggingAI == 1 &&
-                this->groupCommanderValue == this->id && this->id >= 0) {
+            if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
                 SelectObject(render_area->DrawDc, GetStockObject(7));
             } else {
                 SelectObject(render_area->DrawDc, GetStockObject(6));
             }
 
-            map->get_point(x1, y1, -ry1, -rz2, 0.0f,
-                          x, y);
-            map->get_point(x2, y2, -ry1, rz2, 0.0f,
-                          x, y);
+            map->get_point(x1, y1, -ry1, -rz2, 0.0f, x, y);
+            map->get_point(x2, y2, -ry1, rz2, 0.0f, x, y);
             MoveToEx(render_area->DrawDc, x1, y1, 0);
             LineTo(render_area->DrawDc, x2, y2);
 
-            map->get_point(x1, y1, ry1, rz2, 0.0f,
-                          x, y);
-            map->get_point(x2, y2, -ry1, rz2, 0.0f,
-                          x, y);
+            map->get_point(x1, y1, ry1, rz2, 0.0f, x, y);
+            map->get_point(x2, y2, -ry1, rz2, 0.0f, x, y);
             MoveToEx(render_area->DrawDc, x1, y1, 0);
             LineTo(render_area->DrawDc, x2, y2);
             SelectClipRgn(render_area->DrawDc, 0);
@@ -1033,34 +897,26 @@ void RGE_Static_Object::draw_frame_3d_square_front(
         render_area->Lock(tag, 1);
         int value = (int)this->hp;
         if (value > 0) {
-            map->get_point(x1, y1, ry1, -rz2, rx1,
-                          x, y);
+            map->get_point(x1, y1, ry1, -rz2, rx1, x, y);
             if (value < 1)
                 value = 0;
             int denom = this->master_obj->hp;
             if (denom > 0) {
                 int bar_bottom = (-1) + y1;
                 int bar_left = (-12) + x1;
-                render_area->FillRect(bar_left, bar_bottom - 1,
-                               bar_left + 24, bar_bottom, 0x97);
+                render_area->FillRect(bar_left, bar_bottom - 1, bar_left + 24, bar_bottom, 0x97);
                 bar_bottom = y1;
                 bar_bottom--;
                 bar_left = y1;
                 bar_left--;
                 bar_left--;
-                render_area->FillRect(x1 - 12, bar_left,
-                               (value * 24) / denom + x1 - 12,
-                               bar_bottom, 0x4a);
+                render_area->FillRect(x1 - 12, bar_left, (value * 24) / denom + x1 - 12, bar_bottom, 0x4a);
             }
         }
     }
 }
 
-
-
-
-void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* render_area, short x, short y) {
     short y2, x2, y1, x1;
     float negative_ry;
     RGE_Master_Static_Object* m = this->master_obj;
@@ -1079,47 +935,49 @@ void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* render_area, short x,
         render_area->Unlock(0);
         void* dc = render_area->GetDc(0);
         if (dc != 0) {
-        SelectClipRgn(render_area->DrawDc, view->clip_rgn);
-        if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0)
-            SelectObject(render_area->DrawDc, GetStockObject(7));
-        else
-            SelectObject(render_area->DrawDc, GetStockObject(6));
+            SelectClipRgn(render_area->DrawDc, view->clip_rgn);
+            if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0)
+                SelectObject(render_area->DrawDc, GetStockObject(7));
+            else
+                SelectObject(render_area->DrawDc, GetStockObject(6));
 
-        x += this->screen_x_offset;
-        y += this->screen_y_offset;
-        negative_ry = -ry2;
+            x += this->screen_x_offset;
+            y += this->screen_y_offset;
+            negative_ry = -ry2;
 
-        map->get_point(x2, y2, rx2, negative_ry, 0.0f, x, y);
-        map->get_point(x1, y1, rx2, negative_ry, rz3, x, y);
-        MoveToEx(render_area->DrawDc, x2, y2, 0); LineTo(render_area->DrawDc, x1, y1);
-        map->get_point(x2, y2, rx2, negative_ry, rz4, x, y);
-        map->get_point(x1, y1, rx2, negative_ry, rx1, x, y);
-        MoveToEx(render_area->DrawDc, x2, y2, 0); LineTo(render_area->DrawDc, x1, y1);
-        map->get_point(x2, y2, rx2, negative_ry, 0.0f, x, y);
-        map->get_point(x1, y1, ry1, negative_ry, 0.0f, x, y);
-        MoveToEx(render_area->DrawDc, x2, y2, 0); LineTo(render_area->DrawDc, x1, y1);
-        map->get_point(x2, y2, -rx2, negative_ry, 0.0f, x, y);
-        map->get_point(x1, y1, -ry1, negative_ry, 0.0f, x, y);
-        MoveToEx(render_area->DrawDc, x2, y2, 0); LineTo(render_area->DrawDc, x1, y1);
-        map->get_point(x2, y2, rx2, negative_ry, 0.0f, x, y);
-        map->get_point(x1, y1, rx2, -rz2, 0.0f, x, y);
-        MoveToEx(render_area->DrawDc, x2, y2, 0); LineTo(render_area->DrawDc, x1, y1);
-        map->get_point(x2, y2, rx2, ry2, 0.0f, x, y);
-        map->get_point(x1, y1, rx2, rz2, 0.0f, x, y);
-        MoveToEx(render_area->DrawDc, x2, y2, 0); LineTo(render_area->DrawDc, x1, y1);
+            map->get_point(x2, y2, rx2, negative_ry, 0.0f, x, y);
+            map->get_point(x1, y1, rx2, negative_ry, rz3, x, y);
+            MoveToEx(render_area->DrawDc, x2, y2, 0);
+            LineTo(render_area->DrawDc, x1, y1);
+            map->get_point(x2, y2, rx2, negative_ry, rz4, x, y);
+            map->get_point(x1, y1, rx2, negative_ry, rx1, x, y);
+            MoveToEx(render_area->DrawDc, x2, y2, 0);
+            LineTo(render_area->DrawDc, x1, y1);
+            map->get_point(x2, y2, rx2, negative_ry, 0.0f, x, y);
+            map->get_point(x1, y1, ry1, negative_ry, 0.0f, x, y);
+            MoveToEx(render_area->DrawDc, x2, y2, 0);
+            LineTo(render_area->DrawDc, x1, y1);
+            map->get_point(x2, y2, -rx2, negative_ry, 0.0f, x, y);
+            map->get_point(x1, y1, -ry1, negative_ry, 0.0f, x, y);
+            MoveToEx(render_area->DrawDc, x2, y2, 0);
+            LineTo(render_area->DrawDc, x1, y1);
+            map->get_point(x2, y2, rx2, negative_ry, 0.0f, x, y);
+            map->get_point(x1, y1, rx2, -rz2, 0.0f, x, y);
+            MoveToEx(render_area->DrawDc, x2, y2, 0);
+            LineTo(render_area->DrawDc, x1, y1);
+            map->get_point(x2, y2, rx2, ry2, 0.0f, x, y);
+            map->get_point(x1, y1, rx2, rz2, 0.0f, x, y);
+            MoveToEx(render_area->DrawDc, x2, y2, 0);
+            LineTo(render_area->DrawDc, x1, y1);
 
-        SelectClipRgn(render_area->DrawDc, 0);
-        render_area->ReleaseDc(0);
+            SelectClipRgn(render_area->DrawDc, 0);
+            render_area->ReleaseDc(0);
         }
         render_area->Lock(0, 1);
     }
 }
 
-
-
-
-void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* render_area, short x, short y) {
     short y2, x2, y1, x1;
     float negative_rz2;
     float negative_ry2, negative_ry1;
@@ -1139,125 +997,121 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* render_area, short x
         return;
 
     render_area->Unlock(0);
-        if (render_area->GetDc(0) != 0) {
-            SelectClipRgn(render_area->DrawDc, view->clip_rgn);
-            if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
-                SelectObject(render_area->DrawDc, GetStockObject(7));
-            } else {
-                SelectObject(render_area->DrawDc, GetStockObject(6));
-            }
-
-            // Update x before y and keep both incoming short homes.
-            x += this->screen_x_offset;
-            y += this->screen_y_offset - 0x10;
-            negative_rz2 = -rz2;
-
-            map->get_point(x2, y2, ry2, negative_rz2, rx1, x, y);
-            map->get_point(x1, y1, ry1, negative_rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            negative_ry2 = -ry2;
-            map->get_point(x2, y2, negative_ry2, negative_rz2, rx1, x, y);
-            // Delay this negation until the first projection ends.
-            negative_ry1 = -ry1;
-            map->get_point(x1, y1, negative_ry1, negative_rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, ry2, rz2, rx1, x, y);
-            map->get_point(x1, y1, ry1, rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, rz2, rx1, x, y);
-            map->get_point(x1, y1, negative_ry1, rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, ry2, rz2, rx1, x, y);
-            map->get_point(x1, y1, ry2, rx2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, ry2, negative_rz2, rx1, x, y);
-            map->get_point(x1, y1, ry2, -rx2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, rz2, rx1, x, y);
-            map->get_point(x1, y1, negative_ry2, rx2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, negative_rz2, rx1, x, y);
-            map->get_point(x1, y1, negative_ry2, -rx2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, negative_rz2, 0.0f, x, y);
-            map->get_point(x1, y1, negative_ry2, -rx2, 0.0f, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, rz2, 0.0f, x, y);
-            map->get_point(x1, y1, negative_ry2, rx2, 0.0f, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, ry2, rz2, 0.0f, x, y);
-            map->get_point(x1, y1, ry1, rz2, 0.0f, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, rz2, 0.0f, x, y);
-            map->get_point(x1, y1, negative_ry1, rz2, 0.0f, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, rz2, 0.0f, x, y);
-            map->get_point(x1, y1, negative_ry2, rz2, rz3, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, rz2, rz4, x, y);
-            map->get_point(x1, y1, negative_ry2, rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, negative_rz2, 0.0f, x, y);
-            map->get_point(x1, y1, negative_ry2, negative_rz2, rz3, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, negative_ry2, negative_rz2, rz4, x, y);
-            map->get_point(x1, y1, negative_ry2, negative_rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, ry2, rz2, 0.0f, x, y);
-            map->get_point(x1, y1, ry2, rz2, rz3, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            map->get_point(x2, y2, ry2, rz2, rz4, x, y);
-            map->get_point(x1, y1, ry2, rz2, rx1, x, y);
-            MoveToEx(render_area->DrawDc, x2, y2, 0);
-            LineTo(render_area->DrawDc, x1, y1);
-
-            SelectClipRgn(render_area->DrawDc, 0);
-            render_area->ReleaseDc(0);
+    if (render_area->GetDc(0) != 0) {
+        SelectClipRgn(render_area->DrawDc, view->clip_rgn);
+        if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
+            SelectObject(render_area->DrawDc, GetStockObject(7));
+        } else {
+            SelectObject(render_area->DrawDc, GetStockObject(6));
         }
+
+        // Update x before y and keep both incoming short homes.
+        x += this->screen_x_offset;
+        y += this->screen_y_offset - 0x10;
+        negative_rz2 = -rz2;
+
+        map->get_point(x2, y2, ry2, negative_rz2, rx1, x, y);
+        map->get_point(x1, y1, ry1, negative_rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        negative_ry2 = -ry2;
+        map->get_point(x2, y2, negative_ry2, negative_rz2, rx1, x, y);
+        // Delay this negation until the first projection ends.
+        negative_ry1 = -ry1;
+        map->get_point(x1, y1, negative_ry1, negative_rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, ry2, rz2, rx1, x, y);
+        map->get_point(x1, y1, ry1, rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, rz2, rx1, x, y);
+        map->get_point(x1, y1, negative_ry1, rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, ry2, rz2, rx1, x, y);
+        map->get_point(x1, y1, ry2, rx2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, ry2, negative_rz2, rx1, x, y);
+        map->get_point(x1, y1, ry2, -rx2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, rz2, rx1, x, y);
+        map->get_point(x1, y1, negative_ry2, rx2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, negative_rz2, rx1, x, y);
+        map->get_point(x1, y1, negative_ry2, -rx2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, negative_rz2, 0.0f, x, y);
+        map->get_point(x1, y1, negative_ry2, -rx2, 0.0f, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, rz2, 0.0f, x, y);
+        map->get_point(x1, y1, negative_ry2, rx2, 0.0f, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, ry2, rz2, 0.0f, x, y);
+        map->get_point(x1, y1, ry1, rz2, 0.0f, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, rz2, 0.0f, x, y);
+        map->get_point(x1, y1, negative_ry1, rz2, 0.0f, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, rz2, 0.0f, x, y);
+        map->get_point(x1, y1, negative_ry2, rz2, rz3, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, rz2, rz4, x, y);
+        map->get_point(x1, y1, negative_ry2, rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, negative_rz2, 0.0f, x, y);
+        map->get_point(x1, y1, negative_ry2, negative_rz2, rz3, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, negative_ry2, negative_rz2, rz4, x, y);
+        map->get_point(x1, y1, negative_ry2, negative_rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, ry2, rz2, 0.0f, x, y);
+        map->get_point(x1, y1, ry2, rz2, rz3, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        map->get_point(x2, y2, ry2, rz2, rz4, x, y);
+        map->get_point(x1, y1, ry2, rz2, rx1, x, y);
+        MoveToEx(render_area->DrawDc, x2, y2, 0);
+        LineTo(render_area->DrawDc, x1, y1);
+
+        SelectClipRgn(render_area->DrawDc, 0);
+        render_area->ReleaseDc(0);
+    }
     render_area->Lock(0, 1);
 }
 
-
 // Keep the sprite and sprite-list guards, facet dispatch, frame
 
-
-
-void RGE_Static_Object::draw_frame(TDrawArea* render_area, short x, short y)
-{
+void RGE_Static_Object::draw_frame(TDrawArea* render_area, short x, short y) {
     short min_x;
     short min_y;
     short max_y;
@@ -1291,25 +1145,17 @@ void RGE_Static_Object::draw_frame(TDrawArea* render_area, short x, short y)
                     y2 = y1 + 5;
                     render_area->DrawRect(x1, y1, x2, y2, 0xff);
 
-                    render_area->FillRect(++x1, ++y1, x2 -= 2, y2 -= 2,
-                                          0x55);
-                    render_area->FillRect(x1, y1,
-                                          (cur_hp * 25) / tot_hp + x1 - 1,
-                                          y1 + 3, 0x25);
+                    render_area->FillRect(++x1, ++y1, x2 -= 2, y2 -= 2, 0x55);
+                    render_area->FillRect(x1, y1, (cur_hp * 25) / tot_hp + x1 - 1, y1 + 3, 0x25);
                 }
             }
         }
     }
 }
 
-
-
 typedef unsigned char uchar;
 
-
-
-uchar RGE_Static_Object::update()
-{
+uchar RGE_Static_Object::update() {
     uchar ret = 0;
     if (this->goto_sleep_flag != 0) {
         RGE_Player* own = this->owner;
@@ -1330,35 +1176,51 @@ uchar RGE_Static_Object::update()
     }
     if (this->inside_obj == 0) {
         switch (this->object_state) {
-    case 2: this->check_damage_sprites();
-    case 0:
-        if (this->hp < 1.0f) {
-            this->set_object_state(3); this->new_sprite(this->master_obj->death_sprite);
-            int r = debug_rand(STR_STAT_OBJ, 0x704); int old = debug_random_on; debug_random_on = 0;
-            if (this->master_obj->death_sound != 0 && this->owner->id == this->owner->world->curr_player) this->master_obj->death_sound->play(1);
-            debug_random_on = old; debug_srand(STR_STAT_OBJ, 0x70e, r);
-        } break;
-    case 3: case 5:
-        if (this->attribute_type_held == -1 || this->attribute_amount_held <= 0.0f) {
-            if (this->master_obj->undead_flag != 0) { this->set_object_state(6); this->new_sprite(this->master_obj->undead_sprite); break; }
-            this->set_object_state(7); this->spawn_death_obj(); break;
-        }
-        if (this->master_obj->attribute_rot > 0.0f) {
-            this->attribute_amount_held = this->attribute_amount_held -
-                this->owner->world->world_time_delta_seconds *
-                this->master_obj->attribute_rot;
-            if (this->attribute_amount_held < 0.0f) {
-                this->attribute_amount_held = 0.0f;
+        case 2:
+            this->check_damage_sprites();
+        case 0:
+            if (this->hp < 1.0f) {
+                this->set_object_state(3);
+                this->new_sprite(this->master_obj->death_sprite);
+                int r = debug_rand(STR_STAT_OBJ, 0x704);
+                int old = debug_random_on;
+                debug_random_on = 0;
+                if (this->master_obj->death_sound != 0 && this->owner->id == this->owner->world->curr_player)
+                    this->master_obj->death_sound->play(1);
+                debug_random_on = old;
+                debug_srand(STR_STAT_OBJ, 0x70e, r);
             }
-        }
-        break;
-    case 7: this->set_object_state(8); break;
-    case 8:
-        if (this->master_obj->recyclable != 0)
-            ret = 2;
-        else
-            ret = 1;
-        break;
+            break;
+        case 3:
+        case 5:
+            if (this->attribute_type_held == -1 || this->attribute_amount_held <= 0.0f) {
+                if (this->master_obj->undead_flag != 0) {
+                    this->set_object_state(6);
+                    this->new_sprite(this->master_obj->undead_sprite);
+                    break;
+                }
+                this->set_object_state(7);
+                this->spawn_death_obj();
+                break;
+            }
+            if (this->master_obj->attribute_rot > 0.0f) {
+                this->attribute_amount_held =
+                    this->attribute_amount_held -
+                    this->owner->world->world_time_delta_seconds * this->master_obj->attribute_rot;
+                if (this->attribute_amount_held < 0.0f) {
+                    this->attribute_amount_held = 0.0f;
+                }
+            }
+            break;
+        case 7:
+            this->set_object_state(8);
+            break;
+        case 8:
+            if (this->master_obj->recyclable != 0)
+                ret = 2;
+            else
+                ret = 1;
+            break;
         }
     } else {
         if (this->inside_obj->object_state > 2)
@@ -1367,14 +1229,9 @@ uchar RGE_Static_Object::update()
     return ret;
 }
 
-
-
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
-
-
-void RGE_Static_Object::check_damage_sprites()
-{
+void RGE_Static_Object::check_damage_sprites() {
     long new_damage_loc = -1;
     long curr_damage_loc = -1;
 
@@ -1384,16 +1241,14 @@ void RGE_Static_Object::check_damage_sprites()
     }
 
     long health_percent = (long)(this->hp * DAT_0057473c / master->hp);
-    unsigned char new_damage_percent =
-        (unsigned char)(100 - health_percent);
+    unsigned char new_damage_percent = (unsigned char)(100 - health_percent);
     if (new_damage_percent == this->curr_damage_percent) {
         return;
     }
 
     if (new_damage_percent < 100) {
         for (long i = 0; i < (long)master->damage_sprite_num; ++i) {
-            RGE_Damage_Sprite_Info* damage_sprite =
-                &master->damage_sprites[i];
+            RGE_Damage_Sprite_Info* damage_sprite = &master->damage_sprites[i];
             if (damage_sprite->damage_percent < new_damage_percent) {
                 curr_damage_loc = i;
             }
@@ -1409,8 +1264,7 @@ void RGE_Static_Object::check_damage_sprites()
     }
 
     if (curr_damage_loc >= 0) {
-        RGE_Damage_Sprite_Info* damage_sprite =
-            &this->master_obj->damage_sprites[curr_damage_loc];
+        RGE_Damage_Sprite_Info* damage_sprite = &this->master_obj->damage_sprites[curr_damage_loc];
         RGE_Sprite* sprite = 0;
         short x = 0;
         short y = 0;
@@ -1422,22 +1276,19 @@ void RGE_Static_Object::check_damage_sprites()
         case 1: {
             RGE_Master_Static_Object* random_master = this->master_obj;
             int random_value = debug_rand(s_stat_obj_cpp, 0x774);
-            float rand_x =
-                (float)random_value * random_master->radius_x;
+            float rand_x = (float)random_value * random_master->radius_x;
             rand_x = rand_x * DAT_00574740 - random_master->radius_x;
             short x_part = (short)this->world_x;
             rand_x += this->world_x - (float)x_part;
 
             random_master = this->master_obj;
             random_value = debug_rand(s_stat_obj_cpp, 0x775);
-            float rand_y =
-                (float)random_value * random_master->radius_y;
+            float rand_y = (float)random_value * random_master->radius_y;
             rand_y = rand_y * DAT_00574740 - random_master->radius_y;
             short y_part = (short)this->world_y;
             rand_y += this->world_y - (float)y_part;
 
-            this->owner->world->map->get_point(
-                x, y, rand_x, rand_y, this->world_z, 0, 0);
+            this->owner->world->map->get_point(x, y, rand_x, rand_y, this->world_z, 0, 0);
             sprite = damage_sprite->sprite;
             break;
         }
@@ -1453,13 +1304,11 @@ void RGE_Static_Object::check_damage_sprites()
 
 damage_sprite_done:
     if (new_damage_loc >= 0) {
-        RGE_Damage_Sprite_Info* damage_sprite =
-            &this->master_obj->damage_sprites[new_damage_loc];
+        RGE_Damage_Sprite_Info* damage_sprite = &this->master_obj->damage_sprites[new_damage_loc];
         if (damage_sprite->flag < 2) {
             this->sprite_list->remove_sprite(damage_sprite->sprite);
         } else if (damage_sprite->flag == 2 &&
-                    (curr_damage_loc < 0 ||
-                    this->master_obj->damage_sprites[curr_damage_loc].flag != 2)) {
+                   (curr_damage_loc < 0 || this->master_obj->damage_sprites[curr_damage_loc].flag != 2)) {
             this->new_sprite(this->master_obj->sprite);
             this->curr_damage_percent = new_damage_percent;
             return;
@@ -1468,9 +1317,6 @@ damage_sprite_done:
 
     this->curr_damage_percent = new_damage_percent;
 }
-
-
-
 
 RGE_Static_Object* RGE_Static_Object::spawn_death_obj(void) {
     short id = this->master_obj->death_spawn_obj_id;
@@ -1482,8 +1328,6 @@ RGE_Static_Object* RGE_Static_Object::spawn_death_obj(void) {
     }
     return 0;
 }
-
-
 
 void RGE_Static_Object::rehook(void) {
     RGE_Static_Object* obj;
@@ -1499,13 +1343,7 @@ void RGE_Static_Object::rehook(void) {
     }
 }
 
-
-
-
-
-
-RGE_Static_Object* RGE_Static_Object::get_object_pointer(long obj_id)
-{
+RGE_Static_Object* RGE_Static_Object::get_object_pointer(long obj_id) {
     RGE_Static_Object* object;
     unsigned char player_id;
 
@@ -1520,18 +1358,15 @@ RGE_Static_Object* RGE_Static_Object::get_object_pointer(long obj_id)
                     player_id = 0;
                     while (player_id < this->owner->world->player_num) {
                         if (player_id != this->owner->id) {
-                            object = this->owner->world->players[player_id]
-                                         ->objects->find_by_id(obj_id);
+                            object = this->owner->world->players[player_id]->objects->find_by_id(obj_id);
                             if (object != 0) {
                                 break;
                             }
-                            object = this->owner->world->players[player_id]
-                                         ->sleeping_objects->find_by_id(obj_id);
+                            object = this->owner->world->players[player_id]->sleeping_objects->find_by_id(obj_id);
                             if (object != 0) {
                                 break;
                             }
-                            object = this->owner->world->players[player_id]
-                                         ->doppleganger_objects->find_by_id(obj_id);
+                            object = this->owner->world->players[player_id]->doppleganger_objects->find_by_id(obj_id);
                             if (object != 0) {
                                 break;
                             }
@@ -1546,10 +1381,6 @@ RGE_Static_Object* RGE_Static_Object::get_object_pointer(long obj_id)
     return object;
 }
 
-
-
-
-
 RGE_Sprite* RGE_Static_Object::get_sprite_pointer(short sprite_id) {
     RGE_Game_World* world;
 
@@ -1562,11 +1393,7 @@ RGE_Sprite* RGE_Static_Object::get_sprite_pointer(short sprite_id) {
     return 0;
 }
 
-
-
-
-void RGE_Static_Object::save(int outfile)
-{
+void RGE_Static_Object::save(int outfile) {
     short short_val;
     int long_val;
     int tempInt = outfile;
@@ -1614,30 +1441,29 @@ void RGE_Static_Object::save(int outfile)
     outfile = this->groupMembers.number();
     rge_write(tempInt, &outfile, 4);
     i = 0;
-    if (this->groupMembers.number() > 0) do {
-        outfile = this->groupMembers[i];
-        rge_write(tempInt, &outfile, 4);
-        ++i;
-    } while (i < this->groupMembers.number());
+    if (this->groupMembers.number() > 0)
+        do {
+            outfile = this->groupMembers[i];
+            rge_write(tempInt, &outfile, 4);
+            ++i;
+        } while (i < this->groupMembers.number());
 
     outfile = this->pathingGroupMembers.number();
     rge_write(tempInt, &outfile, 4);
     int k = 0;
-    if (this->pathingGroupMembers.number() > 0) do {
-        outfile = this->pathingGroupMembers[k];
-        rge_write(tempInt, &outfile, 4);
-        ++k;
-    } while (k < this->pathingGroupMembers.number());
+    if (this->pathingGroupMembers.number() > 0)
+        do {
+            outfile = this->pathingGroupMembers[k];
+            rge_write(tempInt, &outfile, 4);
+            ++k;
+        } while (k < this->pathingGroupMembers.number());
 
     this->sprite_list->save(tempInt);
 }
 
-
 // teleport uses the canonical named terrain methods.
 
-
-float RGE_Static_Object::teleport(float x, float y, float z)
-{
+float RGE_Static_Object::teleport(float x, float y, float z) {
     float rz = 0.0f;
     RGE_Map* map = this->owner->world->map;
     if (this->inside_obj != 0) {
@@ -1799,11 +1625,9 @@ float RGE_Static_Object::teleport(float x, float y, float z)
         break;
     }
 
-    this->screen_x_offset =
-        (short)((ry + rx) * map->tile_half_width);
+    this->screen_x_offset = (short)((ry + rx) * map->tile_half_width);
     float screen_y = zd + ry + 1.0f - rx;
-    this->screen_y_offset =
-        (short)((screen_y - this->world_z) * map->tile_half_height);
+    this->screen_y_offset = (short)((screen_y - this->world_z) * map->tile_half_height);
 
     switch (master->movement_type) {
     case 0:
@@ -1811,23 +1635,20 @@ float RGE_Static_Object::teleport(float x, float y, float z)
         this->shadow_y_offset = this->screen_y_offset;
         break;
     case 1:
-        this->shadow_x_offset =
-            (short)((ry + rx) * map->tile_half_width);
-        this->shadow_y_offset =
-            (short)((screen_y - rz) * map->tile_half_height);
+        this->shadow_x_offset = (short)((ry + rx) * map->tile_half_width);
+        this->shadow_y_offset = (short)((screen_y - rz) * map->tile_half_height);
         break;
     }
 
     return rz;
 }
 
-
-
 void RGE_Static_Object::new_sprite(RGE_Sprite* nsprite) {
     if (nsprite == 0) {
         nsprite = this->master_obj->sprite;
     }
-    if (this->sprite != nsprite && (this->sprite != this->master_obj->death_sprite || this->master_obj->death_sprite == 0)) {
+    if (this->sprite != nsprite &&
+        (this->sprite != this->master_obj->death_sprite || this->master_obj->death_sprite == 0)) {
         this->old_sprite = this->sprite;
         this->sprite_list->remove_sprite(this->sprite);
         this->sprite = nsprite;
@@ -1836,25 +1657,16 @@ void RGE_Static_Object::new_sprite(RGE_Sprite* nsprite) {
     }
 }
 
-
-
-
 void RGE_Static_Object::add_overlay_sprite(RGE_Sprite* nsprite, unsigned char order) {
     sprite_list->add_sprite(nsprite, order, 0, 0);
 }
-
-
 
 // this virtual member takes an RGE_Sprite pointer.
 void RGE_Static_Object::remove_overlay_sprite(RGE_Sprite* nsprite) {
     this->sprite_list->remove_sprite(nsprite);
 }
 
-
-
-
-void RGE_Static_Object::change_ownership(RGE_Player* new_owner)
-{
+void RGE_Static_Object::change_ownership(RGE_Player* new_owner) {
     if (new_owner->master_objects[this->master_obj->id] == 0) {
         return;
     }
@@ -1870,15 +1682,12 @@ void RGE_Static_Object::change_ownership(RGE_Player* new_owner)
         this->unexplore_terrain(this->owner, 0, -1);
     }
 
-    this->owner->removeObject(this, this->sleep_flag, this->dopple_flag,
-                              this->player_object_node);
-    RGE_Object_Node* new_node =
-        new_owner->addObject(this, this->sleep_flag, this->dopple_flag);
+    this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
+    RGE_Object_Node* new_node = new_owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
     RGE_Master_Static_Object* old_master = this->master_obj;
     this->player_object_node = new_node;
-    RGE_Master_Static_Object* new_master =
-        new_owner->master_objects[old_master->id];
+    RGE_Master_Static_Object* new_master = new_owner->master_objects[old_master->id];
     RGE_Sprite* new_sprite;
     if (this->sprite == old_master->sprite) {
         new_sprite = new_master->sprite;
@@ -1906,16 +1715,12 @@ void RGE_Static_Object::change_ownership(RGE_Player* new_owner)
     this->notify(this->id, this->id, 0x20B, (int)new_owner->id, 0, 0);
 }
 
-
-
 void RGE_Static_Object::modify(float amount, unsigned char flag) {
     switch (flag) {
-    case 0:
-        {
-            int max_hp = this->master_obj->hp;
-            this->hp = (float)(short)(long)(amount * this->hp / max_hp);
-        }
-        break;
+    case 0: {
+        int max_hp = this->master_obj->hp;
+        this->hp = (float)(short)(long)(amount * this->hp / max_hp);
+    } break;
     case 1:
         if (this->tile != 0 && this->object_state == 2) {
             this->unexplore_terrain(this->owner, 0, -1);
@@ -1926,11 +1731,7 @@ void RGE_Static_Object::modify(float amount, unsigned char flag) {
     }
 }
 
-
-
-
-void RGE_Static_Object::modify_delta(float amount, unsigned char flag)
-{
+void RGE_Static_Object::modify_delta(float amount, unsigned char flag) {
     unsigned int op = flag & 0xff;
     switch (op) {
     case 1:
@@ -1942,20 +1743,13 @@ void RGE_Static_Object::modify_delta(float amount, unsigned char flag)
         }
         return;
     case 0: {
-        this->hp = (float)(int)(short)
-            ((amount + this->master_obj->hp) * this->hp /
-             this->master_obj->hp);
+        this->hp = (float)(int)(short)((amount + this->master_obj->hp) * this->hp / this->master_obj->hp);
         break;
     }
     default:
         return;
     }
 }
-
-
-
-
-
 
 void RGE_Static_Object::modify_percent(float amount, unsigned char flag) {
     switch (flag) {
@@ -1974,9 +1768,6 @@ void RGE_Static_Object::modify_percent(float amount, unsigned char flag) {
         break;
     }
 }
-
-
-
 
 void RGE_Static_Object::transform(RGE_Master_Static_Object* obj) {
     float hp_num = (float)(signed short)(master_obj->hp);
@@ -2006,11 +1797,7 @@ void RGE_Static_Object::transform(RGE_Master_Static_Object* obj) {
     set_object_state(2);
 }
 
-
-
-
-void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* source)
-{
+void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Sprite* new_sprite = 0;
 
     if (this->tile != 0 && this->object_state == 2) {
@@ -2047,9 +1834,6 @@ void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* source)
     }
 }
 
-
-
-
 void RGE_Static_Object::destroy_obj(void) {
     if (this->object_state < 7) {
         if (this->inside_obj != 0) {
@@ -2063,8 +1847,6 @@ void RGE_Static_Object::destroy_obj(void) {
     }
 }
 
-
-
 void RGE_Static_Object::die_die_die(void) {
     if ((this->selected & 1) != 0) {
         this->owner->unselect_one_object(this);
@@ -2073,19 +1855,14 @@ void RGE_Static_Object::die_die_die(void) {
     this->hp = 0;
 }
 
-
-
 typedef unsigned long ulong;
-
-
 
 void RGE_Static_Object::remove_visible_resource() {
     ulong ExploredVal;
     ulong explored;
     RGE_Player* player;
     if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 &&
-        (this->master_obj->create_doppleganger_on_death != 0 ||
-         this->master_obj->track_as_resource != 0)) {
+        (this->master_obj->create_doppleganger_on_death != 0 || this->master_obj->track_as_resource != 0)) {
         ExploredVal = unified_map_offsets[(int)this->world_y][(int)this->world_x];
         explored = ExploredVal >> 16;
         ExploredVal &= 0xFFFF;
@@ -2095,14 +1872,13 @@ void RGE_Static_Object::remove_visible_resource() {
                 if ((explored & 1) == 1) {
                     if (this->master_obj->track_as_resource != 0) {
                         player = this->owner->world->players[player_index];
-                        player->VR_List->Remove_Resource(
-                            this->id, this->master_obj->resource_group);
+                        player->VR_List->Remove_Resource(this->id, this->master_obj->resource_group);
                     }
-                    if (this->master_obj->create_doppleganger_on_death == 1 &&
-                        (ExploredVal & 1) == 0 && player_index > 0) {
+                    if (this->master_obj->create_doppleganger_on_death == 1 && (ExploredVal & 1) == 0 &&
+                        player_index > 0) {
                         player = this->owner->world->players[player_index];
-                        static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])->make_new_obj(
-                            player, this->world_x, this->world_y, this->world_z, this);
+                        static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])
+                            ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                     }
                 }
                 player_index++;
@@ -2116,11 +1892,7 @@ void RGE_Static_Object::remove_visible_resource() {
     }
 }
 
-
-
 typedef unsigned long ulong;
-
-
 
 void RGE_Static_Object::create_doppleganger_when_dying() {
     if (this->id >= 0 && this->owner != 0 && this->master_obj != 0 &&
@@ -2133,8 +1905,8 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
             do {
                 if ((explored & 1) == 1 && (ExploredVal & 1) == 0 && i > 0) {
                     RGE_Player* player = this->owner->world->players[i];
-                    static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])->make_new_obj(
-                        player, this->world_x, this->world_y, this->world_z, this);
+                    static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])
+                        ->make_new_obj(player, this->world_x, this->world_y, this->world_z, this);
                 }
                 i++;
                 ExploredVal >>= 1;
@@ -2146,10 +1918,7 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
     }
 }
 
-
-
-void RGE_Static_Object::set_object_state(unsigned char new_object_state)
-{
+void RGE_Static_Object::set_object_state(unsigned char new_object_state) {
     if (this->object_state != new_object_state) {
         if (new_object_state >= 3 && this->object_state < 3) {
             this->take_attribute_from_owner();
@@ -2169,33 +1938,27 @@ void RGE_Static_Object::set_object_state(unsigned char new_object_state)
             }
         }
 
-        if (this->object_state < 7 && new_object_state == 7 && this->tile != 0 &&
-            this->master_obj->los > 0.0) {
+        if (this->object_state < 7 && new_object_state == 7 && this->tile != 0 && this->master_obj->los > 0.0) {
             this->unexplore_terrain(this->owner, 1, -1);
         }
 
         this->object_state = new_object_state;
 
-        if (new_object_state == 3 &&
-            this->groupCommanderValue == this->id &&
-            this->unitAIValue != 0 &&
+        if (new_object_state == 3 && this->groupCommanderValue == this->id && this->unitAIValue != 0 &&
             this->groupMembers.number() > 1) {
             int i = 0;
             int newCommander = -1;
             if (this->groupMembers.number() > 0) {
                 do {
                     if (this->groupMembers[i] != this->id) {
-                        RGE_Static_Object* member =
-                            this->owner->world->object(this->groupMembers[i]);
-                        if (member != 0 && member->object_state <= 2 &&
-                            member->unitAI() != 0) {
+                        RGE_Static_Object* member = this->owner->world->object(this->groupMembers[i]);
+                        if (member != 0 && member->object_state <= 2 && member->unitAI() != 0) {
                             if (newCommander == -1) {
                                 newCommander = this->groupMembers[i];
                             }
                             member->groupCommanderValue = newCommander;
                             if (this->groupMembers[i] == newCommander) {
-                                member->unitAI()->setPlayStatus(
-                                    this->unitAIValue->playStatus);
+                                member->unitAI()->setPlayStatus(this->unitAIValue->playStatus);
                             }
                         }
                     }
@@ -2204,19 +1967,15 @@ void RGE_Static_Object::set_object_state(unsigned char new_object_state)
             }
         }
 
-        if (this->sleep_flag != 0 && this->object_state != 2 &&
-            this->object_state != 6) {
+        if (this->sleep_flag != 0 && this->object_state != 2 && this->object_state != 6) {
             this->set_sleep_flag(0);
         }
     }
 }
 
-
 // The final X overlap accepts less, equal, and unordered comparisons.
 
-
-RGE_Static_Object* RGE_Static_Object::check_object_bounds()
-{
+RGE_Static_Object* RGE_Static_Object::check_object_bounds() {
     float rx;
     float ry;
     short x1;
@@ -2232,10 +1991,14 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
         x2 = (short)(int)(this->world_x + 3.0f);
         y2 = (short)(int)(this->world_y + 3.0f);
         RGE_Map* map = this->owner->world->map;
-        if (x1 < 0) x1 = 0;
-        if (x2 >= map->map_width) x2 = (short)map->map_width - 1;
-        if (y1 < 0) y1 = 0;
-        if (y2 >= map->map_height) y2 = (short)map->map_height - 1;
+        if (x1 < 0)
+            x1 = 0;
+        if (x2 >= map->map_width)
+            x2 = (short)map->map_width - 1;
+        if (y1 < 0)
+            y1 = 0;
+        if (y2 >= map->map_height)
+            y2 = (short)map->map_height - 1;
         for (short y_index = y1; y_index <= y2; ++y_index) {
             RGE_Tile* tile = map->map_row_offset[y_index] + x1;
             for (short x = x1; x <= x2; ++x) {
@@ -2249,8 +2012,10 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
                         if (rx2 > 0.0f && ry2 > 0.0f) {
                             float dy = obj->world_y - this->world_y;
                             float dx = obj->world_x - this->world_x;
-                            if (dy < 0.0f) dy = -dy;
-                            if (dx < 0.0f) dx = -dx;
+                            if (dy < 0.0f)
+                                dy = -dy;
+                            if (dx < 0.0f)
+                                dx = -dx;
                             if (dy <= ry2 + ry) {
                                 float x_limit = rx2 + rx;
                                 if (!(dx > x_limit)) {
@@ -2268,17 +2033,13 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
     return 0;
 }
 
-
-
 float RGE_Static_Object::get_terrain_speed(unsigned char terrain) {
     return owner->world->terrains[master_obj->terrain][terrain];
 }
 
-
-
-unsigned char RGE_Static_Object::is_moving() { return 0; }
-
-
+unsigned char RGE_Static_Object::is_moving() {
+    return 0;
+}
 
 // this method is an exceptional nonvirtual member. Its original
 unsigned char RGE_Static_Object::is_dying(void) {
@@ -2288,33 +2049,20 @@ unsigned char RGE_Static_Object::is_dying(void) {
     return 0;
 }
 
-
 // the four outputs are references, not pointer parameters.
-
 
 int RGE_Static_Object::get_frame(short& min_x, short& min_y, short& max_x, short& max_y) {
     if (this->sprite != 0 && this->sprite_list != 0) {
-        return this->sprite_list->get_frame(min_x, min_y, max_x,
-                                            max_y, this->sprite,
-                                            (unsigned char)this->facet);
+        return this->sprite_list->get_frame(min_x, min_y, max_x, max_y, this->sprite, (unsigned char)this->facet);
     }
     return 0;
 }
 
-
-
-
 unsigned char RGE_Static_Object::more_room() {
-    if (this->objects->number_of_objects <
-        (short)(unsigned short)this->master_obj->obj_max)
+    if (this->objects->number_of_objects < (short)(unsigned short)this->master_obj->obj_max)
         return 1;
     return 0;
 }
-
-
-
-
-
 
 void RGE_Static_Object::enter_obj(RGE_Static_Object* target) {
     if (!target->more_room()) {
@@ -2339,16 +2087,12 @@ void RGE_Static_Object::enter_obj(RGE_Static_Object* target) {
     world_y = target->world_y;
 }
 
-
-
 void RGE_Static_Object::exit_obj(void) {
     if (inside_obj != 0) {
         inside_obj->objects->remove_node(this, 0);
         inside_obj = 0;
     }
 }
-
-
 
 // LOSTBL is a struct in the original decorated return type.
 LOSTBL* RGE_Static_Object::get_los_table(void) {
@@ -2358,13 +2102,9 @@ LOSTBL* RGE_Static_Object::get_los_table(void) {
     return this->owner->visible->get_los_table((int)this->master_obj->los, 0);
 }
 
-
-
 extern "C" long __cdecl _ftol(void);
 
-
-int RGE_Static_Object::explore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS)
-{
+int RGE_Static_Object::explore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS) {
     if (whos != 0) {
         if (Override_LOS == -1) {
             Override_LOS = (int)this->master_obj->los;
@@ -2373,16 +2113,15 @@ int RGE_Static_Object::explore_terrain(RGE_Player* whos, unsigned char explore_t
             RGE_Visible_Map* visible = whos->visible;
             long current = (whos->id == whos->world->curr_player);
             if (explore_type == 0) {
-                return visible->explore_terrain(
-                    (long)this->world_x, (long)this->world_y, Override_LOS, 0, current, this->id);
+                return visible->explore_terrain((long)this->world_x, (long)this->world_y, Override_LOS, 0, current,
+                                                this->id);
             } else {
                 if (this->master_obj->radius_x > 0.0 && this->master_obj->radius_y > 0.0) {
-                    return visible->explore_terrain_sq(
-                        (long)(this->world_x - this->master_obj->radius_x),
-                        (long)(this->world_y - this->master_obj->radius_y),
-                        (long)(this->world_x + this->master_obj->radius_x - 0.01f),
-                        (long)(this->world_y + this->master_obj->radius_y - 0.01f),
-                        current, this->id);
+                    return visible->explore_terrain_sq((long)(this->world_x - this->master_obj->radius_x),
+                                                       (long)(this->world_y - this->master_obj->radius_y),
+                                                       (long)(this->world_x + this->master_obj->radius_x - 0.01f),
+                                                       (long)(this->world_y + this->master_obj->radius_y - 0.01f),
+                                                       current, this->id);
                 }
             }
         }
@@ -2390,13 +2129,9 @@ int RGE_Static_Object::explore_terrain(RGE_Player* whos, unsigned char explore_t
     return 0;
 }
 
-
-
 extern "C" long __cdecl _ftol(void);
 
-
-void RGE_Static_Object::unexplore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS)
-{
+void RGE_Static_Object::unexplore_terrain(RGE_Player* whos, unsigned char explore_type, int Override_LOS) {
     if (whos != 0) {
         if (Override_LOS == -1) {
             Override_LOS = (int)this->master_obj->los;
@@ -2405,24 +2140,23 @@ void RGE_Static_Object::unexplore_terrain(RGE_Player* whos, unsigned char explor
             RGE_Visible_Map* visible = whos->visible;
             long current = (whos->id == whos->world->curr_player);
             if (explore_type == 0) {
-                visible->unexplore_terrain(
-                    (long)this->world_x, (long)this->world_y, Override_LOS, 0, current, this->id);
+                visible->unexplore_terrain((long)this->world_x, (long)this->world_y, Override_LOS, 0, current,
+                                           this->id);
             } else {
                 if (this->master_obj->radius_x > 0.0 && this->master_obj->radius_y > 0.0) {
-                    visible->unexplore_terrain_sq(
-                        (long)(this->world_x - this->master_obj->radius_x),
-                        (long)(this->world_y - this->master_obj->radius_y),
-                        (long)(this->world_x + this->master_obj->radius_x - 0.01f),
-                        (long)(this->world_y + this->master_obj->radius_y - 0.01f),
-                        current, this->id);
+                    visible->unexplore_terrain_sq((long)(this->world_x - this->master_obj->radius_x),
+                                                  (long)(this->world_y - this->master_obj->radius_y),
+                                                  (long)(this->world_x + this->master_obj->radius_x - 0.01f),
+                                                  (long)(this->world_y + this->master_obj->radius_y - 0.01f), current,
+                                                  this->id);
                 }
             }
         }
     }
 }
 
-
-void RGE_Static_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
+void RGE_Static_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier,
+                               RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
     float damage_amount;
 
     damage_amount = this->calculateDamage(weapon_num, damage, attack_modifier, attacking_player, attackingObject);
@@ -2433,9 +2167,8 @@ void RGE_Static_Object::damage(int weapon_num, RGE_Armor_Weapon_Info* damage, fl
     }
 }
 
-
-
-float RGE_Static_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier, RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
+float RGE_Static_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier,
+                                         RGE_Player* attacking_player, RGE_Static_Object* attackingObject) {
     float damage_amount = 0.0f;
 
     if (weapon_num > 0) {
@@ -2448,8 +2181,6 @@ float RGE_Static_Object::calculateDamage(int weapon_num, RGE_Armor_Weapon_Info* 
     }
     return damage_amount;
 }
-
-
 
 void RGE_Static_Object::rotate(long amount) {
     int facet_num = (int)this->sprite->facet_num;
@@ -2464,20 +2195,15 @@ void RGE_Static_Object::rotate(long amount) {
     this->facet = (unsigned char)facet;
 }
 
-
-
 void RGE_Static_Object::set_attribute(short attr_type, float attr_amount) {
     attribute_type_held = attr_type;
     attribute_amount_held = attr_amount;
 }
 
-
-void RGE_Static_Object::set_attribute_amount(float attr_amount, unsigned char delta, unsigned char check_max)
-{
+void RGE_Static_Object::set_attribute_amount(float attr_amount, unsigned char delta, unsigned char check_max) {
     if (delta != 0) {
         this->attribute_amount_held = attr_amount + this->attribute_amount_held;
-    }
-    else {
+    } else {
         this->attribute_amount_held = attr_amount;
     }
 
@@ -2488,13 +2214,12 @@ void RGE_Static_Object::set_attribute_amount(float attr_amount, unsigned char de
     }
 }
 
-
-
 unsigned char RGE_Static_Object::heal(float healing) {
     float new_hp = healing + this->hp;
     this->hp = new_hp;
     if (healing < 0.0f) {
-        if (new_hp < 1.0f) this->hp = 1.0f;
+        if (new_hp < 1.0f)
+            this->hp = 1.0f;
     }
     int maxHp = this->master_obj->hp;
     if (maxHp <= this->hp) {
@@ -2504,11 +2229,7 @@ unsigned char RGE_Static_Object::heal(float healing) {
     return 0;
 }
 
-
-
 void RGE_Static_Object::notify_of_relation(long player_id, unsigned char relation) {}
-
-
 
 void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* work_obj, short action_type, unsigned char attack_flag) {
     if (worker_num < 0xFA) {
@@ -2516,7 +2237,6 @@ void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* work_obj, short a
     }
     set_sleep_flag(0);
 }
-
 
 void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* caller) {
     if (this->worker_num > 0) {
@@ -2537,18 +2257,7 @@ void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* caller) {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-int RGE_Static_Object::inRange(RGE_Static_Object* obj, float range)
-{
+int RGE_Static_Object::inRange(RGE_Static_Object* obj, float range) {
     float dX = obj->world_x - this->world_x;
     float dY = obj->world_y - this->world_y;
 
@@ -2579,26 +2288,14 @@ int RGE_Static_Object::inRange(RGE_Static_Object* obj, float range)
     return 0;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 float RGE_Static_Object::distance_to_object(RGE_Static_Object* obj) {
     float dX = obj->world_x - this->world_x;
     float dY = obj->world_y - this->world_y;
 
-    if (dX < 0.0f) dX = -dX;
-    if (dY < 0.0f) dY = -dY;
+    if (dX < 0.0f)
+        dX = -dX;
+    if (dY < 0.0f)
+        dY = -dY;
 
     float other_radius_x = obj->master_obj->radius_x;
     float this_radius_x = this->master_obj->radius_x;
@@ -2607,18 +2304,15 @@ float RGE_Static_Object::distance_to_object(RGE_Static_Object* obj) {
     float x = dX - this_radius_x - other_radius_x;
     float y = dY - this_radius_y - other_radius_y;
 
-    if (x < 0.0f) x = 0.0f;
-    if (y < 0.0f) y = 0.0f;
+    if (x < 0.0f)
+        x = 0.0f;
+    if (y < 0.0f)
+        y = 0.0f;
 
     return (float)sqrt(x * x + y * y);
 }
 
-
-
-
-
-float RGE_Static_Object::distance_to_position(float x, float y, float z)
-{
+float RGE_Static_Object::distance_to_position(float x, float y, float z) {
     float dX = world_x - x;
     float dY = world_y - y;
 
@@ -2640,12 +2334,8 @@ float RGE_Static_Object::distance_to_position(float x, float y, float z)
     return sqrt(dX * dX + dY * dY);
 }
 
-
-
-
-unsigned char RGE_Static_Object::hit_test(
-    short draw_x, short draw_y, short mouse_x, short mouse_y, short check_radius)
-{
+unsigned char RGE_Static_Object::hit_test(short draw_x, short draw_y, short mouse_x, short mouse_y,
+                                          short check_radius) {
     if (this->sprite != 0 && this->sprite_list != 0) {
         short frame = this->sprite_list->frame(this->sprite);
         short scr_x = mouse_x - this->screen_x_offset - draw_x;
@@ -2658,9 +2348,7 @@ unsigned char RGE_Static_Object::hit_test(
         if (check_radius != 0) {
             for (short i = -check_radius; i < check_radius; ++i) {
                 for (short inner = -check_radius; inner < check_radius; ++inner) {
-                    if (this->sprite->hit_test(
-                            scr_x + i, scr_y + inner,
-                            this->facet, frame) != 0) {
+                    if (this->sprite->hit_test(scr_x + i, scr_y + inner, this->facet, frame) != 0) {
                         return 1;
                     }
                 }
@@ -2672,13 +2360,12 @@ unsigned char RGE_Static_Object::hit_test(
     return 0;
 }
 
-
-
-
-
-unsigned char RGE_Static_Object::box_hit_test(short draw_x, short draw_y, short start_x, short start_y, short end_x, short end_y) {
-    if (this->sprite == 0) return 0;
-    if (this->sprite_list == 0) return 0;
+unsigned char RGE_Static_Object::box_hit_test(short draw_x, short draw_y, short start_x, short start_y, short end_x,
+                                              short end_y) {
+    if (this->sprite == 0)
+        return 0;
+    if (this->sprite_list == 0)
+        return 0;
 
     this->sprite_list->get_facetindex(this->sprite, this->facet);
 
@@ -2686,28 +2373,29 @@ unsigned char RGE_Static_Object::box_hit_test(short draw_x, short draw_y, short 
     short min_y;
     short max_y;
     short max_x;
-    if (this->get_frame(min_x, min_y, max_x, max_y) == 0) return 0;
+    if (this->get_frame(min_x, min_y, max_x, max_y) == 0)
+        return 0;
 
     min_x = min_x + draw_x + this->screen_x_offset;
     min_y = min_y + draw_y + this->screen_y_offset;
     max_x = max_x + draw_x + this->screen_x_offset;
     max_y = max_y + draw_y + this->screen_y_offset;
 
-    if (min_x >= start_x && min_x <= end_x && min_y >= start_y && min_y <= end_y) return 1;
-    if (max_x >= start_x && max_x <= end_x && max_y >= start_y && max_y <= end_y) return 1;
-    if (start_x >= min_x && start_x <= max_x && start_y >= min_y && start_y <= max_y) return 1;
-    if (end_x >= min_x && end_x <= max_x && end_y >= min_y && end_y <= max_y) return 1;
-    if (start_x < min_x && end_x > max_x &&
-        ((start_y > min_y && start_y < max_y) ||
-         (end_y > min_y && end_y < max_y))) return 1;
-    if (start_y < min_y && end_y > max_y &&
-        ((start_x > min_x && start_x < max_x) ||
-         (end_x > min_x && end_x < max_x))) return 1;
+    if (min_x >= start_x && min_x <= end_x && min_y >= start_y && min_y <= end_y)
+        return 1;
+    if (max_x >= start_x && max_x <= end_x && max_y >= start_y && max_y <= end_y)
+        return 1;
+    if (start_x >= min_x && start_x <= max_x && start_y >= min_y && start_y <= max_y)
+        return 1;
+    if (end_x >= min_x && end_x <= max_x && end_y >= min_y && end_y <= max_y)
+        return 1;
+    if (start_x < min_x && end_x > max_x && ((start_y > min_y && start_y < max_y) || (end_y > min_y && end_y < max_y)))
+        return 1;
+    if (start_y < min_y && end_y > max_y && ((start_x > min_x && start_x < max_x) || (end_x > min_x && end_x < max_x)))
+        return 1;
 
     return 0;
 }
-
-
 
 void RGE_Static_Object::set_location(float x, float y, float z) {
     world_x = x;
@@ -2715,15 +2403,9 @@ void RGE_Static_Object::set_location(float x, float y, float z) {
     world_z = z;
 }
 
-
-
 void RGE_Static_Object::new_angle(float new_angle) {}
 
-
-
-
-unsigned char RGE_Static_Object::drop_held_objects(int dropZone)
-{
+unsigned char RGE_Static_Object::drop_held_objects(int dropZone) {
     float drop_x[10];
     float drop_y[10];
     float radius_x[10];
@@ -2744,12 +2426,10 @@ unsigned char RGE_Static_Object::drop_held_objects(int dropZone)
         RGE_Object_Node* next = temp->next;
 
         while (drop_points > 0) {
-            if (this->find_drop_location(
-                    dropZone, x, y, temp->node->master_obj, temp->node,
-                    drop_x[0], drop_y[0], radius_x[0], radius_y[0]) != 0) {
+            if (this->find_drop_location(dropZone, x, y, temp->node->master_obj, temp->node, drop_x[0], drop_y[0],
+                                         radius_x[0], radius_y[0]) != 0) {
                 RGE_Static_Object* object = temp->node;
-                object->set_location(this->world_x, this->world_y,
-                                     this->world_z);
+                object->set_location(this->world_x, this->world_y, this->world_z);
                 object->exit_obj();
                 object->teleport(x, y, this->world_z);
                 ++count;
@@ -2779,14 +2459,11 @@ unsigned char RGE_Static_Object::drop_held_objects(int dropZone)
     return count;
 }
 
-
 // the x and y outputs are float references in the shipped symbol.
 
-unsigned char RGE_Static_Object::find_drop_location(
-    int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj,
-    RGE_Static_Object* obj, float drop_x, float drop_y,
-    float radius_x, float radius_y)
-{
+unsigned char RGE_Static_Object::find_drop_location(int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj,
+                                                    RGE_Static_Object* obj, float drop_x, float drop_y, float radius_x,
+                                                    float radius_y) {
     radius_x = radius_x + m_obj->radius_x;
     radius_y = radius_y + m_obj->radius_y;
     float radius_2x = radius_x + radius_x;
@@ -2800,50 +2477,43 @@ unsigned char RGE_Static_Object::find_drop_location(
             case 0: {
                 x = radius_x + drop_x;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
-                y = drop_y +
-                    ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
+                y = drop_y + ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
                 break;
             }
             case 1: {
                 x = drop_x - radius_x;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
-                y = drop_y +
-                     ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
+                y = drop_y + ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
                 break;
             }
             case 2: {
                 y = radius_y + drop_y;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
-                x = drop_x +
-                    ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
+                x = drop_x + ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
                 break;
             }
             case 3: {
                 y = drop_y - radius_y;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
-                x = drop_x +
-                    ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
+                x = drop_x + ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
                 break;
             }
             }
 
             if (x >= 0.0f && y >= 0.0f) {
                 RGE_Map* map = this->owner->world->map;
-                if (x < (float)map->map_width &&
-                    y < (float)map->map_height) {
-                    if (dropZone != -1 &&
-                        dropZone != (int)this->lookupZone((int)x, (int)y)) {
+                if (x < (float)map->map_width && y < (float)map->map_height) {
+                    if (dropZone != -1 && dropZone != (int)this->lookupZone((int)x, (int)y)) {
                         goto retry_attempt;
                     }
                     // success returns from inside the retry loop.
-                    if (m_obj->check_placement(this->owner, x, y,
-                        0, 1, 1, 1, 0, 1, 1) == 0 &&
+                    if (m_obj->check_placement(this->owner, x, y, 0, 1, 1, 1, 0, 1, 1) == 0 &&
                         obj->passableTile(x, y, 0) == 1) {
                         return 1;
                     }
                 }
             }
-retry_attempt:
+        retry_attempt:
             ++count;
         } while (count < 50);
 
@@ -2857,13 +2527,9 @@ retry_attempt:
     return 0;
 }
 
-
-
 RGE_Check_List::RGE_Check_List() {
     this->list = 0;
 }
-
-
 
 RGE_Check_List::~RGE_Check_List() {
     RGE_Check_Node* next;
@@ -2875,8 +2541,6 @@ RGE_Check_List::~RGE_Check_List() {
     }
 }
 
-
-
 void RGE_Check_List::add_node(RGE_Static_Object* obj, float dx, float dy, unsigned char flag1) {
     RGE_Check_Node* node = static_cast<RGE_Check_Node*>(calloc(1, sizeof(RGE_Check_Node)));
     node->next = this->list;
@@ -2887,17 +2551,12 @@ void RGE_Check_List::add_node(RGE_Static_Object* obj, float dx, float dy, unsign
     this->list = node;
 }
 
-
-
-
-RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float delta)
-{
+RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float delta) {
     RGE_Master_Static_Object* master = this->master_obj;
     float rx = master->radius_x;
     float ry = master->radius_y;
 
-    if (!(rx > 0.0f) || !(ry > 0.0f) ||
-        !(master->radius_z > 0.0f)) {
+    if (!(rx > 0.0f) || !(ry > 0.0f) || !(master->radius_z > 0.0f)) {
         return 0;
     }
 
@@ -2936,15 +2595,13 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float delta)
                     while (object_node != 0) {
                         RGE_Static_Object* object = object_node->node;
                         if (object != this) {
-                            RGE_Master_Static_Object* object_master =
-                                object->master_obj;
+                            RGE_Master_Static_Object* object_master = object->master_obj;
                             float ry2 = object_master->radius_y;
                             float rx2 = object_master->radius_x;
 
                             if (ry2 > 0.0f && rx2 > 0.0f) {
                                 float dz = object->world_z - this->world_z;
-                                if (!(dz >= -object_master->radius_z) ||
-                                    dz > this->master_obj->radius_z) {
+                                if (!(dz >= -object_master->radius_z) || dz > this->master_obj->radius_z) {
                                     object_node = object_node->next;
                                     continue;
                                 }
@@ -2963,8 +2620,7 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float delta)
 
                                 float dx = raw_x - (rx2 + rx);
                                 float dy = raw_y - (ry2 + ry);
-                                if (!(dx >= delta) && !(dy >= delta) &&
-                                    (dy >= 0.0f || dx >= 0.0f)) {
+                                if (!(dx >= delta) && !(dy >= delta) && (dy >= 0.0f || dx >= 0.0f)) {
                                     check_list->add_node(object, dx, dy, flag);
                                 }
                             }
@@ -2987,15 +2643,12 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float delta)
     return check_list;
 }
 
-
 // The owned body is [004C6AA0, 004C6B41); later bytes are padding.
 // Keep the narrow sprite facet-count read at sprite + 0x60.
 
 extern "C" double __cdecl atan2(double, double);
 
-
-int RGE_Static_Object::boundToFacet(float tX, float tY, int numberBindingFacets)
-{
+int RGE_Static_Object::boundToFacet(float tX, float tY, int numberBindingFacets) {
     int best = -1;
     float smallestFacetDifference = 0.0f;
     float angle = (float)atan2(this->world_y - tY, this->world_x - tX);
@@ -3021,10 +2674,8 @@ int RGE_Static_Object::boundToFacet(float tX, float tY, int numberBindingFacets)
     return best;
 }
 
-
 // The owned body is [004C6B50, 004C6B5F); the next byte is padding.
 // Keep the narrow sprite facet-count read at sprite + 0x60.
-
 
 int RGE_Static_Object::numberFacets() {
     if (this->sprite)
@@ -3032,25 +2683,23 @@ int RGE_Static_Object::numberFacets() {
     return 0;
 }
 
-
 // The owned body is [004C6B60, 004C6B67); 004C6B67 begins padding.
 // The body is one narrow byte read at this + 0x86 followed by ret.
 
-
-unsigned char RGE_Static_Object::underAttack() const { return this->underAttackValue; }
-
+unsigned char RGE_Static_Object::underAttack() const {
+    return this->underAttackValue;
+}
 
 // The owned body is [004C6B70, 004C6B7D); 004C6B7D begins padding.
 // Keep the virtual, non-const setter ABI and the narrow +0x86 store.
 
-
-void RGE_Static_Object::setUnderAttack(unsigned char v) { this->underAttackValue = v; }
-
+void RGE_Static_Object::setUnderAttack(unsigned char v) {
+    this->underAttackValue = v;
+}
 
 // The body is [004C6B80, 004C6C8A); 004C6C90 starts the next symbol.
 
-int RGE_Static_Object::addToObstructionMap(int obMapCode)
-{
+int RGE_Static_Object::addToObstructionMap(int obMapCode) {
     if (this->master_obj->radius_z <= 0.0f) {
         return 0;
     }
@@ -3085,11 +2734,9 @@ int RGE_Static_Object::addToObstructionMap(int obMapCode)
     return 1;
 }
 
-
 // The owned body is [004C6C90, 004C6D9A); 004C6DA0 starts changeInfluenceMap.
 
-int RGE_Static_Object::removeFromObstructionMap(int obMapCode)
-{
+int RGE_Static_Object::removeFromObstructionMap(int obMapCode) {
     if (this->master_obj->radius_z <= 0.0f) {
         return 0;
     }
@@ -3124,14 +2771,10 @@ int RGE_Static_Object::removeFromObstructionMap(int obMapCode)
     return 1;
 }
 
-
-
 extern "C" double __cdecl floor(double);
 extern "C" double __cdecl ceil(double);
 
-
-void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, int usePercentCoverage, int useLOS)
-{
+void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, int usePercentCoverage, int useLOS) {
     int minXTile;
     int minYTile;
     int maxXTile;
@@ -3169,13 +2812,17 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, in
         for (int x = minXTile; x < maxXTile; x++) {
             if (usePercentCoverage) {
                 float left = (float)x;
-                if (objectMinX > (float)x) left = objectMinX;
+                if (objectMinX > (float)x)
+                    left = objectMinX;
                 float right = (float)(x + 1);
-                if (objectMaxX < right) right = objectMaxX;
+                if (objectMaxX < right)
+                    right = objectMaxX;
                 float top = (float)y;
-                if (objectMinY > (float)y) top = objectMinY;
+                if (objectMinY > (float)y)
+                    top = objectMinY;
                 float bottom = (float)(y + 1);
-                if (objectMaxY < bottom) bottom = objectMaxY;
+                if (objectMaxY < bottom)
+                    bottom = objectMaxY;
                 int value = (int)((right - left) * (bottom - top) * 255.0f);
                 if (increment == 1) {
                     iMap->incrementValue(x, y, value);
@@ -3193,16 +2840,10 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* iMap, int increment, in
     }
 }
 
-
-
-
-RGE_Check_List* RGE_Static_Object::objectCollisionList(float delta)
-{
+RGE_Check_List* RGE_Static_Object::objectCollisionList(float delta) {
     RGE_Master_Static_Object* master = this->master_obj;
     float master_radius_y = master->radius_y;
-    if (!(master->radius_x > 0.0f) ||
-        !(master_radius_y > 0.0f) ||
-        !(master->radius_z > 0.0)) {
+    if (!(master->radius_x > 0.0f) || !(master_radius_y > 0.0f) || !(master->radius_z > 0.0)) {
         return 0;
     }
 
@@ -3229,8 +2870,7 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float delta)
     for (int yIndex = minYTile; yIndex <= maxYTile; ++yIndex) {
         RGE_Tile* tile = map->map_row_offset[yIndex] + minXTile;
         for (int x = minXTile; x <= maxXTile; ++x, ++tile) {
-            for (RGE_Object_Node* node = tile->objects.list;
-                 node != 0; node = node->next) {
+            for (RGE_Object_Node* node = tile->objects.list; node != 0; node = node->next) {
                 RGE_Static_Object* object = node->node;
                 if (object == this) {
                     continue;
@@ -3248,34 +2888,29 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float delta)
                 }
 
                 float dz = object->world_z - this->world_z;
-                if ((dz > 0.0f && dz > this->master_obj->radius_z) ||
-                    (dz < 0.0f && dz < -object_master->radius_z)) {
+                if ((dz > 0.0f && dz > this->master_obj->radius_z) || (dz < 0.0f && dz < -object_master->radius_z)) {
                     continue;
                 }
 
                 if (this->world_x < object->world_x) {
-                    float gap = (object->world_x - tempRX) -
-                                (this->world_x + this->master_obj->radius_x);
+                    float gap = (object->world_x - tempRX) - (this->world_x + this->master_obj->radius_x);
                     if (gap > delta) {
                         continue;
                     }
                 } else {
-                    float overlap = (object->world_x + tempRX) -
-                                    (this->world_x - this->master_obj->radius_x);
+                    float overlap = (object->world_x + tempRX) - (this->world_x - this->master_obj->radius_x);
                     if (overlap < -delta) {
                         continue;
                     }
                 }
 
                 if (this->world_y < object->world_y) {
-                    float gap = (object->world_y - tempRY) -
-                                (this->world_y + this->master_obj->radius_y);
+                    float gap = (object->world_y - tempRY) - (this->world_y + this->master_obj->radius_y);
                     if (gap > delta) {
                         continue;
                     }
                 } else {
-                    float overlap = (object->world_y + tempRY) -
-                                    (this->world_y - this->master_obj->radius_y);
+                    float overlap = (object->world_y + tempRY) - (this->world_y - this->master_obj->radius_y);
                     if (overlap < -delta) {
                         continue;
                     }
@@ -3292,12 +2927,9 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float delta)
     return result;
 }
 
-
 // logDebug is a public virtual cdecl member.
 
-
-void __cdecl RGE_Static_Object::logDebug(char* textIn, ...)
-{
+void __cdecl RGE_Static_Object::logDebug(char* textIn, ...) {
     char textOut[1024];
 
     if (logDebugID == -1 || logDebugID == this->id) {
@@ -3322,13 +2954,9 @@ void __cdecl RGE_Static_Object::logDebug(char* textIn, ...)
     }
 }
 
-
-
-UnitAIModule* RGE_Static_Object::unitAI() { return this->unitAIValue; }
-
-
-
-
+UnitAIModule* RGE_Static_Object::unitAI() {
+    return this->unitAIValue;
+}
 
 unsigned char RGE_Static_Object::lookupZone(XYPoint p) {
     if (p.x < 0 || p.y < 0) {
@@ -3339,10 +2967,8 @@ unsigned char RGE_Static_Object::lookupZone(XYPoint p) {
 
     if (zoneMapIndex == -1) {
         RGE_Game_World* world = owner->world;
-        zoneMap = world->map->map_zones->get_zone_map(
-            world->terrains[master_obj->terrain],
-            world->terrain_size,
-            zoneMapIndex);
+        zoneMap = world->map->map_zones->get_zone_map(world->terrains[master_obj->terrain], world->terrain_size,
+                                                      zoneMapIndex);
     } else {
         RGE_Game_World* world = owner->world;
         zoneMap = world->map->map_zones->get_zone_map(zoneMapIndex);
@@ -3355,9 +2981,6 @@ unsigned char RGE_Static_Object::lookupZone(XYPoint p) {
     return zoneMap->get_zone_info(p.x, p.y);
 }
 
-
-
-
 unsigned char RGE_Static_Object::lookupZone(int x, int y) {
     RGE_Game_World* world;
     RGE_Zone_Map* zone_map;
@@ -3368,10 +2991,8 @@ unsigned char RGE_Static_Object::lookupZone(int x, int y) {
 
     if (this->zoneMapIndex == -1) {
         world = this->owner->world;
-        zone_map = world->map->map_zones->get_zone_map(
-            world->terrains[this->master_obj->terrain],
-            world->terrain_size,
-            this->zoneMapIndex);
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], world->terrain_size,
+                                                       this->zoneMapIndex);
     } else {
         zone_map = this->owner->world->map->map_zones->get_zone_map(this->zoneMapIndex);
     }
@@ -3383,19 +3004,13 @@ unsigned char RGE_Static_Object::lookupZone(int x, int y) {
     return zone_map->get_zone_info(x, y);
 }
 
-
-
-
-
 unsigned char RGE_Static_Object::currentZone() {
     RGE_Zone_Map* zoneMap;
 
     if (zoneMapIndex == -1) {
         RGE_Game_World* world = owner->world;
-        zoneMap = world->map->map_zones->get_zone_map(
-            world->terrains[master_obj->terrain],
-            world->terrain_size,
-            zoneMapIndex);
+        zoneMap = world->map->map_zones->get_zone_map(world->terrains[master_obj->terrain], world->terrain_size,
+                                                      zoneMapIndex);
     } else {
         RGE_Game_World* world = owner->world;
         zoneMap = world->map->map_zones->get_zone_map(zoneMapIndex);
@@ -3408,21 +3023,17 @@ unsigned char RGE_Static_Object::currentZone() {
     return 0;
 }
 
-
 // the point input is a reference to struct XYPoint.
-
 
 int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char zone, float range, XYPoint& point) {
     RGE_Zone_Map* zone_map;
 
     if (this->zoneMapIndex == -1) {
         RGE_Game_World* world = this->owner->world;
-        zone_map = world->map->map_zones->get_zone_map(
-            world->terrains[this->master_obj->terrain], world->terrain_size,
-            this->zoneMapIndex);
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], world->terrain_size,
+                                                       this->zoneMapIndex);
     } else {
-        zone_map = this->owner->world->map->map_zones->get_zone_map(
-            this->zoneMapIndex);
+        zone_map = this->owner->world->map->map_zones->get_zone_map(this->zoneMapIndex);
     }
 
     if (zone_map != 0) {
@@ -3431,20 +3042,15 @@ int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char zone, float range,
     return 0;
 }
 
-
-
-
-int RGE_Static_Object::withinRangeOfZone(unsigned char zone, float range)
-{
+int RGE_Static_Object::withinRangeOfZone(unsigned char zone, float range) {
     int ix = (int)this->world_x;
     int iy = (int)this->world_y;
     RGE_Zone_Map* zone_map;
 
     if (this->zoneMapIndex == -1) {
         RGE_Game_World* world = this->owner->world;
-        zone_map = world->map->map_zones->get_zone_map(
-            world->terrains[this->master_obj->terrain], world->terrain_size,
-            this->zoneMapIndex);
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], world->terrain_size,
+                                                       this->zoneMapIndex);
     } else {
         RGE_Game_World* world = this->owner->world;
         zone_map = world->map->map_zones->get_zone_map(this->zoneMapIndex);
@@ -3459,17 +3065,14 @@ int RGE_Static_Object::withinRangeOfZone(unsigned char zone, float range)
     return 0;
 }
 
-
 // the output point is a reference to struct XYPoint.
-
 
 int RGE_Static_Object::findClosestPointInTerrainType(XYPoint p, XYPoint& rVal, int type1, int type2, int range) {
     RGE_Zone_Map* zone_map;
     if (this->zoneMapIndex == -1) {
         RGE_Game_World* world = this->owner->world;
-        zone_map = world->map->map_zones->get_zone_map(
-            world->terrains[this->master_obj->terrain], world->terrain_size,
-            this->zoneMapIndex);
+        zone_map = world->map->map_zones->get_zone_map(world->terrains[this->master_obj->terrain], world->terrain_size,
+                                                       this->zoneMapIndex);
     } else {
         zone_map = this->owner->world->map->map_zones->get_zone_map(this->zoneMapIndex);
     }
@@ -3479,28 +3082,19 @@ int RGE_Static_Object::findClosestPointInTerrainType(XYPoint p, XYPoint& rVal, i
     return 0;
 }
 
-
-
 int RGE_Static_Object::isGroupCommander(void) {
     return id == groupCommanderValue;
 }
 
-
-
-
-int RGE_Static_Object::inGroup() { return this->groupMembers.number() > 0; }
-
-
+int RGE_Static_Object::inGroup() {
+    return this->groupMembers.number() > 0;
+}
 
 int RGE_Static_Object::unitIsInGroup(int uID) {
     return this->groupMembers.contains(uID);
 }
 
-
-
-
-int RGE_Static_Object::createGroup(int* units, int count, int commander, float range)
-{
+int RGE_Static_Object::createGroup(int* units, int count, int commander, float range) {
     if (units == 0 || count == 0) {
         return 0;
     }
@@ -3526,10 +3120,6 @@ int RGE_Static_Object::createGroup(int* units, int count, int commander, float r
     return 1;
 }
 
-
-
-
-
 int RGE_Static_Object::commanderCreateGroup(int* units, int count, int commander, float range) {
     if (units == 0 || count == 0) {
         return 0;
@@ -3552,10 +3142,7 @@ int RGE_Static_Object::commanderCreateGroup(int* units, int count, int commander
     return 1;
 }
 
-
-
-int RGE_Static_Object::addToGroup(int unit, float range)
-{
+int RGE_Static_Object::addToGroup(int unit, float range) {
     if (this->groupMembers.number() >= 25) {
         return 0;
     }
@@ -3564,11 +3151,7 @@ int RGE_Static_Object::addToGroup(int unit, float range)
     return 1;
 }
 
-
-
-
-int RGE_Static_Object::commanderAddToGroup(int unit, float range)
-{
+int RGE_Static_Object::commanderAddToGroup(int unit, float range) {
     RGE_Static_Object* unitObj = this->owner->world->object(unit);
     int temp[25];
     ManagedArray<int>& group = this->groupMembers;
@@ -3586,8 +3169,7 @@ int RGE_Static_Object::commanderAddToGroup(int unit, float range)
             int member = group[i];
             temp[i] = member;
             if (member != this->id) {
-                RGE_Static_Object* object =
-                    this->owner->world->object(group[i]);
+                RGE_Static_Object* object = this->owner->world->object(group[i]);
                 if (object != 0) {
                     object->addToGroup(unit, range);
                 }
@@ -3602,10 +3184,6 @@ int RGE_Static_Object::commanderAddToGroup(int unit, float range)
     return 1;
 }
 
-
-
-
-
 int RGE_Static_Object::removeFromGroup(int unit) {
     int result = groupMembers.remove(unit);
     if (groupMembers.number() <= 0) {
@@ -3614,11 +3192,7 @@ int RGE_Static_Object::removeFromGroup(int unit) {
     return result;
 }
 
-
-
-
-int RGE_Static_Object::commanderRemoveFromGroup(int uID)
-{
+int RGE_Static_Object::commanderRemoveFromGroup(int uID) {
     if (uID == this->id && this->id == this->groupCommanderValue) {
         return this->commanderDestroyGroup();
     }
@@ -3639,22 +3213,17 @@ int RGE_Static_Object::commanderRemoveFromGroup(int uID)
     return 1;
 }
 
-
-
 int RGE_Static_Object::destroyGroup() {
     groupMembers.zeroNumber();
     groupCommanderValue = -1;
     return 1;
 }
 
-
-int RGE_Static_Object::commanderDestroyGroup()
-{
+int RGE_Static_Object::commanderDestroyGroup() {
     int i = 0;
     if (this->groupMembers.number() > 0) {
         do {
-            RGE_Static_Object* object =
-                this->owner->world->object(this->groupMembers[i]);
+            RGE_Static_Object* object = this->owner->world->object(this->groupMembers[i]);
             if (object != 0 && object->id != this->id) {
                 object->destroyGroup();
             }
@@ -3665,16 +3234,9 @@ int RGE_Static_Object::commanderDestroyGroup()
     return 1;
 }
 
-
-
-
-void RGE_Static_Object::addToPathingGroup(int uID)
-{
+void RGE_Static_Object::addToPathingGroup(int uID) {
     this->pathingGroupMembers.add(uID);
 }
-
-
-
 
 void RGE_Static_Object::removeAllFromPathingGroup(void) {
     if (owner->computerPlayer() == 1) {
@@ -3682,20 +3244,15 @@ void RGE_Static_Object::removeAllFromPathingGroup(void) {
     }
 }
 
-
-
 void RGE_Static_Object::remove_shadows(void) {
     int x0 = (int)this->world_x;
     int y0 = (int)this->world_y;
     this->owner->world->map->request_redraw(x0 - 2, y0 - 2, x0 + 1, y0 + 1, 0);
 }
 
-
-
-
-
 void RGE_Static_Object::set_sleep_flag(unsigned char flag_in) {
-    if (sleep_flag == flag_in) return;
+    if (sleep_flag == flag_in)
+        return;
 
     if (flag_in == 0) {
         if (goto_sleep_flag != 0) {
@@ -3705,8 +3262,7 @@ void RGE_Static_Object::set_sleep_flag(unsigned char flag_in) {
         }
 
         RGE_Object_Node* oldField = player_object_node;
-        owner->removeObject(this, (int)(unsigned char)sleep_flag,
-                            (int)dopple_flag, oldField);
+        owner->removeObject(this, (int)(unsigned char)sleep_flag, (int)dopple_flag, oldField);
 
         sleep_flag = 0;
         player_object_node = owner->addObject(this, 0, (int)dopple_flag);
@@ -3717,12 +3273,12 @@ void RGE_Static_Object::set_sleep_flag(unsigned char flag_in) {
     sleep_flag = flag_in;
 }
 
-
+// the shipped getter returns long and is virtual.
+long RGE_Static_Object::get_action_checksum() {
+    return 0;
+}
 
 // the shipped getter returns long and is virtual.
-long RGE_Static_Object::get_action_checksum() { return 0; }
-
-
-
-// the shipped getter returns long and is virtual.
-long RGE_Static_Object::get_waypoint_checksum() { return 0; }
+long RGE_Static_Object::get_waypoint_checksum() {
+    return 0;
+}
