@@ -4,7 +4,7 @@
 
 - Module: `src/aibitm.cpp`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Final source commit: `91ed643da59fb039560bb8a4e0b3bb1531ccc4a1`.
+- Final source commit: `9a9674d08e5aec06e90b825eb52f812d39a56c4e`.
 - Branch: `cleanup/staging-20260915-47`.
 - Changed files: `src/aibitm.cpp` and this report.
 - Header read: `include/aibitm.h`. It was not changed.
@@ -12,6 +12,17 @@
 The source keeps all 31 registry functions in source order. It keeps their
 signatures, types, scopes, storage, calls, expressions, and statement order.
 The source uses 1TBS braces. No structural rewrite was made.
+
+## Correction history
+
+- The initial cleanup source commit was
+  `91ed643da59fb039560bb8a4e0b3bb1531ccc4a1`.
+- The root correction changed only the touched full-argument constructor
+  signature. It is now one readable line instead of a split line with
+  alignment padding. The correction source commit is
+  `9a9674d08e5aec06e90b825eb52f812d39a56c4e`.
+- No fixed 80-column wrap was imposed. No name, type, scope, call, expression,
+  or statement changed in this correction.
 
 ## Evidence coverage
 
