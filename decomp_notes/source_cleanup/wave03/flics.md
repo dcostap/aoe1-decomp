@@ -112,11 +112,54 @@ The known non-exact `palette` and `delta_flc` source shapes remain unchanged.
 Their reviewed behavior and type constraints are recorded in
 `decomp_notes/flics.md`. I did not attempt a structural decoder rewrite.
 
+## Post-cleanup matching investigation
+
+The final validation row for `00449DF0` reports `matching_regression`.
+It reports 3 changed bytes in a 14-byte function. The previous result was
+`UNKNOWN`, so that result did not prove cleanup causation.
+
+I compared the preserved baseline object with the fresh cleanup object:
+
+- Baseline: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/flics.obj`.
+- Baseline SHA256: `766653c06ace7fba825a70373c97784ed217fb12e98c5c24fc33e1e3519b8ae6`.
+- Fresh: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/functions/objects/flics.obj`.
+- Fresh SHA256: `5496c8f3ad10b7dbd06e248fabc6d18fbb535888d838bb0d018533d69aae3d89`.
+
+The baseline resolution bytes are
+`0fbf41100fbf4912c1e0100bc1c3`. The fresh bytes are
+`0fbf41120fbf4910c1e1000bc1c3`. The changed bytes reverse the two field
+loads and change the shift destination.
+
+The baseline source commit was
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341`. Its source SHA256 was
+`9f8b2449475155db4049aa08677f883460032a0cf0fa9e7eb1e8bfa1ac28c98d`.
+The pre-repair cleanup source SHA256 was
+`1bd46f7fe7535e048f5dbeadf92c8e86bd3696a6c7f17fb753313c50c4d615f7`.
+The cleanup body did not change the resolution expression. It changed the
+surrounding compiland through names, braces, source lines, and CRT macros.
+The same cleaned source produced the fresh byte order in a second object.
+Older pre-cleanup objects produced the baseline byte order.
+
+The direct cause is a VC5 code-generation choice for the side-effect-free
+bitwise-OR expression. Cleanup caused VC5 to load `height` before `width`.
+The `_O_BINARY` and `SEEK_*` macros occur in earlier functions and do not
+appear in `resolution`.
+
+The source-only repair is commit
+`dee72a75fe4885309a67715731d978566c439d70`. It swaps the two OR operands so
+the width expression is the right operand. This preserves the result because
+bitwise OR is commutative and both operands only read separate fields.
+It changes no type, layout, symbol, boundary, or call.
+
+No post-repair compiler, build, audit, matching check, test, or game run was
+allowed. The repair therefore remains unvalidated by a new object.
+
 ## Code-generation and review limits
 
 The source edits change identifiers, brace placement, includes, and macro
-spellings only. They do not change public symbols, function boundaries,
-expression order, casts, storage, field layout, calls, or decoder state.
+spellings only. The post-cleanup repair changes only the operands of the
+side-effect-free resolution OR expression. It does not change public symbols,
+function boundaries, casts, storage, field layout, calls, or decoder state.
 `_O_BINARY`, `SEEK_END`, and `SEEK_SET` expand to the original numeric values.
 The PDB/source type differences listed above remain intentionally unresolved.
 
