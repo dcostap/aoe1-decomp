@@ -141,8 +141,10 @@ convention changed.
 
 ## Resource evidence
 
-The three lookups in `draw_icon` use the base `language.dll` string namespace.
-The extracted file is:
+The three lookups in `draw_icon` call `TPanel::get_string`. That method calls
+the virtual game string method. `TRIBE_Game::get_string` tries `StringTableX`
+first, then the base-game fallback. The base records are present and nonempty.
+The extracted base file is:
 
 `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/language.dll`
 
@@ -174,27 +176,33 @@ For comparison, the inspected expansion file is:
 Its SHA-256 is
 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`.
 The extraction record is `build/resource-strings/tpnl_tml-languagex.json`.
-It has no records for `0x106A`, `0x106B`, or `0x106C`. This supports the base
-language namespace used by these calls. It does not prove a macro's original
-name.
+It marks `0x106A`, `0x106B`, and `0x106C` as MISSING. These are missing
+entries, not empty slots. The missing expansion entries require the base-game
+fallback for these IDs. The extraction does not prove a macro's original name.
 
 The extraction records are exact `RT_STRING` results. They do not prove the
-runtime loader path by themselves. The `draw_icon` call site and base
-`TPanel::get_string` path establish the use here.
+runtime loader path by themselves. The `draw_icon` call site and the game
+method chain establish the lookup path here.
 
 ### Root approval
 
-The approval evidence is under `main reviewer-owner28/`. It covers the
-following base-language `RT_STRING` lookups:
+The approval evidence is in these exact files:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner28/language-age-ids.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner28/languagex-age-ids.json`
+
+It covers the following base-language `RT_STRING` lookups:
 
 - Lookup path: `Time_Line_Panel::draw_icon` calls `TPanel::get_string`, which
-  reads the base `language.dll` string namespace.
+  calls the virtual game method. `TRIBE_Game::get_string` tries `StringTableX`
+  first, then the base-game fallback.
 - DLL: `language.dll`, SHA-256
   `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
 - Language: `0x0409`.
-- `0x106A`: `Tool Age`; existing name `IDS_HELP_AGE_TOOL`.
-- `0x106B`: `Bronze Age`; existing name `IDS_HELP_AGE_BRONZE`.
-- `0x106C`: `Iron Age`; existing name `IDS_HELP_AGE_IRON`.
+- `0x106A`: present and nonempty, `Tool Age`; existing name `IDS_HELP_AGE_TOOL`.
+- `0x106B`: present and nonempty, `Bronze Age`; existing name `IDS_HELP_AGE_BRONZE`.
+- `0x106C`: present and nonempty, `Iron Age`; existing name `IDS_HELP_AGE_IRON`.
+- `languagex.dll`: MISSING for all three IDs, not empty slots.
 
 The source adds no new resource name. This worker did not edit the shared
 header or change any other resource ID.
