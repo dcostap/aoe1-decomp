@@ -36,7 +36,7 @@ protected:
     void setup_tab_order();
 
 public:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
     virtual long handle_idle();
 };
 
@@ -51,10 +51,10 @@ public:
     TButtonPanel* ok_button;
     TButtonPanel* cancel_button;
 
-    TRIBE_Dialog_Name(TScreenPanel*);
+    TRIBE_Dialog_Name(TScreenPanel* parent_panel_in);
     virtual ~TRIBE_Dialog_Name();
-    long action(TPanel*, long, unsigned long, unsigned long);
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
+    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
 };
 
 typedef char scr_name_dialog_size_check[
