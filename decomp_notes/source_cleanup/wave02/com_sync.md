@@ -49,10 +49,10 @@ local named `player`. I renamed that existing local to the new cleanup name
 Unresolved names remain unchanged when the scoped PDB has no matching record.
 These include `i`, `worldTime`, `world`, `unifiedChecksum`, and `pathChecksum`
 in `DoChecksum`; `bad`, `i`, and `check` in `ValidateChecksums`; `file`,
-`count`, `index`, `entry`, `visible`, and `player_index` in `LogChecksums`; and
-`myWorldTime`, `i`, and `entry` in `IsPlayerOutOfSync`. Constructor and
- destructor loop locals also have no scoped PDB records. I did not force mappings
-for optimized or reused storage.
+`count`, `index`, `entry`, and `visible` in `LogChecksums`; and `myWorldTime`,
+`i`, and `entry` in `IsPlayerOutOfSync`. Constructor and destructor loop locals
+also have no scoped PDB records. The new `player_index` name has no scoped PDB
+record. I did not force mappings for optimized or reused storage.
 
 All recovered spellings preserve the PDB case and underscore style. The only
 new invented name is `player_index`.
