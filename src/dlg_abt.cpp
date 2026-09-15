@@ -51,7 +51,7 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
 
     TEasy_Panel::create_text(this, &this->title_text, IDS_PRODUCT_TITLE, 0x14, 0x14,
                              0x1e0, 0x14, 4, 0, 0, 0);
-    TEasy_Panel::create_text(this, &this->version_text, 0x241a, 0x14, 0x28,
+    TEasy_Panel::create_text(this, &this->version_text, IDS_PRODUCT_VERSION, 0x14, 0x28,
                              0x1e0, 0x14, 0xb, 0, 0, 0);
 
     TPanel::get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 0x200);
@@ -83,11 +83,11 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
                                  0x41, 0x1e0, 0x14, 10, 0, 0, 0);
     }
 
-    TEasy_Panel::create_text(this, &this->ens_copy_text, 0x241d, 0x14, 0x55,
+    TEasy_Panel::create_text(this, &this->ens_copy_text, IDS_COPYRIGHT_ENSEMBLE, 0x14, 0x55,
                              0x1e0, 0x14, 10, 0, 0, 0);
-    TEasy_Panel::create_text(this, &this->genie_copy_text, 0x2423, 0x14,
+    TEasy_Panel::create_text(this, &this->genie_copy_text, IDS_GENIE_ENGINE_COPYRIGHT, 0x14,
                              0x69, 0x1e0, 0x28, 10, 0, 0, 1);
-    TEasy_Panel::create_text(this, &this->pid_label_text, 0x241e, 0x14,
+    TEasy_Panel::create_text(this, &this->pid_label_text, IDS_PRODUCT_ID_LABEL, 0x14,
                              0x96, 0x5f, 0x14, 10, 0, 0, 0);
 
     if (this->pid_label_text) {
@@ -103,13 +103,13 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
         }
     }
 
-    TPanel::get_string(0x241f, str, 0x1000);
+    TPanel::get_string(IDS_ABOUT_COPYRIGHT_WARNING, str, 0x1000);
     TEasy_Panel::create_text(this, &this->warning_text, str, 0x14, 0xaf,
                              0x1e0, 0xdc, 10, 0, 0, 1);
 
-    TEasy_Panel::create_button(this, &this->credits_button, 0x2420, 0, 0x46,
+    TEasy_Panel::create_button(this, &this->credits_button, IDS_ABOUT_CREDITS_BUTTON, 0, 0x46,
                                0x172, 0xaa, 0x1e, 0, 0, 0);
-    TEasy_Panel::create_button(this, &this->close_button, 0x2421, 0, 0x118,
+    TEasy_Panel::create_button(this, &this->close_button, IDS_ABOUT_CLOSE_BUTTON, 0, 0x118,
                                0x172, 0xaa, 0x1e, 0, 0, 0);
 
     TButtonPanel* close_button = this->close_button;
