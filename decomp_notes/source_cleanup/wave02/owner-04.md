@@ -164,8 +164,9 @@ Each worker started at
 - Integrated commits:
   - `cbcda06730abfbe9a6fbce8247314ad6febde609`
   - `1cdb9445fbfb3961dcee3aad812bc2195f08c876`
-- Header commit: None. `include/ttsk_lst.h` already has all PDB parameter
-  names.
+- Header commit: `cac4ae317c189ac7d8cfb5f78f481f9e20ab8913`.
+- Owner correction: Full combined review found that `include/ttsk_lst.h` had
+  unnamed parameters. The header now uses the PDB names from the source.
 - Review: Approved after full source and report review.
 - Mapping: PDB parameters already matched. New cleanup names clarify candidate
   target IDs, source and target groups, and task indexes.
@@ -181,8 +182,8 @@ procedure coverage, PDB spelling, local types, scopes, casts, explicit
 
 I reviewed the combined source and header changes. The headers only add
 parameter names. They do not change types, virtual order, layout, or symbols.
-`include/ttsk_lst.h` needed no change. All eight source reports state that they
-inspected every registered normal procedure.
+All eight module headers now use the reviewed PDB parameter names. All eight
+source reports state that they inspected every registered normal procedure.
 
 The source changes contain name recovery, descriptive local names, 1TBS brace
 placement, line wrapping, and two sparse comments in `task_lst.cpp`. No worker
