@@ -202,6 +202,36 @@ The first two paths held audit output. `build/asm` held generated assembly
 output. `inventory` and `orig` were temporary local evidence directories.
 Their exact prior contents were not preserved in this worktree.
 
+#### Temporary evidence path commands and types
+
+The surviving r1 transcript records these exact setup commands, run from the
+worker directory:
+
+```text
+ln -s 'C:/Projects/my_decomps/aoe1_attempt3/inventory' inventory
+ln -s 'C:/Projects/my_decomps/aoe1_attempt3/orig' orig
+```
+
+The same transcript records this exact removal command:
+
+```text
+rm -rf -- inventory orig build/asm build/validation/wave03-aimodule-functions build/validation/wave03-aimodule-functions-rerun
+```
+
+After setup, `inventory` and `orig` were observed as ordinary directories.
+`ls -ld` and `stat` reported directory entries. Python reported
+`is_symlink=False`. `du` reported about 130 MB for `inventory` and 161 MB for
+`orig`, and directory listings showed copied file trees. This evidence supports
+copied directories, not symbolic links. It does not prove that every child
+was a copy. It does not include a Windows reparse-point check, so junction
+status is unknown.
+
+For the observed ordinary-directory type, `rm -rf --` recursively removed the
+local directory trees named by the command. The evidence does not prove
+junction behavior or the link type of any child. No external-target traversal
+claim is made. The main-root evidence paths remained present in the later
+transcript, but byte-level preservation is recorded separately as unknown.
+
 No path is removed by this incident-documentation update. The surviving
 worker build output is:
 
