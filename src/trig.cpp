@@ -3,8 +3,7 @@
 
 #include <math.h>
 
-TRIGONOMETRY::TRIGONOMETRY()
-{
+TRIGONOMETRY::TRIGONOMETRY() {
     int i;
 
     // Phase 1: 4096-entry table (0 to 2*PI in 4096 steps)
@@ -42,66 +41,56 @@ TRIGONOMETRY::TRIGONOMETRY()
     }
 }
 
-int TRIGONOMETRY::RestrictAngle(int param_1)
-{
-    int value = param_1 % 0x1000;
+int TRIGONOMETRY::RestrictAngle(int angle) {
+    int value = angle % 0x1000;
     return value < 0 ? -value : value;
 }
 
-int TRIGONOMETRY::RestrictAngle360(int param_1)
-{
-    int value = param_1 % 0x168;
+int TRIGONOMETRY::RestrictAngle360(int angle) {
+    int value = angle % 0x168;
     if (value < 0) {
         value = -value;
     }
     return value;
 }
 
-float TRIGONOMETRY::sine(int param_1)
-{
-    int index = this->RestrictAngle(param_1);
+float TRIGONOMETRY::sine(int angle) {
+    int index = this->RestrictAngle(angle);
     return this->sines[index];
 }
 
-float TRIGONOMETRY::cosine(int param_1)
-{
-    int index = this->RestrictAngle(param_1);
+float TRIGONOMETRY::cosine(int angle) {
+    int index = this->RestrictAngle(angle);
     return this->cose[index];
 }
 
-float TRIGONOMETRY::tangent(int param_1)
-{
-    int index = this->RestrictAngle(param_1);
+float TRIGONOMETRY::tangent(int angle) {
+    int index = this->RestrictAngle(angle);
     return this->tane[index];
 }
 
-float TRIGONOMETRY::atangent(int param_1)
-{
-    int index = this->RestrictAngle(param_1);
+float TRIGONOMETRY::atangent(int angle) {
+    int index = this->RestrictAngle(angle);
     return this->atane[index];
 }
 
-float TRIGONOMETRY::sin360(int param_1)
-{
-    int index = this->RestrictAngle360(param_1);
+float TRIGONOMETRY::sin360(int angle) {
+    int index = this->RestrictAngle360(angle);
     return this->sine360[index];
 }
 
-float TRIGONOMETRY::cos360(int param_1)
-{
-    int index = this->RestrictAngle360(param_1);
+float TRIGONOMETRY::cos360(int angle) {
+    int index = this->RestrictAngle360(angle);
     return this->cose360[index];
 }
 
-float TRIGONOMETRY::tan360(int param_1)
-{
-    int index = this->RestrictAngle360(param_1);
+float TRIGONOMETRY::tan360(int angle) {
+    int index = this->RestrictAngle360(angle);
     return this->tane360[index];
 }
 
-float TRIGONOMETRY::atan360(int param_1)
-{
-    int index = this->RestrictAngle360(param_1);
+float TRIGONOMETRY::atan360(int angle) {
+    int index = this->RestrictAngle360(angle);
     return this->atane360[index];
 }
 
