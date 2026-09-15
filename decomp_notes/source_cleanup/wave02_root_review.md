@@ -1,5 +1,19 @@
 # Cleanup wave 02 root review
 
+## Owner 11: final substitution review approved
+
+Original reviewer `sa-187152fa` approved `f174e776fb3782c12ddfe2dd726ecade29845a7e` with no blockers.
+The assigned final review covered `build/source-cleanup-20260915/owner11-resource-corrections.diff`, 1,525 lines, and changed reports.
+It includes the approved resource substitutions and shared chat notification name.
+The earlier full review and 824-line correction review remain in effect.
+The merge required retention of newer root definitions in `include/resource_ids.h`.
+Root read the complete conflict and retained those definitions without changes.
+Git diff confirms that the resolved resource and chat headers equal their pre-merge main versions.
+Root merged the group as `1be87cdcfdf1d85b53d9ad2a36cc92ac949a952a`.
+This completes integration of all wave 02 groups.
+Main contains 160 assigned modules plus the pilot: 161 of 225, approximately 71.6%.
+Compiler and runtime validation remain deferred.
+
 ## Owner 11: approved correction and resource mappings
 
 Reviewer `sa-187152fa` approved all 824 correction-diff lines at `616082391a771bacc7305fad75c21cc2e602a5f4`.
