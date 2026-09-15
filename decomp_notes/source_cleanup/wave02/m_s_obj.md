@@ -6,12 +6,21 @@
 - Header owner: owner 08 owns `include/m_s_obj.h`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Final cleanup commit: `09b834b0424fafd7c2ff0a9075379b8d1c205592`
+- Formatting correction base: `23b2f3cfaed4f0ea61b204661d4ebb06c034a4ed`
+- Formatting correction commit: recorded after this correction commit.
 - Changed files:
   - `src/m_s_obj.cpp`
   - `decomp_notes/source_cleanup/wave02/m_s_obj.md`
 
 The source cleanup changes names only. It does not change types, statements, literals,
 call order, casts, scopes, layouts, or function symbols.
+
+## Formatting correction
+
+I reviewed every touched `setup`, `copy_obj`, `modify`, `modify_delta`, and
+`modify_percent` definition. I placed each short signature on one line.
+I removed unnecessary signature continuation lines. I changed no source tokens
+outside formatting.
 
 ## Evidence
 
@@ -117,6 +126,6 @@ No resource-ID or shared declaration request is pending.
 
 ## Validation
 
-I reviewed the complete source diff. I ran `git diff --check`.
+I reviewed the complete base-to-head diff. I ran `git diff --check`.
 Compilation, matching, audits, and tests were not run, as required for this wave.
-The cleanup commit hash above was copied from Git after commit.
+The cleanup and correction hashes above were copied from Git after each commit.

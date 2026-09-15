@@ -138,8 +138,7 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* other_object) {
     return 1;
 }
 
-int RGE_Master_Static_Object::setup(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
+int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     short temp_damage_sprite;
     short selected_sound_num;
     short death_sound_num;
@@ -297,8 +296,7 @@ int RGE_Master_Static_Object::setup(
     return 1;
 }
 
-int RGE_Master_Static_Object::setup(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
+int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     short temp_area_effect_object_level;
     short temp_combat_level;
     short temp_damage_sprite;
