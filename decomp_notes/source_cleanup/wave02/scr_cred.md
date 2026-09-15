@@ -9,7 +9,7 @@
   - `src/scr_cred.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_cred.md`
 - Base source SHA256: `ef7120cdf9b3dfcb3b5d872bd5d57834ca1c4e9ef336b95055e1f8cf08c74126`
-- Final source SHA256 before commit: `94b5b60d7b6838dfc411568e576c1a37494c0f511ba5fecb720c31526371a373`
+- Final source SHA256 before commit: `37066f38e65a876687ae2086eecb8e11a1c8069e9b28d081c4d682494bf99395`
 
 The source keeps the sixteen normal registry owners in address order. No header changed.
 
