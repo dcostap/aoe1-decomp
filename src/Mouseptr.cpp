@@ -122,8 +122,7 @@ int TMousePointer::Restore_Mouse(TDrawArea* render_area_in) {
     return 1;
 }
 
-int TMousePointer::setup(int custom_draw_in, TDrawArea* render_area_in,
-                         char* cursor_file_name, int cursor_resId, int maxCursors_in) {
+int TMousePointer::setup(int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in) {
     char file_name[260];
     MouseSystem = this;
     this->custom_draw = custom_draw_in;
