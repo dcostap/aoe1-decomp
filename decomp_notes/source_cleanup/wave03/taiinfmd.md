@@ -7,7 +7,7 @@
 - Source candidate before the declaration correction pass:
   `76180ec12a9cf731a9ddb5135f2caefdab780fd7`
 - Source SHA-256 after the declaration correction pass:
-  `9bf9ded529fc1b838d86dace3372a87edddce464c86d5572c98309c8a7a38d1e`
+  `7894d1e9a71a717e8862e91c8201cfd6463c2330f177f5848c3332feb7ea2f4b`
 - Changed files:
   - `src/taiinfmd.cpp`
   - `decomp_notes/source_cleanup/wave03/taiinfmd.md`
@@ -50,6 +50,17 @@ form, not the rejected form.
 - `unexploredPlayerLocation` now overwrites the low byte of `uID` and separately initializes `i`.
 - `requiredZone` remains an unsafe reused-home PDB record, not a recovered source declaration.
 - `dropsitesWithinRequiredDistance` now declares `a` before its separate initialization.
+
+## Post-cleanup validation repair
+
+The fresh main compilation report found an undeclared `gatherer` at the `lookupZone` call in
+`gameIDOfResourceObject`. The finding is recorded in
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+
+The integrated main at `fafc408fd43285ad1f9e778282cca9443b474b0f` and the precleanup source at
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341` showed the distinct gatherer-object binding. The
+`lookupZone` use now binds to the existing `gathererObj` declaration. No scope, type, storage,
+order, or declaration changed.
 
 ## Scope and coverage
 
@@ -165,5 +176,6 @@ assembly region was changed by this cleanup.
 There are no shared-file requests. The header and resource-ID owners need no changes for this
 module.
 
-Compilation, matching, audits, tests, game execution, and validation were not run.
-This report is a reviewed but unvalidated cleanup record.
+No local compilation, matching, audit, test, game execution, or validation command was run.
+An external fresh-main compilation report supplied the finding above, and this repair records
+the correction without claiming local validation.
