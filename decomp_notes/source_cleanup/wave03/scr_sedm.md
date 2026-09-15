@@ -5,14 +5,17 @@
 - Module: `src/scr_sedm.cpp`
 - Branch: `cleanup/staging-20260915-185`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source-cleanup commit: `9649a6df2e41f024ab0b05f985e55fb0789559a6`
+- Final source-cleanup commit: `67137c7ae8e5d06f3c1f7610150b132ebd350920`
 - Changed files:
   - `src/scr_sedm.cpp`
   - `decomp_notes/source_cleanup/wave03/scr_sedm.md`
 - `include/scr_sedm.h` was read but not changed.
 
-The source commit contains only the assigned source file. This report is a
-separate assigned-file commit. The handoff response records its full hash.
+The first source-cleanup commit contains only the assigned source file. The
+final source-format correction and first report version are in
+`67137c7ae8e5d06f3c1f7610150b132ebd350920`. Both commits touch assigned paths
+only. A report-only correction follows. The handoff response records its full
+hash.
 
 ## Scope and evidence
 
@@ -233,6 +236,7 @@ The result is reviewed but unvalidated.
 ## Commit records
 
 - Base: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source cleanup: `9649a6df2e41f024ab0b05f985e55fb0789559a6`
-- Report: committed separately after this source commit; its full hash is
+- Initial source cleanup: `9649a6df2ff1ff8be90ae9acc5a546746b026cbb`
+- Final source-format correction and first report version: `67137c7ae8e5d06f3c1f7610150b132ebd350920`
+- Report-only correction: committed after this source tree; its full hash is
   recorded in the handoff response.
