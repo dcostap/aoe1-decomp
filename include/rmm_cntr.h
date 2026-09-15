@@ -17,8 +17,7 @@ public:
     virtual uchar generate();
 
 protected:
-    void add_land_module(RGE_Land_Info& info,
-        long type, long player_num);
+    void add_land_module(RGE_Land_Info& info, long type, long player_num);
     void add_terrain_module(RGE_Terrain_Info& info,
         RGE_Land_Info& land_info, long type);
     void add_object_module(RGE_Game_World* world, RGE_Land_Info& land_info);

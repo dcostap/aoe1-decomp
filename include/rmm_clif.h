@@ -37,8 +37,7 @@ public:
 protected:
     void setup_cliff_maps();
     void generate_cliff();
-    uchar check_for_valid_cliff_site(long direction, long& x, long& y,
-        long valid_height);
+    uchar check_for_valid_cliff_site(long direction, long& x, long& y, long valid_height);
     void invalidate_cliff_area(long x, long y, long radius);
 };
 
