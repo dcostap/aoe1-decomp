@@ -15,6 +15,7 @@
 #include "../include/registry.h"
 #include "../include/debuglog.h"
 #include "../include/scr_main.h"
+#include "../include/resource_ids.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -64,7 +65,7 @@ TribeJoinScreen::TribeJoinScreen()
                                                 0x25A2, 0, 0xDC, 0x1B8,
                                                 0xC8, 0x1E, 0, 0, 0)) {
                             if (this->create_button(this, &this->cancelButton,
-                                                    0x0FA2, 0, 0x1AE,
+                                                    IDS_BUTTON_CANCEL, 0, 0x1AE,
                                                     0x1B8, 0xC8, 0x1E,
                                                     0, 0, 0)) {
                                 TButtonPanel* cancel = this->cancelButton;
@@ -135,8 +136,8 @@ long TribeJoinScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
-    switch (cmd) {
+long TribeJoinScreen::handle_user_command(unsigned int wParam, long lParam) {
+    switch (wParam) {
         case 0x17A4:
             break;
         case 0x17B8:
@@ -160,7 +161,7 @@ long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
             }
             break;
     }
-    return TPanel::handle_user_command(cmd, param);
+    return TPanel::handle_user_command(wParam, lParam);
 }
 
 void TribeJoinScreen::fillList() {
@@ -206,22 +207,20 @@ void TribeJoinScreen::fillList() {
     this->listFilled = 1;
 }
 
-long TribeJoinScreen::action(TPanel* panel, long command,
-                             unsigned long param3, unsigned long param4)
-{
+long TribeJoinScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     char temp[256];
     char string[256];
 
-    if (panel != 0) {
-        if (panel == this->list) {
-            if (command == 3 && this->game_count > 0) {
+    if (fromPanel != 0) {
+        if (fromPanel == this->list) {
+            if (actionIn == 3 && this->game_count > 0) {
                 this->action(this->joinButton, 1, 0, 0);
             }
             return 1;
         }
 
-        if (panel == this->joinButton) {
-            if (command == 1) {
+        if (fromPanel == this->joinButton) {
+            if (actionIn == 1) {
                 if (this->game_count > 0) {
                     int line = this->list->currentLineNumber();
                     if (comm->JoinMultiplayerGame(
@@ -243,8 +242,8 @@ long TribeJoinScreen::action(TPanel* panel, long command,
             return 1;
         }
 
-        if (panel == this->cancelButton) {
-            if (command == 1) {
+        if (fromPanel == this->cancelButton) {
+            if (actionIn == 1) {
                 rge_base_game->disable_input();
                 comm->UnlinkToLevel(SINGLE_PLAYER);
                 new TribeMPStartupScreen;
@@ -254,28 +253,28 @@ long TribeJoinScreen::action(TPanel* panel, long command,
             return 1;
         }
 
-        if (panel == this->createButton && command == 1) {
+        if (fromPanel == this->createButton && actionIn == 1) {
             new TribeMPCreateDialog(this);
             return 1;
         }
 
-        if (panel == this->refreshButton) {
-            if (command == 1) {
+        if (fromPanel == this->refreshButton) {
+            if (actionIn == 1) {
                 this->fillList();
             }
             return 1;
         }
 
-        if (panel == this->close_button && command == 1) {
+        if (fromPanel == this->close_button && actionIn == 1) {
             rge_base_game->close();
             return 1;
         }
     }
 
-    return this->TEasy_Panel::action(panel, command, param3, param4);
+    return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
+TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel)
     : TDialogPanel("Create Dialog")
 {
     TEditPanel** inputGamename = &this->inputGamename;
@@ -285,9 +284,9 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
     this->okButton = 0;
     this->cancelButton = 0;
 
-    if (this->setup(parent->renderArea(), parent, 500, 230,
-                    static_cast<TEasy_Panel*>(parent)->get_popup_info_file(),
-                    static_cast<TEasy_Panel*>(parent)->get_popup_info_id(), 1)) {
+    if (this->setup(parentPanel->renderArea(), parentPanel, 500, 230,
+                    static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_file(),
+                    static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_id(), 1)) {
         if (this->create_text(this, &this->title, 0x25a6,
                               20, 20, 0x1cc, 0x1e, 1, 1, 1, 0)) {
             if (this->create_text(this, &this->input_title, 0x25aa,
@@ -306,10 +305,10 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
                                       40, 0x6e, 0x1a4, 0x17,
                                       0xb, 1, 0)) {
                     if (this->create_button(this, &this->okButton,
-                                            0x0fa1, 0, 0x3c, 0xb4,
+                                            IDS_BUTTON_OK, 0, 0x3c, 0xb4,
                                             0xb4, 0x1e, 0, 0, 0)) {
                         if (this->create_button(this, &this->cancelButton,
-                                                0x0fa2, 0, 0x104, 0xb4,
+                                                IDS_BUTTON_CANCEL, 0, 0x104, 0xb4,
                                                 0xb4, 0x1e, 0, 0, 0)) {
                             TButtonPanel* cancel = this->cancelButton;
                             cancel->hotkey = 0x1b;
@@ -336,12 +335,10 @@ TribeMPCreateDialog::~TribeMPCreateDialog() {
     this->delete_panel((TPanel**)&this->cancelButton);
 }
 
-long TribeMPCreateDialog::action(TPanel* panel, long command,
-                                 unsigned long param3, unsigned long param4)
-{
-    if (panel != 0) {
-        if ((panel == this->okButton && command == 1) ||
-            (panel == this->inputGamename && command == 0)) {
+long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0) {
+        if ((fromPanel == this->okButton && actionIn == 1) ||
+            (fromPanel == this->inputGamename && actionIn == 0)) {
             if (this->inputGamename->is_blank()) {
                 this->set_curr_child(this->inputGamename);
                 return 1;
@@ -400,13 +397,13 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
             return 1;
         }
 
-        if ((panel == this->cancelButton && command == 1) ||
-            (panel == this->inputGamename && command == 1)) {
+        if ((fromPanel == this->cancelButton && actionIn == 1) ||
+            (fromPanel == this->inputGamename && actionIn == 1)) {
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Create Dialog");
             return 1;
         }
     }
 
-    return TPanel::action(panel, command, param3, param4);
+    return TPanel::action(fromPanel, actionIn, a1, a2);
 }
