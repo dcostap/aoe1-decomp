@@ -15,9 +15,7 @@ static char s_terrain_log[] = "Random Map terrain initilization, rand: %d";
 static char s_object_log[] = "Random Map object initilization, rand: %d";
 static char s_shallows_log[] = "Random Map shallows initilization, rand: %d";
 
-TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(
-    char* land_file, char* terrain_file, char* object_file,
-    char* map_file)
+TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* land_file, char* terrain_file, char* object_file, char* map_file)
     : RGE_RMM_Database_Controller(land_file, terrain_file, object_file,
                                   map_file) {
 }
@@ -26,9 +24,7 @@ TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int infile)
     : RGE_RMM_Database_Controller(infile) {
 }
 
-uchar TRIBE_RMM_Database_Controller::init(
-    RGE_Map* in_map, RGE_Game_World* in_world, uchar type, long player_num,
-    uchar fixed_position) {
+uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_world, uchar type, long player_num, uchar fixed_position) {
     RGE_Cliffs_Info cliff_info;
 
     fixed_position =

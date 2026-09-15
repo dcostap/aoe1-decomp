@@ -2,32 +2,33 @@
 
 ## Delivery
 
-- Module: `src/rmm_tdbc.cpp`
-- Report: `decomp_notes/source_cleanup/wave04/rmm_tdbc.md`
+- Module: `C:/Projects/my_decomps/aoe1_attempt3/src/rmm_tdbc.cpp`
+- Report: `C:/Projects/my_decomps/aoe1_attempt3/decomp_notes/source_cleanup/wave04/rmm_tdbc.md`
 - Branch: `cleanup/staging-20260915-233`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Source commit: `5df4225267a7bda81e8ef02bbab846587079c1bb`
-- Assigned header: `include/rmm_tdbc.h` (read only)
+- Source commit: `5df422526a5fb85e1fbc5213ee0c748fa8b78ad7`
+- Report commit: `52c19609b735b7002f80859acced969624d22a79`
+- Assigned header: `C:/Projects/my_decomps/aoe1_attempt3/include/rmm_tdbc.h` (read only)
 
 The source owns the ten registered PDB procedures in source order. The header,
 registry, globals, and all other modules were not edited.
 
 ## Evidence reviewed
 
-- `inventory/pdb/scoped_symbols.json`
-- `inventory/functions/0048/004876C0_TRIBE_RMM_Database_Controller.txt`
-- `inventory/functions/0048/004876F0_TRIBE_RMM_Database_Controller.txt`
-- `inventory/functions/0048/00487710_init.txt`
-- `inventory/functions/0048/00487930_de_init.txt`
-- `inventory/functions/0048/00487940_add_land_module.txt`
-- `inventory/functions/0048/00487DD0_add_terrain_module.txt`
-- `inventory/functions/0048/00487FA0_add_object_module.txt`
-- `inventory/functions/0048/00488700_add_elevation_module.txt`
-- `inventory/functions/0048/004887A0_add_shallows_module.txt`
-- `inventory/functions/0048/00488870_generate.txt`
-- `orig/aoe1_ghidra_assembly_listing.txt`
-- `orig/ghidra_decomp/rmm_tdbc.cpp.decomp`
-- `config/functions/src/rmm_tdbc.cpp.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/004876C0_TRIBE_RMM_Database_Controller.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/004876F0_TRIBE_RMM_Database_Controller.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00487710_init.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00487930_de_init.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00487940_add_land_module.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00487DD0_add_terrain_module.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00487FA0_add_object_module.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00488700_add_elevation_module.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/004887A0_add_shallows_module.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/00488870_generate.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/aoe1_ghidra_assembly_listing.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/ghidra_decomp/rmm_tdbc.cpp.decomp`
+- `C:/Projects/my_decomps/aoe1_attempt3/config/functions/src/rmm_tdbc.cpp.json`
 
 I inspected the procedure-scoped parameters, locals, stack records, and
 `this` register for every registered procedure. Every procedure records
@@ -92,6 +93,18 @@ styles such as `in_map`, `player_num`, `index1`, and `ret_num`.
 
 No behavior change is intended. Identifier and brace changes do not add or
 remove executable statements.
+
+## Header request
+
+Owner 26 should update the declaration names in
+`C:/Projects/my_decomps/aoe1_attempt3/include/rmm_tdbc.h` only. Add the
+recovered names to the four-parameter constructor:
+`land_file`, `terrain_file`, `object_file`, and `map_file`. Add `infile` to the
+integer constructor. Add `in_map`, `in_world`, `type`, `player_num`, and
+`fixed_position` to `init`. Add `fixed_positions` to `add_land_module`.
+
+This request changes declaration names only. It does not change types, order,
+ABI, or class layout. The source owner already uses these names.
 
 ## Validation and limits
 
