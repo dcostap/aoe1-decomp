@@ -88,8 +88,12 @@ These requests do not change any interface type or ABI. No request targets `incl
 ## Reference hashes
 
 - Original PDB: `C:/Projects/my_decomps/aoe1_attempt3/orig/age1_x1.pdb`, SHA256 `3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40`.
-- Original executable: `C:/Projects/my_decomps/aoe1_attempt3/orig/_original_empiresx_from_beta_that_was_decompiled.exe`, SHA256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+- Original executable: `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`, SHA256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 - Preserved pre-cleanup object: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/fractal.obj`, SHA256 `68cb033602f9c2e429e1a9968b64a714522b83449dbf436eba224f13a2b59e02`.
+
+## Correction history
+
+- Owner review corrected the original executable citation to the repo-local path. The directly verified SHA256 is unchanged.
 
 ## Validation status
 
