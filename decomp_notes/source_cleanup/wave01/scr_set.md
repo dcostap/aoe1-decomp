@@ -55,12 +55,15 @@ The source now directly includes the root-owned `include/resource_ids.h` and reu
 
 These are existing shared definitions, not new resource names. No new resource mapping request is proposed. Other numeric resource IDs remain unchanged because no reviewed shared mapping was available. No new non-resource constant was added.
 
-I replaced the former hypothesis about the scenario list position with one factual comment: `Keep this signed calculation for the list's player-column offset.` The calculation, signed division, source order, and call are unchanged. No other new comments were needed.
+I restored the existing accurate evidence comment above `second_column_pos`: `The executable computes this position before it reloads scenarioList, then uses signed divide by ideal_width.` I kept removal of the separate unsupported `LIKELY INTENT` comment. The calculation, signed division, source order, and call are unchanged. No other new comments were needed.
 
 ## Header and resource requests
 
 - Proposed edits to `include/scr_set.h`: none. It remains the module include surface.
-- Proposed edits to `include/scr_set_screen.h`: none. It is not owned by this worker.
+- Proposed root-owned edit to `include/scr_set_screen.h`: add the recovered parameter names without changing types or order, if the declarations remain present:
+  - `virtual long handle_user_command(unsigned int wParam, long lParam);`
+  - `virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);`
+  The PDB records for `004B5C70` and `004B5CB0` prove these names and types. This worker did not edit the header.
 - Proposed edits to `include/resource_ids.h`: none. Root owns the existing shared macros.
 - Resource extraction request: none. This change reuses existing reviewed macros and does not add a mapping.
 

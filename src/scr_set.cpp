@@ -276,7 +276,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            0x0B))
         return;
 
-    // Keep this signed calculation for the list's player-column offset.
+    // The executable computes this position before it reloads
+    // scenarioList, then uses signed divide by ideal_width.
     long second_column_pos;
     second_column_pos = this->scenarioListWidth;
     second_column_pos -= 0x3C;
