@@ -14,7 +14,7 @@ virtual destructor body, and source order unchanged.
 ## PDB coverage and name recovery
 
 The scoped PDB is `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`.
-Its recorded SHA256 is `3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40`.
+Its recorded SHA256 is `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`.
 The PDB source path is `C:\msdev\work\age1_x1\aistrmod.cpp`.
 
 | VA | source function | PDB coverage | PDB parameters and locals | PDB registers | result |
