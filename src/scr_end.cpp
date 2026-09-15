@@ -4,6 +4,7 @@
 #include "../include/pnl_lst.h"
 #include "../include/pnl_pic.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 #include "../include/scr_ach.h"
 #include <string.h>
 
@@ -109,7 +110,7 @@ long TribeEndScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, 
         return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
     }
 
-    new TribeAchievementsScreen(get_string(0x269E), 1);
+    new TribeAchievementsScreen(get_string(IDS_ACHIEVEMENTS_TITLE), 1);
     panel_system.setCurrentPanel("Achievements Screen", 0);
     panel_system.destroyPanel("End Screen");
     return 1;
