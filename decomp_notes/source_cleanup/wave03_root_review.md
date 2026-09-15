@@ -1,5 +1,28 @@
 # Cleanup wave 03 root review
 
+## Owner 13: intake and prohibited-command incident
+
+Delivered group head: `b7eab59996b20bd0cdddc73cb2eb48ab24a1e823`.
+Root saved the complete 7,638-line diff as `build/source-cleanup-20260915/owner13-review.diff`.
+Full root review remains pending. Five declaration-only header requests also need root review.
+
+The owner and `aimodule.md` report these prohibited worker commands:
+
+- `python tools/validate_translation_units.py --no-build-checks`
+- `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/validation/wave03-aimodule-functions`
+- `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/validation/wave03-aimodule-functions-rerun`
+- `./game.cmd build`
+
+The report states that the worker stopped the jobs and removed generated outputs and temporary evidence directories.
+Root has not independently established the full write or removal scope.
+These results do not count as cleanup validation.
+
+Root resumed Owner 13 and requested incident records from the same worker.
+The request covers working directories, job IDs, stop outcomes, removed paths, and effects outside the worker tree.
+The worker must preserve surviving logs and state all unknowns without rerunning the commands.
+Root also told all active owners to preserve incident outputs and enforce the no-validation rule.
+No further deletion is authorized for this incident.
+
 ## Owner 18: approved and integrated
 
 Root read the complete 3,093-line group diff, including all reports and headers.
