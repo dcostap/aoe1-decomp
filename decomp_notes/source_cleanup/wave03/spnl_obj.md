@@ -48,7 +48,7 @@ comment was needed. No executable statement, declaration type, scope, storage
 duration, cast, call target, literal, or evaluation order was changed.
 
 No resource IDs, constants, or shared declarations were added or changed.
-There are no shared-file requests.
+There are no resource-ID or root-owned/cross-group requests. The owner-header request follows.
 
 ### Owner-header request
 
