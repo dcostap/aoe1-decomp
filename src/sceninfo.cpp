@@ -12,11 +12,10 @@
 
 #include "../include/rge_fio.h"
 
-RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
-{
+RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* in_filename) {
     long i;
 
-    strcpy(filename, path);
+    strcpy(filename, in_filename);
 
     int fd = rge_open(this->filename, 0x8000);
     if (fd != -1) {
@@ -63,8 +62,7 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     }
 }
 
-void RGE_Scenario_File_Info::save()
-{
+void RGE_Scenario_File_Info::save() {
     int fd = rge_open(this->filename, 0x8301, 0x180);
     if (fd == -1)
         return;
@@ -86,8 +84,7 @@ void RGE_Scenario_File_Info::save()
     rge_close(fd);
 }
 
-void RGE_Scenario_File_Info::reload_scenarios()
-{
+void RGE_Scenario_File_Info::reload_scenarios() {
     char file_name[260];
     struct _finddata_t file_info;
     long handle;
@@ -192,12 +189,12 @@ void RGE_Scenario_File_Info::reload_scenarios()
     this->scenario_num = total;
 }
 
-char* RGE_Scenario_File_Info::get_scenario_name(long index) {
-    if (index >= this->scenario_num || index < 0) return 0;
-    return this->scenarios[index].name;
+char* RGE_Scenario_File_Info::get_scenario_name(long id) {
+    if (id >= this->scenario_num || id < 0) return 0;
+    return this->scenarios[id].name;
 }
 
-RGE_Scenario_Header* RGE_Scenario_File_Info::get_scenario_info(long index) {
-    if (index >= this->scenario_num || index < 0) return 0;
-    return this->scenarios[index].scenario_header;
+RGE_Scenario_Header* RGE_Scenario_File_Info::get_scenario_info(long id) {
+    if (id >= this->scenario_num || id < 0) return 0;
+    return this->scenarios[id].scenario_header;
 }
