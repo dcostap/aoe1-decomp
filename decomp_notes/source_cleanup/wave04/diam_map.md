@@ -6,8 +6,10 @@
 - Worker slot: 211
 - Branch: `cleanup/staging-20260915-211`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Source commit: `ef4716b4fbe13c21122ed62269471dda8740b9dc`
-- Report commit: follows the source commit
+- Previous source commit: `ef4716b4fbe13c21122ed62269471dda8740b9dc`
+- Final source commit: `ff35c063adefbb7238b185d2c8a0fac519f980c0`
+- Previous report commit: `7707e16f808c4a12629e3ad49380eb8eb8bb8836`
+- Report correction commit: follows the final source commit
 - Changed files:
   - `src/diam_map.cpp`
   - `decomp_notes/source_cleanup/wave04/diam_map.md`
@@ -21,6 +23,19 @@ The header owner is owner 24. This worker did not edit
 The source commit restores procedure-scoped names. It keeps types, scopes,
 declaration order, storage duration, expressions, calls, literals, and
 control flow. It makes no public symbol or ABI change.
+
+## Correction history
+
+Full review requested a wrapping pass and a precise header-owner request.
+Source commit `ff35c063adefbb7238b185d2c8a0fac519f980c0` applies that pass.
+It puts the requested short signatures and calls on one line. It keeps the
+nine-parameter `setup` signature wrapped. It changes no executable token or
+source structure.
+
+The prior source commit is `ef4716b4fbe13c21122ed62269471dda8740b9dc`.
+The prior report correction commit is
+`7707e16f808c4a12629e3ad49380eb8eb8bb8836`. This report records the new
+source commit and the owner-24 header request.
 
 ## PDB coverage
 
@@ -169,8 +184,33 @@ materialize the PDB `color` local because that would change declaration and
 storage structure. The source remains behavior-preserving at the source
 statement level, but generated-code stability was not checked.
 
-No header edit is required. `include/diam_map.h` uses unnamed declarations for
-the affected interfaces. No shared declaration request was sent.
+### Request for owner 24
+
+Please add all recovered parameter names to the matching declarations in
+`include/diam_map.h`. Keep types, order, calling conventions, ABI, and class
+layout unchanged. Parameter names help callers and do not change the ABI.
+
+```cpp
+long setup(TDrawArea *render_area_in, TPanel *parent_panel_in, long x_in,
+           long y_in, long wid_in, long hgt_in, unsigned char color_in,
+           int all_visible_in, TDrawArea *save_area_in);
+int set_bitmap(char *map_bmp, long res_id);
+void set_world(RGE_Game_World *world_in);
+void set_player(RGE_Player *player_in);
+virtual void set_redraw(TPanel::RedrawMode redraw_mode);
+void draw_tile(short col, short row, int fog, unsigned char override_color);
+virtual void draw_visible_object(RGE_Static_Object *game_obj, unsigned char color1, unsigned char color2);
+virtual void draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object *game_obj);
+void draw_clipped_horz_line(short x, short y, short len, unsigned char color, RGE_Map_Image_Line *image_line);
+int pick_tile(long x, long y, short *col, short *row, RGE_Tile **tile);
+virtual long handle_size(long win_wid, long win_hgt);
+void start_scroll_view(long x, long y);
+void handle_scroll_view(long x, long y);
+virtual int is_inside(long x, long y);
+```
+
+The declarations for parameterless procedures need no name change. The
+generated vector deleting destructor also has no source declaration here.
 
 ## Evidence hashes
 
