@@ -31,6 +31,17 @@ The tools' help output was read before use.
 A passing registry check is not a build, matching, or gameplay result.
 Record every failed, skipped, unknown, or unavailable check. Do not weaken checks or discard incident evidence.
 
+## Player, panel, and playbook repair reviews
+
+Root read the complete source and report diffs for three more repairs:
+
+- `1953268e130706baed7571562121091b00f89d9c`: `tplayer` restores `gworld->tech`, preserving the constructor parameter binding.
+- `ba4972d9c8bf7b7a0bf38fbf370a9c9c65f1cb44`: `Pnl_txt` removes the extra closing brace introduced before `else`.
+- `d8b4ba8c98deb1082b494284e5e1e806114caffa`: `aipbook` restores distinct baseline loop names `iGroups` and `iPhases`.
+
+These repairs add no new scopes, types, or storage. The brace repair restores the baseline structure.
+Post-repair compilation remains pending. The initial source review did not detect these defects.
+
 ## Terrain repair review
 
 Root read the complete correction diff to `844478cc9dcbee7d76fe7fad87065aff3c26bd17`.
