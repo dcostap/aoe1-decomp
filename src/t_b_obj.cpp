@@ -840,9 +840,9 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id,
     if (queue_count > 0 &&
         production_queue[queue_count - 1].master_id == master_id) {
         for (short i = 0; i < unit_count; ++i) {
-            short id = master_id;
-            if (tribe_player(owner)->check_obj_cost(id, &id, 1.0f, 1) == 0) {
-                rge_base_game->notification(0x7D, owner->id, id, 0, 0);
+            short temp_attr = master_id;
+            if (tribe_player(owner)->check_obj_cost(temp_attr, &temp_attr, 1.0f, 1) == 0) {
+                rge_base_game->notification(0x7D, owner->id, temp_attr, 0, 0);
                 break;
             }
             tribe_player(owner)->pay_obj_cost(master_id, 1.0f, 1);
