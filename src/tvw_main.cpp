@@ -275,16 +275,14 @@ int TRIBE_Main_View::command_place_object(long x, long y, int reset_mode) {
             object_id = rge_base_game->master_obj_id;
             if (object_id != -1 &&
                 (master_obj = this->player->master_objects[object_id]) != 0) {
-                master_obj->alignment(pick_info.x, pick_info.y,
-                                      this->world, 0);
+                master_obj->alignment(pick_info.x, pick_info.y, this->world, 0);
                 if (master_obj->check_placement(
                         this->player, pick_info.x, pick_info.y, 0,
                         1, master_obj->elevation_flag, 0, 1, 1, 1) == 0) {
                     if (reset_mode != 0 || object_id == 0x6D) {
                         rge_base_game->set_game_mode(0, 0);
                     }
-                    if (static_cast<TRIBE_Player*>(this->player)->command_make_building(
-                            object_id, pick_info.x, pick_info.y) != 0) {
+                    if (static_cast<TRIBE_Player*>(this->player)->command_make_building(object_id, pick_info.x, pick_info.y) != 0) {
                         return 1;
                     }
                 }
@@ -373,13 +371,7 @@ int TRIBE_Main_View::command_place_multi_object(long x1, long y1, long x2, long 
     return result;
 }
 
-void TRIBE_Main_View::place_line_of_walls(
-    TRIBE_Player* player,
-    TRIBE_Master_Building_Object* master_obj,
-    int x1,
-    int y1,
-    int x2,
-    int y2) {
+void TRIBE_Main_View::place_line_of_walls(TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int x1, int y1, int x2, int y2) {
     int x;
     int y;
     int y_skip;
@@ -482,8 +474,7 @@ error_a:
         goto done_a;
 
 default_action:
-        return RGE_Main_View::mouse_left_up_action(
-            x, y, ctrl_key, shift_key);
+        return RGE_Main_View::mouse_left_up_action(x, y, ctrl_key, shift_key);
 
     case 101:
         this->release_mouse();
@@ -595,8 +586,7 @@ invalid_action:
 
     default:
 default_action:
-        return RGE_Main_View::mouse_right_up_action(
-            x, y, ctrl_key, shift_key);
+        return RGE_Main_View::mouse_right_up_action(x, y, ctrl_key, shift_key);
 
     case 101:
         this->release_mouse();
@@ -625,8 +615,7 @@ done_b:
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
         {
-            RGE_Static_Object* object = this->pick_best_target(
-                x, y, 0, -1);
+            RGE_Static_Object* object = this->pick_best_target(x, y, 0, -1);
             if (object != 0 && static_cast<TRIBE_Player*>(this->player)->command_make_repair(object) != 0) {
                 this->display_object_selection(object->id, 0x5DC, 2, 2);
                 this->reset_overlay_sprites();
