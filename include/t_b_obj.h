@@ -17,49 +17,49 @@ class TRIBE_Building_Object;
 
 class TRIBE_Building_Object : public TRIBE_Combat_Object {
 public:
-    TRIBE_Building_Object(TRIBE_Master_Building_Object*, RGE_Player*,
-                          float, float, float, int, int);
-    TRIBE_Building_Object(TRIBE_Master_Building_Object*, RGE_Player*,
-                          float, float, float, int);
-    TRIBE_Building_Object(int, RGE_Game_World*, int);
+    TRIBE_Building_Object(TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner,
+                          float x, float y, float z, int uID, int do_setup);
+    TRIBE_Building_Object(TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner,
+                          float x, float y, float z, int do_setup);
+    TRIBE_Building_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
     virtual ~TRIBE_Building_Object();
     virtual void recycle_out_of_game();
     virtual void destroy_obj();
-    virtual uchar heal(float);
-    virtual void set_object_state(uchar);
+    virtual uchar heal(float healing);
+    virtual void set_object_state(uchar new_object_state);
     virtual void rehook();
     virtual uchar update();
-    virtual int explore_terrain(RGE_Player*, uchar, int);
-    virtual void save(int);
-    virtual void change_ownership(RGE_Player*);
-    virtual void modify(float, uchar);
-    virtual void copy_obj(RGE_Master_Static_Object*);
-    virtual void rotate(long);
-    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
-                        RGE_Static_Object*);
+    virtual int explore_terrain(RGE_Player* whos, uchar explore_type, int Override_LOS);
+    virtual void save(int outfile);
+    virtual void change_ownership(RGE_Player* new_owner);
+    virtual void modify(float amount, uchar flag);
+    virtual void copy_obj(RGE_Master_Static_Object* source);
+    virtual void rotate(long amount);
+    virtual void damage(int weapon_num, RGE_Armor_Weapon_Info* damage, float attack_modifier,
+                        RGE_Player* attacking_player, RGE_Static_Object* attacking_object);
     virtual void stop();
     virtual void cancel_object();
 
-    unsigned char build(float);
-    void add_to_production_queue(short, short);
-    void remove_from_production_queue(short, short);
+    unsigned char build(float build_amount);
+    void add_to_production_queue(short master_id, short unit_count);
+    void remove_from_production_queue(short master_id, short unit_count);
     void cancel_build();
-    int work_status(short&, short&, short&, char*, short);
+    int work_status(short& work_type, short& work_target, short& progress, char* name, short name_size);
     short get_construction_progress();
     void advance_production_queue();
     void empty_production_queue();
-    void enable_production_queue(int);
+    void enable_production_queue(int enabled);
     void update_production_queue();
-    int production_queue_status(short&, short&);
-    long check(TRIBE_Building_Object**);
+    int production_queue_status(short& master_id, short& progress);
+    long check(TRIBE_Building_Object** checks);
     void connect();
     void connect2();
     void lay_down_impassable_terrain();
     void lay_down_passable_terrain();
     virtual void take_building_attribute_from_owner();
     virtual void give_building_attribute_to_owner();
-    void transform(TRIBE_Master_Building_Object*);
+    void transform(TRIBE_Master_Building_Object* obj);
 
     Production_Queue_Record* production_queue; // +0x1C8
     short production_queue_size;               // +0x1CC
@@ -82,9 +82,9 @@ public:
     long PriorTurn3;                            // +0x200
 
 protected:
-    virtual int setup(TRIBE_Master_Building_Object*, RGE_Player*, float,
-                      float, float);
-    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner,
+                      float x, float y, float z);
+    virtual int setup(int infile, RGE_Game_World* gworld);
 };
 
 typedef char tribe_building_object_size_check[

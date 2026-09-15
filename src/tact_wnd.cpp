@@ -14,21 +14,18 @@
 
 static const float LIMIT = 2000.0f;
 
-TRIBE_Action_Wonder::TRIBE_Action_Wonder(int id, RGE_Action_Object* object)
-    : RGE_Action(id, object, 1)
-{
+TRIBE_Action_Wonder::TRIBE_Action_Wonder(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x78;
 }
 
-TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* object)
-    : RGE_Action(object, 1)
-{
+TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* obj_in)
+    : RGE_Action(obj_in, 1) {
     this->action_type = 0x78;
     this->timer = 0.0f;
 }
 
-TRIBE_Action_Wonder::~TRIBE_Action_Wonder()
-{
+TRIBE_Action_Wonder::~TRIBE_Action_Wonder() {
     RGE_Game_World* world = rge_base_game->world;
 
     if (world->game_state == 0) {
@@ -97,18 +94,16 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder()
     }
 }
 
-void TRIBE_Action_Wonder::first_in_stack(unsigned char value)
-{
-    if (value != 0) {
+void TRIBE_Action_Wonder::first_in_stack(unsigned char first_time) {
+    if (first_time != 0) {
         this->set_state(2);
     }
 }
 
-void TRIBE_Action_Wonder::set_state(unsigned char value)
-{
-    this->state = value;
+void TRIBE_Action_Wonder::set_state(unsigned char new_state) {
+    this->state = new_state;
 
-    switch (value) {
+    switch (new_state) {
     case 6: {
         int player_num = (int)rge_base_game->world->player_num;
         RGE_Player** players = rge_base_game->world->players;
@@ -169,27 +164,25 @@ void TRIBE_Action_Wonder::set_state(unsigned char value)
     }
 }
 
-unsigned char TRIBE_Action_Wonder::update()
-{
+unsigned char TRIBE_Action_Wonder::update() {
     switch (this->state) {
     case 6:
         if (this->timer >= LIMIT) return 0;
 
         {
-            float f = this->obj->owner->world->world_time_delta_seconds;
-            this->timer = (f + f) + this->timer;
+            float time_delta = this->obj->owner->world->world_time_delta_seconds;
+            this->timer = (time_delta + time_delta) + this->timer;
 
             if (rge_base_game->world[1].world_time != 0) {
                 goto cleanup;
             }
 
-            int pid = this->obj->owner->id;
-            rge_base_game->set_countdown_timer(pid,
-                                               (int)(LIMIT - this->timer));
+            int player_id = this->obj->owner->id;
+            rge_base_game->set_countdown_timer(player_id, (int)(LIMIT - this->timer));
 
             if (this->timer >= LIMIT) {
-                RGE_Player* player = this->obj->owner;
-                player->win_game_now();
+                RGE_Player* owner = this->obj->owner;
+                owner->win_game_now();
                 rge_base_game->world->game_end_condition = 100;
             }
         }

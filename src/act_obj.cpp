@@ -11,64 +11,50 @@
 #include "../include/world.h"
 #include <stdio.h>
 
-// act_obj.cpp lines 47-56.
-RGE_Action_Object::RGE_Action_Object(RGE_Master_Action_Object* master,
-                                     RGE_Player* player,
-                                     float x, float y, float z, int flag)
-    : RGE_Moving_Object(master, player, x, y, z, 0)
-{
+RGE_Action_Object::RGE_Action_Object(RGE_Master_Action_Object* tobj,
+                                     RGE_Player* obj_owner, float x, float y,
+                                     float z, int do_setup)
+    : RGE_Moving_Object(tobj, obj_owner, x, y, z, 0) {
     this->lastActionValue = -1;
     this->lastActionStateValue = -1;
-    if (flag != 0) {
-        this->setup(master, player, x, y, z);
+    if (do_setup != 0) {
+        this->setup(tobj, obj_owner, x, y, z);
     }
 }
 
-// act_obj.cpp lines 62-71.
-RGE_Action_Object::RGE_Action_Object(int id, RGE_Game_World* world, int flag)
-    : RGE_Moving_Object(id, world, 0)
-{
+RGE_Action_Object::RGE_Action_Object(int infile, RGE_Game_World* gworld, int do_setup)
+    : RGE_Moving_Object(infile, gworld, 0) {
     this->lastActionValue = -1;
     this->lastActionStateValue = -1;
-    if (flag != 0) {
-        this->setup(id, world);
+    if (do_setup != 0) {
+        this->setup(infile, gworld);
     }
 }
 
-// act_obj.cpp lines 76-82.
-RGE_Action_Object::~RGE_Action_Object()
-{
-    RGE_Action_List* p = this->actions;
-    if (p != 0) {
-        delete p;
+RGE_Action_Object::~RGE_Action_Object() {
+    RGE_Action_List* action_list = this->actions;
+    if (action_list != 0) {
+        delete action_list;
         this->actions = 0;
     }
 }
 
-// act_obj.cpp lines 86-91.
-void RGE_Action_Object::recycle_out_of_game()
-{
+void RGE_Action_Object::recycle_out_of_game() {
     if (this->actions) {
         this->actions->delete_list();
     }
     RGE_Static_Object::recycle_out_of_game();
 }
 
-// act_obj.cpp lines 96-100.
-void RGE_Action_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* master_obj, RGE_Player* player,
-    float x, float y, float z)
-{
-    RGE_Moving_Object::recycle_in_to_game(master_obj, player, x, y, z);
+void RGE_Action_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner,
+                                           float x, float y, float z) {
+    RGE_Moving_Object::recycle_in_to_game(tobj, obj_owner, x, y, z);
     this->waiting = 0;
 }
 
-// act_obj.cpp lines 105-124.
-int RGE_Action_Object::setup(
-    RGE_Master_Action_Object* master_obj, RGE_Player* player,
-    float x, float y, float z)
-{
-    RGE_Moving_Object::setup(master_obj, player, x, y, z);
+int RGE_Action_Object::setup(RGE_Master_Action_Object* tobj, RGE_Player* obj_owner,
+                             float x, float y, float z) {
+    RGE_Moving_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x28;
     this->waiting = 0;
     this->actions = this->create_action_list();
@@ -76,83 +62,63 @@ int RGE_Action_Object::setup(
     return 1;
 }
 
-// act_obj.cpp lines 129-145.
-int RGE_Action_Object::setup(int handle, RGE_Game_World* world)
-{
-    RGE_Moving_Object::setup(handle, world);
+int RGE_Action_Object::setup(int infile, RGE_Game_World* gworld) {
+    RGE_Moving_Object::setup(infile, gworld);
     this->type = 0x28;
-    rge_read(handle, &this->waiting, 1);
+    rge_read(infile, &this->waiting, 1);
     if (save_game_version >= 6.5f) {
-        rge_read(handle, &this->command_flag, 1);
+        rge_read(infile, &this->command_flag, 1);
     } else {
         this->command_flag = 0;
     }
     this->actions = this->create_action_list();
-    this->actions->load(handle);
+    this->actions->load(infile);
     return 1;
 }
 
-// act_obj.cpp lines 149-151.
-RGE_Action_List* RGE_Action_Object::create_action_list(void)
-{
+RGE_Action_List* RGE_Action_Object::create_action_list(void) {
     return new RGE_Action_List(this);
 }
 
-// act_obj.cpp lines 160-163.
-void RGE_Action_Object::rehook()
-{
+void RGE_Action_Object::rehook() {
     RGE_Static_Object::rehook();
     this->actions->rehook();
 }
 
-// act_obj.cpp lines 167-174.
-void RGE_Action_Object::save(int handle)
-{
-    RGE_Moving_Object::save(handle);
-    rge_write(handle, &this->waiting, 1);
-    rge_write(handle, &this->command_flag, 1);
-    this->actions->save(handle);
+void RGE_Action_Object::save(int outfile) {
+    RGE_Moving_Object::save(outfile);
+    rge_write(outfile, &this->waiting, 1);
+    rge_write(outfile, &this->command_flag, 1);
+    this->actions->save(outfile);
 }
 
-// act_obj.cpp lines 178-181.
-void RGE_Action_Object::transform(RGE_Master_Static_Object* master)
-{
-    RGE_Moving_Object::transform(master);
+void RGE_Action_Object::transform(RGE_Master_Static_Object* obj) {
+    RGE_Moving_Object::transform(obj);
     this->actions->delete_list();
 }
 
-// act_obj.cpp lines 185-198.
-void RGE_Action_Object::destroy_obj(void)
-{
+void RGE_Action_Object::destroy_obj(void) {
     this->actions->delete_list();
     RGE_Static_Object::destroy_obj();
 }
 
-// act_obj.cpp line 202.
-void RGE_Action_Object::notify_of_relation(long p0, uchar p1)
-{
+void RGE_Action_Object::notify_of_relation(long player_id, uchar relation) {
 }
 
-// act_obj.cpp lines 208-214.
-void RGE_Action_Object::do_command(
-    RGE_Static_Object* target, float x, float y, float z)
-{
-    if (target != this) {
-        this->work2(target, x, y, z, 0);
+void RGE_Action_Object::do_command(RGE_Static_Object* obj, float x, float y, float z) {
+    if (obj != this) {
+        this->work2(obj, x, y, z, 0);
         this->command_flag = this->command_flag + 1;
     }
 }
 
-// act_obj.cpp lines 218-247.
-void RGE_Action_Object::move_to(
-    RGE_Static_Object* target, float x, float y, float z)
-{
-    if (target != this) {
-        if (this->actions->action_move_to(target, x, y, z) == 0) {
+void RGE_Action_Object::move_to(RGE_Static_Object* obj, float x, float y, float z) {
+    if (obj != this) {
+        if (this->actions->action_move_to(obj, x, y, z) == 0) {
             RGE_Action_Move_To* action;
 
-            if (target != 0) {
-                action = new RGE_Action_Move_To(this, target, 0.4f, 0);
+            if (obj != 0) {
+                action = new RGE_Action_Move_To(this, obj, 0.4f, 0);
             } else {
                 action = new RGE_Action_Move_To(this, x, y, z, 0.4f, 0);
             }
@@ -160,10 +126,10 @@ void RGE_Action_Object::move_to(
             if (this->unitAIValue != 0) {
                 this->unitAIValue->setCurrentOrder(0x2C6);
                 this->unitAIValue->setCurrentAction(0x262);
-                if (target != 0) {
+                if (obj != 0) {
                     this->unitAIValue->setCurrentTarget(
-                        target->id,
-                        target->master_obj->object_group,
+                        obj->id,
+                        obj->master_obj->object_group,
                         x, y, z);
                 } else {
                     this->unitAIValue->setCurrentTarget(-1, -1, x, y, z);
@@ -178,34 +144,28 @@ void RGE_Action_Object::move_to(
     }
 }
 
-// act_obj.cpp lines 251-257.
-void RGE_Action_Object::work(
-    RGE_Static_Object* target, float x, float y, float z)
-{
-    if (target != this) {
-        this->work2(target, x, y, z, 1);
+void RGE_Action_Object::work(RGE_Static_Object* obj, float x, float y, float z) {
+    if (obj != this) {
+        this->work2(obj, x, y, z, 1);
         this->command_flag = this->command_flag + 1;
     }
 }
 
-// act_obj.cpp lines 266-462.
-void RGE_Action_Object::work2(
-    RGE_Static_Object* target, float x, float y, float z,
-    unsigned char flag)
-{
+void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
+                              unsigned char work_flag) {
     int skip;
     RGE_Task* task;
     RGE_Action* action;
     RGE_Task* current_task;
-    short action_id;
+    short actionType;
     RGE_Master_Static_Object* other;
     int i;
     int order;
     int current_action;
 
-    if (target != this) {
+    if (obj != this) {
         task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                   ->tasks->get_target_task(this, target, x, y, z);
+                   ->tasks->get_target_task(this, obj, x, y, z);
         if (task == 0 &&
             static_cast<RGE_Master_Action_Object*>(this->master_obj)
                 ->task_by_group != 0) {
@@ -219,7 +179,7 @@ void RGE_Action_Object::work2(
                         static_cast<RGE_Master_Action_Object*>(this->master_obj)
                             ->task_by_group) {
                     task = static_cast<RGE_Master_Action_Object*>(other)
-                               ->tasks->get_target_task(this, target, x, y, z);
+                               ->tasks->get_target_task(this, obj, x, y, z);
                     if (task != 0) {
                         this->transform(other);
                         break;
@@ -230,18 +190,18 @@ void RGE_Action_Object::work2(
 
         current_task = this->actions->get_task();
         skip = 0;
-        action_id = -1;
+        actionType = -1;
         if (current_task != 0 && task == current_task &&
-            this->actions->action_work(target, x, y, z) != 0) {
-            action_id = this->actions->get_action()->type();
+            this->actions->action_work(obj, x, y, z) != 0) {
+            actionType = this->actions->get_action()->type();
             skip = 1;
         }
 
         if (this->actions->have_action() == 1) {
-            if (this->actions->get_action()->get_target_obj() == target &&
+            if (this->actions->get_action()->get_target_obj() == obj &&
                 this->actions->get_action()->type() == 9) {
-                if (this->actions->get_action()->work(target, x, y, z) != 0) {
-                    action_id = this->actions->get_action()->type();
+                if (this->actions->get_action()->work(obj, x, y, z) != 0) {
+                    actionType = this->actions->get_action()->type();
                     skip = 1;
                 }
             }
@@ -249,23 +209,23 @@ void RGE_Action_Object::work2(
 
         if (skip == 0) {
             if (task != 0) {
-                action = this->actions->create_task_action(task, target, x, y, z);
+                action = this->actions->create_task_action(task, obj, x, y, z);
             } else {
                 action = 0;
             }
             if (action != 0) {
-                action_id = action->type();
+                actionType = action->type();
                 this->set_only_action(action);
             } else {
-                action_id = 1;
-                this->move_to(target, x, y, z);
+                actionType = 1;
+                this->move_to(obj, x, y, z);
             }
         }
 
         if (this->unitAIValue != 0) {
             order = -1;
             current_action = -1;
-            switch (action_id) {
+            switch (actionType) {
             case 9:
                 current_action = 0x258;
                 order = 0x2BC;
@@ -318,10 +278,10 @@ void RGE_Action_Object::work2(
 
             this->unitAIValue->setCurrentOrder(order);
             this->unitAIValue->setCurrentAction(current_action);
-            if (target != 0) {
+            if (obj != 0) {
                 this->unitAIValue->setCurrentTarget(
-                    target->id,
-                    target->master_obj->object_group,
+                    obj->id,
+                    obj->master_obj->object_group,
                     x, y, z);
             } else {
                 this->unitAIValue->setCurrentTarget(-1, -1, x, y, z);
@@ -331,36 +291,28 @@ void RGE_Action_Object::work2(
     }
 }
 
-// act_obj.cpp line 466.
-void RGE_Action_Object::set_attack(RGE_Static_Object* p0)
-{
+void RGE_Action_Object::set_attack(RGE_Static_Object* obj) {
 }
 
-// act_obj.cpp line 472.
-void RGE_Action_Object::play_command_sound()
-{
+void RGE_Action_Object::play_command_sound() {
     this->master_obj->play_command_sound();
 }
 
-// act_obj.cpp line 478.
-void RGE_Action_Object::play_move_sound()
-{
+void RGE_Action_Object::play_move_sound() {
     this->master_obj->play_move_sound();
 }
 
-// act_obj.cpp lines 484-519.
 RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
-    RGE_Static_Object* target, float x, float y, float z)
-{
+    RGE_Static_Object* obj, float x, float y, float z) {
     int i;
-    RGE_Master_Static_Object* obj;
+    RGE_Master_Static_Object* master_obj;
     RGE_Task* task;
 
-    if (target != this) {
+    if (obj != this) {
         if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
                     ->task_by_group != 0) {
             task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                       ->tasks->get_target_task(this, target, x, y, z);
+                       ->tasks->get_target_task(this, obj, x, y, z);
             if (task != 0) {
                 return this->master_obj;
             }
@@ -368,19 +320,18 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
             if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
                         ->task_by_group != 0) {
                 for (i = 0; i < this->owner->master_object_num; i++) {
-                    obj = this->owner->master_objects[i];
-                    if (obj != 0 &&
-                        obj->object_group == this->master_obj->object_group &&
-                        obj->master_type == this->master_obj->master_type &&
-                        static_cast<RGE_Master_Action_Object*>(obj)
+                    master_obj = this->owner->master_objects[i];
+                    if (master_obj != 0 &&
+                        master_obj->object_group == this->master_obj->object_group &&
+                        master_obj->master_type == this->master_obj->master_type &&
+                        static_cast<RGE_Master_Action_Object*>(master_obj)
                                 ->task_by_group ==
                             static_cast<RGE_Master_Action_Object*>(
                                 this->master_obj)->task_by_group) {
-                        task = static_cast<RGE_Master_Action_Object*>(obj)
-                                   ->tasks->get_target_task(
-                                       this, target, x, y, z);
+                        task = static_cast<RGE_Master_Action_Object*>(master_obj)
+                                   ->tasks->get_target_task(this, obj, x, y, z);
                         if (task != 0) {
-                            return obj;
+                            return master_obj;
                         }
                     }
                 }
@@ -391,9 +342,7 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
     return this->master_obj;
 }
 
-// act_obj.cpp lines 525-537.
-void RGE_Action_Object::set_task(short task_id)
-{
+void RGE_Action_Object::set_task(short task_id) {
     RGE_Task* task;
     RGE_Action* action;
     RGE_Master_Action_Object* master =
@@ -408,15 +357,13 @@ void RGE_Action_Object::set_task(short task_id)
     }
 }
 
-// act_obj.cpp lines 542-552.
-void RGE_Action_Object::setTaskByTaskID(int task_id)
-{
+void RGE_Action_Object::setTaskByTaskID(int t) {
     RGE_Task* task;
     RGE_Action* action;
     RGE_Master_Action_Object* master =
         static_cast<RGE_Master_Action_Object*>(this->master_obj);
 
-    task = master->getTaskByTaskID(task_id);
+    task = master->getTaskByTaskID(t);
     if (task != 0) {
         action = this->actions->create_task_action(task, 0, -1.0f, -1.0f, -1.0f);
         if (action != 0) {
@@ -425,42 +372,32 @@ void RGE_Action_Object::setTaskByTaskID(int task_id)
     }
 }
 
-// act_obj.cpp lines 557-560.
-void RGE_Action_Object::set_action(RGE_Action* action)
-{
+void RGE_Action_Object::set_action(RGE_Action* action) {
     if (action != 0) {
         this->actions->add_action(action);
     }
 }
 
-// act_obj.cpp lines 565-579.
-void RGE_Action_Object::set_only_action(RGE_Action* action)
-{
+void RGE_Action_Object::set_only_action(RGE_Action* action) {
     this->actions->delete_list();
     if (action != 0) {
         this->actions->add_action(action);
     }
 }
 
-// act_obj.cpp lines 584-587.
-void RGE_Action_Object::set_end_action(RGE_Action* action)
-{
+void RGE_Action_Object::set_end_action(RGE_Action* action) {
     if (action) {
         this->actions->add_action_at_end(action);
     }
 }
 
-// act_obj.cpp lines 592-605.
-void RGE_Action_Object::stop(void)
-{
+void RGE_Action_Object::stop(void) {
     if (this->actions->action_stop() == 0) {
         this->actions->delete_list();
     }
 }
 
-// act_obj.cpp lines 609-717.
-unsigned char RGE_Action_Object::update()
-{
+unsigned char RGE_Action_Object::update() {
     if (actionFile != 0) {
         int action_value;
         int action_state_value;
@@ -520,34 +457,26 @@ unsigned char RGE_Action_Object::update()
     return result;
 }
 
-// act_obj.cpp lines 721-727.
-void RGE_Action_Object::change_ownership(RGE_Player* player)
-{
+void RGE_Action_Object::change_ownership(RGE_Player* new_owner) {
     this->stop();
-    RGE_Static_Object::change_ownership(player);
+    RGE_Static_Object::change_ownership(new_owner);
     this->set_only_action(0);
 }
 
-// act_obj.cpp lines 731-735.
-void RGE_Action_Object::copy_obj(RGE_Master_Static_Object* master_obj)
-{
+void RGE_Action_Object::copy_obj(RGE_Master_Static_Object* source) {
     this->actions->copy_obj(
-        static_cast<RGE_Master_Action_Object*>(master_obj));
-    RGE_Moving_Object::copy_obj(master_obj);
+        static_cast<RGE_Master_Action_Object*>(source));
+    RGE_Moving_Object::copy_obj(source);
 }
 
-// act_obj.cpp lines 739-744.
-unsigned char RGE_Action_Object::have_action(void)
-{
+unsigned char RGE_Action_Object::have_action(void) {
     if (this->actions->have_action()) {
         return 1;
     }
     return 0;
 }
 
-// act_obj.cpp lines 748-756.
-RGE_Static_Object* RGE_Action_Object::get_target_obj(void)
-{
+RGE_Static_Object* RGE_Action_Object::get_target_obj(void) {
     RGE_Action* action;
     RGE_Static_Object* target_obj;
 
@@ -559,13 +488,9 @@ RGE_Static_Object* RGE_Action_Object::get_target_obj(void)
     return target_obj;
 }
 
-// act_obj.cpp lines 764-797.
-RGE_Task* RGE_Action_Object::getTask(
-    RGE_Static_Object* target, float x, float y, float z)
-{
+RGE_Task* RGE_Action_Object::getTask(RGE_Static_Object* target, float targetX, float targetY, float targetZ) {
     RGE_Task* task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
-                           ->tasks->get_target_task(
-        this, target, x, y, z);
+                           ->tasks->get_target_task(this, target, targetX, targetY, targetZ);
     if (task == 0 &&
         static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group != 0) {
         int i = 0;
@@ -580,7 +505,7 @@ RGE_Task* RGE_Action_Object::getTask(
                         static_cast<RGE_Master_Action_Object*>(this->master_obj)
                             ->task_by_group) {
                     task = static_cast<RGE_Master_Action_Object*>(obj)
-                               ->tasks->get_target_task(this, target, x, y, z);
+                               ->tasks->get_target_task(this, target, targetX, targetY, targetZ);
                     if (task != 0) {
                         goto found;
                     }
@@ -596,18 +521,14 @@ found:
     return task;
 }
 
-// act_obj.cpp lines 803-807.
-unsigned char RGE_Action_Object::actionState(void) const
-{
+unsigned char RGE_Action_Object::actionState(void) const {
     if (this->actions->have_action() == 1) {
         return this->actions->get_action()->state;
     }
     return 0;
 }
 
-// act_obj.cpp lines 813-828.
-long RGE_Action_Object::get_action_checksum(void)
-{
+long RGE_Action_Object::get_action_checksum(void) {
     RGE_Action* action;
     long checksum;
 

@@ -11,23 +11,18 @@
 void __cdecl rge_read(int handle, void* buffer, int count);
 void __cdecl rge_write(int handle, void* buffer, int count);
 
-//
-
-TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int file, RGE_Action_Object* object)
-    : RGE_Action(file, object, 1) {
+TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x67;
-    rge_read(file, &this->tech_id, 2);
-    rge_read(file, &this->unique_id, 4);
+    rge_read(infile, &this->tech_id, 2);
+    rge_read(infile, &this->unique_id, 4);
 }
 
-// The constructor preserves the original base construction and field values.
-TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* object,
-                                               short tech_id_value,
-                                               int unique_id_value)
-    : RGE_Action(object, 1) {
-    this->unique_id = unique_id_value;
+TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* obj_in, short id, int uID)
+    : RGE_Action(obj_in, 1) {
+    this->unique_id = uID;
     this->action_type = 0x67;
-    this->tech_id = tech_id_value;
+    this->tech_id = id;
 }
 
 TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
@@ -54,27 +49,27 @@ TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
     }
 }
 
-void TRIBE_Action_Make_Tech::save(int file) {
-    RGE_Action::save(file);
-    rge_write(file, &this->tech_id, 2);
-    rge_write(file, &this->unique_id, 4);
+void TRIBE_Action_Make_Tech::save(int outfile) {
+    RGE_Action::save(outfile);
+    rge_write(outfile, &this->tech_id, 2);
+    rge_write(outfile, &this->unique_id, 4);
 }
 
-void TRIBE_Action_Make_Tech::first_in_stack(unsigned char value) {
-    if (value == 0 || this->tech_id < 0) {
+void TRIBE_Action_Make_Tech::first_in_stack(unsigned char first_time) {
+    if (first_time == 0 || this->tech_id < 0) {
         return;
     }
 
     unsigned char result =
         static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->start_research(
-        this->tech_id, 1, reinterpret_cast<short*>(&value));
+            this->tech_id, 1, reinterpret_cast<short*>(&first_time));
     if (result == 1) {
         this->set_state(6);
         return;
     }
 
     static_cast<TRIBE_Player*>(this->obj->owner)->cancelResearch(
-        (int)*(short*)&value,
+        (int)*(short*)&first_time,
         (int)this->tech_id,
         this->obj->id,
         this->unique_id);
@@ -171,23 +166,20 @@ int TRIBE_Action_Make_Tech::stop() {
     return 1;
 }
 
-void TRIBE_Action_Make_Tech::get_info(short& tech_id_out,
-                                       short& progress_out,
-                                       char* name_out,
-                                       short max_length) {
-    tech_id_out = this->tech_id;
+void TRIBE_Action_Make_Tech::get_info(short& id, short& progress, char* name, short name_size) {
+    id = this->tech_id;
     if (this->state == 1) {
-        progress_out = 100;
+        progress = 100;
     } else {
-        progress_out = static_cast<TRIBE_Player*>(this->obj->owner)
-                           ->tech_tree->get_progress(this->tech_id);
+        progress = static_cast<TRIBE_Player*>(this->obj->owner)
+                       ->tech_tree->get_progress(this->tech_id);
     }
 
-    if (name_out != 0) {
-        strncpy(name_out,
+    if (name != 0) {
+        strncpy(name,
                 static_cast<TRIBE_Player*>(this->obj->owner)
                     ->tech_tree->get_name(this->tech_id),
-                max_length);
-        name_out[max_length - 1] = 0;
+                name_size);
+        name[name_size - 1] = 0;
     }
 }

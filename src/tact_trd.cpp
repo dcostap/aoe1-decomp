@@ -16,35 +16,28 @@
 #include "../include/world.h"
 #include "../include/obj_list.h"
 
-TRIBE_Action_Trade::TRIBE_Action_Trade(int file, RGE_Action_Object* obj)
-    : RGE_Action(file, obj, 1)
-{
-    rge_read(file, &this->pick_up_x, 4);
-    rge_read(file, &this->pick_up_y, 4);
+TRIBE_Action_Trade::TRIBE_Action_Trade(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
+    rge_read(infile, &this->pick_up_x, 4);
+    rge_read(infile, &this->pick_up_y, 4);
     this->action_type = 0x6F;
 }
 
-TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
-                                       RGE_Task* task,
-                                       RGE_Static_Object* target)
-    : RGE_Action(obj, 1)
-{
-    this->task = task;
+TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6F;
-    this->set_target_obj(target);
-    this->target_x = target->world_x;
-    this->target_y = target->world_y;
-    this->target_z = target->world_z;
+    this->set_target_obj(target_obj_in);
+    this->target_x = target_obj_in->world_x;
+    this->target_y = target_obj_in->world_y;
+    this->target_z = target_obj_in->world_z;
     this->pick_up_x = -1.0f;
     this->pick_up_y = -1.0f;
 }
 
-TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
-                                       RGE_Task* task,
-                                       float x, float y, float z)
-    : RGE_Action(obj, 1)
-{
-    this->task = task;
+TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6F;
     *(int*)&this->target_x = *(int*)&x;
     *(int*)&this->target_y = *(int*)&y;
@@ -53,21 +46,19 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
     *(int*)&this->target_z = *(int*)&z;
 }
 
-void TRIBE_Action_Trade::save(int file)
-{
-    RGE_Action::save(file);
-    rge_write(file, &this->pick_up_x, 4);
-    rge_write(file, &this->pick_up_y, 4);
+void TRIBE_Action_Trade::save(int outfile) {
+    RGE_Action::save(outfile);
+    rge_write(outfile, &this->pick_up_x, 4);
+    rge_write(outfile, &this->pick_up_y, 4);
 }
 
-void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
-{
+void TRIBE_Action_Trade::first_in_stack(unsigned char first_time) {
     if (this->obj->attribute_type_held != 0 &&
         this->obj->attribute_type_held != 2 &&
         this->obj->attribute_type_held != 1) {
         this->obj->attribute_type_held = 1;
     }
-    if (param_1 != 0) {
+    if (first_time != 0) {
         if (this->target_obj != 0) {
             this->set_state(4);
             return;
@@ -78,12 +69,11 @@ void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
     this->set_state(3);
 }
 
-void TRIBE_Action_Trade::set_state(unsigned char param_1)
-{
+void TRIBE_Action_Trade::set_state(unsigned char new_state) {
     this->sub_actions->delete_list();
-    this->state = param_1;
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 3:
         this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x267, 0, 0);
         this->obj->new_sprite(this->get_wait_sprite());
@@ -213,8 +203,7 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
 // The original frame is eight bytes plus ESI and EDI.
 extern double DAT_00575350;
 
-unsigned char TRIBE_Action_Trade::update()
-{
+unsigned char TRIBE_Action_Trade::update() {
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
@@ -342,21 +331,21 @@ unsigned char TRIBE_Action_Trade::update()
             this->obj->attribute_type_held = 1;
         }
 
-        float max_amount = (float)(int)this->obj->master_obj->attribute_max_amount;
-        float take_amount = max_amount - this->obj->attribute_amount_held;
+        float max_hold = (float)(int)this->obj->master_obj->attribute_max_amount;
+        float give_amount = max_hold - this->obj->attribute_amount_held;
         short attribute = this->obj->attribute_type_held;
-        if (this->obj->owner->attributes[attribute] < take_amount) {
-            take_amount = this->obj->owner->attributes[attribute];
+        if (this->obj->owner->attributes[attribute] < give_amount) {
+            give_amount = this->obj->owner->attributes[attribute];
         }
-        if (this->target_obj->owner->attributes[9] < take_amount) {
-            take_amount = this->target_obj->owner->attributes[9];
+        if (this->target_obj->owner->attributes[9] < give_amount) {
+            give_amount = this->target_obj->owner->attributes[9];
         }
 
-        this->obj->owner->add_attribute_num(attribute, -take_amount, 1);
-        this->target_obj->owner->attributes[9] -= take_amount;
-        this->obj->attribute_amount_held += take_amount;
+        this->obj->owner->add_attribute_num(attribute, -give_amount, 1);
+        this->target_obj->owner->attributes[9] -= give_amount;
+        this->obj->attribute_amount_held += give_amount;
 
-        if (this->obj->attribute_amount_held >= max_amount) {
+        if (this->obj->attribute_amount_held >= max_hold) {
             this->set_state(8);
             return 0;
         }
@@ -445,8 +434,7 @@ unsigned char TRIBE_Action_Trade::update()
     }
 }
 
-RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
-{
+RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void) {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
 
@@ -462,36 +450,33 @@ RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
     return task->move_sprite;
 }
 
-RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void)
-{
+RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void) {
     TRIBE_Action_Trade* action = this;
     RGE_Task* task = action->task;
     short task_facet = task->attribute_type;
 
     if (task_facet != (short)0xFFFF &&
-        task_facet == action->obj->attribute_type_held
-        && (int)action->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
+        task_facet == action->obj->attribute_type_held &&
+        (int)action->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
         return task->carry_sprite;
     }
     return action->obj->master_obj->sprite;
 }
 
-int TRIBE_Action_Trade::stop()
-{
+int TRIBE_Action_Trade::stop() {
     this->set_state(2);
     return 1;
 }
 
-int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float z)
-{
-    if (obj != 0) {
-        if (obj->owner == this->obj->owner) {
-            if (obj->master_obj->id ==
+int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        if (obj_in->owner == this->obj->owner) {
+            if (obj_in->master_obj->id ==
                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
-                if (obj == this->target_obj2 && this->state == 8) {
+                if (obj_in == this->target_obj2 && this->state == 8) {
                     return 1;
                 }
-                this->set_target_obj2(obj);
+                this->set_target_obj2(obj_in);
                 this->set_state(8);
                 return 1;
             }
@@ -507,26 +492,25 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float 
     return 1;
 }
 
-int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
-{
-    if (obj != 0) {
-        if (obj == this->target_obj) {
+int TRIBE_Action_Trade::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        if (obj_in == this->target_obj) {
             if (this->state == 4 || this->state == 6 || this->state == 7) {
                 return 1;
             }
         }
 
         // Check owner/id match.
-        if (obj->owner == this->obj->owner) {
-            if (obj->master_obj->id ==
+        if (obj_in->owner == this->obj->owner) {
+            if (obj_in->master_obj->id ==
                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site) {
-                this->set_target_obj2(obj);
+                this->set_target_obj2(obj_in);
                 this->set_state(8);
                 return 1;
             }
         }
 
-        this->set_target_obj(obj);
+        this->set_target_obj(obj_in);
         this->set_state(4);
         return 1;
     }
