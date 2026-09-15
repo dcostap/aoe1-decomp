@@ -4,7 +4,7 @@
 
 - Module: `src/scr_cam.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source-cleanup commit: `0578264c4ab2c307e74c2f6f3f905fa7fdf46202`
+- Final source-cleanup commit: `07d2bf45dbe4772db3b6922a9975a2814b39d7ce`
 - Branch: `cleanup/staging-20260915-25`
 - Changed files:
   - `src/scr_cam.cpp`
@@ -44,6 +44,16 @@ The base file contains all 15 requested strings. Both expansion files return
 empty `strings` arrays and list all 15 IDs as missing. The extractor records
 exact PE resource text only. Source lookup and fallback evidence remains based
 on the reviewed game source and call path.
+
+The final source-format correction joined only these two calls onto one line:
+
+```cpp
+this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED, 0, 0x1C2, 100);
+this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO, 0, 0x1C2, 100);
+```
+
+No other source text changed in this correction. The source correction commit
+is `07d2bf45dbe4772db3b6922a9975a2814b39d7ce`.
 
 ## Scope and evidence
 
