@@ -190,6 +190,9 @@ The sweep confirms the repaired matching targets. It does not establish baseline
 Root started ownership audit `bg-93` against the complete `functions-r3/report.json`, with output `final-validation/owners-r3.json`.
 Ownership audit `bg-93` passed for 4,965 functions: zero owner mismatches and zero class/free mismatches.
 Its repair queue retains the two documented terrain failures. Ownership success does not clear those matching failures.
+Full pytest `bg-92` passed: 817 tests and 31 subtests in 257.31 seconds.
+The run selected the repaired executable through `AOE_DEPENDENCY_BUILD`; results are in `final-validation/tests-r3.xml`.
+Earlier failed test output remains preserved. This pass does not replace baseline-output comparison or runtime capture and parity suites.
 
 ## Fresh linked dependency failures
 
