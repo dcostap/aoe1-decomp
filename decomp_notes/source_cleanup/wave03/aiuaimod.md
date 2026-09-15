@@ -8,7 +8,7 @@
 - Scoped records reviewed: 117
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Base source blob: `ea4500e9068e5eaa82f129423a1a1c892e9962ce`
-- Source blob after cleanup: `ec4093cc4c7461999e5da673f550bb4c36b46888`
+- Source blob after cleanup: `9ab7541260e96e4e576be64cb5e4d11cdc9a09a9`
 
 The source changes restore procedure-scoped names. They do not change calls, literals, casts, types, statement order, or control flow.
 
