@@ -12,12 +12,7 @@ RGE_Action_Explore::RGE_Action_Explore(int infile, RGE_Action_Object* obj_in)
     this->action_type = 4;
 }
 
-RGE_Action_Explore::RGE_Action_Explore(
-    RGE_Action_Object* obj_in,
-    RGE_Task* task_in,
-    float x,
-    float y,
-    float z)
+RGE_Action_Explore::RGE_Action_Explore(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 4;
@@ -128,11 +123,7 @@ return_one:
     return 1;
 }
 
-int RGE_Action_Explore::work(
-    RGE_Static_Object* obj_in,
-    float x,
-    float y,
-    float z) {
+int RGE_Action_Explore::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if ((x < 0.0f) || (y < 0.0f)) {
         this->set_state(3);
         return 1;
