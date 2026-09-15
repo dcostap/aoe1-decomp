@@ -5,12 +5,12 @@
 - Module: `src/rmm_elev.cpp`
 - Branch: `cleanup/staging-20260915-15`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source-cleanup commit: `a2336231287bb5b8d39b0bbb9abc5764dec8ef6a`
+- Final source-cleanup commit: `7457c117b3fe2547b95686ff348c8c17489c61e2`
 - Changed files:
   - `src/rmm_elev.cpp`
   - `decomp_notes/source_cleanup/wave01/rmm_elev.md`
 
-The source and report are committed in the final source-cleanup commit above.
+The source correction is committed in the final source-cleanup commit above. This correction round also has a separate report commit.
 
 ## Scope and evidence
 
@@ -111,7 +111,7 @@ No new source comment was needed. The existing module comment remains unchanged.
 
 ## Code-generation-sensitive points
 
-The change renames parameters and locals only. It also applies 1TBS braces to function definitions and formats one wrapped call. It preserves source order, scopes, types, storage, casts, evaluation order, literals, string data, calls, direct targets, and public signatures.
+The change renames parameters and locals only. It also applies 1TBS braces to function definitions and keeps the stack-removal call on one line. It preserves source order, scopes, types, storage, casts, evaluation order, literals, string data, calls, direct targets, and public signatures.
 
 The source string `C:\\msdev\\work\\age1_x1\\rmm_elev.cpp` remains unchanged. No `__LINE__` or other line-dependent macro appears in this module. Generated code, data, relocations, and call-target identity remain unvalidated.
 
@@ -122,3 +122,15 @@ No header edit is requested. `include/rmm_elev.h` needs no declaration change be
 ## Validation status
 
 Compilation, matching, audits, tests, and games were **not run**. I ran only evidence inspection, source review, Git diff review, and `git diff --check`. Compiler output equality and runtime behavior remain unvalidated.
+
+## Correction round
+
+Root review requested one presentation correction. The source now keeps this call on one line:
+
+```cpp
+this->remove_stack_node(this->stack_offsets[y_index] + column);
+```
+
+The source correction is commit `7457c117b3fe2547b95686ff348c8c17489c61e2`. I inspected the full source diff for this round and found no non-name token changes. I also reviewed the complete assigned diff against the base commit. No other source or report content changed in this round except the documented report updates.
+
+Compilation, build, matching, audit, test, and game commands were not run.
