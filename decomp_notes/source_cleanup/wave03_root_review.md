@@ -5,7 +5,14 @@
 Final head: `fafc408fd43285ad1f9e778282cca9443b474b0f`.
 The complete 92-line diff is `build/source-cleanup-20260915/owner14-final-corrections.diff`.
 Original reviewer `sa-e8937a55` resumed to check the declaration move and final report corrections.
-The group remains unmerged until approval. Full validation remains deferred.
+The reviewer approved all 92 lines with no blockers.
+Diff SHA256: `67e143a31040d8cacfcfcb10ec446366763e7d109390eaec22a4e81d5c5359f7`.
+The declaration order and initialization point now match the baseline; report corrections also passed.
+The reviewer found only identifier substitutions in the final source token sequence, with no structural token differences.
+Prior complete reviews remain applicable. Full validation remains deferred until the final group finishes.
+Root merged the group as `f9cb086d4b7dd82b23579de7c7776100d88e9e78`.
+All wave 03 groups are now integrated.
+Main contains 216 assigned modules plus the pilot: 217 of 225, approximately 96.4%.
 
 ## Owner 14: final declaration-order correction required
 
