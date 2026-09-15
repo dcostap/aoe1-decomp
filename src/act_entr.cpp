@@ -13,9 +13,7 @@ RGE_Action_Enter::RGE_Action_Enter(int infile, RGE_Action_Object* obj_in)
     this->action_type = 3;
 }
 
-RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in,
-                                   RGE_Task* task_in,
-                                   RGE_Static_Object* target_obj_in)
+RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     XYPoint start;
     XYPoint dest;
