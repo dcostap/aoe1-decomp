@@ -7,7 +7,7 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Final source commit: `727e0dc3aafccda192d514b899a28cd6717ac082`.
 - Changed files: `src/Chat.cpp`; this report.
-- Paired header: `include/chat.h` (read only).
+- Paired header: `include/chat.h` (owner 22, read only).
 - Registry: `config/functions/src/Chat.cpp.json`.
 - Registry build profile: `gx_no_fpo`.
 
@@ -104,9 +104,9 @@ The pinned VC5 SDK header proves this value at:
 The `00423D00_AddChatMsg.txt` packet shows the original `push 400h` before
 `PostMessageA`. The replacement keeps the value and effective integer type.
 
-The custom message value `0x17D5` remains numeric. Its receive paths are
-`src/scr_mps.cpp` and `src/tribegam.cpp`. Both contain a `0x17D5` case for
-chat notification. No approved shared symbol was found. The loop bounds,
+The `wParam` chat notification payload/code `0x17D5` remains numeric. The
+dispatch cases in `src/scr_mps.cpp` and `src/tribegam.cpp` handle that payload
+on the `WM_USER` path. No approved shared symbol was found. The loop bounds,
 array indices, `MaxArraySize` return value, and all other numeric values remain
 unchanged.
 
@@ -115,8 +115,8 @@ runtime resource file was inspected. No source comment was added.
 
 ## Shared requests and unresolved questions
 
-Root owns `include/chat.h`. Please align its declaration parameter names with
-the recovered PDB names. Do not change types, order, scope, or ABI:
+Owner 22 owns `include/chat.h`. Please align its declaration parameter names
+with the recovered PDB names. Do not change types, order, scope, or ABI:
 
 ```cpp
 TChat(void* HostWndIn);
@@ -131,9 +131,10 @@ int RestartSoundSystem(TSound_Driver* driver);
 This request changes declaration names only. It does not block this source
 cleanup. The source has no unresolved PDB-backed parameter mapping.
 
-Root may also review a shared name for custom message `0x17D5`. Evidence is
-`TChat::AddChatMsg` posting the value and the chat cases in `scr_mps.cpp` and
-`tribegam.cpp`. This worker leaves the value numeric and defines no duplicate.
+Please request a shared chat notification payload/code name from root for
+`wParam` value `0x17D5`. Evidence is `TChat::AddChatMsg` posting the value and
+the dispatch cases in `src/scr_mps.cpp` and `src/tribegam.cpp`. This worker
+leaves the value numeric and defines no duplicate.
 
 ## Code-generation risks and validation limits
 
