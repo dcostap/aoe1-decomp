@@ -4,7 +4,7 @@
 
 - Module: `src/Sounddrv.cpp`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit from `git rev-parse`: `842ea65f0bc7059988f0ffef26896320c1a9433d`; the report update follows it.
+- Final source commit from `git rev-parse`: `842ea65f0863f0da9870b4e3959ea8a07028b5b6`; the report update follows it.
 - Branch: `cleanup/staging-20260915-176`
 - Changed files: `src/Sounddrv.cpp`; this report.
 - Registry: `config/functions/src/Sounddrv.cpp.json`; build flags `default`.
