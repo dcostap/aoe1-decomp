@@ -144,6 +144,61 @@ Owner 08 resumed with the same workers. No part of this group is integrated.
 
 Root read all 272 lines of the correction diff for `89e6677deb4cbe1eb59d88de3e811c2912f8be96`.
 The comment and compact signatures preserve executable expressions.
-The task signature continuation columns still need correction. Integration remains pending.
+Root initially miscounted the task signature columns and withdrew that finding after direct text inspection.
+Both continuations correctly align at zero-based columns 41 and 43. Integration remains pending.
 
 No compiler, build, matching, audit, test, or game command ran during these reviews or integrations.
+
+## Owner 04: integrated
+
+Owner 04 confirmed that the withdrawn request caused no edits or commits.
+Root merged `89e6677deb4cbe1eb59d88de3e811c2912f8be96` as `b0df1cbb4dd9997f91b90ff0a9bd685892676294`.
+Main now contains 64 assigned wave modules, plus the earlier pilot. All remain unvalidated.
+
+## Owner 12: full review complete
+
+Root read the complete 3,379-line diff, including all reports and headers.
+Root confirmed `FlushTurnRange` counter names against scoped PDB offsets and instructions `00431A8B`, `00431A8F`, and `00431B01`.
+Root found no changed executable expression, cast, type, or storage by source review.
+Owner 12 resumed for one whitespace correction: join the existing closing brace and `else` in `com_q::AllocateQueue`.
+No new scope or behavior change is authorized.
+
+## Owner 10: full review and resource decisions
+
+Root read the complete 3,651-line group diff, including all reports and headers.
+The initial source changes preserve executable expressions, casts, types, and declaration order by review.
+Some short signatures still need compact formatting. The reused-home explanations need precise instruction evidence.
+Integration remains pending.
+
+Root reviewed all 81 requested resource mappings and independently extracted both runtime DLLs.
+Artifacts: `build/source-cleanup-20260915/root-owner10-base.json` and `root-owner10-expansion.json`.
+Root also inspected each source resource use in owner 10's delivered tree at `b419f9e35a1621df0ceda896465642291c4d0cf1`.
+
+The base file SHA256 is `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+The expansion file SHA256 is `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`.
+All extracted entries use language `0x0409` and type `RT_STRING`.
+The module reports retain exact payloads, purpose, and pinned-original expansion evidence.
+
+Root added 79 proposed definitions to `include/resource_ids.h`.
+The complete path-finding range contains `Default`, `Medium`, and `High` at `0x260E` through `0x2610`.
+Only the range base needs a macro. The two unused interior-ID proposals remain undeclared.
+Workers must preserve `IDS_PATH_FINDING_OPTION_BASE + i`, not create a table or switch.
+
+Expansion text overrides the version, About warning, and neutral diplomacy help at `0x241A`, `0x241F`, and `0x7685`.
+Its other returned slots are empty; the remaining requested IDs have missing blocks.
+The unchanged game lookup uses the base fallback for both empty and missing expansion entries.
+These findings do not prove why any slot is empty.
+
+Menu confirmation IDs describe message text, not window titles. Their proposed `IDS_CONFIRM_*` names remain suitable.
+Keep the extra player-name argument in the game-speed notification, although the current text has no format placeholder.
+Keep distinct IDs for equal captions, all original casts, all buffer sizes, and all lookup calls.
+These are new cleanup names, not recovered original macros.
+
+The `IDS_HELP_WINDOW_TITLE` purpose is supported by `basegame.cpp` passing the loaded string to `FindWindowA("MS_WINHELP", str)`.
+That unassigned module remains unchanged. Defer its definition and substitution until its own cleanup.
+
+## Wave 03 delivery awaiting review
+
+Owner 18 delivered `3ba4a0385a2999f516bde496c45d3c93dae55806`.
+Root saved its complete 3,093-line diff as `build/source-cleanup-20260915/owner18-review.diff`.
+Root review remains pending. No validation ran.
