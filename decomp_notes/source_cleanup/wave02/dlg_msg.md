@@ -6,13 +6,16 @@
 - Registry: `config/functions/src/dlg_msg.cpp.json`
 - Branch: `cleanup/staging-20260915-89`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source cleanup commit from `git rev-parse`: `271528deff0e82898e192751675c56855b7a09a4`
-- The report follows the source cleanup commit.
+- Previous source cleanup commit: `271528deff0e82898e192751675c56855b7a09a4`
+- Approved resource-ID commit: `8adda677299caa9f9be07fbaa96f476c70c30e56`
+- Latest source cleanup commit from `git rev-parse`: `fa6cac77c18b489ce2d4892ce13df8858fae9b62`
+- Head before this report update from `git rev-parse`: `fa6cac77c18b489ce2d4892ce13df8858fae9b62`
+- The report follows the latest source cleanup commit.
 - Changed files: `src/dlg_msg.cpp`; this report.
 
 The registry assigns seven handwritten functions to this module. The source cleanup covers all seven. The nearby scalar deleting destructor at `0043FCB0` is compiler-generated and has no source body.
 
-The source changes recover procedure-scoped PDB names, use two existing button resource macros, and apply 1TBS function braces. They do not change control flow, calls, types, storage, declaration scope, or values.
+The source changes recover procedure-scoped PDB names, use six approved button resource macros, and apply 1TBS function braces. They do not change control flow, calls, types, storage, declaration scope, or values.
 
 ## Evidence reviewed
 
@@ -92,7 +95,14 @@ The source restores these names from the PDB:
 - `00440070`: `param_4` to `action_val2`.
 - `00440100`: unnamed parameters to `key`, `count`, `alt_key`, `ctrl_key`, and `shift_key`.
 
-The PDB lists `button_num` and `index` as `long`. The current source keeps their established `int` types. This cleanup changes names only. The PDB lists `space` and `y` as `long`, matching the source declarations.
+The PDB lists `button_num`, `index`, `y`, and `space` as `long` (`T_LONG(0012)`). The current source keeps the established `int` types for `button_num` and `index`, and `long` types for `y` and `space`. This cleanup changes names only. The packet shows 32-bit dword operations for all four values, but it does not justify changing the C++ declarations.
+
+The following instruction and use evidence proves each local mapping. Stack-home overlap is only supporting evidence.
+
+- `button_num`: The PDB record is `long` at `+0x1c`. The source declaration is `int button_num`. The original instructions write `1`, `3`, or `2` at `0043FDF7`, `0043FE01`, and `0043FE0B`. `0043FE13` reads the value for the button-width multiplication. `0043FE53` tests it before the button loop. `0043FE9D` reads it for the loop comparison at `0043FEAD`. `0043FF92` reads it for `set_tab_order`. These uses prove a button count, not only a reused stack home.
+- `index`: The PDB record is `long` at `+0xc`. The source declaration is `int index`. `0043FE4B` initializes the loop value to zero. `0043FEA8` reads it, `0043FEAC` increments it, and `0043FEAF` compares it with `button_num`. The value selects `button[index]` in the `create_button` call. These uses prove the loop index, not only a reused stack home.
+- `y`: The PDB record is `long` at `+0x18`. The source declaration is `long y`, initialized at the existing declaration point. `0043FE3B` loads the panel height, `0043FE42` subtracts the button height, and `0043FE48` subtracts `7`. `0043FE55` stores the result, and `0043FE6D` reloads it for later iterations. The value is pushed as the vertical coordinate at `0043FE7D`. These uses prove the button y-coordinate, not only a reused stack home.
+- `space`: The PDB record is `long` at `+0x10`. The source declaration is `long space`. `0043FE13` begins the remaining-width calculation. `0043FE23` subtracts the button total. `0043FE29` stores zero for the narrow case. Otherwise, `0043FE33` through `0043FE37` divide by `button_num + 1`. `0043FE44` reads the result for the initial x-coordinate at `0043FE7E`. `0043FE99` reads it again for the increment at `0043FEA1`. These uses prove the button spacing, not only a reused stack home.
 
 The first `setup` PDB records reuse stack offsets across lifetimes:
 
@@ -101,15 +111,13 @@ The first `setup` PDB records reuse stack offsets across lifetimes:
 - `y` and `dlg_type_in` both use `+0x18`.
 - `space` and `wid_in` both use `+0x10`.
 
-The packet line ranges and distinct uses support these mappings. The source keeps separate declarations, types, scopes, and initialization points. No uncertain storage mapping was forced. `button_x` has no scoped PDB name, so it remains an existing descriptive source name.
+The distinct instruction and use evidence above supports the mappings. The source keeps separate declarations, types, scopes, and initialization points. `button_x` has no scoped PDB name, so its baseline name remains unchanged. The destructor's baseline local `i` also remains unchanged because its PDB record has no local name.
 
 The destructor's `i` local has no scoped PDB record. It remains an existing descriptive source name. The scalar deleting destructor at `0043FCB0` has no PDB source or procedure record. It remains compiler-generated and unchanged.
 
 ## Constants and resource evidence
 
-`include/resource_ids.h` already defines `IDS_BUTTON_OK` as `0x0FA1` and `IDS_BUTTON_CANCEL` as `0x0FA2`. The source now uses those existing macros. The macros preserve the original literal values and types after expansion.
-
-The source keeps numeric literals for `0x0FA3`, `0x0FA4`, `0x0FA5`, and `0x0FA7` until the root owner reviews the shared definitions. No local macros were added.
+`include/resource_ids.h` defines all six button IDs used by this module. The approved definitions landed in commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. The source now uses `IDS_BUTTON_OK`, `IDS_BUTTON_CANCEL`, `IDS_BUTTON_YES`, `IDS_BUTTON_NO`, `IDS_BUTTON_RETRY`, and `IDS_BUTTON_ABORT`. Each macro preserves its original literal value and type after expansion. No local macros were added.
 
 The resource extraction outputs are under the worker build directory:
 
@@ -143,7 +151,7 @@ The pinned original expansion reference is `C:/Projects/my_decomps/aoe1_attempt3
 
 ID `0x0FA6` was inspected in the same string block. It contains `Cancel`, but this module does not use it. No name or declaration request is made for it.
 
-The proposed names are new cleanup names. No original macro name is claimed. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` names belong to the shared header and were not created by this module.
+The four names approved in commit `8adda677299caa9f9be07fbaa96f476c70c30e56` are new cleanup names. No original macro name is claimed. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` names belong to the shared header and were not created by this module.
 
 ## Comments and formatting
 
@@ -153,7 +161,7 @@ Function opening braces now use 1TBS. No statements moved. The source retains so
 
 ## Code-generation and ABI review
 
-The changes rename parameters and locals, use two existing macros that expand to the same numeric literals, add the existing resource header include, and change brace placement.
+The changes rename parameters and locals, use six reviewed macros that expand to the same numeric literals, add the existing resource header include, and change brace placement.
 
 The source preserves all function signatures, parameter types, local types, scopes, declaration points, member layouts, function boundaries, calling conventions, and direct call targets. No helper, wrapper, assembly, layout change, bug fix, or structural rewrite was added.
 
@@ -168,30 +176,15 @@ Compiler output, relocations, call targets, and line records remain unvalidated.
 The header owner may add these recovered parameter names without changing types, order, or ABI:
 
 ```cpp
-long setup(TPanel* parent_panel_in, char* info_file_in, long info_id_in,
-           long wid_in, long hgt_in, unsigned char dlg_type_in, char* text_in,
-           long btn_wid_in, long btn_hgt_in);
-long setup(TPanel* parent_panel_in, char* info_file_in, long info_id_in,
-           long wid_in, long hgt_in, unsigned char dlg_type_in, int text_id,
-           long btn_wid_in, long btn_hgt_in);
-virtual long action(TPanel* from_panel, long action_in,
-                    unsigned long action_val1, unsigned long action_val2);
-virtual long key_down_action(long key, short count, int alt_key, int ctrl_key,
-                             int shift_key);
+long setup(TPanel* parent_panel_in, char* info_file_in, long info_id_in, long wid_in, long hgt_in, unsigned char dlg_type_in, char* text_in, long btn_wid_in, long btn_hgt_in);
+long setup(TPanel* parent_panel_in, char* info_file_in, long info_id_in, long wid_in, long hgt_in, unsigned char dlg_type_in, int text_id, long btn_wid_in, long btn_hgt_in);
+virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
+virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
 ```
 
 ### Root: `include/resource_ids.h`
 
-Please review these shared cleanup definitions:
-
-```cpp
-#define IDS_BUTTON_YES   0x0FA3
-#define IDS_BUTTON_NO    0x0FA4
-#define IDS_BUTTON_RETRY 0x0FA5
-#define IDS_BUTTON_ABORT 0x0FA7
-```
-
-The source leaves these four IDs numeric until the shared owner adds reviewed definitions. No resource header was edited in this worktree.
+The resource-ID request from the previous report is complete in commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. The source uses the approved definitions. No resource header was edited in this worktree.
 
 ## Validation
 
