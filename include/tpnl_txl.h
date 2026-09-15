@@ -15,9 +15,9 @@ public:
     long id;
 
     virtual void draw();
-    void set_info(unsigned char type, char* str, long new_id);
+    void set_info(unsigned char text_type_in, char* text_in, long id_in);
 
-    TRIBE_Panel_Text_Line(TDrawArea* draw_area, TPanel* parent, void* font_arg);
+    TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in);
 };
 
 typedef char tpnl_txl_line_size_check[

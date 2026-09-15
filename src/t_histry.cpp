@@ -8,14 +8,14 @@
 
 #pragma intrinsic(memcpy)
 
-TRIBE_History_Info::TRIBE_History_Info(int index) {
+TRIBE_History_Info::TRIBE_History_Info(int infile) {
     this->history = 0;
     this->events = 0;
     this->number_of_entries = 0;
     this->number_of_events = 0;
     this->max_number_of_entries = 0;
-    if (index >= 0) {
-        load(index);
+    if (infile >= 0) {
+        load(infile);
     }
 }
 
@@ -31,55 +31,54 @@ TRIBE_History_Info::~TRIBE_History_Info() {
     }
 }
 
-void TRIBE_History_Info::save(int file) {
+void TRIBE_History_Info::save(int outfile) {
     TRIBE_History_Events* step;
 
-    rge_write(file, &this->number_of_entries, 4);
-    rge_write(file, &this->number_of_events, 4);
-    rge_write(file, &this->max_number_of_entries, 4);
-    rge_write(file, this->history, this->max_number_of_entries);
+    rge_write(outfile, &this->number_of_entries, 4);
+    rge_write(outfile, &this->number_of_events, 4);
+    rge_write(outfile, &this->max_number_of_entries, 4);
+    rge_write(outfile, this->history, this->max_number_of_entries);
 
-    int step_count = 0;
+    int count = 0;
     step = this->events;
     while (step) {
-        step_count++;
+        count++;
         step = step->next;
     }
 
-    rge_write(file, &step_count, 4);
+    rge_write(outfile, &count, 4);
 
     step = this->events;
     while (step) {
-        rge_write(file, step, 0x10);
+        rge_write(outfile, step, 0x10);
         step = step->next;
     }
 }
 
-void TRIBE_History_Info::load(int file) {
-    rge_read(file, &this->number_of_entries, 4);
-    rge_read(file, &this->number_of_events, 4);
-    rge_read(file, &this->max_number_of_entries, 4);
+void TRIBE_History_Info::load(int infile) {
+    rge_read(infile, &this->number_of_entries, 4);
+    rge_read(infile, &this->number_of_events, 4);
+    rge_read(infile, &this->max_number_of_entries, 4);
 
     this->history = (TRIBE_History_Entry*)calloc(
         this->max_number_of_entries, 1);
-    rge_read(file, this->history, this->max_number_of_entries);
+    rge_read(infile, this->history, this->max_number_of_entries);
 
-    int step_count;
+    int count;
     TRIBE_History_Events** prev_ptr = &this->events;
-    rge_read(file, &step_count, 4);
+    rge_read(infile, &count, 4);
 
-    while (step_count > 0) {
+    while (count > 0) {
         TRIBE_History_Events* step =
             (TRIBE_History_Events*)calloc(1, 0x10);
-        rge_read(file, step, 0x10);
+        rge_read(infile, step, 0x10);
         *prev_ptr = step;
         prev_ptr = &step->next;
-        step_count--;
+        count--;
     }
 }
 
-void TRIBE_History_Info::add_history_entry(unsigned char flag,
-                                           unsigned char value) {
+void TRIBE_History_Info::add_history_entry(unsigned char history_type, unsigned char entry) {
     if (this->number_of_entries >= this->max_number_of_entries) {
         int old_capacity = this->max_number_of_entries;
         this->max_number_of_entries += 0x3C;
@@ -92,8 +91,8 @@ void TRIBE_History_Info::add_history_entry(unsigned char flag,
         this->history = new_entries;
     }
 
-    if (flag == 0) {
-        this->history[this->number_of_entries].population = value;
+    if (history_type == 0) {
+        this->history[this->number_of_entries].population = entry;
     }
 
     this->number_of_entries++;
@@ -103,23 +102,23 @@ long TRIBE_History_Info::get_history_entry_num() {
     return this->number_of_entries;
 }
 
-unsigned char TRIBE_History_Info::get_history_entry(unsigned char mode,
-                                                     long index) {
-    if ((index < this->number_of_entries) && (index >= 0) && (mode == 0)) {
-        return this->history[index].population;
+unsigned char TRIBE_History_Info::get_history_entry(unsigned char history_type, long time) {
+    if ((time < this->number_of_entries) && (time >= 0) &&
+        (history_type == 0)) {
+        return this->history[time].population;
     }
     return 0;
 }
 
-void TRIBE_History_Info::add_history_event(unsigned char event) {
+void TRIBE_History_Info::add_history_event(unsigned char history_event) {
     if (this->number_of_entries > 0) {
-        TRIBE_History_Events* history_event =
+        TRIBE_History_Events* event_node =
             (TRIBE_History_Events*)calloc(1, 0x10);
-        history_event->next = this->events;
-        history_event->time = this->number_of_entries;
-        history_event->world_time = rge_base_game->world->world_time;
-        history_event->event = event;
-        this->events = history_event;
+        event_node->next = this->events;
+        event_node->time = this->number_of_entries;
+        event_node->world_time = rge_base_game->world->world_time;
+        event_node->event = history_event;
+        this->events = event_node;
     }
 }
 
@@ -127,9 +126,7 @@ long TRIBE_History_Info::get_history_event_num() {
     return this->number_of_events;
 }
 
-unsigned char TRIBE_History_Info::get_history_event(long index,
-                                                     unsigned char& event,
-                                                     long& time) {
+unsigned char TRIBE_History_Info::get_history_event(long number, unsigned char& event, long& time) {
     TRIBE_History_Events* node = this->events;
 
     if (node == 0) {
@@ -137,7 +134,7 @@ unsigned char TRIBE_History_Info::get_history_event(long index,
     }
 
     while (node != 0) {
-        if (index == 0) {
+        if (number == 0) {
             event = node->event;
             time = node->time;
             return 1;
@@ -148,12 +145,11 @@ unsigned char TRIBE_History_Info::get_history_event(long index,
     return 0;
 }
 
-unsigned char TRIBE_History_Info::get_history_event(long time,
-                                                     unsigned char& event) {
+unsigned char TRIBE_History_Info::get_history_event(long time_slice, unsigned char& event) {
     TRIBE_History_Events* node = this->events;
 
     while (node != 0) {
-        if (node->time == time) {
+        if (node->time == time_slice) {
             event = node->event;
             return 1;
         }

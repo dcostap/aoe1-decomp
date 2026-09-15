@@ -3,8 +3,8 @@
 
 class TRIGONOMETRY {
 private:
-    int RestrictAngle(int param_1);
-    int RestrictAngle360(int param_1);
+    int RestrictAngle(int angle);
+    int RestrictAngle360(int angle);
 
 public:
     float sines[4096];
@@ -18,14 +18,14 @@ public:
     float atane360[360];
 
     TRIGONOMETRY();
-    float sine(int param_1);
-    float cosine(int param_1);
-    float tangent(int param_1);
-    float atangent(int param_1);
-    float sin360(int param_1);
-    float cos360(int param_1);
-    float tan360(int param_1);
-    float atan360(int param_1);
+    float sine(int angle);
+    float cosine(int angle);
+    float tangent(int angle);
+    float atangent(int angle);
+    float sin360(int angle);
+    float cos360(int angle);
+    float tan360(int angle);
+    float atan360(int angle);
 };
 
 #endif  // AOE1_TRIG_H

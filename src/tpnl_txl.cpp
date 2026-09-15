@@ -2,34 +2,27 @@
 #include "../include/tpnl_txl.h"
 #include <string.h>
 
-//
-
-TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* draw_area, TPanel* parent, void* font_arg) : TPanel() {
-    this->font = font_arg;
+TRIBE_Panel_Text_Line::TRIBE_Panel_Text_Line(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in) : TPanel() {
+    this->font = font_in;
     this->text_type = 0;
     this->text[0] = 0;
     this->id = 0;
-    if (!this->setup(draw_area, parent, 0, 0, 0, 0, 0)) {
+    if (!this->setup(render_area_in, parent_panel_in, 0, 0, 0, 0, 0)) {
         this->error_code = 1;
     }
 }
 
-//
-//   Remaining: vtable load timing and no ecx=this in set_redraw call
-
-void TRIBE_Panel_Text_Line::set_info(unsigned char type, char* str, long new_id)
-{
-    if (type == this->text_type && strcmp(str, this->text) == 0 && new_id == this->id)
+void TRIBE_Panel_Text_Line::set_info(unsigned char text_type_in, char* text_in, long id_in) {
+    if (text_type_in == this->text_type && strcmp(text_in, this->text) == 0 && id_in == this->id)
         return;
 
-    this->text_type = type;
-    strcpy(this->text, str);
-    this->id = new_id;
+    this->text_type = text_type_in;
+    strcpy(this->text, text_in);
+    this->id = id_in;
 
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// The original module declares these imported APIs before draw.
 extern "C" {
 __declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
 __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
@@ -39,11 +32,7 @@ __declspec(dllimport) BOOL __stdcall TextOutA(HDC, int, int, LPCSTR, int);
 
 extern char s_tpnl_txl_draw[];
 
-//
-//   original uses `push ecx`+`push esi` and saves edi/ebp/ebx later in draw path
-
-void TRIBE_Panel_Text_Line::draw()
-{
+void TRIBE_Panel_Text_Line::draw() {
     if (this->render_area == 0 || this->visible == 0 || this->active == 0)
         return;
 
@@ -58,8 +47,7 @@ void TRIBE_Panel_Text_Line::draw()
         SetTextColor(this->render_area->DrawDc, 0);
 
         if (this->text[0] != 0) {
-            TextOutA(this->render_area->DrawDc, this->pnl_x, this->pnl_y,
-                     this->text, strlen(this->text));
+            TextOutA(this->render_area->DrawDc, this->pnl_x, this->pnl_y, this->text, strlen(this->text));
         }
 
         SelectObject(this->render_area->DrawDc, old_font);

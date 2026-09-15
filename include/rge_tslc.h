@@ -16,13 +16,13 @@ public:
 
     RGE_TimeSinceLastCall();
     ~RGE_TimeSinceLastCall();
-    unsigned long GetAvg(int count);
+    unsigned long GetAvg(int duration);
     unsigned long Get();
     unsigned long Set();
     void Skip();
-    char* GetAvgInfo(int count);
-    char* GetHiLoMaxInfo(int count);
-    char* GetHiLoInfo(int count);
+    char* GetAvgInfo(int duration);
+    char* GetHiLoMaxInfo(int duration);
+    char* GetHiLoInfo(int duration);
     unsigned long CPS();
     unsigned long GetFirstCall();
     char* GetElapsedFirstCall();

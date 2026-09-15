@@ -38,24 +38,22 @@ static int file_size;
 static unsigned char* file_buffers;
 extern int ENABLE_COMPRESSION;
 
-int __cdecl rge_fake_open(int param_1, int param_2)
-{
-    if (param_1 >= 0) {
+int __cdecl rge_fake_open(int file_handle, int fake_size) {
+    if (file_handle >= 0) {
         flags = 2;
         point = 0;
         buffers = (unsigned char*)calloc(0x10000, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
-        current_handle = param_1;
-        file_size = param_2;
+        current_handle = file_handle;
+        file_size = fake_size;
     }
-    return param_1;
+    return file_handle;
 }
 
-int __cdecl rge_open(char* param_1, int param_2)
-{
-    int iVar1 = open(param_1, param_2);
+int __cdecl rge_open(char* filename, int flag) {
+    int iVar1 = open(filename, flag);
     if (iVar1 >= 0) {
         flags = 2;
         point = 0;
@@ -72,9 +70,8 @@ int __cdecl rge_open(char* param_1, int param_2)
     return iVar1;
 }
 
-int __cdecl rge_open(char* param_1, int param_2, int param_3)
-{
-    int iVar1 = open(param_1, param_2, param_3);
+int __cdecl rge_open(char* filename, int flag, int pmode) {
+    int iVar1 = open(filename, flag, pmode);
     if (iVar1 >= 0) {
         flags = 2;
         point = 0;
@@ -91,9 +88,8 @@ int __cdecl rge_open(char* param_1, int param_2, int param_3)
     return iVar1;
 }
 
-int __cdecl rge_fake_close(int file)
-{
-    if (file >= 0 && file == current_handle) {
+int __cdecl rge_fake_close(int handle) {
+    if (handle >= 0 && handle == current_handle) {
         if (buffers != 0) {
             free(buffers);
             buffers = 0;
@@ -108,12 +104,11 @@ int __cdecl rge_fake_close(int file)
         }
         current_handle = -1;
     }
-    return file;
+    return handle;
 }
 
-int __cdecl rge_close(int file)
-{
-    if (file >= 0 && file == current_handle) {
+int __cdecl rge_close(int handle) {
+    if (handle >= 0 && handle == current_handle) {
         if (flags == 1 && compression_buffers != 0) {
             int result = deflate_data(compression_buffers, 0, 0, 1);
             if (result == 2) {
@@ -134,54 +129,51 @@ int __cdecl rge_close(int file)
             free(file_buffers);
             file_buffers = 0;
         }
-        file = close(file);
+        handle = close(handle);
     }
-    return file;
+    return handle;
 }
 
-void __cdecl rge_read_uncompressed(int file, void* buffer, int size)
-{
-    if (file >= 0 && file == current_handle) {
-        read(file, buffer, size);
+void __cdecl rge_read_uncompressed(int handle, void* data, int size) {
+    if (handle >= 0 && handle == current_handle) {
+        read(handle, data, size);
         file_size = file_size - size;
     }
 }
 
-void __cdecl rge_write_uncompressed(int file, void* buffer, int size)
-{
-    if ((file >= 0) && (file == current_handle)) {
-        if (write(file, buffer, size) > 0) {
+void __cdecl rge_write_uncompressed(int handle, void* data, int size) {
+    if ((handle >= 0) && (handle == current_handle)) {
+        if (write(handle, data, size) > 0) {
             return;
         }
         rge_write_error = 1;
     }
 }
 
-void __cdecl rge_read(int file, void* buffer, int size)
-{
-    int fsize;
-    int loc;
-    void* rbuf = buffer;
+void __cdecl rge_read(int handle, void* data, int size) {
+    int temp_size;
+    int temp_max;
+    void* temp = data;
 
     if (ENABLE_COMPRESSION == 0) {
-        if (file >= 0 && file == current_handle) {
-            read(file, rbuf, size);
+        if (handle >= 0 && handle == current_handle) {
+            read(handle, temp, size);
             file_size -= size;
             bl += size;
         }
-    } else if (file >= 0 && file == current_handle) {
+    } else if (handle >= 0 && handle == current_handle) {
         if (flags != 0) {
             int state_size = Inf32BufSize();
             compression_buffers = (unsigned char*)calloc(state_size, 1);
             file_buffers = (unsigned char*)calloc(file_size, 1);
-            read(file, file_buffers, file_size);
-            fsize = file_size;
+            read(handle, file_buffers, file_size);
+            temp_size = file_size;
             compression_point = 0;
-            loc = 0x10000;
-            Inf32Decode(file_buffers, 0, &fsize,
-                         buffers, 0, &loc, compression_buffers,
+            temp_max = 0x10000;
+            Inf32Decode(file_buffers, 0, &temp_size,
+                         buffers, 0, &temp_max, compression_buffers,
                          1);
-            compression_point += fsize;
+            compression_point += temp_size;
             flags = 0;
         }
 
@@ -192,25 +184,25 @@ void __cdecl rge_read(int file, void* buffer, int size)
 
             while (total >= 0x10000) {
                 int copy = 0x10000 - point;
-                memcpy(rbuf, ptr, copy);
+                memcpy(temp, ptr, copy);
 
-                fsize = file_size;
-                loc = 0x10000;
-                Inf32Decode(file_buffers, compression_point, &fsize,
-                             buffers, 0, &loc,
+                temp_size = file_size;
+                temp_max = 0x10000;
+                Inf32Decode(file_buffers, compression_point, &temp_size,
+                             buffers, 0, &temp_max,
                              compression_buffers, 1);
-                compression_point += fsize;
+                compression_point += temp_size;
 
                 remaining -= copy;
                 point = 0;
-                rbuf = (char*)rbuf + copy;
+                temp = (char*)temp + copy;
                 current = buffers;
                 ptr = buffers;
                 total = remaining;
             }
 
             if (remaining > 0) {
-                memcpy(rbuf, ptr, remaining);
+                memcpy(temp, ptr, remaining);
                 point += remaining;
                 current += remaining;
             }
@@ -218,26 +210,24 @@ void __cdecl rge_read(int file, void* buffer, int size)
     }
 }
 
-int __cdecl rge_buffer_full(unsigned char* buffer, int size)
-{
-    if (write(current_handle, buffer, size) > 0) {
+int __cdecl rge_buffer_full(unsigned char* out_buf_ofs, int out_buf_size) {
+    if (write(current_handle, out_buf_ofs, out_buf_size) > 0) {
         return 0;
     }
     rge_write_error = 1;
     return 0;
 }
 
-void __cdecl rge_write(int file, void* buffer, int size)
-{
+void __cdecl rge_write(int handle, void* data, int size) {
     if (ENABLE_COMPRESSION == 0) {
-        if (file >= 0 && file == current_handle) {
-            int result = write(file, buffer, size);
+        if (handle >= 0 && handle == current_handle) {
+            int result = write(handle, data, size);
             if (result <= 0) {
                 rge_write_error = 1;
             }
         }
     } else {
-        if (file >= 0 && file == current_handle) {
+        if (handle >= 0 && handle == current_handle) {
             if (flags != 1) {
                 flags = 1;
                 int state_size = deflate_buf_size();
@@ -245,7 +235,7 @@ void __cdecl rge_write(int file, void* buffer, int size)
                 deflate_init(compression_buffers, 0x4B, 2, 1,
                              buffers, 0x10000, rge_buffer_full);
             }
-            int result = deflate_data(compression_buffers, buffer, size, 0);
+            int result = deflate_data(compression_buffers, data, size, 0);
             if (result == 2) {
                 rge_write_error = 1;
             }

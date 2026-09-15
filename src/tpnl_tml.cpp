@@ -8,6 +8,7 @@
 #include "../include/tplayer.h"
 #include "../include/t_histry.h"
 #include "../include/color.h"
+#include "../include/resource_ids.h"
 #include <new.h>
 #include <stdio.h>
 #include <string.h>
@@ -46,8 +47,7 @@ Time_Line_Panel::Time_Line_Panel()
       special_events_pic_wid(0),
       special_events_pic_hgt(0),
       total_slices_to_drop(0),
-      time_slice_events(0)
-{
+      time_slice_events(0) {
     this->handle_mouse_input = 0;
     this->timeline_flag = 1;
     this->drop_flag = 0;
@@ -83,35 +83,34 @@ Time_Line_Panel::~Time_Line_Panel() {
 
 }
 
-long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, long x1, long y1, long x2, long y2, long axis_font_id, long body_font_id, long xden, long yden)
-{
-    long left = parent->width() * x1 / xden;
-    long top = parent->height() * y1 / yden;
-    long right = parent->width() * x2 / xden;
-    long bottom = parent->height() * y2 / yden;
+long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** time_line, long x, long y, long width, long height, long axis_font_num, long body_font_num, long ideal_width, long ideal_height) {
+    long left = parent->width() * x / ideal_width;
+    long top = parent->height() * y / ideal_height;
+    long right = parent->width() * width / ideal_width;
+    long bottom = parent->height() * height / ideal_height;
 
     Time_Line_Panel* panel = new Time_Line_Panel();
-    *out = panel;
+    *time_line = panel;
     if (panel == 0 || panel->error_code != 0) {
         this->error_code = 1;
         return 0;
     }
 
     RGE_Font* axis_font;
-    if (axis_font_id >= 0) {
-        axis_font = rge_base_game->get_font(axis_font_id);
+    if (axis_font_num >= 0) {
+        axis_font = rge_base_game->get_font(axis_font_num);
     } else {
         axis_font = rge_base_game->get_font(0x0B);
     }
 
     RGE_Font* body_font;
-    if (body_font_id >= 0) {
-        body_font = rge_base_game->get_font(body_font_id);
+    if (body_font_num >= 0) {
+        body_font = rge_base_game->get_font(body_font_num);
     } else {
         body_font = rge_base_game->get_font(0x0B);
     }
 
-    if ((*out)->setup(parent->renderArea(), parent, left, top, right, bottom,
+    if ((*time_line)->setup(parent->renderArea(), parent, left, top, right, bottom,
                       axis_font->font, axis_font->font_wid, axis_font->font_hgt,
                       body_font->font, body_font->font_wid, body_font->font_hgt,
                       0, 0, 0, 0, 0, 0) == 0) {
@@ -119,46 +118,45 @@ long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, lon
         return 0;
     }
 
-    (*out)->init_timeline();
+    (*time_line)->init_timeline();
     return 1;
 }
 
 long Time_Line_Panel::setup(
-    TDrawArea* param_1,
-    TPanel* param_2,
-    long param_3,
-    long param_4,
-    long param_5,
-    long param_6,
-    void* param_7,
-    long param_8,
-    long param_9,
-    void* param_10,
-    long param_11,
-    long param_12,
-    char* param_13,
-    char* param_14,
-    int param_15,
-    unsigned char param_16,
-    int param_17,
-    unsigned char param_18
-)
-{
-    this->TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, 0);
+    TDrawArea* render_area_in,
+    TPanel* parent_panel_in,
+    long x_in,
+    long y_in,
+    long wid_in,
+    long hgt_in,
+    void* axis_font_in,
+    long axis_font_wid_in,
+    long axis_font_hgt_in,
+    void* body_font_in,
+    long body_font_wid_in,
+    long body_font_hgt_in,
+    char* back_pic_in,
+    char* special_event_pic_in,
+    int fill_back_in,
+    unsigned char back_color_in,
+    int outline_in,
+    unsigned char outline_color_in
+) {
+    this->TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
 
-    this->fill_back = param_15;
-    this->back_color = param_16;
-    this->outline = param_17;
-    this->outline_color = param_18;
+    this->fill_back = fill_back_in;
+    this->back_color = back_color_in;
+    this->outline = outline_in;
+    this->outline_color = outline_color_in;
 
-    if (param_17) {
+    if (outline_in) {
         this->bevel_type = 1;
     }
 
-    this->set_axis_font(param_7, param_8, param_9);
-    this->set_body_font(param_10, param_11, param_12);
-    this->set_background(param_13);
-    this->set_special_events(param_14);
+    this->set_axis_font(axis_font_in, axis_font_wid_in, axis_font_hgt_in);
+    this->set_body_font(body_font_in, body_font_wid_in, body_font_hgt_in);
+    this->set_background(back_pic_in);
+    this->set_special_events(special_event_pic_in);
 
     unsigned char pal_idx = static_cast<unsigned char>(GetNearestPaletteIndex(
         this->render_area->DrawSystem->Pal, 0));
@@ -167,17 +165,17 @@ long Time_Line_Panel::setup(
     return 1;
 }
 
-void Time_Line_Panel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
-    bevel_type = param_1;
-    bevel_color1 = param_2;
-    bevel_color2 = param_3;
-    bevel_color3 = param_4;
-    bevel_color4 = param_5;
-    bevel_color5 = param_6;
-    bevel_color6 = param_7;
+void Time_Line_Panel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
+    bevel_type = bevel_type_in;
+    bevel_color1 = c1;
+    bevel_color2 = c2;
+    bevel_color3 = c3;
+    bevel_color4 = c4;
+    bevel_color5 = c5;
+    bevel_color6 = c6;
 }
 
-int Time_Line_Panel::set_background(char* name) {
+int Time_Line_Panel::set_background(char* file_name) {
     long x_max;
     long x_min;
     long y_max;
@@ -190,11 +188,11 @@ int Time_Line_Panel::set_background(char* name) {
         this->background_pic_hgt = 0;
     }
 
-    if (name == 0 || *name == '\0') {
+    if (file_name == 0 || *file_name == '\0') {
         return 0;
     }
 
-    this->background_pic = new TShape(name, -1);
+    this->background_pic = new TShape(file_name, -1);
     this->background_pic->shape_minmax(x_max, x_min, y_max, y_min,
                                        static_cast<long>(0));
     this->background_pic_wid = static_cast<short>(y_max - x_max + 1);
@@ -202,8 +200,7 @@ int Time_Line_Panel::set_background(char* name) {
     return 1;
 }
 
-int Time_Line_Panel::set_background(char* name, long id)
-{
+int Time_Line_Panel::set_background(char* file_name, long resource_id) {
     long y_max;
     long y_min;
     long x_min;
@@ -217,15 +214,15 @@ int Time_Line_Panel::set_background(char* name, long id)
         this->background_pic_hgt = 0;
     }
 
-    if (name != 0 && *name != 0 && stricmp(name, "none") != 0) {
-        if (strchr(name, '.') == 0) {
-            sprintf(file_name2, "%s.shp", name);
+    if (file_name != 0 && *file_name != 0 && stricmp(file_name, "none") != 0) {
+        if (strchr(file_name, '.') == 0) {
+            sprintf(file_name2, "%s.shp", file_name);
         } else {
-            sprintf(file_name2, "%s", name);
+            sprintf(file_name2, "%s", file_name);
         }
-        this->background_pic = new TShape(file_name2, id);
-    } else if (id != -1) {
-        this->background_pic = new TShape("", id);
+        this->background_pic = new TShape(file_name2, resource_id);
+    } else if (resource_id != -1) {
+        this->background_pic = new TShape("", resource_id);
     }
 
     if (this->background_pic != 0 && this->background_pic->is_loaded() == 0) {
@@ -243,7 +240,7 @@ int Time_Line_Panel::set_background(char* name, long id)
     return 0;
 }
 
-int Time_Line_Panel::set_special_events(char* param_1) {
+int Time_Line_Panel::set_special_events(char* file_name) {
     long x_min;
     long y_max;
     long y_min;
@@ -254,8 +251,8 @@ int Time_Line_Panel::set_special_events(char* param_1) {
         this->special_events_pic_wid = 0;
         this->special_events_pic_hgt = 0;
     }
-    if (param_1 && *param_1) {
-        this->special_events_pic = new TShape(param_1, -1);
+    if (file_name && *file_name) {
+        this->special_events_pic = new TShape(file_name, -1);
         this->special_events_pic->shape_minmax(y_max, loc, x_min, y_min, 0);
         this->special_events_pic_wid = static_cast<short>(x_min - y_max + 1);
         this->special_events_pic_hgt = static_cast<short>(y_min - loc + 1);
@@ -264,8 +261,7 @@ int Time_Line_Panel::set_special_events(char* param_1) {
     return 0;
 }
 
-int Time_Line_Panel::set_special_events(char* name, long id)
-{
+int Time_Line_Panel::set_special_events(char* file_name, long resource_id) {
     long y_max;
     long y_min;
     long x_min;
@@ -279,15 +275,15 @@ int Time_Line_Panel::set_special_events(char* name, long id)
         this->special_events_pic_hgt = 0;
     }
 
-    if (name != 0 && *name != 0 && stricmp(name, "none") != 0) {
-        if (strchr(name, '.') == 0) {
-            sprintf(file_name2, "%s.shp", name);
+    if (file_name != 0 && *file_name != 0 && stricmp(file_name, "none") != 0) {
+        if (strchr(file_name, '.') == 0) {
+            sprintf(file_name2, "%s.shp", file_name);
         } else {
-            sprintf(file_name2, "%s", name);
+            sprintf(file_name2, "%s", file_name);
         }
-        this->special_events_pic = new TShape(file_name2, id);
-    } else if (id != -1) {
-        this->special_events_pic = new TShape("", id);
+        this->special_events_pic = new TShape(file_name2, resource_id);
+    } else if (resource_id != -1) {
+        this->special_events_pic = new TShape("", resource_id);
     }
 
     if (this->special_events_pic != 0 && this->special_events_pic->is_loaded() == 0) {
@@ -305,27 +301,26 @@ int Time_Line_Panel::set_special_events(char* name, long id)
     return 0;
 }
 
-void Time_Line_Panel::set_axis_font(void* font, long width, long height) {
-    this->axis_font = font;
-    this->axis_font_wid = width;
-    this->axis_font_hgt = height;
+void Time_Line_Panel::set_axis_font(void* font_in, long font_wid_in, long font_hgt_in) {
+    this->axis_font = font_in;
+    this->axis_font_wid = font_wid_in;
+    this->axis_font_hgt = font_hgt_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void Time_Line_Panel::set_body_font(void* font, long width, long height) {
-    this->body_font = font;
-    this->body_font_wid = width;
-    this->body_font_hgt = height;
+void Time_Line_Panel::set_body_font(void* font_in, long font_wid_in, long font_hgt_in) {
+    this->body_font = font_in;
+    this->body_font_wid = font_wid_in;
+    this->body_font_hgt = font_hgt_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void Time_Line_Panel::set_back_color(int a, unsigned char b) {
-    this->fill_back = a;
-    this->back_color = b;
+void Time_Line_Panel::set_back_color(int use_back_color_flag_in, unsigned char back_color_in) {
+    this->fill_back = use_back_color_flag_in;
+    this->back_color = back_color_in;
 }
 
-void Time_Line_Panel::draw_border()
-{
+void Time_Line_Panel::draw_border() {
     if (this->bevel_type != 0) {
         if (this->render_area->Lock("tpnl_tml::draw_border", 1) != 0) {
             switch (this->bevel_type) {
@@ -358,8 +353,7 @@ void Time_Line_Panel::draw_border()
 
 extern RGE_Base_Game* rge_base_game;
 
-void Time_Line_Panel::init_timeline()
-{
+void Time_Line_Panel::init_timeline() {
     int i = 0;
     this->num_history_entries = 0;
     RGE_Game_World* world = rge_base_game->world;
@@ -418,17 +412,17 @@ void Time_Line_Panel::init_timeline()
     }
 }
 
-void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_total, long X_line_pos, int icon_flag) {
+void Time_Line_Panel::add_pop_total_special_event(long sample_time_slice, long sample_pop_total, long sample_x_line_pos, int time_flag) {
     Special_Events* se = static_cast<Special_Events*>(calloc(1, 0xB0));
 
-    se->time_slice = time_slice;
-    se->X_line_pos = X_line_pos;
+    se->time_slice = sample_time_slice;
+    se->X_line_pos = sample_x_line_pos;
     se->Y_line_pos = 0;
     se->intermediate_y_line_segment = 0;
     se->player_id = 0;
     se->player_color = 0;
     se->event = 3;
-    se->pop_total = pop_total;
+    se->pop_total = sample_pop_total;
     se->integer_value_1 = 0;
     se->integer_value_2 = 0;
     se->start_x = 0;
@@ -441,7 +435,7 @@ void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_tota
     se->text1[0] = 0;
     se->text_length2 = 0;
     se->text2[0] = 0;
-    se->icon_flag = icon_flag;
+    se->icon_flag = time_flag;
     se->next = this->time_slice_events;
     this->time_slice_events = se;
 }
@@ -449,8 +443,7 @@ void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_tota
 void Time_Line_Panel::record_special_event(
     unsigned char player_id, TRIBE_History_Info* history,
     unsigned char player_color, long time_slice, long x_line_pos,
-    long y_line_pos, long segment)
-{
+    long y_line_pos, long intermediate_y_line_segment) {
     unsigned char event;
     if (!history->get_history_event(time_slice, event)) {
         return;
@@ -459,7 +452,7 @@ void Time_Line_Panel::record_special_event(
     Special_Events* special_event = static_cast<Special_Events*>(calloc(1, 0xB0));
     special_event->X_line_pos = x_line_pos;
     special_event->Y_line_pos = y_line_pos;
-    special_event->intermediate_y_line_segment = segment;
+    special_event->intermediate_y_line_segment = intermediate_y_line_segment;
     special_event->time_slice = time_slice;
     special_event->player_id = player_id;
     special_event->player_color = player_color;
@@ -483,15 +476,14 @@ void Time_Line_Panel::record_special_event(
 }
 
 int Time_Line_Panel::calculate_icon_location(
-    Special_Events* event, short icon, unsigned char)
-{
+    Special_Events* event_ptr, short icon_number, unsigned char history_type) {
     int result = 1;
     long start_x = 0;
     long start_y = 0;
     long start_text_x = 0;
     long start_text_y = 0;
 
-    event->icon_flag = 0;
+    event_ptr->icon_flag = 0;
 
     if (this->special_events_pic == 0) {
         result = 0;
@@ -499,14 +491,14 @@ int Time_Line_Panel::calculate_icon_location(
     if (this->special_events_pic->shape_count() == 0) {
         result = 0;
     }
-    if (this->special_events_pic->shape_count() < icon) {
+    if (this->special_events_pic->shape_count() < icon_number) {
         result = 0;
     }
 
     if (result != 0) {
         short width;
         short height;
-        this->special_events_pic->shape_bounds(icon, width, height);
+        this->special_events_pic->shape_bounds(icon_number, width, height);
         if (width > 0) {
             this->special_events_pic_wid = width;
         }
@@ -517,41 +509,41 @@ int Time_Line_Panel::calculate_icon_location(
 
     if (result != 0) {
         if (this->special_events_pic_hgt >
-            event->intermediate_y_line_segment) {
+            event_ptr->intermediate_y_line_segment) {
             result = 0;
         }
         long half_width = this->special_events_pic_wid / 2;
-        if (event->X_line_pos + half_width >
+        if (event_ptr->X_line_pos + half_width >
             this->X_start_line_pos + this->X_line_max_width) {
             result = 0;
         }
-        long icon_start_x = event->X_line_pos - half_width;
+        long icon_start_x = event_ptr->X_line_pos - half_width;
         if (icon_start_x < this->X_start_line_pos) {
             result = 0;
         }
 
         if (result != 0) {
             start_x = icon_start_x;
-            start_y = event->Y_line_pos * 2
-                + event->intermediate_y_line_segment / 2
+            start_y = event_ptr->Y_line_pos * 2
+                + event_ptr->intermediate_y_line_segment / 2
                 - this->special_events_pic_hgt / 2;
         }
     }
 
-    switch (event->event) {
+    switch (event_ptr->event) {
     case 0: {
-        event->text_length1 = strlen(event->text1);
-        long text_width = this->body_font_wid * event->text_length1;
-        if (event->X_line_pos + text_width + 2 <
+        event_ptr->text_length1 = strlen(event_ptr->text1);
+        long text_width = this->body_font_wid * event_ptr->text_length1;
+        if (event_ptr->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            start_text_x = event->X_line_pos + 2;
+            start_text_x = event_ptr->X_line_pos + 2;
         } else {
             start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 3;
         }
 
-        start_text_y = event->Y_line_pos
-            + event->intermediate_y_line_segment
+        start_text_y = event_ptr->Y_line_pos
+            + event_ptr->intermediate_y_line_segment
             - this->body_font_hgt - 2;
         if (start_text_y <= this->Y_start_line_pos) {
             start_text_y = this->Y_start_line_pos + 2;
@@ -564,17 +556,17 @@ int Time_Line_Panel::calculate_icon_location(
     }
 
     case 1: {
-        event->text_length1 = strlen(event->text1);
-        long text_width = this->body_font_wid * event->text_length1;
-        if (event->X_line_pos + text_width + 2 <
+        event_ptr->text_length1 = strlen(event_ptr->text1);
+        long text_width = this->body_font_wid * event_ptr->text_length1;
+        if (event_ptr->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            start_text_x = event->X_line_pos + 2;
+            start_text_x = event_ptr->X_line_pos + 2;
         } else {
             start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 8;
         }
 
-        if (event->Y_line_pos + this->body_font_hgt + 2 <
+        if (event_ptr->Y_line_pos + this->body_font_hgt + 2 <
             this->Y_start_line_pos + this->Y_line_max_length) {
             start_text_y = this->Y_start_line_pos + 2;
         } else {
@@ -585,18 +577,18 @@ int Time_Line_Panel::calculate_icon_location(
     }
 
     case 2: {
-        event->text_length1 = strlen(event->text1);
-        long text_width = this->body_font_wid * event->text_length1;
-        if (event->X_line_pos + text_width + 2 <
+        event_ptr->text_length1 = strlen(event_ptr->text1);
+        long text_width = this->body_font_wid * event_ptr->text_length1;
+        if (event_ptr->X_line_pos + text_width + 2 <
             this->X_start_line_pos + this->X_line_max_width) {
-            start_text_x = event->X_line_pos + 2;
+            start_text_x = event_ptr->X_line_pos + 2;
         } else {
             start_text_x = this->X_start_line_pos
                 + this->X_line_max_width - text_width - 3;
         }
 
-        start_text_y = event->Y_line_pos
-            + event->intermediate_y_line_segment
+        start_text_y = event_ptr->Y_line_pos
+            + event_ptr->intermediate_y_line_segment
             - this->body_font_hgt - 2;
         if (start_text_y <= this->Y_start_line_pos) {
             start_text_y = this->Y_start_line_pos + 2;
@@ -610,15 +602,15 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 6: {
         long right = this->X_start_line_pos + this->X_line_max_width;
-        long text_length = static_cast<long>(strlen(event->text1));
-        if (event->X_line_pos + text_length * this->body_font_wid > right) {
-            event->text_length1 =
-                (right - event->X_line_pos) / this->body_font_wid;
+        long text_length = static_cast<long>(strlen(event_ptr->text1));
+        if (event_ptr->X_line_pos + text_length * this->body_font_wid > right) {
+            event_ptr->text_length1 =
+                (right - event_ptr->X_line_pos) / this->body_font_wid;
         } else {
-            event->text_length1 = strlen(event->text1);
+            event_ptr->text_length1 = strlen(event_ptr->text1);
         }
-        if (event->text_length1 > 2) {
-            event->text_length1 = 2;
+        if (event_ptr->text_length1 > 2) {
+            event_ptr->text_length1 = 2;
         }
 
         if (start_y + this->body_font_hgt
@@ -634,15 +626,15 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 8: {
         long right = this->X_start_line_pos + this->X_line_max_width;
-        long text_length = static_cast<long>(strlen(event->text1));
-        if (event->X_line_pos + text_length * this->body_font_wid > right) {
-            event->text_length1 =
-                (right - event->X_line_pos) / this->body_font_wid;
+        long text_length = static_cast<long>(strlen(event_ptr->text1));
+        if (event_ptr->X_line_pos + text_length * this->body_font_wid > right) {
+            event_ptr->text_length1 =
+                (right - event_ptr->X_line_pos) / this->body_font_wid;
         } else {
-            event->text_length1 = strlen(event->text1);
+            event_ptr->text_length1 = strlen(event_ptr->text1);
         }
-        if (event->text_length1 > 5) {
-            event->text_length1 = 5;
+        if (event_ptr->text_length1 > 5) {
+            event_ptr->text_length1 = 5;
         }
 
         if (start_y + this->body_font_hgt
@@ -657,12 +649,12 @@ int Time_Line_Panel::calculate_icon_location(
     }
     }
 
-    event->start_x = start_x;
-    event->start_txt_x1 = start_text_x;
-    event->start_y = start_y;
-    event->start_txt_y1 = start_text_y;
+    event_ptr->start_x = start_x;
+    event_ptr->start_txt_x1 = start_text_x;
+    event_ptr->start_y = start_y;
+    event_ptr->start_txt_y1 = start_text_y;
     if (result != 0) {
-        event->icon_flag = 1;
+        event_ptr->icon_flag = 1;
     }
     return result;
 }
@@ -684,8 +676,7 @@ void Time_Line_Panel::draw(void) {
 
 extern char s_tpnl_tml_draw_axis[];
 
-void Time_Line_Panel::draw_axis()
-{
+void Time_Line_Panel::draw_axis() {
     HGDIOBJ old_font;
     char temp_str[100];
     uchar white_color;
@@ -757,8 +748,7 @@ void Time_Line_Panel::draw_axis()
     }
 }
 
-void Time_Line_Panel::draw_special_events()
-{
+void Time_Line_Panel::draw_special_events() {
     Special_Events* event;
     HGDIOBJ old_font;
 
@@ -874,8 +864,7 @@ void Time_Line_Panel::draw_special_events()
     }
 }
 
-void Time_Line_Panel::draw_background()
-{
+void Time_Line_Panel::draw_background() {
     int pic_rows;
     int tile_rows;
 
@@ -950,8 +939,7 @@ void Time_Line_Panel::draw_background()
     }
 }
 
-void Time_Line_Panel::draw_civilization_names()
-{
+void Time_Line_Panel::draw_civilization_names() {
     char temp_str[100];
     char civ_str[100];
     char name_str[100];
@@ -1016,8 +1004,7 @@ void Time_Line_Panel::draw_civilization_names()
     }
 }
 
-void Time_Line_Panel::draw_timeline()
-{
+void Time_Line_Panel::draw_timeline() {
     if (this->timeline_flag == 0) {
         return;
     }
@@ -1077,7 +1064,8 @@ void Time_Line_Panel::draw_timeline()
                 drop_limit += (1 - dropped_slice_counter) * base_drop_rate;
                 drop_limit -= time_slice_counter;
 
-                if (this->drop_flag != 0 && special_event == 0 &&
+                if (this->drop_flag != 0 &&
+                    special_event == 0 &&
                     pop_sample_counter >= drop_limit &&
                     dropped_slice_counter - 1 < this->total_slices_to_drop) {
                     dropped_slice_counter++;
@@ -1183,7 +1171,7 @@ void Time_Line_Panel::draw_timeline()
                                             player_index + 1]);
                                     unsigned char population =
                                         player->history->get_history_entry(
-                                            0, time_slice);
+                                        0, time_slice);
                                     float player_population =
                                         static_cast<float>(population);
                                     long segment = static_cast<long>(
@@ -1306,8 +1294,7 @@ void Time_Line_Panel::draw_timeline()
     this->render_area->Unlock("tpnl_tml::draw_timeline");
 }
 
-void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3)
-{
+void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uchar history_type) {
     char temp_str[54];
     long total;
     long hi_top;
@@ -1319,25 +1306,25 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     temp_str[0] = static_cast<char>(
         getNearest(this->render_area->DrawSystem->Pal, 0));
 
-    switch (ev->event) {
+    switch (event_ptr->event) {
     case 0:
-        if (this->get_string(0x106a, temp_str + 4, 0x32)) sprintf(ev->text1, "%s", temp_str + 4); else ev->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_TOOL, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 1:
-        if (this->get_string(0x106b, temp_str + 4, 0x32)) sprintf(ev->text1, "%s", temp_str + 4); else ev->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_BRONZE, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 2:
-        if (this->get_string(0x106c, temp_str + 4, 0x32)) sprintf(ev->text1, "%s", temp_str + 4); else ev->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_IRON, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 8:
-        sprintf(temp_str + 4, "%ld/%1d", ev->integer_value_1, ev->integer_value_2);
-        sprintf(ev->text1, "%s", temp_str + 4);
+        sprintf(temp_str + 4, "%ld/%1d", event_ptr->integer_value_1, event_ptr->integer_value_2);
+        sprintf(event_ptr->text1, "%s", temp_str + 4);
     case 3: {
-        sprintf(ev->text1, "%ld", ev->pop_total);
+        sprintf(event_ptr->text1, "%ld", event_ptr->pop_total);
         hi_top = 0;
-        ev->text_length1 = strlen(ev->text1);
+        event_ptr->text_length1 = strlen(event_ptr->text1);
         q_top = 0;
-        total = ev->time_slice * 15;
+        total = event_ptr->time_slice * 15;
         if (total > 59) {
             q_top = total / 60;
             if (q_top > 59) {
@@ -1346,38 +1333,38 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
             }
         }
         sprintf(temp_str + 4, "%1ld:%02ld", hi_top, q_top);
-        sprintf(ev->text2, "%s", temp_str + 4);
-        ev->text_length2 = strlen(ev->text2);
+        sprintf(event_ptr->text2, "%s", temp_str + 4);
+        event_ptr->text_length2 = strlen(event_ptr->text2);
         break;
     }
     default:
         break;
     }
 
-    int ok = this->calculate_icon_location(ev, param_2, param_3);
-    switch (ev->event) {
+    int ok = this->calculate_icon_location(event_ptr, icon_number, history_type);
+    switch (event_ptr->event) {
     case 0:
             this->render_area->DrawVertLine(
-                ev->X_line_pos, ev->Y_line_pos,
-                ev->intermediate_y_line_segment,
+                event_ptr->X_line_pos, event_ptr->Y_line_pos,
+                event_ptr->intermediate_y_line_segment,
                 static_cast<uchar>(temp_str[0]));
         return;
     case 1:
         this->render_area->DrawVertLine(
-            ev->X_line_pos, ev->Y_line_pos,
-            ev->intermediate_y_line_segment,
+            event_ptr->X_line_pos, event_ptr->Y_line_pos,
+            event_ptr->intermediate_y_line_segment,
             static_cast<uchar>(temp_str[0]));
         return;
     case 2:
         this->render_area->DrawVertLine(
-            ev->X_line_pos, ev->Y_line_pos,
-            ev->intermediate_y_line_segment,
+            event_ptr->X_line_pos, event_ptr->Y_line_pos,
+            event_ptr->intermediate_y_line_segment,
             static_cast<uchar>(temp_str[0]));
         return;
     default:
         if (ok) {
-            this->special_events_pic->shape_draw(this->render_area, ev->start_x, ev->start_y,
-                                    static_cast<int>(param_2), 0, 0);
+            this->special_events_pic->shape_draw(this->render_area, event_ptr->start_x, event_ptr->start_y,
+                                    static_cast<int>(icon_number), 0, 0);
         }
         return;
     }
