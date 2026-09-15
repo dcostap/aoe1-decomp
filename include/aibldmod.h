@@ -36,8 +36,7 @@ public:
     int buildListLength() const;
     char* buildListName();
     int haveBuildList() const;
-    int insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap,
-                   int insertAfterItemNumber);
+    int insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber);
     int numberItemsBuilt() const;
     int numberItemsInProgress() const;
     int numberItemsBuiltOrInProgress() const;

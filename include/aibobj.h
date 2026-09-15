@@ -6,8 +6,7 @@ public:
     virtual ~BaseObject();
 
     BaseObject();
-    BaseObject(int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp,
-               int hp, int minp, int maxp);
+    BaseObject(int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp, int hp, int minp, int maxp);
     BaseObject(BaseObject* bo);
     BaseObject(const BaseObject& bo);
 

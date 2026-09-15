@@ -23,8 +23,7 @@ public:
     unsigned char permanentSkipValue;
 
     BuildItem();
-    BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne,
-              int tTwo, int pEle);
+    BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne, int tTwo, int pEle);
     BuildItem(BuildItem* bi);
     BuildItem(const BuildItem& bi);
     virtual ~BuildItem();
