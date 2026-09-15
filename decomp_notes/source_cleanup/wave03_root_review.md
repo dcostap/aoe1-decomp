@@ -1,5 +1,24 @@
 # Cleanup wave 03 root review
 
+## Owner 14: source corrections required
+
+Reviewer `sa-e8937a55` read all 20,962 lines and all reports at `70d4611304b93c9e0d67aff0b1194b54a84d25fb`.
+Diff SHA256: `909e336548c0a70048e13834de9d2b6a27effda47e4e5947aca50c9a11d87437`.
+Root rejected this delivery pending corrections in `taiinfmd.cpp` by the same worker.
+
+- `setupWalls` removed loop locals and allowed the loops to change center parameters, altering later wall rings.
+- `save` merged parameter reuse with the distinct `tempInt` local.
+- `unexploredPlayerLocation` introduced a local instead of the baseline parameter low-byte overwrite.
+- The destructor removed an assignment; `update` removed an explicit cast.
+- Two functions merged separate declarations and initialization statements.
+
+Restore baseline storage, declarations, initialization points, casts, assignments, and center/loop roles.
+PDB names do not authorize these structural changes or prove separate declarations from reused parameter homes.
+Original instruction evidence includes `004D84E3`, `004D84F3`, `004D8638-004D864A`, and `004E175A`.
+The module report and owner ledger must withdraw their inaccurate preservation claims for the rejected version.
+The other seven sources and approved header names remain unchanged by this correction request.
+The group remains unmerged. Full validation remains deferred until cleanup finishes.
+
 ## Owner 14: delegated review started
 
 - Delivered head: `70d4611304b93c9e0d67aff0b1194b54a84d25fb`.
