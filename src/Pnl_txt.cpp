@@ -59,14 +59,12 @@ TTextPanel::TTextPanel()
       bevel_color6(0),
       clip_rgn2(0),
       border_size(0),
-      spacer_size(0)
-{
+      spacer_size(0) {
     this->handle_mouse_input = 0;
     this->panel_type = 1;
 }
 
-TTextPanel::~TTextPanel()
-{
+TTextPanel::~TTextPanel() {
     this->free_text();
     if (this->clip_rgn2 != 0) {
         DeleteObject(this->clip_rgn2);
@@ -74,80 +72,78 @@ TTextPanel::~TTextPanel()
     }
 }
 
-long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,
-                       void* font, long font_arg2, long font_arg3, char* back_pic,
-                       int fill, unsigned char backColor, int outlineValue, unsigned char outlineColor,
-                       short fixedLenValue, char* text)
-{
-    TPanel::setup(draw, parent, x, y, w, h, 0);
-    fill_back = fill;
-    back_color = (unsigned char)backColor;
-    outline = outlineValue;
-    outline_color = outlineColor;
-    fixed_len = fixedLenValue;
-    if (outlineValue != 0) {
+long TTextPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in,
+                       long wid_in, long hgt_in, void* font_in, long font_wid_in,
+                       long font_hgt_in, char* back_pic_in, int fill_back_in,
+                       unsigned char back_color_in, int outline_in, unsigned char outline_color_in,
+                       short fixed_len_in, char* text_in) {
+    TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
+    fill_back = fill_back_in;
+    back_color = (unsigned char)back_color_in;
+    outline = outline_in;
+    outline_color = outline_color_in;
+    fixed_len = fixed_len_in;
+    if (outline_in != 0) {
         bevel_type = 1;
     }
-    set_text(text);
-    set_font(font, font_arg2, font_arg3);
+    set_text(text_in);
+    set_font(font_in, font_wid_in, font_hgt_in);
     set_alignment(AlignCenter, AlignCenter);
-    set_back_pic(back_pic);
+    set_back_pic(back_pic_in);
     return 1;
 }
 
-long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
-                       long h, void* font, long font_width, long font_height,
-                       char* back_picture, int fill, unsigned char backColor,
-                       int outlineValue, unsigned char outlineColor,
-                       short fixedLen, long text_id)
-{
+long TTextPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in,
+                       long hgt_in, void* font_in, long font_wid_in, long font_hgt_in,
+                       char* back_pic_in, int fill_back_in, unsigned char back_color_in,
+                       int outline_in, unsigned char outline_color_in,
+                       short fixed_len_in, long string_id_in) {
     char str[0x1000];
 
-    TPanel::setup(draw, parent, x, y, w, h, 0);
-    fill_back = fill;
-    back_color = backColor;
-    outline = outlineValue;
-    outline_color = outlineColor;
-    fixed_len = fixedLen;
-    if (outlineValue != 0) {
+    TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
+    fill_back = fill_back_in;
+    back_color = back_color_in;
+    outline = outline_in;
+    outline_color = outline_color_in;
+    fixed_len = fixed_len_in;
+    if (outline_in != 0) {
         bevel_type = 1;
     }
-    set_font(font, font_width, font_height);
+    set_font(font_in, font_wid_in, font_hgt_in);
     set_alignment(AlignCenter, AlignCenter);
-    set_back_pic(back_picture);
-    TPanel::get_string(text_id, str, 0x1000);
+    set_back_pic(back_pic_in);
+    TPanel::get_string(string_id_in, str, 0x1000);
     set_text(str);
     return 1;
 }
 
-long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4,
-                       long param_5, long param_6, void* param_7, long param_8,
-                       long param_9, char* param_10, int param_11, unsigned char param_12,
-                       int param_13, unsigned char param_14, short param_15,
-                       char** param_16, short param_17)
-{
-    TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, 0);
-    this->fill_back = param_11;
-    this->back_color = param_12;
-    this->outline = param_13;
-    this->outline_color = param_14;
-    this->fixed_len = param_15;
-    if (param_13 != 0) {
+long TTextPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in,
+                       long wid_in, long hgt_in, void* font_in, long font_wid_in,
+                       long font_hgt_in, char* back_pic_in, int fill_back_in,
+                       unsigned char back_color_in, int outline_in, unsigned char outline_color_in,
+                       short fixed_len_in, char** text_in, short num_lines_in) {
+    TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
+    this->fill_back = fill_back_in;
+    this->back_color = back_color_in;
+    this->outline = outline_in;
+    this->outline_color = outline_color_in;
+    this->fixed_len = fixed_len_in;
+    if (outline_in != 0) {
         this->bevel_type = 1;
     }
-    this->set_text(param_16, param_17);
-    this->set_font(param_7, param_8, param_9);
+    this->set_text(text_in, num_lines_in);
+    this->set_font(font_in, font_wid_in, font_hgt_in);
     this->set_alignment(AlignTop, AlignLeft);
-    this->set_back_pic(param_10);
+    this->set_back_pic(back_pic_in);
     return 1;
 }
 
-void TTextPanel::set_rect(long left, long top, long width, long height) {
+void TTextPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     int x;
     int y;
     tagRECT clip_rect2;
 
-    TPanel::set_rect(left, top, width, height);
+    TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
     this->full_width = this->pnl_wid;
 
     if (this->auto_scbar != 0 && this->scbar_panel != 0) {
@@ -193,22 +189,22 @@ void TTextPanel::set_rect(long left, long top, long width, long height) {
     }
 }
 
-void TTextPanel::set_scrollbar(TScrollBarPanel* panel, int auto_scbar_value) {
-    this->scbar_panel = panel;
-    this->auto_scbar = auto_scbar_value;
-    if (panel != 0) {
-        this->scbar_width = panel->width();
+void TTextPanel::set_scrollbar(TScrollBarPanel* scbar_panel_in, int auto_scbar_in) {
+    this->scbar_panel = scbar_panel_in;
+    this->auto_scbar = auto_scbar_in;
+    if (scbar_panel_in != 0) {
+        this->scbar_width = scbar_panel_in->width();
         this->set_rect(this->pnl_x, this->pnl_y, this->pnl_wid, this->pnl_hgt);
     }
 }
 
-TTextPanel::CharType TTextPanel::char_type(unsigned char* text) {
-    if (text != 0 && *text != 0) {
-        if (IsDBCSLeadByte(*text) != 0) {
+TTextPanel::CharType TTextPanel::char_type(unsigned char* c) {
+    if (c != 0 && *c != 0) {
+        if (IsDBCSLeadByte(*c) != 0) {
             return DoubleByteChar;
         }
 
-        if (*text >= 0xA1 && *text <= 0xDF) {
+        if (*c >= 0xA1 && *c <= 0xDF) {
             return SingleByteKanaChar;
         }
     }
@@ -216,41 +212,40 @@ TTextPanel::CharType TTextPanel::char_type(unsigned char* text) {
     return SingleByteChar;
 }
 
-void TTextPanel::set_text(char* text) {
+void TTextPanel::set_text(char* text_in) {
     char temp_text[256];
 
     free_text();
-    if (text == 0) {
+    if (text_in == 0) {
         if (fixed_len != 0) {
             append_line("", 0);
             return;
         }
     } else {
-        if (*text == '\0') {
+        if (*text_in == '\0') {
             append_line("", 0);
             return;
         }
-        if (word_wrap == 0 && horz_align != 6) {   // 6 == AlignWordwrap
+        if (word_wrap == 0 && horz_align != AlignWordwrap) {
             while (true) {
-                char* nl = (char*)_mbschr((const unsigned char*)text, '\n');
+                char* nl = (char*)_mbschr((const unsigned char*)text_in, '\n');
                 if (nl == 0) {
                     break;
                 }
-                int len = nl - text;
-                strncpy(temp_text, text, (short)len);
+                int len = nl - text_in;
+                strncpy(temp_text, text_in, (short)len);
                 temp_text[(short)len] = '\0';
                 append_line(temp_text, 0);
-                text = nl + 1;
+                text_in = nl + 1;
             }
-            append_line(text, 0);
+            append_line(text_in, 0);
             return;
         }
-        word_wrap_append(text);
+        word_wrap_append(text_in);
     }
 }
 
-int TTextPanel::word_wrap_append(char* text_in)
-{
+int TTextPanel::word_wrap_append(char* text_in) {
     char* text = text_in;
     short text_len;
     short chars;
@@ -432,71 +427,71 @@ int TTextPanel::word_wrap_append(char* text_in)
     return 1;
 }
 
-void TTextPanel::set_text(long id) {
+void TTextPanel::set_text(long string_id_in) {
     char buffer[0x1000];
-    this->get_string(id, buffer, 0x1000);
+    this->get_string(string_id_in, buffer, 0x1000);
     this->set_text(buffer);
 }
 
-void TTextPanel::set_text(char** texts, short count) {
+void TTextPanel::set_text(char** text_in, short num_lines_in) {
     free_text();
-    if (count == 0) {
+    if (num_lines_in == 0) {
         if (fixed_len != 0) {
             append_line("", 0);
         }
-    }
-    else if (count > 0) {
-        int i = count;
+    } else if (num_lines_in > 0) {
+        int i = num_lines_in;
         do {
-            append_line(texts[0], 0);
-            texts++;
+            append_line(text_in[0], 0);
+            text_in++;
             i--;
         } while (i != 0);
     }
 }
 
-void TTextPanel::set_font(void* param_1, long param_2, long param_3) {
-    this->font = param_1;
-    this->font_wid = param_2;
-    this->font_hgt = param_3;
+void TTextPanel::set_font(void* font_in, long font_wid_in, long font_hgt_in) {
+    this->font = font_in;
+    this->font_wid = font_wid_in;
+    this->font_hgt = font_hgt_in;
     this->calc_draw_info(1);
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_alignment(TTextPanel::Alignment a, TTextPanel::Alignment b) {
-    this->vert_align = a;
-    this->horz_align = b;
+void TTextPanel::set_alignment(TTextPanel::Alignment vert_align_in,
+                               TTextPanel::Alignment horz_align_in) {
+    this->vert_align = vert_align_in;
+    this->horz_align = horz_align_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_word_wrap(int value) {
-    this->word_wrap = value;
+void TTextPanel::set_word_wrap(int word_wrap_in) {
+    this->word_wrap = word_wrap_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_style(TTextPanel::Style value) {
-    this->text_style = value;
+void TTextPanel::set_style(TTextPanel::Style text_style_in) {
+    this->text_style = text_style_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_text_color(unsigned long a, unsigned long b) {
-    this->text_color1 = a;
-    this->text_color2 = b;
+void TTextPanel::set_text_color(unsigned long text_color1_in, unsigned long text_color2_in) {
+    this->text_color1 = text_color1_in;
+    this->text_color2 = text_color2_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_highlight_text_color(unsigned long a, unsigned long b) {
-    this->highlightTextColor1 = a;
-    this->highlightTextColor2 = b;
+void TTextPanel::set_highlight_text_color(unsigned long text_color1_in, unsigned long text_color2_in) {
+    this->highlightTextColor1 = text_color1_in;
+    this->highlightTextColor2 = text_color2_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_fill_back(int a, unsigned char b) {
-    this->fill_back = a;
-    this->back_color = b;
+void TTextPanel::set_fill_back(int fill_back_in, unsigned char back_color_in) {
+    this->fill_back = fill_back_in;
+    this->back_color = back_color_in;
 }
 
-void TTextPanel::set_back_pic(char* name) {
+void TTextPanel::set_back_pic(char* back_pic_in) {
     long x_max;
     long x_min;
     long y_max;
@@ -509,37 +504,36 @@ void TTextPanel::set_back_pic(char* name) {
         this->back_pic_hgt = 0;
     }
 
-    if (name == 0 || *name == '\0') {
+    if (back_pic_in == 0 || *back_pic_in == '\0') {
         return;
     }
 
-    this->back_pic = new TShape(name, -1);
+    this->back_pic = new TShape(back_pic_in, -1);
     this->back_pic->shape_minmax(x_max, x_min, y_max, y_min, 0);
     this->back_pic_wid = (short)(y_max - x_max + 1);
     this->back_pic_hgt = (short)(y_min - x_min + 1);
 }
 
-void TTextPanel::set_outline(int outline, unsigned char color) {
-    this->outline = outline;
-    if (outline != 0) {
+void TTextPanel::set_outline(int outline_in, unsigned char outline_color_in) {
+    this->outline = outline_in;
+    if (outline_in != 0) {
         this->bevel_type = 1;
     } else {
         this->bevel_type = 0;
     }
-    this->outline_color = color;
+    this->outline_color = outline_color_in;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6)
-{
-    bevel_type = type, bevel_color1 = (unsigned char)c1;
+void TTextPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
+    bevel_type = bevel_type_in, bevel_color1 = (unsigned char)c1;
     bevel_color2 = (unsigned char)c2;
     bevel_color3 = (unsigned char)c3;
     bevel_color4 = (unsigned char)c4;
     bevel_color5 = (unsigned char)c5;
     bevel_color6 = (unsigned char)c6;
 
-    switch (type) {
+    switch (bevel_type_in) {
     case 1:
     case 2:
     case 5:
@@ -560,25 +554,24 @@ void TTextPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5
     calc_draw_info(1);
 }
 
-void TTextPanel::set_spacer_size(int size) {
-    spacer_size = size;
+void TTextPanel::set_spacer_size(int size_in) {
+    spacer_size = size_in;
     calc_draw_info(1);
 }
 
-void TTextPanel::set_active(int active) {
-    TPanel::set_active(active);
+void TTextPanel::set_active(int activ_in) {
+    TPanel::set_active(activ_in);
     if (this->auto_scbar != 0 && this->scbar_panel != 0) {
         if (this->active != 0) {
             this->scbar_panel->set_active(this->scbar_active);
         }
-        else {
+        } else {
             this->scbar_panel->set_active(0);
         }
     }
 }
 
-void TTextPanel::calc_draw_info(int recalc_scrollbar)
-{
+void TTextPanel::calc_draw_info(int update_scbar) {
     short bottom_line;
     short number_lines;
     short visible_lines;
@@ -637,7 +630,7 @@ void TTextPanel::calc_draw_info(int recalc_scrollbar)
     }
 
     if (this->scbar_panel != 0) {
-        if (recalc_scrollbar != 0) {
+        if (update_scbar != 0) {
             this->scbar_panel->set_list_len(
                 (int)number_lines - (int)visible_lines + 1,
                 (int)this->top_line);
@@ -670,14 +663,13 @@ void TTextPanel::calc_draw_info(int recalc_scrollbar)
     this->text_wid = this->pnl_wid;
 }
 
-void TTextPanel::scroll(unsigned char scroll_type, short amount, int param_3)
-{
+void TTextPanel::scroll(unsigned char scroll_type, short scroll_val, int update_scbar) {
     switch (scroll_type) {
     case 0:
-        this->top_line += amount;
+        this->top_line += scroll_val;
         break;
     case 1:
-        this->top_line = amount;
+        this->top_line = scroll_val;
         break;
     case 2:
         this->top_line++;
@@ -708,42 +700,41 @@ void TTextPanel::scroll(unsigned char scroll_type, short amount, int param_3)
     }
     }
 
-    this->calc_draw_info(param_3);
+    this->calc_draw_info(update_scbar);
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
-                                 int param_4, int param_5)
-{
-    switch (param_1) {
+long TTextPanel::key_down_action(long key, short count, int alt_key,
+                                 int ctrl_key, int shift_key) {
+    switch (key) {
     case 0x28:
         this->scroll(2, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(param_1, param_2, param_3,
-                                                 param_4, param_5);
+            this->parent_panel->key_down_action(key, count, alt_key,
+                                                 ctrl_key, shift_key);
             return 1;
         }
         return 1;
     case 0x26:
         this->scroll(3, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(param_1, param_2, param_3,
-                                                 param_4, param_5);
+            this->parent_panel->key_down_action(key, count, alt_key,
+                                                 ctrl_key, shift_key);
             return 1;
         }
         return 1;
     case 0x22:
         this->scroll(4, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(param_1, param_2, param_3,
-                                                 param_4, param_5);
+            this->parent_panel->key_down_action(key, count, alt_key,
+                                                 ctrl_key, shift_key);
         }
         return 1;
     case 0x21:
         this->scroll(5, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(param_1, param_2, param_3,
-                                                 param_4, param_5);
+            this->parent_panel->key_down_action(key, count, alt_key,
+                                                 ctrl_key, shift_key);
         }
         return 1;
     case 0x24:
@@ -757,10 +748,10 @@ long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
     }
 }
 
-long TTextPanel::action(TPanel* panel, long msg, unsigned long p1, unsigned long p2)
-{
-    if (this->scbar_panel && panel == this->scbar_panel) {
-        switch (msg) {
+long TTextPanel::action(TPanel* from_panel, long action_in,
+                        unsigned long action_val1, unsigned long action_val2) {
+    if (this->scbar_panel && from_panel == this->scbar_panel) {
+        switch (action_in) {
         case 0:
             this->scroll(3, 0, 1);
             return 1;
@@ -774,15 +765,14 @@ long TTextPanel::action(TPanel* panel, long msg, unsigned long p1, unsigned long
             this->scroll(4, 0, 1);
             return 1;
         case 4:
-            this->scroll(1, p1, 0);
+            this->scroll(1, action_val1, 0);
             return 1;
         }
     }
-    return TPanel::action(panel, msg, p1, p2);
+    return TPanel::action(from_panel, action_in, action_val1, action_val2);
 }
 
-void TTextPanel::draw()
-{
+void TTextPanel::draw() {
     this->need_redraw = 0;
     if (this->render_area == 0 || this->visible == 0 || this->active == 0) {
         return;
@@ -819,8 +809,7 @@ void TTextPanel::draw()
     this->draw_finish();
 }
 
-void TTextPanel::draw_background()
-{
+void TTextPanel::draw_background() {
     short pic_cols;
     short pic_rows = 0;
 
@@ -896,8 +885,7 @@ void TTextPanel::draw_background()
     }
 }
 
-void TTextPanel::draw_border()
-{
+void TTextPanel::draw_border() {
     if (this->bevel_type != 0) {
         if (this->render_area->Lock("pnl_txt::draw_border", 1) != 0) {
             switch (this->bevel_type) {
@@ -962,9 +950,8 @@ void TTextPanel::draw_border()
     }
 }
 
-void TTextPanel::draw_line(void* dc, short line_index, short line,
-                           unsigned long color1, unsigned long color2)
-{
+void TTextPanel::draw_line(void* dc, short draw_row, short text_line,
+                           unsigned long color1, unsigned long color2) {
     char* text;
     char* text2;
     short text_len;
@@ -974,8 +961,8 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
 
     text_len = 0;
     text2_len = 0;
-    text = this->get_text((long)line);
-    text2 = this->get_text2((long)line);
+    text = this->get_text((long)text_line);
+    text2 = this->get_text2((long)text_line);
 
     if (text == 0 && text2 == 0) {
         return;
@@ -989,7 +976,7 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
         text2_len = (short)strlen(text2);
     }
 
-    this->calc_line_pos(dc, line_index, line, &line_rect, 0);
+    this->calc_line_pos(dc, draw_row, text_line, &line_rect, 0);
 
     long text_x = line_rect.left;
     if (this->horz_align != 0 && this->horz_align != 6) {
@@ -1070,9 +1057,8 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
     }
 }
 
-void TTextPanel::calc_line_pos(void* dc, short line_index, short line,
-                               tagRECT* line_rect, long* column_offset)
-{
+void TTextPanel::calc_line_pos(void* dc, short draw_row, short text_line,
+                               tagRECT* line_rect, long* cursor_x_offset) {
     char* text;
     short text_len;
     short len;
@@ -1082,9 +1068,9 @@ void TTextPanel::calc_line_pos(void* dc, short line_index, short line,
     long line_top;
     long line_height;
     SIZE text_size;
-    unsigned char temp_text[256];
+    unsigned char temp_text2[256];
 
-    text = this->get_text((long)line);
+    text = this->get_text((long)text_line);
     if (text != 0) {
         if (this->cur_col == 0) {
             col_offset = 0;
@@ -1094,10 +1080,10 @@ void TTextPanel::calc_line_pos(void* dc, short line_index, short line,
                 len = (short)strlen(text);
                 GetTextExtentPoint32A((HDC)dc, text, len, &text_size);
             } else {
-                memset(temp_text, 0, sizeof(temp_text));
-                _mbsncpy(temp_text, (const unsigned char*)text,
+                memset(temp_text2, 0, sizeof(temp_text2));
+                _mbsncpy(temp_text2, (const unsigned char*)text,
                          this->cur_col);
-                len = (short)strlen((const char*)temp_text);
+                len = (short)strlen((const char*)temp_text2);
                 GetTextExtentPoint32A((HDC)dc, text, len, &text_size);
             }
             col_offset = text_size.cx;
@@ -1144,16 +1130,16 @@ void TTextPanel::calc_line_pos(void* dc, short line_index, short line,
 
     switch (this->vert_align) {
     case AlignTop:
-        line_top = this->pnl_y + line_index * line_height +
+        line_top = this->pnl_y + draw_row * line_height +
                    this->border_size + this->spacer_size;
         break;
     case AlignBottom:
         line_top = this->pnl_y + this->pnl_hgt -
-                   (this->num_lines - line_index) * line_height -
+                   (this->num_lines - draw_row) * line_height -
                    this->border_size - this->spacer_size - 1;
         break;
     default:
-        line_top = this->pnl_y + line_index * line_height -
+        line_top = this->pnl_y + draw_row * line_height -
                    this->num_lines * line_height / 2 + this->pnl_hgt / 2;
         break;
     }
@@ -1163,12 +1149,12 @@ void TTextPanel::calc_line_pos(void* dc, short line_index, short line,
     line_rect->right = line_left + text_width - 1;
     line_rect->bottom = line_top + this->text_hgt;
 
-    if (column_offset != 0) {
-        *column_offset = col_offset;
+    if (cursor_x_offset != 0) {
+        *cursor_x_offset = col_offset;
     }
 }
 
-long TTextPanel::mouse_left_down_action(long x, long y, int buttons, int keys) {
+long TTextPanel::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (this->parent_panel != 0) {
         this->parent_panel->action(this, 1, 0, 0);
     }
@@ -1187,16 +1173,16 @@ int TTextPanel::currentLineNumber() const {
     return cur_line;
 }
 
-void TTextPanel::setCurrentLineNumber(int p) { this->set_line(p); }
+void TTextPanel::setCurrentLineNumber(int v) { this->set_line(v); }
 
 char* TTextPanel::currentLine() { return this->get_text(); }
 
-void TTextPanel::set_line(long line) {
-    cur_line = (short)line;
+void TTextPanel::set_line(long line_in) {
+    cur_line = (short)line_in;
     calc_draw_info(1);
 }
 
-void TTextPanel::set_line_by_id(long id) {
+void TTextPanel::set_line_by_id(long id_in) {
     int index = 0;
     void** node = (void**)this->list;
 
@@ -1204,7 +1190,7 @@ void TTextPanel::set_line_by_id(long id) {
         return;
 
     while (node) {
-        if ((long)node[2] == id) {
+        if ((long)node[2] == id_in) {
             this->set_line(index);
             return;
         }
@@ -1213,28 +1199,27 @@ void TTextPanel::set_line_by_id(long id) {
     }
 }
 
-int TTextPanel::append_line(char* text, long value) {
-    return insert_line((int)num_lines, text, value);
+int TTextPanel::append_line(char* text_in, long id_in) {
+    return insert_line((int)num_lines, text_in, id_in);
 }
 
-int TTextPanel::append_line(char* text1, char* text2, long value) {
-    return insert_line((int)num_lines, text1, text2, value);
+int TTextPanel::append_line(char* text_in, char* text2_in, long id_in) {
+    return insert_line((int)num_lines, text_in, text2_in, id_in);
 }
 
-int TTextPanel::append_line(long a1, long a2) {
-    return insert_line((int)num_lines, a1, a2);
+int TTextPanel::append_line(long string_id_in, long id_in) {
+    return insert_line((int)num_lines, string_id_in, id_in);
 }
 
-int TTextPanel::append_line(long a1, long a2, long a3) {
-    return insert_line((int)num_lines, a1, a2, a3);
+int TTextPanel::append_line(long string_id_in, long string_id2_in, long id_in) {
+    return insert_line((int)num_lines, string_id_in, string_id2_in, id_in);
 }
 
-int TTextPanel::insert_line(long line, char* text1, long value) {
-    return insert_line(line, text1, 0, value);
+int TTextPanel::insert_line(long line_in, char* text_in, long id_in) {
+    return insert_line(line_in, text_in, 0, id_in);
 }
 
-int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
-{
+int TTextPanel::insert_line(long line_in, char* text_in, char* text2_in, long id_in) {
     TextNode* new_node = (TextNode*)calloc(1, sizeof(TextNode));
     if (new_node == 0) {
         return 0;
@@ -1242,10 +1227,10 @@ int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
 
     if (this->fixed_len != 0) {
         new_node->text = (char*)calloc(this->fixed_len + 1, 1);
-    } else if (text1 == 0) {
+    } else if (text_in == 0) {
         new_node->text = (char*)calloc(1, 1);
     } else {
-        new_node->text = (char*)calloc(strlen(text1) + 1, 1);
+        new_node->text = (char*)calloc(strlen(text_in) + 1, 1);
     }
 
     if (new_node->text == 0) {
@@ -1253,8 +1238,8 @@ int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
         return 0;
     }
 
-    if (text2 != 0) {
-        new_node->text2 = (char*)calloc(strlen(text2) + 1, 1);
+    if (text2_in != 0) {
+        new_node->text2 = (char*)calloc(strlen(text2_in) + 1, 1);
         if (new_node->text2 == 0) {
             free(new_node->text);
             free(new_node);
@@ -1262,20 +1247,20 @@ int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
         }
     }
 
-    if (text1 == 0) {
+    if (text_in == 0) {
         new_node->text[0] = '\0';
     } else if (this->fixed_len != 0) {
-        strncpy(new_node->text, text1, this->fixed_len);
+        strncpy(new_node->text, text_in, this->fixed_len);
         new_node->text[this->fixed_len] = '\0';
     } else {
-        strcpy(new_node->text, text1);
+        strcpy(new_node->text, text_in);
     }
 
-    if (text2 != 0) {
-        strcpy(new_node->text2, text2);
+    if (text2_in != 0) {
+        strcpy(new_node->text2, text2_in);
     }
 
-    new_node->id = value;
+    new_node->id = id_in;
     new_node->next_node = 0;
 
     TextNode* node = this->list;
@@ -1300,18 +1285,18 @@ int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
         if (node == 0) {
             previous->next_node = new_node;
         }
-    } else if (line == 0) {
+    } else if (line_in == 0) {
         new_node->next_node = node;
         this->list = new_node;
-    } else if (line >= this->num_lines) {
+    } else if (line_in >= this->num_lines) {
         while (node->next_node != 0) {
             node = node->next_node;
         }
         node->next_node = new_node;
     } else {
         int index = 0;
-        --line;
-        while (index != line) {
+        --line_in;
+        while (index != line_in) {
             node = node->next_node;
             ++index;
         }
@@ -1325,68 +1310,66 @@ int TTextPanel::insert_line(long line, char* text1, char* text2, long value)
     return 1;
 }
 
-int TTextPanel::insert_line(long line, long text, long value)
-{
+int TTextPanel::insert_line(long line_in, long string_id_in, long id_in) {
     char str[256];
 
-    get_string((int)text, str, 0x100);
-    return insert_line(line, str, value);
+    get_string((int)string_id_in, str, 0x100);
+    return insert_line(line_in, str, id_in);
 }
 
-int TTextPanel::insert_line(long param_1, long param_2, long param_3, long param_4) {
+int TTextPanel::insert_line(long line_in, long string_id_in, long string_id2_in, long id_in) {
     char str1[256];
     char str2[256];
 
-    this->get_string(param_2, str1, 0x100);
-    this->get_string(param_3, str2, 0x100);
-    return this->insert_line(param_1, str1, str2, param_4);
+    this->get_string(string_id_in, str1, 0x100);
+    this->get_string(string_id2_in, str2, 0x100);
+    return this->insert_line(line_in, str1, str2, id_in);
 }
 
-int TTextPanel::change_line(long param_1, char* param_2, char* param_3, long param_4) {
-    int iVar1;
-    int iVar2;
+int TTextPanel::change_line(long line_in, char* text_in, char* text2_in, long id_in) {
+    int saved_sorted;
+    int insert_result;
 
-    iVar1 = this->sorted;
+    saved_sorted = this->sorted;
     this->sorted = 0;
-    iVar2 = insert_line(param_1, param_2, param_3, param_4);
-    if (iVar2 == 0) {
-        this->sorted = iVar1;
-        return 0;
-    }
-
-    delete_line(param_1 + 1);
-    this->sorted = iVar1;
-    return 1;
-}
-
-int TTextPanel::change_line(long a1, long a2, long a3, long a4) {
-    int saved_sorted = this->sorted;
-    this->sorted = 0;
-
-    if (insert_line(a1, a2, a3, a4) == 0) {
+    insert_result = insert_line(line_in, text_in, text2_in, id_in);
+    if (insert_result == 0) {
         this->sorted = saved_sorted;
         return 0;
     }
 
-    delete_line(a1 + 1);
+    delete_line(line_in + 1);
     this->sorted = saved_sorted;
     return 1;
 }
 
-int TTextPanel::delete_line(long line)
-{
-    if (line >= 0 && line <= this->num_lines - 1) {
+int TTextPanel::change_line(long line_in, long string_id_in, long string_id2_in, long id_in) {
+    int saved_sorted = this->sorted;
+    this->sorted = 0;
+
+    if (insert_line(line_in, string_id_in, string_id2_in, id_in) == 0) {
+        this->sorted = saved_sorted;
+        return 0;
+    }
+
+    delete_line(line_in + 1);
+    this->sorted = saved_sorted;
+    return 1;
+}
+
+int TTextPanel::delete_line(long line_in) {
+    if (line_in >= 0 && line_in <= this->num_lines - 1) {
         TTextPanel::TextNode* deleted;
 
-        if (line == 0) {
+        if (line_in == 0) {
             deleted = this->list;
             this->list = deleted->next_node;
         } else {
             TTextPanel::TextNode* node = this->list;
             int i = 0;
-            --line;
+            --line_in;
             while (true) {
-                if (i == line) {
+                if (i == line_in) {
                     break;
                 }
                 node = node->next_node;
@@ -1428,11 +1411,11 @@ long TTextPanel::get_line() {
     return cur_line;
 }
 
-long TTextPanel::get_line(long index) {
+long TTextPanel::get_line(long id_in) {
     TTextPanel::TextNode* node = this->list;
     int i = 0;
     while (node != 0) {
-        if (node->id == index) {
+        if (node->id == id_in) {
             return i;
         }
         node = node->next_node;
@@ -1441,11 +1424,11 @@ long TTextPanel::get_line(long index) {
     return -1;
 }
 
-long TTextPanel::get_line(char* s) {
+long TTextPanel::get_line(char* text_in) {
     TTextPanel::TextNode* node = this->list;
     long i = 0;
     while (node != 0) {
-        if (strcmp(node->text, s) == 0) return i;
+        if (strcmp(node->text, text_in) == 0) return i;
         node = node->next_node;
         ++i;
     }
@@ -1456,7 +1439,7 @@ char* TTextPanel::get_text() {
     return this->get_text(this->cur_line);
 }
 
-char* TTextPanel::get_text(long index) {
+char* TTextPanel::get_text(long line_in) {
     static char empty_text;
     TTextPanel::TextNode* node = this->list;
     long i = 0;
@@ -1465,7 +1448,7 @@ char* TTextPanel::get_text(long index) {
         return &empty_text;
     }
     while (node != 0) {
-        if (index == i) {
+        if (line_in == i) {
             return node->text;
         }
         node = node->next_node;
@@ -1479,7 +1462,7 @@ char* TTextPanel::get_text2() {
     return this->get_text2(this->cur_line);
 }
 
-char* TTextPanel::get_text2(long index) {
+char* TTextPanel::get_text2(long line_in) {
     static char empty_text;
     long i;
     TTextPanel::TextNode* node;
@@ -1491,7 +1474,7 @@ char* TTextPanel::get_text2(long index) {
         return &empty_text;
     }
     while (node != 0) {
-        if (i == index) return node->text2;
+        if (i == line_in) return node->text2;
         node = node->next_node;
         i++;
     }
@@ -1503,9 +1486,9 @@ long TTextPanel::get_id() {
     return this->get_id(this->cur_line);
 }
 
-long TTextPanel::get_id(long index) {
+long TTextPanel::get_id(long line_in) {
     long count = 0;
-    long target = index;
+    long target = line_in;
     TTextPanel::TextNode* node = this->list;
 
     if (node == 0) return -1;
@@ -1543,8 +1526,8 @@ void TTextPanel::free_text(void) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TTextPanel::set_second_column_pos(long value) {
-    this->second_column_pos = value;
+void TTextPanel::set_second_column_pos(long val) {
+    this->second_column_pos = val;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
