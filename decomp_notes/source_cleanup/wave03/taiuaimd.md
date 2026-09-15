@@ -4,7 +4,7 @@
 
 - Module: `src/taiuaimd.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final module commit: `b50be79a18cd168687911b24d411b00e4cfa6a36`
+- Final module commit: `5bd2d519e42d4dac68c204e4b677e252ad8eb84c`
 - Report commit: the commit that adds this report
 - Changed paths:
   - `src/taiuaimd.cpp`
@@ -63,11 +63,17 @@ The cleanup removed decompiler comments, raw vtable narration, and empty comment
 
 ## Scope and risk
 
-The edits rename parameters and locals, remove unhelpful comments, and apply local 1TBS formatting. They do not change types, widths, casts, storage duration, declaration order, layouts, public names, calling conventions, relocations, or direct call targets.
+The edits rename parameters and locals, remove unhelpful comments, and apply local 1TBS formatting. They preserve existing declarations, storage, and declaration order. In particular, soldier notify keeps its distinct `event` alias and uses it in the body. The edits do not change types, widths, casts, layouts, public names, calling conventions, relocations, or direct call targets.
 
 The header was not changed. No shared-file request is open.
 
 The source diff contains no intentional executable or data change. Compiler output and debug line records were not checked. The formatting and comment edits can change source line records.
+
+## Correction history
+
+- A full-diff review found that the first cleanup removed the existing `NotifyEvent* event = param_1;` declaration in `TribeSoldierUnitAIModule::processNotify`.
+- The correction keeps the recovered `nEvent` parameter, restores `NotifyEvent* event = nEvent;` at the original declaration point, and restores `event` use in the body.
+- The full diff was checked again for other removed or merged declarations. None were found.
 
 ## Validation status
 
