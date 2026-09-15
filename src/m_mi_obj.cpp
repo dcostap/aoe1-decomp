@@ -43,8 +43,7 @@ int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* other_object) {
     return 1;
 }
 
-int RGE_Master_Missile_Object::setup(
-    int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
+int RGE_Master_Missile_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Combat_Object::setup(infile, sprites, sounds);
     master_type = 0x3C;
 
@@ -57,8 +56,7 @@ int RGE_Master_Missile_Object::setup(
     return 1;
 }
 
-int RGE_Master_Missile_Object::setup(
-    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
+int RGE_Master_Missile_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     short temp_missile_type;
     short temp_targetting_type;
     short temp_missile_hit_info;
@@ -125,16 +123,14 @@ void RGE_Master_Missile_Object::modify(float amount, unsigned char flag) {
     RGE_Master_Combat_Object::modify(amount, flag);
 }
 
-void RGE_Master_Missile_Object::modify_delta(
-    float amount, unsigned char flag) {
+void RGE_Master_Missile_Object::modify_delta(float amount, unsigned char flag) {
     if (flag == 0x13) {
         targetting_type = (unsigned char)(int)amount;
     }
     RGE_Master_Combat_Object::modify_delta(amount, flag);
 }
 
-void RGE_Master_Missile_Object::modify_percent(
-    float amount, unsigned char flag) {
+void RGE_Master_Missile_Object::modify_percent(float amount, unsigned char flag) {
     if (flag == 0x13) {
         targetting_type = (unsigned char)(int)amount;
     }
