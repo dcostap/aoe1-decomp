@@ -21,7 +21,8 @@
   braces.
 - Root review resumed from `efcb419a4ad3b37f757cb24fa57163752b987e9e`.
 - Traced the original `GetClientReadiness` call and each renamed `userN`
-  consumer in packet `004A2D50_handle_user_command.txt`.
+  consumer in packet
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004A/004A2D50_handle_user_command.txt`.
 - Restored `selected_position` because the original PDB `pos` slot stores and
   reloads the spilled `this` pointer.
 - Restored `first_any_color_index` because the original instructions use an
@@ -89,6 +90,8 @@ SHA256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 
 ### Instruction-level readiness mapping
 
+The instruction references below use packet
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004A/004A2D50_handle_user_command.txt`.
 The original call at `004A2F84` is
 `GetClientReadiness(index, out0, out1, out2, out3, out4, out5, out6, out7)`.
 The original instructions push `index` at `004A2F83`, then push the output
@@ -96,7 +99,8 @@ pointers in reverse order at `004A2F82`, `004A2F7B`, `004A2F72`, `004A2F6D`,
 `004A2F63`, `004A2F5E`, and `004A2F59`.
 
 The scoped PDB offsets below use the records in
-`inventory/pdb/scoped_symbols.json`. The instruction addresses show the
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`.
+The instruction addresses show the
 address calculation and the later read or consumer. These uses prove the
 renamed declarations.
 
@@ -121,7 +125,9 @@ source calls it `player`, and this report does not force that uncertain name.
 
 ### Original instruction checks for uncertain local renames
 
-For `004A27A0`, the scoped PDB records `pos` at `-0x28` and
+For `004A27A0`, using packet
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004A/004A27A0_calcRandomPositions.txt`,
+the scoped PDB records `pos` at `-0x28` and
 `position_used` at `-0x20`. The packet listing records `pos` at `-0x2C` and
 shows `004A27A5` writing the spilled `this` pointer, then `004A27ED` and
 `004A2858` reading it as the panel base. The selected position is packet
@@ -130,7 +136,9 @@ shows `004A27A5` writing the spilled `this` pointer, then `004A27ED` and
 `004A28E9` writes it into `position_used`. The source therefore retains
 `selected_position`.
 
-For `004A5210`, the packet initializes `first_any_civ` at `004A5237`,
+For `004A5210`, using packet
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004A/004A5210_setupSinglePlayerPlayers.txt`,
+the packet initializes `first_any_civ` at `004A5237`,
 `first_any_color` at `004A523B`, and `local_4` at `004A523F`.
 `004A52B2` and `004A52BB` update the first two values. `004A52BF` updates
 `local_4`. The later consumers are `004A5375` and `004A5382` for the color
