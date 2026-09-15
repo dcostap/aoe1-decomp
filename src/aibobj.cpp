@@ -20,10 +20,7 @@ BaseObject::BaseObject()
     strcpy(nameValue, "");
 }
 
-BaseObject::BaseObject(int gri, int ci, int ti, int gi, char* nm,
-                       float xs, float ys, float zs,
-                       float xp, float yp, float zp,
-                       int hp, int minp, int maxp)
+BaseObject::BaseObject(int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp, int hp, int minp, int maxp)
     : next(0), prev(0), numberGroupsValue(1),
       categoryIDValue(ci), typeIDValue(ti), gameIDValue(gi),
       xPositionValue(xp), yPositionValue(yp), zPositionValue(zp),
