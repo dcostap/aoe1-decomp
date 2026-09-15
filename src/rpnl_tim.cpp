@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-RGE_Panel_Time::RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in,
-                               void* font_in)
+RGE_Panel_Time::RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in, void* font_in)
     : TPanel() {
     font = font_in;
     handle_mouse_input = 0;
@@ -48,62 +47,62 @@ void RGE_Panel_Time::draw() {
             SetBkMode(render_area->DrawDc, TRANSPARENT);
             SetTextColor(render_area->DrawDc, 0xFFFFFF);
 
-            int seconds = game_time;
-            int minutes = 0;
-            int hours = 0;
+            int t = game_time;
+            int m = 0;
+            int h = 0;
 
-            if (seconds > 59) {
-                minutes = seconds / 60;
-                seconds = seconds - minutes * 60;
-                if (minutes > 59) {
-                    hours = minutes / 60;
-                    minutes = minutes - hours * 60;
+            if (t > 59) {
+                m = t / 60;
+                t = t - m * 60;
+                if (m > 59) {
+                    h = m / 60;
+                    m = m - h * 60;
                 }
             }
 
             {
                 char str[100];
-                sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds,
+                sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", h, m, t,
                         (double)rge_base_game->world->game_speed);
                 TextOutA(render_area->DrawDc, render_rect.left,
                          render_rect.top - 2, str, strlen(str));
             }
 
-            int player_index = 1;
+            int pi = 1;
             int player_num = rge_base_game->world->player_num;
 
             if (player_num > 1) {
-                int y_offset = 13;
+                int yo = 13;
 
                 do {
                     long countdown_timer;
-                    rge_base_game->get_countdown_timer(player_index, countdown_timer);
+                    rge_base_game->get_countdown_timer(pi, countdown_timer);
 
                     if (countdown_timer >= 0) {
                         PALETTEENTRY paletteColor;
                         unsigned char map_color =
-                            rge_base_game->world->players[player_index]->color_table->map_color;
+                            rge_base_game->world->players[pi]->color_table->map_color;
                         HPALETTE palette = (HPALETTE)rge_base_game->draw_system->Pal;
 
                         GetPaletteEntries(palette, map_color, 1, &paletteColor);
 
-                        COLORREF text_color =
+                        COLORREF color =
                             (((paletteColor.peBlue & 0xFF) << 8 |
                               (paletteColor.peGreen & 0xFF)) << 8 |
                              (paletteColor.peRed & 0xFF));
 
-                        SetTextColor(render_area->DrawDc, text_color);
+                        SetTextColor(render_area->DrawDc, color);
 
                         {
                             char str[100];
                             sprintf(str, get_string(0x2C24), countdown_timer);
                             TextOutA(render_area->DrawDc, render_rect.left,
-                                     y_offset + render_rect.top, str, strlen(str));
+                                     yo + render_rect.top, str, strlen(str));
                         }
-                        y_offset += 13;
+                        yo += 13;
                     }
-                    player_index++;
-                } while (player_index < player_num);
+                    pi++;
+                } while (pi < player_num);
             }
         }
 
