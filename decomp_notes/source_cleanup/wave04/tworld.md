@@ -6,7 +6,7 @@
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final prior report commit: `cad41fd0133f640144cb7cfb774f39c4a12be364`
 - Final correction commit: `72fe153494f42409f66797cd6fbd39e68422e8eb`
-- Report commit: pending until this correction report is committed
+- Report commit: `9bdac484a9a9c1c393f01bf89df1b74d574be131`
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
