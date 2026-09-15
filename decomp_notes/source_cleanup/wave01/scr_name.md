@@ -104,7 +104,7 @@ The common resource evidence for every row is:
 - Lookup: `StringTableX` is checked first, then `StringTable` through the base lookup.
 - Expansion DLL: `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; all requested IDs are missing.
 - Pinned XPack expansion reference: `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; all requested IDs are missing.
-- Fallback: a miss in `StringTableX` calls `RGE_Base_Game::get_string`, which reads the base `language.dll` table. The help IDs are missing in all checked files, so their text remains unknown.
+- Fallback: a miss in `StringTableX` calls `RGE_Base_Game::get_string`, which reads the base `language.dll` table. Both checked expansion files miss the help IDs; the base `language.dll` supplies the recorded text.
 
 | Numeric ID | Purpose evidence in `src/scr_name.cpp` | Exact text or status in base DLL | Applied macro |
 | --- | --- | --- | --- |
