@@ -70,9 +70,9 @@ public:
     TribeGameSettingsScreen();
     virtual ~TribeGameSettingsScreen();
     virtual long handle_idle();
-    virtual long handle_user_command(unsigned int, long);
+    virtual long handle_user_command(unsigned int wParam, long lParam);
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void init_vars();
     void fillScenarios();
     void getSettings();

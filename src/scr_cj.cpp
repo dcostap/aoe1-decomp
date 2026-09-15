@@ -15,6 +15,7 @@
 #include "../include/registry.h"
 #include "../include/debuglog.h"
 #include "../include/scr_main.h"
+#include "../include/resource_ids.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -46,25 +47,25 @@ TribeJoinScreen::TribeJoinScreen()
 
     if (this->create_text(this, &this->title, 0x259F,
                           0x14, 0x14, 0x258, 0x1E, 1, 1, 0, 0)) {
-        this->create_text(this, &this->listTitle, 0x25A8,
+        this->create_text(this, &this->listTitle, IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN,
                           0x14, 0x41, 0x258, 0x14, 4, 0, 0, 0);
         if (this->create_list(this, &this->list,
                               0x14, 0x5A, 0x258, 0x10E, 0x0B)) {
             if (this->create_auto_scrollbar(&this->scrollbar,
                                             this->list, 0x14)) {
                 this->listFilled = 1;
-                this->list->set_text(0x25AB);
+                this->list->set_text(IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS);
                 if (this->create_button(this, &this->refreshButton,
-                                        0x25A1, 0, 0xD2, 0x172,
+                                        IDS_MULTIPLAYER_SHOW_GAMES, 0, 0xD2, 0x172,
                                         0xDC, 0x1E, 0, 0, 0)) {
                     if (this->create_button(this, &this->joinButton,
-                                            0x25A0, 0, 0x0A, 0x1B8,
+                                            IDS_MULTIPLAYER_JOIN, 0, 0x0A, 0x1B8,
                                             0xC8, 0x1E, 0, 0, 0)) {
                         if (this->create_button(this, &this->createButton,
-                                                0x25A2, 0, 0xDC, 0x1B8,
+                                                IDS_MULTIPLAYER_CREATE, 0, 0xDC, 0x1B8,
                                                 0xC8, 0x1E, 0, 0, 0)) {
                             if (this->create_button(this, &this->cancelButton,
-                                                    0x0FA2, 0, 0x1AE,
+                                                    IDS_BUTTON_CANCEL, 0, 0x1AE,
                                                     0x1B8, 0xC8, 0x1E,
                                                     0, 0, 0)) {
                                 TButtonPanel* cancel = this->cancelButton;
@@ -129,14 +130,14 @@ long TribeJoinScreen::handle_idle() {
         comm->UnlinkToLevel(SERVICE_AVAILABLE);
         this->waitingToStart = 0;
         rge_base_game->enable_input();
-        TEasy_Panel::popupOKDialog(0x25A3, 0, 0x1C2, 100);
+        TEasy_Panel::popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, 0, 0x1C2, 100);
         return 1;
     }
     return TPanel::handle_idle();
 }
 
-long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
-    switch (cmd) {
+long TribeJoinScreen::handle_user_command(unsigned int wParam, long lParam) {
+    switch (wParam) {
         case 0x17A4:
             break;
         case 0x17B8:
@@ -155,12 +156,12 @@ long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
                 comm->UnlinkToLevel(SERVICE_AVAILABLE);
                 this->waitingToStart = 0;
                 rge_base_game->enable_input();
-                TEasy_Panel::popupOKDialog(0x25A3, 0, 0x1C2, 100);
+                TEasy_Panel::popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, 0, 0x1C2, 100);
                 return 1;
             }
             break;
     }
-    return TPanel::handle_user_command(cmd, param);
+    return TPanel::handle_user_command(wParam, lParam);
 }
 
 void TribeJoinScreen::fillList() {
@@ -169,13 +170,13 @@ void TribeJoinScreen::fillList() {
     rge_base_game->disable_input();
     this->listFilled = 0;
     this->game_count = 0;
-    this->list->set_text(0x25A9);
+    this->list->set_text(IDS_MULTIPLAYER_LOOKING_FOR_GAMES);
     rge_base_game->draw_window();
 
     if (this->startedSession == 0) {
         Sess = new TCommunications_Sessions(comm);
         if (Sess == 0) {
-            this->list->set_text(0x25AB);
+            this->list->set_text(IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS);
             return;
         }
         this->startedSession = 1;
@@ -200,33 +201,31 @@ void TribeJoinScreen::fillList() {
         }
         this->set_curr_child(this->list);
     } else {
-        this->list->set_text(0x25AB);
+        this->list->set_text(IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS);
     }
 
     this->listFilled = 1;
 }
 
-long TribeJoinScreen::action(TPanel* panel, long command,
-                             unsigned long param3, unsigned long param4)
-{
+long TribeJoinScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     char temp[256];
     char string[256];
 
-    if (panel != 0) {
-        if (panel == this->list) {
-            if (command == 3 && this->game_count > 0) {
+    if (fromPanel != 0) {
+        if (fromPanel == this->list) {
+            if (actionIn == 3 && this->game_count > 0) {
                 this->action(this->joinButton, 1, 0, 0);
             }
             return 1;
         }
 
-        if (panel == this->joinButton) {
-            if (command == 1) {
+        if (fromPanel == this->joinButton) {
+            if (actionIn == 1) {
                 if (this->game_count > 0) {
                     int line = this->list->currentLineNumber();
                     if (comm->JoinMultiplayerGame(
                             Sess->GetSessionGUID(line)) == 0) {
-                        this->get_string(0x25A3, temp, sizeof(temp));
+                        this->get_string(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, temp, sizeof(temp));
                         sprintf(string, temp, this->list->currentLine());
                         this->popupOKDialog(string, 0, 0x1C2, 100);
                         return 1;
@@ -237,14 +236,14 @@ long TribeJoinScreen::action(TPanel* panel, long command,
                     this->joinTime = debug_timeGetTime(
                         "C:\\msdev\\work\\age1_x1\\scr_cj.cpp", 0x140);
                 } else {
-                    this->popupOKDialog(0x25A4, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_MULTIPLAYER_NO_GAMES_TO_JOIN, 0, 0x1C2, 100);
                 }
             }
             return 1;
         }
 
-        if (panel == this->cancelButton) {
-            if (command == 1) {
+        if (fromPanel == this->cancelButton) {
+            if (actionIn == 1) {
                 rge_base_game->disable_input();
                 comm->UnlinkToLevel(SINGLE_PLAYER);
                 new TribeMPStartupScreen;
@@ -254,30 +253,29 @@ long TribeJoinScreen::action(TPanel* panel, long command,
             return 1;
         }
 
-        if (panel == this->createButton && command == 1) {
+        if (fromPanel == this->createButton && actionIn == 1) {
             new TribeMPCreateDialog(this);
             return 1;
         }
 
-        if (panel == this->refreshButton) {
-            if (command == 1) {
+        if (fromPanel == this->refreshButton) {
+            if (actionIn == 1) {
                 this->fillList();
             }
             return 1;
         }
 
-        if (panel == this->close_button && command == 1) {
+        if (fromPanel == this->close_button && actionIn == 1) {
             rge_base_game->close();
             return 1;
         }
     }
 
-    return this->TEasy_Panel::action(panel, command, param3, param4);
+    return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
-    : TDialogPanel("Create Dialog")
-{
+TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel)
+    : TDialogPanel("Create Dialog") {
     TEditPanel** inputGamename = &this->inputGamename;
     this->title = 0;
     this->input_title = 0;
@@ -285,12 +283,12 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
     this->okButton = 0;
     this->cancelButton = 0;
 
-    if (this->setup(parent->renderArea(), parent, 500, 230,
-                    static_cast<TEasy_Panel*>(parent)->get_popup_info_file(),
-                    static_cast<TEasy_Panel*>(parent)->get_popup_info_id(), 1)) {
-        if (this->create_text(this, &this->title, 0x25a6,
+    if (this->setup(parentPanel->renderArea(), parentPanel, 500, 230,
+                    static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_file(),
+                    static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_id(), 1)) {
+        if (this->create_text(this, &this->title, IDS_MULTIPLAYER_CREATE_GAME_TITLE,
                               20, 20, 0x1cc, 0x1e, 1, 1, 1, 0)) {
-            if (this->create_text(this, &this->input_title, 0x25aa,
+            if (this->create_text(this, &this->input_title, IDS_MULTIPLAYER_GAME_NAME,
                                   40, 0x55, 0x1a4, 20, 4, 0, 1, 0)) {
                 char str[256];
                 char* s = Regs->RegGetAscii(
@@ -306,10 +304,10 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
                                       40, 0x6e, 0x1a4, 0x17,
                                       0xb, 1, 0)) {
                     if (this->create_button(this, &this->okButton,
-                                            0x0fa1, 0, 0x3c, 0xb4,
+                                            IDS_BUTTON_OK, 0, 0x3c, 0xb4,
                                             0xb4, 0x1e, 0, 0, 0)) {
                         if (this->create_button(this, &this->cancelButton,
-                                                0x0fa2, 0, 0x104, 0xb4,
+                                                IDS_BUTTON_CANCEL, 0, 0x104, 0xb4,
                                                 0xb4, 0x1e, 0, 0, 0)) {
                             TButtonPanel* cancel = this->cancelButton;
                             cancel->hotkey = 0x1b;
@@ -336,12 +334,10 @@ TribeMPCreateDialog::~TribeMPCreateDialog() {
     this->delete_panel((TPanel**)&this->cancelButton);
 }
 
-long TribeMPCreateDialog::action(TPanel* panel, long command,
-                                 unsigned long param3, unsigned long param4)
-{
-    if (panel != 0) {
-        if ((panel == this->okButton && command == 1) ||
-            (panel == this->inputGamename && command == 0)) {
+long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0) {
+        if ((fromPanel == this->okButton && actionIn == 1) ||
+            (fromPanel == this->inputGamename && actionIn == 0)) {
             if (this->inputGamename->is_blank()) {
                 this->set_curr_child(this->inputGamename);
                 return 1;
@@ -396,17 +392,17 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
             panel_system.destroyPanel("Create Dialog");
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Status Screen");
-            parent->popupOKDialog(0x25AD, 0, 0x1C2, 100);
+            parent->popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_CREATE_GAME, 0, 0x1C2, 100);
             return 1;
         }
 
-        if ((panel == this->cancelButton && command == 1) ||
-            (panel == this->inputGamename && command == 1)) {
+        if ((fromPanel == this->cancelButton && actionIn == 1) ||
+            (fromPanel == this->inputGamename && actionIn == 1)) {
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Create Dialog");
             return 1;
         }
     }
 
-    return TPanel::action(panel, command, param3, param4);
+    return TPanel::action(fromPanel, actionIn, a1, a2);
 }

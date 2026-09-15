@@ -33,7 +33,7 @@ public:
         SaveScenarioEdit = 2
     };
 
-    TribeSaveGameScreen(Mode mode, char* name, int quit_after_save);
+    TribeSaveGameScreen(Mode m, char* file_name, int quit_after_save_in);
     virtual ~TribeSaveGameScreen();
 
 protected:
@@ -50,7 +50,7 @@ protected:
     int quit_after_save;
 
     void fillList();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void save_for_scenario_editor();
 };
 

@@ -22,8 +22,8 @@ public:
     TRIBE_Screen_Main_Menu();
     virtual ~TRIBE_Screen_Main_Menu();
     virtual long handle_idle();
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char scr_main_menu_size_check[
@@ -37,9 +37,9 @@ public:
 
     TRIBE_Screen_Main_Error();
     virtual ~TRIBE_Screen_Main_Error();
-    void set_text(char*);
-    void set_text(long);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    void set_text(char* message_in);
+    void set_text(long message_in);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2);
     virtual long handle_idle();
 };
 

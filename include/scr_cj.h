@@ -41,8 +41,8 @@ public:
     TribeJoinScreen();
     virtual ~TribeJoinScreen();
     virtual long handle_idle();
-    virtual long handle_user_command(unsigned int, long);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long handle_user_command(unsigned int wParam, long lParam);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
 protected:
     void fillList();
@@ -61,10 +61,10 @@ protected:
 
 public:
     virtual ~TribeMPCreateDialog();
-    TribeMPCreateDialog(TPanel* parent);
+    TribeMPCreateDialog(TPanel* parentPanel);
 
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char scr_cj_create_dialog_size_check[

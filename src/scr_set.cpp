@@ -10,14 +10,14 @@
 #include "../include/tscenaro.h"
 #include "../include/com_hand.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 TribeGameSettingsScreen::TribeGameSettingsScreen()
-    : TScreenPanel("Game Settings Screen")
-{
+    : TScreenPanel("Game Settings Screen") {
     char num_str[5];
     char* setup_file;
     int multiplayer;
@@ -283,7 +283,6 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     second_column_pos -= 0x3C;
     second_column_pos *= this->pnl_wid;
     second_column_pos /= this->ideal_width;
-    // LIKELY INTENT: Scale the list's player column with the panel width.
     this->scenarioList->set_second_column_pos(second_column_pos);
 
     if (rge_base_game->multiplayerGame() != 0) {
@@ -340,18 +339,18 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         return;
     this->missionScrollbar->set_help_info(0x763A, -1);
 
-    if (!this->create_button(this, &this->okButton, 0xFA1,
+    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK,
                              0, 0x3C, 0x1B8, 0xF0, 0x1E, 0, 0, 0))
         return;
-    this->okButton->set_help_info(0x7531, -1);
+    this->okButton->set_help_info(IDS_HELP_OK, -1);
 
-    if (!this->create_button(this, &this->cancelButton, 0xFA2,
+    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL,
                              0, 0x140, 0x1B8, 0xF0, 0x1E, 0, 0, 0))
         return;
     TButtonPanel* cancel_button = this->cancelButton;
     cancel_button->hotkey = 0x1B;
     cancel_button->hotkey_shift = 0;
-    this->cancelButton->set_help_info(0x7532, -1);
+    this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
 
     if (!this->create_button(this, &this->help_button, 0xFA9,
                              0, 0x244, 0x1B8, 0x1E, 0x1E, 0, 0, 0))
@@ -418,8 +417,7 @@ void TribeGameSettingsScreen::init_vars(void) {
     this->last_send_shared = 0;
 }
 
-TribeGameSettingsScreen::~TribeGameSettingsScreen()
-{
+TribeGameSettingsScreen::~TribeGameSettingsScreen() {
     this->delete_panel((TPanel**)&this->title);
     this->delete_panel((TPanel**)&this->mapSizeLabel);
     this->delete_panel((TPanel**)&this->mapSizeDrop);
@@ -508,45 +506,44 @@ long TribeGameSettingsScreen::handle_idle() {
 }
 
 
-long TribeGameSettingsScreen::handle_user_command(unsigned int command, long param) {
+long TribeGameSettingsScreen::handle_user_command(unsigned int wParam, long lParam) {
     if (this->chat_scr != 0) {
-        long result = this->chat_scr->handle_user_command(command, param);
+        long result = this->chat_scr->handle_user_command(wParam, lParam);
         if (result != 0) {
             return result;
         }
     }
-    return this->TPanel::handle_user_command(command, param);
+    return this->TPanel::handle_user_command(wParam, lParam);
 }
 
 
-long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
-{
-    if (param_1 == 0)
+long TribeGameSettingsScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel == 0)
         goto def;
 
     if (this->scenariosLoaded == 0)
         goto def;
 
-    if (param_1 == this->okButton && param_2 == 1) {
+    if (fromPanel == this->okButton && actionIn == 1) {
         this->set_curr_child(this->scenarioList);
         this->sendSettings();
         this->chat_scr->action(this, 1, 0, 0);
         return 1;
     }
 
-    if (param_1 == this->cancelButton && param_2 == 1) {
+    if (fromPanel == this->cancelButton && actionIn == 1) {
         this->set_curr_child(this->scenarioList);
         this->getSettings();
         this->chat_scr->action(this, 0, 0, 0);
         return 1;
     }
 
-    if (param_1 == this->help_button && param_2 == 1) {
+    if (fromPanel == this->help_button && actionIn == 1) {
         this->setup_popup_help();
         return 1;
     }
 
-    if (param_1 == this->victoryTypeDrop && param_2 == 0) {
+    if (fromPanel == this->victoryTypeDrop && actionIn == 0) {
         switch (this->victoryTypeDrop->get_id()) {
         case 7:
             this->timeDrop->set_line(3);
@@ -561,10 +558,10 @@ long TribeGameSettingsScreen::action(TPanel* param_1, long param_2, unsigned lon
         return 1;
     }
 
-    if (param_1 == this->scenarioList) {
-        if (param_2 == 3)
+    if (fromPanel == this->scenarioList) {
+        if (actionIn == 3)
             return 1;
-        if (param_2 == 1) {
+        if (actionIn == 1) {
             this->fillMissionText();
             goto activate_and_return;
         }
@@ -577,13 +574,12 @@ activate_and_return:
     return 1;
 
 def:
-    return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
+    return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
 
-void TribeGameSettingsScreen::fillScenarios()
-{
-    RGE_Scenario_File_Info* info;
+void TribeGameSettingsScreen::fillScenarios() {
+    RGE_Scenario_File_Info* scenario_info_file;
     char* name;
     int i;
     int len;
@@ -595,13 +591,13 @@ void TribeGameSettingsScreen::fillScenarios()
     this->scenario_line_offset = 0;
 
     if (rge_base_game->multiplayerGame() || rge_base_game->scenarioGame()) {
-        info = rge_base_game->scenario_info;
-        info->reload_scenarios();
+        scenario_info_file = rge_base_game->scenario_info;
+        scenario_info_file->reload_scenarios();
         i = 0;
         this->scenarioList->sorted = 1;
         this->scenarioCount = 0;
         while (1) {
-            name = info->get_scenario_name(i);
+            name = scenario_info_file->get_scenario_name(i);
             if (name == 0) {
                 break;
             }
@@ -626,7 +622,7 @@ void TribeGameSettingsScreen::fillScenarios()
                 do {
                     TRIBE_Scenario_Header* entry =
                         static_cast<TRIBE_Scenario_Header*>(
-                            info->get_scenario_info(
+                            scenario_info_file->get_scenario_info(
                                 this->scenarioList->get_id(i)));
                     if (entry != 0) {
                         this->scenarioMission[i] = (char*)calloc(0x1000, 1);
@@ -771,8 +767,7 @@ void TribeGameSettingsScreen::getSettings() {
 }
 
 
-void TribeGameSettingsScreen::sendSettings()
-{
+void TribeGameSettingsScreen::sendSettings() {
     if (this->scenarioList->get_id() >= 0) {
         rge_base_game->setScenarioGame(1);
         rge_base_game->setScenarioName(this->scenarioList->get_text());
@@ -844,11 +839,11 @@ void TribeGameSettingsScreen::sendSettings()
 
 void TribeGameSettingsScreen::activatePanels() {
     TPanel* tabList[3];
-    int isScenario;
+    int is_scenario;
     int count;
 
-    isScenario = (state == 0);
-    if (isScenario) {
+    is_scenario = (state == 0);
+    if (is_scenario) {
         missionTitle->set_active(1);
         missionText->set_active(1);
     } else {
@@ -856,10 +851,10 @@ void TribeGameSettingsScreen::activatePanels() {
         missionText->set_active(0);
     }
 
-    mapSizeDrop->set_active(isScenario == 0);
-    mapTypeDrop->set_active(isScenario == 0);
-    mapSizeLabel->set_active(isScenario == 0);
-    mapTypeLabel->set_active(isScenario == 0);
+    mapSizeDrop->set_active(is_scenario == 0);
+    mapTypeDrop->set_active(is_scenario == 0);
+    mapSizeLabel->set_active(is_scenario == 0);
+    mapTypeLabel->set_active(is_scenario == 0);
 
     if (scenarioList->get_id() == -1) {
         resourcesDrop->set_active(0);
@@ -894,11 +889,11 @@ void TribeGameSettingsScreen::activateVictoryPanels() {
     scoreDrop->set_active(0);
 
     if (state == 0) {
-        long firstLine = scenarioList->get_line();
-        long secondLine = scenarioList->get_line();
+        long first_line = scenarioList->get_line();
+        long second_line = scenarioList->get_line();
 
-        if (scenariosLoaded != 0 && secondLine >= 0 &&
-            scenarioFixed[scenario_line_offset + firstLine] != 0) {
+        if (scenariosLoaded != 0 && second_line >= 0 &&
+            scenarioFixed[scenario_line_offset + first_line] != 0) {
             victoryFixedText->set_active(1);
             victoryTypeLabel->set_active(0);
             victoryTypeDrop->set_active(0);

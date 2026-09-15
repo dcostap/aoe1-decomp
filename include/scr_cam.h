@@ -49,8 +49,7 @@ protected:
     void remove_scenario();
     void move_scenario_up();
     void move_scenario_down();
-    virtual long action(TPanel* panel, long code, unsigned long p3,
-                        unsigned long p4);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char scr_cam_screen_size_check[
