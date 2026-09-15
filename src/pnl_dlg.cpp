@@ -11,9 +11,7 @@ TDialogPanel::TDialogPanel(char* panel_name_in)
     , button_sound_id(0) {
 }
 
-int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in,
-                        long wid_in, long hgt_in, char* info_file_name,
-                        long resource_file_id, int allow_shadow_area_in) {
+int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, char* info_file_name, long resource_file_id, int allow_shadow_area_in) {
     int height;
     int width;
 
@@ -47,9 +45,7 @@ int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in,
     return 1;
 }
 
-int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in,
-                        long wid_in, long hgt_in, unsigned char color_in,
-                        int allow_shadow_area_in) {
+int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_in, long hgt_in, unsigned char color_in, int allow_shadow_area_in) {
     int width;
     int height;
 

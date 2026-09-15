@@ -6,7 +6,7 @@
 - Header owner: owner 18 owns `include/pnl_dlg.h`; this worker did not edit it.
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Base source SHA-256 from Git: `1f1429a06c8fed05e0a4d7503e79fd8294f89617c0757d055fd2c48074805dd2`
-- Final source SHA-256: `c67fbf4cd5ffa7100c5f6b4fd73f95752b5b63c1ee6e6d475e2a63d880906dfb`
+- Final source SHA-256: `dbe13de8ced1f0e9b6a2496a7c59c7e3b1e8880a0993e67d5c557624acdbb5f3`
 - Final commit: see the delivery record for the full Git hash.
 - Changed files:
   - `src/pnl_dlg.cpp`
@@ -15,7 +15,8 @@
 The source keeps the five handwritten functions in PDB source order. It also
 keeps the adjacent compiler-generated vector-deleting destructor outside the
 source owner. The cleanup restores procedure-scoped parameter names and moves
-function opening braces to 1TBS style. It does not change executable logic.
+function opening braces to 1TBS style. The setup signatures stay on one line,
+as required for short signatures. It does not change executable logic.
 
 Evidence identity used during review:
 
@@ -125,3 +126,9 @@ requested.
 Compilation, matching, audits, and tests were not run. No compiler, build,
 matching, audit, test, or game command was run for this assignment. The full
 source diff was reviewed, and `git diff --check` passed.
+
+## Correction history
+
+After the initial cleanup commit, both setup definition signatures moved onto
+one line. The longer `TEasy_Panel::setup` calls remain wrapped. No validation
+was run for this formatting correction.
