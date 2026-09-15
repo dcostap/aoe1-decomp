@@ -29,6 +29,8 @@ Root approval and definition provenance for the approved shared resource set is 
 
 The worker kept the existing lookup calls, argument types, casts, buffers, format arguments, arithmetic, fallback paths, recovered names, and 1TBS formatting. The report update follows the source substitution commit.
 
+The reviewer extraction directory was `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`. The approved string payloads come from the staged runtime base file F1. Both checked expansion files, F2 and F3, miss those payloads. The pinned original set has no base `language.dll`; F3 is only its original expansion `languagex.dll` reference. Root approval and definition, owner header import, and worker substitutions remain separate provenance records above.
+
 ## PDB coverage
 
 I inspected the source registry and all six assigned function packets. The registry is:
@@ -82,7 +84,7 @@ Common resource checks for every row below:
 - F2: `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; SHA256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`.
 - F3: `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; SHA256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 
-F1 is the staged base-language input. F2 is the staged expansion input. F3 is the pinned original expansion reference. F2 and F3 have no RT_STRING entry for any checked ID. The source calls `TEasy_Panel::create_text`, `TEasy_Panel::popupOKDialog`, `TEasy_Panel::popupYesNoDialog`, `TTextPanel::append_line`, and `TPanel::set_help_info`. These paths use `TPanel::get_string` and `RGE_Base_Game::get_string`, whose base DLL name is `language.dll`. No `StringTableX` override call is present in this module. The checked expansion files provide no override or fallback text for these IDs.
+F1 is the staged runtime base-language input. F2 is the staged expansion input. F3 is the pinned original expansion reference. F2 and F3 have no RT_STRING entry for any checked ID. The pinned original set has no base `language.dll`, so it cannot provide a pinned base-language comparison. The source calls `TEasy_Panel::create_text`, `TEasy_Panel::popupOKDialog`, `TEasy_Panel::popupYesNoDialog`, `TTextPanel::append_line`, and `TPanel::set_help_info`. These paths use `TPanel::get_string` and `RGE_Base_Game::get_string`, whose base DLL name is `language.dll`. No `StringTableX` override call is present in this module. The checked expansion files provide no override or fallback text for these IDs.
 
 | ID | Proposed name | Call-site purpose and lookup path | Language and F1 text | F2/F3 result |
 | --- | --- | --- | --- | --- |
