@@ -1,5 +1,14 @@
 # Cleanup wave 04 root review
 
+## Owner 28: final reports approved
+
+Root read the complete two-report diff to `5c12201357c5779f361f6d3232f4688c201b7b08`.
+The reports now state the virtual lookup chain, expansion misses, nonempty base strings, and exact evidence paths.
+No source or header changed in this correction. No review blocker remains.
+The original full review and 979-line correction review remain in effect. Validation remains deferred.
+Root merged the group as `b20c1a86911f20487bed04eca07288cba1d128db`.
+Main contains 208 assigned modules plus the pilot: 209 of 225, approximately 92.9%.
+
 ## Owner 28: correction review started
 
 Corrected head: `4cba115bf1051cd68625e89b0411645c61b1b933`.
