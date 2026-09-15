@@ -79,18 +79,10 @@ TButtonPanel::~TButtonPanel() {
 
 // 004720A0_setup.cpp
 
-long TButtonPanel::setup(
-    TDrawArea* render_area_in,
-    TPanel* parent_panel_in,
-    long x_in,
-    long y_in,
-    long wid_in,
-    long hgt_in,
-    TButtonPanel::DrawType drawTypeIn,
-    TDigital* sound_in,
-    TButtonPanel::NotifyType notifyTypeIn,
-    long id_in
-) {
+long TButtonPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in,
+                         long x_in, long y_in, long wid_in, long hgt_in,
+                         TButtonPanel::DrawType drawTypeIn, TDigital* sound_in,
+                         TButtonPanel::NotifyType notifyTypeIn, long id_in) {
     TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in,
                   0);
     this->drawTypeValue = drawTypeIn;
@@ -110,14 +102,10 @@ TButtonPanel::DrawType TButtonPanel::drawType() const { return this->drawTypeVal
 TButtonPanel::NotifyType TButtonPanel::notifyType() const { return this->notifyTypeValue; }
 
 // 00472140_setDrawType.cpp
-void TButtonPanel::setDrawType(TButtonPanel::DrawType drawTypeIn) {
-    this->drawTypeValue = drawTypeIn;
-}
+void TButtonPanel::setDrawType(TButtonPanel::DrawType drawTypeIn) { this->drawTypeValue = drawTypeIn; }
 
 // 00472150_setButtonType.cpp
-void TButtonPanel::setButtonType(TButtonPanel::ButtonType buttonTypeIn) {
-    this->buttonTypeValue = buttonTypeIn;
-}
+void TButtonPanel::setButtonType(TButtonPanel::ButtonType buttonTypeIn) { this->buttonTypeValue = buttonTypeIn; }
 
 // 00472160_set_picture_info.cpp
 void TButtonPanel::set_picture_info(TShape* pic_in, short pic_index_in, long pic_x_in, long pic_y_in, int all_hot_in, int auto_pic_pos_in) {
@@ -405,8 +393,7 @@ int TButtonPanel::get_text(short state_in, char** text1_in, char** text2_in) {
 }
 
 // 00472880_get_text_color.cpp
-void TButtonPanel::get_text_color(short state_in, unsigned long* color1,
-                                  unsigned long* color2) {
+void TButtonPanel::get_text_color(short state_in, unsigned long* color1, unsigned long* color2) {
     if (state_in == -1) {
         state_in = cur_state;
     }
@@ -1048,9 +1035,7 @@ void TButtonPanel::reset(void) {
 }
 
 // 00473BB0_set_sound_number.cpp
-void TButtonPanel::set_sound_number(int sound_number_in) {
-    this->sound_number = sound_number_in;
-}
+void TButtonPanel::set_sound_number(int sound_number_in) { this->sound_number = sound_number_in; }
 
 // 00473BC0_stop_sound_system.cpp
 void TButtonPanel::stop_sound_system(void) {
