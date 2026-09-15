@@ -106,8 +106,8 @@ The first cleanup mapped the damage local `count` to the PDB name `tot_armor`.
 Root review rejected that mapping. The PDB places `tot_armor` at `+0x8`, but
 that offset does not prove the source declaration.
 
-The original bytes load `attacker->weapon_num` at `0045100D`. They store the
-weapon countdown at `0045102B` and `0045108A`. The source therefore keeps
+The original bytes load `attacker->weapon_num` at `0045100D`. They write the
+weapon countdown at `0045102B` and read it at `0045108A`. The source therefore keeps
 `int count = attacker->weapon_num` and the separate `remaining` declaration.
 The type, scope, expressions, and behavior remain unchanged. The PDB mapping
 is unresolved.
