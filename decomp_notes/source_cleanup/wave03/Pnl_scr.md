@@ -7,7 +7,7 @@
 - Build flags: `default`, from the registry.
 - Branch: `cleanup/staging-20260915-159`.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit: `31745ac4bd55634ab517f7fc60fc6c04ec31e390`.
+- Final source commit: `9adbaf86bf055dc1588872eed36a8eabe11e914f`.
 - Changed files:
   - `src/Pnl_scr.cpp`
   - `decomp_notes/source_cleanup/wave03/Pnl_scr.md`
@@ -109,9 +109,10 @@ unchanged because the PDB does not prove a replacement.
 ## Code-generation risks
 
 The source change renames parameters and applies 1TBS function braces. It also
-adjusts whitespace and wraps two signatures. These changes do not change types,
-storage, declaration order, evaluation order, control flow, literals, calls,
-virtual slots, public symbols, layouts, or ABI declarations.
+adjusts whitespace while keeping both setup signatures and setup calls on one
+line. These changes do not change types, storage, declaration order, evaluation
+order, control flow, literals, calls, virtual slots, public symbols, layouts, or
+ABI declarations.
 
 The aggregate palette declaration remains unchanged. This avoids a speculative
 stack-layout rewrite. The prior module note records seven normal owners and the
