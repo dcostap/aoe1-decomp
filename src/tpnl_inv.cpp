@@ -3,6 +3,7 @@
 #include "../include/Shape.h"
 #include "../include/tplayer.h"
 #include "../include/colorlog.h"
+#include "../include/resource_ids.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -178,19 +179,19 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& string, long& page, long x
         return 0;
 
     if (x < this->pnl_x + 0x37) {
-        sprintf(string, this->get_string(0x1D4EE),
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_WOOD_FORMAT),
                 (int)this->player->attributes[1]);
         page = -1;
     } else if (x < this->pnl_x + 0x6E) {
-        sprintf(string, this->get_string(0x1D4ED),
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_FOOD_FORMAT),
                 (int)this->player->attributes[0]);
         page = -1;
     } else if (x < this->pnl_x + 0xA5) {
-        sprintf(string, this->get_string(0x1D4EF),
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_GOLD_FORMAT),
                 (int)this->player->attributes[3]);
         page = -1;
     } else {
-        sprintf(string, this->get_string(0x1D4F0),
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_STONE_FORMAT),
                 (int)this->player->attributes[2]);
         page = -1;
     }
