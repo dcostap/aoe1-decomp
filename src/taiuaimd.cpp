@@ -1856,6 +1856,7 @@ extern float DAT_005758e0;
 extern float DAT_005758e4;
 
 int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
+    NotifyEvent* event = nEvent;
     float newX;
     float newY;
     RGE_Static_Object* target;
@@ -1865,13 +1866,13 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     float distance;
     int i;
 
-    switch (nEvent->mType) {
+    switch (event->mType) {
     case 0x20F: {
         if (this->objectValue->owner->computerPlayer() == 0)
             break;
 
         RGE_Static_Object* attacker =
-            this->objectValue->owner->world->object(nEvent->caller);
+            this->objectValue->owner->world->object(event->caller);
         if (attacker == 0)
             break;
         short group = attacker->master_obj->id;
@@ -2019,7 +2020,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     }
 
 return_base:
-    return UnitAIModule::processNotify(nEvent, uTime);
+    return UnitAIModule::processNotify(event, uTime);
 return_two:
     return 2;
 }
