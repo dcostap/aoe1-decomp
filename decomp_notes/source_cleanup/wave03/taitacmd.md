@@ -5,8 +5,8 @@
 - Module: `src/taitacmd.cpp`.
 - Common base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Previous source-cleanup commit: `a593951d6517d85078efd5a9d70c6300f22a9db5`.
-- Correction source commit: `ce810adbb5d020a2788c5800018a20470701d4f9`.
-- Final source commit: `ce810adbb5d020a2788c5800018a20470701d4f9`.
+- Correction source commit: `2b9bd67624c4c302b583f4cb57c00846266bac74`.
+- Final source commit: `2b9bd67624c4c302b583f4cb57c00846266bac74`.
 - The final report commit follows this source commit and changes this report only.
 
 ## Changed files
@@ -287,14 +287,14 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 - `TacticalAIGroup::task` recovered `oHP`, `distance`, `gatherRange`, `randomRoll`, `commanderObj`, and `targetObj` from scoped local records and the original task packet.
 - `TacticalAIGroup::isGathered` recovered `distance` and `t` from scoped local and parameter records.
 - `taskCivilians` recovered `tcPosition` and `j` from scoped local records.
+- This correction recovers the supported parameter spellings `t` in `TacticalAIGroup::task` and `outfile` in `TribeTacticalAIModule::save`.
 - The PDB stack records in the coverage table are the complete local and parameter evidence for every assigned procedure.
 
 ## Unresolved declaration mappings
 
-- `TacticalAIGroup::task` keeps source parameter spelling `tactical` instead of PDB spelling `t`. This descriptive spelling avoids a broad call-site rename. This is an unresolved declaration spelling, not a behavior claim.
-- `TribeTacticalAIModule::save` keeps source parameter spelling `file` instead of PDB `outfile`. The save body is a large serialization surface, and this correction does not change that declaration.
 - The load constructor still has generated local spellings `iVar1`, `piVar2`, `pTVar5`, `iVar6`, `tempInt`, and `local_2c` where PDB records overlap or reuse stack slots. `tempUD` is recovered. No alias or extra local was added.
 - Positive-offset PDB records that overlay locals are not treated as proof of a distinct C++ declaration. The full stack record list above preserves that uncertainty.
+- Coverage review found no other reliable parameter or local name left unchanged for convenience. The remaining constructor mappings are uncertain because the records reuse or overlay storage.
 
 ## Recovered versus invented names
 
@@ -313,7 +313,8 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 ## Formatting-only correction
 
 - Applied 1TBS brace placement and consistent four-space indentation throughout `src/taitacmd.cpp`.
-- The correction changes whitespace and brace placement only. It preserves declarations, statements, scopes, macro continuations, names, constants, casts, calls, and evaluation order.
+- The earlier formatting correction changed whitespace and brace placement only. It preserved declarations, statements, scopes, macro continuations, names, constants, casts, calls, and evaluation order.
+- This second correction changes only the supported parameter identifiers and their uses. It does not change formatting, statements, constants, casts, calls, or evaluation order.
 - The load constructor no longer uses its former two-space indentation.
 
 ## Code-generation and ownership risks
@@ -335,7 +336,9 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 1. The first cleanup commit was `a593951d6517d85078efd5a9d70c6300f22a9db5`.
 2. Review found that the report lacked full delivery, evidence, coverage, and risk records.
 3. This correction expands the report, records all 216 registered procedures, and formats the source with 1TBS and four-space indentation.
-4. The correction source commit is `ce810adbb5d020a2788c5800018a20470701d4f9`. Report-only follow-up commits record this final delivery report.
+4. The first correction source commit is `ce810adbb5d020a2788c5800018a20470701d4f9`. Report-only follow-up commits recorded that delivery report.
+5. This second correction recovers the reliable PDB parameter names `t` and `outfile`, updates all uses in their owning functions, and does not change formatting.
+6. The second-correction source commit is `2b9bd67624c4c302b583f4cb57c00846266bac74`; a report-only follow-up commit records this updated report.
 
 ## Required validation statement
 
