@@ -8,6 +8,7 @@
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Source commit: `cd138ad8ff071550dd4cc712602d6e902b0451e9`
 - Report delivery commit: `22dd8c8762fe0b0539da53f7bdb55963e13de15e`
+- Post-cleanup repair commit: recorded by Git after this report is committed
 - Changed files in the source commit:
   - `src/scenario.cpp`
 - Changed files in the report commit:
@@ -89,6 +90,20 @@ The requested declaration names are:
 The non-registry protected `get_object_pointer` record also reliably gives `obj_ID`.
 Owner 26 can rename its header parameter from `object_id` to `obj_ID` in the same declaration-only change.
 
+## Post-cleanup VC5 repair
+
+The fresh main-build report is `C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+It records `src/scenario.cpp` as `compiled: false`.
+VC5 reported `C2374: 'player_index' : redefinition; multiple initialization` at lines 255, 268, 691, 790, 797, and 813.
+VC5 keeps a for-init variable in the enclosing function scope.
+
+I compared the source with pre-cleanup commit `6d46835cdc6e31ba879a2e6e31415327a7c7e341`.
+The load constructor now restores the distinct baseline names `n3`, `n4`, `n5`, and `n6`.
+The `save` function now restores the distinct baseline names `a`, `b`, `c`, `d`, `e`, and `f`.
+The repair changes only loop names and their uses.
+It adds no scope, removes no declaration, and changes no type, storage, order, call, or behavior.
+No new build or compiler run was made for this repair.
+
 ## Constants and comments
 
 I read the pinned VC5 headers before replacing numeric SDK values.
@@ -151,12 +166,12 @@ and languagex override with language.dll fallback.
 
 The changes rename parameters and locals, apply 1TBS formatting, add required CRT includes, and use SDK macros with the same values.
 They preserve types, scopes, storage, casts, call targets, evaluation order, statement order, resource lookup order, and public signatures.
-The source was not compiled, so generated-code stability remains unverified.
+The repaired source was not compiled, so generated-code stability remains unverified.
 
 ## Validation and open items
 
-I reviewed the complete source diff and ran `git diff --check`.
-I did not run a compiler, build, matching check, audit, test, or game.
+The fresh main build report records the VC5 compile failure described above.
+I did not run a compiler, build, matching check, audit, test, or game for this repair.
 
 Open items:
 

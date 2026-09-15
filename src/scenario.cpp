@@ -247,44 +247,44 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
         this->mission_picture = 0;
     }
 
-    for (int player_index = 0; player_index < 16; player_index++) {
+    for (int n3 = 0; n3 < 16; n3++) {
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, this->BuildList[player_index], length);
-        this->BuildList[player_index][length] = 0;
+        if (length > 0) rge_read(infile, this->BuildList[n3], length);
+        this->BuildList[n3][length] = 0;
     }
-    for (int player_index = 0; player_index < 16; player_index++) {
+    for (int n4 = 0; n4 < 16; n4++) {
         rge_read(infile, &length, 2);
-        if (length > 0) rge_read(infile, this->CityPlan[player_index], length);
-        this->CityPlan[player_index][length] = 0;
+        if (length > 0) rge_read(infile, this->CityPlan[n4], length);
+        this->CityPlan[n4][length] = 0;
     }
     if (this->Version >= 1.08) {
-        for (int player_index = 0; player_index < 16; player_index++) {
+        for (int n5 = 0; n5 < 16; n5++) {
             rge_read(infile, &length, 2);
-            if (length > 0) rge_read(infile, this->AiRules[player_index], length);
-            this->AiRules[player_index][length] = 0;
+            if (length > 0) rge_read(infile, this->AiRules[n5], length);
+            this->AiRules[n5][length] = 0;
         }
     }
 
-    for (int player_index = 0; player_index < 16; player_index++) {
-        rge_read(infile, &this->BuildListFileSize[player_index], 4);
-        rge_read(infile, &this->CityPlanFileSize[player_index], 4);
+    for (int n6 = 0; n6 < 16; n6++) {
+        rge_read(infile, &this->BuildListFileSize[n6], 4);
+        rge_read(infile, &this->CityPlanFileSize[n6], 4);
         if (this->Version >= 1.08)
-            rge_read(infile, &this->AiRulesFileSize[player_index], 4);
-        this->BuildListFile[player_index] = 0;
-        this->CityPlanFile[player_index] = 0;
-        this->AiRulesFile[player_index] = 0;
+            rge_read(infile, &this->AiRulesFileSize[n6], 4);
+        this->BuildListFile[n6] = 0;
+        this->CityPlanFile[n6] = 0;
+        this->AiRulesFile[n6] = 0;
         if (this->Version >= 1.15f) {
-            if (this->BuildListFileSize[player_index] > 0) {
-                this->BuildListFile[player_index] = (unsigned char*)calloc(this->BuildListFileSize[player_index], 1);
-                rge_read(infile, this->BuildListFile[player_index], this->BuildListFileSize[player_index]);
+            if (this->BuildListFileSize[n6] > 0) {
+                this->BuildListFile[n6] = (unsigned char*)calloc(this->BuildListFileSize[n6], 1);
+                rge_read(infile, this->BuildListFile[n6], this->BuildListFileSize[n6]);
             }
-            if (this->CityPlanFileSize[player_index] > 0) {
-                this->CityPlanFile[player_index] = (unsigned char*)calloc(this->CityPlanFileSize[player_index], 1);
-                rge_read(infile, this->CityPlanFile[player_index], this->CityPlanFileSize[player_index]);
+            if (this->CityPlanFileSize[n6] > 0) {
+                this->CityPlanFile[n6] = (unsigned char*)calloc(this->CityPlanFileSize[n6], 1);
+                rge_read(infile, this->CityPlanFile[n6], this->CityPlanFileSize[n6]);
             }
-            if (this->AiRulesFileSize[player_index] > 0) {
-                this->AiRulesFile[player_index] = (unsigned char*)calloc(this->AiRulesFileSize[player_index], 1);
-                rge_read(infile, this->AiRulesFile[player_index], this->AiRulesFileSize[player_index]);
+            if (this->AiRulesFileSize[n6] > 0) {
+                this->AiRulesFile[n6] = (unsigned char*)calloc(this->AiRulesFileSize[n6], 1);
+                rge_read(infile, this->AiRulesFile[n6], this->AiRulesFileSize[n6]);
             }
         }
     }
@@ -685,14 +685,14 @@ void RGE_Scenario::save(int outfile) {
     this->Version = this->Get_Version();
     rge_write(outfile, version, 4);
 
-    for (int player_index = 0; player_index < 16; player_index++)
-        rge_write(outfile, this->player_name[player_index], 0x100);
+    for (int a = 0; a < 16; a++)
+        rge_write(outfile, this->player_name[a], 0x100);
 
-    for (int player_index = 0; player_index < 16; player_index++) {
-        rge_write(outfile, &this->PlActive[player_index], 4);
-        rge_write(outfile, &this->PlType[player_index], 4);
-        rge_write(outfile, &this->PlCivilization[player_index], 4);
-        rge_write(outfile, &this->PlayerPosture[player_index], 4);
+    for (int b = 0; b < 16; b++) {
+        rge_write(outfile, &this->PlActive[b], 4);
+        rge_write(outfile, &this->PlType[b], 4);
+        rge_write(outfile, &this->PlCivilization[b], 4);
+        rge_write(outfile, &this->PlayerPosture[b], 4);
     }
 
     rge_write(outfile, &this->victory_conquest, 1);
@@ -787,80 +787,80 @@ void RGE_Scenario::save(int outfile) {
 skip_store:
     this->mission_picture->Save(outfile);
 
-    for (int player_index = 0; player_index < 16; player_index++) {
-        length = (short)strlen(this->BuildList[player_index]);
+    for (int c = 0; c < 16; c++) {
+        length = (short)strlen(this->BuildList[c]);
         rge_write(outfile, &length, 2);
         if (length > 0)
-            rge_write(outfile, this->BuildList[player_index], length);
+            rge_write(outfile, this->BuildList[c], length);
     }
 
-    for (int player_index = 0; player_index < 16; player_index++) {
-        length = (short)strlen(this->CityPlan[player_index]);
+    for (int d = 0; d < 16; d++) {
+        length = (short)strlen(this->CityPlan[d]);
         rge_write(outfile, &length, 2);
         if (length > 0)
-            rge_write(outfile, this->CityPlan[player_index], length);
+            rge_write(outfile, this->CityPlan[d], length);
     }
 
     if (*version >= 1.08) {
-        for (int player_index = 0; player_index < 16; player_index++) {
-            length = (short)strlen(this->AiRules[player_index]);
+        for (int e = 0; e < 16; e++) {
+            length = (short)strlen(this->AiRules[e]);
             rge_write(outfile, &length, 2);
             if (length > 0)
-                rge_write(outfile, this->AiRules[player_index], length);
+                rge_write(outfile, this->AiRules[e], length);
         }
     }
 
-    for (int player_index = 0; player_index < 16; player_index++) {
-        if (this->BuildList[player_index] != 0) {
-            sprintf(temp_file_name, "%s%s.ai", rge_base_game->prog_info->ai_dir, this->BuildList[player_index]);
+    for (int f = 0; f < 16; f++) {
+        if (this->BuildList[f] != 0) {
+            sprintf(temp_file_name, "%s%s.ai", rge_base_game->prog_info->ai_dir, this->BuildList[f]);
             fd = _open(temp_file_name, _O_BINARY);
             if (fd > -1) {
                 lseek(fd, 0, SEEK_END);
-                this->BuildListFileSize[player_index] = _tell(fd);
-                if (this->BuildListFile[player_index] != 0) free(this->BuildListFile[player_index]);
-                this->BuildListFile[player_index] = (unsigned char*)calloc(this->BuildListFileSize[player_index], 1);
+                this->BuildListFileSize[f] = _tell(fd);
+                if (this->BuildListFile[f] != 0) free(this->BuildListFile[f]);
+                this->BuildListFile[f] = (unsigned char*)calloc(this->BuildListFileSize[f], 1);
                 lseek(fd, 0, SEEK_SET);
-                read(fd, this->BuildListFile[player_index], this->BuildListFileSize[player_index]);
+                read(fd, this->BuildListFile[f], this->BuildListFileSize[f]);
                 close(fd);
             }
         }
-        if (this->CityPlan[player_index] != 0) {
-            sprintf(temp_file_name, "%s%s.cty", rge_base_game->prog_info->ai_dir, this->CityPlan[player_index]);
+        if (this->CityPlan[f] != 0) {
+            sprintf(temp_file_name, "%s%s.cty", rge_base_game->prog_info->ai_dir, this->CityPlan[f]);
             fd = _open(temp_file_name, _O_BINARY);
             if (fd > -1) {
                 lseek(fd, 0, SEEK_END);
-                this->CityPlanFileSize[player_index] = _tell(fd);
-                if (this->CityPlanFile[player_index] != 0) free(this->CityPlanFile[player_index]);
-                this->CityPlanFile[player_index] = (unsigned char*)calloc(this->CityPlanFileSize[player_index], 1);
+                this->CityPlanFileSize[f] = _tell(fd);
+                if (this->CityPlanFile[f] != 0) free(this->CityPlanFile[f]);
+                this->CityPlanFile[f] = (unsigned char*)calloc(this->CityPlanFileSize[f], 1);
                 lseek(fd, 0, SEEK_SET);
-                read(fd, this->CityPlanFile[player_index], this->CityPlanFileSize[player_index]);
+                read(fd, this->CityPlanFile[f], this->CityPlanFileSize[f]);
                 close(fd);
             }
         }
-        if (this->AiRules[player_index] != 0) {
-            sprintf(temp_file_name, "%s%s.per", rge_base_game->prog_info->ai_dir, this->AiRules[player_index]);
+        if (this->AiRules[f] != 0) {
+            sprintf(temp_file_name, "%s%s.per", rge_base_game->prog_info->ai_dir, this->AiRules[f]);
             fd = _open(temp_file_name, _O_BINARY);
             if (fd > -1) {
                 lseek(fd, 0, SEEK_END);
-                this->AiRulesFileSize[player_index] = _tell(fd);
-                if (this->AiRulesFile[player_index] != 0) free(this->AiRulesFile[player_index]);
-                this->AiRulesFile[player_index] = (unsigned char*)calloc(this->AiRulesFileSize[player_index], 1);
+                this->AiRulesFileSize[f] = _tell(fd);
+                if (this->AiRulesFile[f] != 0) free(this->AiRulesFile[f]);
+                this->AiRulesFile[f] = (unsigned char*)calloc(this->AiRulesFileSize[f], 1);
                 lseek(fd, 0, SEEK_SET);
-                read(fd, this->AiRulesFile[player_index], this->AiRulesFileSize[player_index]);
+                read(fd, this->AiRulesFile[f], this->AiRulesFileSize[f]);
                 close(fd);
             }
         }
 
-        rge_write(outfile, &this->BuildListFileSize[player_index], 4);
-        rge_write(outfile, &this->CityPlanFileSize[player_index], 4);
+        rge_write(outfile, &this->BuildListFileSize[f], 4);
+        rge_write(outfile, &this->CityPlanFileSize[f], 4);
         if (*version >= 1.08)
-            rge_write(outfile, &this->AiRulesFileSize[player_index], 4);
-        if (this->BuildListFile[player_index] != 0)
-            rge_write(outfile, this->BuildListFile[player_index], this->BuildListFileSize[player_index]);
-        if (this->CityPlanFile[player_index] != 0)
-            rge_write(outfile, this->CityPlanFile[player_index], this->CityPlanFileSize[player_index]);
-        if (this->AiRulesFile[player_index] != 0)
-            rge_write(outfile, this->AiRulesFile[player_index], this->AiRulesFileSize[player_index]);
+            rge_write(outfile, &this->AiRulesFileSize[f], 4);
+        if (this->BuildListFile[f] != 0)
+            rge_write(outfile, this->BuildListFile[f], this->BuildListFileSize[f]);
+        if (this->CityPlanFile[f] != 0)
+            rge_write(outfile, this->CityPlanFile[f], this->CityPlanFileSize[f]);
+        if (this->AiRulesFile[f] != 0)
+            rge_write(outfile, this->AiRulesFile[f], this->AiRulesFileSize[f]);
     }
 
     end_marker = -99;
