@@ -150,6 +150,11 @@ The compiled load order changed although the resolution expression retained its 
 The proposed operand-swap experiment is preserved at `e131991a70833bb256e1f20e6e5e5d972a152577` and is not integrated.
 Root requested a cause-focused correction that retains baseline expression order, rather than an uncompiled scheduling workaround.
 The worker will inspect baseline physical-line formatting and compiland changes before proposing the next repair.
+Root compiled the original-order formatting candidate in isolation as job `bg-81`; compilation passed.
+Its listing still loads height first. Restoring physical lines alone did not recover baseline bytes.
+Output: `build/source-cleanup-20260915/final-validation/flics-lines-experiment/`.
+The candidate remains unmerged. Root authorized the same worker to isolate the cause with targeted VC5 experiments.
+Experiments must use new output directories and preserve operand order, all artifacts, and the rejected history.
 
 ## Fresh linked dependency failures
 
