@@ -114,8 +114,37 @@ function static, or resource mapping request.
 The existing comments for player command virtual slots and the base-game
 cleanup slot remain. No new source comment was needed. The known incomplete
 virtual declarations and command-slot ABI gap remain outside this source-only
-cleanup. Any header change belongs to owner 24. No header request is needed
-for parameter-name changes.
+cleanup.
+
+## Header request to owner 24
+
+Owner 24 must align the unnamed parameters in `include/vw_dimap.h` with these
+PDB-backed source definitions. The request changes parameter names only. It
+does not change the types, virtual slots, or ABI:
+
+```cpp
+virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
+virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);
+virtual long mouse_left_move_action(long x, long y, int ctrl_key, int shift_key);
+virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
+virtual long mouse_right_down_action(long x, long y, int ctrl_key, int shift_key);
+virtual long mouse_right_move_action(long x, long y, int ctrl_key, int shift_key);
+virtual long mouse_right_up_action(long x, long y, int ctrl_key, int shift_key);
+virtual int command_make_do(long x, long y);
+virtual int command_make_move(long x, long y);
+virtual int command_make_work(long x, long y);
+```
+
+The PDB types are `unsigned char` for `mouse_button_in`, `long` for each `x`
+and `y`, and `int` for each `ctrl_key` and `shift_key`. The command methods
+use `long x`, `long y`, and return `int`.
+
+## Correction history
+
+- The initial report in commit `fe2aeb4321e2cf2cf31fd22aa1cfacb63706bd8d`
+  incorrectly stated that no header request was needed.
+- This correction records the required owner 24 request for all ten affected
+  declarations. The worker still does not edit `include/vw_dimap.h`.
 
 ## Type and code-generation risks
 
