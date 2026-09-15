@@ -1,5 +1,13 @@
 # Cleanup wave 04 root review
 
+## Owner 25: correction review started
+
+Corrected head: `044be5c5062e9889129f675ab829b498f486d4b0`.
+The complete 578-line correction diff is `build/source-cleanup-20260915/owner25-corrections.diff`.
+Original reviewer `sa-4261f9a4` resumed to check both blockers, resource substitutions, and changed reports.
+The assignment requires exact baseline declaration and initialization structure for `TRIBE_Player::save`.
+The group remains unmerged. Compiler and runtime validation remain deferred.
+
 ## Owner 28: delegated review started
 
 - Delivered head: `180836230c0c7275581e3489e391546c0c320552`.
