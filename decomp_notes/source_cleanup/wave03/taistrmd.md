@@ -4,15 +4,23 @@
 
 - Module: `src/taistrmd.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `618afdf75a43932587f703a2f8b78e985bce30a8`
+- Initial source commit: `618afdf75a43932587f703a2f8b78e985bce30a8`
+- Initial report commit: `4b890f369303f2ecee38f2cdaefbe38953713ab8`
+- Correction source commit: `1a27f800d5d1c934b8d6822bb6ec923091b064c7`
+- Final source commit: `1a27f800d5d1c934b8d6822bb6ec923091b064c7`
 - Changed source file: `src/taistrmd.cpp`
 - Changed report file: `decomp_notes/source_cleanup/wave03/taistrmd.md`
 - Read-only header: `include/taistrmd.h`; it was not edited.
 - No other tracked file changed.
 
 The source change recovers original local and parameter names from the scoped
-PDB. It keeps the existing function bodies, types, storage, order, literals,
-calls, casts, and control flow. It does not change public symbols or headers.
+PDB. It applies 1TBS to every function definition. It keeps the existing
+function bodies, types, storage, order, literals, calls, casts, and control
+flow. It does not change public symbols or headers.
+
+Correction history: full diff review found function braces on separate lines.
+The correction moved each function opening brace onto its definition line.
+It changed brace placement only. It did not alter scopes or statements.
 
 ## Evidence
 
