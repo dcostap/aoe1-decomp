@@ -326,8 +326,7 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
         }
         static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0,
                                                                    first_human);
-        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0,
-                                                                  first_color);
+        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_color);
     }
 
     comm->SetPlayerHumanity(1, ME_HUMAN);

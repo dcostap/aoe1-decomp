@@ -109,6 +109,8 @@ The correction applies 1TBS to the assigned source file.
 It joins short definitions and the `action` signature where readable.
 The round-two correction restores the three baseline `startGame` names.
 It changes no statements, scopes, types, or storage.
+The root correction restores `setPlayerColor(0, first_color);` to one line.
+It changes no statement or name.
 
 No wrapper, copied context, raw address, raw vptr, fallback declaration, or
 inline assembly was added.
@@ -156,7 +158,7 @@ The baseline names remain in place without recovered-original claims.
 
 ## Validation
 
-I inspected the complete new diff and ran `git diff --check`.
+I inspected the complete correction diff and ran `git diff --check`.
 
 **Compilation, matching, audits, and tests were not run.**
 
