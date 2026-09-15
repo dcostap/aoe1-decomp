@@ -7,7 +7,7 @@
 - Header owner: `include/spnl_obj.h` (not changed)
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Changed files: `src/spnl_obj.cpp`, this report
-- Final commit: recorded after commit
+- Final commit: `c7ed04ebb817ac45a38e38824fd6bae556ba365a`
 
 The source owns the seven normal `TRIBE_Scenario_Editor_Panel_Object` bodies at
 `004BEDC0`, `004BEE30`, `004BEE40`, `004BEE70`, `004BF4D0`, `004BF6C0`, and
@@ -49,6 +49,25 @@ duration, cast, call target, literal, or evaluation order was changed.
 
 No resource IDs, constants, or shared declarations were added or changed.
 There are no shared-file requests.
+
+### Owner-header request
+
+The owner of `include/spnl_obj.h` should add these recovered parameter names
+to the existing declarations. The request changes names only and preserves
+the existing types and declaration order:
+
+```cpp
+TRIBE_Scenario_Editor_Panel_Object(TDrawArea* render_area_in,
+                                   TPanel* parent_panel_in, void* font_in,
+                                   long font_wid_in, long font_hgt_in,
+                                   TShape* unit_pics_in, TShape** bldg_pics_in,
+                                   TRIBE_Player* player_in);
+virtual void draw_item(int row, int pic_index, ValueType val_type, int val1,
+                       int val2);
+virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
+void set_master_info(RGE_Master_Static_Object* master_game_object_in,
+                     TRIBE_Player* master_player_in);
+```
 
 ## Code-generation and ABI notes
 

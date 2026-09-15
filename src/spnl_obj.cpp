@@ -32,8 +32,7 @@ TRIBE_Scenario_Editor_Panel_Object::~TRIBE_Scenario_Editor_Panel_Object() {
 }
 
 // spnl_obj.cpp lines 63-70.
-void TRIBE_Scenario_Editor_Panel_Object::set_master_info(
-    RGE_Master_Static_Object* master_game_object_in, TRIBE_Player* master_player_in) {
+void TRIBE_Scenario_Editor_Panel_Object::set_master_info(RGE_Master_Static_Object* master_game_object_in, TRIBE_Player* master_player_in) {
     master_game_obj = master_game_object_in;
     this->player = master_player_in;
     if (master_player_in == 0) {
@@ -279,8 +278,7 @@ draw_finish:
 }
 
 // spnl_obj.cpp lines 333-382.
-void TRIBE_Scenario_Editor_Panel_Object::draw_item(
-    int row, int pic_index, ValueType val_type, int val1, int val2) {
+void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, int val1, int val2) {
     char val_str[20];
 
     if (item_pic != 0 && pic_index != -1) {
@@ -332,8 +330,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(
 }
 
 // spnl_obj.cpp lines 390-397.
-long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(
-    long x, long y, int ctrl_key, int shift_key) {
+long TRIBE_Scenario_Editor_Panel_Object::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     this->release_mouse();
     if (rge_base_game->prog_mode == 4 || rge_base_game->prog_mode == 6 ||
         rge_base_game->prog_mode == 7 || rge_base_game->prog_mode == 5) {
