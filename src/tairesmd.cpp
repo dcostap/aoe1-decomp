@@ -6,80 +6,70 @@
 
 extern const char s_Resource_AI[];
 
-TribeResourceAIModule::TribeResourceAIModule(void* param_1, int param_2,
-                                             int param_3, int param_4,
-                                             int param_5, int param_6)
-    : AIModule((char*)s_Resource_AI, 0x3EF, param_2, param_1),
+TribeResourceAIModule::TribeResourceAIModule(void* pW, int playerID,
+                                             int n, int iV,
+                                             int minV, int maxV)
+    : AIModule((char*)s_Resource_AI, 0x3EF, playerID, pW),
       md(0),
-      numberResourcesValue(param_3) {
+      numberResourcesValue(n) {
 }
 
-TribeResourceAIModule::TribeResourceAIModule(int param_1, int param_2)
-    : AIModule("ResAI", 0x3EF, param_1, 0),
-      md(0)
-{
-    rge_read(param_2, &this->numberResourcesValue, 4);
+TribeResourceAIModule::TribeResourceAIModule(int playerID, int infile)
+    : AIModule("ResAI", 0x3EF, playerID, 0),
+      md(0) {
+    rge_read(infile, &this->numberResourcesValue, 4);
 }
 
-TribeResourceAIModule::~TribeResourceAIModule()
-{
+TribeResourceAIModule::~TribeResourceAIModule() {
 }
 
-void TribeResourceAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v)
-{
-    this->md = v;
+void TribeResourceAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) {
+    this->md = m;
 }
 
-int TribeResourceAIModule::save(int file_handle)
-{
-    rge_write(file_handle, &this->numberResourcesValue, 4);
+int TribeResourceAIModule::save(int outfile) {
+    rge_write(outfile, &this->numberResourcesValue, 4);
     return 1;
 }
 
-int TribeResourceAIModule::numberResources() const
-{
+int TribeResourceAIModule::numberResources() const {
     return this->numberResourcesValue;
 }
 
-int TribeResourceAIModule::resource(int index) const
-{
-    if ((index >= 0) && (index < this->numberResourcesValue)) {
-        return (int)this->md->player->attributes[index];
+int TribeResourceAIModule::resource(int n) const {
+    if ((n >= 0) && (n < this->numberResourcesValue)) {
+        return (int)this->md->player->attributes[n];
     }
     return -1;
 }
 
-// Canonical Main Decision and Player composition emits a 56-byte
-// is valid.
-int TribeResourceAIModule::resourcesAvailable(ResourceItem* item)
-{
-    if (item == 0)
+int TribeResourceAIModule::resourcesAvailable(ResourceItem* ri) {
+    if (ri == 0)
         return 0;
-    if (numberResourcesValue != item->number())
+    if (numberResourcesValue != ri->number())
         return 0;
 
     int i = 0;
-    int n = item->number();
+    int n = ri->number();
     while (i < n) {
-        if (this->md->player->attributes[i] < (float)item->value(i))
+        if (this->md->player->attributes[i] < (float)ri->value(i))
             return 0;
         ++i;
-        n = item->number();
+        n = ri->number();
     }
 
     return 1;
 }
 
-int TribeResourceAIModule::unavailableResource(ResourceItem* item)
-{
-    if (item == 0)
+int TribeResourceAIModule::unavailableResource(ResourceItem* ri) {
+    if (ri == 0)
         return 0;
 
-    if (this->numberResourcesValue == item->number()) {
+    if (this->numberResourcesValue == ri->number()) {
         int i = 0;
-        while (i < item->number()) {
+        while (i < ri->number()) {
             float* amounts = this->md->player->attributes;
-            if (amounts[i] < (float)item->value(i)) {
+            if (amounts[i] < (float)ri->value(i)) {
                 return i;
             }
             ++i;
@@ -89,18 +79,17 @@ int TribeResourceAIModule::unavailableResource(ResourceItem* item)
     return -1;
 }
 
-char* TribeResourceAIModule::resourceName(int param_1)
-{
-    if (param_1 == 0) {
+char* TribeResourceAIModule::resourceName(int i) {
+    if (i == 0) {
         return (char*)"Food";
     }
-    if (param_1 == 1) {
+    if (i == 1) {
         return (char*)"Wood";
     }
-    if (param_1 == 2) {
+    if (i == 2) {
         return (char*)"Stone";
     }
-    if (param_1 == 3) {
+    if (i == 3) {
         return (char*)"Gold";
     }
     return (char*)"Unknown";
