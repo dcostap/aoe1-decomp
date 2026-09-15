@@ -109,3 +109,17 @@ Root accepted these corrections, but returned two small items through owner run 
 
 No other source changes or new assignments are requested. Screen integration awaits those complete correction commits.
 No compilation, matching, audits, tests, builds, or games ran during this intake.
+
+## Owner 03: final source corrections accepted
+
+Delivered head: `6ded709dd61101f5c49a354664c58afb52129de6`.
+Root read the complete correction diff. Both short calls and the main-screen commit label are corrected.
+However, the new owner ledger contains incorrect full hashes for three correction commits.
+The final response lists the correct hashes; `git log` independently confirms them:
+
+- `044b2398d580d86c2b7d78cf4ccbb5cbfc4115ce`.
+- `a1fc267b6c29dd4eba5ad4e9045f7081294d6333`.
+- `981b03543df1aff75666a5281a0e3850847d7d4a`.
+
+Root returned only the owner ledger for correction in run 4. No worker or source changes are requested.
+Screen integration still awaits that report correction. Wave 02 uses disjoint source and header assignments.
