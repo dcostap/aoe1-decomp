@@ -1,5 +1,38 @@
 # Cleanup wave 04 root review
 
+## Final validation authorization
+
+The user authorized compilation, matching-state checks, and all tests after all cleanup work finishes.
+Do not start validation while any cleanup correction or integration review remains open.
+Compare generated output against the preserved pre-cleanup build, including its existing differences from the original executable.
+Use the pinned toolchain. Preserve all failures and generated artifacts.
+Run the documented registry, ownership, dependency, automated, UI, replay, parity, and gameplay checks after cleanup closes.
+Report unavailable checks and unresolved behavior separately from passing results.
+
+## Owner 24: delegated review started
+
+- Head: `78ce4d2ec76a0bbf767efea731a092b0b9ae9d51`.
+- Full diff: `build/source-cleanup-20260915/owner24-review.diff`, 8,915 lines.
+- Reviewer: `sa-5e58304d`, Sol medium, read only.
+
+The assignment covers eight sources, seven headers, and nine reports, including previously forced PDB mappings.
+The group remains unmerged pending complete review.
+
+## Owner 28: corrections requested
+
+Reviewer `sa-f1296ef0` read all 4,674 lines and all reports.
+Diff SHA256: `ee8debf28580e52fc64def487b634ae0e2eced466600836d0cc21130ad2658fc`.
+Root returned unsupported `tpnl_tml` local mappings to the same worker.
+Records `0051F600` and `005204A0` require type, scope, and use agreement, not stack-home agreement alone.
+Restore baseline descriptive names where that evidence remains uncertain. Do not change types or storage to fit names.
+The `Timeline` comment must state that the second lookup tests `this_player_id` but indexes `target_player_id`.
+
+Root approved the three existing `IDS_HELP_AGE_*` names only for the `tpnl_tml::draw_icon` uses.
+Import the existing resource header; do not add duplicate definitions or change Owner 26 option labels.
+Base strings are `Tool Age`, `Bronze Age`, and `Iron Age`; checked expansion lookups miss these IDs.
+Evidence is under `build/source-cleanup-20260915/reviewer-owner28/`.
+The group remains unmerged and unvalidated pending correction review.
+
 ## Owner 25: correction review started
 
 Corrected head: `044be5c5062e9889129f675ab829b498f486d4b0`.
