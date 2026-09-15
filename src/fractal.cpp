@@ -8,8 +8,7 @@
 extern int __cdecl debug_rand(char* file, int line);
 extern TRIGONOMETRY trig;
 
-void PointMaker::SetDefaultValues()
-{
+void PointMaker::SetDefaultValues() {
     NumberOfSatellites = 2;
     NumSplitsPerBranch = 3;
     Height = 0x118;
@@ -32,8 +31,7 @@ void PointMaker::SetDefaultValues()
     DrawOnlyInExternalArrayFlag = 0;
 }
 
-PointMaker::PointMaker()
-{
+PointMaker::PointMaker() {
     ProbArray = 0;
     PlacementArray = 0;
     SetDefaultValues();
@@ -41,8 +39,7 @@ PointMaker::PointMaker()
     CreateMasks();
 }
 
-PointMaker::~PointMaker()
-{
+PointMaker::~PointMaker() {
     DeleteArrays();
     SetDefaultValues();
     ProbArray = 0;
@@ -50,8 +47,7 @@ PointMaker::~PointMaker()
     DeleteMasks();
 }
 
-void PointMaker::CreateMasks()
-{
+void PointMaker::CreateMasks() {
     Mask_2x2 = new char[16];
     Mask_3x3 = new char[25];
     Mask_4x4 = new char[36];
@@ -75,16 +71,14 @@ void PointMaker::CreateMasks()
     memcpy(Mask_5x5, ptr5, sizeof(ptr5));
 }
 
-void PointMaker::DeleteMasks()
-{
+void PointMaker::DeleteMasks() {
     operator delete(Mask_2x2);
     operator delete(Mask_3x3);
     operator delete(Mask_4x4);
     operator delete(Mask_5x5);
 }
 
-void PointMaker::DrawMask(int x, int y, int size)
-{
+void PointMaker::DrawMask(int x, int y, int size) {
     int rows;
     int len;
     char* maskptr;
@@ -106,8 +100,7 @@ void PointMaker::DrawMask(int x, int y, int size)
         if (y + 4 <= Height && y < 0) {
             y = 0;
         }
-    }
-    else if (size == 3) {
+    } else if (size == 3) {
         if (x + 5 <= Width && x < 0) {
             x = 0;
         }
@@ -185,8 +178,7 @@ void PointMaker::DrawMask(int x, int y, int size)
     }
 }
 
-void PointMaker::ClearArrays()
-{
+void PointMaker::ClearArrays() {
     if (DrawToOneArrayFlag == 0 && PlacementArray != 0) {
         memset(PlacementArray, 0, SizeArrays);
     }
@@ -195,8 +187,7 @@ void PointMaker::ClearArrays()
     }
 }
 
-void PointMaker::DeleteArrays()
-{
+void PointMaker::DeleteArrays() {
     if (ProbArray != 0) {
         operator delete(ProbArray);
     }
@@ -207,8 +198,7 @@ void PointMaker::DeleteArrays()
     PlacementArray = 0;
 }
 
-void PointMaker::MakeArrays()
-{
+void PointMaker::MakeArrays() {
     SizeArrays = Height * Width;
     int count = 10;
     while (count-- != 0) {
@@ -222,8 +212,7 @@ void PointMaker::MakeArrays()
     }
 }
 
-int PointMaker::CreateShape()
-{
+int PointMaker::CreateShape() {
     NumNodes = 0;
     ClearArrays();
     PrepareLimits();
@@ -259,17 +248,16 @@ int PointMaker::CreateShape()
     return ProbabilityTiles;
 }
 
-int PointMaker::CreateShape(int param_1, int param_2)
-{
+int PointMaker::CreateShape(int xt, int yt) {
     NumNodes = 0;
     ClearArrays();
     PrepareLimits();
-    y = param_2;
-    Prime.y = param_2;
+    y = yt;
+    Prime.y = yt;
     ProbabilityTiles = 0;
     NumNodes = 0;
-    x = param_1;
-    Prime.x = param_1;
+    x = xt;
+    Prime.x = xt;
     DrawPrimaryIntoProbabilityArray();
     ErrorCheckingAndCorrection();
 
@@ -292,16 +280,15 @@ int PointMaker::CreateShape(int param_1, int param_2)
     return ProbabilityTiles;
 }
 
-void PointMaker::Branch(int point)
-{
+void PointMaker::Branch(int which) {
     if (CurrentNumberOfBranchLevels > 1 &&
         debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x116) % 100 <
             ChanceOfNextNode * 10 &&
         ProbabilityTiles < MinimumNumTiles * 2) {
         CurrentNumberOfBranchLevels--;
         for (int i = 0; i < NumSplitsPerBranch; i++) {
-            x = Point[point].x;
-            y = Point[point].y;
+            x = Point[which].x;
+            y = Point[which].y;
             int link = MakeNewLink();
             DrawCurrentBranchIntoProbArray(link);
             Branch(link);
@@ -313,8 +300,7 @@ void PointMaker::Branch(int point)
     }
 }
 
-int PointMaker::MakeFirstLink()
-{
+int PointMaker::MakeFirstLink() {
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
     dx = dx % BranchDistance + 2;
     if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134) % 2)
@@ -356,8 +342,7 @@ int PointMaker::MakeFirstLink()
     return result;
 }
 
-int PointMaker::MakeNewLink()
-{
+int PointMaker::MakeNewLink() {
     int max_x;
     int r;
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14A);
@@ -425,8 +410,7 @@ int PointMaker::MakeNewLink()
     return result;
 }
 
-int PointMaker::MakeSatelliteLink()
-{
+int PointMaker::MakeSatelliteLink() {
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
     dx = dx % SatelliteDistance + 1;
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
@@ -466,9 +450,8 @@ int PointMaker::MakeSatelliteLink()
     return result;
 }
 
-void PointMaker::DrawPrimaryIntoProbabilityArray()
-{
-    int ring;
+void PointMaker::DrawPrimaryIntoProbabilityArray() {
+    int i;
     int call_right;
     int call_top;
     int call_left;
@@ -478,7 +461,7 @@ void PointMaker::DrawPrimaryIntoProbabilityArray()
     int radius = PrimaryRadius;
     int left = prime_x - radius;
     int top = prime_y - radius;
-    int bottom = prime_y + radius;
+    int desty = prime_y + radius;
     int right = prime_x + radius;
 
     if (left < 0) left = 0;
@@ -486,12 +469,12 @@ void PointMaker::DrawPrimaryIntoProbabilityArray()
     int max_x = Width - 1;
     if (right > max_x) right = max_x;
     int max_y = Height - 1;
-    if (bottom > max_y) {
-        bottom = max_y;
+    if (desty > max_y) {
+        desty = max_y;
     }
 
     ProbabilityAdd = 1;
-    ring = 0;
+    i = 0;
     if (radius > 0) {
         do {
             call_left = left;
@@ -499,48 +482,47 @@ void PointMaker::DrawPrimaryIntoProbabilityArray()
             left++;
             call_right = right;
             top++;
-            call_bottom = bottom;
+            call_bottom = desty;
             right--;
-            bottom--;
+            desty--;
             AddingRect(call_left, call_top, call_right, call_bottom);
             ProbabilityAdd++;
-            ring++;
-        } while (ring < PrimaryRadius);
+            i++;
+        } while (i < PrimaryRadius);
     }
 }
 
-void PointMaker::DrawCurrentBranchIntoProbArray(int which)
-{
+void PointMaker::DrawCurrentBranchIntoProbArray(int which) {
     int point_x = Point[which].x;
     int radius;
     int point_y;
     int max_x;
     int min_x;
     int min_y;
-    int max_y;
-    int ring;
+    int desty;
+    int i;
 
     radius = BranchRadius;
     point_y = Point[which].y;
     min_x = point_x - radius;
     max_x = radius + point_x;
     min_y = point_y - radius;
-    max_y = point_y + radius;
+    desty = point_y + radius;
 
-    if (max_x >= 0 && max_y >= 0 && min_x < Width && min_y < Height) {
+    if (max_x >= 0 && desty >= 0 && min_x < Width && min_y < Height) {
         if (min_x < 0) min_x = 0;
         if (min_y < 0) min_y = 0;
         if (max_x >= Width) max_x = Width - 1;
-        if (max_y >= Height) max_y = Height - 1;
+        if (desty >= Height) desty = Height - 1;
 
         ProbabilityAdd = 1;
-        ring = 0;
+        i = 0;
         if (BranchRadius > 0) {
-            for (; ring < BranchRadius; ++ring) {
-                AddingRect(min_x, min_y, max_x, max_y);
+            for (; i < BranchRadius; ++i) {
+                AddingRect(min_x, min_y, max_x, desty);
                 ++min_x;
                 if (min_x >= Width || ++min_y >= Height || --max_x < 0 ||
-                    --max_y < 0) {
+                    --desty < 0) {
                     break;
                 }
                 ++ProbabilityAdd;
@@ -566,17 +548,16 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which)
     }
 }
 
-void PointMaker::DrawCurrentSatelliteIntoProbArray(int point)
-{
+void PointMaker::DrawCurrentSatelliteIntoProbArray(int which) {
     int radius = SatelliteRadius;
     ProbabilityAdd = 2;
     while (radius >= 0) {
-        AddingCircle(Point[point].x, Point[point].y, radius);
+        AddingCircle(Point[which].x, Point[which].y, radius);
         ProbabilityAdd++;
         radius--;
     }
 
-    int prob_idx = Point[point].y * Width + Point[point].x;
+    int prob_idx = Point[which].y * Width + Point[which].x;
     int prob_add = ProbabilityAdd;
     if (prob_idx >= 1 && prob_idx < SizeArrays - 1) {
         char* cell = ProbArray + prob_idx;
@@ -594,102 +575,100 @@ void PointMaker::DrawCurrentSatelliteIntoProbArray(int point)
     }
 }
 
-void PointMaker::AddingRect(int left, int top, int right, int bottom)
-{
-    int first = top * Width + left;
-    int width = right - left;
-    int height = bottom - top;
+void PointMaker::AddingRect(int x1, int y1, int x2, int y2) {
+    int start = y1 * Width + x1;
+    int w = x2 - x1;
+    int height = y2 - y1;
     int rows = height - 1;
-    int opposite = rows * Width + first;
+    int top = rows * Width + start;
 
-    if (width < 0) return;
+    if (w < 0) return;
     if (height < 0) return;
 
-    if (width >= 0) {
-        int count = width + 1;
-        int map = first;
+    if (w >= 0) {
+        int count = w + 1;
+        int map = start;
         do {
-                int add_value = ProbabilityAdd;
-                char add = (char)add_value;
-                if (map > 0 && map < SizeArrays - 1) {
-                    char* cell = ProbArray + map;
-                    char value = *cell;
-                    if (value == 0) {
-                        *cell = add;
-                        ProbabilityTiles++;
-                    } else if (add_value + (int)value < 0xFF) {
-                        *cell = add + value;
-                    } else {
-                        *cell = (char)-1;
-                    }
+            int add_value = ProbabilityAdd;
+            char add = (char)add_value;
+            if (map > 0 && map < SizeArrays - 1) {
+                char* cell = ProbArray + map;
+                char value = *cell;
+                if (value == 0) {
+                    *cell = add;
+                    ProbabilityTiles++;
+                } else if (add_value + (int)value < 0xFF) {
+                    *cell = add + value;
+                } else {
+                    *cell = (char)-1;
                 }
+            }
 
-                add_value = ProbabilityAdd;
-                add = (char)add_value;
-                if (opposite > 0 && opposite < SizeArrays - 1) {
-                    char* cell = ProbArray + opposite;
-                    char value = *cell;
-                    if (value == 0) {
-                        *cell = add;
-                        ProbabilityTiles++;
-                    } else if (add_value + (int)value < 0xFF) {
-                        *cell = add + value;
-                    } else {
-                        *cell = (char)-1;
-                    }
+            add_value = ProbabilityAdd;
+            add = (char)add_value;
+            if (top > 0 && top < SizeArrays - 1) {
+                char* cell = ProbArray + top;
+                char value = *cell;
+                if (value == 0) {
+                    *cell = add;
+                    ProbabilityTiles++;
+                } else if (add_value + (int)value < 0xFF) {
+                    *cell = add + value;
+                } else {
+                    *cell = (char)-1;
                 }
-                ++map;
-                ++opposite;
+            }
+            ++map;
+            ++top;
             --count;
         } while (count != 0);
     }
 
-    first += Width;
+    start += Width;
     if (rows >= 0) {
         if (rows != 0) {
             do {
-                    int add_value = ProbabilityAdd;
-                    char add = (char)add_value;
-                    if (first > 0 && first < SizeArrays - 1) {
-                        char* cell = ProbArray + first;
-                        char value = *cell;
-                        if (value == 0) {
-                            *cell = add;
-                            ProbabilityTiles++;
-                        } else if (add_value + (int)value < 0xFF) {
-                            *cell = add + value;
-                        } else {
-                            *cell = (char)-1;
-                        }
+                int add_value = ProbabilityAdd;
+                char add = (char)add_value;
+                if (start > 0 && start < SizeArrays - 1) {
+                    char* cell = ProbArray + start;
+                    char value = *cell;
+                    if (value == 0) {
+                        *cell = add;
+                        ProbabilityTiles++;
+                    } else if (add_value + (int)value < 0xFF) {
+                        *cell = add + value;
+                    } else {
+                        *cell = (char)-1;
                     }
+                }
 
-                    int other = first + width;
-                    add_value = ProbabilityAdd;
-                    add = (char)add_value;
-                    if (other > 0 && other < SizeArrays - 1) {
-                        char* cell = ProbArray + other;
-                        char value = *cell;
-                        if (value == 0) {
-                            *cell = add;
-                            ProbabilityTiles++;
-                        } else if (add_value + (int)value < 0xFF) {
-                            *cell = add + value;
-                        } else {
-                            *cell = (char)-1;
-                        }
+                int other = start + w;
+                add_value = ProbabilityAdd;
+                add = (char)add_value;
+                if (other > 0 && other < SizeArrays - 1) {
+                    char* cell = ProbArray + other;
+                    char value = *cell;
+                    if (value == 0) {
+                        *cell = add;
+                        ProbabilityTiles++;
+                    } else if (add_value + (int)value < 0xFF) {
+                        *cell = add + value;
+                    } else {
+                        *cell = (char)-1;
                     }
-                    first += Width;
+                }
+                start += Width;
                 --rows;
             } while (rows != 0);
         }
     }
 }
 
-void PointMaker::AddingCircle(int param_1, int param_2, int param_3)
-{
-    if (param_3 == 0) param_3 = 1;
+void PointMaker::AddingCircle(int x1, int y1, int radius) {
+    if (radius == 0) radius = 1;
 
-    int step = 360 / (param_3 * 3);
+    int step = 360 / (radius * 3);
     float width = (float)Width;
     float offset;
     float x;
@@ -700,8 +679,8 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3)
     W = 0.0f;
     float lastx;
     for (int angle = 0; angle < 360; angle += step) {
-        lastx = trig.sin360(angle) * (float)param_3;
-        curx = trig.cos360(angle) * (float)param_3;
+        lastx = trig.sin360(angle) * (float)radius;
+        curx = trig.cos360(angle) * (float)radius;
 
         if (lastx != lasty || curx != W) {
             int loc = (int)(width * curx + lastx);
@@ -724,11 +703,11 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3)
             int random = debug_rand(
                 (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x1F1);
             if (random % 2) {
-                x = trig.sin360(angle) * (float)param_3;
+                x = trig.sin360(angle) * (float)radius;
                 offset = debug_rand(
                     (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499) %
                     2 + x - 1.0f;
-                float y = trig.cos360(angle) * (float)param_3;
+                float y = trig.cos360(angle) * (float)radius;
                 int random_2 = debug_rand(
                     (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
                 loc = (int)(width * ((float)random_2 + y - 1.0f) + offset);
@@ -750,8 +729,7 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3)
     }
 }
 
-void PointMaker::CreateMapBasedOnProbabilityArray()
-{
+void PointMaker::CreateMapBasedOnProbabilityArray() {
     int hits = 0;
     int i = 0;
     if (SizeArrays > 0) {
@@ -766,83 +744,68 @@ void PointMaker::CreateMapBasedOnProbabilityArray()
     NumTilesActuallyChosen += hits;
 }
 
-void PointMaker::SetPoint(int value_x, int value_y)
-{
-    x = value_x;
-    y = value_y;
+void PointMaker::SetPoint(int x1, int y1) {
+    x = x1;
+    y = y1;
 }
 
-void PointMaker::SetMaxNumberOfBranches(int value)
-{
-    MaxNumberOfBranches = value;
+void PointMaker::SetMaxNumberOfBranches(int num) {
+    MaxNumberOfBranches = num;
 }
 
-void PointMaker::SetChanceOfNextNode(int value)
-{
-    ChanceOfNextNode = value;
+void PointMaker::SetChanceOfNextNode(int num) {
+    ChanceOfNextNode = num;
 }
 
-void PointMaker::SetNumberOfSatellites(int value)
-{
-    NumberOfSatellites = value;
+void PointMaker::SetNumberOfSatellites(int num) {
+    NumberOfSatellites = num;
 }
 
-void PointMaker::SetSplitsPerBranch(int value)
-{
-    NumSplitsPerBranch = value;
+void PointMaker::SetSplitsPerBranch(int num) {
+    NumSplitsPerBranch = num;
 }
 
-void PointMaker::SetWidthAndHeight(int width, int height)
-{
-    Width = width;
-    Height = height;
+void PointMaker::SetWidthAndHeight(int w, int h) {
+    Width = w;
+    Height = h;
 }
 
-void PointMaker::SetStartPositionRadius(int value)
-{
-    PrimaryRadius = value;
+void PointMaker::SetStartPositionRadius(int num) {
+    PrimaryRadius = num;
 }
 
-void PointMaker::SetBranchsRadius(int value)
-{
-    BranchRadius = value;
+void PointMaker::SetBranchsRadius(int num) {
+    BranchRadius = num;
 }
 
-void PointMaker::SetSatelliteRadius(int value)
-{
-    SatelliteRadius = value;
+void PointMaker::SetSatelliteRadius(int num) {
+    SatelliteRadius = num;
 }
 
-void PointMaker::SetMaxNumberOfBranchLevels(int value)
-{
+void PointMaker::SetMaxNumberOfBranchLevels(int num) {
     MaxBranchFlag = 1;
-    MaxNumberOfBranchLevels = value;
+    MaxNumberOfBranchLevels = num;
 }
 
-void PointMaker::SetSatelliteDistance(int value)
-{
-    SatelliteDistance = value;
+void PointMaker::SetSatelliteDistance(int num) {
+    SatelliteDistance = num;
 }
 
-void PointMaker::SetBranchDistance(int value)
-{
-    BranchDistance = value;
+void PointMaker::SetBranchDistance(int num) {
+    BranchDistance = num;
 }
 
-void PointMaker::SetMinimumNumberOfTiles(int value)
-{
-    MinimumNumTiles = value;
+void PointMaker::SetMinimumNumberOfTiles(int num) {
+    MinimumNumTiles = num;
 }
 
-void PointMaker::SetDrawToOneArray()
-{
+void PointMaker::SetDrawToOneArray() {
     DrawToOneArrayFlag = 1;
 }
 
-void PointMaker::SetBorderDepthPercentage(int value)
-{
-    BorderDepthPercentage = value;
-    if (value > 0x1E) {
+void PointMaker::SetBorderDepthPercentage(int num) {
+    BorderDepthPercentage = num;
+    if (num > 0x1E) {
         BorderDepthPercentage = 0x1E;
     }
     if (BorderDepthPercentage < 5) {
@@ -851,18 +814,15 @@ void PointMaker::SetBorderDepthPercentage(int value)
     PrepareLimits();
 }
 
-char* PointMaker::RetrieveMap()
-{
+char* PointMaker::RetrieveMap() {
     return PlacementArray;
 }
 
-char* PointMaker::RetrieveProbMap()
-{
+char* PointMaker::RetrieveProbMap() {
     return ProbArray;
 }
 
-void PointMaker::ErrorCheckingAndCorrection()
-{
+void PointMaker::ErrorCheckingAndCorrection() {
     int width = Width;
     int size = Height * width;
     SizeArrays = size;
@@ -887,8 +847,7 @@ void PointMaker::ErrorCheckingAndCorrection()
     MaxBranchFlag = 0;
 }
 
-void PointMaker::PrepareLimits()
-{
+void PointMaker::PrepareLimits() {
     int width = Width;
     int border = BorderDepthPercentage;
     int left = (border * width) / 100;
@@ -900,15 +859,14 @@ void PointMaker::PrepareLimits()
     BottomLimit = height - top;
 }
 
-void PointMaker::MapCleanUpEliminatingSinglesOnly()
-{
-    int bottom = Height - 1;
+void PointMaker::MapCleanUpEliminatingSinglesOnly() {
+    int h = Height - 1;
     int row = 1;
-    int right = Width - 1;
-    if (bottom > 1) {
+    int w = Width - 1;
+    if (h > 1) {
         do {
             int column = 1;
-            if (right > 1) {
+            if (w > 1) {
                 do {
                     int width = Width;
                     char* cell = PlacementArray + row * width + column;
@@ -921,9 +879,9 @@ void PointMaker::MapCleanUpEliminatingSinglesOnly()
                         *cell = 0;
                     }
                     column++;
-                } while (column < right);
+                } while (column < w);
             }
             row++;
-        } while (row < bottom);
+        } while (row < h);
     }
 }
