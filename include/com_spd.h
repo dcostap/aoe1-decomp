@@ -51,8 +51,8 @@ public:
     RGE_Communications_Speed(TCommunications_Handler* c);
     ~RGE_Communications_Speed();
 
-    int AnalyzeGameSpeed(unsigned int* out_granularity,
-                         unsigned int* out_frames, int param_3);
+    int AnalyzeGameSpeed(unsigned int* NewGranularity,
+                         unsigned int* NewBufferFrames, int ChangeAlso);
     unsigned int BufferFramesRemaining();
     unsigned int BufferTimeToUse(unsigned long current_turn);
     char* GetSelfPlayerOptimalSpeedStr();
