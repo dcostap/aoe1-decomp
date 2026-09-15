@@ -10,6 +10,16 @@
 - This report is the only file in the follow-up report commit.
 - Temporary evidence is under `build/evidence/` and is not tracked.
 
+## Correction history
+
+- Owner review resumed from `381ac8ad845101418d11c79da39d61adfe9399c7`.
+- Verified `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`.
+  Its SHA256 is `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`.
+- Corrected that SHA256 below.
+- Changed the split `else` in `src/scr_mps.cpp` to `} else {`.
+- A full-source search found no other split `else` clauses or split function
+  braces.
+
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
 It adds no comments.
@@ -19,7 +29,7 @@ It adds no comments.
 I inspected the procedure-scoped records in
 `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`.
 The PDB SHA256 is
-`3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40`.
+`adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`.
 Every source body has a `this` register in `ecx`. The table lists every body,
 its packet selected from `config/functions/src/scr_mps.cpp.json`, and its
 scoped parameters and locals.
