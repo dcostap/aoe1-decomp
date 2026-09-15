@@ -4,8 +4,11 @@
 
 - Module: `src/tact_art.cpp`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit from `git rev-parse`: `090e0786883cfbe4be0aee489a8b5e87dde3a9a2`
-- Final module head before this report commit: `090e0786883cfbe4be0aee489a8b5e87dde3a9a2`
+- Initial source cleanup commit: `090e0786883cfbe4be0aee489a8b5e87dde3a9a2`
+- Initial report commit: `6b01a8587e6fa0c46048417b5d49413a3fd6f904`
+- Source correction commit: `42d0dd0c951809c8a7d8638d2b02ae194facc46a`
+- Final source commit from `git rev-parse`: `42d0dd0c951809c8a7d8638d2b02ae194facc46a`
+- Final source head before this report correction: `42d0dd0c951809c8a7d8638d2b02ae194facc46a`
 - Branch: `cleanup/staging-20260915-38`
 - Changed files:
   - `src/tact_art.cpp`
@@ -69,7 +72,7 @@ its parameters, locals, and registers. Every procedure had the expected PDB
 | `004CCC70` | `first_in_stack` | Recovered `first_time`. |
 | `004CCCB0` | `set_state` | Existing `new_state` matches the PDB name. No named PDB local remains. |
 | `004CCDF0` | `update` | No stack parameter or local names are present in the PDB. Existing descriptive locals remain. |
-| `004CCF30` | `check_ownership` | Existing `map`, `player_num`, `player_list`, and `x0` match PDB names. Recovered `x1` for the first horizontal bound. |
+| `004CCF30` | `check_ownership` | Existing `map`, `map_x`, `map_y`, `player_num`, `player_list`, `x0`, and `y0` remain. The packet does not prove an `x1` declaration mapping. |
 | `004CD120` | `stop` | No stack parameter or local names are present in the PDB. |
 | `004CD130` | `move_to` | Recovered unused `obj_in`; `x`, `y`, and `z` already match the PDB. |
 | `004CD160` | `work` | Recovered `obj_in`, `x`, `y`, and `z`. |
@@ -79,16 +82,18 @@ The PDB has no named locals for `update`. The source keeps its existing
 `val`, `obj`, `speed`, and `owner` names. The PDB has no named locals for the
 new-object temporaries in `set_state`; the source keeps `move`.
 
-In `check_ownership`, the PDB records `x1` and `x0` as stack symbols. The
-original assembly stores the first and third horizontal bounds in stack slots.
-The source now uses recovered `x1`; the existing `x0` spelling remains. The
-vertical bounds use registers and have no PDB name records. The source keeps
-`map_y` and `y0` as existing descriptive names. Their original spellings are
-unresolved. The source also keeps existing inferred names such as `obj`,
-`master`, `best_player`, `unique_owner`, `player`, `node`, `entity`, `type`,
-`x`, and `y`. These are cleanup names, not recovered original names.
+In `check_ownership`, the packet warns that `x1` is unmapped and that its PDB
+home has no XREFs. The lower-bound expression uses reused stack homes that are
+later labeled `map`. Conversion order does not prove a declaration mapping.
+The source therefore restores the baseline `map_x` spelling. The source keeps
+`x0` because direct evidence exists at packet address `004CCF80`. The source
+also keeps `map_y` and `y0`; their original spellings are unresolved. The
+source keeps existing inferred names such as `obj`, `master`, `best_player`,
+`unique_owner`, `player`, `node`, `entity`, `type`, `x`, and `y`. These are
+cleanup names, not recovered original names.
 
-No reused stack-slot mapping was forced for the unresolved vertical bounds.
+No reused stack-slot mapping was forced for `x1`, `map_x`, or the unresolved
+vertical bounds.
 No type, scope, declaration order, or storage duration changed.
 
 ## Constants, resources, and comments
@@ -108,11 +113,13 @@ does not claim a source-level intent.
 
 ## Code generation, type, layout, and symbol review
 
-The source changes rename parameters and one local. They do not change types,
+The source changes rename parameters. The correction restores `map_x` for the
+uncertain lower bound. These changes do not change types,
 casts, declaration scope, statement order, control flow, calls, literals,
 function boundaries, layout, relocations, or ABI symbols. The unused
 `move_to` parameter keeps its original type and position. The `x1` change
-restores the PDB spelling without changing its `short` declaration.
+was reverted because the packet does not prove its declaration mapping. The
+`map_x` spelling keeps the baseline `short` declaration.
 
 No inline assembly, wrapper, helper, or structural rewrite was added.
 
@@ -137,7 +144,8 @@ No root-owned header request exists. No shared resource request exists.
 
 ## Validation and open risks
 
-`git diff --check` passed. The complete Git diff was reviewed.
+`git diff --check` passed for the source correction. The complete cumulative
+diff was reviewed. The correction history is recorded above.
 
 The broad source shape and generated-name limits in `check_ownership` remain
 outside this name cleanup. The vertical-bound original names are unresolved.
