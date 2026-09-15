@@ -6,6 +6,7 @@
 #include "../include/diam_map.h"
 #include "../include/map.h"
 #include "../include/player.h"
+#include "../include/resource_ids.h"
 #include "../include/sprite.h"
 #include "../include/stat_obj.h"
 #include "../include/view.h"
@@ -212,7 +213,7 @@ long RGE_Panel_Tool_Box::action(TPanel* from_panel, long action_in, unsigned lon
                         this->screen_panel,
                         this->screen_panel->get_popup_info_file(),
                         this->screen_panel->get_popup_info_id(),
-                        1, this->get_string(0x232A)) == 0) {
+                        1, this->get_string(IDS_SELECT_OBJECT_TITLE)) == 0) {
                     delete this->dialog;
                     this->dialog = 0;
                 }
