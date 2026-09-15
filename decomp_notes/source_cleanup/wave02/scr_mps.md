@@ -5,7 +5,7 @@
 - Module: `src/scr_mps.cpp`
 - Header owner: owner 11 owns `include/scr_mps.h`; this worker did not edit it.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `f6dae9c2b92f5ce44d004afdf869bef095f03581`
+- Final source commit: `913677d4e6fb0d1f831d5de47fd8247e51cf43c6`
 - Changed files in the source commit: `src/scr_mps.cpp`
 - This report is the only file in the follow-up report commit.
 - Temporary evidence is under `build/evidence/` and is not tracked.
@@ -19,6 +19,14 @@
 - Changed the split `else` in `src/scr_mps.cpp` to `} else {`.
 - A full-source search found no other split `else` clauses or split function
   braces.
+- Root review resumed from `efcb419a4ad3b37f757cb24fa57163752b987e9e`.
+- Traced the original `GetClientReadiness` call and each renamed `userN`
+  consumer in packet `004A2D50_handle_user_command.txt`.
+- Restored `selected_position` because the original PDB `pos` slot stores and
+  reloads the spilled `this` pointer.
+- Restored `first_any_color_index` because the original instructions use an
+  unmapped `local_4` slot for that value. The PDB `first_any_player` slot has
+  no instruction use.
 
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
@@ -43,7 +51,7 @@ scoped parameters and locals.
 | `004A16D0` `004A16D0_key_down_action.txt` | `key: long`, `count: short`, `alt_key: int`, `ctrl_key: int`, `shift_key: int` | none | Recovered all five names from PDB. |
 | `004A16E0` `004A16E0_action.txt` | `fromPanel: TPanel*`, `actionIn: long`, `a1: unsigned long`, `a2: unsigned long` | `file_info: _finddata_t`, `file_name: char[260]` | Recovered all four parameter names. Existing local names match. |
 | `004A2060` `004A2060_startGame.txt` | none | `send_options: int`; `msg: char[1024]` twice; `playerColorUsed: int[8]`; `msg: char[256]` twice; `temp_team: int[8]`; `temp_color: int[8]`; `temp_civ: int[8]` | All current matching names retained. Reused PDB slots remain unchanged. |
-| `004A27A0` `004A27A0_calcRandomPositions.txt` | none | `pos: int`, `position_used: int[8]` | Recovered `pos` from `selected_position`. The source keeps its existing `position_used[9]` size. |
+| `004A27A0` `004A27A0_calcRandomPositions.txt` | none | PDB `pos: int`, `position_used: int[8]` | Kept baseline `selected_position`. Original `pos` stores and reloads the spilled `this` pointer. The selected index is packet `local_28`. The source keeps its existing `position_used[9]` size. |
 | `004A2910` `004A2910_showNetInfo.txt` | none | `num_addr: unsigned int`, `message: char[1024]`, `temp_str: char[256]` | Existing names match. |
 | `004A2BA0` `004A2BA0_cancelScreen.txt` | `lobbyTimeout: int` | none | Recovered `lobbyTimeout` from `timed_out`. |
 | `004A2D50` `004A2D50_handle_user_command.txt` | `wParam: unsigned int`, `lParam: long` | `user1` through `user7: unsigned long`; `ready: int`; `message: char[256]` twice | Recovered `wParam` and `lParam`. Recovered `user3`, `user6`, `user7`, `user1`, `user4`, and `user2` from the PDB and readiness packet. Existing `ready` and `checksum` names remain because their reused stack roles do not map safely. |
@@ -55,7 +63,7 @@ scoped parameters and locals.
 | `004A5020` `004A5020_handleKickedPlayer.txt` | `really_kicked: int` | none | Recovered `really_kicked` from `player_index`. |
 | `004A5060` `004A5060_activateVictoryPanels.txt` | none | none | Inspected. No rename. |
 | `004A5130` `004A5130_setupTabOrder.txt` | none | `tabList: TPanel*[4]` | Existing name matches. |
-| `004A5210` `004A5210_setupSinglePlayerPlayers.txt` | none | `first_any_civ: int`, `first_any_color: int`, `first_any_player: int` | Recovered `first_any_player` from `first_any_color_index`. |
+| `004A5210` `004A5210_setupSinglePlayerPlayers.txt` | none | PDB `first_any_civ: int`, `first_any_color: int`, `first_any_player: int` | Kept baseline `first_any_color_index`. Original instructions use packet `local_4`; the packet `first_any_player` slot has no xref. |
 | `004A5440` `004A5440_fillNumberPlayers.txt` | none | `str: char[16]` | Existing PDB name matches. Other source locals have no scoped PDB names. |
 | `004A54C0` `004A54C0_fillPlayerColors.txt` | none | `str: char[16]` | Existing PDB name matches. |
 | `004A5610` `004A5610_TRIBE_Screen_Wait.txt` | none | `str1`, `str2`, `str3: char[256]` | Existing names match. Loop names have no scoped PDB records. |
@@ -79,11 +87,56 @@ The original behavior oracle is
 `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`,
 SHA256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 
-The `004A2D50` packet shows the readiness outputs as `user3`, `user6`,
-`user7`, `user1`, `user4`, `ready`, and `user2`. The current source has a
-separate first output named `ready` and a checksum variable. These names do not
-map to the PDB stack names without changing types or the existing declaration
-layout. I left both names unchanged.
+### Instruction-level readiness mapping
+
+The original call at `004A2F84` is
+`GetClientReadiness(index, out0, out1, out2, out3, out4, out5, out6, out7)`.
+The original instructions push `index` at `004A2F83`, then push the output
+pointers in reverse order at `004A2F82`, `004A2F7B`, `004A2F72`, `004A2F6D`,
+`004A2F63`, `004A2F5E`, and `004A2F59`.
+
+The scoped PDB offsets below use the records in
+`inventory/pdb/scoped_symbols.json`. The instruction addresses show the
+address calculation and the later read or consumer. These uses prove the
+renamed declarations.
+
+| Source declaration | Output position | Scoped PDB offset | Original address calculation and push | Later tests and consumers |
+| --- | --- | --- | --- | --- |
+| `user3` | `out1` | `-0x114` | `004A2F6E` computes `[ESP+0x38]`; `004A2F72` pushes it. | `004A2F89` tests it; `004A2F9D` compares it with civilization; `004A2FAD` stores it with `setCivilization`. |
+| `user6` | `out2` | `-0x108` | `004A2F69` computes `[ESP+0x40]`; `004A2F6D` pushes it. | `004A2FB4` tests it; `004A2FC3` subtracts one; `004A2FD5` pushes it to `setScenarioPlayer` at `004A2FD7`. |
+| `user7` | `out3` | `-0x110` | `004A2F64` computes `[ESP+0x34]`; `004A2F68` pushes it. | `004A2FDE` tests it; `004A2FE6` and `004A2FFE` compare values one and two; `004A301B` consumes the result in `setPlayerHasCD`. |
+| `user1` | `out4` | `-0x118` | `004A2F5F` computes `[ESP+0x28]`; `004A2F63` pushes it. | `004A3022` tests it; `004A3036` compares it with player color; `004A3046` stores it with `setPlayerColor`. |
+| `user4` | `out5` | `-0x11C` | `004A2F5A` computes `[ESP+0x20]`; `004A2F5E` pushes it. | `004A304D` tests it; `004A3061` compares it with player team; `004A3071` stores it with `setPlayerTeam`. |
+| `user2` | `out7` | `-0x10C` | `004A2F51` computes `[ESP+0x2C]`; `004A2F59` pushes it. | `004A3086` tests it; `004A309A` consumes it in `setPlayerVersion`. |
+
+The packet's reverse push order also proves the two uncertain outputs. The
+pointer from `004A2F77` and `004A2F82` is `message` at `out0`. The pointer from
+`004A2F55` and `004A2F5E` is PDB `ready` at `out6`; `004A3078` tests it and
+`004A3084` stores it through the scenario-checksum pointer. The current source
+passes its `ready` declaration to `out0` and its `checksum` declaration to
+`out6`. Their names and types remain unchanged because the existing source
+layout does not prove a safe mapping to the PDB `message` and `ready` records.
+The input at `004A2F24`, `004A2F27`, and `004A2F83` is PDB `user5`; the current
+source calls it `player`, and this report does not force that uncertain name.
+
+### Original instruction checks for uncertain local renames
+
+For `004A27A0`, the scoped PDB records `pos` at `-0x28` and
+`position_used` at `-0x20`. The packet listing records `pos` at `-0x2C` and
+shows `004A27A5` writing the spilled `this` pointer, then `004A27ED` and
+`004A2858` reading it as the panel base. The selected position is packet
+`local_28`: `004A287B` writes it, `004A28D0` reads it after the retry loop, and
+`004A28D8` updates it. `004A28E4` passes that value to `setScenarioPlayer`, and
+`004A28E9` writes it into `position_used`. The source therefore retains
+`selected_position`.
+
+For `004A5210`, the packet initializes `first_any_civ` at `004A5237`,
+`first_any_color` at `004A523B`, and `local_4` at `004A523F`.
+`004A52B2` and `004A52BB` update the first two values. `004A52BF` updates
+`local_4`. The later consumers are `004A5375` and `004A5382` for the color
+value, and `004A5387` and `004A5394` for `local_4` and `setPlayerColor`.
+The packet `first_any_player` slot at `-0x10` has no xref.
+The source therefore retains `first_any_color_index`.
 
 The `004A4190` PDB record has `file_info` and `file_name` at the same stack
 slot, plus another `file_info` at a reused slot. I changed only the directly
