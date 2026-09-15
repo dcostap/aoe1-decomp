@@ -4,7 +4,7 @@
 
 - Module: `src/scr_cred.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `5842248aa71cd3ccdf2f800902f44ad476f51210`
+- Final source commit: `4fa0ec14605f7bd6a1c05e8ee713efb4041a9d20`
 - Changed files:
   - `src/scr_cred.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_cred.md`
@@ -27,7 +27,8 @@ No structural change was made.
 
 - `5842248aa71cd3ccdf2f800902f44ad476f51210` compacted short signatures and
   calls and added the first direct coordinate trace.
-- This correction restored baseline `second_text_x` because the packet store
+- `4fa0ec14605f7bd6a1c05e8ee713efb4041a9d20` restored baseline `second_text_x`
+  because the packet store
   uses the `draw_row` home at `S+08h`, not the PDB `x` home at `S+10h`.
 
 ## PDB coverage
