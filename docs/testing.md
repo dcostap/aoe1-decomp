@@ -144,3 +144,6 @@ The latest documented work is not an all-green whole-project validation.
 See [the September 15 follow-up](../decomp_notes/human_replay_followup_20260915.md) for build and replay evidence.
 That work includes remaining clock and image differences and static unknowns.
 A focused module audit is not a fresh whole-project function audit.
+
+The [original-repeat investigation](../decomp_notes/original_repeatability_20260915.md) proves a replay timing limitation.
+Equal input/update counters can produce different simulation time. Even equal complete RNG traces can accompany different positions.
