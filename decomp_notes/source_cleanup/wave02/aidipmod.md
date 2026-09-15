@@ -100,9 +100,9 @@ The source keeps the explicit casts, literal values, calls, declaration order, s
 
 ### Shared resource request
 
-Request the root resource-ID owner to review one possible shared mapping. This source does not replace the literal because it passes the value as an `AIModuleID`, not directly to a string lookup.
+Request the root resource-ID owner to review one shared mapping for the base-game lookup use only. This source does not replace the literal because it passes the value as an `AIModuleID`, not directly to a string lookup.
 
-- Proposed cleanup name: `IDS_HELP_FILE_AGE_OF_EMPIRES`.
+- Proposed cleanup name for the base-game lookup: `IDS_HELP_WINDOW_TITLE`.
 - Numeric ID: `0x03EB` (decimal `1003`).
 - Resource type: `RT_STRING`.
 - Current base runtime: `runtime/language.dll`.
@@ -116,9 +116,9 @@ Request the root resource-ID owner to review one possible shared mapping. This s
 - Pinned original expansion SHA256: `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 - Pinned original expansion result: ID `0x03EB` is missing. It is not an empty slot result.
 - Lookup path: `RGE_Base_Game::get_string(long,char*,int)` calls `LoadStringA(StringTable, ...)`. `TRIBE_Game::get_string(long,char*,int)` tries `StringTableX` first, then falls back to the base lookup.
-- Call-site purpose: `RGE_Base_Game::~RGE_Base_Game` looks up `0x03EB` as the help-window name. `DiplomacyAIModule` passes the same value to `AIModule` as its module ID.
+- Call-site purpose: `RGE_Base_Game::~RGE_Base_Game` passes `0x03EB` to `FindWindowA` as the `MS_WINHELP` window-name argument. `DiplomacyAIModule` passes the same value to `AIModule` as its module ID.
 
-The text and purpose are established for the base-game string lookup. The dual use does not prove that the module-ID expression should use a resource macro. The proposed mapping remains a shared request only.
+The text and purpose are established for the base-game string lookup. This request applies to that lookup use only. The identical `DiplomacyAIModule` module ID must remain numeric. Equal values do not prove equal semantic roles. The proposed mapping remains a shared request only.
 
 ## Generation and ownership risk
 
