@@ -1,0 +1,200 @@
+# Source-cleanup report: `src/dlg_help.cpp`
+
+## Delivery
+
+- Module: `src/dlg_help.cpp`
+- Header read-only: `include/dlg_help.h`
+- Header owner: owner 10
+- Shared resource header owner: root (`include/resource_ids.h`)
+- Branch: `cleanup/staging-20260915-86`
+- Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
+- Source commit: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Final report commit: the commit that adds this report; copy its full hash from Git.
+- Changed files:
+  - `src/dlg_help.cpp`
+  - `decomp_notes/source_cleanup/wave02/dlg_help.md`
+- `include/dlg_help.h` was not changed.
+- `include/resource_ids.h` was not changed.
+
+The source cleanup changes names, formatting, and one existing resource macro
+use. It does not change types, storage, control flow, calls, or source order.
+
+## Scope and evidence
+
+I read the repository contract and these complete guides:
+
+- `docs/source_cleanup.md`
+- `docs/source_comments.md`
+- `docs/resource_ids.md`
+- `docs/source_cleanup_owners.md`
+- `docs/testing.md`
+- `decomp_notes/source_cleanup/wave02_assignments.md`
+
+I read the assigned source, header, manifest, and existing module note. I used
+these absolute main-root evidence paths:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/config/functions/src/dlg_help.cpp.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E840_THelpDialog.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E8E0_THelpDialog.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E950_THelpDialog.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043E9E0_setup_help.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043ED40_action.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0043/0043EE10_handle_mouse_down.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/`
+
+The registry selects six handwritten procedures in source and address order.
+The PDB module is `.\\Release\\dlg_help.obj`, with source
+`C:\\msdev\\work\\age1_x1\\dlg_help.cpp`.
+
+The original PE SHA-256 is
+`88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+The preserved baseline directory was inspected but not changed.
+
+## Original-name recovery coverage
+
+Coverage is complete for all six registered procedures. I checked each PDB
+parameter, local, function-static, and register record.
+
+| VA | Procedure | PDB parameters | PDB locals and registers | Source result |
+| --- | --- | --- | --- | --- |
+| `0043E840` | `THelpDialog::THelpDialog` | `parentPanel`, `in_parent_panel`, `help_string_id`, `in_help_page_id`, `x`, `y` | No locals or statics; register `this` in `ecx` | Restored all six parameter names. Kept local `text`, which has no PDB record. |
+| `0043E8E0` | `THelpDialog::THelpDialog` | `parentPanel`, `in_parent_panel`, `in_help_string`, `in_help_page_id`, `x`, `y` | No locals or statics; register `this` in `ecx` | Restored all six parameter names. |
+| `0043E950` | `THelpDialog::~THelpDialog` | None | No locals or statics; register `this` in `ecx` | No rename was supported. |
+| `0043E9E0` | `THelpDialog::setup_help` | `parentPanel`, `in_parent_panel`, `help_string`, `in_help_page_id`, `mouse_x`, `mouse_y` | `rge_text_font` at `-0xc`; `tabList` at `-0x8`; `dialog_x` at `+0xc`; `panel_height` at `+0x8`; register `this` in `ecx` | Restored all six parameters and all four named locals. `dialog_x` and `panel_height` use reused positive stack homes. |
+| `0043ED40` | `THelpDialog::action` | `fromPanel`, `actionIn`, `a1`, `a2` | No locals or statics; register `this` in `ecx` | Restored all four parameter names. Kept local `help_page_id` and `help_topic`; neither has a PDB record. |
+| `0043EE10` | `THelpDialog::handle_mouse_down` | `mouse_button_in`, `x`, `y`, `ctrl_key`, `shift_key` | No locals or statics; register `this` in `ecx` | Restored all five parameter names. `x` and `y` already matched. |
+
+The PDB also lists compiler-generated scalar deleting destructor `0043E8C0`,
+`THelpDialog::\`scalar deleting destructor'`. It has stack `__flags` and
+register `this` in `ecx`. It has no handwritten source owner and was not edited.
+
+### Name details
+
+- Recovered original constructor names are `parentPanel`, `in_parent_panel`,
+  `help_string_id`, `in_help_page_id`, `x`, and `y`.
+- The second constructor also recovers `in_help_string`.
+- Recovered `setup_help` names are `parentPanel`, `in_parent_panel`,
+  `help_string`, `in_help_page_id`, `mouse_x`, `mouse_y`, `rge_text_font`,
+  `tabList`, `dialog_x`, and `panel_height`.
+- Recovered `action` names are `fromPanel`, `actionIn`, `a1`, and `a2`.
+- Recovered `handle_mouse_down` names are `mouse_button_in`, `x`, `y`,
+  `ctrl_key`, and `shift_key`.
+- Existing names without PDB records remain unchanged. These include `text`,
+  `line_height`, `y`, `button`, `tab_count`, `help_page_id`, and `help_topic`.
+- The `setup_help` temporary named `help_topic` has no PDB record. The former
+  local name `help_string` conflicted with the recovered `help_string` parameter.
+  `help_topic` is a new descriptive cleanup name. It adds no declaration.
+- No reused stack slot received a forced extra declaration. No parameter type,
+  local type, scope, storage duration, or initialization point changed.
+- No public function, class, member, global, ABI symbol, or layout changed.
+
+## Resource and constant evidence
+
+The source now includes `../include/resource_ids.h` and uses the existing
+`IDS_BUTTON_OK` macro for both OK-button caption calls. The macro is not claimed
+as a recovered original symbol.
+
+The existing macro maps `0x0FA1` to the OK caption. The source calls
+`create_button` with this ID at original `0043ECCC` and the two branch paths
+before it. The caption role is proved by that call and the resource lookup.
+
+The resource extractor was run after `python tools/inspect_pe_strings.py --help`.
+Its outputs are:
+
+- `build/resource-strings/dlg-help-runtime-language.json`
+- `build/resource-strings/dlg-help-runtime-languagex.json`
+- `build/resource-strings/dlg-help-original-xpack-languagex.json`
+
+All checked resources use `RT_STRING` and language `0x0409` (`1033`).
+
+| File | SHA-256 | `0x0FA1` | `0x243D` |
+| --- | --- | --- | --- |
+| `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `OK` | `More Help` |
+| `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | Missing | Missing |
+| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | Missing | Missing |
+
+`TPanel::get_string` calls the global `rge_base_game` string lookup. The
+`TRIBE_Game` override checks `StringTableX` first and then the base table.
+The checked runtime expansion therefore falls back to the base runtime DLL.
+The checked original XPack expansion also lacks both entries.
+
+The source keeps numeric `0x243D` because no shared macro exists yet. The
+original setup call at `0043EC88` passes it as the caption ID for the optional
+single-player More Help button. The caption role is proved by the call site,
+the branch, and the exact base resource text.
+
+### Shared resource request
+
+Root should add this one mapping to `include/resource_ids.h`:
+
+| Numeric ID | Proposed cleanup name | Resource type | Language | Exact text and files | Lookup path | Purpose |
+| --- | --- | --- | --- | --- | --- | --- |
+| `0x243D` (`9277`) | `IDS_BUTTON_MORE_HELP` | `RT_STRING` | `0x0409` (`1033`) | `runtime/language.dll`: `More Help`; `runtime/languagex.dll`: missing; original XPack `languagex.dll`: missing | `TPanel::get_string` -> virtual `TRIBE_Game::get_string`; expansion table first, base table fallback | Caption passed to `create_button` for the optional More Help button in `THelpDialog::setup_help` |
+
+The proposed name is a new cleanup name. It is not a recovered original macro.
+Keep the numeric expression until root reviews and adds this shared definition.
+
+The source retains `0x101` in `WinHelpA`. Pinned `WINUSER.H` identifies it as
+`HELP_KEY` with value `0x0101L`. No replacement was made because this pass did
+not need to change the existing API literal or its expression type.
+
+## Comments and formatting
+
+No new source comment was needed. The existing EH-framed constructor comment
+remains. It records the module's existing context evidence.
+
+Function opening braces now use 1TBS. The source keeps all statements, calls,
+casts, literals, declarations, scopes, and evaluation order unchanged.
+
+## Output and code-generation concerns
+
+- Identifier changes can alter debug names and line records.
+- The 1TBS formatting changes can alter line records.
+- `IDS_BUTTON_OK` expands to the existing `0x0FA1` literal. It adds no storage.
+- The new resource include changes preprocessing but adds no runtime state.
+- The recovered positive PDB homes remain reused-home evidence. No forced stack
+  layout or compiler steering was added.
+- The existing module note records `setup_help` as nonexact in prior checks.
+  This cleanup does not claim to repair that mismatch.
+- No structural rewrite, helper, bug fix, layout change, or assembly was added.
+
+## Header requests
+
+The owner of `include/dlg_help.h` should review these parameter-name-only edits:
+
+```cpp
+THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, long help_string_id,
+            long in_help_page_id, long x, long y);
+THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, char* in_help_string,
+            long in_help_page_id, long x, long y);
+virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y,
+                               int ctrl_key, int shift_key);
+void setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
+                char* help_string, long in_help_page_id, long mouse_x, long mouse_y);
+```
+
+These edits change no type, order, calling convention, symbol, or layout.
+
+## Validation
+
+Allowed checks performed:
+
+- Read the complete assigned source and header.
+- Read the registry and all six assigned function packets.
+- Read every assigned procedure in `scoped_symbols.json`.
+- Read the original resource evidence and extracted the requested IDs.
+- Inspected the original PE path and preserved baseline directory.
+- Ran `git diff --check`.
+- Reviewed the complete source diff.
+
+Compilation, matching, audits, and tests were not run. I did not run a compiler,
+build, matcher, audit, automated test, menu suite, gameplay suite, or game.
+
+## Commits
+
+- Base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
+- Source cleanup: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Report: committed after this source commit. Copy its full hash from Git.
