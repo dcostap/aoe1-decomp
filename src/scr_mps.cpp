@@ -2304,15 +2304,15 @@ void TribeMPSetupScreen::activateVictoryPanels() {
         victoryAmountInput->set_active(1);
         switch (victoryTypeDrop->get_id()) {
         case 2:
-        victoryAmountLabel->set_text(IDS_VICTORY_PERCENT_LABEL);
+            victoryAmountLabel->set_text(IDS_VICTORY_PERCENT_LABEL);
             return;
         case 3:
         case 4:
         case 5:
-        victoryAmountLabel->set_text(IDS_VICTORY_COUNT_LABEL);
+            victoryAmountLabel->set_text(IDS_VICTORY_COUNT_LABEL);
             return;
         case 6:
-        victoryAmountLabel->set_text(IDS_VICTORY_QUANTITY_LABEL);
+            victoryAmountLabel->set_text(IDS_VICTORY_QUANTITY_LABEL);
             return;
         }
     }
