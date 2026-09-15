@@ -13,8 +13,7 @@ static char s_tpnl_btn_draw3[] = "tpnl_btn::draw3";
 
 TRIBE_Panel_Button::TRIBE_Panel_Button(
     TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in,
-    void* font_in, long font_wid_in, long font_hgt_in, TShape* border_pic_in)
-{
+    void* font_in, long font_wid_in, long font_hgt_in, TShape* border_pic_in) {
     tribe_button_type = 0;
     color_table = 0;
     border_frame = 0;
@@ -33,8 +32,7 @@ TRIBE_Panel_Button::TRIBE_Panel_Button(
     }
 }
 
-void TRIBE_Panel_Button::set_text_msg(char* text_msg_in)
-{
+void TRIBE_Panel_Button::set_text_msg(char* text_msg_in) {
     if (text_msg_in == 0) {
         text_msg[0] = 0;
         return;
@@ -44,8 +42,7 @@ void TRIBE_Panel_Button::set_text_msg(char* text_msg_in)
     text_msg[sizeof(text_msg) - 1] = 0;
 }
 
-int TRIBE_Panel_Button::is_inside(long x, long y)
-{
+int TRIBE_Panel_Button::is_inside(long x, long y) {
     if (!TPanel::is_inside(x, y))
         return 0;
 
@@ -60,8 +57,7 @@ int TRIBE_Panel_Button::is_inside(long x, long y)
     return 1;
 }
 
-void TRIBE_Panel_Button::draw()
-{
+void TRIBE_Panel_Button::draw() {
     HGDIOBJ old_font;
     long calc_y;
     long y;
@@ -238,19 +234,16 @@ void TRIBE_Panel_Button::draw()
     draw_finish();
 }
 
-void TRIBE_Panel_Button::set_display_garrison(int value)
-{
+void TRIBE_Panel_Button::set_display_garrison(int value) {
     display_garrison = value;
     set_redraw(TPanel::RedrawNormal);
 }
 
-void TRIBE_Panel_Button::set_garrison_number(int value)
-{
+void TRIBE_Panel_Button::set_garrison_number(int value) {
     garrsion_number = value;
     set_redraw(TPanel::RedrawNormal);
 }
 
-int TRIBE_Panel_Button::get_garrison_number()
-{
+int TRIBE_Panel_Button::get_garrison_number() {
     return garrsion_number;
 }

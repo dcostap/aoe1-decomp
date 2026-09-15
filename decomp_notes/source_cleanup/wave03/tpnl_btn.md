@@ -13,6 +13,13 @@
 - The source and report commits contain no other files.
 - Header owner: owner 19 owns `include/tpnl_btn.h`. This worker did not edit it.
 
+## Correction 1
+
+Correction base: `3b72d82d2e2e5bb6a62fcb7fd63bdda58d04f6a1`.
+This correction applies 1TBS to every definition in `src/tpnl_btn.cpp`.
+It joins each short signature with its opening brace. The wrapped constructor
+keeps its parameter list and puts its opening brace after the closing `)`.
+
 The registry packet is `config/functions/src/tpnl_btn.cpp.json`. It selects seven
 normal procedures in source order. The selected registry statuses are six
 `matching` procedures and `accepted_drift` for `TRIBE_Panel_Button::draw`.
@@ -102,15 +109,28 @@ No resource lookup or resource ID occurs in this module. No resource ID was
 investigated, so no DLL extraction or resource mapping request is needed.
 No comments were added. No existing comment needs correction.
 
-No shared declaration request was sent. The owned header uses an unnamed
-constructor declaration and unnamed method parameters, so the recovered
-names require no header change. No unresolved header mapping blocks this
-source.
+Header request to owner 19: add the recovered parameter names to
+`include/tpnl_btn.h`. Keep the existing types and declaration order:
+
+```cpp
+TRIBE_Panel_Button(TDrawArea* render_area_in, TPanel* parent_panel_in,
+                   TDigital* sound_in, void* font_in, long font_wid_in,
+                   long font_hgt_in, TShape* border_pic_in);
+void set_text_msg(char* text_msg_in);
+virtual int is_inside(long x, long y);
+void set_display_garrison(int value);
+void set_garrison_number(int value);
+```
+
+The constructor and `set_text_msg` names are recovered from the PDB. The
+other parameterized method names already match their PDB records. This worker
+did not edit the header. The request does not change any ABI type or layout.
 
 ## Code-generation and unresolved items
 
-The source commit changes parameter and local identifiers only, except for the
-`TRANSPARENT` macro replacement. The macro expands to the same literal `1`.
+The source commits change parameter and local identifiers only, except for the
+`TRANSPARENT` macro replacement. The correction also changes brace placement
+and signature wrapping. The macro expands to the same literal `1`.
 No ABI, type, layout, symbol, call target, cast, control-flow, evaluation
 order, storage, buffer, or literal value changed. The constructor call was
 wrapped for readability without moving a statement. Generated output was not
