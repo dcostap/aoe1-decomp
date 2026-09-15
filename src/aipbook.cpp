@@ -526,9 +526,9 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 }
 
                 if (smallestGroup != -1) {
-                        if (playStatus->addGrouping(id,
-                                                    (unsigned char)smallestGroup,
-                                                    (unsigned char)overflowType) == 1) {
+                    if (playStatus->addGrouping(id,
+                                                (unsigned char)smallestGroup,
+                                                (unsigned char)overflowType) == 1) {
                         maximumUnits = play->maximumNumberUnitsValue;
                         id = -1;
                         if (playStatus->numberInPlay() == maximumUnits) {
@@ -988,32 +988,26 @@ int AIPlayBook::loadPlays(char* filename) {
                 if (currentPlay >= 16000)
                     break;
                 this->plays[currentPlay].setName(temp2);
-            }
-            else if (strcmp(temp2, s_PlayType) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_PlayType) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp2);
                 this->plays[currentPlay].typeValue =
                     this->plays[currentPlay].convertToIntType(temp2);
-            }
-            else if (strcmp(temp2, s_MinUnits) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_MinUnits) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].minimumNumberUnitsValue = temp4;
-            }
-            else if (strcmp(temp2, s_MaxUnits) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_MaxUnits) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].maximumNumberUnitsValue = temp4;
-            }
-            else if (strcmp(temp2, s_Power) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_Power) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].powerValue = temp4;
-            }
-            else if (strcmp(temp2, s_Overflow) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_Overflow) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp2);
                 if (strcmp(temp2, s_Balance) == 0)
                     this->plays[currentPlay].overflowValue = 1;
                 else if (strcmp(temp2, s_FirstGroup) == 0)
                     this->plays[currentPlay].overflowValue = 2;
-            }
-            else if (strcmp(temp2, s_DeathPercentage) == 0 &&
+            } else if (strcmp(temp2, s_DeathPercentage) == 0 &&
                      currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 if (temp4 < 0)
@@ -1022,8 +1016,7 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[currentPlay].deathPercentageValue = 100;
                 else
                     this->plays[currentPlay].deathPercentageValue = temp4;
-            }
-            else if (strcmp(temp2, s_Intelligence) == 0 &&
+            } else if (strcmp(temp2, s_Intelligence) == 0 &&
                      currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 if (temp4 < 0)
@@ -1032,24 +1025,20 @@ int AIPlayBook::loadPlays(char* filename) {
                     this->plays[currentPlay].intelligenceValue = 100;
                 else
                     this->plays[currentPlay].intelligenceValue = temp4;
-            }
-            else if (strcmp(temp2, s_TargetChar) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_TargetChar) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp6);
                 int type = this->convertTargetCharacteristicNameToIntType(temp6);
                 if (type != 0)
                     this->plays[currentPlay].addTargetCharacteristic(type);
-            }
-            else if (strcmp(temp2, s_TargetType) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_TargetType) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_string, temp6);
                 int type = this->convertTargetNameToIntType(temp6);
                 if (type != 0)
                     this->plays[currentPlay].addTargetType(type);
-            }
-            else if (strcmp(temp2, s_NumberGroups) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_NumberGroups) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 this->plays[currentPlay].numberGroupsValue = temp4;
-            }
-            else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
+            } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
                      currentPhase == -1) {
                 sscanf(temp, s_format_group_range, &temp4, temp6, &temp3,
                        &i);
@@ -1069,12 +1058,10 @@ int AIPlayBook::loadPlays(char* filename) {
                             group->setMaximum(type, i);
                     }
                 }
-            }
-            else if (strcmp(temp2, s_Phase) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_Phase) == 0 && currentPlay != -1) {
                 sscanf(temp, s_format_skip_string_int, &temp4);
                 currentPhase = temp4;
-            }
-            else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
+            } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
                      currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3,
                        &i, &temp5);
@@ -1085,8 +1072,7 @@ int AIPlayBook::loadPlays(char* filename) {
                                                temp3, i, temp5);
                     phase->addCommand(command);
                 }
-            }
-            else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 &&
+            } else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 &&
                      currentPhase != -1) {
                 sscanf(temp, s_format_trigger, &temp4, temp6, &temp3,
                        &temp7);
@@ -1096,8 +1082,7 @@ int AIPlayBook::loadPlays(char* filename) {
                                            (unsigned char)currentPhase,
                                            (unsigned char)temp4, 0);
                 phase->addTrigger(trigger);
-            }
-            else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 &&
+            } else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 &&
                      currentPhase != -1) {
                 sscanf(temp, s_format_command, &temp4, temp6, &temp3,
                        &temp7, &temp5);
@@ -1107,14 +1092,12 @@ int AIPlayBook::loadPlays(char* filename) {
                                            (unsigned char)currentPhase,
                                            (unsigned char)temp4, temp5);
                 phase->addTrigger(trigger);
-            }
-            else if (strcmp(temp2, s_EndPlay) == 0 && currentPlay != -1) {
+            } else if (strcmp(temp2, s_EndPlay) == 0 && currentPlay != -1) {
                 currentPhase = -1;
                 strcpy(temp2, this->plays[currentPlay].nameValue);
                 if (temp2[0] == 'H' && temp2[1] == 'P') {
                     this->numberPlaysValue -= 7;
-                }
-                else {
+                } else {
                     int sourcePlay = currentPlay;
                     currentPlay += 7;
                     for (int temp8 = 1; temp8 < 8; temp8++) {
@@ -1178,8 +1161,7 @@ int AIPlayBook::loadPlays(char* filename) {
                                         rotatedPoint.yValue,
                                         rotatedPoint.zValue);
                                     curPhase->addCommand(newCommand);
-                                }
-                                else {
+                                } else {
                                     curPhase->addCommand(*command);
                                 }
                             }

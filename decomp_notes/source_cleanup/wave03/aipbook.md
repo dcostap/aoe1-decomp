@@ -11,6 +11,13 @@
   - `decomp_notes/source_cleanup/wave03/aipbook.md`
 - Header changes: none
 
+## Correction history
+
+- Follow-up correction applied 2026-09-15: formatted `src/aipbook.cpp` in 1TBS style.
+- Joined braced parser branches to `} else {` and corrected the over-indented grouping call.
+- Preserved braces, scopes, statements, names, calls, and expressions.
+- Reviewed the Git diff and ran `git diff --check` only.
+
 ## Scope and evidence
 
 This review covers all 68 normal owners in the module registry, from `0040E930` through `00411660`.
