@@ -521,15 +521,15 @@ void RGE_Map::scenario_save(int outfile)
 
 void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain)
 {
+    long map_height;
     long w;
-    long h;
 
+    rge_read(infile, &map_height, 4);
     rge_read(infile, &w, 4);
-    rge_read(infile, &h, 4);
-    this->new_map(w, h);
+    this->new_map(map_height, w);
 
     long height_count = this->map_height;
-    h = 0;
+    long h = 0;
     if (height_count > 0) {
         do {
             int i = 0;
