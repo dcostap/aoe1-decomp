@@ -5,13 +5,13 @@
 - Module: `src/scr_mp.cpp`
 - Paired header: `include/scr_mp.h` (owned by owner 11)
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source-state commit: `4d8093aad58008af81d2772dbd3f289903b3fde1`
+- Final source-state commit: `d09089fcf744127174d5b809ac5f519139e6f6a5`
 - Changed files: `src/scr_mp.cpp`; this report
 - The report commit follows the source commit. The worker result gives its full final branch hash.
 
 The final source-state file hash is:
 
-- `src/scr_mp.cpp`: `102e2bbc220186d16a9fe4034a509617924c31852e81c176b56077f76ff78405`
+- `src/scr_mp.cpp`: `59dbfeeb3da63ee5f411803233241603f39c5c497634a51530a6f51ec11dd363`
 
 No header was edited.
 
@@ -21,9 +21,11 @@ Owner review requested 1TBS formatting for all function definitions. The source 
 
 The correction source commit is `0a0f4dffe28d63d8279ef278b8d4d0551317ddbf`. The report update follows it.
 
+Owner review later found one missed approved substitution: `0x0FA9` is the help-button text ID. The correction uses `IDS_BUTTON_HELP` from the imported header. The source correction commit is `d09089fcf744127174d5b809ac5f519139e6f6a5`; this report update follows it.
+
 ## Resource integration history
 
-Root approved the nine multiplayer connection definitions in root commit `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only `include/resource_ids.h` in integration commit `bdb8bc1af`. This worker replaced every approved numeric ID in `src/scr_mp.cpp` in source commit `4d8093aad58008af81d2772dbd3f289903b3fde1`.
+Root approval and definition provenance for the approved shared resource set is root commit `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only `include/resource_ids.h` in integration commit `bdb8bc1af`. The first worker substitution commit `4d8093aad58008af81d2772dbd3f289903b3fde1` replaced the nine multiplayer connection IDs. Owner review then found the missed `0x0FA9` help-button ID. The imported header provides root macro `IDS_BUTTON_HELP`; this worker replaced that ID in source commit `d09089fcf744127174d5b809ac5f519139e6f6a5`.
 
 The worker kept the existing lookup calls, argument types, casts, buffers, format arguments, arithmetic, fallback paths, recovered names, and 1TBS formatting. The report update follows the source substitution commit.
 
@@ -65,6 +67,7 @@ I included `../include/resource_ids.h` and reused existing shared names for thes
 
 - `IDS_BUTTON_OK` = `0x0FA1`; constructor button text lookup. Base text is `OK`.
 - `IDS_BUTTON_CANCEL` = `0x0FA2`; constructor button text lookup. Base text is `Cancel`.
+- `IDS_BUTTON_HELP` = `0x0FA9`; constructor help-button text lookup. The original constructor packet identifies the base text as `?`.
 - `IDS_BUTTON_CLOSE` = `0x03EA`; constructor close-button text lookup. Base text is `X`.
 - `IDS_HELP_OK` = `0x7531`; OK-button help lookup. Text is missing in every checked file.
 - `IDS_HELP_CANCEL` = `0x7532`; Cancel-button help lookup. Text is missing in every checked file.
@@ -93,7 +96,7 @@ F1 is the staged base-language input. F2 is the staged expansion input. F3 is th
 | `0x7595` | `IDS_HELP_MULTIPLAYER_PLAYER_NAME` | `input->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Type your player name.` | Missing in both files |
 | `0x7596` | `IDS_HELP_MULTIPLAYER_CONNECTION_TYPE` | `list->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Select the type of connection to make. For more information, click More Help.` | Missing in both files |
 
-The resource extraction tool reported the missing slots for `0x7531` and `0x7532` in F1, F2, and F3. This is missing text, not an empty slot. Existing shared names remain valid because the call sites prove their help-ID roles. The nine approved IDs have proven purposes and recovered base text in F1. Their root-approved macros are now used in this source without changing lookup order or values.
+The resource extraction tool reported the missing slots for `0x7531` and `0x7532` in F1, F2, and F3. This is missing text, not an empty slot. Existing shared names remain valid because the call sites prove their help-ID roles. The nine approved IDs have proven purposes and recovered base text in F1. The additional `IDS_BUTTON_HELP` macro is defined by the imported root header and now replaces `0x0FA9`. All approved and existing macros preserve lookup order and values.
 
 ## Shared-file requests
 
@@ -103,7 +106,7 @@ The resource extraction tool reported the missing slots for `0x7531` and `0x7532
 
 ## Comments, code generation, and validation
 
-No source comments were added. The names answer the PDB evidence without a speculative behavior comment. All fourteen resource macros expand to the same integer tokens and values as the replaced literals. The include adds declarations only. Parameter and local renames affect debug names, not executable code. A compiler check is required before making any code-generation claim.
+No source comments were added. The names answer the PDB evidence without a speculative behavior comment. All fifteen resource macros expand to the same integer tokens and values as the replaced literals. The include adds declarations only. Parameter and local renames affect debug names, not executable code. A compiler check is required before making any code-generation claim.
 
 The original executable reference is `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`, SHA256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`. I used it as evidence only.
 
