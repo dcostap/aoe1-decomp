@@ -9,19 +9,22 @@ This correction changes only these two files:
 
 Relative to the initial cleanup commit, the first correction moved opening braces only.
 Every function definition in `src/tplayer.cpp` now uses one true brace style (1TBS).
-This follow-up also restores the baseline variable ownership in `TRIBE_Player::save`.
-It does not change types, scopes, calls, literals, control flow, or data flow.
+The second correction restores the baseline variable ownership in `TRIBE_Player::save`.
+This follow-up applies two root-approved direct resource substitutions.
+It does not change types, scopes, call targets, buffers, argument order, fallback,
+control flow, or data flow.
 
 The common base is `c22ba4258c45b1178181e185d60a3b09a1add617`.
 The full initial cleanup commit is `b55b6d4e480488bf47d0a8ceed53639dc70ca6ae` (`Clean up tplayer source names`).
 The first correction commit is `93bec630cac14f33d4dcab822779006a3d114ec4` (`Normalize tplayer function braces`).
+The save correction commit is `e35426b10aa87044da20b21f20c7e76395526fdc` (`Restore tplayer save handle ownership`).
 The current correction follows that commit.
 
 Source blob hashes:
 
 - Common-base source: `bd436aa1bd57a02ca1c26ab69a5e3ce63aced680`.
 - Initial cleaned source: `31f7862b3b78d76f7fa056bcee982c71d958d1ba`.
-- Corrected source after the save-variable restoration: `ea4b2c8f9f392be483be1d830767a06acb449ac8`.
+- Corrected source after the approved resource substitutions: `ba4edddfdcb7925b51576dbf574f1abd2e2150d1`.
 
 The initial cleanup recovered evidence-supported names for AI, command, cost, scenario,
 mouse, Gaia, and civilization setup code. It also recorded the proposed resource names
@@ -45,19 +48,32 @@ The inspected groups include:
 
 The PDB extraction hash is `e83eecb60607fac8ad2196b27e97f085b7c9567a85907bdfea0a8a78248b5f45`.
 
-## Resource names for owner review
+## Root-approved resource substitutions
 
-Please review these additions in the root-owned `include/resource_ids.h`:
+Root approved these two direct substitutions in
+`decomp_notes/source_cleanup/wave04_root_review.md`, Owner 25:
 
 | Proposed name | ID or range | Evidence and use |
 |---|---:|---|
-| `IDS_TPLAYER_NONE` | `0x2775` | Loads the exact payload ` <None> ` into `noneString`. |
-| `IDS_TPLAYER_RANDOM` | `0x277B` | Loads `Random` into `randomString` and compares it with build-list, city-plan, and ruleset inputs. |
-| `IDS_CIVILIZATION_NAME_BASE` | `0x27F6` | The source adds this base to `master_player_id` before the civilization lookup. The lookup range is `0x27F7..0x2806`. |
-| `IDS_BUILD_LIST_NAME_BASE` | `0x26930` | The source adds this base to `selectedBuildList`. The inspected range is `0x26930..0x269AC`. |
+| `IDS_FILE_NONE` | `0x2775` | Loads the exact payload ` <None> ` into the unused `noneString` buffer. |
+| `IDS_AI_FILE_RANDOM` | `0x277B` | Loads `Random` into `randomString` and compares it with build-list, city-plan, and ruleset inputs. |
 
-The source uses these values at `src/tplayer.cpp:1611-1612`, `2075`, `2210`, and `3129`.
-No resource header was changed in this worker tree.
+The source uses these approved names at `src/tplayer.cpp:1612-1613`.
+The unused `noneString` load remains in place.
+
+The imported root header provenance is:
+
+- `c7e587ce0993e28d5d6620e5b358dbb8286cfe88` added the AI file names.
+- `bf943f3339643ee5beca7dd74e98b4cb729e48d3` corrected `0x2775` to `IDS_FILE_NONE`.
+- The resulting root header blob is `3670c49563f971137b89644d4a0069796cf3d2af`.
+
+The root-owned `include/resource_ids.h` was not changed in this worker tree.
+The source now includes that owner-managed header and does not define its macros.
+
+The prior `IDS_CIVILIZATION_NAME_BASE` and `IDS_BUILD_LIST_NAME_BASE` requests are withdrawn.
+The `0x27F6` arithmetic and `0x26930` arithmetic remain numeric due to the proved limitations.
+The civilization arithmetic does not provide one complete expansion mapping, and the
+checked files do not prove the missing build-list payloads under an unchecked `STRING=` override.
 
 ## Complete resource evidence
 
@@ -92,6 +108,9 @@ The complete output hashes are:
 |---:|---|---|---|
 | `0x2775` | missing | ` <None> ` | missing |
 | `0x277B` | missing | `Random` | missing |
+
+The runtime base supplies ` <None> ` for `0x2775` and `Random` for `0x277B`.
+The current runtime expansion and pinned original expansion both report these IDs as missing.
 
 ### Civilization IDs
 
@@ -153,7 +172,8 @@ All build-list IDs remain empty after both lookups fail.
 
 Please review these requests in the owning changes:
 
-- `include/resource_ids.h`: add the four proposed resource names above.
+- `include/resource_ids.h`: the two approved definitions are owned by root.
+  No civilization-name or build-list-name definition is requested.
 - `include/tplayer.h`: add parameter names that match the cleaned definitions where useful.
   Keep all declaration types and signatures unchanged.
 - `include/tplayer.h` and the first `TRIBE_Player` constructor: the PDB reports a
@@ -179,5 +199,8 @@ temporary. The source keeps existing types, scopes, and declarations for those c
   In `TRIBE_Player::save`, `save_file` retains the file handle, and `outfile`
   is overwritten with the AI-present flag before `rge_write`.
   All file operations use `save_file`, including `playerAI->save(save_file)`.
+- Follow-up resource correction: parent `e35426b10aa87044da20b21f20c7e76395526fdc`.
+  It uses `IDS_FILE_NONE` and `IDS_AI_FILE_RANDOM` at the two direct call sites.
+  It leaves the `0x27F6` and `0x26930` arithmetic numeric.
 
 No build, compiler check, matching check, audit, test, or game run was performed.

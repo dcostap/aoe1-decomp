@@ -36,6 +36,7 @@
 #include "../include/rge_fio.h"
 #include "../include/rge_base_game_global.h"
 #include "../include/game_globals.h"
+#include "../include/resource_ids.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1608,8 +1609,8 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         case 4: this->playerAI->logCommonHistory(tplayerMapMessages[4]); break;
         default: this->playerAI->logCommonHistory(tplayerMapMessages[5]); break;
         }
-        rge_base_game->get_string(0x2775, noneString, 0x100);
-        rge_base_game->get_string(0x277B, randomString, 0x100);
+        rge_base_game->get_string(IDS_FILE_NONE, noneString, 0x100);
+        rge_base_game->get_string(IDS_AI_FILE_RANDOM, randomString, 0x100);
 
         strcpy(buildListName, s_592A40);
         strcpy(ruleSetName, s_592A40);
