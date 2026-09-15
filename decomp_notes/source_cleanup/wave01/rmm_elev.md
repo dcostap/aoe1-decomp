@@ -5,12 +5,12 @@
 - Module: `src/rmm_elev.cpp`
 - Branch: `cleanup/staging-20260915-15`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source-cleanup commit: `21f52335ce9c6404932e56e52a6ef2c378167cb6`
+- Final source-cleanup commit: `a2336231287bb5b8d39b0bbb9abc5764dec8ef6a`
 - Changed files:
   - `src/rmm_elev.cpp`
   - `decomp_notes/source_cleanup/wave01/rmm_elev.md`
 
-The source commit was made before this report. The report commit hash is returned in the handoff after this report is committed.
+The source and report are committed in the final source-cleanup commit above.
 
 ## Scope and evidence
 
@@ -43,7 +43,7 @@ The module has no resource lookup. I did not extract resource strings.
 
 ## PDB name recovery
 
-All names below are PDB names. Names that were already present are listed to show full coverage. I did not change types, storage, scope, declaration order, function symbols, calls, or control flow.
+The sections below list every PDB record and its source mapping. I did not change types, storage, scope, declaration order, function symbols, calls, or control flow.
 
 ### `004846C0` — constructor
 
@@ -63,13 +63,13 @@ The PDB has no stack symbols or parameters. The source keeps `row`, `column`, `t
 
 PDB parameters are `x`, `y`, `base_terrain`, `base_elevation`, and `spacing`. The source now uses all five exact names.
 
-PDB locals are `index1` and `y1`. Both names are present in the source. Other locals have no PDB record and remain unchanged. I did not force mappings for reused parameter stack slots.
+PDB locals are `index1` and `y1`. `index1` shares stack slot `+0x8` with parameter `y`, so I do not claim that mapping. `y1` has a distinct slot and the source keeps that name. Other locals have no PDB record and remain unchanged.
 
 ### `004848A0` — `check_elevation`
 
 PDB parameters are `target`, `x`, `y`, `spacing`, `base_terrain`, and `base_elevation`. Renamed `elev`, `radius`, `terrain`, and `min_elev` to the exact PDB names. `x` and `y` already matched.
 
-PDB locals are `index1`, `y1`, `x1`, and `count`. The source already has these names. The `x1` and `y1` records share stack storage with parameter slots and occur across separate source blocks. I preserved the existing declarations and scopes. Other locals have no PDB record.
+PDB locals are `index1`, `y1`, `x1`, and `count`. `index1` and `count` have distinct slots and the source keeps those names. The `x1` and `y1` records share stack slots with parameters and occur across separate source blocks, so I do not claim those mappings. I preserved the existing declarations and scopes. Other locals have no PDB record.
 
 ### `00484A40` — `generate_modifiers`
 
@@ -93,7 +93,7 @@ The PDB has no other local records. Existing `stack`, `width`, `height`, `max_x`
 
 PDB parameters are `x`, `y`, and `spacing`. Renamed `radius` to `spacing`. `x` and `y` already matched.
 
-PDB locals are `x1` and `y_index`. Renamed `start_x` to `x1` and `row` to `y_index`. The PDB `x1` record uses a reused parameter stack slot. The source role is the lower X bound, so this mapping is reliable without a declaration or storage change. Other locals have no PDB record and remain unchanged.
+PDB locals are `x1` and `y_index`. The PDB `x1` record shares stack slot `+0x8` with parameter `y`, so I kept the existing descriptive name `start_x` and do not claim this mapping. The distinct-slot `y_index` record maps to the existing row loop name. Other locals have no PDB record and remain unchanged.
 
 ### `00484D00` — `base_elevation_generate`
 
