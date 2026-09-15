@@ -5,8 +5,10 @@
 - Module: `src/dlg_dip.cpp`
 - Branch: `cleanup/staging-20260915-85`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source head from `git rev-parse` before this report commit: `d0855b8b272c3d10d8c41aa82a98532ea6ef3c96`
-- Source commit: `d0855b8b272c3d10d8c41aa82a98532ea6ef3c96`
+- Previous report commit: `61dbb6ae3d91aedf6eea80279691dea99ce860e4`
+- Approved `include/resource_ids.h` commit: `46805ee2a76f12ba7a50fa925461d1f787a00e61`
+- Source head from `git rev-parse` before this report commit: `f9d038289fa1d7a46a81b2667839ec08f41abf31`
+- Source commits: `d0855b8b272c3d10d8c41aa82a98532ea6ef3c96`, `f9d038289fa1d7a46a81b2667839ec08f41abf31`
 - Changed files: `src/dlg_dip.cpp`; this report.
 
 The source registry file is `config/functions/src/dlg_dip.cpp.json`. It selects eight normal procedures. The source also covers one compiler-generated scalar deleting destructor. No header changed.
@@ -55,7 +57,11 @@ Every procedure has a scoped PDB review. Each normal procedure has a `this` regi
 | `0043E6E0` | `check_stone` | Lines 846-874; 136 bytes | No stack symbols; `this` (`ecx`) | No PDB local rename was available. |
 | `0043E770` | `draw` | Lines 880-903; 195 bytes | No stack symbols; `this` (`ecx`) | No PDB local rename was available. |
 
-The constructor's `a` maps to the row y-coordinate. The PDB and the packet's Ghidra listing place it at `-0x128`/`-0x12C` and show its `0x50` initialization. This is a direct mapping from the existing `y` name. The action's `tc` maps to the `TRIBE_Command*` used for the command calls. No reused stack-slot mapping was forced.
+The constructor's `a` maps to the row y-coordinate. The scoped PDB record names it `a`, gives type `int` (`T_INT4(0074)`), and gives PDB offset `-0x128`. The packet's Ghidra listing names the same logical slot `Stack[-0x12C] a`.
+
+The original packet shows the declaration's behavior, not only its home. At `0043CD40`, the instruction `mov dword [esp+14h],50h` initializes `a` to `0x50`. The row-control path loads that value at `0043CF4D` and `0043CF84`. The tribute-control path loads it at `0043D05E`. At `0043D1E7`, the loop loads the value, `0043D1EF` adds `0x1E`, and `0043D1F7` stores it back. These uses match the source local previously named `y`: it supplies the row coordinate and advances once per player. This instruction and type evidence proves the `y` to `a` mapping without relying on a reused stack home alone.
+
+The action's `tc` maps to the `TRIBE_Command*` used for the command calls. No reused stack-slot mapping was forced.
 
 ### Renames in the source
 
@@ -99,7 +105,7 @@ The current base resource input is `C:/Projects/my_decomps/aoe1_attempt3/runtime
 
 The base file returned these exact strings. The current expansion file reported each of these IDs as missing. The pinned original expansion file also reported each as missing.
 
-| ID | Exact base text | Call-site purpose | Proposed cleanup name |
+| ID | Exact base text | Call-site purpose | Applied cleanup macro |
 | --- | --- | --- | --- |
 | `0x267B` | `Diplomacy` | Dialog title | `IDS_DIPLOMACY_TITLE` |
 | `0x267C` | `Civilization` | Civilization column title | `IDS_DIPLOMACY_CIVILIZATION` |
@@ -121,7 +127,7 @@ The existing shared definitions `IDS_HELP_OK` (`0x7531`) and `IDS_HELP_CANCEL` (
 
 The base file contains these exact texts. The current expansion file contains the listed result for each ID. The pinned original expansion file reports every listed ID as missing.
 
-| ID | Exact base text | Current expansion result | Call-site purpose | Proposed cleanup name |
+| ID | Exact base text | Current expansion result | Call-site purpose | Applied cleanup macro |
 | --- | --- | --- | --- | --- |
 | `0x7684` | `Click to set your diplomatic stance toward this player as Ally. Your military units do not attack this civilization.` | Empty slot | Ally stance help | `IDS_HELP_DIPLOMACY_ALLY` |
 | `0x7685` | `Click to set your diplomatic stance toward this player as Neutral. Your military units attack all buildings and military units (but not villagers) who enter their sight.` | `Click to set your diplomatic stance toward this  player as Neutral. Your military units attack buildings and villagers when commanded and automatically attack all military units in their sight.` | Neutral stance help | `IDS_HELP_DIPLOMACY_NEUTRAL` |
@@ -133,7 +139,7 @@ The base file contains these exact texts. The current expansion file contains th
 | `0x768B` | `Click to clear all tributes before they are paid.` | Empty slot | Clear-tributes help | `IDS_HELP_DIPLOMACY_CLEAR_TRIBUTES` |
 | `0x768C` | `If there is a check in the box, allied players win or lose as a team. Any allied player who achieves the victory condition wins the game for all allies. All players who want to pursue an allied victory must select Allied Victory.` | Empty slot | Allied-victory help | `IDS_HELP_DIPLOMACY_ALLIED_VICTORY` |
 
-The source keeps all new IDs numeric. The root owner controls `include/resource_ids.h`. These proposed names are cleanup names, not recovered macro names. The source does not define new competing macros.
+The reviewed header commit `46805ee2a76f12ba7a50fa925461d1f787a00e61` defines all proposed diplomacy names. The source now uses these approved macros. They are cleanup names, not recovered macro names.
 
 The `0x69` argument to `get_string2` is a string-group selector. It is not a direct string-table ID. `TRIBE_Game::get_string2` uses it to select the civilization-name branch, and `master_player_id` selects the resulting resource. The source keeps `0x69` and the data-driven lookup unchanged. Shape IDs `0xC62C` and `0xC63A` are not RT_STRING IDs and remain numeric.
 
@@ -148,7 +154,7 @@ TribeDiplomacyDialog(TScreenPanel* parentPanel);
 virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 ```
 
-`include/resource_ids.h` belongs to root. Please review these proposed shared mappings:
+Root applied the approved mappings in `include/resource_ids.h` at commit `46805ee2a76f12ba7a50fa925461d1f787a00e61`. The applied definitions are:
 
 ```cpp
 #define IDS_DIPLOMACY_TITLE 0x267B
@@ -173,11 +179,11 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 #define IDS_HELP_DIPLOMACY_ALLIED_VICTORY 0x768C
 ```
 
-These definitions need owner review. No request exists for the already defined OK and Cancel mappings.
+No resource declaration request remains. No request exists for the already defined OK and Cancel mappings.
 
 ## Code-generation review
 
-The source changes rename identifiers, add the existing resource-ID header, replace four literals with macros that expand to the same values, and move function braces to 1TBS form. They do not change types, declaration points, scope, storage, field layout, evaluation order, control flow, calls, function boundaries, relocations, or ABI symbols. No helper, wrapper, assembly, or layout change was added.
+The source changes rename identifiers, add the existing resource-ID header, replace all approved dialog resource IDs with macros that expand to the same values, and move function braces to 1TBS form. They do not change types, declaration points, scope, storage, field layout, evaluation order, control flow, calls, function boundaries, relocations, or ABI symbols. No helper, wrapper, assembly, or layout change was added.
 
 The constructor's recovered `a` remains an `int` with the same initialization and updates. The action's recovered `tc` remains a `TRIBE_Command*` with the same declaration scope and calls. The resource macros retain integer literal semantics. Compiler output was not checked.
 
