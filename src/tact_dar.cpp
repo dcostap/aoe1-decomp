@@ -14,32 +14,29 @@
 extern float DAT_00575078;
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
-    int file, RGE_Action_Object* object)
-    : RGE_Action(file, object, 1)
-{
+    int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x6C;
     this->flags = (unsigned char*)calloc(
         this->obj->owner->world->player_num, 1);
-    rge_read(file, this->flags, this->obj->owner->world->player_num);
+    rge_read(infile, this->flags, this->obj->owner->world->player_num);
 }
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
-    RGE_Action_Object* object, RGE_Task* task, RGE_Static_Object* target)
-    : RGE_Action(object, 1)
-{
-    this->task = task;
+    RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6C;
-    RGE_Action::set_target_obj(target);
+    RGE_Action::set_target_obj(target_obj_in);
     this->flags = (unsigned char*)calloc(
         this->obj->owner->world->player_num, 1);
 }
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
-    RGE_Action_Object* object, RGE_Task* task,
+    RGE_Action_Object* obj_in, RGE_Task* task_in,
     float x, float y, float z)
-    : RGE_Action(object, 1)
-{
-    this->task = task;
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6C;
     this->target_x = x;
     this->target_y = y;
@@ -48,32 +45,28 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
         this->obj->owner->world->player_num, 1);
 }
 
-void TRIBE_Action_Discovery_Artifact::save(int file)
-{
+void TRIBE_Action_Discovery_Artifact::save(int outfile) {
     int size;
 
-    RGE_Action::save(file);
+    RGE_Action::save(outfile);
     size = this->obj->owner->world->player_num;
-    rge_write(file, this->flags, size);
+    rge_write(outfile, this->flags, size);
 }
 
-void TRIBE_Action_Discovery_Artifact::first_in_stack(unsigned char value)
-{
-    if (value != 0) {
+void TRIBE_Action_Discovery_Artifact::first_in_stack(unsigned char first_time) {
+    if (first_time != 0) {
         this->set_state(6);
     }
 }
 
-void TRIBE_Action_Discovery_Artifact::set_state(unsigned char value)
-{
-    this->state = value;
-    if (value == 10) {
+void TRIBE_Action_Discovery_Artifact::set_state(unsigned char new_state) {
+    this->state = new_state;
+    if (new_state == 10) {
         this->timer = 3.0f;
     }
 }
 
-unsigned char TRIBE_Action_Discovery_Artifact::update()
-{
+unsigned char TRIBE_Action_Discovery_Artifact::update() {
     switch (this->state) {
     case 1:
         return 1;
@@ -98,20 +91,19 @@ unsigned char TRIBE_Action_Discovery_Artifact::update()
     return 0;
 }
 
-void TRIBE_Action_Discovery_Artifact::check_objects()
-{
+void TRIBE_Action_Discovery_Artifact::check_objects() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
 
-    short map_x = (short)(obj->world_x - DAT_00575078 - master->radius_x);
+    short x1 = (short)(obj->world_x - DAT_00575078 - master->radius_x);
     short map_y = (short)(obj->world_y - DAT_00575078 - master->radius_y);
     short x0 = (short)(master->radius_x + obj->world_x - DAT_0057507c);
     short y0 = (short)(master->radius_y + obj->world_y - DAT_0057507c);
 
     RGE_Map* map = obj->owner->world->map;
 
-    if (map_x < 0) {
-        map_x = 0;
+    if (x1 < 0) {
+        x1 = 0;
     }
     if (map_y < 0) {
         map_y = 0;
@@ -124,7 +116,7 @@ void TRIBE_Action_Discovery_Artifact::check_objects()
     }
 
     for (short y = map_y; y <= y0; ++y) {
-        for (short x = map_x; x <= x0; ++x) {
+        for (short x = x1; x <= x0; ++x) {
             RGE_Object_Node* node = map->map_row_offset[y][x].objects.list;
             while (node != 0) {
                 if (node->node->owner != this->obj->owner &&

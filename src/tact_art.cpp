@@ -13,33 +13,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(int id, RGE_Action_Object* object)
-    : RGE_Action(id, object, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x6B;
 }
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* object,
-                                               RGE_Task* task,
-                                               RGE_Static_Object* target)
-    : RGE_Action(object, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
+                                             RGE_Task* task_in,
+                                             RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
     this->action_type = 0x6B;
-    this->task = task;
-    this->target_obj = target;
+    this->task = task_in;
+    this->target_obj = target_obj_in;
 }
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* file,
-                                               RGE_Task* task,
-                                               float x, float y, float z)
-    : RGE_Action(file, 1) {
-    this->task = task;
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
+                                             RGE_Task* task_in,
+                                             float x, float y, float z)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6B;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
 }
 
-void TRIBE_Action_Artifact::first_in_stack(unsigned char value) {
-    if (value == 0) {
+void TRIBE_Action_Artifact::first_in_stack(unsigned char first_time) {
+    if (first_time == 0) {
         return;
     }
     if (this->target_obj != 0) {
@@ -204,7 +204,7 @@ int TRIBE_Action_Artifact::stop() {
     return 1;
 }
 
-int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, float z) {
+int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -212,16 +212,16 @@ int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, flo
     return 1;
 }
 
-int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    if (param_1 != 0) {
-        this->target_obj = param_1;
+int TRIBE_Action_Artifact::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        this->target_obj = obj_in;
         this->set_state(5);
         return 1;
     }
 
-    this->target_x = param_2;
-    this->target_y = param_3;
-    this->target_z = param_4;
+    this->target_x = x;
+    this->target_y = y;
+    this->target_z = z;
     this->set_state(4);
     return 1;
 }

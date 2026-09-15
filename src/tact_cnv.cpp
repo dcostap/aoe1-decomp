@@ -18,36 +18,33 @@
 
 typedef unsigned char uchar;
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(int file, RGE_Action_Object* object)
-    : RGE_Action(file, object, 1), requiredRange(1.0f)
-{
+TRIBE_Action_Convert::TRIBE_Action_Convert(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1), requiredRange(1.0f) {
     this->action_type = 0x68;
-    rge_read(file, &this->was_same_owner, 1);
-    rge_read(file, &this->requiredRange, 4);
+    rge_read(infile, &this->was_same_owner, 1);
+    rge_read(infile, &this->requiredRange, 4);
 }
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* object,
-                                           RGE_Task* task,
-                                           RGE_Static_Object* target)
-    : RGE_Action(object, 1), requiredRange(1.0f)
-{
-    this->task = task;
+TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in,
+                                           RGE_Task* task_in,
+                                           RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1), requiredRange(1.0f) {
+    this->task = task_in;
     this->action_type = 0x68;
-    RGE_Action::set_target_obj(target);
-    if (target != 0) {
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+    RGE_Action::set_target_obj(target_obj_in);
+    if (target_obj_in != 0) {
+        this->target_x = target_obj_in->world_x;
+        this->target_y = target_obj_in->world_y;
+        this->target_z = target_obj_in->world_z;
     }
     this->was_same_owner = 0;
 }
 
-TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* object,
-                                           RGE_Task* task,
+TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* obj_in,
+                                           RGE_Task* task_in,
                                            float x, float y, float z)
-    : RGE_Action(object, 1), requiredRange(1.0f)
-{
-    this->task = task;
+    : RGE_Action(obj_in, 1), requiredRange(1.0f) {
+    this->task = task_in;
     this->action_type = 0x68;
     this->target_x = x;
     this->target_y = y;
@@ -55,15 +52,13 @@ TRIBE_Action_Convert::TRIBE_Action_Convert(RGE_Action_Object* object,
     this->was_same_owner = 0;
 }
 
-void TRIBE_Action_Convert::save(int file)
-{
-    RGE_Action::save(file);
-    rge_write(file, &this->was_same_owner, 1);
-    rge_write(file, &this->requiredRange, 4);
+void TRIBE_Action_Convert::save(int outfile) {
+    RGE_Action::save(outfile);
+    rge_write(outfile, &this->was_same_owner, 1);
+    rge_write(outfile, &this->requiredRange, 4);
 }
 
-void TRIBE_Action_Convert::first_in_stack(uchar param_1)
-{
+void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
     RGE_Static_Object* target = this->target_obj;
     if (target != 0) {
         int object_group = target->master_obj->object_group;
@@ -135,7 +130,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
             return;
         }
     }
-    if (param_1 != 0) {
+    if (first_time != 0) {
         if (target != 0) {
             this->set_state(4);
             return;
@@ -147,11 +142,10 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
     this->set_state(3);
 }
 
-void TRIBE_Action_Convert::set_state(uchar param_1)
-{
+void TRIBE_Action_Convert::set_state(uchar new_state) {
     this->sub_actions->delete_list();
-    this->state = param_1;
-    switch (param_1) {
+    this->state = new_state;
+    switch (new_state) {
     case 3:
         this->obj->notify(
             static_cast<int>(this->obj->id),
@@ -230,8 +224,7 @@ void TRIBE_Action_Convert::set_state(uchar param_1)
     }
 }
 
-uchar TRIBE_Action_Convert::update()
-{
+uchar TRIBE_Action_Convert::update() {
     if (this->targetID != -1) {
         if (this->obj->owner->world->object(this->targetID) == 0) {
             this->set_target_obj(0);
@@ -377,27 +370,24 @@ uchar TRIBE_Action_Convert::update()
     return 0;
 }
 
-int TRIBE_Action_Convert::work(RGE_Static_Object* target,
-                               float, float, float)
-{
-    if (target != 0) {
-        if (target == this->target_obj) {
+int TRIBE_Action_Convert::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        if (obj_in == this->target_obj) {
             uchar state = this->state;
             if (state == 4 || state == 6 || state == 7)
                 return 1;
         }
-        this->set_target_obj(target);
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+        this->set_target_obj(obj_in);
+        this->target_x = obj_in->world_x;
+        this->target_y = obj_in->world_y;
+        this->target_z = obj_in->world_z;
         this->first_in_stack(1);
         return 1;
     }
     return 0;
 }
 
-void TRIBE_Action_Convert::martyrdom()
-{
+void TRIBE_Action_Convert::martyrdom() {
     if (this->state != 7) {
         return;
     }

@@ -15,32 +15,27 @@
 extern float save_game_version;
 
 
-TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* param_2)
-    : RGE_Action(param_1, param_2, 1)
-{
+TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x66;
-    rge_read(param_1, &this->obj_id, 2);
-    rge_read(param_1, &this->work_done, 4);
-    rge_read(param_1, &this->unique_id, 4);
+    rge_read(infile, &this->obj_id, 2);
+    rge_read(infile, &this->work_done, 4);
+    rge_read(infile, &this->unique_id, 4);
 
     if (save_game_version >= 7.23f) {
-        rge_read(param_1, &this->pre_paid, 1);
+        rge_read(infile, &this->pre_paid, 1);
     } else {
         this->pre_paid = 0;
     }
 }
 
-TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
-                                             short obj_id,
-                                             int unique_id,
-                                             unsigned char pre_paid)
-    : RGE_Action(obj, 1)
-{
-    this->unique_id = unique_id;
+TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id, int uniqueID, unsigned char paid)
+    : RGE_Action(obj_in, 1) {
+    this->unique_id = uniqueID;
     this->action_type = 0x66;
-    this->obj_id = obj_id;
+    this->obj_id = id;
     this->work_done = 0.0f;
-    this->pre_paid = pre_paid;
+    this->pre_paid = paid;
 }
 
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
@@ -51,17 +46,16 @@ TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
         (int)this->obj->id, this->unique_id);
 }
 
-void TRIBE_Action_Make_Obj::save(int handle) {
-    RGE_Action::save(handle);
-    rge_write(handle, &this->obj_id, 2);
-    rge_write(handle, &this->work_done, 4);
-    rge_write(handle, &this->unique_id, 4);
-    rge_write(handle, &this->pre_paid, 1);
+void TRIBE_Action_Make_Obj::save(int outfile) {
+    RGE_Action::save(outfile);
+    rge_write(outfile, &this->obj_id, 2);
+    rge_write(outfile, &this->work_done, 4);
+    rge_write(outfile, &this->unique_id, 4);
+    rge_write(outfile, &this->pre_paid, 1);
 }
 
-void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
-{
-    if (param_1 == 0) return;
+void TRIBE_Action_Make_Obj::first_in_stack(uchar first_time) {
+    if (first_time == 0) return;
 
     if (this->obj_id < 0) {
         static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
@@ -98,11 +92,10 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
         0, (int)this->obj_id, (int)this->obj->id, this->unique_id);
 }
 
-void TRIBE_Action_Make_Obj::set_state(uchar v) { this->state = v; }
+void TRIBE_Action_Make_Obj::set_state(uchar new_state) { this->state = new_state; }
 
 // The canonical member names retain the x87 work-rate and completion order.
-unsigned char TRIBE_Action_Make_Obj::update()
-{
+unsigned char TRIBE_Action_Make_Obj::update() {
     switch (this->state) {
     case 1:
         return 1;
@@ -165,22 +158,21 @@ unsigned char TRIBE_Action_Make_Obj::update()
 // four-byte vtable spill and changes the frame from 0x18 to 0x1C.
 static char s_tact_mob_cpp[] = "C:\\msdev\\work\\age1_x1\\tact_mob.cpp";
 
-unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
-{
-    short expand = 0;
+unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
+    short index = 0;
     RGE_Master_Static_Object* proto =
         this->obj->owner->master_objects[this->obj_id];
     RGE_Master_Static_Object* master = this->obj->master_obj;
-    float rx;
-    float ry;
-    float r2x;
-    float r2y;
-    rx = master->radius_x + proto->radius_x - DAT_00575190;
-    r2x = rx + rx;
-    ry = master->radius_y + proto->radius_y - DAT_00575190;
-    r2y = ry + ry;
+    float radius_x;
+    float radius_y;
+    float radius_2x;
+    float radius_2y;
+    radius_x = master->radius_x + proto->radius_x - DAT_00575190;
+    radius_2x = radius_x + radius_x;
+    radius_y = master->radius_y + proto->radius_y - DAT_00575190;
+    radius_2y = radius_y + radius_y;
     short tries;
-    while (expand < 3) {
+    while (index < 3) {
         tries = 0;
         do {
             short dir;
@@ -191,24 +183,24 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
             }
             switch (dir) {
             case 0:
-                this->target_y = this->obj->world_y + ry;
+                this->target_y = this->obj->world_y + radius_y;
                 this->target_x = this->obj->world_x +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xc7) * r2x * DAT_00575198 - rx);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xc7) * radius_2x * DAT_00575198 - radius_x);
                 break;
             case 1:
-                this->target_x = this->obj->world_x - rx;
+                this->target_x = this->obj->world_x - radius_x;
                 this->target_y = this->obj->world_y +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xcb) * r2y * DAT_00575198 - ry);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xcb) * radius_2y * DAT_00575198 - radius_y);
                 break;
             case 2:
-                this->target_x = this->obj->world_x + rx;
+                this->target_x = this->obj->world_x + radius_x;
                 this->target_y = this->obj->world_y +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xcf) * r2y * DAT_00575198 - ry);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xcf) * radius_2y * DAT_00575198 - radius_y);
                 break;
             case 3:
-                this->target_y = this->obj->world_y - ry;
+                this->target_y = this->obj->world_y - radius_y;
                 this->target_x = this->obj->world_x +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xd3) * r2x * DAT_00575198 - rx);
+                    ((float)debug_rand(s_tact_mob_cpp, 0xd3) * radius_2x * DAT_00575198 - radius_x);
                 break;
             }
             if (proto->check_placement(
@@ -216,17 +208,17 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
                     1, 1, 1, 0, 0, 1)) {
                 ++tries;
             } else {
-                *out = this->obj->owner->master_objects[this->obj_id]
+                *rObj = this->obj->owner->master_objects[this->obj_id]
                            ->make_new_obj(this->obj->owner, this->target_x,
                                           this->target_y, this->obj->world_z);
                 return 1;
             }
         } while (tries < 60);
-        rx = rx + (proto->radius_x + proto->radius_x);
-        ry = ry + (proto->radius_y + proto->radius_y);
-        r2x = r2x + (proto->radius_x * 4.0f);
-        r2y = r2y + (proto->radius_y * 4.0f);
-        ++expand;
+        radius_x = radius_x + (proto->radius_x + proto->radius_x);
+        radius_y = radius_y + (proto->radius_y + proto->radius_y);
+        radius_2x = radius_2x + (proto->radius_x * 4.0f);
+        radius_2y = radius_2y + (proto->radius_y * 4.0f);
+        ++index;
     }
     return 0;
 }
@@ -256,24 +248,24 @@ int TRIBE_Action_Make_Obj::stop() {
 }
 
 // The master-object lookup and terminator store preserve the original order.
-void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param_3, short param_4) {
-    param_1 = this->obj_id;
+void TRIBE_Action_Make_Obj::get_info(short& id, short& progress, char* name, short name_size) {
+    id = this->obj_id;
 
     if (this->state == 1) {
-        param_2 = 100;
+        progress = 100;
     } else {
         short divisor = static_cast<TRIBE_Master_Combat_Object*>(
                             this->obj->owner->master_objects[this->obj_id])
                             ->build_pts_required;
         int pc = (int)((this->work_done * DAT_005751a0) /
                        (float)divisor);
-        param_2 = (short)pc;
+        progress = (short)pc;
     }
 
-    if (param_3 != 0) {
+    if (name != 0) {
         RGE_Master_Static_Object* info =
             this->obj->owner->master_objects[this->obj_id];
-        strncpy(param_3, info->name, (unsigned int)param_4);
-        param_3[param_4 - 1] = 0;
+        strncpy(name, info->name, (unsigned int)name_size);
+        name[name_size - 1] = 0;
     }
 }

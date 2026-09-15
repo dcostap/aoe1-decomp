@@ -21,30 +21,30 @@
 extern float DAT_00575150;
 extern double DAT_00575168;
 
-TRIBE_Action_Hunt::TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2)
-    : RGE_Action(param_1, param_2, 1) {
+TRIBE_Action_Hunt::TRIBE_Action_Hunt(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x6E;
-    rge_read(param_1, &targetType, 4);
+    rge_read(infile, &targetType, 4);
 }
 
-TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_Static_Object* target)
-    : RGE_Action(obj, 1)
-{
-    this->task = tsk;
+TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_in,
+                                     RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6E;
-    this->set_target_obj(target);
-    if (target && target->object_state < 7) {
-        this->target_x = (float)target->world_x;
-        this->target_y = (float)target->world_y;
-        this->target_z = (float)target->world_z;
-        this->targetType = target->master_obj->id;
+    this->set_target_obj(target_obj_in);
+    if (target_obj_in && target_obj_in->object_state < 7) {
+        this->target_x = (float)target_obj_in->world_x;
+        this->target_y = (float)target_obj_in->world_y;
+        this->target_z = (float)target_obj_in->world_z;
+        this->targetType = target_obj_in->master_obj->id;
     }
 }
 
-TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* task,
+TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj_in, RGE_Task* task_in,
                                      float x, float y, float z)
-    : RGE_Action(obj, 1) {
-    this->task = task;
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6E;
     this->target_x = x;
     this->target_y = y;
@@ -59,8 +59,7 @@ void TRIBE_Action_Hunt::save(int outfile) {
 
 float _zero_val = 0.0f;
 
-void TRIBE_Action_Hunt::first_in_stack(unsigned char param_1)
-{
+void TRIBE_Action_Hunt::first_in_stack(unsigned char first_time) {
     RGE_Task* tsk = (RGE_Task*)this->task;
 
     short attr_val = tsk->attribute_type;
@@ -68,7 +67,7 @@ void TRIBE_Action_Hunt::first_in_stack(unsigned char param_1)
         this->obj->set_attribute(attr_val, 0.0f);
     }
 
-    if (param_1) {
+    if (first_time) {
         RGE_Static_Object* target = this->target_obj;
         if (target) {
             RGE_Static_Object* unit = this->obj;
@@ -99,12 +98,11 @@ void TRIBE_Action_Hunt::first_in_stack(unsigned char param_1)
     }
 }
 
-void TRIBE_Action_Hunt::set_state(unsigned char param_1)
-{
+void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
     this->sub_actions->delete_list();
-    this->state = param_1;
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 3:
         this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265,
                           this->targetType, 0);
@@ -255,8 +253,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
     }
 }
 
-unsigned char TRIBE_Action_Hunt::update()
-{
+unsigned char TRIBE_Action_Hunt::update() {
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
@@ -404,11 +401,11 @@ unsigned char TRIBE_Action_Hunt::update()
             give_amount = this->target_obj->attribute_amount_held;
         }
 
-        short attribute = this->task->attribute_type2;
-        if (attribute == -1) {
+        short attr = this->task->attribute_type2;
+        if (attr == -1) {
             modifier = 1.0f;
         } else {
-            modifier = this->obj->owner->attributes[attribute];
+            modifier = this->obj->owner->attributes[attr];
         }
 
         max_hold = (float)this->obj->master_obj->attribute_max_amount;
@@ -545,21 +542,21 @@ int TRIBE_Action_Hunt::stop(void) {
     return 1;
 }
 
-int TRIBE_Action_Hunt::move_to(RGE_Static_Object* target, float x, float y, float z) {
-    if (target != 0 && target->owner == this->obj->owner) {
+int TRIBE_Action_Hunt::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0 && obj_in->owner == this->obj->owner) {
         RGE_Master_Action_Object* master =
             static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
-        short id = target->master_obj->id;
+        short id = obj_in->master_obj->id;
         if ((id == master->drop_site || id == master->backup_drop_site) &&
             this->obj->attribute_amount_held > DAT_00575150) {
-            if (target == this->target_obj2 && this->state == 8) {
+            if (obj_in == this->target_obj2 && this->state == 8) {
                 return 1;
             }
             this->set_target_obj(0);
             this->target_x = -1.0f;
             this->target_y = -1.0f;
             this->target_z = -1.0f;
-            this->set_target_obj2(target);
+            this->set_target_obj2(obj_in);
             this->set_state(8);
             return 1;
         }
@@ -572,13 +569,12 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* target, float x, float y, floa
     return 1;
 }
 
-int TRIBE_Action_Hunt::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4)
-{
-    if (param_1 != 0) {
-        if (param_1->owner == this->obj->owner) {
+int TRIBE_Action_Hunt::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        if (obj_in->owner == this->obj->owner) {
             RGE_Master_Action_Object* master =
                 static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
-            short obj_id = param_1->master_obj->id;
+            short obj_id = obj_in->master_obj->id;
             if ((obj_id == master->drop_site || obj_id == master->backup_drop_site) &&
                 this->obj->attribute_amount_held > DAT_00575150) {
                 this->set_target_obj(0);
@@ -586,19 +582,19 @@ int TRIBE_Action_Hunt::work(RGE_Static_Object* param_1, float param_2, float par
                 this->target_x = -1.0f;
                 this->target_y = -1.0f;
                 this->target_z = -1.0f;
-                this->set_target_obj2(param_1);
+                this->set_target_obj2(obj_in);
                 this->set_state(8);
                 return 1;
             }
         }
-        this->set_target_obj(param_1);
+        this->set_target_obj(obj_in);
         this->set_target_obj2(0);
         this->set_state(4);
         return 1;
     }
-    this->target_x = param_2;
-    this->target_y = param_3;
-    this->target_z = param_4;
+    this->target_x = x;
+    this->target_y = y;
+    this->target_z = z;
     this->set_target_obj(0);
     this->set_state(0x0F);
     return 1;

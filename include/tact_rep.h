@@ -11,22 +11,22 @@ class RGE_Task;
 // Keep only declarations owned by tact_rep.cpp in this module header.
 class TRIBE_Action_Repair : public RGE_Action {
 public:
-    TRIBE_Action_Repair(int, RGE_Action_Object*, int);
-    TRIBE_Action_Repair(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
-    TRIBE_Action_Repair(RGE_Action_Object*, RGE_Task*, float, float, float);
+    TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in, int do_setup);
+    TRIBE_Action_Repair(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in);
+    TRIBE_Action_Repair(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
 
-    virtual int setup(int, RGE_Action_Object*);
-    virtual void save(int);
-    virtual void first_in_stack(unsigned char);
+    virtual int setup(int infile, RGE_Action_Object* obj_in);
+    virtual void save(int outfile);
+    virtual void first_in_stack(unsigned char first_time);
 
 protected:
-    virtual void set_state(unsigned char);
+    virtual void set_state(unsigned char new_state);
 
 public:
     virtual unsigned char update();
     virtual int stop();
-    virtual int move_to(RGE_Static_Object*, float, float, float);
-    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual int move_to(RGE_Static_Object* obj_in, float x, float y, float z);
+    virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
 
 protected:
     void meet_target();

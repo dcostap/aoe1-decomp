@@ -15,43 +15,35 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-TRIBE_Action_Build::TRIBE_Action_Build(int id, RGE_Action_Object* object)
-    : RGE_Action(id, object, 1) {
+TRIBE_Action_Build::TRIBE_Action_Build(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x65;
 }
 
-// Moving full owner includes into this direct source removes the
-// This constructor keeps the observed task, owner, target, and
-// coordinate stores in the original action hierarchy.
-TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* action_obj,
-                                       RGE_Task* task,
-                                       RGE_Static_Object* target)
-    : RGE_Action(action_obj, 1)
-{
+TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
     this->action_type = 0x65;
-    this->task = task;
+    this->task = task_in;
 
-    if (!target || action_obj->owner->id == target->owner->id) {
-        this->set_target_obj(target);
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+    if (!target_obj_in || obj_in->owner->id == target_obj_in->owner->id) {
+        this->set_target_obj(target_obj_in);
+        this->target_x = target_obj_in->world_x;
+        this->target_y = target_obj_in->world_y;
+        this->target_z = target_obj_in->world_z;
     }
 }
 
-TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* file,
-                                       RGE_Task* task,
-                                       float x, float y, float z)
-    : RGE_Action(file, 1) {
-    this->task = task;
+TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x65;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
 }
 
-void TRIBE_Action_Build::first_in_stack(unsigned char value) {
-    if (value != 0) {
+void TRIBE_Action_Build::first_in_stack(unsigned char first_time) {
+    if (first_time != 0) {
         if (this->target_obj != 0) {
             this->set_state(4);
             return;
@@ -62,15 +54,13 @@ void TRIBE_Action_Build::first_in_stack(unsigned char value) {
     this->set_state(3);
 }
 
-// state stores around action construction.
-void TRIBE_Action_Build::set_state(unsigned char param_1)
-{
+void TRIBE_Action_Build::set_state(unsigned char new_state) {
     RGE_Action_Move_To* move_to;
 
     this->sub_actions->delete_list();
-    this->state = param_1;
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 3:
         if (this->obj->owner->computerPlayer() == 1) {
             this->obj->notify((int)this->obj->id, (int)this->obj->id,
@@ -149,8 +139,7 @@ void TRIBE_Action_Build::set_state(unsigned char param_1)
     }
 }
 
-unsigned char TRIBE_Action_Build::update()
-{
+unsigned char TRIBE_Action_Build::update() {
     float work;
 
     if (this->targetID != -1) {
@@ -292,8 +281,7 @@ int TRIBE_Action_Build::stop() {
     return 1;
 }
 
-int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
-                                float x, float y, float z) {
+int TRIBE_Action_Build::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -302,27 +290,26 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
     return 1;
 }
 
-int TRIBE_Action_Build::work(RGE_Static_Object* target,
-                             float param_2, float param_3, float param_4) {
-    if (target != 0) {
-        RGE_Player* target_owner = target->owner;
-        if (target_owner == target->owner &&
+int TRIBE_Action_Build::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        RGE_Player* target_owner = obj_in->owner;
+        if (target_owner == obj_in->owner &&
             target_owner->id == this->obj->owner->id) {
-            if (target == this->target_obj) {
+            if (obj_in == this->target_obj) {
                 unsigned char action = this->state;
                 if (action == 4 || action == 6) {
                     return 1;
                 }
             }
-            this->set_target_obj(target);
+            this->set_target_obj(obj_in);
             this->set_state(4);
             return 1;
         }
     }
 
-    this->target_x = param_2;
-    this->target_y = param_3;
-    this->target_z = param_4;
+    this->target_x = x;
+    this->target_y = y;
+    this->target_z = z;
     this->set_target_obj(0);
     this->set_state(11);
     return 1;

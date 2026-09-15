@@ -12,18 +12,18 @@ class RGE_Static_Object;
 
 class TRIBE_Action_Make_Obj : public RGE_Action {
 public:
-    TRIBE_Action_Make_Obj(int, RGE_Action_Object*);
-    TRIBE_Action_Make_Obj(RGE_Action_Object*, short, int, uchar);
+    TRIBE_Action_Make_Obj(int infile, RGE_Action_Object* obj_in);
+    TRIBE_Action_Make_Obj(RGE_Action_Object* obj_in, short id, int uniqueID, uchar paid);
 
     virtual ~TRIBE_Action_Make_Obj();
-    virtual void save(int);
-    virtual void first_in_stack(uchar);
+    virtual void save(int outfile);
+    virtual void first_in_stack(uchar first_time);
     virtual uchar update();
     virtual int stop();
 
 protected:
-    virtual void set_state(uchar);
-    uchar place_obj(RGE_Static_Object**);
+    virtual void set_state(uchar new_state);
+    uchar place_obj(RGE_Static_Object** rObj);
 
 public:
     short obj_id;
@@ -31,7 +31,7 @@ public:
     int unique_id;
     uchar pre_paid;
 
-    void get_info(short&, short&, char*, short);
+    void get_info(short& id, short& progress, char* name, short name_size);
 };
 
 typedef char tact_mob_action_size[(sizeof(RGE_Action) == 0x40) ? 1 : -1];

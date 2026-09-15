@@ -21,39 +21,36 @@
 extern float save_game_version;
 
 // The constructor keeps the period base initialization and conditional setup.
-TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2,
-                                         int param_3)
-    : RGE_Action(param_1, param_2, 0)
-{
+TRIBE_Action_Repair::TRIBE_Action_Repair(int infile, RGE_Action_Object* obj_in,
+                                         int do_setup)
+    : RGE_Action(infile, obj_in, 0) {
     this->action_type = 0x6A;
-    if (param_3 != 0) {
-        this->setup(param_1, param_2);
+    if (do_setup != 0) {
+        this->setup(infile, obj_in);
     }
 }
 
-TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
-                                         RGE_Task* task_arg,
-                                         RGE_Static_Object* target)
-    : RGE_Action(obj, 1)
-{
-    this->task = task_arg;
+TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj_in,
+                                         RGE_Task* task_in,
+                                         RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6A;
     this->save_target_command_flag = 0;
-    this->set_target_obj(target);
-    if (target != 0) {
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+    this->set_target_obj(target_obj_in);
+    if (target_obj_in != 0) {
+        this->target_x = target_obj_in->world_x;
+        this->target_y = target_obj_in->world_y;
+        this->target_z = target_obj_in->world_z;
         this->meet_target();
     }
 }
 
-TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
-                                         RGE_Task* task,
+TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj_in,
+                                         RGE_Task* task_in,
                                          float x, float y, float z)
-    : RGE_Action(obj, 1)
-{
-    this->task = task;
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6A;
     this->target_x = x;
     this->target_y = y;
@@ -61,38 +58,34 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
     this->save_target_command_flag = 0;
 }
 
-int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2)
-{
-    int result = RGE_Action::setup(param_1, param_2);
+int TRIBE_Action_Repair::setup(int infile, RGE_Action_Object* obj_in) {
+    int result = RGE_Action::setup(infile, obj_in);
     if (save_game_version >= 6.5f) {
-        rge_read(param_1, &this->save_target_command_flag, 1);
+        rge_read(infile, &this->save_target_command_flag, 1);
     } else {
         this->save_target_command_flag = 0;
     }
     return result;
 }
 
-void TRIBE_Action_Repair::save(int handle)
-{
-    RGE_Action::save(handle);
-    rge_write(handle, &this->save_target_command_flag, 1);
+void TRIBE_Action_Repair::save(int outfile) {
+    RGE_Action::save(outfile);
+    rge_write(outfile, &this->save_target_command_flag, 1);
 }
 
-void TRIBE_Action_Repair::first_in_stack(unsigned char value)
-{
-    if (value != 0 && this->target_obj != 0) {
+void TRIBE_Action_Repair::first_in_stack(unsigned char first_time) {
+    if (first_time != 0 && this->target_obj != 0) {
         this->set_state(4);
         return;
     }
     this->set_state(3);
 }
 
-void TRIBE_Action_Repair::set_state(unsigned char param_1)
-{
+void TRIBE_Action_Repair::set_state(unsigned char new_state) {
     this->sub_actions->delete_list();
-    this->state = param_1;
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 3:
         this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x26a, 0, 0);
         break;
@@ -175,8 +168,7 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
     this->obj->new_sprite(this->obj->master_obj->sprite);
 }
 
-unsigned char TRIBE_Action_Repair::update()
-{
+unsigned char TRIBE_Action_Repair::update() {
     RGE_Static_Object* check_target;
     RGE_Static_Object* target;
 
@@ -331,15 +323,12 @@ invalid_target:
     return 0;
 }
 
-int TRIBE_Action_Repair::stop()
-{
+int TRIBE_Action_Repair::stop() {
     this->set_state(2);
     return 1;
 }
 
-int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj,
-                                 float x, float y, float z)
-{
+int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -348,34 +337,31 @@ int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj,
     return 1;
 }
 
-int TRIBE_Action_Repair::work(RGE_Static_Object* target,
-                              float param_2, float param_3, float z)
-{
-    if (target != 0) {
-        if (target == this->target_obj) {
+int TRIBE_Action_Repair::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        if (obj_in == this->target_obj) {
             unsigned char state = this->state;
             if (state == 4 || state == 6) {
                 return 1;
             }
         }
-        this->set_target_obj(target);
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+        this->set_target_obj(obj_in);
+        this->target_x = obj_in->world_x;
+        this->target_y = obj_in->world_y;
+        this->target_z = obj_in->world_z;
         this->meet_target();
         this->set_state(4);
         return 1;
     }
-    this->target_x = param_2;
-    this->target_y = param_3;
+    this->target_x = x;
+    this->target_y = y;
     this->target_z = z;
     this->set_target_obj(0);
     this->set_state(11);
     return 1;
 }
 
-void TRIBE_Action_Repair::meet_target()
-{
+void TRIBE_Action_Repair::meet_target() {
     XYPoint rVal;
     XYPoint start;
     XYPoint dest;
