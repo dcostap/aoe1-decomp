@@ -5,7 +5,8 @@
 - Module: `src/tact_tek.cpp`
 - Branch: `cleanup/staging-20260915-133`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final commit: recorded after the source and report commit
+- Final source commit: `f9c32ca108a355223b365202cc2846249df79e24`
+- Report correction commit: follows this source commit.
 - Changed files:
   - `src/tact_tek.cpp`
   - `decomp_notes/source_cleanup/wave03/tact_tek.md`
