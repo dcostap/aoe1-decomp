@@ -114,7 +114,7 @@ These names come from the procedure-scoped PDB records:
   `oGroup`, `bestDefendValue`, and `objPoint`.
 - Lot, wall, and placement helpers: `one`, `two`, `countDiagonal`, `typeID`, `status`,
   `newStatus`, `overlapSize`, `x`, `y`, and `numGates`.
-- Learning and resource helpers: `name`, `numToLoad`, `numMemoriesToLoad`,
+- Learning and resource helpers: `name`, `numToLoad`,
   `point`, `pathDistance`, `playerID`, `numTiles`, `victimID`, `objY`, `oT1`, `oT2`,
   `oT3`, `oT4`, `rDistance`, `rID`, `startPoint`, `rPoint`, `useTransport`,
   `landTerrainRequired`, `stageDistance`, `target`, `vMap`, `gMap`, `targetZone`,
@@ -195,7 +195,7 @@ baseline section hash is `d14a2a90be0692828775c0b4f4464a8613ad4d104056872d7c165d
 The fresh section hash is `74b7aceb23a6718dc4c1a33f759f79367c5e75f331fc192445d57e627a76e2b1`.
 
 The baseline and fresh source comparison used integrated main
-`07e1b741fbd7c60b18c7de222af7ad6f5d28decc7` and precleanup commit
+`07e1b741fbd7c60b18c7de222af7ad6f5d28decc` and precleanup commit
 `6d46835cdc6e31ba879a2e6e31415327a7c7e341`. The cleanup added the separate
 `numMemoriesToLoad` declaration and used it for the first count. The precleanup source reused
 `numToLoad`. This is the only extra local in the function. The baseline object starts with
@@ -206,6 +206,7 @@ which proves that the extra local caused this drift. Parameter and loop-counter 
 cause the observed frame change.
 
 The source now removes only `numMemoriesToLoad` and reuses `numToLoad` for the first count and
-loop bound. It preserves the prior `name` parameter, `resource_index` loop, casts, calls, order,
-and all earlier corrections. The repair is cleanup-introduced, not preexisting in the preserved
-baseline object.
+loop bound. `numMemoriesToLoad` is a reused-home PDB record. It does not prove a distinct source
+declaration. `numToLoad` is the retained declaration and storage. The source preserves the prior
+`name` parameter, `resource_index` loop, casts, calls, order, and all earlier corrections. The
+repair is cleanup-introduced, not preexisting in the preserved baseline object.
