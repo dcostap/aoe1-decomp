@@ -14,7 +14,8 @@ Owner 12 integrated these communication modules:
 - `src/com_sync.cpp` and `include/com_sync.h`
 
 The common base was `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-The reviewed pre-ledger integration head was `2c809b219a009c395ace2d9f7e907d2da9d00888`.
+The initial reviewed pre-ledger head was `2c809b219a009c395ace2d9f7e907d2da9d00888`.
+The reviewed follow-up head was `b0ef4585700912af1a06c6c741aad32da2479cb7`.
 
 ## Workers and integration commits
 
@@ -68,9 +69,10 @@ The worker corrected 14 to 13 in a new commit.
 - Worker: `sa-0c787195`
 - Worker branch: `cleanup/staging-20260915-104`
 - Worker base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Worker head: `75e88b61ffbf7b8d2137b75f1550449797981707`
-- Worker commits: `6ed37f20af52505b7d632bbddb6819378f11b1a7`, `75e88b61ffbf7b8d2137b75f1550449797981707`
-- Integrated commits: `5ddb06d52673d4ebaff8eef9e4665ee5a878bf4c`, `01aeccb5d1a94fe20d1c74cd1ddc0703e2e3a75b`
+- Initial worker head: `75e88b61ffbf7b8d2137b75f1550449797981707`
+- Corrected worker head: `c7618ef157f76577db9b344474119ad4c05db800`
+- Worker commits: `6ed37f20af52505b7d632bbddb6819378f11b1a7`, `75e88b61ffbf7b8d2137b75f1550449797981707`, `dfdfa04fda23e9c58af7354c684fbc5a27341a14`, `c7618ef157f76577db9b344474119ad4c05db800`
+- Integrated commits: `5ddb06d52673d4ebaff8eef9e4665ee5a878bf4c`, `01aeccb5d1a94fe20d1c74cd1ddc0703e2e3a75b`, `10d798e19ea808ac20d0c678432c15542d184e45`, `b0ef4585700912af1a06c6c741aad32da2479cb7`
 - Header commit: `2b96dafa530caa7306545be91900324e2dc9d0fa`
 
 Recovered names include `MaxSize`, `NewQSize`, `TurnID`, `PlayerNo`, `LowRange`, `HiRange`, and `Count`.
@@ -80,6 +82,9 @@ Other recovered names include `FromPlayer`, `Seq`, `Size`, `ThisTurn`, `SendMsg`
 The source retained locals without PDB records.
 The module report lists these unresolved names by function.
 No reused stack slot received a forced mapping.
+
+Root review requested 1TBS formatting for two standalone `else` lines.
+The same worker made the whitespace-only correction and updated its report.
 
 ### `com_serv`
 
