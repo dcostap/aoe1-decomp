@@ -1,5 +1,15 @@
 # Cleanup wave 03 root review
 
+## Owner 21: final report corrections approved
+
+Root read the complete three-report diff to `077dc8b6ba55262e92c65b776822095279c33f43`.
+The report now records all 13 retained baseline casts and labels the mission names as approved.
+No source or header changed in this final correction. No review blocker remains.
+The original full review and resource-substitution review remain in effect.
+Root merged the group as `7378f27fe5576aab3e3886dfbf4aa1d723536289`.
+Main contains 176 assigned modules plus the pilot: 177 of 225, approximately 78.7%.
+Compiler and runtime validation remain deferred.
+
 ## Owner 21: final correction review started
 
 Delivered head: `3e9996a496dd7b2bd934698a46fa4e2effb628f2`.
