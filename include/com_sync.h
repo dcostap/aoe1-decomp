@@ -34,30 +34,28 @@ private:
     CHECKSUMARRAY Check[0x37];
 
 public:
-    RGE_Communications_Synchronize(TCommunications_Handler* comm);
+    RGE_Communications_Synchronize(TCommunications_Handler* c);
     ~RGE_Communications_Synchronize();
-    int Add(unsigned int turn, unsigned long wRandom,
-            unsigned long checksum1, unsigned long checksum2,
-            long chatCrc, long dataCrc, long a7, long a8, long a9);
+    int Add(unsigned int player, unsigned long worldtime,
+            unsigned long worldturn, unsigned long worldrandom,
+            long cs1, long cs2, long cs3, long cs4, long cs5);
 
 protected:
-    int ValidateChecksums(unsigned int turn, unsigned long wRandom,
-                          unsigned long checksum1, unsigned long checksum2,
-                          long chatCrc, long dataCrc, long a7, long a8,
-                          long a9);
+    int ValidateChecksums(unsigned int player, unsigned long worldtime,
+                          unsigned long worldturn, unsigned long worldrandom,
+                          long cs1, long cs2, long cs3, long cs4, long cs5);
 
 public:
     unsigned long DoChecksum(unsigned long turn);
-    void SetLastWorldRandom(unsigned long value);
-    void LogChecksums(unsigned int playerNo, unsigned long worldTime,
-                      unsigned long commTurn, long unifiedVisible,
-                      long checksumNew, long position, long action,
-                      long obstruction, unsigned long random);
-    void EnableSyncChecking(int value);
-    void SetStopOnFail(int value);
-    void SetDialogOnFail(int value);
-    void SendChatMsgsAtChecksum(int value);
-    int IsPlayerOutOfSync(unsigned int playerNo, unsigned long commTurn);
+    void SetLastWorldRandom(unsigned long lwr);
+    void LogChecksums(unsigned int player, unsigned long worldtime,
+                      unsigned long worldturn, long cs1, long cs2, long cs3,
+                      long cs4, long cs5, unsigned long random);
+    void EnableSyncChecking(int Status);
+    void SetStopOnFail(int Status);
+    void SetDialogOnFail(int Status);
+    void SendChatMsgsAtChecksum(int Status);
+    int IsPlayerOutOfSync(unsigned int pnum, unsigned long worldturn);
 };
 
 typedef RGE_Communications_Synchronize::CHECKSUMARRAY
