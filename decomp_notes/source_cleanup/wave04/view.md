@@ -17,8 +17,8 @@ expression order.
 
 ## Evidence and provenance
 
-The executable and its PDB remain the behavior oracle. This pass used these
-repository-local sources:
+The original executable is the behavior oracle. The PDB and inventory are
+reference evidence. This pass used these repository-local sources:
 
 - `build/view_evidence/view_scoped_symbols.txt`.
 - `inventory/functions/0053/*.txt` for the scoped function records.
@@ -348,6 +348,8 @@ No other file is part of this correction.
 - Final source commit: `321a8b461a41ed4d91faae9fa1634e3b2b7c1482`.
 - The final source commit joins readable four-to-six parameter signatures and
   keeps long traversal and GDI signatures wrapped.
+- Review correction: clarified the executable oracle and the reference-evidence
+  role of the PDB and inventory.
 
 ## Exact non-execution statement
 
