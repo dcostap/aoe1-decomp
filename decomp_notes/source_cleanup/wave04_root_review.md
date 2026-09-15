@@ -1,5 +1,36 @@
 # Cleanup wave 04 root review
 
+## Owner 25: corrections and resource decisions
+
+Reviewer `sa-4261f9a4` read all 15,378 lines and all 25 changed files.
+Diff SHA256: `4b7dba284edcb0d4ba6747ceffc877461ec449118c0b5d5d77699e4877aa369d`.
+Two blockers remain. Root returned them to the same workers:
+
+- Restore `TRIBE_Player::save` file-handle alias and parameter overwrite pattern, without changing baseline declaration or initialization positions.
+- Join the `if (InQ)` opening brace in `com_hand.cpp` to follow 1TBS.
+
+Original `00512250` keeps the output handle in EDI; `00512359` and `0051238C` overwrite the parameter slot.
+The cleanup reversed those roles. The report must withdraw its identifier-only claim for that rejected version.
+
+Root approved three unsuffixed hexadecimal macros as new cleanup names:
+
+- `IDS_ERROR_SYNC`, `0x0966`: sync-error popup text in `tcommand`.
+- `IDS_AI_FILE_NONE`, `0x2775`: ` <None> ` in AI file selection.
+- `IDS_AI_FILE_RANDOM`, `0x277B`: `Random` for build-list, city-plan, and ruleset selection.
+
+The `noneString` buffer is loaded but unused in the recovered `loadAIInformation` body. Preserve that behavior.
+Runtime base supplies all three strings in language `0x0409`; both expansion DLLs miss all three IDs.
+Runtime base SHA256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+The pinned original tree lacks the base DLL. Evidence is staged runtime data, not an original base-file claim.
+Extraction is under `build/source-cleanup-20260915/reviewer-owner25/`.
+
+Root rejects `IDS_CIVILIZATION_NAME_BASE` for `0x27F6` at this time.
+Its arithmetic reaches empty `0x2803`, `Unknown` at `0x2804`, and `Tribe Name` at `0x2805`.
+It reaches `Roman` at `0x2806`, not the full expansion civilization mapping. Preserve the literal and original arithmetic.
+Root also defers the missing build-list range `0x26930` through `0x269AC`.
+An unchecked `STRING=` override could supply that range. The checked DLLs do not prove its payloads.
+Owner 26's reviewer received these shared decisions. The groups remain unmerged and unvalidated.
+
 ## Owner 26: delegated review started
 
 - Delivered head: `5945b972778227cd419e66ae49f744e4cb2f5001`.

@@ -360,4 +360,9 @@
 #define IDS_HELP_AGE 0x4E35
 #define IDS_HELP_UNGROUP_BUTTON 0x4E43
 
+// Network failure and AI file selection.
+#define IDS_ERROR_SYNC 0x0966
+#define IDS_AI_FILE_NONE 0x2775
+#define IDS_AI_FILE_RANDOM 0x277B
+
 #endif
