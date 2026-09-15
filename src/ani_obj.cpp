@@ -6,54 +6,48 @@
 #include "../include/world.h"
 
 RGE_Animated_Object::RGE_Animated_Object(
-    RGE_Master_Animated_Object* master, RGE_Player* player,
+    RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner,
     float x, float y, float z, int do_setup)
-    : RGE_Static_Object(master, player, x, y, z, 0)
-{
+    : RGE_Static_Object(tobj, obj_owner, x, y, z, 0) {
     if (do_setup != 0) {
-        setup(master, player, x, y, z);
+        setup(tobj, obj_owner, x, y, z);
     }
 }
 
 RGE_Animated_Object::RGE_Animated_Object(
-    int id, RGE_Game_World* world, int do_setup)
-    : RGE_Static_Object(id, world, 0)
-{
+    int infile, RGE_Game_World* gworld, int do_setup)
+    : RGE_Static_Object(infile, gworld, 0) {
     if (do_setup != 0) {
-        setup(id, world);
+        setup(infile, gworld);
     }
 }
 
 void RGE_Animated_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* master, RGE_Player* player,
-    float x, float y, float z)
-{
-    RGE_Static_Object::recycle_in_to_game(master, player, x, y, z);
+    RGE_Master_Static_Object* tobj, RGE_Player* obj_owner,
+    float x, float y, float z) {
+    RGE_Static_Object::recycle_in_to_game(tobj, obj_owner, x, y, z);
     this->speed = 0.0f;
     RGE_Static_Object::set_sleep_flag(0);
 }
 
 int RGE_Animated_Object::setup(
-    RGE_Master_Animated_Object* master, RGE_Player* player,
-    float x, float y, float z)
-{
-    RGE_Static_Object::setup(master, player, x, y, z);
+    RGE_Master_Animated_Object* tobj, RGE_Player* obj_owner,
+    float x, float y, float z) {
+    RGE_Static_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x14;
     this->speed = 0.0f;
     RGE_Static_Object::set_sleep_flag(0);
     return 1;
 }
 
-int RGE_Animated_Object::setup(int file, RGE_Game_World* world)
-{
-    RGE_Static_Object::setup(file, world);
+int RGE_Animated_Object::setup(int infile, RGE_Game_World* gworld) {
+    RGE_Static_Object::setup(infile, gworld);
     this->type = 0x14;
-    rge_read(file, &this->speed, 4);
+    rge_read(infile, &this->speed, 4);
     return 1;
 }
 
-unsigned char RGE_Animated_Object::update()
-{
+unsigned char RGE_Animated_Object::update() {
     unsigned char result = RGE_Static_Object::update();
 
     unsigned char state = this->object_state;
@@ -84,25 +78,21 @@ unsigned char RGE_Animated_Object::update()
     return result;
 }
 
-void RGE_Animated_Object::save(int file)
-{
-    RGE_Static_Object::save(file);
-    rge_write(file, &this->speed, 4);
+void RGE_Animated_Object::save(int outfile) {
+    RGE_Static_Object::save(outfile);
+    rge_write(outfile, &this->speed, 4);
 }
 
-void RGE_Animated_Object::transform(RGE_Master_Static_Object* master)
-{
-    RGE_Static_Object::transform(master);
+void RGE_Animated_Object::transform(RGE_Master_Static_Object* obj) {
+    RGE_Static_Object::transform(obj);
 }
 
 void RGE_Animated_Object::set_being_worked_on(
-    RGE_Action_Object* action, short mode, unsigned char flag)
-{
-    RGE_Static_Object::set_being_worked_on(action, mode, flag);
+    RGE_Action_Object* work_obj, short action_type, unsigned char attack_flag) {
+    RGE_Static_Object::set_being_worked_on(work_obj, action_type, attack_flag);
 }
 
-void RGE_Animated_Object::release_being_worked_on(RGE_Static_Object* object)
-{
-    RGE_Static_Object::release_being_worked_on(object);
+void RGE_Animated_Object::release_being_worked_on(RGE_Static_Object* caller) {
+    RGE_Static_Object::release_being_worked_on(caller);
     RGE_Static_Object::set_sleep_flag(0);
 }
