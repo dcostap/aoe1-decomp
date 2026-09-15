@@ -6,11 +6,22 @@
 - Report: `decomp_notes/source_cleanup/wave01/rmm_terr.md`
 - Branch: `cleanup/staging-20260915-19`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source commit: `cccb50ecbb00fdf39c3cfad336f0094b3c3dec31`
+- Previous source commit: `cccb50ecbb00fdf39c3cfad336f0094b3c3dec31`
+- Final source commit: `0d8b67a7c8b68126eac5a92eedc30afc784cfe1a`
 - Changed files in the source commit: `src/rmm_terr.cpp`
 - The follow-up report commit contains this report only.
 
 The header `include/rmm_terrain_generator.h` was read and was not edited.
+
+## Correction round
+
+The correction source commit is `0d8b67a7c8b68126eac5a92eedc30afc784cfe1a`.
+It moves every function-definition opening brace to 1TBS style. It preserves
+all braces and scopes. It keeps the inner `base_terrain_generate` scope and
+indents its body.
+
+A whitespace-stripped token comparison against the previous source commit
+returned equal. No non-whitespace source token changed in this round.
 
 ## Evidence reviewed
 
@@ -97,10 +108,11 @@ known `pop_stack` output layout and the reused fairness-count storage.
 
 ## Code-generation-sensitive points
 
-All edits are identifier substitutions or descriptive local names. Types,
-scopes, declaration order, storage, casts, calls, control flow, constants,
-structures, and source ownership remain unchanged. No header, ABI name, or
-public signature was edited. No inline assembly or wrapper was added.
+The source cleanup edits are identifier substitutions or descriptive local
+names. The correction round changes whitespace only. Types, scopes, declaration
+order, storage, casts, calls, control flow, constants, structures, and source
+ownership remain unchanged. No header, ABI name, or public signature was
+edited. No inline assembly or wrapper was added.
 
 Compilation, matching, audits, and tests were not run, as required for this
 cleanup phase. I ran only Git diff review and `git diff --check`.
