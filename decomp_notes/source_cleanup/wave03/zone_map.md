@@ -5,15 +5,16 @@
 - Module: `src/zone_map.cpp`
 - Header owner: owner 16 owns `include/zone_map.h`; this worker did not edit it.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commit: `2fba8cad86516cbbdc3b8709f29a0078b1c6a941`
+- Source commit: `1f420783ede0356da604142e88434c825340f838`
 - Final report commit: see the full Git hash in the delivery record.
 - Changed files:
   - `src/zone_map.cpp`
   - `decomp_notes/source_cleanup/wave03/zone_map.md`
 
 The source keeps all 22 handwritten owners in PDB source order. This cleanup
-recovers procedure-scoped PDB names. It does not change types, calls, literals,
-declaration scopes, evaluation order, storage, or layouts.
+recovers procedure-scoped PDB names and applies 1TBS throughout the module. It
+does not change types, calls, literals, declaration scopes, evaluation order,
+storage, or layouts.
 
 Evidence identity used during review:
 
@@ -90,6 +91,14 @@ an SDK or CRT constant that needs replacement.
 No comment was added or removed. The existing load-constructor note remains
 unchanged. It records the observed serialized read order and pointer lifetime.
 
+## Presentation correction
+
+The correction round places every function and control-statement opening brace
+on its statement line. It joins readable signatures and calls, including the
+three-parameter constructor, `check_info`, `create_zone_map`, and the
+three-parameter terrain-rule `get_zone_map`. It does not add or remove braces,
+change scopes, or reorder statements.
+
 ## Header requests
 
 The owner of `include/zone_map.h` should align declaration parameter names with
@@ -115,12 +124,12 @@ No shared resource declaration request is pending.
 
 ## Code-generation and unresolved items
 
-All source edits rename existing declarations and uses. They do not change a
-public function name, ABI symbol, type, cast, literal, scope, statement order,
-call target, or storage duration. No structural rewrite or behavior repair was
-made. The existing module statuses remain unchanged: `005467B0` and `00546A90`
-are accepted drift, and the second constructor at `005468C0` remains scratch
-per the module note.
+Source edits rename existing declarations and uses, and change whitespace only
+for the presentation correction. They do not change a public function name, ABI
+symbol, type, cast, literal, scope, statement order, call target, or storage
+duration. No structural rewrite or behavior repair was made. The existing
+module statuses remain unchanged: `005467B0` and `00546A90` are accepted drift,
+and the second constructor at `005468C0` remains scratch per the module note.
 
 Unresolved items are the omitted or optimized local-name mappings listed above,
 the `do_zone_map` `group` type mismatch, and the pending header-only parameter
