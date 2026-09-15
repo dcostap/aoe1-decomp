@@ -22,7 +22,7 @@ public:
     virtual ~TribeDiplomacyDialog();
 
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
 public:
     TTextPanel* title[8];
@@ -57,7 +57,7 @@ public:
     int cur_player_row;
     int tribute_flag;
 
-    TribeDiplomacyDialog(TScreenPanel*);
+    TribeDiplomacyDialog(TScreenPanel* parentPanel);
 
 protected:
     int check_gold();

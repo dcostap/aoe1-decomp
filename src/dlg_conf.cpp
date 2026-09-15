@@ -1,5 +1,6 @@
 
 #include "../include/dlg_conf.h"
+#include "../include/resource_ids.h"
 #include "../include/panel.h"
 #include "../include/Pnl_txt.h"
 #include "../include/pnl_btn.h"
@@ -25,14 +26,13 @@ extern int allow_user_commands;
 extern unsigned char do_color_log;
 extern int numberPathingIterations;
 
-TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
-    : TDialogPanel("Config Dialog"), modeValue(mode)
-{
-    TPanel* tab_list[10];
+TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
+    : TDialogPanel("Config Dialog"), modeValue(m) {
+    TPanel* tabList[10];
     int i;
     int string_id;
     int y;
-    unsigned char path_finding;
+    unsigned char val;
 
     this->title = 0;
     memset(this->speedTitle, 0, sizeof(this->speedTitle));
@@ -54,31 +54,31 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     this->okButton = 0;
     this->cancelButton = 0;
 
-    if (!this->setup(parent->renderArea(), parent, 600, 390,
-                     parent->get_popup_info_file(),
-                     parent->get_popup_info_id(), 1))
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 600, 390,
+                     parentPanel->get_popup_info_file(),
+                     parentPanel->get_popup_info_id(), 1))
         return;
 
-    if (!this->create_text(this, &this->title, 0x24D7, 0x67, 0x0A,
+    if (!this->create_text(this, &this->title, IDS_GAME_SETTINGS_TITLE, 0x67, 0x0A,
                            0x18B, 0x1E, 1, 1, 1, 0))
         return;
-    if (!this->create_text(this, &this->speedTitle[0], 0x24DF, 0x14,
+    if (!this->create_text(this, &this->speedTitle[0], IDS_GAME_SPEED_TITLE, 0x14,
                            0x32, 0x6E, 0x1E, 0x0B, 0, 1, 0))
         return;
 
     for (i = 0; i < 3; ++i) {
         switch (i) {
         case 0:
-            string_id = 0x24D8;
+            string_id = IDS_GAME_SPEED_NORMAL;
             break;
         case 1:
-            string_id = 0x24D9;
+            string_id = IDS_GAME_SPEED_FAST;
             break;
         case 2:
-            string_id = 0x24DA;
+            string_id = IDS_GAME_SPEED_VERY_FAST;
             break;
         default:
-            string_id = 0x24D8;
+            string_id = IDS_GAME_SPEED_NORMAL;
             break;
         }
         y = i * 0x23 + 0x55;
@@ -109,13 +109,13 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         this->speedButton[0]->set_radio_button();
     }
 
-    if (!this->create_text(this, this->musicTitle, 0x24DB, 0xA5, 0x2D,
+    if (!this->create_text(this, this->musicTitle, IDS_MUSIC_VOLUME_TITLE, 0xA5, 0x2D,
                            0x6E, 0x28, 0x0B, 0, 1, 1))
         return;
-    if (!this->create_text(this, &this->musicTitle[1], 0x24DC, 0xBE,
+    if (!this->create_text(this, &this->musicTitle[1], IDS_AUDIO_VOLUME_HIGH, 0xBE,
                            0x55, 0x6E, 0x14, 0x0B, 0, 1, 0))
         return;
-    if (!this->create_text(this, &this->musicTitle[2], 0x24DD, 0xBE,
+    if (!this->create_text(this, &this->musicTitle[2], IDS_AUDIO_VOLUME_OFF, 0xBE,
                            0xA5, 0x6E, 0x14, 0x0B, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->musicSlider, 100, 10,
@@ -130,13 +130,13 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     this->musicSlider->set_tab_pos(this->musicVolume);
     this->newMusicVolume = this->musicVolume;
 
-    if (!this->create_text(this, this->soundTitle, 0x24DE, 0x131, 0x2D,
+    if (!this->create_text(this, this->soundTitle, IDS_SOUND_VOLUME_TITLE, 0x131, 0x2D,
                            0x6E, 0x28, 0x0B, 0, 1, 1))
         return;
-    if (!this->create_text(this, &this->soundTitle[1], 0x24DC, 0x14A,
+    if (!this->create_text(this, &this->soundTitle[1], IDS_AUDIO_VOLUME_HIGH, 0x14A,
                            0x55, 0x6E, 0x14, 0x0B, 0, 1, 0))
         return;
-    if (!this->create_text(this, &this->soundTitle[2], 0x24DD, 0x14A,
+    if (!this->create_text(this, &this->soundTitle[2], IDS_AUDIO_VOLUME_OFF, 0x14A,
                            0xA5, 0x6E, 0x14, 0x0B, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->soundSlider, 100, 10,
@@ -151,13 +151,13 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     this->soundSlider->set_tab_pos(this->soundVolume);
     this->newSoundVolume = this->soundVolume;
 
-    if (!this->create_text(this, this->scrollSpeedTitle, 0x24F0, 0x1BD,
+    if (!this->create_text(this, this->scrollSpeedTitle, IDS_SCROLL_SPEED_TITLE, 0x1BD,
                            0x2D, 0x6E, 0x28, 0x0B, 0, 1, 1))
         return;
-    if (!this->create_text(this, &this->scrollSpeedTitle[1], 0x24F1,
+    if (!this->create_text(this, &this->scrollSpeedTitle[1], IDS_SCROLL_SPEED_FAST,
                            0x1D6, 0x55, 0x6E, 0x14, 0x0B, 0, 1, 0))
         return;
-    if (!this->create_text(this, &this->scrollSpeedTitle[2], 0x24F2,
+    if (!this->create_text(this, &this->scrollSpeedTitle[2], IDS_SCROLL_SPEED_SLOW,
                            0x1D6, 0xA5, 0x6E, 0x14, 0x0B, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->scrollSpeedSlider, 100, 10,
@@ -167,19 +167,19 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     this->scrollSpeed = rge_base_game->prog_info->mouse_scroll_interval;
     this->scrollSpeedSlider->set_tab_pos(this->scrollSpeed - 10);
 
-    if (!this->create_text(this, this->sizeTitle, 0x24E0, 0x14, 0xBE,
+    if (!this->create_text(this, this->sizeTitle, IDS_SCREEN_SIZE_TITLE, 0x14, 0xBE,
                            200, 0x1E, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 3; ++i) {
         switch (i) {
         case 0:
-            string_id = 0x24E7;
+            string_id = IDS_SCREEN_SIZE_640X480;
             break;
         case 1:
-            string_id = 0x24E8;
+            string_id = IDS_SCREEN_SIZE_800X600;
             break;
         case 2:
-            string_id = 0x24E9;
+            string_id = IDS_SCREEN_SIZE_1024X768;
             break;
         }
         y = i * 0x23 + 0xE1;
@@ -213,18 +213,18 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     if (!this->render_area->DrawSystem->IsModeAvail(0x400, 0, 8))
         this->sizeButton[2]->set_disabled(1);
 
-    if (!this->create_text(this, this->mouseTitle, 0x24EA, 0xAA, 0xBE,
+    if (!this->create_text(this, this->mouseTitle, IDS_MOUSE_INTERFACE_TITLE, 0xAA, 0xBE,
                            0xD2, 0x1E, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
             if (!this->create_text(this, &this->mouseTitle[i + 1],
-                                   0x24EB, 0xCD, 0xE1, 0x78, 0x1E,
+                                   IDS_MOUSE_INTERFACE_TWO_BUTTONS, 0xCD, 0xE1, 0x78, 0x1E,
                                    0x0B, 0, 1, 0))
                 return;
         } else {
             if (!this->create_text(this, &this->mouseTitle[i + 1],
-                                   0x24EC, 0xCD, i * 0x23 + 0xE1,
+                                   IDS_MOUSE_INTERFACE_ONE_BUTTON, 0xCD, i * 0x23 + 0xE1,
                                    0x78, 0x1E, 0x0B, 0, 1, 0))
                 return;
         }
@@ -240,18 +240,18 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     else
         this->mouseButton[1]->set_radio_button();
 
-    if (!this->create_text(this, this->rolloverTitle, 0x24ED, 0x14A,
+    if (!this->create_text(this, this->rolloverTitle, IDS_ROLLOVER_HELP_TITLE, 0x14A,
                            0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
             if (!this->create_text(this, &this->rolloverTitle[i + 1],
-                                   0x24EE, 0x16D, 0xE1, 0x78, 0x1E,
+                                   IDS_ROLLOVER_HELP_ON, 0x16D, 0xE1, 0x78, 0x1E,
                                    0x0B, 0, 1, 0))
                 return;
         } else {
             if (!this->create_text(this, &this->rolloverTitle[i + 1],
-                                   0x24EF, 0x16D, i * 0x23 + 0xE1,
+                                   IDS_ROLLOVER_HELP_OFF, 0x16D, i * 0x23 + 0xE1,
                                    0x78, 0x1E, 0x0B, 0, 1, 0))
                 return;
         }
@@ -267,11 +267,11 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     else
         this->rolloverButton[1]->set_radio_button();
 
-    if (!this->create_text(this, this->pathFindingTitle, 0x260D, 0x1CC,
+    if (!this->create_text(this, this->pathFindingTitle, IDS_PATH_FINDING_TITLE, 0x1CC,
                            0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 3; ++i) {
-        string_id = 0x260E + i;
+        string_id = IDS_PATH_FINDING_OPTION_BASE + i;
         if (!this->create_text(this, &this->pathFindingTitle[i + 1],
                                string_id, 0x1EF, i * 0x23 + 0xE1, 0x78, 0x1E,
                                0x0B, 0, 1, 0))
@@ -287,16 +287,16 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
         this->pathFindingButton[i]->set_radio_info(this->pathFindingButton, 3);
 
     if (rge_base_game->multiplayerGame())
-        path_finding = rge_base_game->mpPathFinding();
+        val = rge_base_game->mpPathFinding();
     else
-        path_finding = rge_base_game->pathFinding();
-    if (path_finding <= 2)
-        this->pathFindingButton[path_finding]->set_radio_button();
+        val = rge_base_game->pathFinding();
+    if (val <= 2)
+        this->pathFindingButton[val]->set_radio_button();
 
-    if (!this->create_button(this, &this->okButton, 0xFA1, 0, 0x78,
+    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 0x78,
                              0x159, 0xAA, 0x1E, 0, 0, 0))
         return;
-    if (!this->create_button(this, &this->cancelButton, 0xFA2, 0,
+    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
                              0x136, 0x159, 0xAA, 0x1E, 0, 0, 0))
         return;
 
@@ -304,13 +304,12 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     cancel_button->hotkey = 0x1B;
     cancel_button->hotkey_shift = 0;
     this->set_curr_child(this->okButton);
-    tab_list[0] = this->okButton;
-    tab_list[1] = this->cancelButton;
-    this->set_tab_order(tab_list, 2);
+    tabList[0] = this->okButton;
+    tabList[1] = this->cancelButton;
+    this->set_tab_order(tabList, 2);
 }
 
-TribeConfigDialog::~TribeConfigDialog()
-{
+TribeConfigDialog::~TribeConfigDialog() {
     this->delete_panel((TPanel**)&this->title);
 
     TTextPanel** text_panels;
@@ -431,12 +430,9 @@ TribeConfigDialog::~TribeConfigDialog()
     this->delete_panel((TPanel**)&this->cancelButton);
 }
 
-long TribeConfigDialog::action(TPanel* panel, long event,
-                               unsigned long param_3,
-                               unsigned long param_4)
-{
-    if (panel != 0) {
-        if (panel == this->okButton && event == 1) {
+long TribeConfigDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0) {
+        if (fromPanel == this->okButton && actionIn == 1) {
             if (this->modeValue == InGame) {
                 if (rge_base_game->singlePlayerGame() == 1 &&
                     rge_base_game->save_paused == 0) {
@@ -481,7 +477,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                         new_speed != this->gameSpeed) {
                         if (rge_base_game->multiplayerGame() != 0) {
                             char msg[256];
-                            sprintf(msg, this->get_string(0xBF3),
+                            sprintf(msg, this->get_string(IDS_GAME_SPEED_CHANGED),
                                     comm->GetPlayerName(comm->WhoAmI()));
                             comm->SendChatMsgAll(msg);
                         }
@@ -551,22 +547,22 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 return 1;
             }
         } else {
-            if (panel == this->speedButton[0] && event == 1)
+            if (fromPanel == this->speedButton[0] && actionIn == 1)
                 return 1;
-            if (panel == this->speedButton[1] && event == 1)
+            if (fromPanel == this->speedButton[1] && actionIn == 1)
                 return 1;
-            if (panel == this->speedButton[2] && event == 1)
-                return 1;
-
-            if (panel == this->sizeButton[0])
-                return 1;
-            if (panel == this->sizeButton[1])
-                return 1;
-            if (panel == this->sizeButton[2])
+            if (fromPanel == this->speedButton[2] && actionIn == 1)
                 return 1;
 
-            if (panel == this->musicSlider && event == 4) {
-                this->newMusicVolume = param_3;
+            if (fromPanel == this->sizeButton[0])
+                return 1;
+            if (fromPanel == this->sizeButton[1])
+                return 1;
+            if (fromPanel == this->sizeButton[2])
+                return 1;
+
+            if (fromPanel == this->musicSlider && actionIn == 4) {
+                this->newMusicVolume = a1;
                 if (rge_base_game->music_system != 0) {
                     rge_base_game->music_system->set_volume(
                         this->newMusicVolume * -100, 1);
@@ -578,8 +574,8 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 return 1;
             }
 
-            if (panel == this->soundSlider && event == 4) {
-                this->newSoundVolume = param_3;
+            if (fromPanel == this->soundSlider && actionIn == 4) {
+                this->newSoundVolume = a1;
                 if (rge_base_game->sound_system != 0) {
                     rge_base_game->sound_system->set_volume(
                         this->newSoundVolume * -100, 1);
@@ -587,13 +583,13 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 return 1;
             }
 
-            if (panel == this->scrollSpeedSlider && event == 4) {
-                rge_base_game->prog_info->mouse_scroll_interval = param_3 + 10;
-                rge_base_game->prog_info->key_scroll_interval = param_3 + 10;
-                return TPanel::action(panel, event, param_3, param_4);
+            if (fromPanel == this->scrollSpeedSlider && actionIn == 4) {
+                rge_base_game->prog_info->mouse_scroll_interval = a1 + 10;
+                rge_base_game->prog_info->key_scroll_interval = a1 + 10;
+                return TPanel::action(fromPanel, actionIn, a1, a2);
             }
 
-            if (panel == this->cancelButton && event == 1) {
+            if (fromPanel == this->cancelButton && actionIn == 1) {
                 if (rge_base_game->music_system != 0) {
                     rge_base_game->music_system->set_volume(
                         this->musicVolume * -100, 1);
@@ -624,12 +620,12 @@ long TribeConfigDialog::action(TPanel* panel, long event,
             }
         }
 
-        if (panel == this->okButton && event == 1) {
+        if (fromPanel == this->okButton && actionIn == 1) {
             panel_system.setCurrentPanel("Main Menu", 0);
             panel_system.destroyPanel("Config Dialog");
             return 1;
         }
     }
 
-    return TPanel::action(panel, event, param_3, param_4);
+    return TPanel::action(fromPanel, actionIn, a1, a2);
 }

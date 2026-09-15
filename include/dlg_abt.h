@@ -25,11 +25,11 @@ public:
     TButtonPanel* close_button;
     TPicturePanel* circle_p_pic;
 
-    TribeAboutDialog(TScreenPanel*);
+    TribeAboutDialog(TScreenPanel* parentPanel);
     virtual ~TribeAboutDialog();
 
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
 public:
     virtual void draw();
