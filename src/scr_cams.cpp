@@ -15,8 +15,7 @@
 extern TCommunications_Handler* comm;
 
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
-    : TScreenPanel("Campaign Selection Screen")
-{
+    : TScreenPanel("Campaign Selection Screen") {
     init_vars();
     if (!setup(rge_base_game->draw_area, "scr2", 0xC384, 1)) {
         error_code = 1;
@@ -113,8 +112,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     }
 }
 
-void TRIBE_Screen_Campaign_Selection::init_vars()
-{
+void TRIBE_Screen_Campaign_Selection::init_vars() {
     title = 0;
     campaignTitle = 0;
     campaignList = 0;
@@ -133,8 +131,7 @@ void TRIBE_Screen_Campaign_Selection::init_vars()
     rge_base_game->setDifficulty(difficulty);
 }
 
-TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection()
-{
+TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection() {
     delete_panel((TPanel**)&title);
     delete_panel((TPanel**)&campaignTitle);
     delete_panel((TPanel**)&campaignList);
@@ -149,8 +146,7 @@ TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection()
     delete_panel((TPanel**)&close_button);
 }
 
-long TRIBE_Screen_Campaign_Selection::handle_idle()
-{
+long TRIBE_Screen_Campaign_Selection::handle_idle() {
     if (campaignsLoaded == 0) {
         fillCampaigns();
         fillScenarios();
@@ -163,10 +159,7 @@ long TRIBE_Screen_Campaign_Selection::handle_idle()
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Campaign_Selection::action(TPanel* fromPanel, long actionIn,
-                                             unsigned long a1,
-                                             unsigned long a2)
-{
+long TRIBE_Screen_Campaign_Selection::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel != 0 && campaignsLoaded != 0) {
         TPanel* ok = okButton;
         if (fromPanel == ok && actionIn == 1) {
@@ -198,8 +191,7 @@ long TRIBE_Screen_Campaign_Selection::action(TPanel* fromPanel, long actionIn,
     return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-void TRIBE_Screen_Campaign_Selection::fillCampaigns()
-{
+void TRIBE_Screen_Campaign_Selection::fillCampaigns() {
     campaignList->empty_list();
 
     RGE_Game_Info* info = rge_base_game->player_game_info;
@@ -232,8 +224,7 @@ void TRIBE_Screen_Campaign_Selection::fillCampaigns()
     }
 }
 
-void TRIBE_Screen_Campaign_Selection::fillScenarios()
-{
+void TRIBE_Screen_Campaign_Selection::fillScenarios() {
     scenarioList->empty_list();
 
     RGE_Game_Info* info = rge_base_game->player_game_info;
@@ -257,8 +248,7 @@ void TRIBE_Screen_Campaign_Selection::fillScenarios()
     }
 }
 
-void TRIBE_Screen_Campaign_Selection::startGame()
-{
+void TRIBE_Screen_Campaign_Selection::startGame() {
     int player_count;
     if (this->scenarioList->get_line() == -1) {
         return;
