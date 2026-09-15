@@ -36,16 +36,14 @@ int RGE_Master_Animated_Object::setup(RGE_Master_Animated_Object* other_object) 
     return 1;
 }
 
-int RGE_Master_Animated_Object::setup(int infile, RGE_Sprite** sprites,
-                                      RGE_Sound** sounds) {
+int RGE_Master_Animated_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Master_Static_Object::setup(infile, sprites, sounds);
     master_type = 0x14;
     rge_read(infile, &speed, 4);
     return 1;
 }
 
-int RGE_Master_Animated_Object::setup(FILE* infile, RGE_Sprite** sprites,
-                                      RGE_Sound** sounds, short in_id) {
+int RGE_Master_Animated_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     RGE_Master_Static_Object::setup(infile, sprites, sounds, in_id);
     master_type = 0x14;
     fscanf(infile, "%f", &speed);
@@ -86,8 +84,7 @@ void RGE_Master_Animated_Object::modify(float amount, unsigned char flag) {
     speed = amount;
 }
 
-void RGE_Master_Animated_Object::modify_delta(float amount,
-                                              unsigned char flag) {
+void RGE_Master_Animated_Object::modify_delta(float amount, unsigned char flag) {
     if (flag != 5) {
         RGE_Master_Static_Object::modify_delta(amount, flag);
         return;
@@ -95,8 +92,7 @@ void RGE_Master_Animated_Object::modify_delta(float amount,
     speed = amount + speed;
 }
 
-void RGE_Master_Animated_Object::modify_percent(float amount,
-                                                unsigned char flag) {
+void RGE_Master_Animated_Object::modify_percent(float amount, unsigned char flag) {
     if (flag != 5) {
         RGE_Master_Static_Object::modify_percent(amount, flag);
         return;
