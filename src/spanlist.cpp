@@ -11,14 +11,14 @@ extern "C" int __cdecl open(const char* path, int flags, ...);
 extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned int count);
 
-TSpan_Node_List::TSpan_Node_List(int p1, int p2, int p3)
+TSpan_Node_List::TSpan_Node_List(int InitialSize, int GrowSize, int szitem)
     : Free_Pool_Zone(-1), Free_Pool_Index(-1), Zone_Ptrs(0),
       Zone_Size_Ptrs(0), Used_Zones(0), Free_Head(0), Total_Blocks(0),
-      Free_Blocks(0), Max_Zones(8), Default_Grow_Size(p2), Element_Size(p3)
+      Free_Blocks(0), Max_Zones(8), Default_Grow_Size(GrowSize), Element_Size(szitem)
 {
     ResetStats();
     SetNumZones(8);
-    InitNewZone(p1);
+    InitNewZone(InitialSize);
 }
 
 TSpan_Node_List::~TSpan_Node_List(void)
@@ -40,15 +40,15 @@ TSpan_Node_List::~TSpan_Node_List(void)
     }
 }
 
-void TSpan_Node_List::SetNumZones(int newCount)
+void TSpan_Node_List::SetNumZones(int New_Size)
 {
-    if (newCount >= this->Max_Zones) {
-        VSpan_Node** newZonePtrs = (VSpan_Node**)calloc(newCount, 4);
-        int* newZoneSizePtrs = (int*)calloc(newCount, 4);
+    if (New_Size >= this->Max_Zones) {
+        VSpan_Node** Ptrs = (VSpan_Node**)calloc(New_Size, 4);
+        int* newZoneSizePtrs = (int*)calloc(New_Size, 4);
 
         if (this->Zone_Ptrs) {
             for (int i = 0; i < this->Used_Zones; i++) {
-                newZonePtrs[i] = this->Zone_Ptrs[i];
+                Ptrs[i] = this->Zone_Ptrs[i];
                 newZoneSizePtrs[i] = this->Zone_Size_Ptrs[i];
             }
 
@@ -56,20 +56,20 @@ void TSpan_Node_List::SetNumZones(int newCount)
             free(this->Zone_Size_Ptrs);
         }
 
-        this->Zone_Ptrs = newZonePtrs;
+        this->Zone_Ptrs = Ptrs;
         this->Zone_Size_Ptrs = newZoneSizePtrs;
-        this->Max_Zones = newCount;
+        this->Max_Zones = New_Size;
     }
 }
 
-void TSpan_Node_List::InitNewZone(int growSize)
+void TSpan_Node_List::InitNewZone(int Zone_Size)
 {
     if (this->Used_Zones == this->Max_Zones) {
         SetNumZones(this->Used_Zones + 4);
     }
 
     int idx = this->Used_Zones;
-    int grow = growSize;
+    int grow = Zone_Size;
     int* sizes = this->Zone_Size_Ptrs;
     this->Used_Zones = idx + 1;
     int bytes = this->Element_Size * grow;
@@ -77,8 +77,8 @@ void TSpan_Node_List::InitNewZone(int growSize)
     this->Zone_Ptrs[idx] = (VSpan_Node*)malloc(bytes);
 
     this->NewZone_Count++;
-    this->Total_Blocks += growSize;
-    this->Free_Blocks += growSize;
+    this->Total_Blocks += Zone_Size;
+    this->Free_Blocks += Zone_Size;
 
     if (this->Free_Pool_Zone == -1) {
         this->Free_Pool_Zone = idx;
@@ -116,27 +116,27 @@ VSpan_Node* TSpan_Node_List::GetNode()
     return result;
 }
 
-void TSpan_Node_List::FreeNode(VSpan_Node* node)
+void TSpan_Node_List::FreeNode(VSpan_Node* theNode)
 {
-    node->Next = this->Free_Head;
-    node->Prev = 0;
-    this->Free_Head = node;
+    theNode->Next = this->Free_Head;
+    theNode->Prev = 0;
+    this->Free_Head = theNode;
     this->Free_Blocks = this->Free_Blocks + 1;
 }
 
-int TSpan_Node_List::FreeThread(VSpan_Node* first, VSpan_Node* second)
+int TSpan_Node_List::FreeThread(VSpan_Node* HeadNode, VSpan_Node* TailNode)
 {
     int count;
     VSpan_Node* current;
     VSpan_Node* last;
 
     count = 0;
-    current = first;
-    if (first == 0) {
+    current = HeadNode;
+    if (HeadNode == 0) {
         return 0;
     }
 
-    if (second == 0) {
+    if (TailNode == 0) {
         do {
             last = current;
             this->Free_Blocks = this->Free_Blocks + 1;
@@ -144,19 +144,19 @@ int TSpan_Node_List::FreeThread(VSpan_Node* first, VSpan_Node* second)
             current = last->Next;
         } while (current != 0);
         last->Next = this->Free_Head;
-        this->Free_Head = first;
+        this->Free_Head = HeadNode;
     } else {
         do {
             this->Free_Blocks = this->Free_Blocks + 1;
             count = count + 1;
-            if (current != second) {
+            if (current != TailNode) {
                 current = current->Next;
             } else {
                 current = 0;
             }
         } while (current != 0);
-        second->Next = this->Free_Head;
-        this->Free_Head = first;
+        TailNode->Next = this->Free_Head;
+        this->Free_Head = HeadNode;
     }
 
     return count;
@@ -179,13 +179,13 @@ void TSpan_Node_List::ResetStats()
     this->Reset_Count = 0;
 }
 
-TSpan_List_Manager::TSpan_List_Manager(int NumPixels, int NumLines)
-    : VSList(((NumPixels + 31) / 32) * NumLines, NumLines << 4, 0x10)
+TSpan_List_Manager::TSpan_List_Manager(int Surface_Width, int Surface_Height)
+    : VSList(((Surface_Width + 31) / 32) * Surface_Height, Surface_Height << 4, 0x10)
 {
-    this->Num_Lines = NumLines;
-    if (NumLines < 0x10) this->Num_Lines = 0x10;
-    this->Num_Pixels = NumPixels;
-    if (NumPixels < 0x10) this->Num_Pixels = 0x10;
+    this->Num_Lines = Surface_Height;
+    if (Surface_Height < 0x10) this->Num_Lines = 0x10;
+    this->Num_Pixels = Surface_Width;
+    if (Surface_Width < 0x10) this->Num_Pixels = 0x10;
     this->SetSpanRegions(0, 0, this->Num_Pixels - 1,
                          this->Num_Lines - 1);
     this->Line_Head_Ptrs = (VSpan_Node**)calloc(this->Num_Lines, 4);
@@ -204,57 +204,57 @@ TSpan_List_Manager::~TSpan_List_Manager()
     if (Span_Count != 0) free(Span_Count);
 }
 
-void TSpan_List_Manager::SetSpanRegions(int param_1, int param_2,
-                                        int param_3, int param_4)
+void TSpan_List_Manager::SetSpanRegions(int MinS, int MinL,
+                                        int MaxS, int MaxL)
 {
     int temp;
 
-    if (param_1 > param_3) {
-        temp = param_1;
-        param_1 = param_3;
-        param_3 = temp;
+    if (MinS > MaxS) {
+        temp = MinS;
+        MinS = MaxS;
+        MaxS = temp;
     }
 
-    if (param_2 > param_4) {
-        temp = param_2;
-        param_2 = param_4;
-        param_4 = temp;
+    if (MinL > MaxL) {
+        temp = MinL;
+        MinL = MaxL;
+        MaxL = temp;
     }
 
-    if (param_2 < 0) {
-        param_2 = 0;
+    if (MinL < 0) {
+        MinL = 0;
     }
-    if (param_4 < 0) {
+    if (MaxL < 0) {
         return;
     }
 
     temp = this->Num_Lines;
-    if (param_2 >= temp) {
+    if (MinL >= temp) {
         return;
     }
-    if (param_4 >= temp) {
-        param_4 = temp - 1;
+    if (MaxL >= temp) {
+        MaxL = temp - 1;
     }
 
-    if (param_1 < 0) {
-        param_1 = 0;
+    if (MinS < 0) {
+        MinS = 0;
     }
-    if (param_3 < 0) {
+    if (MaxS < 0) {
         return;
     }
 
     temp = this->Num_Pixels;
-    if (param_1 >= temp) {
+    if (MinS >= temp) {
         return;
     }
-    if (param_3 >= temp) {
-        param_3 = temp - 1;
+    if (MaxS >= temp) {
+        MaxS = temp - 1;
     }
 
-    this->Min_Line = param_2;
-    this->Max_Line = param_4;
-    this->Min_Span_Px = param_1;
-    this->Max_Span_Px = param_3;
+    this->Min_Line = MinL;
+    this->Max_Line = MaxL;
+    this->Min_Span_Px = MinS;
+    this->Max_Span_Px = MaxS;
 }
 
 void TSpan_List_Manager::ResetAll()
@@ -283,85 +283,85 @@ void TSpan_List_Manager::ResetAll()
     }
 }
 
-void TSpan_List_Manager::AddSpan(int left, int right, int line)
+void TSpan_List_Manager::AddSpan(int LeftPx, int RightPx, int Line)
 {
     int temp;
 
-    if (line < this->Min_Line || line > this->Max_Line) {
+    if (Line < this->Min_Line || Line > this->Max_Line) {
         return;
     }
 
-    if (left > right) {
-        temp = left;
-        left = right;
-        right = temp;
+    if (LeftPx > RightPx) {
+        temp = LeftPx;
+        LeftPx = RightPx;
+        RightPx = temp;
     }
 
-    if (right < this->Min_Span_Px || left > this->Max_Span_Px) {
+    if (RightPx < this->Min_Span_Px || LeftPx > this->Max_Span_Px) {
         return;
     }
-    if (left < this->Min_Span_Px) {
-        left = this->Min_Span_Px;
+    if (LeftPx < this->Min_Span_Px) {
+        LeftPx = this->Min_Span_Px;
     }
-    if (right > this->Max_Span_Px) {
-        right = this->Max_Span_Px;
+    if (RightPx > this->Max_Span_Px) {
+        RightPx = this->Max_Span_Px;
     }
 
-    VSpan_Node* head = this->Line_Head_Ptrs[line];
+    VSpan_Node* head = this->Line_Head_Ptrs[Line];
     if (head == 0) {
         VSpan_Node* node = this->VSList.GetNode();
         node->Prev = 0;
         node->Next = 0;
-        node->StartPx = left;
-        node->EndPx = right;
-        this->Line_Head_Ptrs[line] = node;
-        this->Line_Tail_Ptrs[line] = node;
-        this->LeftMostPx[line] = left;
-        this->RightMostPx[line] = right;
-        this->Span_Count[line] = this->Span_Count[line] + 1;
+        node->StartPx = LeftPx;
+        node->EndPx = RightPx;
+        this->Line_Head_Ptrs[Line] = node;
+        this->Line_Tail_Ptrs[Line] = node;
+        this->LeftMostPx[Line] = LeftPx;
+        this->RightMostPx[Line] = RightPx;
+        this->Span_Count[Line] = this->Span_Count[Line] + 1;
         return;
     }
 
-    VSpan_Node* tail = this->Line_Tail_Ptrs[line];
-    int leftmost = this->LeftMostPx[line];
+    VSpan_Node* tail = this->Line_Tail_Ptrs[Line];
+    int leftmost = this->LeftMostPx[Line];
 
-    if (leftmost < left) {
-        int rightmost = this->RightMostPx[line];
+    if (leftmost < LeftPx) {
+        int rightmost = this->RightMostPx[Line];
 
-        if (right < rightmost) {
+        if (RightPx < rightmost) {
             VSpan_Node* current = head;
             int current_end = current->EndPx;
 
-            while (current_end < left - 1) {
+            while (current_end < LeftPx - 1) {
                 current = current->Next;
                 current_end = current->EndPx;
             }
 
-            if (right + 1 < current->StartPx) {
+            if (RightPx + 1 < current->StartPx) {
                 VSpan_Node* node = this->VSList.GetNode();
                 tail = current->Prev;
                 node->Next = current;
                 node->Prev = tail;
                 current->Prev = node;
                 node->Prev->Next = node;
-                node->StartPx = left;
-                node->EndPx = right;
-                this->Span_Count[line] = this->Span_Count[line] + 1;
+                node->StartPx = LeftPx;
+                node->EndPx = RightPx;
+                this->Span_Count[Line] = this->Span_Count[Line] + 1;
                 return;
             }
 
-            if (left < current->StartPx) {
-                current->StartPx = left;
+            if (LeftPx < current->StartPx) {
+                current->StartPx = LeftPx;
             }
 
-            if (current->EndPx < right
+            if (current->EndPx < RightPx
                 && (tail = current->Next) != 0) {
                 for (;;) {
-                    if (right + 1 < tail->StartPx) {
-                        current->EndPx = right;
+                    if (RightPx + 1 < tail->StartPx) {
+                        current->EndPx = RightPx;
                         return;
                     }
-                    if (right <= tail->EndPx) {
+                    if (RightPx <= tail->EndPx) {
                         break;
                     }
 
@@ -374,7 +374,7 @@ void TSpan_List_Manager::AddSpan(int left, int right, int line)
 
                     VSpan_Node* next = tail->Next;
                     this->VSList.FreeNode(tail);
-                    this->Span_Count[line] = this->Span_Count[line] - 1;
+                    this->Span_Count[Line] = this->Span_Count[Line] - 1;
                     tail = next;
                     if (next == 0) {
                         return;
@@ -384,33 +384,33 @@ void TSpan_List_Manager::AddSpan(int left, int right, int line)
                 current->EndPx = tail->EndPx;
                 current->Next = tail->Next;
                 this->VSList.FreeNode(tail);
-                this->Span_Count[line] = this->Span_Count[line] - 1;
+                this->Span_Count[Line] = this->Span_Count[Line] - 1;
                 if (current->Next != 0) {
                     current->Next->Prev = current;
                     return;
                 }
-                this->Line_Tail_Ptrs[line] = current;
+                this->Line_Tail_Ptrs[Line] = current;
             }
         } else {
-            if (rightmost + 1 < left) {
+            if (rightmost + 1 < LeftPx) {
                 VSpan_Node* node = this->VSList.GetNode();
                 node->Prev = tail;
                 node->Next = 0;
                 tail->Next = node;
-                node->StartPx = left;
-                node->EndPx = right;
-                this->RightMostPx[line] = right;
-                this->Line_Tail_Ptrs[line] = node;
-                this->Span_Count[line] = this->Span_Count[line] + 1;
+                node->StartPx = LeftPx;
+                node->EndPx = RightPx;
+                this->RightMostPx[Line] = RightPx;
+                this->Line_Tail_Ptrs[Line] = node;
+                this->Span_Count[Line] = this->Span_Count[Line] + 1;
                 return;
             }
 
-            this->RightMostPx[line] = right;
-            int before = left - 1;
+            this->RightMostPx[Line] = RightPx;
+            int before = LeftPx - 1;
             if (before <= tail->EndPx) {
                 for (;;) {
-                    if (tail->StartPx <= left) {
-                        tail->EndPx = right;
+                    if (tail->StartPx <= LeftPx) {
+                        tail->EndPx = RightPx;
                         return;
                     }
 
@@ -419,55 +419,55 @@ void TSpan_List_Manager::AddSpan(int left, int right, int line)
                         break;
                     }
 
-                    this->Line_Tail_Ptrs[line] = previous;
+                    this->Line_Tail_Ptrs[Line] = previous;
                     previous->Next = 0;
                     this->VSList.FreeNode(tail);
-                    this->Span_Count[line] = this->Span_Count[line] - 1;
+                    this->Span_Count[Line] = this->Span_Count[Line] - 1;
                     tail = previous;
                     if (previous->EndPx < before) {
                         return;
                     }
                 }
 
-                tail->StartPx = left;
-                tail->EndPx = right;
+                tail->StartPx = LeftPx;
+                tail->EndPx = RightPx;
                 return;
             }
         }
     } else {
-        if (right < leftmost - 1) {
+        if (RightPx < leftmost - 1) {
             VSpan_Node* node = this->VSList.GetNode();
             node->Prev = 0;
             node->Next = head;
             head->Prev = node;
-            node->StartPx = left;
-            node->EndPx = right;
-            this->LeftMostPx[line] = left;
-            this->Line_Head_Ptrs[line] = node;
-            this->Span_Count[line] = this->Span_Count[line] + 1;
+            node->StartPx = LeftPx;
+            node->EndPx = RightPx;
+            this->LeftMostPx[Line] = LeftPx;
+            this->Line_Head_Ptrs[Line] = node;
+            this->Span_Count[Line] = this->Span_Count[Line] + 1;
             return;
         }
 
-        if (this->RightMostPx[line] <= right) {
-            int* span_count = this->Span_Count + line;
+        if (this->RightMostPx[Line] <= RightPx) {
+            int* span_count = this->Span_Count + Line;
             int freed = this->VSList.FreeThread(head->Next, 0);
             *span_count = *span_count - freed;
             head->Prev = 0;
             head->Next = 0;
-            head->StartPx = left;
-            head->EndPx = right;
-            this->Line_Tail_Ptrs[line] = head;
-            this->RightMostPx[line] = right;
-            this->LeftMostPx[line] = left;
+            head->StartPx = LeftPx;
+            head->EndPx = RightPx;
+            this->Line_Tail_Ptrs[Line] = head;
+            this->RightMostPx[Line] = RightPx;
+            this->LeftMostPx[Line] = LeftPx;
             return;
         }
 
-        this->LeftMostPx[line] = left;
-        int after = right + 1;
+        this->LeftMostPx[Line] = LeftPx;
+        int after = RightPx + 1;
         if (head->StartPx <= after) {
             for (;;) {
-                if (right <= head->EndPx) {
-                    head->StartPx = left;
+                if (RightPx <= head->EndPx) {
+                    head->StartPx = LeftPx;
                     return;
                 }
 
@@ -476,105 +476,105 @@ void TSpan_List_Manager::AddSpan(int left, int right, int line)
                     break;
                 }
 
-                this->Line_Head_Ptrs[line] = next;
+                this->Line_Head_Ptrs[Line] = next;
                 next->Prev = 0;
                 this->VSList.FreeNode(head);
-                this->Span_Count[line] = this->Span_Count[line] - 1;
+                this->Span_Count[Line] = this->Span_Count[Line] - 1;
                 head = next;
                 if (after < next->StartPx) {
                     return;
                 }
             }
 
-            head->StartPx = left;
-            head->EndPx = right;
+            head->StartPx = LeftPx;
+            head->EndPx = RightPx;
         }
     }
 }
 
-void TSpan_List_Manager::AddShape(TShape* shape, int shape_number,
-                                  int x, int y, int mirror)
+void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num,
+                                  int Xpos, int Ypos, int Mirror)
 {
-    if (shape != 0 && shape->FShape != 0) {
+    if (theShape != 0 && theShape->FShape != 0) {
         Shape_Info* info;
-        int right;
-        info = &shape->shape_info[shape_number];
+        int X2;
+        info = &theShape->shape_info[shape_num];
         unsigned short* outline =
-            (unsigned short*)(shape->FShape->Version +
+            (unsigned short*)(theShape->FShape->Version +
                               info->Shape_Outline_Offset);
-        right = info->Width - 1 + x;
+        X2 = info->Width - 1 + Xpos;
 
-        if (mirror == 0) {
-            int line = y;
-            if (line < y + info->Height) {
+        if (Mirror == 0) {
+            int line = Ypos;
+            if (line < Ypos + info->Height) {
                 do {
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (start & 0x8000) == 0) {
-                        AddSpan((short)start + x, right - (short)end, line);
+                        AddSpan((short)start + Xpos, X2 - (short)end, line);
                     }
                     line++;
-                } while (line < y + info->Height);
+                } while (line < Ypos + info->Height);
                 return;
             }
         } else {
-            int line = y;
-            if (line < y + info->Height) {
+            int line = Ypos;
+            if (line < Ypos + info->Height) {
                 do {
                     unsigned short start = *outline++;
                     unsigned short end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (end & 0x8000) == 0) {
-                        AddSpan((short)end + x, right - (short)start, line);
+                        AddSpan((short)end + Xpos, X2 - (short)start, line);
                     }
                     line++;
-                } while (line < y + info->Height);
+                } while (line < Ypos + info->Height);
             }
         }
     }
 }
 
-void TSpan_List_Manager::AddShape_Align(unsigned char* data,
-                                        Shape_Info* shape, int x, int y,
-                                        int align)
+void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base,
+                                        Shape_Info* SI, int Xpos, int Ypos,
+                                        int Mirror)
 {
-    if (shape != 0) {
+    if (SI != 0) {
         unsigned short* outline;
         int line;
         unsigned short start;
         unsigned short end;
-        outline = (unsigned short*)(data + shape->Shape_Outline_Offset);
-        int right = shape->Width - 1 + x;
+        outline = (unsigned short*)(Shape_Base + SI->Shape_Outline_Offset);
+        int X2 = SI->Width - 1 + Xpos;
 
-        if (align == 0) {
-            line = y;
-            if (line < y + shape->Height) {
+        if (Mirror == 0) {
+            line = Ypos;
+            if (line < Ypos + SI->Height) {
                 do {
                     start = *outline++;
                     end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (start & 0x8000) == 0) {
-                        AddSpan((short)start + x & 0xfffffffc,
-                                right - (short)end | 3, line);
+                        AddSpan((short)start + Xpos & 0xfffffffc,
+                                X2 - (short)end | 3, line);
                     }
                     line++;
-                } while (line < y + shape->Height);
+                } while (line < Ypos + SI->Height);
                 return;
             }
         } else {
-            line = y;
-            if (line < y + shape->Height) {
+            line = Ypos;
+            if (line < Ypos + SI->Height) {
                 do {
                     start = *outline++;
                     end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (end & 0x8000) == 0) {
-                        AddSpan((short)end + x & 0xfffffffc,
-                                right - (short)start | 3, line);
+                        AddSpan((short)end + Xpos & 0xfffffffc,
+                                X2 - (short)start | 3, line);
                     }
                     line++;
-                } while (line < y + shape->Height);
+                } while (line < Ypos + SI->Height);
             }
         }
     }
@@ -652,187 +652,187 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
     }
 }
 
-void TSpan_List_Manager::AddMiniList(VSpanMiniList* list, int x_off, int y_off)
+void TSpan_List_Manager::AddMiniList(VSpanMiniList* theList, int Xpos, int Ypos)
 {
-    if (list == 0) {
+    if (theList == 0) {
         return;
     }
 
-    while (list != 0) {
-        int y_delta = list->Y_delta;
+    while (theList != 0) {
+        int y_delta = theList->Y_delta;
         if (y_delta == 0xFF) {
             return;
         }
-        AddSpan(list->X_start + x_off,
-                list->X_end + x_off, y_delta + y_off);
-        ++list;
+        AddSpan(theList->X_start + Xpos,
+                theList->X_end + Xpos, y_delta + Ypos);
+        ++theList;
     }
 }
 
-void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* mini, int x_off,
-                                           int y_off)
+void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* theList, int Xpos,
+                                           int Ypos)
 {
-    if (mini == 0) {
+    if (theList == 0) {
         return;
     }
 
-    int add_x = x_off;
-    int add_y = y_off;
+    int add_x = Xpos;
+    int add_y = Ypos;
 
-    while (mini != 0) {
-        int y_delta = mini->Y_delta;
+    while (theList != 0) {
+        int y_delta = theList->Y_delta;
 
         if (y_delta == 0xFF) {
             return;
         }
 
-        this->DeleteSpan((int)mini->X_start + add_x,
-                         (int)mini->X_end + add_x,
+        this->DeleteSpan((int)theList->X_start + add_x,
+                         (int)theList->X_end + add_x,
                          y_delta + add_y);
 
-        mini = (VSpanMiniList*)((char*)mini + 3);
+        theList = (VSpanMiniList*)((char*)theList + 3);
     }
 }
 
-void TSpan_List_Manager::DeleteSpan(int left, int right, int line)
+void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line)
 {
-    if (line < this->Min_Line || line > this->Max_Line) return;
+    if (Line < this->Min_Line || Line > this->Max_Line) return;
 
-    if (left > right) {
-        int t = left;
-        left = right;
-        right = t;
+    if (LeftPx > RightPx) {
+        int t = LeftPx;
+        LeftPx = RightPx;
+        RightPx = t;
     }
-    if (right < this->Min_Span_Px || left > this->Max_Span_Px) return;
-    if (left < this->Min_Span_Px) left = this->Min_Span_Px;
-    if (right > this->Max_Span_Px) right = this->Max_Span_Px;
+    if (RightPx < this->Min_Span_Px || LeftPx > this->Max_Span_Px) return;
+    if (LeftPx < this->Min_Span_Px) LeftPx = this->Min_Span_Px;
+    if (RightPx > this->Max_Span_Px) RightPx = this->Max_Span_Px;
 
-    VSpan_Node* head = this->Line_Head_Ptrs[line];
+    VSpan_Node* head = this->Line_Head_Ptrs[Line];
     if (head != 0) {
-        if (right >= this->LeftMostPx[line]) {
-            if (left <= this->RightMostPx[line]) {
-                if (left <= this->LeftMostPx[line]
-                    && right >= this->RightMostPx[line]) {
+        if (RightPx >= this->LeftMostPx[Line]) {
+            if (LeftPx <= this->RightMostPx[Line]) {
+                if (LeftPx <= this->LeftMostPx[Line]
+                    && RightPx >= this->RightMostPx[Line]) {
                     this->VSList.FreeThread(head,
-                                            this->Line_Tail_Ptrs[line]);
-                    this->Line_Head_Ptrs[line] = 0;
-                    this->Line_Tail_Ptrs[line] = 0;
-                    this->Span_Count[line] = 0;
-                    this->LeftMostPx[line] = 0;
-                    this->RightMostPx[line] = 0;
+                                            this->Line_Tail_Ptrs[Line]);
+                    this->Line_Head_Ptrs[Line] = 0;
+                    this->Line_Tail_Ptrs[Line] = 0;
+                    this->Span_Count[Line] = 0;
+                    this->LeftMostPx[Line] = 0;
+                    this->RightMostPx[Line] = 0;
                     return;
                 }
 
-                VSpan_Node* last = this->Line_Tail_Ptrs[line];
-                VSpan_Node* savedHead = head;
+                VSpan_Node* R = this->Line_Tail_Ptrs[Line];
+                VSpan_Node* L = head;
                 VSpan_Node* first = head;
 
-                if (first->EndPx < left) {
+                if (first->EndPx < LeftPx) {
                     do {
                         first = first->Next;
-                    } while (first->EndPx < left);
+                    } while (first->EndPx < LeftPx);
                 }
 
-                if (left > first->StartPx && right < first->EndPx) {
+                if (LeftPx > first->StartPx && RightPx < first->EndPx) {
                     VSpan_Node* node = this->VSList.GetNode();
                     node->Prev = first;
                     node->Next = first->Next;
                     first->Next = node;
                     if (node->Next != 0) node->Next->Prev = node;
-                    if (first == last) this->Line_Tail_Ptrs[line] = node;
-                    node->StartPx = right + 1;
+                    if (first == R) this->Line_Tail_Ptrs[Line] = node;
+                    node->StartPx = RightPx + 1;
                     node->EndPx = first->EndPx;
-                    first->EndPx = left - 1;
-                    this->Span_Count[line]++;
+                    first->EndPx = LeftPx - 1;
+                    this->Span_Count[Line]++;
                     return;
                 }
 
-                if (left > first->StartPx) {
-                    first->EndPx = left - 1;
+                if (LeftPx > first->StartPx) {
+                    first->EndPx = LeftPx - 1;
                     first = first->Next;
                 }
 
                 VSpan_Node* next;
                 if (first != 0) do {
-                    if (left <= first->StartPx && right >= first->EndPx) {
-                        if (first == head) savedHead = first->Next;
-                        if (first == last) last = first->Prev;
+                    if (LeftPx <= first->StartPx && RightPx >= first->EndPx) {
+                        if (first == head) L = first->Next;
+                        if (first == R) R = first->Prev;
                         VSpan_Node* prev = first->Prev;
                         if (prev != 0) prev->Next = first->Next;
                         if (first->Next != 0) first->Next->Prev = first->Prev;
                         next = first->Next;
                         this->VSList.FreeNode(first);
-                        this->Span_Count[line]--;
-                        head = savedHead;
+                        this->Span_Count[Line]--;
+                        head = L;
                         first = next;
                     } else {
                         next = 0;
                     }
                 } while (next != 0);
-                if (first != 0 && right >= first->StartPx) {
-                    first->StartPx = right + 1;
+                if (first != 0 && RightPx >= first->StartPx) {
+                    first->StartPx = RightPx + 1;
                 }
-                this->Line_Head_Ptrs[line] = head;
-                this->Line_Tail_Ptrs[line] = last;
-                this->LeftMostPx[line] = head->StartPx;
-                this->RightMostPx[line] = last->EndPx;
+                this->Line_Head_Ptrs[Line] = head;
+                this->Line_Tail_Ptrs[Line] = R;
+                this->LeftMostPx[Line] = head->StartPx;
+                this->RightMostPx[Line] = R->EndPx;
             }
         }
     }
 }
 
-void TSpan_List_Manager::DeleteShape(TShape* shape, int shape_number,
-                                      int x, int y, int mirror)
+void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num,
+                                      int Xpos, int Ypos, int Mirror)
 {
-    if (shape != 0 && shape->FShape != 0) {
+    if (theShape != 0 && theShape->FShape != 0) {
         unsigned short* outline;
-        int right;
+        int X2;
         int line;
         unsigned short start;
         unsigned short end;
 
-        Shape_Info* info = &shape->shape_info[shape_number];
+        Shape_Info* info = &theShape->shape_info[shape_num];
         outline =
-            (unsigned short*)(shape->FShape->Version +
+            (unsigned short*)(theShape->FShape->Version +
                                info->Shape_Outline_Offset);
-        right = info->Width - 1 + x;
+        X2 = info->Width - 1 + Xpos;
 
-        if (mirror == 0) {
-            line = y;
-            if (line < y + info->Height) {
+        if (Mirror == 0) {
+            line = Ypos;
+            if (line < Ypos + info->Height) {
                 do {
                     start = *outline++;
                     end = *outline++;
                     if ((start & 0x8000) == 0) {
-                        this->DeleteSpan(x + (short)start,
-                                         right - (short)end, line);
+                        this->DeleteSpan(Xpos + (short)start,
+                                         X2 - (short)end, line);
                     }
                     line++;
-                } while (line < y + info->Height);
+                } while (line < Ypos + info->Height);
                 return;
             }
         } else {
-            line = y;
-            if (line < y + info->Height) {
+            line = Ypos;
+            if (line < Ypos + info->Height) {
                 do {
                     start = *outline++;
                     end = *outline++;
                     if ((end & 0x8000) == 0) {
-                        this->DeleteSpan(x + (short)end,
-                                         right - (short)start, line);
+                        this->DeleteSpan(Xpos + (short)end,
+                                         X2 - (short)start, line);
                     }
                     line++;
-                } while (line < y + info->Height);
+                } while (line < Ypos + info->Height);
             }
         }
     }
 }
 
-int TSpan_List_Manager::PointVisible(int x, int line)
+int TSpan_List_Manager::PointVisible(int x, int Line)
 {
-    if (line < 0 || line >= this->Num_Lines) return 0;
+    if (Line < 0 || Line >= this->Num_Lines) return 0;
 
-    VSpan_Node* node = this->Line_Head_Ptrs[line];
+    VSpan_Node* node = this->Line_Head_Ptrs[Line];
     if (!node) return 0;
 
     while (node) {
@@ -843,19 +843,19 @@ int TSpan_List_Manager::PointVisible(int x, int line)
     return 0;
 }
 
-void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* p1,
-                                       TSpan_List_Manager* p2)
+void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* List1,
+                                       TSpan_List_Manager* List2)
 {
     ResetAll();
 
-    if (Num_Lines != p1->Num_Lines) return;
-    if (Num_Lines != p2->Num_Lines) return;
-    if (Num_Pixels != p1->Num_Pixels) return;
-    if (Num_Pixels != p2->Num_Pixels) return;
+    if (Num_Lines != List1->Num_Lines) return;
+    if (Num_Lines != List2->Num_Lines) return;
+    if (Num_Pixels != List1->Num_Pixels) return;
+    if (Num_Pixels != List2->Num_Pixels) return;
 
     for (int i = 0; i < Num_Lines; i++) {
-        VSpan_Node* node1 = p1->Line_Head_Ptrs[i];
-        VSpan_Node* node2 = p2->Line_Head_Ptrs[i];
+        VSpan_Node* node1 = List1->Line_Head_Ptrs[i];
+        VSpan_Node* node2 = List2->Line_Head_Ptrs[i];
 
         while (node1 || node2) {
             if (node1) {
@@ -916,26 +916,28 @@ void TSpan_List_Manager::AlignamizeSpans()
     }
 }
 
-void TSpan_List_Manager::ScrollSpansHorizontally(int dx, int use_regions)
+void TSpan_List_Manager::ScrollSpansHorizontally(int XOffset,
+                                                 int ClipToCurrentRegion)
 {
-    if (dx != 0) {
-        if (use_regions != 0 && abs(dx) > this->Max_Span_Px - this->Min_Span_Px) {
+    if (XOffset != 0) {
+        if (ClipToCurrentRegion != 0
+            && abs(XOffset) > this->Max_Span_Px - this->Min_Span_Px) {
             this->ResetAll();
             return;
         }
 
-        int line = 0;
+        int y = 0;
         if (0 < this->Num_Lines) {
             do {
-                VSpan_Node* node = this->Line_Head_Ptrs[line];
+                VSpan_Node* node = this->Line_Head_Ptrs[y];
 
                 while (node != 0) {
                     VSpan_Node* next = node->Next;
-                    int start = node->StartPx + dx;
-                    int end = node->EndPx + dx;
+                    int start = node->StartPx + XOffset;
+                    int end = node->EndPx + XOffset;
                     VSpan_Node* prev = node->Prev;
 
-                    if (use_regions != 0) {
+                    if (ClipToCurrentRegion != 0) {
                         int min = this->Min_Span_Px;
                         if (end < min || start > this->Max_Span_Px) {
                             if (prev != 0) {
@@ -945,7 +947,7 @@ void TSpan_List_Manager::ScrollSpansHorizontally(int dx, int use_regions)
                                 next->Prev = prev;
                             }
                             this->VSList.FreeNode(node);
-                            this->Span_Count[line] = this->Span_Count[line] - 1;
+                            this->Span_Count[y] = this->Span_Count[y] - 1;
                             node = 0;
                         } else {
                             if (start < min) {
@@ -965,138 +967,139 @@ void TSpan_List_Manager::ScrollSpansHorizontally(int dx, int use_regions)
                     node = next;
                 }
 
-                line++;
-            } while (line < this->Num_Lines);
+                y++;
+            } while (y < this->Num_Lines);
         }
     }
 }
 
-void TSpan_List_Manager::ScrollSpansVertically(int dy, int use_regions)
+void TSpan_List_Manager::ScrollSpansVertically(int YOffset,
+                                                int ClipToCurrentRegion)
 {
-    int line;
-    int src_line;
+    int y1;
+    int y2;
     int step;
-    int clear_first;
+    int ClearStart;
 
-    if (dy == 0) {
+    if (YOffset == 0) {
         return;
     }
 
-    if (use_regions != 0) {
-        clear_first = this->Min_Line;
-        use_regions = this->Max_Line;
+    if (ClipToCurrentRegion != 0) {
+        ClearStart = this->Min_Line;
+        ClipToCurrentRegion = this->Max_Line;
     } else {
-        clear_first = 0;
-        use_regions = this->Num_Lines - 1;
+        ClearStart = 0;
+        ClipToCurrentRegion = this->Num_Lines - 1;
     }
 
-    if (abs(dy) > use_regions - clear_first) {
+    if (abs(YOffset) > ClipToCurrentRegion - ClearStart) {
         this->ResetAll();
         return;
     }
 
-    line = 0;
-    src_line = dy;
-    while (line < this->Num_Lines) {
-        if (this->Line_Head_Ptrs[line] != 0) {
-            if (src_line < clear_first || src_line > use_regions) {
-                this->VSList.FreeThread(this->Line_Head_Ptrs[line],
-                                        this->Line_Tail_Ptrs[line]);
-                this->Line_Head_Ptrs[line] = 0;
-                this->Line_Tail_Ptrs[line] = 0;
-                this->Span_Count[line] = 0;
-                this->LeftMostPx[line] = 0;
-                this->RightMostPx[line] = 0;
+    y1 = 0;
+    y2 = YOffset;
+    while (y1 < this->Num_Lines) {
+        if (this->Line_Head_Ptrs[y1] != 0) {
+            if (y2 < ClearStart || y2 > ClipToCurrentRegion) {
+                this->VSList.FreeThread(this->Line_Head_Ptrs[y1],
+                                        this->Line_Tail_Ptrs[y1]);
+                this->Line_Head_Ptrs[y1] = 0;
+                this->Line_Tail_Ptrs[y1] = 0;
+                this->Span_Count[y1] = 0;
+                this->LeftMostPx[y1] = 0;
+                this->RightMostPx[y1] = 0;
             }
         }
-        line++;
-        src_line++;
+        y1++;
+        y2++;
     }
 
-    if (dy > 0) {
-        src_line = this->Num_Lines - dy - 1;
-        line = 0;
+    if (YOffset > 0) {
+        y2 = this->Num_Lines - YOffset - 1;
+        y1 = 0;
         step = -1;
-        clear_first = 0;
-        use_regions = dy - 1;
+        ClearStart = 0;
+        ClipToCurrentRegion = YOffset - 1;
     } else {
-        src_line = dy;
+        y2 = YOffset;
         step = 1;
-        clear_first = this->Num_Lines - dy;
-        line = this->Num_Lines - 1;
-        use_regions = this->Num_Lines;
+        ClearStart = this->Num_Lines - YOffset;
+        y1 = this->Num_Lines - 1;
+        ClipToCurrentRegion = this->Num_Lines;
     }
 
-    line += step;
-    if (src_line != line) {
+    y1 += step;
+    if (y2 != y1) {
         do {
-            this->Line_Head_Ptrs[src_line + dy] = this->Line_Head_Ptrs[src_line];
-            this->Line_Tail_Ptrs[src_line + dy] = this->Line_Tail_Ptrs[src_line];
-            this->Span_Count[src_line + dy] = this->Span_Count[src_line];
-            this->LeftMostPx[src_line + dy] = this->LeftMostPx[src_line];
-            this->RightMostPx[src_line + dy] = this->RightMostPx[src_line];
-            src_line += step;
-        } while (src_line != line);
+            this->Line_Head_Ptrs[y2 + YOffset] = this->Line_Head_Ptrs[y2];
+            this->Line_Tail_Ptrs[y2 + YOffset] = this->Line_Tail_Ptrs[y2];
+            this->Span_Count[y2 + YOffset] = this->Span_Count[y2];
+            this->LeftMostPx[y2 + YOffset] = this->LeftMostPx[y2];
+            this->RightMostPx[y2 + YOffset] = this->RightMostPx[y2];
+            y2 += step;
+        } while (y2 != y1);
     }
 
-    if (clear_first <= use_regions) {
-        for (; clear_first <= use_regions; clear_first++) {
-            this->Line_Head_Ptrs[clear_first] = 0;
-            this->Line_Tail_Ptrs[clear_first] = 0;
-            this->Span_Count[clear_first] = 0;
-            this->LeftMostPx[clear_first] = 0;
-            this->RightMostPx[clear_first] = 0;
+    if (ClearStart <= ClipToCurrentRegion) {
+        for (; ClearStart <= ClipToCurrentRegion; ClearStart++) {
+            this->Line_Head_Ptrs[ClearStart] = 0;
+            this->Line_Tail_Ptrs[ClearStart] = 0;
+            this->Span_Count[ClearStart] = 0;
+            this->LeftMostPx[ClearStart] = 0;
+            this->RightMostPx[ClearStart] = 0;
         }
     }
 }
 
-int TSpan_List_Manager::ValidateSpan(int line)
+int TSpan_List_Manager::ValidateSpan(int Line)
 {
-    int count = 0;
+    int C = 0;
     int prevEnd = 0;
 
-    if (line >= 0 && line < this->Num_Lines) {
-        VSpan_Node* node = this->Line_Head_Ptrs[line];
+    if (Line >= 0 && Line < this->Num_Lines) {
+        VSpan_Node* node = this->Line_Head_Ptrs[Line];
         if (node == 0) {
-            if (this->Line_Tail_Ptrs[line] == 0
-                && this->Span_Count[line] == 0
-                && this->LeftMostPx[line] == 0) {
-                return this->RightMostPx[line] == 0;
+            if (this->Line_Tail_Ptrs[Line] == 0
+                && this->Span_Count[Line] == 0
+                && this->LeftMostPx[Line] == 0) {
+                return this->RightMostPx[Line] == 0;
             }
         } else {
             VSpan_Node* prev = 0;
             while (node != 0) {
-                count++;
-                if (count == 1 && node->StartPx != this->LeftMostPx[line]) return 0;
+                C++;
+                if (C == 1 && node->StartPx != this->LeftMostPx[Line]) return 0;
                 if (node->Prev != prev) return 0;
                 if (node->StartPx > node->EndPx) return 0;
-                if (count > 1 && node->StartPx <= prevEnd) return 0;
+                if (C > 1 && node->StartPx <= prevEnd) return 0;
                 prevEnd = node->EndPx;
                 prev = node;
                 node = node->Next;
             }
-            if (this->Span_Count[line] != count) return 0;
-            if (this->Line_Tail_Ptrs[line] != prev) return 0;
-            if (prev->EndPx != this->RightMostPx[line]) return 0;
-            return this->LeftMostPx[line] <= this->RightMostPx[line];
+            if (this->Span_Count[Line] != C) return 0;
+            if (this->Line_Tail_Ptrs[Line] != prev) return 0;
+            if (prev->EndPx != this->RightMostPx[Line]) return 0;
+            return this->LeftMostPx[Line] <= this->RightMostPx[Line];
         }
     }
     return 0;
 }
 
-int TSpan_List_Manager::DecodeLine(unsigned char* line, int line_index,
-                                    unsigned char delta, int unused)
+int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line,
+                                    unsigned char fillC, int MaxX)
 {
     int count = 0;
 
-    if (this->Line_Head_Ptrs[line_index] != 0) {
-        VSpan_Node* node = this->Line_Head_Ptrs[line_index];
+    if (this->Line_Head_Ptrs[Line] != 0) {
+        VSpan_Node* node = this->Line_Head_Ptrs[Line];
         do {
             int x = node->StartPx;
             int end = node->EndPx;
             if (x <= end) {
                 do {
-                    line[x] = line[x] + delta;
+                    LineBuf[x] = LineBuf[x] + fillC;
                     ++x;
                 } while (x <= end);
             }
@@ -1110,10 +1113,10 @@ int TSpan_List_Manager::DecodeLine(unsigned char* line, int line_index,
 
 static const char s_default_snapshot_name[] = "C:\\AOE_%03d.BMP";
 
-void TSpan_List_Manager::take_snapshot(char* name, int& number,
-                                        TDrawArea* area, int color,
-                                        TSpan_List_Manager** spans,
-                                        int* colors, int count)
+void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
+                                        TDrawArea* render_area, int scolor,
+                                        TSpan_List_Manager** SpanArray,
+                                        int* colorArray, int ArraySize)
 {
     int infile;
     int bmWide;
@@ -1123,11 +1126,11 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
     RGBQUAD bmPAL[256];
     PALETTEENTRY thePal[256];
 
-    if (count > 0) {
+    if (ArraySize > 0) {
         int i = 0;
-        if (i < count) {
-            TSpan_List_Manager** s = spans;
-            while (i < count) {
+        if (i < ArraySize) {
+            TSpan_List_Manager** s = SpanArray;
+            while (i < ArraySize) {
                 if (*s == 0) return;
                 i++;
                 s++;
@@ -1158,7 +1161,7 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
     bmIH.biYPelsPerMeter = 0;
     bmIH.biClrUsed = 0;
     bmIH.biClrImportant = 0;
-    area->GetPalette(thePal);
+    render_area->GetPalette(thePal);
     for (int p = 0; p < 0x100; ++p) {
         bmPAL[p].rgbBlue = thePal[p].peBlue;
         bmPAL[p].rgbGreen = thePal[p].peGreen;
@@ -1167,14 +1170,14 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
     }
 
     int tries = 0;
-    if (number < 0) number = 0;
+    if (index_no < 0) index_no = 0;
     while (1) {
-        if (name == 0) sprintf(BMPFile, s_default_snapshot_name, number);
-        else sprintf(BMPFile, name, number);
+        if (filespec == 0) sprintf(BMPFile, s_default_snapshot_name, index_no);
+        else sprintf(BMPFile, filespec, index_no);
         tries++;
         int fd = open(BMPFile, 0);
         if (fd == -1) break;
-        number++;
+        index_no++;
         close(fd);
         if (tries > 1000) return;
     }
@@ -1189,12 +1192,12 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
         if (y >= 0) {
             do {
                 memset(line, 0, bmWide);
-                this->DecodeLine(line, y, (unsigned char)color, Height);
-                if (count > 0) {
+                this->DecodeLine(line, y, (unsigned char)scolor, Height);
+                if (ArraySize > 0) {
                     int i;
-                    for (i = 0; i < count; ++i) {
-                        spans[i]->DecodeLine(line, y,
-                                             (unsigned char)colors[i], Height);
+                    for (i = 0; i < ArraySize; ++i) {
+                        SpanArray[i]->DecodeLine(line, y,
+                                                 (unsigned char)colorArray[i], Height);
                     }
                 }
                 write(infile, line, bmWide);
