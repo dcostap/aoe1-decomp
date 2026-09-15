@@ -1,21 +1,22 @@
 
 #include "../include/flics.h"
+#include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
-RGE_Flic_Player::RGE_Flic_Player(char* path)
-{
+RGE_Flic_Player::RGE_Flic_Player(char* filename) {
     register int size;
-    register int fd = open(path, 0x8000);
+    register int fd = open(filename, _O_BINARY);
 
     if (fd > -1) {
-        lseek(fd, 0, 2);
+        lseek(fd, 0, SEEK_END);
         size = tell(fd);
         flic_buffer = (unsigned char*)calloc(size, 1);
-        lseek(fd, 0, 0);
+        lseek(fd, 0, SEEK_SET);
         read(fd, flic_buffer, size);
         // The shipped constructor copies the complete 0x84-byte
         // FLIC header before it reads the width field.
@@ -28,12 +29,11 @@ RGE_Flic_Player::RGE_Flic_Player(char* path)
         flic_handle = -1;
     }
 }
-RGE_Flic_Player::RGE_Flic_Player(int file_handle)
-{
-    if (file_handle > -1) {
-        read(file_handle, &this->flichead, 0x84);
+RGE_Flic_Player::RGE_Flic_Player(int handle) {
+    if (handle > -1) {
+        read(handle, &this->flichead, 0x84);
         this->flic_width = (int)(short)this->flichead.width;
-        this->flic_handle = file_handle;
+        this->flic_handle = handle;
         this->flic_buffer = 0;
         this->start();
     } else {
@@ -42,34 +42,32 @@ RGE_Flic_Player::RGE_Flic_Player(int file_handle)
     }
 }
 
-RGE_Flic_Player::~RGE_Flic_Player()
-{
+RGE_Flic_Player::~RGE_Flic_Player() {
     if (this->flic_buffer) {
         free(this->flic_buffer);
     }
 }
 
-void RGE_Flic_Player::palette(tagRGBQUAD* palette)
-{
+void RGE_Flic_Player::palette(tagRGBQUAD* palette) {
     FrameHead* framehead;
     int* chunk;
-    int* frame_buffer = 0;
+    int* temp_buffer = 0;
     int packets;
     int color_index;
 
     if (this->flic_handle > -1) {
         framehead = (FrameHead*)calloc(1, 0x10);
-        lseek(this->flic_handle, (int)this->flichead.oframe2, 0);
+        lseek(this->flic_handle, (int)this->flichead.oframe2, SEEK_SET);
         read(this->flic_handle, framehead, 0x10);
         chunk = (int*)calloc(framehead->size, 1);
-        frame_buffer = chunk;
+        temp_buffer = chunk;
         read(this->flic_handle, chunk, framehead->size);
     } else {
         framehead = (FrameHead*)this->flichead.oframe2;
         chunk = (int*)((char*)framehead + 0x10);
     }
 
-    int chunk_index = 0;
+    int index1 = 0;
     if (0 < framehead->chunks) {
         do {
             if ((short)chunk[1] == 4) {
@@ -156,38 +154,34 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
             }
 
             chunk = (int*)((char*)chunk + *chunk);
-            chunk_index++;
-        } while (chunk_index < (int)framehead->chunks);
+            index1++;
+        } while (index1 < (int)framehead->chunks);
     }
 
     if (this->flic_handle > -1) {
         if (framehead != 0) {
             free(framehead);
         }
-        if (frame_buffer != 0) {
-            free(frame_buffer);
+        if (temp_buffer != 0) {
+            free(temp_buffer);
         }
     }
 }
 
-long RGE_Flic_Player::resolution()
-{
+long RGE_Flic_Player::resolution() {
     return ((long)this->flichead.width << 16) |
            (short)this->flichead.height;
 }
 
-long RGE_Flic_Player::time_delay()
-{
+long RGE_Flic_Player::time_delay() {
     return this->flichead.speed;
 }
 
-short RGE_Flic_Player::frames()
-{
+short RGE_Flic_Player::frames() {
     return this->flichead.frames;
 }
 
-void RGE_Flic_Player::start()
-{
+void RGE_Flic_Player::start() {
     switch (this->flichead.type) {
     case 0xAF12:
         this->flichead.oframe1 += (long)this->flic_buffer;
@@ -206,21 +200,19 @@ void RGE_Flic_Player::start()
     this->flichead.oframe2 = this->flichead.oframe1;
 }
 
-void RGE_Flic_Player::reset()
-{
+void RGE_Flic_Player::reset() {
     this->flichead.oframe2 = this->flichead.oframe1;
 }
 
 unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
-                                    long flic_y)
-{
+                                    long flic_y) {
     char* temp_buffer = 0;
     FrameHead* frame;
     char* chunk_base;
 
     if (this->flic_handle > -1) {
         frame = (FrameHead*)calloc(1, sizeof(FrameHead));
-        lseek(this->flic_handle, (long)this->flichead.oframe2, 0);
+        lseek(this->flic_handle, (long)this->flichead.oframe2, SEEK_SET);
         read(this->flic_handle, frame, sizeof(FrameHead));
         chunk_base = (char*)calloc(frame->size, 1);
         temp_buffer = chunk_base;
@@ -305,8 +297,7 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
     return result;
 }
 
-void RGE_Flic_Player::literal()
-{
+void RGE_Flic_Player::literal() {
     int i = 0;
     if (this->flic_size_y <= 0) {
         return;
@@ -319,8 +310,7 @@ void RGE_Flic_Player::literal()
     } while (i < this->flic_size_y);
 }
 
-void RGE_Flic_Player::delta_flc()
-{
+void RGE_Flic_Player::delta_flc() {
     long cur_y = 0;
     char* chunk = this->chunk;
     int count = *(short*)chunk;
@@ -404,15 +394,14 @@ void RGE_Flic_Player::delta_flc()
     } while (count != 0);
 }
 
-void RGE_Flic_Player::delta_fli()
-{
+void RGE_Flic_Player::delta_fli() {
     char* chunk = this->chunk;
     int count = *(int*)chunk;
     chunk += 8;
     if (count <= 0) {
         return;
     }
-    int remaining = count;
+    int cur_x = count;
 
     do {
         int lines = (signed char)*chunk;
@@ -436,12 +425,11 @@ void RGE_Flic_Player::delta_fli()
             } while (--line_remaining != 0);
         }
         this->window_buffer += this->drawarea_width;
-        remaining--;
-    } while (remaining != 0);
+        cur_x--;
+    } while (cur_x != 0);
 }
 
-void RGE_Flic_Player::black()
-{
+void RGE_Flic_Player::black() {
     long i;
     unsigned char* p;
 
@@ -457,8 +445,7 @@ void RGE_Flic_Player::black()
     }
 }
 
-void RGE_Flic_Player::byte_run()
-{
+void RGE_Flic_Player::byte_run() {
     char* chunk = this->chunk;
     int count = this->y1 + this->flic_size_y - 1;
     if (count < 0) {
