@@ -4,13 +4,18 @@
 
 - Module: `src/scr_sing.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source-cleanup commit: `aff63bc7131506e321e22eae2579e6f38e2394d1`
+- Final source-cleanup commit: `de015f711aa467725ddecf5bdf4a3c87dc1be1d9`
 - Branch: `cleanup/staging-20260915-23`
 - Changed paths:
   - `src/scr_sing.cpp`
   - `decomp_notes/source_cleanup/wave01/scr_sing.md`
 
 The report commit follows the source-cleanup commit. The handoff response records its full hash.
+
+The approved shared resource commit is `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`.
+This worker cherry-picked it locally as `90059e0b3cccac0e76bc94adfffd52ba42882554`.
+That worker-local header commit is not a module commit for owner integration.
+Exclude `90059e0b3cccac0e76bc94adfffd52ba42882554` when integrating this module.
 
 ## Scope and evidence
 
@@ -83,8 +88,9 @@ They remain unchanged. I do not claim them as recovered original names.
 - Joined the short action signature and its opening brace.
 - Preserved source order, control flow, calls, types, storage, literals, and lookup order.
 - Preserved the existing local-receiver comment and `cancel` declaration.
+- Applied eight reviewed shared resource macros without changing their values.
 - Added no structural rewrite, helper, cast removal, bug repair, or modern language feature.
-- Added no new source comment or constant.
+- Added no new source comment or local constant.
 
 The parameter and local renames do not change types, layout, calling convention, or symbols.
 Formatting can change debug line records. Compiler-output and relocation risk remains unvalidated.
@@ -100,6 +106,10 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 
 The declaration keeps the existing function name, types, order, virtual slot, and ABI.
 This request is not required for the source definition to compile.
+
+The worker did not edit `include/resource_ids.h`.
+The approved shared commit added the requested macros there.
+The local cherry-pick `90059e0b3cccac0e76bc94adfffd52ba42882554` must stay outside module integration.
 
 ## Resource mapping requests
 
@@ -136,8 +146,9 @@ It also has `RT_STRING` resources, but every requested ID below is missing.
 
 These are new descriptive cleanup names. No original macro name is claimed.
 The proposed macros retain the existing numeric values and introduce no storage.
-The root owner must add them to `include/resource_ids.h` before source replacement.
-The current source keeps all numeric uses unchanged until that shared change is reviewed.
+The shared commit `c9ba20d160541d928b5d9e55e1d02dce5a784e0c` added them to `include/resource_ids.h`.
+The source commit `de015f711aa467725ddecf5bdf4a3c87dc1be1d9` replaced these eight uses.
+The worker did not edit the shared header.
 
 The lookup path starts at `TPanel::get_string`, which calls `rge_base_game->get_string`.
 The base game loads `language.dll` into `StringTable`.
@@ -153,6 +164,15 @@ Therefore, these missing expansion entries fall back to the base `language.dll` 
   The source keeps one declaration for each semantic local and does not imitate PDB storage.
 - The `0x76` coordinate remains numeric because it is not a resource ID.
 - The `cancel` local remains because prior source evidence ties it to the two hotkey stores.
+
+## Commit records
+
+- `aff63bc7131506e321e22eae2579e6f38e2394d1`: source names and formatting.
+- `9ff38c23120dcaab2e0a6fe07dd164a133d8664a`: initial cleanup report.
+- `90059e0b3cccac0e76bc94adfffd52ba42882554`: worker-local cherry-pick of shared header commit.
+- `de015f711aa467725ddecf5bdf4a3c87dc1be1d9`: source resource substitutions.
+
+The report update commit follows. The handoff response records its full hash.
 
 ## Validation status
 
