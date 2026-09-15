@@ -32,8 +32,27 @@ Each worker started at the common base above.
 | `dlg_msg` | `sa-9bad2e00` | `68e9810dfe00f9454a776a38e8af82cdbd965aa8` | `271528deff0e82898e192751675c56855b7a09a4`, `68e9810dfe00f9454a776a38e8af82cdbd965aa8` | `ffb9d1c8ef924f8deae44a3efefe6ab0c1fc88ad`, `53498bd15df34842652c35332e673dd6cfb798b1` |
 | `dlg_sedm` | `sa-189d0416` | `8243d31a4276905a4a367c411916ef6716e9f98b` | `b43aab2ed74523e70c0a514fa59be3807540d245`, `8243d31a4276905a4a367c411916ef6716e9f98b` | `6b739cd552a5939384e4d2d06fef01796df58705`, `f78ba81d505cabf35cac0575752bdc999a43ca52` |
 
-The owner header commit is `2967c3e5b7c892bd29c30cdb64b7451721114688`.
-The group head before this ledger commit is that header commit.
+The initial owner header commit is `2967c3e5b7c892bd29c30cdb64b7451721114688`.
+Root approved the shared definitions in `8c56055b7feee1526f296bd306036a4c34f38041`.
+Owner 10 imported only `include/resource_ids.h` in
+`c6d5f27ea995a8c4e887d0ad0e4541c807e42a98`.
+Owner 10 compacted the assigned declarations in
+`e2d0f7d5846fbbaa2e25877222bdd9095665afa0`.
+
+## Correction history
+
+Owner 10 resumed the same seven workers after root approved the resource IDs.
+`dlg_list` needed no resource correction.
+
+| Module | Worker resource commit | Worker source and final head | Integrated correction commits |
+| --- | --- | --- | --- |
+| `dlg_abt` | `ea9e4c8f74c8f42512971e615be92cde24539fd5` | `f92c8da2a2f14174eadcef05585e4cb16d006c25`, `fe005b89878a1a0d82b02818dfaf3e250d4af36a` | `1cf30d183bb36e730c0dc0a644195edb3680e56b`, `38ef2f75f7cdda3aafcc3cba93d34534cdaa6317` |
+| `dlg_conf` | `3caba12fa62d4d07a0626fcb9f77e3425b9181ff` | `4bb1f30e5b844c4ea0c51cc29308ca22f2825333`, `c281b0909f0057b25574d8ab208f93a1d000840c` | `2cfe1f5430a9ccc6a46827f7b73a54fb6a943536`, `61b4327fad3654ad153b2d0af1ac5370305999eb` |
+| `dlg_dip` | `46805ee2a76f12ba7a50fa925461d1f787a00e61` | `f9d038289fa1d7a46a81b2667839ec08f41abf31`, `30a51d4928ec07e189e13e76e37a0e3ccbc3d18d` | `1c87fe5f93a31e5988dea7d1384387fd7db1c8f2`, `d7beb5c299c8143957b2dea0ff15a79a3ee16141` |
+| `dlg_help` | `08038221ea7047376f742814ca1185dbf31268e8` | `1c75a1dd6757a05fc717fd9dfe44860656a02905`, `cd2a3bffbe92058416d758d231693df54fe1ff5d` | `f9af5e82f1899ec8df637320ebe9f61fcb61d6c6`, `63e9633c24e72b04b00850f32eab56e3c6dd4015` |
+| `dlg_menu` | `5bc93fcb069dce227999254757e001423ec4959e` | `d26604d77fcf83b0b61a08b467c5ab30df85f3dc`, `b25fe65cd60e6facfe985fa08fc457f2b95d544e` | `b2f13e837668d539a3e2a72f5bde7cff746d3846`, `4d5b2134b43099d280e913113aaaa3bdd0d92271` |
+| `dlg_msg` | `8adda677299caa9f9be07fbaa96f476c70c30e56` | `fa6cac77c18b489ce2d4892ce13df8858fae9b62`, `9ad2537666b629eb2260931c1936d52e303bb777` | `e38fd314c4bcac557b75f9964b0dc9fa087a5ef8`, `b36901a2ffc579e80f7203eb2eac052d0e365593` |
+| `dlg_sedm` | `3bff68f3de98c7273f9a41faf3398b68cc17f15a` | `bc983e07915b974a17516dde307dab8a6d6be818`, `5db875f530849d185885d1722f3b82a06dabcdac` | `0b43d95445599022786a78f01c3237d2b145a9d9`, `b130b8b63266e1c1b69f2e9c84ae61b474b719e5` |
 
 ## Recovered mappings
 
@@ -56,13 +75,16 @@ No type, order, virtual slot, layout, or ABI symbol changed.
 
 I read every complete worker diff and report. I checked worker scope, PDB coverage, resource evidence, name provenance, types, declaration points, and 1TBS changes.
 
-All eight worker results were complete and acceptable. No worker correction was required.
+All eight initial worker results were complete and acceptable for the first handoff.
+Root then requested focused corrections and approved 79 shared definitions.
+Owner 10 resumed the same seven affected workers and reviewed every correction diff.
 Each worker preserved uncertain locals that had no reliable PDB mapping.
 The `dlg_conf` reused `+0x8` homes remain separate declarations. Their types and uses support the reported mappings.
 The `dlg_help` positive reused homes remain separate declarations.
 The `dlg_msg` reused argument homes remain separate declarations and types.
 
-The source reuses only existing resource macros. New shared IDs remain numeric.
+The source uses the 79 approved shared resource macros.
+The path-finding range preserves `IDS_PATH_FINDING_OPTION_BASE + i`.
 No worker edited a header, registry, inventory, build recipe, runtime file, or baseline output.
 
 A combined review checked all eight sources, reports, and assigned headers against the common base.
@@ -74,13 +96,15 @@ Some source locals have no procedure-scoped PDB record. Their existing descripti
 The module reports list each such local.
 No uncertain PDB stack-slot mapping was forced.
 
-The resource macro names below are new cleanup proposals. PDB evidence does not establish their original spelling.
+The applied resource macro names are cleanup names. PDB evidence does not establish their original spelling.
 No pending resource definition blocks the integrated source.
 
-## Shared resource requests
+## Applied shared resource definitions
 
-Root owns `include/resource_ids.h`. The module reports contain exact text, language, hashes, missing or empty results, lookup paths, and purposes.
-All requests use the base language namespace and preserve expansion-first fallback.
+Root owns `include/resource_ids.h`. Root approved 79 definitions in
+`8c56055b7feee1526f296bd306036a4c34f38041`.
+The module reports contain exact text, language, hashes, missing or empty results, lookup paths, and purposes.
+All uses preserve the base language namespace and expansion-first fallback.
 
 ### `dlg_abt`
 
@@ -118,8 +142,6 @@ All requests use the base language namespace and preserve expansion-first fallba
 - `0x24F2` `IDS_SCROLL_SPEED_SLOW`
 - `0x260D` `IDS_PATH_FINDING_TITLE`
 - `0x260E` `IDS_PATH_FINDING_OPTION_BASE`
-- `0x260F` `IDS_PATH_FINDING_OPTION_MEDIUM`
-- `0x2610` `IDS_PATH_FINDING_OPTION_HIGH`
 - `0x0BF3` `IDS_GAME_SPEED_CHANGED`
 
 ### `dlg_dip`
@@ -184,7 +206,8 @@ All requests use the base language namespace and preserve expansion-first fallba
 - `0x2446` `IDS_SCENARIO_MENU_TEST`
 - `0x2444` `IDS_SCENARIO_MENU_CANCEL`
 
-`dlg_list` has no new shared request.
+`dlg_list` needed no new shared definition.
+No shared resource request remains pending.
 
 ## Validation status
 
