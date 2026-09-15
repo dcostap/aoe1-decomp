@@ -8,7 +8,8 @@
 - Shared resource header owner: root (`include/resource_ids.h`)
 - Branch: `cleanup/staging-20260915-86`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Inherited shared resource commit: `08038221ea7047376f742814ca1185dbf31268e8`
+- Worker-local shared resource import: `08038221ea7047376f742814ca1185dbf31268e8`
+- Root approval commit: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Earlier source commit: `7333ff58036a73e1d7fac31869df3bed37d9604b`
 - Earlier report commit: `9e873050d6241e2e75bf9dde6f99f52943eb3d3c`
 - Source correction commit: `1c75a1dd6757a05fc717fd9dfe44860656a02905`
@@ -119,9 +120,11 @@ The source now includes `../include/resource_ids.h` and uses the existing
 `IDS_BUTTON_OK` macro for both OK-button caption calls. The macro is not claimed
 as a recovered original symbol.
 
-The inherited shared resource commit `08038221ea7047376f742814ca1185dbf31268e8`
-adds `IDS_BUTTON_MORE_HELP` for `0x243D`. The source now uses this macro for the
-optional More Help button. It is a new cleanup name, not an original macro.
+The worker-local shared resource import `08038221ea7047376f742814ca1185dbf31268e8`
+contains `IDS_BUTTON_MORE_HELP` for `0x243D`. Root approved this mapping in
+commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source now uses this
+macro for the optional More Help button. It is a new cleanup name, not an
+original macro.
 
 The existing macro maps `0x0FA1` to the OK caption. The source calls
 `create_button` with this ID at original `0043ECCC` and the two branch paths
@@ -154,8 +157,9 @@ the same numeric value.
 
 ### Applied shared resource mapping
 
-Root added this mapping to `include/resource_ids.h` in commit
-`08038221ea7047376f742814ca1185dbf31268e8`:
+The worker-local import `08038221ea7047376f742814ca1185dbf31268e8` contains this
+mapping. Root approved it in commit
+`8c56055b7feee1526f296bd306036a4c34f38041`:
 
 | Numeric ID | Proposed cleanup name | Resource type | Language | Exact text and files | Lookup path | Purpose |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -225,7 +229,8 @@ build, matcher, audit, automated test, menu suite, gameplay suite, or game.
 ## Commits
 
 - Base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Inherited shared resource header: `08038221ea7047376f742814ca1185dbf31268e8`
+- Worker-local shared resource import: `08038221ea7047376f742814ca1185dbf31268e8`
+- Root approval: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Earlier source cleanup: `7333ff58036a73e1d7fac31869df3bed37d9604b`
 - Earlier report: `9e873050d6241e2e75bf9dde6f99f52943eb3d3c`
 - Source correction: `1c75a1dd6757a05fc717fd9dfe44860656a02905`
