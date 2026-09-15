@@ -650,7 +650,7 @@ static char s_log_87[] = "";
 static char s_log_88[] = "";
 static char s_log_89[] = "";
 
-int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
+int TacticalAIGroup::task(TribeTacticalAIModule* t,
                           TribeMainDecisionAIModule* md, int taskID,
                           int resetOriginal, int overrideCurrentAction) {
     int i;
@@ -661,10 +661,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     RGE_Static_Object* object;
     UnitAIModule* unitAI;
 
-    tactical->logGroupDebug(idValue, s0, taskID, resetOriginal, overrideCurrentAction);
+    t->logGroupDebug(idValue, s0, taskID, resetOriginal, overrideCurrentAction);
 
     if (commanderValue == -1) {
-        tactical->logGroupDebug(idValue, s_no_commander);
+        t->logGroupDebug(idValue, s_no_commander);
         return 0;
     }
 
@@ -675,20 +675,20 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     switch (taskID) {
     case 0:
     case 1:
-        tactical->logGroupDebug(idValue, s_log_00);
+        t->logGroupDebug(idValue, s_log_00);
         oHP = 0;
         unit = unitsValue;
         for (i = 0; i < 40; ++i, ++unit) {
             if (*unit != -1) {
-                tactical->logGroupDebug(idValue, s_log_01, *unit);
+                t->logGroupDebug(idValue, s_log_01, *unit);
                 object = md->object(*unit);
                 if (object == 0 || object->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_02, *unit);
+                    t->logGroupDebug(idValue, s_log_02, *unit);
                     removeUnitByIndex(i, md);
                 } else {
                     unitsOriginalHitPointsValue[i] = (int)object->hp;
                     oHP += unitsOriginalHitPointsValue[i];
-                    tactical->stopUnit(*unit, 100);
+                    t->stopUnit(*unit, 100);
                 }
             }
         }
@@ -746,7 +746,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                 if (taskID == 14) {
                     gatherRange = 0.0f;
                 } else {
-                    gatherRange = (float)tactical->strategicNumber(41);
+                    gatherRange = (float)t->strategicNumber(41);
                 }
                 distance = object->distance_to_position(
                                gatherLocationValue.x, gatherLocationValue.y,
@@ -757,13 +757,13 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                 }
                 if (!(distance >= gatherRange)) {
                     if (object->unitAI()->currentOrder() != -1) {
-                        tactical->stopUnit(*unit, 100);
+                        t->stopUnit(*unit, 100);
                     }
                 } else {
-                    tactical->groupGatherUnit(
+                    t->groupGatherUnit(
                         *unit, commanderValue, gatherLocationValue.x,
                         gatherLocationValue.y, gatherLocationValue.z,
-                        gatherRange, tactical->calculatePriority(distance));
+                        gatherRange, t->calculatePriority(distance));
                 }
             }
         }
@@ -771,8 +771,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     }
 
     case 3:
-        tactical->logGroupDebug(idValue, s_log_18);
-        tactical->logGroupDebug(idValue, s_log_19,
+        t->logGroupDebug(idValue, s_log_18);
+        t->logGroupDebug(idValue, s_log_19,
                                 (double)retreatLocationValue.x,
                                 (double)retreatLocationValue.y);
         unit = unitsValue;
@@ -780,10 +780,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_20, *unit);
+            t->logGroupDebug(idValue, s_log_20, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_21, *unit);
+                t->logGroupDebug(idValue, s_log_21, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
@@ -797,10 +797,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                     distance = DAT_005756f0;
                 }
                 if (!(distance >= object->master_obj->los * DAT_005756f8)) {
-                    tactical->logGroupDebug(idValue, s_log_23, *unit);
+                    t->logGroupDebug(idValue, s_log_23, *unit);
                 } else {
-                    tactical->logGroupDebug(idValue, s_log_22, *unit);
-                    tactical->moveUnit(*unit, retreatLocationValue.x,
+                    t->logGroupDebug(idValue, s_log_22, *unit);
+                    t->moveUnit(*unit, retreatLocationValue.x,
                                        retreatLocationValue.y, 100);
                 }
             }
@@ -810,7 +810,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     case 7: {
         int randomRoll;
 
-        tactical->logGroupDebug(idValue, s_log_31);
+        t->logGroupDebug(idValue, s_log_31);
         randomRoll = debug_rand(s_file, 943) % 100;
         oHP = 0;
         unit = unitsValue;
@@ -818,10 +818,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_32, *unit);
+            t->logGroupDebug(idValue, s_log_32, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_33, *unit);
+                t->logGroupDebug(idValue, s_log_33, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
@@ -829,21 +829,21 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() != -1) {
-                tactical->logGroupDebug(idValue, s_log_34, *unit,
+                t->logGroupDebug(idValue, s_log_34, *unit,
                                         object->unitAI()->currentAction());
                 continue;
             }
 
             if (*unit == commanderValue) {
-                tactical->logGroupDebug(idValue, s_log_35, commanderValue);
-                tactical->taskExplorer(*unit, 0);
-            } else if (randomRoll < tactical->strategicNumber(200)) {
-                tactical->logGroupDebug(idValue, s_log_36, *unit);
-                tactical->taskDefender(*unit, commanderValue,
+                t->logGroupDebug(idValue, s_log_35, commanderValue);
+                t->taskExplorer(*unit, 0);
+            } else if (randomRoll < t->strategicNumber(200)) {
+                t->logGroupDebug(idValue, s_log_36, *unit);
+                t->taskDefender(*unit, commanderValue,
                                        object->master_obj->los * DAT_005756fc, 99);
             } else {
-                tactical->logGroupDebug(idValue, s_log_37, *unit);
-                tactical->taskExplorer(*unit, 0);
+                t->logGroupDebug(idValue, s_log_37, *unit);
+                t->taskExplorer(*unit, 0);
             }
         }
         inUseValue = 1;
@@ -855,28 +855,28 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     }
 
     case 8:
-        tactical->logGroupDebug(idValue, s_log_38);
+        t->logGroupDebug(idValue, s_log_38);
         oHP = 0;
         unit = unitsValue;
         for (i = 0; i < 40; ++i, ++unit) {
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_39, *unit);
+            t->logGroupDebug(idValue, s_log_39, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_40, *unit);
+                t->logGroupDebug(idValue, s_log_40, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() != -1) {
-                tactical->logGroupDebug(idValue, s_log_41, *unit,
+                t->logGroupDebug(idValue, s_log_41, *unit,
                                         object->unitAI()->currentAction());
                 continue;
             }
-            tactical->taskExplorer(*unit, 0);
+            t->taskExplorer(*unit, 0);
         }
         inUseValue = 1;
         if (resetOriginal == 1) {
@@ -888,21 +888,21 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     case 20: {
         int elapsed;
 
-        tactical->logGroupDebug(idValue, s_log_54, targetValue);
-        tactical->logGroupDebug(idValue, s_log_55,
+        t->logGroupDebug(idValue, s_log_54, targetValue);
+        t->logGroupDebug(idValue, s_log_55,
                                 (double)targetLocationValue.x,
                                 (double)targetLocationValue.y);
         elapsed = (int)(md->player->world->world_time -
                         lastAttackRoundupTime);
         elapsed /= 1000;
         if (elapsed < 10) {
-            tactical->logGroupDebug(idValue, s_log_56, elapsed);
+            t->logGroupDebug(idValue, s_log_56, elapsed);
             return 0;
         }
-        tactical->logGroupDebug(idValue, s_log_57, elapsed);
+        t->logGroupDebug(idValue, s_log_57, elapsed);
         lastAttackRoundupTime = md->player->world->world_time;
         if (playNumberValue != -1) {
-            tactical->logGroupDebug(idValue, s_log_58);
+            t->logGroupDebug(idValue, s_log_58);
             return 0;
         }
 
@@ -912,42 +912,42 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_59, *unit);
+            t->logGroupDebug(idValue, s_log_59, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_60, *unit);
+                t->logGroupDebug(idValue, s_log_60, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
 
             unitAI = object->unitAI();
-            tactical->logGroupDebug(idValue, s_log_61,
+            t->logGroupDebug(idValue, s_log_61,
                                     unitAI->currentAction());
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() != -1) {
-                tactical->logGroupDebug(idValue, s_log_62, *unit);
+                t->logGroupDebug(idValue, s_log_62, *unit);
                 continue;
             }
 
-            tactical->logGroupDebug(idValue, s_log_63, *unit, subTypeValue);
+            t->logGroupDebug(idValue, s_log_63, *unit, subTypeValue);
             if (subTypeValue != 0 && subTypeValue != 4) {
                 RGE_Static_Object* targetObj = md->object(targetValue);
                 if (targetObj != 0) {
-                    tactical->logGroupDebug(idValue, s_log_66, *unit,
+                    t->logGroupDebug(idValue, s_log_66, *unit,
                                             targetValue);
-                    tactical->taskAttacker(
+                    t->taskAttacker(
                         *unit, targetLocationValue.x, targetLocationValue.y,
                         targetValue, targetObj->owner->id,
                         attackWaypoints, numberAttackWaypointsValue,
                         commanderValue, 1);
                 } else {
-                    tactical->logGroupDebug(idValue, s_log_65);
+                    t->logGroupDebug(idValue, s_log_65);
                 }
             } else {
-                tactical->logGroupDebug(idValue, s_log_64, *unit,
+                t->logGroupDebug(idValue, s_log_64, *unit,
                                         targetValue);
-                tactical->taskDefender(*unit, targetValue, 2.0f, 100);
+                t->taskDefender(*unit, targetValue, 2.0f, 100);
             }
         }
 
@@ -964,14 +964,14 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     case 21: {
         int firstTime;
 
-        tactical->logGroupDebug(idValue, s_log_03, targetValue);
-        tactical->logGroupDebug(idValue, s_log_04,
+        t->logGroupDebug(idValue, s_log_03, targetValue);
+        t->logGroupDebug(idValue, s_log_04,
                                 (double)targetLocationValue.x,
                                 (double)targetLocationValue.y);
         if (playNumberValue == -1) {
-            tactical->logGroupDebug(idValue, s_log_05);
+            t->logGroupDebug(idValue, s_log_05);
         } else {
-            tactical->logGroupDebug(idValue, s_log_06, playNumberValue);
+            t->logGroupDebug(idValue, s_log_06, playNumberValue);
         }
 
         firstTime = 1;
@@ -983,16 +983,16 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                 continue;
             }
 
-            tactical->logGroupDebug(idValue, s_log_07, *unit);
+            t->logGroupDebug(idValue, s_log_07, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_08, *unit);
+                t->logGroupDebug(idValue, s_log_08, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
 
             unitAI = object->unitAI();
-            tactical->logGroupDebug(idValue, s_log_09,
+            t->logGroupDebug(idValue, s_log_09,
                                     unitAI->currentAction());
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
@@ -1003,11 +1003,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
 
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() == 600 &&
                 object->unitAI()->currentTargetType() != 27) {
-                tactical->logGroupDebug(idValue, s_log_10, *unit);
+                t->logGroupDebug(idValue, s_log_10, *unit);
                 continue;
             }
 
-            tactical->logGroupDebug(idValue, s_log_11, *unit, subTypeValue);
+            t->logGroupDebug(idValue, s_log_11, *unit, subTypeValue);
             if (subTypeValue != 0 && subTypeValue != 4) {
                 RGE_Static_Object* targetObj = md->object(targetValue);
                 if (targetObj != 0) {
@@ -1016,7 +1016,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                         XYPoint max;
                         unsigned char waypoint;
 
-                        tactical->logGroupDebug(idValue, s_log_14);
+                        t->logGroupDebug(idValue, s_log_14);
                         min.x = (int)targetLocationValue.x - 7;
                         min.y = (int)targetLocationValue.y - 7;
                         md->informationAI.mapBound(min);
@@ -1044,21 +1044,21 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                             (unsigned char)md->player->id,
                             (unsigned char)targetObj->owner->id, 0, 0,
                             md->player->world->world_time, -1);
-                        tactical->resetAttackSeparationTime();
+                        t->resetAttackSeparationTime();
                         firstTime = 0;
                     }
 
-                    tactical->logGroupDebug(idValue, s_log_15, *unit,
+                    t->logGroupDebug(idValue, s_log_15, *unit,
                                             targetValue);
                     if (*unit == commanderValue ||
-                        tactical->importantGroupLeader(commanderValue) == 0 ||
-                        tactical->strategicNumber(121) == 0) {
-                        tactical->logGroupDebug(idValue, s_log_16);
+                        t->importantGroupLeader(commanderValue) == 0 ||
+                        t->strategicNumber(121) == 0) {
+                        t->logGroupDebug(idValue, s_log_16);
                         if (taskID == 21) {
-                            tactical->moveUnit(*unit, targetLocationValue.x,
+                            t->moveUnit(*unit, targetLocationValue.x,
                                                targetLocationValue.y, 100);
                         } else {
-                            tactical->taskAttacker(
+                            t->taskAttacker(
                                 *unit, targetLocationValue.x,
                                 targetLocationValue.y, targetValue,
                                 (int)targetObj->owner->id,
@@ -1066,25 +1066,25 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                                 commanderValue, 0);
                         }
                     } else {
-                        tactical->logGroupDebug(idValue, s_log_17);
-                        tactical->taskDefender(
+                        t->logGroupDebug(idValue, s_log_17);
+                        t->taskDefender(
                             *unit, commanderValue,
-                            (float)tactical->strategicNumber(131), 99);
+                            (float)t->strategicNumber(131), 99);
                     }
                 } else {
-                    tactical->logGroupDebug(idValue, s_log_13);
+                    t->logGroupDebug(idValue, s_log_13);
                 }
             } else {
-                tactical->logGroupDebug(idValue, s_log_12, *unit,
+                t->logGroupDebug(idValue, s_log_12, *unit,
                                         targetValue);
-                tactical->taskDefender(*unit, targetValue, 2.0f, 100);
+                t->taskDefender(*unit, targetValue, 2.0f, 100);
             }
         }
 
         if (playNumberValue != -1) {
             int* list = new int[numberUnitsValue];
             if (list == 0) {
-                tactical->logGroupDebug(idValue, s_attack_play_alloc_fail);
+                t->logGroupDebug(idValue, s_attack_play_alloc_fail);
                 return 0;
             }
 
@@ -1095,7 +1095,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
                     *destination++ = *unit;
                 }
             }
-            tactical->taskPlay(commanderValue, list, numberUnitsValue,
+            t->taskPlay(commanderValue, list, numberUnitsValue,
                                targetValue, playNumberValue, attackWaypoints,
                                numberAttackWaypointsValue);
             delete[] list;
@@ -1112,7 +1112,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     }
 
     case 4:
-        tactical->logGroupDebug(idValue, s_log_24, targetValue,
+        t->logGroupDebug(idValue, s_log_24, targetValue,
                                 (double)targetLocationValue.x,
                                 (double)targetLocationValue.y);
         oHP = 0;
@@ -1121,10 +1121,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_25, *unit);
+            t->logGroupDebug(idValue, s_log_25, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_26, *unit);
+                t->logGroupDebug(idValue, s_log_26, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
@@ -1132,23 +1132,23 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() != -1) {
-                tactical->logGroupDebug(idValue, s_log_27, *unit,
+                t->logGroupDebug(idValue, s_log_27, *unit,
                                         object->unitAI()->currentAction());
                 continue;
             }
 
-            priority = tactical->calculatePriority(
+            priority = t->calculatePriority(
                 object->distance_to_position(targetLocationValue.x,
                                              targetLocationValue.y,
                                              targetLocationValue.z));
             if (targetTypeValue == 109) {
-                tactical->taskDefender(
+                t->taskDefender(
                     *unit, targetValue,
-                    (float)tactical->strategicNumber(22), priority);
+                    (float)t->strategicNumber(22), priority);
             } else {
-                tactical->taskDefender(
+                t->taskDefender(
                     *unit, targetValue,
-                    (float)tactical->strategicNumber(57), priority);
+                    (float)t->strategicNumber(57), priority);
             }
         }
         inUseValue = 1;
@@ -1159,35 +1159,35 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
         return 1;
 
     case 10:
-        tactical->logGroupDebug(idValue, s_log_42);
+        t->logGroupDebug(idValue, s_log_42);
         oHP = 0;
         unit = unitsValue;
         for (i = 0; i < 40; ++i, ++unit) {
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_43, *unit);
+            t->logGroupDebug(idValue, s_log_43, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_44, *unit);
+                t->logGroupDebug(idValue, s_log_44, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() != -1) {
-                tactical->logGroupDebug(idValue, s_log_45, *unit,
+                t->logGroupDebug(idValue, s_log_45, *unit,
                                         object->unitAI()->currentAction());
                 continue;
             }
             if (*unit == commanderValue) {
-                tactical->logGroupDebug(idValue, s_log_46, *unit);
-                tactical->taskWaterFisher(*unit, targetValue,
+                t->logGroupDebug(idValue, s_log_46, *unit);
+                t->taskWaterFisher(*unit, targetValue,
                                           targetLocationValue.x,
                                           targetLocationValue.y);
             } else {
-                tactical->logGroupDebug(idValue, s_log_47, *unit);
-                tactical->taskDefender(*unit, commanderValue,
+                t->logGroupDebug(idValue, s_log_47, *unit);
+                t->taskDefender(*unit, commanderValue,
                                        object->master_obj->los * DAT_005756fc, 99);
             }
         }
@@ -1199,33 +1199,33 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
         return 1;
 
     case 11:
-        tactical->logGroupDebug(idValue, s_log_48);
+        t->logGroupDebug(idValue, s_log_48);
         oHP = 0;
         unit = unitsValue;
         for (i = 0; i < 40; ++i, ++unit) {
             if (*unit == -1) {
                 continue;
             }
-            tactical->logGroupDebug(idValue, s_log_49, *unit);
+            t->logGroupDebug(idValue, s_log_49, *unit);
             object = md->object(*unit);
             if (object == 0 || object->unitAI() == 0) {
-                tactical->logGroupDebug(idValue, s_log_50, *unit);
+                t->logGroupDebug(idValue, s_log_50, *unit);
                 removeUnitByIndex(i, md);
                 continue;
             }
             unitsOriginalHitPointsValue[i] = (int)object->hp;
             oHP += unitsOriginalHitPointsValue[i];
             if (overrideCurrentAction == 0 && object->unitAI()->currentAction() != -1) {
-                tactical->logGroupDebug(idValue, s_log_51, *unit,
+                t->logGroupDebug(idValue, s_log_51, *unit,
                                         object->unitAI()->currentAction());
                 continue;
             }
             if (*unit == commanderValue) {
-                tactical->logGroupDebug(idValue, s_log_52, *unit);
-                tactical->taskWaterTrader(*unit, targetValue);
+                t->logGroupDebug(idValue, s_log_52, *unit);
+                t->taskWaterTrader(*unit, targetValue);
             } else {
-                tactical->logGroupDebug(idValue, s_log_53, *unit);
-                tactical->taskDefender(*unit, commanderValue,
+                t->logGroupDebug(idValue, s_log_53, *unit);
+                t->taskDefender(*unit, commanderValue,
                                        object->master_obj->los * DAT_005756fc, 99);
             }
         }
@@ -1240,15 +1240,15 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
     case 6:
     case 12:
     case 19:
-        tactical->logGroupDebug(idValue, s_log_28);
+        t->logGroupDebug(idValue, s_log_28);
         oHP = 0;
         unit = unitsValue;
         for (i = 0; i < 40; ++i, ++unit) {
             if (*unit != -1) {
-                tactical->logGroupDebug(idValue, s_log_29, *unit);
+                t->logGroupDebug(idValue, s_log_29, *unit);
                 object = md->object(*unit);
                 if (object == 0 || object->unitAI() == 0) {
-                    tactical->logGroupDebug(idValue, s_log_30, *unit);
+                    t->logGroupDebug(idValue, s_log_30, *unit);
                     removeUnitByIndex(i, md);
                 } else {
                     unitsOriginalHitPointsValue[i] = (int)object->hp;
@@ -1264,7 +1264,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical,
         return 0;
 
     default:
-        tactical->logGroupDebug(idValue, s_unknown_task, taskID);
+        t->logGroupDebug(idValue, s_unknown_task, taskID);
         return 0;
     }
 }
@@ -2114,176 +2114,176 @@ void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) { th
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
 
-int TribeTacticalAIModule::save(int file) {
+int TribeTacticalAIModule::save(int outfile) {
     int i;
     int tempInt;
     TacticalAIGroup* group;
 
     tempInt = this->civilians.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->civilians.numberValue; i++) {
         tempInt = this->civilians[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->civilianExplorers.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->civilianExplorers.numberValue; i++) {
         tempInt = this->civilianExplorers[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
-    rge_write(file, &this->numberGatherersValue, 4);
-    rge_write(file, &this->desiredNumberGatherersValue, 4);
-    rge_write(file, this->gatherers, 0x4b0);
+    rge_write(outfile, &this->numberGatherersValue, 4);
+    rge_write(outfile, &this->desiredNumberGatherersValue, 4);
+    rge_write(outfile, this->gatherers, 0x4b0);
 
     tempInt = this->soldiers.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->soldiers.numberValue; i++) {
         tempInt = this->soldiers[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->ungroupedSoldiers.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->ungroupedSoldiers.numberValue; i++) {
         tempInt = this->ungroupedSoldiers[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->boats.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->boats.numberValue; i++) {
         tempInt = this->boats[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->warBoats.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->warBoats.numberValue; i++) {
         tempInt = this->warBoats[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->fishingBoats.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->fishingBoats.numberValue; i++) {
         tempInt = this->fishingBoats[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->tradeBoats.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->tradeBoats.numberValue; i++) {
         tempInt = this->tradeBoats[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->transportBoats.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->transportBoats.numberValue; i++) {
         tempInt = this->transportBoats[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->artifacts.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->artifacts.numberValue; i++) {
         tempInt = this->artifacts[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = 226;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < tempInt; i++) {
-        rge_write(file, &this->sn[i], 4);
+        rge_write(outfile, &this->sn[i], 4);
     }
 
     tempInt = this->playersToAttack.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->playersToAttack.numberValue; i++) {
         tempInt = this->playersToAttack[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->playersToDefend.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->playersToDefend.numberValue; i++) {
         tempInt = this->playersToDefend[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->workingArea.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->workingArea.numberValue; i++) {
         tempInt = this->workingArea[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     tempInt = this->unitsTaskedThisUpdate.numberValue;
-    rge_write(file, &tempInt, 4);
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->unitsTaskedThisUpdate.numberValue; i++) {
         tempInt = this->unitsTaskedThisUpdate[i];
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
     for (i = 0; i < 4; i++) {
-        rge_write(file, &this->actualGathererDistribution[i], 4);
+        rge_write(outfile, &this->actualGathererDistribution[i], 4);
     }
     for (i = 0; i < 4; i++) {
-        rge_write(file, &this->desiredGathererDistribution[i], 4);
+        rge_write(outfile, &this->desiredGathererDistribution[i], 4);
     }
     for (i = 0; i < 4; i++) {
-        rge_write(file, &this->neededResourceValue[i], 4);
+        rge_write(outfile, &this->neededResourceValue[i], 4);
     }
     for (i = 0; i < 4; i++) {
-        rge_write(file, &this->resourceDifferenceValue[i], 4);
+        rge_write(outfile, &this->resourceDifferenceValue[i], 4);
     }
     for (i = 0; i < 4; i++) {
-        rge_write(file, &this->numberStoragePitsBuilt[i], 4);
+        rge_write(outfile, &this->numberStoragePitsBuilt[i], 4);
     }
     for (i = 0; i < 4; i++) {
-        rge_write(file, &this->numberGranariesBuilt[i], 4);
+        rge_write(outfile, &this->numberGranariesBuilt[i], 4);
     }
     for (i = 0; i < 4; i++) {
         tempInt = this->neededResources.value(i);
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
     }
 
-    rge_write(file, &this->groupIDValue, 4);
-    rge_write(file, &this->numberGroupsValue, 4);
+    rge_write(outfile, &this->groupIDValue, 4);
+    rge_write(outfile, &this->numberGroupsValue, 4);
     group = this->groups.next;
     while (group != &this->groups && group != 0) {
-        group->save(file);
+        group->save(outfile);
         group = group->next;
     }
 
-    rge_write(file, &this->lastGroupAttackTime, 4);
-    rge_write(file, &this->lastGroupRebalanceTime, 4);
-    rge_write(file, &this->lastAttackResponseTime, 4);
-    rge_write(file, &this->lastBoatAttackResponseTime, 4);
-    rge_write(file, &this->lastScalingUpdateValue, 4);
-    rge_write(file, &this->numberBuildUpdatesSkipped, 4);
-    rge_write(file, &this->randomizedAttackSeparationTime, 4);
-    rge_write(file, &this->attackEnabledValue, 4);
-    rge_write(file, &this->updateArea, 4);
-    rge_write(file, &this->wonderInProgressValue, 4);
-    rge_write(file, &this->wonderBuiltValue, 4);
-    rge_write(file, &this->placementStateValue, 0x130);
-    rge_write(file, &this->nextCivilianToTaskValue, 4);
-    rge_write(file, &this->nextIdleSoldierGroupToTaskValue, 4);
-    rge_write(file, &this->nextActiveSoldierGroupToTaskValue, 4);
-    rge_write(file, &this->builtFirstStoragePit, 4);
-    rge_write(file, &this->builtFirstGranary, 4);
-    rge_write(file, &this->lastBuildTime, 4);
-    rge_write(file, &this->lastAttackResponseBuildInsertionTime, 4);
-    rge_write(file, &this->lastCoopTributeDemandTime, 4);
-    rge_write(file, &this->lastCoopTributeGiftTime, 4);
-    rge_write(file, &this->zoomingToNextAge, 4);
-    rge_write(file, &this->lastCoopAttackDemandTime, 4);
-    rge_write(file, &this->lastUngroupedSoldierTaskTime, 4);
-    rge_write(file, &this->attackStateValue, 0x2c);
-    rge_write(file, this->hitsByPlayer, 0x24);
+    rge_write(outfile, &this->lastGroupAttackTime, 4);
+    rge_write(outfile, &this->lastGroupRebalanceTime, 4);
+    rge_write(outfile, &this->lastAttackResponseTime, 4);
+    rge_write(outfile, &this->lastBoatAttackResponseTime, 4);
+    rge_write(outfile, &this->lastScalingUpdateValue, 4);
+    rge_write(outfile, &this->numberBuildUpdatesSkipped, 4);
+    rge_write(outfile, &this->randomizedAttackSeparationTime, 4);
+    rge_write(outfile, &this->attackEnabledValue, 4);
+    rge_write(outfile, &this->updateArea, 4);
+    rge_write(outfile, &this->wonderInProgressValue, 4);
+    rge_write(outfile, &this->wonderBuiltValue, 4);
+    rge_write(outfile, &this->placementStateValue, 0x130);
+    rge_write(outfile, &this->nextCivilianToTaskValue, 4);
+    rge_write(outfile, &this->nextIdleSoldierGroupToTaskValue, 4);
+    rge_write(outfile, &this->nextActiveSoldierGroupToTaskValue, 4);
+    rge_write(outfile, &this->builtFirstStoragePit, 4);
+    rge_write(outfile, &this->builtFirstGranary, 4);
+    rge_write(outfile, &this->lastBuildTime, 4);
+    rge_write(outfile, &this->lastAttackResponseBuildInsertionTime, 4);
+    rge_write(outfile, &this->lastCoopTributeDemandTime, 4);
+    rge_write(outfile, &this->lastCoopTributeGiftTime, 4);
+    rge_write(outfile, &this->zoomingToNextAge, 4);
+    rge_write(outfile, &this->lastCoopAttackDemandTime, 4);
+    rge_write(outfile, &this->lastUngroupedSoldierTaskTime, 4);
+    rge_write(outfile, &this->attackStateValue, 0x2c);
+    rge_write(outfile, this->hitsByPlayer, 0x24);
     return 1;
 }
 
