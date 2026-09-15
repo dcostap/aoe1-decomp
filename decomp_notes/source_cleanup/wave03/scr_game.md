@@ -10,7 +10,7 @@
 - Source brace correction commit: `3415854c8d148ce993b285c57c4e68639fe54362`
 - Report correction commit: `0adf5675caeeb2df4edf1c223235f6321776378a`
 - Correction-hash record commit: `b08bf0343d663cc66c26e8d04e12900c6da39a02`
-- Hotkey-payload correction commit: copy the full hash from Git after commit.
+- Hotkey-payload correction commit: `2c102c6dc0fa08035493388370fc6faa8a9617dd`
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
