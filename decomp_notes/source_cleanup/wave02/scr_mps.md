@@ -241,9 +241,8 @@ Resource extraction outputs are `build/evidence/request_base.json`,
   `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only
   `include/resource_ids.h` at `bdb8bc1af`. This worker did not edit that
   header.
-- Owner 11 owns `include/scr_mps.h`. No declaration change is required. The
-  header has unnamed parameters, so source-only parameter recovery preserves
-  the existing ABI declaration.
+- Owner 11 owns `include/scr_mps.h`. Its parameter names already match the
+  recovered source names. No declaration change is required.
 - No layout, type, enum, global, or shared game declaration request remains.
 
 ## Code-generation and behavior limits
