@@ -26,8 +26,8 @@
 - Restored `selected_position` because the original PDB `pos` slot stores and
   reloads the spilled `this` pointer.
 - Restored `first_any_color_index` because the original instructions use an
-  unmapped `local_4` slot for that value. The PDB `first_any_player` slot has
-  no instruction use.
+  unmapped `local_4` slot for that value. The packet `first_any_player` label
+  has no instruction use.
 
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
