@@ -1,5 +1,27 @@
 # Cleanup wave 03 root review
 
+## Owner 13: corrected and integrated
+
+Root read the complete final correction diff to `47af24f3f592189500684abc225a8f0c6ed13e79`.
+It changes reports and removes one ownership-only comment. No executable token or header changed.
+Root merged the approved group as `101d81618c95afe77e6e3947066806eba428cc22`.
+Main contains 128 assigned modules plus the pilot: 129 of 225, approximately 57.3%.
+The incident record remains preserved. Integration does not approve the prohibited commands or prove broader asset integrity.
+
+## Owner 16: five corrections requested
+
+Reviewer `sa-63de0de9` read all 10,009 diff lines and nine reports.
+Root returned the group to the same `map` worker for these corrections:
+
+- Restore the `scenario_load` input alias and its uses.
+- Restore the removed byte declaration in `get_border_type`.
+- Restore the single format-string token.
+- Recover the supported `obj_owner` parameter name at `00458C90`, including its header declaration.
+- Recover local `type` at `00459400`, supported by the byte store at `0045941F`.
+
+The report and owner ledger must correct their non-structural and complete-recovery claims.
+The group remains unmerged. No compiler or runtime validation ran.
+
 ## Owner 15: corrected and integrated
 
 Root read the complete correction diff to `42608781054e3e29d8092930cc4d1040a20b79e9`.
