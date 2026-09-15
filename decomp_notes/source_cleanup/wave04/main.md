@@ -5,9 +5,12 @@
 - Module: `src/main.cpp`
 - Branch: `cleanup/staging-20260915-238`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `7ee16156ed3c8ed8e0e13d3df57432e8b6200d90`
+- Prior source commit: `7ee16156ed3c8ed8e0e13d3df57432e8b6200d90`
+- Prior report correction commit: `fea76f18237366684de41e8f7e934b9d500d3872`
+- Root resource mapping approval: `0aa69b43219d638bf1a6667b832257d633635ccf`
+- Final source commit: `553533156bea1d6ae75661158e9e079d54e1d5e4`
 - Base source blob: `77d20e3caa52ee276138a8b5f7a53cb82a3df977`
-- Final source blob: `cb09fb9c0f8c0f9aacecd859ae72bee1dd5fb6b4`
+- Final source blob: `40c0ef4236cbc942a1b72e08b771cf49e4fb4872`
 - Report commit: recorded in the delivery message after this report commit.
 - Changed files:
   - `src/main.cpp`
@@ -108,17 +111,20 @@ VC5 SDK header defines this macro at:
 It expands to `0x00000010L`. The API converts it to its `UINT` parameter. The
 effective flag value stays `0x10`. I did not use the newer `MB_ICONERROR` alias.
 
-The resource call keeps numeric ID `0x07D1` and both `0x100` buffer lengths.
-The current shared header has no verified name for this ID. I request this
-root-owned mapping:
+The source now includes the existing `resource_ids.h` header. It replaces only
+the title lookup argument with the exact unsuffixed macro `IDS_ERROR_TITLE`.
+Both `0x100` buffer lengths and all other literals remain unchanged.
+
+Root approved this mapping in commit
+`0aa69b43219d638bf1a6667b832257d633635ccf`:
 
 ```cpp
 #define IDS_ERROR_TITLE 0x07D1
 ```
 
-This name is new cleanup evidence, not an original macro name. The error path
-passes `0x07D1` as the title ID to `TRIBE_Game::get_string`. The purpose is
-therefore an error-dialog title.
+`IDS_ERROR_TITLE` is a new cleanup name, not a proved original name. The error
+path passes this ID to `TRIBE_Game::get_string`. The purpose is an error-dialog
+title.
 
 I checked the override and fallback lookup path. `TRIBE_Game::setup` loads the
 default override `languagex.dll` at `src/tribegam.cpp:388-406`. The base setup
@@ -132,12 +138,13 @@ checked files and results are:
 | --- | --- | --- | --- |
 | `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/languagex.dll`, staged runtime override | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | `0x0409` | `0x07D1`: empty slot, block 126 slot 1 |
 | `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/language.dll`, staged runtime fallback | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `0x0409` | `0x07D1`: `Error`, block 126 slot 1 |
-| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, pinned original override | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | No returned language entry | `0x07D1`: missing |
+| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, pinned expansion override | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | No returned language entry | `0x07D1`: missing |
 
 The staged override has an empty `0x07D1` slot. `LoadStringA` returns zero for
 that slot, so the base `language.dll` supplies `Error`. The pinned original
-XPack tree has no base `language.dll`; the staged runtime fallback is the
-actual checked base input.
+expansion has no `0x07D1` entry. The staged runtime fallback is the actual
+checked base input. The loaded `Error` text is passed as `title` to
+`MessageBoxA`, so it is the message-box caption.
 
 I added one sparse comment before the second discarded `get_error_code()` call.
 The original assembly at `00454F75` proves this status query is called and its
@@ -146,7 +153,7 @@ No other comment was added or changed.
 
 ## Shared requests and unresolved mappings
 
-- Root request: add `IDS_ERROR_TITLE` as `0x07D1` in the owner-controlled resource namespace.
+- Root approval: `IDS_ERROR_TITLE` is approved as `0x07D1` in commit `0aa69b43219d638bf1a6667b832257d633635ccf`.
 - No `include/main.h` request is needed. It has no `WinMain` declaration.
 - The original spelling of the optimized `game` declaration is unresolved.
   Its current type and source name remain unchanged.
