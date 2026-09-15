@@ -165,6 +165,13 @@ Focused job `bg-85` passed: all 14 exact flics targets match after the include r
 The resolution matching regression is resolved in this object check.
 The remaining `new_verified_logic` observation does not prove baseline equality for `delta_flc`; its investigation continues.
 Report: `build/source-cleanup-20260915/final-validation/flics-repair/report.json`.
+Root reviewed and integrated follow-up `996615bddc29398825b76c2a874fff48b2376971`.
+It removes `fcntl.h` and restores open mode `0x8000`, leaving decoder expressions unchanged.
+Targeted experiments isolated that include as the two-byte `delta_flc` trigger.
+The worker reports all 15 function sections equal to the preserved baseline after this repair.
+Root started fresh full build `bg-89` and complete function sweep `bg-90` after integration.
+The sweep uses `build/source-cleanup-20260915/final-validation/functions-r3` and preserves earlier failures.
+Full baseline code/data comparison, linked checks, ownership, tests, and runtime validation remain pending.
 
 ## Fresh linked dependency failures
 
