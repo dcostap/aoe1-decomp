@@ -10,21 +10,17 @@
 
 
 RGE_Action_Make::RGE_Action_Make(int infile, RGE_Action_Object* obj_in)
-    : RGE_Action(infile, obj_in, 1)
-{
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x15;
 }
 
-RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* obj_in,
-                                 RGE_Task* task_in)
-    : RGE_Action(obj_in, 1)
-{
+RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* obj_in, RGE_Task* task_in)
+    : RGE_Action(obj_in, 1) {
     this->action_type = 0x15;
     this->task = task_in;
 }
 
-void RGE_Action_Make::first_in_stack(unsigned char first_time)
-{
+void RGE_Action_Make::first_in_stack(unsigned char first_time) {
     short attribute_type;
 
     this->set_state(6);
@@ -35,14 +31,12 @@ void RGE_Action_Make::first_in_stack(unsigned char first_time)
     }
 }
 
-void RGE_Action_Make::set_state(unsigned char new_state)
-{
+void RGE_Action_Make::set_state(unsigned char new_state) {
     this->state = new_state;
     this->timer = this->obj->owner->attributes[0x24];
 }
 
-unsigned char RGE_Action_Make::update()
-{
+unsigned char RGE_Action_Make::update() {
     switch (this->state) {
     case 1:
         goto success;
