@@ -1,5 +1,17 @@
 # Cleanup wave 04 root review
 
+## Owner 24: source approved; report corrections requested
+
+Reviewer `sa-5e58304d` read all 8,915 lines and all reports. No source or header blocker remains.
+Diff SHA256: `885d7867c24ec7ed825e6e53175449011512ed1d9c8bdee16467280c2e272e45`.
+Root returned two report-only corrections to the same workers:
+
+- `view.md`: identify the original executable as the behavior oracle, not the PDB.
+- `diam_map.md`: correct the PDB size for `00437760 draw_tile` from 1,145 to 1,216 bytes.
+
+The PDB reference range is `00437760-00437C20`; this correction is not new proof of the executable boundary.
+No source or header change is requested. Integration waits for the corrected reports.
+
 ## Owner 26: correction review started
 
 Corrected head: `37a917a6b19236131e49d91da7384d5f8bed1f4c`.
