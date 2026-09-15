@@ -23,7 +23,7 @@ The common base is `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 
 | Module | Reviewed worker head | Result |
 | --- | --- | --- |
-| `taiinfmd` | `24d0331d3629dc440afd4fce4ce36eb4cacfa9ec` | Approved after two declaration reviews and a final report correction. |
+| `taiinfmd` | `810a6198a9b01e11ded8f29cb449bfa5faad8087` | Approved after three declaration reviews and final report corrections. |
 | `taimdmd` | `768c98f6add47808cf8c1929bbda2b7b8aa2d4b9` | Approved after local-storage correction. |
 | `tairesmd` | `f9a3b91cd91120610cb363989a00c7502ee86967` | Approved. |
 | `taistrmd` | `afe72c51515b825f5f2508f76d8f433285619e2d` | Approved after formatting correction. |
@@ -44,9 +44,13 @@ The owner reviewed each complete worker diff and report against the common base.
   A full-source review then found a real `setupWalls` logic regression.
   Renamed center parameters had replaced loop locals, so loops changed later center values.
   The second correction restored `centerX`, `centerY`, and separate `x` and `y` locals.
+  The PDB parameter names `x` and `y` conflict with those required loop locals.
   It also restored the baseline storage forms in `save`, the destructor, `update`,
   `unexploredPlayerLocation`, and `dropsitesWithinRequiredDistance`.
-  A report-only correction removed unsafe `setupWalls` PDB-name claims.
+  `requiredZone` is an unsafe reused-home record, not a source declaration.
+  The final source correction restored the baseline local declaration order in
+  `dropsitesWithinRequiredDistance`.
+  Report corrections now state these limits and rejected forms accurately.
   The retained formatting uses 1TBS and four-space indentation.
 - `taimdmd`: The correction restored the separate `diplomacy_start_time` local.
 - `tairesmd`: The source preserved all declarations and required no correction.
