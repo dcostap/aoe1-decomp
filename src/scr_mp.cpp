@@ -85,7 +85,7 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                         cancel->hotkey = 0x1B;
                         cancel->hotkey_shift = 0;
                         if (this->create_button(this, &this->help_button,
-                                                0x0FA9, 0, 0x244, 0x1B8,
+                                                IDS_BUTTON_HELP, 0, 0x244, 0x1B8,
                                                 0x1E, 0x1E, 0, 0, 0)) {
                             if (this->create_button(this,
                                                     &this->close_button,
