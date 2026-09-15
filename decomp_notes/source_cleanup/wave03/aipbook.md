@@ -4,7 +4,8 @@
 
 - Module: `src/aipbook.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `17f69a5f24484a751c3f65c0f0c07304b6f22414`
+- Previous source cleanup commit: `17f69a5f24484a751c3f65c0f0c07304b6f22414`
+- Final source commit: `d2ca85e3a874c30129877eaa447c9946a089a218`
 - The final delivery commit adds this hash correction to the report.
 - Changed files:
   - `src/aipbook.cpp`
