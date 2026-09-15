@@ -10,7 +10,7 @@
 - Changed files:
   - `src/colorlog.cpp`
   - `decomp_notes/source_cleanup/wave03/colorlog.md`
-- Header read only: `include/colorlog.h`.
+- Header owner: owner 22 owns `include/colorlog.h` and `include/color.h`.
 - Registry: `config/functions/src/colorlog.cpp.json`.
 - Registry build flags: `default`, from `config/flags/default.rsp`.
 - Source SHA-256 before cleanup:
@@ -82,8 +82,10 @@ use the recovered PDB spellings for `point`, `back_dest`, `ddbltfx`, and
 The locals `game`, `sys`, and `offset` have no PDB declaration records. Their
 names remain concise descriptive cleanup names. I did not map them from
 reused registers or stack slots. No source declaration mapping remains that
-requires a header edit. The public header keeps its existing parameter names;
-this source-only definition rename does not change its type or ABI.
+requires another header edit. Owner 22 has aligned the integrated
+`include/colorlog.h` and `include/color.h` declarations with the PDB names
+`c1`, `c2`, and `pos`. This coordinated header state preserves the existing
+types and ABI.
 
 ## Constants, resources, comments, and formatting
 
