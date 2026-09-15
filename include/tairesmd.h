@@ -10,17 +10,18 @@ class TribeMainDecisionAIModule;
 class TribeResourceAIModule : public AIModule {
 public:
     virtual ~TribeResourceAIModule();
-    virtual int save(int);
+    virtual int save(int outfile);
 
-    TribeResourceAIModule(void*, int, int, int, int, int);
-    TribeResourceAIModule(int, int);
+    TribeResourceAIModule(void* pW, int playerID, int n, int iV, int minV,
+                          int maxV);
+    TribeResourceAIModule(int playerID, int infile);
 
     int numberResources() const;
-    int resource(int) const;
-    char* resourceName(int);
-    int resourcesAvailable(ResourceItem*);
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    int unavailableResource(ResourceItem*);
+    int resource(int n) const;
+    char* resourceName(int i);
+    int resourcesAvailable(ResourceItem* ri);
+    void setMainDecisionAI(TribeMainDecisionAIModule* m);
+    int unavailableResource(ResourceItem* ri);
 
     TribeMainDecisionAIModule* md;
     int numberResourcesValue;
