@@ -33,47 +33,47 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
                      parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(), 1))
         return;
 
-    if (!this->create_button(this, &this->button[bi++], 0x2439, 0, 0x14,
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_QUIT_GAME, 0, 0x14,
                              0x0F, 0x168, 0x1E, 0, 0, 4))
         return;
 
     int by = 0x41;
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->get_player()->game_status == 0) {
-            if (!this->create_button(this, &this->button[bi++], 0x2440, 0,
+            if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESIGN, 0,
                                      0x14, by, 0x168, 0x1E, 0, 0, 0x0C))
                 return;
             by = 100;
         }
     }
 
-    if (!this->create_button(this, &this->button[bi++], 0x2437, 0, 0x14,
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_ACHIEVEMENTS, 0, 0x14,
                              by, 0x168, 0x1E, 0, 0, 7))
         return;
     by += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x243E, 0, 0x14,
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_SCENARIO_INSTRUCTIONS, 0, 0x14,
                              by, 0x168, 0x1E, 0, 0, 9))
         return;
     int by2 = by;
     by2 += 0x23;
 
     if (rge_base_game->singlePlayerGame()) {
-        if (!this->create_button(this, &this->button[bi++], 0x2438, 0,
+        if (!this->create_button(this, &this->button[bi++], IDS_MENU_SAVE, 0,
                                  0x14, by2, 0x168, 0x1E, 0, 0, 1))
             return;
         by2 += 0x23;
-        if (!this->create_button(this, &this->button[bi++], 0x243C, 0,
+        if (!this->create_button(this, &this->button[bi++], IDS_MENU_LOAD, 0,
                                  0x14, by2, 0x168, 0x1E, 0, 0, 3))
             return;
         by2 += 0x23;
-        if (!this->create_button(this, &this->button[bi++], 0x243F, 0,
+        if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESTART, 0,
                                  0x14, by2, 0x168, 0x1E, 0, 0, 0x0B))
             return;
         by2 += 0x23;
     }
 
-    if (!this->create_button(this, &this->button[bi++], 0x243A, 0, 0x14,
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_GAME_SETTINGS, 0, 0x14,
                              by2, 0x168, 0x1E, 0, 0, 5))
         return;
     by2 += 0x23;
@@ -83,12 +83,12 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
         return;
     by2 += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x23F9, 0, 0x14,
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_ABOUT, 0, 0x14,
                              by2, 0x168, 0x1E, 0, 0, 10))
         return;
     by2 += 0x23;
 
-    if (!this->create_button(this, &this->button[bi++], 0x243B, 0, 0x14,
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_CANCEL, 0, 0x14,
                              by2 + 0x0F, 0x168, 0x1E, 0, 0, 6))
         return;
 
@@ -134,7 +134,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(0xC1C, "QuitAndLoadDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_QUIT_AND_LOAD, "QuitAndLoadDialog", 0x1C2, 100);
                 return 1;
             }
 
@@ -155,7 +155,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(0xC1D, "QuitGameDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_QUIT_GAME, "QuitGameDialog", 0x1C2, 100);
                 return 1;
             }
 
@@ -171,7 +171,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
 
             if (a1 == 7) {
                 TribeAchievementsScreen* obj =
-                    new TribeAchievementsScreen(this->get_string(0x269E), 0);
+                    new TribeAchievementsScreen(this->get_string(IDS_ACHIEVEMENTS_TITLE), 0);
                 panel_system.setCurrentPanel("Achievements Screen", 0);
                 panel_system.destroyPanel("Menu Dialog");
                 return 1;
@@ -191,7 +191,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(0xC1E, "RestartDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_RESTART_GAME, "RestartDialog", 0x1C2, 100);
                 return 1;
             }
 
@@ -218,7 +218,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(0xC1F, "ResignDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_RESIGN, "ResignDialog", 0x1C2, 100);
                 return 1;
             }
 
