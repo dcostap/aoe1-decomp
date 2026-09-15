@@ -184,6 +184,12 @@ Focused job `bg-83` compiled successfully, but `setup_help` still has two direct
 Its five matching results belong to other functions. Exit 0 does not resolve the linked failure in this nonmatching-status function.
 The local-name restoration did not establish a repair. Root resumed cause isolation with targeted VC5 experiments.
 Report: `build/source-cleanup-20260915/final-validation/dlg-help-repair/report.csv`.
+Targeted experiments then isolated `resource_ids.h` inclusion as the trigger, not the local name.
+Root read all 292 correction-diff lines at `0dfd4d2a11e2f6e0b41c745b8be200ed01f550a3`.
+The repair removes that include and restores three numeric resource expressions without changing their values or types.
+The selected isolated object matches the preserved 849-byte span and its direct-target identities.
+Object SHA256: `10dea241aadf6190856c31d0f703858911b659d36f6f6990ac040f266c15d817`.
+The reports retract the prior name-based cause. Root must still confirm the result in a fresh linked executable.
 
 ## Second function sweep
 
