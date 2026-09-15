@@ -7,7 +7,8 @@
 - Header owner: owner 10
 - Branch: `cleanup/staging-20260915-83`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source head commit: `d70f7ddbae5959ed116b0d2bd51ae96c412070a4`
+- Shared resource-ID commit: `ea9e4c8f74c8f42512971e615be92cde24539fd5`
+- Corrected source head commit: `f92c8da2a2f14174eadcef05585e4cb16d006c25`
 - Changed files:
   - `src/dlg_abt.cpp`
   - `decomp_notes/source_cleanup/wave02/dlg_abt.md`
@@ -92,9 +93,10 @@ close, credits, and base-action paths.
   `a2`.
 - Applied 1TBS function brace placement.
 - Joined the short action signature on one line.
-- Replaced four numeric IDs with existing macros whose values and roles match:
-  `IDS_PRODUCT_TITLE` (`0x2419`), `IDS_COPYRIGHT_PREFIX` (`0x241B`),
+- Applied all eleven approved dialog resource macros. The four existing macros
+  are `IDS_PRODUCT_TITLE` (`0x2419`), `IDS_COPYRIGHT_PREFIX` (`0x241B`),
   `IDS_COPYRIGHT_SUFFIX` (`0x241C`), and `IDS_COPYRIGHT_SEPARATOR` (`0x2424`).
+  The seven newly approved macros are listed in the shared-resource section.
 
 No new source comment was needed. No function, class, member, global, type,
 layout, calling convention, public symbol, declaration order, or source order
@@ -131,18 +133,18 @@ lookups use that virtual expansion-first path.
 The following table records the exact lookup results. `empty` means an existing
 empty string-table slot. `missing` means no matching block or slot.
 
-| ID | Name status and proposed name | Proven purpose | Base `language.dll` | Current `languagex.dll` | Pinned XPack `languagex.dll` |
+| ID | Name status and macro name | Proven purpose | Base `language.dll` | Current `languagex.dll` | Pinned XPack `languagex.dll` |
 | --- | --- | --- | --- | --- | --- |
 | `0x2419` | Existing `IDS_PRODUCT_TITLE` | About-dialog product title. | `Microsoft© Age of Empires™` | `Microsoft® Age of Empires® Expansion:` | `Microsoft© Age of Empires, the Rise of Rome™` |
-| `0x241A` | Request `IDS_PRODUCT_VERSION` | About-dialog version text. | `Version 1.0b` | `Version 1.0` | `Version 1.0` |
+| `0x241A` | Applied `IDS_PRODUCT_VERSION` | About-dialog version text. | `Version 1.0b` | `Version 1.0` | `Version 1.0` |
 | `0x241B` | Existing `IDS_COPYRIGHT_PREFIX` | First copyright segment. | `© & ` | empty | empty |
 | `0x241C` | Existing `IDS_COPYRIGHT_SUFFIX` | Final copyright segment. | `1997 Microsoft Corporation. All rights reserved.` | `1997-1998 Microsoft Corporation. All rights reserved.` | `1998 Microsoft Corporation. All rights reserved.` |
-| `0x241D` | Request `IDS_COPYRIGHT_ENSEMBLE` | Developed by Ensemble Studios text. | `Developed by Ensemble Studios Corp. for Microsoft Corporation.` | empty | empty |
-| `0x241E` | Request `IDS_PRODUCT_ID_LABEL` | Product ID label beside the registry value. | `Product ID:` | empty | empty |
-| `0x241F` | Request `IDS_ABOUT_COPYRIGHT_WARNING` | About-dialog copyright warning text. | See exact records below. | See exact records below. | empty |
-| `0x2420` | Request `IDS_ABOUT_CREDITS_BUTTON` | Credits button caption. | `Credits` | empty | missing |
-| `0x2421` | Request `IDS_ABOUT_CLOSE_BUTTON` | Close button caption. | `Close` | empty | missing |
-| `0x2423` | Request `IDS_GENIE_ENGINE_COPYRIGHT` | Genie engine copyright text. | `Genie engine technology © Copyright 1995, 1996, 1997 by Ensemble Studios Corp. All rights reserved.` | empty | missing |
+| `0x241D` | Applied `IDS_COPYRIGHT_ENSEMBLE` | Developed by Ensemble Studios text. | `Developed by Ensemble Studios Corp. for Microsoft Corporation.` | empty | empty |
+| `0x241E` | Applied `IDS_PRODUCT_ID_LABEL` | Product ID label beside the registry value. | `Product ID:` | empty | empty |
+| `0x241F` | Applied `IDS_ABOUT_COPYRIGHT_WARNING` | About-dialog copyright warning text. | See exact records below. | See exact records below. | empty |
+| `0x2420` | Applied `IDS_ABOUT_CREDITS_BUTTON` | Credits button caption. | `Credits` | empty | missing |
+| `0x2421` | Applied `IDS_ABOUT_CLOSE_BUTTON` | Close button caption. | `Close` | empty | missing |
+| `0x2423` | Applied `IDS_GENIE_ENGINE_COPYRIGHT` | Genie engine copyright text. | `Genie engine technology © Copyright 1995, 1996, 1997 by Ensemble Studios Corp. All rights reserved.` | empty | missing |
 | `0x2424` | Existing `IDS_COPYRIGHT_SEPARATOR` | Selects split or combined copyright layout. | empty | empty | missing |
 
 The exact `0x241F` records are:
@@ -175,8 +177,9 @@ virtual long action(TPanel* fromPanel, long actionIn,
 These names preserve the existing types, order, virtual slot, calling
 convention, and ABI. This worker did not edit the header.
 
-The root owner of `include/resource_ids.h` should review these new cleanup
-macros. They are not recovered original macro names:
+The root owner approved these cleanup macros in commit
+`ea9e4c8f74c8f42512971e615be92cde24539fd5`. They are not recovered original
+macro names:
 
 ```cpp
 #define IDS_PRODUCT_VERSION         0x241A
@@ -188,8 +191,8 @@ macros. They are not recovered original macro names:
 #define IDS_GENIE_ENGINE_COPYRIGHT  0x2423
 ```
 
-Each request has one proven `RT_STRING` role and one resource namespace. The
-source keeps these seven IDs numeric until the shared owner reviews them.
+Each applied definition has one proven `RT_STRING` role and one resource
+namespace. The source now uses all eleven approved dialog resource macros.
 
 ## Code-generation and validation limits
 
