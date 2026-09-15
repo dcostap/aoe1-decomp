@@ -4,14 +4,14 @@
 
 - Module: `src/scr_ach.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `575575b0b6f8e7774bb68d45eedfb0737be8bce7`
+- Final source commit: `cd4f978da5d1e358cc4882dbfb4922574e41686d`
 - Changed files:
   - `src/scr_ach.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_ach.md`
 - Paired header: `include/scr_ach.h`
 - Header owner: slot 11
 
-This cleanup changes names, formatting, one existing resource macro use, and comments.
+This cleanup changes names, formatting, resource macro uses, and comments.
 It does not change types, storage, calls, control flow, or resource values.
 
 ## Scope and source evidence
@@ -109,7 +109,17 @@ The extraction files are:
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/languagex.json`
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/languagex-orig.json`
 
-| ID | Base payload | Call-site purpose | Proposed cleanup name |
+Root approved the resource names and definitions in commit
+`027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+Integration imported only `include/resource_ids.h` in commit `bdb8bc1af`.
+The exact approved header snapshot is:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-91/include/resource_ids.h`
+
+This worker substituted the approved macros in `src/scr_ach.cpp`.
+This worker did not define or edit any header macro.
+
+| ID | Base payload | Call-site purpose | Approved shared macro |
 | --- | --- | --- | --- |
 | `0x03EA` | `X` | Close-button glyph in `create_button` | Existing `IDS_BUTTON_CLOSE` |
 | `0x0C1D` | `Are you sure you want to quit this game?` | Close prompt in `wnd_proc` | `IDS_CONFIRM_QUIT_GAME` |
@@ -153,25 +163,26 @@ The extraction files are:
 | `0x26DC` | `All Artifacts/Ruins.` | Religion statistic | `IDS_ACHIEVEMENTS_ALL_ARTIFACTS_RUINS` |
 
 The payload list proves text and call-site roles.
-It does not prove original macro names.
-Every proposed name except `IDS_BUTTON_CLOSE` is a new cleanup name.
-No proposed name was added in this source-only change.
+It does not prove original developer macro names.
+Every name in this table is a cleanup name.
+`IDS_BUTTON_CLOSE` was already present as a reviewed cleanup name.
+The other names were approved and defined by the root owner.
 
-The source now uses existing `IDS_BUTTON_CLOSE` for `0x03EA`.
-The macro is in `include/resource_ids.h` and expands to `0x03EA`.
+The source uses approved `IDS_BUTTON_CLOSE` for `0x03EA`.
+The macro expands to `0x03EA`.
 Its name is a reviewed cleanup name, not a recovered original macro name.
 
 The source also passes these IDs to `TScreenPanel::setup`:
 
-| ID | Evidence | Status |
+| ID | Evidence | Approved shared macro |
 | --- | --- | --- |
-| `0xC389` | `scr7` layout when `game_status == 1` | Binary `RESFILE` ID; not an `RT_STRING` ID. |
-| `0xC38A` | `scr8` layout when `game_status != 1` | Binary `RESFILE` ID; not an `RT_STRING` ID. |
-| `0xC38D` | `scr10` layout when `end_flag == 0` | Binary `RESFILE` ID; not an `RT_STRING` ID. |
+| `0xC389` | `scr7` layout when `game_status == 1` | `RESID_ACHIEVEMENTS_END_WIN_LAYOUT` |
+| `0xC38A` | `scr8` layout when `game_status != 1` | `RESID_ACHIEVEMENTS_END_OTHER_LAYOUT` |
+| `0xC38D` | `scr10` layout when `end_flag == 0` | `RESID_ACHIEVEMENTS_IN_GAME_LAYOUT` |
 
 `TEasy_Panel::setup` passes these IDs to `RESFILE_load(0x62696E61, ...)`.
-The source keeps the IDs and the load order unchanged.
-No string name is proposed for this binary resource namespace.
+The source keeps the values, arguments, binary type, and load order unchanged.
+The worker uses the approved binary names without adding definitions.
 
 ## Comments and presentation
 
@@ -192,7 +203,7 @@ They did not explain behavior.
 
 The edits do not change function names, classes, members, types, widths, or storage.
 They do not change source order, expressions, calls, branches, or resource values.
-The macro replacement expands to the same unsuffixed integer literal value.
+Each macro expands to the same unsuffixed integer literal value.
 
 Parameter and local names affect debug information, not executable instructions.
 Brace and comment edits can change debug line records.
@@ -213,8 +224,9 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
    This request changes no ABI and no type.
 
 2. **`include/resource_ids.h` — resource-ID owner.**
-   Review the proposed `IDS_*` mappings in the table above.
-   Add one shared definition per base-language ID after owner review.
+   The prior request is resolved by root approval and definitions in
+   `027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+   Integration imported the header in `bdb8bc1af`.
    Do not add a second name for the existing `IDS_BUTTON_CLOSE` mapping.
    The two `Total Score` IDs have distinct call-site roles and need distinct names.
 
@@ -231,6 +243,10 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
   The PDB, packets, executable, DLLs, and extraction files now use them.
 - Root review required compact short handler signatures and calls.
   The source now keeps short calls on one line and aligns remaining continuations.
+- Root approval and definition provenance is `027da42cb19a66cd9d07a7c357ab223034f26cdd`.
+  Header import provenance is `bdb8bc1af`.
+- This worker substituted the approved string and binary resource macros.
+  No header was edited in this correction.
 - Resource payloads, hashes, and conclusions did not change.
 
 ## Validation
