@@ -773,7 +773,7 @@ int RGE_Sprite::get_size(long& xmin, long& ymin, long& xmax,
 }
 
 int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
-                          short& max_y, long frame, long facet)
+                          short& max_y, long facet, long frame)
 {
     char* fname;
 
@@ -803,15 +803,15 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
 
         if ((this->draw_list_num <= 0) || (this->draw_list == 0)) {
             this->get_frame_min_max(min_x, min_y, max_x, max_y,
-                                    frame, facet, 0, 0);
+                                    facet, frame, 0, 0);
         } else {
             for (int i = 0; i < this->draw_list_num; ++i) {
                 if (this->transparent_picking_flag > 0) {
                     this->draw_list[i].sprite->get_frame_min_max(
                         min_x, min_y, max_x, max_y,
-                        (this->draw_list[i].sprite->facet_num * frame) /
+                        (this->draw_list[i].sprite->facet_num * facet) /
                             this->facet_num,
-                        facet,
+                        frame,
                         this->draw_list[i].offset_x,
                         this->draw_list[i].offset_y);
                 }
@@ -833,44 +833,44 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
 }
 
 int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
-                                  short& max_y, long frame, long facet,
+                                  short& max_y, long facet, long frame,
                                   short pic_x, short pic_y)
 {
     int facetindex;
-    long frame_index = facet;
+    long frame_index = frame;
     long calc_min_y;
     long calc_max_y;
     long calc_max_y_value;
 
-    if (facet >= frame_num) {
+    if (frame >= frame_num) {
         frame_index = 0;
     }
 
-    facetindex = get_facetindex(frame, frame_index, calc_min_y);
-    if (get_size(frame, calc_max_y, facet, calc_max_y_value, calc_min_y) == 0) {
+    facetindex = get_facetindex(facet, frame_index, calc_min_y);
+    if (get_size(facet, calc_max_y, frame, calc_max_y_value, calc_min_y) == 0) {
         return 0;
     }
 
     if (facetindex != 0) {
         int swap_temp;
-        swap_temp = -frame;
-        frame = -facet;
-        facet = swap_temp;
+        swap_temp = -facet;
+        facet = -frame;
+        frame = swap_temp;
     }
 
-    frame += pic_x;
     facet += pic_x;
+    frame += pic_x;
     calc_max_y += pic_y;
     calc_max_y_value += pic_y;
 
-    if (frame < min_x) {
-        min_x = (short)frame;
+    if (facet < min_x) {
+        min_x = (short)facet;
     }
     if (calc_max_y < min_y) {
         min_y = (short)calc_max_y;
     }
-    if (facet > max_x) {
-        max_x = (short)facet;
+    if (frame > max_x) {
+        max_x = (short)frame;
     }
     if (calc_max_y_value > max_y) {
         max_y = (short)calc_max_y_value;
