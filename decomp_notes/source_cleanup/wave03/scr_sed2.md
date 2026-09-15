@@ -56,16 +56,17 @@ force a new declaration or merge any storage slots.
 
 ## Constants, resources, comments, and formatting
 
-The source now uses existing `TPanel::PositionMode` names from
-`include/panel.h`:
+The source retains the baseline `TPanel::PositionMode` casts at all 13
+positioning calls. The baseline expressions are:
 
-- `PositionLeftTop` retains value `7`.
-- `PositionLeftBottom` retains value `8`.
-- `PositionRightTop` retains value `9`.
-- `PositionRightBottom` retains value `10`.
+- `static_cast<TPanel::PositionMode>(7)` for left-top positioning.
+- `static_cast<TPanel::PositionMode>(8)` for left-bottom positioning.
+- `static_cast<TPanel::PositionMode>(9)` for right-top positioning.
+- `static_cast<TPanel::PositionMode>(10)` for right-bottom positioning.
 
-The old casts to these enum values were replaced only by their established
-symbols. Their type, value, call order, and panel arguments remain unchanged.
+All 13 baseline casts remain. No enum substitution remains. Follow-up commit
+`e763d0635fd57058de43f03b04ff46317fb54131` records their restoration. No
+other source content changed in that correction.
 
 No resource ID was changed. The source keeps all numeric resource and help
 IDs, including the `0x2775` and `0x277B` file-list entries, the contiguous
