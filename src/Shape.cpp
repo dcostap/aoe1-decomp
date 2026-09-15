@@ -204,8 +204,7 @@ long TShape::shape_count() {
     return this->head->shape_num;
 }
 
-byte TShape::shape_minmax(long& x_min, long& y_min,
-                          long& x_max, long& y_max, long shape_num) {
+byte TShape::shape_minmax(long& x_min, long& y_min, long& x_max, long& y_max, long shape_num) {
     if (shape_num >= 0) {
         if (!Check_shape(shape_num, "RGL_shape_minxy")) {
             if (FShape != 0) {
@@ -391,8 +390,7 @@ byte TShape::shape_check(long check_x, long check_y, long shape_num) {
     return 0;
 }
 
-byte TShape::shape_draw(TDrawArea* drawarea, long x, long y, long shape_num,
-                        byte flags, byte* color_table) {
+byte TShape::shape_draw(TDrawArea* drawarea, long x, long y, long shape_num, byte flags, byte* color_table) {
     long shape_y1;
     byte ret_num = 0;
     long clip_y0;
@@ -538,8 +536,7 @@ byte TShape::shape_draw(TDrawArea* drawarea, long x, long y, long shape_num,
     return ret_num;
 }
 
-byte TShape::shape_draw_unclipped(TDrawArea* drawarea, long shape_x0,
-                                  long shape_y0, long shape_num) {
+byte TShape::shape_draw_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num) {
     Shape_Header* sh = this->shape_header;
     int height = sh->ymax - sh->ymin + 1;
     byte* p = (byte*)(sh + 1);
@@ -591,9 +588,7 @@ byte TShape::shape_draw_unclipped(TDrawArea* drawarea, long shape_x0,
     return 1;
 }
 
-byte TShape::shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0,
-                                         long shape_y0, long shape_num,
-                                         byte* color_table) {
+byte TShape::shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, byte* color_table) {
     Shape_Header* hdr = this->shape_header;
     long height = (hdr->ymax - hdr->ymin) + 1;
     byte* src = (byte*)(hdr + 1);
@@ -652,8 +647,7 @@ byte TShape::shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0,
     return 1;
 }
 
-byte TShape::shape_shadow_unclipped(TDrawArea* drawarea, long shape_x0,
-                                    long shape_y0, byte* color_table) {
+byte TShape::shape_shadow_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, byte* color_table) {
     Shape_Header* sh = shape_header;
     byte* p = (byte*)(sh + 1);
     long height = sh->ymax - sh->ymin + 1;
@@ -1276,8 +1270,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* drawarea, long shape_x0,
     return 1;
 }
 
-byte TShape::shape_mirror(TDrawArea* drawarea, long x, long y,
-                          long shape_num, byte flags, byte* color_table) {
+byte TShape::shape_mirror(TDrawArea* drawarea, long x, long y, long shape_num, byte flags, byte* color_table) {
     byte ret_num;
     long shape_y1;
     long shape_x1;
@@ -1423,8 +1416,7 @@ byte TShape::shape_mirror(TDrawArea* drawarea, long x, long y,
     return ret_num;
 }
 
-byte TShape::shape_mirror_unclipped(TDrawArea* drawarea, long shape_x1,
-                                    long shape_y0) {
+byte TShape::shape_mirror_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0) {
     long pitch = drawarea->AlignedWidth() * drawarea->Orien;
     Shape_Header* sh = this->shape_header;
     long height = sh->ymax - sh->ymin + 1;
@@ -1534,8 +1526,7 @@ byte TShape::shape_mirror_color_trans_unclipped(
     return 1;
 }
 
-byte TShape::shape_mirror_shadow_unclipped(TDrawArea* drawarea, long shape_x1,
-                                           long shape_y0, byte* color_table) {
+byte TShape::shape_mirror_shadow_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0, byte* color_table) {
     long pitch = drawarea->AlignedWidth() * drawarea->Orien;
 
     Shape_Header* hdr = this->shape_header;
@@ -2208,8 +2199,7 @@ byte TShape::shape_mirror_shadow_clipped(
     return 1;
 }
 
-byte TShape::shape_dither(TDrawArea* drawarea, long x, long y, long shape_num,
-                          long dx, long dy) {
+byte TShape::shape_dither(TDrawArea* drawarea, long x, long y, long shape_num, long dx, long dy) {
     long clip_y1;
     tagRECT rect;
 
@@ -2263,8 +2253,7 @@ byte TShape::shape_dither(TDrawArea* drawarea, long x, long y, long shape_num,
     return 0;
 }
 
-byte TShape::shape_dithered_unclipped(TDrawArea* drawarea, long shape_x0,
-                                      long shape_y0, long dx, long dy) {
+byte TShape::shape_dithered_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long dx, long dy) {
     long orientation = drawarea->Orien;
     long width = drawarea->AlignedWidth() * orientation;
     Shape_Header* header = this->shape_header;
