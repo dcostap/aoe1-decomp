@@ -81,9 +81,9 @@ an existing `else` brace to its preceding brace.
 ## Code-generation risks and unresolved issues
 
 Parameter and local renames do not change an ABI symbol, type, storage,
-control flow, field offset, or call target. The enum replacements keep the
-original enum values and parameter type. Formatting changes can change debug
-line records, but this file has no `__LINE__` or `__FILE__` use.
+control flow, field offset, or call target. The restored casts retain the
+baseline source form and type. Formatting changes can change debug line
+records, but this file has no `__LINE__` or `__FILE__` use.
 
 The existing source-recovery note still records `004AE070` as the only
 non-exact normal owner. Its unresolved VC5 merge and local-home permutation
@@ -114,3 +114,9 @@ Evidence for these requests is the procedure-scoped PDB record at each VA in
 
 Compilation, matching, audits, and tests were not run. No compiler, build,
 matching, audit, test, or game command was run for this assignment.
+
+## Correction history
+
+- Source cleanup: `990afb1a237c12b38a9b88ccbf3bd0d56f7c5bb1`
+- Baseline cast restoration: `e763d0635fd57058de43f03b04ff46317fb54131`
+- Report correction: recorded in the follow-up commit after the cast restore.
