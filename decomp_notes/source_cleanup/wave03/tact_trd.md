@@ -5,7 +5,7 @@
 - Module: `src/tact_trd.cpp`
 - Report: `decomp_notes/source_cleanup/wave03/tact_trd.md`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `d7f5d31435be8208d738804a257970bdca27ab3c`
+- Final source commit: `c33bc0d25a7640f45e242b86f40f886da538ad00`
 - Changed files: the two paths above only.
 - Header read but not changed: `include/tact_trd.h`
 
