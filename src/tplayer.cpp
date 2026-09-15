@@ -69,8 +69,7 @@ static char tplayerDifficultyMessage[] = "Difficulty: %d";
 
 
 TRIBE_Player::TRIBE_Player(int infile, TRIBE_World* gworld, unsigned char this_id)
-    : RGE_Player(infile, gworld, this_id), playerAI(0)
-{
+    : RGE_Player(infile, gworld, this_id), playerAI(0) {
     rge_read(infile, &this->type, 1);
     rge_read(infile, &this->update_count, 4);
     rge_read(infile, &this->updateCountNeedHelp, 4);
@@ -118,8 +117,7 @@ TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
                            unsigned char m_player_id, unsigned char computerPlayer,
                            unsigned char flag, char* buildListName, char* cityPlanName,
                            char* ruleSetName)
-    : RGE_Player(gworld, prototype, this_id, new_name, m_player_id, 0), playerAI(0)
-{
+    : RGE_Player(gworld, prototype, this_id, new_name, m_player_id, 0), playerAI(0) {
     this->VR_List = new Visible_Resource_Manager(this, 5);
 
     if (computerPlayer == 0) {
@@ -169,8 +167,7 @@ TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
 
 
 
-TRIBE_Player::~TRIBE_Player()
-{
+TRIBE_Player::~TRIBE_Player() {
     if (tech_tree != 0) {
         delete tech_tree;
         tech_tree = 0;
@@ -189,8 +186,7 @@ TRIBE_Player::~TRIBE_Player()
 
 
 
-RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle)
-{
+RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y, float world_z, short master_id, unsigned char state, float new_angle) {
     RGE_Static_Object* obj = 0;
     RGE_Master_Static_Object* type = this->master_objects[master_id];
     if (type) {
@@ -221,8 +217,7 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float world_x, float world_y,
 
 
 
-void TRIBE_Player::save(int outfile)
-{
+void TRIBE_Player::save(int outfile) {
     int temp;
     color_log(0x16, 0x16, 2);
     temp = outfile;
@@ -256,8 +251,7 @@ void TRIBE_Player::save(int outfile)
 
 
 
-void TRIBE_Player::update()
-{
+void TRIBE_Player::update() {
     this->update_time += this->world->world_time_delta_seconds;
     while (this->update_time > 1.0f) {
         this->update_time -= 1.0f;
@@ -325,8 +319,7 @@ void TRIBE_Player::scenario_save(int outfile) {
 }
 
 
-void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version)
-{
+void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version) {
     TRIBE_Player_Tech* tech;
     int i;
     RGE_Master_Static_Object* obj;
@@ -381,8 +374,7 @@ void TRIBE_Player::scenario_load(int infile, long* player_id_hash, float version
 }
 
 
-void TRIBE_Player::load(int infile)
-{
+void TRIBE_Player::load(int infile) {
     rge_read(infile, &this->master_object_num, 2);
     short count = this->master_object_num;
     if (count > 0) {
@@ -452,8 +444,7 @@ void TRIBE_Player::tech_cost(short tech_id, short& inv_1, short& inv_amt_1,
 
 void TRIBE_Player::obj_cost(short obj_id, char** name, short& inv_1,
                              short& inv_amt_1, short& inv_2, short& inv_amt_2,
-                             short& inv_3, short& inv_amt_3, float modifier)
-{
+                             short& inv_3, short& inv_amt_3, float modifier) {
     short avail;
     short* amount_output;
     short total = 0;
@@ -531,8 +522,7 @@ done_total:
 }
 
 
-RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after_obj)
-{
+RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after_obj) {
     if (after_obj != 0) {
         int found = 0;
         RGE_Object_Node* node = this->objects->list;
@@ -562,8 +552,7 @@ RGE_Static_Object* TRIBE_Player::find_obj(short obj_id, RGE_Static_Object* after
 }
 
 
-RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, float z, int build_all_the_way)
-{
+RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, float z, int build_all_the_way) {
     RGE_Static_Object* object = RGE_Player::make_new_object(obj_id, x, y, z, build_all_the_way);
     if (object != 0) {
         if (build_all_the_way != 0) {
@@ -581,8 +570,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
 }
 
 
-void TRIBE_Player::interface_tech_avail(Item_Avail** list, short* list_num, short obj_cat)
-{
+void TRIBE_Player::interface_tech_avail(Item_Avail** list, short* list_num, short obj_cat) {
     short count = 0;
     short inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3;
     Tech_Tree* base_tech = static_cast<TRIBE_World*>(this->world)->tech->tech_tree;
@@ -645,8 +633,7 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** list, short* list_num, shor
 
 
 
-void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, short obj_cat)
-{
+void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, short obj_cat) {
     short tribe_flag = 0;
     short count = 0;
     short inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3;
@@ -721,8 +708,7 @@ void TRIBE_Player::interface_item_avail(Item_Avail** list, short* list_num, shor
 
 
 void TRIBE_Player::interface_trade_avail(Trade_Avail** list,
-                                          short* list_num)
-{
+                                          short* list_num) {
     int i = 1;
     int dock_count = 0;
     RGE_Static_Object* dock_list[96];
@@ -800,8 +786,7 @@ unsigned char TRIBE_Player::command_make_building(short obj_id, float x, float y
 
 
 unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1,
-                                               long x2, long y2)
-{
+                                               long x2, long y2) {
     short list_num;
     RGE_Static_Object** list;
 
@@ -927,8 +912,7 @@ unsigned char TRIBE_Player::command_building_make_obj(short obj_id) {
 
 
 
-unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj)
-{
+unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     short list_num;
     RGE_Static_Object** list;
     if (!(((obj->owner == this || this->isAlly(obj->owner->id)) &&
@@ -971,8 +955,7 @@ unsigned char TRIBE_Player::command_make_unload(float x, float y) {
 
 
 unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed,
-                                             float modifier, int ignore_pop)
-{
+                                             float modifier, int ignore_pop) {
     float population = this->attributes[3];
     if (attribute_needed != 0) *attribute_needed = static_cast<short>(-1);
     bool population_available;
@@ -1018,8 +1001,7 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* attribute_needed
 }
 
 
-unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignore_pop)
-{
+unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignore_pop) {
     if (check_obj_cost(obj_id, 0, modifier, ignore_pop)) {
         RGE_Master_Static_Object* object = this->master_objects[obj_id];
         TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
@@ -1042,8 +1024,7 @@ unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float modifier, int ignor
 }
 
 
-void TRIBE_Player::reimburse_obj_cost(short obj_id)
-{
+void TRIBE_Player::reimburse_obj_cost(short obj_id) {
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
     if (object->master_type < 0x46) return;
@@ -1059,27 +1040,23 @@ void TRIBE_Player::reimburse_obj_cost(short obj_id)
 }
 
 
-unsigned char TRIBE_Player::check_tech_cost(short tech_id, short* attribute_needed)
-{
+unsigned char TRIBE_Player::check_tech_cost(short tech_id, short* attribute_needed) {
     return this->tech_tree->check_tech_cost(tech_id, attribute_needed);
 }
 
 
-unsigned char TRIBE_Player::pay_tech_cost(short tech_id)
-{
+unsigned char TRIBE_Player::pay_tech_cost(short tech_id) {
     return this->tech_tree->start_research(tech_id, 1, 0);
 }
 
 
-void TRIBE_Player::tech_abling(long tech_id, unsigned char able_flag)
-{
+void TRIBE_Player::tech_abling(long tech_id, unsigned char able_flag) {
     if (able_flag != 0) this->tech_tree->enable(static_cast<short>(tech_id));
     else this->tech_tree->disable(static_cast<short>(tech_id));
 }
 
 
-void TRIBE_Player::rev_tech(long age)
-{
+void TRIBE_Player::rev_tech(long age) {
     switch (age) {
     case 0x19:
         this->tech_tree->do_tech(static_cast<short>(this->attributes[25]));
@@ -1131,8 +1108,7 @@ void TRIBE_Player::add_population_entry() {
 
 
 
-void TRIBE_Player::random_start()
-{
+void TRIBE_Player::random_start() {
     uchar found_ally = 0;
 
     if (this->objects->list == 0) {
@@ -1258,8 +1234,7 @@ void TRIBE_Player::objectCost(int id, int unused1, ResourceItem* ri, int unused2
 }
 
 
-int TRIBE_Player::objectCostByType(int id)
-{
+int TRIBE_Player::objectCostByType(int id) {
     short inv_3;
     short inv_amt_1;
     short inv_2;
@@ -1332,8 +1307,7 @@ void TRIBE_Player::changeToComputerPlayer() {}
 
 
 
-char* TRIBE_Player::aiStatus(int sNum)
-{
+char* TRIBE_Player::aiStatus(int sNum) {
     if (this->playerAI == 0) {
         if (this->world->currentUpdateComputerPlayer != -1) {
             RGE_Player* otherPlayer = this->world->players[this->world->currentUpdateComputerPlayer];
@@ -1477,8 +1451,7 @@ int TRIBE_Player::sendAICommand(int caller, int mType, int p1, int p2, int p3) {
 }
 
 
-RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* obj, int sleepFlag, int dopple_flag)
-{
+RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* obj, int sleepFlag, int dopple_flag) {
     RGE_Object_Node* node = RGE_Player::addObject(obj, sleepFlag, dopple_flag);
     if (obj->master_obj->object_group == 0x0B) {
         return node;
@@ -1513,8 +1486,7 @@ void TRIBE_Player::removeObject(RGE_Static_Object* obj, int sleepFlag, int doppl
 
 
 
-void TRIBE_Player::buildObject(int bi, int oi, float x, float y, int ui)
-{
+void TRIBE_Player::buildObject(int bi, int oi, float x, float y, int ui) {
     int* objectId = static_cast<int*>(calloc(1, 4));
     *objectId = bi;
     static_cast<TRIBE_Command*>(this->world->commands)->command_build(this->id, objectId, 1, oi, x, y, ui);
@@ -1614,8 +1586,7 @@ void TRIBE_Player::setDiplomaticStance(int playerNum, int rType) {
 }
 
 
-void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int mapType)
-{
+void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int mapType) {
     char noneString[256];
     char randomString[256];
     char ruleSetName[256];
@@ -1731,8 +1702,7 @@ extern int global_save_debug_random_on4;
 
 
 void TRIBE_Player::notify(int caller, int recipient, int mType,
-                          long p1, long p2, long p3)
-{
+                          long p1, long p2, long p3) {
     RGE_Static_Object* attackingObject;
     switch (mType) {
     case 0x201:
@@ -1779,8 +1749,7 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
 
 
 
-void TRIBE_Player::notifyAI(int callerID, int recipientID, int mType, long p1, long p2, long p3)
-{
+void TRIBE_Player::notifyAI(int callerID, int recipientID, int mType, long p1, long p2, long p3) {
     RGE_Static_Object* obj = this->world->object(callerID);
     if (mType != 0x20a && mType != 0x72 && mType != 0x74) {
         if (obj == 0) return;
@@ -1841,8 +1810,7 @@ int TRIBE_Player::intelligentCivSelection(int mapType, int gameType, int mapSize
 
 
 void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
-                                                         int mapType, int gameType, int mapSize)
-{
+                                                         int mapType, int gameType, int mapSize) {
     int difficultyLevel;
     int gameDifficulty;
     int buildLists[125];
@@ -2485,8 +2453,7 @@ selectedCountersDone:
 
 
 
-void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Egyptians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2527,8 +2494,7 @@ void TRIBE_Player::setupEgyptian(int* b, int mapType, int gameType, int mapSize)
 
 
 
-void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Greeks.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2570,8 +2536,7 @@ void TRIBE_Player::setupGreek(int* b, int mapType, int gameType, int mapSize)
 
 
 
-void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Babylonians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2609,8 +2574,7 @@ void TRIBE_Player::setupBabylonian(int* b, int mapType, int gameType, int mapSiz
 
 
 
-void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupAssyrian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Assyrians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2695,8 +2659,7 @@ void TRIBE_Player::setupMinoan(int* b, int mapType, int gameType, int mapSize) {
 
 
 
-void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Hittites.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2737,8 +2700,7 @@ void TRIBE_Player::setupHittite(int* b, int mapType, int gameType, int mapSize)
 
 
 
-void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupPhoenician(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Phoenicians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2818,8 +2780,7 @@ void TRIBE_Player::setupSumerian(int* b, int mapType, int gameType, int mapSize)
 
 
 
-void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Persians.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2860,8 +2821,7 @@ void TRIBE_Player::setupPersian(int* b, int mapType, int gameType, int mapSize)
 }
 
 
-void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Shang.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2903,8 +2863,7 @@ void TRIBE_Player::setupShang(int* b, int mapType, int gameType, int mapSize)
 
 
 
-void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupYamato(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Yamato.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -2993,8 +2952,7 @@ void TRIBE_Player::setupChoson(int* b, int mapType, int gameType, int mapSize) {
 
 
 
-void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupRoman(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Roman.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -3078,8 +3036,7 @@ void TRIBE_Player::setupCarthaginian(int* b, int mapType, int gameType, int mapS
 
 
 
-void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Palmyran.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -3122,8 +3079,7 @@ void TRIBE_Player::setupPalmyran(int* b, int mapType, int gameType, int mapSize)
 
 
 
-void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSize)
-{
+void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSize) {
     this->playerAI->logCommonHistory("Setting up as Macedonian.");
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 1) {
@@ -3163,8 +3119,7 @@ void TRIBE_Player::setupMacedonian(int* b, int mapType, int gameType, int mapSiz
 
 
 
-void TRIBE_Player::logStatus(FILE* out, int firstTime)
-{
+void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     char tempString[256];
     if (out == 0)
         return;
@@ -3222,8 +3177,7 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime)
 }
 
 
-void TRIBE_Player::trackUnitGather(int unitID, int attributeID, int amount)
-{
+void TRIBE_Player::trackUnitGather(int unitID, int attributeID, int amount) {
     if (!this->playerAI)
         return;
 
@@ -3231,8 +3185,7 @@ void TRIBE_Player::trackUnitGather(int unitID, int attributeID, int amount)
 }
 
 
-void TRIBE_Player::get_achievement(unsigned char achievement, char* info)
-{
+void TRIBE_Player::get_achievement(unsigned char achievement, char* info) {
     switch (achievement) {
     case 0:
         strcpy(info, name);
@@ -3291,8 +3244,7 @@ void TRIBE_Player::add_attribute_num(short attribute, float amount, unsigned cha
 }
 
 
-void TRIBE_Player::analyize_selected_objects()
-{
+void TRIBE_Player::analyize_selected_objects() {
     int i = 0;
     tplayer_globals::selectedObjectCount = 0;
     this->sel_object_properties = 0;
@@ -3337,8 +3289,7 @@ void TRIBE_Player::analyize_selected_objects()
 
 
 
-int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& text_id)
-{
+int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& text_id) {
     int ObjectType;
     int ObjPlayer;
     RGE_Static_Object* thisObj;
@@ -3567,8 +3518,7 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int Obj_id, int& newFacet, int& 
 
 
 TRIBE_Gaia::TRIBE_Gaia(int infile, TRIBE_World* gworld, unsigned char this_id)
-    : TRIBE_Player(infile, gworld, this_id)
-{
+    : TRIBE_Player(infile, gworld, this_id) {
     this->type = 2;
     rge_read(infile, &update_time, 4);
     rge_read(infile, &update_nature, 4);
@@ -3579,8 +3529,7 @@ TRIBE_Gaia::TRIBE_Gaia(int infile, TRIBE_World* gworld, unsigned char this_id)
 
 TRIBE_Gaia::TRIBE_Gaia(TRIBE_World* gworld, RGE_Master_Player* prototype,
                         unsigned char this_id, char* new_name, unsigned char m_player_id)
-    : TRIBE_Player(gworld, prototype, this_id, new_name, m_player_id, 0, 1, 0, 0, 0)
-{
+    : TRIBE_Player(gworld, prototype, this_id, new_name, m_player_id, 0, 1, 0, 0, 0) {
     this->type = 2;
     this->update_time = 0.0f;
     this->update_nature = 0x1D;
