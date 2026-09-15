@@ -120,6 +120,9 @@ The earlier three failures remain. The newly compiled `taiinfmd` adds `004E1260 
 That row also had prior state `UNKNOWN`. Root resumed the original worker for preserved-baseline comparison.
 Job `bg-77` reruns ownership against this fully compiled report, with output `owners-r2.json` and `owners-r2.txt`.
 The compilation failures are resolved in this run; matching and linked failures are not resolved.
+Ownership job `bg-77` completed with exit 0 across 4,965 normal functions.
+It found zero owner mismatches and zero class/free mismatches. Its repair queue still contains four entries.
+This establishes the reported ownership checks, not matching equality or gameplay correctness.
 
 ## First function sweep
 
