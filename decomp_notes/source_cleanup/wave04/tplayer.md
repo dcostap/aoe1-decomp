@@ -25,6 +25,7 @@ Source blob hashes:
 - Common-base source: `bd436aa1bd57a02ca1c26ab69a5e3ce63aced680`.
 - Initial cleaned source: `31f7862b3b78d76f7fa056bcee982c71d958d1ba`.
 - Corrected source after the approved resource substitutions: `ba4edddfdcb7925b51576dbf574f1abd2e2150d1`.
+- Corrected source after the constructor binding repair: `8cc2075d9a8cee67cc64cc4cc88268b124ebdc3b`.
 
 The initial cleanup recovered evidence-supported names for AI, command, cost, scenario,
 mouse, Gaia, and civilization setup code. It also recorded the proposed resource names
@@ -74,6 +75,18 @@ The prior `IDS_CIVILIZATION_NAME_BASE` and `IDS_BUILD_LIST_NAME_BASE` requests a
 The `0x27F6` arithmetic and `0x26930` arithmetic remain numeric due to the proved limitations.
 The civilization arithmetic does not provide one complete expansion mapping, and the
 checked files do not prove the missing build-list payloads under an unchecked `STRING=` override.
+
+## Post-cleanup validation repair
+
+Fresh main reported `C2039` at `src/tplayer.cpp:164`. The constructor parameter is
+now named `gworld`, so `world->tech` binds to the `RGE_Game_World` member instead.
+The pre-cleanup source at `6d46835cdc6e31ba879a2e6e31415327a7c7e341` uses the
+constructor parameter for this expression. The source now restores that binding as
+`gworld->tech`.
+
+This repair adds no cast, type, scope, control-flow statement, declaration, or other change.
+The external report path is
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
 
 ## Complete resource evidence
 
@@ -202,5 +215,7 @@ temporary. The source keeps existing types, scopes, and declarations for those c
 - Follow-up resource correction: parent `e35426b10aa87044da20b21f20c7e76395526fdc`.
   It uses `IDS_FILE_NONE` and `IDS_AI_FILE_RANDOM` at the two direct call sites.
   It leaves the `0x27F6` and `0x26930` arithmetic numeric.
+- Constructor binding repair: parent `ae634017a848d8b8af7ffdc892da0311e1971f0c`.
+  It restores `gworld->tech` from the pre-cleanup constructor binding.
 
 No build, compiler check, matching check, audit, test, or game run was performed.
