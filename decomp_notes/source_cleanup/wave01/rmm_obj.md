@@ -3,7 +3,7 @@
 - Module: `src/rmm_obj.cpp`
 - Branch: `cleanup/staging-20260915-17`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final code commit: `4dc6a43d1100249b8a163032741960915621c844`
+- Final code commit: `b9a37e53f1f21a8f64eb63265f682e27ecbb3ccf`
 - Assigned header: `include/rmm_obj.h` (read only; not changed)
 - Registry: `config/functions/src/rmm_obj.cpp.json`
 - PDB source: `C:\\msdev\\work\\age1_x1\\rmm_obj.cpp`
@@ -72,6 +72,22 @@ safe.
   used as a byte-equality claim.
 
 ## Validation and limits
+
+### Root correction round
+
+The initial code commit was `4dc6a43d1100249b8a163032741960915621c844`.
+The initial report commit was `757bf42faddb317b8252f91e2f662e536388f5cf`.
+Root review found that the zone comparison had lost the baseline cast. The
+source correction commit is `b9a37e53f1f21a8f64eb63265f682e27ecbb3ccf`.
+It restores the exact expression:
+
+```cpp
+if ((unsigned char)land_zone == ...)
+```
+
+I inspected the full source diff against the assigned base. I found no other
+non-name or non-format token changes. The source keeps the baseline casts,
+expressions, calls, constants, and ordering.
 
 I reviewed the complete Git diff and ran `git diff --check`.
 
