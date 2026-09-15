@@ -202,3 +202,17 @@ That unassigned module remains unchanged. Defer its definition and substitution 
 Owner 18 delivered `3ba4a0385a2999f516bde496c45d3c93dae55806`.
 Root saved its complete 3,093-line diff as `build/source-cleanup-20260915/owner18-review.diff`.
 Root review remains pending. No validation ran.
+
+## Owner 12: integrated after correction review
+
+Root read the complete correction diff for `6a338e77223b49f7f9b9295bf0b58dadce8086d9`.
+Only two existing `else` clauses changed line placement; the report and ledger record that correction.
+Root merged the group as `784095d9739266e5e892e374dd129a22b1968d6e`.
+Main now contains 72 assigned wave modules, plus the earlier pilot. All remain unvalidated.
+
+Owner 10 resumed with its original workers for resource substitutions, precise reused-home evidence, and focused presentation corrections.
+Its shared resource commit is `8c56055b7feee1526f296bd306036a4c34f38041`.
+
+Owner 19 delivered `fea021a8b9836eb0fc357a5a210041828162a328`.
+Root saved its complete 3,182-line diff as `build/source-cleanup-20260915/owner19-review.diff`.
+Root review remains pending. Its resource requests include competing names for `0x2C24`; no new definition is approved yet.
