@@ -18,7 +18,7 @@ source order.
 The name source is the procedure-scoped PDB inventory:
 
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
-- SHA-256: `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff033b`
+- SHA-256: `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`
 - PDB source path: `C:\msdev\work\age1_x1\airchmod.cpp`
 - PDB object module: `.\\Release\\airchmod.obj`
 
