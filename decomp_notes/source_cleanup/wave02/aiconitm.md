@@ -5,9 +5,12 @@
 - Module: `src/aiconitm.cpp`
 - Slot and branch: 50, `cleanup/staging-20260915-50`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `f6db0125c423506bff5f30ce20f5337d9a56fd88`
+- Initial source commit: `f6db0125c423506bff5f30ce20f5337d9a56fd88`
+- Correction commit: `151a911e1acea79628f543738fd3c393d7815eba`
+- Final source commit: `151a911e1acea79628f543738fd3c393d7815eba`
 - Changed files: `src/aiconitm.cpp`, this report
-- The source commit contains only the assigned source file. The report is committed separately.
+- The source commits contain only the assigned source file. The report is committed separately.
+- The correction joins each two-parameter operator definition onto one line. It changes formatting only.
 
 ## Cleanup
 
