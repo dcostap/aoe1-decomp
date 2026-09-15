@@ -1,5 +1,13 @@
 # Cleanup wave 04 root review
 
+## Owner 26: correction review started
+
+Corrected head: `37a917a6b19236131e49d91da7384d5f8bed1f4c`.
+The complete 780-line correction diff is `build/source-cleanup-20260915/owner26-corrections.diff`.
+Original reviewer `sa-e6faf4c1` resumed to check both structural corrections, resource substitutions, and changed reports.
+The review retains numeric age/resource expressions, victory-log base, and direct map IDs where substitutions were deferred.
+The group remains unmerged. Full validation must wait for all cleanup work to finish.
+
 ## Final validation authorization
 
 The user authorized compilation, matching-state checks, and all tests after all cleanup work finishes.
