@@ -6,10 +6,19 @@
 - Paired header: `include/scr_trb.h` (owned by owner 11)
 - Exact base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Final source commit: `6ced4d26dd1c9bf873c58ba8649f46971dea79b6`
+- Reviewed report head before correction: `a5909d1b9ce46a9006aa5297e47fc6cfc8ec4f90`
+- Final full delivery hash before this report amendment: `9ddbb8ae246de4fa28b04f55d514443f264c2ff3`
 - Changed files in this delivery:
   - `src/scr_trb.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_trb.md`
 - The report is committed after the source commit above.
+
+## Correction history
+
+- `6ced4d26dd1c9bf873c58ba8649f46971dea79b6`: source cleanup commit.
+- `a5909d1b9ce46a9006aa5297e47fc6cfc8ec4f90`: reviewed report head before this correction.
+- `9ddbb8ae246de4fa28b04f55d514443f264c2ff3`: correction commit with the source and report fixes.
+- This report amendment creates a newer final head. The delivery response records that full head.
 
 ## Evidence inspected
 
@@ -75,8 +84,7 @@ No invented names were added. The constructor's existing `width`, `backgroundPan
 Owner 11 should update `include/scr_trb.h` parameter names without changing any type or ABI:
 
 ```cpp
-virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1,
-                    unsigned long a2);
+virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 void fillTribeText(int t);
 char* tribeName(int i);
 ```

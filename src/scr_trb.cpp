@@ -7,8 +7,7 @@
 #include "../include/basegame.h"
 
 TribeSelectTribeScreen::TribeSelectTribeScreen()
-    : TScreenPanel("Select Tribe Screen")
-{
+    : TScreenPanel("Select Tribe Screen") {
     char backgroundName[10];
     TPanel* tabList[10];
     RGE_Font* font;
