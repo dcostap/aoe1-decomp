@@ -12,36 +12,35 @@ class ConstructionItem;
 
 class TribeBuildAIModule : public BuildAIModule {
 public:
-    TribeBuildAIModule(void* owner, int player);
-    TribeBuildAIModule(int file, int player);
+    TribeBuildAIModule(void* pW, int pID);
+    TribeBuildAIModule(int pID, int infile);
     virtual ~TribeBuildAIModule();
-    virtual int loadBuildList(char* filename, RGE_Player* player);
+    virtual int loadBuildList(char* lName, RGE_Player* player);
     virtual int numberBuiltOrInProgressItemsOfType(int type, int category);
 
-    void setMainDecisionAI(TribeMainDecisionAIModule* value);
+    void setMainDecisionAI(TribeMainDecisionAIModule* m);
     void initialize();
     void skipNextBuildListItem();
     BuildItem* nextBuildableItem(int category);
     int nextBuildListItemCategory();
     int blockingResource();
-    int mostNeededResource(ResourceItem& item, int maxCount);
-    int isAgeResearch(int type);
-    int insert(int type, int count, int index);
-    int insertResearch(int research, int index);
-    int insertGathererPercentage(int index, int percentage, int bronzeAgeIndex);
-    int addItem(RGE_Static_Object* object, int flag);
-    int addBuiltItem(RGE_Static_Object* object, int id);
+    int mostNeededResource(ResourceItem& itemCost, int countNum);
+    int isAgeResearch(int rID);
+    int insert(int typeID, int buildCap, int insertionPoint);
+    int insertResearch(int typeID, int insertionPoint);
+    int insertGathererPercentage(int rType, int percentage, int insertionPoint);
+    int addItem(RGE_Static_Object* newItem, int gameStarted);
+    int addBuiltItem(RGE_Static_Object* newItem, int buildID);
     int removeBuiltItem(int id);
-    int cancelBuildItem(int action, int objectID, int objectTypeID,
-                        float x, float y, int uniqueBuildID, int taskID);
-    int addTrainedUnit(int param1, int param2, int param3, int param4);
-    int cancelTrainUnit(int param1, int param2, int param3, int param4);
-    int addResearch(int param1, int param2, int param3);
-    int cancelResearch(int param1, int param2, int param3, int param4);
-    int readyToResearch(int param1, int param2);
-    void unskipBuildList(int limit67, int limit44);
-    BuildItem* buildItem(int type, int category1, int category2);
-    int allBuilt(int param1, int param2);
+    int cancelBuildItem(int reason, int blockerID, int blockerType, float x, float y, int uniqueID, int builderID);
+    int addTrainedUnit(int uType, int location, int uniqueID, int gameID);
+    int cancelTrainUnit(int reason, int uType, int location, int uniqueID);
+    int addResearch(int uType, int location, int uniqueID);
+    int cancelResearch(int reason, int rType, int location, int uniqueID);
+    int readyToResearch(int id, int ageResearch);
+    void unskipBuildList(int builtSP, int builtG);
+    BuildItem* buildItem(int typeID, int category1, int category2);
+    int allBuilt(int category1, int category2);
 
 protected:
     // pointer at +0x5BC.

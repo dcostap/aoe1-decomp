@@ -7,10 +7,10 @@
 class TribeAIPlayBook : public AIPlayBook {
 public:
     virtual ~TribeAIPlayBook();
-    virtual int convertTargetNameToIntType(char* name) const;
-    virtual int convertTargetCharacteristicNameToIntType(char* name) const;
-    virtual int convertUnitNameToIntType(char* name) const;
-    virtual int convertUnitToIntType(RGE_Static_Object* object) const;
+    virtual int convertTargetNameToIntType(char* t) const;
+    virtual int convertTargetCharacteristicNameToIntType(char* t) const;
+    virtual int convertUnitNameToIntType(char* t) const;
+    virtual int convertUnitToIntType(RGE_Static_Object* obj) const;
 
     TribeAIPlayBook();
 };

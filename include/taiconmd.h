@@ -9,21 +9,18 @@ struct PlacementState;
 
 class TribeConstructionAIModule : public ConstructionAIModule {
 public:
-    TribeConstructionAIModule(void*, int);
-    TribeConstructionAIModule(int, int);
+    TribeConstructionAIModule(void* pW, int pID);
+    TribeConstructionAIModule(int pID, int infile);
     virtual ~TribeConstructionAIModule();
 
-    void setMainDecisionAI(TribeMainDecisionAIModule* value);
+    void setMainDecisionAI(TribeMainDecisionAIModule* m);
     int canPlace(BuildItem* bi);
-    ConstructionItem* placeStructure(BuildItem* item, int builder_id,
-                                     PlacementState& state,
-                                     unsigned long time);
-    ConstructionItem* placeDock(BuildItem* item);
-    void setBuilt(RGE_Static_Object* object, int built);
+    ConstructionItem* placeStructure(BuildItem* bi, int builder, PlacementState& placementState, unsigned long startTime);
+    ConstructionItem* placeDock(BuildItem* bi);
+    void setBuilt(RGE_Static_Object* bo, int v);
 
 protected:
-    ConstructionItem* compare(ConstructionItem* left,
-                              ConstructionItem* right);
+    ConstructionItem* compare(ConstructionItem* one, ConstructionItem* two);
 
 public:
     TribeMainDecisionAIModule* md;
