@@ -7,19 +7,17 @@
 extern int MouseCursorInChildContol;
 extern int imc_retval;
 
-static long __stdcall pnl_sub_wnd_proc(
-    HWND wnd, unsigned int msg, unsigned int wParam, long lParam)
-{
+static long __stdcall pnl_sub_wnd_proc(HWND wnd, unsigned int msg,
+                                       unsigned int wparam, long lparam) {
     TEditPanel* panel = (TEditPanel*)GetWindowLongA(wnd, -21);
     if (panel != 0) {
-        return panel->sub_wnd_proc(wnd, msg, wParam, lParam);
+        return panel->sub_wnd_proc(wnd, msg, wparam, lparam);
     }
     return 0;
 }
 
 // pnl_edit.cpp lines 50-75.
-TEditPanel::TEditPanel() : TPanel()
-{
+TEditPanel::TEditPanel() : TPanel() {
     edit_wnd = 0;
     text = 0;
     fixed_len = 0;
@@ -47,8 +45,7 @@ TEditPanel::TEditPanel() : TPanel()
 }
 
 // pnl_edit.cpp lines 83-112.
-TEditPanel::~TEditPanel()
-{
+TEditPanel::~TEditPanel() {
     if (this->edit_wnd != 0 && this->hidden == 0) {
         ShowWindow(this->edit_wnd, 0);
         this->hidden = 1;
@@ -72,34 +69,33 @@ TEditPanel::~TEditPanel()
 
 // pnl_edit.cpp lines 121-189.
 long TEditPanel::setup(
-    TDrawArea* param_1, TPanel* param_2, long param_3, long param_4,
-    long param_5, long param_6, void* param_7, short param_8, char* param_9,
-    TEditPanel::FormatType param_10, int param_11)
-{
+    TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in,
+    long wid_in, long hgt_in, void* font_in, short fixed_len_in,
+    char* text_in, TEditPanel::FormatType format_in, int auto_sel_in) {
     long result;
 
-    this->format = param_10;
-    if (param_8 > 0) {
-        param_8++;
+    this->format = format_in;
+    if (fixed_len_in > 0) {
+        fixed_len_in++;
     }
-    this->fixed_len = param_8;
-    this->font = param_7;
-    this->auto_sel = param_11;
+    this->fixed_len = fixed_len_in;
+    this->font = font_in;
+    this->auto_sel = auto_sel_in;
 
-    result = TPanel::setup(param_1, param_2, param_3, param_4, param_5,
-                           param_6, 0xFF);
+    result = TPanel::setup(render_area_in, parent_panel_in, x_in, y_in,
+                           wid_in, hgt_in, 0xFF);
     if (result == 0) {
         return 0;
     }
 
-    int styleVal;
+    int style;
     if (this->format != TEditPanel::FormatMultiLine)
-        styleVal = 0x40000080;
-    else styleVal = 0x40200044;
+        style = 0x40000080;
+    else style = 0x40200044;
     this->edit_wnd = CreateWindowExA(
-        0, "edit", 0, styleVal,
-        param_3 + 1, param_4 + 1, param_5 - 2, param_6 - 2,
-        (HWND)param_1->Wnd, (HMENU)1,
+        0, "edit", 0, style,
+        x_in + 1, y_in + 1, wid_in - 2, hgt_in - 2,
+        (HWND)render_area_in->Wnd, (HMENU)1,
         ((TDrawSystem*)this->render_area->DrawSystem)->Inst, 0);
     if (this->edit_wnd == 0) {
         return 0;
@@ -110,16 +106,16 @@ long TEditPanel::setup(
     SetWindowLongA(this->edit_wnd, -4, (long)(void*)pnl_sub_wnd_proc);
 
     {
-        char* textBuf = (char*)calloc(this->fixed_len + 2, 1);
-        this->text = textBuf;
-        if (textBuf == 0) {
+        char* text_buffer = (char*)calloc(this->fixed_len + 2, 1);
+        this->text = text_buffer;
+        if (text_buffer == 0) {
             return 0;
         }
-        *textBuf = 0;
+        *text_buffer = 0;
     }
     this->text_len = 0;
-    if (param_9 != 0 && *param_9 != 0) {
-        this->set_text(param_9);
+    if (text_in != 0 && *text_in != 0) {
+        this->set_text(text_in);
     }
     this->brush = GetStockObject(4);
     this->text_color1 = 0xFFFFFF;
@@ -138,12 +134,11 @@ long TEditPanel::setup(
 }
 
 // pnl_edit.cpp lines 195-215.
-void TEditPanel::set_text(char* text)
-{
+void TEditPanel::set_text(char* text_in) {
     if (edit_wnd) {
-        if (text) {
+        if (text_in) {
             memset(this->text, 0, (short)fixed_len);
-            strncpy(this->text, text, (short)fixed_len - 1);
+            strncpy(this->text, text_in, (short)fixed_len - 1);
             this->text[(short)fixed_len - 1] = 0;
             text_len = strlen(this->text);
         } else {
@@ -157,8 +152,7 @@ void TEditPanel::set_text(char* text)
 }
 
 // pnl_edit.cpp lines 221-266.
-void TEditPanel::update_text()
-{
+void TEditPanel::update_text() {
     if (this->edit_wnd != 0) {
         GetWindowTextA(this->edit_wnd, this->text, this->fixed_len + 1);
         this->text_len = strlen(this->text);
@@ -177,30 +171,26 @@ void TEditPanel::update_text()
 }
 
 // pnl_edit.cpp lines 272-275.
-char* TEditPanel::get_text()
-{
+char* TEditPanel::get_text() {
     this->update_text();
     return this->text;
 }
 
 // pnl_edit.cpp lines 281-284.
-char* TEditPanel::get_input_buffer()
-{
+char* TEditPanel::get_input_buffer() {
     this->update_text();
     return this->text;
 }
 
 // pnl_edit.cpp lines 290-293.
-char* TEditPanel::currentLine()
-{
+char* TEditPanel::currentLine() {
     this->update_text();
     return this->text;
 }
 
 // pnl_edit.cpp lines 299-306.
-void TEditPanel::set_active(int active)
-{
-    TPanel::set_active(active);
+void TEditPanel::set_active(int activ_in) {
+    TPanel::set_active(activ_in);
     if (this->edit_wnd != 0 && this->active == 0) {
         ShowWindow(this->edit_wnd, 0);
         this->hidden = 1;
@@ -208,14 +198,13 @@ void TEditPanel::set_active(int active)
 }
 
 // pnl_edit.cpp lines 314-395.
-void TEditPanel::set_focus(int focus)
-{
+void TEditPanel::set_focus(int have_focus_in) {
     int old_focus;
     HWND hwnd;
     unsigned long context;
 
     old_focus = this->have_focus;
-    TPanel::set_focus(focus);
+    TPanel::set_focus(have_focus_in);
     if (this->edit_wnd != 0) {
         HWND current = GetFocus();
         if (this->have_focus != 0) {
@@ -264,9 +253,8 @@ void TEditPanel::set_focus(int focus)
 }
 
 // pnl_edit.cpp lines 401-421.
-void TEditPanel::set_rect(long param_1, long param_2, long param_3, long param_4)
-{
-    TPanel::set_rect(param_1, param_2, param_3, param_4);
+void TEditPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
+    TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
     if (this->edit_wnd != 0) {
         int redraw;
         if (this->hidden == 0 && this->visible != 0 && this->active != 0) {
@@ -297,45 +285,39 @@ void TEditPanel::set_rect(long param_1, long param_2, long param_3, long param_4
 }
 
 // pnl_edit.cpp lines 427-431.
-void TEditPanel::set_redraw(TPanel::RedrawMode mode)
-{
+void TEditPanel::set_redraw(TPanel::RedrawMode redraw_mode) {
     TPanel::set_redraw(TPanel::RedrawNormal);
-    if (this->active != 0 && mode != 0 && this->edit_wnd != 0 &&
+    if (this->active != 0 && redraw_mode != 0 && this->edit_wnd != 0 &&
         this->hidden == 0) {
         InvalidateRect(this->edit_wnd, 0, 1);
     }
 }
 
 // pnl_edit.cpp lines 437-441.
-void TEditPanel::set_text_color(unsigned long a, unsigned long b)
-{
-    text_color1 = a;
-    text_color2 = b;
+void TEditPanel::set_text_color(unsigned long val1, unsigned long val2) {
+    text_color1 = val1;
+    text_color2 = val2;
     set_redraw(TPanel::RedrawNormal);
 }
 
 // pnl_edit.cpp line 447.
-void TEditPanel::set_highlight_text_color(unsigned long, unsigned long)
-{
+void TEditPanel::set_highlight_text_color(unsigned long val1, unsigned long val2) {
 }
 
 // pnl_edit.cpp line 460.
-void TEditPanel::set_back_color(void*, unsigned long, unsigned char)
-{
+void TEditPanel::set_back_color(void* brush_in, unsigned long brush_color_in, unsigned char color_in) {
 }
 
 // pnl_edit.cpp lines 474-509.
-void TEditPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4,
-                                int c5, int c6)
-{
-    bevel_type = type;
+void TEditPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
+    bevel_type = bevel_type_in;
     bevel_color1 = (unsigned char)c1;
     bevel_color2 = (unsigned char)c2;
     bevel_color3 = (unsigned char)c3;
     bevel_color4 = (unsigned char)c4;
     bevel_color5 = (unsigned char)c5;
     bevel_color6 = (unsigned char)c6;
-    switch (type) {
+    switch (bevel_type_in) {
     case 1:
     case 2:
     case 5:
@@ -362,32 +344,29 @@ void TEditPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4,
 }
 
 // pnl_edit.cpp lines 515-518.
-void TEditPanel::set_ime_info(int a, int b)
-{
-    this->enable_ime = a;
-    this->turn_ime_on = b;
+void TEditPanel::set_ime_info(int enable_ime_in, int turn_ime_on_in) {
+    this->enable_ime = enable_ime_in;
+    this->turn_ime_on = turn_ime_on_in;
 }
 
 // pnl_edit.cpp lines 524-598.
-long TEditPanel::wnd_proc(void* param_1, unsigned int param_2,
-                          unsigned int param_3, long param_4)
-{
+long TEditPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     HWND edit_window = edit_wnd;
     if (edit_window != 0 && active != 0 && visible != 0 && hidden == 0) {
-        switch (param_2) {
+        switch (msg) {
         case 7:
-            return TPanel::wnd_proc(param_1, 7, param_3, param_4);
+            return TPanel::wnd_proc(hwnd, 7, wParam, lParam);
         case 0x133:
-            if (brush != 0 && (void*)(param_4 & 0xFFFF) == edit_window) {
-                SetBkColor((HDC)param_3, back_color);
-                SetBkMode((HDC)param_3, 2);
-                SetTextColor((HDC)param_3, highlight_text_color1);
+            if (brush != 0 && (void*)(lParam & 0xFFFF) == edit_window) {
+                SetBkColor((HDC)wParam, back_color);
+                SetBkMode((HDC)wParam, 2);
+                SetTextColor((HDC)wParam, highlight_text_color1);
                 return (long)brush;
             }
             break;
         case 0x111:
-            if ((void*)param_4 == edit_window) {
-                short notification = param_3 >> 16;
+            if ((void*)lParam == edit_window) {
+                short notification = wParam >> 16;
                 if (notification == 0x400) {
                     InvalidateRect(edit_window, 0, 1);
                 }
@@ -395,71 +374,68 @@ long TEditPanel::wnd_proc(void* param_1, unsigned int param_2,
             break;
         }
     }
-    return TPanel::wnd_proc(param_1, param_2, param_3, param_4);
+    return TPanel::wnd_proc(hwnd, msg, wParam, lParam);
 }
 
 // pnl_edit.cpp lines 604-753.
-long TEditPanel::sub_wnd_proc(void* param_1, unsigned int param_2,
-                              unsigned int param_3, long param_4)
-{
+long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     if (this->edit_wnd != 0 && this->active != 0 && this->visible != 0 &&
         this->hidden == 0) {
-        switch (param_2) {
+        switch (msg) {
         case 0x0f:
-            InvalidateRect((HWND)param_1, 0, 1);
+            InvalidateRect((HWND)hwnd, 0, 1);
             break;
 
         case 0x14:
             if (this->brush != 0) {
                 RECT rect;
-                SelectObject((HDC)param_3, this->brush);
-                GetClientRect((HWND)param_1, &rect);
-                FillRect((HDC)param_3, &rect, this->brush);
+                SelectObject((HDC)wParam, this->brush);
+                GetClientRect((HWND)hwnd, &rect);
+                FillRect((HDC)wParam, &rect, this->brush);
                 return 1;
             }
             break;
 
         case 0x100:
             if (this->parent_panel != 0) {
-                if (this->parent_panel->wnd_proc(
-                        param_1, param_2, param_3, param_4) != 0) {
+                if (this->parent_panel->wnd_proc(hwnd, msg, wParam, lParam) != 0) {
                     return 0;
                 }
 
-                if (param_3 == 9) {
+                if (wParam == 9) {
                     int alt_down = GetKeyState(0x12) < 0;
                     int control_down = GetKeyState(0x11) < 0;
                     int shift_down = GetKeyState(0x10) < 0;
                     DAT_0086b240 = 1;
-                    this->handle_key_down(9, (short)param_4, alt_down,
+                    this->handle_key_down(9, (short)lParam, alt_down,
                                           control_down, shift_down);
                     DAT_0086b240 = 0;
                     return 0;
                 }
-                if (param_3 == 0x0d) {
+                if (wParam == 0x0d) {
                     this->parent_panel->action(this, 0, 0, 0);
                     return 0;
                 }
-                if (param_3 == 0x1b) {
+                if (wParam == 0x1b) {
                     if (this->parent_panel->action(this, 1, 0, 0) == 0) {
                         SendMessageA(this->edit_wnd, 0xc7, 0, 0);
                     }
                     return 0;
                 }
-            } else if (param_3 == 0x1b) {
+            } else if (wParam == 0x1b) {
                 SendMessageA(this->edit_wnd, 0xc7, 0, 0);
                 return 0;
             }
             break;
 
         case 0x101:
-            if (param_3 == 9) {
+            if (wParam == 9) {
                 return 0;
             }
             break;
 
         case 0x102:
-            if (this->verify_char(param_3) == 0) {
+            if (this->verify_char(wParam) == 0) {
                 return 0;
             }
             break;
@@ -467,8 +443,8 @@ long TEditPanel::sub_wnd_proc(void* param_1, unsigned int param_2,
         case 0x104:
             if (this->imc == 0 || this->enable_ime == 0) {
                 SetFocus((HWND)this->render_area->Wnd);
-                PostMessageA((HWND)this->render_area->Wnd, param_2, param_3,
-                             param_4);
+                PostMessageA((HWND)this->render_area->Wnd, msg, wParam,
+                             lParam);
             }
             return 0;
 
@@ -485,52 +461,48 @@ long TEditPanel::sub_wnd_proc(void* param_1, unsigned int param_2,
     unsigned long old_end = 0;
     unsigned long new_start = 0;
     unsigned long new_end = 0;
-    int check_selection = 0;
+    int check_sel = 0;
 
-    if (this->edit_wnd != 0 && param_2 != 0xb0) {
-        check_selection = 1;
-        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&old_start,
-                     (long)&old_end);
+    if (this->edit_wnd != 0 && msg != 0xb0) {
+        check_sel = 1;
+        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&old_start, (long)&old_end);
     }
 
-    long result = CallWindowProcA((FARPROC)this->old_sub_wnd_proc,
-                                  (HWND)param_1, param_2, param_3, param_4);
+    long result = CallWindowProcA((FARPROC)this->old_sub_wnd_proc, (HWND)hwnd,
+                                  msg, wParam, lParam);
 
-    if (check_selection != 0) {
-        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&new_start,
-                     (long)&new_end);
+    if (check_sel != 0) {
+        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&new_start, (long)&new_end);
         if (new_start != old_start || new_end != old_end) {
             InvalidateRect(this->edit_wnd, 0, 1);
             UpdateWindow(this->edit_wnd);
         }
     }
 
-    if (param_2 == 0x302) {
+    if (msg == 0x302) {
         this->update_text();
     }
 
-    if (param_2 == 0x201 || param_2 == 0x202 || param_2 == 0x204 ||
-        param_2 == 0x205) {
-        unsigned long x = this->pnl_x + ((unsigned long)param_4 & 0xffff);
-        unsigned long y = this->pnl_y + ((unsigned long)param_4 >> 16);
+    if (msg == 0x201 || msg == 0x202 || msg == 0x204 || msg == 0x205) {
+        unsigned long x = this->pnl_x + ((unsigned long)lParam & 0xffff);
+        unsigned long y = this->pnl_y + ((unsigned long)lParam >> 16);
         long position = (long)(((y & 0xffff) << 16) | (x & 0xffff));
-        result = panel_system.currentPanel()->wnd_proc(
-            this->render_area->Wnd, param_2, param_3, position);
+        result = panel_system.currentPanel()->wnd_proc(this->render_area->Wnd, msg,
+                                                       wParam, position);
     }
 
     return result;
 }
 
 // pnl_edit.cpp lines 760-853.
-int TEditPanel::verify_char(int ch)
-{
+int TEditPanel::verify_char(int key) {
     if (DAT_0086b244 != 0) {
         DAT_0086b244 = 0;
         return 0;
     }
-    if (ch == 9) return 0;
-    if (ch == 13 && this->format != 7) return 0;
-    if (ch == 8) return 1;
+    if (key == 9) return 0;
+    if (key == 13 && this->format != 7) return 0;
+    if (key == 8) return 1;
     this->update_text();
     if (this->sel_len == 0) {
         if (this->text_len >= this->fixed_len - 1) {
@@ -540,7 +512,7 @@ int TEditPanel::verify_char(int ch)
     }
     if (this->sel_len == 0) {
         if (this->text_len >= this->fixed_len - 2 &&
-            IsDBCSLeadByte(ch) != 0) {
+            IsDBCSLeadByte(key) != 0) {
             DAT_0086b244 = 1;
             MessageBeep(0xffffffff);
             return 0;
@@ -552,9 +524,9 @@ int TEditPanel::verify_char(int ch)
         goto valid;
     case 8:
         if (this->text_len < 2) {
-            if (ch >= '0' && ch <= '9') goto valid;
+            if (key >= '0' && key <= '9') goto valid;
         }
-        if (this->text_len != 2 || ch != '0') goto invalid;
+        if (this->text_len != 2 || key != '0') goto invalid;
         validation_result = _mbscmp((const unsigned char*)"10",
                                     (const unsigned char*)this->text);
         break;
@@ -562,9 +534,9 @@ int TEditPanel::verify_char(int ch)
     case 2:
     case 3:
         this->update_text();
-        if (ch >= '0' && ch <= '9') goto valid;
-        if (ch == '-' && this->text[0] == 0 && this->format != 3) goto valid;
-        if (ch != '.' || _mbschr((const unsigned char*)this->text, '.') == 0)
+        if (key >= '0' && key <= '9') goto valid;
+        if (key == '-' && this->text[0] == 0 && this->format != 3) goto valid;
+        if (key != '.' || _mbschr((const unsigned char*)this->text, '.') == 0)
             goto invalid;
         if (this->format == 1) goto valid;
         MessageBeep(0xffffffff);
@@ -572,17 +544,17 @@ int TEditPanel::verify_char(int ch)
     case 4:
     case 5:
         this->update_text();
-        if (ch == '.' && this->format == 4 &&
+        if (key == '.' && this->format == 4 &&
             _mbschr((const unsigned char*)this->text, '.') == 0) {
             goto valid;
         }
-        if (ch == '.') goto invalid;
-        if (ch == '\\') goto invalid;
-        if (ch == ':') goto invalid;
+        if (key == '.') goto invalid;
+        if (key == '\\') goto invalid;
+        if (key == ':') goto invalid;
         goto valid_chars;
     case 6:
         this->update_text();
-        if (ch == ':' && this->text_len != 1) goto invalid;
+        if (key == ':' && this->text_len != 1) goto invalid;
         goto valid_chars;
     default:
         goto valid;
@@ -591,8 +563,8 @@ int TEditPanel::verify_char(int ch)
     MessageBeep(0xffffffff);
     return 0;
 valid_chars:
-    if (ch != '/' && ch != '"' && ch != '*' && ch != '?' &&
-        ch != '>' && ch != '<' && ch != '|') goto valid;
+    if (key != '/' && key != '"' && key != '*' && key != '?' &&
+        key != '>' && key != '<' && key != '|') goto valid;
     goto invalid;
 invalid:
     MessageBeep(0xffffffff);
@@ -602,8 +574,7 @@ valid:
 }
 
 // pnl_edit.cpp lines 859-973.
-void TEditPanel::draw()
-{
+void TEditPanel::draw() {
     this->need_redraw = 0;
     if (this->visible == 0) {
         return;
@@ -612,10 +583,10 @@ void TEditPanel::draw()
     this->draw_setup(0);
 
     if (this->brush != 0 && this->active != 0 && this->have_focus != 0) {
-        unsigned char color = (unsigned char)GetNearestPaletteIndex(
+        unsigned char temp_color = (unsigned char)GetNearestPaletteIndex(
             (HPALETTE)this->render_area->DrawSystem->Pal,
             this->back_color);
-        this->render_area->Clear(&this->clip_rect, color);
+        this->render_area->Clear(&this->clip_rect, temp_color);
     } else if (this->parent_panel != 0) {
         if (this->bevel_type >= 2 && this->bevel_type <= 7) {
             this->parent_panel->draw_rect2(&this->clip_rect);
@@ -709,12 +680,12 @@ void TEditPanel::draw()
                 SetBkMode(dc, 1);
                 SetTextColor(dc, this->text_color2);
 
-                tagRECT rect;
-                rect.left = this->draw_rect.left - 1;
-                rect.top = this->draw_rect.top + 1;
-                rect.right = this->draw_rect.right - 1;
-                rect.bottom = this->draw_rect.bottom + 1;
-                DrawTextExA(dc, this->text, -1, &rect,
+                tagRECT r;
+                r.left = this->draw_rect.left - 1;
+                r.top = this->draw_rect.top + 1;
+                r.right = this->draw_rect.right - 1;
+                r.bottom = this->draw_rect.bottom + 1;
+                DrawTextExA(dc, this->text, -1, &r,
                             this->draw_format, 0);
 
                 SetTextColor(dc, this->text_color1);
@@ -731,13 +702,11 @@ void TEditPanel::draw()
 }
 
 // pnl_edit.cpp line 979.
-void TEditPanel::paint()
-{
+void TEditPanel::paint() {
 }
 
 // pnl_edit.cpp lines 987-1011.
-int TEditPanel::is_blank()
-{
+int TEditPanel::is_blank() {
     char* p;
     this->update_text();
     p = this->text;
@@ -753,8 +722,7 @@ blank:
 }
 
 // pnl_edit.cpp lines 1017-1054.
-char* TEditPanel::get_trimmed_str(char* dst, int maxlen)
-{
+char* TEditPanel::get_trimmed_str(char* str, int str_len) {
     char temp_str[256];
     unsigned char* base;
     unsigned char* p;
@@ -762,8 +730,8 @@ char* TEditPanel::get_trimmed_str(char* dst, int maxlen)
     this->update_text();
     memset(temp_str, 0, sizeof(temp_str));
     strcpy(temp_str, this->text);
-    memset(dst, 0, maxlen);
-    base = (unsigned char*)dst;
+    memset(str, 0, str_len);
+    base = (unsigned char*)str;
     p = base;
     cur = (unsigned char*)temp_str;
     while (_ismbcspace(*cur & 0xFF))
@@ -781,12 +749,11 @@ char* TEditPanel::get_trimmed_str(char* dst, int maxlen)
             continue;
         break;
     }
-    return dst;
+    return str;
 }
 
 // pnl_edit.cpp lines 1060-1067.
-void TEditPanel::handle_reactivate()
-{
+void TEditPanel::handle_reactivate() {
     if (this->edit_wnd && this->have_focus) {
         HWND focus = GetFocus();
         if (focus != this->edit_wnd) {
@@ -796,8 +763,6 @@ void TEditPanel::handle_reactivate()
 }
 
 // pnl_edit.cpp lines 1074-1077.
-long TEditPanel::handle_mouse_down(unsigned char button, long x, long y,
-                                   int flags, int area)
-{
-    return TPanel::handle_mouse_down(button, x, y, flags, area);
+long TEditPanel::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
+    return TPanel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
 }

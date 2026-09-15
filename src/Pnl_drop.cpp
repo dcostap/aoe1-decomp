@@ -104,7 +104,7 @@ void TDropDownPanel::draw() {
     TPanel::draw();
 }
 
-long TDropDownPanel::handle_mouse_down(unsigned char buttons, long x, long y, int param4, int param5) {
+long TDropDownPanel::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     if (this->tab_stop && this->parent_panel) {
         this->parent_panel->set_curr_child(this);
     }
@@ -124,36 +124,36 @@ long TDropDownPanel::handle_mouse_down(unsigned char buttons, long x, long y, in
         }
     }
 
-    return TPanel::handle_mouse_down(buttons, x, y, param4, param5);
+    return TPanel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
 }
 
-long TDropDownPanel::handle_mouse_move(long a, long b, int c, int d) {
-    return TPanel::handle_mouse_move(a, b, c, d);
+long TDropDownPanel::handle_mouse_move(long x, long y, int ctrl_key, int shift_key) {
+    return TPanel::handle_mouse_move(x, y, ctrl_key, shift_key);
 }
 
-long TDropDownPanel::handle_mouse_up(unsigned char p1, long p2, long p3, int p4, int p5) {
-    return TPanel::handle_mouse_up(p1, p2, p3, p4, p5);
+long TDropDownPanel::handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
+    return TPanel::handle_mouse_up(mouse_button_in, x, y, ctrl_key, shift_key);
 }
 
-long TDropDownPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
+long TDropDownPanel::handle_key_down(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     if (this->have_focus != 0 && (key == 0x28 || key == 0x26) && this->mode == 1) {
         this->set_mode(ModeList);
         return 1;
     }
-    return TPanel::handle_key_down(key, ch, a3, a4, a5);
+    return TPanel::handle_key_down(key, count, alt_key, ctrl_key, shift_key);
 }
 
-long TDropDownPanel::action(TPanel* panel, long action_code, unsigned long line, unsigned long param4) {
-    if (panel == this->btn_panel) {
-        if (action_code == 2) {
+long TDropDownPanel::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
+    if (from_panel == this->btn_panel) {
+        if (action_in == 2) {
             if (this->mode == 1) {
-                this->set_mode((DropdownMode)action_code);
+                this->set_mode((DropdownMode)action_in);
             }
         }
-    } else if (panel == (TPanel*)this->list_panel) {
-        if (action_code == 3 || action_code == 2) {
-            this->val_num = (short)line;
-            this->val_panel->set_text(this->list_panel->get_text((long)(short)line));
+    } else if (from_panel == (TPanel*)this->list_panel) {
+        if (action_in == 3 || action_in == 2) {
+            this->val_num = (short)action_val1;
+            this->val_panel->set_text(this->list_panel->get_text((long)(short)action_val1));
             this->set_mode(ModeValue);
             if (this->parent_panel) {
                 this->parent_panel->action(this, 0, 0, 0);
@@ -161,11 +161,11 @@ long TDropDownPanel::action(TPanel* panel, long action_code, unsigned long line,
         }
     }
 
-    return TPanel::action(panel, action_code, line, param4);
+    return TPanel::action(from_panel, action_in, action_val1, action_val2);
 }
 
-void TDropDownPanel::set_rect(long p1, long p2, long p3, long p4) {
-    TPanel::set_rect(p1, p2, p3, p4);
+void TDropDownPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
+    TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
 
     if (this->mode == 1) {
         this->val_wid = (this->pnl_wid - this->btn_wid) - 1;
@@ -183,14 +183,14 @@ void TDropDownPanel::set_rect(long p1, long p2, long p3, long p4) {
     }
 }
 
-void TDropDownPanel::set_val_text_color(unsigned long fg, unsigned long bg) {
+void TDropDownPanel::set_val_text_color(unsigned long text_color1_in, unsigned long text_color2_in) {
     if (this->val_panel != 0) {
-        this->val_panel->set_text_color(fg, bg);
+        this->val_panel->set_text_color(text_color1_in, text_color2_in);
     }
 }
 
-void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle param_1) {
-    this->draw_style = param_1;
+void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle draw_style_in) {
+    this->draw_style = draw_style_in;
     if (this->val_panel) {
         DropdownMode old_mode = this->mode;
         this->mode = ModeNone;
@@ -198,18 +198,18 @@ void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle param_1) {
     }
 }
 
-void TDropDownPanel::set_draw_val_rect(int value) {
-    this->draw_val_rect = value;
+void TDropDownPanel::set_draw_val_rect(int draw_val_rect_in) {
+    this->draw_val_rect = draw_val_rect_in;
     if (this->val_panel != 0) {
-        this->val_panel->set_outline(value, this->outline_color);
+        this->val_panel->set_outline(draw_val_rect_in, this->outline_color);
         this->set_redraw(TPanel::RedrawNormal);
     }
 }
 
-void TDropDownPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6) {
+void TDropDownPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6) {
     if (this->val_panel != 0) {
         int mapped;
-        switch (type) {
+        switch (bevel_type_in) {
         case 1: mapped = 1; break;
         case 2: mapped = 5; break;
         case 3: mapped = 6; break;
@@ -221,7 +221,7 @@ void TDropDownPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, in
 
     if (this->list_panel != 0) {
         int mapped;
-        switch (type) {
+        switch (bevel_type_in) {
         case 1: mapped = 1; break;
         case 2: mapped = 2; break;
         case 3: mapped = 3; break;
@@ -233,7 +233,7 @@ void TDropDownPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, in
 
     if (this->scbar_panel != 0) {
         int mapped;
-        switch (type) {
+        switch (bevel_type_in) {
         case 1: mapped = 1; break;
         case 2: mapped = 2; break;
         case 3: mapped = 3; break;
@@ -245,7 +245,7 @@ void TDropDownPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, in
 
     if (this->btn_panel != 0) {
         int mapped;
-        switch (type) {
+        switch (bevel_type_in) {
         case 1: mapped = 1; break;
         case 2: mapped = 2; break;
         case 3: mapped = 3; break;
@@ -256,21 +256,21 @@ void TDropDownPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, in
     }
 }
 
-void TDropDownPanel::set_buttons(TShape* shape, int p2, int p3, int p4, int p5, int p6) {
+void TDropDownPanel::set_buttons(TShape* button_shape_in, int btn_frame_in, int scbar_back_frame_in, int scbar_up_frame_in, int scbar_down_frame_in, int scbar_tab_frame_in) {
     if (this->btn_panel != 0) {
-        if (shape != 0) {
-            this->btn_panel->set_picture(0, shape, (short)p2);
+        if (button_shape_in != 0) {
+            this->btn_panel->set_picture(0, button_shape_in, (short)btn_frame_in);
         } else {
             this->btn_panel->set_picture(0, 0, -1);
         }
     }
     if (this->scbar_panel != 0) {
-        this->scbar_panel->set_buttons(shape, p3, p4, p5, p6);
+        this->scbar_panel->set_buttons(button_shape_in, scbar_back_frame_in, scbar_up_frame_in, scbar_down_frame_in, scbar_tab_frame_in);
     }
 }
 
-void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode new_mode) {
-    if (new_mode == this->mode) {
+void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode_in) {
+    if (mode_in == this->mode) {
         return;
     }
 
@@ -290,11 +290,11 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode new_mode) {
         parent_hgt = this->render_area->Height;
     }
 
-    DropdownMode old_mode = this->mode;
+    DropdownMode save_mode = this->mode;
     this->mode = ModeNone;
 
-    if (new_mode == ModeValue) {
-        if (old_mode == ModeList && this->parent_panel != 0 &&
+    if (mode_in == ModeValue) {
+        if (save_mode == ModeList && this->parent_panel != 0 &&
             this->parent_panel->parent_panel != 0 &&
             (this->clip_rect.left < parent_x ||
              this->clip_rect.top < parent_y ||
@@ -346,7 +346,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode new_mode) {
         }
         this->set_curr_child(this->val_panel);
 
-        if (old_mode == ModeList) {
+        if (save_mode == ModeList) {
             if (panel_system.restorePreviousModalPanel() == 0) {
                 panel_system.setModalPanel(0);
             }
@@ -354,7 +354,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode new_mode) {
                 this->parent_panel->action(this, 2, 0, 0);
             }
         }
-    } else if (new_mode == ModeList) {
+    } else if (mode_in == ModeList) {
         this->list_panel->set_active(1);
 
         if (this->list_panel->spacer_size == 0) {
@@ -534,7 +534,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode new_mode) {
         }
     }
 
-    this->mode = new_mode;
+    this->mode = mode_in;
 }
 
 int TDropDownPanel::numberLines() {
@@ -551,13 +551,13 @@ int TDropDownPanel::currentLineNumber() {
     return 0;
 }
 
-void TDropDownPanel::setCurrentLineNumber(int p) {
-    this->set_line(p);
+void TDropDownPanel::setCurrentLineNumber(int line_num_in) {
+    this->set_line(line_num_in);
 }
 
-void TDropDownPanel::setCurrentLineId(int id) {
+void TDropDownPanel::setCurrentLineId(int id_in) {
     if (this->list_panel) {
-        this->list_panel->set_line_by_id(id);
+        this->list_panel->set_line_by_id(id_in);
         long line = this->list_panel->get_line();
         this->val_num = (short)line;
         if (this->val_panel) {
@@ -573,16 +573,16 @@ char* TDropDownPanel::currentLine() {
     return 0;
 }
 
-void TDropDownPanel::set_tab_order(TPanel* a, TPanel* b) {
-    TPanel::set_tab_order(a, b);
+void TDropDownPanel::set_tab_order(TPanel* prev_panel, TPanel* next_panel) {
+    TPanel::set_tab_order(prev_panel, next_panel);
     if (this->val_panel != 0) {
         this->val_panel->set_tab_order((TPanel*)0, (TPanel*)0);
     }
 }
 
-void TDropDownPanel::set_sorted(int val) {
+void TDropDownPanel::set_sorted(int sorted_in) {
     if (this->list_panel) {
-        this->list_panel->sorted = val;
+        this->list_panel->sorted = sorted_in;
     }
 }
 
@@ -593,47 +593,47 @@ int TDropDownPanel::get_sorted() {
     return 0;
 }
 
-void TDropDownPanel::set_line(long line) {
-    this->val_num = (short)line;
+void TDropDownPanel::set_line(long line_in) {
+    this->val_num = (short)line_in;
     if (this->list_panel != 0) {
-        this->list_panel->set_line(line);
+        this->list_panel->set_line(line_in);
         if (this->val_panel != 0) {
-            this->val_panel->set_text(this->list_panel->get_text(line));
+            this->val_panel->set_text(this->list_panel->get_text(line_in));
         }
     }
 }
 
-int TDropDownPanel::append_line(char* param_1, long param_2) {
+int TDropDownPanel::append_line(char* text_in, long id_in) {
     if (this->list_panel) {
-        return this->list_panel->append_line(param_1, param_2);
+        return this->list_panel->append_line(text_in, id_in);
     }
     return 0;
 }
 
-int TDropDownPanel::append_line(long param_1, long param_2) {
+int TDropDownPanel::append_line(long string_id_in, long id_in) {
     if (this->list_panel) {
-        return this->list_panel->append_line(param_1, param_2);
+        return this->list_panel->append_line(string_id_in, id_in);
     }
     return 0;
 }
 
-int TDropDownPanel::insert_line(long param_1, char* param_2, long param_3) {
+int TDropDownPanel::insert_line(long line_in, char* text_in, long id_in) {
     if (this->list_panel) {
-        return this->list_panel->insert_line(param_1, param_2, param_3);
+        return this->list_panel->insert_line(line_in, text_in, id_in);
     }
     return 0;
 }
 
-int TDropDownPanel::insert_line(long param_1, long param_2, long param_3) {
+int TDropDownPanel::insert_line(long line_in, long string_id_in, long id_in) {
     if (this->list_panel) {
-        return this->list_panel->insert_line(param_1, param_2, param_3);
+        return this->list_panel->insert_line(line_in, string_id_in, id_in);
     }
     return 0;
 }
 
-int TDropDownPanel::delete_line(long param) {
+int TDropDownPanel::delete_line(long line_in) {
     if (this->list_panel) {
-        return this->list_panel->delete_line(param);
+        return this->list_panel->delete_line(line_in);
     }
     return 0;
 }
@@ -645,16 +645,16 @@ long TDropDownPanel::get_line() {
     return 0;
 }
 
-long TDropDownPanel::get_line(long param) {
+long TDropDownPanel::get_line(long id_in) {
     if (this->list_panel) {
-        return this->list_panel->get_line(param);
+        return this->list_panel->get_line(id_in);
     }
     return 0;
 }
 
-long TDropDownPanel::get_line(char* param) {
+long TDropDownPanel::get_line(char* text_in) {
     if (this->list_panel) {
-        return this->list_panel->get_line(param);
+        return this->list_panel->get_line(text_in);
     }
     return 0;
 }
@@ -666,9 +666,9 @@ char* TDropDownPanel::get_text() {
     return 0;
 }
 
-char* TDropDownPanel::get_text(long param) {
+char* TDropDownPanel::get_text(long line_in) {
     if (this->list_panel) {
-        return this->list_panel->get_text(param);
+        return this->list_panel->get_text(line_in);
     }
     return 0;
 }
@@ -680,9 +680,9 @@ long TDropDownPanel::get_id() {
     return 0;
 }
 
-long TDropDownPanel::get_id(long param) {
+long TDropDownPanel::get_id(long line_in) {
     if (this->list_panel) {
-        return this->list_panel->get_id(param);
+        return this->list_panel->get_id(line_in);
     }
     return 0;
 }
@@ -693,8 +693,8 @@ void TDropDownPanel::empty_list() {
     }
 }
 
-TDropDownButtonPanel::TDropDownButtonPanel(TDropDownPanel* panel) : TButtonPanel() {
-    this->drop_down_panel = panel;
+TDropDownButtonPanel::TDropDownButtonPanel(TDropDownPanel* drop_down_panel_in) : TButtonPanel() {
+    this->drop_down_panel = drop_down_panel_in;
 }
 
 long TDropDownButtonPanel::handle_mouse_move(long x, long y, int ctrl_key, int shift_key) {
