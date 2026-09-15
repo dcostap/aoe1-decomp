@@ -5,8 +5,8 @@
 - Module: `src/rpnl_tbx.cpp`
 - Branch: `cleanup/staging-20260915-164`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source cleanup commit from `git rev-parse`: `5343cdd8279add2e0b1b97f08af65879b8f8f082`
-- Report commit: pending
+- Final source commit from `git rev-parse`: `5343cdd8279add2e0b1b97f08af65879b8f8f082`
+- The report is committed separately from the source.
 - Changed files:
   - `src/rpnl_tbx.cpp`
   - `decomp_notes/source_cleanup/wave03/rpnl_tbx.md`
