@@ -1,5 +1,14 @@
 # Cleanup wave 03 root review
 
+## Owner 14: correction review started
+
+Corrected head: `319af2dc9de31467d5b67388a2b16784d9a856a5`.
+The complete 361-line correction diff is `build/source-cleanup-20260915/owner14-corrections.diff`.
+Original reviewer `sa-e8937a55` resumed to check every AI logic, storage, cast, assignment, and initialization finding.
+The assignment checks all later wall-ring center uses and distinct parameter/local storage against the baseline.
+Only `taiinfmd.cpp` and its delivery records changed. The group remains unmerged pending correction review.
+Full validation remains deferred until all cleanup work finishes.
+
 ## Owner 14: source corrections required
 
 Reviewer `sa-e8937a55` read all 20,962 lines and all reports at `70d4611304b93c9e0d67aff0b1194b54a84d25fb`.
