@@ -5,10 +5,21 @@
 - Module: `src/point.cpp`
 - Slot and branch: 207, `cleanup/staging-20260915-207`
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit from `git rev-parse`: `5d8b041d307096bbaf217f847c5e7ffa9e810f20`
+- Final source commit from `git rev-parse`: `44a132a636301ab777f8d2d7e244b9542c54f383`
 - Changed source file in the source commit: `src/point.cpp`
 - This report is committed separately.
 - Read-only paired header: `include/point.h`
+
+The correction source commit is
+`44a132a636301ab777f8d2d7e244b9542c54f383`. It joins the short
+`rotateXYByFacet` definition signature on one line.
+
+Worker commits that precede this report update are:
+
+- `5d8b041d307096bbaf217f847c5e7ffa9e810f20`
+- `8a97e17215889fd9142aab0efc8ab6d8663b0da3`
+- `10ae482037415ccb1b508aea4d9ced1bd0e59352`
+- `44a132a636301ab777f8d2d7e244b9542c54f383`
 
 The cleanup restores supported PDB parameter and local names. It also applies
 1TBS braces in the rotation function. It preserves expressions, types, scopes,
@@ -97,16 +108,8 @@ identifies `DAT_00571CE8` as a read-only `float` with initializer
 `0.785398185f`, raw bytes `0xDB, 0x0F, 0x49, 0x3F`, and one reference at
 `0047E617`.
 
-This module has no resource lookup and no resource ID. The original resource
-files and runtime DLLs are not relevant to this source. For provenance, the
-hash-only checks saw these runtime files:
-
-- `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`:
-  `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`
-- `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`:
-  `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`
-
-No string ID extraction was needed. No resource mapping request is open.
+This module has no resource lookup or resource ID. No resource mapping request
+is open.
 
 No source comment was added or removed. The named rotation products are
 supported by the exact-product-order evidence in
