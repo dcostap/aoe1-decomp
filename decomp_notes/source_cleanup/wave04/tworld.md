@@ -11,7 +11,7 @@
 - Final prior brace report commit: `d8d75f1203c61f3020f1c6e312394d7b8e8e0721`
 - Root resource approval commit: `bf943f3339643ee5beca7dd74e98b4cb729e48d3`
 - Final resource macro correction commit: `9435f1c4e3a36d5bd98f2f43b39d34ebc9a21821`
-- Report commit: pending until this correction report is committed
+- Report commit: `3255b49562c14cc6e986a2b1c28f491762516c96`
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
