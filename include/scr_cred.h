@@ -22,8 +22,8 @@ public:
     TScrollTextPanel(TPanel* parent_in, TDrawArea* render_area_in, long x, long y,
                      long wid, long hgt, int speed_in, void* font_in,
                      long font_wid_in, long font_hgt_in, char* text_in);
-    void draw_scrolled_line(void* dc, short draw_row, short text_line,
-                            unsigned long color1, unsigned long color2);
+    void draw_scrolled_line(void* dc, short draw_row, short text_line, unsigned long color1,
+                            unsigned long color2);
 };
 
 typedef char scr_cred_scroll_text_panel_size_check[
