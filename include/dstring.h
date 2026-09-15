@@ -12,55 +12,55 @@ public:
     int currentWordValue;
 
     DString();
-    DString(const DString& other);
-    DString(const char* value);
+    DString(const DString& d);
+    DString(const char* s);
     ~DString();
-    DString& operator=(const char* value);
-    DString& operator=(const DString& other);
+    DString& operator=(const char* s);
+    DString& operator=(const DString& d);
 
-    char& operator[](int index);
+    char& operator[](int i);
     operator char*() const;
-    DString operator+(const DString& value) const;
+    DString operator+(const DString& d) const;
     int length() const;
     int numWords();
     int index() const;
-    int contains(DString value) const;
-    int contains(const char* value) const;
-    DString word(int wordIndex);
-    DString nextWord(int updateIndex);
+    int contains(DString s) const;
+    int contains(const char* s) const;
+    DString word(int num);
+    DString nextWord(int incIndex);
     void moveToFirstWord();
     void moveToNextWord();
     DString subString(int start, int count);
-    void append(DString value);
-    DString stripTrailing(char value);
-    DString stripLeading(char value);
+    void append(DString d);
+    DString stripTrailing(char c);
+    DString stripLeading(char c);
     int asInt() const;
     double asDouble() const;
     void uppercase();
     DString asUppercase();
     void lowercase();
     DString asLowercase();
-    void change(char from, char to);
+    void change(char o, char n);
 };
 
 class istream;
 class ostream;
 
-ostream& __cdecl operator<<(ostream& stream, const DString& value);
-istream& __cdecl operator>>(istream& stream, DString& value);
+ostream& __cdecl operator<<(ostream& out, const DString& d);
+istream& __cdecl operator>>(istream& in, DString& d);
 
-int __cdecl operator==(const DString& lhs, const DString& rhs);
-int __cdecl operator==(const DString& lhs, const char* rhs);
-int __cdecl operator==(const char* lhs, const DString& rhs);
-int __cdecl operator!=(const DString& lhs, const DString& rhs);
-int __cdecl operator!=(const DString& lhs, const char* rhs);
-int __cdecl operator!=(const char* lhs, const DString& rhs);
-int __cdecl operator<(const DString& lhs, const DString& rhs);
-int __cdecl operator<(const DString& lhs, const char* rhs);
-int __cdecl operator<(const char* lhs, const DString& rhs);
-int __cdecl operator>(const DString& lhs, const DString& rhs);
-int __cdecl operator>(const DString& lhs, const char* rhs);
-int __cdecl operator>(const char* lhs, const DString& rhs);
+int __cdecl operator==(const DString& one, const DString& two);
+int __cdecl operator==(const DString& one, const char* two);
+int __cdecl operator==(const char* one, const DString& two);
+int __cdecl operator!=(const DString& one, const DString& two);
+int __cdecl operator!=(const DString& one, const char* two);
+int __cdecl operator!=(const char* one, const DString& two);
+int __cdecl operator<(const DString& one, const DString& two);
+int __cdecl operator<(const DString& one, const char* two);
+int __cdecl operator<(const char* one, const DString& two);
+int __cdecl operator>(const DString& one, const DString& two);
+int __cdecl operator>(const DString& one, const char* two);
+int __cdecl operator>(const char* one, const DString& two);
 
 class DKeyString {
 public:
@@ -68,12 +68,12 @@ public:
     DString valueValue;
 
     DKeyString();
-    DKeyString(DString key, DString value);
+    DKeyString(DString k, DString v);
     ~DKeyString();
     DString key() const;
-    void setKey(DString key);
+    void setKey(DString k);
     DString value() const;
-    void setValue(DString value);
+    void setValue(DString v);
 };
 
 #endif

@@ -8,11 +8,11 @@
 #include <string.h>
 #include <windows.h>
 
-TChat::TChat(void* host_wnd) {
+TChat::TChat(void* HostWndIn) {
     int i;
 
     taunt = new TTaunt(rge_base_game->sound_system);
-    HostWnd = host_wnd;
+    HostWnd = HostWndIn;
 
     for (i = 0; i < 0x33; ++i) {
         Chat[i] = 0;
@@ -32,11 +32,11 @@ TChat::~TChat() {
     }
 }
 
-int TChat::AddChatMsg(char* speaker, char* text, unsigned char taunt_id) {
-    if (speaker == 0) {
+int TChat::AddChatMsg(char* PlayerName, char* Text, unsigned char Local) {
+    if (PlayerName == 0) {
         return 0;
     }
-    if (text == 0) {
+    if (Text == 0) {
         return 0;
     }
 
@@ -49,23 +49,23 @@ int TChat::AddChatMsg(char* speaker, char* text, unsigned char taunt_id) {
         free(Chat[CurrentMsgNo]);
     }
 
-    Chat[CurrentMsgNo] = (char*)calloc(strlen(speaker) + strlen(text) + 3, 1);
+    Chat[CurrentMsgNo] = (char*)calloc(strlen(PlayerName) + strlen(Text) + 3, 1);
     if (Chat[CurrentMsgNo] == 0) {
         return 0;
     }
 
-    sprintf(Chat[CurrentMsgNo], "%s: %s", speaker, text);
-    PostMessageA(HostWnd, 0x400, 0x17D5, CurrentMsgNo);
+    sprintf(Chat[CurrentMsgNo], "%s: %s", PlayerName, Text);
+    PostMessageA(HostWnd, WM_USER, CHAT_RECEIVED, CurrentMsgNo);
     if (taunt != 0) {
-        taunt->PlayTauntStr(text, taunt_id);
+        taunt->PlayTauntStr(Text, Local);
     }
 
     return 1;
 }
 
-char* TChat::GetChatMsg(int index) {
-    if (index >= 0 && index <= 0x32) {
-        return Chat[index];
+char* TChat::GetChatMsg(int lineno) {
+    if (lineno >= 0 && lineno <= 0x32) {
+        return Chat[lineno];
     }
     return 0;
 }
@@ -84,22 +84,22 @@ int TChat::MaxArraySize() {
     return 50;
 }
 
-void TChat::setWindowHandle(void* value) {
-    HostWnd = value;
+void TChat::setWindowHandle(void* newHandle) {
+    HostWnd = newHandle;
 }
 
-void TChat::setInChatGroup(int index, int value) {
-    if (index > 0) {
-        if (index <= 9) {
-            chatGroupPlayers[index] = value;
+void TChat::setInChatGroup(int playerNum, int status) {
+    if (playerNum > 0) {
+        if (playerNum <= 9) {
+            chatGroupPlayers[playerNum] = status;
         }
     }
 }
 
-int TChat::inChatGroup(int index) {
-    if (index >= 0) {
-        if (index <= 9) {
-            return chatGroupPlayers[index];
+int TChat::inChatGroup(int playerNum) {
+    if (playerNum >= 0) {
+        if (playerNum <= 9) {
+            return chatGroupPlayers[playerNum];
         }
     }
     return 0;
@@ -111,9 +111,9 @@ void TChat::StopSoundSystem() {
     }
 }
 
-int TChat::RestartSoundSystem(TSound_Driver* sound_driver) {
+int TChat::RestartSoundSystem(TSound_Driver* driver) {
     if (taunt != 0) {
-        return taunt->RestartSoundSystem(sound_driver);
+        return taunt->RestartSoundSystem(driver);
     }
     return 1;
 }

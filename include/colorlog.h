@@ -3,6 +3,6 @@
 
 extern unsigned char do_color_log;
 
-void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3);
+void __cdecl color_log(unsigned char c1, unsigned char c2, int pos);
 
 #endif  // AOE1_COLORLOG_H

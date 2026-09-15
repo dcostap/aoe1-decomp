@@ -15,27 +15,27 @@ DString::DString() {
     strcpy(this->stringValue, "");
 }
 
-DString::DString(const DString& other) {
-    this->lengthValue = other.lengthValue;
-    this->numWordsValue = other.numWordsValue;
-    this->indexValue = other.indexValue;
-    this->currentWordValue = other.currentWordValue;
+DString::DString(const DString& d) {
+    this->lengthValue = d.lengthValue;
+    this->numWordsValue = d.numWordsValue;
+    this->indexValue = d.indexValue;
+    this->currentWordValue = d.currentWordValue;
     if (this->lengthValue > 0) {
         this->stringValue = (char*)malloc(this->lengthValue + 1);
-        strcpy(this->stringValue, other.stringValue);
+        strcpy(this->stringValue, d.stringValue);
     } else {
         this->stringValue = 0;
     }
 }
 
-DString::DString(const char* value) {
-    this->lengthValue = (int)strlen(value);
+DString::DString(const char* s) {
+    this->lengthValue = (int)strlen(s);
     this->numWordsValue = -1;
     this->indexValue = 0;
     this->currentWordValue = 0;
     if (this->lengthValue > 0) {
         this->stringValue = (char*)malloc(this->lengthValue + 1);
-        strcpy(this->stringValue, value);
+        strcpy(this->stringValue, s);
     } else {
         this->stringValue = 0;
     }
@@ -47,106 +47,106 @@ DString::~DString() {
     }
 }
 
-ostream& __cdecl operator<<(ostream& stream, const DString& value) {
-    if (value.stringValue != 0) {
-        stream << value.stringValue;
+ostream& __cdecl operator<<(ostream& out, const DString& d) {
+    if (d.stringValue != 0) {
+        out << d.stringValue;
     }
-    return stream;
+    return out;
 }
 
-DString& DString::operator=(const char* value) {
+DString& DString::operator=(const char* s) {
     if (this->stringValue != 0) {
         free(this->stringValue);
     }
     this->numWordsValue = -1;
     this->indexValue = 0;
     this->currentWordValue = 0;
-    this->lengthValue = (int)strlen(value);
+    this->lengthValue = (int)strlen(s);
     if (this->lengthValue > 0) {
         this->stringValue = (char*)malloc(this->lengthValue + 1);
-        strcpy(this->stringValue, value);
+        strcpy(this->stringValue, s);
     } else {
         this->stringValue = 0;
     }
     return *this;
 }
 
-DString& DString::operator=(const DString& other) {
+DString& DString::operator=(const DString& d) {
     if (this->stringValue != 0) {
         free(this->stringValue);
     }
-    this->numWordsValue = other.numWordsValue;
-    this->indexValue = other.indexValue;
-    this->currentWordValue = other.currentWordValue;
-    this->lengthValue = other.lengthValue;
+    this->numWordsValue = d.numWordsValue;
+    this->indexValue = d.indexValue;
+    this->currentWordValue = d.currentWordValue;
+    this->lengthValue = d.lengthValue;
     if (this->lengthValue > 0) {
         this->stringValue = (char*)malloc(this->lengthValue + 1);
-        strcpy(this->stringValue, other.stringValue);
+        strcpy(this->stringValue, d.stringValue);
     } else {
         this->stringValue = 0;
     }
     return *this;
 }
 
-int __cdecl operator==(const DString& lhs, const DString& rhs) {
-    return strcmp(lhs.stringValue, rhs.stringValue) == 0;
+int __cdecl operator==(const DString& one, const DString& two) {
+    return strcmp(one.stringValue, two.stringValue) == 0;
 }
 
-int __cdecl operator==(const DString& lhs, const char* rhs) {
-    return strcmp(lhs.stringValue, rhs) == 0;
+int __cdecl operator==(const DString& one, const char* two) {
+    return strcmp(one.stringValue, two) == 0;
 }
 
-int __cdecl operator==(const char* lhs, const DString& rhs) {
-    return strcmp(lhs, rhs.stringValue) == 0;
+int __cdecl operator==(const char* one, const DString& two) {
+    return strcmp(one, two.stringValue) == 0;
 }
 
-int __cdecl operator!=(const DString& lhs, const DString& rhs) {
-    return strcmp(lhs.stringValue, rhs.stringValue) != 0;
+int __cdecl operator!=(const DString& one, const DString& two) {
+    return strcmp(one.stringValue, two.stringValue) != 0;
 }
 
-int __cdecl operator!=(const DString& lhs, const char* rhs) {
-    return strcmp(lhs.stringValue, rhs) != 0;
+int __cdecl operator!=(const DString& one, const char* two) {
+    return strcmp(one.stringValue, two) != 0;
 }
 
-int __cdecl operator!=(const char* lhs, const DString& rhs) {
-    return strcmp(lhs, rhs.stringValue) != 0;
+int __cdecl operator!=(const char* one, const DString& two) {
+    return strcmp(one, two.stringValue) != 0;
 }
 
-int __cdecl operator<(const DString& lhs, const DString& rhs) {
-    return strcmp(lhs.stringValue, rhs.stringValue) < 0;
+int __cdecl operator<(const DString& one, const DString& two) {
+    return strcmp(one.stringValue, two.stringValue) < 0;
 }
 
-int __cdecl operator<(const DString& lhs, const char* rhs) {
-    return strcmp(lhs.stringValue, rhs) < 0;
+int __cdecl operator<(const DString& one, const char* two) {
+    return strcmp(one.stringValue, two) < 0;
 }
 
-int __cdecl operator<(const char* lhs, const DString& rhs) {
-    return strcmp(lhs, rhs.stringValue) < 0;
+int __cdecl operator<(const char* one, const DString& two) {
+    return strcmp(one, two.stringValue) < 0;
 }
 
-int __cdecl operator>(const DString& lhs, const DString& rhs) {
-    return strcmp(lhs.stringValue, rhs.stringValue) > 0;
+int __cdecl operator>(const DString& one, const DString& two) {
+    return strcmp(one.stringValue, two.stringValue) > 0;
 }
 
-int __cdecl operator>(const DString& lhs, const char* rhs) {
-    return strcmp(lhs.stringValue, rhs) > 0;
+int __cdecl operator>(const DString& one, const char* two) {
+    return strcmp(one.stringValue, two) > 0;
 }
 
-int __cdecl operator>(const char* lhs, const DString& rhs) {
-    return strcmp(lhs, rhs.stringValue) > 0;
+int __cdecl operator>(const char* one, const DString& two) {
+    return strcmp(one, two.stringValue) > 0;
 }
 
-DString DString::operator+(const DString& value) const {
+DString DString::operator+(const DString& d) const {
     DString newStr(*this);
 
-    newStr.append(value);
+    newStr.append(d);
     return newStr;
 }
 
-char& DString::operator[](int index) {
-    if (index < 0 || this->lengthValue < index + 1)
+char& DString::operator[](int i) {
+    if (i < 0 || this->lengthValue < i + 1)
         return this->stringValue[0];
-    return this->stringValue[index];
+    return this->stringValue[i];
 }
 
 DString::operator char*() const {
@@ -161,21 +161,21 @@ int DString::index() const {
     return this->indexValue;
 }
 
-int DString::contains(DString value) const {
-    if (strstr(this->stringValue, value) != 0) {
+int DString::contains(DString s) const {
+    if (strstr(this->stringValue, s) != 0) {
         return 1;
     }
     return 0;
 }
 
-int DString::contains(const char* value) const {
-    return strstr(this->stringValue, value) != 0;
+int DString::contains(const char* s) const {
+    return strstr(this->stringValue, s) != 0;
 }
 
 int DString::numWords() {
     int cached;
     int index;
-    int inWord;
+    int in_word;
 
     cached = this->numWordsValue;
     if (cached == -1) {
@@ -186,21 +186,21 @@ int DString::numWords() {
 
         if (this->stringValue[0] == ' ') {
             this->numWordsValue = 0;
-            inWord = 0;
+            in_word = 0;
         } else {
             this->numWordsValue = 1;
-            inWord = 1;
+            in_word = 1;
         }
 
         index = 0;
         if (cached > 0) {
             do {
-                if (!inWord) {
+                if (!in_word) {
                     if (isspace((int)this->stringValue[index])) {
                         goto still_in_gap;
                     }
                     cached = this->numWordsValue;
-                    inWord = 1;
+                    in_word = 1;
                     cached = cached + 1;
                     this->numWordsValue = cached;
                     goto next_index;
@@ -208,7 +208,7 @@ int DString::numWords() {
 
 still_in_gap:
                 if (isspace((int)this->stringValue[index])) {
-                    inWord = 0;
+                    in_word = 0;
                 }
 
 next_index:
@@ -223,41 +223,41 @@ next_index:
     return cached;
 }
 
-DString DString::word(int wordIndex) {
-    int wordCount;
+DString DString::word(int num) {
+    int word_count;
     int index;
-    int inWord;
+    int in_word;
 
-    if ((wordIndex <= this->numWords()) && (wordIndex >= 1)) {
-        if (wordIndex == this->currentWordValue + 1) {
+    if ((num <= this->numWords()) && (num >= 1)) {
+        if (num == this->currentWordValue + 1) {
             this->currentWordValue = this->currentWordValue + 1;
             return this->nextWord(1);
         }
 
         index = 0;
-        inWord = 0;
-        wordCount = 0;
+        in_word = 0;
+        word_count = 0;
 
-        for (; wordCount != wordIndex; index = index + 1) {
+        for (; word_count != num; index = index + 1) {
             if (index >= this->lengthValue)
                 break;
-            if (!inWord) {
+            if (!in_word) {
                 if (isspace((int)this->stringValue[index])) {
                     goto still_in_gap;
                 }
-                wordCount = wordCount + 1;
-                inWord = 1;
+                word_count = word_count + 1;
+                in_word = 1;
                 goto next_index;
             }
 still_in_gap:
             if (isspace((int)this->stringValue[index])) {
-                inWord = 0;
+                in_word = 0;
             }
 next_index:
             ;
         }
 
-        if (wordCount == wordIndex) {
+        if (word_count == num) {
             int start;
 
             start = index - 1;
@@ -272,15 +272,15 @@ next_index:
     return DString("");
 }
 
-istream& __cdecl operator>>(istream& stream, DString& value) {
+istream& __cdecl operator>>(istream& in, DString& d) {
     char buffer[256];
 
-    stream.getline(buffer, 0x100);
-    value = buffer;
-    return stream;
+    in.getline(buffer, 0x100);
+    d = buffer;
+    return in;
 }
 
-DString DString::nextWord(int updateIndex) {
+DString DString::nextWord(int incIndex) {
     int i;
     int start;
 
@@ -292,7 +292,7 @@ DString DString::nextWord(int updateIndex) {
     while ((isspace((int)this->stringValue[i]) == 0) && (i < this->lengthValue)) {
         i = i + 1;
     }
-    if (updateIndex != 0) {
+    if (incIndex != 0) {
         this->indexValue = i;
     }
     DString rStr = this->subString(start, i - start);
@@ -336,12 +336,12 @@ DString DString::subString(int start, int count) {
     return rStr;
 }
 
-void DString::append(DString value) {
+void DString::append(DString d) {
     int i;
-    int baseLen;
+    int base_len;
     char* text;
 
-    text = (char*)malloc(value.length() + this->lengthValue + 1);
+    text = (char*)malloc(d.length() + this->lengthValue + 1);
     i = 0;
     if (this->lengthValue > 0) {
         do {
@@ -349,44 +349,44 @@ void DString::append(DString value) {
             i = i + 1;
         } while (i < this->lengthValue);
     }
-    baseLen = this->lengthValue;
-    if (i < value.length() + baseLen) {
+    base_len = this->lengthValue;
+    if (i < d.length() + base_len) {
         do {
-            text[i] = value[i - baseLen];
-            baseLen = this->lengthValue;
+            text[i] = d[i - base_len];
+            base_len = this->lengthValue;
             i = i + 1;
-        } while (i < value.length() + baseLen);
+        } while (i < d.length() + base_len);
     }
     text[i] = 0;
     free(this->stringValue);
     this->stringValue = text;
-    this->lengthValue = this->lengthValue + value.length();
+    this->lengthValue = this->lengthValue + d.length();
     this->numWordsValue = -1;
     this->indexValue = 0;
     this->currentWordValue = 0;
 }
 
-DString DString::stripTrailing(char value) {
+DString DString::stripTrailing(char c) {
     int index;
 
     index = this->lengthValue;
-    while ((this->stringValue[index - 1] == value) && (0 < index)) {
+    while ((this->stringValue[index - 1] == c) && (0 < index)) {
         index = index - 1;
     }
     *this = this->subString(0, index);
     return *this;
 }
 
-DString DString::stripLeading(char value) {
+DString DString::stripLeading(char c) {
     int index;
 
     index = 0;
-    if (this->stringValue[0] == value) {
+    if (this->stringValue[0] == c) {
         while (1) {
             if (index >= this->lengthValue)
                 break;
             index = index + 1;
-            if (this->stringValue[index] != value)
+            if (this->stringValue[index] != c)
                 break;
         }
     }
@@ -415,10 +415,10 @@ void DString::uppercase() {
 }
 
 DString DString::asUppercase() {
-    DString result(this->stringValue);
+    DString rStr(this->stringValue);
 
-    result.uppercase();
-    return result;
+    rStr.uppercase();
+    return rStr;
 }
 
 void DString::lowercase() {
@@ -434,20 +434,20 @@ void DString::lowercase() {
 }
 
 DString DString::asLowercase() {
-    DString result(this->stringValue);
+    DString rStr(this->stringValue);
 
-    result.lowercase();
-    return result;
+    rStr.lowercase();
+    return rStr;
 }
 
-void DString::change(char from, char to) {
+void DString::change(char o, char n) {
     long i;
 
     i = 0;
     if (this->lengthValue > 0) {
         do {
-            if (this->stringValue[i] == from) {
-                this->stringValue[i] = to;
+            if (this->stringValue[i] == o) {
+                this->stringValue[i] = n;
             }
             i = i + 1;
         } while (i < this->lengthValue);
@@ -456,8 +456,8 @@ void DString::change(char from, char to) {
 
 DKeyString::DKeyString() : keyValue(""), valueValue("") {}
 
-DKeyString::DKeyString(DString key, DString value)
-    : keyValue(key), valueValue(value) {}
+DKeyString::DKeyString(DString k, DString v)
+    : keyValue(k), valueValue(v) {}
 
 DKeyString::~DKeyString() {}
 
@@ -465,14 +465,14 @@ DString DKeyString::key() const {
     return this->keyValue;
 }
 
-void DKeyString::setKey(DString key) {
-    this->keyValue = key;
+void DKeyString::setKey(DString k) {
+    this->keyValue = k;
 }
 
 DString DKeyString::value() const {
     return this->valueValue;
 }
 
-void DKeyString::setValue(DString value) {
-    this->valueValue = value;
+void DKeyString::setValue(DString v) {
+    this->valueValue = v;
 }

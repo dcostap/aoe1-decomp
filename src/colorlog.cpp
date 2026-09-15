@@ -5,7 +5,7 @@
 #include "../include/drawarea.h"
 #include "../include/rge_base_game_global.h"
 
-void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3) {
+void __cdecl color_log(unsigned char c1, unsigned char c2, int pos) {
     if (!do_color_log)
         return;
     RGE_Base_Game* game = rge_base_game;
@@ -25,7 +25,7 @@ void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3
     POINT point;
     DDBLTFX ddbltfx;
 
-    int offset = 2 - param_3;
+    int offset = 2 - pos;
     offset *= 20;
     back_dest.left = (sys->DrawArea->Width / 2) + offset;
     back_dest.right = back_dest.left + 10;
@@ -44,13 +44,13 @@ void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3
     scr_dest.bottom = point.y + 10;
 
     ddbltfx.dwSize = 100;
-    ddbltfx.dwFillColor = param_1;
+    ddbltfx.dwFillColor = c1;
 
-    sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
+    sys->PrimarySurface->Blt(&scr_dest, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
 
     ddbltfx.dwSize = 100;
-    ddbltfx.dwFillColor = param_1;
-    sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
+    ddbltfx.dwFillColor = c1;
+    sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
 
     back_dest.top = back_dest.top + 10;
     back_dest.bottom = back_dest.bottom + 10;
@@ -58,11 +58,11 @@ void __cdecl color_log(unsigned char param_1, unsigned char param_2, int param_3
     scr_dest.bottom = scr_dest.bottom + 10;
 
     ddbltfx.dwSize = 100;
-    ddbltfx.dwFillColor = param_2;
+    ddbltfx.dwFillColor = c2;
 
-    sys->PrimarySurface->Blt(&scr_dest, 0, 0, 0x1000400, &ddbltfx);
+    sys->PrimarySurface->Blt(&scr_dest, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
 
     ddbltfx.dwSize = 100;
-    ddbltfx.dwFillColor = param_2;
-    sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, 0x1000400, &ddbltfx);
+    ddbltfx.dwFillColor = c2;
+    sys->DrawArea->DrawSurface->Blt(&back_dest, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
 }

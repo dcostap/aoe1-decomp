@@ -1,21 +1,19 @@
 
 #include "../include/registry.h"
 
-TRegistry::TRegistry(const char* name)
-{
+TRegistry::TRegistry(const char* Key) {
     this->ghMachineKey = 0;
     this->ghUserKey = 0;
     this->ghMachineKeyRead = 0;
-    RegCreateKeyExA(HKEY_CURRENT_USER, name, 0, 0, 0, KEY_ALL_ACCESS, 0,
+    RegCreateKeyExA(HKEY_CURRENT_USER, Key, 0, 0, 0, KEY_ALL_ACCESS, 0,
                     &this->ghUserKey, &this->gdwDisp);
-    RegCreateKeyExA(HKEY_LOCAL_MACHINE, name, 0, 0, 0, KEY_ALL_ACCESS, 0,
+    RegCreateKeyExA(HKEY_LOCAL_MACHINE, Key, 0, 0, 0, KEY_ALL_ACCESS, 0,
                     &this->ghMachineKey, &this->gdwDisp);
-    RegCreateKeyExA(HKEY_LOCAL_MACHINE, name, 0, 0, 0, KEY_QUERY_VALUE, 0,
+    RegCreateKeyExA(HKEY_LOCAL_MACHINE, Key, 0, 0, 0, KEY_QUERY_VALUE, 0,
                     &this->ghMachineKeyRead, &this->gdwDisp);
 }
 
-TRegistry::~TRegistry()
-{
+TRegistry::~TRegistry() {
     if (this->ghUserKey != 0) {
         RegCloseKey(this->ghUserKey);
         this->ghUserKey = 0;
@@ -30,85 +28,79 @@ TRegistry::~TRegistry()
     }
 }
 
-int TRegistry::RegSet(int use_user, const char* name,
-                      unsigned char* value, unsigned long size)
-{
+int TRegistry::RegSet(int UseUserKey, const char* lptszName, unsigned char* lpData, unsigned long dwSize) {
     long err;
-    if (use_user) {
-        err = RegSetValueExA(this->ghUserKey, name, 0, 4, value, size);
+    if (UseUserKey) {
+        err = RegSetValueExA(this->ghUserKey, lptszName, 0, REG_DWORD,
+                             lpData, dwSize);
     } else {
-        err = RegSetValueExA(this->ghMachineKey, name, 0, 4, value, size);
+        err = RegSetValueExA(this->ghMachineKey, lptszName, 0, REG_DWORD,
+                             lpData, dwSize);
     }
     return (err == 0);
 }
 
-int TRegistry::RegSetInt(int useUserKey, const char* valueName, int value)
-{
+int TRegistry::RegSetInt(int UseUserKey, const char* lptszName, int Value) {
     unsigned long ret;
-    if (useUserKey != 0) {
-        ret = RegSetValueExA(ghUserKey, valueName, 0, 4,
-                             (const unsigned char*)&value, 4);
-    }
-    else {
-        ret = RegSetValueExA(ghMachineKey, valueName, 0, 4,
-                             (const unsigned char*)&value, 4);
+    if (UseUserKey != 0) {
+        ret = RegSetValueExA(ghUserKey, lptszName, 0, REG_DWORD,
+                             (const unsigned char*)&Value, 4);
+    } else {
+        ret = RegSetValueExA(ghMachineKey, lptszName, 0, REG_DWORD,
+                             (const unsigned char*)&Value, 4);
     }
     return (ret == 0);
 }
 
-int TRegistry::RegSetAscii(int use_user, const char* name,
-                           unsigned char* value, unsigned long size)
-{
+int TRegistry::RegSetAscii(int UseUserKey, const char* lptszName, unsigned char* lpData, unsigned long dwSize) {
     long err;
-    if (use_user) {
-        err = RegSetValueExA(this->ghUserKey, name, 0, 1, value, size);
+    if (UseUserKey) {
+        err = RegSetValueExA(this->ghUserKey, lptszName, 0, REG_SZ,
+                             lpData, dwSize);
     } else {
-        err = RegSetValueExA(this->ghMachineKey, name, 0, 1, value, size);
+        err = RegSetValueExA(this->ghMachineKey, lptszName, 0, REG_SZ,
+                             lpData, dwSize);
     }
     return (err == 0);
 }
 
-char* TRegistry::RegGetAscii(int userKey, const char* name)
-{
-    unsigned long type = REG_SZ;
-    unsigned long size = sizeof(this->Data) - 1;
+char* TRegistry::RegGetAscii(int UseUserKey, const char* lptszName) {
+    unsigned long dwType = REG_SZ;
+    unsigned long dwSize = sizeof(this->Data) - 1;
 
-    if (userKey != 0) {
-        return RegQueryValueExA(ghUserKey, name, 0, &type,
-                                (unsigned char*)Data, &size) ? 0 : Data;
+    if (UseUserKey != 0) {
+        return RegQueryValueExA(ghUserKey, lptszName, 0, &dwType,
+                                (unsigned char*)Data, &dwSize) ? 0 : Data;
     } else {
-        return RegQueryValueExA(ghMachineKeyRead, name, 0, &type,
-                                (unsigned char*)Data, &size) ? 0 : Data;
+        return RegQueryValueExA(ghMachineKeyRead, lptszName, 0, &dwType,
+                                (unsigned char*)Data, &dwSize) ? 0 : Data;
     }
 }
 
-long TRegistry::RegGet(int useUserKey, const char* valueName,
-                       unsigned char* data, unsigned long* dataSize)
-{
-    unsigned long type;
-    if (useUserKey != 0) {
-        return RegQueryValueExA(this->ghUserKey, valueName, 0,
-                                &type, data, dataSize);
+long TRegistry::RegGet(int UseUserKey, const char* lptszName, unsigned char* lpData, unsigned long* lpdwDataSize) {
+    unsigned long dwType;
+    if (UseUserKey != 0) {
+        return RegQueryValueExA(this->ghUserKey, lptszName, 0,
+                                &dwType, lpData, lpdwDataSize);
     }
-    return RegQueryValueExA(this->ghMachineKeyRead, valueName, 0,
-                            &type, data, dataSize);
+    return RegQueryValueExA(this->ghMachineKeyRead, lptszName, 0,
+                            &dwType, lpData, lpdwDataSize);
 }
 
-int TRegistry::RegGetInt(int use_user, const char* name)
-{
-    unsigned long dwSize = 4;
-    unsigned long dwType = 4;
-    int result;
+int TRegistry::RegGetInt(int UseUserKey, const char* lptszName) {
+    unsigned long Size = 4;
+    unsigned long dwType = REG_DWORD;
+    int Data;
     long err;
-    if (use_user) {
-        err = RegQueryValueExA(this->ghUserKey, name, 0, &dwType,
-                               (unsigned char*)&result, &dwSize);
+    if (UseUserKey) {
+        err = RegQueryValueExA(this->ghUserKey, lptszName, 0, &dwType,
+                               (unsigned char*)&Data, &Size);
     } else {
-        err = RegQueryValueExA(this->ghMachineKeyRead, name, 0, &dwType,
-                               (unsigned char*)&result, &dwSize);
+        err = RegQueryValueExA(this->ghMachineKeyRead, lptszName, 0, &dwType,
+                               (unsigned char*)&Data, &Size);
     }
     if (err == 0) {
-        return result;
+        return Data;
     }
     return -1;
 }

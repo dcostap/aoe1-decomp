@@ -29,26 +29,26 @@ TDebuggingLog::~TDebuggingLog() {
     CloseLog();
 }
 
-void TDebuggingLog::LogFile(int value) {
-    if (value != 0) {
+void TDebuggingLog::LogFile(int DoLog) {
+    if (DoLog != 0) {
         LogToFile = 1;
     } else {
         LogToFile = 0;
     }
-    Log("Logging to File %s", YesOrNo(value));
+    Log("Logging to File %s", YesOrNo(DoLog));
 }
 
-void TDebuggingLog::LogOutput(int value) {
-    if (value != 0) {
+void TDebuggingLog::LogOutput(int DoLog) {
+    if (DoLog != 0) {
         LogToOutput = 1;
     } else {
         LogToOutput = 0;
     }
-    Log("Logging to OUTPUT %s", YesOrNo(value));
+    Log("Logging to OUTPUT %s", YesOrNo(DoLog));
 }
 
-void TDebuggingLog::LogTimestamp(int value) {
-    if (value != 0) {
+void TDebuggingLog::LogTimestamp(int DoTimestamp) {
+    if (DoTimestamp != 0) {
         Timestamp = 1;
     } else {
         Timestamp = 0;
@@ -56,8 +56,8 @@ void TDebuggingLog::LogTimestamp(int value) {
     Log("Timestamp milliseconds %s", YesOrNo(Timestamp));
 }
 
-void TDebuggingLog::LogDateTimestamp(int value) {
-    if (value != 0) {
+void TDebuggingLog::LogDateTimestamp(int DoTimestamp) {
+    if (DoTimestamp != 0) {
         DateTimestamp = 1;
     } else {
         DateTimestamp = 0;
@@ -71,7 +71,7 @@ void TDebuggingLog::Time() {
     time_t ltime;
     time(&ltime);
     struct tm* timeinfo = localtime(&ltime);
-    float elapsed = (float)(ticks - LogStartTickCount) * 0.001f;
+    float fTicksElapsed = (float)(ticks - LogStartTickCount) * 0.001f;
     const char* timestr;
 
     if (timeinfo == 0) {
@@ -79,11 +79,11 @@ void TDebuggingLog::Time() {
     } else {
         timestr = asctime(timeinfo);
     }
-    Log(">>>TIME>>>  %s   [%7.1f sec. elapsed]", timestr, (double)elapsed);
+    Log(">>>TIME>>>  %s   [%7.1f sec. elapsed]", timestr, (double)fTicksElapsed);
 }
 
-void TDebuggingLog::FlushToDisk(int value) {
-    if (value != 0) {
+void TDebuggingLog::FlushToDisk(int DoFlush) {
+    if (DoFlush != 0) {
         Flush = 1;
     } else {
         Flush = 0;
@@ -91,8 +91,8 @@ void TDebuggingLog::FlushToDisk(int value) {
     Log("Flush queue each message %s", YesOrNo(Flush));
 }
 
-void TDebuggingLog::LogSequence(int value) {
-    if (value != 0) {
+void TDebuggingLog::LogSequence(int DoSequence) {
+    if (DoSequence != 0) {
         Sequence = 1;
         SeqNo = 0;
     } else {
@@ -112,11 +112,11 @@ void TDebuggingLog::OpenLog() {
     LogStartTickCount = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\Debuglog.cpp", 0xA3);
 
-    for (int i = 1; i <= 25; i++) {
-        if (i == 1) {
+    for (int nLoop = 1; nLoop <= 25; nLoop++) {
+        if (nLoop == 1) {
             strcpy(Filename, "C:\\AOELOG.txt");
         } else {
-            sprintf(Filename, "C:\\AOELOG%.2d.txt", i - 1);
+            sprintf(Filename, "C:\\AOELOG%.2d.txt", nLoop - 1);
         }
 
         logstream = fopen(Filename, "wt");
@@ -150,7 +150,7 @@ void TDebuggingLog::CloseLog() {
     }
 }
 
-void __cdecl TDebuggingLog::Log(char* format, ...) {
+void __cdecl TDebuggingLog::Log(char* fmt, ...) {
     if ((LogToFile == 0 && LogToOutput == 0) || LogError != 0) {
         return;
     }
@@ -167,8 +167,8 @@ void __cdecl TDebuggingLog::Log(char* format, ...) {
     char* buffer = TBuff;
     ++SeqNo;
     va_list args;
-    va_start(args, format);
-    vsprintf(buffer, format, args);
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
     va_end(args);
 
     unsigned long ticks = GetTickCount();
@@ -211,8 +211,8 @@ void __cdecl TDebuggingLog::Log(char* format, ...) {
     }
 }
 
-char* TDebuggingLog::YesOrNo(int value) {
-    if (value != 0) {
+char* TDebuggingLog::YesOrNo(int TorF) {
+    if (TorF != 0) {
         return " is now ACTIVE.";
     }
     return " has been deactivated.";
