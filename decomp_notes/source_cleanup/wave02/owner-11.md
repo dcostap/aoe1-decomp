@@ -4,7 +4,8 @@
 
 - Group branch: `cleanup/staging-20260915-91`
 - Common base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Reviewed source and header head before this ledger: `412be0cccf0a953760519ce7b7bc350406874ddb`
+- Initial reviewed group head: `ad4e8c9b917e77b44b12c04fe87b46e762421355`
+- Correction review head before this ledger update: `9daf9fe7a64a05dde6cff1e529128f9482fa219b`
 - Sources: `src/scr_ach.cpp`, `src/scr_cred.cpp`, `src/scr_end.cpp`, `src/scr_info.cpp`, `src/scr_mp.cpp`, `src/scr_mps.cpp`, `src/scr_stms.cpp`, and `src/scr_trb.cpp`
 - Headers: `include/scr_ach.h`, `include/scr_cred.h`, `include/scr_end.h`, `include/scr_info.h`, `include/scr_mp.h`, `include/scr_mps.h`, `include/scr_stms.h`, and `include/scr_trb.h`
 - Module reports: the eight matching files under `decomp_notes/source_cleanup/wave02/`
@@ -33,6 +34,20 @@ superseded it. The object was not integrated.
 
 Owner header commit: `412be0cccf0a953760519ce7b7bc350406874ddb`.
 
+Focused root review required presentation and evidence corrections after the
+initial integration. The correction chains remain separate commits.
+
+| Module | Corrected worker head | Additional worker commits | Additional integrated commits |
+| --- | --- | --- | --- |
+| `scr_ach` | `c4670cbe9f6e0461ecafa8905ebc343679ff804f` | `575575b0b6f8e7774bb68d45eedfb0737be8bce7`, `c4670cbe9f6e0461ecafa8905ebc343679ff804f` | `86ff13705d905d821d80975238ccf2a7b9073f47`, `f468d160e3ec03d4925c3847f27a44a2d672f1a8` |
+| `scr_cred` | `66ea3e0f4c9f41d9fdea133bb10b7beb8d6703f2` | `5842248aa71cd3ccdf2f800902f44ad476f51210`, `e92959ab36b06198a74c28146b499c037f0a8216`, `641a1218013c112de1707d8f3e471c26bb92b4a1`, `4fa0ec14605f7bd6a1c05e8ee713efb4041a9d20`, `3b9305d6a03f6913dd71ac1686467467337fba75`, `690da0d79225b7126cdff62836b1d591f97dfc92`, `66ea3e0f4c9f41d9fdea133bb10b7beb8d6703f2` | `95c9b04e3f0855e0bf61661416ca4eb5b24623d4`, `a9919fe8ae5cd292e090b9bedeba807ec686f49d`, `5742d6deb62b7053b0d8c56c7f9d6633f207ee9a`, `afb677dc6f1c575ad9bc2aa3ff74757dc2f6f425`, `4f32bced31b5ba3e0124b9c36765cb4e2ce961b6`, `54f812c794a332fbd41ccfc4c131bf8bee3d25a9`, `7ed1ef9a9dfff2f41319a615ad9eb76d576f707b` |
+| `scr_end` | `59fe2d19bc70e61c3ff86af792485b6579b25ec2` | `87b8556a3ec3d4084e2ec55a88d8f0e91b251702`, `59fe2d19bc70e61c3ff86af792485b6579b25ec2` | `1eb69fd1134025d60ce362c5d5c993a10c8ac46d`, `1da92e2dbc4ed86d664e207c3dd2766e32b67e2c` |
+| `scr_info` | `4fea9d562931344d3f4af6d54a9b8acbfdf26524` | `f31e86c42def400fb8747401707c153426dc7ff1`, `4fea9d562931344d3f4af6d54a9b8acbfdf26524` | `b7e62ed24bcd65a4f048b63550c1156e117f6054`, `9833b6686fbe4a23a1b4b8abad4c03b4b4cba758` |
+| `scr_mps` | `87b578a1333cfa985e7c9de24b8935e04824b846` | `913677d4e6fb0d1f831d5de47fd8247e51cf43c6`, `5dccb06ffd7366df9a34487424b79f8d27bad237`, `b091d3a5fcf0925e958de79b2f6338d6c20b0fd0`, `9709313fb7e9a7e930448b54eafb545a9fba7c32`, `87b578a1333cfa985e7c9de24b8935e04824b846` | `934dc3fa3086b24b483fc71fe54e1dbe39dc7206`, `bced0177307e6fe3883d1cbeefe8dda3093349d3`, `74866e19e2eb326dc1a66761a49b730007b51980`, `dc1673f961ec9bb429dc132b7d1f707c68d03cf9`, `7b701b8bfde46237eab1acec33bc626f1c5a782f` |
+
+The matching header presentation correction is
+`9daf9fe7a64a05dde6cff1e529128f9482fa219b`.
+
 ## Review findings and corrections
 
 I read every complete worker diff and module report.
@@ -41,7 +56,12 @@ I read every complete worker diff and module report.
 - `scr_mp`: returned for the constructor brace and the four-parameter action line.
 - `scr_mps`: returned for a wrong PDB hash and one split `else` clause.
 - `scr_trb`: returned for the constructor brace, header-request wrapping, and correction history.
-- `scr_cred`, `scr_end`, `scr_info`, and `scr_stms`: approved on first review.
+- `scr_cred`, `scr_end`, and `scr_info`: returned after root review for compact
+  signatures and calls. The credits correction also required direct coordinate
+  evidence and one restored uncertain local name.
+- `scr_mps`: returned after root review to restore two uncertain local names and
+  document direct readiness-pointer evidence.
+- `scr_stms`: approved on first review.
 
 The header commit restores the same PDB parameter spellings in declarations.
 It changes no type, order, virtual slot, or layout. It also removes one
@@ -62,16 +82,19 @@ The main recovered declaration groups are:
 - Screen-specific names include `titleText`, `end_flag`, `backgroundName`,
   `message_in`, `lobbyTimeout`, `line_no`, `really_kicked`, `tabList`, and
   the credits palette names.
-- `scr_cred` adds the new descriptive local `action_result`. All other changed
-  names are recovered PDB spellings.
+- `scr_cred` adds the descriptive local `action_result`. It keeps the baseline
+  `second_text_x` because the PDB `x` home does not match the instruction store.
 
 The following mappings remain unresolved and unchanged:
 
 - `scr_ach`: overlapping PDB `txt[30]` and `temptxt[50]` records share storage.
 - `scr_cred`: constructor PDB `size` is `long`; source keeps its existing `int`.
+  The source also keeps `second_text_x`; the instruction store uses the reused
+  `draw_row` home at entry `ESP+08h`, not the PDB `x` home at `ESP+10h`.
 - `scr_mp`: PDB array sizes for `Data` and `temp_str` differ from source.
-- `scr_mps`: source keeps `position_used[9]`, the readiness alias mapping, and
-  the `file_scratch` union despite narrower or reused PDB records.
+- `scr_mps`: source keeps `position_used[9]`, `selected_position`,
+  `first_any_color_index`, the readiness alias mapping, and the `file_scratch`
+  union despite narrower, reused, or instruction-unproved PDB records.
 - `scr_stms` and `scr_trb`: unrecorded readable locals remain unchanged.
 
 ## Shared resource requests
