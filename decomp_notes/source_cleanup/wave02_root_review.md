@@ -1,5 +1,13 @@
 # Cleanup wave 02 root review
 
+## Owner 11: corrected delivery queued
+
+Corrected head: `616082391a771bacc7305fad75c21cc2e602a5f4`.
+Root saved the complete 824-line correction diff as `build/source-cleanup-20260915/owner11-corrections.diff`.
+Delegated correction review waits for one of the three active reviewers to finish.
+The 78 string requests and three binary resource requests still need decisions.
+No shared resource definition changed in this delivery. Integration remains blocked on review and those decisions.
+
 ## Owner 10: approved and integrated
 
 Root read all 340 lines of the final report-only correction diff.
