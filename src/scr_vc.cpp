@@ -45,7 +45,7 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
         // The shipped executable truncates the copied name by four bytes.
         adjusted_name[strlen(scenario_name) - 4] = 0;
     } else {
-        strcpy(adjusted_name, get_string(0x2655));
+        strcpy(adjusted_name, get_string(IDS_MISSION_TITLE_INSTRUCTIONS));
     }
 
     create_text(this, &this->title, adjusted_name, 10, 0xF, 0x26C,
@@ -62,12 +62,12 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
 
     create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0xC8, 0x1B8,
                   0xF0, 0x1E, 0, 0, 0);
-    create_button(this, &this->text_buttons[0], 0x2A31, 0, 0x145,
+    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 0x145,
                   0x13C, 0xB4, 0x1E, 0, -1, 0);
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(this, text_button_1, 0x2A32, 0, 0x145, 0x15C,
+    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 0x145, 0x15C,
                   0xB4, 0x1E, 0, -1, 0);
-    create_button(this, &this->text_buttons[2], 0x2A37, 0, 0x145,
+    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 0x145,
                   0x17C, 0xB4, 0x1E, 0, -1, 0);
 
     for (int i = 0; i < 3; i++) {
