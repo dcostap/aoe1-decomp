@@ -119,9 +119,14 @@ worker's correction.
 
 ## Resource evidence
 
-The random-game path uses numeric lookup `0x277B` through the virtual
-`get_string` call. The call passes the returned string as random-game AI
-information. It proves the purpose, but not an original macro name.
+The root resource header approves cleanup macro `IDS_AI_FILE_RANDOM`.
+The approval is in root commit `bf943f3339643ee5beca7dd74e98b4cb729e48d3`.
+The macro retains value `0x277B`.
+The random-game path passes this ID through the virtual `get_string` call.
+The call passes the returned string as random-game AI information.
+The macro is a cleanup name, not a claimed original macro name.
+The DLL extraction proves payload status only. The source lookup path supplies
+the runtime base and override behavior.
 
 The inspected DLL evidence is:
 
@@ -145,18 +150,19 @@ The lookup path is:
 
 1. `RGE_Base_Game` sets `string_dll_name` to `language.dll`.
 2. Base setup loads that name with `LoadLibraryA` into `StringTable`.
-3. `World::new_game` calls `rge_base_game->get_string(0x277B, ...)`.
+3. `World::new_game` calls `rge_base_game->get_string(IDS_AI_FILE_RANDOM, ...)`.
 4. The virtual `TRIBE_Game::get_string` checks `StringTableX` first.
 5. `TRIBE_Game::setup` loads `languagex.dll` into `StringTableX`, unless a
    `STRING=` command option selects another override DLL.
 6. If `StringTableX` has no entry, `TRIBE_Game::get_string` calls the base
    method.
-7. The base method calls `LoadStringA(StringTable, 0x277B, ...)`.
+7. The base method calls `LoadStringA(StringTable, IDS_AI_FILE_RANDOM, ...)`.
 8. The base fallback therefore returns `Random` from `language.dll`.
 
 The inspected runtime files are not called original files. The XPack file is
 the pinned original only because its path is under the repository's original
-game files. No shared resource header changed, and no resource name was added.
+game files. The approved root header owns the cleanup macro. This worker does
+not modify that header.
 
 No new constants or comments were added. Existing numeric file flags and
 scenario version values remain unchanged.
