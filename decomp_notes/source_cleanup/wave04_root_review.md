@@ -1,5 +1,19 @@
 # Cleanup wave 04 root review
 
+## Owner 27: delegated review started
+
+- Delivered head: `54b83713c3ed08ec13f03739be043a1c99d9cf63`.
+- Base: `c22ba4258c45b1178181e185d60a3b09a1add617`.
+- Full diff: `build/source-cleanup-20260915/owner27-review.diff`, 12,498 lines.
+- Reviewer: `sa-32cff643`, Sol medium, read only.
+
+The assignment covers eight sources, six changed headers, and nine reports.
+The reviewer will check `IDS_ERROR_TITLE` at `0x07D1` and the shared chat-header request.
+Main already contains the approved chat header. Review must still check the group's import and consumer state.
+The historical `0x03EB` help-window mapping remains subject to caller and resource evidence.
+All groups have now delivered. Owners 14 and 27 still need final review before cleanup can close.
+Full validation remains deferred until all corrections and integrations finish.
+
 ## Owner 28: final reports approved
 
 Root read the complete two-report diff to `5c12201357c5779f361f6d3232f4688c201b7b08`.
