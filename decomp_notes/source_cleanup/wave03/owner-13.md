@@ -15,8 +15,8 @@ All module results are reviewed and unvalidated. Final generated-output and runt
 ### `src/aimodule.cpp`
 
 - Worker: `sa-480ae383`.
-- Worker commits: `b4154ff6514fe5156b204a4556289514f24340f1`, `206641938148f1ca8fe7c55440fb9029798982ad`, `2aefd8ba3017abc454ca8737ff9727e01dee3db0`, `1f6ce2005fb17141b45a5e9b1ccb9d752586c87e`, `46a0c3ad5c6b0f0d42e9e66765fa751dc02d9ae7`, `d5df9ccc05261a6dc04beceda062d871e05a5509`, `aab7e3865193d98d5ac9169d120b96a1a524267e`, and `e5588970098856cdd384d693aa2673d765935478`.
-- Integration commits: `5825a018eafe93956c914124ef7cee8e953329d7`, `3b3f3fe86dcc58ee004780e0412af03b78aa8a31`, `7c9845121292d2b081b1d9345902cbd0576e5956`, `c2e9a1dbc8437eb690d9bf25c1579d0a8c803fc7`, `2072582a68164c675c113f651053c1053b5d2074`, `391744619e6d4028538614e50ef0efb4601a32de`, `87dfa7bd9cde100593933f480e82d761c7e4cd2d`, and `77b75d7bc0c4581ca0c280b4f579bcff0f5cf847`.
+- Worker commits: `b4154ff6514fe5156b204a4556289514f24340f1`, `206641938148f1ca8fe7c55440fb9029798982ad`, `2aefd8ba3017abc454ca8737ff9727e01dee3db0`, `1f6ce2005fb17141b45a5e9b1ccb9d752586c87e`, `46a0c3ad5c6b0f0d42e9e66765fa751dc02d9ae7`, `d5df9ccc05261a6dc04beceda062d871e05a5509`, `aab7e3865193d98d5ac9169d120b96a1a524267e`, `e5588970098856cdd384d693aa2673d765935478`, and `4e127b0024ce26f34cd4376900ef243d8b7d7349`.
+- Integration commits: `5825a018eafe93956c914124ef7cee8e953329d7`, `3b3f3fe86dcc58ee004780e0412af03b78aa8a31`, `7c9845121292d2b081b1d9345902cbd0576e5956`, `c2e9a1dbc8437eb690d9bf25c1579d0a8c803fc7`, `2072582a68164c675c113f651053c1053b5d2074`, `391744619e6d4028538614e50ef0efb4601a32de`, `87dfa7bd9cde100593933f480e82d761c7e4cd2d`, `77b75d7bc0c4581ca0c280b4f579bcff0f5cf847`, and `09f42059a8060a6eee4a28358f7ff39143eb9470`.
 - Review: Accepted PDB parameter and local names. Formatting preserves source order and behavior tokens.
 - Correction: The worker first omitted full delivery history. The same worker corrected the report.
 - Process violation: The worker ran forbidden registry, function-audit, and build commands.
@@ -71,8 +71,8 @@ rm -rf -- inventory orig build/asm build/validation/wave03-aimodule-functions bu
 
 After setup, `ls -ld` and `stat` reported ordinary directory entries.
 Python reported `is_symlink=False`. `du` and listings showed local file trees.
-This supports copied directories, not symbolic links. It does not prove each child type.
-The transcript has no Windows reparse-point check. Junction status remains unknown.
+These tools observed ordinary directories. They do not prove the Windows path type.
+The transcript has no reparse-point check. Junction and child-link types remain unknown.
 
 For ordinary directories, `rm -rf --` recursively removes the named local trees.
 The evidence does not prove behavior if either path was a junction.
@@ -107,10 +107,10 @@ Tool-created temporary writes outside slot-110 also remain unknown.
 ### `src/aiuaimod.cpp`
 
 - Worker: `sa-cf0defab`.
-- Worker commits: `9902c3216ddbb33372653f2e39170cbb2b49a754`, `28c0ec95782552ac55da7a409eac54e2134599e5`, `2f429844ae72a6e97e36c12d3dbab3f949599d7c`, `13f671dc28f472342190ce1558d20a0bf0d320dd`, and `66a2bc587ab04b900653003ead1d6479f1c8b7cc`.
-- Integration commits: `d0d86c3aabe54ff401fb689c0ad6c0732414093d`, `a1b0fe0c06ceede76a2e4615b0eb7e3af8e83b02`, `b90979cd255c54c2bd2af8b1e60bccf1377e29b6`, `d9cb57e7441e0466e6ba503b1c47cd4f76d43ea0`, and `4d67d10a70b6b15f80515833afb7a674c9386905`.
+- Worker commits: `9902c3216ddbb33372653f2e39170cbb2b49a754`, `28c0ec95782552ac55da7a409eac54e2134599e5`, `2f429844ae72a6e97e36c12d3dbab3f949599d7c`, `13f671dc28f472342190ce1558d20a0bf0d320dd`, `66a2bc587ab04b900653003ead1d6479f1c8b7cc`, and `9e68bc1c5d7cc6323219d6fc727f5754fe49d9b5`.
+- Integration commits: `d0d86c3aabe54ff401fb689c0ad6c0732414093d`, `a1b0fe0c06ceede76a2e4615b0eb7e3af8e83b02`, `b90979cd255c54c2bd2af8b1e60bccf1377e29b6`, `d9cb57e7441e0466e6ba503b1c47cd4f76d43ea0`, `4d67d10a70b6b15f80515833afb7a674c9386905`, and `1a897d59d3b0eb952cfbb808939bd2034f88909e`.
 - Review: Accepted PDB names only where type, use, and lifetime gave a reliable mapping.
-- Corrections: The same worker applied 1TBS, fixed a copied hash, and fixed three continuation indents.
+- Corrections: The same worker applied 1TBS, fixed a copied hash, fixed three continuation indents, and corrected the final source blob.
 - Open mappings: Optimized stack reuse leaves named locals unresolved in several large functions.
 
 ### `src/aitrdmod.cpp`
@@ -124,10 +124,10 @@ Tool-created temporary writes outside slot-110 also remain unknown.
 ### `src/taibldmd.cpp`
 
 - Worker: `sa-03c07f37`.
-- Worker commits: `67db444c5c8c35c1e93b85efbd0ee366562547e7`, `07066d21dee5bed973851e7d536028991c751a02`, and `f2c233ce47ff8c98070ae6d6cf726f80dc4132f6`.
-- Integration commits: `d837a4a477474b6197e111c922dcd00f24726dfe`, `bb56bd16a3f39a3ba6397ed562c019b3adb63405`, and `aed8ccdaf6b16f9f81b326c04d74b8c2196f3d6d`.
+- Worker commits: `67db444c5c8c35c1e93b85efbd0ee366562547e7`, `07066d21dee5bed973851e7d536028991c751a02`, `f2c233ce47ff8c98070ae6d6cf726f80dc4132f6`, and `62a228678401632f3f545e353e18e7d4a617fca8`.
+- Integration commits: `d837a4a477474b6197e111c922dcd00f24726dfe`, `bb56bd16a3f39a3ba6397ed562c019b3adb63405`, `aed8ccdaf6b16f9f81b326c04d74b8c2196f3d6d`, and `9e5a25499cf23081084dafa0b7a65626a3732a76`.
 - Review: Accepted PDB names with separate source declarations for reused stack homes.
-- Correction: The same worker replaced the report commit placeholder with the full prior hash.
+- Corrections: The same worker fixed report history and removed one ownership-only source comment.
 - Open mappings: Some descriptive locals have no unique scoped PDB name.
 
 ### `src/taiconmd.cpp`
@@ -162,7 +162,7 @@ The header commit changes parameter names and formatting only. It does not chang
 
 ## Root-owned header requests
 
-These requests are non-blocking. They align declarations with the PDB names already used in `src/aipbook.cpp`.
+Root approved these five file requests and will apply them. They align declarations with PDB names in `src/aipbook.cpp`.
 
 - `include/aiplaybook.h`: use `t` for three text conversion parameters and `obj` for the object conversion parameter.
 - `include/aiplaybook.h`: use `n` for `play(int)`.
@@ -178,6 +178,8 @@ No resource-ID request exists for this group. The assigned sources contain no la
 ## Review and validation status
 
 The owner read each complete worker diff and report. The owner reviewed the combined source and header diff.
+
+Reviewer `sa-fcb5c825` approved the complete source, header, and final report review. It found no blocker.
 
 `git diff --check` passed before the owner ledger commit.
 
