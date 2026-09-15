@@ -6,7 +6,7 @@
 - Base: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Initial handoff integration head: `2fdfc17c35a4ed868558ef3263b939df3ea75f0c`
 - Corrected integration head before this ledger update: `be32a0e3515bcaa8500bd176acda4c95fe77c56b`
-- Final correction head before this ledger update: `981b03543aaaf9676430c9575c221df197da73d4`
+- Final correction head before this ledger update: `981b03543df1aff75666a5281a0e3850847d7d4a`
 - Scope: eight screen modules and eight authorized headers.
 - Status: reviewed and integrated, but unvalidated.
 
@@ -76,6 +76,9 @@ The same worker restored both calls to one line.
 Final root review found an incorrect top commit label in `scr_main.md`.
 The same worker distinguished the root commit from the worker-local cherry-pick.
 
+Commit `6ded709dd61101f5c49a354664c58afb52129de6` recorded three incorrect full hashes in this ledger.
+This report correction uses the exact hashes copied from `git log`.
+
 Excluded worker-local shared-header commits:
 
 | Module | Excluded commit |
@@ -130,9 +133,9 @@ Excluded worker-local shared-header commits:
 | `326fdea4ce43820c020f01a4ec90f4e86eb075cc` | `scr_main` resource report |
 | `fe6c99a0f18ddde55d50efad386d9d2d5805c447` | `scr_name` resource substitutions and report |
 | `be32a0e3515bcaa8500bd176acda4c95fe77c56b` | `scr_name` resource evidence correction |
-| `044b2398dd25079a0da79bb9ec0ee16287cdb7d7` | `scr_main` shared-commit provenance correction |
-| `a1fc267b64788799287b8c6a3b2c0c513dc1827` | `scr_cam` final call formatting |
-| `981b03543aaaf9676430c9575c221df197da73d4` | `scr_cam` final correction record |
+| `044b2398d580d86c2b7d78cf4ccbb5cbfc4115ce` | `scr_main` shared-commit provenance correction |
+| `a1fc267b6c29dd4eba5ad4e9045f7081294d6333` | `scr_cam` final call formatting |
+| `981b03543df1aff75666a5281a0e3850847d7d4a` | `scr_cam` final correction record |
 
 ## Owner header changes
 
