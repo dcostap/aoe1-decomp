@@ -5,7 +5,9 @@
 - Module: `src/tpnl_inv.cpp`
 - Branch: `cleanup/staging-20260915-168`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `88cf53624dc23936c7f1ab13521a7132a9156591`
+- Final source commit: `769862964a5a4b0a3fd7e9d1a791df669c2e7b71`
+- Root approval commit: `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`
+- Worker header import commit: `9a69d07001fa96f93d72ada89e3a094a579e4428`
 - Report commit: separate commit after the source commit
 - Changed files:
   - `src/tpnl_inv.cpp`
@@ -13,8 +15,13 @@
 - Header owner: owner 19 owns `include/tpnl_inv.h`. I did not edit it.
 
 The source keeps the eight normal functions in PDB source order. It also keeps
-all existing calls, expressions, types, storage, scopes, literals, and data.
-The cleanup restores PDB parameter names and one SDK constant name.
+all existing calls, types, storage, scopes, and data values. The cleanup
+restores PDB parameter names, one SDK constant name, and four approved resource
+names.
+
+The root-approved `include/resource_ids.h` import is a parent commit. This
+worker did not edit the header. This follow-up changes only the source and this
+report.
 
 ## Scope and evidence
 
@@ -46,6 +53,18 @@ I inspected each registry-selected packet. The packets are:
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0051/0051AC10_save_info.txt`
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0051/0051ACA0_get_help_info.txt`
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0051/0051A690_scalar_deleting_destructor.txt`
+
+I reviewed the owner-19 resource checks:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/base.json`
+  SHA-256 `01aea4f0a56a8f7ac03fc7ec2c9e1239eaf501f5081c50ec5f8cdc4bf65ecb5c`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/runtime-x.json`
+  SHA-256 `edda90ec31fbbddbd271ab4a92275abc97cd2cc19fdb4b3b9e18c751ce59a5b0`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/pinned-x.json`
+  SHA-256 `f67bdf54caf9ec971423f95a69222da2827a8892eb2215628922c1151ad88235`
+
+All three owner-19 files report IDs `0x1D4ED` through `0x1D4F0` as missing
+for language `0x0409`.
 
 The original executable remains the behavior oracle:
 
@@ -119,9 +138,11 @@ created. Existing `TPanel::RedrawNone` and `TPanel::RedrawNormal` names remain.
 Other numeric values remain unchanged because no shared symbol has a proved
 matching role.
 
-The four IDs in `get_help_info` are resource lookup IDs. Root owns
-`include/resource_ids.h`, so I did not define macros. The source keeps the
-numeric IDs until root reviews the requests below.
+The four IDs in `get_help_info` are resource lookup IDs. Root approved these
+names in commit `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`. The worker imported
+the reviewed header in commit `9a69d07001fa96f93d72ada89e3a094a579e4428`.
+The import hash was verified with `git rev-parse`. I then included the header
+and replaced only these four ID literals in this source.
 
 The lookup path is established by these source owners:
 
@@ -145,12 +166,12 @@ folder:
 Each checked file uses resource type `RT_STRING`. Every ID below is missing.
 A missing ID has no returned language or text record. This is not an empty slot.
 
-| ID | Proposed cleanup name | Proven purpose | Base runtime result | Runtime expansion result | Pinned XPack expansion result |
+| ID | Approved cleanup name | Proven purpose | Base runtime result | Runtime expansion result | Pinned XPack expansion result |
 | --- | --- | --- | --- | --- | --- |
-| `0x1D4ED` | `IDS_HELP_FOOD` | Help format for `attributes[0]`, the food field | Missing; no text | Missing; no text | Missing; no text |
-| `0x1D4EE` | `IDS_HELP_WOOD` | Help format for `attributes[1]`, the wood field | Missing; no text | Missing; no text | Missing; no text |
-| `0x1D4EF` | `IDS_HELP_GOLD` | Help format for `attributes[3]`, the gold field | Missing; no text | Missing; no text | Missing; no text |
-| `0x1D4F0` | `IDS_HELP_STONE` | Help format for `attributes[2]`, the stone field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4ED` | `IDS_HELP_INVENTORY_FOOD_FORMAT` | Help format for `attributes[0]`, the food field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4EE` | `IDS_HELP_INVENTORY_WOOD_FORMAT` | Help format for `attributes[1]`, the wood field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4EF` | `IDS_HELP_INVENTORY_GOLD_FORMAT` | Help format for `attributes[3]`, the gold field | Missing; no text | Missing; no text | Missing; no text |
+| `0x1D4F0` | `IDS_HELP_INVENTORY_STONE_FORMAT` | Help format for `attributes[2]`, the stone field | Missing; no text | Missing; no text | Missing; no text |
 
 Resource file provenance and hashes:
 
@@ -164,10 +185,11 @@ Resource file provenance and hashes:
   SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
   Checked language `0x0409`; all four IDs are missing.
 
-The proposed names are new cleanup names. No original macro spelling is known.
-The purpose is proven by the four hit bands in the original packet and by the
-named resource fields in `src/dlg_dip.cpp` lines `585-596`. The text remains
-unknown.
+The approved names are cleanup names, not recovered original macro spellings.
+The format purpose is proved by the assigned `get_help_info` call sites and
+their player field roles. Each call gets a string and passes one integer
+attribute to `sprintf`. The four help payloads remain unknown because all four
+IDs are missing from the checked resource files.
 
 ## Comments and unusual behavior
 
@@ -179,14 +201,15 @@ The source also keeps the original narrow `short` snapshot values and the
 ## Code generation, type, layout, and symbol review
 
 The source changes only parameter names, local identifier uses, one SDK macro
-that expands to the same integer literal, and brace or signature formatting.
+that expands to the same integer literal, four resource macros with the same
+integer values, an include, and brace or signature formatting.
 It does not change any public function name, decorated symbol, ABI type, call
 target, cast, declaration scope, storage, member layout, statement order,
 control flow, literal value, string, function boundary, or relocation source.
 The `TRANSPARENT` macro keeps the original `1` value and type. Generated code,
 program data, relocations, and call targets remain unvalidated.
 
-## Header requests and unresolved questions
+## Header review and unresolved questions
 
 I did not edit `include/tpnl_inv.h`. Owner 19 may add these PDB-backed parameter
 names without changing types or ABI:
@@ -199,18 +222,19 @@ virtual unsigned char get_help_info(char*& string, long& page, long x, long y);
 void set_player(TRIBE_Player* player_in);
 ```
 
-Root owns `include/resource_ids.h`. Please review these four new shared
-resource mappings:
+Root owns `include/resource_ids.h`. Root approved these shared resource
+mappings in commit `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`:
 
-- `0x1D4ED` -> `IDS_HELP_FOOD`
-- `0x1D4EE` -> `IDS_HELP_WOOD`
-- `0x1D4EF` -> `IDS_HELP_GOLD`
-- `0x1D4F0` -> `IDS_HELP_STONE`
+- `0x1D4ED` -> `IDS_HELP_INVENTORY_FOOD_FORMAT`
+- `0x1D4EE` -> `IDS_HELP_INVENTORY_WOOD_FORMAT`
+- `0x1D4EF` -> `IDS_HELP_INVENTORY_GOLD_FORMAT`
+- `0x1D4F0` -> `IDS_HELP_INVENTORY_STONE_FORMAT`
 
-The source does not apply these names until root provides the shared macros.
-No other header request is open. The resource text is missing in all three
-checked DLLs. The purpose remains established; the exact historical text does
-not.
+The worker imported the approved header in commit
+`9a69d07001fa96f93d72ada89e3a094a579e4428`. The source now applies these
+names. No other header request is open. The resource text is missing in all
+three checked DLLs. The format purpose remains established; the exact
+historical text does not.
 
 ## Validation
 
