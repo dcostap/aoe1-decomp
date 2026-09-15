@@ -1,5 +1,15 @@
 # Cleanup wave 03 root review
 
+## Owner 16: final report correction approved
+
+Root read the complete final diff to `41abb6751ca915b6136b8a1c6c777baeb988ab3d`.
+It changes only the map report and owner ledger, including the stale declaration name.
+The report now agrees with the approved source and header. No review blocker remains.
+The original full review and 276-line correction review remain in effect.
+Root merged the group as `39c340bb871a4d0fe5eccec0d70247bf1a6d619e`.
+Main contains 152 assigned modules plus the pilot: 153 of 225, or 68.0%.
+Compiler and runtime validation remain deferred.
+
 ## Owner 16: correction review resumed
 
 Owner 16 delivered corrected head `fa9d0014ec5cd16dfe6d545c54816eb68d4611dd`.
