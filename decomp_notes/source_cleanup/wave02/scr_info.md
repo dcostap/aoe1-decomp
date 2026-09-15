@@ -6,14 +6,14 @@
 - Header read-only: `include/scr_info.h`
 - Branch: `cleanup/staging-20260915-95`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source cleanup commit: `1c0c10bd6edd401f7c70b1a47173fa854bf5c8fc`
+- Final source cleanup commit: `f31e86c42def400fb8747401707c153426dc7ff1`
 - Changed files:
   - `src/scr_info.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_info.md`
 
 The source commit changes only the assigned source file. The report commit
 follows the source commit. Its full hash is returned in the worker handoff.
-The final module source commit above is the exact post-cleanup source hash.
+The final module source commit above includes the root correction review.
 
 ## Scope and evidence
 
@@ -135,6 +135,25 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1,
 The request changes no type, order, ABI, virtual slot, or layout. This worker
 did not edit the header.
 
+## Root correction review
+
+Root requested presentation-only corrections. I compacted both wrapped
+`debug_timeGetTime` calls and the `key_down_action` and
+`mouse_left_down_action` definitions. The constructor remains wrapped because
+its declaration is longer. Its continuation stays aligned with its first
+parameter. I changed no types, scopes, order, calls, casts, or behavior.
+
+The correction source commit is:
+
+- `f31e86c42def400fb8747401707c153426dc7ff1`
+
+The earlier source commit remains:
+
+- `1c0c10bd6edd401f7c70b1a47173fa854bf5c8fc`
+
+The report was updated with this correction history. The header remains
+unchanged.
+
 ## Code-generation effects and validation
 
 The cleanup restores names that the PDB records. It moves function opening
@@ -150,6 +169,8 @@ I ran these allowed checks:
 - Read-only inspection of the source, header, registry, and durable note.
 - `git diff --check` before the source commit.
 - Complete source diff review.
+- `git diff --check` for the root correction.
+- Complete correction diff review.
 
 Compilation, matching, audits, and tests were **not run**. I did not run a
 compiler, build command, matching tool, audit, test suite, or game command.
@@ -157,6 +178,7 @@ compiler, build command, matching tool, audit, test suite, or game command.
 ## Commit records
 
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source cleanup commit: `1c0c10bd6edd401f7c70b1a47173fa854bf5c8fc`
+- Initial source cleanup commit: `1c0c10bd6edd401f7c70b1a47173fa854bf5c8fc`
+- Root correction commit: `f31e86c42def400fb8747401707c153426dc7ff1`
 - Final report commit: the commit that adds this report; its full hash is
   returned in the worker handoff.
