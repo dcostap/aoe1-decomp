@@ -5,7 +5,7 @@
 - Module: `src/t_histry.cpp`.
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`.
 - Source cleanup commit: `f5cf89b8070dd8bbd443f65ceb7d7527b08a6979`.
-- Final report commit: to be copied from Git after the report update.
+- Final report commit: `e8aad6b89351db0f947ae297aa5da270c89224da`.
 - Changed files: `src/t_histry.cpp` and this report only.
 - Read-only header: `include/t_histry.h`.
 
