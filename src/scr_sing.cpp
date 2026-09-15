@@ -12,9 +12,7 @@
 #include "../include/pnl_lst.h"
 #include <stdlib.h>
 
-TribeSPMenuScreen::TribeSPMenuScreen()
-    : TScreenPanel("Single Player Menu")
-{
+TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
     rge_base_game->setSinglePlayerGame(1);
     rge_base_game->setScenarioName("");
 
@@ -66,8 +64,7 @@ TribeSPMenuScreen::TribeSPMenuScreen()
     }
 }
 
-TribeSPMenuScreen::~TribeSPMenuScreen()
-{
+TribeSPMenuScreen::~TribeSPMenuScreen() {
     delete_panel((TPanel**)&title);
 
     TPanel** panel = (TPanel**)&button[0];
@@ -79,18 +76,15 @@ TribeSPMenuScreen::~TribeSPMenuScreen()
     delete_panel((TPanel**)&close_button);
 }
 
-long TribeSPMenuScreen::handle_idle()
-{
+long TribeSPMenuScreen::handle_idle() {
     if (rge_base_game->input_enabled == 0)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
 }
 
-long TribeSPMenuScreen::action(TPanel* panel, long code,
-                               unsigned long a3, unsigned long a4)
-{
-    if (panel != 0 && code == 1) {
-        if (panel == button[0]) {
+long TribeSPMenuScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0 && actionIn == 1) {
+        if (fromPanel == button[0]) {
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
@@ -103,7 +97,7 @@ long TribeSPMenuScreen::action(TPanel* panel, long code,
             return 1;
         }
 
-        if (panel == button[2]) {
+        if (fromPanel == button[2]) {
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(0);
@@ -116,7 +110,7 @@ long TribeSPMenuScreen::action(TPanel* panel, long code,
             return 1;
         }
 
-        if (panel == button[3]) {
+        if (fromPanel == button[3]) {
             rge_base_game->setCampaignGame(0);
             rge_base_game->setSavedGame(0);
             rge_base_game->setScenarioGame(1);
@@ -129,7 +123,7 @@ long TribeSPMenuScreen::action(TPanel* panel, long code,
             return 1;
         }
 
-        if (panel == button[4]) {
+        if (fromPanel == button[4]) {
             rge_base_game->disable_input();
             new TribeLoadSavedGameScreen;
             panel_system.setCurrentPanel("Load Saved Game Screen", 0);
@@ -137,18 +131,18 @@ long TribeSPMenuScreen::action(TPanel* panel, long code,
             return 1;
         }
 
-        if (panel == button[1]) {
+        if (fromPanel == button[1]) {
             rge_base_game->disable_input();
 
             RGE_Game_Info* info = rge_base_game->player_game_info;
-            char** list = 0;
-            long count;
-            long result = info->get_people_list(&list, count);
+            char** players = 0;
+            long curr_player;
+            long result = info->get_people_list(&players, curr_player);
 
             if (result > 0) {
                 for (int i = 0; i < result; i++)
-                    free(list[i]);
-                free(list);
+                    free(players[i]);
+                free(players);
             }
 
             if (result > 0) {
@@ -162,7 +156,7 @@ long TribeSPMenuScreen::action(TPanel* panel, long code,
             return 1;
         }
 
-        if (panel == button[5]) {
+        if (fromPanel == button[5]) {
             rge_base_game->disable_input();
             new TRIBE_Screen_Main_Menu;
             panel_system.setCurrentPanel("Main Menu", 0);
@@ -170,11 +164,11 @@ long TribeSPMenuScreen::action(TPanel* panel, long code,
             return 1;
         }
 
-        if (panel == close_button) {
+        if (fromPanel == close_button) {
             rge_base_game->close();
             return 1;
         }
     }
 
-    return TEasy_Panel::action(panel, code, a3, a4);
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
