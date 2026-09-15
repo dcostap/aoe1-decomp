@@ -6,7 +6,8 @@
 - Branch: `cleanup/staging-20260915-85`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Previous report commit: `61dbb6ae3d91aedf6eea80279691dea99ce860e4`
-- Approved `include/resource_ids.h` commit: `46805ee2a76f12ba7a50fa925461d1f787a00e61`
+- Worker-local `include/resource_ids.h` import commit: `46805ee2a76f12ba7a50fa925461d1f787a00e61`
+- Actual root approval commit: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Source head from `git rev-parse` before this report commit: `f9d038289fa1d7a46a81b2667839ec08f41abf31`
 - Source commits: `d0855b8b272c3d10d8c41aa82a98532ea6ef3c96`, `f9d038289fa1d7a46a81b2667839ec08f41abf31`
 - Changed files: `src/dlg_dip.cpp`; this report.
@@ -139,7 +140,7 @@ The base file contains these exact texts. The current expansion file contains th
 | `0x768B` | `Click to clear all tributes before they are paid.` | Empty slot | Clear-tributes help | `IDS_HELP_DIPLOMACY_CLEAR_TRIBUTES` |
 | `0x768C` | `If there is a check in the box, allied players win or lose as a team. Any allied player who achieves the victory condition wins the game for all allies. All players who want to pursue an allied victory must select Allied Victory.` | Empty slot | Allied-victory help | `IDS_HELP_DIPLOMACY_ALLIED_VICTORY` |
 
-The reviewed header commit `46805ee2a76f12ba7a50fa925461d1f787a00e61` defines all proposed diplomacy names. The source now uses these approved macros. They are cleanup names, not recovered macro names.
+The worker-local header import commit `46805ee2a76f12ba7a50fa925461d1f787a00e61` defines all proposed diplomacy names. Root approval is recorded by commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source now uses these approved macros. They are cleanup names, not recovered macro names.
 
 The `0x69` argument to `get_string2` is a string-group selector. It is not a direct string-table ID. `TRIBE_Game::get_string2` uses it to select the civilization-name branch, and `master_player_id` selects the resulting resource. The source keeps `0x69` and the data-driven lookup unchanged. Shape IDs `0xC62C` and `0xC63A` are not RT_STRING IDs and remain numeric.
 
@@ -154,7 +155,7 @@ TribeDiplomacyDialog(TScreenPanel* parentPanel);
 virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 ```
 
-Root applied the approved mappings in `include/resource_ids.h` at commit `46805ee2a76f12ba7a50fa925461d1f787a00e61`. The applied definitions are:
+The worker-local `include/resource_ids.h` import at commit `46805ee2a76f12ba7a50fa925461d1f787a00e61` contains the applied definitions below. Root approval is recorded by commit `8c56055b7feee1526f296bd306036a4c34f38041`:
 
 ```cpp
 #define IDS_DIPLOMACY_TITLE 0x267B
