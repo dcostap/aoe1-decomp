@@ -17,14 +17,12 @@
 extern int displayPathingFlags;
 extern int displayPathObjectID;
 
-
-
-RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
-                                     RGE_Player* player,
+RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* tobj,
+                                     RGE_Player* obj_owner,
                                      float x, float y, float z,
-                                     int doSetup)
-    : RGE_Animated_Object(master,
-                          player, x, y, z, 0),
+                                     int do_setup)
+    : RGE_Animated_Object(tobj,
+                          obj_owner, x, y, z, 0),
       pathValue(10),
       exceptionPathValue(10),
       rangeStatusValue(2),
@@ -52,17 +50,15 @@ RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
     this->continueCounter = 0;
     this->closestDistanceToWaypoint = 100000.0f;
 
-    if (doSetup != 0) {
-        this->setup(master, player, x, y, z);
+    if (do_setup != 0) {
+        this->setup(tobj, obj_owner, x, y, z);
     }
 }
 
-
-
-RGE_Moving_Object::RGE_Moving_Object(int mode,
-                                     RGE_Game_World* world,
-                                     int doSetup)
-    : RGE_Animated_Object(mode, world, 0),
+RGE_Moving_Object::RGE_Moving_Object(int infile,
+                                     RGE_Game_World* gworld,
+                                     int do_setup)
+    : RGE_Animated_Object(infile, gworld, 0),
       pathValue(10),
       exceptionPathValue(10),
       rangeStatusValue(2),
@@ -91,12 +87,10 @@ RGE_Moving_Object::RGE_Moving_Object(int mode,
     this->continueCounter = 0;
     this->closestDistanceToWaypoint = 100000.0f;
 
-    if (doSetup != 0) {
-        this->setup(mode, world);
+    if (do_setup != 0) {
+        this->setup(infile, gworld);
     }
 }
-
-
 
 RGE_Moving_Object::~RGE_Moving_Object() {
     if (this->userDefinedWaypoints != 0) {
@@ -105,13 +99,9 @@ RGE_Moving_Object::~RGE_Moving_Object() {
     }
 }
 
-
-
-void RGE_Moving_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* master,
-    RGE_Player* player,
-    float x, float y, float z)
-{
+void RGE_Moving_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj,
+                                           RGE_Player* obj_owner,
+                                           float x, float y, float z) {
     {
         Path path(10);
         this->pathValue = path;
@@ -139,7 +129,7 @@ void RGE_Moving_Object::recycle_in_to_game(
     this->continueCounter = 0;
     this->closestDistanceToWaypoint = 100000.0f;
 
-    RGE_Animated_Object::recycle_in_to_game(master, player, x, y, z);
+    RGE_Animated_Object::recycle_in_to_game(tobj, obj_owner, x, y, z);
 
     this->velocity_x = 0.0f;
     this->velocity_y = 0.0f;
@@ -161,8 +151,8 @@ void RGE_Moving_Object::recycle_in_to_game(
                     this->angle = this->angle - DAT_00570b4c;
                 } else if (this->angle > DAT_00570b50) {
                     this->angle = this->angle - DAT_00570b50;
-    }
-}
+                }
+            }
 
         }
     }
@@ -170,11 +160,9 @@ void RGE_Moving_Object::recycle_in_to_game(
     this->set_angle();
 }
 
-
-
-int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
-                             RGE_Player* player, float x, float y, float z) {
-    this->RGE_Animated_Object::setup(master_obj, player, x, y, z);
+int RGE_Moving_Object::setup(RGE_Master_Moving_Object* tobj,
+                             RGE_Player* obj_owner, float x, float y, float z) {
+    this->RGE_Animated_Object::setup(tobj, obj_owner, x, y, z);
 
     this->type = 0x1E;
     this->velocity_x = 0.0f;
@@ -211,62 +199,58 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
     return 1;
 }
 
-// Path insertion/reset, user-defined waypoint allocation/load, and version-gated fields.
-// Path::initToStart, and Path::moveToNextWaypoint. The legacy fallback assigns
-
-int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
-{
-    RGE_Animated_Object::setup(fd, world);
+int RGE_Moving_Object::setup(int infile, RGE_Game_World* gworld) {
+    RGE_Animated_Object::setup(infile, gworld);
     this->type = 0x1e;
 
-    rge_read(fd, &this->trail_remainder, 4);
-    rge_read(fd, &this->velocity_x, 4);
-    rge_read(fd, &this->velocity_y, 4);
-    rge_read(fd, &this->velocity_z, 4);
-    rge_read(fd, &this->angle, 4);
-    rge_read(fd, &this->turn_towards_time, 4);
+    rge_read(infile, &this->trail_remainder, 4);
+    rge_read(infile, &this->velocity_x, 4);
+    rge_read(infile, &this->velocity_y, 4);
+    rge_read(infile, &this->velocity_z, 4);
+    rge_read(infile, &this->angle, 4);
+    rge_read(infile, &this->turn_towards_time, 4);
 
-    int count;
-    rge_read(fd, &count, 4);
-    for (int i = 0; i < count; ++i) {
-        Waypoint wp;
-        rge_read(fd, &wp, 0x10);
-        this->pathValue.insertAtEnd(wp);
+    int numberOfWaypoints;
+    rge_read(infile, &numberOfWaypoints, 4);
+    for (int i = 0; i < numberOfWaypoints; ++i) {
+        Waypoint temp;
+        rge_read(infile, &temp, 0x10);
+        this->pathValue.insertAtEnd(temp);
     }
 
-    int reset_count;
-    rge_read(fd, &reset_count, 4);
+    int currentWaypoint;
+    rge_read(infile, &currentWaypoint, 4);
     int j = 0;
     this->pathValue.initToStart();
-    for (; j < reset_count; ++j) {
+    for (; j < currentWaypoint; ++j) {
         this->pathValue.moveToNextWaypoint();
     }
 
-    rge_read(fd, &this->startValue, 0x10);
-    rge_read(fd, &this->goalValue, 0x10);
-    rge_read(fd, &this->turnTimer, 4);
-    rge_read(fd, &this->collisionAvoidanceDistance, 4);
-    rge_read(fd, &this->actionRange, 4);
-    rge_read(fd, &this->targetIDValue, 4);
-    rge_read(fd, &this->targetRadiusX, 4);
-    rge_read(fd, &this->targetRadiusY, 4);
-    rge_read(fd, &this->continueCounter, 4);
-    rge_read(fd, &this->rangeStatusValue, 4);
-    rge_read(fd, &this->waitingToMoveValue, 1);
-    rge_read(fd, &this->numberWaitDelays, 1);
+    rge_read(infile, &this->startValue, 0x10);
+    rge_read(infile, &this->goalValue, 0x10);
+    rge_read(infile, &this->turnTimer, 4);
+    rge_read(infile, &this->collisionAvoidanceDistance, 4);
+    rge_read(infile, &this->actionRange, 4);
+    rge_read(infile, &this->targetIDValue, 4);
+    rge_read(infile, &this->targetRadiusX, 4);
+    rge_read(infile, &this->targetRadiusY, 4);
+    rge_read(infile, &this->continueCounter, 4);
+    rge_read(infile, &this->rangeStatusValue, 4);
+    rge_read(infile, &this->waitingToMoveValue, 1);
+    rge_read(infile, &this->numberWaitDelays, 1);
 
-    rge_read(fd, &this->numberUserDefinedWaypointsValue, 4);
-    rge_read(fd, &this->maxUserDefinedWaypointsValue, 4);
+    rge_read(infile, &this->numberUserDefinedWaypointsValue, 4);
+    rge_read(infile, &this->maxUserDefinedWaypointsValue, 4);
     this->userDefinedWaypoints = (XYZBYTEPoint*)operator new(this->maxUserDefinedWaypointsValue * 3);
     for (int k = 0; k < this->numberUserDefinedWaypointsValue; ++k) {
-        rge_read(fd, &this->userDefinedWaypoints[k], 3);
+        rge_read(infile, &this->userDefinedWaypoints[k], 3);
     }
 
-    rge_read(fd, &this->finalUserDefinedWaypoint, 1);
+    rge_read(infile, &this->finalUserDefinedWaypoint, 1);
 
     if (!(save_game_version < DAT_00570b54)) {
-        rge_read(fd, &this->minInitialPointValue.x, 8);
-        rge_read(fd, &this->maxInitialPointValue.x, 8);
+        rge_read(infile, &this->minInitialPointValue.x, 8);
+        rge_read(infile, &this->maxInitialPointValue.x, 8);
     } else {
         this->minInitialPointValue.x = -1;
         this->minInitialPointValue.y = -1;
@@ -275,82 +259,77 @@ int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
     }
 
     if (!(save_game_version < DAT_00570b58)) {
-        rge_read(fd, &this->closestDistanceToWaypoint, 4);
-        rge_read(fd, &this->lastFacet, 1);
+        rge_read(infile, &this->closestDistanceToWaypoint, 4);
+        rge_read(infile, &this->lastFacet, 1);
     } else {
         this->closestDistanceToWaypoint = 100000.0f;
         this->lastFacet = 0xff;
     }
 
     if (!(save_game_version < DAT_00570b5c)) {
-        rge_read(fd, &this->lastFacet2, 1);
+        rge_read(infile, &this->lastFacet2, 1);
         return 1;
     }
     this->lastFacet2 = 0xff;
     return 1;
 }
 
-// six float fields, Path count and records, current index, object fields, and
-// user-waypoint fields. The binary has no save error branch.
-// explicit byte-offset user-waypoint loop: 642B, three bytes too large; the
-// Width audit: 4-byte scalars and records use 4/0x10, points use 8, and byte
+void RGE_Moving_Object::save(int outfile) {
+    RGE_Animated_Object::save(outfile);
 
-void RGE_Moving_Object::save(int handle) {
-    RGE_Animated_Object::save(handle);
-
-    rge_write(handle, &this->trail_remainder, 4);
-    rge_write(handle, &this->velocity_x, 4);
-    rge_write(handle, &this->velocity_y, 4);
-    rge_write(handle, &this->velocity_z, 4);
-    rge_write(handle, &this->angle, 4);
-    rge_write(handle, &this->turn_towards_time, 4);
+    rge_write(outfile, &this->trail_remainder, 4);
+    rge_write(outfile, &this->velocity_x, 4);
+    rge_write(outfile, &this->velocity_y, 4);
+    rge_write(outfile, &this->velocity_z, 4);
+    rge_write(outfile, &this->angle, 4);
+    rge_write(outfile, &this->turn_towards_time, 4);
 
     Path* path = &this->pathValue;
     int numberOfWaypoints = path->numberOfWaypoints();
-    rge_write(handle, &numberOfWaypoints, 4);
+    rge_write(outfile, &numberOfWaypoints, 4);
 
     for (int iWaypoint = 0; iWaypoint < numberOfWaypoints; ++iWaypoint) {
-        rge_write(handle, (void*)path->waypoint(iWaypoint), 0x10);
+        rge_write(outfile, (void*)path->waypoint(iWaypoint), 0x10);
     }
 
     int currentWaypoint = path->currentWaypointNumber();
-    rge_write(handle, &currentWaypoint, 4);
+    rge_write(outfile, &currentWaypoint, 4);
 
-    rge_write(handle, &this->startValue, 0x10);
-    rge_write(handle, &this->goalValue, 0x10);
-    rge_write(handle, &this->turnTimer, 4);
-    rge_write(handle, &this->collisionAvoidanceDistance, 4);
-    rge_write(handle, &this->actionRange, 4);
-    rge_write(handle, &this->targetIDValue, 4);
-    rge_write(handle, &this->targetRadiusX, 4);
-    rge_write(handle, &this->targetRadiusY, 4);
-    rge_write(handle, &this->continueCounter, 4);
-    rge_write(handle, &this->rangeStatusValue, 4);
-    rge_write(handle, &this->waitingToMoveValue, 1);
-    rge_write(handle, &this->numberWaitDelays, 1);
+    rge_write(outfile, &this->startValue, 0x10);
+    rge_write(outfile, &this->goalValue, 0x10);
+    rge_write(outfile, &this->turnTimer, 4);
+    rge_write(outfile, &this->collisionAvoidanceDistance, 4);
+    rge_write(outfile, &this->actionRange, 4);
+    rge_write(outfile, &this->targetIDValue, 4);
+    rge_write(outfile, &this->targetRadiusX, 4);
+    rge_write(outfile, &this->targetRadiusY, 4);
+    rge_write(outfile, &this->continueCounter, 4);
+    rge_write(outfile, &this->rangeStatusValue, 4);
+    rge_write(outfile, &this->waitingToMoveValue, 1);
+    rge_write(outfile, &this->numberWaitDelays, 1);
 
-    rge_write(handle, &this->numberUserDefinedWaypointsValue, 4);
-    rge_write(handle, &this->maxUserDefinedWaypointsValue, 4);
+    rge_write(outfile, &this->numberUserDefinedWaypointsValue, 4);
+    rge_write(outfile, &this->maxUserDefinedWaypointsValue, 4);
 
     for (int iUser = 0; iUser < this->numberUserDefinedWaypointsValue; ++iUser) {
-        rge_write(handle, &this->userDefinedWaypoints[iUser], 3);
+        rge_write(outfile, &this->userDefinedWaypoints[iUser], 3);
     }
 
-    rge_write(handle, &this->finalUserDefinedWaypoint, 1);
-    rge_write(handle, &this->minInitialPointValue.x, 8);
-    rge_write(handle, &this->maxInitialPointValue.x, 8);
-    rge_write(handle, &this->closestDistanceToWaypoint, 4);
-    rge_write(handle, &this->lastFacet, 1);
-    rge_write(handle, &this->lastFacet2, 1);
+    rge_write(outfile, &this->finalUserDefinedWaypoint, 1);
+    rge_write(outfile, &this->minInitialPointValue.x, 8);
+    rge_write(outfile, &this->maxInitialPointValue.x, 8);
+    rge_write(outfile, &this->closestDistanceToWaypoint, 4);
+    rge_write(outfile, &this->lastFacet, 1);
+    rge_write(outfile, &this->lastFacet2, 1);
 }
 
-void RGE_Moving_Object::new_sprite(RGE_Sprite* sprite) {
-    if (sprite == 0) {
-        sprite = this->master_obj->sprite;
+void RGE_Moving_Object::new_sprite(RGE_Sprite* nsprite) {
+    if (nsprite == 0) {
+        nsprite = this->master_obj->sprite;
     }
-    if (this->sprite != sprite) {
+    if (this->sprite != nsprite) {
         this->old_sprite = this->sprite;
-        RGE_Static_Object::new_sprite(sprite);
+        RGE_Static_Object::new_sprite(nsprite);
         this->set_angle();
     }
 }
@@ -363,8 +342,8 @@ RGE_Static_Object* RGE_Moving_Object::spawn_death_obj(void) {
     return obj;
 }
 
-void RGE_Moving_Object::transform(RGE_Master_Static_Object* master) {
-    this->RGE_Animated_Object::transform(master);
+void RGE_Moving_Object::transform(RGE_Master_Static_Object* obj) {
+    this->RGE_Animated_Object::transform(obj);
     this->velocity_x = 0.0f;
     this->velocity_y = 0.0f;
     this->velocity_z = 0.0f;
@@ -383,20 +362,18 @@ unsigned char RGE_Moving_Object::is_moving() {
 
 void RGE_Moving_Object::stop_moving() { this->speed = 0; }
 
-
-
-float RGE_Moving_Object::angle_to_object(RGE_Static_Object* target, float tx, float ty)
-{
+float RGE_Moving_Object::angle_to_object(RGE_Static_Object* to_object,
+                                         float x, float y) {
     RGE_Sprite* g = this->sprite;
     if (g != 0 && (g->flags & 2) != 0 && g->facet_num > 0) {
         float ax;
         float ay;
-        if (target) {
-            ay = target->world_y;
-            ax = target->world_x;
+        if (to_object) {
+            ay = to_object->world_y;
+            ax = to_object->world_x;
         } else {
-            ay = ty;
-            ax = tx;
+            ay = y;
+            ax = x;
         }
 
         float x_delta = ax - world_x;
@@ -414,29 +391,23 @@ float RGE_Moving_Object::angle_to_object(RGE_Static_Object* target, float tx, fl
     return DAT_00570b48;
 }
 
-// move_obj.cpp lines 475-505
-//   angle field; packet evidence proves a virtual unsigned-char method taking
-//   RGE_Static_Object*, float, float and returning the post-turn tolerance.
-//   turn_speed, sprite->facet_num, angle/turn_towards_time, direct
-//   topology through a natural angle local.
-
-unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* object,
+unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* obj,
                                                float x, float y) {
-    float turnTime;
-    float angle = this->angle_to_object(object, x, y);
-    if (angle <= 0.5f) {
-        if (angle >= -0.5f) {
+    float world_time;
+    float angle_delta = this->angle_to_object(obj, x, y);
+    if (angle_delta <= 0.5f) {
+        if (angle_delta >= -0.5f) {
             return 1;
         }
     }
 
-    turnTime = (float)this->owner->world->world_time * DAT_00570b84;
-    if (turnTime - this->turn_towards_time <
+    world_time = (float)this->owner->world->world_time * DAT_00570b84;
+    if (world_time - this->turn_towards_time <
         ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed) {
         return 0;
     }
 
-    if (angle < 0.0f) {
+    if (angle_delta < 0.0f) {
         this->angle -=
             (float)(DAT_00570b40 / (float)(int)this->sprite->facet_num);
     } else {
@@ -451,11 +422,11 @@ unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* object,
     }
 
     this->set_angle();
-    this->turn_towards_time = turnTime;
+    this->turn_towards_time = world_time;
 
-    angle = this->angle_to_object(object, x, y);
-    if (angle <= 0.5f) {
-        if (angle >= -0.5f) {
+    angle_delta = this->angle_to_object(obj, x, y);
+    if (angle_delta <= 0.5f) {
+        if (angle_delta >= -0.5f) {
             return 1;
         }
     }
@@ -479,8 +450,6 @@ void RGE_Moving_Object::set_angle() {
     }
     this->facet = (unsigned char)((int)temp);
 }
-
-
 
 float RGE_Moving_Object::teleport(float x, float y, float z) {
     if (((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_options != 0 &&
@@ -507,20 +476,19 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                 float dx;
                 float dy;
                 float dz;
-                float distance;
+                float d;
                 float tx;
                 float ty;
                 float tz;
-                // The original adds the remainder at 0045D458.
-                // It adds the remainder again at 0045D55A for a nonpositive count.
+                //! @bug This branch adds trail_remainder twice when count is nonpositive.
                 dx = x - this->world_x;
                 dy = y - this->world_y;
                 dz = z - this->world_z;
-                distance =
+                d =
                     (float)sqrt(dx * dx + dy * dy + dz * dz) +
                     this->trail_remainder;
                 short count =
-                    (short)(distance /
+                    (short)(d /
                             ((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_spacing);
 
                 if (count > 0) {
@@ -543,11 +511,11 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                     }
 
                     this->trail_remainder =
-                        distance -
+                        d -
                         ((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_spacing *
                             (float)count;
                 } else {
-                    this->trail_remainder = distance + this->trail_remainder;
+                    this->trail_remainder = d + this->trail_remainder;
                 }
                 break;
             }
@@ -558,16 +526,14 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
     return RGE_Static_Object::teleport(x, y, z);
 }
 
-void RGE_Moving_Object::set_velocity(float a, float b, float c) {
-    this->velocity_x = a;
-    this->velocity_y = b;
-    this->velocity_z = c;
+void RGE_Moving_Object::set_velocity(float x, float y, float z) {
+    this->velocity_x = x;
+    this->velocity_y = y;
+    this->velocity_z = z;
 }
 
-// other_method declaration produced the wrong direct symbol. A direct float
-// assignment preserves the executable's bit-copy store without a pointer cast.
-void RGE_Moving_Object::new_angle(float param_1) {
-    this->angle = param_1;
+void RGE_Moving_Object::new_angle(float new_angle) {
+    this->angle = new_angle;
     this->set_angle();
 }
 
@@ -584,30 +550,28 @@ unsigned char RGE_Moving_Object::facetToNextWaypoint() const {
     return 0xFF;
 }
 
-void RGE_Moving_Object::setGoal(float a, float b, float c) {
-    this->goalValue.x = a;
-    this->goalValue.y = b;
-    this->goalValue.z = c;
+void RGE_Moving_Object::setGoal(float gX, float gY, float gZ) {
+    this->goalValue.x = gX;
+    this->goalValue.y = gY;
+    this->goalValue.z = gZ;
 }
 
-void RGE_Moving_Object::setActionRange(float v) { this->actionRange = v; }
+void RGE_Moving_Object::setActionRange(float r) { this->actionRange = r; }
 
-void RGE_Moving_Object::setTargetID(int v) { this->targetIDValue = v; }
+void RGE_Moving_Object::setTargetID(int tid) { this->targetIDValue = tid; }
 
-void RGE_Moving_Object::setTargetRadius(float a, float b) {
-    this->targetRadiusX = a;
-    this->targetRadiusY = b;
+void RGE_Moving_Object::setTargetRadius(float x, float y) {
+    this->targetRadiusX = x;
+    this->targetRadiusY = y;
 }
 
-inline void RGE_Moving_Object::setStart(float x, float y, float z)
-{
+inline void RGE_Moving_Object::setStart(float x, float y, float z) {
     this->startValue.x = x;
     this->startValue.y = y;
     this->startValue.z = z;
 }
 
-inline void RGE_Moving_Object::displayPath(int object_id)
-{
+inline void RGE_Moving_Object::displayPath(int object_id) {
     if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
         this->pathValue.initToStart();
         int i = 0;
@@ -625,10 +589,7 @@ inline void RGE_Moving_Object::displayPath(int object_id)
     }
 }
 
-
-
-RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
-{
+RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
     if (this->master_obj->radius_z <= 0.0f) {
         this->setWaitingToMove(0);
         this->setStart(this->world_x, this->world_y, this->world_z);
@@ -643,7 +604,6 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
         return PathFound;
     }
 
-    // the executable keeps this constant guard and its unreachable cleanup arm.
     void (RGE_Moving_Object::*waitFunction)(uchar) =
         &RGE_Moving_Object::setWaitingToMove;
     if (waitFunction == 0) {
@@ -671,7 +631,6 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     int found;
     if (this->numberUserDefinedWaypointsValue > 0) {
         found = pathSystem.findTilePath(
-            // natural casts keep __ftol input on x87 ST0.
             (int)this->startValue.x, (int)this->startValue.y,
             this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
             this, this->actionRange, this->targetIDValue,
@@ -704,7 +663,6 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     }
 
     if (!found && this->pathValue.numberOfWaypoints() == 1) {
-        // cast each floor result before subtracting the float tile bias.
         if (pathSystem.passable(this,
                                 (float)floor((double)this->world_x) - DAT_00570b80,
                                 (float)floor((double)this->world_y) - DAT_00570b80, 1)) {
@@ -725,15 +683,12 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     return PathFound;
 }
 
-
-
-int RGE_Moving_Object::doMove()
-{
+int RGE_Moving_Object::doMove() {
     float distanceToGoal;
     float dY;
     float newDY;
     float dX;
-    float distanceToWaypoint;
+    float radiusDistance;
     int waypointStatus;
     int found;
     int i;
@@ -811,7 +766,7 @@ int RGE_Moving_Object::doMove()
         }
     }
 
-    distanceToWaypoint = (float)sqrt(
+    radiusDistance = (float)sqrt(
         this->master_obj->radius_y * this->master_obj->radius_y +
         this->master_obj->radius_x * this->master_obj->radius_x);
     waypointStatus = 1;
@@ -858,7 +813,7 @@ int RGE_Moving_Object::doMove()
     }
 
     if (waypointStatus == 0) {
-        if (distanceToGoal <= newDY + distanceToWaypoint +
+        if (distanceToGoal <= newDY + radiusDistance +
                                 this->actionRange) {
             this->speed = 0.0f;
             this->rangeStatusValue = 1;
@@ -875,7 +830,7 @@ int RGE_Moving_Object::doMove()
             }
             dX = (float)this->userDefinedWaypoints->x - this->world_x;
             dY = (float)this->userDefinedWaypoints->y - this->world_y;
-            if (distanceToWaypoint + this->actionRange - DAT_00570ba8 <
+            if (radiusDistance + this->actionRange - DAT_00570ba8 <
                 (float)sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
@@ -1042,7 +997,7 @@ int RGE_Moving_Object::doMove()
             }
             dX = (float)this->userDefinedWaypoints->x - this->world_x;
             dY = (float)this->userDefinedWaypoints->y - this->world_y;
-            if (distanceToWaypoint + this->actionRange - DAT_00570ba8 <
+            if (radiusDistance + this->actionRange - DAT_00570ba8 <
                 (float)sqrt(dY * dY + dX * dX)) {
                 reachedWaypoint = 1;
             }
@@ -1157,10 +1112,7 @@ int RGE_Moving_Object::doMove()
     return 1;
 }
 
-
-
-int RGE_Moving_Object::doTrivialMove(float x, float y)
-{
+int RGE_Moving_Object::doTrivialMove(float x, float y) {
     int alreadyMoving = 1;
     if (this->speed == DAT_00570b98) {
         alreadyMoving = 0;
@@ -1466,7 +1418,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
     }
 
-    float oldZ = this->world_z;
+    float tempZ = this->world_z;
     float curDistance;
     Waypoint* waypoint = this->pathValue.currentWaypoint();
     if (waypoint != 0) {
@@ -1505,7 +1457,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         this->teleport(newX, newY, this->world_z + this->velocity_z);
     }
 
-    float speedOffset = oldZ - this->world_z;
+    float speedOffset = tempZ - this->world_z;
     float speedMultiplier = 1.0f;
     unsigned char oldFacet = this->lastFacet;
     this->lastFacet = this->facet;
@@ -1535,78 +1487,73 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     return 0;
 }
 
-// Qualified owner: RGE_Moving_Object::passableTile in move_obj.cpp.
-// selects the pathing receiver; the helper gets this, x, y, and literal 1.
-
-
-int RGE_Moving_Object::passableTile(float x, float y, int mode) {
-    if (mode != 0) {
+int RGE_Moving_Object::passableTile(float x, float y, int aiCheck) {
+    if (aiCheck != 0) {
         return aiPathSystem.passable(this, x, y, 1);
     }
     return pathSystem.passable(this, x, y, 1);
 }
 
-
-
-int RGE_Moving_Object::canPath(XYZPoint point, float tolerance, int targetID,
-                               float* costOut, int useAI, int unobPlayerID,
-                               int unobGroupID) {
-    if (point.x < 0 || point.y < 0) {
+int RGE_Moving_Object::canPath(XYZPoint p, float aRange, int targetID,
+                               float* pathDistance, int aiCheck,
+                               int unobstructiblePlayerID,
+                               int unobstructibleGroupID) {
+    if (p.x < 0 || p.y < 0) {
         return 0;
     }
 
     RGE_Map* map = this->owner->world->map;
-    if (point.x < map->map_width && point.y < map->map_height) {
-            if (this->zoneMapIndex == -1) {
-                this->owner->world->map->map_zones->get_zone_map(
-                    this->owner->world->terrains[this->master_obj->terrain],
-                    this->owner->world->terrain_size, this->zoneMapIndex);
-            }
-
-            RGE_Zone_Map* zone_map =
-                this->owner->world->map->map_zones->get_zone_map(
-                    this->zoneMapIndex);
-            if (zone_map != 0) {
-                int start_zone = zone_map->get_zone_info(
-                    (long)this->world_x, (long)this->world_y);
-                int goal_zone = zone_map->get_zone_info(point.x, point.y);
-                if (goal_zone != start_zone) {
-                    XYPoint start;
-                    start.x = (int)this->world_x;
-                    start.y = (int)this->world_y;
-
-                    XYPoint goal;
-                    goal.x = point.x;
-                    goal.y = point.y;
-
-                    if (zone_map->withinRange(start, goal, tolerance) == 0) {
-                        return 0;
-                    }
-                }
-
-                if (useAI != 0) {
-                    aiPathSystem.incrementCanPaths();
-                    return aiPathSystem.findTilePath(
-                        (int)this->world_x, (int)this->world_y, point.x,
-                        point.y, this, tolerance, targetID, 0, costOut, 1,
-                        1, 1, 1, unobPlayerID, unobGroupID);
-                }
-
-                pathSystem.incrementCanPaths();
-                return pathSystem.findTilePath(
-                    (int)this->world_x, (int)this->world_y, point.x, point.y,
-                    this, tolerance, targetID, 0, costOut, 1, 1, 1, 1,
-                    unobPlayerID, unobGroupID);
-            }
+    if (p.x < map->map_width && p.y < map->map_height) {
+        if (this->zoneMapIndex == -1) {
+            this->owner->world->map->map_zones->get_zone_map(
+                this->owner->world->terrains[this->master_obj->terrain],
+                this->owner->world->terrain_size, this->zoneMapIndex);
         }
+
+        RGE_Zone_Map* zone_map =
+            this->owner->world->map->map_zones->get_zone_map(
+                this->zoneMapIndex);
+        if (zone_map != 0) {
+            int initialZone = zone_map->get_zone_info(
+                (long)this->world_x, (long)this->world_y);
+            int goal_zone = zone_map->get_zone_info(p.x, p.y);
+            if (goal_zone != initialZone) {
+                XYPoint start;
+                start.x = (int)this->world_x;
+                start.y = (int)this->world_y;
+
+                XYPoint goal;
+                goal.x = p.x;
+                goal.y = p.y;
+
+                if (zone_map->withinRange(start, goal, aRange) == 0) {
+                    return 0;
+                }
+            }
+
+            if (aiCheck != 0) {
+                aiPathSystem.incrementCanPaths();
+                return aiPathSystem.findTilePath(
+                    (int)this->world_x, (int)this->world_y, p.x, p.y,
+                    this, aRange, targetID, 0, pathDistance, 1, 1, 1,
+                    1, unobstructiblePlayerID, unobstructibleGroupID);
+            }
+
+            pathSystem.incrementCanPaths();
+            return pathSystem.findTilePath(
+                (int)this->world_x, (int)this->world_y, p.x, p.y, this,
+                aRange, targetID, 0, pathDistance, 1, 1, 1, 1,
+                unobstructiblePlayerID, unobstructibleGroupID);
+        }
+    }
 
     return 0;
 }
 
-
-
-int RGE_Moving_Object::canPath(int targetID, float tolerance, float* costOut,
-                               int useAI, int unobPlayerID, int unobGroupID) {
+int RGE_Moving_Object::canPath(int targetID, float aRange,
+                               float* pathDistance, int aiCheck,
+                               int unobstructiblePlayerID,
+                               int unobstructibleGroupID) {
     RGE_Static_Object* target = this->owner->world->object(targetID);
     if (target == 0) {
         return 0;
@@ -1638,43 +1585,41 @@ int RGE_Moving_Object::canPath(int targetID, float tolerance, float* costOut,
         goal.x = (int)target->world_x;
         goal.y = (int)target->world_y;
 
-        if (zone_map->withinRange(start, goal, tolerance) == 0) {
+        if (zone_map->withinRange(start, goal, aRange) == 0) {
             return 0;
         }
     }
 
-    if (useAI != 0) {
+    if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         return aiPathSystem.findTilePath(
             (int)this->world_x, (int)this->world_y,
             (int)target->world_x, (int)target->world_y, this,
-            tolerance, targetID, 0, costOut, 1, 1, 1, 1,
-            unobPlayerID, unobGroupID);
+            aRange, targetID, 0, pathDistance, 1, 1, 1, 1,
+            unobstructiblePlayerID, unobstructibleGroupID);
     }
 
     pathSystem.incrementCanPaths();
     return pathSystem.findTilePath(
         (int)this->world_x, (int)this->world_y,
         (int)target->world_x, (int)target->world_y, this,
-        tolerance, targetID, 0, costOut, 1, 1, 1, 1,
-        unobPlayerID, unobGroupID);
+        aRange, targetID, 0, pathDistance, 1, 1, 1, 1,
+        unobstructiblePlayerID, unobstructibleGroupID);
 }
 
-
-
 int RGE_Moving_Object::canBidirectionPath(
-    int sourceID, int goalID, float tolerance, float* costOut, int useAI,
-    int unobPlayerID, int unobGroupID) {
+    int targetID, int targetID2, float aRange, float* pathDistance,
+    int aiCheck, int unobstructiblePlayerID, int unobstructibleGroupID) {
     RGE_Static_Object* source;
     RGE_Static_Object* goal;
-    RGE_Zone_Map* zone_map;
-    int start_zone;
+    RGE_Zone_Map* zoneMap;
+    int initialZone;
     int goal_zone;
     XYPoint start;
     XYPoint goal_point;
 
-    source = this->owner->world->object(sourceID);
-    goal = this->owner->world->object(goalID);
+    source = this->owner->world->object(targetID);
+    goal = this->owner->world->object(targetID2);
     if (source == 0 || goal == 0) {
         return 0;
     }
@@ -1685,36 +1630,36 @@ int RGE_Moving_Object::canBidirectionPath(
             this->owner->world->terrain_size, this->zoneMapIndex);
     }
 
-    zone_map =
+    zoneMap =
         this->owner->world->map->map_zones->get_zone_map(this->zoneMapIndex);
-    if (zone_map == 0) {
+    if (zoneMap == 0) {
         return 0;
     }
 
-    start_zone = zone_map->get_zone_info(
+    initialZone = zoneMap->get_zone_info(
         (long)this->world_x, (long)this->world_y);
-    goal_zone = zone_map->get_zone_info(
+    goal_zone = zoneMap->get_zone_info(
         (long)source->world_x, (long)source->world_y);
 
-    if (goal_zone != start_zone) {
+    if (goal_zone != initialZone) {
         start.x = (int)this->world_x;
         start.y = (int)this->world_y;
         goal_point.x = (int)source->world_x;
         goal_point.y = (int)source->world_y;
 
-        if (zone_map->withinRange(start, goal_point, tolerance) == 0) {
+        if (zoneMap->withinRange(start, goal_point, aRange) == 0) {
             return 0;
         }
     }
 
     this->storePathInExceptionPath = 1;
-    if (useAI != 0) {
+    if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         int result = aiPathSystem.findTilePath(
-                (int)this->world_x, (int)this->world_y,
-                (int)source->world_x, (int)source->world_y, this, tolerance,
-                sourceID, 1, costOut, 1, 1, 1, 1, unobPlayerID,
-                unobGroupID);
+            (int)this->world_x, (int)this->world_y,
+            (int)source->world_x, (int)source->world_y, this, aRange,
+            targetID, 1, pathDistance, 1, 1, 1, 1,
+            unobstructiblePlayerID, unobstructibleGroupID);
         if (result == 0) {
             this->storePathInExceptionPath = (unsigned char)result;
             return result;
@@ -1723,18 +1668,19 @@ int RGE_Moving_Object::canBidirectionPath(
         result = aiPathSystem.findTilePath(
             (int)this->exceptionPathValue.lastWaypoint()->x,
             (int)this->exceptionPathValue.lastWaypoint()->y,
-            (int)goal->world_x, (int)goal->world_y, this, tolerance, goalID, 0,
-            costOut, 1, 1, 1, 1, unobPlayerID, unobGroupID);
+            (int)goal->world_x, (int)goal->world_y, this, aRange, targetID2, 0,
+            pathDistance, 1, 1, 1, 1, unobstructiblePlayerID,
+            unobstructibleGroupID);
         this->storePathInExceptionPath = 0;
         return result;
     }
 
     pathSystem.incrementCanPaths();
     int result = pathSystem.findTilePath(
-            (int)this->world_x, (int)this->world_y,
-            (int)source->world_x, (int)source->world_y, this, tolerance,
-            sourceID, 1, costOut, 1, 1, 1, 1, unobPlayerID,
-            unobGroupID);
+        (int)this->world_x, (int)this->world_y,
+        (int)source->world_x, (int)source->world_y, this, aRange,
+        targetID, 1, pathDistance, 1, 1, 1, 1,
+        unobstructiblePlayerID, unobstructibleGroupID);
     if (result == 0) {
         this->storePathInExceptionPath = (unsigned char)result;
         return result;
@@ -1743,17 +1689,17 @@ int RGE_Moving_Object::canBidirectionPath(
     result = pathSystem.findTilePath(
         (int)this->exceptionPathValue.lastWaypoint()->x,
         (int)this->exceptionPathValue.lastWaypoint()->y,
-        (int)goal->world_x, (int)goal->world_y, this, tolerance, goalID, 0,
-        costOut, 1, 1, 1, 1, unobPlayerID, unobGroupID);
+        (int)goal->world_x, (int)goal->world_y, this, aRange, targetID2, 0,
+        pathDistance, 1, 1, 1, 1, unobstructiblePlayerID,
+        unobstructibleGroupID);
     this->storePathInExceptionPath = 0;
     return result;
 }
 
-
-
 int RGE_Moving_Object::canPathWithObstructions(
-    int targetID, float range, float* costOut, int useAI,
-    int unobPlayerID, int unobGroupID, ManagedArray<int>& unobstructibles) {
+    int targetID, float aRange, float* pathDistance, int aiCheck,
+    int unobstructiblePlayerID, int unobstructibleGroupID,
+    ManagedArray<int>& obstructions) {
     RGE_Static_Object* target = this->owner->world->object(targetID);
     if (target == 0) {
         return 0;
@@ -1785,21 +1731,21 @@ int RGE_Moving_Object::canPathWithObstructions(
         goal.x = (int)target->world_x;
         goal.y = (int)target->world_y;
 
-        if (zone_map->withinRange(start, goal, range) == 0) {
+        if (zone_map->withinRange(start, goal, aRange) == 0) {
             return 0;
         }
     }
 
     this->storePathInExceptionPath = 1;
-    if (useAI != 0) {
+    if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         int result = aiPathSystem.findTilePath(
             (int)this->world_x, (int)this->world_y,
             (int)target->world_x, (int)target->world_y, this,
-            range, targetID, 1, costOut, 1, 1, 1, 1,
-            unobPlayerID, unobGroupID);
-        if (unobGroupID != -1) {
-            aiPathSystem.copyUnobstructibles(unobstructibles);
+            aRange, targetID, 1, pathDistance, 1, 1, 1, 1,
+            unobstructiblePlayerID, unobstructibleGroupID);
+        if (unobstructibleGroupID != -1) {
+            aiPathSystem.copyUnobstructibles(obstructions);
         }
         this->storePathInExceptionPath = 0;
         return result;
@@ -1808,45 +1754,43 @@ int RGE_Moving_Object::canPathWithObstructions(
         int result = pathSystem.findTilePath(
             (int)this->world_x, (int)this->world_y,
             (int)target->world_x, (int)target->world_y, this,
-            range, targetID, 1, costOut, 1, 1, 1, 1,
-            unobPlayerID, unobGroupID);
-        if (unobGroupID != -1) {
-            pathSystem.copyUnobstructibles(unobstructibles);
+            aRange, targetID, 1, pathDistance, 1, 1, 1, 1,
+            unobstructiblePlayerID, unobstructibleGroupID);
+        if (unobstructibleGroupID != -1) {
+            pathSystem.copyUnobstructibles(obstructions);
         }
         this->storePathInExceptionPath = 0;
         return result;
     }
 }
 
-
-
 int RGE_Moving_Object::canPathWithAdditionalPassability(
-    XYZPoint point, float tolerance, int targetID, float* costOut,
-    int terrainException1, int terrainException2, int useAI,
-    int unobPlayerID, int unobGroupID) {
-    if (point.x < 0 || point.y < 0 ||
-        point.x >= this->owner->world->map->map_width ||
-        point.y >= this->owner->world->map->map_height) {
+    XYZPoint p, float aRange, int targetID, float* pathDistance,
+    int eTerrain1, int eTerrain2, int aiCheck,
+    int unobstructiblePlayerID, int unobstructibleGroupID) {
+    if (p.x < 0 || p.y < 0 ||
+        p.x >= this->owner->world->map->map_width ||
+        p.y >= this->owner->world->map->map_height) {
         return 0;
     }
 
-    this->currentTerrainException1 = terrainException1;
-    this->currentTerrainException2 = terrainException2;
+    this->currentTerrainException1 = eTerrain1;
+    this->currentTerrainException2 = eTerrain2;
     this->storePathInExceptionPath = 1;
 
     int result;
-    if (useAI != 0) {
+    if (aiCheck != 0) {
         aiPathSystem.incrementCanPaths();
         result = aiPathSystem.findTilePath(
-            (int)this->world_x, (int)this->world_y, point.x, point.y, this,
-            tolerance, targetID, 1, costOut, 1, 1, 1, 1, unobPlayerID,
-            unobGroupID);
+            (int)this->world_x, (int)this->world_y, p.x, p.y, this,
+            aRange, targetID, 1, pathDistance, 1, 1, 1, 1,
+            unobstructiblePlayerID, unobstructibleGroupID);
     } else {
         pathSystem.incrementCanPaths();
         result = pathSystem.findTilePath(
-            (int)this->world_x, (int)this->world_y, point.x, point.y, this,
-            tolerance, targetID, 1, costOut, 1, 1, 1, 1, unobPlayerID,
-            unobGroupID);
+            (int)this->world_x, (int)this->world_y, p.x, p.y, this,
+            aRange, targetID, 1, pathDistance, 1, 1, 1, 1,
+            unobstructiblePlayerID, unobstructibleGroupID);
     }
 
     this->storePathInExceptionPath = 0;
@@ -1855,11 +1799,8 @@ int RGE_Moving_Object::canPathWithAdditionalPassability(
     return result;
 }
 
-// declarations live in include/move_obj.h.
-
-
 int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
-    int terrain, float* result_x, float* result_y) {
+    int eTerrain, float* rX, float* rY) {
     int i;
     XYPoint p1, p2, rVal;
     Path* path = &this->exceptionPathValue;
@@ -1886,12 +1827,11 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     while (i < path->numberOfWaypoints()) {
         if (this->firstTileAlongLine((const XYPoint&)p1, (const XYPoint&)p2,
                                      rVal,
-                                     terrain, terrain, 1) == 1) {
-            // The original 00460210 body writes the x-derived
-            // result to both output pointers at 0046038D-0046039E.
+                                     eTerrain, eTerrain, 1) == 1) {
+            //! @bug The original writes the x result to both output pointers.
             float result = (float)rVal.x - DAT_00570b80;
-            *result_x = result;
-            *result_y = result;
+            *rX = result;
+            *rY = result;
             return 1;
         }
 
@@ -1907,25 +1847,22 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
         ++i;
     }
 
-    *result_x = -1.0f;
-    *result_y = -1.0f;
+    *rX = -1.0f;
+    *rY = -1.0f;
     return 0;
 }
 
-// The canonical RGE_Moving_Object and XYPoint declarations live in
-
-
-int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
-                                   float maxDistance, XYPoint& result,
-                                   int terrain) {
+int RGE_Moving_Object::canLinePath(const XYPoint& s, const XYPoint& d,
+                                   float range, XYPoint& rPoint,
+                                   int aiCheck) {
     int lastX;
-    int lastY;
+    int priorY;
     float xDistance;
     float yDistance;
-    int startX = a.x;
-    int endX = b.x;
-    int startY = a.y;
-    int endY = b.y;
+    int startX = s.x;
+    int endX = d.x;
+    int startY = s.y;
+    int endY = d.y;
 
     xDistance = (float)(endX - startX);
     yDistance = (float)(endY - startY);
@@ -1939,8 +1876,8 @@ int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
     int i;
     float xStep;
     float yStep;
-    float x;
-    float y;
+    float xTile;
+    float yTile;
 
     if (fabs(yDistance) > fabs(xDistance)) {
         numSteps = abs((int)yDistance) * 2;
@@ -1949,50 +1886,46 @@ int RGE_Moving_Object::canLinePath(const XYPoint& a, const XYPoint& b,
     }
 
     lastX = -999;
-    lastY = -999;
+    priorY = -999;
     i = 0;
     xStep = 0.0f;
     xStep = xDistance / (float)numSteps;
     yStep = yDistance / (float)numSteps;
-    x = (float)startX;
-    y = (float)startY;
+    xTile = (float)startX;
+    yTile = (float)startY;
 
     for (; i < numSteps; ++i) {
-            x += xStep;
-            y += yStep;
-            int tileX = (int)x;
-            int tileY = (int)y;
+        xTile += xStep;
+        yTile += yStep;
+        int tile_x = (int)xTile;
+        int tile_y = (int)yTile;
 
-            if (tileX != lastX || tileY != lastY) {
-                lastX = tileX;
-                lastY = tileY;
-                if (this->passableTile(x, y, terrain) == 0) {
-                    result.x = tileX;
-                    result.y = tileY;
-                    return 0;
-                }
-
-                if ((float)sqrt(((float)b.x - x) * ((float)b.x - x) +
-                                ((float)b.y - y) * ((float)b.y - y)) <=
-                    maxDistance) {
-                    return 1;
-                }
+        if (tile_x != lastX || tile_y != priorY) {
+            lastX = tile_x;
+            priorY = tile_y;
+            if (this->passableTile(xTile, yTile, aiCheck) == 0) {
+                rPoint.x = tile_x;
+                rPoint.y = tile_y;
+                return 0;
             }
+
+            if ((float)sqrt(((float)d.x - xTile) * ((float)d.x - xTile) +
+                            ((float)d.y - yTile) * ((float)d.y - yTile)) <=
+                range) {
+                return 1;
+            }
+        }
     }
 
     return 1;
 }
 
-// The canonical RGE_Moving_Object declaration lives in
-// include/move_obj.h. This is the integer-coordinate overload.
-
-
-int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
-                                   float maxDistance, int terrain) {
+int RGE_Moving_Object::canLinePath(int sX, int sY, int dX, int dY,
+                                   float range, int aiCheck) {
     int lastX;
     int lastY;
-    float xDistance = (float)(x2 - x1);
-    float yDistance = (float)(y2 - y1);
+    float xDistance = (float)(dX - sX);
+    float yDistance = (float)(dY - sY);
 
     if ((xDistance == DAT_00570b48) &&
         (yDistance == DAT_00570b48)) {
@@ -2003,8 +1936,8 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
     int i;
     float xStep;
     float yStep;
-    float x;
-    float y;
+    float xTile;
+    float yTile;
 
     if (fabs(yDistance) > fabs(xDistance)) {
         numSteps = abs((int)yDistance) * 2;
@@ -2018,25 +1951,25 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
     xStep = xDistance / (float)numSteps;
     yStep = yDistance / (float)numSteps;
 
-    x = (float)x1;
-    y = (float)y1;
+    xTile = (float)sX;
+    yTile = (float)sY;
 
     for (i = 0; i < numSteps; ++i) {
-        x += xStep;
-        y += yStep;
-        int tileX = (int)x;
-        int tileY = (int)y;
+        xTile += xStep;
+        yTile += yStep;
+        int tile_x = (int)xTile;
+        int tile_y = (int)yTile;
 
-        if (tileX != lastX || tileY != lastY) {
-            lastX = tileX;
-            lastY = tileY;
-            if (this->passableTile(x, y, terrain) == 0) {
+        if (tile_x != lastX || tile_y != lastY) {
+            lastX = tile_x;
+            lastY = tile_y;
+            if (this->passableTile(xTile, yTile, aiCheck) == 0) {
                 return 0;
             }
 
-            if ((float)sqrt(((float)x2 - x) * ((float)x2 - x) +
-                            ((float)y2 - y) * ((float)y2 - y)) <=
-                maxDistance) {
+            if ((float)sqrt(((float)dX - xTile) * ((float)dX - xTile) +
+                            ((float)dY - yTile) * ((float)dY - yTile)) <=
+                range) {
                 return 1;
             }
         }
@@ -2046,19 +1979,15 @@ int RGE_Moving_Object::canLinePath(int x1, int y1, int x2, int y2,
     return 1;
 }
 
-// The canonical map, player, moving-object, and point layouts live in
-// include/move_obj.h. The inherited passableTile ABI is named there.
-
-
-int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
-                                           const XYPoint& b,
-                                           XYPoint& result,
-                                           int terrain1, int terrain2,
-                                           int checkTerrain) {
+int RGE_Moving_Object::firstTileAlongLine(const XYPoint& s,
+                                           const XYPoint& d,
+                                           XYPoint& rPoint,
+                                           int tType1, int tType2,
+                                           int checkPassability) {
     int lastX;
     int lastY;
-    float xDistance = (float)(b.x - a.x);
-    float yDistance = (float)(b.y - a.y);
+    float xDistance = (float)(d.x - s.x);
+    float yDistance = (float)(d.y - s.y);
 
     if ((xDistance == DAT_00570b48) &&
         (yDistance == DAT_00570b48)) {
@@ -2069,8 +1998,8 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
     int i;
     float xStep;
     float yStep;
-    float x;
-    float y;
+    float xTile;
+    float yTile;
     RGE_Map* map;
     unsigned char tileType;
 
@@ -2086,31 +2015,30 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
     xStep = 0.0f;
     xStep = xDistance / (float)numSteps;
     yStep = yDistance / (float)numSteps;
-    x = (float)a.x;
-    y = (float)a.y;
+    xTile = (float)s.x;
+    yTile = (float)s.y;
     map = this->owner->world->map;
 
     while (i < numSteps) {
-            x += xStep;
-            y += yStep;
-            int tileX = (int)x;
-            int tileY = (int)y;
+        xTile += xStep;
+        yTile += yStep;
+        int tile_x = (int)xTile;
+        int tile_y = (int)yTile;
 
-            if ((tileX != lastX) || (tileY != lastY)) {
-                lastX = tileX;
-                lastY = tileY;
-                tileType = map->get_terrain((short)tileX, (short)tileY);
-                if (((int)tileType == terrain1 ||
-                     (int)tileType == terrain2) &&
-                    (checkTerrain == 1)) {
-                    if (this->passableTile(x, y, 0) == 1) {
-                        result.x = tileX;
-                        result.y = tileY;
-                        return 1;
-                    }
+        if ((tile_x != lastX) || (tile_y != lastY)) {
+            lastX = tile_x;
+            lastY = tile_y;
+            tileType = map->get_terrain((short)tile_x, (short)tile_y);
+            if (((int)tileType == tType1 ||
+                 (int)tileType == tType2) &&
+                (checkPassability == 1)) {
+                if (this->passableTile(xTile, yTile, 0) == 1) {
+                    rPoint.x = tile_x;
+                    rPoint.y = tile_y;
+                    return 1;
                 }
             }
-
+        }
         ++i;
     }
 
@@ -2125,9 +2053,6 @@ float RGE_Moving_Object::maximumSpeed(void) {
     return ((RGE_Master_Moving_Object*)this->master_obj)->speed;
 }
 
-// The canonical RGE_Moving_Object declaration and named movement-state
-// methods live in include/move_obj.h.
-
 unsigned char RGE_Moving_Object::waitingToMove(void) const {
     unsigned int state = this->actionState();
 
@@ -2137,31 +2062,27 @@ unsigned char RGE_Moving_Object::waitingToMove(void) const {
     return this->waitingToMoveValue;
 }
 
-void RGE_Moving_Object::setWaitingToMove(unsigned char v) { this->waitingToMoveValue = v; }
+void RGE_Moving_Object::setWaitingToMove(unsigned char w) { this->waitingToMoveValue = w; }
 
-
-
-XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int param_1) {
-    if (param_1 < 0 || param_1 >= numberUserDefinedWaypointsValue) return 0;
-    return (XYZBYTEPoint*)((char*)userDefinedWaypoints + param_1 * 3);
+XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int v) {
+    if (v < 0 || v >= numberUserDefinedWaypointsValue) return 0;
+    return (XYZBYTEPoint*)((char*)userDefinedWaypoints + v * 3);
 }
 
-
-
-int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* point, int param_2) {
+int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* p, int stopObject) {
     if (this->finalUserDefinedWaypoint == 1) {
-        this->removeAllUserDefinedWaypoints(param_2);
+        this->removeAllUserDefinedWaypoints(stopObject);
         this->finalUserDefinedWaypoint = 0;
     }
 
     if (this->maxUserDefinedWaypointsValue >
         this->numberUserDefinedWaypointsValue) {
         this->userDefinedWaypoints[
-            this->numberUserDefinedWaypointsValue].x = point->x;
+            this->numberUserDefinedWaypointsValue].x = p->x;
         this->userDefinedWaypoints[
-            this->numberUserDefinedWaypointsValue].y = point->y;
+            this->numberUserDefinedWaypointsValue].y = p->y;
         this->userDefinedWaypoints[
-            this->numberUserDefinedWaypointsValue].z = point->z;
+            this->numberUserDefinedWaypointsValue].z = p->z;
     } else {
         if (this->maxUserDefinedWaypointsValue == 0) {
             this->userDefinedWaypoints =
@@ -2195,21 +2116,20 @@ int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* point, int param_2) 
         }
 
         this->userDefinedWaypoints[
-            this->numberUserDefinedWaypointsValue].x = point->x;
+            this->numberUserDefinedWaypointsValue].x = p->x;
         this->userDefinedWaypoints[
-            this->numberUserDefinedWaypointsValue].y = point->y;
+            this->numberUserDefinedWaypointsValue].y = p->y;
         this->userDefinedWaypoints[
-            this->numberUserDefinedWaypointsValue].z = point->z;
+            this->numberUserDefinedWaypointsValue].z = p->z;
     }
 
     ++this->numberUserDefinedWaypointsValue;
     return 1;
 }
 
-
-void RGE_Moving_Object::removeAllUserDefinedWaypoints(int param_1) {
+void RGE_Moving_Object::removeAllUserDefinedWaypoints(int stopObject) {
     this->numberUserDefinedWaypointsValue = 0;
-    if (param_1 == 1 && this->unitAIValue != 0) {
+    if (stopObject == 1 && this->unitAIValue != 0) {
         if (actionFile != 0) {
             fprintf(actionFile, "#%d call stopObject %s %d\n", this->id, "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xb59);
         }
@@ -2217,13 +2137,11 @@ void RGE_Moving_Object::removeAllUserDefinedWaypoints(int param_1) {
     }
 }
 
-
-
-void RGE_Moving_Object::removeUserDefinedWaypoint(int index) {
+void RGE_Moving_Object::removeUserDefinedWaypoint(int v) {
     int i;
 
-    if (index < 0 || index >= numberUserDefinedWaypointsValue) return;
-    for (i = 0; i < numberUserDefinedWaypointsValue && i < index; i++) {
+    if (v < 0 || v >= numberUserDefinedWaypointsValue) return;
+    for (i = 0; i < numberUserDefinedWaypointsValue && i < v; i++) {
     }
     for (; i < numberUserDefinedWaypointsValue; i++) {
         if (i) {
@@ -2237,9 +2155,7 @@ void RGE_Moving_Object::removeUserDefinedWaypoint(int index) {
 
 void RGE_Moving_Object::setFinalUserDefinedWaypoint() { this->finalUserDefinedWaypoint = 1; }
 
-
-
-Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& point, float range,
+Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& goalPoint, float aRange,
                                            int targetID) {
     if (this->zoneMapIndex == -1) {
         this->owner->world->map->map_zones->get_zone_map(
@@ -2253,7 +2169,7 @@ Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& point, float range,
     int start_zone = zone_map->get_zone_info(
         (long)this->world_x, (long)this->world_y);
     int goal_zone =
-        zone_map->get_zone_info(point.x, point.y);
+        zone_map->get_zone_info(goalPoint.x, goalPoint.y);
 
     if (goal_zone != start_zone) {
         XYPoint start;
@@ -2261,38 +2177,34 @@ Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& point, float range,
 
         start.x = (int)this->world_x;
         start.y = (int)this->world_y;
-        goal.x = point.x;
-        goal.y = point.y;
+        goal.x = goalPoint.x;
+        goal.y = goalPoint.y;
 
-        if (zone_map->withinRange(start, goal, range) == 0) {
+        if (zone_map->withinRange(start, goal, aRange) == 0) {
             return 0;
         }
     }
 
     this->storePathInExceptionPath = 1;
     aiPathSystem.findTilePath(
-        (int)this->world_x, (int)this->world_y, point.x, point.y, this,
-        range, targetID, 1, 0, 0, 1, 1, 1, -1, -1);
+        (int)this->world_x, (int)this->world_y, goalPoint.x, goalPoint.y,
+        this, aRange, targetID, 1, 0, 0, 1, 1, 1, -1, -1);
     this->storePathInExceptionPath = 0;
     aiPathSystem.initMisc(0);
     return &this->exceptionPathValue;
 }
 
-void RGE_Moving_Object::setInitialPoints(XYPoint& minPoint, XYPoint& maxPoint) {
-    this->minInitialPointValue.x = minPoint.x;
-    this->minInitialPointValue.y = minPoint.y;
-    this->maxInitialPointValue.x = maxPoint.x;
-    this->maxInitialPointValue.y = maxPoint.y;
+void RGE_Moving_Object::setInitialPoints(XYPoint& min, XYPoint& max) {
+    this->minInitialPointValue.x = min.x;
+    this->minInitialPointValue.y = min.y;
+    this->maxInitialPointValue.x = max.x;
+    this->maxInitialPointValue.y = max.y;
 }
 
-// The canonical RGE_Static_Object and RGE_Master_Moving_Object layouts live
-// in include/move_obj.h. Their named virtual surface preserves both
-// direct target identity and the final base copy call.
-
-void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
+void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* source2) {
     RGE_Sprite* sprite = 0;
     RGE_Master_Moving_Object* old_master = (RGE_Master_Moving_Object*)this->master_obj;
-    RGE_Master_Moving_Object* new_master = (RGE_Master_Moving_Object*)master_obj;
+    RGE_Master_Moving_Object* new_master = (RGE_Master_Moving_Object*)source2;
 
     if (this->sprite == old_master->move_sprite) {
         sprite = new_master->move_sprite;
@@ -2302,88 +2214,79 @@ void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
     if (sprite != 0) {
         this->new_sprite(sprite);
     }
-    RGE_Static_Object::copy_obj(master_obj);
+    RGE_Static_Object::copy_obj(source2);
 }
 
+void RGE_Moving_Object::boundAngle(float* x, int numFacets) {
+    float wrappedAngle = *x;
 
-
-void RGE_Moving_Object::boundAngle(float* angle, int numberFacets) {
-    float wrappedAngle = *angle;
-
-    if (*angle < DAT_00570b48) {
+    if (*x < DAT_00570b48) {
         do {
             wrappedAngle -= DAT_00570b4c;
         } while (wrappedAngle < DAT_00570b48);
-        *angle = wrappedAngle;
+        *x = wrappedAngle;
     } else {
         while (wrappedAngle > 6.2831855f) {
-            *angle = wrappedAngle = *angle - 6.2831855f;
+            *x = wrappedAngle = *x - 6.2831855f;
         }
     }
 
-    if (numberFacets != -1) {
-        float facetAngle;
-        if (numberFacets == 8) {
-            facetAngle = 0.785398185f;
+    if (numFacets != -1) {
+        float bestDifference;
+        if (numFacets == 8) {
+            bestDifference = 0.785398185f;
         } else {
-            facetAngle = 0.392699093f;
+            bestDifference = 0.392699093f;
         }
 
-        int closestFacet = -1;
+        int bestFacet = -1;
         int i = 0;
-        if (numberFacets >= 0) {
+        if (numFacets >= 0) {
             do {
-                float difference = *angle - (float)i * facetAngle;
+                float difference = *x - (float)i * bestDifference;
                 if (difference < DAT_00570b98) {
                     difference = -difference;
                 }
-                if (difference < facetAngle) {
-                    facetAngle = difference;
-                    closestFacet = i;
+                if (difference < bestDifference) {
+                    bestDifference = difference;
+                    bestFacet = i;
                 }
-                if (facetAngle < DAT_00570c00) {
+                if (bestDifference < DAT_00570c00) {
                     break;
                 }
                 ++i;
-            } while (i <= numberFacets);
+            } while (i <= numFacets);
         }
 
-        if (numberFacets == 8) {
-            *angle = (float)closestFacet * DAT_00570b88;
+        if (numFacets == 8) {
+            *x = (float)bestFacet * DAT_00570b88;
         } else {
-            *angle = (float)closestFacet * DAT_00570bfc;
+            *x = (float)bestFacet * DAT_00570bfc;
         }
     }
 }
 
-// The canonical RGE_Moving_Object and RGE_Sprite layouts live in
-// include/move_obj.h. new_angle is the inherited slot at +0xB4.
-
-void RGE_Moving_Object::rotate(long angleDeg) {
+void RGE_Moving_Object::rotate(long amount) {
     RGE_Sprite* sprite;
-    float rotation;
+    float angle2;
 
     sprite = this->sprite;
-    rotation = (float)(((double)angleDeg * 6.2831853) /
-                       (double)sprite->facet_num) + this->angle;
+    angle2 = (float)(((double)amount * 6.2831853) /
+                     (double)sprite->facet_num) + this->angle;
 
-    if (rotation < 0.0f) {
+    if (angle2 < 0.0f) {
         do {
-            rotation += 6.2831853f;
-        } while (rotation < 0.0f);
+            angle2 += 6.2831853f;
+        } while (angle2 < 0.0f);
     }
-    if (rotation >= 6.2831853) {
+    if (angle2 >= 6.2831853) {
         do {
-            rotation -= 6.2831853f;
-        } while (rotation >= 6.2831853);
+            angle2 -= 6.2831853f;
+        } while (angle2 >= 6.2831853);
     }
 
-    this->new_angle(rotation);
+    this->new_angle(angle2);
 }
-
-// The canonical RGE_Moving_Object and Path layouts live in
-// EBX/EBP allocation swap and commutative FPU add order.
-
 
 long RGE_Moving_Object::get_waypoint_checksum() {
     float temp = 0.0f;
