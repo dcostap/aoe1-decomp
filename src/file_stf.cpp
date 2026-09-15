@@ -7,23 +7,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-int __cdecl compareFilenameStrings(const void* a, const void* b)
-{
-    return strcmp((const char*)a, (const char*)b);
+int __cdecl compareFilenameStrings(const void* e1, const void* e2) {
+    return strcmp((const char*)e1, (const char*)e2);
 }
 
-char driveAsLetter(int value)
-{
-    return (char)(value + 0x40);
+char driveAsLetter(int d) {
+    return (char)(d + 0x40);
 }
 
-int driveAsInt(char value)
-{
-    return value - 64;
+int driveAsInt(char d) {
+    return d - 64;
 }
 
-DriveInformation::DriveInformation()
-{
+DriveInformation::DriveInformation() {
     int drive;
 
     drive = _getdrive();
@@ -33,48 +29,39 @@ DriveInformation::DriveInformation()
     strcpy(this->initialDirectoryValue, this->currentDirectoryValue);
 }
 
-int DriveInformation::initialDrive() const
-{
+int DriveInformation::initialDrive() const {
     return this->initialDriveValue;
 }
 
-char DriveInformation::initialDriveAsLetter() const
-{
+char DriveInformation::initialDriveAsLetter() const {
     return (char)(this->initialDriveValue + 0x40);
 }
 
-char* DriveInformation::initialDirectory()
-{
+char* DriveInformation::initialDirectory() {
     return this->initialDirectoryValue;
 }
 
-int DriveInformation::currentDrive() const
-{
+int DriveInformation::currentDrive() const {
     return this->currentDriveValue;
 }
 
-char DriveInformation::currentDriveAsLetter() const
-{
+char DriveInformation::currentDriveAsLetter() const {
     return (char)(this->currentDriveValue + '@');
 }
 
-char* DriveInformation::currentDirectory()
-{
+char* DriveInformation::currentDirectory() {
     return this->currentDirectoryValue;
 }
 
-int DriveInformation::numberDrives() const
-{
+int DriveInformation::numberDrives() const {
     return this->driveValues[0];
 }
 
-int DriveInformation::validDrive(int index) const
-{
-    return this->driveValues[index];
+int DriveInformation::validDrive(int v) const {
+    return this->driveValues[v];
 }
 
-void DriveInformation::checkDrives()
-{
+void DriveInformation::checkDrives() {
     int drive;
 
     this->driveValues[0] = 0;
@@ -90,13 +77,12 @@ void DriveInformation::checkDrives()
     _chdrive(this->currentDriveValue);
 }
 
-int DriveInformation::numberOfFilesWithFilename(char* filename)
-{
+int DriveInformation::numberOfFilesWithFilename(char* n) {
     long handle;
     _finddata_t fileInfo;
     int count;
 
-    handle = _findfirst(filename, &fileInfo);
+    handle = _findfirst(n, &fileInfo);
     if (handle == -1) {
         return 0;
     }
@@ -107,8 +93,7 @@ int DriveInformation::numberOfFilesWithFilename(char* filename)
     return count;
 }
 
-int DriveInformation::numberOfFilesWithAttribute(int attribute)
-{
+int DriveInformation::numberOfFilesWithAttribute(int a) {
     long handle;
     _finddata_t fileInfo;
     int count;
@@ -119,16 +104,14 @@ int DriveInformation::numberOfFilesWithAttribute(int attribute)
     }
     count = 1;
     while (_findnext(handle, &fileInfo) != -1) {
-        if ((fileInfo.attrib & attribute) != 0) {
+        if ((fileInfo.attrib & a) != 0) {
             count++;
         }
     }
     return count;
 }
 
-int DriveInformation::numberOfFilesWithFilenameOrAttribute(char* filename,
-                                                            int attribute)
-{
+int DriveInformation::numberOfFilesWithFilenameOrAttribute(char* n, int a) {
     long handle;
     _finddata_t fileInfo;
     int count;
@@ -139,52 +122,46 @@ int DriveInformation::numberOfFilesWithFilenameOrAttribute(char* filename,
     }
     count = 1;
     while (_findnext(handle, &fileInfo) != -1) {
-        if ((fileInfo.attrib & attribute) != 0 ||
-            strstr(fileInfo.name, filename) != 0) {
+        if ((fileInfo.attrib & a) != 0 ||
+            strstr(fileInfo.name, n) != 0) {
             count++;
         }
     }
     return count;
 }
 
-int DriveInformation::resetCurrentDriveAndDirectory()
-{
+int DriveInformation::resetCurrentDriveAndDirectory() {
     if (this->resetCurrentDrive() != 0) {
         return this->resetCurrentDirectory();
     }
     return 0;
 }
 
-int DriveInformation::resetCurrentDrive()
-{
+int DriveInformation::resetCurrentDrive() {
     return this->changeDrive(this->initialDriveValue);
 }
 
-int DriveInformation::resetCurrentDirectory()
-{
+int DriveInformation::resetCurrentDirectory() {
     return this->changeDirectory(this->initialDirectoryValue);
 }
 
-int DriveInformation::changeDrive(int drive)
-{
-    if (_chdrive(drive) == 0) {
-        this->currentDriveValue = drive;
+int DriveInformation::changeDrive(int d) {
+    if (_chdrive(d) == 0) {
+        this->currentDriveValue = d;
         return 1;
     }
     return 0;
 }
 
-int DriveInformation::changeDirectory(char* path)
-{
-    if (_chdir(path) == 0) {
+int DriveInformation::changeDirectory(char* d) {
+    if (_chdir(d) == 0) {
         this->updateDirectory();
         return 1;
     }
     return 0;
 }
 
-void DriveInformation::updateDirectory()
-{
+void DriveInformation::updateDirectory() {
     char cDrive[3];
     char extension[256];
     char filename[256];
