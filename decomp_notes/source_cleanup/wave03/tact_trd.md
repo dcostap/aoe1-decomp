@@ -9,8 +9,9 @@
 - Changed files: the two paths above only.
 - Header read but not changed: `include/tact_trd.h`
 
-The source commit contains only identifier recovery. The report is committed in
-one later commit because its source commit hash is part of this report.
+The source commits contain identifier recovery and the allowed 1TBS brace
+formatting pass. The report is committed later because its source commit hash
+is part of this report.
 
 ## PDB coverage
 
