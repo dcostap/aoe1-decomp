@@ -4,7 +4,7 @@
 
 - Module: `src/aiblditm.cpp`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Final source commit: `f2a2b3915c0dfadf533aa0dea139c218069674df`.
+- Final source commit: `85465df59c336ac9f37f49648a60f34909b5e7df`.
 - Branch: `cleanup/staging-20260915-48`.
 - Changed files: `src/aiblditm.cpp` and this report.
 - Registry: `config/functions/src/aiblditm.cpp.json`, with `default` build flags.
@@ -13,6 +13,17 @@
 The source keeps all 34 registry functions in source order. The cleanup restores
 procedure-scoped PDB parameter names. It keeps types, scopes, storage, calls,
 literals, evaluation order, and executable statements. It uses 1TBS braces.
+
+## Correction history
+
+- The initial cleanup source commit was
+  `f2a2b3915c0dfadf533aa0dea139c218069674df`.
+- The root correction changed only the touched full-argument constructor
+  signature. It is now one readable line instead of split lines with alignment
+  padding. The correction source commit is
+  `85465df59c336ac9f37f49648a60f34909b5e7df`.
+- No fixed 80-column wrap was imposed. No name, type, scope, call, expression,
+  or statement changed in this correction.
 
 ## Evidence coverage
 
