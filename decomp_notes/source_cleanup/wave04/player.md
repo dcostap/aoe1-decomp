@@ -7,10 +7,15 @@
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`.
 - Base source SHA-256: `d0a7152b8de13fac316723a3714338a10eafa57ff531e789d71f52edd3a8f872`.
 - Cleaned source SHA-256: `fe847fec60fb57c0bfb9416be7e3e0a9db9d5bdcc1a9aebee4fcecef29aab2b8`.
-- Final commit: see the Git history for this delivery.
+- Initial delivery commit: `ee934757e344c476cfb56fb5ae84113690603d3b` (contains the source and initial report).
 - Changed files: `src/player.cpp`; this report.
 - Registry: `config/functions/src/player.cpp.json`, build flags `gx`.
 - Header request: `include/player.h` remains unchanged.
+
+## Correction history
+
+This correction records the full initial delivery commit above. It changes
+only this report and does not change the source.
 
 The original behavior oracle is
 `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`.
