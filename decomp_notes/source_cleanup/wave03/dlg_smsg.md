@@ -6,7 +6,7 @@
 - Worktree: `slot-189`
 - Branch: `cleanup/staging-20260915-189`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source-cleanup commit: `98afc1fe063aff8ca93bb15c31386bdc197969fc`
+- Final source-cleanup commit: `8fc5420596ec5025b05f8b802b1a1e3035aad8f4`
 - Changed files:
   - `src/dlg_smsg.cpp`
   - `decomp_notes/source_cleanup/wave03/dlg_smsg.md`
@@ -15,6 +15,10 @@
 
 The final handoff commit adds this report after the source commit.
 The source commit hash above is copied from Git.
+
+Follow-up correction commit `8fc5420596ec5025b05f8b802b1a1e3035aad8f4`
+moved both constructor opening braces onto their initializer-list lines.
+The correction changes formatting only. It changes no token or behavior.
 
 ## Scope and method
 
