@@ -126,9 +126,10 @@ clear, and the comment guide does not support a comment quota.
 
 ## Code generation, type, and layout review
 
-The source changes rename parameters and one inferred local. They also move the
-`setOverallState` opening brace onto its definition line for 1TBS style. They do
-not change types, declaration order, declaration scope, storage duration,
+The source changes rename parameters and one inferred local. They also place the
+opening braces for both constructors and `setOverallState` after the final
+definition or initializer line for 1TBS style. They do not change types,
+declaration order, declaration scope, storage duration,
 member access, casts, evaluation order, control flow, calls, literals, string
 data, function boundaries, relocations, direct targets, virtual slots, or
 public symbols.

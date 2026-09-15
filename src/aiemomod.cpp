@@ -7,8 +7,7 @@ void __cdecl rge_write(int file, void* data, int size);
 
 EmotionalAIModule::EmotionalAIModule(void* pW, int playerID)
     : AIModule("Emotional AI", 0x3EC, playerID, pW)
-    , md(0)
-{
+    , md(0) {
     for (int i = 0; i < 6; i++) stateValue[i] = 49;
     strcpy(stateNameValue[0], "Aggressive");
     strcpy(stateNameValue[1], "Compassionate");
@@ -20,8 +19,7 @@ EmotionalAIModule::EmotionalAIModule(void* pW, int playerID)
 
 EmotionalAIModule::EmotionalAIModule(int playerID, int infile)
     : AIModule("Emotional AI", 0x3EC, playerID, 0)
-    , md(0)
-{
+    , md(0) {
     int* ptr = stateValue;
     int count = 6;
     do {
