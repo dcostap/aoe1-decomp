@@ -9,15 +9,13 @@ extern int __cdecl debug_rand(char*, int);
 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
     RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
     RGE_Shallows_Info* in_info)
-    : RGE_Random_Map_Module(in_map, parent_module, 1)
-{
+    : RGE_Random_Map_Module(in_map, parent_module, 1) {
     this->schedule = 1.1f;
     this->info = *in_info;
 }
 
 // inner loop at line 57, and connection call at line 58.
-uchar RGE_RMM_Shallows_Generator::generate()
-{
+uchar RGE_RMM_Shallows_Generator::generate() {
     this->clear_stack();
 
     long i, j;
@@ -70,17 +68,16 @@ uchar RGE_RMM_Shallows_Generator::generate()
 }
 
 void RGE_RMM_Shallows_Generator::make_tribe_connections(
-    long point1, long point2)
-{
+    long point1, long point2) {
     long start_x = this->info.shallows[point1].x;
     long start_y = this->info.shallows[point1].y;
     long target_x = this->info.shallows[point2].x;
     long target_y = this->info.shallows[point2].y;
-    long path_x = target_x;
-    long path_y = target_y;
+    long tx1 = target_x;
+    long ty = target_y;
     long x;
     long y;
-    long done;
+    long tx2;
     float cost;
     float terrain[40] = {0};
     Map_Stack stack;
@@ -93,14 +90,14 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
     terrain[4] = 2.0f;
     terrain[22] = 14.0f;
 
-    this->find_path(start_x, start_y, path_x, path_y, terrain);
+    this->find_path(start_x, start_y, tx1, ty, terrain);
 
-    if (path_x != target_x || path_y != target_y) {
+    if (tx1 != target_x || ty != target_y) {
         return;
     }
 
-    x = path_x;
-    y = path_y;
+    x = tx1;
+    y = ty;
     if (x < 0 || x >= this->map_width ||
         y < 0 || y >= this->map_height) {
         return;
@@ -108,10 +105,10 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
 
     stack.next = 0;
     stack.prev = 0;
-    done = 0;
+    tx2 = 0;
 
-    while (!done) {
-        switch (this->search_map_rows[path_y][path_x]) {
+    while (!tx2) {
+        switch (this->search_map_rows[ty][tx1]) {
         case 4:
             ++x;
             break;
@@ -141,28 +138,28 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             --x;
             break;
         default:
-            done = 1;
+            tx2 = 1;
             break;
         }
 
         if (x < 0 || x >= this->map_width ||
             y < 0 || y >= this->map_height) {
-            done = 1;
+            tx2 = 1;
         }
 
-        if (done) {
+        if (tx2) {
             break;
         }
 
         uchar terrain_type =
             this->map_row_offset[y][x].terrain_type & 0x1f;
         if (terrain_type == 1 || terrain_type == 0x16) {
-            long min_x =
+            long end_y =
                 x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xc6) * 2) /
                         0x7fff -
                 1;
-            if (min_x < 0) {
-                min_x = 0;
+            if (end_y < 0) {
+                end_y = 0;
             }
 
             long min_y =
@@ -173,24 +170,24 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
                 min_y = 0;
             }
 
-            long max_x =
+            long in_zone =
                 x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xce) * 2) /
                         0x7fff +
                 1;
-            if (max_x >= this->map_width) {
-                max_x = this->map_width - 1;
+            if (in_zone >= this->map_width) {
+                in_zone = this->map_width - 1;
             }
 
-            long max_y =
+            long end_x =
                 y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xd2) * 3) /
                         0x7fff +
                 1;
-            if (max_y >= this->map_height) {
-                max_y = this->map_height - 1;
+            if (end_x >= this->map_height) {
+                end_x = this->map_height - 1;
             }
 
-            for (long fill_y = min_y; fill_y <= max_y; ++fill_y) {
-                for (long fill_x = min_x; fill_x <= max_x; ++fill_x) {
+            for (long fill_y = min_y; fill_y <= end_x; ++fill_y) {
+                for (long fill_x = end_y; fill_x <= in_zone; ++fill_x) {
                     if ((this->map_row_offset[fill_y][fill_x].terrain_type &
                          0x1f) == 1 ||
                         (this->map_row_offset[fill_y][fill_x].terrain_type &
@@ -230,9 +227,9 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             }
         }
 
-        this->search_map_rows[path_y][path_x] = 0xff;
-        path_x = x;
-        path_y = y;
+        this->search_map_rows[ty][tx1] = 0xff;
+        tx1 = x;
+        ty = y;
     }
 
     while (this->pop_stack(stack, x, y, cost)) {
