@@ -6,7 +6,7 @@
 - Worker slot: 211
 - Branch: `cleanup/staging-20260915-211`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Source commit: `ef4716b4f9d52b8e0bb9b5efb8c8912489bc3b53`
+- Source commit: `ef4716b4fbe13c21122ed62269471dda8740b9dc`
 - Report commit: follows the source commit
 - Changed files:
   - `src/diam_map.cpp`
