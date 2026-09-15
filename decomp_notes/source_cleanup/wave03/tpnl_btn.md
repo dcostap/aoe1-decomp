@@ -17,7 +17,7 @@ The registry packet is `config/functions/src/tpnl_btn.cpp.json`. It selects seve
 normal procedures in source order. The selected registry statuses are six
 `matching` procedures and `accepted_drift` for `TRIBE_Panel_Button::draw`.
 The source changes names and one verified SDK constant. They preserve types,
-scopes, storage, calls, casts, literals, control flow, and layouts.
+scopes, storage, calls, casts, literal values, control flow, and layouts.
 
 ## PDB coverage and name recovery
 
