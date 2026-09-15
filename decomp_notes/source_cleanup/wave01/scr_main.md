@@ -7,7 +7,8 @@
 - Branch: `cleanup/staging-20260915-24`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Source cleanup commit: `752601e741d0327c863e78db2e474fd7ee69bdd8`
-- Shared header commit, worker-local cherry-pick only: `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`
+- Approved shared-header root commit: `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`
+- Worker-local shared-header cherry-pick: `ac3ccdedc8b2f4ee50f949205f7e35293cd8da52`
 - Changed paths:
   - `src/scr_main.cpp`
   - `decomp_notes/source_cleanup/wave01/scr_main.md`
