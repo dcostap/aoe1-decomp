@@ -24,13 +24,14 @@ public:
     TButtonPanel* command_button;
     TPanel* dialog;
 
-    RGE_Panel_Tool_Box(TDrawArea*, TPanel*, long, long, long, long, void*,
-                       long, long, TDigital*, TScreenPanel*, RGE_View*,
-                       RGE_Diamond_Map*);
+    RGE_Panel_Tool_Box(TDrawArea* draw_area_in, TPanel* parent_in, long x, long y,
+                       long wid, long hgt, void* font, long font_wid, long font_hgt,
+                       TDigital* sound, TScreenPanel* screen_panel_in, RGE_View* view_in,
+                       RGE_Diamond_Map* map_in);
     virtual ~RGE_Panel_Tool_Box();
-    void game_mode_changed(int, int);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual long key_down_action(long, short, int, int, int);
+    void game_mode_changed(int old_mode, int new_mode);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
     virtual void draw();
 };
 

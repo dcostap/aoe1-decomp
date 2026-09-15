@@ -80,21 +80,22 @@ public:
     int save_farm_amt;
 
     virtual ~TRIBE_Panel_Object();
-    TRIBE_Panel_Object(TDrawArea*, TPanel*, void*, long, long, TShape*,
-                       TShape**, TRIBE_Player*);
+    TRIBE_Panel_Object(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in,
+                       long font_wid_in, long font_hgt_in, TShape* unit_pics_in,
+                       TShape** bldg_pics_in, TRIBE_Player* player_in);
     virtual void draw();
 
 protected:
-    virtual void draw_item(int, int, ValueType, int, int);
+    virtual void draw_item(int row, int pic_index, ValueType val_type, int val1, int val2);
 
 public:
     virtual long handle_idle();
-    virtual long mouse_left_down_action(long, long, int, int);
-    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
 
-    void set_player(TRIBE_Player*);
-    void set_object(RGE_Static_Object*);
-    void set_mode(unsigned char);
+    void set_player(TRIBE_Player* player_in);
+    void set_object(RGE_Static_Object* game_obj_in);
+    void set_mode(unsigned char mode_in);
     unsigned char get_mode();
 
 protected:

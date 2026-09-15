@@ -28,13 +28,13 @@ public:
     int LastIBWidth;
     int LastIBHeight;
 
-    TRIBE_Panel_Pop(TDrawArea*, TPanel*);
+    TRIBE_Panel_Pop(TDrawArea* render_area_in, TPanel* parent_in);
     virtual ~TRIBE_Panel_Pop();
-    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
     void startup();
     int get_player_id();
     virtual void draw();
-    virtual void get_true_render_rect(tagRECT&);
+    virtual void get_true_render_rect(tagRECT& drawRect);
     virtual long handle_idle();
 
 protected:
