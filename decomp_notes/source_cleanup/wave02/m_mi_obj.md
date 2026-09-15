@@ -3,7 +3,7 @@
 - Module: `src/m_mi_obj.cpp`
 - Branch: `cleanup/staging-20260915-69`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final code commit: `407a300caf49d7a368cbe52bbd13d8e77faac650`
+- Final code commit: `6eace1abd457c9ffec3c934e521068905e5e50f9`
 - Assigned header: `include/m_mi_obj.h` (read only; not changed)
 - Registry: `config/functions/src/m_mi_obj.cpp.json`
 - PDB source: `C:\\msdev\\work\\age1_x1\\m_mi_obj.cpp`
@@ -18,6 +18,19 @@
 The source commits change recovered parameter and local names. They also move
 opening braces to 1TBS positions. They keep types, scopes, storage, statements,
 calls, casts, literals, source order, and evaluation order.
+
+## Root formatting correction
+
+The prior source correction ended at code commit
+`407a300caf49d7a368cbe52bbd13d8e77faac650`. Root review requested compact
+signatures for every touched `setup`, `copy_obj`, `modify`, `modify_delta`, and
+`modify_percent` definition. The source correction commit is
+`6eace1abd457c9ffec3c934e521068905e5e50f9`.
+
+All three `setup` overloads and the listed copy and modify definitions now use
+one-line signatures where readable. I reviewed continuation indentation. The
+correction changes formatting only. It keeps all tokens, types, scopes,
+expressions, and behavior.
 
 ## PDB recovery coverage
 
