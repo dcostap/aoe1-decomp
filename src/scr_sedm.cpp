@@ -19,8 +19,7 @@ extern char s_Main_Menu[];
 extern TPanelSystem panel_system;
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
-    : TScreenPanel(s_Scenario_Editor_Menu)
-{
+    : TScreenPanel(s_Scenario_Editor_Menu) {
     title = 0;
     for (int j = 0; j < 4; j++)
         button[j] = 0;
@@ -66,16 +65,14 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
     set_curr_child(button[0]);
 }
 
-TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu()
-{
+TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu() {
     delete_panel(reinterpret_cast<TPanel**>(&title));
     for (int i = 0; i < 4; i++)
         delete_panel(reinterpret_cast<TPanel**>(&button[i]));
     delete_panel(reinterpret_cast<TPanel**>(&close_button));
 }
 
-long TRIBE_Screen_Sed_Menu::handle_idle()
-{
+long TRIBE_Screen_Sed_Menu::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
