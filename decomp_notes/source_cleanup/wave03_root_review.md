@@ -1,5 +1,16 @@
 # Cleanup wave 03 root review
 
+## Owner 14: delegated review started
+
+- Delivered head: `70d4611304b93c9e0d67aff0b1194b54a84d25fb`.
+- Base: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
+- Full diff: `build/source-cleanup-20260915/owner14-review.diff`, 20,962 lines.
+- Reviewer: `sa-e8937a55`, Sol medium, read only.
+
+The assignment covers all eight sources, eight headers, and nine reports, including complete correction history.
+The reviewer must check original use evidence for high-risk PDB mappings and preserve all baseline declaration structure.
+The group remains unmerged. Full validation must wait for all cleanup work to finish.
+
 ## Owner 21: final report corrections approved
 
 Root read the complete three-report diff to `077dc8b6ba55262e92c65b776822095279c33f43`.
