@@ -15,22 +15,20 @@ public:
     int Height;
     short Orien;
 
-    TPicture(char* file_name, long resource_id, int palette_id,
-        void* palette, int palette_flags);
-    TPicture(int file_handle, int param_2);
+    TPicture(char* FileName, long res_id, int UseTrans, void* MapToPal, int ZeroIsTrans);
+    TPicture(int infile, int UseTrans);
     TPicture();
     ~TPicture();
 
-    void Save(int fd);
-    void Load(char* file_name, long resource_id, int palette_id,
-        void* palette, int palette_flags);
-    void Init(BITMAPINFO256* info, unsigned char* bits, TRANSINFO* trans);
+    void Save(int outfile);
+    void Load(char* FileName, long res_id, int UseTrans, void* MapToPal, int ZeroIsTrans);
+    void Init(BITMAPINFO256* FromInfo, unsigned char* FromBits, TRANSINFO* FromTrans);
     long AlignedWidth();
-    void Draw(TDrawArea* draw_area, long x, long y, int dst_x, int dst_y);
-    long Tile(TDrawArea* draw_area, long param_2, long param_3, long param_4,
-        long param_5, long param_6, long param_7, long param_8, long param_9,
-        long param_10, long param_11);
-    unsigned char GetPixel(long x, long y, int param_3, int param_4);
+    void Draw(TDrawArea* DrawArea, long DestX, long DestY, int Mirror, int Flip);
+    long Tile(TDrawArea* DrawArea, long DestX, long DestY, long DestWid,
+        long DestHgt, long BlockWid, long BlockHgt, long SrcX, long SrcY,
+        long SrcWid, long SrcHgt);
+    unsigned char GetPixel(long x, long y, int Mirror, int Flip);
 };
 
 typedef char picture_size_check[(sizeof(TPicture) == 0x20) ? 1 : -1];

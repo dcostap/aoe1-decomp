@@ -72,8 +72,8 @@ public:
     long flic_size_x;             // +0xB4
     long flic_size_y;             // +0xB8
 
-    RGE_Flic_Player(char* path);
-    RGE_Flic_Player(int file_handle);
+    RGE_Flic_Player(char* filename);
+    RGE_Flic_Player(int handle);
     ~RGE_Flic_Player();
 
     void palette(tagRGBQUAD* palette);
