@@ -98,13 +98,14 @@ arguments. Its `ret 14h` restores `ESP` to `S-34h` before `004931E5`.
   `00493214` adds it to the first-column value. `00493216` stores the result
   in `[esp+3Ch]` (`S+08h`), a reused stack cell for the second-column value.
 
-The first-column TextOutA uses read the `[esp+40h]` cell directly. In the
+The first-column TextOutA calls read the `[esp+40h]` cell directly. In the
 shadow path, `00493293` reads it, `0049329C` subtracts one, and `0049329E`
 pushes that x coordinate before `004932A0` calls TextOutA. The normal path
 reads it at `004932B7`, pushes it at `004932BE`, and calls TextOutA through
-`00493314`.
+`00493314`. The style-zero path reads it at `0049330C`, pushes it at
+`00493313`, and calls TextOutA at `00493314`.
 
-The second-column TextOutA uses read the `[esp+3Ch]` cell. The shadow path
+The second-column TextOutA calls read the `[esp+3Ch]` cell. The shadow path
 reads it at `0049336D`, subtracts one at `00493376`, pushes it at `00493378`,
 and calls TextOutA at `0049337A`. The normal path reads it at `0049338C`,
 pushes it at `00493393`, and calls TextOutA at `00493395`. The other text
