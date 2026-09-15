@@ -26,22 +26,24 @@ Record each managed ID here after launch.
 
 The first capacity check found three running owners and six completed wave 02 groups awaiting root intake.
 Owner 13's request is ready, but root paused launches to clear that review queue first.
-No wave 03 owner has launched yet. The preparation job continues independently.
+No wave 03 owner has launched yet.
+Preparation has now completed successfully for all 90 clean worktrees and ten individual launch requests.
+Available disk space afterward was approximately 85 GiB. The root review pause remains active.
 
 ## Queue
 
 | Owner | Group | State | Managed ID |
 | --- | --- | --- | --- |
-| 13 | AI core and build support | Preparing | Not launched |
-| 14 | Tribe AI and game information | Preparing | Not launched |
-| 15 | Active objects and remaining actions | Preparing | Not launched |
-| 16 | Maps and visibility | Preparing | Not launched |
-| 17 | Core panels | Preparing | Not launched |
-| 18 | Panel and dialog support | Preparing | Not launched |
-| 19 | Tribe panels | Preparing | Not launched |
-| 20 | Audio and image support | Preparing | Not launched |
-| 21 | Game and editor screens | Preparing | Not launched |
-| 22 | Text and file support | Preparing | Not launched |
+| 13 | AI core and build support | Ready; review pause | Not launched |
+| 14 | Tribe AI and game information | Ready; review pause | Not launched |
+| 15 | Active objects and remaining actions | Ready; review pause | Not launched |
+| 16 | Maps and visibility | Ready; review pause | Not launched |
+| 17 | Core panels | Ready; review pause | Not launched |
+| 18 | Panel and dialog support | Ready; review pause | Not launched |
+| 19 | Tribe panels | Ready; review pause | Not launched |
+| 20 | Audio and image support | Ready; review pause | Not launched |
+| 21 | Game and editor screens | Ready; review pause | Not launched |
+| 22 | Text and file support | Ready; review pause | Not launched |
 
 No compilation, builds, matching, audits, tests, or games ran during assignment and preparation.
 The same full-diff review and unchanged-output requirements remain active.

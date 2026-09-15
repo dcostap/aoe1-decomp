@@ -27,3 +27,45 @@ The ledger must clearly label invented `dpl_obj` local names, separate from reco
 
 Owner `sa-fe7f217c` resumed in run 2. No part of this group is merged into main yet.
 Root preserved all earlier commits and worktrees. No compilation, builds, matching, audits, tests, or games ran.
+
+## Owner 09: corrections approved and integrated
+
+Corrected head: `7c558c4bafe4b99f706efb6d1eead4a3a982511c`.
+Root read the complete 398-line correction diff and the changed reports.
+The source restores `max_y` and retains the supported `x1` mapping without changing expressions or storage.
+The reports now distinguish the uncertain pointer-home evidence and invented descriptive names.
+Header corrections change presentation only.
+
+Root merged the complete group without conflicts as `2b9e1412f991eab6819abdc3ab0cac3732f33921`.
+This includes eight sources, eight headers, eight module reports, and the owner ledger.
+All histories remain preserved. The 32 integrated wave modules remain reviewed and unvalidated.
+
+## Owner 05: returned for corrections
+
+Delivered head: `75fb726c37e61a81933e7ba658a1215295a0fbce`.
+Root read the full 2,910-line group diff and all nine reports.
+Root found no removed cast or changed executable expression, but identified two uncertain local-name mappings.
+
+- `tact_dar::check_objects` renames the loop variable `x` to `x1`.
+  Packet `004CE7A0` stores the first horizontal bound in the `x1` home at `004CE7CD`.
+  It clips that bound at `004CE804` and `004CE816`, then reloads it at `004CE86A`.
+  Root requested restoration of loop `x` and evidence-based treatment of the lower-bound declaration instead.
+- `tact_art::check_ownership` renames `map_x` to `x1` without reliable home mapping.
+  Packet `004CCF30` warns that `x1` should be unmapped and gives that home no cross-references.
+  Root requested baseline `map_x` unless the worker supplies reliable declaration evidence.
+- The `tact_cnv` report cites nonexistent `src/act_lst.cpp` callers.
+  The cited `convert` and `die_die_die` procedures belong to `src/t_c_obj.cpp`.
+  Root requested actual source paths and call-site evidence.
+- Short touched definitions still have unnecessary wrapping, notably conversion work, repair work/movement, and the make-object constructor.
+
+Owner `sa-fb0803db` resumed in run 2 and must use the same source workers for corrections.
+No source, type, scope, or behavior repair is authorized. No part of this group is integrated yet.
+
+## Pending delivered groups
+
+Root prepared full diff artifacts for these deliveries but has not yet read their complete diffs or reports:
+
+- Owner 04: `32538789aa6fb57dfb041749f878c122b15a674d`; `build/source-cleanup-20260915/owner04-review.diff`, 3,717 lines.
+- Owner 12: `54713c0810fcde59c9aeb665ddcf45685f62f1a1`; `build/source-cleanup-20260915/owner12-review.diff`, 3,379 lines.
+
+No compilation, builds, matching, audits, tests, or games ran during these intakes.
