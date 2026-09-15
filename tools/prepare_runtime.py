@@ -61,7 +61,10 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy") -> d
                       "method": method, "size": src.stat().st_size})
         return str(dst)
 
-    shutil.copytree(source, output, copy_function=copy_verified)
+    # Repository documentation is not an installed game input.
+    shutil.copytree(source, output, copy_function=copy_verified,
+                    ignore=lambda directory, names: {"README.md"}
+                    if Path(directory) == source else set())
     shutil.copy2(exe, output / "empiresx.exe")
     if digest(output / "empiresx.exe") != exe_hash:
         raise ValueError("Selected EXE copy verification failed.")

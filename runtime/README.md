@@ -19,3 +19,6 @@ The other files provide the complete release installation. Do not replace
 
 The game files are ignored by Git. Keep this README tracked. Do not modify the
 original files under `orig/` or the user's installed game.
+
+Keep `runtime` included in sparse checkouts.
+Before changing sparse rules, preserve a verified copy of these ignored files.

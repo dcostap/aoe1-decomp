@@ -42,6 +42,21 @@ def test_complete_copy_and_launcher(inputs):
     assert "WINDOW" not in launcher
 
 
+def test_repository_readme_is_not_a_game_input(inputs):
+    source, exe, output = inputs
+    (source / "README.md").write_text("Repository setup instructions.")
+    (source / "Readme.doc").write_bytes(b"Installed game documentation")
+    (source / "data/README.md").write_bytes(b"Nested installation input")
+    report = prepare_runtime.prepare(source, exe, output)
+    paths = {row["path"] for row in report["copied_files_before_exe_replacement"]}
+    assert "README.md" not in paths
+    assert not (output / "README.md").exists()
+    assert (source / "README.md").is_file()
+    assert "Readme.doc" in paths and "data/README.md" in paths
+    assert (output / "Readme.doc").read_bytes() == b"Installed game documentation"
+    assert (output / "data/README.md").read_bytes() == b"Nested installation input"
+
+
 def test_reject_existing_output(inputs):
     source, exe, output = inputs
     output.mkdir(parents=True)

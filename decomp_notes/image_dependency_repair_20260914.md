@@ -210,3 +210,44 @@ It does not prove full image ownership, inherited callee behavior, every indirec
 The harness unit tests do not establish actual gameplay or rendered-pixel parity.
 The older broken executable is unavailable locally, so its optional regression remains skipped.
 The preserved civilization-repaired baseline and fresh executable both retain the nine historical repairs.
+
+## Main integration
+
+Main commit `0b0a097e1` imports only repair commit `8c3dbb7a6`, not its preparation commits.
+The four unshared source files match the worker's committed blobs.
+The timeline merge retains the separately approved `draw_special_events` patch.
+All eleven former scratch functions subsequently completed independent dual review.
+Their registry status is `new_verified_logic`; their local byte checks remain mismatches.
+
+The final combined build is:
+`build/executable/all-review-repairs/20260914T234718323952Z/`.
+EXE SHA256: `4b833839dc713ae378e0efbb40509f2ebdc15df17b60df1eb8a7fe63a461a221`.
+All game sources compiled and linked.
+The final linked audit is `build/dependency-audit/all-review-repairs/`.
+It reports 7,760 passes, zero failures, and 47,025 unknown checks.
+The full suite with this linked fixture passed 749 tests and 31 subtests.
+Test report: `build/all-review-repairs-tests.xml`.
+
+`build/final-dependency-coverage.json` retains the comparison with the original 13-failure audit.
+All 54,785 check identities remain. Exactly 13 statuses change from fail to pass.
+The stricter unknown-reason equality check fails for one check in `setup_buttons`.
+Its reason changes from an unverified containing emission to unaligned instruction windows.
+That check remains unknown. No unknown check becomes a pass.
+The build directory retains the initial comparison and failed assertion.
+
+Sparse-checkout changes removed the ignored runtime inputs during integration.
+The restoration script copied inputs from preserved original runs, not from rebuilt state.
+All 414 restored files match the unchanged recording's asset hashes.
+Restoration record: `build/runtime-input-restoration.json`.
+The local sparse checkout now includes `runtime` and the current review archives.
+The recording, original files, prior captures, and prior builds remain unchanged.
+
+The first final parity run is `build/runtime/parity-20260914T235333018159Z/report.json`.
+Its short scripted case passed. Both human workers correctly rejected the starting contract.
+Sparse checkout had also restored the tracked `runtime/README.md`, an extra repository document.
+The game inputs themselves matched all 414 hashes.
+Runtime preparation now omits only that root repository document from staged game inputs.
+It still copies the installed `Readme.doc`, nested documents, and all other input files.
+The recording and contract comparison remain unchanged.
+A new test checks this distinction. All 64 focused tests passed.
+The failed replay reports and logs remain intact.
