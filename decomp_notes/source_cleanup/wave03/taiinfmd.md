@@ -103,8 +103,8 @@ These comments were retained. The final edit added no new resource or API commen
 
 ## Code-generation and type risks
 
-The cleanup changes names and presentation only. It keeps expressions, casts, literal values,
-statement order, calls, explicit `this->` use, and source ownership.
+The cleanup changes names, declaration shape, and presentation. It keeps expressions, casts,
+literal values, statement order, calls, explicit `this->` use, and source ownership.
 
 Names do not affect the ABI, but local declaration changes can affect VC5 register allocation,
 stack allocation, or instruction selection. The highest-risk edits are the removal of redundant
