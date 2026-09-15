@@ -6,11 +6,12 @@
 - Slot and branch: 50, `cleanup/staging-20260915-50`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Initial source commit: `f6db0125c423506bff5f30ce20f5337d9a56fd88`
-- Correction commit: `151a911e1acea79628f543738fd3c393d7815eba`
-- Final source commit: `151a911e1acea79628f543738fd3c393d7815eba`
+- Operator formatting correction commit: `151a911e1acea79628f543738fd3c393d7815eba`
+- Constructor formatting correction commit: `891620b9264a5a6fd2f7319a3e8e9875ff860465`
+- Final source commit: `891620b9264a5a6fd2f7319a3e8e9875ff860465`
 - Changed files: `src/aiconitm.cpp`, this report
 - The source commits contain only the assigned source file. The report is committed separately.
-- The correction joins each two-parameter operator definition onto one line. It changes formatting only.
+- The formatting corrections join the operator and constructor signatures onto readable lines. They change formatting only.
 
 ## Cleanup
 
