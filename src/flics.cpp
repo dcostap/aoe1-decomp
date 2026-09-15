@@ -168,9 +168,12 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette) {
     }
 }
 
-long RGE_Flic_Player::resolution() {
-    return (short)this->flichead.height |
-           ((long)this->flichead.width << 16);
+
+
+long RGE_Flic_Player::resolution()
+{
+    return ((long)this->flichead.width << 16) |
+           (short)this->flichead.height;
 }
 
 long RGE_Flic_Player::time_delay() {
