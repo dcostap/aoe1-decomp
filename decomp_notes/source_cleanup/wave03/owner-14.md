@@ -23,8 +23,8 @@ The common base is `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 
 | Module | Reviewed worker head | Result |
 | --- | --- | --- |
-| `taiinfmd` | `810a6198a9b01e11ded8f29cb449bfa5faad8087` | Approved after three declaration reviews and final report corrections. |
-| `taimdmd` | `768c98f6add47808cf8c1929bbda2b7b8aa2d4b9` | Approved after local-storage correction. |
+| `taiinfmd` | `44bff3342082f36035287dfb343ade136afc03b1` | Approved after declaration reviews and a post-cleanup binding repair. |
+| `taimdmd` | `3c2d4a7914ba1a6c24d7424442a63cdaca5f3bb0` | Approved after storage and VC5 scope repairs. |
 | `tairesmd` | `f9a3b91cd91120610cb363989a00c7502ee86967` | Approved. |
 | `taistrmd` | `afe72c51515b825f5f2508f76d8f433285619e2d` | Approved after formatting correction. |
 | `taitacmd` | `0210fcdf9217069b4585f52599ff1f5578d84baa` | Approved after report, formatting, and PDB-name corrections. |
@@ -60,6 +60,16 @@ The owner reviewed each complete worker diff and report against the common base.
 - `taiuaimd`: The correction restored `NotifyEvent* event = nEvent;` and its uses.
 - `taunt`: The source preserved behavior and required no correction.
 - `gameinfo`: The source preserved behavior and required no correction.
+
+A root fresh-main compilation later found two incorrect cleanup bindings.
+
+- `taiinfmd`: `lookupZone` used the removed `gatherer` name. The repair binds
+  the call to the existing `gathererObj` declaration.
+- `taimdmd`: A final `i` loop declaration collided with an earlier initializer
+  under VC5 scope rules. The repair restores `neutralPlayer` and `target`.
+
+The external report is
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
 
 No prohibited compiler, build, matching, audit, test, or game command occurred.
 
@@ -110,7 +120,9 @@ No change is requested for `include/resource_ids.h` or `include/game_globals.h`.
 
 ## Validation status
 
-The owner performed evidence extraction and complete Git diff review only.
-Compilation, matching, audits, tests, game execution, and runtime validation were not run.
+The owner and workers performed evidence extraction and Git diff review only.
+Root ran the fresh-main compilation that found the two errors recorded above.
+The workers did not run compilation, matching, audits, tests, or game execution.
 
-This group is reviewed but unvalidated. Generated-code equality remains unknown.
+The two repairs have not received a later validation run.
+Generated-code equality remains unknown.
