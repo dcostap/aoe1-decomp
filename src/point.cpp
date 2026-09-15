@@ -8,16 +8,16 @@ XYZ::XYZ() {
     this->zValue = 0;
 }
 
-XYZ::XYZ(int x, int y, int z) {
-    xValue = x;
-    yValue = y;
-    zValue = z;
+XYZ::XYZ(int a, int b, int c) {
+    xValue = a;
+    yValue = b;
+    zValue = c;
 }
 
-int __cdecl operator==(const XYZ& a, const XYZ& b) {
-    if (a.xValue == b.xValue) {
-        if (a.yValue == b.yValue) {
-            if (a.zValue == b.zValue) {
+int __cdecl operator==(const XYZ& one, const XYZ& two) {
+    if (one.xValue == two.xValue) {
+        if (one.yValue == two.yValue) {
+            if (one.zValue == two.zValue) {
                 return 1;
             }
         }
@@ -25,10 +25,10 @@ int __cdecl operator==(const XYZ& a, const XYZ& b) {
     return 0;
 }
 
-int __cdecl operator!=(const XYZ& a, const XYZ& b) {
-    if (a.xValue == b.xValue) {
-        if (a.yValue == b.yValue) {
-            if (a.zValue == b.zValue) {
+int __cdecl operator!=(const XYZ& one, const XYZ& two) {
+    if (one.xValue == two.xValue) {
+        if (one.yValue == two.yValue) {
+            if (one.zValue == two.zValue) {
                 return 0;
             }
         }
@@ -36,40 +36,38 @@ int __cdecl operator!=(const XYZ& a, const XYZ& b) {
     return 1;
 }
 
-XYZ& XYZ::operator=(const XYZ& other) {
-    this->xValue = other.xValue;
-    this->yValue = other.yValue;
-    this->zValue = other.zValue;
+XYZ& XYZ::operator=(const XYZ& p) {
+    this->xValue = p.xValue;
+    this->yValue = p.yValue;
+    this->zValue = p.zValue;
     return *this;
 }
 
-XYZ XYZ::operator+(const XYZ& other) const {
-    XYZ tmp(xValue + other.xValue, yValue + other.yValue, zValue + other.zValue);
-    return tmp;
+XYZ XYZ::operator+(const XYZ& p) const {
+    XYZ newP(xValue + p.xValue, yValue + p.yValue, zValue + p.zValue);
+    return newP;
 }
 
-XYZ XYZ::operator-(XYZ const& param_1) const {
-    XYZ newP(this->xValue - param_1.xValue, this->yValue - param_1.yValue, this->zValue - param_1.zValue);
+XYZ XYZ::operator-(XYZ const& p) const {
+    XYZ newP(this->xValue - p.xValue, this->yValue - p.yValue, this->zValue - p.zValue);
     return newP;
 }
 
 void XYZ::rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint,
-                          unsigned char facet)
-{
+                          unsigned char facet) {
     rPoint.xValue = this->xValue;
     rPoint.yValue = this->yValue;
     rPoint.zValue = this->zValue;
 
-    if (facet)
-    {
-        int dx = this->xValue - refPoint.xValue;
-        int dy = this->yValue - refPoint.yValue;
-        float angle = (float)(facet & 0xFF) * 0.7853981852531433f;
-        float s = sin(angle);
-        float c = cos(angle);
-        rPoint.xValue = (int)(c * dx - s * dy);
-        float y1 = c * dy;
-        float x1 = s * dx;
+    if (facet) {
+        int xDiff = this->xValue - refPoint.xValue;
+        int yDiff = this->yValue - refPoint.yValue;
+        float rotAmount = (float)(facet & 0xFF) * 0.7853981852531433f;
+        float s = sin(rotAmount);
+        float c = cos(rotAmount);
+        rPoint.xValue = (int)(c * xDiff - s * yDiff);
+        float y1 = c * yDiff;
+        float x1 = s * xDiff;
         rPoint.yValue = (int)(y1 + x1);
     }
 }
