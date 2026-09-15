@@ -4,7 +4,7 @@
 
 - Module: `src/Dib.cpp`.
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit from `git rev-parse`: pending; the report update follows it.
+- Final source commit from `git rev-parse`: `559e1492c9ad3a8d15d1dbd24b1512fab69f0c48`.
 - Branch: `cleanup/staging-20260915-179`.
 - Changed files: `src/Dib.cpp`; this report.
 - Registry: `config/functions/src/Dib.cpp.json`; build flags `default`.
