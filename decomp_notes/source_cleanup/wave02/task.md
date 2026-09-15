@@ -19,7 +19,7 @@ storage, declaration order, serialized field order, or data value changed.
 ## Evidence and hashes
 
 The source registry is `config/functions/src/task.cpp.json`. Its PDB source
-path is `C:\\msdev\\work\\age1_x1\\task.cpp`.
+path is `C:\msdev\work\age1_x1\task.cpp`.
 
 PDB evidence came from:
 
