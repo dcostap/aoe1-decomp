@@ -294,11 +294,11 @@ void RGE_RMM_Terrain_Generator::link_stack_randomly(
 }
 
 void RGE_RMM_Terrain_Generator::remove_area_from_lists(
-    long x, long y, long spacing) {
+    long x, long p2, long spacing) {
     long xmin = x - spacing;
-    long ymin = y - spacing;
+    long ymin = p2 - spacing;
     long xmax = x + spacing;
-    long ymax = y + spacing;
+    long ymax = p2 + spacing;
 
     if (xmin < 0) xmin = 0;
     if (ymin < 0) ymin = 0;
