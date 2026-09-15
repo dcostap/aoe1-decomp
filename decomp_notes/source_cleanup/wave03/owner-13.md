@@ -15,8 +15,8 @@ All module results are reviewed and unvalidated. Final generated-output and runt
 ### `src/aimodule.cpp`
 
 - Worker: `sa-480ae383`.
-- Worker commits: `b4154ff6514fe5156b204a4556289514f24340f1`, `206641938148f1ca8fe7c55440fb9029798982ad`, `2aefd8ba3017abc454ca8737ff9727e01dee3db0`, `1f6ce2005fb17141b45a5e9b1ccb9d752586c87e`, `46a0c3ad5c6b0f0d42e9e66765fa751dc02d9ae7`, and `d5df9ccc05261a6dc04beceda062d871e05a5509`.
-- Integration commits: `5825a018eafe93956c914124ef7cee8e953329d7`, `3b3f3fe86dcc58ee004780e0412af03b78aa8a31`, `7c9845121292d2b081b1d9345902cbd0576e5956`, `c2e9a1dbc8437eb690d9bf25c1579d0a8c803fc7`, `2072582a68164c675c113f651053c1053b5d2074`, and `391744619e6d4028538614e50ef0efb4601a32de`.
+- Worker commits: `b4154ff6514fe5156b204a4556289514f24340f1`, `206641938148f1ca8fe7c55440fb9029798982ad`, `2aefd8ba3017abc454ca8737ff9727e01dee3db0`, `1f6ce2005fb17141b45a5e9b1ccb9d752586c87e`, `46a0c3ad5c6b0f0d42e9e66765fa751dc02d9ae7`, `d5df9ccc05261a6dc04beceda062d871e05a5509`, `aab7e3865193d98d5ac9169d120b96a1a524267e`, and `e5588970098856cdd384d693aa2673d765935478`.
+- Integration commits: `5825a018eafe93956c914124ef7cee8e953329d7`, `3b3f3fe86dcc58ee004780e0412af03b78aa8a31`, `7c9845121292d2b081b1d9345902cbd0576e5956`, `c2e9a1dbc8437eb690d9bf25c1579d0a8c803fc7`, `2072582a68164c675c113f651053c1053b5d2074`, `391744619e6d4028538614e50ef0efb4601a32de`, `87dfa7bd9cde100593933f480e82d761c7e4cd2d`, and `77b75d7bc0c4581ca0c280b4f579bcff0f5cf847`.
 - Review: Accepted PDB parameter and local names. Formatting preserves source order and behavior tokens.
 - Correction: The worker first omitted full delivery history. The same worker corrected the report.
 - Process violation: The worker ran forbidden registry, function-audit, and build commands.
@@ -56,7 +56,28 @@ Before the preservation reminder, the worker removed these exact slot-110 paths:
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/inventory`
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/orig`
 
-The last two were temporary local evidence directories. Their prior contents are not preserved.
+The exact setup commands were:
+
+```text
+ln -s 'C:/Projects/my_decomps/aoe1_attempt3/inventory' inventory
+ln -s 'C:/Projects/my_decomps/aoe1_attempt3/orig' orig
+```
+
+The exact removal command was:
+
+```text
+rm -rf -- inventory orig build/asm build/validation/wave03-aimodule-functions build/validation/wave03-aimodule-functions-rerun
+```
+
+After setup, `ls -ld` and `stat` reported ordinary directory entries.
+Python reported `is_symlink=False`. `du` and listings showed local file trees.
+This supports copied directories, not symbolic links. It does not prove each child type.
+The transcript has no Windows reparse-point check. Junction status remains unknown.
+
+For ordinary directories, `rm -rf --` recursively removes the named local trees.
+The evidence does not prove behavior if either path was a junction.
+It also does not prove whether a child link caused outside traversal.
+The temporary trees' exact prior contents are not preserved.
 The surviving output includes
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/build/source-cleanup/aimodule/selected_packets.txt`.
 Other surviving ignored output is unknown. No later incident-documentation run removed an artifact.
@@ -65,10 +86,13 @@ No recorded command targeted a path outside slot-110 for write or delete.
 The transcript recorded the main-root `inventory` and `orig` directories after cleanup.
 It recorded both preserved pilot paths as present. It did not compare their bytes.
 
-The transcript has no direct integrity check for
-`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build`.
-It has no post-cleanup integrity check for the nested original asset root.
-Thus, pilot, baseline, and original-asset byte integrity remains unknown.
+Root independently fingerprinted these two files after the incident:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/empiresx.exe` is SHA-256 `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee98799a0b5d07cdcde`.
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe` is SHA-256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+
+Both match their previously recorded values. This proves only those two files.
+Pilot, baseline-directory, and original-asset-tree byte integrity remains unknown.
 Tool-created temporary writes outside slot-110 also remain unknown.
 
 ### `src/aipbook.cpp`
