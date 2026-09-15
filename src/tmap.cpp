@@ -150,9 +150,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     }
 }
 
-void TRIBE_Map::change_terrain(short map_col, short map_row,
-                               unsigned char new_terrain,
-                               RGE_Game_World* world) {
+void TRIBE_Map::change_terrain(short map_col, short map_row, unsigned char new_terrain, RGE_Game_World* world) {
     RGE_Tile* tile = this->map_row_offset[map_row] + map_col;
     tile->terrain_type = new_terrain;
 
