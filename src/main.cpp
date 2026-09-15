@@ -4,6 +4,7 @@
 #include "../include/main.h"
 #include "../include/tribegam.h"
 #include "../include/game_globals.h"
+#include "../include/resource_ids.h"
 
 extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char* cmd_line, int show_wnd_flag) {
     int retval;
@@ -87,7 +88,7 @@ extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char*
             delete game;
         }
         else if (error_code != 4) {
-            game->get_string(0x7D1, title, 0x100);
+            game->get_string(IDS_ERROR_TITLE, title, 0x100);
             game->get_string2(1, error_code, 0, msg, 0x100);
             delete game;
             MessageBoxA(0, msg, title, MB_ICONHAND);
