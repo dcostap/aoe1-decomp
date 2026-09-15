@@ -6,12 +6,19 @@
 - Paired header: `include/scr_end.h` (owned by owner 11)
 - Worker branch: `cleanup/staging-20260915-94`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `e252a26e474b9dac0f2c1acc4365f663336a3f01`
+- Final source commit: `87b8556a3ec3d4084e2ec55a88d8f0e91b251702`
 - Changed source: `src/scr_end.cpp`
 - Changed report: `decomp_notes/source_cleanup/wave02/scr_end.md`
 
 The final source commit changes only the assigned source. The report is a
 separate documentation-only commit.
+
+Correction history:
+
+- `e252a26e474b9dac0f2c1acc4365f663336a3f01` recovered the PDB names and
+  applied the initial 1TBS placement.
+- `87b8556a3ec3d4084e2ec55a88d8f0e91b251702` compacted the short constructor
+  and action signatures into one line. It made no semantic change.
 
 ## PDB inspection coverage
 
