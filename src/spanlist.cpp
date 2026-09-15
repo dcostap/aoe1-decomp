@@ -176,8 +176,7 @@ TSpan_List_Manager::TSpan_List_Manager(int Surface_Width, int Surface_Height)
     if (Surface_Height < 0x10) this->Num_Lines = 0x10;
     this->Num_Pixels = Surface_Width;
     if (Surface_Width < 0x10) this->Num_Pixels = 0x10;
-    this->SetSpanRegions(0, 0, this->Num_Pixels - 1,
-                         this->Num_Lines - 1);
+    this->SetSpanRegions(0, 0, this->Num_Pixels - 1, this->Num_Lines - 1);
     this->Line_Head_Ptrs = (VSpan_Node**)calloc(this->Num_Lines, 4);
     this->Line_Tail_Ptrs = (VSpan_Node**)calloc(this->Num_Lines, 4);
     this->LeftMostPx = (int*)calloc(this->Num_Lines, 4);
@@ -477,8 +476,7 @@ void TSpan_List_Manager::AddSpan(int LeftPx, int RightPx, int Line) {
     }
 }
 
-void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num,
-                                  int Xpos, int Ypos, int Mirror) {
+void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int Ypos, int Mirror) {
     if (theShape != 0 && theShape->FShape != 0) {
         Shape_Info* info;
         int X2;
@@ -519,9 +517,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num,
     }
 }
 
-void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base,
-                                        Shape_Info* SI, int Xpos, int Ypos,
-                                        int Mirror) {
+void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* SI, int Xpos, int Ypos, int Mirror) {
     if (SI != 0) {
         unsigned short* outline;
         int line;
@@ -644,8 +640,7 @@ void TSpan_List_Manager::AddMiniList(VSpanMiniList* theList, int Xpos, int Ypos)
         if (y_delta == 0xFF) {
             return;
         }
-        AddSpan(theList->X_start + Xpos,
-                theList->X_end + Xpos, y_delta + Ypos);
+        AddSpan(theList->X_start + Xpos, theList->X_end + Xpos, y_delta + Ypos);
         ++theList;
     }
 }
@@ -691,8 +686,7 @@ void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line) {
             if (LeftPx <= this->RightMostPx[Line]) {
                 if (LeftPx <= this->LeftMostPx[Line]
                     && RightPx >= this->RightMostPx[Line]) {
-                    this->VSList.FreeThread(head,
-                                            this->Line_Tail_Ptrs[Line]);
+                    this->VSList.FreeThread(head, this->Line_Tail_Ptrs[Line]);
                     this->Line_Head_Ptrs[Line] = 0;
                     this->Line_Tail_Ptrs[Line] = 0;
                     this->Span_Count[Line] = 0;
@@ -759,8 +753,7 @@ void TSpan_List_Manager::DeleteSpan(int LeftPx, int RightPx, int Line) {
     }
 }
 
-void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num,
-                                      int Xpos, int Ypos, int Mirror) {
+void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, int Ypos, int Mirror) {
     if (theShape != 0 && theShape->FShape != 0) {
         unsigned short* outline;
         int X2;
@@ -819,8 +812,7 @@ int TSpan_List_Manager::PointVisible(int x, int Line) {
     return 0;
 }
 
-void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* List1,
-                                       TSpan_List_Manager* List2) {
+void TSpan_List_Manager::Merge_n_Align(TSpan_List_Manager* List1, TSpan_List_Manager* List2) {
     ResetAll();
 
     if (Num_Lines != List1->Num_Lines) return;
@@ -1056,8 +1048,7 @@ int TSpan_List_Manager::ValidateSpan(int Line) {
     return 0;
 }
 
-int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line,
-                                    unsigned char fillC, int MaxX) {
+int TSpan_List_Manager::DecodeLine(unsigned char* LineBuf, int Line, unsigned char fillC, int MaxX) {
     int count = 0;
 
     if (this->Line_Head_Ptrs[Line] != 0) {
@@ -1163,8 +1154,7 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
                 if (ArraySize > 0) {
                     int i;
                     for (i = 0; i < ArraySize; ++i) {
-                        SpanArray[i]->DecodeLine(line, y,
-                                                 (unsigned char)colorArray[i], Height);
+                        SpanArray[i]->DecodeLine(line, y, (unsigned char)colorArray[i], Height);
                     }
                 }
                 write(infile, line, bmWide);
