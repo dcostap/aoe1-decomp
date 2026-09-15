@@ -6,15 +6,16 @@
 - Worktree: `slot-188`
 - Branch: `cleanup/staging-20260915-188`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source-cleanup commit: `3ec6d5735700829768fbcc49e5fd384a5019703d`
+- Previous source-cleanup commit: `3ec6d5735700829768fbcc49e5fd384a5019703d`
+- Follow-up source-cleanup commit: `c9ae9f1135a82501d4d8275d2a82cf7080b7b017`
 - Changed files:
   - `src/scr_vc.cpp`
   - `decomp_notes/source_cleanup/wave03/scr_vc.md`
 - Header owner: group owner for `include/scr_vc.h`
 - Shared resource header owner: root for `include/resource_ids.h`
 
-The final handoff commit is the commit that adds this report after the source commit.
-The source commit hash above is copied from Git.
+The follow-up source commit applies the approved shared resource macros.
+Both source commit hashes above are copied from Git.
 
 ## Scope and method
 
@@ -144,21 +145,46 @@ no handwritten source declaration. It remains outside `src/scr_vc.cpp`.
 
 ## Resource IDs
 
-The source now uses the existing shared macro `IDS_BUTTON_OK` for `0x0FA1`.
-The macro is in `include/resource_ids.h`. It preserves the original literal
-value and does not add storage. The source includes that existing header.
-
-The remaining four IDs stay numeric. They need new shared macros from the root
-owner before this source can replace them. The requested names are descriptive
-cleanup names. They are not claimed as original developer symbols.
+The source uses the existing shared macro `IDS_BUTTON_OK` for `0x0FA1`.
+The source now also uses the four approved mission macros for `0x2655`,
+`0x2A31`, `0x2A32`, and `0x2A37`. All five macros preserve their original
+literal values and add no storage. The source already included the shared
+header. The macro names are descriptive cleanup names, not original symbols.
 
 | ID | Source use and proposed name | Runtime base result | Runtime expansion result | Pinned original expansion result |
 | --- | --- | --- | --- | --- |
 | `0x0FA1` | `ok_button` caption; existing `IDS_BUTTON_OK` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409` (`1033`), exact text `OK` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2655` | Fallback title when `Get_scenario_name()` returns null or empty; request `IDS_MISSION_TITLE_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2A31` | `text_buttons[0]` caption; it selects scenario message index `4`; request `IDS_MISSION_HISTORY` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `History` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2A32` | `text_buttons[1]` caption; it selects scenario message index `0`; request `IDS_MISSION_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
-| `0x2A37` | `text_buttons[2]` caption; it selects scenario message index `1`; request `IDS_MISSION_HINTS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Hints` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2655` | Fallback title when `Get_scenario_name()` returns null or empty; approved `IDS_MISSION_TITLE_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2A31` | `text_buttons[0]` caption; it selects scenario message index `4`; approved `IDS_MISSION_HISTORY` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `History` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2A32` | `text_buttons[1]` caption; it selects scenario message index `0`; approved `IDS_MISSION_INSTRUCTIONS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Instructions` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+| `0x2A37` | `text_buttons[2]` caption; it selects scenario message index `1`; approved `IDS_MISSION_HINTS` | `runtime/language.dll`, SHA-256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, language `0x0409`, exact text `Hints` | `runtime/languagex.dll`, SHA-256 `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, language `0x0409`, missing ID; no empty slot | `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, language `0x0409`, missing ID; no empty slot |
+
+### Root approval record
+
+Root approved the four shared macros in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. I read the approved header at
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-181/include/resource_ids.h`.
+This worker did not edit the header. The follow-up source commit only replaced
+the four direct literals with the approved macro names.
+
+```cpp
+#define IDS_MISSION_TITLE_INSTRUCTIONS 0x2655
+#define IDS_MISSION_HISTORY            0x2A31
+#define IDS_MISSION_INSTRUCTIONS       0x2A32
+#define IDS_MISSION_HINTS              0x2A37
+```
+
+This approval is separate from the worker evidence above. The packets and
+resource extraction establish the call-site roles and exact staged resource
+statuses. Root approval establishes the shared declaration and its ownership.
+The runtime-base and expansion results above are unchanged from the worker
+extraction. Runtime base `language.dll` remains SHA-256
+`3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` with the
+listed text. Runtime expansion `languagex.dll` remains SHA-256
+`4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` with all
+five IDs missing and no empty slots. The pinned original expansion remains
+SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
+with all five IDs missing and no empty slots.
 
 The extraction outputs are under `build/resource-strings/`:
 
@@ -204,8 +230,8 @@ explicit behavior.
   layout was added.
 - Formatting and the added include can change debug line records or compiler
   details. Generated code, relocations, and direct-call targets are unvalidated.
-- The four requested resource macros are not in this source. Their numeric
-  literals remain unchanged until root reviews and adds shared declarations.
+- The four approved resource macros preserve the original numeric values.
+  Their generated output remains unvalidated.
 - The assigned header still has its old parameter spellings because the group
   owner owns that file.
 - The compiler-generated vector-deleting destructor remains unowned by a
@@ -233,24 +259,12 @@ Evidence: the scoped records at
 for `004B8100`, `004B89A0`, and `004B8AE0`. The packet line spans are
 45-194, 266-293, and 299-307.
 
-### Request to root: `include/resource_ids.h`
+### Root approval: `include/resource_ids.h`
 
-Add these shared macros with the listed values. Keep them in the base-language
-resource namespace. They are new descriptive cleanup names, not recovered
-original symbols.
-
-```cpp
-#define IDS_MISSION_TITLE_INSTRUCTIONS 0x2655
-#define IDS_MISSION_HISTORY            0x2A31
-#define IDS_MISSION_INSTRUCTIONS       0x2A32
-#define IDS_MISSION_HINTS              0x2A37
-```
-
-Evidence: the constructor packet uses `0x2655` in the fallback call and
-`0x2A31`, `0x2A32`, and `0x2A37` in the three `create_button` calls. The action
-packet maps those buttons to message indexes `4`, `0`, and `1`. Runtime resource
-extraction is recorded above. Leave the source literals unchanged until the
-shared declarations exist.
+Root approved the shared declarations in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. The approval record and the exact
+worker resource statuses are in the Resource IDs section above. This worker
+did not edit the root-owned header.
 
 ## Validation status
 
