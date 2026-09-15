@@ -9,9 +9,18 @@
   - `src/scr_cred.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_cred.md`
 - Base source SHA256: `ef7120cdf9b3dfcb3b5d872bd5d57834ca1c4e9ef336b95055e1f8cf08c74126`
-- Final source SHA256 before commit: `37066f38e65a876687ae2086eecb8e11a1c8069e9b28d081c4d682494bf99395`
+- Final source SHA256 before commit: `604c8e1c5c039b4e27324ccc51234b59c35d71a43d5e3fd820836546984ae609`
 
 The source keeps the sixteen normal registry owners in address order. No header changed.
+
+## Correction review
+
+This correction compacts the short `action` signature and delegated call.
+It also compacts the `draw_scrolled_line` call and signature while preserving
+aligned continuation lines where wrapping remains.
+
+The direct packet trace below was added to prove the `x2` and `x` mappings.
+No structural change was made.
 
 ## PDB coverage
 
@@ -68,6 +77,45 @@ That packet SHA256 is
 I renamed `lVar1` to the invented cleanup name `action_result`.
 The local stores the delegated action return value and returns it unchanged.
 The PDB has no stable name for this local.
+
+### Direct packet trace for `draw_scrolled_line` coordinates
+
+The direct original packet is
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0049/00493160_draw_scrolled_line.txt`.
+Its SHA256 is
+`7e2bf6e7fe9c59b1234d30a141fd06a3e77807f7dc4ef9a8021ca4f90f545b7e`.
+
+Let `S` be the entry `ESP`. The prologue leaves `ESP` at `S-34h` after the
+four register pushes. `00493166` reads `[esp+3Ch]`, which is the `text_line`
+argument at `S+0Ch`. The `calc_line_pos` call at `004931E0` pushes five
+arguments. Its `ret 14h` restores `ESP` to `S-34h` before `004931E5`.
+
+- `004931EB` reads `[esp+24h]` (`S-10h`), the `line_rect.left` result.
+- `004931F1` writes that value to `[esp+40h]` (`S+0Ch`). `004931FC` adds
+  five for the non-centred alignment case. `004931FF` stores the adjusted
+  first-column coordinate in the same cell.
+- `00493209` reads `[esp+40h]`. `00493203` reads `second_column_pos`, and
+  `00493214` adds it to the first-column value. `00493216` stores the result
+  in `[esp+3Ch]` (`S+08h`), a reused stack cell for the second-column value.
+
+The first-column TextOutA uses read the `[esp+40h]` cell directly. In the
+shadow path, `00493293` reads it, `0049329C` subtracts one, and `0049329E`
+pushes that x coordinate before `004932A0` calls TextOutA. The normal path
+reads it at `004932B7`, pushes it at `004932BE`, and calls TextOutA through
+`00493314`.
+
+The second-column TextOutA uses read the `[esp+3Ch]` cell. The shadow path
+reads it at `0049336D`, subtracts one at `00493376`, pushes it at `00493378`,
+and calls TextOutA at `0049337A`. The normal path reads it at `0049338C`,
+pushes it at `00493393`, and calls TextOutA at `00493395`. The other text
+styles read the same cell at `004933B6`, `004933D5`, and `004933FF` before
+their TextOutA calls at `004933C3`, `004933DE`, and `00493408`.
+
+This direct instruction trace proves `text_x` maps to the first-column PDB
+name `x2`, and `second_text_x` maps to the second-column PDB name `x`.
+The PDB reports reused homes at `+0Ch` and `+10h`; the packet uses dynamic
+`[esp+40h]` and `[esp+3Ch]` cells after the call. The mapping does not rely
+only on those reused homes or on another function.
 
 The constructor PDB records `size` as `long`. The source retains its existing
 `int` type because this wave forbids type changes. Both types are 32-bit here.
@@ -133,7 +181,9 @@ The current header SHA256 is
 
 ## Code-generation effects and validation
 
-The edits rename parameters and locals and apply 1TBS brace placement.
+The edits rename parameters and locals, apply 1TBS brace placement, and compact
+short handler signatures and calls. The action and draw-scrolled-line wrappers
+retain the same argument order and continuation alignment.
 They do not change types, declarations, scopes, calls, literals, evaluation
 order, layout, calling conventions, or ABI symbols.
 Parameter and local names can change debug metadata. Brace placement can change

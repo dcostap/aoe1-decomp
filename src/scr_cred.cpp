@@ -126,9 +126,8 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     }
 }
 
-long TRIBE_Credits_Screen::handle_mouse_down(unsigned char mouse_button_in,
-                                             long x, long y, int ctrl_key,
-                                             int shift_key) {
+long TRIBE_Credits_Screen::handle_mouse_down(unsigned char mouse_button_in, long x,
+                                             long y, int ctrl_key, int shift_key) {
     this->close_screen();
     return 1;
 }
@@ -264,9 +263,7 @@ long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key,
     return 0;
 }
 
-long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in,
-                                  unsigned long action_val1,
-                                  unsigned long action_val2) {
+long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     long action_result;
 
     if (from_panel != 0 && from_panel == this->text_panel &&
@@ -274,8 +271,7 @@ long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in,
         this->text_done = 1;
         return 1;
     }
-    action_result = this->TEasy_Panel::action(from_panel, action_in,
-                                              action_val1, action_val2);
+    action_result = this->TEasy_Panel::action(from_panel, action_in, action_val1, action_val2);
     return action_result;
 }
 
@@ -359,8 +355,7 @@ void TScrollTextPanel::draw() {
             void* old_font = SelectObject(dc, this->font);
             SetBkMode(dc, 1);
             for (short i = 0; i < this->num_lines; i++) {
-                this->draw_scrolled_line(dc, i, i,
-                                         this->text_color1, this->text_color2);
+                this->draw_scrolled_line(dc, i, i, this->text_color1, this->text_color2);
             }
             SelectObject(dc, old_font);
             SelectClipRgn(dc, 0);
@@ -372,8 +367,7 @@ void TScrollTextPanel::draw() {
 }
 
 void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
-                                          short text_line,
-                                          unsigned long color1,
+                                          short text_line, unsigned long color1,
                                           unsigned long color2) {
     char* text;
     short text_len;
