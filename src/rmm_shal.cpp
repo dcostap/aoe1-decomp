@@ -77,7 +77,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
     long ty = target_y;
     long x;
     long y;
-    long tx2;
+    long done;
     float cost;
     float terrain[40] = {0};
     Map_Stack stack;
@@ -105,9 +105,9 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
 
     stack.next = 0;
     stack.prev = 0;
-    tx2 = 0;
+    done = 0;
 
-    while (!tx2) {
+    while (!done) {
         switch (this->search_map_rows[ty][tx1]) {
         case 4:
             ++x;
@@ -138,28 +138,28 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             --x;
             break;
         default:
-            tx2 = 1;
+            done = 1;
             break;
         }
 
         if (x < 0 || x >= this->map_width ||
             y < 0 || y >= this->map_height) {
-            tx2 = 1;
+            done = 1;
         }
 
-        if (tx2) {
+        if (done) {
             break;
         }
 
         uchar terrain_type =
             this->map_row_offset[y][x].terrain_type & 0x1f;
         if (terrain_type == 1 || terrain_type == 0x16) {
-            long end_y =
+            long min_x =
                 x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xc6) * 2) /
                         0x7fff -
                 1;
-            if (end_y < 0) {
-                end_y = 0;
+            if (min_x < 0) {
+                min_x = 0;
             }
 
             long min_y =
@@ -170,24 +170,24 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
                 min_y = 0;
             }
 
-            long in_zone =
+            long max_x =
                 x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xce) * 2) /
                         0x7fff +
                 1;
-            if (in_zone >= this->map_width) {
-                in_zone = this->map_width - 1;
+            if (max_x >= this->map_width) {
+                max_x = this->map_width - 1;
             }
 
-            long end_x =
+            long max_y =
                 y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xd2) * 3) /
                         0x7fff +
                 1;
-            if (end_x >= this->map_height) {
-                end_x = this->map_height - 1;
+            if (max_y >= this->map_height) {
+                max_y = this->map_height - 1;
             }
 
-            for (long fill_y = min_y; fill_y <= end_x; ++fill_y) {
-                for (long fill_x = end_y; fill_x <= in_zone; ++fill_x) {
+            for (long fill_y = min_y; fill_y <= max_y; ++fill_y) {
+                for (long fill_x = min_x; fill_x <= max_x; ++fill_x) {
                     if ((this->map_row_offset[fill_y][fill_x].terrain_type &
                          0x1f) == 1 ||
                         (this->map_row_offset[fill_y][fill_x].terrain_type &
