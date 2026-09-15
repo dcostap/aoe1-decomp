@@ -23,7 +23,7 @@ extern "C" int __cdecl strncmp(const char* left, const char* right,
                                unsigned int count);
 extern void __cdecl color_log(unsigned char a, unsigned char b, int c);
 
-struct WAVHEADER {
+struct _tag_wavheader {
     unsigned char szRIFF[4];
     unsigned long dwFormatLength;
     unsigned char szWAVE[4];
@@ -43,9 +43,9 @@ TSound_Driver::TSound_Driver() {
     this->init_vars();
 }
 
-TSound_Driver::TSound_Driver(void* window, char* path) {
+TSound_Driver::TSound_Driver(void* wnd, char* path_in) {
     this->init_vars();
-    this->init(window, path);
+    this->init(wnd, path_in);
 }
 
 TSound_Driver::~TSound_Driver() {
@@ -67,14 +67,14 @@ void TSound_Driver::init_vars() {
     this->path[0] = 0;
 }
 
-int TSound_Driver::init(void* window, char* path) {
+int TSound_Driver::init(void* wnd, char* path_in) {
     int has_secondary;
     DSCAPS dscaps;
-    DSBUFFERDESC dsbd;
+    DSBUFFERDESC dsBD;
     WAVEFORMATEX fmt;
 
-    this->set_path(path);
-    this->main_wnd = window;
+    this->set_path(path_in);
+    this->main_wnd = wnd;
     this->ready = 0;
 
     this->dsrval = DirectSoundCreate(0, &this->direct_sound, 0);
@@ -86,18 +86,18 @@ int TSound_Driver::init(void* window, char* path) {
     this->direct_sound->GetCaps(&dscaps);
 
     has_secondary = 0;
-    if ((dscaps.dwFlags & 8) != 0) {
+    if ((dscaps.dwFlags & DSCAPS_PRIMARY16BIT) != 0) {
         this->dsrval = this->direct_sound->SetCooperativeLevel(
-            (HWND)this->main_wnd, 2);
+            (HWND)this->main_wnd, DSSCL_PRIORITY);
         if (this->dsrval != 0) {
             this->dsrval = this->direct_sound->SetCooperativeLevel(
-                (HWND)this->main_wnd, 1);
+                (HWND)this->main_wnd, DSSCL_NORMAL);
         } else {
             has_secondary = 1;
         }
     } else {
         this->dsrval = this->direct_sound->SetCooperativeLevel(
-            (HWND)this->main_wnd, 1);
+            (HWND)this->main_wnd, DSSCL_NORMAL);
     }
 
     if (this->dsrval != 0) {
@@ -106,11 +106,11 @@ int TSound_Driver::init(void* window, char* path) {
         return 0;
     }
 
-    memset(&dsbd, 0, sizeof(dsbd));
-    dsbd.dwSize = 0x14;
-    dsbd.dwFlags = 1;
+    memset(&dsBD, 0, sizeof(dsBD));
+    dsBD.dwSize = 0x14;
+    dsBD.dwFlags = DSBCAPS_PRIMARYBUFFER;
     this->dsrval = this->direct_sound->CreateSoundBuffer(
-        &dsbd, &this->primary_buffer, 0);
+        &dsBD, &this->primary_buffer, 0);
     if (this->dsrval != 0) {
         this->direct_sound->Release();
         this->direct_sound = 0;
@@ -118,7 +118,7 @@ int TSound_Driver::init(void* window, char* path) {
     }
 
     if (has_secondary != 0) {
-        fmt.wFormatTag = 1;
+        fmt.wFormatTag = WAVE_FORMAT_PCM;
         fmt.nChannels = 1;
         fmt.nSamplesPerSec = 0x5622;
         fmt.nAvgBytesPerSec = 0xAC44;
@@ -128,7 +128,7 @@ int TSound_Driver::init(void* window, char* path) {
         this->dsrval = this->primary_buffer->SetFormat(&fmt);
     }
 
-    this->dsrval = this->primary_buffer->Play(0, 0, 1);
+    this->dsrval = this->primary_buffer->Play(0, 0, DSBPLAY_LOOPING);
     if (this->dsrval != 0) {
         this->direct_sound->Release();
         this->direct_sound = 0;
@@ -158,9 +158,9 @@ void TSound_Driver::exit() {
     }
 }
 
-void TSound_Driver::set_path(char* path) {
-    if (path != 0) {
-        strcpy(this->path, path);
+void TSound_Driver::set_path(char* path_in) {
+    if (path_in != 0) {
+        strcpy(this->path, path_in);
     } else {
         this->path[0] = 0;
     }
@@ -174,12 +174,12 @@ long TSound_Driver::get_volume() {
     return this->volume;
 }
 
-void TSound_Driver::set_volume(long volume, int update_driver) {
+void TSound_Driver::set_volume(long in_vol, int permanent) {
     unsigned long delta;
     unsigned long scaled;
 
-    if (update_driver != 0) {
-        this->volume = volume;
+    if (permanent != 0) {
+        this->volume = in_vol;
     }
     if (this->mixer_open == 0) {
         return;
@@ -187,21 +187,22 @@ void TSound_Driver::set_volume(long volume, int update_driver) {
 
     delta = (unsigned long)(this->mixer_volume_control.Bounds.lMaximum -
                            this->mixer_volume_control.Bounds.lMinimum);
-    scaled = (unsigned long)((delta * (volume + 10000)) / 10000);
+    scaled = (unsigned long)((delta * (in_vol + 10000)) / 10000);
     this->mixer_volume_value.dwValue = scaled;
-    this->dsrval = mixerSetControlDetails(
-        (HMIXEROBJ)this->mixer_handle, &this->mixer_volume_details, 0);
+    this->dsrval = mixerSetControlDetails((HMIXEROBJ)this->mixer_handle,
+                                          &this->mixer_volume_details,
+                                          MIXER_SETCONTROLDETAILSF_VALUE);
 }
 
-int TSound_Driver::stream_file(char* file, int mode, long resource_id) {
+int TSound_Driver::stream_file(char* file_name, int loop, long volume) {
     char file_name2[260];
 
     if (this->ready == 0) {
         return 0;
     }
 
-    sprintf(file_name2, "%s%s", this->path, file);
-    return ds_stream_file(file_name2, mode, resource_id);
+    sprintf(file_name2, "%s%s", this->path, file_name);
+    return ds_stream_file(file_name2, loop, volume);
 }
 
 int TSound_Driver::set_stream_volume(long volume) {
@@ -232,17 +233,16 @@ int TSound_Driver::stop_stream() {
     return ds_stream_stop();
 }
 
-unsigned int TSound_Driver::handle_messages(
-    void* a, unsigned int b, unsigned int c, long d) {
+unsigned int TSound_Driver::handle_messages(void* wnd, unsigned int msg, unsigned int wparam, long lparam) {
     if (this->ready == 0) {
         return 0;
     }
-    return ds_stream_messages(a, b, c, d);
+    return ds_stream_messages(wnd, msg, wparam, lparam);
 }
 
-int TSound_Driver::add_to_play_list(TDigital* digital) {
+int TSound_Driver::add_to_play_list(TDigital* sound) {
     if ((this->play_list_count != 0xFF) && (this->mute == 0)) {
-        this->sound_play_list[this->play_list_count] = digital;
+        this->sound_play_list[this->play_list_count] = sound;
         ++this->play_list_count;
         return 1;
     }
@@ -280,10 +280,12 @@ int TSound_Driver::open_mixer() {
             memset(&this->mixer_line_info, 0,
                    sizeof(this->mixer_line_info));
             this->mixer_line_info.cbStruct = sizeof(this->mixer_line_info);
-            this->mixer_line_info.dwComponentType = 0x1008;
+            this->mixer_line_info.dwComponentType =
+                MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT;
 
             if (mixerGetLineInfoA(this->mixer_handle,
-                                  &this->mixer_line_info, 3) == 0) {
+                                  &this->mixer_line_info,
+                                  MIXER_GETLINEINFOF_COMPONENTTYPE) == 0) {
                 memset(&this->mixer_line_controls, 0,
                        sizeof(this->mixer_line_controls));
                 memset(&this->mixer_volume_control, 0,
@@ -292,16 +294,17 @@ int TSound_Driver::open_mixer() {
                     sizeof(this->mixer_line_controls);
                 this->mixer_line_controls.dwLineID =
                     this->mixer_line_info.dwLineID;
-                this->mixer_line_controls.dwControlType = 0x50030001;
+                this->mixer_line_controls.dwControlType =
+                    MIXERCONTROL_CONTROLTYPE_VOLUME;
                 this->mixer_line_controls.cControls = 1;
                 this->mixer_line_controls.cbmxctrl =
                     sizeof(this->mixer_volume_control);
                 this->mixer_line_controls.pamxctrl =
                     &this->mixer_volume_control;
 
-                if (mixerGetLineControlsA(this->mixer_handle,
-                                           &this->mixer_line_controls,
-                                           2) == 0) {
+                if (mixerGetLineControlsA(
+                        this->mixer_handle, &this->mixer_line_controls,
+                        MIXER_GETLINECONTROLSF_ONEBYTYPE) == 0) {
                     memset(&this->mixer_volume_details, 0,
                            sizeof(this->mixer_volume_details));
                     memset(&this->mixer_volume_value, 0,
@@ -318,7 +321,7 @@ int TSound_Driver::open_mixer() {
 
                     if (mixerGetControlDetailsA(
                             this->mixer_handle, &this->mixer_volume_details,
-                            0) == 0) {
+                            MIXER_GETCONTROLDETAILSF_VALUE) == 0) {
                         this->mixer_open = 1;
                         this->start_volume =
                             (int)(((unsigned long)this->mixer_volume_value.dwValue *
@@ -355,23 +358,23 @@ void TSound_Driver::close_mixer() {
     }
 }
 
-TDigital::TDigital(TSound_Driver* driver, char* file, long resource_id) {
+TDigital::TDigital(TSound_Driver* in_sound_system, char* file_name, long res_id) {
     this->init_vars();
-    this->sound_system = driver;
-    this->resource_id = resource_id;
-    if (file != 0) {
-        strncpy(this->sound_file, file, 0x0C);
+    this->sound_system = in_sound_system;
+    this->resource_id = res_id;
+    if (file_name != 0) {
+        strncpy(this->sound_file, file_name, 0x0C);
         this->sound_file[0x0C] = 0;
     }
 }
 
-TDigital::TDigital(TDigital* owner) {
+TDigital::TDigital(TDigital* first) {
     this->init_vars();
-    this->owner = owner;
-    this->volume = owner->volume;
-    this->pitch = owner->pitch;
-    this->pan = owner->pan;
-    this->loop = owner->loop;
+    this->owner = first;
+    this->volume = first->volume;
+    this->pitch = first->pitch;
+    this->pan = first->pan;
+    this->loop = first->loop;
 }
 
 TDigital::~TDigital() {
@@ -407,14 +410,14 @@ void TDigital::exit() {
     }
 }
 
-int TDigital::load(char* name, long param) {
+int TDigital::load(char* file_name, long res_id) {
     unsigned long size1;
     unsigned long size2;
     void* mem2;
     void* mem1;
     int load_type;
     DSBUFFERDESC buffer_desc = {0};
-    WAVHEADER wave_hdr;
+    _tag_wavheader wave_hdr;
     char file_with_path[260];
     int resDataSize;
     unsigned int result;
@@ -427,7 +430,7 @@ int TDigital::load(char* name, long param) {
     }
 
     if (this->owner != 0) {
-        return this->owner->load(name, -1);
+        return this->owner->load(file_name, -1);
     }
 
     if (this->sound_system == 0) {
@@ -440,8 +443,8 @@ int TDigital::load(char* name, long param) {
         this->unload();
     }
 
-    if (name != 0) {
-        strncpy(this->sound_file, name, 12);
+    if (file_name != 0) {
+        strncpy(this->sound_file, file_name, 12);
         this->sound_file[12] = 0;
     }
 
@@ -449,11 +452,11 @@ int TDigital::load(char* name, long param) {
         goto fail_return;
     }
 
-    if (param <= -1) {
-        param = this->resource_id;
+    if (res_id <= -1) {
+        res_id = this->resource_id;
     }
 
-    if (sound_file_first != 0 || param < 0) {
+    if (sound_file_first != 0 || res_id < 0) {
         sprintf(file_with_path, "%s%s", this->sound_system->path,
                 this->sound_file);
         fd = _open(file_with_path, 0, 0);
@@ -466,7 +469,7 @@ int TDigital::load(char* name, long param) {
             }
 
             if (strncmp((char*)wave_hdr.szRIFF, "RIFF", 4) != 0 ||
-                wave_hdr.wFormatTag != 1) {
+                wave_hdr.wFormatTag != WAVE_FORMAT_PCM) {
                 this->failed = 1;
                 close(fd);
                 goto fail_return;
@@ -507,7 +510,7 @@ int TDigital::load(char* name, long param) {
             this->wave_info->cbSize = 0;
 
             buffer_desc.dwSize = 0x14;
-            buffer_desc.dwFlags = 0xE2;
+            buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLDEFAULT;
             buffer_desc.dwBufferBytes = this->data_size;
             buffer_desc.dwReserved = 0;
             buffer_desc.lpwfxFormat = this->wave_info;
@@ -547,8 +550,8 @@ int TDigital::load(char* name, long param) {
         }
     }
 
-    if (param <= -1 || (resource_data = RESFILE_load(
-                            0x77617620, param, load_type, resDataSize)) == 0) {
+    if (res_id <= -1 || (resource_data = RESFILE_load(
+                            0x77617620, res_id, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
         memcpy(&wave_hdr.szRIFF, resource_data, 0x2C);
@@ -586,7 +589,7 @@ wave_info_fail:
 
                 LPDIRECTSOUNDBUFFER* buffer_slot = &this->sound_buffer;
                 buffer_desc.dwSize = 0x14;
-                buffer_desc.dwFlags = 0xE2;
+                buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLDEFAULT;
                 buffer_desc.dwBufferBytes = this->data_size;
                 buffer_desc.dwReserved = 0;
                 buffer_desc.lpwfxFormat = this->wave_info;
@@ -706,7 +709,7 @@ int TDigital::play() {
 
     hr = target->sound_buffer->Play(0, 0, loop_flag);
 
-    if (hr == 0x88780096) {
+    if (hr == DSERR_BUFFERLOST) {
         int result = target->load(0, -1);
         if (result == 0) {
             return 0;
@@ -744,51 +747,51 @@ void TDigital::stop() {
     p->sound_buffer->Stop();
 }
 
-void TDigital::set_loop(short value) {
-    if (value == 0) {
+void TDigital::set_loop(short loop_count) {
+    if (loop_count == 0) {
         this->loop = 0;
         return;
     }
     this->loop = 1;
 }
 
-void TDigital::set_volume(long value) {
+void TDigital::set_volume(long in_vol) {
     TDigital* p = this->owner;
 
-    this->volume = value;
+    this->volume = in_vol;
     if (p == 0) {
         p = this;
     }
     if (p->loaded == 0) {
         return;
     }
-    p->sound_buffer->SetVolume(value);
+    p->sound_buffer->SetVolume(in_vol);
 }
 
-void TDigital::set_pitch(unsigned long value) {
+void TDigital::set_pitch(unsigned long in_pitch) {
     TDigital* p = this->owner;
 
-    this->pitch = value;
+    this->pitch = in_pitch;
     if (p == 0) {
         p = this;
     }
     if (p->loaded == 0) {
         return;
     }
-    p->sound_buffer->SetFrequency(value);
+    p->sound_buffer->SetFrequency(in_pitch);
 }
 
-void TDigital::set_pan(long value) {
+void TDigital::set_pan(long in_pan) {
     TDigital* p = this->owner;
 
-    this->pan = value;
+    this->pan = in_pan;
     if (p == 0) {
         p = this;
     }
     if (p->loaded == 0) {
         return;
     }
-    p->sound_buffer->SetPan(value);
+    p->sound_buffer->SetPan(in_pan);
 }
 
 int TDigital::is_playing() {
@@ -801,7 +804,7 @@ int TDigital::is_playing() {
     if (this->sound_system != 0 && target->loaded != 0 &&
         target->sound_buffer != 0) {
         if (target->sound_buffer->GetStatus(&status) == 0) {
-            if (status == 1 || status == 4) {
+            if (status == DSBSTATUS_PLAYING || status == DSBSTATUS_LOOPING) {
                 return 1;
             }
         }

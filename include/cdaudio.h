@@ -13,24 +13,22 @@ public:
 
     CCDAudio();
     ~CCDAudio();
-    unsigned long Open(void* wnd);
+    unsigned long Open(void* Wnd);
     unsigned long Close();
     unsigned long Stop();
-    unsigned long Play(unsigned char track);
+    unsigned long Play(unsigned char nTrack);
     unsigned long Pause();
     unsigned long ResumePlay();
     unsigned long Eject();
-    unsigned long GetNumberOfTracks(unsigned char& track_count);
-    unsigned long IsMediaPresent(int& present);
-    unsigned long IsPlaying(int& playing);
-    unsigned long GetLength(unsigned char& minutes, unsigned char& seconds);
-    unsigned long GetTrackLength(unsigned char track, unsigned char& minutes,
-                                 unsigned char& seconds);
-    unsigned long GetPosition(unsigned char& minutes, unsigned char& seconds,
-                              unsigned char& frames);
+    unsigned long GetNumberOfTracks(unsigned char& nNumTracks);
+    unsigned long IsMediaPresent(int& bPresent);
+    unsigned long IsPlaying(int& bPlaying);
+    unsigned long GetLength(unsigned char& nMinutes, unsigned char& nSeconds);
+    unsigned long GetTrackLength(unsigned char nTrack, unsigned char& nMinutes, unsigned char& nSeconds);
+    unsigned long GetPosition(unsigned char& nTrack, unsigned char& nMinutes, unsigned char& nSeconds);
 
 private:
-    unsigned long DisplayErrorMsg(unsigned long error);
+    unsigned long DisplayErrorMsg(unsigned long dwError);
 };
 
 typedef char cdaudio_size_check[(sizeof(CCDAudio) == 0x18) ? 1 : -1];

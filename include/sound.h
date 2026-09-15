@@ -24,18 +24,18 @@ public:
     unsigned long cache_time;
     short id;
 
-    RGE_Sound(FILE* file, short sound_id);
-    RGE_Sound(int handle, TSound_Driver* driver);
+    RGE_Sound(FILE* infile, short in_id);
+    RGE_Sound(int infile, TSound_Driver* sound);
     RGE_Sound();
     ~RGE_Sound();
 
-    void save(int handle);
-    void restart_sound(TSound_Driver* driver);
-    void update(unsigned long now);
-    void set_cache_time(unsigned long time);
+    void save(int outfile);
+    void restart_sound(TSound_Driver* sound);
+    void update(unsigned long curr_time);
+    void set_cache_time(unsigned long new_cache_time);
     void play_at_update();
     void update_play();
-    void play(int add_to_list);
+    void play(int add_to_play_list);
     char* get_file_name();
     void stop();
     int is_playing();
