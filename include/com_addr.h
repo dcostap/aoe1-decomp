@@ -32,18 +32,18 @@ private:
     IPAD* pIPAD;                     // +0x220
 
 public:
-    RGE_Communications_Addresses(TCommunications_Handler* handler);
+    RGE_Communications_Addresses(TCommunications_Handler* CommIn);
     ~RGE_Communications_Addresses();
     char* GetHostName();
 
 protected:
-    int SetIPAliases(char* out_buffer);
-    int SetIPAddresses(char* out_buffer);
+    int SetIPAliases(char* sz);
+    int SetIPAddresses(char* sz);
     void EraseInformation();
 
 public:
-    char* GetAddress(unsigned int index);
-    char* GetAlias(unsigned int index);
+    char* GetAddress(unsigned int Num);
+    char* GetAlias(unsigned int Num);
 };
 
 typedef char com_addr_size_check[(sizeof(RGE_Communications_Addresses) == 0x224) ? 1 : -1];

@@ -4,17 +4,17 @@
 
 extern TDebuggingLog* L;
 
-RGE_Communications_Queue::RGE_Communications_Queue(int param_1) {
-    if (param_1 < 0x14) {
-        param_1 = 0x14;
+RGE_Communications_Queue::RGE_Communications_Queue(int MaxSize) {
+    if (MaxSize < 0x14) {
+        MaxSize = 0x14;
     }
     this->QueueDepth = 0;
     this->HighQueueDepth = 0;
     this->LastCurrentTurn = 0;
     this->Queue = 0;
-    this->MaxQSize = param_1;
+    this->MaxQSize = MaxSize;
     this->Sequence = 1;
-    this->AllocateQueue(param_1);
+    this->AllocateQueue(MaxSize);
 }
 
 RGE_Communications_Queue::~RGE_Communications_Queue() {
@@ -25,18 +25,16 @@ RGE_Communications_Queue::~RGE_Communications_Queue() {
     }
 }
 
-int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
+int RGE_Communications_Queue::AllocateQueue(unsigned int NewQSize) {
     int result;
-    if (param_1 < this->MaxQSize) {
+    if (NewQSize < this->MaxQSize) {
         result = 0;
-    }
-    else {
-        unsigned int count = param_1 + 1;
+    } else {
+        unsigned int count = NewQSize + 1;
         MsgQueue* newQueue = new MsgQueue[count];
         if (newQueue == 0) {
             result = 0;
-        }
-        else {
+        } else {
             if (this->Queue != 0) {
                 for (unsigned int i = 0; i <= this->MaxQSize; ++i) {
                     if (this->Queue[i].Size != 0) {
@@ -69,7 +67,7 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
             }
 
             this->Queue = newQueue;
-            this->MaxQSize = param_1;
+            this->MaxQSize = NewQSize;
             result = 1;
         }
     }
@@ -78,7 +76,7 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
 }
 
 unsigned char RGE_Communications_Queue::ExpectedNextSequence(
-    unsigned long turn, unsigned int from) {
+    unsigned long TurnID, unsigned int PlayerNo) {
     static unsigned char Count;
     unsigned char seq;
     unsigned int i;
@@ -87,8 +85,8 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
     i = 0;
     Count = seq;
     do {
-        if (this->Queue[i].ExecTurn == turn &&
-            this->Queue[i].From == from &&
+        if (this->Queue[i].ExecTurn == TurnID &&
+            this->Queue[i].From == PlayerNo &&
             this->Queue[i].Size != 0) {
             seq++;
             Count = seq;
@@ -106,13 +104,13 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
     }
 }
 
-unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {
+unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long TurnID) {
     unsigned int count = 0;
     unsigned int* execTurn = &this->Queue->ExecTurn;
     int remaining = this->HighQueueDepth + 1;
 
     do {
-        if (*execTurn == turn) {
+        if (*execTurn == TurnID) {
             ++count;
         }
         execTurn += sizeof(MsgQueue) / sizeof(*execTurn);
@@ -127,16 +125,16 @@ void RGE_Communications_Queue::FlushAll() {
 }
 
 unsigned int RGE_Communications_Queue::FlushTurnRange(
-    unsigned long param_1, unsigned long param_2) {
+    unsigned long LowRange, unsigned long HiRange) {
+    unsigned int Count = 0;
     unsigned int i = 0;
-    unsigned int index = 0;
 
     do {
-        unsigned int execTurn = Queue[index].ExecTurn;
-        MsgQueue* entry = &Queue[index];
-        if (((execTurn >= param_1) && (execTurn <= param_2)) ||
-            ((param_1 == 0) && (param_2 == 0))) {
-            i++;
+        unsigned int execTurn = Queue[i].ExecTurn;
+        MsgQueue* entry = &Queue[i];
+        if (((execTurn >= LowRange) && (execTurn <= HiRange)) ||
+            ((LowRange == 0) && (HiRange == 0))) {
+            Count++;
             if (entry->Size > 0) {
                 entry->Code = 0;
                 entry->ExecTurn = 0;
@@ -150,20 +148,20 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(
                 entry->msgptr = 0;
             }
         }
-        index++;
-    } while (index <= HighQueueDepth);
+        i++;
+    } while (i <= HighQueueDepth);
 
-    return i;
+    return Count;
 }
 
-void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
-    L->Log("Flushing queue for player %d", param_1);
+void RGE_Communications_Queue::FlushForPlayer(unsigned int p) {
+    L->Log("Flushing queue for player %d", p);
 
     unsigned int i = 0;
     do {
         unsigned int from = Queue[i].From;
         MsgQueue* entry = &Queue[i];
-        if (from == param_1 && entry->Size > 0) {
+        if (from == p && entry->Size > 0) {
             L->Log("Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d",
                 i, entry->SeqNo, entry->ExecTurn, from, entry->Size,
                 entry->ControlCommand, entry->Code);
@@ -185,17 +183,17 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
     } while (i <= HighQueueDepth);
 }
 
-unsigned int RGE_Communications_Queue::FlushForTurn(unsigned long turn) {
-    return this->FlushTurnRange(turn, turn);
+unsigned int RGE_Communications_Queue::FlushForTurn(unsigned long TurnID) {
+    return this->FlushTurnRange(TurnID, TurnID);
 }
 
-unsigned int RGE_Communications_Queue::FlushThruTurn(unsigned long turn) {
-    return this->FlushTurnRange(0, turn);
+unsigned int RGE_Communications_Queue::FlushThruTurn(unsigned long TurnID) {
+    return this->FlushTurnRange(0, TurnID);
 }
 
 int RGE_Communications_Queue::AddItem(
-    unsigned long turn, void* data, unsigned long size,
-    unsigned int from, unsigned char sequence, int control) {
+    unsigned long ExecuteOnTurn, void* command, unsigned long nBytes,
+    unsigned int PFrom, unsigned char InSequence, int ControlCommand) {
     unsigned int i = 0;
 
     while (this->Queue[i].Size != 0) {
@@ -220,19 +218,19 @@ int RGE_Communications_Queue::AddItem(
     MsgQueue* slot = this->Queue + i;
     this->HighQueueDepth = high_depth;
 
-    char* message = static_cast<char*>(operator new(size + 1));
+    char* message = static_cast<char*>(operator new(nBytes + 1));
     slot->msgptr = message;
 
     if (message != 0) {
-        memcpy(message, data, size);
+        memcpy(message, command, nBytes);
     }
 
-    this->Queue[i].Size = size;
-    this->Queue[i].SeqNo = sequence;
-    this->Queue[i].ExecTurn = turn;
-    this->Queue[i].From = from;
-    this->Queue[i].Code = (unsigned int)sequence + from * 1000;
-    this->Queue[i].ControlCommand = control;
+    this->Queue[i].Size = nBytes;
+    this->Queue[i].SeqNo = InSequence;
+    this->Queue[i].ExecTurn = ExecuteOnTurn;
+    this->Queue[i].From = PFrom;
+    this->Queue[i].Code = (unsigned int)InSequence + PFrom * 1000;
+    this->Queue[i].ControlCommand = ControlCommand;
     this->QueueDepth = i;
 
     return 1;
@@ -247,15 +245,15 @@ unsigned int RGE_Communications_Queue::GetHighQueueDepth() {
 }
 
 void* RGE_Communications_Queue::GetSpecificItem(
-    unsigned int player, unsigned long turn, unsigned char sequence,
-    unsigned int* size) {
+    unsigned int FromPlayer, unsigned long ExecuteOnTurn, unsigned char Seq,
+    unsigned int* Size) {
     static void* retptr;
-    unsigned int targetCode = player * 1000 + sequence;
+    unsigned int targetCode = FromPlayer * 1000 + Seq;
     unsigned int idx = 0;
     MsgQueue* entry = this->Queue;
 
     while (1) {
-        if (entry->Code == targetCode && entry->ExecTurn == turn) {
+        if (entry->Code == targetCode && entry->ExecTurn == ExecuteOnTurn) {
             goto found;
         }
         idx++;
@@ -266,7 +264,7 @@ void* RGE_Communications_Queue::GetSpecificItem(
     }
 
 found:
-    *size = this->Queue[idx].Size;
+    *Size = this->Queue[idx].Size;
     retptr = this->Queue[idx].msgptr;
     this->Queue[idx].msgptr = 0;
 
@@ -303,36 +301,36 @@ void* RGE_Communications_Queue::GetNextItemSingle() {
     return 0;
 }
 
-void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
+void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long ThisTurn) {
     static void* retptr;
     unsigned int bestControlCommand = 0xFFFFFFFF;
     unsigned int i = 0;
-    int bestIndex = -1;
+    int SendMsg = -1;
 
     do {
         if (Queue[i].Code != 0 && Queue[i].Size != 0) {
-            if (Queue[i].ExecTurn < turn) {
+            if (Queue[i].ExecTurn < ThisTurn) {
                 TestShowQueue();
             }
 
             if (Queue[i].Code < bestControlCommand &&
-                Queue[i].ExecTurn == turn) {
+                Queue[i].ExecTurn == ThisTurn) {
                 bestControlCommand = Queue[i].Code;
-                bestIndex = i;
+                SendMsg = i;
             }
         }
 
         i++;
     } while (i <= HighQueueDepth);
 
-    if (bestIndex == -1) {
+    if (SendMsg == -1) {
         return 0;
     }
 
-    retptr = Queue[bestIndex].msgptr;
-    Queue[bestIndex].msgptr = 0;
+    retptr = Queue[SendMsg].msgptr;
+    Queue[SendMsg].msgptr = 0;
 
-    MsgQueue* mq = Queue + bestIndex;
+    MsgQueue* mq = Queue + SendMsg;
     mq->Code = 0;
     mq->ExecTurn = 0;
     mq->SeqNo = 0;
@@ -343,10 +341,10 @@ void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
     return retptr;
 }
 
-unsigned char RGE_Communications_Queue::GetNextSequence(unsigned long turn) {
-    if (turn != this->LastCurrentTurn) {
+unsigned char RGE_Communications_Queue::GetNextSequence(unsigned long ThisTurn) {
+    if (ThisTurn != this->LastCurrentTurn) {
         this->Sequence = 1;
-        this->LastCurrentTurn = turn;
+        this->LastCurrentTurn = ThisTurn;
         return 1;
     }
     ++this->Sequence;

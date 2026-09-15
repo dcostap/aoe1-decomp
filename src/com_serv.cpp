@@ -27,55 +27,55 @@ int TCommunications_Services::IncServiceCount() {
     return ServiceCount;
 }
 
-char* TCommunications_Services::GetServiceName(int index) {
-    if ((index >= 0) && (index <= ServiceCount)) {
-        return Service[index].Name;
+char* TCommunications_Services::GetServiceName(int id) {
+    if ((id >= 0) && (id <= ServiceCount)) {
+        return Service[id].Name;
     }
     return 0;
 }
 
-int TCommunications_Services::SetServiceName(int serviceIndex, char* name) {
-    strcpy(Service[serviceIndex].Name, name);
+int TCommunications_Services::SetServiceName(int id, char* Text) {
+    strcpy(Service[id].Name, Text);
     return 1;
 }
 
-_GUID TCommunications_Services::GetServiceGUID(int index) {
-    return *Service[index].GUID;
+_GUID TCommunications_Services::GetServiceGUID(int id) {
+    return *Service[id].GUID;
 }
 
-void TCommunications_Services::EnumServiceGUID(int index, _GUID* guid) {
-    if ((index >= 0) && (index <= ServiceCount)) {
-        Service[index].GUID = guid;
+void TCommunications_Services::EnumServiceGUID(int id, _GUID* gid) {
+    if ((id >= 0) && (id <= ServiceCount)) {
+        Service[id].GUID = gid;
     }
 }
 
-int TCommunications_Services::GetServiceActive(int index) {
-    if ((index >= 0) && (index <= ServiceCount)) {
-        return Service[index].Active;
+int TCommunications_Services::GetServiceActive(int id) {
+    if ((id >= 0) && (id <= ServiceCount)) {
+        return Service[id].Active;
     }
     return 0;
 }
 
-void TCommunications_Services::SetServiceActive(int index, int active) {
-    if ((index >= 0) && (index <= ServiceCount)) {
-        Service[index].Active = active;
+void TCommunications_Services::SetServiceActive(int id, int state) {
+    if ((id >= 0) && (id <= ServiceCount)) {
+        Service[id].Active = state;
     }
 }
 
-BOOL __stdcall DPEnumCallback(LPGUID guid, LPSTR name, DWORD flags,
-                              DWORD reserved, LPVOID context) {
+BOOL __stdcall DPEnumCallback(LPGUID pid, LPSTR szName, DWORD major_ver,
+                              DWORD minor_ver, LPVOID lpx) {
     TCommunications_Services* services =
-        (TCommunications_Services*)context;
+        (TCommunications_Services*)lpx;
     int count = services->GetServiceCount();
-    services->SetServiceName(count, name);
-    services->EnumServiceGUID(count, guid);
+    services->SetServiceName(count, szName);
+    services->EnumServiceGUID(count, pid);
 
-    IDirectPlay* directPlay;
-    int result = DirectPlayCreate(guid, (LPDIRECTPLAY*)&directPlay, 0);
+    IDirectPlay* lpIDC;
+    int result = DirectPlayCreate(pid, (LPDIRECTPLAY*)&lpIDC, 0);
 
     if (result == 0) {
         services->SetServiceActive(count, 1);
-        directPlay->Release();
+        lpIDC->Release();
         services->IncServiceCount();
         return 1;
     }

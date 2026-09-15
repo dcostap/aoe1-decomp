@@ -17,18 +17,18 @@ protected:
     RGE_Comm_Error* Err;
 
 public:
-    RGE_Lobby(void* hwnd);
+    RGE_Lobby(void* Host);
     ~RGE_Lobby();
     void ClearLobbyInfo(void);
     int IsLobbyLaunched(void);
-    unsigned char CheckForLobbyLaunch(IDirectPlay3*& dplay);
+    unsigned char CheckForLobbyLaunch(IDirectPlay3*& direct_play);
     unsigned char IsThisHost(void);
-    unsigned char GetPlayerInfo(char** out);
-    unsigned char GetSessionInfo(DPSESSIONDESC2& out);
+    unsigned char GetPlayerInfo(char** player_name);
+    unsigned char GetSessionInfo(DPSESSIONDESC2& info);
     long SendZoneHandshakeResponse(void);
     int GameIsOver(void);
     long ReceiveZoneMessages(void);
-    long SendZoneMessage(char* data, unsigned long dataSize, _GUID guid);
+    long SendZoneMessage(char* Data, unsigned long dwSize, _GUID guid);
 };
 
 #endif

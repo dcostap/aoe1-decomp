@@ -9,10 +9,10 @@ public:
     void* HostHWND;
     long LastReportedError;
 
-    RGE_Comm_Error(void* param);
+    RGE_Comm_Error(void* Host);
     ~RGE_Comm_Error();
-    void NotifyWindowParam(COMMMESSAGES message, long param);
-    void ShowReturn(long code, char* context);
+    void NotifyWindowParam(COMMMESSAGES msg, long lparam);
+    void ShowReturn(long hr, char* Text);
 };
 
 #endif
