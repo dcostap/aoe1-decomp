@@ -6,6 +6,7 @@
 #include "../include/basegame.h"
 #include "../include/color.h"
 #include "../include/player.h"
+#include "../include/resource_ids.h"
 #include "../include/rge_base_game_global.h"
 #include "../include/scenario.h"
 #include "../include/tribegam.h"
@@ -16,12 +17,12 @@
 
 extern int confirmed_close;
 
-TribeAchievementsScreen::TribeAchievementsScreen(char*, int end_game)
+TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     : TScreenPanel("Achievements Screen")
 {
     char info_file[260];
     char str[100];
-    TPanel* tab_list[8];
+    TPanel* tabList[8];
     long seconds;
     long minutes = 0;
     long hours = 0;
@@ -44,7 +45,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char*, int end_game)
     this->instruction_bar = 0;
     this->win_loss_text_bar = 0;
     this->summary_text_bar = 0;
-    this->end_game_flag = end_game;
+    this->end_game_flag = end_flag;
 
     for (i = 0; i < 5; ++i) {
         this->achievement_choice[i] = 0;
@@ -132,7 +133,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char*, int end_game)
         this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->time_line->set_special_events("timeline.slp");
 
-    if (this->create_button(this, &this->close_button, 0x3EA, 0, 0, 0, 0,
+    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0,
                             0, -1, -1, 0) == 0) {
         return;
     }
@@ -288,16 +289,16 @@ TribeAchievementsScreen::TribeAchievementsScreen(char*, int end_game)
 
     int tab_count = 0;
     if (this->aftermathButton != 0) {
-        tab_list[tab_count++] = this->aftermathButton;
+        tabList[tab_count++] = this->aftermathButton;
     }
     if (this->timelineButton != 0) {
-        tab_list[tab_count++] = this->timelineButton;
+        tabList[tab_count++] = this->timelineButton;
     }
     if (this->restartButton != 0) {
-        tab_list[tab_count++] = this->restartButton;
+        tabList[tab_count++] = this->restartButton;
     }
-    tab_list[tab_count++] = this->okButton;
-    this->set_tab_order(tab_list, static_cast<short>(tab_count));
+    tabList[tab_count++] = this->okButton;
+    this->set_tab_order(tabList, static_cast<short>(tab_count));
     this->set_curr_child(this->okButton);
     this->backButton->set_tab_order(static_cast<TPanel*>(0),
                                     static_cast<TPanel*>(0));
@@ -307,8 +308,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char*, int end_game)
     this->set_mode(this->win_loss_text != 0 ? 5 : 0);
 }
 
-TribeAchievementsScreen::~TribeAchievementsScreen()
-{
+TribeAchievementsScreen::~TribeAchievementsScreen() {
     panel_system.destroyPanel("YesNoDialog");
 
     if (this->win_decal != 0) {
@@ -388,9 +388,8 @@ TribeAchievementsScreen::~TribeAchievementsScreen()
 }
 
 // Mode 6 is emitted before mode 5 in the original handler
-// order. Mode 3 calls victory IDs 15 and 16 in that order.
-void TribeAchievementsScreen::set_mode(long mode)
-{
+// order. Mode 3 reads victory IDs 16 and 15 in that order.
+void TribeAchievementsScreen::set_mode(long new_mode) {
     int player_num = static_cast<int>(rge_base_game->world->player_num) - 1;
     char temptxt[50];
 
@@ -401,7 +400,7 @@ void TribeAchievementsScreen::set_mode(long mode)
     if (this->win_loss_text != 0) {
         this->win_loss_text->set_active(0);
     }
-    this->current_mode = mode;
+    this->current_mode = new_mode;
     this->time_line->set_active(0);
     this->instruction->set_active(0);
     this->time->set_active(1);
@@ -426,7 +425,7 @@ void TribeAchievementsScreen::set_mode(long mode)
     }
     this->set_curr_child(this->backButton);
 
-    switch (mode) {
+    switch (new_mode) {
     case 0: {
         this->size = 7;
         this->set_curr_child(this->okButton);
@@ -729,8 +728,7 @@ void TribeAchievementsScreen::set_mode(long mode)
     }
 }
 
-void TribeAchievementsScreen::draw()
-{
+void TribeAchievementsScreen::draw() {
     TScreenPanel::draw();
 
     if (this->current_mode < 5) {
@@ -763,11 +761,9 @@ void TribeAchievementsScreen::draw()
     }
 }
 
-// long, int, int)
-long TribeAchievementsScreen::handle_mouse_down(unsigned char button, long x,
-                                                long y, int flags, int area)
-{
-    long result = TEasy_Panel::handle_mouse_down(button, x, y, flags, area);
+long TribeAchievementsScreen::handle_mouse_down(unsigned char mouse_button_in, long x,
+                                                long y, int ctrl_key, int shift_key) {
+    long result = TEasy_Panel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
     if (current_mode == 0) {
         if (achievement_choice[0]->is_inside(x, y)) {
             set_mode(1);
@@ -790,12 +786,8 @@ long TribeAchievementsScreen::handle_mouse_down(unsigned char button, long x,
     return result;
 }
 
-// unsigned long)
-long TribeAchievementsScreen::action(TPanel* panel, long id,
-                                     unsigned long param3,
-                                     unsigned long param4)
-{
-    if (panel == this->okButton && id == 1) {
+long TribeAchievementsScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel == this->okButton && actionIn == 1) {
         if (this->end_game_flag != 0) {
             static_cast<TRIBE_Game*>(rge_base_game)->quit_game();
         } else {
@@ -809,12 +801,12 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
         return 1;
     }
 
-    if (panel == this->restartButton && id == 1) {
+    if (fromPanel == this->restartButton && actionIn == 1) {
         static_cast<TRIBE_Game*>(rge_base_game)->restart_game();
-        return id;
+        return actionIn;
     }
 
-    if (panel == this->timelineButton && id == 1) {
+    if (fromPanel == this->timelineButton && actionIn == 1) {
         this->set_mode(6);
         if (this->restartButton != 0) {
             this->restartButton->set_active(0);
@@ -830,23 +822,23 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
         }
         if (this->backButton != 0) {
             this->backButton->set_active(1);
-            return id;
+            return actionIn;
         }
     } else {
-        if (panel != this->aftermathButton || id != 1) {
-            if ((panel == this->backButton || panel == this->backButton2) &&
-                id == 1) {
+        if (fromPanel != this->aftermathButton || actionIn != 1) {
+            if ((fromPanel == this->backButton || fromPanel == this->backButton2) &&
+                actionIn == 1) {
                 this->set_mode(0);
-                return id;
-            } else if (panel == this->close_button && id == 1) {
+                return actionIn;
+            } else if (fromPanel == this->close_button && actionIn == 1) {
                 rge_base_game->close();
-                return id;
+                return actionIn;
             } else {
-                char* panel_name = panel->panelName();
+                char* panel_name = fromPanel->panelName();
                 if (panel_name != 0 &&
-                    strcmp(panel->panelName(), "YesNoDialog") == 0) {
+                    strcmp(fromPanel->panelName(), "YesNoDialog") == 0) {
                     panel_system.destroyPanel("YesNoDialog");
-                    if (id == 0) {
+                    if (actionIn == 0) {
                         rge_base_game->close();
                     } else {
                         confirmed_close = 0;
@@ -854,7 +846,7 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
                     return 1;
                 }
 
-                return TEasy_Panel::action(panel, id, param3, param4);
+                return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
             }
         }
 
@@ -873,24 +865,20 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
         }
         if (this->backButton != 0) {
             this->backButton->set_active(1);
-            return id;
+            return actionIn;
         }
     }
 
     return 1;
 }
 
-long TribeAchievementsScreen::handle_idle()
-{
+long TribeAchievementsScreen::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
 }
 
-// unsigned int, long)
-long TribeAchievementsScreen::wnd_proc(void* h1, unsigned int msg,
-                                       unsigned int w, long l)
-{
+long TribeAchievementsScreen::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     if (msg == 0x10 && confirmed_close == 0) {
         confirmed_close = 1;
         int mode = rge_base_game->prog_mode;
@@ -901,5 +889,5 @@ long TribeAchievementsScreen::wnd_proc(void* h1, unsigned int msg,
             }
         }
     }
-    return TPanel::wnd_proc(h1, msg, w, l);
+    return TPanel::wnd_proc(hwnd, msg, wParam, lParam);
 }
