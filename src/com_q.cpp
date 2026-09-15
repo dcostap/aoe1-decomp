@@ -29,14 +29,12 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int NewQSize) {
     int result;
     if (NewQSize < this->MaxQSize) {
         result = 0;
-    }
-    else {
+    } else {
         unsigned int count = NewQSize + 1;
         MsgQueue* newQueue = new MsgQueue[count];
         if (newQueue == 0) {
             result = 0;
-        }
-        else {
+        } else {
             if (this->Queue != 0) {
                 for (unsigned int i = 0; i <= this->MaxQSize; ++i) {
                     if (this->Queue[i].Size != 0) {
