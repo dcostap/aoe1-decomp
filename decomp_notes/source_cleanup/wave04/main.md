@@ -130,15 +130,14 @@ checked files and results are:
 
 | DLL and provenance | SHA256 | Language | ID result |
 | --- | --- | --- | --- |
-| `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/languagex.dll`, staged runtime override | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | `0x0409` | `0x07D1`: empty slot, block 126 slot 1; `0x1440`: missing |
-| `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/language.dll`, staged runtime fallback | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `0x0409` | `0x07D1`: `Error`, block 126 slot 1; `0x1440`: `Axeman`, block 325 slot 0 |
-| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, pinned original override | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | No returned language entry | `0x07D1`: missing; `0x1440`: missing |
+| `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/languagex.dll`, staged runtime override | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | `0x0409` | `0x07D1`: empty slot, block 126 slot 1 |
+| `C:/Projects/my_decomps/aoe1_attempt3/build/runtime/original-20260914T230838850570Z/language.dll`, staged runtime fallback | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `0x0409` | `0x07D1`: `Error`, block 126 slot 1 |
+| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, pinned original override | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | No returned language entry | `0x07D1`: missing |
 
 The staged override has an empty `0x07D1` slot. `LoadStringA` returns zero for
 that slot, so the base `language.dll` supplies `Error`. The pinned original
 XPack tree has no base `language.dll`; the staged runtime fallback is the
-actual checked base input. The `0x1440` record is an unrelated original
-assembly annotation and is listed because the extraction checked it.
+actual checked base input.
 
 I added one sparse comment before the second discarded `get_error_code()` call.
 The original assembly at `00454F75` proves this status query is called and its
