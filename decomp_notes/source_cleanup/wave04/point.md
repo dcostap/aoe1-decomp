@@ -108,7 +108,7 @@ hash-only checks saw these runtime files:
 
 No string ID extraction was needed. No resource mapping request is open.
 
-No source comment was added or removed. The existing rotation comment is
+No source comment was added or removed. The named rotation products are
 supported by the exact-product-order evidence in
 `C:/Projects/my_decomps/aoe1_attempt3/logic_reviews/0047E5D0.md`.
 
