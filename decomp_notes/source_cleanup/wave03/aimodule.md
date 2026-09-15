@@ -253,5 +253,18 @@ transcript recorded the main-root `orig` directory as existing after cleanup.
 It did not record a post-cleanup check for the nested original asset root.
 It recorded no hash or byte comparison. Byte-level integrity is unknown.
 
+#### Bounded root evidence
+
+Existing root review evidence records matching previously recorded SHA-256
+values for these two executable files:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/empiresx.exe`:
+  `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee98799a0b5d07cdcde`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`:
+  `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`
+
+This is bounded evidence for these two files only. It is not a broader
+baseline, pilot, directory, or original-asset integrity claim.
+
 Tool-created temporary writes outside slot-110 cannot be confirmed from
 surviving evidence. Their status is unknown.
