@@ -6,7 +6,7 @@
 - Header owner: owner 23 owns `include/asp_list.h`; this worker did not edit it.
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Base source SHA-256 from Git: `31cc0408cfd251fb4a6a5c34e7c8259b7ccdcb8b5b04ab8cbcd61e5fd92298f4`
-- Final source SHA-256: `e2f8fdd0654e04f0799bb86f987ffda6bd45b2f5d3ddf1f1c6f7b7c614b2b171`
+- Final source SHA-256: `6727133fdb7a42cda691bb77846ad2b4c698dcce2f420f366457d39ff6f7daa1`
 - Final commit: see the delivery record for the full Git hash.
 - Changed files:
   - `src/asp_list.cpp`
@@ -132,3 +132,7 @@ The evidence is the procedure-scoped PDB data at the VAs in the table. The heade
 ## Validation status
 
 Compilation, matching, audits, validation, and tests were not run. No compiler, build, matching, audit, validation, test, or game command was run for this assignment. The complete source diff was reviewed, and `git diff --check` passed.
+
+## Correction history
+
+After full diff review, the three-parameter `load_node` definition and the four-parameter `add_sprite` definition moved onto one line. The duplicate reference-count comment in `remove_sprite` was removed. The earlier `add_sprite` comment already explains shared-node retention.

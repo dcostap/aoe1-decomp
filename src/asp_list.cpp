@@ -41,8 +41,7 @@ void RGE_Active_Sprite_List::load(int infile, RGE_Sprite** sprites) {
 }
 
 // This protected owner carries the shipped EH cleanup state.
-unsigned char RGE_Active_Sprite_List::load_node(int infile, unsigned char type,
-                                                 RGE_Sprite** sprites) {
+unsigned char RGE_Active_Sprite_List::load_node(int infile, unsigned char type, RGE_Sprite** sprites) {
     RGE_Active_Sprite_Node* node;
     RGE_Active_Sprite* sprite;
     int type_value = type;
@@ -129,9 +128,7 @@ void RGE_Active_Sprite_List::use_sprite_list(RGE_Active_Sprite_Node* temp_list) 
     this->list = temp_list;
 }
 
-void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* sprite,
-                                         unsigned char order,
-                                         long x, long y) {
+void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* sprite, unsigned char order, long x, long y) {
     RGE_Active_Sprite_Node* node;
     RGE_Active_Sprite_Node** link;
     RGE_Active_Sprite* active_sprite;
@@ -176,7 +173,6 @@ void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* sprite) {
     if (node != 0) {
         while (node != 0) {
             if (node->node->sprite == sprite) {
-                // Remove one retained reference before deleting the node.
                 if (node->count > 0) {
                     node->count = node->count + 0xff;
                     return;
