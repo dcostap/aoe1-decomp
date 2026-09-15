@@ -1,5 +1,6 @@
 #include "../include/tpnl_tim.h"
 #include "../include/color.h"
+#include "../include/resource_ids.h"
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
 
@@ -264,16 +265,16 @@ void TRIBE_Panel_Time::draw() {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
         case 4:
-            sprintf(str, this->get_string(0x2C25), rounded_time);
+            sprintf(str, this->get_string(IDS_WONDER_YEARS_FORMAT), rounded_time);
             break;
         case 5:
-            sprintf(str, this->get_string(0x2C26), rounded_time);
+            sprintf(str, this->get_string(IDS_ARTIFACTS_YEARS_FORMAT), rounded_time);
             break;
         case 6:
-            sprintf(str, this->get_string(0x2C27), rounded_time);
+            sprintf(str, this->get_string(IDS_RUINS_YEARS_FORMAT), rounded_time);
             break;
         default:
-            sprintf(str, this->get_string(0x2C24), rounded_time);
+            sprintf(str, this->get_string(IDS_COUNTDOWN_YEARS_FORMAT), rounded_time);
             break;
         }
         text_flags = DT_SINGLELINE | DT_RIGHT;
@@ -416,16 +417,16 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
         int rounded_time = ((this->game_time + 4) / 5) * 5;
         switch (this->clock_type) {
         case 4:
-            sprintf(str, this->get_string(0x2C25), rounded_time);
+            sprintf(str, this->get_string(IDS_WONDER_YEARS_FORMAT), rounded_time);
             break;
         case 5:
-            sprintf(str, this->get_string(0x2C26), rounded_time);
+            sprintf(str, this->get_string(IDS_ARTIFACTS_YEARS_FORMAT), rounded_time);
             break;
         case 6:
-            sprintf(str, this->get_string(0x2C27), rounded_time);
+            sprintf(str, this->get_string(IDS_RUINS_YEARS_FORMAT), rounded_time);
             break;
         default:
-            sprintf(str, this->get_string(0x2C24), rounded_time);
+            sprintf(str, this->get_string(IDS_COUNTDOWN_YEARS_FORMAT), rounded_time);
             break;
         }
         text_flags = DT_SINGLELINE | DT_RIGHT;

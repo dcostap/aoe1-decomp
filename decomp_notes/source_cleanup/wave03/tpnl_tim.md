@@ -4,8 +4,9 @@
 
 - Module: `src/tpnl_tim.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `6bdf682f2ff757b1b785d07b170e3ce5c5be3ddc`
-- This report update is a second documentation commit after the source commit.
+- Source/resource mapping commit: pending
+- Root approval commit: `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`
+- Worker header import commit: `c76e13f7e04debf152a6342fe4b435876f4a6130`
 - Changed files:
   - `src/tpnl_tim.cpp`
   - `decomp_notes/source_cleanup/wave03/tpnl_tim.md`
@@ -57,6 +58,16 @@ They define `DT_SINGLELINE` as `0x20` and `DT_RIGHT` as `0x2` in
 
 No source comments were added. No new source identifiers were invented.
 
+The approved resource names replaced the numeric IDs in both call paths:
+
+- `0x2C24` -> `IDS_COUNTDOWN_YEARS_FORMAT`
+- `0x2C25` -> `IDS_WONDER_YEARS_FORMAT`
+- `0x2C26` -> `IDS_ARTIFACTS_YEARS_FORMAT`
+- `0x2C27` -> `IDS_RUINS_YEARS_FORMAT`
+
+The source includes `../include/resource_ids.h`. The substitutions preserve the
+numeric values, calls, arithmetic, buffers, fallback, and formatting arguments.
+
 ## Owner-header request
 
 Request to the owner of `include/tpnl_tim.h`:
@@ -101,11 +112,11 @@ Its PDB parameter is `__flags`. I did not edit it.
 The packet evidence shows the same boundaries and original direct calls used by
 the registry. It does not support any further source-name mapping.
 
-## Resource evidence and requests
+## Resource evidence and approval
 
 The four IDs are formatted year strings used by both `draw` and
-`render_to_image_buffer`. The calls are at `src/tpnl_tim.cpp:265-284` and
-`src/tpnl_tim.cpp:417-428`.
+`render_to_image_buffer`. The calls are at `src/tpnl_tim.cpp:268,271,274,277`
+and `src/tpnl_tim.cpp:420,423,426,429`.
 
 The inherited `TPanel::get_string` call reaches `rge_base_game->get_string`.
 `TRIBE_Game::get_string` checks `StringTableX` first, then falls back to the
@@ -145,18 +156,27 @@ The runtime language file is staged evidence, not the pinned original base DLL.
 The pinned original tree contains only the XPack language module for this
 lookup. This provenance remains unresolved for the base DLL.
 
-Request to the root owner of `include/resource_ids.h`:
+I reviewed the owner evidence files under
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/`.
+Their resource text and hashes agree with the evidence above.
+
+Root approval and worker import:
+
+- Root approved the substitutions in commit
+  `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`.
+- The worker imported only `include/resource_ids.h` in commit
+  `c76e13f7e04debf152a6342fe4b435876f4a6130`.
+- The worker did not edit the imported header.
 
 ```cpp
-#define IDS_YEARS_FORMAT          0x2C24
-#define IDS_WONDER_YEARS_FORMAT   0x2C25
+#define IDS_COUNTDOWN_YEARS_FORMAT 0x2C24
+#define IDS_WONDER_YEARS_FORMAT    0x2C25
 #define IDS_ARTIFACTS_YEARS_FORMAT 0x2C26
-#define IDS_RUINS_YEARS_FORMAT    0x2C27
+#define IDS_RUINS_YEARS_FORMAT     0x2C27
 ```
 
-These are new cleanup names, not recovered macro names. I left the source IDs
-numeric until the shared definitions receive review. The names describe the
-shared game string namespace and their formatted-message role.
+These reviewed names describe one logical game string namespace and their
+formatted-message roles. The source now uses all four names.
 
 ## Unresolved items and scope requests
 
@@ -165,8 +185,8 @@ shared game string namespace and their formatted-message role.
 - Optimized temporaries and EH slots remain unnamed. I did not map them.
 - The base DLL provenance remains unresolved, as noted above.
 - The `include/tpnl_tim.h` owner must apply the declaration-name request above.
-- Add the four resource macros only through the root-owned
-  `include/resource_ids.h`.
+- The root-owned resource definitions are imported. No header edit was made in
+  this worktree.
 
 ## Validation
 
