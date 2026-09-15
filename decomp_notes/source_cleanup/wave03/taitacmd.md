@@ -299,6 +299,7 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 ## Recovered versus invented names
 
 - Recovered names are listed in the evidence table and match a PDB parameter or local record, or a direct original-packet label.
+- The first constructor's local names `value` and `i` are descriptive names, not PDB recoveries. The PDB exposes no local record for `004ED1C0`.
 - No new gameplay name, resource name, constant, field, class, function, or storage object was invented.
 - Existing descriptive spellings remain where no direct declaration mapping was safe.
 
