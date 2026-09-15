@@ -19,35 +19,35 @@ public:
     RGE_Main_View();
     virtual void draw();
     virtual long handle_idle();
-    virtual long handle_mouse_up(unsigned char, long, long, int, int);
-    virtual long mouse_move_action(long, long, int, int);
-    virtual long mouse_left_down_action(long, long, int, int);
-    virtual long mouse_left_move_action(long, long, int, int);
-    virtual long mouse_left_up_action(long, long, int, int);
-    virtual long mouse_right_down_action(long, long, int, int);
-    virtual long mouse_right_move_action(long, long, int, int);
-    virtual long mouse_right_up_action(long, long, int, int);
-    virtual int command_place_object(long, long, int);
-    virtual int command_make_do(long, long, int, short);
-    virtual int command_make_move(long, long);
-    virtual int command_make_work(long, long);
-    virtual int command_place_multi_object(long, long, long, long, int);
-    virtual int start_scroll_view(unsigned char, long, long, int, int);
-    virtual int handle_scroll_view(long, long);
+    virtual long handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_move_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_move_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_right_down_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_right_move_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_right_up_action(long x, long y, int ctrl_key, int shift_key);
+    virtual int command_place_object(long x, long y, int reset_mode);
+    virtual int command_make_do(long x, long y, int work_on_tile, short action_type);
+    virtual int command_make_move(long x, long y);
+    virtual int command_make_work(long x, long y);
+    virtual int command_place_multi_object(long x1, long y1, long x2, long y2, int reset_mode);
+    virtual int start_scroll_view(unsigned char scroll_action_in, long x, long y, int ctrl_key, int shift_key);
+    virtual int handle_scroll_view(long x, long y);
     virtual void draw_multi_object_outline();
     int do_auto_scroll();
     int handle_keys();
-    unsigned char pick1(unsigned char, unsigned char, long, long,
-                        RGE_Pick_Info*, RGE_Static_Object*, int);
-    int pick_objects1(long, long, RGE_Static_Object**, int);
-    RGE_Static_Object* pick_best_target(long, long, int*, short);
+    unsigned char pick1(unsigned char pick_mode_in, unsigned char select_level, long x, long y,
+                        RGE_Pick_Info* pick_info, RGE_Static_Object* last_picked_object, int pick_dopples);
+    int pick_objects1(long x, long y, RGE_Static_Object** object_list, int max_objects);
+    RGE_Static_Object* pick_best_target(long x, long y, int* attacking_in, short action_type);
 
 protected:
-    virtual unsigned char get_help_info(char*&, long&, long, long);
-    void fixup_pick_info(RGE_Pick_Info*);
+    virtual unsigned char get_help_info(char*& string, long& page, long x, long y);
+    void fixup_pick_info(RGE_Pick_Info* pick_info);
 
 public:
-    void reset_display_object_selection(int);
+    void reset_display_object_selection(int reset_type);
 
     TPanel* map_view;
     unsigned long last_mouse_scroll_time;
@@ -66,20 +66,19 @@ typedef char vw_main_main_view_size_check[
 // The base layout and virtual surface remain owned by vw_main.cpp/view.cpp.
 class TRIBE_Main_View : public RGE_Main_View {
 public:
-    virtual long mouse_left_up_action(long, long, int, int);
-    virtual long mouse_left_dbl_click_action(long, long, int, int);
-    virtual long mouse_right_up_action(long, long, int, int);
-    virtual int pick_through_fog(RGE_Static_Object*);
-    virtual int pick_weight(RGE_Static_Object*, int);
+    virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_dbl_click_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_right_up_action(long x, long y, int ctrl_key, int shift_key);
+    virtual int pick_through_fog(RGE_Static_Object* obj);
+    virtual int pick_weight(RGE_Static_Object* obj, int confidence);
     virtual void draw_multi_object_outline();
-    virtual int command_place_object(long, long, int);
-    virtual int command_make_do(long, long, int, short);
-    virtual int command_place_multi_object(long, long, long, long, int);
+    virtual int command_place_object(long x, long y, int reset_mode);
+    virtual int command_make_do(long x, long y, int work_on_tile, short action_type);
+    virtual int command_place_multi_object(long x1, long y1, long x2, long y2, int reset_mode);
 
 protected:
-    int draw_wall_outline(long, long, TRIBE_Master_Building_Object*, long);
-    void place_line_of_walls(TRIBE_Player*, TRIBE_Master_Building_Object*,
-                             int, int, int, int);
+    int draw_wall_outline(long col, long row, TRIBE_Master_Building_Object* master_bldg, long facet);
+    void place_line_of_walls(TRIBE_Player* player, TRIBE_Master_Building_Object* master_obj, int x1, int y1, int x2, int y2);
 };
 
 typedef char vw_main_tribe_main_view_size_check[

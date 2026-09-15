@@ -35,40 +35,37 @@ public:
   RGE_Diamond_Map();
   virtual ~RGE_Diamond_Map();
 
-  long setup(TDrawArea *, TPanel *, long, long, long, long, unsigned char, int,
-             TDrawArea *);
-  int set_bitmap(char *, long);
-  void set_world(RGE_Game_World *);
-  void set_player(RGE_Player *);
+  long setup(TDrawArea *render_area_in, TPanel *parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+             unsigned char color_in, int all_visible_in, TDrawArea *save_area_in);
+  int set_bitmap(char *map_bmp, long res_id);
+  void set_world(RGE_Game_World *world_in);
+  void set_player(RGE_Player *player_in);
   void set_visibility(int);
   void set_main_view(RGE_View *);
-  virtual void set_redraw(TPanel::RedrawMode);
+  virtual void set_redraw(TPanel::RedrawMode redraw_mode);
   void set_fog_color(unsigned char);
   unsigned char get_fog_color();
   void delete_surfaces();
   int create_surfaces();
   virtual void draw();
-  int pick_tile(long, long, short *, short *, RGE_Tile **);
-  virtual long handle_size(long, long);
-  void start_scroll_view(long, long);
-  void handle_scroll_view(long, long);
+  int pick_tile(long x, long y, short *col, short *row, RGE_Tile **tile);
+  virtual long handle_size(long win_wid, long win_hgt);
+  void start_scroll_view(long x, long y);
+  void handle_scroll_view(long x, long y);
   void end_scroll_view();
-  virtual int is_inside(long, long);
+  virtual int is_inside(long x, long y);
 
 protected:
   void clear_image();
   void copy_image();
   void draw_all_tiles();
   void draw_explored_tiles();
-  void draw_tile(short, short, int, unsigned char);
+  void draw_tile(short col, short row, int fog, unsigned char override_color);
   virtual void draw_selected_area();
   virtual void draw_objects();
-  virtual void draw_visible_object(RGE_Static_Object *, unsigned char,
-                                   unsigned char);
-  virtual void draw_object(short, short, unsigned char, short,
-                           RGE_Static_Object *);
-  void draw_clipped_horz_line(short, short, short, unsigned char,
-                              RGE_Map_Image_Line *);
+  virtual void draw_visible_object(RGE_Static_Object *game_obj, unsigned char color1, unsigned char color2);
+  virtual void draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object *game_obj);
+  void draw_clipped_horz_line(short x, short y, short len, unsigned char color, RGE_Map_Image_Line *image_line);
   virtual void draw_view_rect();
 
 public:

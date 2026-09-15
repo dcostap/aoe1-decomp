@@ -12,12 +12,11 @@ public:
     unsigned long last_attack_time;
     int flash_on;
 
-    virtual void set_redraw(TPanel::RedrawMode);
+    virtual void set_redraw(TPanel::RedrawMode redraw_mode);
 
 protected:
     virtual void draw_objects();
-    virtual void draw_object(short, short, unsigned char, short,
-                             RGE_Static_Object*);
+    virtual void draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object* game_obj);
 };
 
 typedef char tvw_dmap_view_size_check[

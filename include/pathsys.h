@@ -87,31 +87,29 @@ public:
     ManagedArray<int> currentUnobstructibles;
     int aiPS;
 
-    PathingSystem(int xSize, int ySize, int aiPS, RGE_Map* map,
-                  RGE_Game_World* world);
-    int initialize(int xSize, int ySize, RGE_Map* map, RGE_Game_World* world);
-    void initMisc(unsigned char value);
+    PathingSystem(int x, int y, int aiPS, RGE_Map* map, RGE_Game_World* world);
+    int initialize(int x, int y, RGE_Map* map, RGE_Game_World* world);
+    void initMisc(unsigned char v);
     void zeroObstructionMap();
-    unsigned char lookupMisc(int row, int column);
-    void setMisc(int row, int column, unsigned char value);
+    unsigned char lookupMisc(int x, int y);
+    void setMisc(int x, int y, unsigned char v);
     unsigned char obstruction(int x, int y);
     void incrementObstruction(int x, int y);
     void decrementObstruction(int x, int y);
-    int findTilePath(int startX, int startY, int goalX, int goalY,
-                     RGE_Moving_Object* obj, float tolerance, int targetID,
-                     int mode, float* costOut, int useIterationCap,
-                     int checkTerrain, int checkObstructions, int step,
-                     int unobPlayerID, int unobGroupID);
+    int findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit,
+                     float actionRange, int cTargetID, int copyPathWhenDone, float* pathLength,
+                     int checkPathingIterations, int checkTerrainFirstTime, int checkCollisions,
+                     int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID);
     void incrementInitialPaths();
     void incrementContinuePaths();
     void incrementCanPaths();
-    int passable(RGE_Moving_Object* object, float x, float y, int checkObjects);
+    int passable(RGE_Moving_Object* obj, float newX, float newY, int checkTerrain);
     long checksum(void);
 protected:
-    void printState(RGE_Moving_Object* obj);
-    int copyPath(int step);
+    void printState(RGE_Moving_Object* unit);
+    int copyPath(int stepSize);
 public:
-    void copyUnobstructibles(ManagedArray<int>& out);
+    void copyUnobstructibles(ManagedArray<int>& d);
     void printToFile(char* filename);
 };
 
