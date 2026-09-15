@@ -623,8 +623,7 @@ int RGE_View::get_selection_area(long& sel_col1_in, long& sel_row1_in, long& sel
 }
 
 
-void RGE_View::CreateBlitQueue(tagRECT& src_rect, tagRECT& dest_rect,
-                               int xDelta, int yDelta) {
+void RGE_View::CreateBlitQueue(tagRECT& src_rect, tagRECT& dest_rect, int xDelta, int yDelta) {
     int one_blit = 0;
     int nBlits;
     int One_Blit;
@@ -3032,8 +3031,7 @@ void RGE_View::Draw_GDI_Object(DClipInfo_Node* SDI, TDrawArea* render_area) {
 
 
 
-int RGE_View::get_tile_mask_num(int map_col, int map_row, int map_width,
-                                int map_height, unsigned long VisibleMask) {
+int RGE_View::get_tile_mask_num(int map_col, int map_row, int map_width, int map_height, unsigned long VisibleMask) {
     unsigned int mask_number = 0;
 
     if (0 < map_col && 0 < map_row && map_col < map_width - 1 && map_row < map_height - 1) {
@@ -3270,8 +3268,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int index, unsign
 
 
 
-void RGE_View::draw_terrain_obstruction_map(int x, int y, TShape* shape,
-                                             int index, int TileX, int TileY) {
+void RGE_View::draw_terrain_obstruction_map(int x, int y, TShape* shape, int index, int TileX, int TileY) {
     int TileX4 = TileX * 4;
     TileY *= 4;
 
@@ -3597,8 +3594,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
 
 
 
-int RGE_View::sprite_check(uchar* Shape_Base, Shape_Info* Shape,
-                           int check_x, int check_y) {
+int RGE_View::sprite_check(uchar* Shape_Base, Shape_Info* Shape, int check_x, int check_y) {
     int width;
     if (Shape != 0) {
         if (check_x >= 0) {
@@ -3914,8 +3910,7 @@ int RGE_View::get_border_edge_pictures(unsigned char border_type, unsigned char 
 
 
 
-int RGE_View::hit_tile(RGE_Tile* tile, short x, short y,
-                        short map_col, short map_row, tagPOINT* mouse_pos) {
+int RGE_View::hit_tile(RGE_Tile* tile, short x, short y, short map_col, short map_row, tagPOINT* mouse_pos) {
     short terrain_type = 0;
     short tile_type;
 
@@ -4027,8 +4022,7 @@ next:
 
 
 
-int RGE_View::start_scroll_view(unsigned char scroll_action_in, long x, long y,
-                                int ctrl_key, int shift_key) {
+int RGE_View::start_scroll_view(unsigned char scroll_action_in, long x, long y, int ctrl_key, int shift_key) {
     RGE_Pick_Info pick_info;
     int result;
 
@@ -4471,9 +4465,7 @@ bool RGE_View::Object_Was_Displayed(int ObjectID, bool InFogOK) {
     return true;
 }
 
-DClipInfo_List::DClipInfo_List(int InitialSize, int GrowSize,
-                               int szitem, int top_Yline, int bottom_Yline,
-                               int mxLevel) {
+DClipInfo_List::DClipInfo_List(int InitialSize, int GrowSize, int szitem, int top_Yline, int bottom_Yline, int mxLevel) {
     int yline_offset;
     int yline_size;
 
