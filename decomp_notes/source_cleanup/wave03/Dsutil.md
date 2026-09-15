@@ -52,7 +52,7 @@ The packet set is:
 `00448B30_ds_stream_messages.txt`, and `00448BA0_ds_stream_time_func.txt`.
 
 The original executable is
-`C:/Projects/my_decomps/aoe1_attempt3/orig/_original_empiresx_from_beta_that_was_decompiled.exe`,
+`C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`,
 SHA-256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 The preserved pre-cleanup object is
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/Dsutil.obj`,
