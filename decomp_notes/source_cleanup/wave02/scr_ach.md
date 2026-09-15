@@ -101,6 +101,15 @@ The checked override files are:
 
 Both `languagex.dll` files have no entries for the IDs below.
 The base runtime file supplies every listed text payload.
+The root reviewer extraction directory is:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`
+
+The reviewer evidence confirms that the string payloads come from the runtime
+base `language.dll`. Both checked expansion DLLs miss these payloads.
+The pinned original set at
+`C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/`
+has no base `language.dll` file.
 The exact extraction directory is
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/`.
 The extraction files are:
@@ -183,6 +192,12 @@ The source also passes these IDs to `TScreenPanel::setup`:
 `TEasy_Panel::setup` passes these IDs to `RESFILE_load(0x62696E61, ...)`.
 The source keeps the values, arguments, binary type, and load order unchanged.
 The worker uses the approved binary names without adding definitions.
+The reviewer evidence confirms that the runtime base
+`C:/Projects/my_decomps/aoe1_attempt3/runtime/data/Interfac.drs` supplies
+these layouts. The checked expansion files
+`C:/Projects/my_decomps/aoe1_attempt3/runtime/data2/Interfac.drs` and
+`C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/data2/Interfac.drs`
+miss these IDs.
 
 ## Comments and presentation
 
@@ -216,12 +231,11 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
 ## Shared-file requests
 
 1. **`include/scr_ach.h` — owner slot 11.**
-   Name assigned declarations with the recovered PDB spellings:
+   The header already has the recovered PDB spellings:
    `titleText`, `end_flag`, `new_mode`, `mouse_button_in`, `x`, `y`,
    `ctrl_key`, `shift_key`, `fromPanel`, `actionIn`, `a1`, `a2`, `hwnd`,
    `msg`, `wParam`, and `lParam`.
-   The current declarations omit parameter names.
-   This request changes no ABI and no type.
+   No further header edit is required.
 
 2. **`include/resource_ids.h` — resource-ID owner.**
    The prior request is resolved by root approval and definitions in
@@ -231,9 +245,12 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
    The two `Total Score` IDs have distinct call-site roles and need distinct names.
 
 3. **Binary `RESFILE` IDs.**
-   Assign a separate shared domain only after the `RESFILE` namespace owner
-   confirms names for `0xC389`, `0xC38A`, and `0xC38D`.
-   Do not place these IDs in the base-language `IDS_*` group.
+   Resolved by root approval and source use of
+   `RESID_ACHIEVEMENTS_END_WIN_LAYOUT`,
+   `RESID_ACHIEVEMENTS_END_OTHER_LAYOUT`, and
+   `RESID_ACHIEVEMENTS_IN_GAME_LAYOUT`.
+   Keep these names separate from the base-language `IDS_*` group.
+   The binary type remains `0x62696E61`.
 
 ## Correction history
 
@@ -247,6 +264,15 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
   Header import provenance is `bdb8bc1af`.
 - This worker substituted the approved string and binary resource macros.
   No header was edited in this correction.
+- Owner review confirmed that `include/scr_ach.h` already has all recovered
+  parameter names. No further header edit is required.
+- Owner review resolved the binary `RESID_*` request.
+  Root-approved names are used and remain separate from `IDS_*`.
+- Root reviewer evidence comes from
+  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
+  It confirms runtime-base string and `Interfac.drs` provenance.
+- The pinned original set has no base language file.
+  Checked expansion DLLs and `Interfac.drs` files miss these requested IDs.
 - Resource payloads, hashes, and conclusions did not change.
 
 ## Validation
