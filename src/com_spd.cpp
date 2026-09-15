@@ -4,16 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char s_self_player_optimal_speed_text[152];
-static char s_player_speed_status_text[256];
-static char s_machine_speed_info_text[256];
+static char buf[152];
+static char speedstr[256];
+static char Info[256];
 
 RGE_Communications_Speed::RGE_Communications_Speed(
-    TCommunications_Handler* handler)
-{
+    TCommunications_Handler* c) {
     // The constructor initializes ten player records, then
     // allocates FrameTSLC before TurnTSLC.
-    Comm = handler;
+    Comm = c;
     CurrentBufferGranularity = 90;
     OptimalBufferGranularity = 90;
     CurrentBufferFrames = 10;
@@ -48,8 +47,7 @@ RGE_Communications_Speed::RGE_Communications_Speed(
     TurnTSLC = new RGE_TimeSinceLastCall();
 }
 
-RGE_Communications_Speed::~RGE_Communications_Speed()
-{
+RGE_Communications_Speed::~RGE_Communications_Speed() {
     RGE_TimeSinceLastCall* tslc;
 
     tslc = this->FrameTSLC;
@@ -64,72 +62,62 @@ RGE_Communications_Speed::~RGE_Communications_Speed()
 }
 
 void RGE_Communications_Speed::SetPlayerTurnSpeed(
-    unsigned int player, unsigned char avg_frames_msec,
-    unsigned char high_latency)
-{
-    if (player < 1 || player > 9) {
+    unsigned int PlayerNo, unsigned char AvgFramesMsec,
+    unsigned char HiLatencyCenti) {
+    if (PlayerNo < 1 || PlayerNo > 9) {
         return;
     }
-    this->PlayerAvgFramesMsec[player] = avg_frames_msec;
-    this->PlayerHighLatencyMsec[player] = high_latency * 10;
+    this->PlayerAvgFramesMsec[PlayerNo] = AvgFramesMsec;
+    this->PlayerHighLatencyMsec[PlayerNo] = HiLatencyCenti * 10;
 }
 
 void RGE_Communications_Speed::SetActualLatency(
-    unsigned int player, unsigned long latency)
-{
-    if (player >= 1 && player <= 9) {
-        if (latency < 30)
-            latency = 30;
-        if (latency > 6000)
-            latency = 6000;
-        this->ActualLatency[player] = latency;
+    unsigned int PlayerNo, unsigned long Msec) {
+    if (PlayerNo >= 1 && PlayerNo <= 9) {
+        if (Msec < 30)
+            Msec = 30;
+        if (Msec > 6000)
+            Msec = 6000;
+        this->ActualLatency[PlayerNo] = Msec;
     }
 }
 
 void RGE_Communications_Speed::SetFutureSpeedChange(
-    unsigned int buffer_frames, unsigned int granularity,
-    unsigned long turn_change)
-{
+    unsigned int BuffCount, unsigned int BuffGran,
+    unsigned long ExecTurn) {
     if (this->NextLatencyChangeTurn)
         return;
-    this->FutureBufferFrames = buffer_frames;
-    this->FutureBufferGranularity = granularity;
-    this->NextLatencyChangeTurn = turn_change;
+    this->FutureBufferFrames = BuffCount;
+    this->FutureBufferGranularity = BuffGran;
+    this->NextLatencyChangeTurn = ExecTurn;
 }
 
-void RGE_Communications_Speed::EnableSpeedControl(int value)
-{
-    this->SpeedControlEnabled = value;
+void RGE_Communications_Speed::EnableSpeedControl(int TorF) {
+    this->SpeedControlEnabled = TorF;
 }
 
-unsigned int RGE_Communications_Speed::GetBufferGranularity()
-{
+unsigned int RGE_Communications_Speed::GetBufferGranularity() {
     return this->CurrentBufferGranularity;
 }
 
-unsigned long RGE_Communications_Speed::GetAdjustmentCount()
-{
+unsigned long RGE_Communications_Speed::GetAdjustmentCount() {
     return this->AdjustmentCount;
 }
 
-unsigned int RGE_Communications_Speed::GetBufferGranularityAdjusted()
-{
+unsigned int RGE_Communications_Speed::GetBufferGranularityAdjusted() {
     LastFrameHadTime = 1;
     return CurrentBufferGranularity;
 }
 
-unsigned int RGE_Communications_Speed::BufferFramesRemaining()
-{
+unsigned int RGE_Communications_Speed::BufferFramesRemaining() {
     return this->TotalBufferFramesRemaining;
 }
 
-unsigned int RGE_Communications_Speed::WaitingOnAcknowledgement()
-{
+unsigned int RGE_Communications_Speed::WaitingOnAcknowledgement() {
     return ++this->SkipFrames;
 }
 
-void RGE_Communications_Speed::AdjustLocalSpeed()
-{
+void RGE_Communications_Speed::AdjustLocalSpeed() {
     unsigned long next_latency_change_turn;
     TCommunications_Handler* comm;
     unsigned int adjustment_count;
@@ -155,16 +143,14 @@ void RGE_Communications_Speed::AdjustLocalSpeed()
     this->FutureBufferGranularity = 0;
 }
 
-void RGE_Communications_Speed::ReloadBufferFrames()
-{
+void RGE_Communications_Speed::ReloadBufferFrames() {
     this->TurnTSLC->Set();
     this->DroppedFramesTurn = 0;
     this->AdjustLocalSpeed();
     this->TotalBufferFramesRemaining = this->CurrentBufferFrames;
 }
 
-unsigned int RGE_Communications_Speed::BufferTimeToUse(unsigned long value)
-{
+unsigned int RGE_Communications_Speed::BufferTimeToUse(unsigned long current_turn) {
     if (this->LastFrameHadTime != 0) {
         this->FrameTSLC->Set();
     } else {
@@ -188,7 +174,7 @@ unsigned int RGE_Communications_Speed::BufferTimeToUse(unsigned long value)
         (this->CurrentBufferFrames - this->TotalBufferFramesRemaining) *
         this->CurrentBufferGranularity;
     if (this->OverheadFactor + this->RealTimePassed < this->BufferTimePassed) {
-        if (value > 6) {
+        if (current_turn > 6) {
             this->DroppedFrames = this->DroppedFrames + 1;
             this->DroppedFramesTurn = this->DroppedFramesTurn + 1;
         }
@@ -201,14 +187,12 @@ unsigned int RGE_Communications_Speed::BufferTimeToUse(unsigned long value)
     return this->CurrentBufferGranularity;
 }
 
-void RGE_Communications_Speed::Skip()
-{
+void RGE_Communications_Speed::Skip() {
     FrameTSLC->Skip();
     LastFrameHadTime = 0;
 }
 
-unsigned char RGE_Communications_Speed::GetHighLatencyCenti()
-{
+unsigned char RGE_Communications_Speed::GetHighLatencyCenti() {
     unsigned int high_latency;
     unsigned int player;
     unsigned int* latency;
@@ -237,16 +221,14 @@ unsigned char RGE_Communications_Speed::GetHighLatencyCenti()
     return static_cast<unsigned char>(high_latency);
 }
 
-unsigned long RGE_Communications_Speed::GetPlayerLatency(unsigned int player)
-{
-    if (player < 1 || player > 9) {
+unsigned long RGE_Communications_Speed::GetPlayerLatency(unsigned int PlayerNo) {
+    if (PlayerNo < 1 || PlayerNo > 9) {
         return 0;
     }
-    return this->ActualLatency[player];
+    return this->ActualLatency[PlayerNo];
 }
 
-char* RGE_Communications_Speed::GetLatencyInfo()
-{
+char* RGE_Communications_Speed::GetLatencyInfo() {
     char buf[24];
 
     strcpy(this->TBuff, "Latency> ");
@@ -259,31 +241,29 @@ char* RGE_Communications_Speed::GetLatencyInfo()
     return this->TBuff;
 }
 
-char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr()
-{
+char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
     unsigned int frames;
     unsigned int granularity;
 
     frames = this->GetRecommendedBufferFrames();
     granularity = this->GetRecommendedBufferGranularity();
     sprintf(
-        s_self_player_optimal_speed_text,
+        buf,
         "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d",
         frames,
         granularity,
         1000 / static_cast<int>(granularity),
         granularity * frames
     );
-    return s_self_player_optimal_speed_text;
+    return buf;
 }
 
-char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player)
-{
+char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int PlayerNo) {
     unsigned int granularity;
     unsigned int frames;
     char* hi_lo_info;
 
-    if (player < 0 || player > 9) {
+    if (PlayerNo < 0 || PlayerNo > 9) {
         return 0;
     }
 
@@ -291,7 +271,7 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player)
     frames = this->CurrentBufferFrames;
     hi_lo_info = this->FrameTSLC->GetHiLoInfo(0x32);
     sprintf(
-        s_player_speed_status_text,
+        speedstr,
         "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s",
         this->TotalBufferFramesRemaining,
         frames,
@@ -299,27 +279,25 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player)
         frames * granularity,
         hi_lo_info
     );
-    return s_player_speed_status_text;
+    return speedstr;
 }
 
-char* RGE_Communications_Speed::GetMachineSpeedInfo()
-{
+char* RGE_Communications_Speed::GetMachineSpeedInfo() {
     char buf[24];
 
-    strcpy(s_machine_speed_info_text, "PlrSpeed> ");
+    strcpy(Info, "PlrSpeed> ");
     for (int i = 1; i <= 9; i++) {
         if (Comm->IsPlayerHuman(i)) {
             sprintf(buf, "P#%1d(fr%d lat%d) ", i,
                     PlayerAvgFramesMsec[i], PlayerHighLatencyMsec[i]);
-            strcat(s_machine_speed_info_text, buf);
+            strcat(Info, buf);
         }
     }
 
-    return s_machine_speed_info_text;
+    return Info;
 }
 
-unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames()
-{
+unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames() {
     unsigned int high_latency;
     int player;
 
@@ -345,13 +323,11 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames()
     return high_latency + 1;
 }
 
-unsigned int RGE_Communications_Speed::GetAvgFrameRate()
-{
+unsigned int RGE_Communications_Speed::GetAvgFrameRate() {
     return this->FrameTSLC->GetAvg(0x32);
 }
 
-unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity()
-{
+unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity() {
     unsigned int granularity;
 
     granularity = this->FrameTSLC->GetAvg(0x32);
@@ -369,8 +345,7 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity()
 
 int RGE_Communications_Speed::AnalyzeGameSpeed(
     unsigned int* NewGranularity, unsigned int* NewBufferFrames,
-    int ChangeAlso)
-{
+    int ChangeAlso) {
     unsigned long SyncTurn;
     unsigned int AvgFramesMsec;
     unsigned int HighLatencyMsec;
@@ -455,12 +430,10 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
     return 1;
 }
 
-void RGE_Communications_Speed::SetV1(unsigned long value)
-{
-    L->Log("Speed set V1=%d", value);
+void RGE_Communications_Speed::SetV1(unsigned long v1) {
+    L->Log("Speed set V1=%d", v1);
 }
 
-void RGE_Communications_Speed::SetV2(unsigned long value)
-{
-    L->Log("Speed set V2=%d", value);
+void RGE_Communications_Speed::SetV2(unsigned long v2) {
+    L->Log("Speed set V2=%d", v2);
 }
