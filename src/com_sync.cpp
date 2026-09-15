@@ -21,8 +21,8 @@ extern long DAT_0062D208[9];
 extern unsigned long DAT_0062D230;
 
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(
-    TCommunications_Handler* handler) {
-    Comm = handler;
+    TCommunications_Handler* c) {
+    Comm = c;
     CheckTime = 1000;
     CheckTurn = 10;
 
@@ -69,9 +69,9 @@ RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
 }
 
 int RGE_Communications_Synchronize::Add(
-    unsigned int turn, unsigned long wRandom, unsigned long checksum1,
-    unsigned long checksum2, long chatCrc, long dataCrc,
-    long a7, long a8, long a9) {
+    unsigned int player, unsigned long worldtime, unsigned long worldturn,
+    unsigned long worldrandom, long cs1, long cs2, long cs3, long cs4,
+    long cs5) {
     if (!this->DoChecksums) {
         return 0;
     }
@@ -81,25 +81,25 @@ int RGE_Communications_Synchronize::Add(
         this->Offset = 0;
     }
 
-    this->Check[this->Offset].WTime = wRandom;
-    this->Check[this->Offset].WTurn = checksum1;
-    this->Check[this->Offset].cs1 = chatCrc;
-    this->Check[this->Offset].cs2 = dataCrc;
-    this->Check[this->Offset].cs3 = a7;
-    this->Check[this->Offset].cs4 = a8;
-    this->Check[this->Offset].cs5 = a9;
-    this->Check[this->Offset].Random = checksum2;
-    this->Check[this->Offset].PlayerNo = turn;
+    this->Check[this->Offset].WTime = worldtime;
+    this->Check[this->Offset].WTurn = worldturn;
+    this->Check[this->Offset].cs1 = cs1;
+    this->Check[this->Offset].cs2 = cs2;
+    this->Check[this->Offset].cs3 = cs3;
+    this->Check[this->Offset].cs4 = cs4;
+    this->Check[this->Offset].cs5 = cs5;
+    this->Check[this->Offset].Random = worldrandom;
+    this->Check[this->Offset].PlayerNo = player;
 
     this->NewData = 1;
-    return this->ValidateChecksums(turn, wRandom, checksum1, checksum2,
-                                   chatCrc, dataCrc, a7, a8, a9);
+    return this->ValidateChecksums(player, worldtime, worldturn, worldrandom,
+                                   cs1, cs2, cs3, cs4, cs5);
 }
 
 int RGE_Communications_Synchronize::ValidateChecksums(
-    unsigned int turn, unsigned long wRandom, unsigned long checksum1,
-    unsigned long checksum2, long chatCrc, long dataCrc, long a7,
-    long a8, long a9) {
+    unsigned int player, unsigned long worldtime, unsigned long worldturn,
+    unsigned long worldrandom, long cs1, long cs2, long cs3, long cs4,
+    long cs5) {
     int bad = 0;
 
     if (!this->NewData) {
@@ -112,31 +112,31 @@ int RGE_Communications_Synchronize::ValidateChecksums(
     unsigned int i = 1;
     RGE_Communications_Check* check = &this->Check[1];
     for (; i <= 0x36; ++i, ++check) {
-        if (check->WTurn == checksum1) {
-            if (check->WTime != wRandom) {
+        if (check->WTurn == worldturn) {
+            if (check->WTime != worldtime) {
                 bad = 1;
             }
         }
 
-        if (check->WTime == wRandom) {
-            if (check->cs1 != chatCrc || check->cs2 != dataCrc ||
-                check->cs3 != a7 || check->cs4 != a8 ||
-                check->cs5 != a9 || check->Random != checksum2) {
+        if (check->WTime == worldtime) {
+            if (check->cs1 != cs1 || check->cs2 != cs2 ||
+                check->cs3 != cs3 || check->cs4 != cs4 ||
+                check->cs5 != cs5 || check->Random != worldrandom) {
                 bad = 1;
             }
         }
 
         if (bad) {
-            this->LogChecksums(turn, wRandom, checksum1, chatCrc, dataCrc,
-                               a7, a8, a9, checksum2);
-            this->Comm->NotifyWindowParam((COMMMESSAGES)0x17B0, checksum1);
+            this->LogChecksums(player, worldtime, worldturn, cs1, cs2, cs3,
+                               cs4, cs5, worldrandom);
+            this->Comm->NotifyWindowParam((COMMMESSAGES)0x17B0, worldturn);
             this->LastResult = 0;
             return 0;
         }
     }
 
     L->Log("P#%d In Sync @ Wtime=%d WTurn=%d Wrand=%d Wchksum=%d",
-           turn, wRandom, checksum1, checksum2, chatCrc);
+           player, worldtime, worldturn, worldrandom, cs1);
     this->LastResult = 1;
     return 1;
 }
@@ -201,21 +201,20 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
     return 1;
 }
 
-void RGE_Communications_Synchronize::SetLastWorldRandom(unsigned long value) {
-    this->LastWorldRandom = value;
+void RGE_Communications_Synchronize::SetLastWorldRandom(unsigned long lwr) {
+    this->LastWorldRandom = lwr;
 }
 
 void RGE_Communications_Synchronize::LogChecksums(
-    unsigned int playerNo, unsigned long worldTime, unsigned long commTurn,
-    long unifiedVisible, long checksumNew, long position, long action,
-    long obstruction, unsigned long random) {
+    unsigned int player, unsigned long worldtime, unsigned long worldturn,
+    long cs1, long cs2, long cs3, long cs4, long cs5,
+    unsigned long random) {
     char TBuff[513];
     FILE* file = fopen("C:\\aoesync.txt", "wt");
 
     sprintf(TBuff,
             "Adding:  P#%d  WTime=%d  Turn=%d Cs1=%d  Cs2=%d  Cs3=%d  Cs4=%d  Cs5=%d  Rand=%d",
-            playerNo, worldTime, commTurn, unifiedVisible, checksumNew,
-            position, action, obstruction, random);
+            player, worldtime, worldturn, cs1, cs2, cs3, cs4, cs5, random);
     L->Log(TBuff);
     if (file != 0) {
         fputs(TBuff, file);
@@ -245,10 +244,10 @@ void RGE_Communications_Synchronize::LogChecksums(
             fputs("\n", file);
         }
 
-        if (entry.WTurn == commTurn && entry.WTime != worldTime) {
+        if (entry.WTurn == worldturn && entry.WTime != worldtime) {
             sprintf(TBuff,
                     "=====>  WORLD TIME IS OUT OF SYNC  (%d should be %d at turn %d)",
-                    worldTime, entry.WTime, commTurn);
+                    worldtime, entry.WTime, worldturn);
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
@@ -256,7 +255,7 @@ void RGE_Communications_Synchronize::LogChecksums(
             }
         }
 
-        if (entry.WTime == worldTime) {
+        if (entry.WTime == worldtime) {
             if (entry.Random != random) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED RANDOM ( %d should be %d)",
@@ -267,7 +266,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (entry.cs1 != unifiedVisible) {
+            if (entry.cs1 != cs1) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED Unified Visible Map");
                 L->Log(TBuff);
@@ -276,7 +275,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (entry.cs2 != checksumNew) {
+            if (entry.cs2 != cs2) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED CHECKSUM...New");
                 L->Log(TBuff);
@@ -285,7 +284,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (entry.cs3 != position) {
+            if (entry.cs3 != cs3) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED..Position");
                 L->Log(TBuff);
@@ -294,7 +293,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (entry.cs4 != action) {
+            if (entry.cs4 != cs4) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED...Action");
                 L->Log(TBuff);
@@ -303,7 +302,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                     fputs("\n", file);
                 }
             }
-            if (entry.cs5 != obstruction) {
+            if (entry.cs5 != cs5) {
                 sprintf(TBuff,
                         "=====>  MISMATCHED...ObstructionMap Checksums");
                 L->Log(TBuff);
@@ -325,11 +324,11 @@ void RGE_Communications_Synchronize::LogChecksums(
         fputs("\n", file);
     }
 
-    unsigned int player = 0;
+    unsigned int player_index = 0;
     long* visible = DAT_0062D208;
     do {
-        if (this->Comm->IsPlayerHuman(player) ||
-            this->Comm->IsPlayerComputer(player)) {
+        if (this->Comm->IsPlayerHuman(player_index) ||
+            this->Comm->IsPlayerComputer(player_index)) {
             strcpy(TBuff, " \n");
             L->Log(TBuff);
             if (file != 0) {
@@ -338,15 +337,15 @@ void RGE_Communications_Synchronize::LogChecksums(
             }
 
             sprintf(TBuff, "PLAYER: %s",
-                    this->Comm->GetPlayerName(player));
+                    this->Comm->GetPlayerName(player_index));
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
                 fputs("\n", file);
             }
 
-            sprintf(TBuff, "P#%d CSum=%d ", player,
-                    rge_base_game->GetChecksum(player));
+            sprintf(TBuff, "P#%d CSum=%d ", player_index,
+                    rge_base_game->GetChecksum(player_index));
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
@@ -361,7 +360,7 @@ void RGE_Communications_Synchronize::LogChecksums(
             }
         }
 
-        ++player;
+        ++player_index;
         ++visible;
     } while (visible < DAT_0062D208 + 9);
 
@@ -375,20 +374,20 @@ void RGE_Communications_Synchronize::LogChecksums(
     fclose(file);
 }
 
-void RGE_Communications_Synchronize::EnableSyncChecking(int value) {
-    this->DoChecksums = value;
+void RGE_Communications_Synchronize::EnableSyncChecking(int Status) {
+    this->DoChecksums = Status;
 }
 
-void RGE_Communications_Synchronize::SetStopOnFail(int value) {
-    this->StopOnSyncFail = value;
+void RGE_Communications_Synchronize::SetStopOnFail(int Status) {
+    this->StopOnSyncFail = Status;
 }
 
-void RGE_Communications_Synchronize::SetDialogOnFail(int value) {
-    this->DialogOnSyncFail = value;
+void RGE_Communications_Synchronize::SetDialogOnFail(int Status) {
+    this->DialogOnSyncFail = Status;
 }
 
-void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
-    this->SendChatMsgs = value;
+void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int Status) {
+    this->SendChatMsgs = Status;
 }
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
