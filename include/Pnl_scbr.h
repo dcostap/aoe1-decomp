@@ -65,29 +65,30 @@ public:
 
     TScrollBarPanel();
     virtual ~TScrollBarPanel();
-    long setup(TDrawArea*, TPanel*, long, long, long, long,
-               char*, char*, char*, char*, long, long, TPanel*, long,
-               Orientation);
-    virtual void set_rect(long, long, long, long);
+    long setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in,
+               long wid_in, long hgt_in, char* back_pic_in, char* up_pic_in,
+               char* down_pic_in, char* tab_pic_in, long arrowSizeIn, long tabSizeIn,
+               TPanel* list_panel_in, long list_len_in, Orientation orientation);
+    virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
 protected:
     void calc_item_rects();
 public:
-    void set_tab_pos(long);
-    void set_list_len(long, long);
-    void set_buttons(TShape*, int, int, int, int);
-    void set_bevel_info(int, int, int, int, int, int, int);
+    void set_tab_pos(long list_num_in);
+    void set_list_len(long list_len_in, long list_num_in);
+    void set_buttons(TShape* button_pics_in, int back_frame_in, int up_frame_in, int down_frame_in, int tab_frame_in);
+    void set_bevel_info(int bevel_type_in, int c1, int c2, int c3, int c4, int c5, int c6);
     virtual long handle_idle();
-    virtual long mouse_left_down_action(long, long, int, int);
-    virtual long mouse_left_move_action(long, long, int, int);
-    virtual long mouse_left_up_action(long, long, int, int);
-    void scroll(ActionType, long);
+    virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_move_action(long x, long y, int ctrl_key, int shift_key);
+    virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
+    void scroll(ActionType action, long val);
     virtual void draw();
 
 protected:
-    void draw_border(int, int, tagRECT*);
-    void draw_border(int, int, long, long, long, long);
+    void draw_border(int button, int down, tagRECT* rect);
+    void draw_border(int button, int down, long x1, long y1, long x2, long y2);
     void draw_back_pic();
-    void draw_button_pic(int, int, tagRECT*);
+    void draw_button_pic(int frame, int down, tagRECT* rect);
 };
 
 typedef char pnl_scbr_tpanel_size_check[(sizeof(TPanel) == 0xF4) ? 1 : -1];
