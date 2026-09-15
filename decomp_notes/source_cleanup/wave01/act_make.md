@@ -4,7 +4,9 @@
 
 - Module: `src/act_make.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source commit: `b5511ca6d957be5203454d7442c5e3886f207071`
+- Initial source cleanup commit: `b5511ca6d957be5203454d7442c5e3886f207071`
+- Presentation correction commit: `8dcd3a2b5789d911a9a23a1e12715c10648fa0db`
+- Final source commit: `8dcd3a2b5789d911a9a23a1e12715c10648fa0db`
 - Changed files:
   - `src/act_make.cpp`
   - `decomp_notes/source_cleanup/wave01/act_make.md`
@@ -13,8 +15,9 @@
 The source keeps the PDB source order for all five normal owners. The source
 module is `C:\\msdev\\work\\age1_x1\\ACT_make.cpp`.
 
-The full final source commit is
-`b5511ca6d957be5203454d7442c5e3886f207071`.
+The full source commit sequence is
+`b5511ca6d957be5203454d7442c5e3886f207071`, then
+`8dcd3a2b5789d911a9a23a1e12715c10648fa0db`.
 
 ## Function coverage and names
 
@@ -69,11 +72,13 @@ comment need that names and types cannot address.
 
 ## Risk and open items
 
-The edits change identifier spellings only. They do not change types, storage,
-declaration scope, statement order, calls, casts, layout, or ABI symbols. The
-unused `first_time` name follows the PDB without changing its use. The update
-still has the broad structural drift recorded in `decomp_notes/act_make.md`.
-This cleanup does not attempt that separate code-generation issue.
+The source cleanup changes identifier spellings and presentation only. The
+presentation correction moves opening braces and joins one signature line. It
+does not change types, storage, declaration scope, statement order, calls,
+casts, layout, or ABI symbols. The unused `first_time` name follows the PDB
+without changing its use. The update still has the broad structural drift
+recorded in `decomp_notes/act_make.md`. This cleanup does not attempt that
+separate code-generation issue.
 
 Header owner 01 should update `include/act_make.h` parameter names to match the
 recovered PDB records:
