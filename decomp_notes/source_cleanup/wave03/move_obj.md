@@ -5,7 +5,7 @@
 - Module: `src/move_obj.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `819293c71043fd471befad2dbfc7d3f86395d19e`
-- Final report commit: this report commit; record its full hash from Git output
+- Final report commit: `be26cbf860b59dc718fecb84402284206ddb67d1`
 - Branch: `cleanup/staging-20260915-129`
 - Changed files:
   - `src/move_obj.cpp`
