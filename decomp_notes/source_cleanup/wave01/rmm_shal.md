@@ -5,7 +5,8 @@
 - Module: `src/rmm_shal.cpp`
 - Branch: `cleanup/staging-20260915-18`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source commit: `18ddffead707ce569cc7cf3dbb5542ef0a6c4d0`
+- Prior source commit: `18ddffead707ce569cc7cf3dbb5542ef0a6c4d0`
+- Final correction commit: `ee43991bfbbe042a2bdcdc778ce9ed3426c5b541`
 - Changed files in the source commit:
   - `src/rmm_shal.cpp`
 - The report is committed separately after the source commit.
@@ -47,28 +48,40 @@ The PDB records these parameters and register:
 
 The source keeps all three names and types.
 
-The following local names were recovered from the procedure-scoped records and
+Two local names were recovered from direct procedure-scoped records and
 assembly use. The source types and declaration structure did not change.
 
 | PDB name | Previous source name | Evidence |
 | --- | --- | --- |
 | `tx1` | `path_x` | PDB stack record and path output use |
 | `ty` | `path_y` | PDB stack record and path output use |
-| `tx2` | `done` | PDB stack record and loop stop flag use |
-| `end_y` | `min_x` | PDB stack record and lower bound use |
-| `in_zone` | `max_x` | PDB stack record and upper bound use |
-| `end_x` | `max_y` | PDB stack record and upper bound use |
 
-The PDB reports `in_zone` as `float`. The source keeps its existing `long`
-type because this cleanup does not change effective types or storage.
+The `tx1` mapping is direct. At `00487245`, the second point's X value is
+stored in the PDB `tx1` slot. At `00487268`, the function passes that slot to
+`find_path` as the mutable X output. At `004872a6`, it reloads the same slot.
+
+The `ty` mapping is also direct. At `00487252`, the second point's Y value is
+stored in the PDB `ty` slot. At `0048725f`, the function passes that slot to
+`find_path` as the mutable Y output. At `004872b2`, it reloads the same slot.
+
+The following four PDB names remain unresolved reused-lifetime records. The
+source keeps the descriptive names `done`, `min_x`, `max_x`, and `max_y`.
+
+- `tx2` at stack offset `-0xc0` is not forced onto `done`.
+- `end_y` is not forced onto `min_x`.
+- `in_zone` is not forced onto `max_x`. The PDB type is `float`, while the
+  source variable is `long`.
+- `end_x` is not forced onto `max_y`. The PDB excerpt also shows reused
+  lifetime evidence for this name.
+
+The PDB `done` record is at stack offset `-0xc4`, separate from `tx2` at
+`-0xc0`. The source keeps `done` as an unresolved descriptive name.
 
 The PDB also records `x`, `y`, `stack`, and `terrain`. Those names were already
 present and remain unchanged. The records `x1`/`ty2` share stack offset
-`-0xd8`. The records `y1`/`ty` share stack offset `-0xc8`. The `end_x` record
-covers reused lifetime evidence in the original assembly. The current source
-uses separate declarations for some of these lifetimes. I did not merge or
-rename `start_x`, `start_y`, `min_y`, `fill_x`, or `fill_y` across those reused
-slots.
+`-0xd8`. The records `y1`/`ty` share stack offset `-0xc8`; the direct path
+uses above identify `ty` before that later reuse. I did not merge or rename
+`start_x`, `start_y`, `min_y`, `fill_x`, or `fill_y` across those reused slots.
 
 The current source also retains `target_x`, `target_y`, `cost`, and
 `terrain_type`. The PDB does not provide a reliable direct name mapping for
@@ -86,8 +99,7 @@ these declarations. The `generate` locals `i`, `j`, `count`, `index1`, and
 ## Recovered and retained names
 
 Recovered or confirmed PDB names include `in_map`, `parent_module`, `in_info`,
-`index2`, `point1`, `point2`, `x`, `y`, `stack`, `terrain`, `tx1`, `ty`, `tx2`,
-`end_y`, `in_zone`, and `end_x`.
+`index2`, `point1`, `point2`, `x`, `y`, `stack`, `terrain`, `tx1`, and `ty`.
 
 The cleanup did not invent a new identifier. Retained descriptive names remain
 unclaimed as original names where the PDB has no direct record or where stack
