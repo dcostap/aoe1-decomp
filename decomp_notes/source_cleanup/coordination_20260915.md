@@ -51,6 +51,12 @@ The map is a scheduling baseline. Recompute affected ownership after shared-head
 Shared definitions and `src/game_globals.cpp` require explicit coordinated assignments; they are not free extra edit scope.
 Do not create or launch the remaining module workers before reviewing the pilot and adjusting guidance.
 
+The registry assigns `include/vw_main.h` to both `src/vw_main.cpp` and `src/tvw_main.cpp`.
+Treat that as a shared-ownership decision, not two independent header assignments.
+The recorded graph also has high-fan-out headers: `game_globals.h` reaches 147 TUs and `basegame.h` reaches 113.
+Do not promise ten-way concurrency when an assigned header requires those dependents to wait.
+Registry header hints need review; they do not replace explicit editing ownership.
+
 ## Pilot assignment
 
 Worker ID: `cleanup-pilot-scr-load`.
