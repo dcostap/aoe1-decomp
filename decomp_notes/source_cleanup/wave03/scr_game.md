@@ -10,6 +10,7 @@
 - Source brace correction commit: `3415854c8d148ce993b285c57c4e68639fe54362`
 - Report correction commit: `0adf5675caeeb2df4edf1c223235f6321776378a`
 - Correction-hash record commit: `b08bf0343d663cc66c26e8d04e12900c6da39a02`
+- Hotkey-payload correction commit: copy the full hash from Git after commit.
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
@@ -167,13 +168,14 @@ entries.
 | `0x1039` | `G` | Group command hotkey | `IDS_HOTKEY_GROUP` |
 | `0x103A` | `U` | Ungroup command hotkey | `IDS_HOTKEY_UNGROUP` |
 | `0x103B` | `X` | More command hotkey | `IDS_HOTKEY_MORE` |
+| `0x103C` | Empty slot | No reviewed source call; no macro request | None |
 | `0x103D` | `D` | Stand-ground command hotkey | `IDS_HOTKEY_STAND_GROUND` |
 | `0x103E` | `T` | Attack-ground command hotkey | `IDS_HOTKEY_ATTACK_GROUND` |
 | `0x103F` | `H` | Town-center view hotkey | `IDS_HOTKEY_VIEW_TOWN_CENTER` |
 | `0x1040`–`0x1047` | `N`, `B`, `D`, `A`, `K`, `L`, `P`, `Y` | Eight `command_select_building` hotkeys | `IDS_HOTKEY_SELECT_BUILDING_BASE` with the existing `+ i` range |
-| `0x1048` | `C` | Heal command hotkey | `IDS_HOTKEY_HEAL` |
-| `0x1049` | `M` | Convert command hotkey | `IDS_HOTKEY_CONVERT` |
-| `0x104A` | `W` | Move command hotkey | `IDS_HOTKEY_MOVE` |
+| `0x1048` | `E` | Heal command hotkey | `IDS_HOTKEY_HEAL` |
+| `0x1049` | `C` | Convert command hotkey | `IDS_HOTKEY_CONVERT` |
+| `0x104A` | `M` | Move command hotkey | `IDS_HOTKEY_MOVE` |
 | `0x104B` | `W` | Work command hotkey | `IDS_HOTKEY_WORK` |
 | `0x104C` | `A` | Attack command hotkey | `IDS_HOTKEY_ATTACK` |
 | `0x104D` | `R` | Repair command hotkey | `IDS_HOTKEY_REPAIR` |
