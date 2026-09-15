@@ -29,21 +29,23 @@ public:
     int insert_mode;
     short input_pos;
     unsigned char pad_1B6[2];
-    long setup(TDrawArea*, TPanel*, long, long, long, long, void*, long, long,
-               char*, int, unsigned char, int, unsigned char, unsigned char,
-               short, TDigital*, char*, FormatType);
-    virtual void set_focus(int);
-    void set_format(FormatType);
+    long setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in,
+               void* font_in, long font_wid_in, long font_hgt_in, char* back_pic_in, int fill_back_in,
+               unsigned char back_color_in, int outline_in, unsigned char outline_color_in,
+               unsigned char caret_color_in, short max_len_in, TDigital* overLengthSoundIn,
+               char* text_in, FormatType format_type_in);
+    virtual void set_focus(int have_focus_in);
+    void set_format(FormatType format_type_in);
     virtual long handle_idle();
-    virtual long char_action(long, short);
-    virtual long key_down_action(long, short, int, int, int);
+    virtual long char_action(long key, short count);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
     virtual void draw();
-    virtual void set_text(char*);
-    virtual void set_text(char**, short);
+    virtual void set_text(char* text_in);
+    virtual void set_text(char** text_in, short num_lines_in);
     char* get_input_buffer();
 protected:
-    int append_character(long);
-    int insert_character(long);
+    int append_character(long c);
+    int insert_character(long c);
     int delete_character();
     int backspace_character();
     int paste();
@@ -52,7 +54,7 @@ protected:
     void calc_cur_line_col();
 public:
     int is_blank();
-    char* get_trimmed_str(char*, int);
+    char* get_trimmed_str(char* str, int str_len);
 };
 
 #endif
