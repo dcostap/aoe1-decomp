@@ -48,30 +48,21 @@ static const char version_108[] = "1.08";
 static const char version_109[] = "1.09";
 static const char version_110[] = "1.10";
 static const char version_111[] = "1.11";
-static const char world_data_format[] =
-    "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %hd %hd %hd";
+static const char world_data_format[] = "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %hd %hd %hd";
 static char base_save_version[] = "VER 3.7";
 
 void __cdecl debug_random_reset();
-int __cdecl debug_rand(char*, int);
-void __cdecl debug_srand(char*, int, unsigned int);
-unsigned long __cdecl debug_timeGetTime(char*, int);
+int __cdecl debug_rand(char *, int);
+void __cdecl debug_srand(char *, int, unsigned int);
+unsigned long __cdecl debug_timeGetTime(char *, int);
 
 RGE_Game_World::RGE_Game_World()
-    : objectsValue(0),
-      numberObjectsValue(0),
-      maxNumberObjectsValue(10000),
-      negativeObjectsValue(0),
-      numberNegativeObjectsValue(0),
-      maxNumberNegativeObjectsValue(1000),
-      maximumComputerPlayerUpdateTime(2),
-      availableComputerPlayerUpdateTime(2),
-      currentUpdateComputerPlayer(-1),
-      difficultyLevelValue(-1)
-{
+    : objectsValue(0), numberObjectsValue(0), maxNumberObjectsValue(10000), negativeObjectsValue(0),
+      numberNegativeObjectsValue(0), maxNumberNegativeObjectsValue(1000), maximumComputerPlayerUpdateTime(2),
+      availableComputerPlayerUpdateTime(2), currentUpdateComputerPlayer(-1), difficultyLevelValue(-1) {
     world_update_counter = 0;
-    objectsValue = new RGE_Static_Object*[maxNumberObjectsValue];
-    negativeObjectsValue = new RGE_Static_Object*[maxNumberNegativeObjectsValue];
+    objectsValue = new RGE_Static_Object *[maxNumberObjectsValue];
+    negativeObjectsValue = new RGE_Static_Object *[maxNumberNegativeObjectsValue];
     VIS_UNIT_objectsValue = objectsValue;
     playbook = 0;
     sound_num = 0;
@@ -124,8 +115,7 @@ RGE_Game_World::RGE_Game_World()
     }
 }
 
-RGE_Game_World::~RGE_Game_World()
-{
+RGE_Game_World::~RGE_Game_World() {
     delete this->commands;
     this->del_game_info();
 
@@ -242,9 +232,9 @@ void RGE_Game_World::reset_object_count() {
 }
 
 void RGE_Game_World::pause(unsigned char flag) {
-	int i;
+    int i;
 
-	if (flag != 0) {
+    if (flag != 0) {
         i = 0;
         if (this->sound_num > 0) {
             do {
@@ -255,30 +245,29 @@ void RGE_Game_World::pause(unsigned char flag) {
     }
 }
 
-
 void RGE_Game_World::set_map_visible(unsigned char flag) {
-	if (this->map)
-		this->map->set_map_visible(flag);
+    if (this->map)
+        this->map->set_map_visible(flag);
 }
 
 void RGE_Game_World::set_map_fog(unsigned char flag) {
-	if (this->map)
-		this->map->set_map_fog(flag);
+    if (this->map)
+        this->map->set_map_fog(flag);
 }
 
-unsigned char RGE_Game_World::data_load_sounds(char* file_name) {
-	FILE* fp = fopen(file_name, "r");
-	if (fp != 0) {
-		short count;
-		short id;
-		short index;
-		int result;
-		result = fscanf(fp, "%hd %hd", &this->sound_num, &count);
-		if (result != -1) {
-			this->sounds = (RGE_Sound**)calloc(this->sound_num, 4);
-			for (id = 0; id < count; id++) {
+unsigned char RGE_Game_World::data_load_sounds(char *file_name) {
+    FILE *fp = fopen(file_name, "r");
+    if (fp != 0) {
+        short count;
+        short id;
+        short index;
+        int result;
+        result = fscanf(fp, "%hd %hd", &this->sound_num, &count);
+        if (result != -1) {
+            this->sounds = (RGE_Sound **)calloc(this->sound_num, 4);
+            for (id = 0; id < count; id++) {
                 if (fscanf(fp, "%hd", &index) != -1) {
-                    RGE_Sound* s = new RGE_Sound(fp, index);
+                    RGE_Sound *s = new RGE_Sound(fp, index);
                     this->sounds[index] = s;
                 }
             }
@@ -291,35 +280,34 @@ unsigned char RGE_Game_World::data_load_sounds(char* file_name) {
     return 1;
 }
 
-unsigned char RGE_Game_World::data_load_terrain_tables(char* file_name)
-{
-	FILE* f = fopen(file_name, "r");
+unsigned char RGE_Game_World::data_load_terrain_tables(char *file_name) {
+    FILE *f = fopen(file_name, "r");
     if (f != 0) {
         if (fscanf(f, "%hd %hd", &this->terrain_num, &this->terrain_size) != -1) {
-            this->terrains = (float**)calloc(this->terrain_num, 4);
+            this->terrains = (float **)calloc(this->terrain_num, 4);
 
-			short index = 0;
-			if (index < this->terrain_num) {
-				do {
-					short id;
-					short count;
+            short index = 0;
+            if (index < this->terrain_num) {
+                do {
+                    short id;
+                    short count;
 
-					if (fscanf(f, "%hd %hd", &id, &count) != -1) {
-						this->terrains[id] = (float*)calloc(this->terrain_size, 4);
+                    if (fscanf(f, "%hd %hd", &id, &count) != -1) {
+                        this->terrains[id] = (float *)calloc(this->terrain_size, 4);
 
-						short si = 0;
-						if (si < count) {
-							do {
-								short index3;
-								fscanf(f, "%hd", &index3);
-								fscanf(f, "%f", &this->terrains[id][index3]);
-								++si;
-							} while (si < count);
-						}
-					}
+                        short si = 0;
+                        if (si < count) {
+                            do {
+                                short index3;
+                                fscanf(f, "%hd", &index3);
+                                fscanf(f, "%f", &this->terrains[id][index3]);
+                                ++si;
+                            } while (si < count);
+                        }
+                    }
 
-					++index;
-				} while (index < this->terrain_num);
+                    ++index;
+                } while (index < this->terrain_num);
             }
         } else {
             this->terrain_num = 0;
@@ -331,19 +319,18 @@ unsigned char RGE_Game_World::data_load_terrain_tables(char* file_name)
     return 1;
 }
 
-uchar RGE_Game_World::data_load_color_tables(char* file_name)
-{
-	short count;
-	FILE* f = fopen(file_name, "r");
+uchar RGE_Game_World::data_load_color_tables(char *file_name) {
+    short count;
+    FILE *f = fopen(file_name, "r");
     if (f == NULL)
         goto epilogue;
 
     if (fscanf(f, "%hd %hd", &this->color_table_num, &count) != -1) {
-        this->color_tables = (RGE_Color_Table**)calloc(this->color_table_num, 4);
-		for (short id = 0; id < count; id++) {
+        this->color_tables = (RGE_Color_Table **)calloc(this->color_table_num, 4);
+        for (short id = 0; id < count; id++) {
             short index;
             if (fscanf(f, "%hd", &index) != -1) {
-                RGE_Color_Table* ct = new RGE_Color_Table(f, index);
+                RGE_Color_Table *ct = new RGE_Color_Table(f, index);
                 this->color_tables[index] = ct;
             }
         }
@@ -358,26 +345,26 @@ epilogue:
     return 1;
 }
 
-unsigned char RGE_Game_World::data_load_sprites(char* file_name) {
-	FILE* file = fopen(file_name, "r");
-	if (file != 0) {
-		short count;
-		short i;
-		short id;
+unsigned char RGE_Game_World::data_load_sprites(char *file_name) {
+    FILE *file = fopen(file_name, "r");
+    if (file != 0) {
+        short count;
+        short i;
+        short id;
 
-		if (fscanf(file, "%hd %hd", &this->sprite_num, &count) != -1) {
-			this->sprites = (RGE_Sprite**)calloc(this->sprite_num, 4);
+        if (fscanf(file, "%hd %hd", &this->sprite_num, &count) != -1) {
+            this->sprites = (RGE_Sprite **)calloc(this->sprite_num, 4);
 
-			for (i = 0; i < count; i++) {
+            for (i = 0; i < count; i++) {
                 if (fscanf(file, "%hd", &id) != -1) {
-                    RGE_Sprite* sprite = new RGE_Sprite(file, id, this->sounds);
+                    RGE_Sprite *sprite = new RGE_Sprite(file, id, this->sounds);
                     this->sprites[id] = sprite;
                 }
             }
 
-			for (i = 0; i < count; i++) {
+            for (i = 0; i < count; i++) {
                 if (this->sprites[i] == 0) {
-                    RGE_Sprite* sprite = new RGE_Sprite(i);
+                    RGE_Sprite *sprite = new RGE_Sprite(i);
                     this->sprites[i] = sprite;
                 }
             }
@@ -390,25 +377,25 @@ unsigned char RGE_Game_World::data_load_sprites(char* file_name) {
     return 1;
 }
 
-void RGE_Game_World::data_load_players_type(short id, short type, FILE* infile) {
-	if (type == 0) {
-		this->master_players[id] = new RGE_Master_Player(infile);
-	}
+void RGE_Game_World::data_load_players_type(short id, short type, FILE *infile) {
+    if (type == 0) {
+        this->master_players[id] = new RGE_Master_Player(infile);
+    }
 }
 
-unsigned char RGE_Game_World::data_load_players(char* file_name) {
-	FILE* fp;
-	short count;
-	short id;
-	short type;
+unsigned char RGE_Game_World::data_load_players(char *file_name) {
+    FILE *fp;
+    short count;
+    short type;
+    short id;
 
-	fp = fopen(file_name, "r");
-	if (fp != 0) {
-		if (fscanf(fp, "%hd %hd", &this->master_player_num, &count) != -1) {
-			this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, 4);
-			for (short i = 0; i < count; i++) {
-				if (fscanf(fp, "%hd %hd", &id, &type) != -1) {
-					this->data_load_players_type(id, type, fp);
+    fp = fopen(file_name, "r");
+    if (fp != 0) {
+        if (fscanf(fp, "%hd %hd", &this->master_player_num, &count) != -1) {
+            this->master_players = (RGE_Master_Player **)calloc(this->master_player_num, 4);
+            for (short i = 0; i < count; i++) {
+                if (fscanf(fp, "%hd %hd", &id, &type) != -1) {
+                    this->data_load_players_type(id, type, fp);
                 }
             }
         } else {
@@ -420,8 +407,8 @@ unsigned char RGE_Game_World::data_load_players(char* file_name) {
     return 1;
 }
 
-unsigned char RGE_Game_World::data_load_objects(char* file_name) {
-    FILE* fp = fopen(file_name, "r");
+unsigned char RGE_Game_World::data_load_objects(char *file_name) {
+    FILE *fp = fopen(file_name, "r");
     if (fp != 0) {
         short player_count;
         short in_id;
@@ -454,32 +441,28 @@ unsigned char RGE_Game_World::data_load_objects(char* file_name) {
     return 1;
 }
 
-void RGE_Game_World::data_load_effects(char* effects_file) {
-    RGE_Effects* e;
+void RGE_Game_World::data_load_effects(char *effects_file) {
+    RGE_Effects *e;
     e = new RGE_Effects(effects_file);
     this->effects = e;
 }
 
-void RGE_Game_World::data_load_map(char* border_file, char* overlay_file,
-                                   char* terrain_file, char* map_file,
-                                   short tile_width, short tile_height,
-                                   short elev_height, RGE_Sound** sounds,
-                                   char* terr_obj_file) {
-    RGE_Map* m;
+void RGE_Game_World::data_load_map(char *border_file, char *overlay_file, char *terrain_file, char *map_file,
+                                   short tile_width, short tile_height, short elev_height, RGE_Sound **sounds,
+                                   char *terr_obj_file) {
+    RGE_Map *m;
 
-    m = new RGE_Map(border_file, terrain_file, map_file, tile_width,
-                    tile_height, elev_height, sounds);
+    m = new RGE_Map(border_file, terrain_file, map_file, tile_width, tile_height, elev_height, sounds);
     this->map = m;
     m->load_terrain_obj_types(terr_obj_file);
 }
 
-void RGE_Game_World::data_load_random_map(char* rmm_map_file, char* rmm_land_file,
-                                          char* rmm_terr_file, char* rmm_obj_file) {
-    this->map->load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file,
-                               rmm_obj_file);
+void RGE_Game_World::data_load_random_map(char *rmm_map_file, char *rmm_land_file, char *rmm_terr_file,
+                                          char *rmm_obj_file) {
+    this->map->load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_obj_file);
 }
 
-unsigned char RGE_Game_World::data_load_world(FILE* infile) {
+unsigned char RGE_Game_World::data_load_world(FILE *infile) {
     short elev_height;
     short tile_width;
     short tile_height;
@@ -500,13 +483,9 @@ unsigned char RGE_Game_World::data_load_world(FILE* infile) {
     char terrain_table_file[23];
     char rmm_map_file[23];
 
-    fscanf(infile, world_data_format,
-        terrain_table_file, color_file, sound_file,
-        border_file, overlay_file, terrain_file, map_file,
-        sprite_file, player_file, obj_file, effects_file,
-        terr_obj_file, rmm_map_file, rmm_land_file,
-        rmm_terr_file, rmm_object_file, &tile_height,
-        &elev_height, &tile_width);
+    fscanf(infile, world_data_format, terrain_table_file, color_file, sound_file, border_file, overlay_file,
+           terrain_file, map_file, sprite_file, player_file, obj_file, effects_file, terr_obj_file, rmm_map_file,
+           rmm_land_file, rmm_terr_file, rmm_object_file, &tile_height, &elev_height, &tile_width);
 
     this->data_load_terrain_tables(terrain_table_file);
     this->data_load_color_tables(color_file);
@@ -515,16 +494,14 @@ unsigned char RGE_Game_World::data_load_world(FILE* infile) {
     this->data_load_players(player_file);
     this->data_load_objects(obj_file);
     this->data_load_effects(effects_file);
-    this->data_load_map(border_file, overlay_file, terrain_file,
-        map_file, tile_height, elev_height, tile_width, this->sounds,
-        terr_obj_file);
-    this->data_load_random_map(rmm_map_file, rmm_land_file,
-        rmm_terr_file, rmm_object_file);
+    this->data_load_map(border_file, overlay_file, terrain_file, map_file, tile_height, elev_height, tile_width,
+                        this->sounds, terr_obj_file);
+    this->data_load_random_map(rmm_map_file, rmm_land_file, rmm_terr_file, rmm_object_file);
     return 1;
 }
 
-unsigned char RGE_Game_World::data_load(char* base_name, char* world_info) {
-    FILE* f = fopen(world_info, "r");
+unsigned char RGE_Game_World::data_load(char *base_name, char *world_info) {
+    FILE *f = fopen(world_info, "r");
     if (f != 0) {
         this->data_load_world(f);
         fclose(f);
@@ -546,7 +523,7 @@ unsigned char RGE_Game_World::init_player(int infile) {
     rge_read(infile, &this->master_player_num, 2);
 
     if (this->master_player_num > 0) {
-        this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, 4);
+        this->master_players = (RGE_Master_Player **)calloc(this->master_player_num, 4);
         for (int i = 0; (short)i < this->master_player_num; i++) {
             unsigned char type;
             rge_read(infile, &type, 1);
@@ -561,12 +538,12 @@ void RGE_Game_World::terrain_tables_init(int infile) {
     rge_read(infile, &terrain_size, 2);
 
     if (terrain_num > 0 && terrain_size > 0) {
-        terrains = (float**)calloc(terrain_num, 4);
+        terrains = (float **)calloc(terrain_num, 4);
         rge_read(infile, terrains, terrain_num * 4);
 
         for (int i = 0; i < terrain_num; i++) {
             if (terrains[i] != 0) {
-                terrains[i] = (float*)calloc(terrain_size, 4);
+                terrains[i] = (float *)calloc(terrain_size, 4);
                 rge_read(infile, terrains[i], terrain_size * 4);
             }
         }
@@ -577,27 +554,25 @@ void RGE_Game_World::color_table_init(int infile) {
     rge_read(infile, &color_table_num, 2);
 
     if (color_table_num > 0) {
-        color_tables = (RGE_Color_Table**)calloc(color_table_num, 4);
+        color_tables = (RGE_Color_Table **)calloc(color_table_num, 4);
         for (int i = 0; i < color_table_num; i++) {
             color_tables[i] = new RGE_Color_Table(infile);
         }
     }
 }
 
-void RGE_Game_World::init_sounds(int infile, TSound_Driver* sound_dvr)
-{
+void RGE_Game_World::init_sounds(int infile, TSound_Driver *sound_dvr) {
     rge_read(infile, &this->sound_num, 2);
-    this->sounds = (RGE_Sound**)calloc(this->sound_num, 4);
+    this->sounds = (RGE_Sound **)calloc(this->sound_num, 4);
     for (int i = 0; i < this->sound_num; i++) {
         this->sounds[i] = new RGE_Sound(infile, this->sound_driver);
     }
 }
 
-void RGE_Game_World::init_sprites(int infile)
-{
+void RGE_Game_World::init_sprites(int infile) {
     rge_read(infile, &sprite_num, 2);
 
-    sprites = (RGE_Sprite**)calloc(sprite_num, 4);
+    sprites = (RGE_Sprite **)calloc(sprite_num, 4);
 
     rge_read(infile, sprites, sprite_num * 4);
 
@@ -614,37 +589,34 @@ void RGE_Game_World::init_sprites(int infile)
     }
 }
 
-void RGE_Game_World::scenario_init(int infile, RGE_Game_World* world) {
-    RGE_Scenario* p = new RGE_Scenario(infile, world);
+void RGE_Game_World::scenario_init(int infile, RGE_Game_World *world) {
+    RGE_Scenario *p = new RGE_Scenario(infile, world);
     scenario = p;
 }
 
-void RGE_Game_World::scenario_init(RGE_Game_World* world) {
-    RGE_Scenario* s = new RGE_Scenario(world);
+void RGE_Game_World::scenario_init(RGE_Game_World *world) {
+    RGE_Scenario *s = new RGE_Scenario(world);
     this->scenario = s;
 }
 
-void RGE_Game_World::map_init(int infile, TSound_Driver* sound_dvr) {
-    RGE_Map* new_map = new RGE_Map(infile, this->sounds, 1);
+void RGE_Game_World::map_init(int infile, TSound_Driver *sound_dvr) {
+    RGE_Map *new_map = new RGE_Map(infile, this->sounds, 1);
     this->map = new_map;
 }
 
 void RGE_Game_World::effects_init(int infile) {
-    RGE_Effects* e = new RGE_Effects(infile);
+    RGE_Effects *e = new RGE_Effects(infile);
     this->effects = e;
 }
 
-void RGE_Game_World::master_player_init(int infile) {
-    this->init_player(infile);
-}
+void RGE_Game_World::master_player_init(int infile) { this->init_player(infile); }
 
-void RGE_Game_World::command_init(int infile, TCommunications_Handler* com_hand) {
-    RGE_Command* p = new RGE_Command(this, com_hand);
+void RGE_Game_World::command_init(int infile, TCommunications_Handler *com_hand) {
+    RGE_Command *p = new RGE_Command(this, com_hand);
     this->commands = p;
 }
 
-void RGE_Game_World::world_init(int infile, TSound_Driver* sound_dvr,
-                                TCommunications_Handler* com_hand) {
+void RGE_Game_World::world_init(int infile, TSound_Driver *sound_dvr, TCommunications_Handler *com_hand) {
     this->terrain_tables_init(infile);
     this->color_table_init(infile);
     this->init_sounds(infile, sound_dvr);
@@ -655,8 +627,7 @@ void RGE_Game_World::world_init(int infile, TSound_Driver* sound_dvr,
     this->command_init(infile, com_hand);
 }
 
-unsigned char RGE_Game_World::init(char* base_name, TSound_Driver* sound_dvr,
-                                   TCommunications_Handler* com_hand) {
+unsigned char RGE_Game_World::init(char *base_name, TSound_Driver *sound_dvr, TCommunications_Handler *com_hand) {
     char version[8];
 
     this->sound_driver = sound_dvr;
@@ -689,8 +660,8 @@ void RGE_Game_World::turn_sound_off(void) {
     }
 }
 
-void RGE_Game_World::reset_communications(TCommunications_Handler* com_hand) {
-	this->commands->reset_communications(com_hand);
+void RGE_Game_World::reset_communications(TCommunications_Handler *com_hand) {
+    this->commands->reset_communications(com_hand);
 }
 
 void RGE_Game_World::reset_player_visible_maps(void) {
@@ -706,8 +677,7 @@ void RGE_Game_World::reset_player_visible_maps(void) {
     }
 }
 
-void RGE_Game_World::del_game_info()
-{
+void RGE_Game_World::del_game_info() {
     int i;
     world_update_counter = 0;
 
@@ -783,63 +753,64 @@ void RGE_Game_World::del_game_info()
 }
 
 void RGE_Game_World::load_player(int infile, unsigned char type, short index) {
-    RGE_Game_World* self = this;
+    RGE_Game_World *self = this;
     if (type != 0)
         return;
 
-    RGE_Player* player = new RGE_Player(infile, self, index);
+    RGE_Player *player = new RGE_Player(infile, self, index);
     self->players[index] = player;
     self->players[index]->load(infile);
 }
 
 unsigned char RGE_Game_World::load_world(int infile1) {
     int i;
-    unsigned long* p;
+    unsigned long *p;
     int count;
     int type;
+    int f = infile1;
     unsigned char tempGameState;
 
     this->game_state = 2;
     this->game_end_condition = 0;
-    rge_read(infile1, &this->world_time, 4);
-    rge_read(infile1, &this->old_world_time, 4);
-    rge_read(infile1, &this->world_time_delta, 4);
-    rge_read(infile1, &this->world_time_delta_seconds, 4);
-    rge_read(infile1, &this->timer, 4);
-    rge_read(infile1, &this->game_speed, 4);
-    rge_read(infile1, &this->temp_pause, 1);
-    rge_read(infile1, &this->next_object_id, 4);
-    rge_read(infile1, &this->next_reusable_object_id, 4);
-    rge_read(infile1, &this->random_seed, 4);
-    rge_read(infile1, &this->curr_player, 2);
+    rge_read(f, &this->world_time, 4);
+    rge_read(f, &this->old_world_time, 4);
+    rge_read(f, &this->world_time_delta, 4);
+    rge_read(f, &this->world_time_delta_seconds, 4);
+    rge_read(f, &this->timer, 4);
+    rge_read(f, &this->game_speed, 4);
+    rge_read(f, &this->temp_pause, 1);
+    rge_read(f, &this->next_object_id, 4);
+    rge_read(f, &this->next_reusable_object_id, 4);
+    rge_read(f, &this->random_seed, 4);
+    rge_read(f, &this->curr_player, 2);
 
-    rge_read(infile1, &this->player_num, 2);
-    rge_read(infile1, &tempGameState, 1);
-    rge_read(infile1, &this->campaign, 4);
-    rge_read(infile1, &this->campaign_player, 4);
-    rge_read(infile1, &this->campaign_scenario, 4);
-    rge_read(infile1, &this->player_turn, 4);
+    rge_read(f, &this->player_num, 2);
+    rge_read(f, &tempGameState, 1);
+    rge_read(f, &this->campaign, 4);
+    rge_read(f, &this->campaign_player, 4);
+    rge_read(f, &this->campaign_scenario, 4);
+    rge_read(f, &this->player_turn, 4);
 
     p = this->player_time_delta;
     count = 9;
     do {
-        rge_read(infile1, p, 4);
+        rge_read(f, p, 4);
         p++;
         count--;
     } while (count != 0);
 
     i = 0;
     this->old_time = 0;
-    this->map->load_map(infile1);
+    this->map->load_map(f);
     this->initializePathingSystem();
     this->currentUpdateComputerPlayer = -1;
 
     if (0 < this->player_num) {
-        this->players = (RGE_Player**)calloc(4, this->player_num);
+        this->players = (RGE_Player **)calloc(4, this->player_num);
         if (0 < this->player_num) {
             do {
-                rge_read(infile1, &type, 1);
-                this->load_player(infile1, type, (short)i);
+                rge_read(f, &type, 1);
+                this->load_player(f, type, (short)i);
                 i++;
             } while (i < this->player_num);
         }
@@ -850,15 +821,15 @@ unsigned char RGE_Game_World::load_world(int infile1) {
     i = 0;
     if (0 < this->player_num) {
         do {
-            this->players[i]->load_info(infile1);
+            this->players[i]->load_info(f);
             i++;
         } while (i < this->player_num);
     }
     this->map->unified_vis_map->suppress_updates(0);
-    this->scenario_init(infile1, this);
+    this->scenario_init(f, this);
 
     if (save_game_version >= DAT_00577a10) {
-        rge_read(infile1, &this->difficultyLevelValue, 4);
+        rge_read(f, &this->difficultyLevelValue, 4);
     } else {
         this->difficultyLevelValue = -1;
     }
@@ -869,23 +840,21 @@ unsigned char RGE_Game_World::load_world(int infile1) {
     return 1;
 }
 
-unsigned char RGE_Game_World::load_game(char* name)
-{
-    char version[8];
-    char tempname[300];
+unsigned char RGE_Game_World::load_game(char *name) {
+    char buf[308];
 
     world_update_counter = 0;
 
     this->del_game_info();
 
-    sprintf(tempname, "%s%s", rge_base_game->prog_info->save_dir, name);
+    sprintf(buf + 8, "%s%s", rge_base_game->prog_info->save_dir, name);
 
-    int fh = rge_open(tempname, 0x8000);
+    int fh = rge_open(buf + 8, 0x8000);
     if (fh != -1) {
-        rge_read(fh, version, 8);
+        rge_read(fh, buf, 8);
         rge_read(fh, &save_game_version, 4);
 
-        if (strcmp(version, "VER 8.6") != 0) {
+        if (strcmp(buf, "VER 8.6") != 0) {
             rge_close(fh);
             return 0;
         }
@@ -900,20 +869,18 @@ unsigned char RGE_Game_World::load_game(char* name)
 void RGE_Game_World::set_game_speed(float new_speed) { this->game_speed = new_speed; }
 
 void RGE_Game_World::setup_gaia() {
-    RGE_Player* p = new RGE_Player(this, *master_players, 0, "GAIA", 0, 1);
+    RGE_Player *p = new RGE_Player(this, *master_players, 0, "GAIA", 0, 1);
     *players = p;
 }
 
-void RGE_Game_World::setup_players(RGE_Player_Info& info) {
+void RGE_Game_World::setup_players(RGE_Player_Info &info) {
     short index = 1;
 
     if (player_num > 1) {
         do {
             if (info.type[index - 1] != -1) {
-                RGE_Player* player = new RGE_Player(this,
-                    master_players[info.tribe[index - 1]],
-                    index, info.name[index - 1],
-                    info.tribe[index - 1], 1);
+                RGE_Player *player = new RGE_Player(this, master_players[info.tribe[index - 1]], index,
+                                                    info.name[index - 1], info.tribe[index - 1], 1);
                 players[index] = player;
             }
             index++;
@@ -921,7 +888,7 @@ void RGE_Game_World::setup_players(RGE_Player_Info& info) {
     }
 }
 
-void RGE_Game_World::setup_player_colors(RGE_Player_Info& info) {
+void RGE_Game_World::setup_player_colors(RGE_Player_Info &info) {
     int color_index = -1;
 
     this->players[0]->set_color_table(7);
@@ -933,13 +900,12 @@ void RGE_Game_World::setup_player_colors(RGE_Player_Info& info) {
     }
 
     int i = 1;
-    unsigned char* colors_used = (unsigned char*)calloc(this->color_table_num, 1);
-    unsigned char* players_done = (unsigned char*)calloc(this->player_num, 1);
+    unsigned char *colors_used = (unsigned char *)calloc(this->color_table_num, 1);
+    unsigned char *players_done = (unsigned char *)calloc(this->player_num, 1);
 
     if (this->player_num > 1) {
         do {
-            if (i - 1 < max_iter && info.color[i - 1] >= 0 &&
-                colors_used[info.color[i - 1]] == 0) {
+            if (i - 1 < max_iter && info.color[i - 1] >= 0 && colors_used[info.color[i - 1]] == 0) {
                 this->players[i]->set_color_table((unsigned char)info.color[i - 1]);
                 colors_used[info.color[i - 1]] = 1;
                 players_done[i] = 1;
@@ -954,8 +920,7 @@ void RGE_Game_World::setup_player_colors(RGE_Player_Info& info) {
             if (players_done[i] == 0) {
                 do {
                     ++color_index;
-                } while (colors_used[color_index] == 1 ||
-                         this->color_tables[color_index]->type != 1);
+                } while (colors_used[color_index] == 1 || this->color_tables[color_index]->type != 1);
 
                 this->players[i]->set_color_table((unsigned char)color_index);
                 colors_used[color_index] = 1;
@@ -973,7 +938,7 @@ void RGE_Game_World::setup_player_colors() {
 
     this->players[0]->set_color_table(7);
 
-    unsigned char* used = (unsigned char*)calloc(this->color_table_num, 1);
+    unsigned char *used = (unsigned char *)calloc(this->color_table_num, 1);
 
     for (int p = 1; p < this->player_num; p++) {
         do {
@@ -987,8 +952,7 @@ void RGE_Game_World::setup_player_colors() {
     free(used);
 }
 
-unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum)
-{
+unsigned char RGE_Game_World::new_game(RGE_Player_Info &info, int myPlayerNum) {
     char randomString[256];
     int team;
     unsigned char retval;
@@ -998,7 +962,8 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum)
     pathSystem.zeroObstructionMap();
     aiPathSystem.zeroObstructionMap();
     this->currentUpdateComputerPlayer = -1;
-    for (i = 0; i < 13; i++) computerPlayerSetup[i] = 0;
+    for (i = 0; i < 13; i++)
+        computerPlayerSetup[i] = 0;
     this->del_game_info();
     debug_random_reset();
     debug_timeGetTime_cnt = 0;
@@ -1027,7 +992,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum)
     L->Log("  World: after_new_map (rand=%d)", this->random_seed);
 
     this->player_num = info.player_num + 1;
-    this->players = (RGE_Player**)calloc(4, (int)this->player_num);
+    this->players = (RGE_Player **)calloc(4, (int)this->player_num);
     this->setup_gaia();
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x520);
     L->Log("  World: after_gaia (rand=%d)", this->random_seed);
@@ -1100,13 +1065,15 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum)
 
     this->initializePathingSystem();
     for (i = 0; i < this->player_num; i++) {
-        if (this->players[i]) this->players[i]->random_start();
+        if (this->players[i])
+            this->players[i]->random_start();
     }
-    if (retval) this->game_state = 0;
+    if (retval)
+        this->game_state = 0;
 
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5b2);
     L->Log("  World: end_of_new_game (rand=%d)", this->random_seed);
-    RGE_Base_Game* base_game = rge_base_game;
+    RGE_Base_Game *base_game = rge_base_game;
     base_game->get_string(0x277b, randomString, 0x100);
     if (team == 1) {
         for (i = 1; i < this->player_num; i++) {
@@ -1118,9 +1085,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int myPlayerNum)
     return retval;
 }
 
-unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info,
-                                            int random_seed_in)
-{
+unsigned char RGE_Game_World::new_scenario(RGE_Player_Info &info, int random_seed_in) {
     unsigned char retval;
     int i;
 
@@ -1132,14 +1097,13 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info,
         random_seed_in = this->commands->com_hand->GetRandomSeed();
     }
     this->random_seed = random_seed_in;
-    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5d5,
-                this->random_seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5d5, this->random_seed);
 
     this->map->new_map((long)info.map_width, (long)info.map_height);
     this->map->clear_map((unsigned char)info.map_info->base_terrain, 1);
 
     this->player_num = info.player_num + 1;
-    this->players = (RGE_Player**)calloc(4, (int)this->player_num);
+    this->players = (RGE_Player **)calloc(4, (int)this->player_num);
     this->setup_gaia();
     this->setup_players(info);
 
@@ -1168,12 +1132,11 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info,
     return retval;
 }
 
-unsigned char RGE_Game_World::new_random_game(RGE_Player_Info& info)
-{
+unsigned char RGE_Game_World::new_random_game(RGE_Player_Info &info) {
     short saved_curr_player;
     int loop_count;
     short i;
-    RGE_Player* player;
+    RGE_Player *player;
 
     world_update_counter = 0;
     this->setup_player_colors(info);
@@ -1232,8 +1195,7 @@ void RGE_Game_World::update_sprites(unsigned long time) {
     this->sprite_update_index++;
 }
 
-unsigned char RGE_Game_World::update()
-{
+unsigned char RGE_Game_World::update() {
     char fileName[256];
     int cycle;
     int i;
@@ -1244,6 +1206,7 @@ unsigned char RGE_Game_World::update()
     long minutes;
     long hours;
     unsigned long elapsed;
+    unsigned long statusLogTime;
     unsigned char first_update = 0;
 
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
@@ -1259,7 +1222,8 @@ unsigned char RGE_Game_World::update()
     visible_combats = 0;
     debug_random_on = 1;
     debug_timeGetTime_on = 1;
-    if (do_fixed_update != 0) cycle = fixed_update_time;
+    if (do_fixed_update != 0)
+        cycle = fixed_update_time;
 
     debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6a2, this->random_seed);
     now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6a4);
@@ -1273,7 +1237,8 @@ unsigned char RGE_Game_World::update()
         } else {
             elapsed = now - this->old_time;
         }
-        if (elapsed > 100) elapsed = 100;
+        if (elapsed > 100)
+            elapsed = 100;
     } else {
         elapsed = cycle;
     }
@@ -1282,13 +1247,11 @@ unsigned char RGE_Game_World::update()
     this->old_world_time = this->world_time;
     if (this->temp_pause != 0) {
         if (cycle != -1) {
-            this->world_time = this->old_world_time +
-                (unsigned long)(elapsed * this->game_speed);
+            this->world_time = this->old_world_time + (unsigned long)(elapsed * this->game_speed);
         }
         this->temp_pause = 0;
     } else {
-        this->world_time = this->old_world_time +
-            (unsigned long)(elapsed * this->game_speed);
+        this->world_time = this->old_world_time + (unsigned long)(elapsed * this->game_speed);
     }
     this->world_time_delta = this->world_time - this->old_world_time;
 
@@ -1299,13 +1262,13 @@ unsigned char RGE_Game_World::update()
         world_update_counter = world_update_counter + 1;
         for (i = 0; i < this->player_num; ++i) {
             if (this->players[i] != 0) {
-                this->player_time_delta[i] =
-                    this->player_time_delta[i] + this->world_time_delta;
+                this->player_time_delta[i] = this->player_time_delta[i] + this->world_time_delta;
                 this->players[i]->update();
                 this->players[i]->tile_list.del_list();
             }
         }
-        if (MouseSystem != 0) MouseSystem->Poll();
+        if (MouseSystem != 0)
+            MouseSystem->Poll();
         now = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6e2);
         for (i = 0; i < this->player_num; ++i) {
             if (this->players[i] != 0) {
@@ -1320,7 +1283,8 @@ unsigned char RGE_Game_World::update()
         debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6f6, now);
         this->player_time_delta[this->player_turn] = 0;
         this->player_turn = this->player_turn + 1;
-        if (this->player_turn >= this->player_num) this->player_turn = 0;
+        if (this->player_turn >= this->player_num)
+            this->player_turn = 0;
         this->check_game_state();
     }
 
@@ -1331,15 +1295,15 @@ unsigned char RGE_Game_World::update()
     this->commands->com_hand->LastWorldRandom(this->random_seed);
 
     if (logStatusOn == 1 && this->game_state != 1) {
-        if (30000 < this->world_time - lastStatusLogTime ||
-            lastStatusLogTime == 0) {
-            FILE* statusFile = logStatusFile;
+        statusLogTime = lastStatusLogTime;
+        if (30000 < this->world_time - statusLogTime || statusLogTime == 0) {
+            FILE *statusFile = logStatusFile;
             if (statusFile == 0) {
-                sprintf(fileName, "AILog\\%s.log",
-                        rge_base_game->player_game_info->get_current_player_name());
+                sprintf(fileName, "AILog\\%s.log", rge_base_game->player_game_info->get_current_player_name());
                 statusFile = fopen(fileName, "a");
                 logStatusFile = statusFile;
-                if (statusFile == 0) return this->game_state;
+                if (statusFile == 0)
+                    return this->game_state;
             }
             seconds = this->world_time / 1000;
             minutes = 0;
@@ -1355,9 +1319,7 @@ unsigned char RGE_Game_World::update()
             if (lastStatusLogTime == 0) {
                 this->logStatus(statusFile, 1);
             } else {
-                fprintf(statusFile,
-                        "\nStatus Log at GameTime %02ld:%02ld:%02ld\n",
-                        hours, minutes, seconds);
+                fprintf(statusFile, "\nStatus Log at GameTime %02ld:%02ld:%02ld\n", hours, minutes, seconds);
             }
             for (i = 1; i < this->player_num; ++i) {
                 if (this->players[i] != 0) {
@@ -1389,18 +1351,13 @@ unsigned char RGE_Game_World::update()
     return this->game_state;
 }
 
-int RGE_Game_World::is_player_turn(int player_id) {
-    return this->player_turn == player_id;
-}
+int RGE_Game_World::is_player_turn(int player_id) { return this->player_turn == player_id; }
 
-unsigned long RGE_Game_World::get_accum_time_delta(int player_id) {
-    return this->player_time_delta[player_id];
-}
+unsigned long RGE_Game_World::get_accum_time_delta(int player_id) { return this->player_time_delta[player_id]; }
 
 unsigned char RGE_Game_World::get_game_state() { return this->game_state; }
 
-unsigned char RGE_Game_World::check_game_state(void)
-{
+unsigned char RGE_Game_World::check_game_state(void) {
     long games_won = 0;
     long games_lost = 0;
     long games_on = 0;
@@ -1415,10 +1372,8 @@ unsigned char RGE_Game_World::check_game_state(void)
             if (candidate <= 0 || candidate_state == 0) {
                 candidate = i;
                 candidate_state = 1;
-            }
-            else if (this->players[i]->allied_victory == 0 ||
-                     this->players[candidate]->relation(i) != 0 ||
-                     this->players[i]->relation(candidate) != 0) {
+            } else if (this->players[i]->allied_victory == 0 || this->players[candidate]->relation(i) != 0 ||
+                       this->players[i]->relation(candidate) != 0) {
                 candidate_state = -1;
             }
             break;
@@ -1436,8 +1391,7 @@ unsigned char RGE_Game_World::check_game_state(void)
         for (long i = 1; i < this->player_num; ++i) {
             this->players[i]->loss_if_game_on();
         }
-    }
-    else if (this->scenario->Get_conquest_victory()) {
+    } else if (this->scenario->Get_conquest_victory()) {
         if ((games_on > 0 && candidate_state > 0) || games_won == 0) {
             this->game_state = 1;
             for (long i = 1; i < this->player_num; ++i) {
@@ -1453,8 +1407,7 @@ unsigned char RGE_Game_World::check_game_state(void)
                 rge_base_game->set_campaign_win();
                 return this->game_state;
             }
-        }
-        else {
+        } else {
             this->campaign = -1;
         }
     }
@@ -1462,8 +1415,7 @@ unsigned char RGE_Game_World::check_game_state(void)
     return this->game_state;
 }
 
-void RGE_Game_World::save(int outfile)
-{
+void RGE_Game_World::save(int outfile) {
     color_log('$', '$', 1);
     save_game_version = 7.23f;
     rge_write(outfile, &this->world_time, 4);
@@ -1483,7 +1435,8 @@ void RGE_Game_World::save(int outfile)
     rge_write(outfile, &this->campaign_player, 4);
     rge_write(outfile, &this->campaign_scenario, 4);
     rge_write(outfile, &this->player_turn, 4);
-    for (int i = 0; i < 9; i++) rge_write(outfile, &this->player_time_delta[i], 4);
+    for (int i = 0; i < 9; i++)
+        rge_write(outfile, &this->player_time_delta[i], 4);
     this->map->save_map(outfile);
     for (int j = 0; j < this->player_num; j++) {
         color_log('$', 'L', 1);
@@ -1504,7 +1457,7 @@ void RGE_Game_World::save(int outfile)
     rge_write(outfile, &this->difficultyLevelValue, 4);
 }
 
-unsigned char RGE_Game_World::save_game(char* name) {
+unsigned char RGE_Game_World::save_game(char *name) {
     char tempname[300];
 
     save_game_version = 7.23f;
@@ -1571,7 +1524,7 @@ void RGE_Game_World::base_save(int outfile) {
     }
 }
 
-void RGE_Game_World::base_save(char* name) {
+void RGE_Game_World::base_save(char *name) {
     int file_handle = rge_open(name, 0x8309, 0x180);
     if (file_handle != -1) {
         this->base_save(file_handle);
@@ -1581,15 +1534,14 @@ void RGE_Game_World::base_save(char* name) {
 
 typedef unsigned char byte;
 
-byte RGE_Game_World::save_scenario(char* filename)
-{
+byte RGE_Game_World::save_scenario(char *filename) {
     char scenario_name[300];
     char kill_name[300];
-    long scenario_player_num = (short)this->player_num;
-    long index;
+    int scenario_player_num = (short)this->player_num;
+    int index;
     float obj_angle;
-    long count;
-    char* p = filename;
+    int count;
+    char *p = filename;
     int n = 0;
 
     do {
@@ -1620,14 +1572,16 @@ byte RGE_Game_World::save_scenario(char* filename)
 
         for (index = 0; index < (short)this->player_num; ++index) {
             count = 0;
-            RGE_Object_Node* o = this->players[index]->objects->list;
+            RGE_Object_Node *o = this->players[index]->objects->list;
             while (o) {
-                if (o->node->master_obj->master_type != 0x19) ++count;
+                if (o->node->master_obj->master_type != 0x19)
+                    ++count;
                 o = o->next;
             }
             o = this->players[index]->sleeping_objects->list;
             while (o) {
-                if (o->node->master_obj->master_type != 0x19) ++count;
+                if (o->node->master_obj->master_type != 0x19)
+                    ++count;
                 o = o->next;
             }
             rge_write(fd, &count, 4);
@@ -1641,9 +1595,8 @@ byte RGE_Game_World::save_scenario(char* filename)
                     rge_write(fd, &o->node->id, 4);
                     rge_write(fd, &o->node->master_obj->id, 2);
                     rge_write(fd, &o->node->object_state, 1);
-                    if (o->node->master_obj->master_type > 0x1e &&
-                        o->node->master_obj->master_type < 0x5a) {
-                        obj_angle = static_cast<RGE_Moving_Object*>(o->node)->angle;
+                    if (o->node->master_obj->master_type > 0x1e && o->node->master_obj->master_type < 0x5a) {
+                        obj_angle = static_cast<RGE_Moving_Object *>(o->node)->angle;
                     } else {
                         obj_angle = (float)o->node->facet;
                     }
@@ -1661,9 +1614,8 @@ byte RGE_Game_World::save_scenario(char* filename)
                     rge_write(fd, &o->node->id, 4);
                     rge_write(fd, &o->node->master_obj->id, 2);
                     rge_write(fd, &o->node->object_state, 1);
-                    if (o->node->master_obj->master_type > 0x1e &&
-                        o->node->master_obj->master_type < 0x5a) {
-                        obj_angle = static_cast<RGE_Moving_Object*>(o->node)->angle;
+                    if (o->node->master_obj->master_type > 0x1e && o->node->master_obj->master_type < 0x5a) {
+                        obj_angle = static_cast<RGE_Moving_Object *>(o->node)->angle;
                     } else {
                         obj_angle = (float)o->node->facet;
                     }
@@ -1687,8 +1639,7 @@ byte RGE_Game_World::save_scenario(char* filename)
     return 0;
 }
 
-unsigned char RGE_Game_World::load_scenario(char* scenario, RGE_Player_Info& info)
-{
+unsigned char RGE_Game_World::load_scenario(char *scenario, RGE_Player_Info &info) {
     union ScenarioVersionWord {
         char bytes[4];
         unsigned long word;
@@ -1705,8 +1656,8 @@ unsigned char RGE_Game_World::load_scenario(char* scenario, RGE_Player_Info& inf
     static const ScenarioVersionWord version_word_110 = {{'1', '.', '1', '0'}};
     static const ScenarioVersionWord version_word_111 = {{'1', '.', '1', '1'}};
     char scenario_name[300];
-    long header_size;
-    long version;
+    unsigned long header_size;
+    int version;
     int file;
     world_update_counter = 0;
     sprintf(scenario_name, "%s%s", rge_base_game->prog_info->scenario_dir, scenario);
@@ -1726,7 +1677,7 @@ unsigned char RGE_Game_World::load_scenario(char* scenario, RGE_Player_Info& inf
                 if (version <= 0) {
                     goto version2;
                 }
-                void* buf = malloc(version);
+                void *buf = malloc(version);
                 if (buf == 0) {
                     goto close_failed;
                 }
@@ -1766,10 +1717,10 @@ unsigned char RGE_Game_World::load_scenario(char* scenario, RGE_Player_Info& inf
             } else {
                 goto close_failed;
             }
-success:
+        success:
             this->setup_player_colors(info);
             return 1;
-close_failed:
+        close_failed:
             rge_close(file);
         }
     }
@@ -1780,7 +1731,7 @@ version2:
     goto success;
 }
 
-unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
+unsigned char RGE_Game_World::load_scenario(RGE_Player_Info &info) {
     union ScenarioVersionWord {
         char bytes[4];
         unsigned long word;
@@ -1796,8 +1747,8 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
     static const ScenarioVersionWord version_word_109 = {{'1', '.', '0', '9'}};
     static const ScenarioVersionWord version_word_110 = {{'1', '.', '1', '0'}};
     static const ScenarioVersionWord version_word_111 = {{'1', '.', '1', '1'}};
-    long header_size;
-    long version;
+    unsigned long header_size;
+    int version;
     int file;
 
     world_update_counter = 0;
@@ -1820,7 +1771,7 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
     if (header_size == version_word_103.word) {
         rge_read_uncompressed(file, &version, 4);
         if (version > 0) {
-            void* buffer = malloc(version);
+            void *buffer = malloc(version);
             if (buffer == 0) {
                 goto fail;
             }
@@ -1869,9 +1820,7 @@ shared_80:
 
 success:
     this->setup_player_colors(info);
-    rge_base_game->get_campaign_info(this->campaign,
-                                     this->campaign_player,
-                                     this->campaign_scenario);
+    rge_base_game->get_campaign_info(this->campaign, this->campaign_player, this->campaign_scenario);
     return 1;
 
 fail:
@@ -1880,33 +1829,23 @@ cleanup:
     return 0;
 }
 
-void RGE_Game_World::scenario_make_player(short index, unsigned char player_type,
-    unsigned char info_type, unsigned char master_player_id, char* name) {
+void RGE_Game_World::scenario_make_player(short index, unsigned char player_type, unsigned char info_type,
+                                          unsigned char master_player_id, char *name) {
     if (info_type != 0)
         return;
 
-    this->players[index] = new RGE_Player(
-        this,
-        this->master_players[master_player_id],
-        (unsigned char)index,
-        name,
-        master_player_id,
-        1
-    );
+    this->players[index] =
+        new RGE_Player(this, this->master_players[master_player_id], (unsigned char)index, name, master_player_id, 1);
 }
 
-void RGE_Game_World::scenario_make_map(int infile)
-{
-    this->map->scenario_load(infile, (unsigned char*)0);
-}
+void RGE_Game_World::scenario_make_map(int infile) { this->map->scenario_load(infile, (unsigned char *)0); }
 
-void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info &info) {
     long player_id_hash[9];
-    long id;
-    long scenario_player_num;
-    long count;
-    long obj_id;
+    int id;
+    int scenario_player_num;
+    int count;
+    int obj_id;
     float obj_angle;
     unsigned char obj_state;
     short master_id;
@@ -1916,7 +1855,7 @@ void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info& info)
     char rem[13];
     unsigned char player_type;
     unsigned char master_player_id;
-    long index;
+    int index;
     int j;
     int player_num;
 
@@ -1973,12 +1912,11 @@ void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info& info)
                     rge_read(infile, &master_id, 2);
                     rge_read(infile, &obj_state, 1);
                     rge_read(infile, &obj_angle, 4);
-                    if (index < this->player_num && player_id_hash[index] >= 0 &&
-                        this->players[index] != 0) {
+                    if (index < this->player_num && player_id_hash[index] >= 0 && this->players[index] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id_hash[index]]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                        this->players[player_id_hash[index]]->make_scenario_obj(world_x, world_y, world_z, master_id,
+                                                                                obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -1993,10 +1931,9 @@ void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info& info)
 
     index = 1;
     if (index < scenario_player_num) {
-        long* player_map = player_id_hash + 1;
+        long *player_map = player_id_hash + 1;
         do {
-            if (index < this->player_num && *player_map > -1 &&
-                this->players[*player_map] != 0) {
+            if (index < this->player_num && *player_map > -1 && this->players[*player_map] != 0) {
                 this->players[*player_map]->scenario_load(infile, player_id_hash, 1.0f);
             } else {
                 this->players[0]->scenario_load(infile, player_id_hash, 1.0f);
@@ -2014,10 +1951,8 @@ void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info& info)
             if (index < scenario_player_num) {
                 if (this->players[index] != 0) {
                     this->players[player_id_hash[index]]->loadAIInformation(
-                        this->scenario->Get_BuildList(index - 1, 1),
-                        this->scenario->Get_CityPlan(index - 1, 1),
-                        this->scenario->Get_player_AI(index - 1, 1),
-                        this->scenario->GetPlayerPosture(index - 1), -1);
+                        this->scenario->Get_BuildList(index - 1, 1), this->scenario->Get_CityPlan(index - 1, 1),
+                        this->scenario->Get_player_AI(index - 1, 1), this->scenario->GetPlayerPosture(index - 1), -1);
                 }
             } else {
                 return;
@@ -2027,10 +1962,9 @@ void RGE_Game_World::load_scenario1(int infile, RGE_Player_Info& info)
     }
 }
 
-void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info &info) {
     long player_id_hash[9];
-    long id;
+    int id;
     char rem[13];
     int obj_id;
     float world_x;
@@ -2051,25 +1985,41 @@ void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info)
 
     int player_num = this->player_num;
     if (player_num > 0) {
-        do { for (int k = 0; k < 9; k++) player_id_hash[k] = -1; } while (player_num > 10);
+        do {
+            for (int k = 0; k < 9; k++)
+                player_id_hash[k] = -1;
+        } while (player_num > 10);
     }
-    long index = 0;
+    int index = 0;
     if (player_num > 0) {
-        long* p = &info.player_id_hash[0];
-        do { int idx = *p++; player_id_hash[idx] = index; index++; } while (index < player_num);
+        long *p = &info.player_id_hash[0];
+        do {
+            int idx = *p++;
+            player_id_hash[idx] = index;
+            index++;
+        } while (index < player_num);
     }
     int j = 0;
     if (player_num > 0) {
-        do { this->players[j]->remake_visible_map(); j++; } while (j < this->player_num);
+        do {
+            this->players[j]->remake_visible_map();
+            j++;
+        } while (j < this->player_num);
     }
 
     rge_read(infile, &scenario_player_num, 4);
     j = 0;
-    if (scenario_player_num > 0) { do { rge_read(infile, &player_type, 1); rge_read(infile, &master_player_id, 1); j++; } while (j < scenario_player_num); }
+    if (scenario_player_num > 0) {
+        do {
+            rge_read(infile, &player_type, 1);
+            rge_read(infile, &master_player_id, 1);
+            j++;
+        } while (j < scenario_player_num);
+    }
 
     int outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &count, 4);
             j = 0;
@@ -2086,13 +2036,15 @@ void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info)
                     if (mapped >= 0 && this->players[mapped] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[mapped]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
+                        this->players[mapped]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state,
+                                                                 obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     j++;
                 } while (j < count);
             }
-            outer++; map++;
+            outer++;
+            map++;
         } while (outer < scenario_player_num);
     }
 
@@ -2100,14 +2052,15 @@ void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info)
     rge_read(infile, rem, 13);
     j = 1;
     if (scenario_player_num > 1) {
-        long* map = &player_id_hash[1];
+        long *map = &player_id_hash[1];
         do {
             if (j < this->player_num && *map > -1 && this->players[*map] != 0) {
                 this->players[*map]->scenario_load(infile, player_id_hash, 1.03f);
             } else {
                 this->players[0]->scenario_load(infile, player_id_hash, 1.03f);
             }
-            j++; map++;
+            j++;
+            map++;
         } while (j < scenario_player_num);
     }
 
@@ -2119,10 +2072,8 @@ void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info)
                 if (this->players[j] != 0 && player_id_hash[j] > -1) {
                     int s = j - 1;
                     this->players[player_id_hash[j]]->loadAIInformation(
-                        this->scenario->Get_BuildList(s, 1),
-                        this->scenario->Get_CityPlan(s, 1),
-                        this->scenario->Get_player_AI(s, 1),
-                        this->scenario->GetPlayerPosture(s), -1);
+                        this->scenario->Get_BuildList(s, 1), this->scenario->Get_CityPlan(s, 1),
+                        this->scenario->Get_player_AI(s, 1), this->scenario->GetPlayerPosture(s), -1);
                 }
             } else {
                 return;
@@ -2132,8 +2083,7 @@ void RGE_Game_World::load_scenario2(int infile, RGE_Player_Info& info)
     }
 }
 
-void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info &info) {
     uchar player_type;
     uchar master_player_id;
     long scenario_player_num;
@@ -2154,7 +2104,7 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
     world_update_counter = 0;
     rge_read_uncompressed(infile, &count, 4);
     if (count > 0) {
-        void* p = malloc(count);
+        void *p = malloc(count);
         if (p == 0) {
             rge_close(infile);
             return;
@@ -2168,12 +2118,13 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
     int n = this->player_num;
     if (n > 0) {
         do {
-            for (int k = 0; k < 9; k++) player_id_hash[k] = -1;
+            for (int k = 0; k < 9; k++)
+                player_id_hash[k] = -1;
         } while (n > 10);
     }
-    long index = 0;
+    int index = 0;
     if (n > 0) {
-        long* ids = info.player_id_hash;
+        long *ids = info.player_id_hash;
         do {
             player_id_hash[*ids++] = index;
             index++;
@@ -2197,7 +2148,7 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
     }
     outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &header_size, 4);
             int j = 0;
@@ -2214,9 +2165,8 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
                     if (pid >= 0 && this->players[pid] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[pid]->make_scenario_obj(
-                            world_z, world_y, world_x, master_id, obj_state,
-                            obj_angle);
+                        this->players[pid]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state,
+                                                              obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     j++;
@@ -2230,7 +2180,7 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
     rge_read(infile, rem, 13);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
             if (index >= this->player_num || *map <= -1 || this->players[*map] == 0) {
                 this->players[0]->scenario_load(infile, player_id_hash, 1.04f);
@@ -2248,7 +2198,9 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
             if (index < scenario_player_num) {
                 if (this->players[index] != 0 && player_id_hash[index] > -1) {
                     int idx = index - 1;
-                    this->players[player_id_hash[index]]->loadAIInformation(this->scenario->Get_BuildList(idx,1), this->scenario->Get_CityPlan(idx,1), this->scenario->Get_player_AI(idx,1), this->scenario->GetPlayerPosture(idx), -1);
+                    this->players[player_id_hash[index]]->loadAIInformation(
+                        this->scenario->Get_BuildList(idx, 1), this->scenario->Get_CityPlan(idx, 1),
+                        this->scenario->Get_player_AI(idx, 1), this->scenario->GetPlayerPosture(idx), -1);
                 }
             } else {
                 return;
@@ -2258,8 +2210,7 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info& info)
     }
 }
 
-void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info &info) {
     long id;
     long count;
     long header_size;
@@ -2276,7 +2227,7 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
     world_update_counter = 0;
     rge_read_uncompressed(infile, &count, 4);
     if (count > 0) {
-        void* p = malloc(count);
+        void *p = malloc(count);
         if (p == 0) {
             rge_close(infile);
             return;
@@ -2292,13 +2243,14 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
     int n = this->player_num;
     if (n > 0) {
         do {
-            for (int k = 0; k < 9; ++k) player_id_hash[k] = -1;
+            for (int k = 0; k < 9; ++k)
+                player_id_hash[k] = -1;
         } while (n > 10);
     }
 
-    long index = 0;
+    int index = 0;
     if (n > 0) {
-        long* ids = info.player_id_hash;
+        long *ids = info.player_id_hash;
         do {
             player_id_hash[*ids++] = index;
             ++index;
@@ -2317,10 +2269,9 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
-            if (index < this->player_num && *map > -1 &&
-                this->players[*map] != 0) {
+            if (index < this->player_num && *map > -1 && this->players[*map] != 0) {
                 this->players[*map]->scenario_load(infile, player_id_hash, 1.04f);
             } else {
                 this->players[0]->scenario_load(infile, player_id_hash, 1.04f);
@@ -2332,7 +2283,7 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
 
     outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &header_size, 4);
             int j = 0;
@@ -2349,8 +2300,8 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
                     if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                        this->players[player_id]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state,
+                                                                    obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2366,22 +2317,19 @@ void RGE_Game_World::load_scenario4(int infile, RGE_Player_Info& info)
 
     index = 1;
     while (index < this->player_num) {
-        if (index >= scenario_player_num) return;
+        if (index >= scenario_player_num)
+            return;
         if (this->players[index] != 0 && player_id_hash[index] > -1) {
             int player_index = index - 1;
             this->players[player_id_hash[index]]->loadAIInformation(
-                this->scenario->Get_BuildList(player_index, 1),
-                this->scenario->Get_CityPlan(player_index, 1),
-                this->scenario->Get_player_AI(player_index, 1),
-                this->scenario->GetPlayerPosture(player_index),
-                -1);
+                this->scenario->Get_BuildList(player_index, 1), this->scenario->Get_CityPlan(player_index, 1),
+                this->scenario->Get_player_AI(player_index, 1), this->scenario->GetPlayerPosture(player_index), -1);
         }
         ++index;
     }
 }
 
-void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info &info) {
     long count;
     long obj_id;
     float obj_angle;
@@ -2393,11 +2341,11 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
     long header_size;
     long player_id_hash[9];
     int outer;
-    long index;
+    int index;
     long id;
     int j;
     long scenario_player_num;
-    void* buffer;
+    void *buffer;
 
     world_update_counter = 0;
     rge_read_uncompressed(infile, &count, 4);
@@ -2418,13 +2366,14 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
     int n = this->player_num;
     if (n > 0) {
         do {
-            for (index = 0; index < 9; ++index) player_id_hash[index] = -1;
+            for (index = 0; index < 9; ++index)
+                player_id_hash[index] = -1;
         } while (n > 10);
     }
 
     index = 0;
     if (n > 0) {
-        long* ids = info.player_id_hash;
+        long *ids = info.player_id_hash;
         do {
             player_id_hash[*ids++] = index++;
         } while (index < n);
@@ -2441,10 +2390,9 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
-            if (index >= this->player_num || *map <= -1 ||
-                this->players[*map] == 0) {
+            if (index >= this->player_num || *map <= -1 || this->players[*map] == 0) {
                 this->players[0]->scenario_load(infile, player_id_hash, 1.06f);
             } else {
                 this->players[*map]->scenario_load(infile, player_id_hash, 1.06f);
@@ -2456,7 +2404,7 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
 
     outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &header_size, 4);
             j = 0;
@@ -2473,8 +2421,8 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
                     if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                        this->players[player_id]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state,
+                                                                    obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2489,10 +2437,9 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
-            if (index >= this->player_num || *map <= -1 ||
-                this->players[*map] == 0) {
+            if (index >= this->player_num || *map <= -1 || this->players[*map] == 0) {
                 this->players[0]->scenario_postload(infile, player_id_hash, 1.06f);
             } else {
                 this->players[*map]->scenario_postload(infile, player_id_hash, 1.06f);
@@ -2505,21 +2452,19 @@ void RGE_Game_World::load_scenario5(int infile, RGE_Player_Info& info)
     rge_close(infile);
     index = 1;
     while (index < this->player_num) {
-        if (index >= scenario_player_num) return;
+        if (index >= scenario_player_num)
+            return;
         if (this->players[index] != 0 && player_id_hash[index] > -1) {
             int player_index = index - 1;
             this->players[player_id_hash[index]]->loadAIInformation(
-                this->scenario->Get_BuildList(player_index, 1),
-                this->scenario->Get_CityPlan(player_index, 1),
-                this->scenario->Get_player_AI(player_index, 1),
-                this->scenario->GetPlayerPosture(player_index), -1);
+                this->scenario->Get_BuildList(player_index, 1), this->scenario->Get_CityPlan(player_index, 1),
+                this->scenario->Get_player_AI(player_index, 1), this->scenario->GetPlayerPosture(player_index), -1);
         }
         ++index;
     }
 }
 
-void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info &info) {
     long count;
     long id;
     long obj_id;
@@ -2532,15 +2477,18 @@ void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info& info)
     long player_id_hash[9];
     long scenario_player_num;
     long header_size;
-    long index;
+    int index;
     int j;
     int outer;
-    void* buf;
+    void *buf;
     world_update_counter = 0;
     rge_read_uncompressed(infile, &count, 4);
     if (count > 0) {
         buf = malloc(count);
-        if (buf == 0) { rge_close(infile); return; }
+        if (buf == 0) {
+            rge_close(infile);
+            return;
+        }
         rge_read_uncompressed(infile, buf, count);
         free(buf);
     }
@@ -2549,31 +2497,42 @@ void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info& info)
     this->scenario_make_map(infile);
     int n = this->player_num;
     if (n > 0) {
-        do { for (index=0;index<9;index++) player_id_hash[index] = -1; } while (n > 10);
+        do {
+            for (index = 0; index < 9; index++)
+                player_id_hash[index] = -1;
+        } while (n > 10);
     }
-    for (index=0; index<n; index++) player_id_hash[info.player_id_hash[index]] = index;
-    for (index=0; index<this->player_num; index++) this->players[index]->remake_visible_map();
+    for (index = 0; index < n; index++)
+        player_id_hash[info.player_id_hash[index]] = index;
+    for (index = 0; index < this->player_num; index++)
+        this->players[index]->remake_visible_map();
     rge_read(infile, &scenario_player_num, 4);
-    for (index=1; index<scenario_player_num; index++) {
-        if (index >= this->player_num || player_id_hash[index] <= -1 ||
-            this->players[player_id_hash[index]]==0)
+    for (index = 1; index < scenario_player_num; index++) {
+        if (index >= this->player_num || player_id_hash[index] <= -1 || this->players[player_id_hash[index]] == 0)
             this->players[0]->scenario_load(infile, player_id_hash, 1.07f);
         else
             this->players[player_id_hash[index]]->scenario_load(infile, player_id_hash, 1.07f);
     }
     outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &header_size, 4);
-            for (j=0; j<header_size; j++) {
-                rge_read(infile, &world_z, 4); rge_read(infile, &world_y, 4); rge_read(infile, &world_x, 4); rge_read(infile, &obj_id, 4); rge_read(infile, &obj_angle, 2); rge_read(infile, &player_type, 1); rge_read(infile, &object_value, 4);
+            for (j = 0; j < header_size; j++) {
+                rge_read(infile, &world_z, 4);
+                rge_read(infile, &world_y, 4);
+                rge_read(infile, &world_x, 4);
+                rge_read(infile, &obj_id, 4);
+                rge_read(infile, &obj_angle, 2);
+                rge_read(infile, &player_type, 1);
+                rge_read(infile, &object_value, 4);
                 long player_id = *map;
                 if (player_id >= 0 && this->players[player_id] != 0) {
-                    this->scenario_object_flag=1;
-                    this->scenario_object_id=obj_id;
-                    this->players[player_id]->make_scenario_obj(world_z, world_y, world_x, obj_angle, player_type, object_value);
-                    this->scenario_object_flag=0;
+                    this->scenario_object_flag = 1;
+                    this->scenario_object_id = obj_id;
+                    this->players[player_id]->make_scenario_obj(world_z, world_y, world_x, obj_angle, player_type,
+                                                                object_value);
+                    this->scenario_object_flag = 0;
                 }
             }
             ++outer;
@@ -2582,27 +2541,23 @@ void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info& info)
     }
     this->next_object_id = id;
     rge_read(infile, &scenario_player_num, 4);
-    for (index=1; index<scenario_player_num; index++) {
-        if (index >= this->player_num || player_id_hash[index] <= -1 ||
-            this->players[player_id_hash[index]]==0)
+    for (index = 1; index < scenario_player_num; index++) {
+        if (index >= this->player_num || player_id_hash[index] <= -1 || this->players[player_id_hash[index]] == 0)
             this->players[0]->scenario_postload(infile, player_id_hash, 1.07f);
         else
             this->players[player_id_hash[index]]->scenario_postload(infile, player_id_hash, 1.07f);
     }
     rge_close(infile);
-    for (index=1; index<this->player_num && index<scenario_player_num; index++)
+    for (index = 1; index < this->player_num && index < scenario_player_num; index++)
         if (this->players[index] && player_id_hash[index] > -1) {
-            int k=index-1;
+            int k = index - 1;
             this->players[player_id_hash[index]]->loadAIInformation(
-                this->scenario->Get_BuildList(k,1),
-                this->scenario->Get_CityPlan(k,1),
-                this->scenario->Get_player_AI(k,1),
-                this->scenario->GetPlayerPosture(k), -1);
+                this->scenario->Get_BuildList(k, 1), this->scenario->Get_CityPlan(k, 1),
+                this->scenario->Get_player_AI(k, 1), this->scenario->GetPlayerPosture(k), -1);
         }
 }
 
-void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info &info) {
     long count;
     long obj_id;
     float obj_angle;
@@ -2614,11 +2569,11 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
     long header_size;
     long player_id_hash[9];
     int outer;
-    long index;
+    int index;
     long id;
     int j;
     long scenario_player_num;
-    void* buffer;
+    void *buffer;
 
     world_update_counter = 0;
     rge_read_uncompressed(infile, &count, 4);
@@ -2639,13 +2594,14 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
     int n = this->player_num;
     if (n > 0) {
         do {
-            for (index = 0; index < 9; ++index) player_id_hash[index] = -1;
+            for (index = 0; index < 9; ++index)
+                player_id_hash[index] = -1;
         } while (n > 10);
     }
 
     index = 0;
     if (n > 0) {
-        long* ids = info.player_id_hash;
+        long *ids = info.player_id_hash;
         do {
             player_id_hash[*ids++] = index++;
         } while (index < n);
@@ -2662,10 +2618,9 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
-            if (index >= this->player_num || *map <= -1 ||
-                this->players[*map] == 0) {
+            if (index >= this->player_num || *map <= -1 || this->players[*map] == 0) {
                 this->players[0]->scenario_load(infile, player_id_hash, 1.08f);
             } else {
                 this->players[*map]->scenario_load(infile, player_id_hash, 1.08f);
@@ -2677,7 +2632,7 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
 
     outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &header_size, 4);
             j = 0;
@@ -2694,8 +2649,8 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
                     if (player_id >= 0 && this->players[player_id] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[player_id]->make_scenario_obj(
-                            world_x, world_y, world_z, master_id, obj_state, obj_angle);
+                        this->players[player_id]->make_scenario_obj(world_x, world_y, world_z, master_id, obj_state,
+                                                                    obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2710,10 +2665,9 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
-            if (index >= this->player_num || *map <= -1 ||
-                this->players[*map] == 0) {
+            if (index >= this->player_num || *map <= -1 || this->players[*map] == 0) {
                 this->players[0]->scenario_postload(infile, player_id_hash, 1.08f);
             } else {
                 this->players[*map]->scenario_postload(infile, player_id_hash, 1.08f);
@@ -2726,21 +2680,19 @@ void RGE_Game_World::load_scenario7(int infile, RGE_Player_Info& info)
     rge_close(infile);
     index = 1;
     while (index < this->player_num) {
-        if (index >= scenario_player_num) return;
+        if (index >= scenario_player_num)
+            return;
         if (this->players[index] != 0 && player_id_hash[index] > -1) {
             int player_index = index - 1;
             this->players[player_id_hash[index]]->loadAIInformation(
-                this->scenario->Get_BuildList(player_index, 1),
-                this->scenario->Get_CityPlan(player_index, 1),
-                this->scenario->Get_player_AI(player_index, 1),
-                this->scenario->GetPlayerPosture(player_index), -1);
+                this->scenario->Get_BuildList(player_index, 1), this->scenario->Get_CityPlan(player_index, 1),
+                this->scenario->Get_player_AI(player_index, 1), this->scenario->GetPlayerPosture(player_index), -1);
         }
         ++index;
     }
 }
 
-void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
-{
+void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info &info) {
     long count;
     long id;
     long header_size;
@@ -2758,8 +2710,11 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
     world_update_counter = 0;
     rge_read_uncompressed(infile, &count, 4);
     if (count > 0) {
-        char* buf = (char*)malloc(count);
-        if (buf == 0) { rge_close(infile); return; }
+        char *buf = (char *)malloc(count);
+        if (buf == 0) {
+            rge_close(infile);
+            return;
+        }
         rge_read_uncompressed(infile, buf, count);
         free(buf);
     }
@@ -2767,15 +2722,31 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
     this->scenario_init(infile, this);
     this->scenario_make_map(infile);
     int n = this->player_num;
-    if (n > 0) { do { for (int k = 0; k < 9; ++k) player_id_hash[k] = -1; } while (n > 10); }
-    long index = 0;
-    if (n > 0) { long* ids = info.player_id_hash; do { player_id_hash[*ids++] = index; ++index; } while (index < n); }
+    if (n > 0) {
+        do {
+            for (int k = 0; k < 9; ++k)
+                player_id_hash[k] = -1;
+        } while (n > 10);
+    }
+    int index = 0;
+    if (n > 0) {
+        long *ids = info.player_id_hash;
+        do {
+            player_id_hash[*ids++] = index;
+            ++index;
+        } while (index < n);
+    }
     index = 0;
-    if (n > 0) { do { this->players[index]->remake_visible_map(); ++index; } while (index < this->player_num); }
+    if (n > 0) {
+        do {
+            this->players[index]->remake_visible_map();
+            ++index;
+        } while (index < this->player_num);
+    }
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
             if (index < this->player_num && *map > -1 && this->players[*map] != 0) {
                 this->players[*map]->scenario_load(infile, player_id_hash, 1.11f);
@@ -2788,7 +2759,7 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
     }
     outer = 0;
     if (scenario_player_num > 0) {
-        long* map = player_id_hash;
+        long *map = player_id_hash;
         do {
             rge_read(infile, &header_size, 4);
             int j = 0;
@@ -2804,8 +2775,8 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
                     if (*map >= 0 && this->players[*map] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[*map]->make_scenario_obj(
-                            world_z, world_y, world_x, master_id, obj_state, obj_angle);
+                        this->players[*map]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state,
+                                                               obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;
@@ -2819,7 +2790,7 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
     rge_read(infile, &scenario_player_num, 4);
     index = 1;
     if (scenario_player_num > 1) {
-        long* map = player_id_hash + 1;
+        long *map = player_id_hash + 1;
         do {
             if (index < this->player_num && *map > -1 && this->players[*map] != 0) {
                 this->players[*map]->scenario_postload(infile, player_id_hash, 1.11f);
@@ -2838,10 +2809,8 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info& info)
                 if (this->players[index] != 0 && player_id_hash[index] > -1) {
                     int s = index - 1;
                     this->players[player_id_hash[index]]->loadAIInformation(
-                        this->scenario->Get_BuildList(s, 1),
-                        this->scenario->Get_CityPlan(s, 1),
-                        this->scenario->Get_player_AI(s, 1),
-                        this->scenario->GetPlayerPosture(s), -1);
+                        this->scenario->Get_BuildList(s, 1), this->scenario->Get_CityPlan(s, 1),
+                        this->scenario->Get_player_AI(s, 1), this->scenario->GetPlayerPosture(s), -1);
                 }
             } else {
                 return;
@@ -2857,7 +2826,7 @@ void RGE_Game_World::selectNextComputerPlayer(int cPType) {
         int i = 0;
         int n = this->player_num;
         if (i < n) {
-            RGE_Player** ptr = this->players;
+            RGE_Player **ptr = this->players;
             for (; i < n; ++i, ++ptr) {
                 if ((*ptr)->type == cPType) {
                     this->currentUpdateComputerPlayer = i;
@@ -2876,7 +2845,7 @@ void RGE_Game_World::selectNextComputerPlayer(int cPType) {
     while (start < n) {
         if (counter >= n)
             return;
-        RGE_Player* p = this->players[start];
+        RGE_Player *p = this->players[start];
         if (p->type == cPType && start != this->currentUpdateComputerPlayer) {
             this->currentUpdateComputerPlayer = start;
             return;
@@ -2894,21 +2863,18 @@ void RGE_Game_World::useComputerPlayerUpdateTime(unsigned long usedTime) {
     }
 }
 
-int RGE_Game_World::computerPlayerUpdateTimeAvailable() {
-    return 0 < this->availableComputerPlayerUpdateTime;
-}
+int RGE_Game_World::computerPlayerUpdateTimeAvailable() { return 0 < this->availableComputerPlayerUpdateTime; }
 
-int RGE_Game_World::objectGroupOnTile(int ownerID, int groupID, int x, int y, int& objectCount)
-{
+int RGE_Game_World::objectGroupOnTile(int ownerID, int groupID, int x, int y, int &objectCount) {
     if (x >= 0) {
         if (y >= 0) {
-            RGE_Map* map = this->map;
+            RGE_Map *map = this->map;
             if (x < map->map_width) {
                 if (y < map->map_height) {
                     objectCount = map->map_row_offset[y][x].objects.number_of_objects;
-                    RGE_Object_Node* node = this->map->map_row_offset[y][x].objects.list;
+                    RGE_Object_Node *node = this->map->map_row_offset[y][x].objects.list;
                     if (node != 0) {
-                        RGE_Static_Object* object;
+                        RGE_Static_Object *object;
                         while (node != 0) {
                             object = node->node;
                             if (object == 0) {
@@ -2937,21 +2903,17 @@ int RGE_Game_World::difficultyLevel(void) {
     return this->difficultyLevelValue;
 }
 
-RGE_Scenario* RGE_Game_World::get_scenario_info(char* filename) { return 0; }
+RGE_Scenario *RGE_Game_World::get_scenario_info(char *filename) { return 0; }
 
 int RGE_Game_World::maxNumberObjects() { return this->maxNumberObjectsValue; }
 
-int RGE_Game_World::maxNumberNegativeObjects() {
-    return this->maxNumberNegativeObjectsValue;
-}
+int RGE_Game_World::maxNumberNegativeObjects() { return this->maxNumberNegativeObjectsValue; }
 
 int RGE_Game_World::numberObjects() { return this->numberObjectsValue; }
 
-int RGE_Game_World::numberNegativeObjects() {
-    return this->numberNegativeObjectsValue;
-}
+int RGE_Game_World::numberNegativeObjects() { return this->numberNegativeObjectsValue; }
 
-RGE_Static_Object* RGE_Game_World::object(int oID) {
+RGE_Static_Object *RGE_Game_World::object(int oID) {
     int neg_index;
     if (oID < 0) {
         neg_index = -oID;
@@ -2965,15 +2927,13 @@ RGE_Static_Object* RGE_Game_World::object(int oID) {
     return 0;
 }
 
-RGE_Static_Object* RGE_Game_World::object_ptr(int oID) {
-    return object(oID);
-}
+RGE_Static_Object *RGE_Game_World::object_ptr(int oID) { return object(oID); }
 
 long RGE_Game_World::get_next_object_id() {
     if (!this->scenario_object_flag) {
-        for (; this->maxNumberObjectsValue - 1 >= this->next_object_id &&
-               this->objectsValue[this->next_object_id] != 0;
-             this->next_object_id++) {}
+        for (; this->maxNumberObjectsValue - 1 >= this->next_object_id && this->objectsValue[this->next_object_id] != 0;
+             this->next_object_id++) {
+        }
 
         int result = this->next_object_id;
         this->next_object_id = result + 1;
@@ -2993,10 +2953,9 @@ long RGE_Game_World::get_next_reusable_object_id() {
     return this->next_reusable_object_id--;
 }
 
-int RGE_Game_World::addObject(RGE_Static_Object* newObject)
-{
+int RGE_Game_World::addObject(RGE_Static_Object *newObject) {
     int newMax;
-    RGE_Static_Object** newList;
+    RGE_Static_Object **newList;
     int i;
     int id = newObject->id;
     if (id >= 0) {
@@ -3005,8 +2964,9 @@ int RGE_Game_World::addObject(RGE_Static_Object* newObject)
             if (newMax < id) {
                 newMax = (float)id * 1.1f;
             }
-            newList = new RGE_Static_Object*[newMax];
-            if (newList == 0) return 0;
+            newList = new RGE_Static_Object *[newMax];
+            if (newList == 0)
+                return 0;
             i = 0;
             if (this->maxNumberObjectsValue > 0) {
                 do {
@@ -3024,7 +2984,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* newObject)
             VIS_UNIT_objectsValue = newList;
             this->maxNumberObjectsValue = newMax;
         }
-        RGE_Static_Object* old = this->objectsValue[newObject->id];
+        RGE_Static_Object *old = this->objectsValue[newObject->id];
         this->objectsValue[newObject->id] = newObject;
         this->numberObjectsValue++;
         if (old != 0 && this->scenario_object_flag != 0) {
@@ -3039,8 +2999,9 @@ int RGE_Game_World::addObject(RGE_Static_Object* newObject)
             if (newMax < lookupSlot) {
                 newMax = (float)lookupSlot * 1.1f;
             }
-            newList = new RGE_Static_Object*[newMax];
-            if (newList == 0) return 0;
+            newList = new RGE_Static_Object *[newMax];
+            if (newList == 0)
+                return 0;
             i = 0;
             if (this->maxNumberNegativeObjectsValue > 0) {
                 do {
@@ -3064,26 +3025,26 @@ int RGE_Game_World::addObject(RGE_Static_Object* newObject)
 }
 
 int RGE_Game_World::removeObject(int oID) {
-    int object_id = oID;
+    int edx = oID;
 
-    if (object_id < 0) {
-        int max_negative_objects = this->maxNumberNegativeObjectsValue;
-        int negative_index = object_id;
-        negative_index = -negative_index;
-        if (negative_index < max_negative_objects) {
-            this->negativeObjectsValue[negative_index] = 0;
+    if (edx < 0) {
+        int esi = this->maxNumberNegativeObjectsValue;
+        int eax = edx;
+        eax = -eax;
+        if (eax < esi) {
+            this->negativeObjectsValue[eax] = 0;
             return 1;
         }
     }
-    if ((object_id > -1) && (object_id < this->maxNumberObjectsValue)) {
-        this->objectsValue[object_id] = 0;
+    if ((edx > -1) && (edx < this->maxNumberObjectsValue)) {
+        this->objectsValue[edx] = 0;
         return 1;
     }
     return 0;
 }
 
 int RGE_Game_World::initializePathingSystem(void) {
-    RGE_Map* map = this->map;
+    RGE_Map *map = this->map;
     if (map == 0) {
         return 0;
     }
@@ -3094,8 +3055,7 @@ int RGE_Game_World::initializePathingSystem(void) {
     return 1;
 }
 
-unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char object_type,
-                                                         RGE_Static_Object* obj) {
+unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char object_type, RGE_Static_Object *obj) {
     switch (object_type) {
     case 0x0A:
         reusable_static_objects->add_node(obj);
@@ -3123,10 +3083,10 @@ unsigned char RGE_Game_World::recycle_object_out_of_game(unsigned char object_ty
     }
 }
 
-RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char object_type) {
-    RGE_Static_Object* result = 0;
-    RGE_Object_List* lst;
-    RGE_Object_Node* nod;
+RGE_Static_Object *RGE_Game_World::recycle_object_in_to_game(unsigned char object_type) {
+    RGE_Static_Object *result = 0;
+    RGE_Object_List *lst;
+    RGE_Object_Node *nod;
 
     switch (object_type) {
     case 0x0A:
@@ -3202,14 +3162,11 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char objec
     return result;
 }
 
-static const char s_update_visibilities[] =
-    "updating player visibilities @ wt=%d\n";
+static const char s_update_visibilities[] = "updating player visibilities @ wt=%d\n";
 static const char s_player[] = "player %d\n";
-static const char s_masks[] =
-    "  mutualExploredMask = %8.8x   mutualVisibleMask = %8.8x   "
-    "nonMutualVisibleMask = %8.8x\n";
-static const char s_player_flags[] =
-    "  allied_LOS_Enable = %d   allied_victory = %d \n";
+static const char s_masks[] = "  mutualExploredMask = %8.8x   mutualVisibleMask = %8.8x   "
+                              "nonMutualVisibleMask = %8.8x\n";
+static const char s_player_flags[] = "  allied_LOS_Enable = %d   allied_victory = %d \n";
 static const char s_diplomacy[] = "  unitDiplomacy = [";
 static const char s_mutual_allies[] = "  mututalAlly = [";
 static const char s_removed_visible_bits[] = "  RemoveVisibleBits = [";
@@ -3219,54 +3176,58 @@ static const char s_list_end[] = "]\n";
 
 void RGE_Game_World::update_mutual_allies() {
     int one = 1;
-    int i,j;
+    int i, j;
     int pNum, index;
     fprintf(DVlogf, s_update_visibilities, world_time);
-    i=0;
-    if (i < player_num) do {
-        this->players[i]->mutualExploredMask=0;
-        this->players[i]->mutualVisibleMask=0;
-        this->players[i]->nonMutualVisibleMask=0;
-        for (j=0; j<9; ++j) this->players[i]->RemoveVisibleBits[j]=0;
-        int* mutual = this->players[i]->mutualAlly;
-        j=0;
+    i = 0;
+    if (i < player_num)
         do {
-            if (j==i) {
-                *mutual=1;
-                this->players[i]->mutualVisibleMask = 1 << i;
-                this->players[i]->mutualExploredMask = 1 << (i+16);
-            } else *mutual=0;
-            ++j;
-            ++mutual;
-        } while (j < 9);
-        ++i;
-    } while (i < player_num);
+            this->players[i]->mutualExploredMask = 0;
+            this->players[i]->mutualVisibleMask = 0;
+            this->players[i]->nonMutualVisibleMask = 0;
+            for (j = 0; j < 9; ++j)
+                this->players[i]->RemoveVisibleBits[j] = 0;
+            int *mutual = this->players[i]->mutualAlly;
+            j = 0;
+            do {
+                if (j == i) {
+                    *mutual = 1;
+                    this->players[i]->mutualVisibleMask = 1 << i;
+                    this->players[i]->mutualExploredMask = 1 << (i + 16);
+                } else
+                    *mutual = 0;
+                ++j;
+                ++mutual;
+            } while (j < 9);
+            ++i;
+        } while (i < player_num);
 
     {
         i = 1;
-        if (i < player_num) do {
-            if (players[i]->allied_LOS_Enable == one) {
-                j = 1;
-                if (j < player_num) do {
-                    if (j != i) {
-                        if (!players[i]->relations[j] && !players[j]->relations[i]) {
-                            players[i]->mutualAlly[j] = one;
-                            players[i]->mutualVisibleMask |= 1 << j;
-                            players[i]->mutualExploredMask |= 1 << (j + 16);
-                        }
-                    }
-                } while (++j < player_num);
-            }
-            ++i;
-        } while (i < player_num);
+        if (i < player_num)
+            do {
+                if (players[i]->allied_LOS_Enable == one) {
+                    j = 1;
+                    if (j < player_num)
+                        do {
+                            if (j != i) {
+                                if (!players[i]->relations[j] && !players[j]->relations[i]) {
+                                    players[i]->mutualAlly[j] = one;
+                                    players[i]->mutualVisibleMask |= 1 << j;
+                                    players[i]->mutualExploredMask |= 1 << (j + 16);
+                                }
+                            }
+                        } while (++j < player_num);
+                }
+                ++i;
+            } while (i < player_num);
     }
 
-    for (i=0; i < player_num; ++i) {
-        for (pNum=one; pNum < player_num; ++pNum) {
+    for (i = 0; i < player_num; ++i) {
+        for (pNum = one; pNum < player_num; ++pNum) {
             if (pNum != i && players[i]->mutualAlly[pNum] == 0) {
-                for (index=one; index < player_num; ++index) {
-                    if (players[i]->mutualAlly[index] == 0 &&
-                        players[index]->mutualAlly[pNum] == 1 &&
+                for (index = one; index < player_num; ++index) {
+                    if (players[i]->mutualAlly[index] == 0 && players[index]->mutualAlly[pNum] == 1 &&
                         players[index]->mutualAlly[i] == 1) {
                         players[i]->nonMutualVisibleMask |= 1 << pNum;
                         players[i]->RemoveVisibleBits[pNum] |= 1 << index;
@@ -3276,30 +3237,37 @@ void RGE_Game_World::update_mutual_allies() {
         }
     }
 
-    for (i=0;i<player_num;i++) {
+    for (i = 0; i < player_num; i++) {
         fprintf(DVlogf, s_player, i);
-        fprintf(DVlogf, s_masks, players[i]->mutualExploredMask, players[i]->mutualVisibleMask, players[i]->nonMutualVisibleMask);
+        fprintf(DVlogf, s_masks, players[i]->mutualExploredMask, players[i]->mutualVisibleMask,
+                players[i]->nonMutualVisibleMask);
         fprintf(DVlogf, s_player_flags, players[i]->allied_LOS_Enable, players[i]->allied_victory);
         fprintf(DVlogf, s_diplomacy);
-        for (j=0;j<9;j++) {
+        for (j = 0; j < 9; j++) {
             fprintf(DVlogf, s_decimal, players[i]->unitDiplomacy[j]);
-            if (j < 8) fprintf(DVlogf, s_separator);
-            else fprintf(DVlogf, s_list_end);
+            if (j < 8)
+                fprintf(DVlogf, s_separator);
+            else
+                fprintf(DVlogf, s_list_end);
         }
         fprintf(DVlogf, s_mutual_allies);
-        for (j=0;j<9;j++) {
+        for (j = 0; j < 9; j++) {
             fprintf(DVlogf, s_decimal, players[i]->mutualAlly[j]);
-            if (j < 8) fprintf(DVlogf, s_separator);
-            else fprintf(DVlogf, s_list_end);
+            if (j < 8)
+                fprintf(DVlogf, s_separator);
+            else
+                fprintf(DVlogf, s_list_end);
         }
         fprintf(DVlogf, s_removed_visible_bits);
-        for (j=0;j<9;j++) {
+        for (j = 0; j < 9; j++) {
             fprintf(DVlogf, s_decimal, players[i]->RemoveVisibleBits[j]);
-            if (j < 8) fprintf(DVlogf, s_separator);
-            else fprintf(DVlogf, s_list_end);
+            if (j < 8)
+                fprintf(DVlogf, s_separator);
+            else
+                fprintf(DVlogf, s_list_end);
         }
     }
-    TPanel* panel;
+    TPanel *panel;
     if ((panel = rge_base_game->get_view_panel()) != 0)
         panel->set_redraw(TPanel::RedrawImmediate);
     if ((panel = rge_base_game->get_map_panel()) != 0)
