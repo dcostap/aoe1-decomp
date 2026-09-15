@@ -9,13 +9,15 @@
 class TRIBE_Master_Player : public RGE_Master_Player {
 public:
     virtual ~TRIBE_Master_Player();
-    virtual void load_master_object(int, unsigned char, RGE_Sprite**,
-                                    RGE_Sound**, short);
-    virtual void load_object(FILE*, unsigned char, RGE_Sprite**, RGE_Sound**,
-                             short);
+    virtual void load_master_object(int infile, unsigned char obj_type,
+                                    RGE_Sprite** sprites, RGE_Sound** sounds,
+                                    short index);
+    virtual void load_object(FILE* infile, unsigned char obj_type,
+                             RGE_Sprite** sprites, RGE_Sound** sounds,
+                             short index);
 
-    TRIBE_Master_Player(FILE*);
-    TRIBE_Master_Player(int);
+    TRIBE_Master_Player(FILE* infile);
+    TRIBE_Master_Player(int infile);
 };
 
 typedef char tribe_master_player_size_check[

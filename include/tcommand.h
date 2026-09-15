@@ -159,54 +159,57 @@ typedef char tribe_command_queue_size_check[
 
 class TRIBE_Command : public RGE_Command {
 public:
-    TRIBE_Command(TRIBE_World*, TCommunications_Handler*);
+    TRIBE_Command(TRIBE_World* world, TCommunications_Handler* com_hand);
 
 private:
-    virtual void do_command(void*);
-    virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute*);
-    void do_command_tribe_create(RGE_Command_Create*);
-    void do_command_make(TRIBE_Command_Make*);
-    void do_command_research(TRIBE_Command_Research*);
-    void do_command_build(TRIBE_Command_Build*);
-    void do_command_build_wall(TRIBE_Command_Build_Wall*);
-    void place_line_of_walls(TRIBE_Player*, TRIBE_Master_Building_Object*, int,
-                             int, int, int, int, RGE_Static_Object**);
-    void do_command_explore(TRIBE_Command_Explore*);
-    void do_command_game(TRIBE_Command_Game*);
-    void do_command_cancel_build(TRIBE_Command_Cancel_Build*);
-    void do_command_attack_ground(TRIBE_Command_Attack_Ground*);
-    void do_command_trade_attribute(TRIBE_Command_Trade_Attribute*);
-    void do_command_repair(TRIBE_Command_Repair*);
-    void do_command_unload(TRIBE_Command_Unload*);
-    void do_command_queue(TRIBE_Command_Queue*);
+    virtual void do_command(void* order);
+    virtual void do_command_give_attribute(TRIBE_Command_Give_Attribute* order);
+    void do_command_tribe_create(RGE_Command_Create* order);
+    void do_command_make(TRIBE_Command_Make* order);
+    void do_command_research(TRIBE_Command_Research* order);
+    void do_command_build(TRIBE_Command_Build* order);
+    void do_command_build_wall(TRIBE_Command_Build_Wall* order);
+    void place_line_of_walls(TRIBE_Player* player,
+                             TRIBE_Master_Building_Object* master_obj,
+                             int unique_id, int x1, int y1, int x2, int y2,
+                             RGE_Static_Object** first_wall);
+    void do_command_explore(TRIBE_Command_Explore* order);
+    void do_command_game(TRIBE_Command_Game* order);
+    void do_command_cancel_build(TRIBE_Command_Cancel_Build* order);
+    void do_command_attack_ground(TRIBE_Command_Attack_Ground* order);
+    void do_command_trade_attribute(TRIBE_Command_Trade_Attribute* order);
+    void do_command_repair(TRIBE_Command_Repair* order);
+    void do_command_unload(TRIBE_Command_Unload* order);
+    void do_command_queue(TRIBE_Command_Queue* order);
 
 public:
-    virtual void command_give_attribute(int, int, int, float, float);
-    void command_make(RGE_Static_Object*, short);
-    void command_make(int, int, int, int);
-    void command_research(RGE_Static_Object*, short);
-    void command_research(int, int, int, int);
-    void command_build(RGE_Static_Object**, short, short, float, float);
-    void command_build(int, int*, int, int, float, float, int);
-    void command_build_wall(RGE_Static_Object**, short, short, long, long,
-                            long, long);
-    void command_explore(int, int*, int, float, float);
-    void command_allied_victory(short, unsigned char);
-    void command_relation(short, short, short);
-    void command_game_speed(float);
+    virtual void command_give_attribute(int player_id, int to_player_id,
+                                        int attr_id, float attr_amount,
+                                        float attr_cost);
+    void command_make(RGE_Static_Object* unit, short obj_id);
+    void command_make(int playerID, int buildingID, int objID, int uniqueID);
+    void command_research(RGE_Static_Object* unit, short tech_id);
+    void command_research(int playerID, int buildingID, int techID, int uniqueID);
+    void command_build(RGE_Static_Object** unit, short list_num, short obj_id, float location_x, float location_y);
+    void command_build(int playerID, int* unitID, int numUnits, int objectID, float xLoc, float yLoc, int uniqueID);
+    void command_build_wall(RGE_Static_Object** unit, short list_num, short obj_id, long x1, long y1, long x2, long y2);
+    void command_explore(int playerID, int* unitID, int numUnits, float x, float y);
+    void command_allied_victory(short player, unsigned char flag);
+    void command_relation(short player, short target_player, short relation);
+    void command_game_speed(float gamespeed);
     void command_save_game();
-    void command_inventory(short, short, float);
-    void command_upgrade_town(short);
-    void command_quick_build(short);
-    void command_shared_los(short);
-    void command_cancel_build(RGE_Static_Object*);
-    void command_attack_ground(RGE_Static_Object**, short, float, float);
-    void command_cheat(short, short);
-    void command_trade_attribute(RGE_Static_Object**, short, long);
-    void command_trade_attribute(int, int, long);
-    void command_repair(RGE_Static_Object**, short, RGE_Static_Object*);
-    void command_unload(RGE_Static_Object**, short, float, float);
-    void command_queue(RGE_Static_Object*, short, short);
+    void command_inventory(short player, short inventory, float amount);
+    void command_upgrade_town(short player);
+    void command_quick_build(short quick_build);
+    void command_shared_los(short player);
+    void command_cancel_build(RGE_Static_Object* unit);
+    void command_attack_ground(RGE_Static_Object** unit, short list_num, float x, float y);
+    void command_cheat(short player, short cheat_code);
+    void command_trade_attribute(RGE_Static_Object** unit, short list_num, long attribute);
+    void command_trade_attribute(int unitID, int playerID, long attribute);
+    void command_repair(RGE_Static_Object** unit, short unit_count, RGE_Static_Object* target);
+    void command_unload(RGE_Static_Object** unit, short list_num, float x, float y);
+    void command_queue(RGE_Static_Object* bldg_obj, short train_id, short train_count);
 };
 
 typedef char tribe_command_size_check[

@@ -20,72 +20,71 @@ struct VISIBLE_UNIT_REC;
 // The combat object owns the combat additions to RGE_Action_Object.
 class RGE_Combat_Object : public RGE_Action_Object {
 public:
-    RGE_Combat_Object(RGE_Master_Combat_Object*, RGE_Player*, float, float,
-                      float, int);
-    RGE_Combat_Object(int, RGE_Game_World*, int);
+    RGE_Combat_Object(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
+    RGE_Combat_Object(int infile, RGE_Game_World* gworld, int do_setup);
     virtual ~RGE_Combat_Object();
 
-    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
-                                    float, float, float);
-    virtual void save(int);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
+    virtual void save(int outfile);
     virtual void stop();
-    virtual uchar area_attack(float, float, float, RGE_Combat_Object*,
-                              RGE_Static_Object*);
+    virtual uchar area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignore_object);
     // VC5 reverses this adjacent overload pair in the emitted vtable.
-    virtual uchar attack(RGE_Static_Object*, RGE_Combat_Object*);
-    virtual uchar attack(float, float, float, RGE_Combat_Object*);
-    virtual uchar do_attack(RGE_Static_Object*, RGE_Combat_Object*, float,
-                            float, float);
-    virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
-                        RGE_Static_Object*);
+    virtual uchar attack(RGE_Static_Object* target, RGE_Combat_Object* attacker);
+    virtual uchar attack(float target_x, float target_y, float target_z, RGE_Combat_Object* attacker);
+    virtual uchar do_attack(RGE_Static_Object* target, RGE_Combat_Object* attacker, float x, float y, float z);
+    virtual void damage(int weapon_num, RGE_Armor_Weapon_Info* damage,
+                        float attack_modifier, RGE_Player* attacking_player,
+                        RGE_Static_Object* attackingObject);
     virtual uchar can_attack();
-    virtual void get_armor(short&, short&);
-    virtual void get_weapon(short&, short&);
-    virtual void get_weapon_range(float&, float&);
-    virtual void get_speed_of_attack(float&, float&);
-    virtual void release_being_worked_on(RGE_Static_Object*);
-    virtual void enter_obj(RGE_Static_Object*);
+    virtual void get_armor(short& cur_armor_in, short& orig_armor_in);
+    virtual void get_weapon(short& cur_weapon_in, short& orig_weapon_in);
+    virtual void get_weapon_range(float& cur_weapon_range_in, float& orig_weapon_range_in);
+    virtual void get_speed_of_attack(float& cur_speed_of_attack_in, float& orig_speed_of_attack_in);
+    virtual void release_being_worked_on(RGE_Static_Object* caller);
+    virtual void enter_obj(RGE_Static_Object* target);
     virtual uchar update();
-    virtual void copy_obj(RGE_Master_Static_Object*);
-    virtual void notify(int, int, int, long, long, long);
-    virtual int attack(int, int);
-    virtual int attack(float, float, float, int);
-    virtual int moveTo(int, float, int);
-    virtual int moveTo(float, float, float, float, int);
-    virtual int moveTo(int, int);
-    virtual int moveAwayFrom(int, int);
-    virtual int gather(int, int);
-    virtual int explore(int, int, int);
-    virtual int enter(int, int);
-    virtual int transport(float, float, float, int);
-    virtual int unload(int, float, float, float);
+    virtual void copy_obj(RGE_Master_Static_Object* source2);
+    virtual void notify(int caller, int recipient, int mType, long p1, long p2, long p3);
+    virtual int attack(int targetID, int unconditional);
+    virtual int attack(float x, float y, float z, int unconditional);
+    virtual int moveTo(int targetID, float minRange, int unconditional);
+    virtual int moveTo(float x, float y, float z, float minRange, int unconditional);
+    virtual int moveTo(int targetID, int unconditional);
+    virtual int moveAwayFrom(int targetID, int unconditional);
+    virtual int gather(int targetID, int unconditional);
+    virtual int explore(int tX, int tY, int unconditional);
+    virtual int enter(int targetID, int unconditional);
+    virtual int transport(float tX, float tY, float tZ, int unconditional);
+    virtual int unload(int unconditional, float x, float y, float z);
     virtual int stopAction();
     virtual int pause();
     virtual float damageCapability();
-    virtual float damageCapability(RGE_Static_Object*);
+    virtual float damageCapability(RGE_Static_Object* attackingUnit);
     virtual float rateOfFire();
-    virtual int inAttackRange(RGE_Static_Object*);
+    virtual int inAttackRange(RGE_Static_Object* target);
     virtual int currentTargetID() const;
     virtual float currentTargetX() const;
     virtual float currentTargetY() const;
     virtual float currentTargetZ() const;
     virtual float weaponRange();
     virtual float minimumWeaponRange();
-    virtual float teleport(float, float, float);
-    virtual float calc_attack_modifier(RGE_Static_Object*);
+    virtual float teleport(float x, float y, float z);
+    virtual float calc_attack_modifier(RGE_Static_Object* target);
 
     void reset_attack_timer();
     void get_weapon_range(short&, short&);
     void calc_attack_modifier();
     void set_something(int);
     void play_move_sound(RGE_Sound*);
-    virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
-                                  RGE_Player*, RGE_Static_Object*);
+    virtual float calculateDamage(int weapon_num,
+                                  RGE_Armor_Weapon_Info* damage,
+                                  float attack_modifier,
+                                  RGE_Player* attacking_player,
+                                  RGE_Static_Object* attackingObject);
 
 protected:
-    virtual int setup(int, RGE_Game_World*);
-    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float,
-                      float);
+    virtual int setup(int infile, RGE_Game_World* gworld);
+    virtual int setup(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
     float base_teleport(float, float, float);
     uchar attack(RGE_Static_Object*, float, RGE_Combat_Object*, float, float);
 
