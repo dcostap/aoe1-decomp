@@ -17,7 +17,7 @@ public:
     int currentSizeValue;
     int currentWaypointValue;
 
-    Path(int max_size);
+    Path(int v);
 
     int growMaxSize(int new_maximum) {
         if (new_maximum == 0) {
@@ -48,25 +48,25 @@ public:
         }
     }
 
-    Path& operator=(const Path& other);
-    int insertAtEnd(Waypoint wp);
+    Path& operator=(const Path& p);
+    int insertAtEnd(Waypoint w);
     ~Path();
-    Path operator+(const Path& other) const;
-    int operator==(const Path& other) const;
-    int insertAtCurrent(const Waypoint& wp);
-    int contains(const Waypoint& wp) const;
+    Path operator+(const Path& p) const;
+    int operator==(const Path& p) const;
+    int insertAtCurrent(const Waypoint& w);
+    int contains(const Waypoint& w) const;
     void killPath();
     const int maxNumberOfWaypoints() const;
     const int numberOfWaypoints() const;
     unsigned long timeStamp() const;
-    void setTimeStamp(unsigned long value);
+    void setTimeStamp(unsigned long v);
     float length() const;
     const Waypoint& start() const;
     const Waypoint& goal() const;
-    const Waypoint* waypoint(int index) const;
+    const Waypoint* waypoint(int w) const;
     Waypoint* currentWaypoint() const;
     const int currentWaypointNumber() const;
-    void setCurrentWaypointNumber(int value);
+    void setCurrentWaypointNumber(int v);
     const Waypoint* nextWaypoint() const;
     const Waypoint* previousWaypoint() const;
     const Waypoint* firstWaypoint() const;
@@ -80,6 +80,6 @@ public:
 
 typedef char path_size_check[(sizeof(Path) == 0x34) ? 1 : -1];
 
-ostream& __cdecl operator<<(ostream& os, const Path& path);
+ostream& __cdecl operator<<(ostream& out, const Path& p);
 
 #endif

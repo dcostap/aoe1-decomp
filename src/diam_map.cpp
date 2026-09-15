@@ -53,17 +53,17 @@ RGE_Diamond_Map::~RGE_Diamond_Map() {
   }
 }
 
-long RGE_Diamond_Map::setup(TDrawArea *param_1, TPanel *param_2, long param_3,
-                            long param_4, long param_5, long param_6,
-                            unsigned char param_7, int param_8,
-                            TDrawArea *param_9) {
-  this->save_area = param_9;
+long RGE_Diamond_Map::setup(TDrawArea *render_area_in, TPanel *parent_panel_in,
+                            long x_in, long y_in, long wid_in, long hgt_in,
+                            unsigned char color_in, int all_visible_in,
+                            TDrawArea *save_area_in) {
+  this->save_area = save_area_in;
   this->own_save_area = 0;
-  TPanel::setup(param_1, param_2, param_3, param_4, param_5, param_6, param_7);
+  TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, color_in);
   return 1;
 }
 
-int RGE_Diamond_Map::set_bitmap(char *name, long param_2) {
+int RGE_Diamond_Map::set_bitmap(char *map_bmp, long res_id) {
   TPicture *picture;
   short pic_hgt;
   short pic_wid;
@@ -79,7 +79,7 @@ int RGE_Diamond_Map::set_bitmap(char *name, long param_2) {
     this->map_tile_rows = 0;
   }
 
-  picture = new TPicture(name, param_2, 0, 0, 0);
+  picture = new TPicture(map_bmp, res_id, 0, 0, 0);
   if (picture == 0)
     return 0;
   if (picture->Dib == 0) {
@@ -150,16 +150,16 @@ int RGE_Diamond_Map::set_bitmap(char *name, long param_2) {
   return 1;
 }
 
-void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
+void RGE_Diamond_Map::set_world(RGE_Game_World *world_in) {
   short line;
   float tile_row;
   short draw_wid;
   short tot_draw_wid;
   float col_step;
 
-  this->world = world;
-  if (world != 0 && this->map_image_lines != 0) {
-    this->map = world->map;
+  this->world = world_in;
+  if (world_in != 0 && this->map_image_lines != 0) {
+    this->map = world_in->map;
     this->map_wid = (short)this->map->map_width;
     this->map_tile_row_cnt =
         this->map_wid + (this->map_hgt = (short)this->map->map_height) - 1;
@@ -290,14 +290,14 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
   this->map = 0;
 }
 
-void RGE_Diamond_Map::set_player(RGE_Player *value) {
-  this->player = value;
+void RGE_Diamond_Map::set_player(RGE_Player *player_in) {
+  this->player = player_in;
   this->set_redraw(TPanel::RedrawImmediate);
 }
 
-void RGE_Diamond_Map::set_redraw(TPanel::RedrawMode mode) {
-  TPanel::set_redraw(mode);
-  if (mode == 2) {
+void RGE_Diamond_Map::set_redraw(TPanel::RedrawMode redraw_mode) {
+  TPanel::set_redraw(redraw_mode);
+  if (redraw_mode == 2) {
     this->render_all = 1;
   }
 }
@@ -317,8 +317,7 @@ int RGE_Diamond_Map::create_surfaces() {
     if (da == 0) {
       return 0;
     }
-    if (!da->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt,
-                  0, 0)) {
+    if (!da->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0)) {
       delete this->save_area;
       this->save_area = 0;
       return 0;
@@ -465,15 +464,15 @@ void RGE_Diamond_Map::draw_all_tiles() {
 
 void RGE_Diamond_Map::draw_explored_tiles() {
   RGE_Tile_List_Node *list;
-  int count;
+  int list_size;
 
-  this->player->diam_tile_list.get_list_info(list, count);
+  this->player->diam_tile_list.get_list_info(list, list_size);
 
-  if (count > 0) {
+  if (list_size > 0) {
     if (this->save_area->Lock("diam_map::draw_explored_tiles", 1)) {
       int i;
       i = 0;
-      while (i < count) {
+      while (i < list_size) {
         this->draw_tile((short)list->col, (short)list->row, 0, 0);
         i++;
         list++;
@@ -483,8 +482,7 @@ void RGE_Diamond_Map::draw_explored_tiles() {
   }
 }
 
-void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
-                                unsigned char color) {
+void RGE_Diamond_Map::draw_tile(short col, short row, int fog, unsigned char override_color) {
   RGE_Map_Tile_Row *tile_row =
       this->map_tile_rows + this->map_wid + row - col - 1;
   if (tile_row->draw == 0)
@@ -518,24 +516,24 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
     return;
 
   short image_line = tile_row->image_line;
-  long draw_x = this->map_image_lines[image_line].start_x + draw_offset;
-  long draw_y = this->map_image_start_y + image_line;
+  long x = this->map_image_lines[image_line].start_x + draw_offset;
+  long y = this->map_image_start_y + image_line;
   unsigned char terrain = tile->terrain_type;
 
-  if (selected != 0) {
-    draw_x += this->pnl_x;
-    draw_y += this->pnl_y;
+  if (fog != 0) {
+    x += this->pnl_x;
+    y += this->pnl_y;
     short draw_wid = tile_row->draw_wid;
     if (this->map_tile_draw_hgt == 1) {
       if (draw_wid == 1) {
-        this->render_area->SetPixel(draw_x, draw_y, this->fog_color);
+        this->render_area->SetPixel(x, y, this->fog_color);
       } else if (draw_wid == 2) {
-        this->render_area->SetPixel(draw_x, draw_y, this->fog_color);
-        this->render_area->SetPixel(draw_x + 1, draw_y, this->fog_color);
+        this->render_area->SetPixel(x, y, this->fog_color);
+        this->render_area->SetPixel(x + 1, y, this->fog_color);
       } else if (draw_wid > 0) {
         do {
-          this->render_area->SetPixel(draw_x, draw_y, this->fog_color);
-          ++draw_x;
+          this->render_area->SetPixel(x, y, this->fog_color);
+          ++x;
           --draw_wid;
         } while (draw_wid != 0);
       }
@@ -543,12 +541,11 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
       short draw_row = 0;
       while (draw_row < this->map_tile_draw_hgt) {
         short width = draw_wid;
-        long x = draw_x;
+        long pixel_x = x;
         if (width > 0) {
           do {
-            this->render_area->SetPixel(x, draw_y + draw_row,
-                                        this->fog_color);
-            ++x;
+            this->render_area->SetPixel(pixel_x, y + draw_row, this->fog_color);
+            ++pixel_x;
             --width;
           } while (width != 0);
         }
@@ -558,10 +555,10 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
     return;
   }
 
-  if (color == 0) {
+  if (override_color == 0) {
     switch (tile->tile_type) {
     case 0:
-      color = map->terrain_types[terrain].map_med_color;
+      override_color = map->terrain_types[terrain].map_med_color;
       break;
 
     case 1:
@@ -573,7 +570,7 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
     case 12:
     case 13:
     case 15:
-      color = map->terrain_types[terrain].map_low_color;
+      override_color = map->terrain_types[terrain].map_low_color;
       break;
 
     case 2:
@@ -583,25 +580,25 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
     case 11:
     case 14:
     case 16:
-      color = map->terrain_types[terrain].map_hi_color;
+      override_color = map->terrain_types[terrain].map_hi_color;
       break;
     }
   }
 
-  short check_row;
-  for (check_row = row - 1; check_row < row + 2; ++check_row) {
-    if (check_row < 0 || check_row >= this->map_hgt)
+  short trow;
+  for (trow = row - 1; trow < row + 2; ++trow) {
+    if (trow < 0 || trow >= this->map_hgt)
       continue;
 
-    short check_col;
-    for (check_col = col - 1; check_col < col + 2; ++check_col) {
-      if (check_col < 0 || check_col >= this->map_wid)
+    short j;
+    for (j = col - 1; j < col + 2; ++j) {
+      if (j < 0 || j >= this->map_wid)
         continue;
 
-      RGE_Object_Node *node = map_rows[check_row][check_col].objects.list;
+      RGE_Object_Node *node = map_rows[trow][j].objects.list;
       while (node != 0) {
         if (node->node->master_obj->map_draw_level == 4) {
-          color = node->node->master_obj->map_color;
+          override_color = node->node->master_obj->map_color;
           break;
         }
         node = node->next;
@@ -612,14 +609,14 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
   short draw_wid = tile_row->draw_wid;
   if (this->map_tile_draw_hgt == 1) {
     if (draw_wid == 1) {
-      this->save_area->SetPixel(draw_x, draw_y, color);
+      this->save_area->SetPixel(x, y, override_color);
     } else if (draw_wid == 2) {
-      this->save_area->SetPixel(draw_x, draw_y, color);
-      this->save_area->SetPixel(draw_x + 1, draw_y, color);
+      this->save_area->SetPixel(x, y, override_color);
+      this->save_area->SetPixel(x + 1, y, override_color);
     } else if (draw_wid > 0) {
       do {
-        this->save_area->SetPixel(draw_x, draw_y, color);
-        ++draw_x;
+        this->save_area->SetPixel(x, y, override_color);
+        ++x;
         --draw_wid;
       } while (draw_wid != 0);
     }
@@ -627,11 +624,11 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int selected,
     short draw_row = 0;
     while (draw_row < this->map_tile_draw_hgt) {
       short width = draw_wid;
-      long x = draw_x;
+      long pixel_x = x;
       if (width > 0) {
         do {
-          this->save_area->SetPixel(x, draw_y + draw_row, color);
-          ++x;
+          this->save_area->SetPixel(pixel_x, y + draw_row, override_color);
+          ++pixel_x;
           --width;
         } while (width != 0);
       }
@@ -644,17 +641,17 @@ void RGE_Diamond_Map::draw_selected_area(void) {
   if (this->main_view == 0)
     return;
 
-  long x1, y1, x2, y2;
-  if (!this->main_view->get_selection_area(x1, y1, x2, y2, 1))
+  long sel_col1, sel_row1, sel_col2, sel_row2;
+  if (!this->main_view->get_selection_area(sel_col1, sel_row1, sel_col2, sel_row2, 1))
     return;
 
   if (!this->render_area->Lock("diam_map::draw_selected_area", 1))
     return;
 
   int y;
-  for (y = y1; y <= y2; y++) {
+  for (y = sel_row1; y <= sel_row2; y++) {
     int x;
-    for (x = x1; x <= x2; x++) {
+    for (x = sel_col1; x <= sel_col2; x++) {
       draw_tile((short)x, (short)y, 1, 0);
     }
   }
@@ -733,9 +730,7 @@ void RGE_Diamond_Map::draw_objects() {
   this->render_area->Unlock("diam_map::draw_objects");
 }
 
-void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
-                                           unsigned char color1,
-                                           unsigned char color2) {
+void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj, unsigned char color1, unsigned char color2) {
   unsigned char visible;
   unsigned char draw_level;
   unsigned long map_value;
@@ -743,11 +738,11 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
   short row;
   RGE_Player *player;
 
-  if (object->tile == 0)
+  if (game_obj->tile == 0)
     return;
 
-  col = (short)(long)object->world_x;
-  row = (short)(long)object->world_y;
+  col = (short)(long)game_obj->world_x;
+  row = (short)(long)game_obj->world_y;
   player = this->player;
 
   if (player->visible == 0) {
@@ -769,17 +764,17 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
   }
 
   if (visible != 0x0F &&
-      (visible != 0x80 || object->master_obj->fog_flag == 0))
+      (visible != 0x80 || game_obj->master_obj->fog_flag == 0))
     return;
 
-  if (object->type == 0x19) {
+  if (game_obj->type == 0x19) {
     RGE_Doppleganger_Object *doppleganger =
-        static_cast<RGE_Doppleganger_Object *>(object);
+        static_cast<RGE_Doppleganger_Object *>(game_obj);
 
     if (visible == 0x0F)
       return;
 
-    if (player->mutualAlly[object->owner->id] == 1 &&
+    if (player->mutualAlly[game_obj->owner->id] == 1 &&
         (this->cur_player_bit & doppleganger->CantSeeBits) == 0) {
       draw_level = doppleganger->map_draw_level;
       color1 = doppleganger->map_color;
@@ -790,81 +785,77 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
       color2 = 0xFF;
     }
   } else {
-    draw_level = object->master_obj->map_draw_level;
+    draw_level = game_obj->master_obj->map_draw_level;
     if (draw_level == 3)
-      color1 = object->master_obj->map_color;
+      color1 = game_obj->master_obj->map_color;
   }
 
   switch (draw_level) {
   case 2:
-    this->draw_object(col, row, color1, 2, object);
+    this->draw_object(col, row, color1, 2, game_obj);
     return;
   case 1:
-    this->draw_object(col, row, color2, 1, object);
+    this->draw_object(col, row, color2, 1, game_obj);
     break;
   case 3:
-    this->draw_object(col, row, color1, 2, object);
+    this->draw_object(col, row, color1, 2, game_obj);
     break;
   }
 }
 
-void RGE_Diamond_Map::draw_object(short param_1, short param_2,
-                                  unsigned char param_3, short param_4,
-                                  RGE_Static_Object *param_5) {
-  short max_coord = param_2;
-  int row_index = (int)this->map_wid + (int)param_2 - (int)param_1;
-  RGE_Map_Tile_Row *row = this->map_tile_rows + row_index - 1;
+void RGE_Diamond_Map::draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object *game_obj) {
+  short max_coord = row;
+  int row_index = (int)this->map_wid + (int)row - (int)col;
+  RGE_Map_Tile_Row *tile_row = this->map_tile_rows + row_index - 1;
 
-  if (param_1 < param_2)
-    max_coord = param_1;
+  if (col < row)
+    max_coord = col;
 
   short x_offset;
-  if (row->ratio < 1.0f) {
-    x_offset = (short)((float)max_coord * row->ratio);
+  if (tile_row->ratio < 1.0f) {
+    x_offset = (short)((float)max_coord * tile_row->ratio);
   } else {
-    x_offset = (short)((float)max_coord * row->draw_step);
+    x_offset = (short)((float)max_coord * tile_row->draw_step);
   }
 
-  short image_line = row->image_line;
+  short image_line = tile_row->image_line;
   short x = this->map_image_lines[image_line].start_x;
   x = x + (short)this->pnl_x + x_offset;
 
   short y = (short)this->pnl_y + this->map_image_start_y + image_line;
 
-  if (param_4 == 1) {
-    this->render_area->FillRect(x - 1, y - 1, x + 1, y + 1, param_3);
+  if (size == 1) {
+    this->render_area->FillRect(x - 1, y - 1, x + 1, y + 1, color);
     return;
   }
-  if (param_4 == 2) {
-    this->render_area->FillRect(x, y - 1, x, y + 1, param_3);
-    this->render_area->FillRect(x - 1, y, x + 1, y, param_3);
+  if (size == 2) {
+    this->render_area->FillRect(x, y - 1, x, y + 1, color);
+    this->render_area->FillRect(x - 1, y, x + 1, y, color);
     return;
   }
-  if (param_4 == 3) {
-    this->render_area->FillRect(x - 3, y, x + 3, y + 1, param_3);
-    this->render_area->FillRect(x - 2, y - 1, x + 2, y + 2, param_3);
+  if (size == 3) {
+    this->render_area->FillRect(x - 3, y, x + 3, y + 1, color);
+    this->render_area->FillRect(x - 2, y - 1, x + 2, y + 2, color);
     return;
   }
-  if (param_4 == 4) {
-    this->render_area->FillRect(x - 2, y - 2, x + 2, y + 2, param_3);
+  if (size == 4) {
+    this->render_area->FillRect(x - 2, y - 2, x + 2, y + 2, color);
   }
 }
 
-void RGE_Diamond_Map::draw_clipped_horz_line(
-    short x, short y, short width, unsigned char color,
-    RGE_Map_Image_Line *line) {
-  short start_x = line->start_x;
+void RGE_Diamond_Map::draw_clipped_horz_line(short x, short y, short len, unsigned char color, RGE_Map_Image_Line *image_line) {
+  short start_x = image_line->start_x;
   int line_start = this->pnl_x + (int)start_x;
 
   if ((int)x < line_start) {
     x = (short)this->pnl_x + start_x;
   }
 
-  if (line->line_len + line_start <= width - 1 + (int)x) {
-    width = (short)this->pnl_x - x + line->line_len + start_x;
+  if (image_line->line_len + line_start <= len - 1 + (int)x) {
+    len = (short)this->pnl_x - x + image_line->line_len + start_x;
   }
 
-  this->render_area->DrawHorzLine(x, y, width, color);
+  this->render_area->DrawHorzLine(x, y, len, color);
 }
 
 void RGE_Diamond_Map::draw_view_rect() {
@@ -899,19 +890,19 @@ void RGE_Diamond_Map::draw_view_rect() {
                   this->map_image_lines[image_line].start_x + x_offset;
     short map_y =
         (short)this->pnl_y + this->map_image_start_y + image_line;
-    short view_wid;
-    short view_hgt;
-    this->main_view->get_max_size(&view_wid, &view_hgt);
+    short vwid;
+    short vhgt;
+    this->main_view->get_max_size(&vwid, &vhgt);
 
     this->view_rect.left =
-        (long)((float)map_x - (float)(view_wid / 2) * this->map_col_ratio);
+        (long)((float)map_x - (float)(vwid / 2) * this->map_col_ratio);
     this->view_rect.top =
-        (long)((float)map_y - (float)view_hgt * this->map_row_ratio);
+        (long)((float)map_y - (float)vhgt * this->map_row_ratio);
     this->view_rect.right =
         (long)((float)map_x +
-               (float)(view_wid / 2 + 2) * this->map_col_ratio);
+               (float)(vwid / 2 + 2) * this->map_col_ratio);
     this->view_rect.bottom =
-        (long)((float)map_y + (float)(view_hgt + 4) * this->map_row_ratio);
+        (long)((float)map_y + (float)(vhgt + 4) * this->map_row_ratio);
 
     this->view_col = col;
     this->view_row = (short)row;
@@ -956,8 +947,7 @@ void RGE_Diamond_Map::draw_view_rect() {
   }
 }
 
-int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short *param_3,
-                               short *param_4, RGE_Tile **param_5) {
+int RGE_Diamond_Map::pick_tile(long x, long y, short *col, short *row, RGE_Tile **tile) {
   if (this->map == 0) {
     return 0;
   }
@@ -966,8 +956,8 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short *param_3,
     return 0;
   }
 
-  int adjusted_x = param_1 - this->pnl_x;
-  int adjusted_y = param_2 - this->pnl_y;
+  int adjusted_x = x - this->pnl_x;
+  int adjusted_y = y - this->pnl_y;
 
   if (adjusted_y >= this->map_image_start_y &&
       adjusted_y <= this->map_image_start_y + this->map_image_hgt - 1) {
@@ -985,14 +975,14 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short *param_3,
       short result_col = tile_row_ptr->map_col + (short)col_offset;
       short result_row = tile_row_ptr->map_row + (short)col_offset;
 
-      if (param_3 != 0) {
-        *param_3 = result_col;
+      if (col != 0) {
+        *col = result_col;
       }
-      if (param_4 != 0) {
-        *param_4 = result_row;
+      if (row != 0) {
+        *row = result_row;
       }
-      if (param_5 != 0) {
-        *param_5 = this->map->map_row_offset[result_row] + result_col;
+      if (tile != 0) {
+        *tile = this->map->map_row_offset[result_row] + result_col;
       }
       return 1;
     }
@@ -1000,8 +990,8 @@ int RGE_Diamond_Map::pick_tile(long param_1, long param_2, short *param_3,
   return 0;
 }
 
-long RGE_Diamond_Map::handle_size(long width, long height) {
-  this->TPanel::handle_size(width, height);
+long RGE_Diamond_Map::handle_size(long win_wid, long win_hgt) {
+  this->TPanel::handle_size(win_wid, win_hgt);
   this->view_col = -1;
   this->view_row = -1;
   this->create_surfaces();
@@ -1009,14 +999,14 @@ long RGE_Diamond_Map::handle_size(long width, long height) {
 }
 
 void RGE_Diamond_Map::start_scroll_view(long x, long y) {
-  short xs, ys;
+  short col, row;
   RGE_Tile *tile;
 
-  if (pick_tile(x, y, &xs, &ys, &tile)) {
+  if (pick_tile(x, y, &col, &row, &tile)) {
     this->capture_mouse();
 
     this->scrolling = 1;
-    this->player->set_view_loc((float)xs + 0.5f, (float)ys + 0.5f);
+    this->player->set_view_loc((float)col + 0.5f, (float)row + 0.5f);
 
     this->set_redraw(TPanel::RedrawNormal);
 
@@ -1029,12 +1019,12 @@ void RGE_Diamond_Map::start_scroll_view(long x, long y) {
   }
 }
 
-void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
-  short out_1;
-  short out_2;
+void RGE_Diamond_Map::handle_scroll_view(long x, long y) {
+  short col;
+  short row;
   RGE_Tile *tile;
-  if (this->pick_tile(param_1, param_2, &out_1, &out_2, &tile) != 0) {
-    this->player->set_view_loc((float)out_1 + 0.5f, (float)out_2 + 0.5f);
+  if (this->pick_tile(x, y, &col, &row, &tile) != 0) {
+    this->player->set_view_loc((float)col + 0.5f, (float)row + 0.5f);
 
     this->set_redraw(TPanel::RedrawNormal);
 
@@ -1042,8 +1032,8 @@ void RGE_Diamond_Map::handle_scroll_view(long param_1, long param_2) {
       this->main_view->set_redraw(TPanel::RedrawNormal);
     }
 
-    this->mouse_last_x = param_1;
-    this->mouse_last_y = param_2;
+    this->mouse_last_x = x;
+    this->mouse_last_y = y;
   }
 }
 
@@ -1053,11 +1043,11 @@ void RGE_Diamond_Map::end_scroll_view() {
 }
 
 int RGE_Diamond_Map::is_inside(long x, long y) {
-  short out_x;
-  short out_y;
+  short col;
+  short row;
   RGE_Tile *tile;
 
   if (TPanel::is_inside(x, y))
-    return this->pick_tile(x, y, &out_x, &out_y, &tile);
+    return this->pick_tile(x, y, &col, &row, &tile);
   return 0;
 }
