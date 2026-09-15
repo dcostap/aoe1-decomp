@@ -23,7 +23,7 @@ The common base is `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 
 | Module | Reviewed worker head | Result |
 | --- | --- | --- |
-| `taiinfmd` | `b01cd87da9c788b4a61107eb3dd22b77b9bbd66b` | Approved after declaration and formatting corrections. |
+| `taiinfmd` | `24d0331d3629dc440afd4fce4ce36eb4cacfa9ec` | Approved after two declaration reviews and a final report correction. |
 | `taimdmd` | `768c98f6add47808cf8c1929bbda2b7b8aa2d4b9` | Approved after local-storage correction. |
 | `tairesmd` | `f9a3b91cd91120610cb363989a00c7502ee86967` | Approved. |
 | `taistrmd` | `afe72c51515b825f5f2508f76d8f433285619e2d` | Approved after formatting correction. |
@@ -40,8 +40,14 @@ Cherry-pick commit identities differ on this integration branch.
 The owner reviewed each complete worker diff and report against the common base.
 
 - `taiinfmd`: The first delivery changed declaration shape and reused storage.
-  The correction restored aliases, declarations, scopes, and initialization points.
-  It also applied 1TBS and four-space indentation.
+  The first correction restored several aliases, declarations, and initialization points.
+  A full-source review then found a real `setupWalls` logic regression.
+  Renamed center parameters had replaced loop locals, so loops changed later center values.
+  The second correction restored `centerX`, `centerY`, and separate `x` and `y` locals.
+  It also restored the baseline storage forms in `save`, the destructor, `update`,
+  `unexploredPlayerLocation`, and `dropsitesWithinRequiredDistance`.
+  A report-only correction removed unsafe `setupWalls` PDB-name claims.
+  The retained formatting uses 1TBS and four-space indentation.
 - `taimdmd`: The correction restored the separate `diplomacy_start_time` local.
 - `tairesmd`: The source preserved all declarations and required no correction.
 - `taistrmd`: The correction moved function opening braces to 1TBS positions.
