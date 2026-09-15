@@ -106,5 +106,5 @@ Existing shared mappings `IDS_BUTTON_OK` (`0x0FA1`, text `OK`) and `IDS_BUTTON_C
 - Applied the eleven proved resource substitutions in `src/scr_cj.cpp`: `0x25A0`, `0x25A1`, `0x25A2`, `0x25A3`, `0x25A4`, `0x25A6`, `0x25A8`, `0x25A9`, `0x25AA`, `0x25AB`, and `0x25AD`.
 - The source keeps the same numeric values, lookup calls, argument order, and fallback behavior.
 - The 1TBS constructor correction remains in place.
-- Module commit for this application round: copy the full hash from Git delivery output.
+- Module commit for this application round: `1672368289a0cdc665ae9563fab4f084394549c4`.
 - Compilation, matching, audits, and tests were not run.
