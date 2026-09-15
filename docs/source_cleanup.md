@@ -79,7 +79,26 @@ Do not recursively copy original assets or build outputs into every worktree.
 
 ## Allowed cleanup
 
-### 1. Replace decompiler-generated names
+### 1. Recover original names and replace generated names
+
+Inspect available procedure-scoped PDB records and original source evidence for every assigned function.
+Compare parameter and local names with that evidence, including names that already look reasonable.
+Recover supported original names wherever the current declarations can be mapped reliably.
+This is required recovery work, not an optional step limited to obvious `param_*` placeholders.
+
+Earlier recovery work can leave descriptive substitutes such as `panel` and `message` instead of original names.
+For `TribeLoadSavedGameScreen::action`, the PDB establishes `fromPanel`, `actionIn`, `a1`, and `a2`.
+Restore those names even though `panel` and `message` appear readable and `a1` and `a2` are terse.
+Matching status does not establish original parameter or local names.
+
+Original PDB names use mixed styles, sometimes within one function. Do not normalize them to camelCase or snake_case.
+The load-screen constructor records `tabList`, `info_file`, and `from_panel` together.
+`RGE_Map::get_point` records `screen_x`, `screen_y`, `x_offset`, and `y_offset`.
+Preserve those spellings. Neither underscores nor terse names establish that an identifier is generated.
+
+Match each record to its owning function, type, scope, and use; do not copy names from unrelated procedures.
+Reused stack slots can make the declaration mapping uncertain. Report those cases instead of forcing a rename.
+Recovering a name does not authorize copying a different buffer size, type, scope, or declaration arrangement.
 
 Replace placeholders such as `param_1` and `local_6` when their meanings are established.
 Other generated forms can include `iVar4`, `uVar2`, or `pcVar7`; the spelling alone is not proof.
@@ -89,6 +108,8 @@ A short or awkward name is not, by itself, a generated name.
 Do not rename original developer names recovered from PDB records or original source.
 If a placeholder has a known original name, restore that original name.
 Otherwise, use a concise descriptive name supported by the function and its callers.
+Use `snake_case` for parameter and local names we assign when no original name can be recovered.
+This preference does not override recovered original spellings or authorize new variable declarations.
 Record newly inferred names as cleanup names, not recovered original names.
 
 Preserve scope, declarations, initialization points, types, and storage duration.
@@ -147,6 +168,10 @@ Preserve localization, formatting tokens, hotkey characters, fallback behavior, 
 
 Inspect the pinned original resource module and its call site before naming an ID.
 Record the resource module, numeric ID, language, payload, and proposed meaning in the evidence report.
+Record missing or empty payloads explicitly; do not require recovered text to name a proven role.
+Trace the argument, lookup path, and relevant callers before declaring an ID's purpose unknown.
+When that evidence establishes the resource type and purpose, use a descriptive name even if the text is unavailable.
+Keep unknown text separate from unknown purpose. Do not invent either.
 An ID belongs to a resource namespace. The same number in another DLL need not mean the same thing.
 
 Reuse a proven original resource symbol when available.
@@ -183,9 +208,37 @@ Do not introduce implementation-dependent multi-character literals as a shortcut
 
 ### 6. Make local presentation clearer
 
-Fix local indentation or spacing when it obstructs reading.
-Match the module's existing style and preserve line endings.
-Do not run a repository-wide formatter or reorder whole files.
+Workers may freely adjust indentation, spacing, blank lines, wrapping, and brace placement throughout their assigned files.
+Formatting does not require a nearby name change or evidence that the old style obstructs reading.
+Use consistent indentation, preserve line endings, and follow the brace and wrapping rules below.
+Do not reformat unassigned files or reorder source declarations or statements.
+
+Allow moderately long lines. Do not wrap declarations or calls merely to meet an 80-column limit.
+Keep short parameter lists on one line when they remain easy to read, including this declaration:
+
+```cpp
+virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+```
+
+The same rule applies to definitions. Keep this signature and its opening brace on one line:
+
+```cpp
+long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+```
+
+Do not put each short parameter on a separate line.
+Use **1TBS (One True Brace Style)**: opening braces share the line with function definitions, classes, structures, and control statements.
+Use `} else {` and `} catch (...) {` when applicable.
+Workers may move existing opening braces onto those lines throughout their assigned files.
+Change brace placement only; do not add or remove braces, change scopes, or move statements.
+
+Wrap when it improves readability, not just because a line crosses a fixed column count.
+Join unnecessarily wrapped short declarations, calls, and expressions when the result remains easy to read.
+These formatting changes are allowed even when the lines need no name or constant changes.
+A module-wide formatting pass is allowed within the assigned files.
+Preserve tokens, comments, preprocessor boundaries, and executable structure.
+Do not change macro continuations, string contents, or the meaning of line comments through formatting.
+Check for line-dependent macros such as `__LINE__`; formatting must still preserve generated code and program data.
 
 Group or explain related code only without moving executable statements or changing declaration scope.
 Preserve source order and the sole natural source owner.
@@ -256,6 +309,7 @@ Do not silently overwrite another worker's changes during integration.
 ## Worker delivery
 
 Review the complete diff before reporting completion.
+Copy base and final commit hashes directly from Git output. Do not reconstruct or abbreviate the required full hashes.
 Commit only assigned changes and the assigned durable report.
 Use small coherent commits if several cleanup categories are involved.
 Do not squash unrelated module work together.
@@ -263,7 +317,7 @@ Do not squash unrelated module work together.
 The report must include:
 
 1. Module path, base commit, final commit, and every changed file.
-2. A summary of renamed placeholders and their evidence.
+2. Original-name recovery coverage, renamed parameters and locals, supporting evidence, and unresolved declaration mappings.
 3. Evidence for new constants, resource IDs, and noteworthy comments.
 4. Which names are recovered originals and which are new descriptive names.
 5. Any change that could affect types, code generation, layout, or symbol identity.

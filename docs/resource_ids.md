@@ -45,6 +45,24 @@ The corresponding uses in `src/scr_game.cpp` provide the purpose; the single cha
 
 ## Naming convention
 
+### Known purpose does not require known text
+
+Name an ID when the executable's lookup path and call sites establish its resource type and purpose.
+Missing or empty DLL text does not block that change.
+Record the purpose as known and the text as missing, empty, or unknown, as applicable.
+Do not invent the text, its absence's cause, or an original macro name.
+
+For example, `0x7531` and `0x7532` identify OK-button and Cancel-button help text.
+The original executable stores them as help-string IDs and passes them to the string lookup.
+Repeated call sites establish the button roles, although the checked DLLs lack both entries.
+Use descriptive names `IDS_HELP_OK` and `IDS_HELP_CANCEL`; do not leave them numeric solely because text is missing.
+See [the load-screen evidence](../decomp_notes/source_cleanup/scr_load_help_ids.md).
+
+If the resource type or purpose remains uncertain after tracing the uses, keep the literal and report that specific uncertainty.
+Numerical equality or a nearby button alone does not establish the role; inspect the argument and lookup path.
+
+### Names and ownership
+
 Preserve verified original symbols first.
 Otherwise use uppercase `IDS_` names that describe purpose, not just text or numeric value.
 These are new cleanup names unless original evidence establishes otherwise.
@@ -108,5 +126,6 @@ Use a `_BASE` suffix when the range relationship is established.
 Leave the arithmetic intact. Do not generate a replacement switch or table.
 
 Record evidence for each new name in the module report or shared resource mapping.
-Include the resource file hash, language, ID, text, call-site purpose, and whether the name is recovered or newly assigned.
+Include the resource file hash, language when present, ID, text result, call-site purpose, and name provenance.
+For missing text, record the checked files and the independent evidence that establishes the type and purpose.
 Keep that evidence out of repetitive source comments. Clear names do not need comments that repeat their text.
