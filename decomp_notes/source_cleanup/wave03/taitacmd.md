@@ -5,8 +5,8 @@
 - Module: `src/taitacmd.cpp`.
 - Common base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Previous source-cleanup commit: `a593951d6517d85078efd5a9d70c6300f22a9db5`.
-- Correction source commit: `ce810adbb8a7de3e002b6f0f5d842cd7c881d759`.
-- Final source commit: `ce810adbb8a7de3e002b6f0f5d842cd7c881d759`.
+- Correction source commit: `ce810adbb5d020a2788c5800018a20470701d4f9`.
+- Final source commit: `ce810adbb5d020a2788c5800018a20470701d4f9`.
 - The final report commit follows this source commit and changes this report only.
 
 ## Changed files
@@ -334,7 +334,7 @@ All names in this list come from the procedure-scoped PDB records above. The VA 
 1. The first cleanup commit was `a593951d6517d85078efd5a9d70c6300f22a9db5`.
 2. Review found that the report lacked full delivery, evidence, coverage, and risk records.
 3. This correction expands the report, records all 216 registered procedures, and formats the source with 1TBS and four-space indentation.
-4. The correction source commit is `ce810adbb8a7de3e002b6f0f5d842cd7c881d759`. A report-only follow-up commit records this final delivery report.
+4. The correction source commit is `ce810adbb5d020a2788c5800018a20470701d4f9`. Report-only follow-up commits record this final delivery report.
 
 ## Required validation statement
 
