@@ -6,26 +6,22 @@
 #include "../include/tribegam.h"
 #include <string.h>
 
-TRIBE_Screen_Info::TRIBE_Screen_Info(char* panel_name, char* screen_file,
-                                     long screen_id,
-                                     unsigned long timer_value)
-    : TScreenPanel(panel_name)
-{
-    timer = timer_value;
+TRIBE_Screen_Info::TRIBE_Screen_Info(char* scr_name_in, char* info_file_in,
+                                     long info_id_in, unsigned long timer_in)
+    : TScreenPanel(scr_name_in) {
+    timer = timer_in;
     auto_close = timer > 0;
     last_time = 0;
 
-    if (setup(rge_base_game->draw_area, screen_file, screen_id, 0) == 0) {
+    if (setup(rge_base_game->draw_area, info_file_in, info_id_in, 0) == 0) {
         error_code = 1;
     }
 }
 
-TRIBE_Screen_Info::~TRIBE_Screen_Info()
-{
+TRIBE_Screen_Info::~TRIBE_Screen_Info() {
 }
 
-long TRIBE_Screen_Info::handle_idle()
-{
+long TRIBE_Screen_Info::handle_idle() {
     if (rge_base_game->input_enabled == 0) {
         rge_base_game->enable_input();
     }
@@ -48,29 +44,25 @@ long TRIBE_Screen_Info::handle_idle()
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Info::key_down_action(long key, short, int, int, int)
-{
+long TRIBE_Screen_Info::key_down_action(long key, short count, int alt_key,
+                                        int ctrl_key, int shift_key) {
     if (key != 0x12 && key != 0x11 && key != 0x10) {
         close_screen();
     }
     return 0;
 }
 
-long TRIBE_Screen_Info::mouse_left_down_action(long, long, int, int)
-{
+long TRIBE_Screen_Info::mouse_left_down_action(long x, long y, int ctrl_key,
+                                               int shift_key) {
     close_screen();
     return 0;
 }
 
-long TRIBE_Screen_Info::action(TPanel* panel, long event,
-                               unsigned long param3,
-                               unsigned long param4)
-{
-    return TEasy_Panel::action(panel, event, param3, param4);
+long TRIBE_Screen_Info::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-void TRIBE_Screen_Info::close_screen()
-{
+void TRIBE_Screen_Info::close_screen() {
     if (strcmp(panel_name, "RandomMap") == 0) {
         rge_base_game->disable_input();
         new TribeSPMenuScreen;
