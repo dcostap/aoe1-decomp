@@ -1,5 +1,18 @@
 # Cleanup wave 04 root review
 
+## Owner 28: delegated review started
+
+- Delivered head: `180836230c0c7275581e3489e391546c0c320552`.
+- Base: `c22ba4258c45b1178181e185d60a3b09a1add617`.
+- Full diff: `build/source-cleanup-20260915/owner28-review.diff`, 4,674 lines.
+- Reviewer: `sa-f1296ef0`, Sol medium, read only.
+
+The assignment covers all eight sources, eight headers, and nine reports.
+The requested age macros already exist in main, but not in the group's base header.
+The reviewer must check the timeline caller role before recommending their use.
+Option-label age uses in Owner 26 remain deferred; equal IDs do not establish equal caller roles.
+The group remains unmerged. Compiler and runtime validation remain deferred.
+
 ## Owner 26: corrections and resource decisions
 
 Reviewer `sa-e6faf4c1` read all 9,390 lines and all reports.
