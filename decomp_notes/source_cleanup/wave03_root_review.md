@@ -1,5 +1,14 @@
 # Cleanup wave 03 root review
 
+## Owner 15: corrected and integrated
+
+Root read the complete correction diff to `42608781054e3e29d8092930cc4d1040a20b79e9`.
+It restores both required evidence notes and changes no executable tokens.
+This resolves the delegated reviewer's blocking findings.
+Root merged the group as `09f31350eec9ba339459679c82f635f4d3c065fc`.
+Main contains 120 assigned modules plus the pilot: 121 of 225 modules, approximately 53.8%.
+Final validation remains deferred.
+
 ## Owner 13: source approval and shared declarations
 
 Reviewer `sa-fcb5c825` approved the complete source/owned-header diff at `0e7a7d77e70b68069ff692a762887a8b3a5f6499`.

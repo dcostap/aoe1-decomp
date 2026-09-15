@@ -1,5 +1,32 @@
 # Cleanup wave 02 root review
 
+## Owner 11: approved correction and resource mappings
+
+Reviewer `sa-187152fa` approved all 824 correction-diff lines at `616082391a771bacc7305fad75c21cc2e602a5f4`.
+The correction retains supported `x2` and six `userN` names, but restores unproved coordinate and index names.
+Root approved 74 new string macros and three separate `RESID_` binary layout macros.
+Four of the 78 requested string names already exist and are not duplicated.
+
+All 78 string payloads exist in runtime `language.dll`, language `0x0409`.
+Its SHA256 is `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+Both runtime and original expansion DLLs miss these IDs; no requested slot is empty.
+The lookup retains expansion-first lookup and base fallback.
+The pinned original tree lacks the base language file. These English payloads come from staged runtime evidence.
+Extraction is under `build/source-cleanup-20260915/reviewer-owner11/`.
+
+The binary layout IDs are `0xC389`, `0xC38A`, and `0xC38D`, under type `0x62696E61`.
+They select end-win, end-other, and in-game layouts respectively.
+Runtime base `data/Interfac.drs` supplies them; both checked expansion files lack them.
+Its SHA256 is `8a7f1b1f9009d4bc0262c7890935d69d62668c80751ec3b861345064a0e63d33`.
+The payload hashes, in ID order, are:
+
+- `4ac46eae9163f876966ad385fe43a0097f0d4e96b95e3c96c500595999d0acae`
+- `560cd53269166666a75e0836a3139fc6ed18679651ae6969978b21b5d1fd2798`
+- `854d2e6e0dc6ed9fc677ff1902831909fbb5226f380452fa4940500c6ccf7cc0`
+
+Workers must preserve all lookup calls, literal types, and the dropped/canceled two-ID arithmetic.
+Integration waits for their resource substitutions and correction review. No validation ran.
+
 ## Owner 11: corrected delivery queued
 
 Corrected head: `616082391a771bacc7305fad75c21cc2e602a5f4`.
