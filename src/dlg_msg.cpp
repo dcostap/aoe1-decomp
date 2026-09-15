@@ -89,20 +89,20 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
         button[1]->hotkey_shift = 0;
         break;
     case 2:
-        button[0]->set_text(0, 0x0FA3);
-        button[1]->set_text(0, 0x0FA4);
+        button[0]->set_text(0, IDS_BUTTON_YES);
+        button[1]->set_text(0, IDS_BUTTON_NO);
         button[1]->hotkey = 0x1B;
         button[1]->hotkey_shift = 0;
         break;
     case 3:
-        button[0]->set_text(0, 0x0FA5);
-        button[1]->set_text(0, 0x0FA7);
+        button[0]->set_text(0, IDS_BUTTON_RETRY);
+        button[1]->set_text(0, IDS_BUTTON_ABORT);
         button[1]->hotkey = 0x1B;
         button[1]->hotkey_shift = 0;
         break;
     case 4:
-        button[0]->set_text(0, 0x0FA3);
-        button[1]->set_text(0, 0x0FA4);
+        button[0]->set_text(0, IDS_BUTTON_YES);
+        button[1]->set_text(0, IDS_BUTTON_NO);
         button[2]->set_text(0, IDS_BUTTON_CANCEL);
         button[2]->hotkey = 0x1B;
         button[2]->hotkey_shift = 0;
@@ -126,9 +126,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
                  dlg_type_in, str, btn_wid_in, btn_hgt_in);
 }
 
-long TMessageDialog::action(TPanel* from_panel, long action_in,
-                            unsigned long action_val1,
-                            unsigned long action_val2) {
+long TMessageDialog::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     if (parent_panel != 0 && action_in == 1) {
         if (from_panel == button[0]) {
             parent_panel->action(this, 0, 0, 0);
@@ -146,8 +144,7 @@ long TMessageDialog::action(TPanel* from_panel, long action_in,
     return TEasy_Panel::action(from_panel, action_in, action_val1, action_val2);
 }
 
-long TMessageDialog::key_down_action(long key, short count, int alt_key,
-                                     int ctrl_key, int shift_key) {
+long TMessageDialog::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     return 0;
 }
 
