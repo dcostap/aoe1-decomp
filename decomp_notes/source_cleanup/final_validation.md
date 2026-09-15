@@ -178,6 +178,10 @@ Runtime: `build/runtime/rebuilt-20260915T231427209558Z`.
 Root started linked dependency audit `bg-91` in `final-validation/dependencies-r3` against this build.
 Root started full pytest `bg-92` with `AOE_DEPENDENCY_BUILD` set to this build and output `final-validation/tests-r3.xml`.
 Successful linking alone does not establish baseline equality or gameplay correctness.
+Linked audit `bg-91` completed: 7,760 passed, zero failed, and 47,025 unknown.
+The two help-dialog linked target failures are resolved in the fresh executable.
+These counts equal the historical pre-cleanup dependency counts; they do not prove whole-image equivalence.
+Unknown checks remain unknown. This audit does not establish runtime behavior or complete image ownership.
 
 ## Fresh linked dependency failures
 
