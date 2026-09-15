@@ -1,4 +1,5 @@
 #include "../include/dlg_help.h"
+#include "../include/resource_ids.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,7 +32,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     RGE_Font* rge_text_font;
     long line_height;
     long panel_height;
-    long x;
+    long dialog_x;
     long y;
 
     this->ok_button = 0;
@@ -55,14 +56,14 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     panel_height = line_height * rge_text_font->font_hgt + 0x37;
 
     if (parentPanel->width() + parentPanel->xPosition() >= mouse_x + 0x163) {
-        x = abs(parentPanel->xPosition() - mouse_x - 5);
+        dialog_x = abs(parentPanel->xPosition() - mouse_x - 5);
     } else if (parentPanel->xPosition() + 10 <= mouse_x - 0x159) {
-        x = abs(mouse_x - 0x159 - parentPanel->xPosition());
+        dialog_x = abs(mouse_x - 0x159 - parentPanel->xPosition());
     } else {
-        x = parentPanel->width() / 2 - 0xAA;
+        dialog_x = parentPanel->width() / 2 - 0xAA;
     }
-    if (x < 0) {
-        x = 0;
+    if (dialog_x < 0) {
+        dialog_x = 0;
     }
 
     if (parentPanel->yPosition() <= mouse_y - panel_height - 10) {
@@ -77,7 +78,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
         y = 0;
     }
 
-    this->set_fixed_position(x, y, 0x154, panel_height);
+    this->set_fixed_position(dialog_x, y, 0x154, panel_height);
     this->set_ideal_size(this->max_wid, this->max_hgt);
     this->list->set_fixed_position(10, 10, 0x14A,
                                    line_height * rge_text_font->font_hgt);
@@ -85,7 +86,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     if (rge_base_game->singlePlayerGame() && in_help_page_id >= 0) {
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
-            this->create_button(this, &this->encyclopedia_button, 0x243D, 0,
+            this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0,
                                 0x19,
                                 line_height * rge_text_font->font_hgt + 0x14,
                                 0x78, 0x19, 0x0B, 0, 0);
@@ -93,11 +94,11 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     }
 
     if (this->encyclopedia_button == 0) {
-        this->create_button(this, &this->ok_button, 0xFA1, 0, 0x6E,
+        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0x6E,
                             line_height * rge_text_font->font_hgt + 0x14,
                             0x78, 0x19, 0x0B, 0, 0);
     } else {
-        this->create_button(this, &this->ok_button, 0xFA1, 0, 0xC3,
+        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0xC3,
                             line_height * rge_text_font->font_hgt + 0x14,
                             0x78, 0x19, 0x0B, 0, 0);
     }
