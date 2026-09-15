@@ -17,7 +17,7 @@ Root retains integration responsibility. Keep at most ten editing owners, includ
 | 23 | Drawing and sprite support | Launched | `sa-40c80a1c` |
 | 24 | Paths and views | Launched | `sa-161407e1` |
 | 25 | Players and commands | Launched | `sa-0dfcbbfb` |
-| 26 | Worlds and scenarios | Prepared; waiting for capacity and RAM headroom | Not launched |
+| 26 | Worlds and scenarios | Launched | `sa-7663a5cf` |
 | 27 | Game core and victory | Prepared; waiting for capacity and RAM headroom | Not launched |
 | 28 | Resources and timelines | Prepared; waiting for capacity and RAM headroom | Not launched |
 

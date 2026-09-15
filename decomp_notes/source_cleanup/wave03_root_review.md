@@ -1,5 +1,13 @@
 # Cleanup wave 03 root review
 
+## Owner 20: corrected and integrated
+
+Root read the complete correction diff to `c7319027417fbc7d5fc53a82ae3ad021fdff2b5b`.
+The source restores `0x77617620`; both reports correct the byte-order claims and retain correction history.
+This resolves the delegated reviewer's only blocking finding.
+Root merged the group as `f6149f09c425962ca4574ae69c7c4a90ca907dd1`.
+Main contains 112 assigned wave modules, plus the pilot. Final validation remains deferred.
+
 ## Owner 19: reviewed resource definitions
 
 Reviewer `sa-e5a8d4d2` read all 3,182 diff lines and all 25 changed files at `fea021a8b9836eb0fc357a5a210041828162a328`.
