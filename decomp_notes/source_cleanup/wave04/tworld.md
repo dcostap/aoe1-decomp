@@ -8,7 +8,10 @@
 - Prior correction source commit: `72fe153494f42409f66797cd6fbd39e68422e8eb`
 - Prior correction report commit: `cb00ce396f9b2a5bc0ad4cf9a1f6ee323607248a`
 - Final brace correction commit: `b1a138720126836367f4271ad44a589e8fdc7c53`
-- Report commit: `17c8f34772d6ee06c7a8cdfd2a70910621f7ccc3`
+- Final prior brace report commit: `d8d75f1203c61f3020f1c6e312394d7b8e8e0721`
+- Root resource approval commit: `bf943f3339643ee5beca7dd74e98b4cb729e48d3`
+- Final resource macro correction commit: `9435f1c4e3a36d5bd98f2f43b39d34ebc9a21821`
+- Report commit: pending until this correction report is committed
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
@@ -16,9 +19,9 @@
 - Registry: `config/functions/src/tworld.cpp.json`
 - Header owner: group owner 26 owns `include/tworld.h`.
 
-The prior source commit contains only the assigned source. This correction
-commit contains only the assigned source. This report is a separate
-assigned-file commit.
+The prior source and brace correction commits contain only the assigned source.
+This correction commit contains only the assigned source. This report is a
+separate assigned-file commit.
 
 ## Evidence checked
 
@@ -151,15 +154,30 @@ The PDB has no direct records for several current locals, including `pb`, `m`,
 
 ## Constants, resources, comments, and formatting
 
-I reused existing shared resource macros. The source now includes
-`include/resource_ids.h` and uses:
+I imported the approved shared resource names from root approval commit
+`bf943f3339643ee5beca7dd74e98b4cb729e48d3`. That commit updates
+`include/resource_ids.h`. This assigned correction updates only
+`src/tworld.cpp` and uses direct macro substitutions. It adds no local alias.
 
-- `IDS_BUTTON_YES` for resource ID `0x0FA3`.
-- `IDS_BUTTON_NO` for resource ID `0x0FA4`.
-- `IDS_PATH_FINDING_OPTION_BASE` for base ID `0x260E`.
+The source now includes `include/resource_ids.h` and uses these approved
+direct substitutions:
 
-The existing macros preserve the original integer values and expression types.
-I did not define a new resource macro.
+- `0x0FA3` and `0x0FA4`: `IDS_BUTTON_YES` and `IDS_BUTTON_NO`.
+- `mapSize() + 0x2973`: `mapSize() + IDS_MAP_SIZE_BASE`.
+- `mapType() + 0x296A`: `mapType() + IDS_MAP_TYPE_BASE`.
+- `0x265C`-`0x265F`: `IDS_VICTORY_DESCRIPTION_STANDARD`,
+  `IDS_VICTORY_DESCRIPTION_TIME_LIMIT`, `IDS_VICTORY_DESCRIPTION_SCORE`,
+  and `IDS_VICTORY_DESCRIPTION_CONQUEST`.
+- Direct format lookups `0x25B6`, `0x25B8`, `0x25BB`, `0x25DA`, `0x25E0`,
+  `0x25E4`, `0x25E5`, `0x25E9`, and `0x25EC`: the matching approved format
+  macros.
+- Direct `0x25F0` and `0x25F1`: `IDS_POPULATION_LIMIT_FORMAT` and
+  `IDS_PATH_FINDING_FORMAT`.
+- Direct `0x106E`, `0x10E7`, and `0x2BD0` base: `IDS_AGE_NOMAD`,
+  `IDS_OPTION_DEFAULT`, and `IDS_DIFFICULTY_BASE`.
+
+The macros preserve the original integer values and expression types. I did
+not define a new resource macro.
 
 I inspected the actual runtime lookup path. `TRIBE_Game::setup` loads
 `languagex.dll` by default. `TRIBE_Game::get_string` tries that module first,
@@ -241,32 +259,24 @@ but the inspected entries have the same results.
 
 The resource purpose is established by the `TRIBE_Game` enums and the switches
 in `new_game`, plus the `victoryType()`, `mapSize()`, and `mapType()` calls in
-`logStatus`. I did not replace numeric IDs whose shared names are not yet
-approved.
+`logStatus`.
 
-Please add these proposed shared mappings to `include/resource_ids.h` in the
-root-owned resource namespace. These are new cleanup names, not recovered
-original macro names:
+The approved names are now used only at their approved direct or base uses.
+These numeric expressions remain deferred:
 
-- Victory descriptions: `0x265C` standard, `0x265D` time limit, `0x265E`
-  score, and `0x265F` conquest.
-- Victory condition log labels: `0x28A6` default, `0x28A7` conquest,
-  `0x28AD` time, `0x28AE` score, and `0x28AF` standard. Their runtime text is
-  empty or missing, but the enum and lookup arithmetic establish their roles.
-- Map-type text range: `0x296A`-`0x2972`, with names for Small Islands,
-  Large Islands, Coastal, Inland, Highland, Continental, Mediterranean,
-  Hill Country, and Narrows.
-- Map-size text range: `0x2973`-`0x2978`, with names for Tiny, Small, Medium,
-  Large, Huge, and Gigantic.
-- Format IDs: `0x25B6` map type, `0x25B8` reveal map, `0x25BB` cheating,
-  `0x25DA` map size, `0x25E0` difficulty, `0x25E4` age, `0x25E5` resources,
-  `0x25E9` fixed positions, `0x25EC` full tech tree, `0x25F0` population
-  limit, and `0x25F1` path finding.
-- Age and resource text: `0x1069`-`0x106C`, `0x106E`, `0x10E7`, and
-  `0x25E6`-`0x25E8`.
-- Difficulty text range: `0x2BD0`-`0x2BD4` only. The inspected `0x2BD5`-
-  `0x2BD6` entries are `Up` and `Down`, and `0x2BD7`-`0x2BD9` are empty.
-  The source does not prove those entries are valid difficulty values.
+- Victory-log lookup `victoryType() + 0x28A6`. The five inspected victory-log
+  slots are empty in the base DLL and missing in both inspected override DLLs.
+- Direct per-map switch IDs `0x296A`-`0x2972` and `0x2973`-`0x2978`. Only
+  `mapType() + 0x296A` and `mapSize() + 0x2973` received base macros.
+- `age + 0x1067`. The approved `IDS_AGE_NOMAD` covers only direct `0x106E`.
+- `res + 0x25E5`. The approved `IDS_RESOURCE_LEVEL_FORMAT` covers only the
+  direct format lookup.
+- Resource labels `0x25E6`-`0x25E8` have no approved source use here.
+- `0x2BD5`-`0x2BD9` remain outside the approved difficulty base. The first
+  two entries are `Up` and `Down`; the last three are empty.
+
+I did not use the `HELP_AGE_*` names. I did not change any call, cast,
+argument, buffer, enum arithmetic, order, or fallback.
 
 Please update `include/tworld.h` with a declaration-name-only change for owner
 26. Its declarations omit parameter names. Add the PDB names from the table to
