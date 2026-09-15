@@ -24,7 +24,7 @@ public:
 
 protected:
     void fillList();
-    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
 };
 
 typedef char scr_sedo_screen_size_check[
