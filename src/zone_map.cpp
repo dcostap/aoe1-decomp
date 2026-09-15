@@ -10,74 +10,75 @@ void rge_write(int file, void* data, int size);
 extern "C" void __cdecl free(void* block);
 extern "C" void* __cdecl calloc(unsigned int num, unsigned int size);
 
-unsigned char __cdecl zone_pop(Zone_Queue** head, Zone_Queue** tail,
-                               long& x_out, long& y_out)
+unsigned char __cdecl zone_pop(Zone_Queue** zone_queue, Zone_Queue** zone_end,
+                               long& x, long& y)
 {
-    Zone_Queue* node = *head;
+    Zone_Queue* node = *zone_queue;
     if (node == 0) {
         return 0;
     }
 
-    x_out = node->x;
-    y_out = node->y;
-    *head = node->next;
+    x = node->x;
+    y = node->y;
+    *zone_queue = node->next;
     free(node);
-    if (*head == 0) {
-        *tail = 0;
+    if (*zone_queue == 0) {
+        *zone_end = 0;
     }
     return 1;
 }
 
-void __cdecl zone_push(Zone_Queue** head, Zone_Queue** tail, long x, long y)
+void __cdecl zone_push(Zone_Queue** zone_queue, Zone_Queue** zone_end, long x, long y)
 {
     Zone_Queue* node = (Zone_Queue*)calloc(1, 0xC);
 
-    if (*tail != 0) {
-        (*tail)->next = node;
+    if (*zone_end != 0) {
+        (*zone_end)->next = node;
     }
     node->x = x;
     node->y = y;
-    *tail = node;
-    if (*head == 0) {
-        *head = node;
+    *zone_end = node;
+    if (*zone_queue == 0) {
+        *zone_queue = node;
     }
 }
 
 // The shipped load constructor keeps the map pointer live across the row
 // setup and restores the serialized fields before reading the map data.
-RGE_Zone_Map::RGE_Zone_Map(int param_1, RGE_Map* param_2)
+RGE_Zone_Map::RGE_Zone_Map(int infile, RGE_Map* new_map)
 {
-    this->map = param_2;
+    this->map = new_map;
 
-    this->zone_map = (uchar*)calloc(param_2->map_width * param_2->map_height, 1);
-    this->zone_map_rows = (uchar**)calloc(param_2->map_height, 4);
+    this->zone_map = (uchar*)calloc(new_map->map_width * new_map->map_height, 1);
+    this->zone_map_rows = (uchar**)calloc(new_map->map_height, 4);
 
     for (int i = 0; i < this->map->map_height; i++) {
         this->zone_map_rows[i] = this->zone_map + this->map->map_width * i;
     }
 
-    rge_read(param_1, this->zone_info, 0xFF);
-    rge_read(param_1, this, 0x3FC);
+    rge_read(infile, this->zone_info, 0xFF);
+    rge_read(infile, this, 0x3FC);
 
-    rge_read(param_1, this->zone_map,
+    rge_read(infile, this->zone_map,
              this->map->map_height * this->map->map_width);
 
-    rge_read(param_1, &this->terrain_passability_rules_num, 4);
+    rge_read(infile, &this->terrain_passability_rules_num, 4);
     if (this->terrain_passability_rules_num > 0) {
         this->terrain_passability_rules =
             (float*)calloc(this->terrain_passability_rules_num, 4);
-        rge_read(param_1, this->terrain_passability_rules,
+        rge_read(infile, this->terrain_passability_rules,
                  this->terrain_passability_rules_num * 4);
     } else {
         this->terrain_passability_rules = NULL;
     }
 }
 
-RGE_Zone_Map::RGE_Zone_Map(RGE_Map* map, float* rules, long rule_count)
+RGE_Zone_Map::RGE_Zone_Map(RGE_Map* new_map, float* new_terrain_rules,
+                           long new_terrain_rules_num)
 {
     int i;
 
-    this->map = map;
+    this->map = new_map;
     this->zone_map = (uchar*)calloc(this->map->map_width * this->map->map_height, 1);
     memset(this->zone_map, 0xFF, this->map->map_width * this->map->map_height);
     this->zone_map_rows = (uchar**)calloc(this->map->map_height, 4);
@@ -91,10 +92,10 @@ RGE_Zone_Map::RGE_Zone_Map(RGE_Map* map, float* rules, long rule_count)
         this->numberTilesInZoneValue[i] = 0;
     }
 
-    this->terrain_passability_rules_num = rule_count;
+    this->terrain_passability_rules_num = new_terrain_rules_num;
     this->terrain_passability_rules =
         (float*)calloc(this->terrain_passability_rules_num, 4);
-    memcpy(this->terrain_passability_rules, rules,
+    memcpy(this->terrain_passability_rules, new_terrain_rules,
            this->terrain_passability_rules_num * 4);
     this->do_zone_map();
 }
@@ -106,15 +107,15 @@ RGE_Zone_Map::~RGE_Zone_Map()
     free(this->terrain_passability_rules);
 }
 
-void RGE_Zone_Map::save(int file)
+void RGE_Zone_Map::save(int outfile)
 {
-    rge_write(file, this->zone_info, 0xFF);
-    rge_write(file, this, 0x3FC);
-    rge_write(file, this->zone_map,
+    rge_write(outfile, this->zone_info, 0xFF);
+    rge_write(outfile, this, 0x3FC);
+    rge_write(outfile, this->zone_map,
               this->map->map_height * this->map->map_width);
-    rge_write(file, &this->terrain_passability_rules_num, 4);
+    rge_write(outfile, &this->terrain_passability_rules_num, 4);
     if (this->terrain_passability_rules_num > 0) {
-        rge_write(file, this->terrain_passability_rules,
+        rge_write(outfile, this->terrain_passability_rules,
                   this->terrain_passability_rules_num * 4);
     }
 }
@@ -180,7 +181,7 @@ uchar RGE_Zone_Map::do_zone_map()
 
 extern double DAT_00577a20;
 
-void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
+void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char group,
                                     unsigned char zone)
 {
     Zone_Queue* zone_end = 0;
@@ -193,7 +194,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
             unsigned char* cell = this->zone_map_rows[y] + x - 1;
             if (*cell == 0xff) {
                 if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
+                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x - 1, y);
                 }
@@ -203,7 +204,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
             RGE_Tile* tile = this->map->map_row_offset[y - 1] + x;
             if (this->zone_map_rows[y - 1][x] == 0xff) {
                 if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
+                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     this->zone_map_rows[y - 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y - 1);
                 }
@@ -214,7 +215,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
             unsigned char* cell = this->zone_map_rows[y] + x + 1;
             if (*cell == 0xff) {
                 if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
+                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     *cell = zone;
                     zone_push(&zone_end, &zone_queue, x + 1, y);
                 }
@@ -224,7 +225,7 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
             RGE_Tile* tile = this->map->map_row_offset[y + 1] + x;
             if (this->zone_map_rows[y + 1][x] == 0xff) {
                 if (((this->terrain_passability_rules[tile->terrain_type] >
-                      DAT_00577a20) ? 1 : 0) == (passable & 0xff)) {
+                      DAT_00577a20) ? 1 : 0) == (group & 0xff)) {
                     this->zone_map_rows[y + 1][x] = zone;
                     zone_push(&zone_end, &zone_queue, x, y + 1);
                 }
@@ -234,14 +235,15 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
 }
 
 
-RGE_Zone_Map* RGE_Zone_Map::check_info(float* input, long count)
+RGE_Zone_Map* RGE_Zone_Map::check_info(float* new_terrain_rules,
+                                       long new_terrain_rules_num)
 {
     int n = this->terrain_passability_rules_num;
-    if (count == n) {
+    if (new_terrain_rules_num == n) {
         int i = 0;
         if (n > 0) {
             do {
-                if (input[i] <= DAT_00577a20) {
+                if (new_terrain_rules[i] <= DAT_00577a20) {
                     if (this->terrain_passability_rules[i] > DAT_00577a20)
                         return 0;
                 } else {
@@ -261,15 +263,15 @@ unsigned char RGE_Zone_Map::get_zone_info(long x, long y)
     return zone_map_rows[y][x];
 }
 
-int RGE_Zone_Map::withinRange(XYPoint point, XYPoint from, float range)
+int RGE_Zone_Map::withinRange(XYPoint start, XYPoint goal, float range)
 {
-    return withinRange(this->zone_map_rows[point.y][point.x], from, range);
+    return withinRange(this->zone_map_rows[start.y][start.x], goal, range);
 }
 
-int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
+int RGE_Zone_Map::withinRange(uchar startZone, XYPoint goal, float range)
 {
-    int min_x = from.x - (int)range;
-    int min_y = from.y - (int)range;
+    int min_x = goal.x - (int)range;
+    int min_y = goal.y - (int)range;
 
     if (min_x < 0)
         min_x = 0;
@@ -277,8 +279,8 @@ int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
         min_y = 0;
 
     XYPoint max;
-    max.x = from.x + (int)range;
-    max.y = from.y + (int)range;
+    max.x = goal.x + (int)range;
+    max.y = goal.y + (int)range;
 
     if (max.x > this->map->map_width - 1)
         max.x = this->map->map_width - 1;
@@ -286,14 +288,14 @@ int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
         max.y = this->map->map_height - 1;
 
     for (int x = min_x; x <= max.x; ++x) {
-        int x_distance = from.x - x;
+        int x_distance = goal.x - x;
         int y = min_y;
         if (y <= max.y) {
             int x_squared = x_distance * x_distance;
-            int y_distance = from.y - min_y;
+            int y_distance = goal.y - min_y;
             do {
                 if (sqrtf((float)(x_squared + y_distance * y_distance)) <= range &&
-                    this->zone_map_rows[y][x] == zone)
+                    this->zone_map_rows[y][x] == startZone)
                     return 1;
                 ++y;
                 --y_distance;
@@ -306,7 +308,7 @@ int RGE_Zone_Map::withinRange(uchar zone, XYPoint from, float range)
 int RGE_Zone_Map::numberTilesInZone(unsigned char zone)
 {
     int* cached;
-    int width;
+    int mapWidth;
     int height;
     int x;
     int count;
@@ -316,11 +318,11 @@ int RGE_Zone_Map::numberTilesInZone(unsigned char zone)
         return *cached;
     }
 
-    width = this->map->map_width;
+    mapWidth = this->map->map_width;
     height = this->map->map_height;
     count = 0;
     x = 0;
-    if (width > 0) {
+    if (mapWidth > 0) {
         do {
             if (height > 0) {
                 unsigned char** row = this->zone_map_rows;
@@ -334,22 +336,22 @@ int RGE_Zone_Map::numberTilesInZone(unsigned char zone)
                 } while (y != 0);
             }
             x++;
-        } while (x < width);
+        } while (x < mapWidth);
     }
     *cached = count;
     return count;
 }
 
-int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint& out,
-                                                int a, int b, int c)
+int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint p, XYPoint& rVal,
+                                                int type1, int type2, int range)
 {
-    int x_value = point.x;
-    int y_value = point.y;
+    int x_value = p.x;
+    int y_value = p.y;
     XYPoint max;
     XYPoint min;
 
-    min.x = x_value - c;
-    min.y = y_value - c;
+    min.x = x_value - range;
+    min.y = y_value - range;
 
     if (min.x < 0) {
         min.x = 0;
@@ -358,8 +360,8 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint& out,
         min.y = 0;
     }
 
-    max.x = x_value + c;
-    max.y = y_value + c;
+    max.x = x_value + range;
+    max.y = y_value + range;
     if (max.x > this->map->map_width - 1) {
         max.x = this->map->map_width - 1;
     }
@@ -369,19 +371,19 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint& out,
 
     int best = -1;
     if (min.x <= max.x) {
-        c = x_value - min.x;
+        range = x_value - min.x;
         do {
             if (min.y <= max.y) {
                 int y_distance = y_value - min.y;
                 int y = min.y;
                 do {
                     int terrain = this->map->get_terrain((short)min.x, (short)y);
-                    if (terrain == a || terrain == b) {
-                        int distance = c * c + y_distance * y_distance;
+                    if (terrain == type1 || terrain == type2) {
+                        int distance = range * range + y_distance * y_distance;
                         if (best == -1 || best > distance) {
                             best = distance;
-                            out.x = min.x;
-                            out.y = y;
+                            rVal.x = min.x;
+                            rVal.y = y;
                         }
                     }
                     ++y;
@@ -389,32 +391,32 @@ int RGE_Zone_Map::findClosestPointInTerrainType(XYPoint point, XYPoint& out,
                 } while (y <= max.y);
             }
             ++min.x;
-            --c;
+            --range;
         } while (min.x <= max.x);
     }
 
     return best != -1;
 }
 
-RGE_Zone_Map_List::RGE_Zone_Map_List(int file, RGE_Map* map)
+RGE_Zone_Map_List::RGE_Zone_Map_List(int infile, RGE_Map* in_map)
 {
     this->zone_maps = 0;
-    this->map = map;
-    rge_read(file, &this->zone_map_num, 4);
+    this->map = in_map;
+    rge_read(infile, &this->zone_map_num, 4);
 
     if (this->zone_map_num > 0) {
         this->zone_maps = (RGE_Zone_Map**)calloc(this->zone_map_num, 4);
         for (int i = 0; i < this->zone_map_num; i++) {
-            this->zone_maps[i] = new RGE_Zone_Map(file, this->map);
+            this->zone_maps[i] = new RGE_Zone_Map(infile, this->map);
         }
     } else {
         this->zone_maps = 0;
     }
 }
 
-RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Map* map)
+RGE_Zone_Map_List::RGE_Zone_Map_List(RGE_Map* in_map)
 {
-    this->map = map;
+    this->map = in_map;
     this->zone_maps = 0;
     this->zone_map_num = 0;
 }
@@ -424,24 +426,26 @@ RGE_Zone_Map_List::~RGE_Zone_Map_List()
     this->delete_zone_maps();
 }
 
-void RGE_Zone_Map_List::save(int file)
+void RGE_Zone_Map_List::save(int outfile)
 {
     int i;
 
-    rge_write(file, &zone_map_num, 4);
+    rge_write(outfile, &zone_map_num, 4);
     if (zone_map_num > 0) {
         for (i = 0; i < zone_map_num; i++) {
-            zone_maps[i]->save(file);
+            zone_maps[i]->save(outfile);
         }
     }
 }
 
-long RGE_Zone_Map_List::create_zone_map(float* table, long count)
+long RGE_Zone_Map_List::create_zone_map(float* new_terrain_rules,
+                                        long new_terrain_rules_num)
 {
     long i;
 
     for (i = 0; i < this->zone_map_num; i++) {
-        if (this->zone_maps[i]->check_info(table, count) != 0) {
+        if (this->zone_maps[i]->check_info(new_terrain_rules,
+                                           new_terrain_rules_num) != 0) {
             if (this->zone_maps[i]->do_zone_map() != 0)
                 return i;
             i = -1;
@@ -458,7 +462,7 @@ long RGE_Zone_Map_List::create_zone_map(float* table, long count)
     }
 
     RGE_Zone_Map* new_zone_map =
-        new RGE_Zone_Map(this->map, table, count);
+        new RGE_Zone_Map(this->map, new_terrain_rules, new_terrain_rules_num);
     new_zone_maps[this->zone_map_num] = new_zone_map;
     this->zone_maps = new_zone_maps;
     this->zone_map_num++;
@@ -466,15 +470,16 @@ long RGE_Zone_Map_List::create_zone_map(float* table, long count)
 }
 
 RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(
-    float* terrain_info, long terrain_info_num, int& zone_map_index)
+    float* new_terrain_rules, long new_terrain_rules_num, int& zoneMapIndex)
 {
     int i = 0;
     RGE_Zone_Map** new_zone_maps;
 
     if (this->zone_map_num > 0) {
         while (i < this->zone_map_num) {
-            if (this->zone_maps[i]->check_info(terrain_info, terrain_info_num) != 0) {
-                zone_map_index = i;
+            if (this->zone_maps[i]->check_info(new_terrain_rules,
+                                               new_terrain_rules_num) != 0) {
+                zoneMapIndex = i;
                 return this->zone_maps[i];
             }
             i++;
@@ -487,18 +492,18 @@ RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(
         free(this->zone_maps);
     }
     new_zone_maps[this->zone_map_num] =
-        new RGE_Zone_Map(this->map, terrain_info, terrain_info_num);
+        new RGE_Zone_Map(this->map, new_terrain_rules, new_terrain_rules_num);
     this->zone_maps = new_zone_maps;
     this->zone_map_num++;
-    zone_map_index = this->zone_map_num - 1;
+    zoneMapIndex = this->zone_map_num - 1;
     return new_zone_maps[this->zone_map_num - 1];
 }
 
-RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(long index)
+RGE_Zone_Map* RGE_Zone_Map_List::get_zone_map(long id)
 {
-    if (index < this->zone_map_num) {
-        if (index >= 0) {
-            return this->zone_maps[index];
+    if (id < this->zone_map_num) {
+        if (id >= 0) {
+            return this->zone_maps[id];
         }
     }
     return 0;
