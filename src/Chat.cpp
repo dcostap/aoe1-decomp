@@ -55,7 +55,7 @@ int TChat::AddChatMsg(char* PlayerName, char* Text, unsigned char Local) {
     }
 
     sprintf(Chat[CurrentMsgNo], "%s: %s", PlayerName, Text);
-    PostMessageA(HostWnd, WM_USER, 0x17D5, CurrentMsgNo);
+    PostMessageA(HostWnd, WM_USER, CHAT_RECEIVED, CurrentMsgNo);
     if (taunt != 0) {
         taunt->PlayTauntStr(Text, Local);
     }
