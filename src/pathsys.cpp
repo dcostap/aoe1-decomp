@@ -28,10 +28,9 @@ struct BYTEPoint {
 PathingSystem pathSystem(0xFF, 0xFF, 0, 0, 0);
 PathingSystem aiPathSystem(0xFF, 0xFF, 1, 0, 0);
 
-PathingSystem::PathingSystem(int xSize, int ySize, int aiPS,
-                             RGE_Map* map, RGE_Game_World* world)
-{
-    this->aiPS = aiPS;
+PathingSystem::PathingSystem(int x, int y, int aiPSInit,
+                             RGE_Map* map, RGE_Game_World* world) {
+    this->aiPS = aiPSInit;
     this->xSizeValue = -1;
     this->ySizeValue = -1;
     this->currentTerrainException1 = -1;
@@ -55,39 +54,37 @@ PathingSystem::PathingSystem(int xSize, int ySize, int aiPS,
     this->averageSuccessTime = 0.0f;
     this->averageFailTime = 0.0f;
 
-    this->initialize(xSize, ySize, map, world);
+    this->initialize(x, y, map, world);
     this->initMisc(0);
     this->zeroObstructionMap();
 
-    aiPS = 0;
+    int i = 0;
     int* distance = DiagionalDistance;
     do {
-        *distance = (int)(DAT_00570e50 - (float)aiPS * DAT_00570e48 * DAT_00570e4c);
-        ++aiPS;
+        *distance = (int)(DAT_00570e50 - (float)i * DAT_00570e48 * DAT_00570e4c);
+        ++i;
         ++distance;
     } while ((int)distance < (int)(DiagionalDistance + 256));
 }
 
-PathingSystem::~PathingSystem()
-{
+PathingSystem::~PathingSystem() {
 }
 
-int PathingSystem::initialize(int xSize, int ySize, RGE_Map* map, RGE_Game_World* world) {
+int PathingSystem::initialize(int x, int y, RGE_Map* map, RGE_Game_World* world) {
     mapValue = map;
     worldValue = world;
     if (map != 0) {
         xSizeValue = map->map_width;
         ySizeValue = map->map_height;
     } else {
-        xSizeValue = xSize;
-        ySizeValue = ySize;
+        xSizeValue = x;
+        ySizeValue = y;
     }
     CurrentFacetMask = 0xF0;
     return 1;
 }
 
-void PathingSystem::printToFile(char* filename)
-{
+void PathingSystem::printToFile(char* filename) {
     int column;
     int i;
     if (filename != 0) {
@@ -147,16 +144,16 @@ void PathingSystem::printToFile(char* filename)
     }
 }
 
-unsigned char PathingSystem::lookupMisc(int row, int column) {
-    return this->miscValue[row][column];
+unsigned char PathingSystem::lookupMisc(int x, int y) {
+    return this->miscValue[x][y];
 }
 
-void PathingSystem::setMisc(int row, int column, unsigned char value) {
-    this->miscValue[row][column] = value;
+void PathingSystem::setMisc(int x, int y, unsigned char v) {
+    this->miscValue[x][y] = v;
 }
 
-void PathingSystem::initMisc(unsigned char value) {
-    memset(this->miscValue, value, 0xFE01);
+void PathingSystem::initMisc(unsigned char v) {
+    memset(this->miscValue, v, 0xFE01);
 }
 
 void PathingSystem::zeroObstructionMap(void) {
@@ -185,8 +182,7 @@ void PathingSystem::decrementObstruction(int x, int y) {
     }
 }
 
-static __inline int estimateDistanceOrdered(int ax, int ay, int bx, int by)
-{
+static __inline int estimateDistanceOrdered(int ax, int ay, int bx, int by) {
     int swap;
     int diagonal;
     int straight;
@@ -215,11 +211,10 @@ static __inline int estimateDistanceOrdered(int ax, int ay, int bx, int by)
 }
 
 #pragma optimize("y", off)
-int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* obj,
-                                float tolerance, int targetID, int mode, float* costOut,
-                                int useIterationCap, int checkTerrain, int checkObstructions,
-                                int step, int unobPlayerID, int unobGroupID)
-{
+int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* unit,
+                                float actionRange, int cTargetID, int copyPathWhenDone, float* pathLength,
+                                int checkPathingIterations, int checkTerrainFirstTime, int checkCollisions,
+                                int stepSize, int unobstructiblePlayerID, int unobstructibleGroupID) {
     int dist;
     int currentEstimate;
     int MGP_goalTolerance;
@@ -239,7 +234,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int minScanX;
     int minScanY;
     int maxScanX;
-    int maxScanY;
+    int MaxY;
     int left;
     int right;
     int top;
@@ -293,39 +288,39 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
     if (startX < 0 || startY < 0 || startX > this->xSizeValue || startY > this->xSizeValue ||
         goalX < 0 || goalY < 0 || goalX > this->xSizeValue || goalY > this->xSizeValue) {
-        if (mode == 1) {
-            path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
+        if (copyPathWhenDone == 1) {
+            path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
             path->killPath();
         }
         return 0;
     }
 
-    if (tolerance > DAT_00570e54) {
+    if (actionRange > DAT_00570e54) {
         dist = estimateDistanceOrdered(goalX, goalY, startX, startY);
-        if ((float)dist < tolerance * DAT_00570e58) {
-            if (costOut != 0) *costOut = 0;
-            if (mode == 1) {
-                path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
+        if ((float)dist < actionRange * DAT_00570e58) {
+            if (pathLength != 0) *pathLength = 0;
+            if (copyPathWhenDone == 1) {
+                path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
                 path->killPath();
             }
             return 1;
         }
-        if (obj->maximumSpeed() == DAT_00570e5c) {
-            if (costOut != 0) *costOut = 0;
-            if (mode == 1) {
-                path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
+        if (unit->maximumSpeed() == DAT_00570e5c) {
+            if (pathLength != 0) *pathLength = 0;
+            if (copyPathWhenDone == 1) {
+                path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
                 path->killPath();
             }
             return 0;
         }
     }
 
-    this->currentObject = obj;
-    this->currentTerrainTable = this->worldValue->terrains[obj->master_obj->terrain];
-    this->currentTerrainException1 = obj->currentTerrainException1;
-    this->currentTerrainException2 = obj->currentTerrainException2;
-    this->currentUnobstructiblePlayerID = unobPlayerID;
-    this->currentUnobstructibleGroupID = unobGroupID;
+    this->currentObject = unit;
+    this->currentTerrainTable = this->worldValue->terrains[unit->master_obj->terrain];
+    this->currentTerrainException1 = unit->currentTerrainException1;
+    this->currentTerrainException2 = unit->currentTerrainException2;
+    this->currentUnobstructiblePlayerID = unobstructiblePlayerID;
+    this->currentUnobstructibleGroupID = unobstructibleGroupID;
     this->currentUnobstructibles.zeroNumber();
 
     if (MapPathsDisplay != 0) {
@@ -350,11 +345,11 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
     this->minTarget.x = goalX * 4;
     this->minTarget.y = goalY * 4;
-    this->currentTargetID = targetID;
+    this->currentTargetID = cTargetID;
     this->maxTarget.x = goalX * 4 + 3;
     this->maxTarget.y = goalY * 4 + 3;
-    if (targetID != -1) {
-        target = this->worldValue->object(targetID);
+    if (cTargetID != -1) {
+        target = this->worldValue->object(cTargetID);
         if (target == 0) {
             this->currentTargetID = -1;
         } else {
@@ -366,7 +361,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     }
 
     this->startOfPath = 1;
-    this->checkTerrainOnFirstPass = checkTerrain;
+    this->checkTerrainOnFirstPass = checkTerrainFirstTime;
     this->currentObjectInObMap = this->currentObject->removeFromObstructionMap(this->aiPS);
 
     // VC5 evaluates the Y floor argument before X.
@@ -377,8 +372,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         this->currentXOffset = 0.5f;
         this->currentYOffset = 0.5f;
     } else {
-        this->currentXOffset = obj->world_x - (float)floor((double)obj->world_x);
-        this->currentYOffset = obj->world_y - (float)floor((double)obj->world_y);
+        this->currentXOffset = unit->world_x - (float)floor((double)unit->world_x);
+        this->currentYOffset = unit->world_y - (float)floor((double)unit->world_y);
     }
 
     curObj = this->currentObject;
@@ -437,8 +432,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->MGP_bestTraversedPath.x = (unsigned char)startX;
     this->MGP_bestTraversedPath.y = (unsigned char)startY;
 
-    if ((float)step <= tolerance) MGP_goalTolerance = (int)(tolerance * DAT_00570e58);
-    else MGP_goalTolerance = step << 4;
+    if ((float)stepSize <= actionRange) MGP_goalTolerance = (int)(actionRange * DAT_00570e58);
+    else MGP_goalTolerance = stepSize << 4;
 
     float xRadius = this->currentObject->master_obj->radius_x;
     float yRadius = this->currentObject->master_obj->radius_y;
@@ -469,7 +464,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     while (this->numberOpenPathsValue > 0) {
         XYPoint bestPathPoint;
         XYPoint temp;
-        if (numberPathingIterations != -1 && useIterationCap == 1 && iterations > numberIterationCap) break;
+        if (numberPathingIterations != -1 && checkPathingIterations == 1 && iterations > numberIterationCap) break;
         if (iterations > 0x4e20) break;
 
         bestPathPoint.x = this->MGP_openPaths[1].x;
@@ -486,8 +481,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         }
 
         if (currentEstimate < MGP_goalTolerance) {
-            if (mode == 1 && this->copyPath(step) == 0) {
-                path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
+            if (copyPathWhenDone == 1 && this->copyPath(stepSize) == 0) {
+                path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
                     path->killPath();
                 curObj = this->currentObject;
                 i = 0;
@@ -502,7 +497,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 }
                 goto final_failure_restore;
             }
-            if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
+            if (pathLength != 0) *pathLength = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
             curObj = this->currentObject;
             i = 0;
             while (i < curObj->pathingGroupMembers.number()) {
@@ -557,14 +552,14 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         temp.y = bestPathPoint.y;
         while (i < 8) {
             switch (i) {
-            case 0: temp.x -= step; temp.y -= step; break;
+            case 0: temp.x -= stepSize; temp.y -= stepSize; break;
             case 1:
-            case 2: temp.x += step; break;
-            case 3: temp.y += step; break;
-            case 4: temp.y += step; break;
+            case 2: temp.x += stepSize; break;
+            case 3: temp.y += stepSize; break;
+            case 4: temp.y += stepSize; break;
             case 5:
-            case 6: temp.x -= step; break;
-            case 7: temp.y -= step; break;
+            case 6: temp.x -= stepSize; break;
+            case 7: temp.y -= stepSize; break;
             }
 
             facetByte = this->facetValue[bestPathPoint.x][bestPathPoint.y];
@@ -593,7 +588,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = temp.x + xDeltaLeft;
                 minScanY = temp.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
-                maxScanY = bestPathPoint.y + yDeltaDown;
+                MaxY = bestPathPoint.y + yDeltaDown;
                 MinX4 = temp.x * 4 + xDeltaLeft4;
                 MinY4 = temp.y * 4 + yDeltaUp4;
                 MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
@@ -603,7 +598,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = temp.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
-                maxScanY = bestPathPoint.y + yDeltaDown;
+                MaxY = bestPathPoint.y + yDeltaDown;
                 MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
                 MinY4 = temp.y * 4 + yDeltaUp4;
                 MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
@@ -613,7 +608,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = temp.y + yDeltaUp;
                 maxScanX = temp.x + xDeltaRight;
-                maxScanY = bestPathPoint.y + yDeltaDown;
+                MaxY = bestPathPoint.y + yDeltaDown;
                 MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
                 MinY4 = temp.y * 4 + yDeltaUp4;
                 MaxX4 = temp.x * 4 + xDeltaRight4;
@@ -623,7 +618,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = temp.x + xDeltaRight;
-                maxScanY = bestPathPoint.y + yDeltaDown;
+                MaxY = bestPathPoint.y + yDeltaDown;
                 MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
                 MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
                 MaxX4 = temp.x * 4 + xDeltaRight4;
@@ -633,7 +628,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = temp.x + xDeltaRight;
-                maxScanY = temp.y + yDeltaDown;
+                MaxY = temp.y + yDeltaDown;
                 MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
                 MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
                 MaxX4 = temp.x * 4 + xDeltaRight4;
@@ -643,7 +638,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
-                maxScanY = temp.y + yDeltaDown;
+                MaxY = temp.y + yDeltaDown;
                 MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
                 MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
                 MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
@@ -653,7 +648,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = temp.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
-                maxScanY = temp.y + yDeltaDown;
+                MaxY = temp.y + yDeltaDown;
                 MinX4 = temp.x * 4 + xDeltaLeft4;
                 MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
                 MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
@@ -663,7 +658,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = temp.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
-                maxScanY = bestPathPoint.y + yDeltaDown;
+                MaxY = bestPathPoint.y + yDeltaDown;
                 MinX4 = temp.x * 4 + xDeltaLeft4;
                 MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
                 MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
@@ -673,7 +668,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanX = temp.x;
                 minScanY = temp.y;
                 maxScanX = temp.x;
-                maxScanY = temp.y;
+                MaxY = temp.y;
                 MinX4 = temp.x * 4 + xDeltaLeft4;
                 MinY4 = temp.y * 4 + yDeltaUp4;
                 MaxX4 = temp.x * 4 + xDeltaRight4;
@@ -686,11 +681,11 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             if (MinX4 < 0) ++MinX4;
             if (MinY4 < 0) ++MinY4;
             map = this->mapValue;
-            if ((maxScanX & 0xff) >= map->map_width || (maxScanY & 0xff) >= map->map_height) {
+            if ((maxScanX & 0xff) >= map->map_width || (MaxY & 0xff) >= map->map_height) {
                 terrainStatus = 0xfe;
             } else {
                 terrainRow = (unsigned char)minScanY;
-                if (terrainRow <= (unsigned char)maxScanY) {
+                if (terrainRow <= (unsigned char)MaxY) {
                     RGE_Tile** terrainRows = map->map_row_offset;
                     do {
                         terrainCol = (unsigned char)minScanX;
@@ -717,12 +712,12 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                             ++terrainCol;
                         }
                         ++terrainRow;
-                    } while (terrainRow <= (unsigned char)maxScanY && terrainStatus == 1);
+                    } while (terrainRow <= (unsigned char)MaxY && terrainStatus == 1);
                 }
             }
             badCollision = terrainStatus;
 
-            if (badCollision == 1 && checkObstructions == 1) {
+            if (badCollision == 1 && checkCollisions == 1) {
                 left = MinX4;
                 right = MaxX4;
                 top = MinY4;
@@ -794,9 +789,9 @@ obstruction_done:
                 while (row <= maxScanX && row < this->xSizeValue && found == 0) {
                     minScanY = temp.y - 1;
                     if (minScanY < 0) minScanY = 0;
-                    maxScanY = temp.y + 1;
+                    MaxY = temp.y + 1;
                     col = minScanY;
-                    while (col <= maxScanY && col < this->ySizeValue && found == 0) {
+                    while (col <= MaxY && col < this->ySizeValue && found == 0) {
                         objectCountOnTile = 0;
                         hitId = this->worldValue->objectGroupOnTile(this->currentUnobstructiblePlayerID, this->currentUnobstructibleGroupID, row, col, objectCountOnTile);
                         if (hitId == -1) {
@@ -853,8 +848,8 @@ obstruction_done:
                 }
             }
             if (badCollision == 0) {
-                if (mode == 1 && this->copyPath(step) == 0) {
-                    path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
+                if (copyPathWhenDone == 1 && this->copyPath(stepSize) == 0) {
+                    path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
                     path->killPath();
                     curObj = this->currentObject;
                     i = 0;
@@ -869,7 +864,7 @@ obstruction_done:
                     }
                     goto final_failure_restore;
                 }
-                if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
+                if (pathLength != 0) *pathLength = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
                 curObj = this->currentObject;
                 i = 0;
                 while (i < curObj->pathingGroupMembers.number()) {
@@ -925,8 +920,8 @@ path_exhausted:
         }
     }
 
-    if (mode == 1 && this->copyPath(step) == 0) {
-        path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
+    if (copyPathWhenDone == 1 && this->copyPath(stepSize) == 0) {
+        path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
                     path->killPath();
         curObj = this->currentObject;
         i = 0;
@@ -940,7 +935,7 @@ path_exhausted:
             ++i;
         }
     } else {
-        if (costOut != 0) *costOut = (float)this->MGP_bestTraversedPath.total;
+        if (pathLength != 0) *pathLength = (float)this->MGP_bestTraversedPath.total;
         curObj = this->currentObject;
         i = 0;
         while (i < curObj->pathingGroupMembers.number()) {
@@ -977,8 +972,7 @@ void PathingSystem::incrementCanPaths() {
 }
 
 int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY,
-                            int checkTerrain)
-{
+                            int checkTerrain) {
     this->currentObject = obj;
     this->currentTerrainTable =
         this->worldValue->terrains[obj->master_obj->terrain];
@@ -1151,11 +1145,10 @@ long PathingSystem::checksum(void) {
     return value;
 }
 
-void PathingSystem::printState(RGE_Moving_Object* obj)
-{
-    obj->logDebug("    There are %d open paths and %d traversed paths.",
+void PathingSystem::printState(RGE_Moving_Object* unit) {
+    unit->logDebug("    There are %d open paths and %d traversed paths.",
         this->numberOpenPathsValue, this->numberTraversedPathsValue);
-    obj->logDebug("    The open paths:");
+    unit->logDebug("    The open paths:");
 
     int i = 1;
     if (i <= this->numberOpenPathsValue) {
@@ -1167,7 +1160,7 @@ void PathingSystem::printState(RGE_Moving_Object* obj)
             } else {
                 facet = 0xff;
             }
-            obj->logDebug("      %5d: (%d, %d), total=%d, facet=%d.",
+            unit->logDebug("      %5d: (%d, %d), total=%d, facet=%d.",
                 i, path[-1], path[0], *(int*)(path + 3), facet);
             ++i;
             path += 8;
@@ -1175,8 +1168,7 @@ void PathingSystem::printState(RGE_Moving_Object* obj)
     }
 }
 
-int PathingSystem::copyPath(int step)
-{
+int PathingSystem::copyPath(int stepSize) {
     uchar previousFacet;
 
     {
@@ -1188,13 +1180,13 @@ int PathingSystem::copyPath(int step)
         path->killPath();
     }
 
-    BYTEPoint currentPoint;
-    currentPoint.x = this->MGP_openPaths[1].x;
-    currentPoint.y = this->MGP_openPaths[1].y;
-    int fooX = currentPoint.x;
-    int fooY = currentPoint.y;
+    BYTEPoint temp;
+    temp.x = this->MGP_openPaths[1].x;
+    temp.y = this->MGP_openPaths[1].y;
+    int fooX = temp.x;
+    int fooY = temp.y;
     previousFacet = 0xFF;
-    uchar facetByte = this->facetValue[currentPoint.x][currentPoint.y];
+    uchar facetByte = this->facetValue[temp.x][temp.y];
     uchar currentFacet;
     if ((facetByte & 0xF8) == this->CurrentFacetMask)
         currentFacet = facetByte & 7;
@@ -1202,11 +1194,11 @@ int PathingSystem::copyPath(int step)
         currentFacet = 0xFF;
 
     RGE_Moving_Object* object = this->currentObject;
-    Waypoint waypoint;
-    waypoint.x = (float)fooX + this->currentXOffset;
-    waypoint.y = (float)fooY + this->currentYOffset;
-    waypoint.z = object->world_z;
-    waypoint.facetToNextWaypoint = currentFacet;
+    Waypoint wp;
+    wp.x = (float)fooX + this->currentXOffset;
+    wp.y = (float)fooY + this->currentYOffset;
+    wp.z = object->world_z;
+    wp.facetToNextWaypoint = currentFacet;
 
     {
         Path* path = object->storePathInExceptionPath == 0
@@ -1218,10 +1210,10 @@ int PathingSystem::copyPath(int step)
     do {
         if (this->initialTile.x == fooX && this->initialTile.y == fooY) {
             if (this->currentObject->storePathInExceptionPath == 0) {
-                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
+                if (this->currentObject->pathValue.insertAtCurrent(wp) == 0)
                     return 0;
             } else {
-                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
+                if (this->currentObject->exceptionPathValue.insertAtCurrent(wp) == 0)
                     return 0;
             }
             return 1;
@@ -1229,10 +1221,10 @@ int PathingSystem::copyPath(int step)
 
         if (currentFacet != previousFacet) {
             if (this->currentObject->storePathInExceptionPath == 0) {
-                if (this->currentObject->pathValue.insertAtCurrent(waypoint) == 0)
+                if (this->currentObject->pathValue.insertAtCurrent(wp) == 0)
                     return 0;
             } else {
-                if (this->currentObject->exceptionPathValue.insertAtCurrent(waypoint) == 0)
+                if (this->currentObject->exceptionPathValue.insertAtCurrent(wp) == 0)
                     return 0;
             }
         }
@@ -1273,55 +1265,54 @@ int PathingSystem::copyPath(int step)
 
         switch ((int)currentFacet) {
         case 0:
-            currentPoint.x += (uchar)step;
-            currentPoint.y += (uchar)step;
+            temp.x += (uchar)stepSize;
+            temp.y += (uchar)stepSize;
             break;
         case 1:
-            currentPoint.y += (uchar)step;
+            temp.y += (uchar)stepSize;
             break;
         case 2:
-            currentPoint.x -= (uchar)step;
-            currentPoint.y += (uchar)step;
+            temp.x -= (uchar)stepSize;
+            temp.y += (uchar)stepSize;
             break;
         case 3:
-            currentPoint.x -= (uchar)step;
+            temp.x -= (uchar)stepSize;
             break;
         case 4:
-            currentPoint.x -= (uchar)step;
-            currentPoint.y -= (uchar)step;
+            temp.x -= (uchar)stepSize;
+            temp.y -= (uchar)stepSize;
             break;
         case 5:
-            currentPoint.y -= (uchar)step;
+            temp.y -= (uchar)stepSize;
             break;
         case 6:
-            currentPoint.x += (uchar)step;
-            currentPoint.y -= (uchar)step;
+            temp.x += (uchar)stepSize;
+            temp.y -= (uchar)stepSize;
             break;
         case 7:
-            currentPoint.x += (uchar)step;
+            temp.x += (uchar)stepSize;
             break;
         }
 
         previousFacet = currentFacet;
-        fooX = currentPoint.x;
-        fooY = currentPoint.y;
+        fooX = temp.x;
+        fooY = temp.y;
         facetByte = this->facetValue[fooX][fooY];
         if ((facetByte & 0xF8) == this->CurrentFacetMask)
             currentFacet = facetByte & 7;
         else
             currentFacet = 0xFF;
-        waypoint.x = (float)fooX + this->currentXOffset;
-        waypoint.y = (float)fooY + this->currentYOffset;
-        waypoint.facetToNextWaypoint = currentFacet;
+        wp.x = (float)fooX + this->currentXOffset;
+        wp.y = (float)fooY + this->currentYOffset;
+        wp.facetToNextWaypoint = currentFacet;
     } while (true);
 }
 
-void PathingSystem::copyUnobstructibles(ManagedArray<int>& out)
-{
+void PathingSystem::copyUnobstructibles(ManagedArray<int>& d) {
     int i = this->currentUnobstructibles.number();
     if (i >= 0) {
         do {
-            out.add(this->currentUnobstructibles[i]);
+            d.add(this->currentUnobstructibles[i]);
 
             --i;
         } while (i >= 0);
