@@ -4,7 +4,10 @@
 
 - Module: `src/m_ac_obj.cpp`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Source head commit: `7631026304e61b4f20c0d67a89893d9fd95adfdb`.
+- Initial source commit: `7631026304e61b4f20c0d67a89893d9fd95adfdb`.
+- Initial report commit: `515ac3f53a815d1b1ba56e1e324ff9382725bff9`.
+- Formatting correction source commit: `3f302226887047f81b5a693b9f42ee45bf5bafaa`.
+- Source head commit: `3f302226887047f81b5a693b9f42ee45bf5bafaa`.
 - Changed files: `src/m_ac_obj.cpp` and this report.
 - Header read but not changed: `include/m_ac_obj.h`.
 - Registry: `config/functions/src/m_ac_obj.cpp.json`, with `gx` flags.
@@ -83,6 +86,10 @@ The source also moves function opening braces to 1TBS positions. It keeps all
 casts, literals, calls, statement order, evaluation order, and explicit source
 forms unchanged.
 
+The formatting correction reviewed every touched definition. Both `setup`
+overloads, `copy_obj`, `modify`, `modify_delta`, and `modify_percent` now keep
+short signatures on one line. Their continuation indentation is no longer used.
+
 ## Constants, resources, and comments
 
 No new constant, resource ID, or comment was added.
@@ -135,5 +142,5 @@ The brace changes can affect debug line records. Final validation must compare
 the result with the preserved pre-cleanup output. This worker did not run that
 validation.
 
-I reviewed the complete Git diff and ran `git diff --check`.
+I reviewed the complete base-to-head Git diff and ran `git diff --check`.
 Compilation, matching, audits, and tests were not run.
