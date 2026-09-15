@@ -5,7 +5,15 @@
 Corrected head: `b02bf34c8a0ef850b9f73b04cf6dcc73df87e3c2`.
 The complete 890-line correction diff is `build/source-cleanup-20260915/owner19-corrections.diff`.
 Original reviewer `sa-e5a8d4d2` resumed to review all substitutions and report corrections.
-Integration remains pending that result.
+Reviewer `sa-e5a8d4d2` approved every correction line and changed report. No blocker remains.
+The imported header matches root blob `71ec35b821fffd3b0b2ceb0232a661952ae3019f`.
+All ten definitions retain their exact literal tokens. Both countdown paths use the approved common name.
+Calls, buffers, arguments, arithmetic, and lookup order remain unchanged by source review.
+The indentation and obsolete citation corrections are complete. This approval is not compiler or runtime validation.
+Root merged the group as `952ef63539ca8029e93200877933387dadd21361`.
+The header conflict contained only newer root definitions absent from the imported older header.
+Root retained those definitions. The resolved header equals the main header before the merge.
+Main now contains 136 assigned modules plus the pilot: 137 of 225, approximately 60.9%.
 
 ## Owner 22: approval and coordinated notification name
 
