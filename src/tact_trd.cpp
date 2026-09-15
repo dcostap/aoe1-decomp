@@ -23,9 +23,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(int infile, RGE_Action_Object* obj_in)
     this->action_type = 0x6F;
 }
 
-TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
-                                       RGE_Task* task_in,
-                                       RGE_Static_Object* target_obj_in)
+TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 0x6F;
@@ -37,9 +35,7 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
     this->pick_up_y = -1.0f;
 }
 
-TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in,
-                                       RGE_Task* task_in,
-                                       float x, float y, float z)
+TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 0x6F;
@@ -460,8 +456,8 @@ RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void) {
     short task_facet = task->attribute_type;
 
     if (task_facet != (short)0xFFFF &&
-        task_facet == action->obj->attribute_type_held
-        && (int)action->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
+        task_facet == action->obj->attribute_type_held &&
+        (int)action->obj->attribute_amount_held > 0 && task->carry_sprite != 0) {
         return task->carry_sprite;
     }
     return action->obj->master_obj->sprite;
