@@ -15,10 +15,21 @@ from prepare_runtime import ORIGINAL_SHA256
 MESSAGES = {*range(0x100,0x108),*range(0x200,0x20a)}
 V1_POLICY = 'human-idle20-clock1-paced-v1-message-driven-polling'
 V2_POLICY = 'human-idle20-clock1-paced-v2-serialized-message-driven-polling'
+V3_POLICY = 'human-idle20-clock1-paced-v3-no-native-timers'
+V4_POLICY = 'human-idle20-clock1-paced-v4-controlled-paint'
 POLICY = V2_POLICY
 V1_TEMPLATE_SHA256 = '6312fbd5ebb7d82dd91abe775e8c4c15c538743f276dba03ab61bbb8a1043db4'
 V2_TEMPLATE_SHA256 = '1112a4ab54fef13f766d20da7fc1815b20f43aa844bbfdde23ce14eeabc862f4'
 V1_TO_V2_UPGRADE = 'v1-to-v2-serialized-dispatch-20260915'
+V3_TEMPLATE_SHA256 = 'd4dbe3e19381be0af88827d80bb783027960b2d37bb2b43b430db869c9c14000'
+V1_TO_V3_UPGRADE = 'v1-to-v3-no-native-timers-turn-stop-20260915'
+V2_TO_V3_UPGRADE = 'v2-to-v3-no-native-timers-turn-stop-20260915'
+V4_TEMPLATE_SHA256 = '17752944a9ed945df3a3d0e34bea6f7ac7aabbdcde68a6ae8ad0c65797c5e99e'
+V1_TO_V4_UPGRADE = 'v1-to-v4-controlled-paint-turn-stop-20260915'
+V2_TO_V4_UPGRADE = 'v2-to-v4-controlled-paint-turn-stop-20260915'
+UPGRADES = {V1_TO_V2_UPGRADE:(V1_POLICY,V2_POLICY), V1_TO_V3_UPGRADE:(V1_POLICY,V3_POLICY),
+            V2_TO_V3_UPGRADE:(V2_POLICY,V3_POLICY), V1_TO_V4_UPGRADE:(V1_POLICY,V4_POLICY),
+            V2_TO_V4_UPGRADE:(V2_POLICY,V4_POLICY)}
 MAX_RECORDING_BYTES = 32*1024*1024
 
 
@@ -27,6 +38,10 @@ def template_sha256(policy):
         return V1_TEMPLATE_SHA256
     if policy == V2_POLICY:
         return V2_TEMPLATE_SHA256
+    if policy == V3_POLICY:
+        return V3_TEMPLATE_SHA256
+    if policy == V4_POLICY:
+        return V4_TEMPLATE_SHA256
     raise ValueError('Unknown human input policy.')
 
 
@@ -50,7 +65,7 @@ def validate_session(session):
     if not integer(session.get('duration_ms'), 1, 190000):
         raise ValueError('Recorded terminal boundary exceeds 190 seconds.')
     upgrade = session.get('upgrade_rule')
-    if upgrade is not None and upgrade != V1_TO_V2_UPGRADE:
+    if upgrade is not None and upgrade not in UPGRADES:
         raise ValueError('Unknown human replay upgrade rule.')
     if session['mode'] == 'record' and upgrade is not None:
         raise ValueError('A recording cannot use a replay upgrade rule.')
@@ -61,8 +76,11 @@ def validate_session(session):
         policy = contract.get('policy')
         if policy not in (V1_POLICY,V2_POLICY) or contract.get('script_sha256') != template_sha256(policy):
             raise ValueError('Unknown human replay policy or control-script hash.')
-        if upgrade is not None and policy != V1_POLICY:
-            raise ValueError('The scheduler upgrade requires the exact v1 policy and script hash.')
+        if upgrade is not None:
+            required_policy = UPGRADES[upgrade][0]
+            if policy != required_policy:
+                version = 'v2' if required_policy == V2_POLICY else 'v1'
+                raise ValueError(f'The scheduler upgrade requires the exact {version} policy and script hash.')
         recording_sha = session.get('recording_sha256')
         if recording_sha is not None and (not isinstance(recording_sha,str) or len(recording_sha) != 64 or
                 any(c not in '0123456789abcdef' for c in recording_sha)):
@@ -76,6 +94,8 @@ def validate_session(session):
         raise ValueError('A human recording cannot contain replay inputs.')
     if type(session.get('smoke',False)) is not bool:
         raise ValueError('The smoke flag must be boolean.')
+    if type(session.get('message_noise',False)) is not bool or (session['mode'] == 'record' and session.get('message_noise')):
+        raise ValueError('Message noise is a boolean replay-only diagnostic.')
     if session['mode'] == 'replay' and session.get('smoke'):
         raise ValueError('Replay cannot add smoke inputs.')
     previous = 0
@@ -133,7 +153,9 @@ def execution_plan(session):
                 'upgrade_rule':None, 'recording_sha256':None, 'same_policy_replay':None}
     contract = session['contract']
     upgrade = session.get('upgrade_rule')
-    executed_policy = V2_POLICY if upgrade else contract['policy']
+    executed_policy = UPGRADES[upgrade][1] if upgrade else contract['policy']
+    if session.get('message_noise') and executed_policy != V4_POLICY:
+        raise ValueError('Marked message-noise diagnostics require a v4 replay upgrade.')
     return {'recorded_policy':contract['policy'], 'recorded_script_sha256':contract['script_sha256'],
             'executed_policy':executed_policy, 'executed_script_sha256':template_sha256(executed_policy),
             'upgrade_rule':upgrade, 'recording_sha256':session.get('recording_sha256'),
@@ -246,10 +268,20 @@ def main():
     parser.add_argument('--combat',action='store_true',help='Use focused combat diagnostics instead of broad state hooks; requires --observe')
     parser.add_argument('--upgrade-v1-to-v2',action='store_true',
                         help='Diagnostic only: replay an exact v1 recording with the serialized v2 scheduler')
+    parser.add_argument('--upgrade-v1-to-v3',action='store_true',
+                        help='Experimental: suppress native timers and stop eight turns after the final input')
+    parser.add_argument('--controlled',action='store_true',
+                        help='Use v1 or v2 recorded inputs under the explicit v4 control profile')
+    parser.add_argument('--upgrade-v1-to-v4',action='store_true',help='Experiment with controlled queued paints as well as timers')
+    parser.add_argument('--message-noise',action='store_true',help='Diagnostic: add queued timer/paint messages during controlled replay')
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
     parser.add_argument('--cursor-check',action='store_true',help='Private stationary-cursor and normal-close check; requires smoke')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
+    if args.message_noise and args.record:
+        parser.error('--message-noise requires controlled replay')
+    if ((args.controlled or args.upgrade_v1_to_v3 or args.upgrade_v1_to_v4) and args.record) or sum((args.controlled,args.upgrade_v1_to_v2,args.upgrade_v1_to_v3,args.upgrade_v1_to_v4)) > 1:
+        parser.error('Select one replay upgrade; v3/v4 do not record new inputs yet.')
     if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe or args.upgrade_v1_to_v2)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
         parser.error('Use 1..180 seconds, 1..3 runs, and smoke only with record.')
     output = args.output or ROOT/'build/runtime'/('human-'+stamp())
@@ -275,11 +307,17 @@ def main():
             print(f'Recording: {output / "recording.json"}')
         else:
             recording, recording_sha256 = load_recording_with_sha256(args.recording)
+            upgrade_rule = V1_TO_V3_UPGRADE if args.upgrade_v1_to_v3 else (V1_TO_V2_UPGRADE if args.upgrade_v1_to_v2 else None)
+            if args.controlled:
+                upgrade_rule = V1_TO_V4_UPGRADE if recording['policy'] == V1_POLICY else V2_TO_V4_UPGRADE
+            if args.upgrade_v1_to_v4:
+                upgrade_rule = V1_TO_V4_UPGRADE
             session = {'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],
                        'events':recording['events'],'contract':recording['contract'],'target':args.target,
                        'observe':args.observe,'rng_only':args.rng_only,'combat':args.combat,
+                       'message_noise':args.message_noise,
                        'recording_sha256':recording_sha256,
-                       'upgrade_rule':V1_TO_V2_UPGRADE if args.upgrade_v1_to_v2 else None}
+                       'upgrade_rule':upgrade_rule}
             result['human_control'] = execution_plan(session)
             first = None
             for _ in range(args.runs):

@@ -54,6 +54,9 @@ The suite returned one. It did not treat completed captures as a parity pass.
 
 ## Replay the recording
 
+Without an upgrade flag, replay preserves the recorded policy. V1/v2 timing is not repeatable in all runs.
+Use the controlled-input mode below for repeatability checks.
+
 Use the printed recording path:
 
 ```cmd
@@ -99,7 +102,7 @@ The asset comparison excludes unused saves, as described below.
 It then uses the v2 scheduler without changing the recording.
 The report records both policies, both template hashes, the upgrade rule, and the recording hash.
 It also records `same_policy_replay` as false.
-The standard parity suite rejects upgraded captures.
+The legacy same-policy suite rejects upgraded captures. The current standard suite requires its explicit v4 profile instead.
 The generic human comparison labels them as an explicit v1-to-v2 upgrade comparison.
 
 The default profile saves only the first 10,000 RNG observations, plus the total count.
@@ -107,6 +110,58 @@ An equal prefix is not a complete RNG match. The comparison reports this limit e
 Video comparison uses recorded pre-encode RGB hashes, with no pixel tolerance or masks.
 Equal video timestamps are not necessarily equal simulation boundaries.
 The comparison's `complete` flag means all comparisons ran, not that the executables matched.
+
+## Controlled-input replay (v4)
+
+```cmd
+game.cmd replay-original build/runtime/human-EXAMPLE/recording.json --controlled
+game.cmd replay-rebuilt build/runtime/human-EXAMPLE/recording.json --controlled
+```
+
+This accepts unchanged v1 or v2 recordings as input scenarios under explicit v4 control.
+New user recordings still use v2; v4 currently supports replay, not recording.
+The lower-level session tool also accepts the v1-only `--upgrade-v1-to-v4` flag.
+The `--upgrade-v1-to-v3` flag preserves the rejected timer-only experiment for reproduction.
+
+V4 suppresses dispatched `WM_TIMER` messages on the game thread.
+It discards queued root-window paints and validates their complete dirty region. It does not save that region for later.
+It sends a new synchronous paint after each eligible idle, including nested idle calls inside input handlers.
+It skips another injected paint while one is active. Synchronous game-requested paints remain intact.
+The original game still updates through its own idle paths. The harness does not inject simulation state or RNG results.
+The replay stops at a Paint boundary eight idle turns after the last recorded input.
+The worker retains its independent wall-time deadline.
+The old recording duration remains visible as historical metadata; it does not control this new test's terminal turn.
+
+V4 does not reconstruct the old recording's missing timer and paint history.
+Reports identify both policies, both script hashes, the unchanged recording hash, and the explicit upgrade rule.
+They correctly report `same_policy_replay: false`.
+The standard suite compares original and rebuilt runs under this common profile, including their exact new clock values.
+The recorded messages, routes, turns, and target panels remain required.
+Historical clocks and world-update counts remain visible, but are not expected outputs under a different clock profile.
+Fresh original/rebuilt executions must agree exactly on every compared clock and world-update count.
+
+For complete RNG and per-update state evidence, use the lower-level session tool:
+
+```cmd
+build\harness-env\Scripts\python.exe tools/harness/human_session.py --recording config/harness/human-candidate-20260915.json --target original --runs 3 --observe --combat --controlled
+```
+
+Use `tools/harness/human_repeatability.py --help` to compare complete capture reports.
+It checks every pair and returns failure for any difference or missing world/RNG evidence.
+Use `game.cmd test-parity` to run both permanent cases on both executables with these observations.
+
+The session tool's `--message-noise` option adds queued timers and paints every 37 wall-time milliseconds.
+This is an explicit robustness stimulus, not a read-only observer or recorded user input.
+Reports retain its script hash and posted-message counts. Standard parity rejects these diagnostic captures.
+Marked noise requires v4. The checker pins its script hash and requires suppressed-dispatch receipts for both message types.
+The repeatability tool requires matching perturbation modes unless the explicit robustness mode applies.
+Use its explicit `--noise-resistance` flag to compare quiet and perturbed captures without relaxing any output check.
+That mode requires both quiet and perturbed captures. Earlier unmarked noise evidence remains preserved but cannot meet this stronger gate.
+
+The qualified cases are bounded new-game scenarios. Saved-game loading and native blocking modal loops are not qualified.
+Do not interpret a stalled unsupported recording as a game-code defect.
+Observer neutrality and complete hidden-state equality remain separate questions.
+See [the repair record](../decomp_notes/replay_control_repair_20260915.md) for experiments and exact results.
 
 ## Optional read-only diagnostics
 

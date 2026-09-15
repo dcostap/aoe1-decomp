@@ -8,27 +8,39 @@ This experimental mode compares game behavior beyond pixels. It does not replace
 game.cmd test-parity
 ```
 
-Use this command for gameplay parity checks. It runs the short script and the accepted human recording.
-Both cases run three fresh originals and three fresh rebuilt games.
-The human case uses `config/harness/human-accepted-20260914.json`. Its 324 messages remain unchanged.
-The suite checks its pinned SHA256 before it starts any game.
+Use this command for gameplay parity checks. It runs the short script and two controlled human-input cases.
+Each case runs three fresh originals and three fresh rebuilt games: 18 executions in total.
+The human cases use `config/harness/human-accepted-20260914.json` and `config/harness/human-candidate-20260915.json`.
+Their 324 and 1,361 messages remain unchanged. The suite checks both pinned hashes before starting games.
 The historical `source_report` path records provenance. Replay does not need that old report.
-This case uses its frozen v1 control template and exact recorded script hash.
-The suite rejects a v1-to-v2 scheduler upgrade or a missing control-policy record.
+The human cases explicitly use v4 control, not the original v1 timing.
+V4 suppresses native game-thread timer messages and controls queued root-window paints at idle boundaries.
+Synchronous game-requested paints remain intact. Replay stops eight idle turns after the final recorded input.
+The original executable supplies expected behavior under this shared control profile.
+The reports preserve historical recording fidelity, including its different clock values and world-update counts.
+The recorded messages, routes, turns, and target panels remain required.
+They do not claim an exact reconstruction of missing v1 timer history.
+The suite rejects an unexpected upgrade, missing control identity, or changed recording.
 
-The human case records the full RNG stream with the read-only RNG observer.
-It compares inputs, clocks, camera observations, terminal observations, RNG records, and captured RGB hashes.
-It checks repeatability within each executable before comparing the executables.
+The human cases record full RNG streams, world entry/exit state, and focused actor observations.
+They compare inputs, clocks, all captured state observations, terminal observations, RNG records, and raw RGB hashes.
+Each human case checks all 15 pairs among its six runs, including all nine cross-build pairs.
+Missing world observations or complete RNG evidence fail the check.
 It retains every timing and frame difference. It does not align simulation states or apply tolerances.
 Observer neutrality and complete hidden-state equivalence remain unproved.
 
 Reports and videos remain under `build/runtime/`. The suite report uses `build/runtime/parity-*/report.json`.
 Only exact equality of the checked observations returns zero. Missing evidence or observed differences return one.
 A failure does not by itself prove a game-code defect. Original repeatability can also fail.
-The human case still runs when the short script finds differences.
+Both human cases still run when the short script finds differences.
+
+Use `game.cmd test-parity --legacy` to run the former same-policy v1 suite.
+It retains its strict old timing checks and known repeatability failures. V1 recordings and templates remain unchanged.
+Recording new user input still uses v2. Use `--controlled` when replaying it for repeatable controlled-input comparisons.
+See [human replay](human_replay.md#controlled-input-replay-v4) for commands and limits.
 
 `python -m pytest -q` checks the fixture and suite routing without starting games.
-`game.cmd test-parity --check-fixtures` checks the permanent recording without starting games.
+`game.cmd test-parity --check-fixtures` checks both permanent recordings without starting games.
 The commands below are focused checks, not substitutes for the standard suite.
 
 ## Run a short replay

@@ -136,8 +136,10 @@ game.cmd test-captures --list
 game.cmd test-parity
 ```
 
-The standard [gameplay parity suite](docs/behavior_replay.md) includes the accepted 324-message human recording.
-It compares typed observations, complete debug RNG traces, and images. Use `replay` only for a focused short-script check.
+The standard [gameplay parity suite](docs/behavior_replay.md) uses both preserved human recordings under explicit v4 control.
+It compares clocks, captured state, complete RNG traces, and raw images across repeated original and rebuilt runs.
+The old same-policy suite remains available with `game.cmd test-parity --legacy`.
+Use `replay` only for a focused short-script check.
 
 Prepare a complete runtime copy with the older control workflow:
 

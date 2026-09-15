@@ -61,7 +61,7 @@ def test_standard_suite_runs_human_case_after_scripted_failure(tmp_path, monkeyp
         assert timeout > 0 and visible is False
         return 1 if len(commands) == 1 else 0
     monkeypatch.setattr(suite, 'human_result', lambda *args: {'complete': True, 'passed': True})
-    result = suite.run_suite(tmp_path / 'run', runner)
+    result = suite.run_legacy_suite(tmp_path / 'run', runner)
     assert len(commands) == 3
     for command, target in zip(commands[1:], ('original', 'rebuilt')):
         assert command[command.index('--target') + 1] == target
@@ -115,7 +115,7 @@ def test_fixture_failure_starts_no_games(tmp_path, monkeypatch):
     def reject():
         raise ValueError('changed fixture')
     monkeypatch.setattr(suite, 'accepted_recording', reject)
-    result = suite.run_suite(tmp_path / 'run', lambda *args: pytest.fail('Started a game'))
+    result = suite.run_legacy_suite(tmp_path / 'run', lambda *args: pytest.fail('Started a game'))
     assert result['passed'] is False and result['workers'] == []
 
 

@@ -113,16 +113,22 @@ game.cmd test-parity
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
 See [the runtime harness](runtime_harness.md) for its setup, reports, and coverage.
 
-`test-parity` runs the short new-game script and the accepted 324-message human recording.
+`test-parity` runs the short new-game script and the 324-message and 1,361-message human-input cases.
 Each case runs three originals and three rebuilt games.
-It checks repeatability within each executable before cross-executable comparisons.
-The human case compares inputs, clocks, camera observations, terminal observations, complete RNG records, and raw RGB hashes.
+Each human case checks all 15 pairs, including within-executable and cross-executable comparisons.
+It compares inputs, clocks, all captured state observations, terminal observations, complete RNG records, and raw RGB hashes.
+Missing world entry/exit observations or complete RNG evidence fail the check.
 Reports and videos remain under `build/runtime/`.
 
-`game.cmd test-parity --check-fixtures` checks the permanent fixture without running games.
+`game.cmd test-parity --check-fixtures` checks both permanent fixtures without running games.
 It is not a gameplay pass.
-The newer 1,361-message recording is a separate diagnostic case, not part of the standard suite.
-Its explicit v1-to-v2 replay upgrade cannot qualify as a standard same-policy pass.
+The human cases now use explicit v4 control. They suppress native timer messages and control queued paint delivery.
+They use an input-relative terminal turn and preserve synchronous game-requested paints.
+They compare new executions under the same profile, not historical v1 clocks or world-update counts.
+The recorded messages, routes, turns, and target panels remain required.
+The recordings remain unchanged. Reports keep their historical timing differences visible.
+Use `game.cmd test-parity --legacy` for the old same-policy v1 suite and its known repeatability failures.
+An unexpected control profile still fails validation. No state alignment, pixel masks, or timing tolerances apply.
 
 New-game starting-asset comparisons ignore `.gam` and `.gmx` files beneath `savegame`.
 Adding personal saves does not block these replays. Other asset checks and full manifests remain.
@@ -147,3 +153,7 @@ A focused module audit is not a fresh whole-project function audit.
 
 The [original-repeat investigation](../decomp_notes/original_repeatability_20260915.md) proves a replay timing limitation.
 Equal input/update counters can produce different simulation time. Even equal complete RNG traces can accompany different positions.
+The [repair record](../decomp_notes/replay_control_repair_20260915.md) includes the rejected v3 experiment and v4 checks.
+The completed v4 suite passed both preserved input cases and the short script on the pinned executable pair.
+Its report is `build/runtime/parity-v4-final-20260915/report.json`.
+This is bounded controlled-input evidence, not a fresh all-green whole-project result.

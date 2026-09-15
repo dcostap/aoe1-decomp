@@ -163,7 +163,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     human = scenario.get('human')
     human_control = None
     if human:
-        from human_session import V1_POLICY, execution_plan, validate_session
+        from human_session import V1_POLICY, V3_POLICY, V4_POLICY, execution_plan, validate_session
         validate_session(human)
         human_control = execution_plan(human)
         original_target = human.get('target','original') == 'original'
@@ -214,10 +214,15 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         if human:
             template += '\n' + Path(__file__).with_name('offline.js').read_text()
             template += '\n' + Path(__file__).with_name('human.js').read_text()
+            if human_control['executed_policy'] in (V3_POLICY,V4_POLICY):
+                template += '\n' + Path(__file__).with_name('human-v3.js').read_text()
+            if human_control['executed_policy'] == V4_POLICY:
+                template += '\n' + Path(__file__).with_name('human-v4.js').read_text()
     template_sha256 = hashlib.sha256(template.encode()).hexdigest()
     if human and template_sha256 != human_control['executed_script_sha256']:
         raise ValueError('Selected human control template differs from its policy hash.')
     observer = Path(__file__).with_name('human_observe.js').read_text() if observe else ''
+    noise = Path(__file__).with_name('human_noise.js').read_text() if human and human.get('message_noise') else ''
     video = None
     video_report = None
     video_origin = None
@@ -252,6 +257,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         source = template.replace('__CONFIG__', json.dumps(config))
         if observer:
             source += '\n' + observer
+        if noise:
+            source += '\n' + noise
         (output / 'instrumentation.js').write_text(source)
         (output / 'capture-tool.py').write_bytes(Path(__file__).read_bytes())
         pid = device.spawn([str(runtime / 'empiresx.exe'), *arguments], cwd=str(runtime),
@@ -467,6 +474,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             report = {'schema': 1, 'runtime': str(runtime), 'manifest': manifest, 'hook': config,
                       'script_sha256': template_sha256, 'human_control':human_control,
                       'observer_sha256':hashlib.sha256(observer.encode()).hexdigest() if observer else None,
+                      'noise_sha256':hashlib.sha256(noise.encode()).hexdigest() if noise else None,
                       'instrumentation_sha256':digest(output/'instrumentation.js') if (output/'instrumentation.js').exists() else None,
                       'registry_inputs': registry_snapshot, 'shared_assets_unchanged': not changed_assets,
                       'desktop': process_desktop,

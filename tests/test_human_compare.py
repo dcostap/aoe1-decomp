@@ -91,3 +91,19 @@ def test_explicit_upgrade_identity_is_visible_and_strict(monkeypatch):
     right['report']['human_control']['upgrade_rule']='unknown'
     with pytest.raises(ValueError,match='control identity'):
         human_compare.compare_captures(left,right)
+
+
+@pytest.mark.parametrize('classification', ['same-policy','explicit-v1-to-v2-upgrade',
+                                         'explicit-v1-to-v3-upgrade','explicit-v2-to-v3-upgrade',
+                                         'explicit-v1-to-v4-upgrade','explicit-v2-to-v4-upgrade'])
+def test_aggregate_comparison_keeps_its_actual_profile(tmp_path,monkeypatch,classification):
+    import json
+    import sys
+    import human_compare
+    monkeypatch.setattr(human_compare,'load_batch',lambda *args:[{}, {}, {}])
+    monkeypatch.setattr(human_compare,'compare_captures',lambda *args:{'control_identity':{
+        'same_policy_replay':classification=='same-policy','classification':classification}})
+    output=tmp_path/'comparison'
+    monkeypatch.setattr(sys,'argv',['human_compare.py','--original','a','--rebuilt','b','--output',str(output)])
+    assert human_compare.main()==0
+    assert json.loads((output/'report.json').read_text())['classification']==classification+'-comparison'

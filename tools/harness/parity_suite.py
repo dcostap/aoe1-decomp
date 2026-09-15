@@ -1,4 +1,4 @@
-"""Run the standard gameplay parity suite, including the accepted human recording."""
+"""Run scripted smoke and both permanent human-input cases on both executables."""
 import argparse
 import hashlib
 import json
@@ -9,11 +9,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from game import ROOT, run_worker, stamp
 from human_session import load_recording, compare_inputs, inputs
 from human_compare import load_batch, compare_captures
+from human_session import V1_TO_V4_UPGRADE, V4_POLICY, V4_TEMPLATE_SHA256
+from human_repeatability import compare as compare_repeatability
+import itertools
 
 RECORDING = ROOT / 'config/harness/human-accepted-20260914.json'
 RECORDING_SHA256 = 'a320c5d68b8b6f2e49d5d9963e60bc3455c177deac2909d5795ab19e02510e4d'
 SCOPE = ('Exact observed comparisons, including clock differences. No pixel masks or timing tolerances. '
          'Full RNG capture uses the read-only observer. Observer neutrality and full hidden-state equivalence remain unproved.')
+CONTROLLED_SCOPE = ('Original and rebuilt executions use the same explicit v4 control profile. '
+    'The unchanged v1 recordings supply messages, routes, and turn/panel schedules, not expected v4 clocks or world-update counts. '
+    'Historical recording fidelity stays visible. All cross-run clock, state, RNG, and RGB checks remain exact. '
+    'This does not reproduce the missing v1 timer history or prove complete hidden-state equivalence.')
+CONTROLLED_CASES = (
+    ('accepted', RECORDING, RECORDING_SHA256, 324),
+    ('candidate', ROOT / 'config/harness/human-candidate-20260915.json',
+     '60c04e651b19d144cd033ffcc5ed2bdff1bfe75629b036f493d8db497e4b832e', 1361),
+)
 
 
 def accepted_recording(path=RECORDING):
@@ -86,7 +98,7 @@ def human_result(original_path, rebuilt_path, recording):
     return result
 
 
-def run_suite(output, runner=run_worker):
+def run_legacy_suite(output, runner=run_worker):
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema': 1, 'complete': False, 'passed': False, 'scope': SCOPE,
               'recording': str(RECORDING), 'recording_sha256': RECORDING_SHA256, 'workers': []}
@@ -127,17 +139,97 @@ def run_suite(output, runner=run_worker):
     return result
 
 
+def controlled_recordings():
+    recordings = {}
+    for name, path, sha, count in CONTROLLED_CASES:
+        if hashlib.sha256(path.read_bytes()).hexdigest() != sha:
+            raise ValueError(f'The {name} input recording changed.')
+        recording = load_recording(path)
+        if recording.get('automated_smoke') is not False or len(recording['events']) != count:
+            raise ValueError(f'Invalid {name} input recording.')
+        recordings[name] = recording
+    return recordings
+
+
+def controlled_result(original_path, rebuilt_path, recording, recording_sha):
+    result = {'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE,
+              'recording_sha256':recording_sha, 'recording_fidelity':[]}
+    try:
+        captures = load_batch(original_path, True) + load_batch(rebuilt_path, False)
+        for capture in captures:
+            report = capture['report']
+            session = report['fixture']['human']
+            control = report.get('human_control') or {}
+            if (session.get('observe') is not True or session.get('combat') is not True or session.get('rng_only') or session.get('message_noise') or
+                    control.get('upgrade_rule') != V1_TO_V4_UPGRADE or control.get('same_policy_replay') is not False or
+                    control.get('executed_policy') != V4_POLICY or control.get('executed_script_sha256') != V4_TEMPLATE_SHA256 or
+                    control.get('recording_sha256') != recording_sha):
+                raise ValueError('The controlled case requires its explicit v4 profile and world/RNG observers.')
+            if any(session[key] != recording[key] for key in ('duration_ms','events','contract')):
+                raise ValueError('Capture does not use the pinned input recording.')
+            result['recording_fidelity'].append(compare_inputs(recording['events'], inputs(report)))
+        result['pairs'] = [compare_repeatability(a,b) for a,b in itertools.combinations(captures,2)]
+        result['complete'] = True
+        result['passed'] = (all(row['same_messages'] for row in result['recording_fidelity']) and
+                            all(row['passed'] for row in result['pairs']))
+    except (OSError,ValueError,KeyError,TypeError,IndexError) as error:
+        result['error'] = str(error)
+    return result
+
+
+def run_suite(output, runner=run_worker):
+    output.mkdir(parents=True, exist_ok=False)
+    result = {'schema':2, 'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE, 'workers':[], 'human':{}}
+    try:
+        recordings = controlled_recordings()
+        python = str(ROOT / 'build/harness-env/Scripts/python.exe')
+        scripted = output / 'scripted'
+        commands = [('scripted', [python, str(ROOT / 'tools/harness/replay.py'),
+            '--fixture', str(ROOT / 'config/harness/replay-random-smoke.json'),
+            '--runs','3','--seconds','90','--output',str(scripted)], 780)]
+        for name, path, sha, count in CONTROLLED_CASES:
+            for target in ('original','rebuilt'):
+                label = name + '-' + target
+                commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
+                    '--recording',str(path),'--target',target,'--runs','3','--observe','--combat',
+                    '--upgrade-v1-to-v4','--output',str(output / label)], 1170))
+        for name, command, timeout in commands:
+            row = {'name':name,'command':command,'returncode':None}
+            result['workers'].append(row)
+            try:
+                row['returncode'] = runner(command, output / (name + '.log'), timeout, False)
+            except OSError as error:
+                row['error'] = str(error)
+        try:
+            result['scripted'] = json.loads((scripted / 'report.json').read_text())
+        except (OSError,ValueError) as error:
+            result['scripted'] = {'passed':False,'error':str(error)}
+        for name, path, sha, count in CONTROLLED_CASES:
+            result['human'][name] = controlled_result(output / (name + '-original/report.json'),
+                output / (name + '-rebuilt/report.json'), recordings[name], sha)
+        result['complete'] = ('error' not in result['scripted'] and all(case['complete'] for case in result['human'].values()) and
+                              all(row['returncode'] is not None for row in result['workers']))
+        result['passed'] = (result['complete'] and result['scripted'].get('passed') is True and
+                            all(case['passed'] for case in result['human'].values()) and
+                            all(row['returncode'] == 0 for row in result['workers']))
+    except (OSError,ValueError) as error:
+        result['error'] = str(error)
+    (output / 'report.json').write_text(json.dumps(result,indent=2)+'\n')
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--check-fixtures', action='store_true', help='Check the permanent recording without running games')
+    parser.add_argument('--check-fixtures', action='store_true', help='Check both permanent recordings without running games')
+    parser.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite instead of controlled v4 cases')
     args = parser.parse_args()
     if args.check_fixtures:
-        accepted_recording()
-        print(f'Accepted human fixture: 324 messages; SHA256 {RECORDING_SHA256}')
+        accepted_recording() if args.legacy else controlled_recordings()
+        print('Pinned input fixtures checked; no games started.')
         return 0
     output = args.output or ROOT / 'build/runtime' / ('parity-' + stamp())
-    result = run_suite(output)
+    result = (run_legacy_suite if args.legacy else run_suite)(output)
     print(f'Gameplay parity: {"PASS" if result["passed"] else "FAIL"}')
     print(f'Report: {output / "report.json"}')
     return 0 if result['passed'] else 1

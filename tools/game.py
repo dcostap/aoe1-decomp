@@ -181,13 +181,20 @@ def main():
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
     p.add_argument('--upgrade-v1-to-v2',action='store_true',
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
+    p.add_argument('--upgrade-v1-to-v3',action='store_true',
+                   help='Use controlled v3 timing; this does not reproduce historical v1 clock values')
+    p.add_argument('--controlled',action='store_true',help='Use recorded v1/v2 inputs under controlled v4 timing')
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
     p.add_argument('--upgrade-v1-to-v2',action='store_true',
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
+    p.add_argument('--upgrade-v1-to-v3',action='store_true',
+                   help='Use controlled v3 timing; this does not reproduce historical v1 clock values')
+    p.add_argument('--controlled',action='store_true',help='Use recorded v1/v2 inputs under controlled v4 timing')
     p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the accepted human recording')
     p.add_argument('--check-fixtures', action='store_true', help='Validate the permanent fixture without running games')
+    p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
     p = subs.add_parser('replay', help='Compare repeated original and rebuilt gameplay replays')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
@@ -236,6 +243,8 @@ def main():
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/parity_suite.py')]
             if args.check_fixtures:
                 command.append('--check-fixtures')
+            if args.legacy:
+                command.append('--legacy')
             return subprocess.run(command, cwd=ROOT).returncode
         if args.command in ('record-original','replay-original','replay-rebuilt'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
@@ -244,6 +253,10 @@ def main():
                          '--target','rebuilt' if args.command == 'replay-rebuilt' else 'original'])
             if args.command != 'record-original' and args.upgrade_v1_to_v2:
                 command.append('--upgrade-v1-to-v2')
+            if args.command != 'record-original' and args.upgrade_v1_to_v3:
+                command.append('--upgrade-v1-to-v3')
+            if args.command != 'record-original' and args.controlled:
+                command.append('--controlled')
             return subprocess.run(command,cwd=ROOT).returncode
         if args.command == 'replay-repeat':
             output = ROOT / 'build/runtime' / ('replay-repeat-' + stamp())

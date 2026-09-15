@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from human_session import compare_inputs, execution_plan, inputs, session_contract
+from human_session import V1_POLICY, V3_POLICY, V4_POLICY, compare_inputs, execution_plan, inputs, session_contract
 
 
 def compare_rows(left, right):
@@ -116,7 +116,12 @@ def compare_captures(left,right):
     return {'left':left['path'],'right':right['path'],
             'control_identity':{'left':controls[0],'right':controls[1],
                                 'same_policy_replay':same_policy,
-                                'classification':'same-policy' if same_policy else 'explicit-v1-to-v2-upgrade'},
+                                'classification':('same-policy' if same_policy else
+                                    ('explicit-v1-to-v4-upgrade' if controls[0]['recorded_policy'] == V1_POLICY else
+                                     'explicit-v2-to-v4-upgrade') if controls[0]['executed_policy'] == V4_POLICY else
+                                    ('explicit-v1-to-v3-upgrade' if controls[0]['recorded_policy'] == V1_POLICY else
+                                     'explicit-v2-to-v3-upgrade') if controls[0]['executed_policy'] == V3_POLICY else
+                                    'explicit-v1-to-v2-upgrade')},
             'inputs':compare_inputs(inputs(a),inputs(b)),
             'camera_values':compare_rows([r['camera'] for r in cameras[0]],[r['camera'] for r in cameras[1]]),
             'camera_receipts':compare_rows(cameras[0],cameras[1]),
@@ -159,8 +164,10 @@ def main():
         result['cross_build'] = [compare_captures(original[0],row) for row in rebuilt]
         comparisons = [row for name in ('original_repeat','rebuilt_repeat','cross_build') for row in result[name]]
         result['same_policy_replay'] = all(row['control_identity']['same_policy_replay'] for row in comparisons)
-        result['classification'] = ('same-policy-comparison' if result['same_policy_replay'] else
-                                    'explicit-v1-to-v2-upgrade-comparison')
+        classifications = {row['control_identity']['classification'] for row in comparisons}
+        if len(classifications) != 1:
+            raise ValueError('Batch comparison contains different control profiles.')
+        result['classification'] = classifications.pop() + '-comparison'
         result['complete'] = True
     except (OSError,ValueError,KeyError) as error:
         result['error'] = str(error)
