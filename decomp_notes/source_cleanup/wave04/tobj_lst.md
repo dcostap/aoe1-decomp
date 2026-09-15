@@ -7,6 +7,8 @@
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit: `97869ea32d964341c47cde51aad0bad7ac4fc487`
 - Changed files in the source commit: `src/tobj_lst.cpp`
+- Changed files in the final delivery: `src/tobj_lst.cpp` and
+  `decomp_notes/source_cleanup/wave04/tobj_lst.md`.
 - The report is committed separately after the source commit.
 
 The source has one registered normal function. The cleanup restores two
