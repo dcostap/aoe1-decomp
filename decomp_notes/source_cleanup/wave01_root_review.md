@@ -123,3 +123,23 @@ The final response lists the correct hashes; `git log` independently confirms th
 
 Root returned only the owner ledger for correction in run 4. No worker or source changes are requested.
 Screen integration still awaits that report correction. Wave 02 uses disjoint source and header assignments.
+
+## Owner 03: approved integration
+
+Final delivered head: `47c67d4b2ec63bebc7ecfd907f32febf9c84fcfc`.
+Root read the complete final ledger correction. All three hashes now match the recorded Git history.
+The ledger preserves the erroneous prior commit and documents the correction.
+No source changed in this final round. The earlier complete source and correction reviews remain applicable.
+
+Root merged the complete group as `120c332ddb87a000e2aea54111b705af6ac3b52d` without conflicts.
+The merge adds eight sources, eight module headers, eight module reports, and the owner ledger changes.
+The identical shared resource header was already present on main and required no further change.
+All module commits, corrections, and worktrees remain preserved.
+
+The first merge command exceeded its 30-second limit before changing HEAD or creating a merge state.
+Root confirmed a clean worktree and no pending merge, then completed the merge through a managed background command.
+
+All 24 wave 01 modules are now integrated, reviewed, and unvalidated.
+The nine wave 02 owners continue from their recorded common base; no active worktree needs an update.
+No compilation, matching, audits, tests, builds, or games ran during this intake.
+Generated code, program data, relocations, and call-target equality remain deferred validation requirements.
