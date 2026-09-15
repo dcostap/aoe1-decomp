@@ -7,7 +7,8 @@
 - Branch: `cleanup/staging-20260915-89`
 - Base commit from `git rev-parse`: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Previous source cleanup commit: `271528deff0e82898e192751675c56855b7a09a4`
-- Approved resource-ID commit: `8adda677299caa9f9be07fbaa96f476c70c30e56`
+- Worker-local resource import provenance: `8adda677299caa9f9be07fbaa96f476c70c30e56`
+- Root resource-ID approval: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Latest source cleanup commit from `git rev-parse`: `fa6cac77c18b489ce2d4892ce13df8858fae9b62`
 - Head before this report update from `git rev-parse`: `fa6cac77c18b489ce2d4892ce13df8858fae9b62`
 - The report follows the latest source cleanup commit.
@@ -117,7 +118,7 @@ The destructor's `i` local has no scoped PDB record. It remains an existing desc
 
 ## Constants and resource evidence
 
-`include/resource_ids.h` defines all six button IDs used by this module. The approved definitions landed in commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. The source now uses `IDS_BUTTON_OK`, `IDS_BUTTON_CANCEL`, `IDS_BUTTON_YES`, `IDS_BUTTON_NO`, `IDS_BUTTON_RETRY`, and `IDS_BUTTON_ABORT`. Each macro preserves its original literal value and type after expansion. No local macros were added.
+`include/resource_ids.h` defines all six button IDs used by this module. The worker-local import has provenance commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. Root approved these definitions in commit `8c56055b7feee1526f296bd306036a4c34f38041`. The source now uses `IDS_BUTTON_OK`, `IDS_BUTTON_CANCEL`, `IDS_BUTTON_YES`, `IDS_BUTTON_NO`, `IDS_BUTTON_RETRY`, and `IDS_BUTTON_ABORT`. Each macro preserves its original literal value and type after expansion. No local macros were added.
 
 The resource extraction outputs are under the worker build directory:
 
@@ -151,7 +152,7 @@ The pinned original expansion reference is `C:/Projects/my_decomps/aoe1_attempt3
 
 ID `0x0FA6` was inspected in the same string block. It contains `Cancel`, but this module does not use it. No name or declaration request is made for it.
 
-The four names approved in commit `8adda677299caa9f9be07fbaa96f476c70c30e56` are new cleanup names. No original macro name is claimed. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` names belong to the shared header and were not created by this module.
+The four names approved by root in commit `8c56055b7feee1526f296bd306036a4c34f38041` are new cleanup names. The worker-local import provenance is commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. No original macro name is claimed. The existing `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` names belong to the shared header and were not created by this module.
 
 ## Comments and formatting
 
@@ -184,7 +185,7 @@ virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, i
 
 ### Root: `include/resource_ids.h`
 
-The resource-ID request from the previous report is complete in commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. The source uses the approved definitions. No resource header was edited in this worktree.
+The resource-ID request from the previous report is complete under root approval commit `8c56055b7feee1526f296bd306036a4c34f38041`. Worker-local import provenance remains commit `8adda677299caa9f9be07fbaa96f476c70c30e56`. The source uses the approved definitions. No resource header was edited in this worktree.
 
 ## Validation
 
