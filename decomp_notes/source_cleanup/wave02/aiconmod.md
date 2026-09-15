@@ -5,13 +5,23 @@
 - Module: `src/aiconmod.cpp`.
 - Header owner: owner 06 owns `include/aiconmod.h`. This worker did not edit it.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Final source commit: `9c10e5929358cab5ba4fe0757594b8222fe1e4db`.
+- Final source commit: `1b3e5335170c9f93bfa35211beb694adc87070cd`.
 - Changed source: `src/aiconmod.cpp`.
 - Changed report: `decomp_notes/source_cleanup/wave02/aiconmod.md`.
 - Branch: `cleanup/staging-20260915-54`.
 
 The source commit contains only the assigned source. The report is a separate
 assigned-file commit so the source commit hash remains exact and reproducible.
+
+## Correction history
+
+- Initial source commit: `9c10e5929358cab5ba4fe0757594b8222fe1e4db`.
+- Initial report commit: `2a8f7ee35fd6e536e7c581a4c51114de1d7dd237`.
+- Correction request: move both constructor braces onto their final
+  initializer lines and correct the original executable hash.
+- Correction source commit: `1b3e5335170c9f93bfa35211beb694adc87070cd`.
+- Correction report commit: follows this source commit and contains the
+  corrected report hash data.
 
 ## PDB coverage
 
@@ -117,7 +127,7 @@ For provenance, the inspected binary paths and hashes are:
 
 - Original behavior oracle:
   `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`, SHA256
-  `88a039212028c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+  `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
 - Preserved pre-cleanup object:
   `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/aiconmod.obj`, SHA256
   `1e37678ec9a0f6a92c4c7aabaffa6950a89617a16e8ac34691ee9e8b7710bdb2`.
