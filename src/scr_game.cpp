@@ -262,7 +262,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[16]->setDrawType(TButtonPanel::DrawText);
     this->button_panel[16]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[16]->tribe_button_type = 3;
-    this->button_panel[16]->set_text(0, IDS_SCORE_BUTTON_LABEL);
+    this->button_panel[16]->set_text(0, 0x1023L);
     this->get_string(IDS_SCORE_BUTTON_MESSAGE, str, 0x200);
     this->button_panel[16]->set_text_msg(str);
 
