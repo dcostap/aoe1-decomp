@@ -370,8 +370,7 @@ uchar TRIBE_Action_Convert::update() {
     return 0;
 }
 
-int TRIBE_Action_Convert::work(RGE_Static_Object* obj_in,
-                               float x, float y, float z) {
+int TRIBE_Action_Convert::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in == this->target_obj) {
             uchar state = this->state;
