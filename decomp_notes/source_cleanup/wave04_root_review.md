@@ -1,5 +1,13 @@
 # Cleanup wave 04 root review
 
+## Owner 28: correction review started
+
+Corrected head: `4cba115bf1051cd68625e89b0411645c61b1b933`.
+The complete 979-line correction diff is `build/source-cleanup-20260915/owner28-corrections.diff`.
+Original reviewer `sa-f1296ef0` resumed to check restored names, the lookup comment, three resource substitutions, and changed reports.
+The review must preserve baseline types, storage, and declarations instead of forcing uncertain PDB mappings.
+The group remains unmerged. Full validation must wait for all cleanup work to finish.
+
 ## Owner 24: final reports approved
 
 Root read the complete three-report diff to `c3d77f3540ad04c7cfd3097ffdb9998a27beb909`.
