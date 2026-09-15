@@ -11,10 +11,8 @@
 #include "../include/player.h"
 #include "../include/game_globals.h"
 
-RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj,
-                                             RGE_Static_Object* target_obj,
-                                             float target_x, float target_y,
-                                             float target_z) {
+RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Object* target_obj,
+                                           float target_x, float target_y, float target_z) {
     short attribute_type = obj->attribute_type_held;
 
     if (attribute_type != -1 && obj->attribute_amount_held > 0.0f &&
