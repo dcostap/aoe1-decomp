@@ -40,18 +40,25 @@ The extra procedure is the compiler-generated scalar deleting destructor at `004
 It is not a source owner.
 
 The original executable is:
-`C:/Projects/my_decomps/aoe1_attempt3/orig/_original_empiresx_from_beta_that_was_decompiled.exe`.
+`C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`.
 Its SHA256 is `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
-The expansion executable has the same SHA256.
 The pinned expansion language DLL is:
 `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`.
 Its SHA256 is `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 
+The preserved baseline report is:
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/report.json`.
+It selects the required original executable path above.
+The baseline Pnl_txt object is:
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/ai-rng-filename-repair/20260915T083203564911Z/Pnl_txt.obj`.
+Its SHA256 is `50646d993004fbe5e295e18fa98c571723b3a41607b24e0dc6970e231876176e`.
+The baseline report records the same object hash.
+The baseline source input hash is `eddf96c6fe71fcd479d47f036ca9660f14e3f68dd52f3b0e4b97c1a7fcb65ec4`.
+The baseline executable hash is `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee98799a0b5d07cdcde`.
+
 The requested reunification packet path was absent:
 `C:/Projects/my_decomps/aoe1_attempt3/build/source_reunification/packet/Pnl_txt_cpp`.
 The inventory packets supplied the original procedure evidence instead.
-The requested baseline path was also absent:
-`C:/Projects/my_decomps/aoe1_attempt3/preparation/baseline-build`.
 
 ## Every-function PDB coverage
 
@@ -275,7 +282,8 @@ No shared resource ID declaration is needed.
    The per-function inventory packets remain the packet evidence.
 2. The PDB stack aliases at `0047C640` and `0047D760` need no forced source mapping.
 3. The two array type differences need a separate type and code-generation review.
-4. The missing baseline-build path prevented baseline artifact inspection.
+4. The preserved baseline object predates this cleanup.
+   A fresh comparison is still required after integration.
 
 ## Validation status
 
