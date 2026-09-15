@@ -8,7 +8,7 @@
 - Prior correction source commit: `72fe153494f42409f66797cd6fbd39e68422e8eb`
 - Prior correction report commit: `cb00ce396f9b2a5bc0ad4cf9a1f6ee323607248a`
 - Final brace correction commit: `b1a138720126836367f4271ad44a589e8fdc7c53`
-- Report commit: pending until this correction report is committed
+- Report commit: `17c8f34772d6ee06c7a8cdfd2a70910621f7ccc3`
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
