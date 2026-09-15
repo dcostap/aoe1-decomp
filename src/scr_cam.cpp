@@ -295,8 +295,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
     campaign_filename = this->filename->get_text();
     if (campaign_filename != 0) {
         if (*campaign_filename == 0 || *campaign_filename == ' ') {
-            this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED,
-                                0, 0x1C2, 100);
+            this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED, 0, 0x1C2, 100);
             // An invalid name returns without clearing need_to_save.
             return;
         } else {
@@ -338,8 +337,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
                 free(scenarios_text);
                 free(scenarios_filenames);
             } else {
-                this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO,
-                                    0, 0x1C2, 100);
+                this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO, 0, 0x1C2, 100);
             }
             free(text);
             this->fill_campaign_drop();
