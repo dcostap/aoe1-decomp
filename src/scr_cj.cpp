@@ -275,8 +275,7 @@ long TribeJoinScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1,
 }
 
 TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel)
-    : TDialogPanel("Create Dialog")
-{
+    : TDialogPanel("Create Dialog") {
     TEditPanel** inputGamename = &this->inputGamename;
     this->title = 0;
     this->input_title = 0;

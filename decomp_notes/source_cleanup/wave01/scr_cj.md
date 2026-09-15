@@ -87,3 +87,12 @@ Existing shared mappings `IDS_BUTTON_OK` (`0x0FA1`, text `OK`) and `IDS_BUTTON_C
 - The source includes one existing macro-only header. No conflicting local declaration was added.
 - No inline assembly, wrapper, structural rewrite, or resource lookup change was made.
 - Compilation, matching, audits, and tests were not run, as required for this cleanup wave.
+
+## Correction round
+
+- Applied 1TBS to `TribeMPCreateDialog::TribeMPCreateDialog`.
+- The opening brace now shares the initializer-list line:
+  `: TDialogPanel("Create Dialog") {`.
+- No statement, declaration, initializer, source order, or behavior changed.
+- Correction commit: copy the full hash from Git delivery output.
+- Compilation, matching, audits, and tests were not run.
