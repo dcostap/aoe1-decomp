@@ -6,7 +6,15 @@ Corrected head: `044be5c5062e9889129f675ab829b498f486d4b0`.
 The complete 578-line correction diff is `build/source-cleanup-20260915/owner25-corrections.diff`.
 Original reviewer `sa-4261f9a4` resumed to check both blockers, resource substitutions, and changed reports.
 The assignment requires exact baseline declaration and initialization structure for `TRIBE_Player::save`.
-The group remains unmerged. Compiler and runtime validation remain deferred.
+Reviewer `sa-4261f9a4` approved all 578 correction lines with no blockers.
+Correction diff SHA256: `dc06b8ca8fd2e9a44eddc428867f92025713d50025b3f663363c53ea7b0a2d0c`.
+`save_file` retains the handle; `outfile` receives the flag and supplies both write addresses.
+Declaration, initialization, grouping, and order match the baseline. The brace correction also passed review.
+The imported header matches approved blob `3670c49563f971137b89644d4a0069796cf3d2af`.
+All three resource substitutions preserve calls and types. The unused load and deferred numeric arithmetic remain.
+The original 15,378-line review remains applicable. Compiler and runtime validation remain deferred.
+Root merged the group as `6efc095c70317fcf294205b80a1e504aff85bbe3`.
+Main contains 184 assigned modules plus the pilot: 185 of 225, approximately 82.2%.
 
 ## Owner 28: delegated review started
 
