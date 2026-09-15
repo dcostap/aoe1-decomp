@@ -59,7 +59,7 @@ Recovered original spellings changed in this cleanup:
 - `action`: `panel` -> `fromPanel`, `event` -> `actionIn`, `param3` -> `a1`, `param4` -> `a2`, `services` -> `Serv`.
 - `handle_user_command`: `p0` -> `wParam`, `p1` -> `lParam`.
 
-No invented local or parameter names were added. No public symbol, class member, type, scope, declaration order, or function signature changed. The header has unnamed parameters, so it needs no paired parameter-name edit.
+No invented local or parameter names were added. No public symbol, class member, type, scope, declaration order, or function signature changed. The owner header now uses the recovered parameter names, so no further paired parameter-name edit is needed.
 
 ## Constants and resource evidence
 
@@ -101,7 +101,7 @@ The resource extraction tool reported the missing slots for `0x7531` and `0x7532
 ## Shared-file requests
 
 1. Root owns `include/resource_ids.h`. The nine approved macros are present in the imported header from `bdb8bc1af`, with the exact values above. No further declaration is requested.
-2. Owner 11 owns `include/scr_mp.h`. No declaration change is requested. Its parameters are unnamed, and the recovered definition names do not change the ABI.
+2. Owner 11 owns `include/scr_mp.h`. Its parameters now match the recovered source names. No declaration change is requested, and the recovered names do not change the ABI.
 3. Do not add expansion-specific definitions. Both checked expansion DLLs lack these IDs. Keep the base-language namespace.
 
 ## Comments, code generation, and validation
