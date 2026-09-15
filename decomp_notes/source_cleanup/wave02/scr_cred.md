@@ -73,7 +73,7 @@ I restored these names from the scoped PDB records:
 - `00492D70`: `from_panel`, `action_in`, `action_val1`, `action_val2`.
 - `00492E70`: `parent_in`, `render_area_in`, `wid`, `hgt`, `speed_in`, `font_in`, `font_wid_in`, `font_hgt_in`, `text_in`.
 - `00492F80`: `text_in`.
-- `00493160`: `dc`, `draw_row`, `text_line`, `text2_len`, `x2`, and `x`.
+- `00493160`: `dc`, `draw_row`, `text_line`, `text2_len`, and `x2`.
 - `00493420`: `surface_in`, `color_in`, `fade_time_in`, `direction_in`, `new_palette`, `ignore_color1_in`, and `ignore_color2_in`.
 - `00493540`: `delta_time`.
 
