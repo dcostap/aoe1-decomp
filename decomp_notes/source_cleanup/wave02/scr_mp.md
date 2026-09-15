@@ -5,13 +5,13 @@
 - Module: `src/scr_mp.cpp`
 - Paired header: `include/scr_mp.h` (owned by owner 11)
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source-state commit: `0a0f4dffe28d63d8279ef278b8d4d0551317ddbf`
+- Final source-state commit: `4d8093aad58008af81d2772dbd3f289903b3fde1`
 - Changed files: `src/scr_mp.cpp`; this report
 - The report commit follows the source commit. The worker result gives its full final branch hash.
 
 The final source-state file hash is:
 
-- `src/scr_mp.cpp`: `b41dda77133fbc2f773f9406bdbdfe7f97ab7d99d8b3004977b49bb22a0288dd`
+- `src/scr_mp.cpp`: `102e2bbc220186d16a9fe4034a509617924c31852e81c176b56077f76ff78405`
 
 No header was edited.
 
@@ -20,6 +20,12 @@ No header was edited.
 Owner review requested 1TBS formatting for all function definitions. The source correction moves the constructor brace onto its initializer line and puts the complete four-parameter `action` definition on one line with its brace. No braces, statements, declarations, or control structure changed.
 
 The correction source commit is `0a0f4dffe28d63d8279ef278b8d4d0551317ddbf`. The report update follows it.
+
+## Resource integration history
+
+Root approved the nine multiplayer connection definitions in root commit `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Owner 11 imported only `include/resource_ids.h` in integration commit `bdb8bc1af`. This worker replaced every approved numeric ID in `src/scr_mp.cpp` in source commit `4d8093aad58008af81d2772dbd3f289903b3fde1`.
+
+The worker kept the existing lookup calls, argument types, casts, buffers, format arguments, arithmetic, fallback paths, recovered names, and 1TBS formatting. The report update follows the source substitution commit.
 
 ## PDB coverage
 
@@ -65,7 +71,7 @@ I included `../include/resource_ids.h` and reused existing shared names for thes
 
 These are existing shared declarations. They are not new recovered macro names.
 
-The source keeps the following IDs numeric because their shared definitions need root review. The proposed names are new descriptive names, not recovered original macro names.
+The root-approved header now defines the following IDs. The applied names are new descriptive names, not recovered original macro names.
 
 Common resource checks for every row below:
 
@@ -87,17 +93,17 @@ F1 is the staged base-language input. F2 is the staged expansion input. F3 is th
 | `0x7595` | `IDS_HELP_MULTIPLAYER_PLAYER_NAME` | `input->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Type your player name.` | Missing in both files |
 | `0x7596` | `IDS_HELP_MULTIPLAYER_CONNECTION_TYPE` | `list->set_help_info`; help text is resolved through the panel/base-game string lookup | `0x0409`: `Select the type of connection to make. For more information, click More Help.` | Missing in both files |
 
-The resource extraction tool reported the missing slots for `0x7531` and `0x7532` in F1, F2, and F3. This is missing text, not an empty slot. Existing shared names remain valid because the call sites prove their help-ID roles. The nine requested IDs have proven purposes and recovered base text in F1. Their proposed names can be added to `include/resource_ids.h` by its root owner without changing lookup order or values.
+The resource extraction tool reported the missing slots for `0x7531` and `0x7532` in F1, F2, and F3. This is missing text, not an empty slot. Existing shared names remain valid because the call sites prove their help-ID roles. The nine approved IDs have proven purposes and recovered base text in F1. Their root-approved macros are now used in this source without changing lookup order or values.
 
 ## Shared-file requests
 
-1. Root owns `include/resource_ids.h`. Add the nine proposed macros in one multiplayer-startup group, with the exact values above. Keep the source numeric until that reviewed declaration exists.
+1. Root owns `include/resource_ids.h`. The nine approved macros are present in the imported header from `bdb8bc1af`, with the exact values above. No further declaration is requested.
 2. Owner 11 owns `include/scr_mp.h`. No declaration change is requested. Its parameters are unnamed, and the recovered definition names do not change the ABI.
 3. Do not add expansion-specific definitions. Both checked expansion DLLs lack these IDs. Keep the base-language namespace.
 
 ## Comments, code generation, and validation
 
-No source comments were added. The names answer the PDB evidence without a speculative behavior comment. The five reused macros expand to the same integer tokens and values as the replaced literals. The include adds declarations only. Parameter and local renames affect debug names, not executable code. A compiler check is required before making any code-generation claim.
+No source comments were added. The names answer the PDB evidence without a speculative behavior comment. All fourteen resource macros expand to the same integer tokens and values as the replaced literals. The include adds declarations only. Parameter and local renames affect debug names, not executable code. A compiler check is required before making any code-generation claim.
 
 The original executable reference is `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`, SHA256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`. I used it as evidence only.
 
