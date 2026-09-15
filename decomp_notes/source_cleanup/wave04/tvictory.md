@@ -5,7 +5,7 @@
 - Module: `src/tvictory.cpp`
 - Branch: `cleanup/staging-20260915-243`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `f8d77b08c8d4e319be1cddc8bc5cc0d0cfc15610`.
+- Final source commit: `f8d77b08c50df11a6fa74d30ec369a829bd2ddbb`.
 - Report correction commit: follows this source commit.
 - Changed files:
   - `src/tvictory.cpp`
@@ -192,12 +192,15 @@ symbols unchanged:
 TRIBE_Victory_Conditions(RGE_Player* in_player, int infile,
                          long* player_id_hash, unsigned char version_control);
 TRIBE_Victory_Conditions(RGE_Player* in_Player);
+virtual void handle_condition(RGE_Victory_Entry* node);
+void handle_tech(RGE_Victory_Entry* node);
+unsigned char add_tech(unsigned char v_group, long tech_id);
 ```
 
-The exact evidence is the `S_BPREL32` records for `0052C8F0` and `0052C920`
-in `inventory/pdb/scoped_symbols.json`, with the types and stack offsets
-listed in the coverage table above. No root-owned shared declaration or
-resource mapping request exists.
+The exact evidence is the `S_BPREL32` records for all five parameterized
+functions in `inventory/pdb/scoped_symbols.json`, with the types and stack
+offsets listed in the coverage table above. No root-owned shared declaration
+or resource mapping request exists.
 
 ## Validation status
 
