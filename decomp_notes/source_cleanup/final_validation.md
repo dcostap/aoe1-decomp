@@ -137,6 +137,11 @@ The preserved baseline uses the existing `numToLoad` storage for both counts.
 The repair removes only the added declaration and restores its three uses to `numToLoad`.
 This is a cleanup-induced storage change, not a preexisting mismatch. Earlier source reviews failed to detect it.
 Post-repair compilation and matching are required before calling the regression resolved.
+Focused job `bg-80` passed: the module compiled and all 99 exact targets returned matching results.
+The `loadLearnInfo` matching regression is resolved in this focused object check.
+Other results remain: four boundary problems, four relocation problems, and one grouped match needing review.
+Report: `build/source-cleanup-20260915/final-validation/taiinfmd-repair/report.json`.
+A fresh full build, linked audit, and whole-project rerun still remain necessary.
 
 ## Flic resolution drift investigation
 
