@@ -5,13 +5,21 @@
 - Module: `src/vw_main.cpp`
 - PDB source: `C:\\msdev\\work\\age1_x1\\vw_main.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `99447c02545d8313a21bab928c9fd77bcb294e5b`
+- Final source commit: `ac0aa099946a77f8c5a4a0643fe8db7cbc62fdeb`
 - Changed files:
   - `src/vw_main.cpp`
   - `decomp_notes/source_cleanup/wave04/vw_main.md`
 
 The source commit changes only the assigned source. The report is the only
 other assigned file. No header or registry file changed.
+
+## Correction history
+
+- Follow-up correction: short signatures and calls now stay on one line when
+  their expressions remain readable. Long expressions keep their existing
+  layout. Executable tokens and structure did not change.
+- The owner-24 request now lists every matching `RGE_Main_View` declaration
+  and every recovered parameter name. Coordinate it once with `tvw_main.cpp`.
 
 ## Evidence
 
@@ -125,7 +133,28 @@ made.
 
 ## Shared requests and unresolved questions
 
-- Header request to owner 24: no declaration change is required. `include/vw_main.h` has unnamed parameters. Please review the source names `mouse_button_in`, `scroll_action_in`, `pick_mode_in`, `last_picked_object`, `pick_dopples`, `reset_mode`, `work_on_tile`, `action_type`, `attacking_in`, `string`, and `reset_type` if header parameter names are added later. The header is shared with `tvw_main.cpp` and was not edited.
+- Owner-24 shared header request: add these names to the matching `RGE_Main_View` declarations in `include/vw_main.h`. Coordinate this one pass with the `tvw_main.cpp` requests. The header is shared and remains unedited.
+  - `virtual long handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_move_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_left_move_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_right_down_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_right_move_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual long mouse_right_up_action(long x, long y, int ctrl_key, int shift_key);`
+  - `virtual int command_place_object(long x, long y, int reset_mode);`
+  - `virtual int command_make_do(long x, long y, int work_on_tile, short action_type);`
+  - `virtual int command_make_move(long x, long y);`
+  - `virtual int command_make_work(long x, long y);`
+  - `virtual int command_place_multi_object(long x1, long y1, long x2, long y2, int reset_mode);`
+  - `virtual int start_scroll_view(unsigned char scroll_action_in, long x, long y, int ctrl_key, int shift_key);`
+  - `virtual int handle_scroll_view(long x, long y);`
+  - `unsigned char pick1(unsigned char pick_mode_in, unsigned char select_level, long x, long y, RGE_Pick_Info* pick_info, RGE_Static_Object* last_picked_object, int pick_dopples);`
+  - `int pick_objects1(long x, long y, RGE_Static_Object** object_list, int max_objects);`
+  - `RGE_Static_Object* pick_best_target(long x, long y, int* attacking_in, short action_type);`
+  - `virtual unsigned char get_help_info(char*& string, long& page, long x, long y);`
+  - `void fixup_pick_info(RGE_Pick_Info* pick_info);`
+  - `void reset_display_object_selection(int reset_type);`
 - Root shared declaration request: none.
 - Root resource mapping request: none.
 - Open PDB mapping: `pick1::high_confidence` has no current declaration. Do not add it without source or stack-lifetime evidence.
