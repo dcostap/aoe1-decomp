@@ -14,7 +14,7 @@ extern "C" const GUID CLSID_DirectPlay;
 extern "C" const GUID IID_IDirectPlay3;
 extern "C" const GUID IID_IDirectDrawSurface3;
 
-void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
+void GetDXVersion( unsigned long* pdwDXVersion, unsigned long* pdwDXPlatform ) {
     int hr;
     void* DDHinst = 0;
     void* DIHinst = 0;
@@ -31,19 +31,19 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     osVer.dwOSVersionInfoSize = 0x94;
 
     if (!GetVersionExA( &osVer )) {
-        *param_1 = 0;
-        *param_2 = 0;
+        *pdwDXVersion = 0;
+        *pdwDXPlatform = 0;
         return;
     }
 
-    if (osVer.dwPlatformId == 2) {
-        *param_2 = 2;
+    if (osVer.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+        *pdwDXPlatform = VER_PLATFORM_WIN32_NT;
         if (osVer.dwMajorVersion < 4) {
-            *param_2 = 0;
+            *pdwDXPlatform = 0;
             return;
         }
         if (osVer.dwMajorVersion == 4) {
-            *param_1 = 0x200;
+            *pdwDXVersion = 0x200;
             DIHinst = LoadLibraryA( "DINPUT.DLL" );
             if (DIHinst == 0) {
                 OutputDebugStringA( "Couldn't LoadLibrary DInput\r\n" );
@@ -51,10 +51,10 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             }
 
             {
-                void* DirectInputCreate =
+                void* DirectInputCreateA =
                     GetProcAddress( DIHinst, "DirectInputCreateA" );
                 FreeLibrary( DIHinst );
-                if (DirectInputCreate == 0) {
+                if (DirectInputCreateA == 0) {
                     OutputDebugStringA( "Couldn't GetProcAddress DInputCreate\r\n" );
                     return;
                 }
@@ -62,9 +62,10 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 
             {
                 IUnknown* dp3;
-                *param_1 = 0x300;
+                *pdwDXVersion = 0x300;
                 int coInitResult = CoInitialize( 0 );
-                hr = CoCreateInstance( CLSID_DirectPlay, 0, 1, IID_IDirectPlay3,
+                hr = CoCreateInstance( CLSID_DirectPlay, 0, CLSCTX_INPROC_SERVER,
+                                       IID_IDirectPlay3,
                                        (void**)&dp3 );
                 if (hr < 0) {
                     if (coInitResult != 0)
@@ -75,26 +76,26 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
                 dp3->Release();
                 if (coInitResult != 0)
                     CoUninitialize();
-                *param_1 = (IsDPlay501a() != 0) + 0x500;
+                *pdwDXVersion = (IsDPlay501a() != 0) + 0x500;
                 return;
             }
         }
 
-        *param_1 = 0x501;
+        *pdwDXVersion = 0x501;
         return;
     }
 
     {
-        *param_2 = 1;
+        *pdwDXPlatform = VER_PLATFORM_WIN32_WINDOWS;
         if ((osVer.dwBuildNumber & 0xFFFF) > 0x549) {
-            *param_1 = 0x501;
+            *pdwDXVersion = 0x501;
             return;
         }
 
         DDHinst = LoadLibraryA( "DDRAW.DLL" );
         if (DDHinst == 0) {
-            *param_1 = 0;
-            *param_2 = 0;
+            *pdwDXVersion = 0;
+            *pdwDXPlatform = 0;
             FreeLibrary( DDHinst );
             return;
         }
@@ -102,8 +103,8 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         DirectDrawCreate = (DIRECTDRAWCREATE)GetProcAddress( DDHinst,
                                                                "DirectDrawCreate" );
         if (DirectDrawCreate == 0) {
-            *param_1 = 0;
-            *param_2 = 0;
+            *pdwDXVersion = 0;
+            *pdwDXPlatform = 0;
             FreeLibrary( DDHinst );
             OutputDebugStringA( "Couldn't LoadLibrary DDraw\r\n" );
             return;
@@ -111,14 +112,14 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 
         hr = DirectDrawCreate( 0, &pDDraw, 0 );
         if (hr < 0) {
-            *param_1 = 0;
-            *param_2 = 0;
+            *pdwDXVersion = 0;
+            *pdwDXPlatform = 0;
             FreeLibrary( DDHinst );
             OutputDebugStringA( "Couldn't create DDraw\r\n" );
             return;
         }
 
-        *param_1 = 0x100;
+        *pdwDXVersion = 0x100;
         hr = pDDraw->QueryInterface( IID_IDirectDraw2, (void**)&pDDraw2 );
         if (hr < 0) {
             pDDraw->Release();
@@ -128,7 +129,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         }
 
         pDDraw2->Release();
-        *param_1 = 0x200;
+        *pdwDXVersion = 0x200;
         DIHinst = LoadLibraryA( "DINPUT.DLL" );
         if (DIHinst == 0) {
             OutputDebugStringA( "Couldn't LoadLibrary DInput\r\n" );
@@ -137,9 +138,9 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             return;
         }
 
-        void* DirectInputCreate = GetProcAddress( DIHinst, "DirectInputCreateA" );
+        void* DirectInputCreateA = GetProcAddress( DIHinst, "DirectInputCreateA" );
         FreeLibrary( DIHinst );
-        if (DirectInputCreate == 0) {
+        if (DirectInputCreateA == 0) {
             FreeLibrary( DDHinst );
             pDDraw->Release();
             OutputDebugStringA( "Couldn't GetProcAddress DInputCreate\r\n" );
@@ -148,16 +149,16 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 
         DDSURFACEDESC desc;
         memset( &desc, 0, sizeof(desc) );
-        *param_1 = 0x300;
+        *pdwDXVersion = 0x300;
         desc.dwSize = sizeof(desc);
-        desc.dwFlags = 1;
-        desc.ddsCaps.dwCaps = 0x200;
+        desc.dwFlags = DDSD_CAPS;
+        desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-        hr = pDDraw->SetCooperativeLevel( 0, 8 );
+        hr = pDDraw->SetCooperativeLevel( 0, DDSCL_NORMAL );
         if (hr < 0) {
             pDDraw->Release();
             FreeLibrary( DDHinst );
-            *param_1 = 0;
+            *pdwDXVersion = 0;
             OutputDebugStringA( "Couldn't Set coop level\r\n" );
             return;
         }
@@ -166,7 +167,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         if (hr < 0) {
             pDDraw->Release();
             FreeLibrary( DDHinst );
-            *param_1 = 0;
+            *pdwDXVersion = 0;
             OutputDebugStringA( "Couldn't CreateSurface\r\n" );
             return;
         }
@@ -178,7 +179,7 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
             return;
         }
 
-        *param_1 = (IsDPlay501a() != 0) + 0x500;
+        *pdwDXVersion = (IsDPlay501a() != 0) + 0x500;
         pSurf->Release();
         pDDraw->Release();
         FreeLibrary( DDHinst );
@@ -186,8 +187,8 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
 }
 
 int IsDPlay501a() {
-    DWORD lpDummy;
-    UINT verSize = GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);
+    DWORD zero;
+    UINT verSize = GetFileVersionInfoSizeA("dplayx.dll", &zero);
     VS_FIXEDFILEINFO* verInfo;
     unsigned int verInfoLen;
     BOOL result;

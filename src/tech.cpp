@@ -18,8 +18,7 @@ void __cdecl rge_read(int file, void* data, int size);
 void __cdecl rge_write(int file, void* data, int size);
 
 
-TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg)
-{
+TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg) {
     short i;
 
     this->world = world_arg;
@@ -63,8 +62,7 @@ TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg)
     }
 }
 
-TRIBE_Tech::TRIBE_Tech(char* filename)
-{
+TRIBE_Tech::TRIBE_Tech(char* filename) {
     FILE* file;
     unsigned char button_temp;
     int k;
@@ -127,8 +125,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename)
     }
 }
 
-TRIBE_Tech::~TRIBE_Tech()
-{
+TRIBE_Tech::~TRIBE_Tech() {
     int i;
 
     if (this->tech_tree) {
@@ -142,16 +139,14 @@ TRIBE_Tech::~TRIBE_Tech()
     }
 }
 
-unsigned char TRIBE_Tech::do_tech(short tech_id, RGE_Player* player)
-{
+unsigned char TRIBE_Tech::do_tech(short tech_id, RGE_Player* player) {
     if (this->tech_tree[tech_id].effect >= 0) {
         this->world->effects->do_effect(this->tech_tree[tech_id].effect, player);
     }
     return 1;
 }
 
-void TRIBE_Tech::save(int file)
-{
+void TRIBE_Tech::save(int file) {
     short i;
 
     rge_write(file, &this->tech_tree_num, 2);
@@ -192,8 +187,7 @@ void TRIBE_Tech::save(int file)
     }
 }
 
-long TRIBE_Tech::get_help_message(short tech_id)
-{
+long TRIBE_Tech::get_help_message(short tech_id) {
     // The executable accepts tech_tree_num as an index.
     if (tech_id < 0 || tech_id > this->tech_tree_num) {
         return -1;
@@ -201,8 +195,7 @@ long TRIBE_Tech::get_help_message(short tech_id)
     return this->tech_tree[tech_id].help_string_id;
 }
 
-long TRIBE_Tech::get_help_page(short tech_id)
-{
+long TRIBE_Tech::get_help_page(short tech_id) {
     // The executable accepts tech_tree_num as an index.
     if (tech_id < 0 || tech_id > this->tech_tree_num) {
         return -1;
@@ -210,8 +203,7 @@ long TRIBE_Tech::get_help_page(short tech_id)
     return this->tech_tree[tech_id].help_page_id;
 }
 
-long TRIBE_Tech::get_hotkey(short tech_id)
-{
+long TRIBE_Tech::get_hotkey(short tech_id) {
     // The executable accepts tech_tree_num as an index.
     if (tech_id < 0 || tech_id > this->tech_tree_num) {
         return -1;
@@ -219,9 +211,7 @@ long TRIBE_Tech::get_hotkey(short tech_id)
     return this->tech_tree[tech_id].hotkey_id;
 }
 
-TRIBE_Player_Tech::TRIBE_Player_Tech(int file, TRIBE_Tech* tech,
-                                     RGE_Player* player, unsigned char load)
-{
+TRIBE_Player_Tech::TRIBE_Player_Tech(int file, TRIBE_Tech* tech, RGE_Player* player, unsigned char load) {
     short i;
 
     rge_read(file, &this->tech_player_tree_num, 2);
@@ -251,9 +241,7 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(int file, TRIBE_Tech* tech,
     }
 }
 
-TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* tech, RGE_Player* player,
-                                     unsigned char load)
-{
+TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* tech, RGE_Player* player, unsigned char load) {
     this->base_tech = tech;
     this->owner = player;
     this->tech_player_tree_num = tech->tech_tree_num;
@@ -266,21 +254,18 @@ TRIBE_Player_Tech::TRIBE_Player_Tech(TRIBE_Tech* tech, RGE_Player* player,
     }
 }
 
-TRIBE_Player_Tech::~TRIBE_Player_Tech()
-{
+TRIBE_Player_Tech::~TRIBE_Player_Tech() {
     if (this->tech_player_tree) {
         free(this->tech_player_tree);
         this->tech_player_tree = 0;
     }
 }
 
-short TRIBE_Player_Tech::get_tech_state(short tech_id)
-{
+short TRIBE_Player_Tech::get_tech_state(short tech_id) {
     return this->tech_player_tree[tech_id].state;
 }
 
-unsigned char TRIBE_Player_Tech::undo_tech(short tech_id)
-{
+unsigned char TRIBE_Player_Tech::undo_tech(short tech_id) {
     if (this->tech_player_tree[tech_id].state >= 1) {
         this->tech_player_tree[tech_id].state = 0;
         check_for_new_tech();
@@ -289,8 +274,7 @@ unsigned char TRIBE_Player_Tech::undo_tech(short tech_id)
     return 0;
 }
 
-unsigned char TRIBE_Player_Tech::do_tech(short tech_id)
-{
+unsigned char TRIBE_Player_Tech::do_tech(short tech_id) {
     if (this->tech_player_tree[tech_id].state < 3 &&
         this->tech_player_tree[tech_id].state > -1) {
         this->tech_player_tree[tech_id].state = 3;
@@ -308,8 +292,7 @@ unsigned char TRIBE_Player_Tech::do_tech(short tech_id)
     return 0;
 }
 
-unsigned char TRIBE_Player_Tech::research(short tech_id, float amount)
-{
+unsigned char TRIBE_Player_Tech::research(short tech_id, float amount) {
     if (this->tech_player_tree[tech_id].state == 2) {
         this->tech_player_tree[tech_id].research_done += amount;
         if (!(this->tech_player_tree[tech_id].research_done <
@@ -322,10 +305,7 @@ unsigned char TRIBE_Player_Tech::research(short tech_id, float amount)
     return 0;
 }
 
-void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1,
-                                  short& attr2, short& cost2, short& attr3,
-                                  short& cost3)
-{
+void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, short& attr2, short& cost2, short& attr3, short& cost3) {
     short total;
     Tech_Tree* tech;
     unsigned char can_use_carry;
@@ -407,9 +387,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1,
     }
 }
 
-unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id,
-                                                  short* missing_attribute)
-{
+unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id, short* missing_attribute) {
     Tech_Tree* tech;
     float carry;
     unsigned char has_carry;
@@ -459,10 +437,7 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id,
     return 0;
 }
 
-unsigned char TRIBE_Player_Tech::start_research(short tech_id,
-                                                unsigned char charge,
-                                                short* missing_attribute)
-{
+unsigned char TRIBE_Player_Tech::start_research(short tech_id, unsigned char charge, short* missing_attribute) {
     Tech_Tree* tech;
     float cost;
     int attribute;
@@ -496,9 +471,7 @@ unsigned char TRIBE_Player_Tech::start_research(short tech_id,
     return 0;
 }
 
-unsigned char TRIBE_Player_Tech::cancel_research(short tech_id,
-                                                 unsigned char refund)
-{
+unsigned char TRIBE_Player_Tech::cancel_research(short tech_id, unsigned char refund) {
     Tech_Tree* tech;
     short i;
 
@@ -520,8 +493,7 @@ unsigned char TRIBE_Player_Tech::cancel_research(short tech_id,
     return 0;
 }
 
-unsigned char TRIBE_Player_Tech::check_for_new_tech()
-{
+unsigned char TRIBE_Player_Tech::check_for_new_tech() {
     Tech_Tree* tech;
     short j;
     short active_count;
@@ -573,8 +545,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
     return 1;
 }
 
-void TRIBE_Player_Tech::save(int file)
-{
+void TRIBE_Player_Tech::save(int file) {
     rge_write(file, &this->tech_player_tree_num, 2);
     for (short i = 0; i < this->tech_player_tree_num; i++) {
         rge_write(file, &this->tech_player_tree[i], 4);
@@ -582,8 +553,7 @@ void TRIBE_Player_Tech::save(int file)
     }
 }
 
-short TRIBE_Player_Tech::get_progress(short tech_id)
-{
+short TRIBE_Player_Tech::get_progress(short tech_id) {
     short progress;
 
     if (this->tech_player_tree[tech_id].state == 2) {
@@ -597,28 +567,23 @@ short TRIBE_Player_Tech::get_progress(short tech_id)
     return progress;
 }
 
-char* TRIBE_Player_Tech::get_name(short tech_id)
-{
+char* TRIBE_Player_Tech::get_name(short tech_id) {
     return this->base_tech->tech_tree[tech_id].name;
 }
 
-short TRIBE_Player_Tech::get_string_id(short tech_id)
-{
+short TRIBE_Player_Tech::get_string_id(short tech_id) {
     return this->base_tech->tech_tree[tech_id].string_id;
 }
 
-short TRIBE_Player_Tech::get_string_id2(short tech_id)
-{
+short TRIBE_Player_Tech::get_string_id2(short tech_id) {
     return this->base_tech->tech_tree[tech_id].string_id2;
 }
 
-unsigned char TRIBE_Player_Tech::get_button_location(short tech_id)
-{
+unsigned char TRIBE_Player_Tech::get_button_location(short tech_id) {
     return this->base_tech->tech_tree[tech_id].button_location;
 }
 
-void TRIBE_Player_Tech::do_rev_tech(short tech_id)
-{
+void TRIBE_Player_Tech::do_rev_tech(short tech_id) {
     int i;
     int tech;
 
@@ -633,8 +598,7 @@ void TRIBE_Player_Tech::do_rev_tech(short tech_id)
     this->do_tech(tech_id);
 }
 
-unsigned char TRIBE_Player_Tech::rev_tech(short tech_id)
-{
+unsigned char TRIBE_Player_Tech::rev_tech(short tech_id) {
     int i;
     int j;
 
@@ -649,8 +613,7 @@ unsigned char TRIBE_Player_Tech::rev_tech(short tech_id)
     return 1;
 }
 
-void TRIBE_Player_Tech::disable(short tech_id)
-{
+void TRIBE_Player_Tech::disable(short tech_id) {
     int i;
 
     if (tech_id < 0) {
@@ -664,8 +627,7 @@ void TRIBE_Player_Tech::disable(short tech_id)
     }
 }
 
-void TRIBE_Player_Tech::enable(short tech_id)
-{
+void TRIBE_Player_Tech::enable(short tech_id) {
     int i;
 
     if (tech_id < 0) {
@@ -679,17 +641,14 @@ void TRIBE_Player_Tech::enable(short tech_id)
     }
 }
 
-long TRIBE_Player_Tech::get_help_message(short tech_id)
-{
+long TRIBE_Player_Tech::get_help_message(short tech_id) {
     return this->base_tech->get_help_message(tech_id);
 }
 
-long TRIBE_Player_Tech::get_help_page(short tech_id)
-{
+long TRIBE_Player_Tech::get_help_page(short tech_id) {
     return this->base_tech->get_help_page(tech_id);
 }
 
-long TRIBE_Player_Tech::get_hotkey(short tech_id)
-{
+long TRIBE_Player_Tech::get_hotkey(short tech_id) {
     return this->base_tech->get_hotkey(tech_id);
 }

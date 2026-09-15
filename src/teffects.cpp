@@ -3,14 +3,14 @@
 #include "../include/tplayer.h"
 
 
-TRIBE_Effects::TRIBE_Effects(int param) : RGE_Effects(param) {
+TRIBE_Effects::TRIBE_Effects(int infile) : RGE_Effects(infile) {
 }
 
-TRIBE_Effects::TRIBE_Effects(char* param) : RGE_Effects(param) {
+TRIBE_Effects::TRIBE_Effects(char* effect_file) : RGE_Effects(effect_file) {
 }
 
-void TRIBE_Effects::do_effect(short param_1, RGE_Player* player) {
-    int index = param_1;
+void TRIBE_Effects::do_effect(short current_effect, RGE_Player* player) {
+    int index = current_effect;
     if (index >= this->effect_num) {
         return;
     }
@@ -35,11 +35,11 @@ void TRIBE_Effects::do_effect(short param_1, RGE_Player* player) {
         } while (i < record->effect_list_num);
     }
 
-    RGE_Effects::do_effect(param_1, player);
+    RGE_Effects::do_effect(current_effect, player);
 }
 
-void TRIBE_Effects::do_tech_effect(short tech_id, RGE_Player* player) {
-    int index = tech_id;
+void TRIBE_Effects::do_tech_effect(short current_effect, RGE_Player* player) {
+    int index = current_effect;
     RGE_Effect* record = &this->effects[index];
     int i = 0;
 
