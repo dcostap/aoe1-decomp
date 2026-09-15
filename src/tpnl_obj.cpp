@@ -720,8 +720,7 @@ void TRIBE_Panel_Object::draw_score() {
     this->draw_finish();
 }
 
-void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type,
-                                   int val1, int val2) {
+void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, int val1, int val2) {
     char val_str[20];
 
     if (this->item_pic != 0 && pic_index != -1) {

@@ -122,7 +122,22 @@ Final compiler and output checks remain required before any code-generation clai
 
 ## Shared requests and unresolved questions
 
-- Header request: none. `include/tpnl_obj.h` remains read-only.
+- Owner-header request: update the matching declarations in `include/tpnl_obj.h`
+  with these exact recovered parameter names. Do not change the header in this
+  worker's commit.
+
+  ```cpp
+  TRIBE_Panel_Object(TDrawArea* render_area_in, TPanel* parent_panel_in, void* font_in,
+                     long font_wid_in, long font_hgt_in, TShape* unit_pics_in,
+                     TShape** bldg_pics_in, TRIBE_Player* player_in);
+  void set_player(TRIBE_Player* player_in);
+  void set_object(RGE_Static_Object* game_obj_in);
+  void set_mode(unsigned char mode_in);
+  virtual void draw_item(int row, int pic_index, ValueType val_type, int val1, int val2);
+  virtual long mouse_left_down_action(long x, long y, int ctrl_key, int shift_key);
+  virtual long mouse_left_up_action(long x, long y, int ctrl_key, int shift_key);
+  ```
+
 - Resource header request: none. `0x69` remains unresolved as a direct resource
   mapping.
 - The documented source-reunification packet is absent at the path recorded above.
