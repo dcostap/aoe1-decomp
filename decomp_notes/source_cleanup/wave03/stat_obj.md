@@ -4,13 +4,18 @@
 
 - Module: `src/stat_obj.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `5719dfd55ac6ebcc5ff87fc69e703e980220ffac`
+- Initial cleanup source commit: `5719dfd55ac6ebcc5ff87fc69e703e980220ffac`
+- Final source commit: `057f6dd4cf284bdd7e086742ac98b137f6c65761`
 - Changed files:
   - `src/stat_obj.cpp`
   - `decomp_notes/source_cleanup/wave03/stat_obj.md`
 
 The final source commit contains only the source cleanup. The report is the second
 assigned file and has no source ownership effect.
+
+The later correction commit formats the module. It attaches existing function and
+control braces, joins existing `else` braces, and fixes drawing-block indentation.
+It changes whitespace only.
 
 ## Evidence
 
@@ -102,10 +107,10 @@ status file, inventory file, or global declaration.
 
 ## Code-generation and behavior review
 
-The cleanup changes identifier names and removes stale comments only. It keeps
-statement order, control flow, calls, casts, declaration scopes, storage
-duration, types, literals, and public ABI symbols unchanged. No new constant or
-resource lookup was added. The source diff received a full review, and
+The cleanup changes identifier names, whitespace, and stale comments only. It keeps
+statement order, control flow, calls, casts, declaration scopes, storage duration,
+types, literals, and public ABI symbols unchanged. No new constant or resource
+lookup was added. The complete base-to-head diff received a second review, and
 `git diff --check` passed.
 
 Compilation, compiler checks, matching checks, audits, tests, and games were not
