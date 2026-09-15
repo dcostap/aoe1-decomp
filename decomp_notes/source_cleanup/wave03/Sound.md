@@ -5,7 +5,7 @@
 - Module: `src/Sound.cpp`
 - Slot and branch: 175, `cleanup/staging-20260915-175`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `e6e50623c92724fedda3fb605e57c4dcd55e0e13`
+- Final source commit: `2cd293369aa522d75889c3be17a4f2c593e0c5ff`
 - Changed files: `src/Sound.cpp`, this report
 - The source commit contains only the assigned source file. The report is committed separately.
 
@@ -53,7 +53,7 @@ They provide the original body ranges, line records, and assembly for every row.
 | `004BC2D0` | `set_cache_time(unsigned long)` | 190-192; 2 records | `new_cache_time` (`unsigned long`, `+0x4`); `this` in `ecx` | Restored `new_cache_time`. |
 | `004BC2E0` | `play_at_update()` | 197-199; 2 records | No stack parameters or locals; `this` in `ecx` | No source names to recover. |
 | `004BC2F0` | `update_play()` | 204-210; 5 records | No stack parameters or locals; `this` in `ecx` | No source names to recover. |
-| `004BC310` | `play(int)` | 215-273; 25 records | `add_to_play_list` (`int`, `+0x4`), `s` (`char[256]`, `-0x100`); `this` in `ecx` | Both source names already matched the PDB. |
+| `004BC310` | `play(int)` | 215-273; 25 records | `add_to_play_list` (`int`, `+0x4`), `s` (`char[256]`, `-0x100`); `this` in `ecx` | Restored `add_to_play_list`; `s` already matched the PDB. |
 | `004BC470` | `get_file_name()` | 278-299; 10 records | No stack parameters or locals; `this` in `ecx` | No source names to recover. |
 | `004BC4F0` | `stop()` | 304-318; 6 records | No stack parameters or locals; `this` in `ecx` | No source names to recover. |
 | `004BC540` | `is_playing()` | 323-339; 11 records | No stack parameters or locals; `this` in `ecx` | No source names to recover. |
