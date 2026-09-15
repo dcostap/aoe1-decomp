@@ -42,11 +42,13 @@ I integrated each approved worker commit without omitted hunks.
 ### `src/diam_map.cpp`
 
 - Worker: `sa-52b69f61`.
-- Worker commits: `ef4716b4fbe13c21122ed62269471dda8740b9dc`, `d5b86f71284dba65d033b62e76c859d58419ec55`, `7707e16f808c4a12629e3ad49380eb8eb8bb8836`, `ff35c063adefbb7238b185d2c8a0fac519f980c0`, `8a2878786a0a1cbb29f0c461c051bcfa4b6af87a`.
-- Integration commits: `2ac8aa65524c9232f7f2fe201c0026733f966705`, `808eea3584a817b6ff0c7c943057da1e9a958b18`, `d508b7358c4eed27dd046e9fe77e20a99d869646`, `03fcf0e0b494f619ce9dfbc94331030fd5f278f9`, `0067f5fc46fb9a6543e9c332bf4e812c83b368f0`.
+- Worker commits: `ef4716b4fbe13c21122ed62269471dda8740b9dc`, `d5b86f71284dba65d033b62e76c859d58419ec55`, `7707e16f808c4a12629e3ad49380eb8eb8bb8836`, `ff35c063adefbb7238b185d2c8a0fac519f980c0`, `8a2878786a0a1cbb29f0c461c051bcfa4b6af87a`, `862dc64576de762544179128ce654f84954469c4`.
+- Integration commits: `2ac8aa65524c9232f7f2fe201c0026733f966705`, `808eea3584a817b6ff0c7c943057da1e9a958b18`, `d508b7358c4eed27dd046e9fe77e20a99d869646`, `03fcf0e0b494f619ce9dfbc94331030fd5f278f9`, `0067f5fc46fb9a6543e9c332bf4e812c83b368f0`, `4fb0f89335f2a441b2f9cbf03f82cee7880dd5b1`.
 - Report: `decomp_notes/source_cleanup/wave04/diam_map.md`.
 - Review required short signature wrapping and a precise header request.
 - The same worker corrected both items.
+- Final review corrected the `00437760` PDB reference size to 1216 bytes.
+- The report does not claim new executable boundary proof from that metadata.
 - The owner added the recovered parameter names to `include/diam_map.h`.
 - Status: integrated, reviewed, and unvalidated.
 
@@ -55,13 +57,15 @@ I integrated each approved worker commit without omitted hunks.
 - Worker: `sa-6350ea36`.
 - Initial worker commit: `e2182159345429652b16d887b8549fb63ad8cf15`.
 - The worker replaced that commit during correction with `dd1e6f50e70f9b242ce4ff651a83f8db4b8fd788`.
-- Later worker commits: `321a8b461a41ed4d91faae9fa1634e3b2b7c1482`, `8c6ffb71511181a93cd80f6c07bcf9c157c31718`.
-- Integration commits: `41353e56d3c470ae6243c93d50deaa03d4176804`, `254559d86d9be64b3ee9cb66e7d7d9e61e34f22a`, `cb91159e2b26f8f5e28649118022ff7058054880`.
+- Later worker commits: `321a8b461a41ed4d91faae9fa1634e3b2b7c1482`, `8c6ffb71511181a93cd80f6c07bcf9c157c31718`, `fa8ef2138e7c0fea16927e2215388e470573c009`.
+- Integration commits: `41353e56d3c470ae6243c93d50deaa03d4176804`, `254559d86d9be64b3ee9cb66e7d7d9e61e34f22a`, `cb91159e2b26f8f5e28649118022ff7058054880`, `455bf77ddb4e88a326f716483d260b8875e0c2c5`.
 - Report: `decomp_notes/source_cleanup/wave04/view.md`.
 - Review found forced names from reused homes in `view_function`.
 - Review also found incomplete 1TBS formatting and an incomplete report.
 - The same worker restored the role-based names and documented the unresolved PDB aliases.
 - The worker then completed formatting, coverage, and the exact header request.
+- Final review clarified that only the original executable is the behavior oracle.
+- The report now identifies the PDB and inventory as reference evidence.
 - The owner added the supported parameter names to `include/view.h`.
 - Status: integrated, reviewed, and unvalidated.
 
