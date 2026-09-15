@@ -27,17 +27,24 @@ Each worker started at
 ### `act_list`
 
 - Worker: `sa-d68417cd`, slot 29.
-- Worker head: `631e085f5d60718fd59cb85249d8eec30079f3fd`.
+- Initial worker head: `631e085f5d60718fd59cb85249d8eec30079f3fd`.
+- Corrected worker head: `04017a88e61324ae1435db99f69f01e339c709b6`.
 - Worker commits:
   - `75a263bac24c04c07efe53787799a33b618f0b28`
   - `f5c9a61fe3beb3e9d0002634a0936502c997871b`
   - `631e085f5d60718fd59cb85249d8eec30079f3fd`
+  - `76d321c4d1bece12f17f6904e3d1c787dc12259e`
+  - `04017a88e61324ae1435db99f69f01e339c709b6`
 - Integrated commits:
   - `356b0ec8c12ceb184b7a21371dacf04515235914`
   - `c7b5c201807f6b566b754c57096c3cc9a5ecdf13`
   - `a29251e3a0e0f7b2d355b5bfed42b894d4c31b54`
+  - `26108aea9ebb555dcd0dcb78fdb2981213b1ce09`
+  - `91909948ec68658d3986cffd66a28b2ee674104c`
 - Header commit: `ea38d88a5856be51c1967843c0a4751f67fcc7df`.
-- Review: Approved after full source and report review.
+- Review correction: Root requested one-line move and work signatures. Root
+  also requested one-line formatting for the short negative-target call. The
+  same worker made both presentation changes. The corrected diff passed review.
 - Mapping: Restored `obj_in`, `infile`, `outfile`, `action_type`, target
   names, response names, copy names, and `action_name`.
 - Unresolved: The `save` PDB record names a `short action_type` in a reused
@@ -99,15 +106,22 @@ Each worker started at
 ### `task_lst`
 
 - Worker: `sa-a85f9e52`, slot 33.
-- Worker head: `afae26bd5b5c09c5452d0de83e919302f0bb0eee`.
+- Initial worker head: `afae26bd5b5c09c5452d0de83e919302f0bb0eee`.
+- Corrected worker head: `e70f813273a2a93d74c15b3a957b9d9868b12bfa`.
 - Worker commits:
   - `11b723ce64894ffcbcfc43905ed9ea3a6640d51d`
   - `afae26bd5b5c09c5452d0de83e919302f0bb0eee`
+  - `48d3d4fe00f58ba29df464a1317bd6b2fd772406`
+  - `e70f813273a2a93d74c15b3a957b9d9868b12bfa`
 - Integrated commits:
   - `6ac9f0adf0a99961d4655b4356d3b3d66ccb051c`
   - `19afa96224718d793fead0fc3c926c0e7105ca0e`
+  - `382517af6329add76db1ef7caeacc4537e0adcb7`
+  - `09ef0eaf53dd163bb9bbeed88d3ddf3188097e07`
 - Header commit: `9ce7a03d1c909c0cf9d23bf81c512be1170b7c7b`.
-- Review: Approved after full source and report review.
+- Review correction: Root requested compact signatures and corrected the
+  held-attribute comment. The same worker applied the exact comment and
+  presentation changes. The corrected diff passed review.
 - Mapping: Restored list copy, file, index, object, target, coordinate, and
   task-check names.
 - Unresolved: `self`, loop counters, pointer locals, and terrain locals lack
@@ -157,17 +171,24 @@ Each worker started at
 ### `ttsk_lst`
 
 - Worker: `sa-7bf35382`, slot 36.
-- Worker head: `849e537397ab9e44dceb33e7cb896372f60c3b4a`.
+- Initial worker head: `849e537397ab9e44dceb33e7cb896372f60c3b4a`.
+- Corrected worker head: `5538a5060839ff3df765323a0ad48be28db77a7e`.
 - Worker commits:
   - `4e0192183b6768b3bd1b842952cf6eab9ed8a043`
   - `849e537397ab9e44dceb33e7cb896372f60c3b4a`
+  - `95b7fa83e8e8b61f6fce66288eafc470a27b530d`
+  - `5538a5060839ff3df765323a0ad48be28db77a7e`
 - Integrated commits:
   - `cbcda06730abfbe9a6fbce8247314ad6febde609`
   - `1cdb9445fbfb3961dcee3aad812bc2195f08c876`
+  - `3c377b511891bc1425e54123dec0c0bc72c6c8a6`
+  - `8947a530ea93e1a58ffa6894c7c12ac2302b3740`
 - Header commit: `cac4ae317c189ac7d8cfb5f78f481f9e20ab8913`.
 - Owner correction: Full combined review found that `include/ttsk_lst.h` had
   unnamed parameters. The header now uses the PDB names from the source.
-- Review: Approved after full source and report review.
+- Review correction: Root requested a compact two-line signature with aligned
+  continuation text. The same worker applied it. The corrected diff passed
+  review.
 - Mapping: PDB parameters already matched. New cleanup names clarify candidate
   target IDs, source and target groups, and task indexes.
 - Unresolved: The PDB has no local names. The scoped size for `0052C3F0`
@@ -184,6 +205,15 @@ I reviewed the combined source and header changes. The headers only add
 parameter names. They do not change types, virtual order, layout, or symbols.
 All eight module headers now use the reviewed PDB parameter names. All eight
 source reports state that they inspected every registered normal procedure.
+
+Root read the complete 3,717-line group diff and all reports. Root found no
+removed cast or changed executable expression. Root requested presentation
+corrections in `act_list.cpp`, `task_lst.cpp`, and `ttsk_lst.cpp`. The same
+workers made those corrections. I reviewed each correction commit and report.
+
+I also reviewed owner-header continuation indentation. Continuation text aligns
+with the first parameter. No header type, scope, or declaration shape changed
+during this correction pass.
 
 The source changes contain name recovery, descriptive local names, 1TBS brace
 placement, line wrapping, and two sparse comments in `task_lst.cpp`. No worker
