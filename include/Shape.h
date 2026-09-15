@@ -79,55 +79,47 @@ public:
     Shape_Info* shape_info;
 
     TShape();
-    TShape(char* filename, long resource_id);
+    TShape(char* filename, long resource_file_id);
     ~TShape();
 
 private:
-    byte Check_shape(long index, char* name);
+    byte Check_shape(long shape_num, char* proc);
 
 public:
     int is_loaded();
-    byte shape_bounds(long index, short& width, short& height);
+    byte shape_bounds(long shape_num, short& width, short& height);
     long shape_count();
-    byte shape_minmax(long& min_x, long& min_y, long& max_x, long& max_y,
-                      long index);
-    byte shape_check(long x, long y, long frame);
+    byte shape_minmax(long& x_min, long& y_min, long& x_max, long& y_max, long shape_num);
+    byte shape_check(long check_x, long check_y, long shape_num);
 
 private:
-    byte shape_draw_unclipped(TDrawArea*, long, long, long);
-    byte shape_color_trans_unclipped(TDrawArea*, long, long, long, byte*);
-    byte shape_shadow_unclipped(TDrawArea*, long, long, byte*);
-    byte shape_draw_clipped(TDrawArea*, long, long, long, long, long, long);
-    byte shape_color_trans_clipped(TDrawArea*, long, long, long,
-                                   long, long, long, long, byte*);
-    byte shape_shadow_clipped(TDrawArea*, long, long, long,
-                              long, long, long, byte*);
+    byte shape_draw_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num);
+    byte shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, byte* color_table);
+    byte shape_shadow_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, byte* color_table);
+    byte shape_draw_clipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1);
+    byte shape_color_trans_clipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* color_table);
+    byte shape_shadow_clipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* color_table);
 
 public:
-    byte shape_draw(TDrawArea*, long, long, long, byte, byte*);
+    byte shape_draw(TDrawArea* drawarea, long x, long y, long shape_num, byte flags, byte* color_table);
 
 private:
-    byte shape_mirror_unclipped(TDrawArea*, long, long);
-    byte shape_mirror_color_trans_unclipped(TDrawArea*, long, long,
-                                            long, byte*);
-    byte shape_mirror_shadow_unclipped(TDrawArea*, long, long, byte*);
-    byte shape_mirror_clipped(TDrawArea*, long, long, long,
-                              long, long, long);
-    byte shape_mirror_color_trans_clipped(TDrawArea*, long, long, long,
-                                          long, long, long, long, byte*);
-    byte shape_mirror_shadow_clipped(TDrawArea*, long, long,
-                                     long, long, long, long, byte*);
+    byte shape_mirror_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0);
+    byte shape_mirror_color_trans_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num, byte* color_table);
+    byte shape_mirror_shadow_unclipped(TDrawArea* drawarea, long shape_x1, long shape_y0, byte* color_table);
+    byte shape_mirror_clipped(TDrawArea* drawarea, long shape_x1, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1);
+    byte shape_mirror_color_trans_clipped(TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* color_table);
+    byte shape_mirror_shadow_clipped(TDrawArea* drawarea, long shape_x1, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* color_table);
 
 public:
-    byte shape_mirror(TDrawArea*, long, long, long, byte, byte*);
+    byte shape_mirror(TDrawArea* drawarea, long x, long y, long shape_num, byte flags, byte* color_table);
 
 private:
-    byte shape_dithered_unclipped(TDrawArea*, long, long, long, long);
-    byte shape_dithered_clipped(TDrawArea*, long, long, long, long,
-                                long, long, long, long);
+    byte shape_dithered_unclipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long dx, long dy);
+    byte shape_dithered_clipped(TDrawArea* drawarea, long shape_x0, long shape_y0, long clip_x0, long clip_y0, long clip_x1, long clip_y1, long dx, long dy);
 
 public:
-    byte shape_dither(TDrawArea*, long, long, long, long, long);
+    byte shape_dither(TDrawArea* drawarea, long x, long y, long shape_num, long dx, long dy);
 };
 
 #endif
