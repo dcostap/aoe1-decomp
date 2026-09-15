@@ -4,7 +4,7 @@
 
 - Module: `src/rmm_cntr.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source commit: `2318ff6ac72bc12f5fbcad04836f6bab839f0f21`
+- Final source commit: `af4f8c26a23ca5837e73477bdb030a7b92fbdba9`
 - Branch: `cleanup/staging-20260915-14`
 - Changed files:
   - `src/rmm_cntr.cpp`
@@ -50,27 +50,27 @@ I restored these names from the scoped PDB records:
   This local name avoids a parameter collision.
   It is a new cleanup name, not a recovered original name.
 - `add_land_module` parameter `number_of_players` became `player_num`.
-- The land loop variable `index` became `mid_x1`.
-- The collision loop variable `previous` became `mid_y2`.
 - The retry flag `retry` became `not_done`.
-- The lower X bound `minimum_x` became `mid_x2`.
-- The lower Y bound `minimum_y` became `index2`.
-- The upper X bound `maximum_x` became `mid_y1`.
 - `count_map_tiles` parameter `ignored` became `terrain`.
 
-The stack locations and uses support each land-local mapping. The PDB names
-also match the original line records and stack locations.
+The PDB names `mid_x1`, `mid_y2`, `mid_x2`, `index2`, and `mid_y1` remain
+unresolved. Their uses conflict with the recovered loop and bound roles.
+The stack slots can be reused by optimized code.
 
 I retained existing names for `info`, `world`, `land_info`, `object_info`,
-`land_tile_num`, and `bound_square`. These names match the PDB records or
-existing source evidence.
+`land_tile_num`, `bound_square`, `index`, `previous`, `minimum_x`,
+`minimum_y`, and `maximum_x`. These names match existing source evidence.
 
 ## Unresolved mappings
 
-The PDB has a stack symbol named `index` at offset `-0x3c`.
-Its direct use is not present in the recovered source mapping.
-I did not force this name onto another variable.
-The stack slot can be reused by optimized code.
+The PDB has stack symbols named `mid_x1`, `mid_y2`, `mid_x2`, `index2`, and
+`mid_y1` in `add_land_module`.
+Their uses contradict the descriptive loop and bound names in the source.
+I did not force these names onto reused stack slots.
+
+The PDB also has a stack symbol named `index`.
+Its exact source mapping remains unresolved because optimized slots overlap.
+I kept the existing source name `index`.
 
 The PDB has no scoped records for `land_percent`, `x`, `y`, `maximum_y`,
 `delta_x`, `delta_y`, the terrain loop index, or object `land_num` and `i`.
