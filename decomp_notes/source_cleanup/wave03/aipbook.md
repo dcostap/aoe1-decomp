@@ -86,9 +86,12 @@ The following parameter names match the scoped PDB records:
 
 `loadPlays` also uses the scoped names that have clear type and lifetime matches:
 `temp`, `fileIn`, `temp2`, `temp3`, `temp4`, `temp5`, `temp6`, `temp7`, `temp8`,
-`commentTemp1`, `commentTemp2`, `command`, `trigger`, `i`, `j`, `a`, `refGroup`,
+`commentTemp1`, `commentTemp2`, `command`, `trigger`, `i`, `a`, `refGroup`,
 `curGroup`, `refPhase`, and `curPhase`.
-The command-copy loop uses the PDB name `a` and the phase and group loops use `j`.
+The command-copy loop uses the PDB name `a`.
+Scoped PDB reuse cannot produce two VC5 loop declarations with the name `j`.
+The repair restores baseline names `iGroups` and `iPhases` for the group and phase loops.
+These are restored baseline names, not uniquely mapped PDB names.
 The outer play index remains `currentPlay`.
 
 The PDB has overlapping stack homes for several `loadPlays` locals.
