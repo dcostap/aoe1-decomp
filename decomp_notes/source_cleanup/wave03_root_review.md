@@ -71,6 +71,15 @@ Its complete 10,442-line diff is `build/source-cleanup-20260915/owner15-review.d
 
 ## Owner 13: intake and prohibited-command incident
 
+Final incident head: `b41a7b3eccda9d05c1bec9bce3e2b011347e82b6`.
+Root read the complete final report diff. Source and headers remain unchanged.
+The recorded setup used `ln -s` for main-root `inventory` and `orig`.
+Later observations identified ordinary directories, consistent with copies, but did not establish Windows junction or child-link status.
+The recorded removal used `rm -rf` on those local paths and the generated output directories.
+The deleted trees are unavailable for further inspection. Outside traversal remains unproved, not confirmed.
+No further command or deletion ran during this documentation request.
+Reviewer `sa-fcb5c825` received the final head and report-only difference for its current source review.
+
 Incident-documentation head: `0e7a7d77e70b68069ff692a762887a8b3a5f6499`.
 Root read the complete incident additions. Only the module report and owner ledger changed.
 The records identify five jobs and five removed paths within slot 110.
