@@ -4,16 +4,18 @@
 
 - Module: `src/m_co_obj.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `630a5f20f737a32d1eabce6c1cc1a65a7df64990`
+- Prior cleanup source commit: `630a5f20f737a32d1eabce6c1cc1a65a7df64990`
+- Final source correction commit: `1b162ffb28d57d7b2133d8798571bd240bbbcd1c`
 - Base source blob: `e7f54d212108a65a67a5b761984b1a528a751300`
-- Final source blob: `13de99dd3a4af9e5a4e6f417a4a38478b0a880c2`
+- Final source blob: `f22d07d4976a25ae9ad54959c4aece4720cbe097`
 - Changed files:
   - `src/m_co_obj.cpp`
   - `decomp_notes/source_cleanup/wave02/m_co_obj.md`
 - Header read but not changed: `include/m_co_obj.h`
 
-The source commit contains only the assigned source file. The report is the
-second assigned change and is committed in the follow-up report commit.
+The prior source and report commits remain in history. This correction source
+commit contains only the assigned source file. This report records the new
+correction commit.
 
 ## PDB coverage
 
@@ -84,7 +86,7 @@ Recovered PDB names in the source definition are:
 - The save parameter `file` became `outfile`, and `sprite_id` became
   `temp_fight_sprite`.
 - The damage parameter `target` became `attacker`.
-- The damage local `count` became the recovered PDB name `tot_armor`.
+- The damage local keeps the existing name `count`.
 
 The source already used the PDB names `do_setup`, `sprites`, `sounds`, `source`,
 `x`, `y`, and `z` in their proven roles. No new inferred names were added.
@@ -97,6 +99,22 @@ The PDB has no one-to-one records for those locals. I did not merge them or
 change their types, scopes, declaration order, or storage duration. The reused
 homes in `00450450` remain separate. The existing `other` copy local also
 remains because no scoped record proves a different mapping.
+
+## Root correction review
+
+The first cleanup mapped the damage local `count` to the PDB name `tot_armor`.
+Root review rejected that mapping. The PDB places `tot_armor` at `+0x8`, but
+that offset does not prove the source declaration.
+
+The original bytes load `attacker->weapon_num` at `0045100D`. They store the
+weapon countdown at `0045102B` and `0045108A`. The source therefore keeps
+`int count = attacker->weapon_num` and the separate `remaining` declaration.
+The type, scope, expressions, and behavior remain unchanged. The PDB mapping
+is unresolved.
+
+The correction also compacts the short setup, copy, and modify signatures.
+The modify continuation indentation is no longer present. The changes follow
+readable line lengths and do not apply an 80-column rule.
 
 ## Constants, resources, and comments
 
