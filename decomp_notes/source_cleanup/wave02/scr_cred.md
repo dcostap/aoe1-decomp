@@ -77,8 +77,10 @@ I restored these names from the scoped PDB records:
 - `00493420`: `surface_in`, `color_in`, `fade_time_in`, `direction_in`, `new_palette`, `ignore_color1_in`, and `ignore_color2_in`.
 - `00493540`: `delta_time`.
 
-The `x2` and `x` mappings follow the PDB names and the two text-column uses.
-The same names occur in the PDB packet for `TTextPanel::draw_line` at
+The `x2` mapping follows the direct packet trace. I did not adopt PDB name
+`x` for the second-column local because the direct trace uses the `draw_row`
+home. The source retains baseline name `second_text_x`. The same coordinate
+names occur in the PDB packet for `TTextPanel::draw_line` at
 `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0047/0047D760_draw_line.txt`.
 That packet SHA256 is
 `dd0d247991e094f93d6f1944b991654341de7c2d5d8faa9b9565cacfb369bb61`.
