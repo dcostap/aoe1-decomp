@@ -55,21 +55,24 @@ register `this` in `ecx`. No function static records exist.
   remain unchanged.
 - `0045AB20` `make_object_collision_list` has parameter `delta` and locals
   `dy`, `dx`, `map`, `check_list`, `x2`, `x1`, `ry`, `rx`, `ry2`, and `rx2`.
-  The source restores `delta` from `extra`, `x1` from `max_x`, `x2` from
-  `max_y`, and `check_list` from `list`. The PDB types establish the float,
-  map, collision-list, and short categories. The original decompilation's
-  four conversion calls support the upper-x and upper-y use of `x1` and `x2`.
+  The source restores `delta` from `extra`, `x1` from `max_x`, and
+  `check_list` from `list`. It keeps `max_y` for the upper-y bound because
+  the PDB `x2` stack home is reused. The fourth upper-y `__ftol` result is in
+  ESI at `0045ABBC`; the `x2` home receives the `RGE_Check_List*` at
+  `0045ABE7` and `0045ABEF`. The PDB types establish the float, map,
+  collision-list, and short categories. The `max_y` to `x2` mapping remains
+  unresolved.
 
 Recovered original spellings are `tobj`, `obj_owner`, `infile`, `gworld`,
-`outfile`, `launcher`, `target`, `in_range`, `delta`, `x1`, `x2`,
+`outfile`, `launcher`, `target`, `in_range`, `delta`, and `x1`,
 `check_list`, `new_x`, `new_y`, `new_z`, `dx`, `dy`, `rx`, `ry`, `rx2`,
 `ry2`, and `map`. The source keeps the PDB mixed style.
 
-The names `min_x`, `min_y`, `row`, `column`, `tile`, `node`, `object`,
-`object_master`, and `dz` have no matching scoped PDB record. They remain
-concise descriptive names. The PDB does not prove their original spellings.
-The compiler reuses storage for `x2` and collision-list state. The source keeps
-separate typed variables and does not force a storage alias.
+The names `min_x`, `min_y`, `max_y`, `row`, `column`, `tile`, `node`,
+`object`, `object_master`, and `dz` have no matching scoped PDB record. They
+remain concise descriptive names. The PDB does not prove their original
+spellings. Its `x2` stack home is reused for collision-list state. The source
+keeps `max_y` and `check_list` separate and does not force a storage alias.
 
 ## Constants, resources, comments, and formatting
 
@@ -108,7 +111,7 @@ void init_missile(RGE_Combat_Object* launcher, float x, float y, float z,
 ```
 
 The source does not request a shared constant or resource declaration. The
-unrecorded names listed above remain unresolved. The `x2` storage reuse also
-needs no further source mapping without stronger evidence.
+unrecorded names listed above remain unresolved. The `x2` storage-home mapping
+needs no further source change without stronger evidence.
 
 Compilation, matching, audits, and tests were not run. Games were not run.

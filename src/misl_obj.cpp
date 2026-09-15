@@ -118,7 +118,7 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
     short min_x;
     short min_y;
     short x1;
-    short x2;
+    short max_y;
     RGE_Map* map;
     RGE_Check_List* check_list;
 
@@ -131,7 +131,7 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
     min_x = (short)(int)(this->world_x - DAT_00570938);
     min_y = (short)(int)(this->world_y - DAT_00570938);
     x1 = (short)(int)(this->world_x - DAT_0057093c);
-    x2 = (short)(int)(this->world_y - DAT_0057093c);
+    max_y = (short)(int)(this->world_y - DAT_0057093c);
 
     map = this->owner->world->map;
     check_list = new RGE_Check_List;
@@ -145,11 +145,11 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
     if (min_y < 0) {
         min_y = 0;
     }
-    if ((int)x2 >= map->map_height) {
-        x2 = (short)(map->map_height - 1);
+    if ((int)max_y >= map->map_height) {
+        max_y = (short)(map->map_height - 1);
     }
 
-    for (short row = min_y; row <= x2; ++row) {
+    for (short row = min_y; row <= max_y; ++row) {
         RGE_Tile* tile = map->map_row_offset[row] + min_x;
         for (short column = min_x; column <= x1; ++column) {
             RGE_Object_Node* node = tile->objects.list;
