@@ -17,6 +17,7 @@ Root inspected the current expressions: constants, operand order, pointer source
 Root updated only the expected names in three test files. Both minimap functions still receive separate checks.
 No arithmetic assertion, forbidden-pointer assertion, or mouse flag check was removed.
 Job `bg-78` reruns those three test files; full-suite rerun remains required after final repairs.
+The focused rerun passed all 13 tests with exit 0. This does not replace the full-suite rerun.
 The failed full-suite report remains at `build/source-cleanup-20260915/final-validation/tests-r2.xml`.
 
 The second executable build passed: 226 sources compiled, one assembly source assembled, and the executable linked.
