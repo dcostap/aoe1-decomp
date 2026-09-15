@@ -7,7 +7,8 @@
 - Branch: `cleanup/staging-20260915-49`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Source cleanup commit: `3428f377ef82b12af699ea52799d64ca3616ae2b`
-- Final source commit: `3428f377ef82b12af699ea52799d64ca3616ae2b`
+- Source correction commit: `ec0fe00806d16ad5a5257994a7622bb8c37d08b7`
+- Final source commit: `ec0fe00806d16ad5a5257994a7622bb8c37d08b7`
 - Report delivery is a separate documentation-only commit after this source commit.
 - Changed files:
   - `src/aibobj.cpp`
@@ -97,3 +98,14 @@ when source braces move.
 I reviewed the complete Git diff and ran `git diff --check`.
 Compilation, matching, audits, and tests were not run, as required for this wave.
 No byte-equality or semantic-validation claim is made.
+
+## Correction history
+
+Root correction round 2 requested formatting only. I compacted the recovered
+parameter constructor signature onto one line. This removes unnecessary wrapping
+and follows the existing source style. No declaration, expression, or token
+changed apart from whitespace and line breaks.
+
+The source correction is commit
+`ec0fe00806d16ad5a5257994a7622bb8c37d08b7`. The report update is a separate
+documentation-only commit.
