@@ -9,8 +9,7 @@ BaseItem::BaseItem()
     strcpy(nameValue, "");
 }
 
-BaseItem::BaseItem(int tid, int gid, int uid, char* n,
-                   float x, float y, float z, float xs, float ys, float zs)
+BaseItem::BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z, float xs, float ys, float zs)
     : typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid),
       xValue(x), yValue(y), zValue(z),
       xSizeValue(xs), ySizeValue(ys), zSizeValue(zs), skipValue(0) {
