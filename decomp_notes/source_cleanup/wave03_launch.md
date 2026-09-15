@@ -24,6 +24,10 @@ Use the individual JSON request with `subagent_start` only after that owner's ni
 Do not rerun preparation against active trees. Do not launch an owner twice.
 Record each managed ID here after launch.
 
+The first capacity check found three running owners and six completed wave 02 groups awaiting root intake.
+Owner 13's request is ready, but root paused launches to clear that review queue first.
+No wave 03 owner has launched yet. The preparation job continues independently.
+
 ## Queue
 
 | Owner | Group | State | Managed ID |
