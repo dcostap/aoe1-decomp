@@ -6,7 +6,7 @@
 - Worker slot: 165.
 - Branch: `cleanup/staging-20260915-165`.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit: `22a613f83286b1b916056e38c1722d4312215b43`.
+- Final source commit: `3a348ac7acf01966fbf208085de2a299a9835c2c`.
 - Final report commit: this report commit. Git output supplies its full hash.
 - Changed files:
   - `src/rpnl_tim.cpp`.
@@ -16,9 +16,9 @@
 - Registry flags: `gx`.
 - Read-only header: `include/rpnl_tim.h`.
 
-The source commit changes identifier names, two verified GDI mode constants, and
-presentation. It keeps types, scopes, declarations, storage, calls, literals,
-source order, and control flow unchanged.
+The source commit changes PDB-supported identifier names, two verified GDI mode
+constants, and presentation. It keeps types, scopes, declarations, storage,
+calls, literals, source order, and control flow unchanged.
 
 ## Evidence checked
 
@@ -82,16 +82,14 @@ The draw local names changed as follows:
 - `pc` -> `player_num`, recovered from the PDB.
 - `ct` -> `countdown_timer`, recovered from the PDB.
 - `pe` -> `paletteColor`, recovered from the PDB.
-- `t` -> `seconds`, a new descriptive cleanup name.
-- `m` -> `minutes`, a new descriptive cleanup name.
-- `h` -> `hours`, a new descriptive cleanup name.
-- `pi` -> `player_index`, a new descriptive cleanup name.
-- `yo` -> `y_offset`, a new descriptive cleanup name.
-- `color` -> `text_color`, a new descriptive cleanup name.
 
 The PDB displays `player_num` as `long`. The existing source declaration stays
 `int`; this cleanup changes its spelling only. The source type mapping remains
 an open question.
+
+The source retains `t`, `m`, `h`, `pi`, `yo`, and `color`. Their terse spelling
+does not prove that they are generated names. The PDB has no names for them,
+and this cleanup does not force descriptive replacements.
 
 The PDB has one `str` record. The source has separate `char str[100]`
 declarations in distinct paused, clock, and countdown scopes. The source keeps
@@ -123,9 +121,9 @@ Resource evidence for `0x2C24`:
 
 | File | SHA-256 | Language | Result |
 | --- | --- | --- | --- |
-| `runtime/language.dll` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `0x0409` | `%d Years` |
-| `runtime/languagex.dll` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | not present | ID missing |
-| `orig/.../XPack/languagex.dll` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | not present | ID missing |
+| `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5` | `0x0409` | `%d Years` |
+| `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` | not present | ID missing |
+| `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll` | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2` | not present | ID missing |
 
 `TRIBE_Game::get_string` checks the expansion table before the base table. The
 checked expansion files lack this ID, so the checked base file supplies the
@@ -148,13 +146,22 @@ target comparison was run.
 
 I did not edit `include/rpnl_tim.h` or `include/resource_ids.h`.
 
+Owner 19 may add the recovered constructor names to `include/rpnl_tim.h`:
+
+```cpp
+RGE_Panel_Time(TDrawArea* draw_area_in, TPanel* parent_in, void* font_in);
+```
+
+This request changes parameter names only. It does not change the interface,
+types, order, or ABI.
+
 The root header owner may add this descriptive resource definition after review:
 
 ```cpp
 #define IDS_COUNTDOWN_TIMER_FORMAT 0x2C24
 ```
 
-The request is non-blocking. The source keeps `0x2C24` until that shared
+Both requests are non-blocking. The source keeps `0x2C24` until its shared
 mapping is approved. The PDB `player_num` type spelling and the one-to-many
 mapping of the PDB `str` record remain unresolved source questions. No layout,
 ABI, global, or other shared declaration request is open.
