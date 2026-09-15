@@ -11,14 +11,12 @@ extern "C" double __cdecl sqrt(double value);
 
 RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
     RGE_Map* in_map, RGE_Random_Map_Module* parent_module, RGE_Terrain_Info* in_info)
-    : RGE_Random_Map_Module(in_map, parent_module, 1)
-{
+    : RGE_Random_Map_Module(in_map, parent_module, 1) {
     this->info = *in_info;
     this->schedule = 2.0f;
 }
 
-unsigned char RGE_RMM_Terrain_Generator::generate()
-{
+unsigned char RGE_RMM_Terrain_Generator::generate() {
     long index;
     float terrain_table[99];
 
@@ -46,8 +44,7 @@ unsigned char RGE_RMM_Terrain_Generator::generate()
     return 1;
 }
 
-unsigned char RGE_RMM_Terrain_Generator::water(unsigned char terrain)
-{
+unsigned char RGE_RMM_Terrain_Generator::water(unsigned char terrain) {
     if (terrain == 1) {
         return terrain;
     }
@@ -60,8 +57,7 @@ unsigned char RGE_RMM_Terrain_Generator::water(unsigned char terrain)
     return 0;
 }
 
-void RGE_RMM_Terrain_Generator::check_borders()
-{
+void RGE_RMM_Terrain_Generator::check_borders() {
     int y = 0;
     int max_y = this->map_height - 1;
     int max_x = this->map_width - 1;
@@ -115,8 +111,7 @@ void RGE_RMM_Terrain_Generator::check_borders()
 }
 
 uchar RGE_RMM_Terrain_Generator::check_terrain(
-    uchar target, long x, long y, long spacing, uchar base_terrain)
-{
+    uchar target, long x, long y, long spacing, uchar base_terrain) {
     // Both scans use clipped inclusive bounds and preserve the
     // executable's terrain predicate and byte-count return.
     long index1 = 1;
@@ -194,8 +189,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
     return (uchar)index1;
 }
 
-void RGE_RMM_Terrain_Generator::generate_modifiers()
-{
+void RGE_RMM_Terrain_Generator::generate_modifiers() {
     long modifier;
 
     long map_size = this->map_width;
@@ -245,13 +239,11 @@ void RGE_RMM_Terrain_Generator::generate_modifiers()
 }
 
 float RGE_RMM_Terrain_Generator::fig_chance(
-    long count, long x, long y, long clumpiness_factor)
-{
+    long count, long x, long y, long clumpiness_factor) {
     return (float)(0xFA - clumpiness_factor * count);
 }
 
-long RGE_RMM_Terrain_Generator::count_map_tiles(unsigned char terrain)
-{
+long RGE_RMM_Terrain_Generator::count_map_tiles(unsigned char terrain) {
     // The executable scans +0x10 rows with +0x18 tile records.
     RGE_Tile* tile = this->map_row_offset[0];
     RGE_Tile* end = tile + this->map_width * this->map_height;
@@ -267,8 +259,7 @@ long RGE_RMM_Terrain_Generator::count_map_tiles(unsigned char terrain)
 }
 
 void RGE_RMM_Terrain_Generator::link_stack_randomly(
-    Map_Stack* loc_stack, unsigned char base_terrain_type)
-{
+    Map_Stack* loc_stack, unsigned char base_terrain_type) {
     Map_Stack* list = loc_stack;
     long max_x = this->map_width - 1;
     long max_y = this->map_height - 1;
@@ -303,8 +294,7 @@ void RGE_RMM_Terrain_Generator::link_stack_randomly(
 }
 
 void RGE_RMM_Terrain_Generator::remove_area_from_lists(
-    long x, long y, long spacing)
-{
+    long x, long y, long spacing) {
     long xmin = x - spacing;
     long ymin = y - spacing;
     long xmax = x + spacing;
@@ -336,8 +326,7 @@ void RGE_RMM_Terrain_Generator::remove_area_from_lists(
 }
 
 uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
-    RGE_Terrain_Info_Line info_line)
-{
+    RGE_Terrain_Info_Line info_line) {
     // pop_stack writes adjacent long x and y outputs.
     struct Stack_Coordinates {
         long x;
@@ -373,116 +362,48 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
     max_y = this->map_width - 1;
     max_x = this->map_height - 1;
     {
-    terrain_fairness_zones_visited_count = 0;
+        terrain_fairness_zones_visited_count = 0;
 
-    if (info_line.avoid_hot_spots == 2 && this->info.hot_spot_num > 0) {
-        hot_i = 0;
-        RGE_Terrain_Hot_Spots* hot_spot = this->info.hot_spots;
-        do {
-            terrain_fairness_zones[hot_i] =
-                this->map_zone->get_zone_info(hot_spot->x, hot_spot->y);
-            terrain_fairness_zones_visited[hot_i] = 0;
-            ++hot_i;
-            ++hot_spot;
-        } while (hot_i < this->info.hot_spot_num);
-    }
-
-    for (stack_i = 0; stack_i < 99; ++stack_i) {
-        this->init_stack(stack[stack_i]);
-    }
-
-    loc_stack.next = 0;
-    loc_stack.prev = 0;
-    this->link_stack_randomly(&loc_stack, (uchar)info_line.base_terrain_type);
-
-    base_area = (long)sqrt((double)info_line.terrain_size / (double)info_line.clumps);
-    base_area += base_area;
-    if (base_area < 2) {
-        base_area = 2;
-    }
-
-    clump_size = 0;
-    if (clump_size < info_line.clumps) {
-        stack_ptr = stack;
-        while (clump_size < info_line.clumps) {
-            if (this->pop_stack(loc_stack, y, x, cost) == 0) {
-                break;
-            }
-
-            if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
-                    info_line.base_terrain_type &&
-                this->check_terrain((uchar)info_line.terrain_type, y, x,
-                    info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
-                (info_line.avoid_hot_spots == 0 ||
-                 this->search_map_rows[x][y] == 0)) {
-                this->remove_area_from_lists(y, x, base_area);
-
-                this->map_row_offset[x][y].terrain_type =
-                    (uchar)info_line.terrain_type;
-
-                if (y > 0) {
-                    this->push_stack(*stack_ptr, y - 1, x, 0.0f, 0.0f);
-                }
-                if (x > 0) {
-                    this->push_stack(*stack_ptr, y, x - 1, 0.0f, 0.0f);
-                }
-                if (y < this->map_width - 1) {
-                    this->push_stack(*stack_ptr, y + 1, x, 0.0f, 0.0f);
-                }
-                if (x < this->map_height - 1) {
-                    this->push_stack(*stack_ptr, y, x + 1, 0.0f, 0.0f);
-                }
-
-                ++in_zone;
-                ++clump_size;
-                ++stack_ptr;
-
-                uchar zone = this->map_zone->get_zone_info(y, x);
-                if (info_line.avoid_hot_spots == 2) {
-                    fair_i = 0;
-                    if (this->info.hot_spot_num > 0) {
-                        do {
-                            if (terrain_fairness_zones[fair_i] == zone &&
-                                terrain_fairness_zones_visited[fair_i] == 0) {
-                                terrain_fairness_zones_visited[fair_i] = 1;
-                                ++terrain_fairness_zones_visited_count;
-                            }
-                            ++fair_i;
-                        } while (fair_i < this->info.hot_spot_num);
-                    }
-                }
-            }
+        if (info_line.avoid_hot_spots == 2 && this->info.hot_spot_num > 0) {
+            hot_i = 0;
+            RGE_Terrain_Hot_Spots* hot_spot = this->info.hot_spots;
+            do {
+                terrain_fairness_zones[hot_i] =
+                    this->map_zone->get_zone_info(hot_spot->x, hot_spot->y);
+                terrain_fairness_zones_visited[hot_i] = 0;
+                ++hot_i;
+                ++hot_spot;
+            } while (hot_i < this->info.hot_spot_num);
         }
-    }
 
-    if (info_line.avoid_hot_spots == 2 &&
-        terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
-        stack_ptr = &stack[clump_size];
-        while (terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
-            if (this->pop_stack(loc_stack, y, x, cost) == 0) {
-                break;
-            }
+        for (stack_i = 0; stack_i < 99; ++stack_i) {
+            this->init_stack(stack[stack_i]);
+        }
 
-            if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
-                    info_line.base_terrain_type &&
-                this->check_terrain((uchar)info_line.terrain_type, y, x,
-                    info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
-                this->search_map_rows[x][y] < 0x1e) {
-                uchar zone = this->map_zone->get_zone_info(y, x);
-                fair_i = 0;
-                if (this->info.hot_spot_num > 0) {
-                    do {
-                        if (terrain_fairness_zones[fair_i] == zone &&
-                            terrain_fairness_zones_visited[fair_i] == 0) {
-                            break;
-                        }
-                        ++fair_i;
-                    } while (fair_i < this->info.hot_spot_num);
+        loc_stack.next = 0;
+        loc_stack.prev = 0;
+        this->link_stack_randomly(&loc_stack, (uchar)info_line.base_terrain_type);
+
+        base_area = (long)sqrt((double)info_line.terrain_size / (double)info_line.clumps);
+        base_area += base_area;
+        if (base_area < 2) {
+            base_area = 2;
+        }
+
+        clump_size = 0;
+        if (clump_size < info_line.clumps) {
+            stack_ptr = stack;
+            while (clump_size < info_line.clumps) {
+                if (this->pop_stack(loc_stack, y, x, cost) == 0) {
+                    break;
                 }
 
-                if (fair_i != this->info.hot_spot_num) {
-                    ++terrain_fairness_zones_visited_count;
-                    terrain_fairness_zones_visited[fair_i] = 1;
+                if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
+                        info_line.base_terrain_type &&
+                    this->check_terrain((uchar)info_line.terrain_type, y, x,
+                        info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
+                    (info_line.avoid_hot_spots == 0 ||
+                     this->search_map_rows[x][y] == 0)) {
                     this->remove_area_from_lists(y, x, base_area);
 
                     this->map_row_offset[x][y].terrain_type =
@@ -504,10 +425,78 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                     ++in_zone;
                     ++clump_size;
                     ++stack_ptr;
+
+                    uchar zone = this->map_zone->get_zone_info(y, x);
+                    if (info_line.avoid_hot_spots == 2) {
+                        fair_i = 0;
+                        if (this->info.hot_spot_num > 0) {
+                            do {
+                                if (terrain_fairness_zones[fair_i] == zone &&
+                                    terrain_fairness_zones_visited[fair_i] == 0) {
+                                    terrain_fairness_zones_visited[fair_i] = 1;
+                                    ++terrain_fairness_zones_visited_count;
+                                }
+                                ++fair_i;
+                            } while (fair_i < this->info.hot_spot_num);
+                        }
+                    }
                 }
             }
         }
-    }
+
+        if (info_line.avoid_hot_spots == 2 &&
+            terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
+            stack_ptr = &stack[clump_size];
+            while (terrain_fairness_zones_visited_count < this->info.hot_spot_num) {
+                if (this->pop_stack(loc_stack, y, x, cost) == 0) {
+                    break;
+                }
+
+                if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
+                        info_line.base_terrain_type &&
+                    this->check_terrain((uchar)info_line.terrain_type, y, x,
+                        info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
+                    this->search_map_rows[x][y] < 0x1e) {
+                    uchar zone = this->map_zone->get_zone_info(y, x);
+                    fair_i = 0;
+                    if (this->info.hot_spot_num > 0) {
+                        do {
+                            if (terrain_fairness_zones[fair_i] == zone &&
+                                terrain_fairness_zones_visited[fair_i] == 0) {
+                                break;
+                            }
+                            ++fair_i;
+                        } while (fair_i < this->info.hot_spot_num);
+                    }
+
+                    if (fair_i != this->info.hot_spot_num) {
+                        ++terrain_fairness_zones_visited_count;
+                        terrain_fairness_zones_visited[fair_i] = 1;
+                        this->remove_area_from_lists(y, x, base_area);
+
+                        this->map_row_offset[x][y].terrain_type =
+                            (uchar)info_line.terrain_type;
+
+                        if (y > 0) {
+                            this->push_stack(*stack_ptr, y - 1, x, 0.0f, 0.0f);
+                        }
+                        if (x > 0) {
+                            this->push_stack(*stack_ptr, y, x - 1, 0.0f, 0.0f);
+                        }
+                        if (y < this->map_width - 1) {
+                            this->push_stack(*stack_ptr, y + 1, x, 0.0f, 0.0f);
+                        }
+                        if (x < this->map_height - 1) {
+                            this->push_stack(*stack_ptr, y, x + 1, 0.0f, 0.0f);
+                        }
+
+                        ++in_zone;
+                        ++clump_size;
+                        ++stack_ptr;
+                    }
+                }
+            }
+        }
 
     }
 
