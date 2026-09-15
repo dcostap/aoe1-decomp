@@ -14,6 +14,36 @@
 The report is committed after the source-cleanup commit. The handoff response
 records the final report commit hash.
 
+## Correction record
+
+The previous report version cited resource JSON files under the old preserved
+`pilot2-scr-load` worktree. That citation was wrong for this worker. I retain
+the mistake here so the correction history is clear:
+
+```text
+C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/runtime-language.json
+C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/runtime-languagex.json
+C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/original-xpack-languagex.json
+```
+
+I did not edit that worktree or any of its artifacts. I previously wrote only
+the assigned source and report in the slot-25 worktree. The old paths were read
+as evidence, not written by this worker.
+
+After reading the extractor help, I ran the read-only PE extractor again. The
+correct artifacts are under this slot-25 worktree:
+
+```text
+C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-25/build/resource-strings/runtime-language.json
+C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-25/build/resource-strings/runtime-languagex.json
+C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-25/build/resource-strings/original-xpack-languagex.json
+```
+
+The base file contains all 15 requested strings. Both expansion files return
+empty `strings` arrays and list all 15 IDs as missing. The extractor records
+exact PE resource text only. Source lookup and fallback evidence remains based
+on the reviewed game source and call path.
+
 ## Scope and evidence
 
 This cleanup covers the 13 normal functions registered for `scr_cam.cpp`.
@@ -196,10 +226,10 @@ Resource provenance for every request:
 - SHA-256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
 - Resource type: `RT_STRING`
 - Language: `0x0409` (1033)
-- PE extraction artifacts: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/runtime-language.json`,
-  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/runtime-languagex.json`,
+- PE extraction artifacts: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-25/build/resource-strings/runtime-language.json`,
+  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-25/build/resource-strings/runtime-languagex.json`,
   and
-  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/original-xpack-languagex.json`
+  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-25/build/resource-strings/original-xpack-languagex.json`
 - Lookup path: these calls resolve to `TPanel::get_string`, which delegates to
   the virtual `rge_base_game->get_string`. `TRIBE_Game::get_string` checks
   `StringTableX` from `languagex.dll`, then falls back to
