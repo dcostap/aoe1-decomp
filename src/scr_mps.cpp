@@ -665,8 +665,7 @@ long TribeMPSetupScreen::handle_idle() {
         if (last_send_shared == 0) {
             last_send_shared = debug_timeGetTime(
                 "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x2FE);
-        }
-        else {
+        } else {
             unsigned long t = debug_timeGetTime(
                 "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x301);
             if (t - last_send_shared != 0) {
