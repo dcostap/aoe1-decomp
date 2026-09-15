@@ -10,8 +10,10 @@
   `b43aab2ed74523e70c0a514fa59be3807540d245`
 - Initial report commit:
   `8243d31a4276905a4a367c411916ef6716e9f98b`
-- Approved resource-header commit from root:
+- Worker-local resource-header import provenance:
   `3bff68f3de98c7273f9a41faf3398b68cc17f15a`
+- Actual root approval:
+  `8c56055b7feee1526f296bd306036a4c34f38041`
 - Correction source head from `git rev-parse`:
   `bc983e07915b974a17516dde307dab8a6d6be818`
 - Correction source commit: `Apply dlg_sedm resource IDs`
@@ -118,13 +120,13 @@ The constructor passes these IDs to the long-ID overload of
 
 | Applied macro and ID | Button role | Name status | Provenance |
 | --- | --- | --- | --- |
-| `IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU` (`0x2443`) | button 0, Quit to Main Menu | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
-| `IDS_SCENARIO_MENU_SAVE` (`0x2441`) | button 1, Save | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
-| `IDS_SCENARIO_MENU_SAVE_AS` (`0x2442`) | button 2, Save As | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
-| `IDS_SCENARIO_MENU_EDIT_SCENARIO` (`0x2445`) | button 3, Edit Scenario | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
-| `IDS_SCENARIO_MENU_CREATE_SCENARIO` (`0x242E`) | button 4, Create Scenario | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
-| `IDS_SCENARIO_MENU_TEST` (`0x2446`) | button 5, Test | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
-| `IDS_SCENARIO_MENU_CANCEL` (`0x2444`) | button 6, Cancel | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU` (`0x2443`) | button 0, Quit to Main Menu | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `IDS_SCENARIO_MENU_SAVE` (`0x2441`) | button 1, Save | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `IDS_SCENARIO_MENU_SAVE_AS` (`0x2442`) | button 2, Save As | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `IDS_SCENARIO_MENU_EDIT_SCENARIO` (`0x2445`) | button 3, Edit Scenario | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `IDS_SCENARIO_MENU_CREATE_SCENARIO` (`0x242E`) | button 4, Create Scenario | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `IDS_SCENARIO_MENU_TEST` (`0x2446`) | button 5, Test | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
+| `IDS_SCENARIO_MENU_CANCEL` (`0x2444`) | button 6, Cancel | applied approved cleanup name | worker-local import `3bff68f3de98c7273f9a41faf3398b68cc17f15a`; root approval `8c56055b7feee1526f296bd306036a4c34f38041` |
 
 The current base resource file is:
 
@@ -227,8 +229,9 @@ and `00440400`. This worker did not edit the header.
 
 ### Applied root-owned resource mappings
 
-The root owner added these base-language mappings in commit
-`3bff68f3de98c7273f9a41faf3398b68cc17f15a`:
+The worker-local import contains these base-language mappings from commit
+`3bff68f3de98c7273f9a41faf3398b68cc17f15a`. The actual root approval is
+`8c56055b7feee1526f296bd306036a4c34f38041`:
 
 ```cpp
 #define IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU 0x2443
