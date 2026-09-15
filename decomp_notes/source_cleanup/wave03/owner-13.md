@@ -98,10 +98,13 @@ Tool-created temporary writes outside slot-110 also remain unknown.
 ### `src/aipbook.cpp`
 
 - Worker: `sa-2e015ef6`.
-- Worker commits: `17f69a5f24484a751c3f65c0f0c07304b6f22414`, `e5125f1b1d5b7a62b7afd55f4304f9953d63a710`, `d2ca85e3a874c30129877eaa447c9946a089a218`, and `99481e5981af6d8e8555f657b2579075e0a1f86f`.
-- Integration commits: `dc85587bad03d8135a3915fb646167628ae2379f`, `b697a37ac1868fa5b8a11f1207c940880bc6a06d`, `6f22d23b92165ff21923b4cbbacd5ed8d03131ed`, and `92b3fd24c2100563ce2789c37a83a0795927f913`.
+- Worker commits: `17f69a5f24484a751c3f65c0f0c07304b6f22414`, `e5125f1b1d5b7a62b7afd55f4304f9953d63a710`, `d2ca85e3a874c30129877eaa447c9946a089a218`, `99481e5981af6d8e8555f657b2579075e0a1f86f`, `c5ca8470790c070d29a0fe706aa07ce478b39add`, `939606d66f64933e2b0d2b3d26cdbc59bb3f537d`, and `206fe29302cc27c4e031e822ea6416f42e8c51e0`.
+- Integration commits: `dc85587bad03d8135a3915fb646167628ae2379f`, `b697a37ac1868fa5b8a11f1207c940880bc6a06d`, `6f22d23b92165ff21923b4cbbacd5ed8d03131ed`, `92b3fd24c2100563ce2789c37a83a0795927f913`, `6a6081edc8204114d69a3f791a7e726d513635bb`, `602ea95e19accffdbd033d33f4772c4aedfd5db4`, and `21daeb2673c1ed73f1ddb7d4d2ebf0c79f9c1663`.
 - Review: Accepted scoped PDB names and existing enum constants with equal values.
 - Correction: The first source had non-1TBS branches and one bad indent. The same worker corrected both.
+- Validation repair: Fresh main build report `C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json` found VC5 C2374 at line 1142.
+- Repair: Restored distinct baseline loop names `iGroups` and `iPhases`. VC5 treats these for-loop declarations as function-scope declarations.
+- Repair limit: No type, scope, storage, control flow, or executable expression changed. Root must rerun fresh validation.
 - Open mappings: Reused stack homes prevent some local-name recovery in `fillGroups` and `loadPlays`.
 
 ### `src/aiuaimod.cpp`

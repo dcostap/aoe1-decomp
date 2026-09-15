@@ -6,6 +6,7 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Previous source cleanup commit: `17f69a5f24484a751c3f65c0f0c07304b6f22414`
 - Final source commit: `d2ca85e3a874c30129877eaa447c9946a089a218`
+- VC5 loop repair commit: `c5ca8470790c070d29a0fe706aa07ce478b39add`
 - The final delivery commit adds this hash correction to the report.
 - Changed files:
   - `src/aipbook.cpp`
@@ -18,6 +19,27 @@
 - Joined braced parser branches to `} else {` and corrected the over-indented grouping call.
 - Preserved braces, scopes, statements, names, calls, and expressions.
 - Reviewed the Git diff and ran `git diff --check` only.
+
+## Post-cleanup validation repair
+
+The fresh main build report is:
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+It records this exact error for `src/aipbook.cpp`:
+
+```text
+C:\Projects\my_decomps\aoe1_attempt3\src\aipbook.cpp(1142) : error C2374: 'j' : redefinition; multiple initialization
+```
+
+The preserved pre-cleanup source is commit `6d46835cdc6e31ba879a2e6e31415327a7c7e341`.
+It uses distinct `iGroups` and `iPhases` counters for the two loops.
+The scoped PDB and `00410220_loadPlays` packet show reused local homes for these loops.
+VC5 gives for-loop declarations function scope in this case.
+
+The repair restores `iGroups` and `iPhases` in `loadPlays`.
+It changes no types, storage, scopes, braces, control flow, statement order, calls, or expressions.
+
+This repair keeps the failed build outputs and history.
+Root must repeat final build, matching, audit, test, and runtime checks.
 
 ## Scope and evidence
 
@@ -64,9 +86,12 @@ The following parameter names match the scoped PDB records:
 
 `loadPlays` also uses the scoped names that have clear type and lifetime matches:
 `temp`, `fileIn`, `temp2`, `temp3`, `temp4`, `temp5`, `temp6`, `temp7`, `temp8`,
-`commentTemp1`, `commentTemp2`, `command`, `trigger`, `i`, `j`, `a`, `refGroup`,
+`commentTemp1`, `commentTemp2`, `command`, `trigger`, `i`, `a`, `refGroup`,
 `curGroup`, `refPhase`, and `curPhase`.
-The command-copy loop uses the PDB name `a` and the phase and group loops use `j`.
+The command-copy loop uses the PDB name `a`.
+Scoped PDB reuse cannot produce two VC5 loop declarations with the name `j`.
+The repair restores baseline names `iGroups` and `iPhases` for the group and phase loops.
+These are restored baseline names, not uniquely mapped PDB names.
 The outer play index remains `currentPlay`.
 
 The PDB has overlapping stack homes for several `loadPlays` locals.
