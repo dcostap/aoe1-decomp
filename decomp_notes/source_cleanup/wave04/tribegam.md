@@ -223,9 +223,11 @@ The source does not infer a meaning from an empty slot.
 
 The source uses names supplied by the approved root header. The header was
 read-only for this assignment. The 22 age, civilization, and dropped-player
-mappings came from root approval/import commit
-`3f5867e84cda53a3103593a0e74f952a3f0798b7`. Its
-`include/resource_ids.h` blob is `3670c49563f971137b89644d4a0069796cf3d2af`.
+mappings were approved by root in commit
+`bf943f3339643ee5beca7dd74e98b4cb729e48d3`. That approval produced the
+`include/resource_ids.h` blob
+`3670c49563f971137b89644d4a0069796cf3d2af`. Later commit
+`3f5867e84cda53a3103593a0e74f952a3f0798b7` imported that same blob.
 
 | Source name | ID | Base payload or role | Override state |
 | --- | ---: | --- | --- |
@@ -282,20 +284,23 @@ chat body still calls `handleChatReceived(val2)`. Root must integrate the
 header commit before compiling this source. This worker did not edit
 `include/chat.h`.
 
-`include/resource_ids.h` is root-owned. The 22 age, civilization, and
-dropped-player mappings used here came from root approval/import commit
-`3f5867e84cda53a3103593a0e74f952a3f0798b7`, with header blob
-`3670c49563f971137b89644d4a0069796cf3d2af`. Owner 27 imports the later root
-header from commit `0aa69b43219d638bf1a6667b832257d633635ccf`. That header
-retains these mappings and adds `IDS_ERROR_TITLE`. No new resource macro
-request is needed for this source. Root must keep this later header available
-when it integrates `src/tribegam.cpp`.
+`include/resource_ids.h` is root-owned. Root approved the 22 age,
+civilization, and dropped-player mappings in commit
+`bf943f3339643ee5beca7dd74e98b4cb729e48d3`. That approval produced header
+blob `3670c49563f971137b89644d4a0069796cf3d2af`. Later commit
+`3f5867e84cda53a3103593a0e74f952a3f0798b7` imported the same blob. Owner 27
+imports the later root header from commit
+`0aa69b43219d638bf1a6667b832257d633635ccf`. That header retains these
+mappings and adds `IDS_ERROR_TITLE`. No new resource macro request is needed
+for this source. Root must keep this later header available when it integrates
+`src/tribegam.cpp`.
 
 ### Correction history
 
 This report corrects an earlier claim that every used resource macro existed
-in the common base header. That claim was false. The 22 mappings came from
-the later root approval/import commit listed above.
+in the common base header. That claim was false. Root approved the 22 mappings
+in `bf943f3339643ee5beca7dd74e98b4cb729e48d3`, and later commit
+`3f5867e84cda53a3103593a0e74f952a3f0798b7` imported the resulting blob.
 
 ### Header parameter-label request
 
