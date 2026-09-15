@@ -14,14 +14,14 @@ struct rdlg_list_info {
 typedef char rdlg_list_info_size_check[
     (sizeof(rdlg_list_info) == 0x66) ? 1 : -1];
 
-int __cdecl rdlg_list_compare(const void*, const void*);
+int __cdecl rdlg_list_compare(const void* arg1, const void* arg2);
 
 class RGE_Dialog_List : public TListDialog {
 public:
-    RGE_Dialog_List(char*);
+    RGE_Dialog_List(char* name);
     virtual ~RGE_Dialog_List();
     virtual short get_list_id();
-    int setup(TScreenPanel*, char*, long, int, char*);
+    int setup(TScreenPanel* parent_screen, char* info_file_in, long info_id_in, int list_type_in, char* title_in);
 
     int list_type;
     short list_size;

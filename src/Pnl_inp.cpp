@@ -10,16 +10,14 @@ TInputPanel::TInputPanel() : TTextPanel(), caret_color(0),
                              overLengthSound(0), input_buffer(0),
                              input_buffer1(0), input_buffer2(0),
                              input_len(0), max_len(0), insert_mode(1),
-                             input_pos(0)
-{
+                             input_pos(0) {
     this->handle_mouse_input = 1;
     this->bevel_type = 1;
     this->panel_type = 7;
     this->horz_align = TTextPanel::AlignHorizontalScroll;
 }
 
-TInputPanel::~TInputPanel()
-{
+TInputPanel::~TInputPanel() {
     if (this->input_buffer1 != 0) {
         delete this->input_buffer1;
         this->input_buffer1 = 0;
@@ -32,26 +30,25 @@ TInputPanel::~TInputPanel()
     this->handle_mouse_input = 1;
 }
 
-long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3, long p4,
-                        long p5, long p6, void* p7, long p8, long p9,
-                        char* p10, int p11, unsigned char p12, int p13,
-                        unsigned char p14, unsigned char p15,
-                        short maxChars, TDigital* digital,
-                        char* text, FormatType format)
-{
-    long setupMax = (format == FormatMultiLine) ? 0 : maxChars;
-    if (TTextPanel::setup(da, parent, p3, p4, p5, p6, p7, p8, p9, p10,
-                          p11, p12, p13, p14, setupMax, (char*)0) == 0) {
+long TInputPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in,
+                        long wid_in, long hgt_in, void* font_in, long font_wid_in, long font_hgt_in,
+                        char* back_pic_in, int fill_back_in, unsigned char back_color_in, int outline_in,
+                        unsigned char outline_color_in, unsigned char caret_color_in,
+                        short max_len_in, TDigital* overLengthSoundIn,
+                        char* text_in, FormatType format_type_in) {
+    long setup_max = (format_type_in == FormatMultiLine) ? 0 : max_len_in;
+    if (TTextPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, font_in, font_wid_in, font_hgt_in, back_pic_in,
+                          fill_back_in, back_color_in, outline_in, outline_color_in, setup_max, (char*)0) == 0) {
         return 0;
     }
-    this->caret_color = p15;
-    this->format_type = format;
+    this->caret_color = caret_color_in;
+    this->format_type = format_type_in;
     if (this->have_focus != 0) {
         this->draw_caret = 1;
         this->caret_last_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp", 89);
     }
-    if (maxChars != 0)
-        this->overLengthSound = digital;
+    if (max_len_in != 0)
+        this->overLengthSound = overLengthSoundIn;
     else
         this->overLengthSound = 0;
     if (this->format_type == FormatMultiLine) {
@@ -61,33 +58,30 @@ long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3, long p4,
         this->set_alignment(TTextPanel::AlignCenter,
                             TTextPanel::AlignHorizontalScroll);
     }
-    this->input_buffer1 = (char*)calloc((unsigned int)((int)maxChars + (int)maxChars + 1), 1);
+    this->input_buffer1 = (char*)calloc((unsigned int)((int)max_len_in + (int)max_len_in + 1), 1);
     if (this->input_buffer1 == 0) return 0;
-    this->input_buffer2 = (char*)calloc((unsigned int)((int)maxChars + (int)maxChars + 1), 1);
+    this->input_buffer2 = (char*)calloc((unsigned int)((int)max_len_in + (int)max_len_in + 1), 1);
     if (this->input_buffer2 == 0) return 0;
     this->input_buffer = this->input_buffer1;
-    this->set_text(text);
-    this->max_len = maxChars;
+    this->set_text(text_in);
+    this->max_len = max_len_in;
     this->reformat();
     return 1;
 }
 
-void TInputPanel::set_focus(int focus)
-{
-    TPanel::set_focus(focus);
+void TInputPanel::set_focus(int have_focus_in) {
+    TPanel::set_focus(have_focus_in);
     if (this->have_focus != 0) {
         this->draw_caret = 1;
         this->caret_last_time = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp", 137);
     }
 }
 
-void TInputPanel::set_format(FormatType format)
-{
-    this->format_type = format;
+void TInputPanel::set_format(FormatType format_type_in) {
+    this->format_type = format_type_in;
 }
 
-long TInputPanel::handle_idle()
-{
+long TInputPanel::handle_idle() {
     if (this->have_focus != 0) {
         unsigned long now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp", 158);
         if ((now - this->caret_last_time) >= this->caret_interval) {
@@ -100,10 +94,9 @@ long TInputPanel::handle_idle()
     return TPanel::handle_idle();
 }
 
-long TInputPanel::char_action(long ch, short count)
-{
+long TInputPanel::char_action(long key, short count) {
     short i;
-    if (ch == 8 || ch == 9 || ch == 10 || ch == 13 || ch == 27 || ch < 0x1B)
+    if (key == 8 || key == 9 || key == 10 || key == 13 || key == 27 || key < 0x1B)
         return 1;
     if (count == 0) count = 1;
     i = 0;
@@ -111,8 +104,8 @@ long TInputPanel::char_action(long ch, short count)
     while (i < count) {
         switch (this->format_type) {
         case FormatPercent:
-            if (_mbslen((const unsigned char*)this->get_text()) < 2 && ch >= '0' && ch <= '9') break;
-            if (_mbslen((const unsigned char*)this->get_text()) != 2 || ch != '0' ||
+            if (_mbslen((const unsigned char*)this->get_text()) < 2 && key >= '0' && key <= '9') break;
+            if (_mbslen((const unsigned char*)this->get_text()) != 2 || key != '0' ||
                 _mbscmp((const unsigned char*)"10", (const unsigned char*)this->get_text()) != 0) {
                 if (this->overLengthSound != 0) this->overLengthSound->play();
                 else MessageBeep(0xFFFFFFFF);
@@ -122,25 +115,25 @@ long TInputPanel::char_action(long ch, short count)
         case FormatNumber:
         case FormatInteger:
         case FormatUnsignedInt:
-            if (ch >= '0' && ch <= '9') break;
-            if (ch == '-' && this->input_buffer[0] == 0 && this->format_type != FormatUnsignedInt) break;
-            if (ch == '.' && _mbschr((const unsigned char*)this->input_buffer, ch) != 0 && this->format_type == FormatNumber) break;
+            if (key >= '0' && key <= '9') break;
+            if (key == '-' && this->input_buffer[0] == 0 && this->format_type != FormatUnsignedInt) break;
+            if (key == '.' && _mbschr((const unsigned char*)this->input_buffer, key) != 0 && this->format_type == FormatNumber) break;
             if (this->overLengthSound != 0) this->overLengthSound->play();
             else MessageBeep(0xFFFFFFFF);
             return 1;
         case FormatFile:
         case FormatFileNoExt:
-            if (ch == '.') {
-                if (this->format_type == FormatFile && _mbschr((const unsigned char*)this->input_buffer, ch) == 0) break;
+            if (key == '.') {
+                if (this->format_type == FormatFile && _mbschr((const unsigned char*)this->input_buffer, key) == 0) break;
             }
-            if (ch == '.' || ch == '\\' || ch == ':' || ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') {
+            if (key == '.' || key == '\\' || key == ':' || key == '/' || key == '"' || key == '*' || key == '?' || key == '>' || key == '<' || key == '|') {
                 if (this->overLengthSound != 0) this->overLengthSound->play();
                 else MessageBeep(0xFFFFFFFF);
                 return 1;
             }
             break;
         case FormatPath:
-            if ((ch == ':' && this->input_len != 1) || ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') {
+            if ((key == ':' && this->input_len != 1) || key == '/' || key == '"' || key == '*' || key == '?' || key == '>' || key == '<' || key == '|') {
                 if (this->overLengthSound != 0) this->overLengthSound->play();
                 else MessageBeep(0xFFFFFFFF);
                 return 1;
@@ -150,19 +143,18 @@ long TInputPanel::char_action(long ch, short count)
         case FormatMultiLine:
             break;
         }
-        if (this->insert_character(ch) == 0) return 1;
+        if (this->insert_character(key) == 0) return 1;
         ++i;
     }
     return 1;
 }
 
-long TInputPanel::key_down_action(long key, short, int, int control, int shift)
-{
+long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     short line_len;
     short column;
 
     switch (key) {
-    case 0x25:
+    case VK_LEFT:
         if (this->num_lines < 1) return 1;
         if (this->cur_col > 0) {
             this->cur_col--;
@@ -176,7 +168,7 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->set_redraw(TPanel::RedrawNormal);
         break;
 
-    case 0x27:
+    case VK_RIGHT:
         if (this->num_lines < 1) return 1;
         column = this->cur_col;
         line_len = (short)_mbslen(
@@ -192,7 +184,7 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->set_redraw(TPanel::RedrawNormal);
         break;
 
-    case 0x26:
+    case VK_UP:
         if (this->num_lines < 1) return 1;
         if (this->cur_line <= 0) break;
         this->cur_line--;
@@ -206,7 +198,7 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->set_redraw(TPanel::RedrawNormal);
         break;
 
-    case 0x28:
+    case VK_DOWN:
         if (this->num_lines < 1) return 1;
         if (this->cur_line >= this->num_lines - 1) break;
         this->cur_line++;
@@ -220,9 +212,9 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->set_redraw(TPanel::RedrawNormal);
         break;
 
-    case 0x24:
+    case VK_HOME:
         if (this->num_lines < 1) return 1;
-        if (control != 0) {
+        if (ctrl_key != 0) {
             if (this->cur_col == 0 && this->cur_line == 0) break;
             this->cur_col = 0;
             this->cur_line = 0;
@@ -236,9 +228,9 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->calc_input_pos();
         break;
 
-    case 0x23:
+    case VK_END:
         if (this->num_lines < 1) return 1;
-        if (control != 0) {
+        if (ctrl_key != 0) {
             if (this->cur_line == this->num_lines - 1) {
                 line_len = (short)_mbslen(
                     (const unsigned char*)this->get_text(this->cur_line));
@@ -256,7 +248,7 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->calc_input_pos();
         break;
 
-    case 0x21:
+    case VK_PRIOR:
         if (this->num_lines < 1) return 1;
         if (this->cur_line <= 0) break;
         if (this->cur_line < this->top_line ||
@@ -277,7 +269,7 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->set_redraw(TPanel::RedrawNormal);
         break;
 
-    case 0x22:
+    case VK_NEXT:
         if (this->num_lines < 1) return 1;
         if (this->cur_line >= this->num_lines - 1) break;
         if (this->cur_line < this->top_line ||
@@ -298,23 +290,23 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         this->set_redraw(TPanel::RedrawNormal);
         break;
 
-    case 0x2e:
+    case VK_DELETE:
         this->delete_character();
         break;
 
-    case 0x2d:
-        if (shift != 0) {
+    case VK_INSERT:
+        if (shift_key != 0) {
             this->paste();
-        } else if (control == 0) {
+        } else if (ctrl_key == 0) {
             this->insert_mode = (this->insert_mode == 0);
         }
         break;
 
-    case 8:
+    case VK_BACK:
         this->backspace_character();
         break;
 
-    case 13:
+    case VK_RETURN:
         if (this->format_type == FormatMultiLine) {
             this->insert_character(10);
         } else if (this->parent_panel != 0) {
@@ -322,14 +314,14 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
         }
         break;
 
-    case 27:
+    case VK_ESCAPE:
         if (this->parent_panel != 0) {
             this->parent_panel->action(this, 1, 0, 0);
         }
         break;
 
     case 0x56:
-        if (control == 0) return 0;
+        if (ctrl_key == 0) return 0;
         this->paste();
         break;
 
@@ -340,8 +332,7 @@ long TInputPanel::key_down_action(long key, short, int, int control, int shift)
     return 1;
 }
 
-void TInputPanel::draw()
-{
+void TInputPanel::draw() {
     TTextPanel::draw();
     if (this->render_area == 0) return;
     if (this->visible == 0) return;
@@ -378,12 +369,11 @@ void TInputPanel::draw()
     this->draw_finish();
 }
 
-void TInputPanel::set_text(char* param_1)
-{
+void TInputPanel::set_text(char* text_in) {
     char* buf = this->input_buffer;
     if (buf != 0) {
-        if (param_1 == 0) *buf = 0;
-        else _mbscpy((unsigned char*)buf, (const unsigned char*)param_1);
+        if (text_in == 0) *buf = 0;
+        else _mbscpy((unsigned char*)buf, (const unsigned char*)text_in);
         short len = _mbslen((const unsigned char*)this->input_buffer);
         this->input_len = len;
         this->input_pos = 0;
@@ -397,23 +387,19 @@ void TInputPanel::set_text(char* param_1)
     }
 }
 
-void TInputPanel::set_text(char**, short)
-{
+void TInputPanel::set_text(char** text_in, short num_lines_in) {
 }
 
-char* TInputPanel::get_input_buffer()
-{
+char* TInputPanel::get_input_buffer() {
     return this->input_buffer;
 }
 
-int TInputPanel::append_character(long value)
-{
+int TInputPanel::append_character(long c) {
     this->input_pos = this->input_len;
-    return this->insert_character(value);
+    return this->insert_character(c);
 }
 
-int TInputPanel::insert_character(long ch)
-{
+int TInputPanel::insert_character(long c) {
     if (this->input_len >= this->max_len) {
         if (this->overLengthSound != 0) this->overLengthSound->play();
         else MessageBeep(0xFFFFFFFF);
@@ -436,7 +422,7 @@ int TInputPanel::insert_character(long ch)
         src_buffer = (char*)_mbsninc((const unsigned char*)src_buffer, this->input_pos);
         dst_buffer = (char*)_mbsninc((const unsigned char*)dst_buffer, this->input_pos);
     }
-    _mbsncpy((unsigned char*)dst_buffer, (const unsigned char*)&ch, 1);
+    _mbsncpy((unsigned char*)dst_buffer, (const unsigned char*)&c, 1);
     dst_buffer = (char*)_mbsinc((const unsigned char*)dst_buffer);
     _mbsncpy((unsigned char*)dst_buffer, (const unsigned char*)src_buffer, this->input_len - this->input_pos + 1);
     this->input_len++;
@@ -448,8 +434,7 @@ int TInputPanel::insert_character(long ch)
     return 1;
 }
 
-int TInputPanel::delete_character()
-{
+int TInputPanel::delete_character() {
     short deleted_len;
     unsigned char* pcVar2;
     unsigned char* pcVar3;
@@ -509,8 +494,7 @@ do_copy:
     return 1;
 }
 
-int TInputPanel::backspace_character()
-{
+int TInputPanel::backspace_character() {
     if (this->input_pos > 0) {
         this->input_pos = this->input_pos - 1;
         return this->delete_character();
@@ -518,8 +502,7 @@ int TInputPanel::backspace_character()
     return 0;
 }
 
-int TInputPanel::paste()
-{
+int TInputPanel::paste() {
     int len;
     HANDLE data_handle;
     char* locked;
@@ -530,9 +513,9 @@ int TInputPanel::paste()
     char new_str[0x1000];
     len = 0;
     new_str[0] = 0;
-    if (!IsClipboardFormatAvailable(1)) return 0;
+    if (!IsClipboardFormatAvailable(CF_TEXT)) return 0;
     if (!OpenClipboard(this->render_area->Wnd)) return 0;
-    data_handle = GetClipboardData(1);
+    data_handle = GetClipboardData(CF_TEXT);
     if (data_handle != 0) {
         locked = (char*)GlobalLock(data_handle);
         if (locked != 0) {
@@ -584,8 +567,7 @@ int TInputPanel::paste()
     return 1;
 }
 
-void TInputPanel::reformat()
-{
+void TInputPanel::reformat() {
     short top = this->top_line;
     short cur = this->cur_line;
     TTextPanel::set_text(this->input_buffer);
@@ -597,8 +579,7 @@ void TInputPanel::reformat()
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TInputPanel::calc_input_pos()
-{
+void TInputPanel::calc_input_pos() {
     TTextPanel::TextNode* node;
     short i;
     short len;
@@ -634,8 +615,7 @@ void TInputPanel::calc_input_pos()
     }
 }
 
-void TInputPanel::calc_cur_line_col()
-{
+void TInputPanel::calc_cur_line_col() {
     TTextPanel::TextNode* node;
     short offset;
     short len;
@@ -667,8 +647,7 @@ void TInputPanel::calc_cur_line_col()
     }
 }
 
-int TInputPanel::is_blank()
-{
+int TInputPanel::is_blank() {
     char* p = this->currentLine();
     if (p == 0) goto blank;
     if (*p == 0) goto blank;
@@ -681,16 +660,15 @@ blank:
     return 1;
 }
 
-char* TInputPanel::get_trimmed_str(char* dst, int maxlen)
-{
+char* TInputPanel::get_trimmed_str(char* str, int str_len) {
     char temp_str[256];
     unsigned char* base;
     unsigned char* p;
     unsigned char* cur;
     memset(temp_str, 0, sizeof(temp_str));
     strcpy(temp_str, this->currentLine());
-    memset(dst, 0, maxlen);
-    base = (unsigned char*)dst;
+    memset(str, 0, str_len);
+    base = (unsigned char*)str;
     p = base;
     cur = (unsigned char*)temp_str;
     while (_ismbcspace(*cur & 0xFF)) cur = (unsigned char*)_mbsinc(cur);

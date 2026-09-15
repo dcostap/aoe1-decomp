@@ -36,9 +36,9 @@ int TRIBE_Dialog_List::create_build_list() {
         return 0;
     }
 
-    Item_Avail* avail_list = 0;
+    Item_Avail* item_list = 0;
     short item_num = 0;
-    player->interface_item_avail(&avail_list, &item_num, 0x76);
+    player->interface_item_avail(&item_list, &item_num, 0x76);
     if (item_num == 0) {
         return 0;
     }
@@ -51,8 +51,8 @@ int TRIBE_Dialog_List::create_build_list() {
 
     if (list_size > 0) {
         do {
-            list_info[i].id = avail_list[i].id;
-            strcpy(list_info[i].text, avail_list[i].name);
+            list_info[i].id = item_list[i].id;
+            strcpy(list_info[i].text, item_list[i].name);
             i++;
         } while (i < list_size);
     }
@@ -60,17 +60,17 @@ int TRIBE_Dialog_List::create_build_list() {
 }
 
 int TRIBE_Dialog_List::create_train_list() {
-    Item_Avail* avail_list;
+    Item_Avail* item_list;
     short item_num;
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     short i = 0;
 
     if (player != 0 && player->selected_obj != 0) {
         if (player->own_selected()) {
-            avail_list = 0;
+            item_list = 0;
             item_num = 0;
             player->interface_item_avail(
-                &avail_list, &item_num,
+                &item_list, &item_num,
                 player->selected_obj->master_obj->id);
             if (item_num != 0) {
                 list_size = item_num;
@@ -78,8 +78,8 @@ int TRIBE_Dialog_List::create_train_list() {
                 if (list_info != 0) {
                     if (list_size > 0) {
                         do {
-                            list_info[i].id = avail_list[i].id;
-                            strcpy(list_info[i].text, avail_list[i].name);
+                            list_info[i].id = item_list[i].id;
+                            strcpy(list_info[i].text, item_list[i].name);
                             i++;
                         } while (i < list_size);
                     }
@@ -92,17 +92,17 @@ int TRIBE_Dialog_List::create_train_list() {
 }
 
 int TRIBE_Dialog_List::create_research_list() {
-    Item_Avail* avail_list;
+    Item_Avail* item_list;
     short item_num;
     TRIBE_Player* player = (TRIBE_Player*)rge_base_game->get_player();
     short i = 0;
 
     if (player != 0 && player->selected_obj != 0) {
         if (player->own_selected()) {
-            avail_list = 0;
+            item_list = 0;
             item_num = 0;
             player->interface_tech_avail(
-                &avail_list, &item_num,
+                &item_list, &item_num,
                 player->selected_obj->master_obj->id);
             if (item_num != 0) {
                 list_size = item_num;
@@ -110,8 +110,8 @@ int TRIBE_Dialog_List::create_research_list() {
                 if (list_info != 0) {
                     if (list_size > 0) {
                         do {
-                            list_info[i].id = avail_list[i].id;
-                            strcpy(list_info[i].text, avail_list[i].name);
+                            list_info[i].id = item_list[i].id;
+                            strcpy(list_info[i].text, item_list[i].name);
                             i++;
                         } while (i < list_size);
                     }

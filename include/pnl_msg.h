@@ -55,25 +55,25 @@ public:
     int IconFrame1;
     int IconFrame2;
 
-    TMessagePanel(void*, long, long);
+    TMessagePanel(void* font_in, long font_wid_in, long font_hgt_in);
     virtual ~TMessagePanel();
-    virtual void set_rect(long, long, long, long);
+    virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);
     virtual void draw();
-    virtual void get_true_render_rect(tagRECT&);
+    virtual void get_true_render_rect(tagRECT& drawRect);
     virtual long handle_idle();
-    virtual long handle_mouse_down(unsigned char, long, long, int, int) { return 0; }
-    virtual long handle_mouse_move(long, long, int, int) { return 0; }
-    virtual long handle_mouse_up(unsigned char, long, long, int, int) { return 0; }
-    void set_justification(JustType, JustType, int);
-    void show_message(MessageType, char*, unsigned char, unsigned char,
-                      void*, long, long);
-    void show_message2(MessageType, char*, unsigned long, unsigned long,
-                       void*, long, long, TShape*, int, TShape*, int);
+    virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) { return 0; }
+    virtual long handle_mouse_move(long x, long y, int ctrl_key, int shift_key) { return 0; }
+    virtual long handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) { return 0; }
+    void set_justification(JustType horz_just_in, JustType vert_just_in, int word_wrap_in);
+    void show_message(MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in, long font_wid_in, long font_hgt_in);
+    void show_message2(MessageType message_type_in, char* text_in, unsigned long color1, unsigned long color2,
+                       void* font_in, long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in,
+                       TShape* Icon2_in, int Frame2_in);
     void remove_message();
 protected:
     int render_to_image_buffer();
 public:
-    virtual void set_font(void*, long, long);
+    virtual void set_font(void* font_in, long font_wid_in, long font_hgt_in);
 };
 
 typedef char pnl_msg_message_panel_size_check[

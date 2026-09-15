@@ -8,15 +8,15 @@ extern "C" int strncmp(const char*, const char*, unsigned int);
 extern "C" char* strncpy(char*, const char*, unsigned int);
 unsigned long __cdecl debug_timeGetTime(char*, int);
 
-TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt)
+TMessagePanel::TMessagePanel(void* font_in, long font_wid_in, long font_hgt_in)
     : TPanel(),
       message_type(InfoMessage),
       showing_message(0),
       start_time(0),
       show_message_interval(8000),
-      font(font),
-      font_wid(font_wid),
-      font_hgt(font_hgt),
+      font(font_in),
+      font_wid(font_wid_in),
+      font_hgt(font_hgt_in),
       font_color(0),
       back_color(0),
       horz_just(LeftJust),
@@ -48,10 +48,10 @@ TMessagePanel::~TMessagePanel(void) {
     }
 }
 
-void TMessagePanel::set_rect(long x, long y, long w, long h) {
-    TPanel::set_rect(x, y, w, h);
+void TMessagePanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
+    TPanel::set_rect(x_in, y_in, wid_in, hgt_in);
 
-    if (this->pnl_wid > this->LastIBWidth || this->pnl_hgt > this->LastIBHeight || x + this->LastIBWidth >= this->render_area->Width) {
+    if (this->pnl_wid > this->LastIBWidth || this->pnl_hgt > this->LastIBHeight || x_in + this->LastIBWidth >= this->render_area->Width) {
         if (this->image_clip_region != 0) {
             DeleteObject(this->image_clip_region);
             this->image_clip_region = 0;
@@ -90,45 +90,41 @@ void TMessagePanel::set_rect(long x, long y, long w, long h) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TMessagePanel::set_justification(TMessagePanel::JustType a,
-                                      TMessagePanel::JustType b, int c) {
-    this->horz_just = a;
-    this->vert_just = b;
-    this->word_wrap = c;
+void TMessagePanel::set_justification(TMessagePanel::JustType horz_just_in, TMessagePanel::JustType vert_just_in, int word_wrap_in) {
+    this->horz_just = horz_just_in;
+    this->vert_just = vert_just_in;
+    this->word_wrap = word_wrap_in;
 }
 
-void TMessagePanel::show_message(TMessagePanel::MessageType message_type,
-                                  char* text, unsigned char font_color,
-                                  unsigned char back_color, void* font,
-                                  long font_wid, long font_hgt) {
-    if (this->showing_message && this->message_type == message_type &&
-        strncmp(text, this->text, 0x1ff) == 0) {
-        if (font == 0) {
+void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in, long font_wid_in, long font_hgt_in) {
+    if (this->showing_message && this->message_type == message_type_in &&
+        strncmp(text_in, this->text, 0x1ff) == 0) {
+        if (font_in == 0) {
             return;
         }
-        if (font == this->font) {
+        if (font_in == this->font) {
             return;
         }
     }
 
-    if (font != 0) {
-        this->font = font;
-        this->font_wid = font_wid;
-        this->font_hgt = font_hgt;
+    if (font_in != 0) {
+        this->font = font_in;
+        this->font_wid = font_wid_in;
+        this->font_hgt = font_hgt_in;
     }
 
-    this->message_type = message_type;
+    this->message_type = message_type_in;
     for (int i = 0; i < 0x200; ++i) {
         this->text[i] = 0;
     }
-    strncpy(this->text, text, 0x1ff);
+    strncpy(this->text, text_in, 0x1ff);
     this->display_changed_count++;
     this->showing_message = 1;
     this->start_time = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0x9e);
-    this->font_color = font_color;
+    this->font_color = colorIn;
     this->index_color = 1;
-    this->back_color = back_color;
+    this->back_color = backColorIn;
 
     if (this->ImageBuffer) {
         this->render_to_image_buffer();
@@ -142,44 +138,44 @@ void TMessagePanel::show_message(TMessagePanel::MessageType message_type,
 }
 
 void TMessagePanel::show_message2(
-    TMessagePanel::MessageType message_type, char* text,
-    unsigned long font_color1, unsigned long font_color2, void* font,
-    long font_wid, long font_hgt, TShape* Icon1, int IconFrame1,
-    TShape* Icon2, int IconFrame2) {
-    if (this->showing_message && this->message_type == message_type &&
-        strncmp(text, this->text, 0x1ff) == 0) {
-        if (font == 0 || font == this->font) {
-            if (this->Icon1 == Icon1 && this->Icon2 == Icon2 &&
-                this->IconFrame1 == IconFrame1 &&
-                this->IconFrame2 == IconFrame2) {
+    TMessagePanel::MessageType message_type_in, char* text_in,
+    unsigned long color1, unsigned long color2, void* font_in,
+    long font_wid_in, long font_hgt_in, TShape* Icon1_in, int Frame1_in,
+    TShape* Icon2_in, int Frame2_in) {
+    if (this->showing_message && this->message_type == message_type_in &&
+        strncmp(text_in, this->text, 0x1ff) == 0) {
+        if (font_in == 0 || font_in == this->font) {
+            if (this->Icon1 == Icon1_in && this->Icon2 == Icon2_in &&
+                this->IconFrame1 == Frame1_in &&
+                this->IconFrame2 == Frame2_in) {
                 return;
             }
         }
     }
 
-    if (font != 0) {
-        this->font = font;
-        this->font_wid = font_wid;
-        this->font_hgt = font_hgt;
+    if (font_in != 0) {
+        this->font = font_in;
+        this->font_wid = font_wid_in;
+        this->font_hgt = font_hgt_in;
     }
 
-    this->message_type = message_type;
-    this->Icon1 = Icon1;
-    this->IconFrame1 = IconFrame1;
-    this->IconFrame2 = IconFrame2;
-    this->Icon2 = Icon2;
+    this->message_type = message_type_in;
+    this->Icon1 = Icon1_in;
+    this->IconFrame1 = Frame1_in;
+    this->IconFrame2 = Frame2_in;
+    this->Icon2 = Icon2_in;
 
     for (int i = 0; i < 0x200; ++i) {
         this->text[i] = 0;
     }
-    strncpy(this->text, text, 0x1ff);
+    strncpy(this->text, text_in, 0x1ff);
     this->display_changed_count++;
     this->showing_message = 1;
     this->start_time = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0xd3);
-    this->font_color1 = font_color1;
+    this->font_color1 = color1;
     this->index_color = 0;
-    this->font_color2 = font_color2;
+    this->font_color2 = color2;
 
     if (this->ImageBuffer) {
         this->render_to_image_buffer();
@@ -205,12 +201,12 @@ void TMessagePanel::remove_message(void) {
 }
 
 void TMessagePanel::draw(void) {
-    tagPALETTEENTRY p;
+    tagPALETTEENTRY paletteColor;
     void* old_font;
     unsigned long font_rgb;
     unsigned long back_rgb;
-    long x1;
-    long y1;
+    long x;
+    long y;
     long wid;
     long hgt;
     tagSIZE ts;
@@ -254,13 +250,13 @@ void TMessagePanel::draw(void) {
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->font_color, 1, &p);
-        font_rgb = ((unsigned long)p.peBlue << 16) |
-                   ((unsigned long)p.peGreen << 8) | p.peRed;
+                          this->font_color, 1, &paletteColor);
+        font_rgb = ((unsigned long)paletteColor.peBlue << 16) |
+                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
         GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->back_color, 1, &p);
-        back_rgb = ((unsigned long)p.peBlue << 16) |
-                   ((unsigned long)p.peGreen << 8) | p.peRed;
+                          this->back_color, 1, &paletteColor);
+        back_rgb = ((unsigned long)paletteColor.peBlue << 16) |
+                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
     } else {
         font_rgb = this->font_color1;
         back_rgb = this->font_color2;
@@ -268,13 +264,13 @@ void TMessagePanel::draw(void) {
 
     if (this->message_type == DebugMessage) {
         SetBkColor(this->render_area->DrawDc, 0);
-        SetBkMode(this->render_area->DrawDc, 2);
+        SetBkMode(this->render_area->DrawDc, OPAQUE);
     } else {
-        SetBkMode(this->render_area->DrawDc, 1);
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
     }
 
-    x1 = this->render_rect.left + 1;
-    y1 = this->render_rect.top + 1;
+    x = this->render_rect.left + 1;
+    y = this->render_rect.top + 1;
     wid = this->pnl_wid - 2;
     hgt = this->pnl_hgt - 2;
 
@@ -282,42 +278,42 @@ void TMessagePanel::draw(void) {
                           strlen(this->text), &ts);
 
     if (this->message_type == BadMessage) {
-        flags = 0x21;
+        flags = DT_SINGLELINE | DT_CENTER;
     } else if (this->message_type == RightInfoMessage) {
-        flags = 0x22;
+        flags = DT_SINGLELINE | DT_RIGHT;
     } else {
         GetTextExtentPoint32A(this->render_area->DrawDc, this->text,
                               strlen(this->text), &ts);
         if (this->word_wrap != 0 && ts.cx > wid) {
-            flags = 0x10;
+            flags = DT_WORDBREAK;
         } else {
-            flags = 0x20;
+            flags = DT_SINGLELINE;
         }
 
         if (this->horz_just == CenterJust) {
-            flags |= 1;
+            flags |= DT_CENTER;
         } else if (this->horz_just == RightJust) {
-            flags |= 2;
+            flags |= DT_RIGHT;
         }
 
         if (this->vert_just == CenterJust) {
-            flags |= 4;
+            flags |= DT_VCENTER;
         } else if (this->vert_just == BottomJust) {
-            flags |= 8;
+            flags |= DT_BOTTOM;
         }
     }
 
     SetTextColor(this->render_area->DrawDc, back_rgb);
-    SetRect(&rect, x1 - 1, y1 - 1, x1 + wid - 2, y1 + hgt - 2);
+    SetRect(&rect, x - 1, y - 1, x + wid - 2, y + hgt - 2);
     DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
-    SetRect(&rect, x1 - 1, y1 + 1, x1 + wid - 2, y1 + hgt);
+    SetRect(&rect, x - 1, y + 1, x + wid - 2, y + hgt);
     DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
-    SetRect(&rect, x1 + 1, y1 - 1, x1 + wid, y1 + hgt - 2);
+    SetRect(&rect, x + 1, y - 1, x + wid, y + hgt - 2);
     DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
-    SetRect(&rect, x1 + 1, y1 + 1, x1 + wid, y1 + hgt);
+    SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
     DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
     SetTextColor(this->render_area->DrawDc, font_rgb);
-    SetRect(&rect, x1, y1, x1 + wid - 1, y1 + hgt - 1);
+    SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
     DrawTextA(this->render_area->DrawDc, this->text, -1, &rect, flags);
 
     SelectObject(this->render_area->DrawDc, old_font);
@@ -328,18 +324,19 @@ finish:
     this->draw_finish();
 }
 
-void TMessagePanel::get_true_render_rect(tagRECT& rect) {
+void TMessagePanel::get_true_render_rect(tagRECT& drawRect) {
     if (this->ImageBuffer && this->render_area && this->visible &&
         this->active && this->showing_message) {
-        rect = this->UsedScreenRect;
+        drawRect = this->UsedScreenRect;
     } else {
-        rect = this->render_rect;
+        drawRect = this->render_rect;
     }
 }
 
 long TMessagePanel::handle_idle() {
     if (active && showing_message) {
-        if (message_type == 1 || message_type == 3 || message_type == 4) {
+        if (message_type == BadMessage || message_type == ChatMessage ||
+            message_type == ColoredChatMessage) {
             long now = debug_timeGetTime(
                 "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0x1BA);
             if (now - start_time >= show_message_interval) {
@@ -353,12 +350,12 @@ long TMessagePanel::handle_idle() {
 int TMessagePanel::render_to_image_buffer() {
     tagRECT* image_rect;
     void* old_font;
-    tagPALETTEENTRY p;
+    tagPALETTEENTRY paletteColor;
     unsigned long font_rgb;
     unsigned long back_rgb;
-    long x1;
-    long display_hgt;
-    long y1;
+    long x;
+    long Display_hgt;
+    long y;
     long wid;
     long hgt;
     tagSIZE ts;
@@ -395,78 +392,78 @@ int TMessagePanel::render_to_image_buffer() {
 
     if (this->index_color != 0) {
         GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->font_color, 1, &p);
-        font_rgb = ((unsigned long)p.peBlue << 16) |
-                   ((unsigned long)p.peGreen << 8) | p.peRed;
+                          this->font_color, 1, &paletteColor);
+        font_rgb = ((unsigned long)paletteColor.peBlue << 16) |
+                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
         GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->back_color, 1, &p);
-        back_rgb = ((unsigned long)p.peBlue << 16) |
-                   ((unsigned long)p.peGreen << 8) | p.peRed;
+                          this->back_color, 1, &paletteColor);
+        back_rgb = ((unsigned long)paletteColor.peBlue << 16) |
+                   ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
     } else {
         font_rgb = this->font_color1;
         back_rgb = this->font_color2;
     }
 
-    if (this->message_type == 2) {
+    if (this->message_type == DebugMessage) {
         SetBkColor(this->ImageBuffer->DrawDc, 0);
-        SetBkMode(this->ImageBuffer->DrawDc, 2);
+        SetBkMode(this->ImageBuffer->DrawDc, OPAQUE);
     } else {
-        SetBkMode(this->ImageBuffer->DrawDc, 1);
+        SetBkMode(this->ImageBuffer->DrawDc, TRANSPARENT);
     }
 
     wid = this->pnl_wid - 2;
-    x1 = image_rect->left + 1;
-    y1 = this->ImageRect.top + 1;
+    x = image_rect->left + 1;
+    y = this->ImageRect.top + 1;
     hgt = this->pnl_hgt - 2;
 
     if (GetTextExtentPoint32A(this->ImageBuffer->DrawDc, this->text,
                               strlen(this->text), &ts) == 0) {
-        SetRect(&rect, x1 - 1, y1 - 1, x1 + wid - 2, y1 + hgt - 2);
+        SetRect(&rect, x - 1, y - 1, x + wid - 2, y + hgt - 2);
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         this->ImageTextActive = 0;
     } else {
-        display_hgt = ts.cy + 2;
+        Display_hgt = ts.cy + 2;
         used_w = ts.cx + 2;
         used_y = 0;
         used_x = 0;
         tight = 1;
 
-        if (this->message_type == 1) {
-            flags = 0x21;
+        if (this->message_type == BadMessage) {
+            flags = DT_SINGLELINE | DT_CENTER;
             used_x = ((this->pnl_wid - used_w) >> 1) - 1;
-        } else if (this->message_type == 5) {
-            flags = 0x22;
+        } else if (this->message_type == RightInfoMessage) {
+            flags = DT_SINGLELINE | DT_RIGHT;
             used_x = (this->pnl_wid - used_w) - 1;
             used_y = 0;
         } else {
             if (this->word_wrap == 0 || ts.cx <= wid) {
                 used_w = ts.cx + 1;
-                flags = 0x20;
-                display_hgt = ts.cy + 1;
+                flags = DT_SINGLELINE;
+                Display_hgt = ts.cy + 1;
                 tight = 1;
             } else {
                 used_w = this->pnl_wid;
-                display_hgt = this->pnl_hgt;
+                Display_hgt = this->pnl_hgt;
                 used_x = 0;
                 used_y = 0;
-                flags = 0x10;
+                flags = DT_WORDBREAK;
                 tight = 0;
             }
-            if (this->horz_just == 4) {
-                flags |= 1;
+            if (this->horz_just == CenterJust) {
+                flags |= DT_CENTER;
                 if (tight) used_x = ((this->pnl_wid - used_w) >> 1) - 1;
-            } else if (this->horz_just == 3) {
-                flags |= 2;
+            } else if (this->horz_just == RightJust) {
+                flags |= DT_RIGHT;
                 if (tight) used_x = (this->pnl_wid - used_w) - 1;
             } else if (tight) {
                 used_x = 0;
             }
-            if (this->vert_just == 4) {
-                flags |= 4;
-                if (tight) used_y = ((this->pnl_hgt - display_hgt) >> 1) - 1;
-            } else if (this->vert_just == 1) {
-                flags |= 8;
-                if (tight) used_y = (this->pnl_hgt - display_hgt) - 1;
+            if (this->vert_just == CenterJust) {
+                flags |= DT_VCENTER;
+                if (tight) used_y = ((this->pnl_hgt - Display_hgt) >> 1) - 1;
+            } else if (this->vert_just == BottomJust) {
+                flags |= DT_BOTTOM;
+                if (tight) used_y = (this->pnl_hgt - Display_hgt) - 1;
             } else if (tight) {
                 used_y = 0;
             }
@@ -478,23 +475,23 @@ int TMessagePanel::render_to_image_buffer() {
         this->UsedImageRect.left = used_x;
         this->UsedImageRect.top = used_y;
         this->UsedImageRect.right = used_x + used_w;
-        this->UsedImageRect.bottom = used_y + display_hgt;
+        this->UsedImageRect.bottom = used_y + Display_hgt;
         if (this->UsedImageRect.right > this->ImageRect.right)
             this->UsedImageRect.right = this->ImageRect.right;
         if (this->UsedImageRect.bottom > this->ImageRect.bottom)
             this->UsedImageRect.bottom = this->ImageRect.bottom;
 
         SetTextColor(this->ImageBuffer->DrawDc, back_rgb);
-        SetRect(&rect, x1 - 1, y1 - 1, x1 + wid - 2, y1 + hgt - 2);
+        SetRect(&rect, x - 1, y - 1, x + wid - 2, y + hgt - 2);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
-        SetRect(&rect, x1 - 1, y1 + 1, x1 + wid - 2, y1 + hgt);
+        SetRect(&rect, x - 1, y + 1, x + wid - 2, y + hgt);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
-        SetRect(&rect, x1 + 1, y1 - 1, x1 + wid, y1 + hgt - 2);
+        SetRect(&rect, x + 1, y - 1, x + wid, y + hgt - 2);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
-        SetRect(&rect, x1 + 1, y1 + 1, x1 + wid, y1 + hgt);
+        SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
         SetTextColor(this->ImageBuffer->DrawDc, font_rgb);
-        SetRect(&rect, x1, y1, x1 + wid - 1, y1 + hgt - 1);
+        SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
 
         if (this->Icon1 != 0) {
@@ -536,11 +533,11 @@ int TMessagePanel::render_to_image_buffer() {
     return this->ImageTextActive;
 }
 
-void TMessagePanel::set_font(void* param_1, long param_2, long param_3) {
-    if (this->font != param_1) {
-        this->font = param_1;
-        this->font_wid = param_2;
-        this->font_hgt = param_3;
+void TMessagePanel::set_font(void* font_in, long font_wid_in, long font_hgt_in) {
+    if (this->font != font_in) {
+        this->font = font_in;
+        this->font_wid = font_wid_in;
+        this->font_hgt = font_hgt_in;
         this->need_restore = 1;
         this->set_redraw(TPanel::RedrawNormal);
     }

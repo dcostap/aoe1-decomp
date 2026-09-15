@@ -24,8 +24,8 @@ public:
     TPicturePanel();
     virtual ~TPicturePanel();
     virtual void draw();
-    long setup(TDrawArea*, TPanel*, long, long, long, long, char*, long, int, int);
-    void set_picture(TShape*, long);
+    long setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, char* pic_name_in, long res_id_in, int size_from_pic_in, int keep_loaded_in);
+    void set_picture(TShape* pic_in, long res_id_in);
 
 protected:
     int load_pic();

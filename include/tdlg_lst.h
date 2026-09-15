@@ -6,7 +6,7 @@
 
 class TRIBE_Dialog_List : public RGE_Dialog_List {
 public:
-    TRIBE_Dialog_List(char*);
+    TRIBE_Dialog_List(char* name);
 
 protected:
     virtual int create_list();

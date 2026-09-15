@@ -20,49 +20,47 @@ TPicturePanel::~TPicturePanel() {
     this->free_pic();
 }
 
-long TPicturePanel::setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, char* p7, long p8, int p9, int p10)
-{
-    short sw, sh;
+long TPicturePanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in, long y_in, long wid_in, long hgt_in, char* pic_name_in, long res_id_in, int size_from_pic_in, int keep_loaded_in) {
+    short shape_wid, shape_hgt;
 
-    if (p7) {
-        strcpy(this->pic_name, p7);
+    if (pic_name_in) {
+        strcpy(this->pic_name, pic_name_in);
     } else {
         this->pic_name[0] = 0;
     }
 
-    this->res_id = p8;
-    this->size_from_pic = p9;
-    this->keep_loaded = p10;
+    this->res_id = res_id_in;
+    this->size_from_pic = size_from_pic_in;
+    this->keep_loaded = keep_loaded_in;
 
-    if ((p9 || p10) && this->load_pic()) {
+    if ((size_from_pic_in || keep_loaded_in) && this->load_pic()) {
         if (this->size_from_pic) {
             if (this->pic_type == Picture) {
-                p5 = this->pic->Width;
-                p6 = this->pic->Height;
+                wid_in = this->pic->Width;
+                hgt_in = this->pic->Height;
             } else {
-                this->shape->shape_bounds(0, sw, sh);
-                p5 = sw;
-                p6 = sh;
+                this->shape->shape_bounds(0, shape_wid, shape_hgt);
+                wid_in = shape_wid;
+                hgt_in = shape_hgt;
             }
         }
         if (!this->keep_loaded)
             this->free_pic();
     }
 
-    TPanel::setup(p1, p2, p3, p4, p5, p6, 0);
+    TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0);
     return 1;
 }
 
-void TPicturePanel::set_picture(TShape* new_shape, long new_res_id) {
+void TPicturePanel::set_picture(TShape* pic_in, long res_id_in) {
     this->free_pic();
-    this->shape = new_shape;
-    this->res_id = new_res_id;
+    this->shape = pic_in;
+    this->res_id = res_id_in;
     this->own_pic = 0;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-int TPicturePanel::load_pic()
-{
+int TPicturePanel::load_pic() {
     char file_name[80];
 
     this->free_pic();
@@ -126,8 +124,7 @@ void TPicturePanel::free_pic() {
     this->own_pic = 0;
 }
 
-void TPicturePanel::draw()
-{
+void TPicturePanel::draw() {
     if (!this->render_area) return;
     if (!this->visible) return;
     if (!this->active) return;
@@ -139,7 +136,7 @@ void TPicturePanel::draw()
 
     void* locked = this->render_area->Lock("pnl_pic::draw", 1);
     if (locked) {
-        if (this->pic_type == 0) {
+        if (this->pic_type == Picture) {
             if (this->pic)
                 this->pic->Draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0);
         } else {
