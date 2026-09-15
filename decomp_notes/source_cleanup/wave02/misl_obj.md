@@ -85,6 +85,8 @@ separate typed variables and does not force a storage alias.
 - The edit changes identifiers only. It does not change calls, casts, types,
   declaration points, scopes, evaluation order, control flow, or storage.
   Existing braces already follow 1TBS.
+- Identifier changes can alter debug names and source line records. No
+  executable code-generation effect is expected, but this was not validated.
 
 ## Concerns and requests
 
