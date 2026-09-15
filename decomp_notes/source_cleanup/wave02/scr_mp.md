@@ -5,7 +5,7 @@
 - Module: `src/scr_mp.cpp`
 - Paired header: `include/scr_mp.h` (owned by owner 11)
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source-state commit: `912b0bfcbab02983140042a44b5c7d010d9fd75`
+- Final source-state commit: `912b0bfcbbab02983140042a44b5c7d010d9fd75`
 - Changed files: `src/scr_mp.cpp`; this report
 - The report commit follows the source commit. The worker result gives its full final branch hash.
 
