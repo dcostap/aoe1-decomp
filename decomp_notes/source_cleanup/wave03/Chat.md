@@ -5,15 +5,15 @@
 - Module: `src/Chat.cpp`.
 - Branch: `cleanup/staging-20260915-191`.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final source commit: `727e0dc3aafccda192d514b899a28cd6717ac082`.
+- Final source commit: `a9300ec0fb82482786bcb9c141e8ddb89b94b9f8`.
 - Changed files: `src/Chat.cpp`; this report.
 - Paired header: `include/chat.h` (owner 22, read only).
 - Registry: `config/functions/src/Chat.cpp.json`.
 - Registry build profile: `gx_no_fpo`.
 
 The source registry owns 11 functions. This cleanup restores procedure-scoped
-PDB parameter names and replaces the proven `WM_USER` value. It keeps types,
-calls, literals, scopes, storage, order, layouts, and ABI symbols unchanged.
+PDB parameter names and uses the shared `CHAT_RECEIVED` cleanup name. It keeps
+types, calls, values, scopes, storage, order, layouts, and ABI symbols unchanged.
 
 ## Evidence reviewed
 
@@ -55,7 +55,7 @@ The preserved pre-cleanup build report is:
 That report selects `config/flags/gx_no_fpo.rsp` for this module. Its prior
 `src/Chat.cpp` SHA-256 is `78b5f223e0bce7adeab517b08436d6c9c16a4edce7d82ba6f539fd6fddf08e9c`.
 The final source SHA-256 is
-`754dcc1276b7a64af8d1843f199fb3e715341c6bd44d2f31471f3b4341c36aad`.
+`838eaaa144913dbd0299403fb6bb6b28fb8a854afb97c86afc3ac73db87a2d1b`.
 
 ## Original-name recovery
 
@@ -104,11 +104,12 @@ The pinned VC5 SDK header proves this value at:
 The `00423D00_AddChatMsg.txt` packet shows the original `push 400h` before
 `PostMessageA`. The replacement keeps the value and effective integer type.
 
-The `wParam` chat notification payload/code `0x17D5` remains numeric. The
-dispatch cases in `src/scr_mps.cpp` and `src/tribegam.cpp` handle that payload
-on the `WM_USER` path. No approved shared symbol was found. The loop bounds,
-array indices, `MaxArraySize` return value, and all other numeric values remain
-unchanged.
+The `wParam` chat notification payload/code is now `CHAT_RECEIVED`. Owner 22
+defined it as `0x17D5` in group commit
+`c0ce37473c32dfd6511e884ea1ead7dace6b5cce`. The dispatch cases in
+`src/scr_mps.cpp` and `src/tribegam.cpp` handle that payload on the `WM_USER`
+path. The loop bounds, array indices, `MaxArraySize` return value, and all
+other numeric values remain unchanged.
 
 This module has no resource lookup and no resource ID. No language DLL or
 runtime resource file was inspected. No source comment was added.
@@ -131,15 +132,18 @@ int RestartSoundSystem(TSound_Driver* driver);
 This request changes declaration names only. It does not block this source
 cleanup. The source has no unresolved PDB-backed parameter mapping.
 
-Please request a shared chat notification payload/code name from root for
-`wParam` value `0x17D5`. Evidence is `TChat::AddChatMsg` posting the value and
-the dispatch cases in `src/scr_mps.cpp` and `src/tribegam.cpp`. This worker
-leaves the value numeric and defines no duplicate.
+`CHAT_RECEIVED` is a new cleanup name, not a recovered original. Owner 22
+committed its shared declaration in group commit
+`c0ce37473c32dfd6511e884ea1ead7dace6b5cce`. The name represents the `wParam`
+payload/code `0x17D5`. Its evidence is `TChat::AddChatMsg` posting the value
+and the dispatch cases in `src/scr_mps.cpp` and `src/tribegam.cpp`. This worker
+did not edit the header or define a duplicate.
 
 ## Code-generation risks and validation limits
 
-The source changes parameter identifiers and replaces `0x400` with a VC5 SDK
-macro that expands to `0x0400`. They do not change types, casts, declarations,
+The source changes parameter identifiers, replaces `0x400` with a VC5 SDK
+macro that expands to `0x0400`, and replaces `0x17D5` with a macro that
+expands to the same value. They do not change types, casts, declarations,
 scopes, storage, evaluation order, control flow, calls, relocations, layouts,
 or ABI symbols. The parameter names can change debug metadata. No comments or
 line-dependent macros changed.
