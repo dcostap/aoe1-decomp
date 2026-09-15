@@ -2534,523 +2534,523 @@ void TRIBE_Screen_Game::setup_buttons() {
         long final_type;
         bool set_final_button = false;
         player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
-        culture = player->culture;
-        if (culture > 5) {
-            culture = 0;
+    culture = player->culture;
+    if (culture > 5) {
+        culture = 0;
+    }
+    if ((rge_base_game->game_mode == 6) &&
+        (rge_base_game->sub_game_mode == 1)) {
+        short building_count;
+        short tc_num = -1;
+        short range_num = -1;
+        int any_more = 0;
+
+        player->interface_item_avail(&this->bldg_list,
+                                     &this->item_cnt, 0x76);
+        building_count = this->item_cnt;
+
+        for (short building_index = 0; building_index < building_count; ++building_index) {
+            if (this->bldg_list[building_index].id == 0x6D) {
+                tc_num = building_index;
+            }
+            if (this->bldg_list[building_index].id == 0x57) {
+                range_num = building_index;
+            }
         }
-        if ((rge_base_game->game_mode == 6) &&
-            (rge_base_game->sub_game_mode == 1)) {
-            short building_count;
-            short tc_num = -1;
-            short range_num = -1;
-            int any_more = 0;
 
-            player->interface_item_avail(&this->bldg_list,
-                                         &this->item_cnt, 0x76);
-            building_count = this->item_cnt;
+        for (short item_index = 0; item_index < this->item_cnt; ++item_index) {
+            short item_id = this->bldg_list[item_index].id;
+            RGE_Master_Static_Object* base_master =
+                player->master_objects[item_id];
+            TRIBE_Master_Building_Object* master =
+                static_cast<TRIBE_Master_Building_Object*>(base_master);
+            unsigned char btn_loc =
+                static_cast<TRIBE_Master_Combat_Object*>(base_master)
+                    ->button_location;
 
-            for (short building_index = 0; building_index < building_count; ++building_index) {
-                if (this->bldg_list[building_index].id == 0x6D) {
-                    tc_num = building_index;
-                }
-                if (this->bldg_list[building_index].id == 0x57) {
-                    range_num = building_index;
-                }
+            if ((item_index == tc_num) && (range_num == -1)) {
+                btn_loc = 6;
             }
 
-            for (short item_index = 0; item_index < this->item_cnt; ++item_index) {
-                short item_id = this->bldg_list[item_index].id;
-                RGE_Master_Static_Object* base_master =
-                    player->master_objects[item_id];
-                TRIBE_Master_Building_Object* master =
-                    static_cast<TRIBE_Master_Building_Object*>(base_master);
-                unsigned char btn_loc =
-                    static_cast<TRIBE_Master_Combat_Object*>(base_master)
-                        ->button_location;
-
-                if ((item_index == tc_num) && (range_num == -1)) {
-                    btn_loc = 6;
-                }
-
-                if (this->start_item == 0) {
-                    if (btn_loc > 10) {
-                        any_more = 1;
-                        continue;
-                    }
-                } else if (btn_loc < 11) {
+            if (this->start_item == 0) {
+                if (btn_loc > 10) {
                     any_more = 1;
                     continue;
                 }
-
-                rge_base_game->get_string(master->string_id, name + 4, 0x200);
-                this->calc_text_msg(msg_str + 4, &this->bldg_list[item_index], 0x13,
-                                    master->string_id2);
-                short button = this->calc_button_loc(btn_loc);
-                Item_Avail* item = &this->bldg_list[item_index];
-                this->set_button(this->button_bldg_pics[culture], button,
-                                 static_cast<short>(master->building_facet + item->pict),
-                                 0x13, item->id,
-                                 master->string_id2 + 100000,
-                                 item->help_page_id, master->hotkey_id,
-                                 player->color_table->table, name + 4,
-                                 msg_str + 4, 0);
+            } else if (btn_loc < 11) {
+                any_more = 1;
+                continue;
             }
 
-            if (any_more != 0) {
-                this->set_button(this->more_cancel_pic, 5, this->more_frame,
-                                 0x0C, 0, 0x1D4D7, -1, 0,
-                                 0, 0, 0, 0);
-            }
+            rge_base_game->get_string(master->string_id, name + 4, 0x200);
+            this->calc_text_msg(msg_str + 4, &this->bldg_list[item_index], 0x13,
+                                master->string_id2);
+            short button = this->calc_button_loc(btn_loc);
+            Item_Avail* item = &this->bldg_list[item_index];
+            this->set_button(this->button_bldg_pics[culture], button,
+                             static_cast<short>(master->building_facet + item->pict),
+                             0x13, item->id,
+                             master->string_id2 + 100000,
+                             item->help_page_id, master->hotkey_id,
+                             player->color_table->table, name + 4,
+                             msg_str + 4, 0);
+        }
 
-            final_pic = this->more_cancel_pic;
-            final_frame = this->cancel_frame;
-            final_type = 0x0B;
-            set_final_button = 1;
-        } else if ((rge_base_game->game_mode == 0) &&
-                   (rge_base_game->prog_mode != 5)) {
-            if (this->game_obj->owner == player) {
-                unsigned char level = player->unit_level_selected();
-                int continue_setup = 1;
+        if (any_more != 0) {
+            this->set_button(this->more_cancel_pic, 5, this->more_frame,
+                             0x0C, 0, 0x1D4D7, -1, 0,
+                             0, 0, 0, 0);
+        }
 
-                if (level == 3) {
-                    this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 1, 0, 0x1F, 0, 0x1D4F6, -1, 0, 0, 0, 0, 0);
-                    if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 2, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                    }
+        final_pic = this->more_cancel_pic;
+        final_frame = this->cancel_frame;
+        final_type = 0x0B;
+        set_final_button = 1;
+    } else if ((rge_base_game->game_mode == 0) &&
+               (rge_base_game->prog_mode != 5)) {
+        if (this->game_obj->owner == player) {
+            unsigned char level = player->unit_level_selected();
+            int continue_setup = 1;
 
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = 6;
-                    set_final_button = 1;
-                    continue_setup = 0;
-                } else if (level == 9) {
-                    if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                    }
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = 6;
-                    set_final_button = 1;
-                    continue_setup = 0;
-                } else if (level == 4) {
-                    short selected = 0;
-                    int movable = 1;
-                    short i = 0;
-
-                    while ((selected < this->sel_count) && (i < 25)) {
-                        RGE_Static_Object* object = player->sel_list[i];
-                        if (object != 0) {
-                            RGE_Master_Combat_Object* master =
-                                static_cast<RGE_Master_Combat_Object*>(
-                                    object->master_obj);
-                            if ((master->missile_id == -1) ||
-                                (master->area_effect_range == DAT_00572ce4)) {
-                                movable = 0;
-                                break;
-                            }
-                            ++selected;
-                        }
-                        ++i;
-                    }
-
-                    this->set_button(this->button_cmd_pic, 0, 4, 0x16, 0, 0x1D4EA, -1, 0, 0, 0, 0, 0);
-                    short command_index = 1;
-                    if (movable) {
-                        this->set_button(this->button_cmd_pic, 1, 0x0C, 0x17, 0, 0x1D4EB, -1, 0, 0, 0, 0, 0);
-                        command_index = 2;
-                    }
-                    if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, command_index, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                    }
-
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = 6;
-                    set_final_button = 1;
-                    continue_setup = 0;
-                } else if (level == 6) {
-                    this->set_button(this->button_cmd_pic, 0, 0x0D, 0x1C, 0, 0x1D4F1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 1, 0x0E, 0x1D, 0, 0x1D4F2, -1, 0, 0, 0, 0, 0);
-                    if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 2, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                    }
-
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = 6;
-                    set_final_button = 1;
-                    continue_setup = 0;
-                } else if (level == 7) {
-                    short selected = 0;
-                    int found = 0;
-                    short i = 0;
-
-                    while ((selected < player->sel_count) && (i < 25)) {
-                        RGE_Static_Object* object = player->sel_list[i];
-                        if (object != 0) {
-                            ++selected;
-                            if (object->objects->number_of_objects > 0) {
-                                this->set_button(this->button_cmd_pic, 0, 5, 7, 0, 0x1D4E9, -1, 0, 0, 0, 0, 0);
-                                found = 1;
-                                break;
-                            }
-                        }
-                        ++i;
-                    }
-
-                    if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, found, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                    }
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = 6;
-                    set_final_button = 1;
-                    continue_setup = 0;
-                } else if (level == 5) {
-                    this->set_button(this->button_tech_pic, 1, 0x57, 0x19,
-                                     0, 0x1A25C, 0x265AF, 0,
-                                     0, 0, 0, 0);
-                    this->set_button(this->button_tech_pic, 2, 0x56, 0x1A,
-                                     0, 0x1A25D, 0x265AF, 0,
-                                     0, 0, 0, 0);
-                    this->set_button(this->button_tech_pic, 3, 0x58, 0x1B,
-                                     0, 0x1A25E, 0x265AF, 0,
-                                     0, 0, 0, 0);
-                    if (this->any_selected_have_action()) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                    }
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = 6;
-                    set_final_button = 1;
-                    continue_setup = 0;
-                } else if ((level == 2) &&
-                           (this->game_obj->master_obj->master_type == 'P')) {
-                    TRIBE_Building_Object* building =
-                        static_cast<TRIBE_Building_Object*>(this->game_obj);
-                    short work_type;
-                    short work_target;
-                    short progress;
-
-                    building->work_status(work_type, work_target, progress,
-                                          name + 4, 0x200);
-                    if (progress == 100) {
-                        work_type = 0;
-                    }
-
-                    unsigned char object_state = building->object_state;
-                    if (object_state < 2) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 0x14, 0, 0x1D4E5, -1, 0, 0, 0, 0, 0);
-                        final_pic = this->more_cancel_pic;
-                        final_frame = this->unselect_frame;
-                        final_type = 6;
-                        set_final_button = 1;
-                        continue_setup = 0;
-                    } else if (object_state > 2) {
-                        final_pic = this->more_cancel_pic;
-                        final_frame = this->unselect_frame;
-                        final_type = 6;
-                        set_final_button = 1;
-                        continue_setup = 0;
-                    } else if ((object_state == 2) &&
-                               ((work_type == 0x67) ||
-                                ((work_type == 0x66) &&
-                                 (production_queues_is_use == 0)))) {
-                        this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                        final_pic = this->more_cancel_pic;
-                        final_frame = this->unselect_frame;
-                        final_type = 6;
-                        set_final_button = 1;
-                        continue_setup = 0;
-                    } else if ((object_state == 2) &&
-                               ((work_type != 0x66) ||
-                                (production_queues_is_use != 0))) {
-                        short tech_cnt;
-                        short make_cnt;
-                        player->interface_tech_avail(&this->tech_list,
-                                                     &tech_cnt,
-                                                     this->game_obj->master_obj->id);
-                        player->interface_item_avail(&this->make_list,
-                                                     &make_cnt,
-                                                     this->game_obj->master_obj->id);
-                        this->item_cnt = make_cnt + tech_cnt;
-
-                        bool queue_active =
-                            (production_queues_is_use != 0) &&
-                            (building->production_queue_count > 0);
-                        if (queue_active) {
-                            this->set_button(this->button_cmd_pic, 6, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                        }
-
-                        for (short make_index = 0; make_index < make_cnt; ++make_index) {
-                            short item_id = this->make_list[make_index].id;
-                            RGE_Master_Static_Object* base_master =
-                                player->master_objects[item_id];
-                            TRIBE_Master_Combat_Object* master =
-                                static_cast<TRIBE_Master_Combat_Object*>(base_master);
-                            int queued = 0;
-
-                            if (queue_active) {
-                                short queue_count =
-                                    building->production_queue_count;
-                                if (queue_count > 0) {
-                                    Production_Queue_Record* queue =
-                                        building->production_queue;
-                                    do {
-                                        if (queue->master_id == master->id) {
-                                            queued += queue->unit_count;
-                                        }
-                                        ++queue;
-                                        --queue_count;
-                                    } while (queue_count != 0);
-                                }
-                            }
-
-                            if ((!queue_active) || (queued > 0)) {
-                                rge_base_game->get_string(master->string_id,
-                                                          name + 4, 0x200);
-                                this->calc_text_msg(msg_str + 4,
-                                                    &this->make_list[make_index], 0x12,
-                                                    master->string_id2);
-                                short button = this->calc_button_loc(
-                                    master->button_location);
-                                Item_Avail* item = &this->make_list[make_index];
-                                this->set_button(this->button_unit_pic, button,
-                                                 item->pict, 0x12, item->id,
-                                                 master->string_id2 + 100000,
-                                                 item->help_page_id,
-                                                 master->hotkey_id,
-                                                 player->color_table->table,
-                                                 name + 4, msg_str + 4, 0);
-                                if ((!queue_active) || (queued < 1)) {
-                                    this->button_panel[button]->set_display_garrison(0);
-                                } else {
-                                    this->button_panel[button]->set_display_garrison(1);
-                                    this->button_panel[button]->set_garrison_number(queued);
-                                }
-                            }
-                        }
-
-                        int make_disabled = 0;
-                        if (queue_active) {
-                            continue_setup = 0;
-                        } else {
-                            if ((building->master_obj->id == 0x6D) &&
-                                (tech_cnt == 0) &&
-                                (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
-                                short tech_id =
-                                    static_cast<short>(
-                                        static_cast<int>(rge_base_game->get_player()->attributes[6]) + 100);
-                                if (player->tech_tree->get_tech_state(tech_id) != -1) {
-                                    if (this->tech_list != 0) {
-                                        free(this->tech_list);
-                                    }
-                                    this->tech_list = static_cast<Item_Avail*>(
-                                        calloc(1, sizeof(Item_Avail)));
-                                    if (this->tech_list != 0) {
-                                        tech_cnt = 1;
-                                        make_disabled = 1;
-                                        short inv_1;
-                                        short inv_amt_1;
-                                        short inv_2;
-                                        short inv_amt_2;
-                                        short inv_3;
-                                        short inv_amt_3;
-                                        player->tech_tree->tech_cost(
-                                            tech_id, inv_1, inv_amt_1, inv_2,
-                                            inv_amt_2, inv_3, inv_amt_3);
-                                        Tech_Tree* tech =
-                                            &this->world->tech->tech_tree[tech_id];
-                                        this->tech_list->id = tech_id;
-                                        this->tech_list->name = tech->name;
-                                        this->tech_list->pict = tech->icon;
-                                        this->tech_list->inventory_item_1 = inv_1;
-                                        this->tech_list->inventory_cost_1 = static_cast<float>(inv_amt_1);
-                                        this->tech_list->inventory_item_2 = inv_2;
-                                        this->tech_list->inventory_cost_2 = static_cast<float>(inv_amt_2);
-                                        this->tech_list->inventory_item_3 = inv_3;
-                                        this->tech_list->inventory_cost_3 = static_cast<float>(inv_amt_3);
-                                        this->tech_list->help_string_id =
-                                            player->tech_tree->get_help_message(tech_id);
-                                        this->tech_list->help_page_id =
-                                            player->tech_tree->get_help_page(tech_id);
-                                    }
-                                }
-                            }
-
-                            for (int tech_index = 0; tech_index < tech_cnt; ++tech_index) {
-                                short item_id = this->tech_list[tech_index].id;
-                                short string_id =
-                                    player->tech_tree->get_string_id(item_id);
-                                rge_base_game->get_string(string_id, name + 4,
-                                                          0x200);
-                                short string_id2 =
-                                    player->tech_tree->get_string_id2(
-                                        this->tech_list[tech_index].id);
-                                this->calc_text_msg(msg_str + 4,
-                                                    &this->tech_list[tech_index],
-                                                    0x11, string_id2);
-                                unsigned char btn_loc =
-                                    player->tech_tree->get_button_location(
-                                        this->tech_list[tech_index].id);
-                                short button = this->calc_button_loc(btn_loc);
-                                Item_Avail* item = &this->tech_list[tech_index];
-                                unsigned char* color_table =
-                                    player->color_table->table;
-                                long hotkey =
-                                    player->tech_tree->get_hotkey(item->id);
-                                this->set_button(this->button_tech_pic, button,
-                                                 item->pict, 0x11, item->id,
-                                                 item->help_string_id,
-                                                 item->help_page_id,
-                                                 hotkey, color_table,
-                                                 name + 4, msg_str + 4,
-                                                 make_disabled);
-                            }
-
-                            if ((make_cnt == 0) && (tech_cnt == 0)) {
-                                if (player->sel_count > 1) {
-                                    this->set_button(this->button_cmd_pic, 6, 7, 8,
-                                                     0, 0x1D4E1, -1, 0,
-                                                     0, 0, 0, 0);
-                                    this->set_button(this->button_cmd_pic, 7, 8, 9,
-                                                     0, 0x4E43, -1, 0,
-                                                     0, 0, 0, 0);
-                                } else if (this->game_obj->selected_group != 0) {
-                                    this->set_button(this->button_cmd_pic, 6, 8, 9,
-                                                     0, 0x1D4E3, -1, 0,
-                                                     0, 0, 0, 0);
-                                }
-                            }
-                            final_pic = this->more_cancel_pic;
-                            final_frame = this->unselect_frame;
-                            final_type = 6;
-                            set_final_button = 1;
-                            continue_setup = 0;
-                        }
-                    }
-
+            if (level == 3) {
+                this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                this->set_button(this->button_cmd_pic, 1, 0, 0x1F, 0, 0x1D4F6, -1, 0, 0, 0, 0, 0);
+                if (this->any_selected_have_action()) {
+                    this->set_button(this->button_cmd_pic, 2, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
                 }
 
-                if (continue_setup != 0) {
-                    bool special_selection =
-                        (level == 0) && (player->sel_count > 1);
-                    bool all_moveable_units = true;
-                    bool have_action = false;
-                    if (special_selection) {
-                        short selected = 0;
-                        for (short j = 0;
-                             (j < 25) && (selected < player->sel_count); ++j) {
-                            RGE_Action_Object* object =
-                                static_cast<RGE_Action_Object*>(player->sel_list[j]);
-                            if (object != 0) {
-                                unsigned char object_level = object->master_obj->unit_level;
-                                if ((object_level != 3) &&
-                                    (object_level != 9) &&
-                                    (object_level != 4) &&
-                                    (object_level != 5) &&
-                                    (object_level != 6) &&
-                                    (object_level != 7) &&
-                                    (object_level != 8)) {
-                                    all_moveable_units = false;
-                                    break;
-                                }
-                                if (!have_action) {
-                                    have_action = object->have_action() != 0;
-                                }
-                                ++selected;
-                            }
-                        }
-                    }
-
-                    int group;
-                    bool special_known = special_selection && all_moveable_units;
-                    if (special_known) {
-                        group = player->is_group_selected(4);
-                        if (group != 0) {
-                            this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
-                        }
-                        if (have_action) {
-                            this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                        }
-                    } else {
-                        group = player->is_group_selected(4);
-                        if (group != 0) {
-                            this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
-                        }
-                        if (this->any_selected_have_action()) {
-                            this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                        }
-                    }
-                    if (player->sel_count > 1) {
-                        this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                        this->set_button(this->button_cmd_pic, 7, 8, 9, 0,
-                                         special_known ? 0x1D4E3 : 0x4E43,
-                                         -1, 0, 0, 0, 0, 0);
-                    } else if (this->game_obj->selected_group != 0) {
-                        this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-                    }
-                    final_pic = this->more_cancel_pic;
-                    final_frame = this->unselect_frame;
-                    final_type = special_known ? 6 : 0x0B;
-                    set_final_button = 1;
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
-            } else {
                 final_pic = this->more_cancel_pic;
                 final_frame = this->unselect_frame;
                 final_type = 6;
                 set_final_button = 1;
+                continue_setup = 0;
+            } else if (level == 9) {
+                if (this->any_selected_have_action()) {
+                    this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                }
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = 6;
+                set_final_button = 1;
+                continue_setup = 0;
+            } else if (level == 4) {
+                short selected = 0;
+                int movable = 1;
+                short i = 0;
+
+                while ((selected < this->sel_count) && (i < 25)) {
+                    RGE_Static_Object* object = player->sel_list[i];
+                    if (object != 0) {
+                        RGE_Master_Combat_Object* master =
+                            static_cast<RGE_Master_Combat_Object*>(
+                                object->master_obj);
+                        if ((master->missile_id == -1) ||
+                            (master->area_effect_range == DAT_00572ce4)) {
+                            movable = 0;
+                            break;
+                        }
+                        ++selected;
+                    }
+                    ++i;
+                }
+
+                this->set_button(this->button_cmd_pic, 0, 4, 0x16, 0, 0x1D4EA, -1, 0, 0, 0, 0, 0);
+                short command_index = 1;
+                if (movable) {
+                    this->set_button(this->button_cmd_pic, 1, 0x0C, 0x17, 0, 0x1D4EB, -1, 0, 0, 0, 0, 0);
+                    command_index = 2;
+                }
+                if (this->any_selected_have_action()) {
+                    this->set_button(this->button_cmd_pic, command_index, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                }
+
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = 6;
+                set_final_button = 1;
+                continue_setup = 0;
+            } else if (level == 6) {
+                this->set_button(this->button_cmd_pic, 0, 0x0D, 0x1C, 0, 0x1D4F1, -1, 0, 0, 0, 0, 0);
+                this->set_button(this->button_cmd_pic, 1, 0x0E, 0x1D, 0, 0x1D4F2, -1, 0, 0, 0, 0, 0);
+                if (this->any_selected_have_action()) {
+                    this->set_button(this->button_cmd_pic, 2, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                }
+
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = 6;
+                set_final_button = 1;
+                continue_setup = 0;
+            } else if (level == 7) {
+                short selected = 0;
+                int found = 0;
+                short i = 0;
+
+                while ((selected < player->sel_count) && (i < 25)) {
+                    RGE_Static_Object* object = player->sel_list[i];
+                    if (object != 0) {
+                        ++selected;
+                        if (object->objects->number_of_objects > 0) {
+                            this->set_button(this->button_cmd_pic, 0, 5, 7, 0, 0x1D4E9, -1, 0, 0, 0, 0, 0);
+                            found = 1;
+                            break;
+                        }
+                    }
+                    ++i;
+                }
+
+                if (this->any_selected_have_action()) {
+                    this->set_button(this->button_cmd_pic, found, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                }
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = 6;
+                set_final_button = 1;
+                continue_setup = 0;
+            } else if (level == 5) {
+                this->set_button(this->button_tech_pic, 1, 0x57, 0x19,
+                                 0, 0x1A25C, 0x265AF, 0,
+                                 0, 0, 0, 0);
+                this->set_button(this->button_tech_pic, 2, 0x56, 0x1A,
+                                 0, 0x1A25D, 0x265AF, 0,
+                                 0, 0, 0, 0);
+                this->set_button(this->button_tech_pic, 3, 0x58, 0x1B,
+                                 0, 0x1A25E, 0x265AF, 0,
+                                 0, 0, 0, 0);
+                if (this->any_selected_have_action()) {
+                    this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                }
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = 6;
+                set_final_button = 1;
+                continue_setup = 0;
+            } else if ((level == 2) &&
+                       (this->game_obj->master_obj->master_type == 'P')) {
+                TRIBE_Building_Object* building =
+                    static_cast<TRIBE_Building_Object*>(this->game_obj);
+                short work_type;
+                short work_target;
+                short progress;
+
+                building->work_status(work_type, work_target, progress,
+                                      name + 4, 0x200);
+                if (progress == 100) {
+                    work_type = 0;
+                }
+
+                unsigned char object_state = building->object_state;
+                if (object_state < 2) {
+                    this->set_button(this->button_cmd_pic, 0, 3, 0x14, 0, 0x1D4E5, -1, 0, 0, 0, 0, 0);
+                    final_pic = this->more_cancel_pic;
+                    final_frame = this->unselect_frame;
+                    final_type = 6;
+                    set_final_button = 1;
+                    continue_setup = 0;
+                } else if (object_state > 2) {
+                    final_pic = this->more_cancel_pic;
+                    final_frame = this->unselect_frame;
+                    final_type = 6;
+                    set_final_button = 1;
+                    continue_setup = 0;
+                } else if ((object_state == 2) &&
+                           ((work_type == 0x67) ||
+                            ((work_type == 0x66) &&
+                             (production_queues_is_use == 0)))) {
+                    this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                    final_pic = this->more_cancel_pic;
+                    final_frame = this->unselect_frame;
+                    final_type = 6;
+                    set_final_button = 1;
+                    continue_setup = 0;
+                } else if ((object_state == 2) &&
+                           ((work_type != 0x66) ||
+                            (production_queues_is_use != 0))) {
+                    short tech_cnt;
+                    short make_cnt;
+                    player->interface_tech_avail(&this->tech_list,
+                                                 &tech_cnt,
+                                                 this->game_obj->master_obj->id);
+                    player->interface_item_avail(&this->make_list,
+                                                 &make_cnt,
+                                                 this->game_obj->master_obj->id);
+                    this->item_cnt = make_cnt + tech_cnt;
+
+                    bool queue_active =
+                        (production_queues_is_use != 0) &&
+                        (building->production_queue_count > 0);
+                    if (queue_active) {
+                        this->set_button(this->button_cmd_pic, 6, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                    }
+
+                    for (short make_index = 0; make_index < make_cnt; ++make_index) {
+                        short item_id = this->make_list[make_index].id;
+                        RGE_Master_Static_Object* base_master =
+                            player->master_objects[item_id];
+                        TRIBE_Master_Combat_Object* master =
+                            static_cast<TRIBE_Master_Combat_Object*>(base_master);
+                        int queued = 0;
+
+                        if (queue_active) {
+                            short queue_count =
+                                building->production_queue_count;
+                            if (queue_count > 0) {
+                                Production_Queue_Record* queue =
+                                    building->production_queue;
+                                do {
+                                    if (queue->master_id == master->id) {
+                                        queued += queue->unit_count;
+                                    }
+                                    ++queue;
+                                    --queue_count;
+                                } while (queue_count != 0);
+                            }
+                        }
+
+                        if ((!queue_active) || (queued > 0)) {
+                            rge_base_game->get_string(master->string_id,
+                                                      name + 4, 0x200);
+                            this->calc_text_msg(msg_str + 4,
+                                                &this->make_list[make_index], 0x12,
+                                                master->string_id2);
+                            short button = this->calc_button_loc(
+                                master->button_location);
+                            Item_Avail* item = &this->make_list[make_index];
+                            this->set_button(this->button_unit_pic, button,
+                                             item->pict, 0x12, item->id,
+                                             master->string_id2 + 100000,
+                                             item->help_page_id,
+                                             master->hotkey_id,
+                                             player->color_table->table,
+                                             name + 4, msg_str + 4, 0);
+                            if ((!queue_active) || (queued < 1)) {
+                                this->button_panel[button]->set_display_garrison(0);
+                            } else {
+                                this->button_panel[button]->set_display_garrison(1);
+                                this->button_panel[button]->set_garrison_number(queued);
+                            }
+                        }
+                    }
+
+                    int make_disabled = 0;
+                    if (queue_active) {
+                        continue_setup = 0;
+                    } else {
+                        if ((building->master_obj->id == 0x6D) &&
+                            (tech_cnt == 0) &&
+                            (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
+                            short tech_id =
+                                static_cast<short>(
+                                    static_cast<int>(rge_base_game->get_player()->attributes[6]) + 100);
+                            if (player->tech_tree->get_tech_state(tech_id) != -1) {
+                                if (this->tech_list != 0) {
+                                    free(this->tech_list);
+                                }
+                                this->tech_list = static_cast<Item_Avail*>(
+                                    calloc(1, sizeof(Item_Avail)));
+                                if (this->tech_list != 0) {
+                                    tech_cnt = 1;
+                                    make_disabled = 1;
+                                    short inv_1;
+                                    short inv_amt_1;
+                                    short inv_2;
+                                    short inv_amt_2;
+                                    short inv_3;
+                                    short inv_amt_3;
+                                    player->tech_tree->tech_cost(
+                                        tech_id, inv_1, inv_amt_1, inv_2,
+                                        inv_amt_2, inv_3, inv_amt_3);
+                                    Tech_Tree* tech =
+                                        &this->world->tech->tech_tree[tech_id];
+                                    this->tech_list->id = tech_id;
+                                    this->tech_list->name = tech->name;
+                                    this->tech_list->pict = tech->icon;
+                                    this->tech_list->inventory_item_1 = inv_1;
+                                    this->tech_list->inventory_cost_1 = static_cast<float>(inv_amt_1);
+                                    this->tech_list->inventory_item_2 = inv_2;
+                                    this->tech_list->inventory_cost_2 = static_cast<float>(inv_amt_2);
+                                    this->tech_list->inventory_item_3 = inv_3;
+                                    this->tech_list->inventory_cost_3 = static_cast<float>(inv_amt_3);
+                                    this->tech_list->help_string_id =
+                                        player->tech_tree->get_help_message(tech_id);
+                                    this->tech_list->help_page_id =
+                                        player->tech_tree->get_help_page(tech_id);
+                                }
+                            }
+                        }
+
+                        for (int tech_index = 0; tech_index < tech_cnt; ++tech_index) {
+                            short item_id = this->tech_list[tech_index].id;
+                            short string_id =
+                                player->tech_tree->get_string_id(item_id);
+                            rge_base_game->get_string(string_id, name + 4,
+                                                      0x200);
+                            short string_id2 =
+                                player->tech_tree->get_string_id2(
+                                    this->tech_list[tech_index].id);
+                            this->calc_text_msg(msg_str + 4,
+                                                &this->tech_list[tech_index],
+                                                0x11, string_id2);
+                            unsigned char btn_loc =
+                                player->tech_tree->get_button_location(
+                                    this->tech_list[tech_index].id);
+                            short button = this->calc_button_loc(btn_loc);
+                            Item_Avail* item = &this->tech_list[tech_index];
+                            unsigned char* color_table =
+                                player->color_table->table;
+                            long hotkey =
+                                player->tech_tree->get_hotkey(item->id);
+                            this->set_button(this->button_tech_pic, button,
+                                             item->pict, 0x11, item->id,
+                                             item->help_string_id,
+                                             item->help_page_id,
+                                             hotkey, color_table,
+                                             name + 4, msg_str + 4,
+                                             make_disabled);
+                        }
+
+                        if ((make_cnt == 0) && (tech_cnt == 0)) {
+                            if (player->sel_count > 1) {
+                                this->set_button(this->button_cmd_pic, 6, 7, 8,
+                                                 0, 0x1D4E1, -1, 0,
+                                                 0, 0, 0, 0);
+                                this->set_button(this->button_cmd_pic, 7, 8, 9,
+                                                 0, 0x4E43, -1, 0,
+                                                 0, 0, 0, 0);
+                            } else if (this->game_obj->selected_group != 0) {
+                                this->set_button(this->button_cmd_pic, 6, 8, 9,
+                                                 0, 0x1D4E3, -1, 0,
+                                                 0, 0, 0, 0);
+                            }
+                        }
+                        final_pic = this->more_cancel_pic;
+                        final_frame = this->unselect_frame;
+                        final_type = 6;
+                        set_final_button = 1;
+                        continue_setup = 0;
+                    }
+                }
+
             }
 
+            if (continue_setup != 0) {
+                bool special_selection =
+                    (level == 0) && (player->sel_count > 1);
+                bool all_moveable_units = true;
+                bool have_action = false;
+                if (special_selection) {
+                    short selected = 0;
+                    for (short j = 0;
+                         (j < 25) && (selected < player->sel_count); ++j) {
+                        RGE_Action_Object* object =
+                            static_cast<RGE_Action_Object*>(player->sel_list[j]);
+                        if (object != 0) {
+                            unsigned char object_level = object->master_obj->unit_level;
+                            if ((object_level != 3) &&
+                                (object_level != 9) &&
+                                (object_level != 4) &&
+                                (object_level != 5) &&
+                                (object_level != 6) &&
+                                (object_level != 7) &&
+                                (object_level != 8)) {
+                                all_moveable_units = false;
+                                break;
+                            }
+                            if (!have_action) {
+                                have_action = object->have_action() != 0;
+                            }
+                            ++selected;
+                        }
+                    }
+                }
+
+                int group;
+                bool special_known = special_selection && all_moveable_units;
+                if (special_known) {
+                    group = player->is_group_selected(4);
+                    if (group != 0) {
+                        this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                    }
+                    if (have_action) {
+                        this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                    }
+                } else {
+                    group = player->is_group_selected(4);
+                    if (group != 0) {
+                        this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                    }
+                    if (this->any_selected_have_action()) {
+                        this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                    }
+                }
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0,
+                                     special_known ? 0x1D4E3 : 0x4E43,
+                                     -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = special_known ? 6 : 0x0B;
+                set_final_button = 1;
+            }
         } else {
             final_pic = this->more_cancel_pic;
-            final_frame = this->cancel_frame;
-            final_type = 0x0B;
+            final_frame = this->unselect_frame;
+            final_type = 6;
             set_final_button = 1;
         }
 
-        if (set_final_button) {
-            this->set_button(final_pic, 0x0B, final_frame, final_type, 0,
-                             0x1D4D9, -1, 0, 0, 0, 0, 0);
-        }
+    } else {
+        final_pic = this->more_cancel_pic;
+        final_frame = this->cancel_frame;
+        final_type = 0x0B;
+        set_final_button = 1;
     }
+
+    if (set_final_button) {
+        this->set_button(final_pic, 0x0B, final_frame, final_type, 0,
+                         0x1D4D9, -1, 0, 0, 0, 0, 0);
+    }
+}
     this->disable_unused_buttons();
 }
 
