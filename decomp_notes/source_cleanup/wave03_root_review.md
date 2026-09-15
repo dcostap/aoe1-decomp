@@ -6,6 +6,10 @@ Owner 16 delivered corrected head `fa9d0014ec5cd16dfe6d545c54816eb68d4611dd`.
 The complete 276-line diff is `build/source-cleanup-20260915/owner16-corrections.diff`.
 Original reviewer `sa-63de0de9` resumed to check all five findings and the changed reports.
 The group remains unmerged until that review completes. Validation remains deferred.
+The reviewer read all 276 lines and confirmed that all five source blockers are resolved.
+Correction diff SHA256: `b42ff23f1c8a3805af04a3376a7d2c9350df619b108320cee37464d878834199`.
+One report declaration still uses `player` instead of the corrected `obj_owner`.
+Root returned that report-only fix to the same worker. No further source or header change is needed.
 
 ## Owner 22: corrected and integrated
 
