@@ -5,7 +5,7 @@
 - Module: `src/aiconmod.cpp`.
 - Header owner: owner 06 owns `include/aiconmod.h`. This worker did not edit it.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Final source commit: `1b3e5335170c9f93bfa35211beb694adc87070cd`.
+- Final source commit: `1546ddb642e74f0f388fcd4f111d15a6f903dc33`.
 - Changed source: `src/aiconmod.cpp`.
 - Changed report: `decomp_notes/source_cleanup/wave02/aiconmod.md`.
 - Branch: `cleanup/staging-20260915-54`.
@@ -22,6 +22,10 @@ assigned-file commit so the source commit hash remains exact and reproducible.
 - Correction source commit: `1b3e5335170c9f93bfa35211beb694adc87070cd`.
 - Correction report commit: follows this source commit and contains the
   corrected report hash data.
+- Root correction request: restore unsupported constructor local names and
+  format both loops as `for (i = 0; i < ...; i++)`.
+- Root correction source commit: `1546ddb642e74f0f388fcd4f111d15a6f903dc33`.
+- Root correction report commit: follows this source commit.
 
 ## PDB coverage
 
@@ -66,9 +70,7 @@ order.
 
 - `0040AA90`: `param_1` became `pW`; `param_2` became `playerID`.
 - `0040ABB0`: `p1` became `playerID`; `fd` became `infile`; loop counter `n`
-  became PDB `i`. PDB names `buildAttemptsValue`, `inProgressValue`,
-  `skipValue`, and `builtValue` replaced the prior short names in both
-  serialized loops.
+  became PDB `i`.
 - `0040B1A0`: `fd` became `outfile`.
 - `0040B690`: parameters became `pName`, `mXSize`, `mYSize`, `xRef`, `yRef`,
   and `zRef`.
@@ -98,6 +100,12 @@ The source keeps these mappings unchanged:
   safe one-to-one match in the current typed `IntFloat x` source. The source
   keeps `IntFloat x` and its `.i` accesses. The PDB type records also report
   overlapping integer and floating names in this constructor.
+- In `0040ABB0`, the PDB repeats `buildAttemptsValue`, `inProgressValue`,
+  `skipValue`, and `builtValue` across reused homes. The records do not prove
+  those names for both current loop declarations. Both loops therefore retain
+  baseline names `buildAttempts`, `inProgress`, `skip`, and `built`. Their
+  `IntFloat` types, declaration scopes and order, `rge_read` calls, uses, and
+  raw-bit member accesses remain unchanged.
 - In `0040B690`, PDB records for `id`, `name`, `xSize`, and `y` overlap the
   current saved-plan pointer, parser integer, parser floats, comment bytes,
   and buffer declarations. The current `saved_plan`, `xSize`, `item_arg_5`,
