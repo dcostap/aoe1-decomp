@@ -12,8 +12,8 @@ static char s_tpnl_btn_draw3[] = "tpnl_btn::draw3";
 
 
 TRIBE_Panel_Button::TRIBE_Panel_Button(
-    TDrawArea* draw_area, TPanel* parent, TDigital* sound, void* font,
-    long font_width, long font_height, TShape* border)
+    TDrawArea* render_area_in, TPanel* parent_panel_in, TDigital* sound_in,
+    void* font_in, long font_wid_in, long font_hgt_in, TShape* border_pic_in)
 {
     tribe_button_type = 0;
     color_table = 0;
@@ -22,24 +22,25 @@ TRIBE_Panel_Button::TRIBE_Panel_Button(
     in_use = 0;
     display_garrison = 0;
     garrsion_number = 0;
-    border_pic = border;
+    border_pic = border_pic_in;
 
-    if (setup(draw_area, parent, 0, 0, 0, 0, TButtonPanel::DrawClear, sound,
+    if (setup(render_area_in, parent_panel_in, 0, 0, 0, 0,
+              TButtonPanel::DrawClear, sound_in,
               TButtonPanel::NotifyAction, -1) == 0) {
         error_code = 1;
     } else {
-        set_font(font, font_width, font_height);
+        set_font(font_in, font_wid_in, font_hgt_in);
     }
 }
 
-void TRIBE_Panel_Button::set_text_msg(char* text)
+void TRIBE_Panel_Button::set_text_msg(char* text_msg_in)
 {
-    if (text == 0) {
+    if (text_msg_in == 0) {
         text_msg[0] = 0;
         return;
     }
 
-    strncpy(text_msg, text, sizeof(text_msg));
+    strncpy(text_msg, text_msg_in, sizeof(text_msg));
     text_msg[sizeof(text_msg) - 1] = 0;
 }
 
@@ -101,7 +102,7 @@ void TRIBE_Panel_Button::draw()
         if (dc != 0) {
             SelectClipRgn(dc, clip_rgn);
             old_font = SelectObject(dc, static_cast<HGDIOBJ>(font));
-            SetBkMode(dc, 1);
+            SetBkMode(dc, TRANSPARENT);
 
             int center_x = pnl_wid / 2;
             calc_y = pnl_hgt / 2;
@@ -220,15 +221,15 @@ void TRIBE_Panel_Button::draw()
     if (display_garrison && garrsion_number > 0) {
         HDC dc = static_cast<HDC>(render_area->GetDc(s_tpnl_btn_draw2));
         if (dc != 0) {
-            char message[10];
-            sprintf(message, "%d", garrsion_number);
+            char msg[10];
+            sprintf(msg, "%d", garrsion_number);
 
             SelectClipRgn(render_area->DrawDc, clip_rgn);
-            SetBkMode(render_area->DrawDc, 1);
+            SetBkMode(render_area->DrawDc, TRANSPARENT);
             SetTextColor(render_area->DrawDc, 0xCCCCCC);
             TextOutA(render_area->DrawDc, pnl_x + 3 + (is_down != 0),
-                     pnl_y + 2 + (is_down != 0), message,
-                     static_cast<int>(strlen(message)));
+                     pnl_y + 2 + (is_down != 0), msg,
+                     static_cast<int>(strlen(msg)));
             SelectClipRgn(render_area->DrawDc, 0);
             render_area->ReleaseDc(s_tpnl_btn_draw2);
         }
