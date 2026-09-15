@@ -13,89 +13,71 @@
 #include "../include/taimdmd.h"
 #include <string.h>
 
-// handwritten owner and is emitted by the TribeBuildAIModule virtual surface.
-
-TribeBuildAIModule::TribeBuildAIModule(void* owner, int player)
-    : BuildAIModule(owner, player), md(0)
-{
+TribeBuildAIModule::TribeBuildAIModule(void* pW, int pID)
+    : BuildAIModule(pW, pID), md(0) {
 }
 
-TribeBuildAIModule::TribeBuildAIModule(int file, int player)
-    : BuildAIModule(file, player), md(0)
-{
+TribeBuildAIModule::TribeBuildAIModule(int pID, int infile)
+    : BuildAIModule(pID, infile), md(0) {
 }
 
-TribeBuildAIModule::~TribeBuildAIModule()
-{
+TribeBuildAIModule::~TribeBuildAIModule() {
 }
 
-void TribeBuildAIModule::setMainDecisionAI(TribeMainDecisionAIModule* value)
-{
-    this->md = value;
+void TribeBuildAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) {
+    this->md = m;
 }
 
-int TribeBuildAIModule::loadBuildList(char* filename, RGE_Player* player)
-{
+int TribeBuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
     this->typesToIgnore.add(0x46);
     this->typesToIgnore.add(0x67);
     this->typesToIgnore.add(0x44);
-    return BuildAIModule::loadBuildList(filename, player);
+    return BuildAIModule::loadBuildList(lName, player);
 }
 
-void TribeBuildAIModule::initialize()
-{
-    int bronzeAgeCount = 0;
+void TribeBuildAIModule::initialize() {
+    int bronzeAgeIndex = 0;
     int transportCount = 0;
-    int toolAgeCount = 0;
+    int toolAgeIndex = 0;
     int fishingBoatCount = 0;
-    int resourceBuildingCount = 0;
-    int firstMarkerIndex = -1;
-    int secondMarkerIndex = -1;
-    int thirdMarkerIndex = -1;
-    int ironAgePresent = 0;
-    int bronzeAgePresent = 0;
-    int dockPresent = 0;
+    int resource_building_count = 0;
+    int warshipCount = -1;
+    int triremeUpgrade = -1;
+    int transportUpgrade = -1;
+    int ironAgeIndex = 0;
+    int warshipUpgrade = 0;
+    int dockCount = 0;
 
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
     while (item != sentinel && item != 0) {
         if (item->buildCategory() == 0) {
             if (item->typeID() == 0x46) {
-                ++bronzeAgeCount;
-            }
-            else if (item->typeID() == 0x2D) {
+                ++bronzeAgeIndex;
+            } else if (item->typeID() == 0x2D) {
                 ++transportCount;
             }
-        }
-        else if (item->buildCategory() == 2) {
+        } else if (item->buildCategory() == 2) {
             if (item->typeID() == 0x0D) {
-                ++toolAgeCount;
-            }
-            else if (item->typeID() == 0x11 || item->typeID() == 0x12) {
+                ++toolAgeIndex;
+            } else if (item->typeID() == 0x11 || item->typeID() == 0x12) {
                 ++fishingBoatCount;
+            } else if (item->typeID() == 0x13 || item->typeID() == 0xFA) {
+                ++resource_building_count;
             }
-            else if (item->typeID() == 0x13 || item->typeID() == 0xFA) {
-                ++resourceBuildingCount;
-            }
-        }
-        else if (item->buildCategory() == 1 || item->buildCategory() == 4) {
+        } else if (item->buildCategory() == 1 || item->buildCategory() == 4) {
             if (item->typeID() == 0x65) {
-                firstMarkerIndex = item->uniqueID();
-            }
-            else if (item->typeID() == 0x66) {
-                secondMarkerIndex = item->uniqueID();
-            }
-            else if (item->typeID() == 0x67) {
-                thirdMarkerIndex = item->uniqueID();
-            }
-            else if (item->typeID() == 5) {
-                ironAgePresent = 1;
-            }
-            else if (item->typeID() == 7) {
-                bronzeAgePresent = 1;
-            }
-            else if (item->typeID() == 8) {
-                dockPresent = 1;
+                warshipCount = item->uniqueID();
+            } else if (item->typeID() == 0x66) {
+                triremeUpgrade = item->uniqueID();
+            } else if (item->typeID() == 0x67) {
+                transportUpgrade = item->uniqueID();
+            } else if (item->typeID() == 5) {
+                ironAgeIndex = 1;
+            } else if (item->typeID() == 7) {
+                warshipUpgrade = 1;
+            } else if (item->typeID() == 8) {
+                dockCount = 1;
             }
         }
 
@@ -109,13 +91,11 @@ void TribeBuildAIModule::initialize()
     if (transportCount < this->md->tacticalAI.strategicNumber(0xD4) &&
         this->md->tacticalAI.strategicNumber(0xD0) == 1) {
         count = this->md->tacticalAI.strategicNumber(0xD4) - transportCount;
-        if (secondMarkerIndex != -1) {
-            spacing = secondMarkerIndex / count;
-        }
-        else if (firstMarkerIndex != -1) {
-            spacing = firstMarkerIndex / count;
-        }
-        else {
+        if (triremeUpgrade != -1) {
+            spacing = triremeUpgrade / count;
+        } else if (warshipCount != -1) {
+            spacing = warshipCount / count;
+        } else {
             spacing = 10;
         }
 
@@ -127,17 +107,15 @@ void TribeBuildAIModule::initialize()
         }
     }
 
-    if (toolAgeCount < this->md->tacticalAI.strategicNumber(0xD5) &&
+    if (toolAgeIndex < this->md->tacticalAI.strategicNumber(0xD5) &&
         this->md->tacticalAI.strategicNumber(0xD1) == 1) {
-        count = this->md->tacticalAI.strategicNumber(0xD5) - toolAgeCount;
+        count = this->md->tacticalAI.strategicNumber(0xD5) - toolAgeIndex;
         if (count > 0) {
-            if (secondMarkerIndex != -1) {
-                spacing = secondMarkerIndex / count;
-            }
-            else if (firstMarkerIndex != -1) {
-                spacing = firstMarkerIndex / count;
-            }
-            else {
+            if (triremeUpgrade != -1) {
+                spacing = triremeUpgrade / count;
+            } else if (warshipCount != -1) {
+                spacing = warshipCount / count;
+            } else {
                 spacing = 10;
             }
 
@@ -153,15 +131,13 @@ void TribeBuildAIModule::initialize()
     if (fishingBoatCount < this->md->tacticalAI.strategicNumber(0xD6) &&
         this->md->tacticalAI.strategicNumber(0xD2) == 1) {
         count = this->md->tacticalAI.strategicNumber(0xD6) - fishingBoatCount;
-        if (firstMarkerIndex != -1) {
-            spacing = (this->buildListLengthValue - firstMarkerIndex) / (count * 2);
-            index = secondMarkerIndex;
-        }
-        else if (secondMarkerIndex != -1) {
-            spacing = (this->buildListLengthValue - secondMarkerIndex) / (count * 2);
+        if (warshipCount != -1) {
+            spacing = (this->buildListLengthValue - warshipCount) / (count * 2);
+            index = triremeUpgrade;
+        } else if (triremeUpgrade != -1) {
+            spacing = (this->buildListLengthValue - triremeUpgrade) / (count * 2);
             index = -1;
-        }
-        else {
+        } else {
             spacing = 10;
             index = 0;
         }
@@ -172,20 +148,19 @@ void TribeBuildAIModule::initialize()
             --count;
         }
 
-        if (!dockPresent && thirdMarkerIndex != -1) {
-            this->insertResearch(8, thirdMarkerIndex + 2);
+        if (!dockCount && transportUpgrade != -1) {
+            this->insertResearch(8, transportUpgrade + 2);
         }
     }
 
-    if (resourceBuildingCount < this->md->tacticalAI.strategicNumber(0xE0) &&
+    if (resource_building_count < this->md->tacticalAI.strategicNumber(0xE0) &&
         this->md->tacticalAI.strategicNumber(0xDF) == 1 &&
-        (thirdMarkerIndex != -1 || secondMarkerIndex != -1)) {
-        count = this->md->tacticalAI.strategicNumber(0xE0) - resourceBuildingCount;
-        if (thirdMarkerIndex != -1) {
-            spacing = thirdMarkerIndex / count;
-        }
-        else {
-            spacing = secondMarkerIndex / count;
+        (transportUpgrade != -1 || triremeUpgrade != -1)) {
+        count = this->md->tacticalAI.strategicNumber(0xE0) - resource_building_count;
+        if (transportUpgrade != -1) {
+            spacing = transportUpgrade / count;
+        } else {
+            spacing = triremeUpgrade / count;
         }
 
         index = spacing;
@@ -195,41 +170,40 @@ void TribeBuildAIModule::initialize()
             --count;
         }
 
-        if (!ironAgePresent && secondMarkerIndex != -1) {
-            this->insertResearch(5, secondMarkerIndex + 5);
+        if (!ironAgeIndex && triremeUpgrade != -1) {
+            this->insertResearch(5, triremeUpgrade + 5);
         }
-        if (!bronzeAgePresent && thirdMarkerIndex != -1) {
-            this->insertResearch(7, thirdMarkerIndex + 5);
+        if (!warshipUpgrade && transportUpgrade != -1) {
+            this->insertResearch(7, transportUpgrade + 5);
         }
     }
 
-    if (bronzeAgeCount == 0 &&
+    if (bronzeAgeIndex == 0 &&
         this->md->tacticalAI.strategicNumber(0xB4) == 1) {
         item = this->buildList.next;
         int buildIndex = 0;
-        int supportedCount = 0;
+        int houseCount = 0;
         int trainedCount = 0;
 
         while (item != sentinel && item != 0) {
             if (item->buildCategory() == 0 && item->typeID() == 0x6D) {
-                supportedCount += 4;
+                houseCount += 4;
             }
             if (item->buildCategory() == 2) {
                 ++trainedCount;
             }
-            if (trainedCount > supportedCount) {
+            if (trainedCount > houseCount) {
                 int insertIndex;
                 if (buildIndex > 1) {
                     insertIndex = buildIndex - 1;
-                }
-                else {
+                } else {
                     insertIndex = 1;
                 }
                 if (this->insert(0x46, -1, insertIndex) == 1) {
-                    supportedCount += 4;
+                    houseCount += 4;
                 }
             }
-            if (supportedCount >
+            if (houseCount >
                 this->md->tacticalAI.strategicNumber(0x98) + 50) {
                 break;
             }
@@ -240,31 +214,29 @@ void TribeBuildAIModule::initialize()
     }
 
     int totalPercentage = this->md->tacticalAI.strategicNumber(0xA0);
-    int divisionSize = this->md->tacticalAI.strategicNumber(0x9B) + 4;
+    int requiredPop = this->md->tacticalAI.strategicNumber(0x9B) + 4;
     if (totalPercentage != 0) {
         item = this->buildList.next;
         ResourceItem resourceCount(4);
         resourceCount.setAllValues(0);
         int itemCount = 0;
-        int divisionIndex = 0;
+        int divisionSize = 0;
 
         while (item != sentinel && item != 0) {
             if (item->buildCategory() == 6) {
                 item = item->next;
                 ++itemCount;
-            }
-            else {
+            } else {
                 if (item->buildCategory() == 1 || item->buildCategory() == 4) {
                     this->md->aiPlayer->researchCost(
                         item->typeID(), -1, &resourceCount, 1);
-                }
-                else {
+                } else {
                     this->md->aiPlayer->objectCost(
                         item->typeID(), -1, &resourceCount, 1);
                 }
 
                 ++itemCount;
-                if (itemCount >= divisionSize) {
+                if (itemCount >= requiredPop) {
                     int totalCost = 0;
                     int resource;
                     for (resource = 0; resource < 4; ++resource) {
@@ -276,10 +248,10 @@ void TribeBuildAIModule::initialize()
                             this->insertGathererPercentage(
                                 resource,
                                 resourceCount.value(resource) * totalPercentage / totalCost,
-                                divisionIndex);
+                                divisionSize);
                         }
                         resourceCount.setAllValues(0);
-                        divisionIndex += divisionSize;
+                        divisionSize += requiredPop;
                         itemCount = 0;
                     }
                 }
@@ -290,8 +262,7 @@ void TribeBuildAIModule::initialize()
     }
 }
 
-void TribeBuildAIModule::skipNextBuildListItem()
-{
+void TribeBuildAIModule::skipNextBuildListItem() {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
@@ -313,8 +284,7 @@ void TribeBuildAIModule::skipNextBuildListItem()
     }
 }
 
-BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
-{
+BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
     int numStoragePits =
         this->numberBuiltOrInProgressItemsOfType(0x67, 0);
     int numGranaries =
@@ -471,8 +441,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                     item = item->next;
                     continue;
                 }
-            }
-            else if (item->buildCategory() != category) {
+            } else if (item->buildCategory() != category) {
                 item = item->next;
                 continue;
             }
@@ -501,8 +470,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                          item->typeID() == 0x44)) {
                         item->setBuildAttempts(
                             this->md->tacticalAI.strategicNumber(0x72) * 6);
-                    }
-                    else {
+                    } else {
                         item->setBuildAttempts(
                             this->md->tacticalAI.strategicNumber(0x72));
                     }
@@ -525,8 +493,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
             if (category == 1) {
                 available =
                     this->md->aiPlayer->researchAvailable(item->typeID());
-            }
-            else {
+            } else {
                 available =
                     this->md->aiPlayer->objectAvailable(item->typeID());
             }
@@ -535,8 +502,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                 if (category == 1) {
                     this->md->aiPlayer->researchCost(
                         item->typeID(), -1, &itemCost, 1);
-                }
-                else {
+                } else {
                     this->md->aiPlayer->objectCost(
                         item->typeID(), -1, &itemCost, 1);
                 }
@@ -547,8 +513,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                         canBuildItem = this->md->object(
                             -1, item->buildFrom(), -1, -1, -1,
                             -1, -1, -1, 2, -1) != 0;
-                    }
-                    else {
+                    } else {
                         canBuildItem =
                             this->md->constructionAI.canPlace(item);
                     }
@@ -575,8 +540,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
     return 0;
 }
 
-int TribeBuildAIModule::nextBuildListItemCategory()
-{
+int TribeBuildAIModule::nextBuildListItemCategory() {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
@@ -591,8 +555,7 @@ int TribeBuildAIModule::nextBuildListItemCategory()
     return 0;
 }
 
-int TribeBuildAIModule::blockingResource()
-{
+int TribeBuildAIModule::blockingResource() {
     BuildItem& list = this->buildList;
     BuildItem* item = list.next;
     while (item != &list && item != 0 &&
@@ -606,8 +569,7 @@ int TribeBuildAIModule::blockingResource()
     ResourceItem itemCost(4);
     if (item->buildCategory() == 1 || item->buildCategory() == 4) {
         this->md->aiPlayer->researchCost(item->typeID(), -1, &itemCost, 1);
-    }
-    else {
+    } else {
         this->md->aiPlayer->objectCost(item->typeID(), -1, &itemCost, 1);
     }
 
@@ -617,9 +579,8 @@ int TribeBuildAIModule::blockingResource()
     return -1;
 }
 
-int TribeBuildAIModule::mostNeededResource(ResourceItem& item, int maxCount)
-{
-    item.setAllValues(0);
+int TribeBuildAIModule::mostNeededResource(ResourceItem& itemCost, int countNum) {
+    itemCost.setAllValues(0);
 
     BuildItem* buildItem = this->buildList.next;
     int count = 0;
@@ -640,13 +601,13 @@ int TribeBuildAIModule::mostNeededResource(ResourceItem& item, int maxCount)
                     if (buildItem->buildCategory() == 1 ||
                         buildItem->buildCategory() == 4) {
                         this->md->aiPlayer->researchCost(
-                            buildItem->typeID(), -1, &item, 1);
+                            buildItem->typeID(), -1, &itemCost, 1);
                     } else {
                         this->md->aiPlayer->objectCost(
-                            buildItem->typeID(), -1, &item, 1);
+                            buildItem->typeID(), -1, &itemCost, 1);
                     }
 
-                    if (++count == maxCount) {
+                    if (++count == countNum) {
                         break;
                     }
                 }
@@ -659,13 +620,12 @@ int TribeBuildAIModule::mostNeededResource(ResourceItem& item, int maxCount)
     return count;
 }
 
-int TribeBuildAIModule::addItem(RGE_Static_Object* object, int flag)
-{
-    if (this->md->informationAI.isBuilding(object)) {
-        this->md->constructionAI.setBuilt(object, 1);
+int TribeBuildAIModule::addItem(RGE_Static_Object* newItem, int gameStarted) {
+    if (this->md->informationAI.isBuilding(newItem)) {
+        this->md->constructionAI.setBuilt(newItem, 1);
     }
 
-    if (flag == 0) {
+    if (gameStarted == 0) {
         BuildItem* item = this->buildList.next;
         BuildItem* sentinel = &this->buildList;
 
@@ -675,9 +635,9 @@ int TribeBuildAIModule::addItem(RGE_Static_Object* object, int flag)
                     break;
                 }
 
-                if (item->typeID() == object->master_obj->id) {
+                if (item->typeID() == newItem->master_obj->id) {
                     if (item->built() == 0) {
-                        item->setGameID(object->id);
+                        item->setGameID(newItem->id);
                         item->setInProgress(0);
                         item->setBuilt(1);
                         item->incrementNumberBuilds();
@@ -696,21 +656,20 @@ int TribeBuildAIModule::addItem(RGE_Static_Object* object, int flag)
     return 0;
 }
 
-int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* object, int id)
-{
+int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* newItem, int buildID) {
     int found = 0;
     BuildItem* item = (BuildItem*)this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
     while (item != sentinel && item != 0 && found == 0) {
-        if (item->typeID() == object->master_obj->id &&
+        if (item->typeID() == newItem->master_obj->id &&
             item->built() == 0 &&
-            id != -1 &&
-            item->uniqueID() == id) {
+            buildID != -1 &&
+            item->uniqueID() == buildID) {
             item->setInProgress(found);
             found = 1;
             item->setBuilt(found);
-            item->setGameID(object->id);
+            item->setGameID(newItem->id);
             item->incrementNumberBuilds();
             if (item->typeID() == 0x114) {
                 this->md->tacticalAI.wonderBuiltValue = found;
@@ -726,8 +685,7 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* object, int id)
     return 1;
 }
 
-int TribeBuildAIModule::removeBuiltItem(int id)
-{
+int TribeBuildAIModule::removeBuiltItem(int id) {
     BuildItem* item = this->buildList.next;
     int found = 0;
     BuildItem* sentinel = &this->buildList;
@@ -751,23 +709,23 @@ int TribeBuildAIModule::removeBuiltItem(int id)
     return 1;
 }
 
-int TribeBuildAIModule::cancelBuildItem(int action, int objId, int objectTypeId,
-                                        float x, float y, int uniqueBuildId, int taskId)
-{
+int TribeBuildAIModule::cancelBuildItem(int reason, int blockerID, int blockerType,
+                                        float x, float y, int uniqueID, int builderID) {
     BuildItem* item;
-    if (taskId != -1) this->md->detask(taskId);
+    if (builderID != -1)
+        this->md->detask(builderID);
     int moving = 0;
-    int lotStatus = moving;
+    int decrementWallBuild = moving;
     unsigned char newLotStatus = 2;
-    switch (action) {
+    switch (reason) {
     case -1:
-        lotStatus = 1;
+        decrementWallBuild = 1;
         moving = 0;
         newLotStatus = 0;
         break;
     case 8:
         moving = 1;
-        lotStatus = moving;
+        decrementWallBuild = moving;
         break;
     case 1:
         break;
@@ -784,60 +742,61 @@ int TribeBuildAIModule::cancelBuildItem(int action, int objId, int objectTypeId,
     case 7:
         break;
     default:
-        lotStatus = 1;
+        decrementWallBuild = 1;
         moving = 0;
         break;
     }
-    RGE_Static_Object* obj = this->md->object(objId);
+    RGE_Static_Object* obj = this->md->object(blockerID);
     if (obj && moving == 1) {
-        if (this->md->isMoveable(objId) == 1) {
+        if (this->md->isMoveable(blockerID) == 1) {
             ConstructionItem* lot = this->md->constructionAI.lot(x, y);
             if (lot) {
-                this->md->tacticalAI.clearArea(objId,
+                this->md->tacticalAI.clearArea(blockerID,
                     lot->x() - lot->xSize() * 0.5f,
                     lot->y() - lot->ySize() * 0.5f,
                     lot->x() - lot->xSize() * -0.5f,
                     lot->y() - lot->ySize() * -0.5f);
             } else {
-                this->md->tacticalAI.clearArea(objId, x - 2.0f, y - 2.0f,
+                this->md->tacticalAI.clearArea(blockerID, x - 2.0f, y - 2.0f,
                                                 x - -2.0f, y - -2.0f);
             }
         } else {
             this->md->constructionAI.incrementBuildAttempts(x, y, 10);
         }
     }
-    this->md->constructionAI.unplaceStructure(x, y, lotStatus);
-    item = this->specificBuildListItem(uniqueBuildId);
+    this->md->constructionAI.unplaceStructure(x, y, decrementWallBuild);
+    item = this->specificBuildListItem(uniqueID);
     if (item) {
         item->setInProgress(0);
         this->md->informationAI.removeLot(item->typeID(), (int)x, (int)y, newLotStatus);
-        if (item->typeID() == 0x114) this->md->tacticalAI.wonderInProgressValue = 0;
+        if (item->typeID() == 0x114)
+            this->md->tacticalAI.wonderInProgressValue = 0;
     }
     return 1;
 }
 
-int TribeBuildAIModule::addTrainedUnit(int param1, int param2, int param3, int param4)
-{
+int TribeBuildAIModule::addTrainedUnit(int uType, int location, int uniqueID,
+                                       int gameID) {
     BuildItem* item;
 
-    item = this->specificBuildListItem(param3);
+    item = this->specificBuildListItem(uniqueID);
     if (item != 0) {
         item->setInProgress(0);
         item->setBuilt(1);
-        item->setGameID(param4);
+        item->setGameID(gameID);
         item->incrementNumberBuilds();
     }
-    this->md->detask(param2);
+    this->md->detask(location);
     this->md->tacticalAI.updateNeededResources();
     return 1;
 }
 
-int TribeBuildAIModule::cancelTrainUnit(int p1, int p2, int p3, int p4)
-{
+int TribeBuildAIModule::cancelTrainUnit(int reason, int uType, int location,
+                                        int uniqueID) {
     int val = *(int*)(*(int*)(*(int*)((char*)this->md + 0xF0) + 0x3C) + 4);
-    this->logCommonHistory("Canceling training (WT=%ld) for item of type %d at building w/ gameID=%d.", val, p2, p3);
+    this->logCommonHistory("Canceling training (WT=%ld) for item of type %d at building w/ gameID=%d.", val, uType, location);
 
-    BuildItem* item = (BuildItem*)this->specificBuildListItem(p4);
+    BuildItem* item = (BuildItem*)this->specificBuildListItem(uniqueID);
 
     if (item) {
         this->logCommonHistory("  Setting build item #%d in progress to FALSE.", item->uniqueID());
@@ -850,25 +809,24 @@ int TribeBuildAIModule::cancelTrainUnit(int p1, int p2, int p3, int p4)
     return 1;
 }
 
-int TribeBuildAIModule::addResearch(int param1, int param2, int param3)
-{
-    BuildItem* item = this->specificBuildListItem(param3);
+int TribeBuildAIModule::addResearch(int uType, int location, int uniqueID) {
+    BuildItem* item = this->specificBuildListItem(uniqueID);
     if (item != 0) {
         item->setInProgress(0);
         item->setBuilt(1);
         item->incrementNumberBuilds();
     }
-    this->md->detask(param2);
+    this->md->detask(location);
     this->md->tacticalAI.updateNeededResources();
     return 1;
 }
 
-int TribeBuildAIModule::cancelResearch(int p1, int p2, int p3, int p4)
-{
+int TribeBuildAIModule::cancelResearch(int reason, int rType, int location,
+                                       int uniqueID) {
     int val = *(int*)(*(int*)(*(int*)((char*)this->md + 0xF0) + 0x3C) + 4);
-    this->logCommonHistory("Canceling research (WT=%ld) for item of type %d, %d", val, p2, p3);
+    this->logCommonHistory("Canceling research (WT=%ld) for item of type %d, %d", val, rType, location);
 
-    BuildItem* item = (BuildItem*)this->specificBuildListItem(p4);
+    BuildItem* item = (BuildItem*)this->specificBuildListItem(uniqueID);
 
     if (item) {
         this->logCommonHistory("  Setting build item #%d in progress to FALSE", item->uniqueID());
@@ -881,55 +839,53 @@ int TribeBuildAIModule::cancelResearch(int p1, int p2, int p3, int p4)
     return 1;
 }
 
-int TribeBuildAIModule::isAgeResearch(int value)
-{
-    if (value == 0x65 || value == 0x66 || value == 0x67)
+int TribeBuildAIModule::isAgeResearch(int rID) {
+    if (rID == 0x65 || rID == 0x66 || rID == 0x67)
         return 1;
     return 0;
 }
 
-int TribeBuildAIModule::insert(int p1, int p2, int p3)
-{
+int TribeBuildAIModule::insert(int typeID, int buildCap, int insertionPoint) {
     int flags;
-    int buildCat;
+    int buildCategory;
 
-    switch (p1) {
+    switch (typeID) {
     case 4:
     case 5:
     case 0x19:
     case 0x27:
     case 0x29:
-        buildCat = 0x57;
+        buildCategory = 0x57;
         flags = 2;
         break;
     case 0x0B:
     case 0x23:
     case 0x24:
-        buildCat = 0x31;
+        buildCategory = 0x31;
         flags = 2;
         break;
     case 0x53:
-        buildCat = 0x6D;
+        buildCategory = 0x6D;
         flags = 2;
         break;
     case 0x49:
     case 0x4B:
-        buildCat = 0x0C;
+        buildCategory = 0x0C;
         flags = 2;
         break;
     case 0x5D:
-        buildCat = 0;
+        buildCategory = 0;
         flags = 2;
         break;
     case 0x7D:
-        buildCat = 0x68;
+        buildCategory = 0x68;
         flags = 2;
         break;
     case 0x25:
     case 0x28:
     case 0x2E:
     case 0x12B:
-        buildCat = 0x65;
+        buildCategory = 0x65;
         flags = 2;
         break;
     case 0x0D:
@@ -938,7 +894,7 @@ int TribeBuildAIModule::insert(int p1, int p2, int p3)
     case 0x12:
     case 0x13:
     case 0xFA:
-        buildCat = 0x2D;
+        buildCategory = 0x2D;
         flags = 2;
         break;
     case 0x2D:
@@ -952,14 +908,14 @@ int TribeBuildAIModule::insert(int p1, int p2, int p3)
     case 0x44:
     case 0x45:
     case 0x46:
-        buildCat = -1;
+        buildCategory = -1;
         flags = 0;
         break;
     default:
         return 0;
     }
 
-    if (p3 == -1) {
+    if (insertionPoint == -1) {
         BuildItem* item = this->buildList.next;
         int count = 0;
 
@@ -968,19 +924,20 @@ int TribeBuildAIModule::insert(int p1, int p2, int p3)
             count++;
         }
 
-        return this->insertItem(this->md->player, p1, 1, flags, buildCat, p2, count);
+        return this->insertItem(this->md->player, typeID, 1, flags, buildCategory,
+                                buildCap, count);
     }
 
-    return this->insertItem(this->md->player, p1, 1, flags, buildCat, p2, p3);
+    return this->insertItem(this->md->player, typeID, 1, flags, buildCategory,
+                            buildCap, insertionPoint);
 }
 
-int TribeBuildAIModule::insertResearch(int research, int index)
-{
-    if (research != 5 && (research <= 6 || research > 8)) {
+int TribeBuildAIModule::insertResearch(int typeID, int insertionPoint) {
+    if (typeID != 5 && (typeID <= 6 || typeID > 8)) {
         return 0;
     }
 
-    if (index == -1) {
+    if (insertionPoint == -1) {
         BuildItem* item = this->buildList.next;
         BuildItem* sentinel = &this->buildList;
         int count = 0;
@@ -988,20 +945,21 @@ int TribeBuildAIModule::insertResearch(int research, int index)
             item = item->next;
             count++;
         }
-        return this->insertItem(this->md->player, research, 1, 1, 0x2d, 1, count);
+        return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1, count);
     }
-    return this->insertItem(this->md->player, research, 1, 1, 0x2d, 1, index);
+    return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1,
+                            insertionPoint);
 }
 
-int TribeBuildAIModule::insertGathererPercentage(int index, int percentage, int bronzeAgeIndex)
-{
-    return this->insertItem(this->md->player, index, 1, 6, percentage, 1, bronzeAgeIndex);
+int TribeBuildAIModule::insertGathererPercentage(int rType, int percentage,
+                                                 int insertionPoint) {
+    return this->insertItem(this->md->player, rType, 1, 6, percentage, 1,
+                            insertionPoint);
 }
 
-int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int flag)
-{
+int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int category) {
     int count;
-    if (flag == 0 && (type == 0x67 || type == 0x44)) {
+    if (category == 0 && (type == 0x67 || type == 0x44)) {
         count = this->numberInProgressItemsOfType(type, 0);
         if (type == 0x67) {
             count += this->md->informationAI.numberStoragePits();
@@ -1009,24 +967,24 @@ int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int flag)
             count += this->md->informationAI.numberGranaries();
         }
     } else {
-        count = BuildAIModule::numberBuiltOrInProgressItemsOfType(type, flag);
+        count = BuildAIModule::numberBuiltOrInProgressItemsOfType(type, category);
     }
     return count;
 }
 
-int TribeBuildAIModule::allBuilt(int param_1, int param_2)
-{
+int TribeBuildAIModule::allBuilt(int category1, int category2) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
     if (item != sentinel) {
-        int bx = param_2;
-        int bp = param_1;
+        int first_category = category2;
+        int second_category = category1;
         while (item != sentinel) {
             if (item == 0) {
                 break;
             }
-            if ((item->buildCategory() == bp || item->buildCategory() == bx) &&
+            if ((item->buildCategory() == second_category ||
+                 item->buildCategory() == first_category) &&
                 !item->built() && !item->inProgress()) {
                 return 0;
             }
@@ -1036,8 +994,7 @@ int TribeBuildAIModule::allBuilt(int param_1, int param_2)
     return 1;
 }
 
-int TribeBuildAIModule::readyToResearch(int id, int ageResearch)
-{
+int TribeBuildAIModule::readyToResearch(int id, int ageResearch) {
     unsigned char rState;
 
     if (ageResearch == 1) {
@@ -1059,42 +1016,48 @@ int TribeBuildAIModule::readyToResearch(int id, int ageResearch)
     return rState == 1;
 }
 
-void TribeBuildAIModule::unskipBuildList(int limit67, int limit44)
-{
-    int lim67 = this->numberBuiltOrInProgressItemsOfType(0x67, 0);
-    int lim44 = this->numberBuiltOrInProgressItemsOfType(0x44, 0);
+void TribeBuildAIModule::unskipBuildList(int builtSP, int builtG) {
+    int storage_pit_count = this->numberBuiltOrInProgressItemsOfType(0x67, 0);
+    int granary_count = this->numberBuiltOrInProgressItemsOfType(0x44, 0);
 
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
-    if (item == sentinel) return;
-    if (item == 0) return;
+    if (item == sentinel)
+        return;
+    if (item == 0)
+        return;
 
     for (;;) {
-        if (item == 0) break;
-        if (item->built() == 1) goto next;
-        if (item->inProgress() == 1) goto next;
-        if (lim67 > 0 && item->typeID() == 0x67) goto next;
-        if (lim44 > 0 && item->typeID() == 0x44) goto next;
+        if (item == 0)
+            break;
+        if (item->built() == 1)
+            goto next;
+        if (item->inProgress() == 1)
+            goto next;
+        if (storage_pit_count > 0 && item->typeID() == 0x67)
+            goto next;
+        if (granary_count > 0 && item->typeID() == 0x44)
+            goto next;
 
         item->setSkip(0);
         item->setBuildAttempts(0);
         item->setSkipCycles(0);
         item->setPermanentSkip(0);
 
-next:
+    next:
         item = item->next;
-        if (item == sentinel) break;
+        if (item == sentinel)
+            break;
     }
 }
 
-BuildItem* TribeBuildAIModule::buildItem(int type, int category1, int category2)
-{
+BuildItem* TribeBuildAIModule::buildItem(int typeID, int category1, int category2) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
     while (item != sentinel && item != 0) {
-        if (!item->built() && !item->inProgress() && item->typeID() == type) {
+        if (!item->built() && !item->inProgress() && item->typeID() == typeID) {
             if (item->buildCategory() == category1 || item->buildCategory() == category2) {
                 return item;
             }

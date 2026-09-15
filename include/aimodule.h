@@ -8,8 +8,8 @@ class AIModuleMessage;
 class AIModuleID {
 public:
     virtual ~AIModuleID();
-    AIModuleID(char*, int);
-    void setID(int, char*);
+    AIModuleID(char* n, int i);
+    void setID(int i, char* n);
 
     int id;
     char name[64];
@@ -19,11 +19,11 @@ class AIModuleMessage {
 public:
     virtual ~AIModuleMessage();
     AIModuleMessage();
-    AIModuleMessage(int, int, int, int, long, long, long, AIModuleMessage*, int);
-    AIModuleMessage(AIModuleMessage*);
-    void setText(char*);
-    void setSender(int, char*);
-    void setRecipient(int, char*);
+    AIModuleMessage(int s, int r, int i, int p, long d1, long d2, long d3, AIModuleMessage* c, int t);
+    AIModuleMessage(AIModuleMessage* m);
+    void setText(char* t);
+    void setSender(int i, char* n);
+    void setRecipient(int i, char* n);
 
     int id;
     char text[128];
@@ -45,26 +45,26 @@ class AIModule {
 public:
     virtual ~AIModule();
     virtual int loggingHistory() const;
-    virtual void setLogHistory(int);
+    virtual void setLogHistory(int v);
     virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char*);
+    virtual void setHistoryFilename(char* f);
     virtual int loggingCommonHistory() const;
-    virtual void setLogCommonHistory(int);
+    virtual void setLogCommonHistory(int v);
     virtual void toggleLogCommonHistory();
     virtual int loadState(char*) { return 0; }
     virtual int saveState(char*) { return 0; }
     virtual int gleanState(int) { return 0; }
-    virtual int processMessage(AIModuleMessage*);
-    virtual int update(int);
-    virtual void setCallbackMessage(AIModuleMessage*);
+    virtual int processMessage(AIModuleMessage* m);
+    virtual int update(int timeLimit);
+    virtual void setCallbackMessage(AIModuleMessage* m);
 
     AIModule();
-    AIModule(char*, int, int, void*);
+    AIModule(char* n, int i, int pN, void* pW);
     AIModuleID id() const;
     int idNumber() const;
     int playerNumber() const;
     char* playerName() const;
-    void setPlayer(int, char*);
+    void setPlayer(int i, char* n);
     void start();
     void stop();
     void toggleRun();
@@ -73,38 +73,38 @@ public:
     int running() const;
     int paused() const;
     int intelligenceLevel() const;
-    int setIntelligenceLevel(int);
+    int setIntelligenceLevel(int v);
     int priority() const;
-    int setPriority(int);
-    int incrementPriority(int);
-    int decrementPriority(int);
-    int sendMessage(AIModuleMessage*, int);
-    void receiveMessage(AIModuleMessage*);
+    int setPriority(int v);
+    int incrementPriority(int v);
+    int decrementPriority(int v);
+    int sendMessage(AIModuleMessage* m, int processNow);
+    void receiveMessage(AIModuleMessage* m);
     int messageLimit();
-    void setMessageLimit(int);
+    void setMessageLimit(int l);
     int callbackLimit();
-    void setCallbackLimit(int);
+    void setCallbackLimit(int l);
     int messageTimeout();
-    void setMessageTimeout(int);
-    int purgeMessages(AIModuleID);
-    int purgeMessagesWithID(AIModuleID, int);
-    int purgeMessagesWithPriorityBelow(AIModuleID, int);
-    int purgeMessagesWithData(AIModuleID, int, int, long);
-    int purgeCallbacks(AIModuleID);
-    int purgeCallbacksWithID(AIModuleID, int);
-    int purgeCallbacksWithPriorityBelow(AIModuleID, int);
-    int purgeCallbacksWithData(AIModuleID, int, int, long);
-    void logHistory(char*, ...);
-    void logCommonHistory(char*, ...);
-    void logDebug(char*, ...);
+    void setMessageTimeout(int t);
+    int purgeMessages(AIModuleID s);
+    int purgeMessagesWithID(AIModuleID s, int i);
+    int purgeMessagesWithPriorityBelow(AIModuleID s, int p);
+    int purgeMessagesWithData(AIModuleID s, int i, int n, long d);
+    int purgeCallbacks(AIModuleID s);
+    int purgeCallbacksWithID(AIModuleID s, int i);
+    int purgeCallbacksWithPriorityBelow(AIModuleID s, int p);
+    int purgeCallbacksWithData(AIModuleID s, int i, int n, long d);
+    void logHistory(char* textIn, ...);
+    void logCommonHistory(char* textIn, ...);
+    void logDebug(char* textIn, ...);
 
 protected:
-    virtual int filterOutMessage(AIModuleMessage*);
+    virtual int filterOutMessage(AIModuleMessage* m);
     void checkMessageLimit();
     void checkCallbackLimit();
     int processFrame();
     void incrementProcessFrame();
-    int timeDifference(AIModuleMessage*);
+    int timeDifference(AIModuleMessage* m);
 
     AIModuleID idValue;
     int playerNumberValue;

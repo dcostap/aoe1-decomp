@@ -13,9 +13,9 @@ public:
     unsigned char ratingValue[2500];
 
     CombatRuleSystem();
-    int loadRules(char* filename);
-    int bestUnitTypeToAttack(int unitType);
-    int bestUnitTypeToDefendAgainst(int unitType);
+    int loadRules(char* rName);
+    int bestUnitTypeToAttack(int tType);
+    int bestUnitTypeToDefendAgainst(int tType);
 };
 
 typedef char taicrule_combat_rule_system_size[

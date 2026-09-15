@@ -8,37 +8,39 @@ CombatRuleSystem::CombatRuleSystem() {}
 
 CombatRuleSystem::~CombatRuleSystem() {}
 
-int CombatRuleSystem::loadRules(char* filename)
-{
-    char line[256]; FILE* f; int a,b,c; char c1,c2;
+int CombatRuleSystem::loadRules(char* rName) {
+    char temp[256];
+    FILE* f;
+    int unitIndex, targetUnitType, rating;
+    char commentTemp1, commentTemp2;
 
-    if (strcmp(filename, "NONE") == 0 || !filename) {
+    if (strcmp(rName, "NONE") == 0 || !rName) {
         return 0;
     }
 
-    sprintf(line, "%s", filename);
-    f = fopen(line, "r");
+    sprintf(temp, "%s", rName);
+    f = fopen(temp, "r");
     if (!f)
         return 0;
 
     memset(ratingValue, '2', 2500);
 
-    while (fgets(line, 256, f)) {
-        sscanf(line, "%c%c", &c1, &c2);
-        if (c1 == '/' && c2 == '/')
+    while (fgets(temp, 256, f)) {
+        sscanf(temp, "%c%c", &commentTemp1, &commentTemp2);
+        if (commentTemp1 == '/' && commentTemp2 == '/')
             continue;
-        sscanf(line, "%d %d %d", &c, &a, &b);
-        if (c < 0 || c >= 50)
+        sscanf(temp, "%d %d %d", &rating, &unitIndex, &targetUnitType);
+        if (rating < 0 || rating >= 50)
             continue;
-        ratingValue[a + c * 50] = (char)b;
+        ratingValue[unitIndex + rating * 50] = (char)targetUnitType;
     }
 
     fclose(f);
-    if (strstr(filename, ".tmp"))
-        unlink(filename);
+    if (strstr(rName, ".tmp"))
+        unlink(rName);
     return 1;
 }
 
-int CombatRuleSystem::bestUnitTypeToAttack(int) { return -1; }
+int CombatRuleSystem::bestUnitTypeToAttack(int tType) { return -1; }
 
-int CombatRuleSystem::bestUnitTypeToDefendAgainst(int) { return -1; }
+int CombatRuleSystem::bestUnitTypeToDefendAgainst(int tType) { return -1; }

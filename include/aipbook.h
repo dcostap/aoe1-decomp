@@ -28,28 +28,27 @@ public:
     AIPlayPhase phases[10];              // +0x090
 
     AIPlay();
-    void setName(char* name);
+    void setName(char* n);
     int humanPlay() const;
     char* typeName() const;
-    unsigned char targetType(int index) const;
-    int isTargetType(unsigned char type) const;
-    int addTargetType(unsigned char type);
-    unsigned char targetCharacteristic(int index) const;
-    int isTargetCharacteristic(unsigned char characteristic) const;
-    int addTargetCharacteristic(unsigned char characteristic);
-    int gatherTolerance(int group, int phaseNumber);
-    AIPlayGroup* group(int index);
-    AIPlayPhase* phase(int index);
-    int fillGroups(AIPlayStatus* status, int* units, int unitCount,
-                   RGE_Game_World* world);
-    int groupGivenCommandOnPhase(int group, int type, int phaseNumber);
+    unsigned char targetType(int n) const;
+    int isTargetType(unsigned char v) const;
+    int addTargetType(unsigned char v);
+    unsigned char targetCharacteristic(int n) const;
+    int isTargetCharacteristic(unsigned char v) const;
+    int addTargetCharacteristic(unsigned char v);
+    int gatherTolerance(int groupID, int phaseID);
+    AIPlayGroup* group(int n);
+    AIPlayPhase* phase(int n);
+    int fillGroups(AIPlayStatus* playStatus, int* groupMembers, int numberGroupMembers, RGE_Game_World* world);
+    int groupGivenCommandOnPhase(int gID, int cType, int pID);
 
 protected:
-    unsigned char convertToIntType(char* name) const;
-    char* convertToNameType(unsigned char type) const;
+    unsigned char convertToIntType(char* t) const;
+    char* convertToNameType(unsigned char t) const;
 
 public:
-    int locationsOnMap(int x1, int y1, int x2, int y2);
+    int locationsOnMap(int targetX, int targetY, int mapXSize, int mapYSize);
 
     friend class AIPlayBook;
 };
@@ -77,22 +76,22 @@ public:
     unsigned char pad_1C5[3];           // +0x1C5
 
     AIPlayStatus();
-    int originalHitPoints(int groupNumber) const;
-    void setOriginalHitPoints(int groupNumber, int value);
+    int originalHitPoints(int n) const;
+    void setOriginalHitPoints(int n, int v);
     XYZ originalPoint() const { return this->originalPointValue; }
     unsigned char numberInPlay() const;
-    unsigned char numberInGroup(int groupNumber);
-    unsigned char numberOfTypeInGroup(int groupNumber, int type);
-    unsigned char group(int id);
-    int addGrouping(int id, unsigned char groupID, unsigned char type);
-    int removeGrouping(int id);
+    unsigned char numberInGroup(int n);
+    unsigned char numberOfTypeInGroup(int n, int type);
+    unsigned char group(int uID);
+    int addGrouping(int uID, unsigned char gID, unsigned char type);
+    int removeGrouping(int uID);
     void zeroAllGroupings();
-    void copyUnits(int* units, int& count);
-    void load(int file);
-    void save(int file);
-    void copy(AIPlayStatus* other);
-    void removeDeadUnits(int groupNumber, RGE_Game_World* world);
-    void resetHitPoints(int groupNumber, RGE_Game_World* world);
+    void copyUnits(int* array, int& count);
+    void load(int infile);
+    void save(int outfile);
+    void copy(AIPlayStatus* ps);
+    void removeDeadUnits(int gID, RGE_Game_World* world);
+    void resetHitPoints(int gID, RGE_Game_World* world);
 };
 
 typedef char aipbook_xyz_size[(sizeof(XYZ) == 0x0C) ? 1 : -1];

@@ -5,11 +5,11 @@
 #include <string.h>
 #include <time.h>
 
-AIModuleID::AIModuleID(char* name_str, int id_value) {
-    this->id = id_value;
+AIModuleID::AIModuleID(char* n, int i) {
+    this->id = i;
 
-    if (name_str != NULL) {
-        strncpy(this->name, name_str, 0x3F);
+    if (n != NULL) {
+        strncpy(this->name, n, 0x3F);
     } else {
         strcpy(this->name, "");
     }
@@ -17,10 +17,10 @@ AIModuleID::AIModuleID(char* name_str, int id_value) {
 
 AIModuleID::~AIModuleID() {}
 
-void AIModuleID::setID(int param_1, char* param_2) {
-    this->id = param_1;
-    if (param_2 != 0) {
-        strncpy(this->name, param_2, 0x3F);
+void AIModuleID::setID(int i, char* n) {
+    this->id = i;
+    if (n != 0) {
+        strncpy(this->name, n, 0x3F);
         return;
     }
     strcpy(this->name, "");
@@ -37,63 +37,58 @@ AIModuleMessage::AIModuleMessage()
       callbackMessage(0),
       timeStamp(0),
       next(0),
-      prev(0)
-{
+      prev(0) {
     strcpy(text, "");
 }
 
-AIModuleMessage::AIModuleMessage(int sender_id, int recipient_id, int msg_id, int msg_priority,
-                                 long p5, long p6, long p7, AIModuleMessage* callback, int timestamp)
-    : id(msg_id),
-      priority(msg_priority),
-      sender("", sender_id),
-      recipient("", recipient_id),
-      data1(p5),
-      data2(p6),
-      data3(p7),
-      callbackMessage(callback),
-      timeStamp(timestamp)
-{
+AIModuleMessage::AIModuleMessage(int s, int r, int i, int p, long d1, long d2, long d3,
+                                 AIModuleMessage* c, int t)
+    : id(i),
+      priority(p),
+      sender("", s),
+      recipient("", r),
+      data1(d1),
+      data2(d2),
+      data3(d3),
+      callbackMessage(c),
+      timeStamp(t) {
     strcpy(this->text, "");
 }
 
-AIModuleMessage::AIModuleMessage(AIModuleMessage* other)
-    : id(other->id),
-      priority(other->priority),
-      sender(other->sender.name, other->sender.id),
-      recipient(other->recipient.name, other->recipient.id),
-      data1(other->data1),
-      data2(other->data2),
-      data3(other->data3),
-      callbackMessage(other->callbackMessage),
-      timeStamp(other->timeStamp),
+AIModuleMessage::AIModuleMessage(AIModuleMessage* m)
+    : id(m->id),
+      priority(m->priority),
+      sender(m->sender.name, m->sender.id),
+      recipient(m->recipient.name, m->recipient.id),
+      data1(m->data1),
+      data2(m->data2),
+      data3(m->data3),
+      callbackMessage(m->callbackMessage),
+      timeStamp(m->timeStamp),
       next(0),
-      prev(0)
-{
-    this->setText(other->text);
+      prev(0) {
+    this->setText(m->text);
 }
 
-AIModuleMessage::~AIModuleMessage()
-{
+AIModuleMessage::~AIModuleMessage() {
     delete this->callbackMessage;
 }
 
-void AIModuleMessage::setText(char* text)
-{
-    if (text != 0) {
-        strncpy(this->text, text, 0x7F);
+void AIModuleMessage::setText(char* t) {
+    if (t != 0) {
+        strncpy(this->text, t, 0x7F);
         return;
     }
 
     strcpy(this->text, "");
 }
 
-void AIModuleMessage::setSender(int a, char* b) {
-    this->sender.setID(a, b);
+void AIModuleMessage::setSender(int i, char* n) {
+    this->sender.setID(i, n);
 }
 
-void AIModuleMessage::setRecipient(int a, char* b) {
-    this->recipient.setID(a, b);
+void AIModuleMessage::setRecipient(int i, char* n) {
+    this->recipient.setID(i, n);
 }
 
 AIModule::AIModule()
@@ -110,9 +105,9 @@ AIModule::AIModule()
     strcpy(this->playerNameValue, "Unknown");
 }
 
-AIModule::AIModule(char* name, int id, int player, void* owner)
-    : idValue(name, id),
-      playerNumberValue(player),
+AIModule::AIModule(char* n, int i, int pN, void* pW)
+    : idValue(n, i),
+      playerNumberValue(pN),
       runningValue(0),
       pausedValue(0),
       logHistoryValue(0),
@@ -144,10 +139,10 @@ int AIModule::playerNumber() const { return this->playerNumberValue; }
 
 char* AIModule::playerName() const { return (char*)this->playerNameValue; }
 
-void AIModule::setPlayer(int playerNumber, char* playerName) {
-    this->playerNumberValue = playerNumber;
-    if (playerName != 0) {
-        strncpy(this->playerNameValue, playerName, 0x3F);
+void AIModule::setPlayer(int i, char* n) {
+    this->playerNumberValue = i;
+    if (n != 0) {
+        strncpy(this->playerNameValue, n, 0x3F);
         return;
     }
     strcpy(this->playerNameValue, "Unknown");
@@ -171,9 +166,7 @@ void AIModule::togglePause() {
         pausedValue = 1;
 }
 
-void AIModule::step(void)
-{
-}
+void AIModule::step(void) {}
 
 int AIModule::running() const { return this->runningValue; }
 
@@ -181,24 +174,21 @@ int AIModule::paused() const { return this->pausedValue; }
 
 int AIModule::loggingHistory() const { return this->logHistoryValue; }
 
-void AIModule::setLogHistory(int a) {}
+void AIModule::setLogHistory(int v) {}
 
-void AIModule::toggleLogHistory(void)
-{
-}
+void AIModule::toggleLogHistory(void) {}
 
 int AIModule::loggingCommonHistory() const { return this->logCommonHistoryValue; }
 
-void AIModule::setLogCommonHistory(int on)
-{
-    this->logCommonHistoryValue = on;
+void AIModule::setLogCommonHistory(int v) {
+    this->logCommonHistoryValue = v;
     FILE* f = commonHistoryLogFile;
-    if (on != 0) {
+    if (v != 0) {
         if (f == 0) {
             commonHistoryLogFile = fopen("c:\\aoeai.txt", "wa");
-            time_t t;
-            time(&t);
-            this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&t)));
+            time_t clock;
+            time(&clock);
+            this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&clock)));
             this->logCommonHistory("");
             return;
         }
@@ -211,21 +201,19 @@ void AIModule::setLogCommonHistory(int on)
     }
 }
 
-void AIModule::toggleLogCommonHistory(void)
-{
-}
+void AIModule::toggleLogCommonHistory(void) {}
 
-void AIModule::setHistoryFilename(char *a) {}
+void AIModule::setHistoryFilename(char *f) {}
 
 int AIModule::intelligenceLevel() const { return this->intelligenceLevelValue; }
 
-int AIModule::setIntelligenceLevel(int param_1) {
-    this->intelligenceLevelValue = param_1;
-    if (param_1 < 1) {
+int AIModule::setIntelligenceLevel(int v) {
+    this->intelligenceLevelValue = v;
+    if (v < 1) {
         this->intelligenceLevelValue = 1;
         return 0;
     }
-    if (param_1 > 10) {
+    if (v > 10) {
         this->intelligenceLevelValue = 10;
         return 0;
     }
@@ -234,93 +222,86 @@ int AIModule::setIntelligenceLevel(int param_1) {
 
 int AIModule::priority() const { return this->priorityValue; }
 
-int AIModule::setPriority(int value) {
-    priorityValue = value;
-    if (value < 1) {
+int AIModule::setPriority(int v) {
+    priorityValue = v;
+    if (v < 1) {
         priorityValue = 1;
         return 0;
     }
-    if (value > 100) {
+    if (v > 100) {
         priorityValue = 100;
         return 0;
     }
     return 1;
 }
 
-int AIModule::incrementPriority(int delta) {
-    return setPriority(priorityValue + delta);
+int AIModule::incrementPriority(int v) {
+    return setPriority(priorityValue + v);
 }
 
-int AIModule::decrementPriority(int delta) {
-    return setPriority(priorityValue - delta);
+int AIModule::decrementPriority(int v) {
+    return setPriority(priorityValue - v);
 }
 
-int AIModule::sendMessage(AIModuleMessage *a, int b) { return 0; }
+int AIModule::sendMessage(AIModuleMessage *m, int processNow) { return 0; }
 
-void AIModule::receiveMessage(AIModuleMessage *a) {}
+void AIModule::receiveMessage(AIModuleMessage *m) {}
 
-int AIModule::processMessage(AIModuleMessage *a) { return 0; }
+int AIModule::processMessage(AIModuleMessage *m) { return 0; }
 
-int AIModule::update(int a) { return 0; }
+int AIModule::update(int timeLimit) { return 0; }
 
-void AIModule::setCallbackMessage(AIModuleMessage *a) {}
+void AIModule::setCallbackMessage(AIModuleMessage *m) {}
 
 int AIModule::messageLimit() { return 0; }
 
-void AIModule::setMessageLimit(int a) {}
+void AIModule::setMessageLimit(int l) {}
 
 int AIModule::callbackLimit() { return 0; }
 
-void AIModule::setCallbackLimit(int a) {}
+void AIModule::setCallbackLimit(int l) {}
 
 int AIModule::messageTimeout() { return 0; }
 
-void AIModule::setMessageTimeout(int a) {}
+void AIModule::setMessageTimeout(int t) {}
 
-int AIModule::purgeMessages(AIModuleID p) { return 0; }
+int AIModule::purgeMessages(AIModuleID s) { return 0; }
 
-int AIModule::purgeMessagesWithID(AIModuleID p, int id) {
+int AIModule::purgeMessagesWithID(AIModuleID s, int i) {
     return 0;
 }
 
-int AIModule::purgeMessagesWithPriorityBelow(AIModuleID p, int priority) {
+int AIModule::purgeMessagesWithPriorityBelow(AIModuleID s, int p) {
     return 0;
 }
 
-int AIModule::purgeMessagesWithData(AIModuleID id, int type, int priority, long data) {
+int AIModule::purgeMessagesWithData(AIModuleID s, int i, int n, long d) {
     return 0;
 }
 
-int AIModule::purgeCallbacks(AIModuleID p) {
+int AIModule::purgeCallbacks(AIModuleID s) {
     return 0;
 }
 
-int AIModule::purgeCallbacksWithID(AIModuleID p, int id) { return 0; }
+int AIModule::purgeCallbacksWithID(AIModuleID s, int i) { return 0; }
 
-int AIModule::purgeCallbacksWithPriorityBelow(AIModuleID p, int priority) {
+int AIModule::purgeCallbacksWithPriorityBelow(AIModuleID s, int p) {
     return 0;
 }
 
-int AIModule::purgeCallbacksWithData(AIModuleID id, int type, int priority, long data) {
+int AIModule::purgeCallbacksWithData(AIModuleID s, int i, int n, long d) {
     return 0;
 }
 
-void AIModule::checkMessageLimit(void)
-{
-}
+void AIModule::checkMessageLimit(void) {}
 
-void AIModule::checkCallbackLimit(void)
-{
-}
+void AIModule::checkCallbackLimit(void) {}
 
-int AIModule::filterOutMessage(AIModuleMessage *a) { return 0; }
+int AIModule::filterOutMessage(AIModuleMessage *m) { return 0; }
 
-void AIModule::logHistory(char*, ...)
-{
-}
+void AIModule::logHistory(char* textIn, ...) {}
 
-void AIModule::logCommonHistory(char* fmt, ...)
-{
+void AIModule::logCommonHistory(char* textIn, ...) {
     char textOut[1024];
 
     if (specificAIPlayerToLog != -1 && specificAIPlayerToLog != this->playerNumberValue) {
@@ -331,8 +312,8 @@ void AIModule::logCommonHistory(char* fmt, ...)
     }
 
     va_list args;
-    va_start(args, fmt);
-    vsprintf(textOut, fmt, args);
+    va_start(args, textIn);
+    vsprintf(textOut, textIn, args);
     va_end(args);
 
     if (strlen(textOut) != 0) {
@@ -343,9 +324,7 @@ void AIModule::logCommonHistory(char* fmt, ...)
     fflush(commonHistoryLogFile);
 }
 
-void AIModule::logDebug(char*, ...)
-{
-}
+void AIModule::logDebug(char* textIn, ...) {}
 
 int AIModule::processFrame() { return this->processFrameValue; }
 
@@ -359,4 +338,4 @@ void AIModule::incrementProcessFrame() {
     }
 }
 
-int AIModule::timeDifference(AIModuleMessage *a) { return 0; }
+int AIModule::timeDifference(AIModuleMessage *m) { return 0; }

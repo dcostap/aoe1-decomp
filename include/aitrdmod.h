@@ -12,11 +12,11 @@ class MainDecisionAIModule;
 class TradeAIModule : public AIModule {
 public:
     virtual ~TradeAIModule();
-    virtual int save(int value);
+    virtual int save(int outfile);
 
-    TradeAIModule(void* ptr, int player);
-    TradeAIModule(int player, int unused);
-    void setMainDecisionAI(MainDecisionAIModule* module);
+    TradeAIModule(void* pW, int playerID);
+    TradeAIModule(int playerID, int infile);
+    void setMainDecisionAI(MainDecisionAIModule* m);
 
     MainDecisionAIModule* md;
 };
