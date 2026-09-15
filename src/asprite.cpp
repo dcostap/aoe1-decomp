@@ -315,8 +315,7 @@ short RGE_Active_Animated_Sprite::get_facetindex(short facet) {
 }
 
 unsigned char RGE_Active_Animated_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet) {
-    return (unsigned char)this->sprite->get_frame(min_x, min_y, max_x, max_y,
-                                                   facet, this->frame);
+    return (unsigned char)this->sprite->get_frame(min_x, min_y, max_x, max_y, facet, this->frame);
 }
 
 void RGE_Active_Animated_Sprite::setToFirstFrame() {
