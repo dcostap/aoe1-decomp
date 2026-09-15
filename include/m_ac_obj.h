@@ -24,19 +24,19 @@ public:
     RGE_Sound* move_sound;
     unsigned char run_pattern;
 
-    RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup);
-    RGE_Master_Action_Object(int id, RGE_Sprite** sprites,
+    RGE_Master_Action_Object(RGE_Master_Action_Object* other_object, int do_setup);
+    RGE_Master_Action_Object(int infile, RGE_Sprite** sprites,
                              RGE_Sound** sounds, int do_setup);
-    RGE_Master_Action_Object(FILE* file, RGE_Sprite** sprites,
-                             RGE_Sound** sounds, short id, int do_setup);
+    RGE_Master_Action_Object(FILE* infile, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, short in_id, int do_setup);
 
     virtual ~RGE_Master_Action_Object();
     virtual void copy_obj(RGE_Master_Static_Object* source);
-    virtual void modify(float value, unsigned char attribute);
-    virtual void modify_delta(float value, unsigned char attribute);
-    virtual void modify_percent(float value, unsigned char attribute);
-    virtual void save(int file);
-    virtual RGE_Static_Object* make_new_obj(RGE_Player* player, float x,
+    virtual void modify(float amount, unsigned char flag);
+    virtual void modify_delta(float amount, unsigned char flag);
+    virtual void modify_percent(float amount, unsigned char flag);
+    virtual void save(int outfile);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x,
                                              float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
     virtual RGE_Task_List* create_task_list();
@@ -44,12 +44,12 @@ public:
     virtual void play_move_sound();
 
     RGE_Task* get_task(short task_id);
-    RGE_Task* getTaskByTaskID(int task_id) const;
+    RGE_Task* getTaskByTaskID(int t) const;
 
 protected:
-    int setup(RGE_Master_Action_Object* source);
-    int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
-    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id);
+    int setup(RGE_Master_Action_Object* other_object);
+    int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 };
 
 typedef char m_ac_obj_action_size[
