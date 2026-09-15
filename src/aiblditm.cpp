@@ -12,69 +12,64 @@ BuildItem::BuildItem()
     terrainAdjacencyValue[1] = -1;
 }
 
-BuildItem::BuildItem(int category, int typeID, int uniqueID, int number,
-                     int priority, int buildFrom, char* name, float xSize,
-                     float ySize, float zSize, int terrainSet, int adjacency0,
-                     int adjacency1, int elevation)
-    : BaseItem(typeID, -1, uniqueID, name, -1.0f, -1.0f, -1.0f,
-               xSize, ySize, zSize),
-      next(0), prev(0), buildCategoryValue(category), numberValue(number),
-      priorityValue(priority), progressValue(0), builtValue(0),
-      buildAttemptsValue(0), buildFromValue(buildFrom),
-      terrainSetValue(terrainSet),
-      placeOnElevationValue(elevation), numberBuildsValue(0),
+BuildItem::BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name,
+                     float x, float y, float z, int tSet, int tOne, int tTwo,
+                     int pEle)
+    : BaseItem(ti, -1, bi, name, -1.0f, -1.0f, -1.0f, x, y, z),
+      next(0), prev(0), buildCategoryValue(bc), numberValue(n),
+      priorityValue(p), progressValue(0), builtValue(0),
+      buildAttemptsValue(0), buildFromValue(bf), terrainSetValue(tSet),
+      placeOnElevationValue(pEle), numberBuildsValue(0),
       buildCapValue(-1), skipCyclesValue(0), permanentSkipValue(0) {
-    terrainAdjacencyValue[0] = adjacency0;
-    terrainAdjacencyValue[1] = adjacency1;
+    terrainAdjacencyValue[0] = tOne;
+    terrainAdjacencyValue[1] = tTwo;
 }
 
-BuildItem::BuildItem(BuildItem* source)
-    : BaseItem(static_cast<BaseItem*>(source)), next(0), prev(0),
-      buildCategoryValue(source->buildCategoryValue),
-      numberValue(source->numberValue), priorityValue(source->priorityValue),
-      progressValue(source->progressValue), builtValue(source->progressValue),
-      buildAttemptsValue(source->buildAttemptsValue),
-      buildFromValue(source->buildFromValue),
-      terrainSetValue(source->terrainSetValue),
-      placeOnElevationValue(source->placeOnElevationValue),
+BuildItem::BuildItem(BuildItem* bi)
+    : BaseItem(static_cast<BaseItem*>(bi)), next(0), prev(0),
+      buildCategoryValue(bi->buildCategoryValue),
+      numberValue(bi->numberValue), priorityValue(bi->priorityValue),
+      progressValue(bi->progressValue), builtValue(bi->progressValue),
+      buildAttemptsValue(bi->buildAttemptsValue),
+      buildFromValue(bi->buildFromValue), terrainSetValue(bi->terrainSetValue),
+      placeOnElevationValue(bi->placeOnElevationValue),
       numberBuildsValue(0), buildCapValue(-1), skipCyclesValue(0),
       permanentSkipValue(0) {
-    terrainAdjacencyValue[0] = source->terrainAdjacencyValue[0];
-    terrainAdjacencyValue[1] = source->terrainAdjacencyValue[1];
+    terrainAdjacencyValue[0] = bi->terrainAdjacencyValue[0];
+    terrainAdjacencyValue[1] = bi->terrainAdjacencyValue[1];
 }
 
-BuildItem::BuildItem(const BuildItem& source)
-    : BaseItem(static_cast<const BaseItem&>(source)), next(0), prev(0),
-      buildCategoryValue(source.buildCategoryValue),
-      numberValue(source.numberValue), priorityValue(source.priorityValue),
-      progressValue(source.progressValue), builtValue(source.progressValue),
-      buildAttemptsValue(source.buildAttemptsValue),
-      buildFromValue(source.buildFromValue),
-      terrainSetValue(source.terrainSetValue),
-      placeOnElevationValue(source.placeOnElevationValue),
+BuildItem::BuildItem(const BuildItem& bi)
+    : BaseItem(static_cast<const BaseItem&>(bi)), next(0), prev(0),
+      buildCategoryValue(bi.buildCategoryValue),
+      numberValue(bi.numberValue), priorityValue(bi.priorityValue),
+      progressValue(bi.progressValue), builtValue(bi.progressValue),
+      buildAttemptsValue(bi.buildAttemptsValue),
+      buildFromValue(bi.buildFromValue), terrainSetValue(bi.terrainSetValue),
+      placeOnElevationValue(bi.placeOnElevationValue),
       numberBuildsValue(0), buildCapValue(-1), skipCyclesValue(0),
       permanentSkipValue(0) {
-    terrainAdjacencyValue[0] = source.terrainAdjacencyValue[0];
-    terrainAdjacencyValue[1] = source.terrainAdjacencyValue[1];
+    terrainAdjacencyValue[0] = bi.terrainAdjacencyValue[0];
+    terrainAdjacencyValue[1] = bi.terrainAdjacencyValue[1];
 }
 
 BuildItem::~BuildItem() {
 }
 
-int __cdecl operator==(const BuildItem& left, const BuildItem& right) {
-    return left.typeIDValue == right.typeIDValue;
+int __cdecl operator==(const BuildItem& one, const BuildItem& two) {
+    return one.typeIDValue == two.typeIDValue;
 }
 
-int __cdecl operator!=(const BuildItem& left, const BuildItem& right) {
-    return left.typeIDValue != right.typeIDValue;
+int __cdecl operator!=(const BuildItem& one, const BuildItem& two) {
+    return one.typeIDValue != two.typeIDValue;
 }
 
-int __cdecl operator<(const BuildItem& left, const BuildItem& right) {
-    return left.typeIDValue < right.typeIDValue;
+int __cdecl operator<(const BuildItem& one, const BuildItem& two) {
+    return one.typeIDValue < two.typeIDValue;
 }
 
-int __cdecl operator>(const BuildItem& left, const BuildItem& right) {
-    return left.typeIDValue > right.typeIDValue;
+int __cdecl operator>(const BuildItem& one, const BuildItem& two) {
+    return one.typeIDValue > two.typeIDValue;
 }
 
 int BuildItem::buildCategory() const {
@@ -109,9 +104,9 @@ int BuildItem::terrainSet() const {
     return terrainSetValue;
 }
 
-int BuildItem::terrainAdjacency(int index) const {
-    if ((index >= 1) && (index <= 2)) {
-        return terrainAdjacencyValue[index - 1];
+int BuildItem::terrainAdjacency(int v) const {
+    if ((v >= 1) && (v <= 2)) {
+        return terrainAdjacencyValue[v - 1];
     }
     return -1;
 }
@@ -120,16 +115,16 @@ int BuildItem::placeOnElevation() const {
     return placeOnElevationValue;
 }
 
-void BuildItem::setInProgress(int value) {
-    progressValue = value;
+void BuildItem::setInProgress(int p) {
+    progressValue = p;
 }
 
-void BuildItem::setBuilt(int value) {
-    builtValue = value;
+void BuildItem::setBuilt(int v) {
+    builtValue = v;
 }
 
-void BuildItem::setBuildAttempts(int value) {
-    buildAttemptsValue = value;
+void BuildItem::setBuildAttempts(int v) {
+    buildAttemptsValue = v;
 }
 
 void BuildItem::incrementBuildAttempts() {
@@ -151,16 +146,16 @@ void BuildItem::incrementNumberBuilds() {
     ++numberBuildsValue;
 }
 
-void BuildItem::setNumberBuilds(int value) {
-    numberBuildsValue = value;
+void BuildItem::setNumberBuilds(int v) {
+    numberBuildsValue = v;
 }
 
 int BuildItem::buildCap() {
     return buildCapValue;
 }
 
-void BuildItem::setBuildCap(int value) {
-    buildCapValue = value;
+void BuildItem::setBuildCap(int v) {
+    buildCapValue = v;
 }
 
 int BuildItem::skipCycles() {
@@ -171,14 +166,14 @@ void BuildItem::incrementSkipCycles() {
     ++skipCyclesValue;
 }
 
-void BuildItem::setSkipCycles(int value) {
-    skipCyclesValue = value;
+void BuildItem::setSkipCycles(int v) {
+    skipCyclesValue = v;
 }
 
 unsigned char BuildItem::permanentSkip() {
     return permanentSkipValue;
 }
 
-void BuildItem::setPermanentSkip(unsigned char value) {
-    permanentSkipValue = value;
+void BuildItem::setPermanentSkip(unsigned char v) {
+    permanentSkipValue = v;
 }
