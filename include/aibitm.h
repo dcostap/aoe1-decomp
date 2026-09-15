@@ -18,10 +18,9 @@ public:
     int skipValue;
 
     BaseItem();
-    BaseItem(int typeID, int gameID, int uniqueID, char* name,
-             float x, float y, float z, float xSize, float ySize, float zSize);
-    BaseItem(BaseItem* other);
-    BaseItem(const BaseItem& other);
+    BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z, float xs, float ys, float zs);
+    BaseItem(BaseItem* bi);
+    BaseItem(const BaseItem& bi);
 
     int typeID() const;
     int gameID() const;
@@ -35,23 +34,23 @@ public:
     float zSize() const;
     int skip() const;
 
-    void setTypeID(int value);
-    void setGameID(int value);
-    void setUniqueID(int value);
-    void setName(char* value);
-    void setX(float value);
-    void setY(float value);
-    void setZ(float value);
-    void setXSize(float value);
-    void setYSize(float value);
-    void setZSize(float value);
-    void setSkip(int value);
+    void setTypeID(int v);
+    void setGameID(int v);
+    void setUniqueID(int v);
+    void setName(char* n);
+    void setX(float v);
+    void setY(float v);
+    void setZ(float v);
+    void setXSize(float v);
+    void setYSize(float v);
+    void setZSize(float v);
+    void setSkip(int v);
 };
 
-int __cdecl operator==(const BaseItem& left, const BaseItem& right);
-int __cdecl operator!=(const BaseItem& left, const BaseItem& right);
-int __cdecl operator<(const BaseItem& left, const BaseItem& right);
-int __cdecl operator>(const BaseItem& left, const BaseItem& right);
+int __cdecl operator==(const BaseItem& one, const BaseItem& two);
+int __cdecl operator!=(const BaseItem& one, const BaseItem& two);
+int __cdecl operator<(const BaseItem& one, const BaseItem& two);
+int __cdecl operator>(const BaseItem& one, const BaseItem& two);
 
 typedef char aibitm_base_item_size[(sizeof(BaseItem) == 0x6C) ? 1 : -1];
 

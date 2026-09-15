@@ -6,10 +6,9 @@
 class ConstructionItem : public BaseItem {
 public:
     ConstructionItem();
-    ConstructionItem(float x, float y, float z, float xSize, float ySize,
-                     float zSize, int typeID, char* name);
-    ConstructionItem(ConstructionItem* other);
-    ConstructionItem(const ConstructionItem& other);
+    ConstructionItem(float x, float y, float z, float xs, float ys, float zs, int ti, char* n);
+    ConstructionItem(ConstructionItem* ci);
+    ConstructionItem(const ConstructionItem& ci);
     virtual ~ConstructionItem();
 
     ConstructionItem* next;      // +0x6c
@@ -21,11 +20,11 @@ public:
     int inProgress() const;
     int built() const;
     int buildAttempts() const;
-    void setInProgress(int value);
-    void setBuilt(int value);
+    void setInProgress(int p);
+    void setBuilt(int b);
     void incrementBuildAttempts();
     void decrementBuildAttempts();
-    void setBuildAttempts(int value);
+    void setBuildAttempts(int v);
 };
 
 typedef char aiconitm_constructionitem_size[
@@ -37,9 +36,9 @@ typedef char aiconitm_built_offset[
 typedef char aiconitm_build_attempts_offset[
     ((char*)&((ConstructionItem*)0)->buildAttemptsValue - (char*)0 == 0x7c) ? 1 : -1];
 
-int __cdecl operator==(const ConstructionItem& left, const ConstructionItem& right);
-int __cdecl operator!=(const ConstructionItem& left, const ConstructionItem& right);
-int __cdecl operator<(const ConstructionItem& left, const ConstructionItem& right);
-int __cdecl operator>(const ConstructionItem& left, const ConstructionItem& right);
+int __cdecl operator==(const ConstructionItem& one, const ConstructionItem& two);
+int __cdecl operator!=(const ConstructionItem& one, const ConstructionItem& two);
+int __cdecl operator<(const ConstructionItem& one, const ConstructionItem& two);
+int __cdecl operator>(const ConstructionItem& one, const ConstructionItem& two);
 
 #endif

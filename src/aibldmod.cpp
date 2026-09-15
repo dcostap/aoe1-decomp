@@ -4,10 +4,9 @@
 
 // The canonical member initializers own the BuildItem,
 // scalar, ManagedArray, and derived virtual setup.
-BuildAIModule::BuildAIModule(void* param_1, int param_2)
-    : AIModule("Build AI", 0x3E9, param_2, param_1),
-      buildList(), buildListLengthValue(0), numberItemsIntoBuildListValue(0)
-{
+BuildAIModule::BuildAIModule(void* pW, int playerID)
+    : AIModule("Build AI", 0x3E9, playerID, pW),
+      buildList(), buildListLengthValue(0), numberItemsIntoBuildListValue(0) {
     this->buildList.next = &this->buildList;
     this->buildList.prev = &this->buildList;
     strcpy(this->buildListNameValue, "");
@@ -19,16 +18,15 @@ BuildAIModule::BuildAIModule(void* param_1, int param_2)
 // The serialized fields, local declaration order, and name
 // buffer size preserve the original constructor frame and call sequence.
 #include <stdlib.h>
-BuildAIModule::BuildAIModule(int p1, int fd)
-    : AIModule("Build AI", 0x3e9, p1, 0), buildList(),
-      buildListLengthValue(0), numberItemsIntoBuildListValue(0)
-{
+BuildAIModule::BuildAIModule(int playerID, int infile)
+    : AIModule("Build AI", 0x3e9, playerID, 0), buildList(),
+      buildListLengthValue(0), numberItemsIntoBuildListValue(0) {
+    int tempInt;
     int buildCap;
-    int buildCapValue;
     int builtValue;
     int inProgressValue;
     int buildAttemptsValue;
-    int terrainAdjacencyOne;
+    int terrainAdjOne;
     int skipValue;
     float zSize;
     int gameID;
@@ -38,10 +36,10 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     float y;
     int buildCategory;
     float z;
-    int terrainAdjacencyTwo;
+    int terrainAdjTwo;
     int numberBuilds;
     float ySize;
-    int skipCycles;
+    int numberSkipCycles;
     int typeID;
     unsigned char permanentSkip;
     int terrainSet;
@@ -51,58 +49,58 @@ BuildAIModule::BuildAIModule(int p1, int fd)
 
     this->buildList.next = &this->buildList;
     this->buildList.prev = &this->buildList;
-    rge_read(fd, &this->buildListLengthValue, 4);
-    rge_read(fd, &buildCap, 4);
-    rge_read(fd, this->buildListNameValue, buildCap);
-    this->buildListNameValue[buildCap] = 0;
-    rge_read(fd, &buildCap, 4);
-    rge_read(fd, this->lastBuildItemRequestedValue, buildCap);
-    this->lastBuildItemRequestedValue[buildCap] = 0;
-    rge_read(fd, &buildCap, 4);
-    rge_read(fd, this->currentBuildItemRequestedValue, buildCap);
-    this->currentBuildItemRequestedValue[buildCap] = 0;
+    rge_read(infile, &this->buildListLengthValue, 4);
+    rge_read(infile, &tempInt, 4);
+    rge_read(infile, this->buildListNameValue, tempInt);
+    this->buildListNameValue[tempInt] = 0;
+    rge_read(infile, &tempInt, 4);
+    rge_read(infile, this->lastBuildItemRequestedValue, tempInt);
+    this->lastBuildItemRequestedValue[tempInt] = 0;
+    rge_read(infile, &tempInt, 4);
+    rge_read(infile, this->currentBuildItemRequestedValue, tempInt);
+    this->currentBuildItemRequestedValue[tempInt] = 0;
     if (save_game_version >= 3.1f) {
-        rge_read(fd, &buildCap, 4);
-        rge_read(fd, this->nextBuildItemRequestedValue, buildCap);
-        this->nextBuildItemRequestedValue[buildCap] = 0;
+        rge_read(infile, &tempInt, 4);
+        rge_read(infile, this->nextBuildItemRequestedValue, tempInt);
+        this->nextBuildItemRequestedValue[tempInt] = 0;
     } else {
         strcpy(this->nextBuildItemRequestedValue, "None");
     }
-    rge_read(fd, &this->numberItemsIntoBuildListValue, 4);
+    rge_read(infile, &this->numberItemsIntoBuildListValue, 4);
 
     int i = 0;
     if (this->buildListLengthValue > 0) {
         do {
-            rge_read(fd, &buildCap, 4);
-            rge_read(fd, name, buildCap);
-            name[buildCap] = 0;
-            rge_read(fd, &typeID, 4);
-            rge_read(fd, &gameID, 4);
-            rge_read(fd, &uniqueID, 4);
-            rge_read(fd, &x, 4);
-            rge_read(fd, &y, 4);
-            rge_read(fd, &z, 4);
-            rge_read(fd, &xSize, 4);
-            rge_read(fd, &ySize, 4);
-            rge_read(fd, &zSize, 4);
-            rge_read(fd, &skipValue, 4);
-            rge_read(fd, &buildCategory, 4);
-            rge_read(fd, &inProgressValue, 4);
-            rge_read(fd, &builtValue, 4);
-            rge_read(fd, &buildAttemptsValue, 4);
-            rge_read(fd, &buildFrom, 4);
-            rge_read(fd, &terrainSet, 4);
-            rge_read(fd, &terrainAdjacencyOne, 4);
-            rge_read(fd, &terrainAdjacencyTwo, 4);
-            rge_read(fd, &placeOnElevation, 4);
-            rge_read(fd, &numberBuilds, 4);
-            buildCapValue = -1;
+            rge_read(infile, &tempInt, 4);
+            rge_read(infile, name, tempInt);
+            name[tempInt] = 0;
+            rge_read(infile, &typeID, 4);
+            rge_read(infile, &gameID, 4);
+            rge_read(infile, &uniqueID, 4);
+            rge_read(infile, &x, 4);
+            rge_read(infile, &y, 4);
+            rge_read(infile, &z, 4);
+            rge_read(infile, &xSize, 4);
+            rge_read(infile, &ySize, 4);
+            rge_read(infile, &zSize, 4);
+            rge_read(infile, &skipValue, 4);
+            rge_read(infile, &buildCategory, 4);
+            rge_read(infile, &inProgressValue, 4);
+            rge_read(infile, &builtValue, 4);
+            rge_read(infile, &buildAttemptsValue, 4);
+            rge_read(infile, &buildFrom, 4);
+            rge_read(infile, &terrainSet, 4);
+            rge_read(infile, &terrainAdjOne, 4);
+            rge_read(infile, &terrainAdjTwo, 4);
+            rge_read(infile, &placeOnElevation, 4);
+            rge_read(infile, &numberBuilds, 4);
+            buildCap = -1;
             if (save_game_version >= 2.2f) {
-                rge_read(fd, &buildCapValue, 4);
+                rge_read(infile, &buildCap, 4);
             }
-            rge_read(fd, &skipCycles, 4);
-            rge_read(fd, &permanentSkip, 1);
-            BuildItem* item = new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name, xSize, ySize, zSize, terrainSet, terrainAdjacencyOne, terrainAdjacencyTwo, placeOnElevation);
+            rge_read(infile, &numberSkipCycles, 4);
+            rge_read(infile, &permanentSkip, 1);
+            BuildItem* item = new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name, xSize, ySize, zSize, terrainSet, terrainAdjOne, terrainAdjTwo, placeOnElevation);
             item->setBuilt(builtValue);
             item->setInProgress(inProgressValue);
             item->setBuildAttempts(buildAttemptsValue);
@@ -112,8 +110,8 @@ BuildAIModule::BuildAIModule(int p1, int fd)
             item->setY(y);
             item->setZ(z);
             item->setNumberBuilds(numberBuilds);
-            item->setBuildCap(buildCapValue);
-            item->setSkipCycles(skipCycles);
+            item->setBuildCap(buildCap);
+            item->setSkipCycles(numberSkipCycles);
             item->setPermanentSkip(permanentSkip);
             i++;
             item->next = &this->buildList;
@@ -125,57 +123,95 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     }
 }
 
-BuildAIModule::~BuildAIModule()
-{
+BuildAIModule::~BuildAIModule() {
     if (buildListLengthValue > 0)
         removeOldList();
 }
 
-int BuildAIModule::save(int file) {
+int BuildAIModule::save(int outfile) {
     char tempString[257];
-    int tempInt; float tempFloat; int iStack_110; unsigned char local_109;
-    rge_write(file, &this->buildListLengthValue, 4);
-    strcpy(tempString, this->buildListNameValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
-    strcpy(tempString, this->lastBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
-    strcpy(tempString, this->currentBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
-    strcpy(tempString, this->nextBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
-    rge_write(file, &this->numberItemsIntoBuildListValue, 4);
+    int tempInt;
+    float tempFloat;
+    int tempBOOL;
+    unsigned char tempBYTE;
+    rge_write(outfile, &this->buildListLengthValue, 4);
+    strcpy(tempString, this->buildListNameValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->lastBuildItemRequestedValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->currentBuildItemRequestedValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->nextBuildItemRequestedValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    rge_write(outfile, &this->numberItemsIntoBuildListValue, 4);
     BuildItem* item = this->buildList.next;
     BuildItem* end = &this->buildList;
     while (item != end) {
         if (item == 0) return 1;
-        strcpy(tempString, item->name()); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
-        tempInt = item->typeID(); rge_write(file, &tempInt, 4);
-        tempInt = item->gameID(); rge_write(file, &tempInt, 4);
-        tempInt = item->uniqueID(); rge_write(file, &tempInt, 4);
-        tempFloat = item->x(); rge_write(file, &tempFloat, 4);
-        tempFloat = item->y(); rge_write(file, &tempFloat, 4);
-        tempFloat = item->z(); rge_write(file, &tempFloat, 4);
-        tempFloat = item->xSize(); rge_write(file, &tempFloat, 4);
-        tempFloat = item->ySize(); rge_write(file, &tempFloat, 4);
-        tempFloat = item->zSize(); rge_write(file, &tempFloat, 4);
-        iStack_110 = item->skip(); rge_write(file, &iStack_110, 4);
-        tempInt = item->buildCategory(); rge_write(file, &tempInt, 4);
-        iStack_110 = item->inProgress(); rge_write(file, &iStack_110, 4);
-        iStack_110 = item->built(); rge_write(file, &iStack_110, 4);
-        tempInt = item->buildAttempts(); rge_write(file, &tempInt, 4);
-        tempInt = item->buildFrom(); rge_write(file, &tempInt, 4);
-        tempInt = item->terrainSet(); rge_write(file, &tempInt, 4);
-        tempInt = item->terrainAdjacency(1); rge_write(file, &tempInt, 4);
-        tempInt = item->terrainAdjacency(2); rge_write(file, &tempInt, 4);
-        iStack_110 = item->placeOnElevation(); rge_write(file, &iStack_110, 4);
-        tempInt = item->numberBuilds(); rge_write(file, &tempInt, 4);
-        tempInt = item->buildCap(); rge_write(file, &tempInt, 4);
-        tempInt = item->skipCycles(); rge_write(file, &tempInt, 4);
-        local_109 = item->permanentSkip();
-        rge_write(file, &local_109, 1);
+        strcpy(tempString, item->name());
+        tempInt = strlen(tempString);
+        rge_write(outfile, &tempInt, 4);
+        rge_write(outfile, tempString, strlen(tempString));
+        tempInt = item->typeID();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->gameID();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->uniqueID();
+        rge_write(outfile, &tempInt, 4);
+        tempFloat = item->x();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->y();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->z();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->xSize();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->ySize();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->zSize();
+        rge_write(outfile, &tempFloat, 4);
+        tempBOOL = item->skip();
+        rge_write(outfile, &tempBOOL, 4);
+        tempInt = item->buildCategory();
+        rge_write(outfile, &tempInt, 4);
+        tempBOOL = item->inProgress();
+        rge_write(outfile, &tempBOOL, 4);
+        tempBOOL = item->built();
+        rge_write(outfile, &tempBOOL, 4);
+        tempInt = item->buildAttempts();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->buildFrom();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->terrainSet();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->terrainAdjacency(1);
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->terrainAdjacency(2);
+        rge_write(outfile, &tempInt, 4);
+        tempBOOL = item->placeOnElevation();
+        rge_write(outfile, &tempBOOL, 4);
+        tempInt = item->numberBuilds();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->buildCap();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->skipCycles();
+        rge_write(outfile, &tempInt, 4);
+        tempBYTE = item->permanentSkip();
+        rge_write(outfile, &tempBYTE, 1);
         item = (BuildItem*)item->next;
     }
     return 1;
 }
 
-void BuildAIModule::displayBuildList()
-{
+void BuildAIModule::displayBuildList() {
     this->logCommonHistory("Build list '%s':", buildListNameValue);
 
     BuildItem* item = this->buildList.next;
@@ -208,32 +244,31 @@ void BuildAIModule::displayBuildList()
 // the in-object buildListNameValue array.
 #include <stdio.h>
 #include <io.h>
-int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
-{
+int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
     int typeID;
     int quantity;
     int buildFrom;
-    int fileIn;
+    int buildCap;
     char name[64];
     char temp[256];
-    FILE* fp;
+    FILE* fileIn;
     float ySize;
     float xSize;
     char commentTemp1;
     char buildCategoryAsChar;
     char commentTemp2;
 
-    strncpy(this->buildListNameValue, filename, 0x3F);
+    strncpy(this->buildListNameValue, lName, 0x3F);
     if (strcmp(this->buildListNameValue, "NONE") == 0 ||
         this->buildListNameValue == 0 ||
         strlen(this->buildListNameValue) == 0) {
         goto no_build_list;
     }
 
-    this->logCommonHistory("Trying to load build list in file '%s'.", filename);
+    this->logCommonHistory("Trying to load build list in file '%s'.", lName);
     sprintf(temp, "%s", this->buildListNameValue);
-    fp = fopen(temp, "r");
-    if (fp == 0) {
+    fileIn = fopen(temp, "r");
+    if (fileIn == 0) {
         this->logCommonHistory("  I cannot do it cap'n!");
         return 0;
     }
@@ -244,7 +279,7 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
     }
     this->buildListLengthValue = 0;
 
-    while (fgets(temp, 0x100, fp) != 0) {
+    while (fgets(temp, 0x100, fileIn) != 0) {
         xSize = ySize = 1.5f;
         typeID = -1;
         sscanf(temp, " %c%c", &commentTemp1, &commentTemp2);
@@ -253,7 +288,7 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
         }
 
         sscanf(temp, " %c%d %s %d %d ", &buildCategoryAsChar,
-               &quantity, name, &buildFrom, &fileIn);
+               &quantity, name, &buildFrom, &buildCap);
 
         int buildCategory;
         switch (buildCategoryAsChar) {
@@ -312,7 +347,7 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
         for (i = 0; i < buildFrom; ++i) {
             BuildItem* item = new BuildItem(
                 buildCategory, quantity, this->buildListLengthValue,
-                1, 0, fileIn, name, ySize, xSize, 0.0f,
+                1, 0, buildCap, name, ySize, xSize, 0.0f,
                 -1, -1, -1, 0);
 
             ++this->buildListLengthValue;
@@ -328,7 +363,7 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
         ;
     }
 
-    fclose(fp);
+    fclose(fileIn);
     if (strstr(this->buildListNameValue, ".tmp") != 0) {
         unlink(this->buildListNameValue);
     }
@@ -355,10 +390,7 @@ int BuildAIModule::haveBuildList() const {
 static const char s_SetGatherPercentage[] = "SetGatherPercentage";
 static const char s_AddedBuildListItem[] = "AddedBuildListItem";
 
-int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity,
-                              int buildCategory, int buildFrom, int buildCap,
-                              int insertAfterItemNumber)
-{
+int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber) {
     if (insertAfterItemNumber > this->buildListLengthValue) {
         return 0;
     }
@@ -473,12 +505,12 @@ char* BuildAIModule::currentBuildItemRequested() const { return (char*)this->cur
 
 char* BuildAIModule::nextBuildItemRequested() const { return (char*)this->nextBuildItemRequestedValue; }
 
-int BuildAIModule::numberItemsOfType(int typeID, int buildCategory) {
+int BuildAIModule::numberItemsOfType(int type, int category) {
     BuildItem* cur = this->buildList.next;
     int count = 0;
     BuildItem* sentinel = &this->buildList;
     while (cur != sentinel && cur != 0) {
-        if (cur->typeID() == typeID && cur->buildCategory() == buildCategory) {
+        if (cur->typeID() == type && cur->buildCategory() == category) {
             count++;
         }
         cur = cur->next;
@@ -486,13 +518,13 @@ int BuildAIModule::numberItemsOfType(int typeID, int buildCategory) {
     return count;
 }
 
-int BuildAIModule::numberBuiltItemsOfType(int param_1, int param_2) {
+int BuildAIModule::numberBuiltItemsOfType(int type, int category) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
     int count = 0;
 
     while (item != sentinel && item != 0) {
-        if (item->typeID() == param_1 && item->buildCategory() == param_2 && item->built() == 1) {
+        if (item->typeID() == type && item->buildCategory() == category && item->built() == 1) {
             ++count;
         }
         item = item->next;
@@ -501,13 +533,13 @@ int BuildAIModule::numberBuiltItemsOfType(int param_1, int param_2) {
     return count;
 }
 
-int BuildAIModule::numberUnbuiltItemsOfType(int param_1, int param_2) {
+int BuildAIModule::numberUnbuiltItemsOfType(int type, int category) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
     int count = 0;
 
     while (item != sentinel && item != 0) {
-        if (item->typeID() == param_1 && item->buildCategory() == param_2 && item->built() == 0) {
+        if (item->typeID() == type && item->buildCategory() == category && item->built() == 0) {
             ++count;
         }
         item = item->next;
@@ -516,13 +548,13 @@ int BuildAIModule::numberUnbuiltItemsOfType(int param_1, int param_2) {
     return count;
 }
 
-int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type_id, int build_category) {
+int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int category) {
     int count = 0;
     BuildItem* item = this->buildList.next;
     BuildItem* end = &this->buildList;
 
     while (item != end && item != 0) {
-        if (item->typeID() == type_id && item->buildCategory() == build_category && (item->built() == 1 || item->inProgress() == 1)) {
+        if (item->typeID() == type && item->buildCategory() == category && (item->built() == 1 || item->inProgress() == 1)) {
             ++count;
         }
         item = item->next;
@@ -531,13 +563,13 @@ int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type_id, int build_cat
     return count;
 }
 
-int BuildAIModule::numberInProgressItemsOfType(int param_1, int param_2) {
+int BuildAIModule::numberInProgressItemsOfType(int type, int category) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
     int count = 0;
 
     while (item != sentinel && item != 0) {
-        if (item->typeID() == param_1 && item->buildCategory() == param_2 && item->inProgress() == 1) {
+        if (item->typeID() == type && item->buildCategory() == category && item->inProgress() == 1) {
             ++count;
         }
         item = item->next;
@@ -561,17 +593,17 @@ void BuildAIModule::removeOldList(void) {
     this->buildListLengthValue = 0;
 }
 
-BuildItem* BuildAIModule::anyBuildListItem(int param_1, int param_2, int param_3) {
+BuildItem* BuildAIModule::anyBuildListItem(int id, int checkBuilt, int buildStatus) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
 
     while (item != sentinel && item != 0) {
-        if (item->typeID() == param_1) {
-            if (param_2 == 0) {
+        if (item->typeID() == id) {
+            if (checkBuilt == 0) {
                 return item;
             }
-            if (param_2 == 1) {
-                if (item->built() == param_3) {
+            if (checkBuilt == 1) {
+                if (item->built() == buildStatus) {
                     return item;
                 }
             }
@@ -583,12 +615,11 @@ BuildItem* BuildAIModule::anyBuildListItem(int param_1, int param_2, int param_3
 }
 
 // The original checks the sentinel before loading the id.
-BuildItem* BuildAIModule::specificBuildListItem(int uniqueID)
-{
+BuildItem* BuildAIModule::specificBuildListItem(int id) {
     BuildItem* item = this->buildList.next;
     if (item == &this->buildList) return 0;
 
-    int saveID = uniqueID;
+    int saveID = id;
     while (item != &this->buildList) {
         if (item == 0) return 0;
         if (item->uniqueID() == saveID) return item;

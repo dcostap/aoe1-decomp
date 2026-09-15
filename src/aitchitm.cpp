@@ -7,16 +7,16 @@ TechnologyItem::TechnologyItem()
     strcpy(this->nameValue, s_592A40);
 }
 
-TechnologyItem::TechnologyItem(int id, char* name, ResourceItem cost)
-    : next(0), prev(0), idValue(id) {
-    this->resourceCostValue = new ResourceItem(cost);
-    strcpy(this->nameValue, name);
+TechnologyItem::TechnologyItem(int i, char* n, ResourceItem r)
+    : next(0), prev(0), idValue(i) {
+    this->resourceCostValue = new ResourceItem(r);
+    strcpy(this->nameValue, n);
 }
 
-TechnologyItem::TechnologyItem(const TechnologyItem& src)
-    : next(0), prev(0), idValue(src.idValue) {
-    this->resourceCostValue = new ResourceItem(src.resourceCostValue);
-    strcpy(this->nameValue, src.nameValue);
+TechnologyItem::TechnologyItem(const TechnologyItem& ti)
+    : next(0), prev(0), idValue(ti.idValue) {
+    this->resourceCostValue = new ResourceItem(ti.resourceCostValue);
+    strcpy(this->nameValue, ti.nameValue);
 }
 
 TechnologyItem::~TechnologyItem() {
@@ -25,20 +25,20 @@ TechnologyItem::~TechnologyItem() {
     }
 }
 
-int __cdecl operator==(TechnologyItem const& lhs, TechnologyItem const& rhs) {
-    return lhs.idValue == rhs.idValue;
+int __cdecl operator==(TechnologyItem const& one, TechnologyItem const& two) {
+    return one.idValue == two.idValue;
 }
 
-int __cdecl operator!=(TechnologyItem const& lhs, TechnologyItem const& rhs) {
-    return lhs.idValue != rhs.idValue;
+int __cdecl operator!=(TechnologyItem const& one, TechnologyItem const& two) {
+    return one.idValue != two.idValue;
 }
 
-int __cdecl operator<(TechnologyItem const& lhs, TechnologyItem const& rhs) {
-    return lhs.idValue < rhs.idValue;
+int __cdecl operator<(TechnologyItem const& one, TechnologyItem const& two) {
+    return one.idValue < two.idValue;
 }
 
-int __cdecl operator>(TechnologyItem const& lhs, TechnologyItem const& rhs) {
-    return lhs.idValue > rhs.idValue;
+int __cdecl operator>(TechnologyItem const& one, TechnologyItem const& two) {
+    return one.idValue > two.idValue;
 }
 
 int TechnologyItem::id() const { return this->idValue; }

@@ -11,8 +11,8 @@ union IntFloat {
     float f;
 };
 
-ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
-    : AIModule("ConAI", 0x3EA, param_2, param_1),
+ConstructionAIModule::ConstructionAIModule(void* pW, int playerID)
+    : AIModule("ConAI", 0x3EA, playerID, pW),
       numberConstructionLotsValue(0),
       constructionLots(),
       numberRandomConstructionLotsValue(0),
@@ -22,8 +22,7 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
       zReferencePointValue(-1.0f),
       mapXSizeValue(-1),
       mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(PlacementOk)
-{
+      lastPlacementReturnCodeValue(PlacementOk) {
     this->constructionLots.next = &this->constructionLots;
     this->constructionLots.prev = &this->constructionLots;
     this->randomConstructionLots.next = &this->randomConstructionLots;
@@ -33,8 +32,8 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
 }
 
 // Typed wire locals preserve the original serialized read order and raw bits.
-ConstructionAIModule::ConstructionAIModule(int p1, int fd)
-    : AIModule("ConAI", 0x3ea, p1, 0),
+ConstructionAIModule::ConstructionAIModule(int playerID, int infile)
+    : AIModule("ConAI", 0x3ea, playerID, 0),
       numberConstructionLotsValue(0),
       constructionLots(),
       numberRandomConstructionLotsValue(0),
@@ -44,11 +43,10 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
       zReferencePointValue(-1.0f),
       mapXSizeValue(-1),
       mapYSizeValue(-1),
-      lastPlacementReturnCodeValue(PlacementOk)
-{
+      lastPlacementReturnCodeValue(PlacementOk) {
     char name[257];
     IntFloat x;
-    int n;
+    int i;
     ConstructionItem* item;
     ConstructionItem* prev;
 
@@ -57,40 +55,40 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
     this->randomConstructionLots.next = &this->randomConstructionLots;
     this->randomConstructionLots.prev = &this->randomConstructionLots;
 
-    rge_read(fd, &this->numberConstructionLotsValue, 4);
-    rge_read(fd, &x.i, 4);
-    rge_read(fd, this->constructionPlanNameValue, x.i);
+    rge_read(infile, &this->numberConstructionLotsValue, 4);
+    rge_read(infile, &x.i, 4);
+    rge_read(infile, this->constructionPlanNameValue, x.i);
     this->constructionPlanNameValue[x.i] = 0;
-    rge_read(fd, &this->xReferencePointValue, 4);
-    rge_read(fd, &this->yReferencePointValue, 4);
-    rge_read(fd, &this->zReferencePointValue, 4);
-    rge_read(fd, &this->mapXSizeValue, 4);
-    rge_read(fd, &this->mapYSizeValue, 4);
+    rge_read(infile, &this->xReferencePointValue, 4);
+    rge_read(infile, &this->yReferencePointValue, 4);
+    rge_read(infile, &this->zReferencePointValue, 4);
+    rge_read(infile, &this->mapXSizeValue, 4);
+    rge_read(infile, &this->mapYSizeValue, 4);
 
-    for (n=0; n<this->numberConstructionLotsValue; n++) {
+    for (i = 0; i < this->numberConstructionLotsValue; i++) {
         IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
         IntFloat skip;
         int typeID;
         int built;
-        IntFloat gameID, i;
+        IntFloat gameID, i_value;
 
-        rge_read(fd, &x.i, 4);
-        rge_read(fd, name, x.i);
+        rge_read(infile, &x.i, 4);
+        rge_read(infile, name, x.i);
         name[x.i] = 0;
-        rge_read(fd, &typeID, 4);
-        rge_read(fd, &inProgress.i, 4);
-        rge_read(fd, &skip.i, 4);
-        rge_read(fd, &y.f, 4);
-        rge_read(fd, &zSize.f, 4);
-        rge_read(fd, &gameID.i, 4);
-        rge_read(fd, &ySize.f, 4);
-        rge_read(fd, &i.i, 4);
-        rge_read(fd, &xSize.f, 4);
-        rge_read(fd, &built, 4);
-        rge_read(fd, &z.f, 4);
-        rge_read(fd, &uniqueID.i, 4);
-        rge_read(fd, &buildAttempts.i, 4);
-        item = new ConstructionItem(y.f, zSize.f, gameID.f, ySize.f, i.f, xSize.f, typeID, name);
+        rge_read(infile, &typeID, 4);
+        rge_read(infile, &inProgress.i, 4);
+        rge_read(infile, &skip.i, 4);
+        rge_read(infile, &y.f, 4);
+        rge_read(infile, &zSize.f, 4);
+        rge_read(infile, &gameID.i, 4);
+        rge_read(infile, &ySize.f, 4);
+        rge_read(infile, &i_value.i, 4);
+        rge_read(infile, &xSize.f, 4);
+        rge_read(infile, &built, 4);
+        rge_read(infile, &z.f, 4);
+        rge_read(infile, &uniqueID.i, 4);
+        rge_read(infile, &buildAttempts.i, 4);
+        item = new ConstructionItem(y.f, zSize.f, gameID.f, ySize.f, i_value.f, xSize.f, typeID, name);
         item->setInProgress(z.i);
         item->setBuilt(uniqueID.i);
         item->setBuildAttempts(buildAttempts.i);
@@ -104,35 +102,35 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
         this->constructionLots.prev = item;
     }
 
-    rge_read(fd, &this->numberRandomConstructionLotsValue, 4);
-    for (n=0; n<this->numberRandomConstructionLotsValue; n++) {
+    rge_read(infile, &this->numberRandomConstructionLotsValue, 4);
+    for (i = 0; i < this->numberRandomConstructionLotsValue; i++) {
         IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
         IntFloat skip;
         int typeID;
         int built;
-        IntFloat gameID, i;
+        IntFloat gameID, i_value;
 
-        rge_read(fd, &x.i, 4);
-        rge_read(fd, name, x.i);
+        rge_read(infile, &x.i, 4);
+        rge_read(infile, name, x.i);
         name[x.i] = 0;
-        rge_read(fd, &built, 4);
-        rge_read(fd, &i.i, 4);
-        rge_read(fd, &xSize.i, 4);
-        rge_read(fd, &y.f, 4);
-        rge_read(fd, &z.f, 4);
-        rge_read(fd, &uniqueID.i, 4);
-        rge_read(fd, &buildAttempts.i, 4);
-        rge_read(fd, &inProgress.i, 4);
-        rge_read(fd, &skip.i, 4);
-        rge_read(fd, &typeID, 4);
-        rge_read(fd, &zSize.i, 4);
-        rge_read(fd, &gameID.i, 4);
-        rge_read(fd, &ySize.i, 4);
+        rge_read(infile, &built, 4);
+        rge_read(infile, &i_value.i, 4);
+        rge_read(infile, &xSize.i, 4);
+        rge_read(infile, &y.f, 4);
+        rge_read(infile, &z.f, 4);
+        rge_read(infile, &uniqueID.i, 4);
+        rge_read(infile, &buildAttempts.i, 4);
+        rge_read(infile, &inProgress.i, 4);
+        rge_read(infile, &skip.i, 4);
+        rge_read(infile, &typeID, 4);
+        rge_read(infile, &zSize.i, 4);
+        rge_read(infile, &gameID.i, 4);
+        rge_read(infile, &ySize.i, 4);
         item = new ConstructionItem(y.f, z.f, uniqueID.f, buildAttempts.f, inProgress.f, skip.f, built, name);
         item->setInProgress(zSize.i);
         item->setBuilt(gameID.i);
         item->setBuildAttempts(ySize.i);
-        item->setGameID(i.i);
+        item->setGameID(i_value.i);
         item->setUniqueID(xSize.i);
         item->setSkip(typeID);
         item->next = &this->randomConstructionLots;
@@ -150,102 +148,100 @@ ConstructionAIModule::~ConstructionAIModule() {
 }
 
 // boundaries, memory effects, fault order, and return value are preserved.
-int ConstructionAIModule::save(int fd)
-{
+int ConstructionAIModule::save(int outfile) {
     char tempString[257];
     int tempInt;
     int tempBOOL;
     float tempFloat;
     ConstructionItem* item;
 
-    rge_write(fd, (void*)&this->numberConstructionLotsValue, 4);
+    rge_write(outfile, (void*)&this->numberConstructionLotsValue, 4);
     strcpy(tempString, this->constructionPlanNameValue);
     tempInt = strlen(tempString);
-    rge_write(fd, &tempInt, 4);
-    rge_write(fd, tempString, strlen(tempString));
-    rge_write(fd, (void*)&this->xReferencePointValue, 4);
-    rge_write(fd, (void*)&this->yReferencePointValue, 4);
-    rge_write(fd, (void*)&this->zReferencePointValue, 4);
-    rge_write(fd, (void*)&this->mapXSizeValue, 4);
-    rge_write(fd, (void*)&this->mapYSizeValue, 4);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    rge_write(outfile, (void*)&this->xReferencePointValue, 4);
+    rge_write(outfile, (void*)&this->yReferencePointValue, 4);
+    rge_write(outfile, (void*)&this->zReferencePointValue, 4);
+    rge_write(outfile, (void*)&this->mapXSizeValue, 4);
+    rge_write(outfile, (void*)&this->mapYSizeValue, 4);
 
     item = this->constructionLots.next;
     while (item != &this->constructionLots) {
         if (item == 0) break;
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
-        rge_write(fd, &tempInt, 4);
-        rge_write(fd, tempString, tempInt);
+        rge_write(outfile, &tempInt, 4);
+        rge_write(outfile, tempString, tempInt);
         tempInt = item->typeID();
-        rge_write(fd, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         tempInt = item->gameID();
-        rge_write(fd, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         tempInt = item->uniqueID();
-        rge_write(fd, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         tempFloat = item->x();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->y();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->z();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->xSize();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->ySize();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->zSize();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempBOOL = item->skip();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->inProgress();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->built();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->buildAttempts();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         item = item->next;
     }
 
-    rge_write(fd, (void*)&this->numberRandomConstructionLotsValue, 4);
+    rge_write(outfile, (void*)&this->numberRandomConstructionLotsValue, 4);
     item = this->randomConstructionLots.next;
     while (item != &this->randomConstructionLots) {
         if (item == 0) return 1;
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
-        rge_write(fd, &tempInt, 4);
-        rge_write(fd, tempString, tempInt);
+        rge_write(outfile, &tempInt, 4);
+        rge_write(outfile, tempString, tempInt);
         tempInt = item->typeID();
-        rge_write(fd, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         tempInt = item->gameID();
-        rge_write(fd, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         tempInt = item->uniqueID();
-        rge_write(fd, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         tempFloat = item->x();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->y();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->z();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->xSize();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->ySize();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempFloat = item->zSize();
-        rge_write(fd, &tempFloat, 4);
+        rge_write(outfile, &tempFloat, 4);
         tempBOOL = item->skip();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->inProgress();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->built();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         tempBOOL = item->buildAttempts();
-        rge_write(fd, &tempBOOL, 4);
+        rge_write(outfile, &tempBOOL, 4);
         item = item->next;
     }
     return 1;
 }
 
-int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float p4, float p5, float p6)
-{
+int ConstructionAIModule::loadConstructionPlan(char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef) {
     char commentTemp1;
     char commentTemp2;
     float y;
@@ -262,14 +258,14 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     char* plan;
     char* saved_plan;
 
-    this->setReferencePoint(p2, p3, p4, p5, p6);
+    this->setReferencePoint(mXSize, mYSize, xRef, yRef, zRef);
     if (this->numberConstructionLotsValue > 0) {
         this->removeOldLots();
     }
 
     plan = this->constructionPlanNameValue;
     saved_plan = plan;
-    strncpy(plan, name, 0x3f);
+    strncpy(plan, pName, 0x3f);
 
     if (strcmp(plan, "NONE") == 0 || plan == 0) {
         if (plan == 0) {
@@ -279,7 +275,7 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
         return 1;
     }
 
-    this->logCommonHistory("Loading construction plan in file '%s'.", name);
+    this->logCommonHistory("Loading construction plan in file '%s'.", pName);
     sprintf(temp + 4, "%s", plan);
     fp = fopen(temp + 4, "r");
     if (fp == 0) {
@@ -322,15 +318,14 @@ char* ConstructionAIModule::constructionPlanName() {
 }
 
 // predicates, list edits, calls, cleanup, and 495-byte boundary are preserved.
-void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, float yRef, float zRef)
-{
-    this->mapXSizeValue = mapX;
-    this->mapYSizeValue = mapY;
-    this->xReferencePointValue = xRef;
-    this->yReferencePointValue = yRef;
-    this->zReferencePointValue = zRef;
+void ConstructionAIModule::setReferencePoint(int mXSize, int mYSize, float x, float y, float z) {
+    this->mapXSizeValue = mXSize;
+    this->mapYSizeValue = mYSize;
+    this->xReferencePointValue = x;
+    this->yReferencePointValue = y;
+    this->zReferencePointValue = z;
 
-    if (xRef <= 0.0 || yRef <= 0.0 || (float)mapX <= xRef || (float)mapY <= yRef) {
+    if (x <= 0.0 || y <= 0.0 || (float)mXSize <= x || (float)mYSize <= y) {
         this->removeOldLots();
         return;
     }
@@ -338,9 +333,9 @@ void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, flo
     ConstructionItem* item = this->constructionLots.next;
     ConstructionItem* end = &this->constructionLots;
     while (item != end && item != 0) {
-        item->setX(item->x() + xRef);
-        item->setY(item->y() + yRef);
-        item->setZ(item->z() + zRef);
+        item->setX(item->x() + x);
+        item->setY(item->y() + y);
+        item->setZ(item->z() + z);
 
         if (item->x() - item->xSize() * 0.5f < 0.0f ||
             item->y() - item->ySize() * 0.5f < 0.0f ||
@@ -367,7 +362,7 @@ float ConstructionAIModule::yReferencePoint() {
 }
 
 // The parameter and result are unused in this shipped base implementation.
-ConstructionItem* ConstructionAIModule::placeStructure(BuildItem* item) {
+ConstructionItem* ConstructionAIModule::placeStructure(BuildItem* bi) {
     return 0;
 }
 
@@ -375,10 +370,10 @@ ConstructionAIModule::PlacementResult ConstructionAIModule::lastPlacementReturnC
     return this->lastPlacementReturnCodeValue;
 }
 
-void ConstructionAIModule::setBuilt(ConstructionItem* item, int built) {
+void ConstructionAIModule::setBuilt(ConstructionItem* ci, int v) {
     ConstructionItem* current;
     ConstructionItem* end;
-    ConstructionItem* target = item;
+    ConstructionItem* target = ci;
 
     current = this->constructionLots.next;
     end = &this->constructionLots;
@@ -387,17 +382,17 @@ void ConstructionAIModule::setBuilt(ConstructionItem* item, int built) {
             break;
         }
         if (operator==(*current, *target)) {
-            current->setBuilt(built);
+            current->setBuilt(v);
             return;
         }
         current = current->next;
     }
 }
 
-int ConstructionAIModule::unplaceStructure(ConstructionItem* item, int decrement) {
+int ConstructionAIModule::unplaceStructure(ConstructionItem* ci, int decBA) {
     ConstructionItem* current;
     ConstructionItem* end;
-    ConstructionItem* target = item;
+    ConstructionItem* target = ci;
     int oldID;
 
     current = this->constructionLots.next;
@@ -411,7 +406,7 @@ int ConstructionAIModule::unplaceStructure(ConstructionItem* item, int decrement
             current->setBuilt(0);
             oldID = current->uniqueID();
             current->setUniqueID(-1);
-            if (decrement == 1) {
+            if (decBA == 1) {
                 current->decrementBuildAttempts();
             }
             return oldID;
@@ -421,7 +416,7 @@ int ConstructionAIModule::unplaceStructure(ConstructionItem* item, int decrement
     return -1;
 }
 
-int ConstructionAIModule::unplaceStructure(float x, float y, int decrement) {
+int ConstructionAIModule::unplaceStructure(float x, float y, int decBA) {
     int id;
     ConstructionItem* item;
 
@@ -435,7 +430,7 @@ int ConstructionAIModule::unplaceStructure(float x, float y, int decrement) {
             item->setBuilt(0);
             id = item->uniqueID();
             item->setUniqueID(-1);
-            if (decrement == 1) {
+            if (decBA == 1) {
                 item->decrementBuildAttempts();
             }
             return id;
@@ -445,28 +440,27 @@ int ConstructionAIModule::unplaceStructure(float x, float y, int decrement) {
     return -1;
 }
 
-void ConstructionAIModule::decrementBuildAttempts(float x, float y, int count) {
+void ConstructionAIModule::decrementBuildAttempts(float x, float y, int n) {
     ConstructionItem* item = this->lot(x, y);
-    if (item != 0 && count > 0) {
+    if (item != 0 && n > 0) {
         do {
             item->decrementBuildAttempts();
-            count = count - 1;
-        } while (count != 0);
+            n = n - 1;
+        } while (n != 0);
     }
 }
 
-void ConstructionAIModule::incrementBuildAttempts(float x, float y, int count) {
+void ConstructionAIModule::incrementBuildAttempts(float x, float y, int n) {
     ConstructionItem* item = this->lot(x, y);
-    if (item != 0 && count > 0) {
+    if (item != 0 && n > 0) {
         do {
             item->incrementBuildAttempts();
-            count = count - 1;
-        } while (count != 0);
+            n = n - 1;
+        } while (n != 0);
     }
 }
 
-ConstructionItem* ConstructionAIModule::lot(float x, float y)
-{
+ConstructionItem* ConstructionAIModule::lot(float x, float y) {
     ConstructionItem* p = this->constructionLots.next;
 
     while (p != &this->constructionLots && p != 0) {
@@ -486,10 +480,10 @@ ConstructionItem* ConstructionAIModule::lot(float x, float y)
     return 0;
 }
 
-ConstructionItem* ConstructionAIModule::randomLot(float px, float py) {
+ConstructionItem* ConstructionAIModule::randomLot(float x, float y) {
     ConstructionItem* cur = this->randomConstructionLots.next;
     while (cur != &this->randomConstructionLots && cur != 0) {
-        if (cur->x() == px && cur->y() == py) {
+        if (cur->x() == x && cur->y() == y) {
             return cur;
         }
         cur = cur->next;

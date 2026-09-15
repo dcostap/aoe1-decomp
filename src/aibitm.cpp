@@ -9,38 +9,37 @@ BaseItem::BaseItem()
     strcpy(nameValue, "");
 }
 
-BaseItem::BaseItem(int typeID, int gameID, int uniqueID, char* name,
-                   float x, float y, float z, float xSize, float ySize, float zSize)
-    : typeIDValue(typeID), gameIDValue(gameID), uniqueIDValue(uniqueID),
+BaseItem::BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z, float xs, float ys, float zs)
+    : typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid),
       xValue(x), yValue(y), zValue(z),
-      xSizeValue(xSize), ySizeValue(ySize), zSizeValue(zSize), skipValue(0) {
-    strncpy(this->nameValue, name, 0x3F);
+      xSizeValue(xs), ySizeValue(ys), zSizeValue(zs), skipValue(0) {
+    strncpy(this->nameValue, n, 0x3F);
 }
 
-BaseItem::BaseItem(BaseItem* other)
-    : typeIDValue(other->typeIDValue), gameIDValue(other->gameIDValue),
-      uniqueIDValue(other->uniqueIDValue), xValue(other->xValue),
-      yValue(other->yValue), zValue(other->zValue),
-      xSizeValue(other->xSizeValue), ySizeValue(other->ySizeValue),
-      zSizeValue(other->zSizeValue), skipValue(other->skipValue) {
-    strcpy(this->nameValue, other->nameValue);
+BaseItem::BaseItem(BaseItem* bi)
+    : typeIDValue(bi->typeIDValue), gameIDValue(bi->gameIDValue),
+      uniqueIDValue(bi->uniqueIDValue), xValue(bi->xValue),
+      yValue(bi->yValue), zValue(bi->zValue),
+      xSizeValue(bi->xSizeValue), ySizeValue(bi->ySizeValue),
+      zSizeValue(bi->zSizeValue), skipValue(bi->skipValue) {
+    strcpy(this->nameValue, bi->nameValue);
 }
 
-BaseItem::BaseItem(const BaseItem& src)
-    : typeIDValue(src.typeIDValue), gameIDValue(src.gameIDValue),
-      uniqueIDValue(src.uniqueIDValue), xValue(src.xValue),
-      yValue(src.yValue), zValue(src.zValue),
-      xSizeValue(src.xSizeValue), ySizeValue(src.ySizeValue),
-      zSizeValue(src.zSizeValue), skipValue(src.skipValue) {
-    strcpy(this->nameValue, src.nameValue);
+BaseItem::BaseItem(const BaseItem& bi)
+    : typeIDValue(bi.typeIDValue), gameIDValue(bi.gameIDValue),
+      uniqueIDValue(bi.uniqueIDValue), xValue(bi.xValue),
+      yValue(bi.yValue), zValue(bi.zValue),
+      xSizeValue(bi.xSizeValue), ySizeValue(bi.ySizeValue),
+      zSizeValue(bi.zSizeValue), skipValue(bi.skipValue) {
+    strcpy(this->nameValue, bi.nameValue);
 }
 
 BaseItem::~BaseItem() {}
 
-int __cdecl operator==(const BaseItem& lhs, const BaseItem& rhs) {
-    if (lhs.gameIDValue == rhs.gameIDValue) {
-        if (lhs.xValue == rhs.xValue) {
-            if (lhs.yValue == rhs.yValue) {
+int __cdecl operator==(const BaseItem& one, const BaseItem& two) {
+    if (one.gameIDValue == two.gameIDValue) {
+        if (one.xValue == two.xValue) {
+            if (one.yValue == two.yValue) {
                 return 1;
             }
         }
@@ -48,16 +47,16 @@ int __cdecl operator==(const BaseItem& lhs, const BaseItem& rhs) {
     return 0;
 }
 
-int __cdecl operator!=(const BaseItem& lhs, const BaseItem& rhs) {
-    return !operator==(lhs, rhs);
+int __cdecl operator!=(const BaseItem& one, const BaseItem& two) {
+    return !operator==(one, two);
 }
 
-int __cdecl operator<(const BaseItem& lhs, const BaseItem& rhs) {
-    return lhs.gameIDValue < rhs.gameIDValue;
+int __cdecl operator<(const BaseItem& one, const BaseItem& two) {
+    return one.gameIDValue < two.gameIDValue;
 }
 
-int __cdecl operator>(const BaseItem& lhs, const BaseItem& rhs) {
-    return lhs.gameIDValue > rhs.gameIDValue;
+int __cdecl operator>(const BaseItem& one, const BaseItem& two) {
+    return one.gameIDValue > two.gameIDValue;
 }
 
 int BaseItem::typeID() const {
@@ -104,46 +103,46 @@ int BaseItem::skip() const {
     return this->skipValue;
 }
 
-void BaseItem::setTypeID(int value) {
-    typeIDValue = value;
+void BaseItem::setTypeID(int v) {
+    typeIDValue = v;
 }
 
-void BaseItem::setGameID(int value) {
-    gameIDValue = value;
+void BaseItem::setGameID(int v) {
+    gameIDValue = v;
 }
 
-void BaseItem::setUniqueID(int value) {
-    uniqueIDValue = value;
+void BaseItem::setUniqueID(int v) {
+    uniqueIDValue = v;
 }
 
-void BaseItem::setName(char* value) {
-    strncpy(this->nameValue, value, 63);
+void BaseItem::setName(char* n) {
+    strncpy(this->nameValue, n, 63);
 }
 
-void BaseItem::setX(float value) {
-    xValue = value;
+void BaseItem::setX(float v) {
+    xValue = v;
 }
 
-void BaseItem::setY(float value) {
-    yValue = value;
+void BaseItem::setY(float v) {
+    yValue = v;
 }
 
-void BaseItem::setZ(float value) {
-    zValue = value;
+void BaseItem::setZ(float v) {
+    zValue = v;
 }
 
-void BaseItem::setXSize(float value) {
-    xSizeValue = value;
+void BaseItem::setXSize(float v) {
+    xSizeValue = v;
 }
 
-void BaseItem::setYSize(float value) {
-    ySizeValue = value;
+void BaseItem::setYSize(float v) {
+    ySizeValue = v;
 }
 
-void BaseItem::setZSize(float value) {
-    zSizeValue = value;
+void BaseItem::setZSize(float v) {
+    zSizeValue = v;
 }
 
-void BaseItem::setSkip(int value) {
-    skipValue = value;
+void BaseItem::setSkip(int v) {
+    skipValue = v;
 }
