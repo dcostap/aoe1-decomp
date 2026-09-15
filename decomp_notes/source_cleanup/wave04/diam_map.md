@@ -37,6 +37,10 @@ The prior report correction commit is
 `7707e16f808c4a12629e3ad49380eb8eb8bb8836`. This report records the new
 source commit and the owner-24 header request.
 
+Review correction: the `00437760` row now records the correct 1216-byte PDB
+reference size from `scoped_symbols.json`. This is report metadata only. It
+does not prove a new executable boundary.
+
 ## PDB coverage
 
 The scoped PDB evidence is
@@ -47,7 +51,7 @@ I inspected every selected function owner, packet metadata, and scoped-symbol
 record.
 All 27 normal procedures have a `this` symbol in `ecx`.
 
-The table lists the original packet size, PDB source span, parameters, and
+The table lists the PDB reference size, PDB source span, parameters, and
 scoped locals. Names in this table are PDB names.
 
 | VA | Procedure | Bytes | PDB source span | Parameters | Locals |
@@ -66,7 +70,7 @@ scoped locals. Names in this table are PDB names.
 | `00437620` | `copy_image` | 62 | 575-654 | none | `r` |
 | `00437660` | `draw_all_tiles` | 102 | 660-673 | none | none |
 | `004376D0` | `draw_explored_tiles` | 137 | 679-693 | none | `list`, `list_size` |
-| `00437760` | `draw_tile` | 1145 | 699-891 | `col`, `row`, `fog`, `override_color` | `tile`, `j`, `y`, `x`, `draw_wid`, `color`, `tile_row`, `terrain`, `trow` |
+| `00437760` | `draw_tile` | 1216 | 699-891 | `col`, `row`, `fog`, `override_color` | `tile`, `j`, `y`, `x`, `draw_wid`, `color`, `tile_row`, `terrain`, `trow` |
 | `00437C20` | `draw_selected_area` | 147 | 897-917 | none | `sel_col1`, `sel_col2`, `sel_row1`, `sel_row2` |
 | `00437CC0` | `draw_objects` | 498 | 923-1015 | none | `color1`, `color2`, `i` |
 | `00437EC0` | `draw_visible_object` | 397 | 1021-1112 | `game_obj`, `color1`, `color2` | `row`, `col` |
