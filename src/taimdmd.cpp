@@ -468,11 +468,12 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
     }
 
     if (tactical->strategicNumber(0xD9) == 1) {
-        timeLimit = (tactical->strategicNumber(0x68) - 3) * 1000;
-        if (timeLimit < 0)
-            timeLimit = 0;
+        int diplomacy_start_time =
+            (tactical->strategicNumber(0x68) - 3) * 1000;
+        if (diplomacy_start_time < 0)
+            diplomacy_start_time = 0;
         if (this->player->world->world_time >
-            (unsigned long)timeLimit) {
+            (unsigned long)diplomacy_start_time) {
             tactical->setStrategicNumber(0xD9, 0);
             int newEnemy = -1;
             for (int i = 1; i < this->player->world->player_num; i++) {

@@ -147,13 +147,20 @@ name. The source also retains short inferred names such as `tactical`,
 `selection`, `other`, `object`, `current`, and `tribute`; these are not
 claimed as recovered PDB names.
 
+## Correction history
+
+Full diff review found that the recovered `timeLimit` parameter name did not
+authorize reuse of that parameter as storage. The local declaration is now
+`diplomacy_start_time` again. Its declaration and storage remain distinct from
+the unused `timeLimit` parameter.
+
 ## Code-generation and ownership risks
 
 Parameter and local identifier changes do not change types, layout, storage,
 call targets, literals, casts, or ABI symbols. The source keeps explicit
-`this->` uses and source order. The update parameter `timeLimit` now carries
-the proven original tail calculation, instead of a separate inferred local.
-That declaration use can affect generated code and remains unvalidated.
+`this->` uses and source order. The update keeps the `timeLimit` parameter
+distinct from the `diplomacy_start_time` local. The local declaration and
+storage remain unchanged by this correction.
 The brace and comment changes can affect debug line records. No assembly,
 helper, wrapper, layout, macro-context fragment, or behavior repair was added.
 
