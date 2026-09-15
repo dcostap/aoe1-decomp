@@ -6,7 +6,7 @@
 - Paired header: `include/scr_end.h` (owned by owner 11)
 - Worker branch: `cleanup/staging-20260915-94`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `87b8556a3ec3d4084e2ec55a88d8f0e91b251702`
+- Final source commit: `58c4d027aee629338711daea2d788dbc36965a34`
 - Changed source: `src/scr_end.cpp`
 - Changed report: `decomp_notes/source_cleanup/wave02/scr_end.md`
 
@@ -19,6 +19,10 @@ Correction history:
   applied the initial 1TBS placement.
 - `87b8556a3ec3d4084e2ec55a88d8f0e91b251702` compacted the short constructor
   and action signatures into one line. It made no semantic change.
+- Root approved the shared resource mapping in
+  `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Integration imported the
+  definition in `bdb8bc1afb50e9e28b76d09fe731855eafa66460` (`bdb8bc1af`). This
+  worker then replaced the action call's literal with the approved macro.
 
 ## PDB inspection coverage
 
@@ -58,7 +62,7 @@ The action method now uses the recovered PDB names:
 
 The names match their procedure records, stack offsets, types, and uses. No
 uncertain reused-stack-slot mapping remains. I changed no type, scope,
-declaration order, evaluation order, call, cast, literal, member, or ABI
+declaration order, evaluation order, call, cast, literal value, member, or ABI
 signature.
 
 I moved the three function opening braces to 1TBS placement. No new comment was
@@ -67,20 +71,22 @@ without a useful sparse comment.
 
 ## Resource and constant evidence
 
-The action method keeps numeric ID `0x269E` at `src/scr_end.cpp:117`. The call
-passes the result to `TribeAchievementsScreen` as its title. A second call in
-`src/dlg_menu.cpp:177` uses the same ID when opening the same screen. These
-call sites establish the purpose as the Achievements screen title.
+The action method uses `IDS_ACHIEVEMENTS_TITLE` at `src/scr_end.cpp:117`. The
+approved macro expands to `0x269E`. The call passes the result to
+`TribeAchievementsScreen` as its title. A second call in `src/dlg_menu.cpp:177`
+uses the same ID when opening the same screen. These call sites establish the
+purpose as the Achievements screen title.
 
-The proposed shared declaration is:
+The approved shared declaration is:
 
 ```c
 #define IDS_ACHIEVEMENTS_TITLE 0x269E
 ```
 
 This is a new descriptive cleanup name, not a recovered original macro name.
-Keep the numeric literal until the shared declaration owner reviews and adds the
-mapping.
+The definition is root-approved and imported from the integration header.
+This worker's substitution changed only the preprocessor spelling. The value
+remains `0x269E`.
 
 The lookup path is:
 
@@ -104,20 +110,24 @@ ID, and the runtime base file supplies the English fallback. The original
 expansion reference also misses the ID. Missing blocks are distinct from empty
 slots here; the extraction reported a missing ID, not an empty slot.
 
-Shared-file request:
+Shared-file provenance and request:
 
-- Root owns `include/resource_ids.h`. Please review and add
-  `IDS_ACHIEVEMENTS_TITLE` with value `0x269E` if the shared mapping is
-  accepted. No source change in this commit depends on that pending macro.
+- Root approved `IDS_ACHIEVEMENTS_TITLE` with value `0x269E` in
+  `027da42cb19a66cd9d07a7c357ab223034f26cdd`. Integration imported
+  `include/resource_ids.h` at
+  `bdb8bc1afb50e9e28b76d09fe731855eafa66460` (`bdb8bc1af`). The source substitution is in
+  worker commit `58c4d027aee629338711daea2d788dbc36965a34`.
 - Owner 11 owns `include/scr_end.h`. No header edit is required. The source
   parameter names can change without changing its unnamed declaration or ABI.
 
 ## Possible code-generation effects
 
-Only identifier spellings and function-brace placement changed. These edits can
-change debug line records and object debug metadata. They do not intentionally
-change executable statements, data, relocations, call targets, storage layout,
-types, or symbol identity. Compilation and matching validation remain required.
+The cleanup changed identifier spellings, function-brace placement, and the
+resource ID token. These edits can change debug line records and object debug
+metadata. The approved macro preserves the literal value and call arguments.
+The edits do not intentionally change executable statements, data, relocations,
+call targets, storage layout, types, or symbol identity. Compilation and
+matching validation remain required.
 
 The original executable evidence path is
 `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`,
