@@ -127,8 +127,30 @@ No automatic expansion to the larger wave follows completion.
 
 Launch base: `ce65dc808eee23c3d07acb7a5c4366890b933da1`.
 Managed agent: `sa-af9710e1`, using the exact model and thinking level above.
-Current state: pilot launched; all other cleanup assignments remain held.
+First pilot completed at `5bee68e147f3d70bf5aee0e4186a135e14a5ab7a`; its worktree and commit remain preserved.
+It is not integrated. All other module assignments remain held.
 
 The new worktree uses a limited checkout for source, headers, config, tools, guides, and relevant notes.
 Its initial empty index was populated from the launch commit before the worker started.
 The worker began with a clean index and worktree. Main-tree original assets were not changed.
+
+## Fresh pilot after guidance review
+
+The user requested a fresh worker and worktree, not corrections to the first pilot.
+The revised guide requires PDB name recovery, separates resource purpose from text, and allows full assigned-file formatting.
+It specifies 1TBS, relaxed wrapping, and snake_case for newly assigned variable names only.
+
+- Base: `436d8cf3b02546b68e57e7f79e8c3b8dd1168936`.
+- Branch: `cleanup/pilot2-scr-load-20260915`.
+- Worktree: `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load`.
+- Agent: `sa-06ce0e61`, fresh context, `openai-codex-secondary/gpt-5.6-luna`, `xhigh`.
+- Owned source/header paths: the same three paths as the first pilot.
+- Owned report: `decomp_notes/source_cleanup/pilot2_scr_load.md`.
+
+Git diff confirmed unchanged source and headers between the first launch base and this base.
+An interrupted initial checkout required a fresh-worktree index restore before launch.
+No Git process remained when its stale index lock was removed. Launch status was clean.
+No first-pilot worktree, original asset, or preserved build was changed.
+
+The new worker must use the updated guidance and supplied evidence without copying the first pilot's result.
+Compare complete results before any broader launch. Validation remains deferred.
