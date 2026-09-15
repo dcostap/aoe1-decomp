@@ -6,7 +6,7 @@
 - Header owner: `include/tmap.h`; read only. A declaration-name request is
   recorded below; no header edit is included in this task.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
-- Final code commit: `d8b5e8cc95981016674b785e13fa8c2ae308190d`.
+- Final code commit: `9addb1d62d8bd49efb1d1b068a1789aeadb5ac4a`.
 - Changed files: `src/tmap.cpp` and this report.
 - Source order, declarations, types, storage, calls, and executable statements remain unchanged.
 
@@ -14,8 +14,9 @@
 
 - Owner review correction: recorded the complete `include/tmap.h`
   declaration-name request as declaration-only and ABI-neutral. Joined the
-  readable random-map constructor and terrain-setting calls. No tokens, casts,
-  call targets, argument order, or executable statements changed.
+  readable random-map constructor, terrain-setting calls, and short signatures.
+  No tokens, casts, call targets, argument order, or executable statements
+  changed.
 
 ## Original-name inspection
 
