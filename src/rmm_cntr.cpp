@@ -27,8 +27,8 @@ uchar RGE_RMM_Controller::generate() {
 void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
     long type, long player_num) {
     long land_percent;
-    long mid_x1;
-    long mid_y2;
+    long index;
+    long previous;
     long x;
     long y;
     bool not_done;
@@ -87,43 +87,43 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
     float bound =
         (float)(this->map_width - 16) / sqrt((float)player_num) * .8;
     float bound_square = bound * bound;
-    long mid_x2 = (long)(this->map_width / 2 - bound * .9);
-    long index2 = (long)(this->map_height / 2 - bound * .9);
-    long mid_y1 = (long)(this->map_width / 2 - bound * -.9);
+    long minimum_x = (long)(this->map_width / 2 - bound * .9);
+    long minimum_y = (long)(this->map_height / 2 - bound * .9);
+    long maximum_x = (long)(this->map_width / 2 - bound * -.9);
     long maximum_y = (long)(this->map_height / 2 - bound * -.9);
 
-    if (mid_x2 <= 8)
-        mid_x2 = 9;
-    if (index2 <= 8)
-        index2 = 9;
-    if (mid_y1 >= this->map_width - 9)
-        mid_y1 = this->map_width - 10;
+    if (minimum_x <= 8)
+        minimum_x = 9;
+    if (minimum_y <= 8)
+        minimum_y = 9;
+    if (maximum_x >= this->map_width - 9)
+        maximum_x = this->map_width - 10;
     if (maximum_y >= this->map_height - 9)
         maximum_y = this->map_height - 10;
 
-    mid_x1 = 0;
+    index = 0;
     if (0 < player_num) {
         do {
             switch (type) {
             case 2:
             case 3:
             case 4:
-                info.land[mid_x1].terrain_type = 0;
-                info.land[mid_x1].area = 3;
-                info.land[mid_x1].base_size = 5;
-                info.land[mid_x1].zone = 0;
+                info.land[index].terrain_type = 0;
+                info.land[index].area = 3;
+                info.land[index].base_size = 5;
+                info.land[index].zone = 0;
                 break;
             case 1:
-                info.land[mid_x1].terrain_type = 0;
-                info.land[mid_x1].area = 4;
-                info.land[mid_x1].base_size = 5;
-                info.land[mid_x1].zone = (uchar)mid_x1;
+                info.land[index].terrain_type = 0;
+                info.land[index].area = 4;
+                info.land[index].base_size = 5;
+                info.land[index].zone = (uchar)index;
                 break;
             case 0:
-                info.land[mid_x1].terrain_type = 0;
-                info.land[mid_x1].area = 7;
-                info.land[mid_x1].base_size = 5;
-                info.land[mid_x1].zone = (uchar)mid_x1;
+                info.land[index].terrain_type = 0;
+                info.land[index].area = 7;
+                info.land[index].base_size = 5;
+                info.land[index].zone = (uchar)index;
             }
 
             do {
@@ -133,38 +133,38 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
                 y = debug_rand(s_rmm_cntr_path, 0xD2) *
                     (this->map_height - 16) / 0x7FFF + 8;
 
-                if (x > mid_x2 && x < mid_y1 &&
-                    y > index2 && y < maximum_y) {
+                if (x > minimum_x && x < maximum_x &&
+                    y > minimum_y && y < maximum_y) {
                     not_done = true;
                 } else {
-                    mid_y2 = 0;
-                    if (0 < mid_x1) {
+                    previous = 0;
+                    if (0 < index) {
                         do {
-                            long delta_x = x - info.land[mid_y2].x;
+                            long delta_x = x - info.land[previous].x;
                             if (delta_x < 0)
                                 delta_x = -delta_x;
-                            long delta_y = y - info.land[mid_y2].y;
+                            long delta_y = y - info.land[previous].y;
                             if (delta_y < 0)
                                 delta_y = -delta_y;
                             if ((float)(delta_x * delta_x +
                                 delta_y * delta_y) <= bound_square) {
-                                if (!not_done && mid_y2 == mid_x1 - 1) {
-                                    info.land[mid_y2].y = y;
-                                    info.land[mid_y2].x = x;
+                                if (!not_done && previous == index - 1) {
+                                    info.land[previous].y = y;
+                                    info.land[previous].x = x;
                                 }
                                 not_done = true;
                             }
-                            ++mid_y2;
-                        } while (mid_y2 < mid_x1);
+                            ++previous;
+                        } while (previous < index);
                     }
                 }
             } while (not_done);
 
-            info.land[mid_x1].x = x;
-            info.land[mid_x1].y = y;
-            info.land[mid_x1].land_size = land_tile_num / info.land_num;
-            ++mid_x1;
-        } while (mid_x1 < info.land_num);
+            info.land[index].x = x;
+            info.land[index].y = y;
+            info.land[index].land_size = land_tile_num / info.land_num;
+            ++index;
+        } while (index < info.land_num);
     }
 
     new RGE_RMM_Land_Generator(this->map, this, &info);
