@@ -115,6 +115,12 @@ Use the harness `everything_search` tool for recursive path discovery. Use `rg`
 for file content searches. Do not recursively enumerate the repository with
 `find` when Everything can answer the query.
 
+## Testing
+
+Read [the testing guide](docs/testing.md) before planning validation or reporting project test results.
+It defines the separate checks, build selection, reports, and coverage limits. There is no universal test command.
+Report which stages ran. Keep failures, skips, unknowns, and untested areas visible.
+
 ## Evidence and communication
 
 Separate facts from hypotheses. State the source of each important conclusion.
