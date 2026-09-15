@@ -43,7 +43,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     setup_shadow_area(0);
     set_ideal_size(0x280, 0x1E0);
 
-    if (!create_text(this, &title, 0x24CD, 0x14, 0x14, 600, 0x1E, 1, 1, 0, 0))
+    if (!create_text(this, &title, IDS_SCENARIO_OPEN_TITLE, 0x14, 0x14, 600, 0x1E, 1, 1, 0, 0))
         return;
 
     if (!create_list(this, &list, 0x14, 0x46, 600, 0x154, 0x0B))
@@ -210,7 +210,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                                 start_scenario_editor(fileName, 0);
                             return 1;
                         } else {
-                            popupOKDialog(0x24CF, 0, 0x1C2, 100);
+                            popupOKDialog(IDS_ERROR_CANNOT_LOAD_SCENARIO, 0, 0x1C2, 100);
                             return 1;
                         }
                     }
