@@ -161,7 +161,7 @@ TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
     this->fog_update = (debug_rand(tplayerSourceName, 0x140) * 3) / 0x7fff + 3;
     this->update_time = 0.0f;
     this->history = new TRIBE_History_Info(-1);
-    this->tech_tree = new TRIBE_Player_Tech(world->tech, this, 1);
+    this->tech_tree = new TRIBE_Player_Tech(gworld->tech, this, 1);
     this->ruin_held_time = -1.0f;
     this->artifact_held_time = -1.0f;
 }

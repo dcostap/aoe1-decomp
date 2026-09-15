@@ -21,7 +21,7 @@ The owner also updated the eight matching headers.
 | Module | Worker commits | Integration commits |
 | --- | --- | --- |
 | `player.cpp` | `ee934757e344c476cfb56fb5ae84113690603d3b`, `21904e686bf21c1327b89c11ae2a1b5d7ad2403a` | `a1d2a5c4d555bac10bf9eeaad0a7a2d2378b9640`, `d70f19344f30e49f1cb6e078dd989cbb274ef9a7` |
-| `tplayer.cpp` | `b55b6d4e480488bf47d0a8ceed53639dc70ca6ae`, `93bec630cac14f33d4dcab822779006a3d114ec4`, `e35426b10aa87044da20b21f20c7e76395526fdc`, `ae634017a848d8b8af7ffdc892da0311e1971f0c` | `34aee64465a3daad581964f0bdc3afbec3b041ad`, `2e1a6e41103318f946e76f54463c7160a848dcec`, `eb61744fef1f30ba760a36d74ca6602783195d3b`, `a5edf8489673885a85ecc96af2c5f714fa8abebc` |
+| `tplayer.cpp` | `b55b6d4e480488bf47d0a8ceed53639dc70ca6ae`, `93bec630cac14f33d4dcab822779006a3d114ec4`, `e35426b10aa87044da20b21f20c7e76395526fdc`, `ae634017a848d8b8af7ffdc892da0311e1971f0c`, `117391699c0899191371a5f0fa07d5726138b531` | `34aee64465a3daad581964f0bdc3afbec3b041ad`, `2e1a6e41103318f946e76f54463c7160a848dcec`, `eb61744fef1f30ba760a36d74ca6602783195d3b`, `a5edf8489673885a85ecc96af2c5f714fa8abebc`, `5e3ee0fa787bda7ded1c9482e7600ef0b07f7bd4` |
 | `tmplayer.cpp` | `a540c0409504a58501d7fe0a97b87e7b5e68c52f`, `0f6b6f8454d2cb980007a4a1cb0eb70a239897a9` | `fa54a8cdc59b8e0732617a450f82419711dbc1f6`, `74b9b72b2518e8b85310233f9e447b4283da8773` |
 | `com_hand.cpp` | `6d0a12480437318b0590c5f956844dcb3be8d30b`, `2190866426979b55ee91c0c86050a37242e7e2c9`, `0c55cee885d49df20bcc9ee68ae5d79f96e3b983` | `9941de0c4230bcd866ae517f318c14a1be2774ae`, `3e0a2fff3a931d88ef4db0208d1903ee7031a094`, `43c0e639d6b00f10c4d07b8b07b895f79efb1509` |
 | `com_obj.cpp` | `81c9c0021f91a9b63fb38448f87bb51379763d67`, `0738f55c91c4b2b054d7b95dc4160c7ed074a785`, `97fd3db53fce3a4e152a59267a0720ea16e69f6d` | `53c88a39b6e1ae33da4896d4e2e516a91e0a569e`, `53888e2371907dce197a97240406563f4e2540c1`, `46837748ec2d2222f8f1bafae15060e4263e58ff` |
@@ -50,6 +50,12 @@ The same worker restored `save_file` as the handle and `outfile` as the flag.
 The original declaration and initialization order remains intact.
 
 The same `com_hand.cpp` worker moved the remaining `if (InQ)` brace to 1TBS.
+
+Fresh main validation found `C2039` in the second `TRIBE_Player` constructor.
+The parameter rename had changed `world->tech` from the parameter to the base member.
+The same worker restored the baseline binding as `gworld->tech`.
+The repair report is
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
 
 Header names use reviewed source or procedure-scoped PDB evidence.
 The owner did not add unsupported names for three ambiguous `player.h` declarations.
