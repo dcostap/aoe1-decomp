@@ -7,15 +7,13 @@
 #include "../include/unit_ai_module.h"
 #include "../include/world.h"
 
-MainDecisionAIModule::MainDecisionAIModule(void* pW, int playerID,
-                                           RGE_Player* plyr)
+MainDecisionAIModule::MainDecisionAIModule(void* pW, int playerID, RGE_Player* plyr)
     : AIModule("Main Decision AI", 1000, playerID, pW),
       player(plyr),
       objects() {
 }
 
-MainDecisionAIModule::MainDecisionAIModule(int playerID, RGE_Player* plyr,
-                                           int infile)
+MainDecisionAIModule::MainDecisionAIModule(int playerID, RGE_Player* plyr, int infile)
     : AIModule("Main Decision AI", 1000, playerID, 0),
       player(plyr),
       objects() {
@@ -131,8 +129,7 @@ int MainDecisionAIModule::numberObjectsWithTargetType(int tt) {
     return count;
 }
 
-int MainDecisionAIModule::numberObjectsWithActionAndTargetType(int action,
-                                                               int tt) {
+int MainDecisionAIModule::numberObjectsWithActionAndTargetType(int action, int tt) {
     int count = 0;
 
     for (int i = 0; i < this->objects.number(); ++i) {
