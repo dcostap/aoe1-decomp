@@ -5,7 +5,8 @@
 - Module: `src/dlg_menu.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Source head commit: `d26604d77fcf83b0b61a08b467c5ab30df85f3dc`
-- Applied resource definitions: `5bc93fcb069dce227999254757e001423ec4959e`
+- Worker-local resource import provenance: `5bc93fcb069dce227999254757e001423ec4959e`
+- Root approval: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Assigned report: `decomp_notes/source_cleanup/wave02/dlg_menu.md`
 - Changed files: `src/dlg_menu.cpp`, this report
 - Header owner: owner 10 owns `include/dlg_menu.h`. This worker did not edit it.
@@ -81,17 +82,21 @@ no entries for these IDs:
 - `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA256
   `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 
-Root applied the following definitions in `include/resource_ids.h` in commit
-`5bc93fcb069dce227999254757e001423ec4959e`. They are new cleanup names, not
+The worker imported the following reviewed definitions from
+`include/resource_ids.h` in local commit
+`5bc93fcb069dce227999254757e001423ec4959e`. Root approved them in
+`8c56055b7feee1526f296bd306036a4c34f38041`. They are new cleanup names, not
 recovered original macro names. Each ID is an RT_STRING lookup through the
 panel/game string path. The base-language result is from the file and
 language listed above.
 
 `TEasy_Panel::popupYesNoDialog(long, char*, int, int)` loads the confirmation
 ID into a text buffer, then passes that text to the dialog overload. These
-confirmation resources are message text. The adjacent `QuitAndLoadDialog`,
-`QuitGameDialog`, `RestartDialog`, and `ResignDialog` strings select dialog
-resources; they are not the confirmation message IDs.
+confirmation resources are message text. At `Panel_ez.cpp:1416`, the adjacent
+`QuitAndLoadDialog`, `QuitGameDialog`, `RestartDialog`, and `ResignDialog`
+strings pass to `new TMessageDialog(message)`. They name dialog panels. The
+dialog `setup` call uses `popup_info_file_name` and `popup_info_id` separately.
+These strings do not select resource payloads.
 
 | ID | exact base text | call-site purpose | applied cleanup name |
 | --- | --- | --- | --- |
@@ -133,9 +138,10 @@ Shared requests:
 
 1. Owner 10 may update the unassigned declaration names in `include/dlg_menu.h`
    to `parentPanel`, `fromPanel`, `actionIn`, `a1`, and `a2`.
-2. Root applied all approved resource IDs in
-   `5bc93fcb069dce227999254757e001423ec4959e`. `IDS_MENU_HELP` was already
-   present and remains reused.
+2. Root approved all resource IDs in
+   `8c56055b7feee1526f296bd306036a4c34f38041`. The worker-local import
+   provenance is `5bc93fcb069dce227999254757e001423ec4959e`.
+   `IDS_MENU_HELP` was already present and remains reused.
 
 The preserved pre-cleanup reference is under
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/`.
