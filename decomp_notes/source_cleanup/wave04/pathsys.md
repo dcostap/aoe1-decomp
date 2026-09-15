@@ -5,7 +5,7 @@
 - Module: `src/pathsys.cpp`
 - PDB source: `C:\\msdev\\work\\age1_x1\\pathsys.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `307f74ba2c02befb00b09eb5a7ebf1df28673cec`
+- Final source commit: `d9cd60d02a02d893a4a16f65d3149f9e675428ad`
 - Changed files:
   - `src/pathsys.cpp`
   - `decomp_notes/source_cleanup/wave04/pathsys.md`
@@ -49,7 +49,7 @@ The PDB source map records these normal owners:
 | `0046D280` | `passable` | Parameters `obj`, `newX`, `newY`, `checkTerrain`. Existing names match. PDB locals `currentXOffset`, `maxY`, `maxX`, `minY`, `minX`, `inObMap`, and `yRadius` match the source. |
 | `0046D740` | `checksum` | No stack locals. `this` only. Unchanged. |
 | `0046D770` | `printState` | Recovered parameter `unit` from `obj`. |
-| `0046D830` | `copyPath` | Recovered parameter `stepSize`, locals `temp` and `wp`. Existing `currentFacet`, `fooX`, `fooY`, and `objectCountOnTile` already match. |
+| `0046D830` | `copyPath` | Recovered parameter `stepSize`, locals `temp`, `wp`, `tWX2`, `tWY2`, and `tWY1`. Existing `currentFacet`, `fooX`, `fooY`, and `objectCountOnTile` already match. |
 | `0046DCB0` | `copyUnobstructibles` | Recovered parameter `d` from `out`. Local `i` already matched. |
 
 The PDB also lists compiler-generated startup wrappers at `0046B060` and
@@ -68,9 +68,9 @@ pointer cannot be mapped to it with reliable type and scope evidence. I left it
 unchanged. The PDB does not provide reliable records for the remaining source
 scan variables. I did not rename them by inference.
 
-`copyPath` has PDB locals `tWX2`, `tWY2`, and `tWY1` that are absent from the
-current source. Their reused homes do not prove a current declaration mapping.
-I left them unresolved. The PDB names its `BYTEPoint` type as
+`copyPath` maps PDB locals `tWX2`, `tWY2`, and `tWY1` to the upper X bound and
+the two Y bounds in the unobstructible-object scan. The lower X bound has no
+PDB record, so the existing `minX` name remains. The PDB names its `BYTEPoint` type as
 `PathingSystem::BYTEPoint`, while the current source has a source-local
 `BYTEPoint`. This type-ownership issue predates this cleanup and remains open.
 
