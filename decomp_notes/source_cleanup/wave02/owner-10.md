@@ -237,11 +237,24 @@ failures in `THelpDialog::setup_help` at relative instructions 246 and 255.
 The preserved baseline binds these positions to `width` and `xPosition`.
 The fresh object binds them to `xPosition` and `width`.
 
-The cleanup had renamed the baseline local `x` to recovered PDB name
-`dialog_x`. The source expression and its call order stayed textually equal.
-Existing probe evidence also showed that reversing the sum did not repair the
-relocation order. The worker restored only the baseline local spelling `x`.
-Types, scopes, calls, expressions, and control flow remain unchanged.
+The first repair restored local spelling `x`. Root compiled that source and
+confirmed that the two relocation failures remained. Thus, the local rename
+was not the cause.
+
+Root then authorized targeted pinned VC5 compiles for `dlg_help.cpp` only.
+The worker compiled isolated source variants under
+`build/setup-help-cause/`. The baseline source has target order `width`, then
+`xPosition`. Adding only `resource_ids.h` changes it to `xPosition`, then
+`width`. Removing that include restores baseline order with either `x` or
+`dialog_x`.
+
+The final repair removes the resource header include from `dlg_help.cpp` and
+restores numeric IDs `0x243D` and `0xFA1`. The shared mappings remain reviewed
+and documented. The selected object SHA-256 is
+`10dea241aadf6190856c31d0f703858911b659d36f6f6990ac040f266c15d817`.
+Its 849-byte `setup_help` span matches the preserved baseline, including the
+two relocation target identities. Types, scopes, calls, expressions, and
+control flow remain unchanged.
 
 The worker repair commit is
 `4cf7d67790b4b4393b38aab8ca4b693cc7b19405`.
@@ -249,8 +262,13 @@ The integrated repair commit is
 `e2f4da23723f70aea480b7440be958e49488dfb8`.
 Root owns compilation and linked validation after this repair.
 
+The final worker repair commit is
+`6ba8cff410268573906f18dc66f41909e60a21ce`.
+The final integrated repair commit is
+`2b66112fb46597825eb9638c06b68921da0a6876`.
+
 ## Validation status
 
-Compilation, matching, audits, and tests were not run.
-No compiler, build, game, or runtime command was run.
-All results remain reviewed but unvalidated.
+The worker ran only targeted pinned VC5 compiles for the documented
+`dlg_help.cpp` variants. No broad build, matching audit, automated test, menu
+suite, gameplay suite, or game ran. Root owns fresh linked validation.
