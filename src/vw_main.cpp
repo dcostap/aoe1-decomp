@@ -258,22 +258,19 @@ int RGE_Main_View::handle_keys() {
     return 0;
 }
 
-long RGE_Main_View::handle_mouse_up(unsigned char mouse_button_in, long x,
-                                    long y, int ctrl_key, int shift_key) {
+long RGE_Main_View::handle_mouse_up(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     unsigned long start;
     long result;
     unsigned long stop;
 
     start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x1AE);
-    result = RGE_View::handle_mouse_up(mouse_button_in, x, y, ctrl_key,
-                                       shift_key);
+    result = RGE_View::handle_mouse_up(mouse_button_in, x, y, ctrl_key, shift_key);
     stop = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x1B0);
     rge_base_game->add_to_timing(0x0D, stop - start);
     return result;
 }
 
-long RGE_Main_View::mouse_move_action(long x, long y, int ctrl_key,
-                                      int shift_key) {
+long RGE_Main_View::mouse_move_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Base_Game* game = rge_base_game;
     int mode = game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
@@ -292,8 +289,7 @@ long RGE_Main_View::mouse_move_action(long x, long y, int ctrl_key,
     return 0;
 }
 
-long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
-                                           int shift_key) {
+long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     short min_x;
     short min_y;
     short max_y;
@@ -309,22 +305,19 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
 
             switch (mode) {
             case 18:
-                if (this->pick1(0x29, 0, x, y, &pick_info,
-                                this->player->selected_obj, 1) == 0x34) {
+                if (this->pick1(0x29, 0, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                     this->player->unselect_object();
                     this->player->select_one_object(pick_info.object, 1);
                     this->set_redraw(TPanel::RedrawNormal);
                     if (pick_info.object->sprite != 0) {
-                        pick_info.object->get_frame(min_x, min_y, max_x,
-                                                   max_y);
+                        pick_info.object->get_frame(min_x, min_y, max_x, max_y);
                         point.x = pick_info.scr_x - min_x;
                         point.y = pick_info.scr_y - min_y;
                         if (this->TPanel::render_area->DrawSystem->ScreenMode == 1)
                             ClientToScreen(this->TPanel::render_area->Wnd, &point);
                         if (this->TPanel::render_area->DrawSystem->ScreenMode == 1)
                             ScreenToClient(this->TPanel::render_area->Wnd, &point);
-                        this->start_scroll_view(4, point.x, point.y, ctrl_key,
-                                                shift_key);
+                        this->start_scroll_view(4, point.x, point.y, ctrl_key, shift_key);
                     }
                 }
                 break;
@@ -337,16 +330,13 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
                         this->player->master_objects[object_id] != 0) {
                         RGE_Master_Static_Object* master =
                             this->player->master_objects[object_id];
-                        master->alignment(pick_info.x, pick_info.y,
-                                          this->world, 0);
-                        this->player->command_place_object(
-                            (short)object_id, pick_info.x, pick_info.y, 0.0f);
+                        master->alignment(pick_info.x, pick_info.y, this->world, 0);
+                        this->player->command_place_object((short)object_id, pick_info.x, pick_info.y, 0.0f);
                     } else if (object_id != -1 && this->world->players[0]
                                ->master_objects[object_id] != 0) {
                         RGE_Master_Static_Object* master =
                             this->world->players[0]->master_objects[object_id];
-                        master->alignment(pick_info.x, pick_info.y,
-                                          this->world, 0);
+                        master->alignment(pick_info.x, pick_info.y, this->world, 0);
                         this->world->players[0]->command_place_object(
                             (short)object_id, pick_info.x, pick_info.y, 0.0f);
                     }
@@ -378,8 +368,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
                 break;
 
             case 15:
-                if (this->pick1(0x29, 0, x, y, &pick_info,
-                                this->player->selected_obj, 1) == 0x34) {
+                if (this->pick1(0x29, 0, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
                     if (pick_info.object->master_obj->object_group != 0x22) {
                         unsigned char draw_level;
                         if (pick_info.object->sprite_list != 0) {
@@ -403,14 +392,12 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
                             this->set_redraw(TPanel::RedrawImmediate);
                         rge_base_game->set_game_mode(8, 1);
                         if (this->movable_object->sprite != 0) {
-                            this->movable_object->get_frame(
-                                min_x, min_y, max_x, max_y);
+                            this->movable_object->get_frame(min_x, min_y, max_x, max_y);
                             point.x = pick_info.scr_x - min_x;
                             point.y = pick_info.scr_y - min_y;
                             if (this->TPanel::render_area->DrawSystem
                                     ->ScreenMode == 1)
-                                ClientToScreen(this->TPanel::render_area->Wnd,
-                                               &point);
+                                ClientToScreen(this->TPanel::render_area->Wnd, &point);
                         }
                         this->start_scroll_view(9, x, y, ctrl_key, shift_key);
                     }
@@ -429,8 +416,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
     return 0;
 }
 
-long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key,
-                                           int shift_key) {
+long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
         if (rge_base_game->get_paused()) {
@@ -449,8 +435,7 @@ long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key,
         switch (rge_base_game->game_mode) {
         case 0:
             this->release_mouse();
-            this->start_scroll_view(2, this->mouse_down_x, this->mouse_down_y,
-                                    ctrl_key, shift_key);
+            this->start_scroll_view(2, this->mouse_down_x, this->mouse_down_y, ctrl_key, shift_key);
             this->handle_scroll_view(x, y);
             return 1;
         case 1:
@@ -464,8 +449,7 @@ long RGE_Main_View::mouse_left_move_action(long x, long y, int ctrl_key,
     return 0;
 }
 
-long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
-                                         int shift_key) {
+long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
@@ -479,9 +463,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
 
         if (rge_base_game->game_mode == 0x15) {
             int placement_mode = (ctrl_key == 0 && shift_key == 0) ? 1 : 0;
-            this->command_place_multi_object(
-                this->sel_col1, this->sel_row1, this->sel_col2,
-                this->sel_row2, placement_mode);
+            this->command_place_multi_object(this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2, placement_mode);
         }
 
         if (rge_base_game->game_mode == 8) {
@@ -649,14 +631,11 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
                     } else {
                         RGE_Static_Object** list;
                         short list_num;
-                        if (this->player->get_selected_objects_to_command(
-                                &list, &list_num, -1, -1,
-                                -1, -1)) {
+                        if (this->player->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
                             free(list);
                             if (allow_user_commands != 0) {
                                 this->fixup_pick_info(&pick_info);
-                                this->player->command_add_waypoint(
-                                    pick_info.x, pick_info.y, 1.0f);
+                                this->player->command_add_waypoint(pick_info.x, pick_info.y, 1.0f);
                                 this->reset_display_object_selection(2);
                                 this->add_overlay_sprite(
                                     rge_base_game->shapes[1], 0,
@@ -682,8 +661,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
         break;
 
     case 7:
-        this->command_place_object(x, y,
-                                    (ctrl_key == 0 && shift_key == 0) ? 1 : 0);
+        this->command_place_object(x, y, (ctrl_key == 0 && shift_key == 0) ? 1 : 0);
         break;
 
     case 8:
@@ -724,8 +702,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
     }
 
     case 0x10:
-        if (this->pick1(0x29, 1, x, y, &pick_info,
-                        this->player->selected_obj, 1) == 0x34) {
+        if (this->pick1(0x29, 1, x, y, &pick_info, this->player->selected_obj, 1) == 0x34) {
             if (this->curr_child != 0) {
                 this->curr_child->action(
                     this, 0x10,
@@ -738,8 +715,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
         break;
 
     case 0x14:
-        if (this->pick1(0x29, 2, x, y, &pick_info,
-                        this->player->selected_obj, 1) == 0x34)
+        if (this->pick1(0x29, 2, x, y, &pick_info, this->player->selected_obj, 1) == 0x34)
             pick_info.object->rotate(1);
         break;
     }
@@ -748,8 +724,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
     return 1;
 }
 
-long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key,
-                                            int shift_key) {
+long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key, int shift_key) {
     if (!rge_base_game->get_paused()) {
         int mode = rge_base_game->prog_mode;
         if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
@@ -771,8 +746,7 @@ long RGE_Main_View::mouse_right_down_action(long x, long y, int ctrl_key,
     return 0;
 }
 
-long RGE_Main_View::mouse_right_move_action(long x, long y, int ctrl_key,
-                                            int shift_key) {
+long RGE_Main_View::mouse_right_move_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
     if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
         return 0;
@@ -794,16 +768,14 @@ long RGE_Main_View::mouse_right_move_action(long x, long y, int ctrl_key,
 
     if (this->player->sel_count == 0) {
         this->release_mouse();
-        this->start_scroll_view(1, this->mouse_down_x, this->mouse_down_y,
-                                ctrl_key, shift_key);
+        this->start_scroll_view(1, this->mouse_down_x, this->mouse_down_y, ctrl_key, shift_key);
         this->handle_scroll_view(x, y);
         return 1;
     }
     return 0;
 }
 
-long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key,
-                                          int shift_key) {
+long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
@@ -816,8 +788,7 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key,
             this->release_mouse();
 
             if (rge_base_game->game_mode == 0x14) {
-                if (this->pick1(0x29, 2, x, y, &pick_info,
-                                this->player->selected_obj, 1) == 0x34)
+                if (this->pick1(0x29, 2, x, y, &pick_info, this->player->selected_obj, 1) == 0x34)
                     pick_info.object->rotate(-1);
             } else {
                 if (rge_base_game->get_paused() != 0) {
@@ -838,16 +809,12 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key,
                             } else {
                                 RGE_Static_Object** list;
                                 short list_num;
-                                if (this->player->get_selected_objects_to_command(
-                                        &list, &list_num,
-                                        -1, -1, -1, -1)) {
+                                if (this->player->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
                                     free(list);
                                     if (allow_user_commands != 0) {
-                                        if (this->pick1(0x28, 0, x, y,
-                                                        &pick_info, 0, 1) == 0x33) {
+                                        if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
                                             this->fixup_pick_info(&pick_info);
-                                            this->player->command_add_waypoint(
-                                                pick_info.x, pick_info.y, 1.0f);
+                                            this->player->command_add_waypoint(pick_info.x, pick_info.y, 1.0f);
                                             this->reset_display_object_selection(2);
                                             this->add_overlay_sprite(
                                                 rge_base_game->shapes[1], 0,
@@ -884,11 +851,8 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key,
     return 0;
 }
 
-int RGE_Main_View::start_scroll_view(unsigned char scroll_action_in, long x,
-                                     long y,
-                                     int ctrl_key, int shift_key) {
-    if (this->RGE_View::start_scroll_view(
-            scroll_action_in, x, y, ctrl_key, shift_key) != 0) {
+int RGE_Main_View::start_scroll_view(unsigned char scroll_action_in, long x, long y, int ctrl_key, int shift_key) {
+    if (this->RGE_View::start_scroll_view(scroll_action_in, x, y, ctrl_key, shift_key) != 0) {
         if (this->map_view != 0)
             this->map_view->set_redraw(TPanel::RedrawNormal);
         return 1;
@@ -959,8 +923,7 @@ int RGE_Main_View::command_place_object(long x, long y, int reset_mode) {
                 alignment_flag = 1;
                 if (rge_base_game->sub_game_mode == 3)
                     alignment_flag = 0;
-                master_obj->alignment(pick_info.x, pick_info.y, this->world,
-                                      alignment_flag);
+                master_obj->alignment(pick_info.x, pick_info.y, this->world, alignment_flag);
                 check = master_obj->check_placement(
                     rge_base_game->get_player(), pick_info.x, pick_info.y, 0,
                     1, master_obj->elevation_flag, 0, 1, 1, 1);
@@ -978,8 +941,7 @@ int RGE_Main_View::command_place_object(long x, long y, int reset_mode) {
                             object = this->movable_object;
                             object->teleport(pick_info.x, pick_info.y, 0.0f);
                         } else {
-                            object = rge_base_game->get_player()->make_new_object(
-                                object_id, pick_info.x, pick_info.y, 0.0f, 1);
+                            object = rge_base_game->get_player()->make_new_object(object_id, pick_info.x, pick_info.y, 0.0f, 1);
                         }
                         if (object != 0) {
                             unsigned char draw_level;
@@ -1005,8 +967,7 @@ int RGE_Main_View::command_place_object(long x, long y, int reset_mode) {
     return 0;
 }
 
-int RGE_Main_View::command_make_do(long x, long y, int work_on_tile,
-                                   short action_type) {
+int RGE_Main_View::command_make_do(long x, long y, int work_on_tile, short action_type) {
     RGE_Static_Object** list;
     short list_num;
     int attacking;
@@ -1014,16 +975,14 @@ int RGE_Main_View::command_make_do(long x, long y, int work_on_tile,
     int result;
 
     if (allow_user_commands != 0) {
-        if (this->player->get_selected_objects_to_command(
-                &list, &list_num, -1, -1, -1, -1)) {
+        if (this->player->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
             free(list);
             color_log(0x4C, 0xBA, 2);
 
             RGE_Static_Object* target =
                 this->pick_best_target(x, y, &attacking, action_type);
             if (target != 0) {
-                result = this->player->command_make_do(
-                    target, target->world_x, target->world_y);
+                result = this->player->command_make_do(target, target->world_x, target->world_y);
                 if (result != 0)
                     this->display_object_selection(target->id, 0x5DC, 2, 2);
                 this->reset_overlay_sprites();
@@ -1035,8 +994,7 @@ int RGE_Main_View::command_make_do(long x, long y, int work_on_tile,
             if (work_on_tile != 0) {
                 if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
                     this->fixup_pick_info(&pick_info);
-                    result = this->player->command_make_move(
-                        0, pick_info.x, pick_info.y);
+                    result = this->player->command_make_move(0, pick_info.x, pick_info.y);
                     if (result != 0) {
                         this->reset_display_object_selection(2);
                         this->add_overlay_sprite(
@@ -1180,9 +1138,7 @@ unsigned char RGE_Main_View::pick1(unsigned char pick_mode_in,
     return 0x34;
 }
 
-int RGE_Main_View::pick_objects1(long x, long y,
-                                 RGE_Static_Object** object_list,
-                                 int max_objects) {
+int RGE_Main_View::pick_objects1(long x, long y, RGE_Static_Object** object_list, int max_objects) {
     RGE_Static_Object* previous;
     int count;
     RGE_Static_Object** output;
@@ -1206,8 +1162,7 @@ int RGE_Main_View::pick_objects1(long x, long y,
     return count;
 }
 
-RGE_Static_Object* RGE_Main_View::pick_best_target(
-    long x, long y, int* attacking_in, short action_type) {
+RGE_Static_Object* RGE_Main_View::pick_best_target(long x, long y, int* attacking_in, short action_type) {
     // task ownership is RGE_Master_Action_Object, not its static
     // base. Its named tasks and task_by_group fields are used below.
     short selected_count;
@@ -1228,8 +1183,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
     if (picked_count == 0)
         return 0;
 
-    if (!this->player->get_selected_objects_to_command(
-            &selected_objects, &selected_count, -1, -1, -1, -1))
+    if (!this->player->get_selected_objects_to_command(&selected_objects, &selected_count, -1, -1, -1, -1))
         return 0;
 
     if (picked_count > 0) {
@@ -1295,8 +1249,7 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
                                                     this->pick_weight(
                                                         object,
                                                         info->confidence);
-                                                if (object2->tasks->is_attack_task(
-                                                        action2))
+                                                if (object2->tasks->is_attack_task(action2))
                                                     attacking[target_count] = 1;
                                                 goto next_target;
                                             }
@@ -1346,14 +1299,12 @@ int RGE_Main_View::command_make_move(long x, long y) {
     int result;
 
     if (allow_user_commands != 0) {
-        if (this->player->get_selected_objects_to_command(
-                &list, &list_num, -1, -1, -1, -1)) {
+        if (this->player->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
             free(list);
             result = 0;
             if (this->pick1(0x2A, 1, x, y, &pick_info, 0, 1) != 0x32) {
                 this->fixup_pick_info(&pick_info);
-                result = this->player->command_make_move(
-                    pick_info.object, pick_info.x, pick_info.y);
+                result = this->player->command_make_move(pick_info.object, pick_info.x, pick_info.y);
                 this->set_redraw(TPanel::RedrawNormal);
             }
             rge_base_game->set_game_mode(0, 0);
@@ -1372,13 +1323,11 @@ int RGE_Main_View::command_make_work(long x, long y) {
     int result;
 
     if (allow_user_commands != 0) {
-        if (this->player->get_selected_objects_to_command(
-                &list, &list_num, -1, -1, -1, -1)) {
+        if (this->player->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
             free(list);
             target = this->pick_best_target(x, y, &attacking, -1);
             if (target != 0) {
-                result = this->player->command_make_work(
-                    target, target->world_x, target->world_y);
+                result = this->player->command_make_work(target, target->world_x, target->world_y);
                 if (result != 0)
                     this->display_object_selection(target->id, 0x5DC, 2, 2);
                 this->reset_overlay_sprites();
@@ -1389,8 +1338,7 @@ int RGE_Main_View::command_make_work(long x, long y) {
 
             if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
                 this->fixup_pick_info(&pick_info);
-                result = this->player->command_make_work(
-                    0, pick_info.x, pick_info.y);
+                result = this->player->command_make_work(0, pick_info.x, pick_info.y);
                 if (result != 0) {
                     this->reset_display_object_selection(2);
                     this->add_overlay_sprite(
@@ -1411,15 +1359,13 @@ int RGE_Main_View::command_make_work(long x, long y) {
     return 0;
 }
 
-int RGE_Main_View::command_place_multi_object(
-    long x1, long y1, long x2, long y2, int reset_mode) {
+int RGE_Main_View::command_place_multi_object(long x1, long y1, long x2, long y2, int reset_mode) {
     this->set_selection_area(-1, -1, -1, -1);
     this->set_redraw(TPanel::RedrawNormal);
     return 0;
 }
 
-unsigned char RGE_Main_View::get_help_info(char*& string, long& page,
-                                           long x, long y) {
+unsigned char RGE_Main_View::get_help_info(char*& string, long& page, long x, long y) {
     RGE_Pick_Info pick_info;
     unsigned char result = this->pick1(0x29, 2, x, y, &pick_info, 0, 1);
 
