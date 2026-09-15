@@ -299,12 +299,12 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* loc_stack) {
 
 void RGE_RMM_Elevation_Generator::remove_area_from_lists(
     long x, long y, long spacing) {
-    long x1 = x - spacing;
+    long start_x = x - spacing;
     long start_y = y - spacing;
     long max_x = x + spacing;
 
-    if (x1 < 0) {
-        x1 = 0;
+    if (start_x < 0) {
+        start_x = 0;
     }
     if (start_y < 0) {
         start_y = 0;
@@ -315,8 +315,8 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(
 
     long y_index = start_y;
     while (y_index <= max_x) {
-        if (x1 <= max_x) {
-            long column = x1;
+        if (start_x <= max_x) {
+            long column = start_x;
             while (column <= max_x) {
                 this->remove_stack_node(
                     this->stack_offsets[y_index] + column);
