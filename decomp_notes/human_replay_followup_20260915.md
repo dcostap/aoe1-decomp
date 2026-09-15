@@ -90,3 +90,49 @@ It contains 1,206 frames at 20 FPS, with dimensions 1920 by 512.
 The video uses the first reported pair, not the equal pair.
 One black end frame marks the shorter rebuilt video. No existing game frame is masked or omitted.
 Its difference panel compares decoded video pixels. Raw capture hashes remain the exact comparison evidence.
+
+## Six completed candidate diagnostics
+
+Batch root: `build/runtime/new-input-v2-full-20260915T080644Z/`.
+All six captures and both batch workers returned zero.
+The comparison completed as `explicit-v1-to-v2-upgrade-comparison`, not a same-policy replay.
+All runs preserved the 1,361 messages and game input boundaries. Camera values also matched between compared runs.
+Clock boundaries differed. RNG order, terminal observations, and video frames varied within each executable.
+
+Original RNG counts: 3,611,267; 3,611,257; 3,611,244.
+Rebuilt RNG counts: 3,611,267; 3,611,244; 3,611,252.
+The three cross-build comparisons differ at 173, 1,928, and 1,988 RGB frame positions.
+Each cross-build side has 3,608 frames. The first pair has equal terminal world observations.
+Its first video difference occurs at 3,950 video milliseconds.
+
+An exact field scan of the first pair checks all 3,611,267 RNG records.
+Every returned value matches. Exactly one site identity differs, at index 3,609,993.
+Both records return 7,893 at source line 2,862.
+The original reports `aiuaimod.cpp`; the rebuilt reports `aiuaimod.c`.
+The scan retains this discrepancy as a failure. It applies no filename alias.
+Scan evidence: `rng-field-differences.json` and `inspect_rng_pairs.py` beneath the batch root.
+An independent worker checks the corresponding source literal against the original callsite bytes.
+
+The first-pair comparison video is `comparison/original-rebuilt-difference.mp4` beneath the batch root.
+It shows original, repaired, and decoded RGB difference panels without dropping end frames.
+No complete gameplay equivalence follows from these diagnostics.
+
+The separate legacy replay also completed after freezing V1:
+`build/runtime/human-20260915T080541397572Z/report.json`.
+
+## Proven RNG logging literal repair
+
+`UnitAIModule::closestUndiscoveredTile` owns the original range 00415F40 through 004161CB.
+The original instruction at 0041601A pushes line 0xB2E.
+The instruction at 0041601F pushes 0057F980, which stores `C:\msdev\work\age1_x1\aiuaimod.cpp`.
+The call at 00416024 reaches `debug_rand` at 004230A0.
+The rebuilt source omitted the final `pp`. The repair restores only that literal.
+`debug_rand` calls `rand` at 004230A4 and saves its result before handling the logging arguments.
+Thus this repair corrects logging identity, not the RNG calculation.
+
+The first pair's numeric RNG files are byte-equal, but their site dictionaries differ.
+Numeric file equality alone does not establish complete trace equality.
+The exact site-aware comparison correctly rejected the old literal.
+The regression test checks the original bytes and call identity without changing the comparator.
+The fresh function check reports MATCH for all 652 bytes.
+Linked-image and runtime validation of this final source change follow separately.

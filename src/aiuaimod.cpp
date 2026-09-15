@@ -1833,7 +1833,8 @@ int UnitAIModule::closestUndiscoveredTile(int* param_1, int* param_2, int param_
         highY = map->map_height - 1;
     }
 
-    const int randSelect = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\aiuaimod.c", 0xB2E) % 3;
+    // Original 0041601F points to the .cpp path at 0057F980.
+    const int randSelect = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xB2E) % 3;
     currentZone = this->objectValue->currentZone();
 
     for (y = lowY; y <= highY; ++y) {

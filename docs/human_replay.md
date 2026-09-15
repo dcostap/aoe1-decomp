@@ -188,6 +188,9 @@ Input can run in a nested modal message loop.
 The v2 scheduler releases input after the matching nested dispatch returns.
 An unrelated nested dispatch or A/W forwarding call cannot release it.
 The recording does not store dispatch depth, so replay does not prove equal modal-loop nesting.
+A handler can enter a modal loop that needs another recorded input before that handler returns.
+V2 withholds that input while the handler remains pending. Such a replay can stall and fail its deadline.
+Do not treat this unsupported case as a game-code defect.
 
 Replay schedules messages at recorded idle-return boundaries, including nested idle calls during mouse handling.
 The normal game loop dispatches them through Windows. The harness checks receipts without calling game command functions directly.
