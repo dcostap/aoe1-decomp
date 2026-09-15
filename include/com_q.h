@@ -50,29 +50,29 @@ public:
     unsigned char Sequence;
     MsgQueue* Queue;
 
-    RGE_Communications_Queue(int param_1);
+    RGE_Communications_Queue(int MaxSize);
     ~RGE_Communications_Queue();
 
 protected:
-    int AllocateQueue(unsigned int param_1);
-    unsigned int QueuedForTurn(unsigned long turn);
+    int AllocateQueue(unsigned int NewQSize);
+    unsigned int QueuedForTurn(unsigned long TurnID);
 
 public:
-    unsigned char ExpectedNextSequence(unsigned long turn, unsigned int from);
+    unsigned char ExpectedNextSequence(unsigned long TurnID, unsigned int PlayerNo);
     void FlushAll();
-    unsigned int FlushTurnRange(unsigned long first, unsigned long last);
-    void FlushForPlayer(unsigned int player);
-    unsigned int FlushForTurn(unsigned long turn);
-    unsigned int FlushThruTurn(unsigned long turn);
-    int AddItem(unsigned long turn, void* data, unsigned long size,
-                unsigned int from, unsigned char sequence, int control);
+    unsigned int FlushTurnRange(unsigned long LowRange, unsigned long HiRange);
+    void FlushForPlayer(unsigned int p);
+    unsigned int FlushForTurn(unsigned long TurnID);
+    unsigned int FlushThruTurn(unsigned long TurnID);
+    int AddItem(unsigned long ExecuteOnTurn, void* command, unsigned long nBytes,
+                unsigned int PFrom, unsigned char InSequence, int ControlCommand);
     unsigned int GetQueueDepth();
     unsigned int GetHighQueueDepth();
-    void* GetSpecificItem(unsigned int player, unsigned long turn,
-                          unsigned char sequence, unsigned int* size);
+    void* GetSpecificItem(unsigned int FromPlayer, unsigned long ExecuteOnTurn,
+                          unsigned char Seq, unsigned int* Size);
     void* GetNextItemSingle();
-    void* GetNextItemOrdered(unsigned long turn);
-    unsigned char GetNextSequence(unsigned long turn);
+    void* GetNextItemOrdered(unsigned long ThisTurn);
+    unsigned char GetNextSequence(unsigned long ThisTurn);
     void TestShowQueue();
 };
 
