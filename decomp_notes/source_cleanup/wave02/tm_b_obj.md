@@ -6,13 +6,20 @@
 - Report: `decomp_notes/source_cleanup/wave02/tm_b_obj.md`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Initial source commit: `bfeeaa062d35c6d0388e8c6d279a221779694253`
-- Final source commit: `b8759588ca43b4751cd656f4ed179c40c8f518e0`
+- Local-role correction source commit: `b8759588ca43b4751cd656f4ed179c40c8f518e0`
+- Formatting correction source commit: `e5505f5e6c13ad1961ad2757719ccad132b0c009`
+- Final source commit: `e5505f5e6c13ad1961ad2757719ccad132b0c009`
 - The final source commit head was copied from `git rev-parse HEAD`.
 - Each source commit changed only `src/tm_b_obj.cpp`.
 - The report remains a separate commit because its final hash cannot appear inside itself.
 
-The source change recovers names from the procedure-scoped PDB data. It does not
-change types, statements, calls, literals, scopes, or storage declarations.
+The source changes recover names from the procedure-scoped PDB data and compact
+short method signatures. They do not change types, statements, calls, literals,
+scopes, or storage declarations.
+
+The formatting correction compacts the three `setup` definitions and the
+`modify`, `modify_delta`, and `modify_percent` definitions. `copy_obj` already
+had a one-line signature. It keeps its existing indentation.
 
 ## PDB inspection coverage
 
@@ -133,5 +140,6 @@ needed.
 
 ## Validation
 
-I ran evidence inspection and `git diff --check` only. I did not run a
-compiler, build, matching, audit, or test. I did not run the game.
+I ran evidence inspection, `git diff --check`, and a full base-to-head diff
+review. I did not run a compiler, build, matching, audit, or test. I did not
+run the game.
