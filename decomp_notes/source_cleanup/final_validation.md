@@ -190,6 +190,11 @@ The repair removes that include and restores three numeric resource expressions 
 The selected isolated object matches the preserved 849-byte span and its direct-target identities.
 Object SHA256: `10dea241aadf6190856c31d0f703858911b659d36f6f6990ac040f266c15d817`.
 The reports retract the prior name-based cause. Root must still confirm the result in a fresh linked executable.
+Focused job `bg-87` passed after the include removal.
+The `setup_help` row reports all 849 bytes matching and zero direct relocation-target problems.
+All five configured exact targets also match. The existing `new_verified_logic` status remains unchanged.
+Report: `build/source-cleanup-20260915/final-validation/dlg-help-repair-r2/report.csv`.
+This resolves the object-level call-target drift; fresh linked validation remains required.
 
 ## Second function sweep
 
