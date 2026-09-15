@@ -7,8 +7,7 @@ extern char s_setResource_r_v[];
 void* operator new(size_t size);
 void operator delete(void* ptr);
 
-ResourceAIModule::ResourceAIModule(void* pW, int playerID, int n, int iV,
-                                   int minV, int maxV)
+ResourceAIModule::ResourceAIModule(void* pW, int playerID, int n, int iV, int minV, int maxV)
     : AIModule("Resource AI", 0x3EF, playerID, pW), md(0),
       numberResourcesValue(n) {
     int bytes = n * 4;
@@ -162,8 +161,7 @@ void ResourceAIModule::incrementResource(int n, int v) {
         return;
     }
 
-    this->logCommonHistory("  incrementResource: r[%d]=%d.", n,
-                           resourceValue[n]);
+    this->logCommonHistory("  incrementResource: r[%d]=%d.", n, resourceValue[n]);
 }
 
 void ResourceAIModule::incrementResources(ResourceItem* ri) {
@@ -201,8 +199,7 @@ void ResourceAIModule::decrementResource(int n, int v) {
         return;
     }
 
-    this->logCommonHistory("  decrementResource: r[%d]=%d.", n,
-                           resourceValue[n]);
+    this->logCommonHistory("  decrementResource: r[%d]=%d.", n, resourceValue[n]);
 }
 
 void ResourceAIModule::decrementResources(ResourceItem* ri) {
@@ -265,14 +262,11 @@ void ResourceAIModule::addResourceType(int r, int t) {
 }
 
 int ResourceAIModule::isResourceType(int r, int t) {
-    this->logCommonHistory("Entering isResourceType: r=%d, t=%d.",
-                           r, t);
-    this->logCommonHistory("  There are %d resource types for resource %d.",
-                           this->numberResourceTypesValue[r], r);
+    this->logCommonHistory("Entering isResourceType: r=%d, t=%d.", r, t);
+    this->logCommonHistory("  There are %d resource types for resource %d.", this->numberResourceTypesValue[r], r);
 
     for (int i = 0; i < this->numberResourceTypesValue[r]; i++) {
-        this->logCommonHistory("    Checking against type %d.",
-                               this->resourceTypesValue[r][i]);
+        this->logCommonHistory("    Checking against type %d.", this->resourceTypesValue[r][i]);
         if (this->resourceTypesValue[r][i] == t) {
             this->logCommonHistory("      Match!  Returning TRUE.");
             return 1;
