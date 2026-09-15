@@ -16,10 +16,9 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
 RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
 }
 
-int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
-                           long popup_id, int list_type, char* title)
-{
-    this->list_type = list_type;
+int RGE_Dialog_List::setup(TScreenPanel* parent_screen, char* info_file_in,
+                           long info_id_in, int list_type_in, char* title_in) {
+    this->list_type = list_type_in;
     this->list_info = 0;
     this->list_text = 0;
 
@@ -50,15 +49,14 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
     }
 
     return this->TListDialog::setup(
-        screen, popup_file, popup_id,
+        parent_screen, info_file_in, info_id_in,
         0x136, 0x190, 0x0A, 0x0A, 0x122,
-        0x19, title, 0x0A, 0x2D, 0x122,
+        0x19, title_in, 0x0A, 0x2D, 0x122,
         0x131, this->list_text, this->list_size, this->list_line,
         0x0A, 0xA0, 0x168, 0x8C, 0x1E) != 0;
 }
 
-RGE_Dialog_List::~RGE_Dialog_List()
-{
+RGE_Dialog_List::~RGE_Dialog_List() {
     if (this->list_text) {
         for (int i = 0; i < this->list_size; i++) {
             if (this->list_text[i])
@@ -74,37 +72,34 @@ RGE_Dialog_List::~RGE_Dialog_List()
     }
 }
 
-short RGE_Dialog_List::get_list_id(void)
-{
+short RGE_Dialog_List::get_list_id(void) {
     short index = this->list_id;
     if (index == -1)
         return index;
     return this->list_info[index].id;
 }
 
-int RGE_Dialog_List::create_list()
-{
+int RGE_Dialog_List::create_list() {
     if (this->list_type - 1)
         return 0;
     return this->create_object_list();
 }
 
-int RGE_Dialog_List::create_object_list()
-{
+int RGE_Dialog_List::create_object_list() {
     short i;
     short j;
     RGE_Player* player;
-    short num_objects;
+    short end_i;
 
     if ((player = rge_base_game->get_player()) == 0)
         return 0;
 
     this->list_size = 1;
-    num_objects = player->master_object_num;
-    if (num_objects > 0) {
+    end_i = player->master_object_num;
+    if (end_i > 0) {
         int count;
         int object_index = 0;
-        count = num_objects;
+        count = end_i;
         do {
             if (player->master_objects[object_index] &&
                 player->master_objects[object_index]->hide_in_scenario_editor == 0)
@@ -126,7 +121,7 @@ int RGE_Dialog_List::create_object_list()
 
     i = 1;
     j = 0;
-    if (num_objects > 0) {
+    if (end_i > 0) {
         int object_index = 0;
         do {
             if (player->master_objects[object_index] &&
@@ -144,28 +139,25 @@ int RGE_Dialog_List::create_object_list()
             }
             j++;
             object_index++;
-        } while (j < num_objects);
+        } while (j < end_i);
     }
 
     return 1;
 }
 
-int __cdecl rdlg_list_compare(const void* a, const void* b)
-{
-    int result = CompareStringA(0x400, 1, (const char*)a, -1,
-                                (const char*)b, -1);
+int __cdecl rdlg_list_compare(const void* arg1, const void* arg2) {
+    int result = CompareStringA(0x400, 1, (const char*)arg1, -1,
+                                (const char*)arg2, -1);
     if (result == 1)
         return -1;
     return result == 3;
 }
 
-void RGE_Dialog_List::sort_list()
-{
+void RGE_Dialog_List::sort_list() {
     qsort(this->list_info, (int)this->list_size, 0x66, rdlg_list_compare);
 }
 
-void RGE_Dialog_List::calc_list_line()
-{
+void RGE_Dialog_List::calc_list_line() {
     this->list_line = -1;
     short selected_id = this->get_cur_id();
     if (selected_id != -1) {
@@ -180,8 +172,7 @@ void RGE_Dialog_List::calc_list_line()
         this->list_line = 0;
 }
 
-short RGE_Dialog_List::get_cur_id()
-{
+short RGE_Dialog_List::get_cur_id() {
     int list_type;
     RGE_Base_Game* base_game;
 
