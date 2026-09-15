@@ -9,6 +9,7 @@
 - Previous source cleanup commit: `79849d74ecf5ec1c5fa84cd08d1c38b4169b65c5`
 - Previous report commit: `b659e2e1d9e1a92e8e7fb95c64329346896a0562`
 - Correction commit: `a76d02bdb0e6470c6906f7c1b032a43adc693db5`
+- Reviewer correction: `load_scenario6` keeps the baseline declaration `int index, j;`.
 - Headers changed: none
 
 This correction keeps base declaration types, scope, storage, order, and

@@ -2477,8 +2477,7 @@ void RGE_Game_World::load_scenario6(int infile, RGE_Player_Info &info) {
     long player_id_hash[9];
     long scenario_player_num;
     long header_size;
-    int index;
-    int j;
+    int index, j;
     int outer;
     void *buf;
     world_update_counter = 0;
