@@ -11,12 +11,12 @@
 
 class TRIBE_Action_List : public RGE_Action_List {
 public:
-    virtual RGE_Action* create_action(int, short);
-    virtual RGE_Action* create_task_action(RGE_Task*, RGE_Static_Object*,
-                                            float, float, float);
-    virtual void get_action_name(char*);
+    virtual RGE_Action* create_action(int infile, short action_type);
+    virtual RGE_Action* create_task_action(RGE_Task* task, RGE_Static_Object* target_obj,
+                                           float target_x, float target_y, float target_z);
+    virtual void get_action_name(char* action_name);
 
-    TRIBE_Action_List(RGE_Action_Object*);
+    TRIBE_Action_List(RGE_Action_Object* obj_in);
 };
 
 typedef char tact_lst_action_list_size_check[

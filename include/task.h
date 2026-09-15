@@ -38,12 +38,12 @@ public:
     RGE_Sound* work_sound;
     RGE_Sound* work_sound2;
 
-    RGE_Task(short param_1);
+    RGE_Task(short id_in);
     ~RGE_Task();
-    void copy(RGE_Task* src);
-    void load(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
-    void load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds);
-    void save(int fd);
+    void copy(RGE_Task* other_task);
+    void load(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void load(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void save(int outfile);
 };
 
 typedef char rge_task_size_check[(sizeof(RGE_Task) == 0x4C) ? 1 : -1];
