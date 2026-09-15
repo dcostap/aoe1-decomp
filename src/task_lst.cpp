@@ -104,10 +104,8 @@ RGE_Task* RGE_Task_List::create_task(short task_type, short index) {
     return task;
 }
 
-RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj,
-                                          RGE_Static_Object* target_obj,
-                                          float target_x, float target_y,
-                                          float target_z) {
+RGE_Task* RGE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Object* target_obj,
+                                         float target_x, float target_y, float target_z) {
     int i;
     short terrain_type;
 
@@ -177,9 +175,8 @@ int RGE_Task_List::is_attack_task(RGE_Task* task) {
     return task->action_type == 7;
 }
 
-int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj,
-                               RGE_Static_Object* target_obj) {
-    // A task that requires a held attribute accepts only a positive amount.
+int RGE_Task_List::check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj) {
+    // Reject a missing held attribute or a non-positive amount.
     if (task->holding_attr == 1) {
         if (target_obj->attribute_type_held == -1 ||
             target_obj->attribute_amount_held <= DAT_00576544)
