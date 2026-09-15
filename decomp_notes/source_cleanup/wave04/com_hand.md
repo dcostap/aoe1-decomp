@@ -5,13 +5,26 @@
 - Module: `src/com_hand.cpp`
 - Branch: `cleanup/staging-20260915-221`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
+- Initial delivery commit: `6d0a12480437318b0590c5f956844dcb3be8d30b`
 - Changed files:
   - `src/com_hand.cpp`
   - `decomp_notes/source_cleanup/wave04/com_hand.md`
-- Source SHA-256 after cleanup: `93bebe0320eea974963fe83b619fb20b801aaff18cd17380d13cc7daeb82fc0a`
-- The source cleanup changes names only. It does not change types, scopes,
-  storage, expressions, control flow, calls, literals, or function boundaries.
+- Source SHA-256 after the initial cleanup:
+  `93bebe0320eea974963fe83b619fb20b801aaff18cd17380d13cc7daeb82fc0a`
+- Source SHA-256 after this correction:
+  `d7187d12eff258db9dbf6c34585a7381b66cfeb7017b58341a4c66c9fb396df8`
+- This correction applies 1TBS brace placement only. It does not change types,
+  scopes, storage, expressions, control flow, calls, literals, or function
+  boundaries.
 - `include/com_hand.h` was read but not edited.
+
+## Correction history
+
+- The initial cleanup was delivered in commit
+  `6d0a12480437318b0590c5f956844dcb3be8d30b`.
+- This correction follows review feedback. It moves every function opening
+  brace to the definition line and expands the resource lookup evidence.
+- The final correction commit is reported by the delivery response.
 
 The source registry is `config/functions/src/com_hand.cpp.json`. It assigns 146
 functions to this module. The registry and every assigned procedure were
@@ -94,28 +107,40 @@ unchanged. The pinned VC5 `WINUSER.H` defines `WM_USER` as `0x0400`, but this
 cleanup does not replace the literal. Existing DirectPlay, HRESULT, message,
 and `COMMMESSAGES` values remain unchanged.
 
-I inspected runtime `language.dll`, runtime `languagex.dll`, and the original
-`XPack/languagex.dll` for the communication resource lookups. The runtime
-`language.dll` has SHA-256
-`3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`. It
-confirms these exact English strings:
+I inspected the base language DLL, the runtime expansion DLL, and the pinned
+original expansion DLL. The source uses these eight IDs. IDs `0x04B5` through
+`0x04B9` and `0x04BB` are not used by this module.
 
-| ID | Text | Use observed in this module |
-| --- | --- | --- |
-| `0x04B0` | `Ready` | default waiting status |
-| `0x04B1` | `Computer` | computer player status |
-| `0x04B2` | `Empty` | absent or non-human status |
-| `0x04B3` | `Loading` | early-turn status |
-| `0x04B4` | `Waiting` | waiting-for-turn status |
-| `0x04BA` | `Player '%s' (%d) is not responding...` | timeout warning |
-| `0x04BC` | `Intentional drop of Ser#%d  Cmd=%d '%c' ` | intentional packet drop |
-| `0x04BD` | `Player %d - '%s' dropped/disconnected.` | dropped-player message |
+| ID | Base DLL: path; SHA-256; language; result | Runtime expansion DLL: path; SHA-256; language; result | Original expansion DLL: path; SHA-256; language; result | Use observed in this module |
+| --- | --- | --- | --- | --- |
+| `0x04B0` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Ready` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | default waiting status |
+| `0x04B1` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Computer` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | computer player status |
+| `0x04B2` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Empty` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | absent or non-human status |
+| `0x04B3` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Loading` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | early-turn status |
+| `0x04B4` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Waiting` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | waiting-for-turn status |
+| `0x04BA` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Player '%s' (%d) is not responding...` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | timeout warning |
+| `0x04BC` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Intentional drop of Ser#%d  Cmd=%d '%c' ` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | intentional packet drop |
+| `0x04BD` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`; `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`; `0x0409` (1033); text `Player %d - '%s' dropped/disconnected.` | `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`; `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`; no matching language record; missing | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`; `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; no matching language record; missing | dropped-player message |
 
-The runtime and original `languagex.dll` extractions have SHA-256
-`4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39` and
-`a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`,
-respectively. They do not provide text for these IDs. Resource text does not
-prove macro names, so no resource-ID declaration was invented or requested.
+No empty slot was reported for any listed ID. The two expansion extractions
+reported no matching `RT_STRING` record for all listed IDs. The base extraction
+reported language `0x0409` (1033) for all listed text entries.
+
+The complete lookup path is an expansion override followed by a base fallback.
+`TRIBE_Game::setup` first runs base setup. `RGE_Base_Game` sets
+`string_dll_name` to `language.dll` and loads it into `StringTable` with
+`LoadLibraryA`. `TRIBE_Game::setup` then sets the expansion name to
+`languagex.dll`. A command-line `STRING=` option replaces that name before
+`LoadLibraryA` loads it into `StringTableX`.
+
+`TRIBE_Game::get_string` calls `LoadStringA(StringTableX, id, buffer,
+buffer_size)` first. If that call returns zero, it calls
+`RGE_Base_Game::get_string`. The base method calls
+`LoadStringA(StringTable, id, buffer, buffer_size)`. The `com_hand.cpp` call
+sites use `rge_base_game->get_string`, so the expansion override can supply a
+localized string and the base `language.dll` supplies the fallback. Resource
+text does not prove macro names, so no resource-ID declaration was invented or
+requested.
 
 No source comment was added. No assembly, binary dependency, layout, or source
 owner changed.
