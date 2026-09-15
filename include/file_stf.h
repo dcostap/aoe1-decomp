@@ -18,23 +18,23 @@ public:
     char currentDriveAsLetter() const;
     char* currentDirectory();
     int numberDrives() const;
-    int validDrive(int index) const;
+    int validDrive(int v) const;
     void checkDrives();
-    int numberOfFilesWithFilename(char* filename);
-    int numberOfFilesWithAttribute(int attribute);
-    int numberOfFilesWithFilenameOrAttribute(char* filename, int attribute);
+    int numberOfFilesWithFilename(char* n);
+    int numberOfFilesWithAttribute(int a);
+    int numberOfFilesWithFilenameOrAttribute(char* n, int a);
     int resetCurrentDriveAndDirectory();
     int resetCurrentDrive();
     int resetCurrentDirectory();
-    int changeDrive(int drive);
-    int changeDirectory(char* path);
+    int changeDrive(int d);
+    int changeDirectory(char* d);
 
 protected:
     void updateDirectory();
 };
 
-int __cdecl compareFilenameStrings(const void* a, const void* b);
-char driveAsLetter(int value);
-int driveAsInt(char value);
+int __cdecl compareFilenameStrings(const void* e1, const void* e2);
+char driveAsLetter(int d);
+int driveAsInt(char d);
 
 #endif  // AOE1_FILE_STF_H

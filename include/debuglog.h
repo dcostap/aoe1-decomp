@@ -19,20 +19,20 @@ public:
 
     TDebuggingLog();
     ~TDebuggingLog();
-    void __cdecl Log(char* format, ...);
-    void LogFile(int value);
-    void LogOutput(int value);
-    void LogTimestamp(int value);
-    void LogDateTimestamp(int value);
+    void __cdecl Log(char* fmt, ...);
+    void LogFile(int DoLog);
+    void LogOutput(int DoLog);
+    void LogTimestamp(int DoTimestamp);
+    void LogDateTimestamp(int DoTimestamp);
     void Time();
-    void FlushToDisk(int value);
-    void LogSequence(int value);
+    void FlushToDisk(int DoFlush);
+    void LogSequence(int DoSequence);
     void OpenLog();
     void FlushLog();
     void CloseLog();
 
 protected:
-    char* YesOrNo(int value);
+    char* YesOrNo(int TorF);
 };
 
 typedef char debuglog_TDebuggingLog_size_check[

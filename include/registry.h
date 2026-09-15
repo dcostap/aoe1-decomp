@@ -14,17 +14,14 @@ public:
     unsigned long gdwDisp;
     char Data[256];
 
-    TRegistry(const char *name);
+    TRegistry(const char* Key);
     ~TRegistry();
-    int RegSet(int useUserKey, const char *name,
-               unsigned char *value, unsigned long size);
-    int RegSetInt(int useUserKey, const char *name, int value);
-    int RegSetAscii(int useUserKey, const char *name,
-                    unsigned char *value, unsigned long size);
-    char *RegGetAscii(int useUserKey, const char *name);
-    long RegGet(int useUserKey, const char *name,
-                unsigned char *data, unsigned long *dataSize);
-    int RegGetInt(int useUserKey, const char *name);
+    int RegSet(int UseUserKey, const char* lptszName, unsigned char* lpData, unsigned long dwSize);
+    int RegSetInt(int UseUserKey, const char* lptszName, int Value);
+    int RegSetAscii(int UseUserKey, const char* lptszName, unsigned char* lpData, unsigned long dwSize);
+    char* RegGetAscii(int UseUserKey, const char* lptszName);
+    long RegGet(int UseUserKey, const char* lptszName, unsigned char* lpData, unsigned long* lpdwDataSize);
+    int RegGetInt(int UseUserKey, const char* lptszName);
 };
 
 typedef char registry_size_check[(sizeof(TRegistry) == 0x110) ? 1 : -1];

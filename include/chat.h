@@ -11,17 +11,17 @@ public:
     int CurrentMsgNo;
     TTaunt* taunt;
 
-    TChat(void* host_wnd);
+    TChat(void* HostWndIn);
     ~TChat();
-    int AddChatMsg(char* speaker, char* text, unsigned char taunt_id);
-    char* GetChatMsg(int index);
+    int AddChatMsg(char* PlayerName, char* Text, unsigned char Local);
+    char* GetChatMsg(int lineno);
     void ClearChat();
     int MaxArraySize();
-    void setWindowHandle(void* value);
-    void setInChatGroup(int index, int value);
-    int inChatGroup(int index);
+    void setWindowHandle(void* newHandle);
+    void setInChatGroup(int playerNum, int status);
+    int inChatGroup(int playerNum);
     void StopSoundSystem();
-    int RestartSoundSystem(TSound_Driver* sound_driver);
+    int RestartSoundSystem(TSound_Driver* driver);
 };
 
 typedef char chat_size_check[(sizeof(TChat) == 0x100) ? 1 : -1];
