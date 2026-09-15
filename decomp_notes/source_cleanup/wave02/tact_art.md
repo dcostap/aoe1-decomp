@@ -7,8 +7,10 @@
 - Initial source cleanup commit: `090e0786883cfbe4be0aee489a8b5e87dde3a9a2`
 - Initial report commit: `6b01a8587e6fa0c46048417b5d49413a3fd6f904`
 - Source correction commit: `42d0dd0c951809c8a7d8638d2b02ae194facc46a`
-- Final source commit from `git rev-parse`: `42d0dd0c951809c8a7d8638d2b02ae194facc46a`
-- Final source head before this report correction: `42d0dd0c951809c8a7d8638d2b02ae194facc46a`
+- Prior report correction commit: `1a38a2845d0a38ece118a96868a1fdfa74b9d67c`
+- Source formatting commit: `0ac4143be02f2c3e71725d8cb6c1e5edd5fdacd7`
+- Final source commit from `git rev-parse`: `0ac4143be02f2c3e71725d8cb6c1e5edd5fdacd7`
+- Final source head before this report update: `0ac4143be02f2c3e71725d8cb6c1e5edd5fdacd7`
 - Branch: `cleanup/staging-20260915-38`
 - Changed files:
   - `src/tact_art.cpp`
@@ -114,12 +116,16 @@ does not claim a source-level intent.
 ## Code generation, type, layout, and symbol review
 
 The source changes rename parameters. The correction restores `map_x` for the
-uncertain lower bound. These changes do not change types,
+uncertain lower bound. The formatting commit changes whitespace only. These
+changes do not change types,
 casts, declaration scope, statement order, control flow, calls, literals,
 function boundaries, layout, relocations, or ABI symbols. The unused
 `move_to` parameter keeps its original type and position. The `x1` change
 was reverted because the packet does not prove its declaration mapping. The
 `map_x` spelling keeps the baseline `short` declaration.
+
+The formatting commit aligns continuation parameters in both multiline
+constructors with the first parameter.
 
 No inline assembly, wrapper, helper, or structural rewrite was added.
 
@@ -144,8 +150,9 @@ No root-owned header request exists. No shared resource request exists.
 
 ## Validation and open risks
 
-`git diff --check` passed for the source correction. The complete cumulative
-diff was reviewed. The correction history is recorded above.
+`git diff --check` passed for the source and formatting corrections. The
+complete cumulative diff was reviewed. The correction history is recorded
+above.
 
 The broad source shape and generated-name limits in `check_ownership` remain
 outside this name cleanup. The vertical-bound original names are unresolved.
