@@ -9,7 +9,7 @@
 - Source evidence correction commit: `2df1282e383cdebb37459ee573392cbf3e904616`
 - Final report commit: `be26cbf860b59dc718fecb84402284206ddb67d1`
 - Correction report commit: `ff6f42778162569c3559f6cf89588bfabc1c2125`
-- Evidence report correction commit: this report commit; record its full hash from Git output
+- Evidence report correction commit: `f6aee050e4741f496752a5e7a37c77986e384177`
 - Branch: `cleanup/staging-20260915-129`
 - Changed files:
   - `src/move_obj.cpp`
