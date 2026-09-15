@@ -5,8 +5,10 @@
 - Module: `src/tworld.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final prior report commit: `cad41fd0133f640144cb7cfb774f39c4a12be364`
-- Final correction commit: `72fe153494f42409f66797cd6fbd39e68422e8eb`
-- Report commit: `9bdac484a9a9c1c393f01bf89df1b74d574be131`
+- Prior correction source commit: `72fe153494f42409f66797cd6fbd39e68422e8eb`
+- Prior correction report commit: `cb00ce396f9b2a5bc0ad4cf9a1f6ee323607248a`
+- Final brace correction commit: `b1a138720126836367f4271ad44a589e8fdc7c53`
+- Report commit: pending until this correction report is committed
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
@@ -307,6 +309,13 @@ The existing comment in `check_destructables` records the proven `+3.0` and
 `-3.0` constants. I kept it. I added no new behavior comment. Function
 braces now use 1TBS placement, and I fixed one existing indentation error.
 No executable statement or declaration moved.
+
+This correction restores the baseline nested scope around `case 101` in
+`cheat`. The prior 1TBS conversion removed the closing brace before its
+`break`, which left `case 102` inside the `case 101` block. The closing brace
+is now present before the break. The `case 100` closing brace remains before
+`case 101`, and `case 102` remains at switch scope. Only brace placement and
+scope tokens changed.
 
 ## Code-generation and validation limits
 
