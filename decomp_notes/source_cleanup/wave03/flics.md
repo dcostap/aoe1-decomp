@@ -135,31 +135,55 @@ The baseline source commit was
 `9f8b2449475155db4049aa08677f883460032a0cf0fa9e7eb1e8bfa1ac28c98d`.
 The pre-repair cleanup source SHA256 was
 `1bd46f7fe7535e048f5dbeadf92c8e86bd3696a6c7f17fb753313c50c4d615f7`.
-The cleanup body did not change the resolution expression. It changed the
-surrounding compiland through names, braces, source lines, and CRT macros.
-The same cleaned source produced the fresh byte order in a second object.
-Older pre-cleanup objects produced the baseline byte order.
+The cleanup body did not change the resolution expression before the repair.
+It changed the surrounding compiland through names, braces, source lines, and
+CRT macros. The same cleaned source produced the fresh byte order in a second
+object. Older pre-cleanup objects produced the baseline byte order.
 
-The direct cause is a VC5 code-generation choice for the side-effect-free
-bitwise-OR expression. Cleanup caused VC5 to load `height` before `width`.
-The `_O_BINARY` and `SEEK_*` macros occur in earlier functions and do not
-appear in `resolution`.
+The baseline source places the resolution declaration at line 173, its brace
+at line 174, and its return at line 175. The cleaned source placed the
+declaration and brace at line 171 and the return at line 172. The palette
+closing brace moved from line 171 to line 169. Two added CRT include lines
+and four earlier joined braces caused the net two-line shift.
 
-The source-only repair is commit
-`dee72a75fe4885309a67715731d978566c439d70`. It swaps the two OR operands so
-the width expression is the right operand. This preserves the result because
-bitwise OR is commutative and both operands only read separate fields.
-It changes no type, layout, symbol, boundary, or call.
+The recovered renames do not occur in `resolution`. The `_O_BINARY` and
+`SEEK_*` macros occur in earlier functions and do not occur in `resolution`.
+The assigned header stayed unchanged. Existing evidence therefore identifies
+the changed source context as the trigger for VC5's code-generation choice,
+but does not isolate one rename, include, macro, or brace without compiling
+intermediate candidates.
 
-No post-repair compiler, build, audit, matching check, test, or game run was
-allowed. The repair therefore remains unvalidated by a new object.
+The object comparison also finds two changed bytes in `delta_flc`. Its prior
+status was `new_verified_logic`, not `matching`, so this is not a new
+matching regression. This repair does not change that function.
+
+The prior commutative-OR experiment is commit
+`dee72a75fe4885309a67715731d978566c439d70`. It is rejected because it
+changed operand and read order. The current source restores the original
+resolution expression tokens and order.
+
+The current source candidate is commit
+`c5660f2b948e1201790d96c104d3b6a99be3eec8`. It restores the original
+resolution brace form and its baseline physical lines. Two blank lines keep
+the resolution declaration and return at baseline lines 173 and 175. It does
+not revert recovered names, CRT macros, or unrelated formatting.
+
+Requested isolated root experiment, not run: compile only this candidate
+`src/flics.cpp` with the pinned VC5 toolchain and `config/flags/default.rsp`.
+Compare symbol `?resolution@RGE_Flic_Player@@QAEJXZ` with the preserved
+baseline object. Check all 15 flics sections and the known `delta_flc` drift.
+Do not run a full build, audit, matching sweep, test, or game.
+
+No post-candidate compiler, build, audit, matching check, test, or game run
+was allowed. The candidate therefore remains unvalidated by a new object.
 
 ## Code-generation and review limits
 
 The source edits change identifiers, brace placement, includes, and macro
-spellings only. The post-cleanup repair changes only the operands of the
-side-effect-free resolution OR expression. It does not change public symbols,
-function boundaries, casts, storage, field layout, calls, or decoder state.
+spellings only. The rejected experiment is not part of the accepted source.
+The accepted candidate restores the original resolution expression, brace
+form, and physical lines. It does not change public symbols, function
+boundaries, casts, storage, field layout, calls, or decoder state.
 `_O_BINARY`, `SEEK_END`, and `SEEK_SET` expand to the original numeric values.
 The PDB/source type differences listed above remain intentionally unresolved.
 
