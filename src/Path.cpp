@@ -5,7 +5,7 @@
 extern float DAT_00570e40;
 
 
-Path::Path(int max_size)
+Path::Path(int v)
 {
     timeStampValue = 0;
     pathValue = 0;
@@ -19,9 +19,9 @@ Path::Path(int max_size)
     goalValue.y = 0;
     goalValue.z = 0;
 
-    if (max_size == 0 || max_size >= 0) {
-        maxSizeValue = max_size;
-        Waypoint* new_path = (Waypoint*)::operator new(max_size << 4);
+    if (v == 0 || v >= 0) {
+        maxSizeValue = v;
+        Waypoint* new_path = (Waypoint*)::operator new(v << 4);
         int i = 0;
         if (currentSizeValue > 0) {
             Waypoint* dst = new_path;
@@ -47,28 +47,28 @@ Path::~Path()
     }
 }
 
-ostream& __cdecl operator<<(ostream& os, const Path& path)
+ostream& __cdecl operator<<(ostream& out, const Path& p)
 {
-    for (int i = 0; i < path.currentSizeValue; i++) {
-        ostream* out = &os;
+    for (int i = 0; i < p.currentSizeValue; i++) {
+        ostream* stream = &out;
         float value;
-        out = &out->operator<<("(");
-        value = path.pathValue[i].x;
-        out = &out->operator<<(value);
-        out = &out->operator<<(", ");
-        value = path.pathValue[i].y;
-        out = &out->operator<<(value);
-        out = &out->operator<<(", ");
-        value = path.pathValue[i].z;
-        out = &(out->operator<<(value) << ", ");
-        os << (int)path.pathValue[i].facetToNextWaypoint << ") ";
+        stream = &stream->operator<<("(");
+        value = p.pathValue[i].x;
+        stream = &stream->operator<<(value);
+        stream = &stream->operator<<(", ");
+        value = p.pathValue[i].y;
+        stream = &stream->operator<<(value);
+        stream = &stream->operator<<(", ");
+        value = p.pathValue[i].z;
+        stream = &(stream->operator<<(value) << ", ");
+        out << (int)p.pathValue[i].facetToNextWaypoint << ") ";
     }
-    return os;
+    return out;
 }
 
-Path Path::operator+(const Path& other) const
+Path Path::operator+(const Path& p) const
 {
-    Path newPath(maxSizeValue + other.maxSizeValue);
+    Path newPath(maxSizeValue + p.maxSizeValue);
     int i = 0;
     if (0 < currentSizeValue) {
         do {
@@ -77,38 +77,38 @@ Path Path::operator+(const Path& other) const
         } while (i < currentSizeValue);
     }
     int j = 0;
-    if (other.currentSizeValue > 0) {
+    if (p.currentSizeValue > 0) {
         do {
-            newPath.insertAtEnd(other.pathValue[i]);
+            newPath.insertAtEnd(p.pathValue[i]);
             i++;
             j++;
-        } while (j < other.currentSizeValue);
+        } while (j < p.currentSizeValue);
     }
     return newPath;
 }
 
-Path& Path::operator=(const Path& other)
+Path& Path::operator=(const Path& p)
 {
-    if (maxSizeValue < other.maxSizeValue) {
-        setMaxSize(other.maxSizeValue);
+    if (maxSizeValue < p.maxSizeValue) {
+        setMaxSize(p.maxSizeValue);
     }
-    for (int i = 0; i < other.currentSizeValue; i++) {
-        pathValue[i].x = other.pathValue[i].x;
-        pathValue[i].y = other.pathValue[i].y;
-        pathValue[i].z = other.pathValue[i].z;
+    for (int i = 0; i < p.currentSizeValue; i++) {
+        pathValue[i].x = p.pathValue[i].x;
+        pathValue[i].y = p.pathValue[i].y;
+        pathValue[i].z = p.pathValue[i].z;
         pathValue[i].facetToNextWaypoint =
-            other.pathValue[i].facetToNextWaypoint;
+            p.pathValue[i].facetToNextWaypoint;
     }
-    currentWaypointValue = other.currentWaypointValue;
-    currentSizeValue = other.currentSizeValue;
+    currentWaypointValue = p.currentWaypointValue;
+    currentSizeValue = p.currentSizeValue;
     return *this;
 }
 
-int Path::operator==(const Path& other) const
+int Path::operator==(const Path& p) const
 {
     for (int i = 0; i < currentSizeValue; i++) {
         Waypoint* path = pathValue + i;
-        Waypoint* other_path = other.pathValue + i;
+        Waypoint* other_path = p.pathValue + i;
         if (path->x != other_path->x ||
             path->y != other_path->y ||
             path->z != other_path->z ||
@@ -119,17 +119,17 @@ int Path::operator==(const Path& other) const
     return 1;
 }
 
-int Path::insertAtCurrent(const Waypoint& wp)
+int Path::insertAtCurrent(const Waypoint& w)
 {
     if (currentSizeValue > 1000) {
         return 0;
     }
     Waypoint* new_path =
         (Waypoint*)::operator new((currentSizeValue + 1) * 16);
-    new_path[0].x = wp.x;
-    new_path[0].y = wp.y;
-    new_path[0].z = wp.z;
-    new_path[0].facetToNextWaypoint = wp.facetToNextWaypoint;
+    new_path[0].x = w.x;
+    new_path[0].y = w.y;
+    new_path[0].z = w.z;
+    new_path[0].facetToNextWaypoint = w.facetToNextWaypoint;
     for (int i = 0; i < currentSizeValue; i++) {
         new_path[i + 1].x = pathValue[i].x;
         new_path[i + 1].y = pathValue[i].y;
@@ -145,7 +145,7 @@ int Path::insertAtCurrent(const Waypoint& wp)
     return 1;
 }
 
-int Path::insertAtEnd(Waypoint wp)
+int Path::insertAtEnd(Waypoint w)
 {
     if (currentSizeValue == maxSizeValue) {
         maxSizeValue += maxSizeValue;
@@ -163,19 +163,19 @@ int Path::insertAtEnd(Waypoint wp)
         }
         pathValue = new_path;
     }
-    pathValue[currentSizeValue].x = wp.x;
-    pathValue[currentSizeValue].y = wp.y;
-    pathValue[currentSizeValue].z = wp.z;
-    pathValue[currentSizeValue].facetToNextWaypoint = wp.facetToNextWaypoint;
+    pathValue[currentSizeValue].x = w.x;
+    pathValue[currentSizeValue].y = w.y;
+    pathValue[currentSizeValue].z = w.z;
+    pathValue[currentSizeValue].facetToNextWaypoint = w.facetToNextWaypoint;
     currentSizeValue++;
     return 1;
 }
 
-int Path::contains(const Waypoint& wp) const
+int Path::contains(const Waypoint& w) const
 {
     for (int i = 0; i < currentSizeValue; i++) {
-        if (floor(pathValue[i].x) == floor(wp.x) &&
-            floor(pathValue[i].y) == floor(wp.y)) {
+        if (floor(pathValue[i].x) == floor(w.x) &&
+            floor(pathValue[i].y) == floor(w.y)) {
             return 1;
         }
     }
@@ -203,9 +203,9 @@ unsigned long Path::timeStamp() const
     return timeStampValue;
 }
 
-void Path::setTimeStamp(unsigned long value)
+void Path::setTimeStamp(unsigned long v)
 {
-    timeStampValue = value;
+    timeStampValue = v;
 }
 
 float Path::length() const
@@ -238,10 +238,10 @@ const Waypoint& Path::goal() const
     return goalValue;
 }
 
-const Waypoint* Path::waypoint(int index) const
+const Waypoint* Path::waypoint(int w) const
 {
-    if (pathValue != 0 && index > -1 && index < currentSizeValue) {
-        return pathValue + index;
+    if (pathValue != 0 && w > -1 && w < currentSizeValue) {
+        return pathValue + w;
     }
     return 0;
 }
@@ -264,9 +264,9 @@ const int Path::currentWaypointNumber() const
     return currentWaypointValue;
 }
 
-void Path::setCurrentWaypointNumber(int value)
+void Path::setCurrentWaypointNumber(int v)
 {
-    currentWaypointValue = value;
+    currentWaypointValue = v;
 }
 
 const Waypoint* Path::nextWaypoint() const
