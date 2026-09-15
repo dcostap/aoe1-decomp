@@ -1,5 +1,17 @@
 # Cleanup wave 04 root review
 
+## Owner 25: delegated review started
+
+- Delivered head: `2f452e4958f5aa90f31de6ec64158ea71726bf82`.
+- Base: `c22ba4258c45b1178181e185d60a3b09a1add617`.
+- Full diff: `build/source-cleanup-20260915/owner25-review.diff`, 15,378 lines.
+- Reviewer: `sa-4261f9a4`, Sol medium, read only.
+
+The assignment covers all eight sources, eight headers, and nine reports.
+It also covers the four shared resource requests at `0x0966`, `0x2775`, `0x277B`, and `0x27F6`.
+The build-list name base remains unapproved without further evidence.
+The group remains unmerged. Compiler and runtime validation remain deferred.
+
 ## Owner 23: delegated review started
 
 - Base: `c22ba4258c45b1178181e185d60a3b09a1add617`.
