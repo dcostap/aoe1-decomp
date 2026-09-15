@@ -217,14 +217,41 @@ No explicit write or delete command targeted a path outside slot-110. The
 temporary evidence setup named the main-root paths
 `C:/Projects/my_decomps/aoe1_attempt3/inventory` and
 `C:/Projects/my_decomps/aoe1_attempt3/orig`. The transcript recorded both
-paths as existing after cleanup. The two preserved pilot paths also existed:
+paths as existing after cleanup.
+
+Git state showed only the assigned source and report changes. Git state does
+not prove the state of ignored pilots, baseline files, or original assets.
+
+#### Pilots
 
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot-scr-load`
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load`
 
-Git state showed only the assigned source and report changes. This supports
-that tracked pilots and baseline files were untouched. The command record has
-no write or delete operation for pilots, baseline files, or original assets.
-It does not prove byte-level integrity for every outside file. Tool-created
-temporary writes outside slot-110 cannot be confirmed from surviving
-evidence. Their status is unknown.
+No recorded command targeted either pilot path for write or delete. The
+existing transcript recorded both paths as existing after cleanup. It recorded
+no hash or byte comparison. Byte-level integrity is unknown.
+
+#### Baseline
+
+The baseline path is:
+
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build`
+
+No recorded command targeted this path for write or delete. The existing
+transcript has no direct existence, hash, or byte comparison for this path.
+Git state does not prove its state. Byte-level integrity is unknown.
+
+#### Original assets
+
+The original asset roots referenced by the incident are:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/orig`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998`
+
+No recorded command targeted either root for write or delete. The existing
+transcript recorded the main-root `orig` directory as existing after cleanup.
+It did not record a post-cleanup check for the nested original asset root.
+It recorded no hash or byte comparison. Byte-level integrity is unknown.
+
+Tool-created temporary writes outside slot-110 cannot be confirmed from
+surviving evidence. Their status is unknown.
