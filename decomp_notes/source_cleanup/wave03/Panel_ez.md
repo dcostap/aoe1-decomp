@@ -4,7 +4,7 @@
 
 - Module: `src/Panel_ez.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: pending final commit
+- Final source commit: `de5e4d1c14e9a524652b9dcd4b47268024382600`
 - Changed files:
   - `src/Panel_ez.cpp`
   - `decomp_notes/source_cleanup/wave03/Panel_ez.md`
