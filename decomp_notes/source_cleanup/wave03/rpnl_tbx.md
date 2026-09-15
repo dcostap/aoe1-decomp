@@ -5,12 +5,14 @@
 - Module: `src/rpnl_tbx.cpp`
 - Branch: `cleanup/staging-20260915-164`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit from `git rev-parse`: `23c837a6b03c0aa6556d7688715b5ffdb29b8ede`
+- Final source commit from `git rev-parse`: `5f8c66e73c070e5356afaf918d80a4086f4a8ce9`
 - The report is committed separately from the source.
 - Changed files:
   - `src/rpnl_tbx.cpp`
   - `decomp_notes/source_cleanup/wave03/rpnl_tbx.md`
-- Header read but not changed: `include/rpnl_tbx.h`
+- Headers not edited by this worker:
+  - `include/rpnl_tbx.h`
+  - `include/resource_ids.h` (imported from the reviewed root change)
 
 The source owns six normal bodies in PDB address and source order. The PDB
 module is `C:\\msdev\\work\\age1_x1\\rpnl_tbx.cpp`.
@@ -33,6 +35,12 @@ The registry-selected original packets were read from:
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048A320_key_down_action.txt`
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048A520_game_mode_changed.txt`
 - `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048A640_draw.txt`
+
+The reviewed resource evidence was read from:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/base.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/runtime-x.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/pinned-x.json`
 
 The original executable and preserved cleanup baseline are reference inputs:
 
@@ -71,8 +79,9 @@ this module.
 
 ## Constants, resources, and comments
 
-No numeric constant changed. No enum or constant was added. The source keeps
-`0x232A` until the root-owned resource mapping is approved.
+No resource value changed. The source now uses the approved
+`IDS_SELECT_OBJECT_TITLE` macro. It expands to the original `0x232A` literal.
+No enum or constant was added in this worker change.
 
 The `0x232A` lookup has this evidence:
 
@@ -94,25 +103,30 @@ The staged base DLL supplied the text. The expansion DLL results are missing
 IDs, not empty slots. The staged runtime file is not described as the pinned
 original base resource.
 
-Root owns `include/resource_ids.h`. Please review this proposed new cleanup
-name:
+Root approved the resource mapping in commit
+`8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`.
+Git records the worker's exact header import commit as
+`f27bf0a3616009dca91c44beb2b3a00f6b4c003b`.
+The worker did not edit `include/resource_ids.h`.
+The source applies the approved macro:
 
 ```cpp
 #define IDS_SELECT_OBJECT_TITLE 0x232A
 ```
 
-This is a new descriptive name, not a recovered original macro. The source
-keeps the literal until root provides the shared definition.
+This is a new descriptive name, not a recovered original macro.
 
 No source comment was added. Existing control flow and lifetime behavior stay
 unchanged.
 
 ## Code generation, type, layout, and symbol review
 
-The source changes parameter and local spellings only. The source also moves
-function braces to 1TBS form. These changes do not change types, casts,
-declaration scope, statement order, control flow, calls, literals, function
-boundaries, object layout, relocations, or ABI symbols.
+The source changes parameter and local spellings, moves function braces to
+1TBS form, and applies the approved resource macro. The macro preserves the
+literal value and effective type. The include and replacement do not change
+calls, lookup buffers, fallback behavior, or formatting arguments. These
+changes do not change types, casts, declaration scope, statement order,
+control flow, function boundaries, object layout, relocations, or ABI symbols.
 
 The local rename in `key_down_action` changes only names for the same four
 stack homes. The explicit narrowing casts remain in place. No helper, wrapper,
@@ -135,8 +149,8 @@ virtual long key_down_action(long key, short count, int alt_key, int ctrl_key,
 void game_mode_changed(int old_mode, int new_mode);
 ```
 
-- Root owns `include/resource_ids.h`. Route the proposed
-`IDS_SELECT_OBJECT_TITLE` definition through root.
+- Root approval and the worker header import cover
+`IDS_SELECT_OBJECT_TITLE`; no new resource declaration request remains.
 - No other shared declaration request exists.
 
 ## Validation and open risks
