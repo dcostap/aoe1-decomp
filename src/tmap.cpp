@@ -94,9 +94,7 @@ void TRIBE_Map::data_load_random_map(int infile) {
 
 void TRIBE_Map::load_random_map(char* rmm_map_file, char* rmm_land_file,
                                 char* rmm_terr_file, char* rmm_obj_file) {
-    TRIBE_RMM_Database_Controller* ctrl =
-        new TRIBE_RMM_Database_Controller(rmm_land_file, rmm_terr_file,
-                                          rmm_obj_file, rmm_map_file);
+    TRIBE_RMM_Database_Controller* ctrl = new TRIBE_RMM_Database_Controller(rmm_land_file, rmm_terr_file, rmm_obj_file, rmm_map_file);
     this->random_map = ctrl;
 }
 
@@ -227,8 +225,7 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size,
         for (long cy = start_y; cy <= y2; cy++) {
             for (long cx = x1; cx <= end_x; cx++) {
                 if (do_terrain_brush_check(cx, cy)) {
-                    set_terrain(this->game_world, (short)cx, (short)cy,
-                                terrain_id, 0, 0);
+                    set_terrain(this->game_world, (short)cx, (short)cy, terrain_id, 0, 0);
                 }
             }
         }
@@ -237,8 +234,7 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long brush_size,
 
     for (long cy = start_y; cy <= y2; cy++) {
         for (long cx = x1; cx <= end_x; cx++) {
-            set_terrain(this->game_world, (short)cx, (short)cy, terrain_id, 0,
-                        0);
+            set_terrain(this->game_world, (short)cx, (short)cy, terrain_id, 0, 0);
         }
     }
     return 1;
@@ -1040,43 +1036,25 @@ void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                         short srow = (short)row;
                         short scol = (short)col;
                         if (place2)
-                            RGE_Map::set_terrain(this->game_world, scol - 1,
-                                                 srow - 1,
-                                                 replacement_terrain, 0, 0);
+                            RGE_Map::set_terrain(this->game_world, scol - 1, srow - 1, replacement_terrain, 0, 0);
                         if (place3)
-                            RGE_Map::set_terrain(this->game_world, scol,
-                                                 srow - 1,
-                                                 replacement_terrain, 0, 0);
+                            RGE_Map::set_terrain(this->game_world, scol, srow - 1, replacement_terrain, 0, 0);
                         if (place4)
-                            RGE_Map::set_terrain(this->game_world, scol + 1,
-                                                 srow - 1,
-                                                 replacement_terrain, 0, 0);
+                            RGE_Map::set_terrain(this->game_world, scol + 1, srow - 1, replacement_terrain, 0, 0);
                         if (place5)
-                            RGE_Map::set_terrain(this->game_world, scol + 1,
-                                                 srow, replacement_terrain, 0,
-                                                 0);
+                            RGE_Map::set_terrain(this->game_world, scol + 1, srow, replacement_terrain, 0, 0);
                         if (place6)
-                            RGE_Map::set_terrain(this->game_world, scol + 1,
-                                                 srow + 1,
-                                                 replacement_terrain, 0, 0);
+                            RGE_Map::set_terrain(this->game_world, scol + 1, srow + 1, replacement_terrain, 0, 0);
                         if (place7)
-                            RGE_Map::set_terrain(this->game_world, scol,
-                                                 srow + 1,
-                                                 replacement_terrain, 0, 0);
+                            RGE_Map::set_terrain(this->game_world, scol, srow + 1, replacement_terrain, 0, 0);
                         if (place8)
-                            RGE_Map::set_terrain(this->game_world, scol - 1,
-                                                 srow + 1,
-                                                 replacement_terrain, 0, 0);
+                            RGE_Map::set_terrain(this->game_world, scol - 1, srow + 1, replacement_terrain, 0, 0);
                         if (west)
-                            RGE_Map::set_terrain(this->game_world, scol - 1,
-                                                 srow, replacement_terrain, 0,
-                                                 0);
+                            RGE_Map::set_terrain(this->game_world, scol - 1, srow, replacement_terrain, 0, 0);
                     } else {
                         if (!this->do_terrain_brush_check(col, row))
                             continue;
-                        RGE_Map::set_terrain(this->game_world, (short)col,
-                                             (short)row, replacement_terrain, 0,
-                                             0);
+                        RGE_Map::set_terrain(this->game_world, (short)col, (short)row, replacement_terrain, 0, 0);
                     }
                     change_flag = 1;
                 }
