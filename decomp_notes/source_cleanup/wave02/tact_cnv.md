@@ -4,7 +4,7 @@
 
 - Module: `src/tact_cnv.cpp`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Final source commit: `caa1e8769bd0dea848c574d9f1953d83157a1cc1`.
+- Final source commit: `856c7639628abbcb88d4588eace823db8291387b`.
 - Changed files:
   - `src/tact_cnv.cpp`.
   - `decomp_notes/source_cleanup/wave02/tact_cnv.md`.
@@ -54,6 +54,13 @@ Its hashes are:
   `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee98799a0b5d07cdcde`.
 - `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/tact_cnv.obj`:
   `ee8e198e6913b5a601ebdc9ffa09be28f3658920d187988d4eb90cc9e93da494`.
+
+## Correction history
+
+- Initial source cleanup: `caa1e8769bd0dea848c574d9f1953d83157a1cc1`.
+- Initial cleanup report: `5c57e486e72cb042de9cda6c8c75a9259493ba5b`.
+- Source signature formatting correction: `856c7639628abbcb88d4588eace823db8291387b`.
+- This report correction follows the source formatting correction.
 
 ## Original-name coverage
 
@@ -166,13 +173,17 @@ virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
 virtual void set_state(unsigned char new_state);
 ```
 
-The constructor call sites are `src/act_lst.cpp:40` and `src/act_lst.cpp:80-81`.
-The direct original call packets are
+The natural source owner for the current related call sites is
+`src/t_c_obj.cpp`. `TRIBE_Combat_Object::convert` constructs the action, and
+`RGE_Static_Object::die_die_die` calls `martyrdom`. No line references are
+included because the source line mapping is not stable evidence.
+
+The original call packets are
 `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004C/004CB1B0_convert.txt`
-at `004CB2B2` and
-`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004C/004CA790_die_die_die.txt`
-at `004CA7D3`. The latter calls `martyrdom`; the source declaration has no
-parameters to name.
+and
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004C/004CA790_die_die_die.txt`.
+Both packets correspond to `src/t_c_obj.cpp`. The latter calls `martyrdom`;
+the source declaration has no parameters to name.
 
 No other header request exists. No resource declaration request exists.
 
