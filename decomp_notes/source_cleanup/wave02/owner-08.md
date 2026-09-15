@@ -18,7 +18,7 @@ The integration branch is `cleanup/staging-20260915-64`.
 
 ## Worker deliveries
 
-| Module | Worker | Worker head | Worker commits | Integrated commits |
+| Module | Worker | Initial worker head | Worker commits | Integrated commits |
 | --- | --- | --- | --- | --- |
 | `m_ac_obj` | `sa-689041a8` | `515ac3f53a815d1b1ba56e1e324ff9382725bff9` | `7631026304e61b4f20c0d67a89893d9fd95adfdb`; `515ac3f53a815d1b1ba56e1e324ff9382725bff9` | `32d9c49b82c9cb096e3fb6c2b3fdcb1d65d6ec5c`; `ddf4f3c84cc170151f21718338d0047e49c1d4e7` |
 | `m_an_obj` | `sa-1c4126ce` | `e4c7792626afa357aa1a5791bccac1f1997e4272` | `0ec83908f65aa3af975899ccd7dc4f917e6a6253`; `e4c7792626afa357aa1a5791bccac1f1997e4272` | `65352068cbb7d4e36d7fb91d4440b9a9cd0d94d3`; `139f51556bac8bba503ca75fe215ce20f94cda99` |
@@ -31,6 +31,19 @@ The integration branch is `cleanup/staging-20260915-64`.
 
 Each worker started at the common base. Each worker changed only its source and module report.
 
+## Root correction deliveries
+
+| Module | Final worker head | Correction worker commits | Integrated correction commits |
+| --- | --- | --- | --- |
+| `m_ac_obj` | `31cf47ac8250b9d3739da1bea8955902c50dc94a` | `3f302226887047f81b5a693b9f42ee45bf5bafaa`; `31cf47ac8250b9d3739da1bea8955902c50dc94a` | `72a028d0b3675d4d99ce74bdf7462715dcffc2e2`; `c36508f50100bc2cb63562c2fd9bbf0e301e63c3` |
+| `m_an_obj` | `fbbdc321b55b513e5f2e59bda4f90d3526a76db2` | `e460ef0325e1825fd5ed5c9e90eda477fc56b652`; `fbbdc321b55b513e5f2e59bda4f90d3526a76db2` | `b9b41d9f375f23d58857d2aa63780717c8812e3f`; `69ace60b35c8423d5db6b22fda4d78f53cd9d8b7` |
+| `m_co_obj` | `5755cec9b447b01d3444b4ea4dc2adac943d29b6` | `1b162ffb28d57d7b2133d8798571bd240bbbcd1c`; `9593be1fee8347000c743da9168d3f5196084066`; `5755cec9b447b01d3444b4ea4dc2adac943d29b6` | `375b8ca403db01cf6103b7cb6b136ea73693a9f4`; `e768ae497002535d3ab9cd9a921e49cb033b1bf5`; `6d4000649cfbb881c6d85f205d99c25a691ae996` |
+| `m_dg_obj` | `25d8c40687eff2e0e606db802b5960a00841c724` | `fa571d2b598dbe95574cf8e7caa2c92ab625f97a`; `25d8c40687eff2e0e606db802b5960a00841c724` | `b707c990ad2d945f7dcfd66e0944f3c9a62af055`; `faf6a9aff07486b7164c9f17de29bc7db7e7c3e2` |
+| `m_mi_obj` | `5970f0b2d483b1426fdfcce97c68353b1f64c234` | `6eace1abd457c9ffec3c934e521068905e5e50f9`; `5970f0b2d483b1426fdfcce97c68353b1f64c234` | `eb5d3ac6b984c1725457adaf19ca75a6f5e5777f`; `dc0832c669140d4a35893414d264b785d74fcf20` |
+| `m_mo_obj` | `b2b2f4f56dee2e9a3be1e9f6cd0969a0d11d4d88` | `caa4b29540d24510b1922e9e000926aeffe59066`; `eab9575b62d4d26e693ba9deb7c73628a3e703c2`; `b2b2f4f56dee2e9a3be1e9f6cd0969a0d11d4d88` | `4f20f32922386f791601bde60b9763e0d951c60d`; `54579c39be614eee9c38f65cb767de96908b4443`; `84f56eca176a196dad2f44acb7b5eaf50a504569` |
+| `m_s_obj` | `49d028540812fac31f543b55329ad6af64a910e0` | `760be242b1eb808ee7b2f95f815d1b37540dbf24`; `49d028540812fac31f543b55329ad6af64a910e0` | `20bc4ec116b24aa9cc8e73ed1c900df35f20cefd`; `53415cd604c0c015fef2ca49fc261db7a4bced92` |
+| `tm_b_obj` | `9825a0ce8999105e937ee3c62c9aae715ecfd9fb` | `e5505f5e6c13ad1961ad2757719ccad132b0c009`; `9825a0ce8999105e937ee3c62c9aae715ecfd9fb` | `6bbc9dbd6818b9d1be8191e8e69c22d1acba0674`; `546ffcc3108c9dbd8aaa175f23a85b91c6dccd54` |
+
 ## Header integration
 
 Commit `63a33d662a0bbc90dbe0a7dccf155554049bfcad` updates all eight owned headers.
@@ -42,6 +55,10 @@ They also use `owner`, `amount`, `flag`, `outfile`, and the recorded draw parame
 `tm_b_obj.h` keeps the original spelling `uID`.
 
 This commit fulfills all worker header requests. No worker needed a header change before source cleanup.
+
+I reviewed all touched header declarations after the root formatting request.
+Their setup, copy, and modifier declarations already use compact signatures.
+No further header edit was necessary.
 
 ## Review findings
 
@@ -60,6 +77,14 @@ The correction kept `sprite_id` and `sound_id` in `setup(int, ...)`.
 Commits `b8759588ca43b4751cd656f4ed179c40c8f518e0` and `0a820eeedc8f9db20a5dcf1a848fd14372a37dd9` record the correction.
 The rejected names remain visible in the earlier worker and integration commits.
 
+Root review found two more unsupported local mappings.
+`m_co_obj` restored `count` because `tot_armor` at `+0x8` does not prove that declaration.
+`m_mo_obj` restored `move_sprite_id` and `run_sprite_id` after address review.
+The save instructions prove field roles and write order, but not the PDB declaration mapping.
+
+All eight workers also reviewed their touched method signatures.
+They compacted short setup, copy, and modifier signatures without an 80-column rule.
+
 The combined header and source review found no parameter-name collision or macro effect.
 All source reports remain available under `decomp_notes/source_cleanup/wave02/`.
 
@@ -74,7 +99,7 @@ The main mapping groups are:
 - Save methods use `outfile` and proved PDB local names.
 - Draw methods use `render_area`, `player_color`, `facet`, `frame`, `draw_frame`, and `frame_color`.
 - Alignment methods use `col`, `row`, `world`, and `center_flag`.
-- Combat damage methods use `attacker` and the proved local `tot_armor` where present.
+- Combat damage methods use the recovered parameter `attacker`.
 - `m_s_obj` restores placement names, coordinate names, and saved-field names from its PDB records.
 
 These are recovered original names unless a module report states that an existing descriptive name remains inferred.
@@ -82,6 +107,10 @@ No new inferred cleanup name was added in this group.
 
 ## Unresolved evidence
 
+- `m_co_obj` VA `00451000` records `tot_armor` at `+0x8`.
+  The count load and countdown slot do not prove that declaration mapping. The source keeps `count`.
+- `m_mo_obj` VA `00452040` proves the move and run sprite roles and serialized order.
+  Its PDB homes do not prove the reversed declaration names. The source keeps descriptive ID names.
 - `tm_b_obj` VA `0050E250` has reused PDB slots named `sound_num` and `sprite_num`.
   Their names conflict with the proved local roles. The source keeps `sprite_id` and `sound_id`.
 - `m_s_obj` VA `00452B00` has a `temp_damage_sprite_num` record with a conflicting type.
