@@ -12,8 +12,7 @@
 // Canonical context: the compiler now owns the proved virtual-table store.
 
 
-VictoryConditionRuleSystem::VictoryConditionRuleSystem()
-{
+VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
     int* p = this->sn;
     p[0] = 34;
     p[1] = 0;
@@ -259,8 +258,7 @@ extern "C" int __cdecl _unlink(const char* filename);
 #pragma intrinsic(strcmp)
 #pragma intrinsic(strlen)
 
-int VictoryConditionRuleSystem::loadRules(char* rName)
-{
+int VictoryConditionRuleSystem::loadRules(char* rName) {
     char commentTemp1;
     char commentTemp2;
     int ruleIndex;
@@ -366,8 +364,7 @@ int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* p, int rul
 
 
 
-int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleNumber)
-{
+int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleNumber) {
     if (vcNumber < 0 || vcNumber >= 0xD) {
         return 0;
     }
@@ -676,8 +673,7 @@ struct ScaleLocals {
     int tmp;
 };
 
-void VictoryConditionRuleSystem::modifyForDifficultyLevel(int dL)
-{
+void VictoryConditionRuleSystem::modifyForDifficultyLevel(int dL) {
     if (dL != 0) {
         int add1 = 0;
         int add2 = 0;
@@ -868,8 +864,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* pW, int playerID)
       executingRules(),
       idleRules(),
       vcRules(),
-      difficultyLevel(0)
-{
+      difficultyLevel(0) {
     this->targetPoint1Value.x = -1.0f;
     this->targetPoint1Value.y = -1.0f;
     this->targetPoint1Value.z = -1.0f;
@@ -891,8 +886,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
       executingRules(),
       idleRules(),
       vcRules(),
-      difficultyLevel(0)
-{
+      difficultyLevel(0) {
     rge_read(infile, &this->currentVictoryConditionValue, 4);
     rge_read(infile, &this->targetIDValue, 4);
     rge_read(infile, &this->secondTargetIDValue, 4);
@@ -945,8 +939,7 @@ extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
 
 
-int TribeStrategyAIModule::update(int timeLimit)
-{
+int TribeStrategyAIModule::update(int timeLimit) {
     int i;
     int result;
     int bestRule;
@@ -1049,8 +1042,7 @@ void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* p);
 
 
-int TribeStrategyAIModule::save(int outfile)
-{
+int TribeStrategyAIModule::save(int outfile) {
     int tempInt;
     char tempString[260];
     int i;
@@ -1216,8 +1208,7 @@ class TRIBE_Player;
 // calls shown at 004EA6EF, 004EA71A, and 004EA72A.
 #pragma inline_depth(0)
 
-void TribeStrategyAIModule::setVictoryCondition(int vcNumber)
-{
+void TribeStrategyAIModule::setVictoryCondition(int vcNumber) {
     ManagedArray<int>* rules = &this->vcRuleSet;
     int v;
     int i;
