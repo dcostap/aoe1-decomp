@@ -17,35 +17,35 @@
 #include "../include/world.h"
 #include "../include/sound.h"
 
-TRIBE_Action_Heal::TRIBE_Action_Heal(int id, RGE_Action_Object* object)
-    : RGE_Action(id, object, 1) {
+TRIBE_Action_Heal::TRIBE_Action_Heal(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x69;
 }
 
 //     RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)
 TRIBE_Action_Heal::TRIBE_Action_Heal(
-    RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target)
-    : RGE_Action(obj, 1) {
-    this->task = task;
+    RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x69;
-    set_target_obj(target);
-    target_x = target->world_x;
-    target_y = target->world_y;
-    target_z = target->world_z;
+    set_target_obj(target_obj_in);
+    target_x = target_obj_in->world_x;
+    target_y = target_obj_in->world_y;
+    target_z = target_obj_in->world_z;
 }
 
 //     RGE_Action_Object*, RGE_Task*, float, float, float)
 TRIBE_Action_Heal::TRIBE_Action_Heal(
-    RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z)
-    : RGE_Action(obj, 1) {
-    this->task = task;
+    RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x69;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
 }
 
-void TRIBE_Action_Heal::first_in_stack(unsigned char) {
+void TRIBE_Action_Heal::first_in_stack(unsigned char first_time) {
     if (this->target_obj != 0) {
         short kind = this->target_obj->master_obj->object_group;
         if (kind == 0x15 || kind == 2 || kind == 0x14 || kind == 0x16) {
@@ -57,11 +57,11 @@ void TRIBE_Action_Heal::first_in_stack(unsigned char) {
     this->set_state(3);
 }
 
-void TRIBE_Action_Heal::set_state(unsigned char state) {
+void TRIBE_Action_Heal::set_state(unsigned char new_state) {
     this->sub_actions->delete_list();
-    this->state = state;
+    this->state = new_state;
 
-    switch (state) {
+    switch (new_state) {
     case 3:
         this->obj->notify(this->obj->id, this->obj->id,
                           0x202, 0x25B, 0, 0);
@@ -257,17 +257,17 @@ unsigned char TRIBE_Action_Heal::update() {
 }
 
 //     RGE_Static_Object*, float, float, float)
-int TRIBE_Action_Heal::work(RGE_Static_Object* target, float, float, float) {
-    if (target != 0) {
-        if (target == this->target_obj) {
+int TRIBE_Action_Heal::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        if (obj_in == this->target_obj) {
             unsigned char state = this->state;
             if (state == 4 || state == 6 || state == 7)
                 return 1;
         }
-        this->set_target_obj(target);
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+        this->set_target_obj(obj_in);
+        this->target_x = obj_in->world_x;
+        this->target_y = obj_in->world_y;
+        this->target_z = obj_in->world_z;
         this->first_in_stack(1);
         return 1;
     }
