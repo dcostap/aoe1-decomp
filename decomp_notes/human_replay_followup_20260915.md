@@ -136,3 +136,37 @@ The exact site-aware comparison correctly rejected the old literal.
 The regression test checks the original bytes and call identity without changing the comparator.
 The fresh function check reports MATCH for all 652 bytes.
 Linked-image and runtime validation of this final source change follow separately.
+
+## Final linked and runtime validation
+
+Final build: `build/executable/ai-rng-filename-repair/20260915T083203564911Z/`.
+EXE SHA256: `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee98799a0b5d07cdcde`.
+Only `src/aiuaimod.cpp` changed among the compiler input files compared with the preceding combined build.
+The final map resolves the owner to 00411F60 and the checked argument sequence to 0041203A.
+That sequence passes the corrected literal at 0055F4E4 and calls `debug_rand` at 0041E950.
+Evidence: `build/linked-ai-rng-literal.json` and `build/check_linked_ai_rng_literal.py`.
+
+The linked dependency audit reports 7,760 passes, zero failures, and 47,025 unknown checks.
+Audit: `build/dependency-audit/ai-rng-filename-repair/`.
+The full suite passed 764 tests and 31 subtests with that linked fixture.
+Test report: `build/ai-rng-filename-tests.xml`.
+The AI module audit reports matching results for all 107 exact validation targets.
+It also reports three relocation problems among the other configured functions. Those remain unresolved.
+Module audit: `build/ai-rng-filename-tu-audit/`.
+
+All three fresh repaired captures completed and preserved the 1,361 messages and game boundaries.
+Each exactly matches the first original run's complete 3,611,267-record RNG trace, including site identities.
+Each also matches that original's camera values and terminal world observations.
+Clock boundaries still differ. RGB differences cover 511, 1,100, and 242 frame positions.
+The other two original runs differ in RNG order and counts, including before this source repair.
+The full nine-pair matrix preserves those differences rather than selecting only matching pairs.
+
+Repaired batch: `build/runtime/new-input-v2-filename-repaired/report.json`.
+Comparison: `build/runtime/new-input-v2-filename-repaired-comparison/report.json`.
+Matrix: `build/runtime/new-input-v2-filename-repaired-comparison/all-pairs.json`.
+Final first-pair video: `build/runtime/new-input-v2-filename-repaired-comparison/original-rebuilt-difference.mp4`.
+The earlier builds, comparisons, and videos remain intact.
+
+These runs use an explicit scheduler upgrade. They do not establish same-policy or full gameplay equivalence.
+Remaining work includes clock-call and presentation-order investigation, with separate original repeat controls.
+Do not infer a new game-code repair from image differences alone.
