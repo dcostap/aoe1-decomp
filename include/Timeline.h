@@ -28,23 +28,19 @@ typedef char timeline_entry_next_offset[
 
 class RGE_Timeline {
 public:
-    RGE_Timeline(RGE_Game_World* world);
-    RGE_Timeline(int fd, RGE_Game_World* world);
+    RGE_Timeline(RGE_Game_World* gworld);
+    RGE_Timeline(int infile, RGE_Game_World* gworld);
     virtual ~RGE_Timeline();
 
     void update();
     void mock_update(float time);
-    void save(int fd);
+    void save(int outfile);
 
     RGE_Time_Entry* add(float time);
-    RGE_Time_Entry* add_attack(float time, RGE_Static_Object* this_obj,
-                               RGE_Static_Object* target_obj);
-    RGE_Time_Entry* add_create(float time, short obj_type,
-                               unsigned char player, float x, float y,
-                               float z);
-    RGE_Time_Entry* add_move(float time, RGE_Static_Object* this_obj,
-                             float x, float y, float z);
-    RGE_Time_Entry* add_delete(float time, RGE_Static_Object* this_obj);
+    RGE_Time_Entry* add_attack(float time, RGE_Static_Object* obj, RGE_Static_Object* target);
+    RGE_Time_Entry* add_create(float time, short obj_id, unsigned char player, float x, float y, float z);
+    RGE_Time_Entry* add_move(float time, RGE_Static_Object* obj, float x, float y, float z);
+    RGE_Time_Entry* add_delete(float time, RGE_Static_Object* obj);
     void sub(RGE_Time_Entry* entry);
 
     RGE_Game_World* world;

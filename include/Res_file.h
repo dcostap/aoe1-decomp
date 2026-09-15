@@ -69,30 +69,14 @@ public:
 // The image table begins at 00585520. game_globals.cpp owns the shipped data.
 extern res_file_type_info res_extension_table[];
 
-void __cdecl RESFILE_open_new_resource_file(
-    char* name, char* cmpName, char* path, int isMapped);
-void __cdecl RESFILE_close_new_resource_file(char* name);
-int __cdecl RESFILE_locate_resource(
-    unsigned long type_id,
-    unsigned long res_id,
-    int& out_fd,
-    int& out_field1,
-    unsigned char*& out_data,
-    int& out_field2);
-unsigned char* __cdecl RESFILE_load(
-    unsigned long type,
-    unsigned long id,
-    int& load_type,
-    int& data_size);
-int __cdecl RESFILE_Extract_to_File(
-    unsigned long type,
-    unsigned long id,
-    char* name,
-    FILE*& file);
-void __cdecl RESFILE_Set_Missing_Flag(int flag);
-int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size);
-int __cdecl RESFILE_build_res_file(
-    char* build_list_file, char* source_path, char* target_path);
-unsigned long __cdecl BUILDRES_get_files_resource_type(char* name);
+void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, char* path, int open_mode);
+void __cdecl RESFILE_close_new_resource_file(char* res_file);
+int __cdecl RESFILE_locate_resource(unsigned long rType, unsigned long rId, int& file, int& offset, unsigned char*& mapped_file, int& size);
+unsigned char* __cdecl RESFILE_load(unsigned long rType, unsigned long rId, int& rLoadType, int& rDataSize);
+int __cdecl RESFILE_Extract_to_File(unsigned long rType, unsigned long rId, char* file_name, FILE*& file);
+void __cdecl RESFILE_Set_Missing_Flag(int FlagVal);
+int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* ResData, int resSize);
+int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, char* target_path);
+unsigned long __cdecl BUILDRES_get_files_resource_type(char* filename);
 
 #endif

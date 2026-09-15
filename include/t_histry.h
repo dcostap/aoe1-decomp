@@ -23,18 +23,17 @@ public:
     long number_of_entries;
     long max_number_of_entries;
 
-    TRIBE_History_Info(int index);
+    TRIBE_History_Info(int infile);
     ~TRIBE_History_Info();
-    void save(int file);
-    void load(int file);
-    void add_history_entry(unsigned char flag, unsigned char value);
+    void save(int outfile);
+    void load(int infile);
+    void add_history_entry(unsigned char history_type, unsigned char entry);
     long get_history_entry_num();
-    unsigned char get_history_entry(unsigned char mode, long index);
-    void add_history_event(unsigned char event);
+    unsigned char get_history_entry(unsigned char history_type, long time);
+    void add_history_event(unsigned char history_event);
     long get_history_event_num();
-    unsigned char get_history_event(long index, unsigned char& event,
-                                    long& time);
-    unsigned char get_history_event(long time, unsigned char& event);
+    unsigned char get_history_event(long number, unsigned char& event, long& time);
+    unsigned char get_history_event(long time_slice, unsigned char& event);
 };
 
 typedef char t_histry_info_size_check[
