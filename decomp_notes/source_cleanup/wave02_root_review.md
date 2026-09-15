@@ -1,5 +1,15 @@
 # Cleanup wave 02 root review
 
+## Owner 10: approved and integrated
+
+Root read all 340 lines of the final report-only correction diff.
+Corrected group head: `3e55e79b436a36893905cfcf1a250c005f31ea41`.
+The reports now separate root approval from worker imports and correct the panel-name and instruction citations.
+No source or header changed in that correction.
+Root merged the complete group as `1c2066ce9aafe171a9b0796ee92061e5d0e05a7f`.
+This raises the integrated count to 88 assigned wave modules, plus the pilot.
+Final generated-output and runtime validation remain deferred.
+
 ## Owner 10: correction review and report fixes
 
 Root read the complete 1,582-line correction diff for `29613ee064d6e99cd4cea0ac2d53e5832ef1cb15`.
