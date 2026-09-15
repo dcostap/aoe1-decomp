@@ -199,7 +199,7 @@ public:
                                short old_terrain, int delete_obj, int no_delete_start, int no_delete_end);
     int clear_terrain_object(RGE_Game_World* gworld, short row, short col, short old_terrain,
                              int delete_obj, int no_delete_start, int no_delete_end);
-    void place_terrain_object(RGE_Player* player, RGE_Game_World* gworld, short row, short col,
+    void place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col,
                               int obj_type_id, int FillFlag);
     void create_terrain_objects(RGE_Player* obj_owner, RGE_Game_World* gworld);
     void set_tile_size(unsigned char tile_type, short width, short height, short y_delta);
