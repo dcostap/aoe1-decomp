@@ -58,8 +58,7 @@ RGE_Sprite::RGE_Sprite(short in_id) {
     this->sound_list = 0;
 }
 
-RGE_Sprite::RGE_Sprite(int infile, RGE_Sound** sounds,
-                       RGE_Color_Table** c_tables) {
+RGE_Sprite::RGE_Sprite(int infile, RGE_Sound** sounds, RGE_Color_Table** c_tables) {
     this->color_tables = c_tables;
     this->last_time = 0;
     this->delta_time = 0;
@@ -445,8 +444,7 @@ void RGE_Sprite::play_sound(short frame1, short frame2, short facet) {
     }
 }
 
-unsigned char RGE_Sprite::get_facetindex(long facet, long frame,
-                                          long& facetindex) {
+unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& facetindex) {
     if (this->mirror_flag != 0 && this->facet_num == 2) {
         facetindex = frame;
         return (unsigned char)facet;
@@ -734,8 +732,7 @@ unsigned char RGE_Sprite::shadow_draw(long facet, long frame, long x, long y,
     return (unsigned char)facet;
 }
 
-int RGE_Sprite::get_size(long& xmin, long& ymin, long& xmax,
-                         long& ymax, long facet) {
+int RGE_Sprite::get_size(long& xmin, long& ymin, long& xmax, long& ymax, long facet) {
     char* fname;
 
     if (this->shape == 0) {
@@ -758,8 +755,7 @@ int RGE_Sprite::get_size(long& xmin, long& ymin, long& xmax,
     return this->shape->shape_minmax(xmin, ymin, xmax, ymax, facet);
 }
 
-int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
-                          short& max_y, long facet, long frame) {
+int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet, long frame) {
     char* fname;
 
     if (this->shape == 0) {
@@ -910,8 +906,7 @@ unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long frame) {
     return this->shape_hit_test(x, y, facet, frame);
 }
 
-unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet,
-                                         long frame) {
+unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet, long frame) {
     char* fname;
     long shape_num;
     long min_x;

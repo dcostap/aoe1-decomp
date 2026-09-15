@@ -20,6 +20,8 @@ The source changes recover PDB names and replace a few generated local names.
 The follow-up correction applies 1TBS to all 22 function definitions. It moves
 existing opening braces only. The changes do not alter types, storage, control
 flow, calls, literals, or source order.
+The final formatting correction joins five clearly short definitions onto one
+line. It keeps the longer draw and `get_frame_min_max` definitions wrapped.
 
 ## Correction history
 
@@ -27,6 +29,10 @@ Full diff review found that the source still used next-line opening braces.
 The correction moves each of the 22 function opening braces onto its definition
 line. It does not add or remove braces or move statements. Existing `} else {`
 forms remain unchanged.
+
+The final formatting review also joined the binary constructor,
+`get_facetindex`, `get_size`, `get_frame`, and `shape_hit_test` signatures.
+It made no token or statement change.
 
 ## Scope and evidence
 
@@ -281,3 +287,5 @@ or game. The cleanup remains unvalidated until final comparison.
 - Report: the commit that adds this report; copy its full hash from Git.
 - 1TBS correction: the commit that applies the reviewed brace correction; copy
   its full hash from Git.
+- Short-signature correction: the commit that applies the final formatting
+  correction; copy its full hash from Git.
