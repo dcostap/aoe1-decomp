@@ -54,7 +54,7 @@ void RGE_Object_List::removeAllObjects() {
     this->number_of_objects = 0;
 }
 
-RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* object) {
+RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* obj) {
     RGE_Object_Node* node;
 
     node = (RGE_Object_Node*)calloc(1, 0x10);
@@ -63,20 +63,20 @@ RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* object) {
     if (this->list != 0) {
         this->list->prev = node;
     }
-    node->node = object;
+    node->node = obj;
     this->number_of_objects++;
     this->list = node;
     return node;
 }
 
-void RGE_Object_List::remove_node(RGE_Static_Object* object,
+void RGE_Object_List::remove_node(RGE_Static_Object* obj,
                                   RGE_Object_Node* node) {
     RGE_Object_Node* current = this->list;
     if (current == 0) {
         return;
     }
     if (node == 0) {
-        RGE_Static_Object* target = object;
+        RGE_Static_Object* target = obj;
         while (current->node != target) {
             current = current->next;
             if (current == 0) {
@@ -115,8 +115,8 @@ void RGE_Object_List::invert() {
     this->list = prev;
 }
 
-void RGE_Object_List::draw(TDrawArea* draw_area, short x, short y,
-                           unsigned char fog) {
+void RGE_Object_List::draw(TDrawArea* render_area, short x, short y,
+                           unsigned char fogged_tile) {
     RGE_Object_Node* node = list;
     if (!node) {
         return;
@@ -129,20 +129,20 @@ void RGE_Object_List::draw(TDrawArea* draw_area, short x, short y,
             RGE_Color_Table* color_table = owner->color_table;
             switch (object->master_obj->fog_flag) {
             case 0:
-                if (fog) {
+                if (fogged_tile) {
                     should_draw = 0;
                 }
                 break;
             case 1:
                 break;
             case 2:
-                if (fog && object->object_state > 2) {
+                if (fogged_tile && object->object_state > 2) {
                     should_draw = 0;
                 }
                 break;
             case 3:
                 should_draw = 0;
-                if (fog) {
+                if (fogged_tile) {
                     RGE_Game_World* world = owner->world;
                     short player_id = owner->id;
                     short current_player = world->curr_player;
@@ -155,7 +155,7 @@ void RGE_Object_List::draw(TDrawArea* draw_area, short x, short y,
                 }
                 break;
             case 4:
-                if (fog && number_of_objects > 1) {
+                if (fogged_tile && number_of_objects > 1) {
                     for (RGE_Object_Node* current = list; current;
                          current = current->next) {
                         if (current->node->type == 0x19) {
@@ -167,23 +167,23 @@ void RGE_Object_List::draw(TDrawArea* draw_area, short x, short y,
                 break;
             }
             if (should_draw) {
-                object->draw(draw_area, x, y, color_table);
+                object->draw(render_area, x, y, color_table);
             }
         }
         node = node->next;
     } while (node);
 }
 
-void RGE_Object_List::shadow_draw(TDrawArea* draw_area, short x, short y,
-                                  unsigned char parameter, unsigned char fog) {
+void RGE_Object_List::shadow_draw(TDrawArea* render_area, short x, short y,
+                                  unsigned char flag, unsigned char fog_flag) {
     RGE_Object_Node* node = this->list;
 
-    if (fog) {
+    if (fog_flag) {
         while (node) {
             RGE_Static_Object* object = node->node;
             if (object) {
                 if (object->master_obj->fog_flag) {
-                    object->shadow_draw(draw_area, x, y, parameter);
+                    object->shadow_draw(render_area, x, y, flag);
                 }
             }
             node = node->next;
@@ -192,23 +192,23 @@ void RGE_Object_List::shadow_draw(TDrawArea* draw_area, short x, short y,
         while (node) {
             RGE_Static_Object* object = node->node;
             if (object) {
-                object->shadow_draw(draw_area, x, y, parameter);
+                object->shadow_draw(render_area, x, y, flag);
             }
             node = node->next;
         }
     }
 }
 
-void RGE_Object_List::normal_draw(TDrawArea* draw_area, short x, short y,
-                                  unsigned char fog) {
+void RGE_Object_List::normal_draw(TDrawArea* render_area, short x, short y,
+                                  unsigned char fog_flag) {
     RGE_Object_Node* sorted = this->sort();
     RGE_Object_Node* node = sorted;
 
-    if (fog) {
+    if (fog_flag) {
         while (node) {
             RGE_Static_Object* object = node->node;
             if (object && object->master_obj->fog_flag) {
-                object->normal_draw(draw_area, x, y);
+                object->normal_draw(render_area, x, y);
             }
             node = node->next;
         }
@@ -216,7 +216,7 @@ void RGE_Object_List::normal_draw(TDrawArea* draw_area, short x, short y,
         while (node) {
             RGE_Static_Object* object = node->node;
             if (object) {
-                object->normal_draw(draw_area, x, y);
+                object->normal_draw(render_area, x, y);
             }
             node = node->next;
         }
@@ -293,7 +293,7 @@ RGE_Object_Node* RGE_Object_List::sort() {
     return sorted;
 }
 
-RGE_Static_Object* RGE_Object_List::find_by_group(long group) {
+RGE_Static_Object* RGE_Object_List::find_by_group(long id) {
     RGE_Object_Node* node = this->list;
     if (node == 0) {
         return 0;
@@ -301,7 +301,7 @@ RGE_Static_Object* RGE_Object_List::find_by_group(long group) {
 
     while (node != 0) {
         if (node->node != 0) {
-            if ((long)node->node->master_obj->object_group == group) {
+            if ((long)node->node->master_obj->object_group == id) {
                 return node->node;
             }
         }
@@ -311,43 +311,43 @@ RGE_Static_Object* RGE_Object_List::find_by_group(long group) {
 }
 
 RGE_Static_Object* RGE_Object_List::find_by_group(
-    long group, float x, float y, unsigned char check_player,
-    unsigned char player_id, RGE_Static_Object* zone_object) {
+    long id, float x, float y, unsigned char certain_state,
+    unsigned char object_state, RGE_Static_Object* zone_obj) {
     int zone;
     RGE_Object_Node* node;
-    RGE_Static_Object* found;
-    float best_distance;
+    RGE_Static_Object* found_obj;
+    float dist;
 
-    if (x > -1.0f && y > -1.0f && zone_object != 0) {
-        zone = zone_object->lookupZone((int)x, (int)y) & 0xff;
+    if (x > -1.0f && y > -1.0f && zone_obj != 0) {
+        zone = zone_obj->lookupZone((int)x, (int)y) & 0xff;
     } else {
         zone = -1;
     }
 
     node = this->list;
-    found = 0;
-    best_distance = -1.0f;
+    found_obj = 0;
+    dist = -1.0f;
     while (node != 0) {
         RGE_Static_Object* object = node->node;
         if (object != 0) {
-            if ((long)object->master_obj->object_group == group) {
-                if (!check_player || object->object_state == player_id) {
+            if ((long)object->master_obj->object_group == id) {
+                if (!certain_state || object->object_state == object_state) {
                     if (x == -1.0f || y == -1.0f) {
                         return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_object->lookupZone((int)object->world_x,
+                        if ((zone_obj->lookupZone((int)object->world_x,
                                                     (int)object->world_y) & 0xff) != zone) {
                             goto next_group_node;
                         }
                     }
                     RGE_Static_Object* current = node->node;
-                    float dx = x - current->world_x;
+                    float diff_x = x - current->world_x;
                     float dy = y - current->world_y;
-                    float distance = dx * dx + dy * dy;
-                    if (best_distance == -1.0f || best_distance > distance) {
-                        best_distance = distance;
-                        found = current;
+                    float distance = diff_x * diff_x + dy * dy;
+                    if (dist == -1.0f || dist > distance) {
+                        dist = distance;
+                        found_obj = current;
                     }
                 }
             }
@@ -356,17 +356,17 @@ next_group_node:
         node = node->next;
     }
 
-    return found;
+    return found_obj;
 }
 
-RGE_Static_Object* RGE_Object_List::find_by_id(long target_id) {
+RGE_Static_Object* RGE_Object_List::find_by_id(long id) {
     RGE_Object_Node* node = this->list;
     if (node == 0) {
         return 0;
     }
 
     while (node) {
-        if (node->node != 0 && node->node->id == target_id) {
+        if (node->node != 0 && node->node->id == id) {
             return node->node;
         }
         node = node->next;
@@ -376,43 +376,43 @@ RGE_Static_Object* RGE_Object_List::find_by_id(long target_id) {
 }
 
 RGE_Static_Object* RGE_Object_List::find_by_master_id(
-    long master_id, float x, float y, unsigned char use_state,
-    unsigned char state, RGE_Static_Object* zone_object) {
+    long id, float x, float y, unsigned char certain_state,
+    unsigned char object_state, RGE_Static_Object* zone_obj) {
     int zone;
     RGE_Object_Node* node;
-    RGE_Static_Object* found;
-    float best_distance;
+    RGE_Static_Object* found_obj;
+    float dist;
 
-    if (x > -1.0f && y > -1.0f && zone_object != 0) {
-        zone = zone_object->lookupZone((int)x, (int)y) & 0xff;
+    if (x > -1.0f && y > -1.0f && zone_obj != 0) {
+        zone = zone_obj->lookupZone((int)x, (int)y) & 0xff;
     } else {
         zone = -1;
     }
 
     node = this->list;
-    found = 0;
-    best_distance = -1.0f;
+    found_obj = 0;
+    dist = -1.0f;
     while (node != 0) {
         RGE_Static_Object* object = node->node;
         if (object != 0) {
-            if (object->master_obj->id == master_id) {
-                if (!use_state || object->object_state == state) {
+            if (object->master_obj->id == id) {
+                if (!certain_state || object->object_state == object_state) {
                     if (x == -1.0f || y == -1.0f) {
                         return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_object->lookupZone((int)object->world_x,
+                        if ((zone_obj->lookupZone((int)object->world_x,
                                                     (int)object->world_y) & 0xff) != zone) {
                             goto next_master_node;
                         }
                     }
                     RGE_Static_Object* current = node->node;
-                    float dx = x - current->world_x;
+                    float diff_x = x - current->world_x;
                     float dy = y - current->world_y;
-                    float distance = dx * dx + dy * dy;
-                    if (best_distance == -1.0f || best_distance > distance) {
-                        best_distance = distance;
-                        found = current;
+                    float distance = diff_x * diff_x + dy * dy;
+                    if (dist == -1.0f || dist > distance) {
+                        dist = distance;
+                        found_obj = current;
                     }
                 }
             }
@@ -421,49 +421,49 @@ next_master_node:
         node = node->next;
     }
 
-    return found;
+    return found_obj;
 }
 
 RGE_Static_Object* RGE_Object_List::find_by_master_ids(
-    long first_id, long second_id, float x, float y,
-    unsigned char check_player, unsigned char player_id,
-    RGE_Static_Object* zone_object) {
+    long id1, long id2, float x, float y,
+    unsigned char certain_state, unsigned char object_state,
+    RGE_Static_Object* zone_obj) {
     int zone;
     RGE_Object_Node* node;
-    RGE_Static_Object* found;
-    float best_distance;
+    RGE_Static_Object* found_obj;
+    float dist;
 
-    if (zone_object != 0 && x > -1.0f && y > -1.0f) {
-        zone = zone_object->lookupZone((int)x, (int)y) & 0xff;
+    if (zone_obj != 0 && x > -1.0f && y > -1.0f) {
+        zone = zone_obj->lookupZone((int)x, (int)y) & 0xff;
     } else {
         zone = -1;
     }
 
     node = this->list;
-    found = 0;
-    best_distance = -1.0f;
+    found_obj = 0;
+    dist = -1.0f;
     while (node != 0) {
         RGE_Static_Object* object = node->node;
         long master_id = object->master_obj->id;
         if (object != 0) {
-            if (master_id == first_id || master_id == second_id) {
-                if (!check_player || object->object_state == player_id) {
+            if (master_id == id1 || master_id == id2) {
+                if (!certain_state || object->object_state == object_state) {
                     if (x == -1.0f && y == -1.0f) {
                         return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_object->lookupZone((int)object->world_x,
+                        if ((zone_obj->lookupZone((int)object->world_x,
                                                     (int)object->world_y) & 0xff) != zone) {
                             goto next_master_ids_node;
                         }
                     }
                     RGE_Static_Object* current = node->node;
-                    float dx = x - current->world_x;
+                    float diff_x = x - current->world_x;
                     float dy = y - current->world_y;
-                    float distance = dx * dx + dy * dy;
-                    if (best_distance == -1.0f || best_distance > distance) {
-                        best_distance = distance;
-                        found = current;
+                    float distance = diff_x * diff_x + dy * dy;
+                    if (dist == -1.0f || dist > distance) {
+                        dist = distance;
+                        found_obj = current;
                     }
                 }
             }
@@ -472,30 +472,30 @@ next_master_ids_node:
         node = node->next;
     }
 
-    return found;
+    return found_obj;
 }
 
 RGE_Static_Object* RGE_Object_List::find_by_type(
-    unsigned char type, float x, float y, unsigned char check_state,
-    unsigned char state) {
-    float best_distance = -1.0f;
+    unsigned char type, float x, float y, unsigned char certain_state,
+    unsigned char object_state) {
+    float dist = -1.0f;
     RGE_Static_Object* best_object = 0;
     RGE_Object_Node* node = this->list;
 
     while (node != 0) {
         RGE_Static_Object* object = node->node;
         if (object != 0 && object->type == type &&
-            (!check_state || object->object_state == state)) {
+            (!certain_state || object->object_state == object_state)) {
             if (x == -1.0f && y == -1.0f) {
                 return node->node;
             }
 
-            float dx = x - object->world_x;
+            float diff_x = x - object->world_x;
             float dy = y - object->world_y;
-            float distance = dx * dx + dy * dy;
+            float distance = diff_x * diff_x + dy * dy;
 
-            if (best_distance == -1.0f || best_distance > distance) {
-                best_distance = distance;
+            if (dist == -1.0f || dist > distance) {
+                dist = distance;
                 best_object = object;
             }
         }
@@ -507,32 +507,32 @@ RGE_Static_Object* RGE_Object_List::find_by_type(
 
 extern void rge_write(int file, void* data, int size);
 
-void RGE_Object_List::save(int file) {
+void RGE_Object_List::save(int outfile) {
     unsigned char finished;
     RGE_Object_Node* node = this->list;
 
     finished = 0;
     while (node != 0) {
         if (node->node != 0) {
-            node->node->save(file);
+            node->node->save(outfile);
         }
         node = node->next;
     }
 
-    rge_write(file, &finished, 1);
+    rge_write(outfile, &finished, 1);
 }
 
 extern void rge_read(int file, void* data, int size);
 
-void RGE_Object_List::load_list(int file, RGE_Game_World* world) {
-    unsigned char type;
+void RGE_Object_List::load_list(int infile, RGE_Game_World* world) {
+    unsigned char object_type;
 
     while (1) {
-        rge_read(file, &type, 1);
-        if (type == 0) {
+        rge_read(infile, &object_type, 1);
+        if (object_type == 0) {
             break;
         }
-        this->load(type, file, world);
+        this->load(object_type, infile, world);
     }
     this->invert();
 }
@@ -547,29 +547,29 @@ void RGE_Object_List::rehook_list() {
     }
 }
 
-void RGE_Object_List::load(unsigned char type, int mode,
+void RGE_Object_List::load(unsigned char object_type, int infile,
                            RGE_Game_World* world) {
-    switch (type) {
+    switch (object_type) {
     case 10:
-        new RGE_Static_Object(mode, world, 1);
+        new RGE_Static_Object(infile, world, 1);
         return;
     case 20:
-        new RGE_Animated_Object(mode, world, 1);
+        new RGE_Animated_Object(infile, world, 1);
         return;
     case 25:
-        new RGE_Doppleganger_Object(mode, world, 1);
+        new RGE_Doppleganger_Object(infile, world, 1);
         return;
     case 30:
-        new RGE_Moving_Object(mode, world, 1);
+        new RGE_Moving_Object(infile, world, 1);
         return;
     case 60:
-        new RGE_Missile_Object(mode, world, 1);
+        new RGE_Missile_Object(infile, world, 1);
         return;
     case 40:
-        new RGE_Action_Object(mode, world, 1);
+        new RGE_Action_Object(infile, world, 1);
         return;
     case 50:
-        new RGE_Combat_Object(mode, world, 1);
+        new RGE_Combat_Object(infile, world, 1);
         return;
     }
 }
