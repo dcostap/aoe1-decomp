@@ -1,5 +1,18 @@
 # Cleanup wave 03 root review
 
+## Owner 20: blocking resource-type change
+
+Reviewer `sa-5806ac65` read the complete 5,411-line diff and all nine reports.
+Reviewed head: `5b9d313b31819f8228623339e733ff1b25f2558e`.
+The reviewer rejected the `Sounddrv.cpp` substitution of `0x77617620` with `MAKEFOURCC('w', 'a', 'v', ' ')`.
+The pinned macro produces `0x20766177`, not the original resource-type value.
+Original instruction `004BD0B2` and the resource table retain `0x77617620`.
+
+Root resumed Owner 20 with the same worker to restore the literal and correct the reports.
+The group remains unmerged. No compiler or runtime check supplied this finding.
+The reviewer accepted the unusual `CCDAudio::GetPosition` PDB names and found no other blockers.
+The available review slot now handles Owner 15 as `sa-cc2cddfa`.
+
 ## Owner 17: delegated approval and integration
 
 Reviewer `sa-33ff58a2` read all 8,322 diff lines, nine reports, eight sources, and the changed header.
