@@ -4,11 +4,11 @@
 #include "../include/tworld.h"
 
 TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* render_area_in, TPanel* parent_in) {
-    RGE_Font* font;
+    RGE_Font* f;
 
     this->handle_mouse_input = 0;
-    font = rge_base_game->get_font(0xB);
-    this->font = font->font;
+    f = rge_base_game->get_font(0xB);
+    this->font = f->font;
     this->color1 = 0xFFFFFF;
     this->color2 = 0;
     this->color3 = 0xFFFF;
@@ -95,15 +95,15 @@ skip_realloc:
 
 void TRIBE_Panel_Pop::startup() {
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
-    TRIBE_Player* player =
+    TRIBE_Player* p =
         static_cast<TRIBE_Player*>(rge_base_game->get_player());
-    this->player = player;
+    this->player = p;
 
-    this->pop = static_cast<int>(player->attributes[0xB]);
-    this->max_pop = this->pop + static_cast<int>(player->attributes[0x4]);
-    int population_limit = static_cast<int>(player->attributes[0x20]);
-    if (this->max_pop > population_limit) {
-        this->max_pop = population_limit;
+    this->pop = static_cast<int>(p->attributes[0xB]);
+    this->max_pop = this->pop + static_cast<int>(p->attributes[0x4]);
+    int limit = static_cast<int>(p->attributes[0x20]);
+    if (this->max_pop > limit) {
+        this->max_pop = limit;
     }
 }
 

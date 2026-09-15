@@ -57,12 +57,10 @@ Recovered source names are:
 - Existing `render_to_image_buffer` locals `str`, `old_font`, and `rect`
   already match the PDB records.
 
-New descriptive cleanup names are `font` for the constructor's unnamed font
-local, `player` for the unnamed startup player local, and
-`population_limit` for the unnamed startup limit local. These are not claimed
-as original developer names. Existing descriptive locals without PDB records
-remain unchanged. No public function, class, member, global, ABI symbol,
-source order, declaration scope, storage, or type changed.
+The unnamed local spellings `f`, `p`, and `limit` remain unchanged. Terse
+spelling alone does not prove a generated name. Existing locals without PDB
+records remain unchanged. No public function, class, member, global, ABI
+symbol, source order, declaration scope, storage, or type changed.
 
 ## Constants and source changes
 
