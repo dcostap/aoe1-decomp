@@ -5,7 +5,10 @@
 - Module: `src/act_expl.cpp`.
 - PDB source: `C:\\msdev\\work\\age1_x1\\act_expl.cpp`.
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`.
-- Final source cleanup commit: `b4f4a2be81247053b5bc7fbb4ab4ed762134b5c4`.
+- Source name cleanup commit: `b4f4a2be81247053b5bc7fbb4ab4ed762134b5c4`.
+- Source style correction commit: `011b203e1e0e204c712900d309ffd4ffcb200146`.
+- Final source head: `011b203e1e0e204c712900d309ffd4ffcb200146`.
+- Initial report commit: `3e65b4cc870b3f79d85f119f7c8dfa5ec5a89f63`.
 - Changed files:
   - `src/act_expl.cpp`
   - `decomp_notes/source_cleanup/wave01/act_expl.md`
