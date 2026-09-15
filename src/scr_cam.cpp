@@ -46,32 +46,33 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    this->create_text(this, &this->title, 0x2BC1,
+    this->create_text(this, &this->title, IDS_CAMPAIGN_EDITOR_TITLE,
                       10, 10, 0x26C, 0x32, 1, 3, 0, 0);
-    this->create_text(this, &this->filename_title, 0x2BC2,
+    this->create_text(this, &this->filename_title, IDS_CAMPAIGN_FILENAME_LABEL,
                       0x14, 0x28, 0x104, 0x14, 4, 0, 0, 0);
     this->create_drop_down(this, &this->filename_drop,
                            0x17C, 0xC8, 0x14, 0x3C, 0x17C,
                            (this->ideal_height * 30) / this->pnl_hgt, 0xB);
 
     this->create_edit(this->filename_drop, &this->filename,
-                      this->get_string(0x2BCA),
+                      this->get_string(IDS_DEFAULT_CAMPAIGN_NAME),
                       100, TEditPanel::FormatFileNoExt,
                       0, 0, 0x168, 0x1E, 0xB, 1, 1);
 
-    this->create_button(this, &this->save_button, 0x2BC4,
+    this->create_button(this, &this->save_button, IDS_BUTTON_SAVE,
                         0, 0x1A4, 0x3C, 0xC8, 0x1E, 0, 0, 0);
-    this->create_button(this, &this->add_button, 0x2BC5,
+    this->create_button(this, &this->add_button, IDS_BUTTON_ADD,
                         0, 0x118, 0x104, 0xA0, 0x1E, 0, 0, 0);
-    this->create_button(this, &this->remove_button, 0x2BC6,
+    this->create_button(this, &this->remove_button, IDS_BUTTON_REMOVE,
                         0, 0x1CC, 0x104, 0xA0, 0x1E, 0, 0, 0);
-    this->create_text(this, &this->scenarios_title, 0x2BC7,
+    this->create_text(this, &this->scenarios_title, IDS_SCENARIOS_TITLE,
                       0x14, 0x64, 0xC8, 0x14, 4, 0, 0, 0);
     this->create_list(this, &this->scenarios,
                       0x14, 0x78, 0x258, 0x82, 0xB);
     this->create_auto_scrollbar(&this->scenarios_bar,
                                 this->scenarios, 0x14);
-    this->create_text(this, &this->campaign_scenarios_title, 0x2BC8,
+    this->create_text(this, &this->campaign_scenarios_title,
+                      IDS_CAMPAIGN_SCENARIOS_TITLE,
                       0x14, 0x118, 0xC8, 0x14, 4, 0, 0, 0);
     this->create_list(this, &this->campaign_scenarios,
                       0x14, 0x12C, 0x1F4, 0x82, 0xB);
@@ -86,9 +87,11 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     cancel->hotkey = 0x1B;
     cancel->hotkey_shift = 0;
 
-    this->create_button(this, &this->move_scenario_up_button, 0x2BD5,
+    this->create_button(this, &this->move_scenario_up_button,
+                        IDS_BUTTON_MOVE_SCENARIO_UP,
                         0, 0x212, 0x12C, 0x5A, 0x1E, 0, 0, 0);
-    this->create_button(this, &this->move_scenario_down_button, 0x2BD6,
+    this->create_button(this, &this->move_scenario_down_button,
+                        IDS_BUTTON_MOVE_SCENARIO_DOWN,
                         0, 0x212, 0x154, 0x5A, 0x1E, 0, 0, 0);
 
     TPanel* tabList[8];
@@ -292,7 +295,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
     campaign_filename = this->filename->get_text();
     if (campaign_filename != 0) {
         if (*campaign_filename == 0 || *campaign_filename == ' ') {
-            this->popupOKDialog(0x2BCC, 0, 0x1C2, 100);
+            this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED,
+                                0, 0x1C2, 100);
             // An invalid name returns without clearing need_to_save.
             return;
         } else {
@@ -334,7 +338,8 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
                 free(scenarios_text);
                 free(scenarios_filenames);
             } else {
-                this->popupOKDialog(0x2BCB, 0, 0x1C2, 100);
+                this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO,
+                                    0, 0x1C2, 100);
             }
             free(text);
             this->fill_campaign_drop();
@@ -442,7 +447,7 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* fromPanel, long actionIn, unsi
 
     if (fromPanel == this->filename_drop && actionIn == 0) {
         if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
-            this->get_string(0x2bc9, str, 0x100);
+            this->get_string(IDS_CONFIRM_SAVE_CAMPAIGN, str, 0x100);
             sprintf(text, str, this->filename->get_text());
             this->popupYesNoCancelDialog(text, "Load Dialog", 0x1c2, 100);
         } else {
@@ -454,7 +459,7 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* fromPanel, long actionIn, unsi
     if (actionIn == 1) {
         if (fromPanel == this->ok_button) {
             if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
-                this->get_string(0x2bc9, str, 0x100);
+                this->get_string(IDS_CONFIRM_SAVE_CAMPAIGN, str, 0x100);
                 sprintf(text, str, this->filename->get_text());
                 this->popupYesNoCancelDialog(text, "Cancel Dialog", 0x1c2, 100);
             } else {
