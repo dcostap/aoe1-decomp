@@ -6,7 +6,16 @@ Corrected head: `4cba115bf1051cd68625e89b0411645c61b1b933`.
 The complete 979-line correction diff is `build/source-cleanup-20260915/owner28-corrections.diff`.
 Original reviewer `sa-f1296ef0` resumed to check restored names, the lookup comment, three resource substitutions, and changed reports.
 The review must preserve baseline types, storage, and declarations instead of forcing uncertain PDB mappings.
-The group remains unmerged. Full validation must wait for all cleanup work to finish.
+Reviewer `sa-f1296ef0` approved all code corrections after reading all 979 lines.
+Correction diff SHA256: `e8c724df3d7df740bdd0b6497956b798321b73a59a75d408ecad194b298d1f08`.
+The restored names preserve declarations and storage. The comment and three resource substitutions also passed review.
+Root returned report-only corrections to the same worker and owner:
+
+- Describe the virtual game lookup, expansion first, then base fallback.
+- Record base age strings as present and nonempty; expansion IDs are missing, not empty.
+- Replace abbreviated evidence paths with the exact root extraction paths.
+
+The group remains unmerged pending those reports. Full validation must wait for all cleanup work to finish.
 
 ## Owner 24: final reports approved
 
