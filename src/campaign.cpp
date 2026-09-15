@@ -48,9 +48,7 @@ RGE_Campaign::RGE_Campaign(char* in_filename) {
     this->scenario_offsets = 0;
 }
 
-RGE_Campaign::RGE_Campaign(char* campaign_filename, char* campaign_name,
-                           long scenario_num, char** scenarios,
-                           char** scenarios_name) {
+RGE_Campaign::RGE_Campaign(char* campaign_filename, char* campaign_name, long scenario_num, char** scenarios, char** scenarios_name) {
     sprintf(this->filename, "%s%s", rge_base_game->prog_info->campaign_dir, campaign_filename);
 
     this->campaign_header.version = version_marker;
@@ -83,8 +81,7 @@ void RGE_Campaign::create_file() {
     int current_offset;
     char tempname[300];
 
-    handle = _open(this->filename, _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY,
-                   _S_IREAD | _S_IWRITE);
+    handle = _open(this->filename, _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY, _S_IREAD | _S_IWRITE);
     if (handle >= 0) {
         write(handle, this, 0x108);
         if (this->campaign_header.scenario_num > 0) {

@@ -5,6 +5,7 @@
 - Module: `src/campaign.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit: `3f4317178392417903a58fa4364c02d9e16fc0be`
+- Report commit: `dc55b87bb95d24da0f8733a172b01e7c56b426e4`
 - Changed files:
   - `src/campaign.cpp`
   - `decomp_notes/source_cleanup/wave04/campaign.md`
