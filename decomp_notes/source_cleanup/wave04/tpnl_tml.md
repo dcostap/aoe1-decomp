@@ -6,7 +6,9 @@
 - Report: `decomp_notes/source_cleanup/wave04/tpnl_tml.md`
 - Branch: `cleanup/staging-20260915-250`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Source cleanup commit: see the delivery record.
+- Source cleanup commit: `320ebf88394be8a8f5c032c6f1b72e7d9cfd4032`.
+- Correction commit: returned separately. This report cannot contain its own
+  commit hash without self-reference.
 - Changed files:
   - `src/tpnl_tml.cpp`
   - `decomp_notes/source_cleanup/wave04/tpnl_tml.md`
@@ -18,10 +20,10 @@ The source owns 25 handwritten `Time_Line_Panel` procedures in PDB order.
 The compiler-generated scalar-deleting destructor at `0051E770` remains outside
 this source owner and was not edited.
 
-The cleanup restores supported PDB parameter and local names. It replaces
-three proven language IDs with names from the shared resource-ID header. It
-also applies 1TBS brace placement and readable wrapping. It does not change
-statements, types, scopes, storage, calls, control flow, or source order.
+The cleanup restores supported PDB parameter and local names. It records three
+proven language IDs for a future shared-header mapping. It also applies 1TBS
+brace placement and readable wrapping. It does not change statements, types,
+scopes, storage, calls, control flow, or source order.
 
 ## Evidence and hashes
 
@@ -53,8 +55,10 @@ The original assembly and decompiler evidence are:
 
 The base source SHA-256 is
 `d18e69dfde64eb38fed1929b93ab12ac360e3be8ce38c61f6a02278cb1e1d1f4`.
-The final source SHA-256 is
+The pre-correction source SHA-256 is
 `84775fd96cde18ebf00b37914f7bcbf7bc299340e0bb3c56fe6d52e9616d5b2d`.
+The corrected source SHA-256 is
+`9b1b1987325be11f6f1cfe522dc8b4afa85ca1329b4964a9634fd9c712da776e`.
 
 ## Original-name recovery
 
@@ -118,9 +122,12 @@ All three records use language `0x0409`:
 | `0x106B` | `Bronze Age` | `IDS_HELP_AGE_BRONZE` | Age-event label in `draw_icon` case `1`. |
 | `0x106C` | `Iron Age` | `IDS_HELP_AGE_IRON` | Age-event label in `draw_icon` case `2`. |
 
-The shared header defines these names. This worker did not add competing names.
-The macro replacements preserve each numeric value, lookup call, buffer size,
-lookup order, localization, and failure path.
+The proposed names are new cleanup names. They are not defined in this
+worktree or the integration base. Root owns `include/resource_ids.h`.
+Request that root review one shared mapping for these three IDs. Keep the
+numeric literals until root provides approved definitions. The current source
+keeps each numeric value, lookup call, buffer size, lookup order, localization,
+and failure path.
 
 For comparison, the inspected expansion file is:
 
@@ -136,6 +143,23 @@ name.
 The extraction records are exact `RT_STRING` results. They do not prove the
 runtime loader path by themselves. The `draw_icon` call site and base
 `TPanel::get_string` path establish the use here.
+
+### Outstanding root mapping request
+
+Root owns `include/resource_ids.h`. Please review one shared mapping for the
+following base-language `RT_STRING` lookups:
+
+- Lookup path: `Time_Line_Panel::draw_icon` calls `TPanel::get_string`, which
+  reads the base `language.dll` string namespace.
+- DLL: `language.dll`, SHA-256
+  `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+- Language: `0x0409`.
+- `0x106A`: `Tool Age`; proposed name `IDS_HELP_AGE_TOOL`.
+- `0x106B`: `Bronze Age`; proposed name `IDS_HELP_AGE_BRONZE`.
+- `0x106C`: `Iron Age`; proposed name `IDS_HELP_AGE_IRON`.
+
+The current source keeps all three numeric literals. This request does not
+edit the shared header or claim that these names are approved.
 
 ## Header request
 
@@ -181,12 +205,12 @@ convention, symbol, or layout.
 
 ## Code-generation and validation status
 
-The source diff changes identifiers, resource macro spellings, whitespace,
-wrapping, and brace placement. It does not change executable expressions,
-field offsets, calls, literals, control flow, or source order. The macro names
-expand to the original integer values.
+The source diff changes identifiers, whitespace, wrapping, and brace
+placement. It restores the three numeric resource literals. It does not
+change executable expressions, field offsets, calls, control flow, or source
+order.
 
 Compilation, builds, compiler checks, audits, validation, matching checks, and
 tests were not run. No executable comparison or runtime harness was run. The
-complete assigned-file diff was reviewed manually. The result remains
+correction was limited to the assigned source and report. The result remains
 unvalidated until the final project validation stage.
