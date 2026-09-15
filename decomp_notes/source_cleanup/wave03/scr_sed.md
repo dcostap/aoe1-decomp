@@ -6,15 +6,16 @@
 - Worktree: `slot-183`
 - Branch: `cleanup/staging-20260915-183`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `03c9158e16142b5e246a646d0e08605d2e3f924a`
+- PDB name cleanup commit: `03c9158e16142b5e246a646d0e08605d2e3f924a`
+- Formatting correction commit: `785eac73d03094f363c74d56d381c635c844c0ca`
 - Changed files:
   - `src/scr_sed.cpp`
   - `decomp_notes/source_cleanup/wave03/scr_sed.md`
 - Base source SHA256: `542e902be520698310c53f801e7235480cf3f9ead58e83ef737ef652db336873`
-- Final source SHA256: `7af3a4a4ea55c34f95944f5cf7847df44302b8852a19557e1f2f773a9c0dfdf3`
+- Final source SHA256: `dbf43378bdb03e5f6bb2216dd8927366377e662365bea094bcb8ce95a5e24e22`
 
-The source commit contains only the assigned source. The report is the second
-assigned file and will have its own delivery commit.
+The source commits contain only the assigned source. The report is the second
+assigned file and has its own delivery commit.
 
 ## Scope and evidence
 
@@ -135,12 +136,30 @@ owns that header and all shared resource declarations.
 No header request is pending. In particular, I did not edit
 `include/scr_sed.h`, `include/resource_ids.h`, or any other header.
 
+## Formatting correction
+
+The follow-up source commit reformats `src/scr_sed.cpp` with 1TBS style. It
+puts function and control opening braces on the same line, uses `} else {`,
+and corrects indentation. It keeps short signatures and calls on one line
+when readable.
+
+The correction changes whitespace and brace placement only. Token and comment
+sequence, brace counts, literals, calls, scopes, and statement order remain
+unchanged. No header or source file other than `src/scr_sed.cpp` changed.
+
+The complete source diff was reviewed. Validation was limited to formatting
+review and token-preservation comparison. No build, compiler, matching, audit,
+test, or game run was performed. Final validation must compare generated code,
+data, relocations, call targets, and boundaries against the preserved baseline
+object.
+
 ## Risk and validation limits
 
-The changes rename parameters and locals only. They do not intentionally alter
-layout, types, storage, control flow, literals, calls, or symbol identity.
-The accepted-drift status remains unvalidated after this cleanup.
+The source changes rename parameters and locals, then apply whitespace-only
+formatting. They do not intentionally alter layout, types, storage, control
+flow, literals, calls, or symbol identity. The accepted-drift status remains
+unvalidated after this cleanup.
 
-I did not run compilation, matching, audits, or tests. I did not run a build or
-the game. Final validation must compare generated code, data, relocations,
-call targets, and boundaries against the preserved baseline object.
+No compilation, matching, audit, or test was run. No build or game was run.
+Final validation must compare generated code, data, relocations, call targets,
+and boundaries against the preserved baseline object.
