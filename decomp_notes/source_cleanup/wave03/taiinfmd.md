@@ -4,15 +4,36 @@
 
 - Module: `src/taiinfmd.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source candidate commit: `e3c28ca2d20c2c3947403e20aecbe31496e4b074`
-- Source SHA-256 at the source candidate commit:
-  `c6b9e370aac6602d688c7052afa78dd94534d754dcdd96750cadd3869867af8c`
+- Source candidate before the declaration correction pass:
+  `76180ec12a9cf731a9ddb5135f2caefdab780fd7`
+- Source SHA-256 after the declaration correction pass:
+  `65ccead13d7317069e9a39569cf211f28d23d05a22a5a90f2763d15764a4ca7e`
 - Changed files:
   - `src/taiinfmd.cpp`
   - `decomp_notes/source_cleanup/wave03/taiinfmd.md`
 
 The source owner is `src/taiinfmd.cpp`. The header `include/taiinfmd.h` was read but not changed.
 No other tracked file changed.
+
+## Declaration correction history
+
+The correction pass compared the cleanup source with base commit
+`76037279ee11dde077bb7d55aeb46b518b2bb27c` and the scoped PDB records.
+It restored declaration shape where the cleanup had removed aliases or changed storage use.
+
+- Restored the constructor's temporary declarations and reused parameter storage.
+- Restored the destructor's separate unit-history file handle.
+- Restored `update` output-slot declarations.
+- Restored `save`'s separate output handle and value temporary.
+- Restored `objectMemory` pointer and index aliases.
+- Restored `loadLearnInfo` count and item-value aliases.
+- Restored the accumulator parameter in `higherPriorityObjectToDefend`.
+- Removed the extra outer `timeKillRatio` declaration in `objectToAttackByGroup2`.
+- Applied 1TBS brace placement and four-space indentation without changing scopes.
+
+Only names supported by a direct PDB record remain recovered names. Other declarations retain
+the source spelling from the base source. The pass did not change statements, scopes, calls,
+casts, literals, storage types, or initialization order.
 
 ## Scope and coverage
 
@@ -27,17 +48,23 @@ class names, member names, layouts, calling conventions, or header declarations.
 
 ## Evidence
 
-The review used these files and records:
+The review used these files and records. Paths are absolute for repeatable review:
 
-- `build/taiinfmd_evidence/scoped_symbols.json`
-- `build/taiinfmd_evidence/packet_index.txt`
-- `build/taiinfmd_evidence/packet_paths.txt`
-- `build/taiinfmd_evidence/source_defs.txt`
-- `inventory/pdb/scoped_symbols.json`
-- The registry `config/functions/src/taiinfmd.cpp.json`
-- Original packets under `inventory/functions/004D/` and `inventory/functions/004E/`
-- `decomp_notes/taiinfmd.md`
-- `include/taiinfmd.h`, read-only for this assignment
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/build/taiinfmd_evidence/scoped_symbols.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/build/taiinfmd_evidence/packet_index.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/build/taiinfmd_evidence/packet_paths.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/build/taiinfmd_evidence/source_defs.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/config/functions/src/taiinfmd.cpp.json`
+- Original packets under `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004D/` and `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004E/`, including:
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004D/004D8D20_closestUnexploredTile.txt`,
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004D/004DFD60_findObjectMemoryLimits.txt`,
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004E/004E1260_loadLearnInfo.txt`,
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004E/004E2E90_updateResourceDropsites.txt`,
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004E/004E3210_amountForageBushesInXTiles.txt`, and
+  `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004E/004E3390_damagePerSecond.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/decomp_notes/taiinfmd.md`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-119/include/taiinfmd.h`, read-only for this assignment
 
 The original executable remains the behavior oracle. PDB names are evidence for spelling and type.
 Packet disassembly and the existing source supplied the behavior context.
@@ -103,15 +130,14 @@ These comments were retained. The final edit added no new resource or API commen
 
 ## Code-generation and type risks
 
-The cleanup changes names, declaration shape, and presentation. It keeps expressions, casts,
-literal values, statement order, calls, explicit `this->` use, and source ownership.
+The cleanup changes names and presentation. The correction pass restores declaration shape,
+aliases, scopes, storage, and initialization points. It keeps expressions, casts, literal
+values, statement order, calls, explicit `this->` use, and source ownership.
 
 Names do not affect the ABI, but local declaration changes can affect VC5 register allocation,
-stack allocation, or instruction selection. The highest-risk edits are the removal of redundant
-file-handle aliases in `save` and the destructor, the reuse of PDB-supported temporary names in
-the load constructor, the use of PDB `x` and `y` parameters as wall-scan variables, and the
-separate `timeKillRatio` declaration in `objectToAttackByGroup2`. These changes require the
-final generated-output comparison.
+stack allocation, or instruction selection. The correction pass reduces this risk by restoring
+the original aliases and lifetimes. Remaining risk is limited to recovered local names and
+source presentation. Generated-output comparison is still required.
 
 No type, structure layout, public signature, function boundary, call target, tail jump, or
 assembly region was changed by this cleanup.
