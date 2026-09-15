@@ -141,8 +141,7 @@ unsigned char TRIBE_World::data_load_world(FILE* infile) {
     return 1;
 }
 
-unsigned char TRIBE_World::init_player_type(int infile, short index,
-                                            unsigned char type) {
+unsigned char TRIBE_World::init_player_type(int infile, short index, unsigned char type) {
     switch (type) {
     case 1: {
         TRIBE_Master_Player* p = new TRIBE_Master_Player(infile);
@@ -184,8 +183,7 @@ void TRIBE_World::effects_init(int infile) {
     this->effects = e;
 }
 
-void TRIBE_World::world_init(int infile, TSound_Driver* sound_dvr,
-                             TCommunications_Handler* com_hand) {
+void TRIBE_World::world_init(int infile, TSound_Driver* sound_dvr, TCommunications_Handler* com_hand) {
     RGE_Game_World::world_init(infile, sound_dvr, com_hand);
 
     TRIBE_Tech* new_tech = new TRIBE_Tech(infile, this);
@@ -198,8 +196,7 @@ void TRIBE_World::world_init(int infile, TSound_Driver* sound_dvr,
     this->score_displayed = 0;
 }
 
-unsigned char TRIBE_World::init(char* base_name, TSound_Driver* sound_dvr,
-                                TCommunications_Handler* com_hand) {
+unsigned char TRIBE_World::init(char* base_name, TSound_Driver* sound_dvr, TCommunications_Handler* com_hand) {
     return RGE_Game_World::init(base_name, sound_dvr, com_hand);
 }
 
@@ -361,21 +358,21 @@ void TRIBE_World::check_destructables(short player_id, short obj_id,
 void TRIBE_World::scenario_make_player(short index,
     unsigned char player_type, unsigned char info_type,
     unsigned char master_player_id, char* name) {
-    if (player_type == 0) {
+    if (info_type == 0) {
         this->players[index] = new TRIBE_Player(this,
-            this->master_players[master_player_id],
-            static_cast<unsigned char>(index), name, master_player_id,
+            this->master_players[player_type],
+            static_cast<unsigned char>(index), name, player_type,
             0, 1, 0, 0, 0);
     } else {
-        if (player_type == 4) {
+        if (info_type == 4) {
             this->players[index] = new TRIBE_Player(this,
-                this->master_players[master_player_id],
-                static_cast<unsigned char>(index), name, master_player_id,
+                this->master_players[player_type],
+                static_cast<unsigned char>(index), name, player_type,
                 1, 1, 0, 0, 0);
         } else {
             this->players[index] = new TRIBE_Player(this,
-                this->master_players[master_player_id],
-                static_cast<unsigned char>(index), name, master_player_id,
+                this->master_players[player_type],
+                static_cast<unsigned char>(index), name, player_type,
                 0, 1, 0, 0, 0);
         }
     }
@@ -895,8 +892,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     return ret_num;
 }
 
-unsigned char TRIBE_World::new_scenario(RGE_Player_Info& info,
-                                        int random_seed_in) {
+unsigned char TRIBE_World::new_scenario(RGE_Player_Info& info, int random_seed_in) {
     unsigned char result =
         RGE_Game_World::new_scenario(info, random_seed_in);
     int i = 1;
@@ -1086,8 +1082,7 @@ unsigned char TRIBE_World::check_game_state() {
     return RGE_Game_World::check_game_state();
 }
 
-long TRIBE_World::get_achievement(unsigned char achievement,
-                                  char** info) {
+long TRIBE_World::get_achievement(unsigned char achievement, char** info) {
     int player = 1;
 
     if (this->player_num > 1) {
@@ -1289,8 +1284,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
     }
 }
 
-void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info,
-                                long score_group) {
+void TRIBE_World::fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_group) {
     int player = 1;
     long high_score = 0;
     int hi_player = 1;
