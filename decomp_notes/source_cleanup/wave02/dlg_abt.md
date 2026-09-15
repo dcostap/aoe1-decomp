@@ -7,7 +7,8 @@
 - Header owner: owner 10
 - Branch: `cleanup/staging-20260915-83`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Shared resource-ID commit: `ea9e4c8f74c8f42512971e615be92cde24539fd5`
+- Worker-local resource-ID import: `ea9e4c8f74c8f42512971e615be92cde24539fd5`
+- Root resource-ID approval: `8c56055b7feee1526f296bd306036a4c34f38041`
 - Corrected source head commit: `f92c8da2a2f14174eadcef05585e4cb16d006c25`
 - Changed files:
   - `src/dlg_abt.cpp`
@@ -177,8 +178,9 @@ virtual long action(TPanel* fromPanel, long actionIn,
 These names preserve the existing types, order, virtual slot, calling
 convention, and ABI. This worker did not edit the header.
 
-The root owner approved these cleanup macros in commit
-`ea9e4c8f74c8f42512971e615be92cde24539fd5`. They are not recovered original
+The worker-local import commit is
+`ea9e4c8f74c8f42512971e615be92cde24539fd5`. The actual root approval is
+`8c56055b7feee1526f296bd306036a4c34f38041`. These are not recovered original
 macro names:
 
 ```cpp
