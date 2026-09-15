@@ -92,7 +92,7 @@ Per the cleanup assignment, compilation, builds, matching, audits, tests, and ga
 ## Correction delivery
 
 - Initial cleanup delivery: `9902c3216ddbb33372653f2e39170cbb2b49a754`.
-- Formatting correction delivery: `28c0ec957c7200a0e443d8a0e119a34dcbdcd26e`.
+- Formatting correction delivery: `28c0ec95782552ac55da7a409eac54e2134599e5`.
 
 The correction places opening braces on the definition line throughout this source. It covers `update`, `updateGroup`, `selectNewPlayPhase`, `order`, both `notify` overloads, `search`, `bestUnitToAttack`, action wrappers, movement helpers, `lookAround`, `askForHelp`, `processGroupNotify`, `processMisc`, both queue overloads, and `purgeNotifyQueue`. Existing standalone scope braces remain unchanged. No brace was added or removed.
 
