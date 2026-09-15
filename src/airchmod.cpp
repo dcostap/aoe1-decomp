@@ -6,24 +6,22 @@
 
 #include "../include/rge_fio.h"
 
-ResearchAIModule::ResearchAIModule(void* ptr, int arg)
-    : AIModule((char*)"Research AI", 0x3ee, arg, ptr),
+ResearchAIModule::ResearchAIModule(void* pW, int playerID)
+    : AIModule((char*)"Research AI", 0x3ee, playerID, pW),
       md(0),
       techTree(),
-      techTreeLengthValue(0)
-{
+      techTreeLengthValue(0) {
     TechnologyItem* head = &this->techTree;
     this->techTree.next = head;
     this->techTree.prev = head;
     strcpy(this->techTreeNameValue, "");
 }
 
-ResearchAIModule::ResearchAIModule(int file, int arg2)
-    : AIModule((char*)"Research AI", 0x3ee, file, 0),
+ResearchAIModule::ResearchAIModule(int playerID, int infile)
+    : AIModule((char*)"Research AI", 0x3ee, playerID, 0),
       md(0),
       techTree(),
-      techTreeLengthValue(0)
-{
+      techTreeLengthValue(0) {
     TechnologyItem* head = &this->techTree;
     int i;
     int tempInt;
@@ -33,22 +31,22 @@ ResearchAIModule::ResearchAIModule(int file, int arg2)
 
     this->techTree.next = head;
     this->techTree.prev = head;
-    rge_read(arg2, &this->techTreeLengthValue, 4);
+    rge_read(infile, &this->techTreeLengthValue, 4);
 
-    rge_read(arg2, &i, 4);
-    rge_read(arg2, &this->techTreeNameValue[0], i);
+    rge_read(infile, &i, 4);
+    rge_read(infile, &this->techTreeNameValue[0], i);
     this->techTreeNameValue[i] = 0;
 
     for (typeID = 0; typeID < this->techTreeLengthValue; ++typeID) {
-        rge_read(arg2, &i, 4);
-        rge_read(arg2, name, i);
+        rge_read(infile, &i, 4);
+        rge_read(infile, name, i);
         name[i] = 0;
-        rge_read(arg2, &tempInt, 4);
+        rge_read(infile, &tempInt, 4);
 
         int j;
         int* p = rc;
         for (j = 4; j != 0; --j) {
-            rge_read(arg2, &i, 4);
+            rge_read(infile, &i, 4);
             *p++ = i;
         }
 
@@ -56,36 +54,33 @@ ResearchAIModule::ResearchAIModule(int file, int arg2)
         TechnologyItem* item = new TechnologyItem(tempInt, name, newRCost);
 
         item->next = head;
-        TechnologyItem* oldTail = this->techTree.prev;
-        item->prev = oldTail;
-        oldTail->next = item;
+        TechnologyItem* old_tail = this->techTree.prev;
+        item->prev = old_tail;
+        old_tail->next = item;
         this->techTree.prev = item;
     }
 }
 
-ResearchAIModule::~ResearchAIModule()
-{
+ResearchAIModule::~ResearchAIModule() {
     if (this->techTreeLengthValue > 0) {
         this->removeOldTechTree();
     }
 }
 
-void ResearchAIModule::setMainDecisionAI(MainDecisionAIModule* value)
-{
-    this->md = value;
+void ResearchAIModule::setMainDecisionAI(MainDecisionAIModule* m) {
+    this->md = m;
 }
 
-int ResearchAIModule::save(int file)
-{
+int ResearchAIModule::save(int outfile) {
     int tempInt;
     char tempString[257];
 
-    rge_write(file, &this->techTreeLengthValue, 4);
+    rge_write(outfile, &this->techTreeLengthValue, 4);
 
     strcpy(tempString, this->techTreeNameValue);
     tempInt = strlen(tempString);
-    rge_write(file, &tempInt, 4);
-    rge_write(file, tempString, strlen(tempString));
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
 
     TechnologyItem* item = this->techTree.next;
     TechnologyItem* end = &this->techTree;
@@ -95,15 +90,15 @@ int ResearchAIModule::save(int file)
         }
         strcpy(tempString, item->name());
         tempInt = strlen(tempString);
-        rge_write(file, &tempInt, 4);
-        rge_write(file, tempString, tempInt);
+        rge_write(outfile, &tempInt, 4);
+        rge_write(outfile, tempString, tempInt);
         tempInt = item->id();
-        rge_write(file, &tempInt, 4);
+        rge_write(outfile, &tempInt, 4);
         ResourceItem* cost = item->resourceCost();
         int i = 0;
         do {
             tempInt = cost->value(i);
-            rge_write(file, &tempInt, 4);
+            rge_write(outfile, &tempInt, 4);
             i++;
         } while (i < 4);
         item = item->next;
@@ -112,8 +107,7 @@ int ResearchAIModule::save(int file)
     return 1;
 }
 
-ResourceItem* ResearchAIModule::resourceCost(int id)
-{
+ResourceItem* ResearchAIModule::resourceCost(int id) {
     TechnologyItem* tech = this->item(id);
     if (tech == 0) {
         return 0;
@@ -121,17 +115,14 @@ ResourceItem* ResearchAIModule::resourceCost(int id)
     return tech->resourceCost();
 }
 
-int ResearchAIModule::buildable(BuildItem* item)
-{
+int ResearchAIModule::buildable(BuildItem* bi) {
     return 1;
 }
 
-void ResearchAIModule::research(BuildItem* item)
-{
+void ResearchAIModule::research(BuildItem* bi) {
 }
 
-int ResearchAIModule::loadTechnologyTree(char* filename)
-{
+int ResearchAIModule::loadTechnologyTree(char* lName) {
     int rc[5];
     char name[64];
     char temp[256];
@@ -144,11 +135,11 @@ int ResearchAIModule::loadTechnologyTree(char* filename)
         this->removeOldTechTree();
     }
 
-    strcpy(this->techTreeNameValue, filename);
+    strcpy(this->techTreeNameValue, lName);
     id = this->techTreeNameValue;
     if (strcmp(id, "NONE") != 0) {
         if (id == 0) goto no_tree;
-        this->logCommonHistory("Loading tech tree in file '%s'.", filename);
+        this->logCommonHistory("Loading tech tree in file '%s'.", lName);
         sprintf(temp, "%s", id);
         fp = fopen(temp, "r");
         if (fp == 0) return 0;
@@ -156,13 +147,13 @@ int ResearchAIModule::loadTechnologyTree(char* filename)
             tail = &this->techTree;
             do {
                 sscanf(temp, "%*c%d %s %*d %*d %d %d %d %d %*d %*d %*d %*d", rc, name, rc + 1, rc + 2, rc + 3, rc + 4);
-                ResourceItem newRCost2(4, rc + 1);
-                TechnologyItem* alloc = new TechnologyItem(rc[0], name, newRCost2);
+                ResourceItem newRCost(4, rc + 1);
+                TechnologyItem* alloc = new TechnologyItem(rc[0], name, newRCost);
                 item = alloc;
                 item->next = tail;
-                TechnologyItem* oldTail = this->techTree.prev;
-                item->prev = oldTail;
-                oldTail->next = item;
+                TechnologyItem* old_tail = this->techTree.prev;
+                item->prev = old_tail;
+                old_tail->next = item;
                 this->techTree.prev = item;
                 this->techTreeLengthValue++;
             } while (fgets(temp, 0x100, fp) != 0);
@@ -181,18 +172,15 @@ no_tree:
     return 1;
 }
 
-int ResearchAIModule::numberTechnologyItems() const
-{
+int ResearchAIModule::numberTechnologyItems() const {
     return this->techTreeLengthValue;
 }
 
-char* ResearchAIModule::technologyTreeName()
-{
+char* ResearchAIModule::technologyTreeName() {
     return this->techTreeNameValue;
 }
 
-void ResearchAIModule::removeOldTechTree(void)
-{
+void ResearchAIModule::removeOldTechTree(void) {
     TechnologyItem* head = &this->techTree;
     TechnologyItem* node = this->techTree.next;
 
@@ -207,15 +195,14 @@ void ResearchAIModule::removeOldTechTree(void)
     this->techTreeLengthValue = 0;
 }
 
-TechnologyItem* ResearchAIModule::item(int tech_id)
-{
+TechnologyItem* ResearchAIModule::item(int id) {
     TechnologyItem* item = this->techTree.next;
     TechnologyItem* end = &this->techTree;
 
     while (item != end) {
         if (item == 0)
             return 0;
-        if (item->id() == tech_id)
+        if (item->id() == id)
             return item;
         item = item->next;
     }

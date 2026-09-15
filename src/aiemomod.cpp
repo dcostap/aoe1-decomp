@@ -5,10 +5,9 @@ char* __cdecl strcpy(char* dest, const char* src);
 void __cdecl rge_read(int handle, void* buf, int size);
 void __cdecl rge_write(int file, void* data, int size);
 
-EmotionalAIModule::EmotionalAIModule(void* param1, int param2)
-    : AIModule("Emotional AI", 0x3EC, param2, param1)
-    , md(0)
-{
+EmotionalAIModule::EmotionalAIModule(void* pW, int playerID)
+    : AIModule("Emotional AI", 0x3EC, playerID, pW)
+    , md(0) {
     for (int i = 0; i < 6; i++) stateValue[i] = 49;
     strcpy(stateNameValue[0], "Aggressive");
     strcpy(stateNameValue[1], "Compassionate");
@@ -18,14 +17,13 @@ EmotionalAIModule::EmotionalAIModule(void* param1, int param2)
     strcpy(stateNameValue[5], "Vengeful");
 }
 
-EmotionalAIModule::EmotionalAIModule(int param1, int param2)
-    : AIModule("Emotional AI", 0x3EC, param1, 0)
-    , md(0)
-{
+EmotionalAIModule::EmotionalAIModule(int playerID, int infile)
+    : AIModule("Emotional AI", 0x3EC, playerID, 0)
+    , md(0) {
     int* ptr = stateValue;
     int count = 6;
     do {
-        rge_read(param2, ptr, 4);
+        rge_read(infile, ptr, 4);
         ptr++;
         count--;
     } while (count != 0);
@@ -41,61 +39,61 @@ EmotionalAIModule::EmotionalAIModule(int param1, int param2)
 EmotionalAIModule::~EmotionalAIModule() {
 }
 
-void EmotionalAIModule::setMainDecisionAI(MainDecisionAIModule* v) {
-    this->md = v;
+void EmotionalAIModule::setMainDecisionAI(MainDecisionAIModule* m) {
+    this->md = m;
 }
 
-int EmotionalAIModule::save(int file) {
+int EmotionalAIModule::save(int outfile) {
     int* value = this->stateValue;
     int count = 6;
 
     do {
-        rge_write(file, value, 4);
+        rge_write(outfile, value, 4);
         value = value + 1;
         count = count - 1;
     } while (count != 0);
     return 1;
 }
 
-char* EmotionalAIModule::stateName(int index) {
-    if ((index >= 0) && (index < 6)) {
-        return this->stateNameValue[index];
+char* EmotionalAIModule::stateName(int s) {
+    if ((s >= 0) && (s < 6)) {
+        return this->stateNameValue[s];
     }
     return 0;
 }
 
-int EmotionalAIModule::state(int index) const {
-    if (index < 0 || index >= 6) return -1;
-    return this->stateValue[index];
+int EmotionalAIModule::state(int s) const {
+    if (s < 0 || s >= 6) return -1;
+    return this->stateValue[s];
 }
 
-void EmotionalAIModule::setState(int index, int val) {
-    if (index < 0 || index >= 6) return;
-    this->stateValue[index] = val;
+void EmotionalAIModule::setState(int s, int value) {
+    if (s < 0 || s >= 6) return;
+    this->stateValue[s] = value;
 }
 
-void EmotionalAIModule::incrementState(int index, int value) {
-    if ((index >= 0) && (index < 6)) {
-        this->stateValue[index] = this->stateValue[index] + value;
+void EmotionalAIModule::incrementState(int s, int delta) {
+    if ((s >= 0) && (s < 6)) {
+        this->stateValue[s] = this->stateValue[s] + delta;
     }
 }
 
-void EmotionalAIModule::decrementState(int index, int value) {
-    if ((index >= 0) && (index < 6)) {
-        this->stateValue[index] = this->stateValue[index] - value;
+void EmotionalAIModule::decrementState(int s, int delta) {
+    if ((s >= 0) && (s < 6)) {
+        this->stateValue[s] = this->stateValue[s] - delta;
     }
 }
 
 int EmotionalAIModule::overallState(void) const {
-    int maxValue = this->stateValue[0];
+    int max_value = this->stateValue[0];
     int result = 0;
     int i = 1;
     const int* values = &this->stateValue[1];
 
     while (i < 6) {
-        if (maxValue < *values) {
+        if (max_value < *values) {
             result = i;
-            maxValue = *values;
+            max_value = *values;
         }
         i++;
         values++;
@@ -103,9 +101,8 @@ int EmotionalAIModule::overallState(void) const {
     return result;
 }
 
-void EmotionalAIModule::setOverallState(int state)
-{
-    switch (state) {
+void EmotionalAIModule::setOverallState(int s) {
+    switch (s) {
     case 0:
         stateValue[0] = 100;
         stateValue[4] = 10;

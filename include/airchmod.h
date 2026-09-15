@@ -9,8 +9,8 @@ class BuildItem;
 
 class ResearchAIModule : public AIModule {
 public:
-    ResearchAIModule(void* ptr, int arg);
-    ResearchAIModule(int file, int arg);
+    ResearchAIModule(void* pW, int playerID);
+    ResearchAIModule(int playerID, int infile);
     virtual ~ResearchAIModule();
 
     MainDecisionAIModule* md;
@@ -18,11 +18,11 @@ public:
     int techTreeLengthValue;
     char techTreeNameValue[260];
 
-    void setMainDecisionAI(MainDecisionAIModule* value);
-    virtual int save(int file);
-    virtual int buildable(BuildItem* item);
-    virtual void research(BuildItem* item);
-    int loadTechnologyTree(char* filename);
+    void setMainDecisionAI(MainDecisionAIModule* m);
+    virtual int save(int outfile);
+    virtual int buildable(BuildItem* bi);
+    virtual void research(BuildItem* bi);
+    int loadTechnologyTree(char* lName);
     ResourceItem* resourceCost(int id);
     int numberTechnologyItems() const;
     char* technologyTreeName();

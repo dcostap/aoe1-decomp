@@ -6,7 +6,7 @@
 
 class StrategyAIModule : public AIModule {
 public:
-    StrategyAIModule(void* param1, int param2);
+    StrategyAIModule(void* pW, int playerID);
     virtual ~StrategyAIModule();
 };
 

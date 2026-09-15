@@ -12,28 +12,29 @@ public:
     RGE_Player* player;
     ManagedArray<int> objects;
 
-    MainDecisionAIModule(void*, int, RGE_Player*);
-    MainDecisionAIModule(int, RGE_Player*, int);
+    MainDecisionAIModule(void* pW, int playerID, RGE_Player* plyr);
+    MainDecisionAIModule(int playerID, RGE_Player* plyr, int infile);
     virtual ~MainDecisionAIModule();
-    virtual void setLogHistory(int);
-    virtual int save(int);
-    virtual int addObject(RGE_Static_Object*);
-    virtual int removeObject(int);
-    virtual int objectGroupThatCanPerformAction(int);
-    virtual int canPerformAction(int, int);
+    virtual void setLogHistory(int v);
+    virtual int save(int outfile);
+    virtual int addObject(RGE_Static_Object* obj);
+    virtual int removeObject(int id);
+    virtual int objectGroupThatCanPerformAction(int a);
+    virtual int canPerformAction(int id, int t);
 
     int numberObjects();
-    int numberObjectsWithAction(int);
-    int numberObjectsWithGroup(int);
-    int numberObjectsWithActionAndTarget(int, int);
-    int numberObjectsWithTargetType(int);
-    int numberObjectsWithActionAndTargetType(int, int);
-    RGE_Static_Object* object(int);
-    RGE_Static_Object* object(int, int, int, int, int, int, int, int, int,
-                              int);
-    RGE_Static_Object* object(int, int, int, int, int, int);
+    int numberObjectsWithAction(int aid);
+    int numberObjectsWithGroup(int gid);
+    int numberObjectsWithActionAndTarget(int action, int target);
+    int numberObjectsWithTargetType(int tt);
+    int numberObjectsWithActionAndTargetType(int action, int tt);
+    RGE_Static_Object* object(int id);
+    RGE_Static_Object* object(int gameID, int typeID, int groupID, int currentAction, int canPerformActionID,
+                              int targetID, int targetType, int secondaryTargetType, int objectState,
+                              int maxAttributeAmount);
+    RGE_Static_Object* object(int gameID, int typeID, int groupID, int action1, int action2, int objectState);
     int numberBusyObjects();
-    RGE_Static_Object* mostDamaged(int, int);
+    RGE_Static_Object* mostDamaged(int oGroup, int oType);
 };
 
 typedef char aimdmod_main_decision_size[
