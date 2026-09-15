@@ -15,13 +15,61 @@ All module results are reviewed and unvalidated. Final generated-output and runt
 ### `src/aimodule.cpp`
 
 - Worker: `sa-480ae383`.
-- Worker commits: `b4154ff6514fe5156b204a4556289514f24340f1`, `206641938148f1ca8fe7c55440fb9029798982ad`, `2aefd8ba3017abc454ca8737ff9727e01dee3db0`, and `1f6ce2005fb17141b45a5e9b1ccb9d752586c87e`.
-- Integration commits: `5825a018eafe93956c914124ef7cee8e953329d7`, `3b3f3fe86dcc58ee004780e0412af03b78aa8a31`, `7c9845121292d2b081b1d9345902cbd0576e5956`, and `c2e9a1dbc8437eb690d9bf25c1579d0a8c803fc7`.
+- Worker commits: `b4154ff6514fe5156b204a4556289514f24340f1`, `206641938148f1ca8fe7c55440fb9029798982ad`, `2aefd8ba3017abc454ca8737ff9727e01dee3db0`, `1f6ce2005fb17141b45a5e9b1ccb9d752586c87e`, `46a0c3ad5c6b0f0d42e9e66765fa751dc02d9ae7`, and `d5df9ccc05261a6dc04beceda062d871e05a5509`.
+- Integration commits: `5825a018eafe93956c914124ef7cee8e953329d7`, `3b3f3fe86dcc58ee004780e0412af03b78aa8a31`, `7c9845121292d2b081b1d9345902cbd0576e5956`, `c2e9a1dbc8437eb690d9bf25c1579d0a8c803fc7`, `2072582a68164c675c113f651053c1053b5d2074`, and `391744619e6d4028538614e50ef0efb4601a32de`.
 - Review: Accepted PDB parameter and local names. Formatting preserves source order and behavior tokens.
 - Correction: The worker first omitted full delivery history. The same worker corrected the report.
 - Process violation: The worker ran forbidden registry, function-audit, and build commands.
 - Response: The owner stopped the jobs. The worker removed generated artifacts and recorded the violation.
 - Result limit: All results from those forbidden commands are invalid and outside this review.
+
+#### Incident provenance
+
+The exact command working directory was
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110`.
+The observed Bash form was
+`/c/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110`.
+
+The worker recorded background jobs `bg-1` through `bg-5`:
+
+- `bg-1`: `python tools/validate_translation_units.py --no-build-checks`.
+  It failed with exit code 1 because `inventory/all_functions.csv` was absent.
+- `bg-2`: `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/validation/wave03-aimodule-functions`.
+  It failed with exit code 1 because the same inventory path was absent.
+- `bg-3`: `python tools/validate_translation_units.py --no-build-checks`.
+  It completed with exit code 0 before the stop request.
+- `bg-4`: `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/validation/wave03-aimodule-functions-rerun`.
+  It completed work and failed with exit code 1 before the stop request.
+- `bg-5`: `./game.cmd build`.
+  The stop response found it already settled as failed. Its exit detail is unavailable.
+
+The worker issued `bash_bg_kill(["bg-3", "bg-4", "bg-5"])`.
+All three jobs had already settled. The worker then issued
+`bash_bg_kill(["bg-1", "bg-2"])`. Both jobs had already failed.
+The recorded follow-up process check found no related active process.
+
+Before the preservation reminder, the worker removed these exact slot-110 paths:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/build/validation/wave03-aimodule-functions`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/build/validation/wave03-aimodule-functions-rerun`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/build/asm`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/inventory`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/orig`
+
+The last two were temporary local evidence directories. Their prior contents are not preserved.
+The surviving output includes
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-110/build/source-cleanup/aimodule/selected_packets.txt`.
+Other surviving ignored output is unknown. No later incident-documentation run removed an artifact.
+
+No recorded command targeted a path outside slot-110 for write or delete.
+The transcript recorded the main-root `inventory` and `orig` directories after cleanup.
+It recorded both preserved pilot paths as present. It did not compare their bytes.
+
+The transcript has no direct integrity check for
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build`.
+It has no post-cleanup integrity check for the nested original asset root.
+Thus, pilot, baseline, and original-asset byte integrity remains unknown.
+Tool-created temporary writes outside slot-110 also remain unknown.
 
 ### `src/aipbook.cpp`
 
