@@ -110,10 +110,14 @@ Extraction outputs are in the worker build directory:
 
 Header requests:
 
-- Root owns `include/resource_ids.h`. Add one shared base-language namespace
-  mapping: `#define IDS_POPULATION_PREFIX 0x2B2A`.
-- Owner 19 owns `include/tpnl_pop.h`. No class, layout, API, or declaration
-  request is needed.
+- Root owns `include/resource_ids.h`. Add one shared logical game-string
+  namespace mapping: `#define IDS_POPULATION_PREFIX 0x2B2A`. The lookup checks
+  the expansion string table first and uses the base table as fallback.
+- Owner 19 owns `include/tpnl_pop.h`. Preserve these recovered declaration
+  parameter names:
+  - `TRIBE_Panel_Pop(TDrawArea* render_area_in, TPanel* parent_in);`
+  - `virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);`
+  - `virtual void get_true_render_rect(tagRECT& drawRect);`
 - The source keeps the numeric ID until the shared mapping is reviewed. No
   competing macro or local resource definition was added.
 
