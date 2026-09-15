@@ -5,7 +5,7 @@
 - Module: `src/aiemomod.cpp`.
 - Branch: `cleanup/staging-20260915-57`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`.
-- Final commit: `bb75b5afe8c1ca7c75633292217a2d004e3ff699`.
+- Final source commit: `be42c7aef4ba063d31f860faa701082262059dec`.
 - Changed files:
   - `src/aiemomod.cpp`
   - `decomp_notes/source_cleanup/wave02/aiemomod.md`
