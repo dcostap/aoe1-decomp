@@ -1,5 +1,15 @@
 # Cleanup wave 03 root review
 
+## Owner 14: final declaration-order correction required
+
+Reviewer `sa-e8937a55` read all 361 correction lines.
+Diff SHA256: `05697fdf82e37fce7ee11917609f626300d44be58392a10bda7b803cdb1d2224`.
+Wall-center logic, parameter reuse, low-byte overwrite, assignment, and cast corrections passed review.
+One declaration remains too late in `dropsitesWithinRequiredDistance`.
+Move `int a;` directly after `int totalApplicable;`, while keeping `a = 0;` after the `dropsites` declaration.
+The same worker must correct the report's parameter-name collision claim and classify `requiredZone` as an unsafe reused-home record.
+No other source or header change is requested. Integration and full validation remain pending.
+
 ## Owner 14: correction review started
 
 Corrected head: `319af2dc9de31467d5b67388a2b16784d9a856a5`.
