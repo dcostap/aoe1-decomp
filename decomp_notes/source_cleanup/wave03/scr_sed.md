@@ -8,11 +8,12 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - PDB name cleanup commit: `03c9158e16142b5e246a646d0e08605d2e3f924a`
 - Formatting correction commit: `785eac73d03094f363c74d56d381c635c844c0ca`
+- `set_player` local-name repair commit: `031c3db9e458b59ff85a96bc122013e0e0095309`
 - Changed files:
   - `src/scr_sed.cpp`
   - `decomp_notes/source_cleanup/wave03/scr_sed.md`
 - Base source SHA256: `542e902be520698310c53f801e7235480cf3f9ead58e83ef737ef652db336873`
-- Final source SHA256: `dbf43378bdb03e5f6bb2216dd8927366377e662365bea094bcb8ce95a5e24e22`
+- Final source SHA256: `4ea724ee37ec604f42ee0569ddf028f8ad14553b243ce69ee2f727ab1b77fede`
 
 The source commits contain only the assigned source. The report is the second
 assigned file and has its own delivery commit.
@@ -152,6 +153,21 @@ review and token-preservation comparison. No build, compiler, matching, audit,
 test, or game run was performed. Final validation must compare generated code,
 data, relocations, call targets, and boundaries against the preserved baseline
 object.
+
+## Post-cleanup source repair
+
+Root ran the validation report at
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+It reported C2065 because `v` was not declared in the `load_player` block of
+`set_player`.
+
+The repair restores the precleanup local name `v` in that block. It changes
+only names: the local declaration and its four load assignments and formatting
+arguments change from `amount` to `v`. The local remains an `int` with the
+same binding, storage, scope, statements, calls, and non-name tokens.
+
+No new validation was run by this worker. Root must rerun its normal validation
+after integrating commit `031c3db9e458b59ff85a96bc122013e0e0095309`.
 
 ## Risk and validation limits
 
