@@ -1128,9 +1128,9 @@ int AIPlayBook::loadPlays(char* filename) {
                         destination->numberGroupsValue =
                             source->numberGroupsValue;
 
-                        for (int j = 0; j < 5; j++) {
-                            AIPlayGroup* refGroup = source->group(j);
-                            AIPlayGroup* curGroup = destination->group(j);
+                        for (int iGroups = 0; iGroups < 5; iGroups++) {
+                            AIPlayGroup* refGroup = source->group(iGroups);
+                            AIPlayGroup* curGroup = destination->group(iGroups);
                             for (i = 0; i < AIPlayGroup::MaxUnitTypes; i++) {
                                 curGroup->setMinimum(
                                     i, refGroup->minimum(i));
@@ -1139,9 +1139,9 @@ int AIPlayBook::loadPlays(char* filename) {
                             }
                         }
 
-                        for (int j = 0; j < 10; j++) {
-                            AIPlayPhase* refPhase = source->phase(j);
-                            AIPlayPhase* curPhase = destination->phase(j);
+                        for (int iPhases = 0; iPhases < 10; iPhases++) {
+                            AIPlayPhase* refPhase = source->phase(iPhases);
+                            AIPlayPhase* curPhase = destination->phase(iPhases);
                             for (int a = 0; a < AIPlayPhase::MaxCommands;
                                  a++) {
                                 AIPlayPhaseCommand* command =

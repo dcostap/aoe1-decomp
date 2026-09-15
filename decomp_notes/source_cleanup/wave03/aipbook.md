@@ -19,6 +19,27 @@
 - Preserved braces, scopes, statements, names, calls, and expressions.
 - Reviewed the Git diff and ran `git diff --check` only.
 
+## Post-cleanup validation repair
+
+The fresh main build report is:
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+It records this exact error for `src/aipbook.cpp`:
+
+```text
+C:\Projects\my_decomps\aoe1_attempt3\src\aipbook.cpp(1142) : error C2374: 'j' : redefinition; multiple initialization
+```
+
+The preserved pre-cleanup source is commit `6d46835cdc6e31ba879a2e6e31415327a7c7e341`.
+It uses distinct `iGroups` and `iPhases` counters for the two loops.
+The scoped PDB and `00410220_loadPlays` packet show reused local homes for these loops.
+VC5 gives for-loop declarations function scope in this case.
+
+The repair restores `iGroups` and `iPhases` in `loadPlays`.
+It changes no types, storage, scopes, braces, control flow, statement order, calls, or expressions.
+
+This repair keeps the failed build outputs and history.
+Root must repeat final build, matching, audit, test, and runtime checks.
+
 ## Scope and evidence
 
 This review covers all 68 normal owners in the module registry, from `0040E930` through `00411660`.
