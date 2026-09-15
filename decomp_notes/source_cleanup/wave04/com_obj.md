@@ -4,7 +4,7 @@
 
 - Module: `src/com_obj.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final commit: pending
+- Final source commit: `81c9c0021f91a9b63fb38448f87bb51379763d67`
 - Changed files: `src/com_obj.cpp` and this report.
 - Branch: `cleanup/staging-20260915-222`
 - Header owner: root owns `include/com_obj.h`. This worker did not edit it.
