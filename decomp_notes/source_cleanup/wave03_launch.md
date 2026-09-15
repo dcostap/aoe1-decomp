@@ -35,6 +35,14 @@ The next capacity check found only owner 11 active. Owner 05 had completed its c
 Root then launched owners 13–21 under the user's revised direction.
 Owner 22 waits for an owner slot. Complete root reviews and final validation remain required.
 
+The user then requested two owner stops because of RAM use.
+Root stopped owners 20 and 21, including their worker trees. Their files and session history remain preserved.
+The user authorized resuming stopped owners when total active subagents fall below 50, including owners and workers.
+Check the count before each owner resumes. Resume owner 20 before owner 21.
+On resume, tell each owner to restart workers that failed, including failures caused by RAM use.
+Preserve worker files and history. Do not duplicate a running worker or reset its worktree.
+Owner 22 remains held; this resume authorization covers the two stopped owners only.
+
 ## Queue
 
 | Owner | Group | State | Managed ID |
@@ -46,9 +54,9 @@ Owner 22 waits for an owner slot. Complete root reviews and final validation rem
 | 17 | Core panels | Launched | `sa-70058a7e` |
 | 18 | Panel and dialog support | Launched | `sa-0acc3514` |
 | 19 | Tribe panels | Launched | `sa-cdd1c097` |
-| 20 | Audio and image support | Launched | `sa-704a4bba` |
-| 21 | Game and editor screens | Launched | `sa-2b87499f` |
-| 22 | Text and file support | Ready; capacity wait | Not launched |
+| 20 | Audio and image support | Stopped for RAM use | `sa-704a4bba` |
+| 21 | Game and editor screens | Stopped for RAM use | `sa-2b87499f` |
+| 22 | Text and file support | Held for RAM use | Not launched |
 
 No compilation, builds, matching, audits, tests, or games ran during assignment and preparation.
 The same full-diff review and unchanged-output requirements remain active.

@@ -69,3 +69,17 @@ Root prepared full diff artifacts for these deliveries but has not yet read thei
 - Owner 12: `54713c0810fcde59c9aeb665ddcf45685f62f1a1`; `build/source-cleanup-20260915/owner12-review.diff`, 3,379 lines.
 
 No compilation, builds, matching, audits, tests, or games ran during these intakes.
+
+## Further deliveries awaiting root approval
+
+- Owner 08 delivered `124d05ecb3fdcafed676fda16ac3124f415fcac0`.
+  Root preserved its complete diff in `build/source-cleanup-20260915/owner08-review.diff`; review remains pending.
+- Owner 11 delivered `ad4e8c9b917e77b44b12c04fe87b46e762421355`.
+  Root preserved its complete diff in `build/source-cleanup-20260915/owner11-review.diff`; review remains pending.
+  The owner reports 78 string-ID requests and three unresolved binary `RESFILE` IDs.
+  These requests still need root evidence review.
+- Owner 05 delivered corrected head `0738989967a422b57bba6a02c34d88bd904095c8`.
+  Root read the complete correction diff in `build/source-cleanup-20260915/owner05-corrections.diff`.
+  It restores artifact `map_x`, restores discovery loop `x`, and maps the supported discovery bound to `x1`.
+  It also corrects caller paths, short signatures, constructor indentation, and reports.
+  Integration remains pending. No new validation ran.
