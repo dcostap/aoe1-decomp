@@ -5,15 +5,21 @@
 - Module: `src/scr_mp.cpp`
 - Paired header: `include/scr_mp.h` (owned by owner 11)
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source-state commit: `912b0bfcbbab02983140042a44b5c7d010d9fd75`
+- Final source-state commit: `0a0f4dffe28d63d8279ef278b8d4d0551317ddbf`
 - Changed files: `src/scr_mp.cpp`; this report
 - The report commit follows the source commit. The worker result gives its full final branch hash.
 
 The final source-state file hash is:
 
-- `src/scr_mp.cpp`: `dc3039fda84ca066fe68138e0465a4f3606f745b87a9ccb91e3342876e4003dd`
+- `src/scr_mp.cpp`: `b41dda77133fbc2f773f9406bdbdfe7f97ab7d99d8b3004977b49bb22a0288dd`
 
 No header was edited.
+
+## Correction history
+
+Owner review requested 1TBS formatting for all function definitions. The source correction moves the constructor brace onto its initializer line and puts the complete four-parameter `action` definition on one line with its brace. No braces, statements, declarations, or control structure changed.
+
+The correction source commit is `0a0f4dffe28d63d8279ef278b8d4d0551317ddbf`. The report update follows it.
 
 ## PDB coverage
 
