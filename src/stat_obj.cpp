@@ -393,7 +393,7 @@ int RGE_Static_Object::setup(int infile, RGE_Game_World* gworld) {
         rge_read(infile, &numberUnits, 4);
         {
             rge_read(infile, &temp_int, 4);
-            unsigned long temp_dword;
+            int temp_dword;
             rge_read(infile, &temp_dword, 4);
             rge_read(infile, &temp_dword, 4);
         }
@@ -1567,7 +1567,7 @@ RGE_Sprite* RGE_Static_Object::get_sprite_pointer(short sprite_id) {
 void RGE_Static_Object::save(int outfile)
 {
     short short_val;
-    long long_val;
+    int long_val;
     int tempInt = outfile;
     int i;
 
