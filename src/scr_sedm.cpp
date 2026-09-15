@@ -32,7 +32,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
 
     set_ideal_size(0x280, 0x1E0);
 
-    if (!create_text(this, &title, 0x242D, 0x14, 0x14, 0x258, 0x1E,
+    if (!create_text(this, &title, IDS_SCENARIO_EDITOR_TITLE, 0x14, 0x14, 0x258, 0x1E,
                      1, 1, 0, 0))
         return;
 
@@ -52,10 +52,10 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
                                   0x11, 0x11, 0x11, 0x11,
                                   0, 0, 0, 0);
 
-    button[0]->set_text(0, 0x242E);
-    button[1]->set_text(0, 0x242F);
-    button[2]->set_text(0, 0x2431);
-    button[3]->set_text(0, 0x2430);
+    button[0]->set_text(0, IDS_SCENARIO_MENU_CREATE_SCENARIO);
+    button[1]->set_text(0, IDS_BUTTON_EDIT_SCENARIO);
+    button[2]->set_text(0, IDS_MENU_CAMPAIGN_EDITOR);
+    button[3]->set_text(0, IDS_SCENARIO_EDITOR_CANCEL);
 
     TButtonPanel* cancel = button[3];
     cancel->hotkey = VK_ESCAPE;
