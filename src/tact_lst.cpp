@@ -61,12 +61,8 @@ RGE_Action* TRIBE_Action_List::create_action(int infile, short action_type) {
 
 // Selection reads RGE_Task::action_type at +0x06 and retains
 // separate target and coordinate constructor paths.
-RGE_Action* TRIBE_Action_List::create_task_action(
-    RGE_Task* task,
-    RGE_Static_Object* target_obj,
-    float target_x,
-    float target_y,
-    float target_z) {
+RGE_Action* TRIBE_Action_List::create_task_action(RGE_Task* task, RGE_Static_Object* target_obj,
+    float target_x, float target_y, float target_z) {
     switch (task->action_type) {
     case 0x65:
         if (target_obj != 0)

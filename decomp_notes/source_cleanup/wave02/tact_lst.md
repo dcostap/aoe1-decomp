@@ -70,6 +70,10 @@ Function definitions now use 1TBS braces. No statement order, control flow,
 expression, type, cast, call, literal, scope, storage, or declaration point
 changed.
 
+Full review correction: the `create_task_action` definition now uses a compact
+two-line signature. This changes formatting only. Its tokens and behavior stay
+unchanged.
+
 ## Resource evidence
 
 This module has no resource lookup and no resource ID. Therefore no per-ID text,
