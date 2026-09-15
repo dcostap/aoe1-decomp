@@ -7,116 +7,104 @@
 #include "../include/world.h"
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    RGE_Master_Missile_Object* source, int do_setup)
-    : RGE_Master_Combat_Object(source, 0)
-{
+    RGE_Master_Missile_Object* other_object, int do_setup)
+    : RGE_Master_Combat_Object(other_object, 0) {
     if (do_setup != 0) {
-        setup(source);
+        setup(other_object);
     }
 }
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    int id, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Combat_Object(id, sprites, sounds, 0)
-{
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
+    : RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
-        setup(id, sprites, sounds);
+        setup(infile, sprites, sounds);
     }
 }
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(
-    FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short target_type,
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
     int do_setup)
-    : RGE_Master_Combat_Object(file, sprites, sounds, target_type, 0)
-{
+    : RGE_Master_Combat_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
-        setup(file, sprites, sounds, target_type);
+        setup(infile, sprites, sounds, in_id);
     }
 }
 
-int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* source)
-{
-    RGE_Master_Combat_Object::setup(source);
+int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* other_object) {
+    RGE_Master_Combat_Object::setup(other_object);
     master_type = 0x3C;
-    missile_type = source->missile_type;
-    targetting_type = source->targetting_type;
-    missile_hit_info = source->missile_hit_info;
-    missile_die_info = source->missile_die_info;
-    area_effect_specials = source->area_effect_specials;
-    ballistics_ratio = source->ballistics_ratio;
+    missile_type = other_object->missile_type;
+    targetting_type = other_object->targetting_type;
+    missile_hit_info = other_object->missile_hit_info;
+    missile_die_info = other_object->missile_die_info;
+    area_effect_specials = other_object->area_effect_specials;
+    ballistics_ratio = other_object->ballistics_ratio;
     return 1;
 }
 
-int RGE_Master_Missile_Object::setup(
-    int id, RGE_Sprite** sprites, RGE_Sound** sounds)
-{
-    RGE_Master_Combat_Object::setup(id, sprites, sounds);
+int RGE_Master_Missile_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
+    RGE_Master_Combat_Object::setup(infile, sprites, sounds);
     master_type = 0x3C;
 
-    rge_read(id, &missile_type, 1);
-    rge_read(id, &targetting_type, 1);
-    rge_read(id, &missile_hit_info, 1);
-    rge_read(id, &missile_die_info, 1);
-    rge_read(id, &area_effect_specials, 1);
-    rge_read(id, &ballistics_ratio, 4);
+    rge_read(infile, &missile_type, 1);
+    rge_read(infile, &targetting_type, 1);
+    rge_read(infile, &missile_hit_info, 1);
+    rge_read(infile, &missile_die_info, 1);
+    rge_read(infile, &area_effect_specials, 1);
+    rge_read(infile, &ballistics_ratio, 4);
     return 1;
 }
 
-int RGE_Master_Missile_Object::setup(
-    FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short target_type)
-{
-    short missile_type_value;
-    short targetting_type_value;
-    short missile_hit_info_value;
-    short missile_die_info_value;
-    short area_effect_specials_value;
+int RGE_Master_Missile_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
+    short temp_missile_type;
+    short temp_targetting_type;
+    short temp_missile_hit_info;
+    short temp_missile_die_info;
+    short temp_area_effect_specials;
 
-    RGE_Master_Combat_Object::setup(file, sprites, sounds, target_type);
+    RGE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
     recyclable = 1;
     master_type = 0x3C;
 
-    fscanf(file, "%hd %hd %hd %hd %hd %f",
-           &missile_type_value,
-           &targetting_type_value,
-           &missile_hit_info_value,
-           &missile_die_info_value,
-           &area_effect_specials_value,
+    fscanf(infile, "%hd %hd %hd %hd %hd %f",
+           &temp_missile_type,
+           &temp_targetting_type,
+           &temp_missile_hit_info,
+           &temp_missile_die_info,
+           &temp_area_effect_specials,
            &ballistics_ratio);
 
-    targetting_type = (unsigned char)targetting_type_value;
-    missile_hit_info = (unsigned char)missile_hit_info_value;
-    missile_die_info = (unsigned char)missile_die_info_value;
-    area_effect_specials = (unsigned char)area_effect_specials_value;
-    missile_type = (unsigned char)missile_type_value;
+    targetting_type = (unsigned char)temp_targetting_type;
+    missile_hit_info = (unsigned char)temp_missile_hit_info;
+    missile_die_info = (unsigned char)temp_missile_die_info;
+    area_effect_specials = (unsigned char)temp_area_effect_specials;
+    missile_type = (unsigned char)temp_missile_type;
     return 1;
 }
 
-RGE_Master_Missile_Object::~RGE_Master_Missile_Object()
-{
+RGE_Master_Missile_Object::~RGE_Master_Missile_Object() {
 }
 
 RGE_Static_Object* RGE_Master_Missile_Object::make_new_obj(
-    RGE_Player* player, float x, float y, float z)
-{
+    RGE_Player* owner, float x, float y, float z) {
     if (recyclable != 0) {
         RGE_Static_Object* recycled =
-            player->world->recycle_object_in_to_game(master_type);
+            owner->world->recycle_object_in_to_game(master_type);
         if (recycled != 0) {
-            recycled->recycle_in_to_game(this, player, x, y, z);
+            recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
         }
     }
 
-    return new RGE_Missile_Object(this, player, x, y, z, 1);
+    return new RGE_Missile_Object(this, owner, x, y, z, 1);
 }
 
-RGE_Master_Static_Object* RGE_Master_Missile_Object::make_new_master()
-{
+RGE_Master_Static_Object* RGE_Master_Missile_Object::make_new_master() {
     return new RGE_Master_Missile_Object(this, 1);
 }
 
-void RGE_Master_Missile_Object::copy_obj(RGE_Master_Static_Object* source)
-{
+void RGE_Master_Missile_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Combat_Object::copy_obj(source);
     RGE_Master_Missile_Object* missile_source =
         (RGE_Master_Missile_Object*)source;
@@ -128,40 +116,34 @@ void RGE_Master_Missile_Object::copy_obj(RGE_Master_Static_Object* source)
     ballistics_ratio = missile_source->ballistics_ratio;
 }
 
-void RGE_Master_Missile_Object::modify(float value, unsigned char attribute)
-{
-    if (attribute == 0x13) {
-        targetting_type = (unsigned char)(int)value;
+void RGE_Master_Missile_Object::modify(float amount, unsigned char flag) {
+    if (flag == 0x13) {
+        targetting_type = (unsigned char)(int)amount;
     }
-    RGE_Master_Combat_Object::modify(value, attribute);
+    RGE_Master_Combat_Object::modify(amount, flag);
 }
 
-void RGE_Master_Missile_Object::modify_delta(
-    float value, unsigned char attribute)
-{
-    if (attribute == 0x13) {
-        targetting_type = (unsigned char)(int)value;
+void RGE_Master_Missile_Object::modify_delta(float amount, unsigned char flag) {
+    if (flag == 0x13) {
+        targetting_type = (unsigned char)(int)amount;
     }
-    RGE_Master_Combat_Object::modify_delta(value, attribute);
+    RGE_Master_Combat_Object::modify_delta(amount, flag);
 }
 
-void RGE_Master_Missile_Object::modify_percent(
-    float value, unsigned char attribute)
-{
-    if (attribute == 0x13) {
-        targetting_type = (unsigned char)(int)value;
+void RGE_Master_Missile_Object::modify_percent(float amount, unsigned char flag) {
+    if (flag == 0x13) {
+        targetting_type = (unsigned char)(int)amount;
     }
-    RGE_Master_Combat_Object::modify_percent(value, attribute);
+    RGE_Master_Combat_Object::modify_percent(amount, flag);
 }
 
-void RGE_Master_Missile_Object::save(int file_id)
-{
-    RGE_Master_Combat_Object::save(file_id);
+void RGE_Master_Missile_Object::save(int outfile) {
+    RGE_Master_Combat_Object::save(outfile);
 
-    rge_write(file_id, &missile_type, 1);
-    rge_write(file_id, &targetting_type, 1);
-    rge_write(file_id, &missile_hit_info, 1);
-    rge_write(file_id, &missile_die_info, 1);
-    rge_write(file_id, &area_effect_specials, 1);
-    rge_write(file_id, &ballistics_ratio, 4);
+    rge_write(outfile, &missile_type, 1);
+    rge_write(outfile, &targetting_type, 1);
+    rge_write(outfile, &missile_hit_info, 1);
+    rge_write(outfile, &missile_die_info, 1);
+    rge_write(outfile, &area_effect_specials, 1);
+    rge_write(outfile, &ballistics_ratio, 4);
 }

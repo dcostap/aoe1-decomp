@@ -7,22 +7,22 @@
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Animated_Object();
-    virtual void copy_obj(RGE_Master_Static_Object*);
-    virtual void modify(float, unsigned char);
-    virtual void modify_delta(float, unsigned char);
-    virtual void modify_percent(float, unsigned char);
-    virtual void save(int);
-    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual void copy_obj(RGE_Master_Static_Object* source);
+    virtual void modify(float amount, unsigned char flag);
+    virtual void modify_delta(float amount, unsigned char flag);
+    virtual void modify_percent(float amount, unsigned char flag);
+    virtual void save(int outfile);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
 
-    RGE_Master_Animated_Object(RGE_Master_Animated_Object*, int);
-    RGE_Master_Animated_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Animated_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
+    RGE_Master_Animated_Object(RGE_Master_Animated_Object* other_object, int do_setup);
+    RGE_Master_Animated_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
+    RGE_Master_Animated_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
 
 protected:
-    int setup(RGE_Master_Animated_Object*);
-    int setup(int, RGE_Sprite**, RGE_Sound**);
-    int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
+    int setup(RGE_Master_Animated_Object* other_object);
+    int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
 public:
     float speed;

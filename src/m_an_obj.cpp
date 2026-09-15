@@ -5,50 +5,48 @@
 #include "../include/world.h"
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(
-    RGE_Master_Animated_Object* source, int do_setup)
-    : RGE_Master_Static_Object(source, 0) {
+    RGE_Master_Animated_Object* other_object, int do_setup)
+    : RGE_Master_Static_Object(other_object, 0) {
     if (do_setup) {
-        setup(source);
+        setup(other_object);
     }
 }
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(
-    int id, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Static_Object(id, sprites, sounds, 0) {
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
+    : RGE_Master_Static_Object(infile, sprites, sounds, 0) {
     if (do_setup) {
-        setup(id, sprites, sounds);
+        setup(infile, sprites, sounds);
     }
 }
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(
-    FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id,
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
     int do_setup)
-    : RGE_Master_Static_Object(file, sprites, sounds, id, 0) {
+    : RGE_Master_Static_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup) {
-        setup(file, sprites, sounds, id);
+        setup(infile, sprites, sounds, in_id);
     }
 }
 
-int RGE_Master_Animated_Object::setup(RGE_Master_Animated_Object* source) {
-    RGE_Master_Static_Object::setup(source);
+int RGE_Master_Animated_Object::setup(RGE_Master_Animated_Object* other_object) {
+    RGE_Master_Static_Object::setup(other_object);
     master_type = 0x14;
-    speed = source->speed;
+    speed = other_object->speed;
     return 1;
 }
 
-int RGE_Master_Animated_Object::setup(int file, RGE_Sprite** sprites,
-                                      RGE_Sound** sounds) {
-    RGE_Master_Static_Object::setup(file, sprites, sounds);
+int RGE_Master_Animated_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
+    RGE_Master_Static_Object::setup(infile, sprites, sounds);
     master_type = 0x14;
-    rge_read(file, &speed, 4);
+    rge_read(infile, &speed, 4);
     return 1;
 }
 
-int RGE_Master_Animated_Object::setup(FILE* file, RGE_Sprite** sprites,
-                                      RGE_Sound** sounds, short id) {
-    RGE_Master_Static_Object::setup(file, sprites, sounds, id);
+int RGE_Master_Animated_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
+    RGE_Master_Static_Object::setup(infile, sprites, sounds, in_id);
     master_type = 0x14;
-    fscanf(file, "%f", &speed);
+    fscanf(infile, "%f", &speed);
     return 1;
 }
 
@@ -56,17 +54,17 @@ RGE_Master_Animated_Object::~RGE_Master_Animated_Object() {
 }
 
 RGE_Static_Object* RGE_Master_Animated_Object::make_new_obj(
-    RGE_Player* player, float x, float y, float z) {
+    RGE_Player* owner, float x, float y, float z) {
     if (recyclable) {
         RGE_Static_Object* object =
-            player->world->recycle_object_in_to_game(master_type);
+            owner->world->recycle_object_in_to_game(master_type);
         if (object) {
-            object->recycle_in_to_game(this, player, x, y, z);
+            object->recycle_in_to_game(this, owner, x, y, z);
             return object;
         }
     }
 
-    return new RGE_Animated_Object(this, player, x, y, z, 1);
+    return new RGE_Animated_Object(this, owner, x, y, z, 1);
 }
 
 RGE_Master_Static_Object* RGE_Master_Animated_Object::make_new_master() {
@@ -78,33 +76,31 @@ void RGE_Master_Animated_Object::copy_obj(RGE_Master_Static_Object* source) {
     speed = static_cast<RGE_Master_Animated_Object*>(source)->speed;
 }
 
-void RGE_Master_Animated_Object::modify(float value, unsigned char attribute) {
-    if (attribute != 5) {
-        RGE_Master_Static_Object::modify(value, attribute);
+void RGE_Master_Animated_Object::modify(float amount, unsigned char flag) {
+    if (flag != 5) {
+        RGE_Master_Static_Object::modify(amount, flag);
         return;
     }
-    speed = value;
+    speed = amount;
 }
 
-void RGE_Master_Animated_Object::modify_delta(float value,
-                                              unsigned char attribute) {
-    if (attribute != 5) {
-        RGE_Master_Static_Object::modify_delta(value, attribute);
+void RGE_Master_Animated_Object::modify_delta(float amount, unsigned char flag) {
+    if (flag != 5) {
+        RGE_Master_Static_Object::modify_delta(amount, flag);
         return;
     }
-    speed = value + speed;
+    speed = amount + speed;
 }
 
-void RGE_Master_Animated_Object::modify_percent(float value,
-                                                unsigned char attribute) {
-    if (attribute != 5) {
-        RGE_Master_Static_Object::modify_percent(value, attribute);
+void RGE_Master_Animated_Object::modify_percent(float amount, unsigned char flag) {
+    if (flag != 5) {
+        RGE_Master_Static_Object::modify_percent(amount, flag);
         return;
     }
-    speed = value * speed;
+    speed = amount * speed;
 }
 
-void RGE_Master_Animated_Object::save(int file) {
-    RGE_Master_Static_Object::save(file);
-    rge_write(file, &speed, 4);
+void RGE_Master_Animated_Object::save(int outfile) {
+    RGE_Master_Static_Object::save(outfile);
+    rge_write(outfile, &speed, 4);
 }

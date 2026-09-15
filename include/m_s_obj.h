@@ -18,39 +18,39 @@ class TDrawArea;
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
-    virtual void copy_obj(RGE_Master_Static_Object*);
-    virtual void modify(float, unsigned char);
-    virtual void modify_delta(float, unsigned char);
-    virtual void modify_percent(float, unsigned char);
-    virtual void save(int);
-    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual void copy_obj(RGE_Master_Static_Object* source);
+    virtual void modify(float amount, unsigned char flag);
+    virtual void modify_delta(float amount, unsigned char flag);
+    virtual void modify_percent(float amount, unsigned char flag);
+    virtual void save(int outfile);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
-    virtual unsigned char check_placement(RGE_Player*, float, float, int*,
-                                          unsigned char, unsigned char,
-                                          unsigned char, unsigned char,
-                                          unsigned char, unsigned char);
-    virtual unsigned char alignment(float&, float&, RGE_Game_World*,
-                                    unsigned char);
-    virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
+    virtual unsigned char check_placement(RGE_Player* player, float col, float row, int* obstructionObject,
+                                          unsigned char check_vis, unsigned char check_flat,
+                                          unsigned char check_overlay, unsigned char construction_radius_flag,
+                                          unsigned char can_be_built_on_flag, unsigned char check_objects);
+    virtual unsigned char alignment(float& col, float& row, RGE_Game_World* world,
+                                    unsigned char center_flag);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* attacker);
     virtual void play_command_sound() {}
     virtual void play_move_sound() {}
-    virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long,
-                      int, unsigned char);
+    virtual void draw(TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color, long facet, long frame,
+                      int draw_frame, unsigned char frame_color);
 
-    RGE_Master_Static_Object(RGE_Master_Static_Object*, int);
-    RGE_Master_Static_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Static_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
+    RGE_Master_Static_Object(RGE_Master_Static_Object* other_object, int do_setup);
+    RGE_Master_Static_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
+    RGE_Master_Static_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
 
 protected:
-    int setup(RGE_Master_Static_Object*);
-    int setup(int, RGE_Sprite**, RGE_Sound**);
-    int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
+    int setup(RGE_Master_Static_Object* other_object);
+    int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
 public:
-    void make_available(unsigned char);
-    unsigned char alignment_box(RGE_Game_World*, float, float,
-                                short&, short&, short&, short&,
-                                short&, short&, short&, short&);
+    void make_available(unsigned char on_off_flag);
+    unsigned char alignment_box(RGE_Game_World* world, float col, float row,
+                                short& x1, short& y1, short& x2, short& y2,
+                                short& x3, short& y3, short& x4, short& y4);
     long get_help_message();
     long get_help_page();
     long get_hotkey();

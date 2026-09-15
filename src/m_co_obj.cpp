@@ -15,135 +15,129 @@ extern float save_game_version;
 
 // m_co_obj.cpp lines 27-30.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(
-    RGE_Master_Combat_Object* source, int do_setup)
-    : RGE_Master_Action_Object(source, 0)
-{
+    RGE_Master_Combat_Object* other_object, int do_setup)
+    : RGE_Master_Action_Object(other_object, 0) {
     if (do_setup != 0) {
-        setup(source);
+        setup(other_object);
     }
 }
 
 // m_co_obj.cpp lines 36-39.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(
-    int id, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Action_Object(id, sprites, sounds, 0)
-{
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
+    : RGE_Master_Action_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
-        setup(id, sprites, sounds);
+        setup(infile, sprites, sounds);
     }
 }
 
 // m_co_obj.cpp lines 45-48.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(
-    FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id,
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
     int do_setup)
-    : RGE_Master_Action_Object(file, sprites, sounds, id, 0)
-{
+    : RGE_Master_Action_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
-        setup(file, sprites, sounds, id);
+        setup(infile, sprites, sounds, in_id);
     }
 }
 
 // m_co_obj.cpp lines 53-99.
-int RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object* source)
-{
-    RGE_Master_Action_Object::setup(source);
+int RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object* other_object) {
+    RGE_Master_Action_Object::setup(other_object);
     master_type = 0x32;
 
-    fight_sprite = source->fight_sprite;
-    base_armor = source->base_armor;
+    fight_sprite = other_object->fight_sprite;
+    base_armor = other_object->base_armor;
 
-    weapon_num = source->weapon_num;
+    weapon_num = other_object->weapon_num;
     if (weapon_num > 0) {
         weapon = (RGE_Armor_Weapon_Info*)calloc(weapon_num, 4);
-        memcpy(weapon, source->weapon, weapon_num * 4);
+        memcpy(weapon, other_object->weapon, weapon_num * 4);
     } else {
         weapon = (RGE_Armor_Weapon_Info*)0;
     }
 
-    armor_num = source->armor_num;
+    armor_num = other_object->armor_num;
     if (armor_num > 0) {
         armor = (RGE_Armor_Weapon_Info*)calloc(armor_num, 4);
-        memcpy(armor, source->armor, armor_num * 4);
+        memcpy(armor, other_object->armor, armor_num * 4);
     } else {
         armor = (RGE_Armor_Weapon_Info*)0;
     }
 
-    defense_terrain_bonus = source->defense_terrain_bonus;
-    weapon_range = source->weapon_range;
-    area_effect_range = source->area_effect_range;
-    speed_of_attack = source->speed_of_attack;
-    missile_id = source->missile_id;
-    base_hit_chance = source->base_hit_chance;
-    break_off_combat = source->break_off_combat;
-    fire_missile_at_frame = source->fire_missile_at_frame;
-    weapon_offset_x = source->weapon_offset_x;
-    weapon_offset_y = source->weapon_offset_y;
-    weapon_offset_z = source->weapon_offset_z;
-    area_effect_level = source->area_effect_level;
-    minimum_weapon_range = source->minimum_weapon_range;
-    orig_armor = source->orig_armor;
-    orig_weapon = source->orig_weapon;
-    orig_weapon_range = source->orig_weapon_range;
-    orig_speed_of_attack = source->orig_speed_of_attack;
+    defense_terrain_bonus = other_object->defense_terrain_bonus;
+    weapon_range = other_object->weapon_range;
+    area_effect_range = other_object->area_effect_range;
+    speed_of_attack = other_object->speed_of_attack;
+    missile_id = other_object->missile_id;
+    base_hit_chance = other_object->base_hit_chance;
+    break_off_combat = other_object->break_off_combat;
+    fire_missile_at_frame = other_object->fire_missile_at_frame;
+    weapon_offset_x = other_object->weapon_offset_x;
+    weapon_offset_y = other_object->weapon_offset_y;
+    weapon_offset_z = other_object->weapon_offset_z;
+    area_effect_level = other_object->area_effect_level;
+    minimum_weapon_range = other_object->minimum_weapon_range;
+    orig_armor = other_object->orig_armor;
+    orig_weapon = other_object->orig_weapon;
+    orig_weapon_range = other_object->orig_weapon_range;
+    orig_speed_of_attack = other_object->orig_speed_of_attack;
 
     return 1;
 }
 
 // m_co_obj.cpp lines 104-177.
-int RGE_Master_Combat_Object::setup(int file, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds)
-{
+int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     int count;
 
-    RGE_Master_Action_Object::setup(file, sprites, sounds);
+    RGE_Master_Action_Object::setup(infile, sprites, sounds);
     master_type = 0x32;
 
-    rge_read(file, &base_armor, 1);
-    rge_read(file, &weapon_num, 2);
+    rge_read(infile, &base_armor, 1);
+    rge_read(infile, &weapon_num, 2);
     if (weapon_num > 0) {
         weapon = (RGE_Armor_Weapon_Info*)calloc((int)weapon_num, 4);
-        rge_read(file, weapon, (int)weapon_num << 2);
+        rge_read(infile, weapon, (int)weapon_num << 2);
     } else {
         weapon = (RGE_Armor_Weapon_Info*)0;
     }
 
-    rge_read(file, &armor_num, 2);
+    rge_read(infile, &armor_num, 2);
     if (armor_num > 0) {
         armor = (RGE_Armor_Weapon_Info*)calloc((int)armor_num, 4);
-        rge_read(file, armor, (int)armor_num << 2);
+        rge_read(infile, armor, (int)armor_num << 2);
     } else {
         armor = (RGE_Armor_Weapon_Info*)0;
     }
 
-    rge_read(file, &defense_terrain_bonus, 2);
-    rge_read(file, &weapon_range, 4);
-    rge_read(file, &area_effect_range, 4);
-    rge_read(file, &speed_of_attack, 4);
-    rge_read(file, &missile_id, 2);
-    rge_read(file, &base_hit_chance, 2);
-    rge_read(file, &break_off_combat, 1);
-    rge_read(file, &fire_missile_at_frame, 2);
-    rge_read(file, &weapon_offset_x, 4);
-    rge_read(file, &weapon_offset_y, 4);
-    rge_read(file, &weapon_offset_z, 4);
-    rge_read(file, &area_effect_level, 1);
-    rge_read(file, &minimum_weapon_range, 4);
+    rge_read(infile, &defense_terrain_bonus, 2);
+    rge_read(infile, &weapon_range, 4);
+    rge_read(infile, &area_effect_range, 4);
+    rge_read(infile, &speed_of_attack, 4);
+    rge_read(infile, &missile_id, 2);
+    rge_read(infile, &base_hit_chance, 2);
+    rge_read(infile, &break_off_combat, 1);
+    rge_read(infile, &fire_missile_at_frame, 2);
+    rge_read(infile, &weapon_offset_x, 4);
+    rge_read(infile, &weapon_offset_y, 4);
+    rge_read(infile, &weapon_offset_z, 4);
+    rge_read(infile, &area_effect_level, 1);
+    rge_read(infile, &minimum_weapon_range, 4);
 
-    short sprite_id;
+    short temp_fight_sprite;
     RGE_Sprite* selected_sprite;
-    rge_read(file, &sprite_id, 2);
-    if (sprite_id >= 0)
-        selected_sprite = sprites[sprite_id];
+    rge_read(infile, &temp_fight_sprite, 2);
+    if (temp_fight_sprite >= 0)
+        selected_sprite = sprites[temp_fight_sprite];
     else
         selected_sprite = (RGE_Sprite*)0;
     fight_sprite = selected_sprite;
 
     if (save_game_version >= DAT_00570500) {
-        rge_read(file, &orig_armor, 2);
-        rge_read(file, &orig_weapon, 2);
-        rge_read(file, &orig_weapon_range, 4);
-        rge_read(file, &orig_speed_of_attack, 4);
+        rge_read(infile, &orig_armor, 2);
+        rge_read(infile, &orig_weapon, 2);
+        rge_read(infile, &orig_weapon_range, 4);
+        rge_read(infile, &orig_speed_of_attack, 4);
         return 1;
     }
 
@@ -179,10 +173,8 @@ int RGE_Master_Combat_Object::setup(int file, RGE_Sprite** sprites,
 }
 
 // m_co_obj.cpp lines 182-262.
-int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds, short count)
-{
-    FILE* input = file;
+int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
+    FILE* input = infile;
     short temp_base_armor;
     short temp_area_effect_level;
     short temp_break_off_combat;
@@ -190,15 +182,15 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     short index;
     short* armor_count_value;
     int value_count;
-    short sprite_index;
+    short temp_fight_sprite;
     RGE_Sprite* selected_sprite;
 
-    RGE_Master_Action_Object::setup(input, sprites, sounds, count);
+    RGE_Master_Action_Object::setup(input, sprites, sounds, in_id);
     master_type = 0x32;
 
     fscanf(input,
            "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
-           &sprite_index, &temp_base_armor, &armor_num, &weapon_num,
+           &temp_fight_sprite, &temp_base_armor, &armor_num, &weapon_num,
            &defense_terrain_bonus,
            &weapon_range, &area_effect_range, &speed_of_attack, &missile_id,
            &base_hit_chance, &temp_break_off_combat,
@@ -234,8 +226,8 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
         weapon = (RGE_Armor_Weapon_Info*)0;
     }
 
-    if (sprite_index >= 0)
-        selected_sprite = sprites[sprite_index];
+    if (temp_fight_sprite >= 0)
+        selected_sprite = sprites[temp_fight_sprite];
     else
         selected_sprite = (RGE_Sprite*)0;
     break_off_combat = (unsigned char)temp_break_off_combat;
@@ -276,8 +268,7 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
 }
 
 // m_co_obj.cpp lines 268-280.
-RGE_Master_Combat_Object::~RGE_Master_Combat_Object()
-{
+RGE_Master_Combat_Object::~RGE_Master_Combat_Object() {
     if (weapon != 0) {
         free(weapon);
         weapon = (RGE_Armor_Weapon_Info*)0;
@@ -290,29 +281,26 @@ RGE_Master_Combat_Object::~RGE_Master_Combat_Object()
 
 // m_co_obj.cpp lines 285-299.
 RGE_Static_Object* RGE_Master_Combat_Object::make_new_obj(
-    RGE_Player* player, float x, float y, float z)
-{
+    RGE_Player* owner, float x, float y, float z) {
     if (recyclable) {
         RGE_Static_Object* recycled =
-            player->world->recycle_object_in_to_game(master_type);
+            owner->world->recycle_object_in_to_game(master_type);
         if (recycled) {
-            recycled->recycle_in_to_game(this, player, x, y, z);
+            recycled->recycle_in_to_game(this, owner, x, y, z);
             return recycled;
         }
     }
 
-    return (RGE_Static_Object*)new RGE_Combat_Object(this, player, x, y, z, 1);
+    return (RGE_Static_Object*)new RGE_Combat_Object(this, owner, x, y, z, 1);
 }
 
 // m_co_obj.cpp lines 304-306.
-RGE_Master_Static_Object* RGE_Master_Combat_Object::make_new_master()
-{
+RGE_Master_Static_Object* RGE_Master_Combat_Object::make_new_master() {
     return new RGE_Master_Combat_Object(this, 1);
 }
 
 // m_co_obj.cpp lines 311-358.
-void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source)
-{
+void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Action_Object::copy_obj(source);
 
     RGE_Master_Combat_Object* other = (RGE_Master_Combat_Object*)source;
@@ -359,11 +347,10 @@ void RGE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source)
 }
 
 // m_co_obj.cpp lines 362-402.
-void RGE_Master_Combat_Object::modify(float value, unsigned char attribute)
-{
-    switch (attribute) {
+void RGE_Master_Combat_Object::modify(float amount, unsigned char flag) {
+    switch (flag) {
     case 8: {
-        long packed = (long)value;
+        long packed = (long)amount;
         unsigned short index = (unsigned short)((packed >> 8) & 0xff);
         RGE_Armor_Weapon_Info* entries = armor;
         if (entries != 0) {
@@ -374,7 +361,7 @@ void RGE_Master_Combat_Object::modify(float value, unsigned char attribute)
         break;
     }
     case 9: {
-        long packed = (long)value;
+        long packed = (long)amount;
         unsigned short index = (unsigned short)((packed >> 8) & 0xff);
         RGE_Armor_Weapon_Info* entries = weapon;
         if (entries != 0) {
@@ -385,36 +372,34 @@ void RGE_Master_Combat_Object::modify(float value, unsigned char attribute)
         break;
     }
     case 10:
-        speed_of_attack = value;
+        speed_of_attack = amount;
         break;
     case 11:
-        base_hit_chance = (short)value;
+        base_hit_chance = (short)amount;
         break;
     case 12:
-        weapon_range = value;
+        weapon_range = amount;
         break;
     case 15:
-        base_armor = (unsigned char)value;
+        base_armor = (unsigned char)amount;
         break;
     case 16:
-        missile_id = (short)(unsigned char)value;
+        missile_id = (short)(unsigned char)amount;
         break;
     case 18:
-        defense_terrain_bonus = (short)value;
+        defense_terrain_bonus = (short)amount;
         break;
     default:
-        RGE_Master_Action_Object::modify(value, attribute);
+        RGE_Master_Action_Object::modify(amount, flag);
         break;
     }
 }
 
 // m_co_obj.cpp lines 406-468.
-void RGE_Master_Combat_Object::modify_delta(float value,
-                                             unsigned char attribute)
-{
-    switch (attribute) {
+void RGE_Master_Combat_Object::modify_delta(float amount, unsigned char flag) {
+    switch (flag) {
     case 8: {
-        int encoded = (int)value;
+        int encoded = (int)amount;
         unsigned short type = (unsigned short)((encoded >> 8) & 0xff);
         RGE_Armor_Weapon_Info* entries = armor;
         if (entries != 0) {
@@ -430,7 +415,7 @@ void RGE_Master_Combat_Object::modify_delta(float value,
         break;
     }
     case 9: {
-        int encoded = (int)value;
+        int encoded = (int)amount;
         unsigned short type = (unsigned short)((encoded >> 8) & 0xff);
         RGE_Armor_Weapon_Info* entries = weapon;
         if (entries != 0) {
@@ -446,113 +431,109 @@ void RGE_Master_Combat_Object::modify_delta(float value,
         break;
     }
     case 6:
-        turn_speed = (float)((double)value + (double)turn_speed);
+        turn_speed = (float)((double)amount + (double)turn_speed);
         break;
     case 10:
-        speed_of_attack = (float)((double)value + (double)speed_of_attack);
+        speed_of_attack = (float)((double)amount + (double)speed_of_attack);
         break;
     case 11:
-        base_hit_chance += (short)(long)value;
+        base_hit_chance += (short)(long)amount;
         break;
     case 12:
-        weapon_range = (float)((double)value + (double)weapon_range);
+        weapon_range = (float)((double)amount + (double)weapon_range);
         break;
     case 15:
-        base_armor += (unsigned char)(long)value;
+        base_armor += (unsigned char)(long)amount;
         break;
     case 16:
-        missile_id += (short)(long)value;
+        missile_id += (short)(long)amount;
         break;
     case 18:
-        defense_terrain_bonus = (short)(long)value;
+        defense_terrain_bonus = (short)(long)amount;
         break;
     default:
-        RGE_Master_Action_Object::modify_delta(value, attribute);
+        RGE_Master_Action_Object::modify_delta(amount, flag);
         break;
     }
 }
 
 // m_co_obj.cpp lines 472-504.
-void RGE_Master_Combat_Object::modify_percent(float value,
-                                                unsigned char attribute)
-{
-    switch (attribute) {
+void RGE_Master_Combat_Object::modify_percent(float amount, unsigned char flag) {
+    switch (flag) {
     case 8:
     case 9:
         break;
     case 6:
-        turn_speed = (float)((double)value * (double)turn_speed);
+        turn_speed = (float)((double)amount * (double)turn_speed);
         break;
     case 10:
-        speed_of_attack = (float)((double)value * (double)speed_of_attack);
+        speed_of_attack = (float)((double)amount * (double)speed_of_attack);
         break;
     case 11:
-        base_hit_chance = (short)((float)base_hit_chance * value);
+        base_hit_chance = (short)((float)base_hit_chance * amount);
         break;
     case 12:
-        weapon_range = (float)((double)value * (double)weapon_range);
+        weapon_range = (float)((double)amount * (double)weapon_range);
         break;
     case 15:
         // the shipped case 15 path uses missile_id as its source.
-        base_armor = (unsigned char)((float)missile_id * value);
+        base_armor = (unsigned char)((float)missile_id * amount);
         break;
     case 16:
-        missile_id = (short)((float)missile_id * value);
+        missile_id = (short)((float)missile_id * amount);
         break;
     case 18:
-        defense_terrain_bonus = (short)value;
+        defense_terrain_bonus = (short)amount;
         break;
     default:
-        RGE_Master_Action_Object::modify_percent(value, attribute);
+        RGE_Master_Action_Object::modify_percent(amount, flag);
         break;
     }
 }
 
 // m_co_obj.cpp lines 509-543.
-void RGE_Master_Combat_Object::save(int file)
-{
-    RGE_Master_Action_Object::save(file);
+void RGE_Master_Combat_Object::save(int outfile) {
+    RGE_Master_Action_Object::save(outfile);
 
-    short sprite_id;
+    short temp_fight_sprite;
     if (fight_sprite != 0)
-        sprite_id = fight_sprite->id;
+        temp_fight_sprite = fight_sprite->id;
     else
-        sprite_id = -1;
+        temp_fight_sprite = -1;
 
-    rge_write(file, &base_armor, 1);
-    rge_write(file, &weapon_num, 2);
+    rge_write(outfile, &base_armor, 1);
+    rge_write(outfile, &weapon_num, 2);
     if (weapon != 0)
-        rge_write(file, weapon, (int)weapon_num * 4);
-    rge_write(file, &armor_num, 2);
+        rge_write(outfile, weapon, (int)weapon_num * 4);
+    rge_write(outfile, &armor_num, 2);
     if (armor != 0)
-        rge_write(file, armor, (int)armor_num * 4);
-    rge_write(file, &defense_terrain_bonus, 2);
-    rge_write(file, &weapon_range, 4);
-    rge_write(file, &area_effect_range, 4);
-    rge_write(file, &speed_of_attack, 4);
-    rge_write(file, &missile_id, 2);
-    rge_write(file, &base_hit_chance, 2);
-    rge_write(file, &break_off_combat, 1);
-    rge_write(file, &fire_missile_at_frame, 2);
-    rge_write(file, &weapon_offset_x, 4);
-    rge_write(file, &weapon_offset_y, 4);
-    rge_write(file, &weapon_offset_z, 4);
-    rge_write(file, &area_effect_level, 1);
-    rge_write(file, &minimum_weapon_range, 4);
-    rge_write(file, &sprite_id, 2);
-    rge_write(file, &orig_armor, 2);
-    rge_write(file, &orig_weapon, 2);
-    rge_write(file, &orig_weapon_range, 4);
-    rge_write(file, &orig_speed_of_attack, 4);
+        rge_write(outfile, armor, (int)armor_num * 4);
+    rge_write(outfile, &defense_terrain_bonus, 2);
+    rge_write(outfile, &weapon_range, 4);
+    rge_write(outfile, &area_effect_range, 4);
+    rge_write(outfile, &speed_of_attack, 4);
+    rge_write(outfile, &missile_id, 2);
+    rge_write(outfile, &base_hit_chance, 2);
+    rge_write(outfile, &break_off_combat, 1);
+    rge_write(outfile, &fire_missile_at_frame, 2);
+    rge_write(outfile, &weapon_offset_x, 4);
+    rge_write(outfile, &weapon_offset_y, 4);
+    rge_write(outfile, &weapon_offset_z, 4);
+    rge_write(outfile, &area_effect_level, 1);
+    rge_write(outfile, &minimum_weapon_range, 4);
+    rge_write(outfile, &temp_fight_sprite, 2);
+    rge_write(outfile, &orig_armor, 2);
+    rge_write(outfile, &orig_weapon, 2);
+    rge_write(outfile, &orig_weapon_range, 4);
+    rge_write(outfile, &orig_speed_of_attack, 4);
 }
 
 // m_co_obj.cpp lines 549-577.
 long RGE_Master_Combat_Object::calc_base_damage_ability(
-    RGE_Master_Combat_Object* target)
-{
+    RGE_Master_Combat_Object* attacker) {
     float total = DAT_00570504;
-    int count = target->weapon_num;
-    RGE_Armor_Weapon_Info* weapon = target->weapon;
+    int count = attacker->weapon_num;
+    RGE_Armor_Weapon_Info* weapon = attacker->weapon;
 
     if (count > 0) {
         int remaining = count;

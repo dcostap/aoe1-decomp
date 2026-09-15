@@ -27,24 +27,24 @@ typedef char rge_armor_weapon_info_size_check[
 // The combat master owns the fields after RGE_Master_Action_Object.
 class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
 public:
-    RGE_Master_Combat_Object(RGE_Master_Combat_Object*, int);
-    RGE_Master_Combat_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Combat_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
+    RGE_Master_Combat_Object(RGE_Master_Combat_Object* other_object, int do_setup);
+    RGE_Master_Combat_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
+    RGE_Master_Combat_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id, int do_setup);
 
     virtual ~RGE_Master_Combat_Object();
-    virtual void copy_obj(RGE_Master_Static_Object*);
-    virtual void modify(float, unsigned char);
-    virtual void modify_delta(float, unsigned char);
-    virtual void modify_percent(float, unsigned char);
-    virtual void save(int);
-    virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+    virtual void copy_obj(RGE_Master_Static_Object* source);
+    virtual void modify(float amount, unsigned char flag);
+    virtual void modify_delta(float amount, unsigned char flag);
+    virtual void modify_percent(float amount, unsigned char flag);
+    virtual void save(int outfile);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
-    virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
+    virtual long calc_base_damage_ability(RGE_Master_Combat_Object* attacker);
 
 protected:
-    int setup(RGE_Master_Combat_Object*);
-    int setup(int, RGE_Sprite**, RGE_Sound**);
-    int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
+    int setup(RGE_Master_Combat_Object* other_object);
+    int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
 public:
     RGE_Sprite* fight_sprite;
