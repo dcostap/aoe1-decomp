@@ -5,6 +5,8 @@
 - Module: `src/act_bird.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Final source commit: `376683569b6e697dea37c675f785e5febf10ba19`.
+- Correction commit: `8dd0da75c00c027506dcf0291d908223369e3dd5`.
+- Prior report commit: `b9f13d6b5325d41315426e2f4cb3554fd3d108af`.
 - Changed files: `src/act_bird.cpp`; this report.
 - Header request only: `include/act_bird.h` remains unchanged.
 - Registry: `config/functions/src/act_bird.cpp.json`, build flags `gx`.
@@ -74,8 +76,7 @@ changing the public types or ABI:
 
 ```cpp
 RGE_Action_Bird(int infile, RGE_Action_Object* obj_in);
-RGE_Action_Bird(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                float x, float y, float z);
+RGE_Action_Bird(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
 virtual void first_in_stack(unsigned char first_time);
 virtual void set_state(unsigned char new_state);
 ```
