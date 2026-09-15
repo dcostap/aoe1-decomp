@@ -19,8 +19,8 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_
 }
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
-                                               RGE_Task* task_in,
-                                               RGE_Static_Object* target_obj_in)
+                                             RGE_Task* task_in,
+                                             RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->action_type = 0x6B;
     this->task = task_in;
@@ -28,8 +28,8 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
 }
 
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
-                                               RGE_Task* task_in,
-                                               float x, float y, float z)
+                                             RGE_Task* task_in,
+                                             float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 0x6B;
