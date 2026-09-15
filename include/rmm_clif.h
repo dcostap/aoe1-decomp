@@ -31,15 +31,15 @@ public:
     RGE_Cliffs_Info info;
     Map_Stack valid_cliff_sites;
 
-    RGE_RMM_Cliffs_Generator(RGE_Map* map,
-        RGE_Random_Map_Module* module, RGE_Cliffs_Info cliffs_info);
+    RGE_RMM_Cliffs_Generator(RGE_Map* in_map,
+        RGE_Random_Map_Module* parent_module, RGE_Cliffs_Info cliff_info);
 
 protected:
     void setup_cliff_maps();
     void generate_cliff();
-    uchar check_for_valid_cliff_site(long direction, long& y,
-        long& valid_height, long index);
-    void invalidate_cliff_area(long x, long y, long spacing);
+    uchar check_for_valid_cliff_site(long direction, long& x, long& y,
+        long valid_height);
+    void invalidate_cliff_area(long x, long y, long radius);
 };
 
 typedef char RMM_Clif_Generator_Size_Check[

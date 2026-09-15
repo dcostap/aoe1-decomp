@@ -41,16 +41,16 @@ typedef char rmm_land_info_size_check[
 
 class RGE_RMM_Land_Generator : public RGE_Random_Map_Module {
 protected:
-    uchar check_terrain_and_zone(uchar unused, uchar land_id,
+    uchar check_terrain_and_zone(uchar target, uchar land_num,
         long x, long y);
-    uchar chance(long x, long y, long land_id);
+    uchar chance(long x, long y, long land_type);
     uchar base_land_generate();
 
 public:
     RGE_Land_Info info;                     // +0x30
 
-    RGE_RMM_Land_Generator(RGE_Map* map,
-        RGE_Random_Map_Module* parent, RGE_Land_Info* info);
+    RGE_RMM_Land_Generator(RGE_Map* in_map,
+        RGE_Random_Map_Module* parent_module, RGE_Land_Info* in_info);
     virtual uchar generate();
 };
 

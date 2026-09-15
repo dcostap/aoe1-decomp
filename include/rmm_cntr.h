@@ -12,17 +12,17 @@ struct RGE_Terrain_Info;
 
 class RGE_RMM_Controller : public RGE_Random_Map_Module {
 public:
-    RGE_RMM_Controller(RGE_Map* map, RGE_Game_World* world,
-        uchar map_type, long number_of_players);
+    RGE_RMM_Controller(RGE_Map* in_map, RGE_Game_World* world,
+        uchar type, long player_num);
     virtual uchar generate();
 
 protected:
-    void add_land_module(RGE_Land_Info& land_info,
-        long map_type, long number_of_players);
-    void add_terrain_module(RGE_Terrain_Info& terrain_info,
-        RGE_Land_Info& land_info, long map_type);
+    void add_land_module(RGE_Land_Info& info,
+        long type, long player_num);
+    void add_terrain_module(RGE_Terrain_Info& info,
+        RGE_Land_Info& land_info, long type);
     void add_object_module(RGE_Game_World* world, RGE_Land_Info& land_info);
-    long count_map_tiles(uchar ignored);
+    long count_map_tiles(uchar terrain);
 };
 
 #endif

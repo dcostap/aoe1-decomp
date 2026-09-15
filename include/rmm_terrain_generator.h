@@ -23,8 +23,8 @@ protected:
     uchar base_terrain_generate(RGE_Terrain_Info_Line info_line);
 
 public:
-    RGE_RMM_Terrain_Generator(RGE_Map* map,
-        RGE_Random_Map_Module* parent, RGE_Terrain_Info* info);
+    RGE_RMM_Terrain_Generator(RGE_Map* in_map,
+        RGE_Random_Map_Module* parent_module, RGE_Terrain_Info* in_info);
     virtual uchar generate();
 };
 

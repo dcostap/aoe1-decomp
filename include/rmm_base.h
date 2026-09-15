@@ -42,27 +42,29 @@ protected:
     void update_child_resources();
     void update_resources();
     void update_child_map_info();
-    void update_map_info(RGE_Map*);
-    void share_resources(uchar**, uchar***, Map_Stack**, Map_Stack***);
+    void update_map_info(RGE_Map* new_map);
+    void share_resources(uchar** search_map_pointer, uchar*** search_map_rows_pointer,
+        Map_Stack** stack_array_pointer, Map_Stack*** stack_offsets_pointer);
 
-    void init_stack(Map_Stack&);
-    void deinit_stack(Map_Stack&);
-    void push_stack(Map_Stack&, long, long, float, float);
-    Map_Stack* pop_stack(Map_Stack&, long&, long&, float&);
-    void add_stack_node(Map_Stack*, Map_Stack*);
-    void remove_stack_node(Map_Stack*);
+    void init_stack(Map_Stack& stack);
+    void deinit_stack(Map_Stack& stack);
+    void push_stack(Map_Stack& stack, long x, long y, float cost, float tot_cost);
+    Map_Stack* pop_stack(Map_Stack& stack, long& x, long& y, float& cost);
+    void add_stack_node(Map_Stack* stack, Map_Stack* new_stack);
+    void remove_stack_node(Map_Stack* stack);
     void clear_stack();
-    uchar check_stack(Map_Stack*);
-    void randomize_stack(Map_Stack*);
-    uchar find_path(long, long, long&, long&, float*);
-    uchar find_path(Map_Stack&, long, long, long&, long&, float*);
-    uchar add_module(RGE_Random_Map_Module*);
-    uchar remove_module(RGE_Random_Map_Module*);
+    uchar check_stack(Map_Stack* stack);
+    void randomize_stack(Map_Stack* stack);
+    uchar find_path(long x, long y, long& end_x, long& end_y, float* terrain);
+    uchar find_path(Map_Stack& path_stack, long x, long y, long& end_x, long& end_y, float* terrain);
+    uchar add_module(RGE_Random_Map_Module* module);
+    uchar remove_module(RGE_Random_Map_Module* module);
     float get_schedule();
 
 public:
     RGE_Random_Map_Module();
-    RGE_Random_Map_Module(RGE_Map*, RGE_Random_Map_Module*, uchar);
+    RGE_Random_Map_Module(RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
+        uchar resources_needed);
     ~RGE_Random_Map_Module();
     virtual uchar generate();
 };
