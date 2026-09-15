@@ -43,7 +43,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
 
     TTextPanel** title_ptr = &this->title;
     if (!this->create_text(this, title_ptr,
-                           (this->modeValue != SaveGame) + 0x24C3,
+                           (this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE,
                            20, 20, 600, 30, 1, 1, 0, 0)) {
         return;
     }
@@ -68,7 +68,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     if (!this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
         return;
     }
-    this->scrollbar->set_help_info(0x7671, -1);
+    this->scrollbar->set_help_info(IDS_HELP_SELECT_SAVED_GAME, -1);
 
     if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0,
                              30, 440, 180, 30, 0, 0, 0)) {
@@ -231,9 +231,9 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
             if (strlen(this->fileNameNoExt) == 0) {
                 if (this->modeValue == SaveGame) {
-                    this->popupOKDialog(0x24C6, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_ERROR_SAVE_GAME_NAME_REQUIRED, 0, 0x1C2, 100);
                 } else {
-                    this->popupOKDialog(0x24C7, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_ERROR_SAVE_SCENARIO_NAME_REQUIRED, 0, 0x1C2, 100);
                 }
                 return 1;
             }
@@ -281,13 +281,13 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 if (this->modeValue == SaveGame) {
                     if (static_cast<TRIBE_Game*>(rge_base_game)->
                             save_game(this->fileName) == 0) {
-                        this->popupOKDialog(0x962, 0, 0x1C2, 100);
+                        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_GAME, 0, 0x1C2, 100);
                         return 1;
                     }
                 } else if (this->modeValue == SaveScenario) {
                     if (static_cast<TRIBE_Game*>(rge_base_game)->
                             save_scenario(this->fileName) == 0) {
-                        this->popupOKDialog(0x963, 0, 0x1C2, 100);
+                        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, 0x1C2, 100);
                         return 1;
                     }
                 } else if (this->modeValue == SaveScenarioEdit) {
@@ -296,7 +296,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 return 1;
             }
 
-            this->popupYesNoDialog(0x24C8, 0, 0x1C2, 100);
+            this->popupYesNoDialog(IDS_CONFIRM_OVERWRITE_FILE, 0, 0x1C2, 100);
             return 1;
         }
 
@@ -339,7 +339,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 _unlink(tempFileName);
                 if (static_cast<TRIBE_Game*>(rge_base_game)->
                         save_game(this->fileName) == 0) {
-                    this->popupOKDialog(0x962, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_GAME, 0, 0x1C2, 100);
                 }
             } else if (this->modeValue == SaveScenario) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
@@ -349,7 +349,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 _unlink(tempFileName);
                 if (static_cast<TRIBE_Game*>(rge_base_game)->
                         save_scenario(this->fileName) == 0) {
-                    this->popupOKDialog(0x963, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, 0x1C2, 100);
                 }
             } else if (this->modeValue == SaveScenarioEdit) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
@@ -367,11 +367,11 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
 }
 
 void TribeSaveGameScreen::save_for_scenario_editor() {
-    static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(0x450, 0, -1);
+    static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
 
     rge_base_game->world->scenario->Set_scenario_name(this->fileName);
     if (!rge_base_game->world->save_scenario(this->fileName)) {
-        this->popupOKDialog(0x963, 0, 0x1C2, 100);
+        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, 0x1C2, 100);
         return;
     }
 
