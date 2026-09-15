@@ -26,16 +26,16 @@ public:
     ~TCommunications_Services();
     int GetServiceCount();
     int IncServiceCount();
-    char* GetServiceName(int index);
-    int SetServiceName(int serviceIndex, char* name);
-    _GUID GetServiceGUID(int index);
-    void EnumServiceGUID(int index, _GUID* guid);
-    int GetServiceActive(int index);
-    void SetServiceActive(int index, int active);
+    char* GetServiceName(int id);
+    int SetServiceName(int id, char* Text);
+    _GUID GetServiceGUID(int id);
+    void EnumServiceGUID(int id, _GUID* gid);
+    int GetServiceActive(int id);
+    void SetServiceActive(int id, int state);
 };
 
-BOOL __stdcall DPEnumCallback(LPGUID guid, LPSTR name, DWORD flags,
-                               DWORD reserved, LPVOID context);
+BOOL __stdcall DPEnumCallback(LPGUID pid, LPSTR szName, DWORD major_ver,
+                              DWORD minor_ver, LPVOID lpx);
 
 typedef char com_serv_services_size_check[
     (sizeof(TCommunications_Services) == 0x2584) ? 1 : -1];
