@@ -5,6 +5,7 @@
 - Module: `src/effects.cpp`
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit from `git rev-parse`: `956b86418ac3abc0bfc54e730ba1cb6a02d8521f`
+- Report commit from `git rev-parse`: `6df2677e7c5d5e301dc14d487565d1c615dbcd3c`
 - Changed files: `src/effects.cpp`; this report.
 - Branch: `cleanup/staging-20260915-234`
 - The source commit contains only the assigned source change.
