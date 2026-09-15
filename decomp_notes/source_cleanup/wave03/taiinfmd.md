@@ -7,7 +7,7 @@
 - Source candidate before the declaration correction pass:
   `76180ec12a9cf731a9ddb5135f2caefdab780fd7`
 - Source SHA-256 after the declaration correction pass:
-  `85642cd8c47620a609a6fe9c59432075df6b217aadede157dc6a88567beff511`
+  `9bf9ded529fc1b838d86dace3372a87edddce464c86d5572c98309c8a7a38d1e`
 - Changed files:
   - `src/taiinfmd.cpp`
   - `decomp_notes/source_cleanup/wave03/taiinfmd.md`
@@ -42,12 +42,13 @@ This pass corrected them on the source branch. The earlier history above now rec
 form, not the rejected form.
 
 - `setupWalls` now has `centerX` and `centerY` parameters, with separate `x` and `y` locals.
-- `setupWalls` retains baseline `wallShape` and `setupGates`; PDB `pattern` and `townWalls`
-  cannot replace them without colliding with the required `x` and `y` locals.
+- `setupWalls` retains baseline `wallShape` and `setupGates`; PDB parameter names `x` and `y`
+  conflict with the required `x` and `y` loop locals.
 - `save` now reuses `outfile` for the list counts and string length.
 - The destructor now assigns `file` to `local_14` before its first file test.
 - `update` now retains the explicit `RGE_Visible_Map*` cast.
 - `unexploredPlayerLocation` now overwrites the low byte of `uID` and separately initializes `i`.
+- `requiredZone` remains an unsafe reused-home PDB record, not a recovered source declaration.
 - `dropsitesWithinRequiredDistance` now declares `a` before its separate initialization.
 
 ## Scope and coverage
@@ -102,7 +103,7 @@ These names come from the procedure-scoped PDB records:
   `oGroup`, `bestDefendValue`, and `objPoint`.
 - Lot, wall, and placement helpers: `one`, `two`, `countDiagonal`, `typeID`, `status`,
   `newStatus`, `overlapSize`, `x`, `y`, and `numGates`.
-- Learning and resource helpers: `name`, `numToLoad`, `numMemoriesToLoad`, `requiredZone`,
+- Learning and resource helpers: `name`, `numToLoad`, `numMemoriesToLoad`,
   `point`, `pathDistance`, `playerID`, `numTiles`, `victimID`, `objY`, `oT1`, `oT2`,
   `oT3`, `oT4`, `rDistance`, `rID`, `startPoint`, `rPoint`, `useTransport`,
   `landTerrainRequired`, `stageDistance`, `target`, `vMap`, `gMap`, `targetZone`,
@@ -128,6 +129,8 @@ mapping.
   The source keeps descriptive names where a direct scope match is not proven.
 - Register-only temporaries in object, resource, attack, and placement procedures remain
   descriptive. A readable substitute does not prove an original developer name.
+- `requiredZone` in `unexploredPlayerLocation` is an unsafe reused-home PDB record. The source
+  keeps the low-byte overwrite of `uID` instead of adding that declaration.
 - No public header parameter declarations were changed. A header-owned spelling question
   remains with the header owner.
 

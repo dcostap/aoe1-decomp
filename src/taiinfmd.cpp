@@ -6301,11 +6301,11 @@ int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int dropsiteType) {
 int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     int& numDS, int rType, int maxDistance) {
     int totalApplicable;
+    int a;
 
     numDS = 0;
     totalApplicable = 0;
     ManagedArray_int dropsites;
-    int a;
     a = 0;
 
     if (this->numResources[rType] > 0) {
