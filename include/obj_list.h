@@ -19,33 +19,43 @@ public:
     short number_of_objects;
 
 protected:
-    virtual void load(unsigned char, int, RGE_Game_World*);
+    virtual void load(unsigned char object_type, int infile,
+                      RGE_Game_World* world);
     void invert();
 
 public:
     RGE_Object_List();
     ~RGE_Object_List();
     void removeAllObjects();
-    RGE_Object_Node* add_node(RGE_Static_Object*);
-    void remove_node(RGE_Static_Object*, RGE_Object_Node*);
-    void draw(TDrawArea*, short, short, unsigned char);
-    void shadow_draw(TDrawArea*, short, short, unsigned char, unsigned char);
-    void normal_draw(TDrawArea*, short, short, unsigned char);
+    RGE_Object_Node* add_node(RGE_Static_Object* obj);
+    void remove_node(RGE_Static_Object* obj, RGE_Object_Node* node);
+    void draw(TDrawArea* render_area, short x, short y,
+              unsigned char fogged_tile);
+    void shadow_draw(TDrawArea* render_area, short x, short y,
+                     unsigned char flag, unsigned char fog_flag);
+    void normal_draw(TDrawArea* render_area, short x, short y,
+                     unsigned char fog_flag);
     void update();
     RGE_Object_Node* sort();
-    RGE_Static_Object* find_by_group(long);
-    RGE_Static_Object* find_by_group(long, float, float, unsigned char,
-                                     unsigned char, RGE_Static_Object*);
-    RGE_Static_Object* find_by_id(long);
-    RGE_Static_Object* find_by_master_id(long, float, float, unsigned char,
-                                         unsigned char, RGE_Static_Object*);
-    RGE_Static_Object* find_by_master_ids(long, long, float, float,
-                                          unsigned char, unsigned char,
-                                          RGE_Static_Object*);
-    RGE_Static_Object* find_by_type(unsigned char, float, float,
-                                    unsigned char, unsigned char);
-    void save(int);
-    void load_list(int, RGE_Game_World*);
+    RGE_Static_Object* find_by_group(long id);
+    RGE_Static_Object* find_by_group(long id, float x, float y,
+                                     unsigned char certain_state,
+                                     unsigned char object_state,
+                                     RGE_Static_Object* zone_obj);
+    RGE_Static_Object* find_by_id(long id);
+    RGE_Static_Object* find_by_master_id(long id, float x, float y,
+                                         unsigned char certain_state,
+                                         unsigned char object_state,
+                                         RGE_Static_Object* zone_obj);
+    RGE_Static_Object* find_by_master_ids(long id1, long id2, float x, float y,
+                                          unsigned char certain_state,
+                                          unsigned char object_state,
+                                          RGE_Static_Object* zone_obj);
+    RGE_Static_Object* find_by_type(unsigned char type, float x, float y,
+                                    unsigned char certain_state,
+                                    unsigned char object_state);
+    void save(int outfile);
+    void load_list(int infile, RGE_Game_World* world);
     void rehook_list();
 };
 

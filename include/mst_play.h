@@ -10,15 +10,16 @@ class RGE_Sound;
 class RGE_Master_Player {
 public:
     virtual ~RGE_Master_Player();
-    virtual void finish_init(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
-    virtual void load_master_object(int id, unsigned char type,
+    virtual void finish_init(int infile, RGE_Sprite** sprites,
+                             RGE_Sound** sounds);
+    virtual void load_master_object(int infile, unsigned char obj_type,
                                     RGE_Sprite** sprites, RGE_Sound** sounds,
                                     short index);
     virtual void create_master_object_space(short count);
-    virtual void load_object(FILE* file, unsigned char type,
+    virtual void load_object(FILE* infile, unsigned char obj_type,
                              RGE_Sprite** sprites, RGE_Sound** sounds,
                              short index);
-    virtual void save(int fd);
+    virtual void save(int outfile);
 
     char name[20];
     short master_object_num;
@@ -29,8 +30,8 @@ public:
     unsigned char type;
     short tribe_effect;
 
-    RGE_Master_Player(FILE* file);
-    RGE_Master_Player(int fd);
+    RGE_Master_Player(FILE* infile);
+    RGE_Master_Player(int infile);
 };
 
 typedef char mst_play_master_player_size[

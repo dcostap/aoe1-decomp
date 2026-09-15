@@ -8,21 +8,23 @@ class RGE_Color_Table;
 
 class RGE_Doppleganger_Object : public RGE_Animated_Object {
 public:
-    virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
-                                    float, float, float, RGE_Static_Object*);
+    virtual void recycle_in_to_game(RGE_Master_Static_Object* tobj,
+                                    RGE_Player* obj_owner, float x, float y,
+                                    float z, RGE_Static_Object* obj_to_dopple);
     virtual unsigned char update();
     virtual void rehook();
-    virtual void save(int);
+    virtual void save(int outfile);
     virtual void validate();
 
-    RGE_Doppleganger_Object(RGE_Master_Doppleganger_Object*, RGE_Player*,
-                            float, float, float, int, RGE_Static_Object*);
-    RGE_Doppleganger_Object(int, RGE_Game_World*, int);
+    RGE_Doppleganger_Object(RGE_Master_Doppleganger_Object* tobj,
+                            RGE_Player* obj_owner, float x, float y, float z,
+                            int do_setup, RGE_Static_Object* obj_to_dopple);
+    RGE_Doppleganger_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
 protected:
-    virtual int setup(RGE_Master_Doppleganger_Object*, RGE_Player*, float,
-                      float, float);
-    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Doppleganger_Object* tobj,
+                      RGE_Player* obj_owner, float x, float y, float z);
+    virtual int setup(int infile, RGE_Game_World* gworld);
 
 public:
     RGE_Static_Object* doppled_object;
@@ -50,14 +52,15 @@ public:
     unsigned long* Last_Map_Value;
     int* Object_ids;
 
-    RGE_Doppleganger_Creator(RGE_Player*, int);
+    RGE_Doppleganger_Creator(RGE_Player* player, int initial_size);
     ~RGE_Doppleganger_Creator();
-    int add_doppleganger_check(RGE_Static_Object*, unsigned long*);
-    int remove_doppleganger_check(RGE_Static_Object*);
+    int add_doppleganger_check(RGE_Static_Object* theObj,
+                               unsigned long* UMV_addr);
+    int remove_doppleganger_check(RGE_Static_Object* theObj);
     void perform_doppleganger_checks();
 
 protected:
-    void expand_allocations(int);
+    void expand_allocations(int grow_size);
 };
 
 typedef char rge_doppleganger_creator_size_check[
