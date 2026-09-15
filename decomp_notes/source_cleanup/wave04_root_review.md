@@ -1,5 +1,14 @@
 # Cleanup wave 04 root review
 
+## Cleanup integration complete
+
+Root read the final two-report correction to `cf5122ca8a4871667110fda68e03b1445c663c58`.
+Approval and import provenance now have separate statements. No source or header changed in that correction.
+Root merged Owner 27 as `b9835268320092cf08fbc6c5a07ac74166f15035`.
+All 224 assigned modules plus the pilot are reviewed and integrated: 225 of 225, or 100%.
+No cleanup review blocker remains. Deferred optional resource names remain numeric, as recorded.
+This completes cleanup integration, not validation. The user-authorized final validation stage can now start.
+
 ## Owner 27: source approved; provenance correction remains
 
 Reviewer `sa-32cff643` read all 475 correction lines and approved the source and imported headers.
