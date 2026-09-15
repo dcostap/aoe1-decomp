@@ -4,7 +4,8 @@
 
 - Module: `src/tpnl_tim.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final commit: pending
+- Final source commit: `6bdf682f2ff757b1b785d07b170e3ce5c5be3ddc`
+- This report update is a second documentation commit after the source commit.
 - Changed files:
   - `src/tpnl_tim.cpp`
   - `decomp_notes/source_cleanup/wave03/tpnl_tim.md`
