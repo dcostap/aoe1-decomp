@@ -119,13 +119,57 @@ The existing comments for the `xSizeValue` Y-bound behavior remain at
 
 ## Header and shared-file requests
 
-`include/infmap.h` was read but not edited. This assignment requires no header
-change. Header parameter names can remain different because they do not affect
-the function type, symbol, calling convention, or ABI. A future header owner
-can synchronize declaration names if that is desired, but no request is needed
-for this source cleanup.
+Owner 16 owns `include/infmap.h`. The header was read but not edited. Please
+apply this declaration-only name update:
+
+```cpp
+InfluenceMap(int x, int y, unsigned char initialValue);
+InfluenceMap(int infile);
+
+int initialize(unsigned char initialValue);
+void save(int outfile);
+void load(int infile);
+
+int setValue(int x, int y, unsigned char v);
+int setValue(int minX, int minY, int maxX, int maxY, unsigned char v);
+int incrementValue(int x, int y, unsigned char v);
+int incrementValue(int minX, int minY, int maxX, int maxY, unsigned char v);
+int decrementValue(int x, int y, unsigned char v);
+int decrementValue(int minX, int minY, int maxX, int maxY, unsigned char v);
+
+int setCoverageCount(const XYPoint& min, const XYPoint& max, int valueLevel);
+int setConnectionCount(const XYPoint& min, const XYPoint& max,
+                       int valueLevel,
+                       int countOrthogonalEdgesAsConnections,
+                       int countDiagonalEdgesAsConnections,
+                       int countDiagonalConnections);
+int coverageIncluding(const XYPoint& min, const XYPoint& max,
+                      unsigned char valueLevel,
+                      unsigned char newValueLevel);
+int connectionsIncluding(const XYPoint& min, const XYPoint& max,
+                         unsigned char valueLevel,
+                         unsigned char newValueLevel,
+                         int countOrthogonalEdgesAsConnections,
+                         int countDiagonalEdgesAsConnections,
+                         int countDiagonalConnections);
+
+void setUnchangeableLimit(unsigned char uL);
+```
+
+The names match the PDB records listed above. Keep the current return types,
+parameter types, parameter order, overloads, virtual slot, and class layout.
+These declaration-only changes do not change ABI symbols, calling convention,
+object layout, or generated storage.
 
 No other shared file was changed or requested.
+
+## Correction history
+
+- Owner review `sa-6888a065-r2` found that the earlier report incorrectly said
+  that no header request was needed.
+- This report replaces that conclusion with the complete declaration-only
+  request above. The source remains unchanged after commit
+  `7da15a7b1921b5aa4610919ff2b55a6f3cc72a9d`.
 
 ## Code-generation and behavior risk
 
