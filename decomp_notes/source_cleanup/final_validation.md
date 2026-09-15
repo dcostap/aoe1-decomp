@@ -12,7 +12,7 @@ Do not overwrite that build or discard failed validation output.
 | Stage | Command | Job | Result |
 | --- | --- | --- | --- |
 | Registry configuration | `python tools/validate_translation_units.py --no-build-checks` | `bg-66` | Passed, exit 0. Configuration only; no compilation or byte proof. |
-| Whole-project function compilation and matching | `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/source-cleanup-20260915/final-validation/functions` | `bg-67` | Running. |
+| Whole-project function compilation and matching | `python tools/audit_translation_unit_functions.py --jobs 4 --output-dir build/source-cleanup-20260915/final-validation/functions` | `bg-67` | Finished with failures: 217 of 225 groups compiled; three matching regressions reported. |
 | Fresh executable | `python tools/game.py build` | `bg-68` | Failed: 218 of 226 sources compiled; no linked executable. |
 
 Both build stages started from the same integrated source state. No source change occurred between their starts.
@@ -52,3 +52,21 @@ Root resumed the original owners and workers for minimal source repairs and repo
 Restore baseline name bindings and distinct declarations. Do not add scopes to bypass VC5 declaration rules.
 Root will review repairs and rerun validation. No failed output will be removed.
 Runtime tests cannot validate this failed build. They await a fresh linked executable.
+
+## First function sweep
+
+The sweep includes 4,942 normal functions: 4,537 exact targets and 405 other configured functions.
+Categories: 4,534 matching results, 178 accepted-drift observations, 162 new-verified-logic observations,
+45 relocation problems, 13 boundary problems, seven grouped matches needing review, and three matching regressions.
+Eight groups did not compile. Counts from compiled groups do not cover those missing functions.
+
+The three reported regressions are:
+
+- `flics`, `00449DF0 resolution`: three instruction bytes differ.
+- `t_b_obj`, `004C9230 lay_down_impassable_terrain`: instruction bytes agree; referenced numeric bytes differ.
+- `t_b_obj`, `004C9360 lay_down_passable_terrain`: instruction bytes agree; referenced numeric bytes differ.
+
+All three rows record prior state `UNKNOWN`, not a prior exact pass.
+Root resumed the original workers to compare the preserved baseline objects before attributing these differences to cleanup.
+Do not relabel matching claims or weaken checks. Preserve both new and preexisting differences explicitly.
+Job `bg-69` checks ownership against this fresh function report; compilation gaps remain part of its limits.
