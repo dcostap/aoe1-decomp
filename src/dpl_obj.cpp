@@ -23,8 +23,7 @@ extern FILE* DDlogf;
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(
     RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x,
     float y, float z, int do_setup, RGE_Static_Object* obj_to_dopple)
-    : RGE_Animated_Object(tobj, obj_owner, x, y, z, 0)
-{
+    : RGE_Animated_Object(tobj, obj_owner, x, y, z, 0) {
     this->doppled_object = 0;
     this->draw_color = 0;
     this->doppled_master_obj = 0;
@@ -69,10 +68,7 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
     this->validate();
 }
 
-RGE_Doppleganger_Object::RGE_Doppleganger_Object(
-    int infile, RGE_Game_World* gworld, int do_setup)
-    : RGE_Animated_Object(infile, gworld, 0)
-{
+RGE_Doppleganger_Object::RGE_Doppleganger_Object(int infile, RGE_Game_World* gworld, int do_setup) : RGE_Animated_Object(infile, gworld, 0) {
     int long_val;
 
     this->doppled_object = 0;
@@ -104,14 +100,7 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
     }
 }
 
-void RGE_Doppleganger_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* tobj,
-    RGE_Player* obj_owner,
-    float x,
-    float y,
-    float z,
-    RGE_Static_Object* obj_to_dopple)
-{
+void RGE_Doppleganger_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, RGE_Static_Object* obj_to_dopple) {
     this->doppled_object = 0;
     this->draw_color = 0;
     this->doppled_master_obj = 0;
@@ -176,10 +165,7 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
     this->validate();
 }
 
-int RGE_Doppleganger_Object::setup(
-    RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x,
-    float y, float z)
-{
+int RGE_Doppleganger_Object::setup(RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x, float y, float z) {
     this->RGE_Animated_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x19;
     int y_i = (int)y;
@@ -190,8 +176,7 @@ int RGE_Doppleganger_Object::setup(
     return 1;
 }
 
-int RGE_Doppleganger_Object::setup(int infile, RGE_Game_World* gworld)
-{
+int RGE_Doppleganger_Object::setup(int infile, RGE_Game_World* gworld) {
     RGE_Animated_Object::setup(infile, gworld);
     int x = (int)(long)(this->world_y);
     this->type = 0x19;
@@ -202,8 +187,7 @@ int RGE_Doppleganger_Object::setup(int infile, RGE_Game_World* gworld)
     return 1;
 }
 
-void RGE_Doppleganger_Object::rehook()
-{
+void RGE_Doppleganger_Object::rehook() {
     RGE_Player* player;
     int player_index;
 
@@ -239,8 +223,7 @@ second_part:
     this->destroy_obj();
 }
 
-unsigned char RGE_Doppleganger_Object::update()
-{
+unsigned char RGE_Doppleganger_Object::update() {
     unsigned char result = RGE_Animated_Object::update();
 
     if (this->doppled_object == 0) {
@@ -281,8 +264,7 @@ unsigned char RGE_Doppleganger_Object::update()
     return result;
 }
 
-void RGE_Doppleganger_Object::save(int file)
-{
+void RGE_Doppleganger_Object::save(int file) {
     int handle = file;
 
     RGE_Animated_Object::save(file);
@@ -309,8 +291,7 @@ void RGE_Doppleganger_Object::save(int file)
     }
 }
 
-void RGE_Doppleganger_Object::validate()
-{
+void RGE_Doppleganger_Object::validate() {
     int row = (int)this->world_y;
     int col = (int)this->world_x;
     RGE_Object_Node* entry =
@@ -341,9 +322,7 @@ void RGE_Doppleganger_Object::validate()
     }
 }
 
-RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(
-    RGE_Player* player, int initial_size)
-{
+RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(RGE_Player* player, int initial_size) {
     this->Objects = (RGE_Static_Object**)calloc(initial_size, 4);
     this->Map_Addresses = (unsigned long**)calloc(initial_size, 4);
     this->Last_Map_Value = (unsigned long*)calloc(initial_size, 4);
@@ -356,8 +335,7 @@ RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(
     }
 }
 
-RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator()
-{
+RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
     if (this->Objects != 0) {
         free(this->Objects);
     }
@@ -376,9 +354,7 @@ RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator()
     }
 }
 
-int RGE_Doppleganger_Creator::add_doppleganger_check(
-    RGE_Static_Object* theObj, unsigned long* UMV_addr)
-{
+int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* theObj, unsigned long* UMV_addr) {
     if (DDlogf) {
         fprintf(DDlogf, "ADC (@%d) p=%d  id=%d\n",
             this->owner->world->world_time,
@@ -412,9 +388,7 @@ int RGE_Doppleganger_Creator::add_doppleganger_check(
     return 1;
 }
 
-int RGE_Doppleganger_Creator::remove_doppleganger_check(
-    RGE_Static_Object* theObj)
-{
+int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* theObj) {
     if (DDlogf) {
         fprintf(DDlogf, "RDC (@%d)  p=%d  id=%d\n",
             owner->world->world_time, owner->id, theObj->id);
@@ -443,8 +417,7 @@ int RGE_Doppleganger_Creator::remove_doppleganger_check(
     return 0;
 }
 
-void RGE_Doppleganger_Creator::perform_doppleganger_checks()
-{
+void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
     unsigned long Unified_Map_Value;
     int i;
     RGE_Static_Object* remove_me = 0;
@@ -507,8 +480,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
     return;
 }
 
-void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
-{
+void RGE_Doppleganger_Creator::expand_allocations(int grow_size) {
     if (DDlogf != 0) {
         fprintf(DDlogf, "RESIZE (@%d) p=%d  grow=%d\n",
             this->owner->world->world_time,
