@@ -6,16 +6,31 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\ttsk_lst.cpp`
 - Worker slot: 36
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `4e0192183b6768b3bd1b842952cf6eab9ed8a043`
+- Earlier source commit: `4e0192183b6768b3bd1b842952cf6eab9ed8a043`
+- Final source commit: `95b7fa83e8e8b61f6fce66288eafc470a27b530d`
 - Changed files:
   - `src/ttsk_lst.cpp`
   - `decomp_notes/source_cleanup/wave02/ttsk_lst.md`
 - Header owner: owner 04 owns `include/ttsk_lst.h`. This worker did not edit it.
 
-The source commit changes local names and applies 1TBS brace placement. It does
-not change function signatures, types, scopes, statements, calls, or literals.
-The report commit follows the source commit. The final delivery hash is in the
-worker response because a report cannot contain its own commit hash.
+The source commits change local names and apply 1TBS brace placement. The final
+source commit also formats `get_target_task` as a compact two-line signature.
+It changes presentation only. It does not change types, scopes, expressions,
+comparisons, statements, calls, or literals. The report commit follows the
+source commits. The final delivery hash is in the worker response because a
+report cannot contain its own commit hash.
+
+## Root correction
+
+The final source commit changes the definition to this two-line form:
+
+```cpp
+RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Object* target_obj,
+                                           float target_x, float target_y, float target_z) {
+```
+
+The continuation starts under the first parameter column. No source token
+changed outside this signature's whitespace.
 
 ## Assigned functions and PDB inspection
 
