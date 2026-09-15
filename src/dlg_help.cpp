@@ -32,7 +32,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     RGE_Font* rge_text_font;
     long line_height;
     long panel_height;
-    long dialog_x;
+    long x;
     long y;
 
     this->ok_button = 0;
@@ -56,14 +56,14 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     panel_height = line_height * rge_text_font->font_hgt + 0x37;
 
     if (parentPanel->width() + parentPanel->xPosition() >= mouse_x + 0x163) {
-        dialog_x = abs(parentPanel->xPosition() - mouse_x - 5);
+        x = abs(parentPanel->xPosition() - mouse_x - 5);
     } else if (parentPanel->xPosition() + 10 <= mouse_x - 0x159) {
-        dialog_x = abs(mouse_x - 0x159 - parentPanel->xPosition());
+        x = abs(mouse_x - 0x159 - parentPanel->xPosition());
     } else {
-        dialog_x = parentPanel->width() / 2 - 0xAA;
+        x = parentPanel->width() / 2 - 0xAA;
     }
-    if (dialog_x < 0) {
-        dialog_x = 0;
+    if (x < 0) {
+        x = 0;
     }
 
     if (parentPanel->yPosition() <= mouse_y - panel_height - 10) {
@@ -78,7 +78,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
         y = 0;
     }
 
-    this->set_fixed_position(dialog_x, y, 0x154, panel_height);
+    this->set_fixed_position(x, y, 0x154, panel_height);
     this->set_ideal_size(this->max_wid, this->max_hgt);
     this->list->set_fixed_position(10, 10, 0x14A,
                                    line_height * rge_text_font->font_hgt);

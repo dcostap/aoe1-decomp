@@ -21,7 +21,9 @@
 - `include/resource_ids.h` was not changed.
 
 The source cleanup changes names, formatting, and two resource macro uses. It
-does not change types, storage, control flow, calls, or source order.
+does not change types, storage, control flow, calls, or source order. The
+`setup_help` local `x` keeps its baseline spelling because the recovered name
+changed linked relocation order.
 
 ## Scope and evidence
 
@@ -66,7 +68,7 @@ parameter, local, function-static, and register record.
 | `0043E840` | `THelpDialog::THelpDialog` | `parentPanel`, `in_parent_panel`, `help_string_id`, `in_help_page_id`, `x`, `y` | No locals or statics; register `this` in `ecx` | Restored all six parameter names. Kept local `text`, which has no PDB record. |
 | `0043E8E0` | `THelpDialog::THelpDialog` | `parentPanel`, `in_parent_panel`, `in_help_string`, `in_help_page_id`, `x`, `y` | No locals or statics; register `this` in `ecx` | Restored all six parameter names. |
 | `0043E950` | `THelpDialog::~THelpDialog` | None | No locals or statics; register `this` in `ecx` | No rename was supported. |
-| `0043E9E0` | `THelpDialog::setup_help` | `parentPanel`, `in_parent_panel`, `help_string`, `in_help_page_id`, `mouse_x`, `mouse_y` | `rge_text_font` at `-0xc`; `tabList` at `-0x8`; `dialog_x` at `+0xc`; `panel_height` at `+0x8`; register `this` in `ecx` | Restored all six parameters and all four named locals. `dialog_x` and `panel_height` use reused positive stack homes. |
+| `0043E9E0` | `THelpDialog::setup_help` | `parentPanel`, `in_parent_panel`, `help_string`, `in_help_page_id`, `mouse_x`, `mouse_y` | `rge_text_font` at `-0xc`; `tabList` at `-0x8`; `dialog_x` at `+0xc`; `panel_height` at `+0x8`; register `this` in `ecx` | Restored all six parameters and `panel_height`. Kept baseline local `x` for linked relocation stability. Both geometry locals use reused positive stack homes. |
 | `0043ED40` | `THelpDialog::action` | `fromPanel`, `actionIn`, `a1`, `a2` | No locals or statics; register `this` in `ecx` | Restored all four parameter names. Kept local `help_page_id` and `help_topic`; neither has a PDB record. |
 | `0043EE10` | `THelpDialog::handle_mouse_down` | `mouse_button_in`, `x`, `y`, `ctrl_key`, `shift_key` | No locals or statics; register `this` in `ecx` | Restored all five parameter names. `x` and `y` already matched. |
 
@@ -87,6 +89,8 @@ register `this` in `ecx`. It has no handwritten source owner and was not edited.
   `ctrl_key`, and `shift_key`.
 - Existing names without PDB records remain unchanged. These include `text`,
   `line_height`, `y`, `button`, `tab_count`, `help_page_id`, and `help_topic`.
+- The PDB records `dialog_x`, but the source uses the baseline spelling `x`.
+  This is an intentional exception for the linked relocation repair below.
 - The `setup_help` temporary named `help_topic` has no PDB record. The former
   local name `help_string` conflicted with the recovered `help_string` parameter.
   `help_topic` is a new descriptive cleanup name. It adds no declaration.
@@ -111,8 +115,33 @@ passed as the panel height. The `dialog_x` mapping remains supported because
 the x candidates, clamp, and final `set_fixed_position` argument use the value
 stored at `0043EB50` and `0043EB58`.
 
-The source retains `panel_height` and `dialog_x` as declaration mappings. This
-does not claim that their raw PDB offsets equal those entry-relative homes.
+The source retains `panel_height` as a declaration mapping. It uses baseline
+spelling `x` for the PDB `dialog_x` record because the recovered spelling
+changed linked relocation order. This does not claim that either raw PDB offset
+equals its entry-relative assembly home.
+
+## Linked call-order repair
+
+The baseline is commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341`. Its `setup_help` source uses the
+expression `parent->width() + parent->xPosition()` and declares `long x`.
+The cleanup kept the expression equivalent but renamed that local to
+`dialog_x`.
+
+The preserved baseline object at
+`build/source-cleanup-20260915/preparation/baseline-build/dlg_help.obj` binds
+relative relocation offset `246` to `width` and offset `255` to `xPosition`.
+The fresh object at
+`build/source-cleanup-20260915/final-validation/functions-r2/objects/dlg_help.obj`
+binds offset `246` to `xPosition` and offset `255` to `width`. The linked audit
+reports the same reciprocal failure at `0043E9E0`.
+
+The source expression itself is unchanged. A prior reverse-sum probe also kept
+the reciprocal failure. The evidence therefore points to the recovered
+`dialog_x` spelling as the source-form drift. This repair restores only the
+baseline spelling `x` at its existing declaration and uses. It keeps
+`panel_height`, all calls, types, homes, control flow, and expression order.
+No post-repair object or linked validation was run.
 
 ## Resource and constant evidence
 
