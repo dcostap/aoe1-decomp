@@ -45,9 +45,11 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (this->create_text(this, &this->title, 0x258B,
+    if (this->create_text(this, &this->title,
+                          IDS_MULTIPLAYER_CONNECTION_TITLE,
                           0x14, 0x14, 600, 0x1E, 1, 1, 0, 0) &&
-        this->create_text(this, &this->inputTitle, 0x258C,
+        this->create_text(this, &this->inputTitle,
+                          IDS_MULTIPLAYER_NAME_LABEL,
                           0x14, 0x4B, 500, 0x14, 4, 0, 0, 0)) {
         if (Regs->RegGetAscii(1, "Default Age Of Empires Player Name") != 0) {
             strcpy(str, Regs->RegGetAscii(
@@ -59,14 +61,16 @@ TribeMPStartupScreen::TribeMPStartupScreen()
         if (this->create_edit(this, &this->input, str, 0x0F,
                               TEditPanel::FormatText,
                               0x14, 100, 600, 0x17, 0x0B, 1, 0)) {
-            this->input->set_help_info(0x7595, -1);
-            if (this->create_text(this, &this->connectionTitle, 0x258D,
+            this->input->set_help_info(IDS_HELP_MULTIPLAYER_PLAYER_NAME, -1);
+            if (this->create_text(this, &this->connectionTitle,
+                                  IDS_MULTIPLAYER_CONNECTION_TYPE_LABEL,
                                   0x14, 0xA5, 600, 0x14, 4, 0, 0, 0) &&
                 this->create_list(this, &this->list,
                                   0x14, 0xBE, 600, 0xD2, 0x0B) &&
                 this->create_auto_scrollbar(&this->scrollbar, this->list,
                                             0x14)) {
-                this->list->set_help_info(0x7596, 0x25F08);
+                this->list->set_help_info(
+                    IDS_HELP_MULTIPLAYER_CONNECTION_TYPE, 0x25F08);
                 ok_button = &this->okButton;
                 if (this->create_button(this, ok_button, IDS_BUTTON_OK,
                                         0, 0x46, 0x1B8, 0xF0, 0x1E,
@@ -188,10 +192,12 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
         if (fromPanel == this->okButton && actionIn == 1) {
             rge_base_game->setMultiplayerGame(1);
             if (*this->input->get_text() == 0) {
-                this->popupOKDialog(0x258F, "Name Error", 0x1C2, 100);
+                this->popupOKDialog(IDS_ERROR_PLAYER_NAME_REQUIRED,
+                                    "Name Error", 0x1C2, 100);
                 return actionIn;
             } else if (this->list->numberLines() == 0) {
-                this->popupOKDialog(0x2592, "List Error", 0x1C2, 100);
+                this->popupOKDialog(IDS_ERROR_NO_MULTIPLAYER_CONNECTIONS,
+                                    "List Error", 0x1C2, 100);
                 return 1;
             } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
                 rge_base_game->disable_input();
@@ -217,7 +223,8 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
                 panel_system.destroyPanel("MP Startup Screen");
                 return 1;
             } else {
-                this->popupYesNoDialog(0x2593, "Start Zone", 0x1C2, 100);
+                this->popupYesNoDialog(IDS_CONFIRM_START_GAMING_ZONE,
+                                       "Start Zone", 0x1C2, 100);
                 return 1;
             }
         }
@@ -303,7 +310,7 @@ void TribeMPStartupScreen::fillList() {
 
     if (_findfirst(this->browser_exec, &file_info) != -1 &&
         this->zone_exec[0]) {
-        this->list->append_line(0x258E, -1);
+        this->list->append_line(IDS_MULTIPLAYER_GAMING_ZONE, -1);
     }
 
     if (lastServiceNumber != -1) {
