@@ -28,9 +28,8 @@ struct BYTEPoint {
 PathingSystem pathSystem(0xFF, 0xFF, 0, 0, 0);
 PathingSystem aiPathSystem(0xFF, 0xFF, 1, 0, 0);
 
-PathingSystem::PathingSystem(int x, int y, int aiPSInit,
-                             RGE_Map* map, RGE_Game_World* world) {
-    this->aiPS = aiPSInit;
+PathingSystem::PathingSystem(int x, int y, int aiPS, RGE_Map* map, RGE_Game_World* world) {
+    this->aiPS = aiPS;
     this->xSizeValue = -1;
     this->ySizeValue = -1;
     this->currentTerrainException1 = -1;
@@ -58,11 +57,11 @@ PathingSystem::PathingSystem(int x, int y, int aiPSInit,
     this->initMisc(0);
     this->zeroObstructionMap();
 
-    int i = 0;
+    aiPS = 0;
     int* distance = DiagionalDistance;
     do {
-        *distance = (int)(DAT_00570e50 - (float)i * DAT_00570e48 * DAT_00570e4c);
-        ++i;
+        *distance = (int)(DAT_00570e50 - (float)aiPS * DAT_00570e48 * DAT_00570e4c);
+        ++aiPS;
         ++distance;
     } while ((int)distance < (int)(DiagionalDistance + 256));
 }
@@ -483,7 +482,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         if (currentEstimate < MGP_goalTolerance) {
             if (copyPathWhenDone == 1 && this->copyPath(stepSize) == 0) {
                 path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
-                    path->killPath();
+                path->killPath();
                 curObj = this->currentObject;
                 i = 0;
                 while (i < curObj->pathingGroupMembers.number()) {
@@ -922,7 +921,7 @@ path_exhausted:
 
     if (copyPathWhenDone == 1 && this->copyPath(stepSize) == 0) {
         path = unit->storePathInExceptionPath == 0 ? &unit->pathValue : &unit->exceptionPathValue;
-                    path->killPath();
+        path->killPath();
         curObj = this->currentObject;
         i = 0;
         while (i < curObj->pathingGroupMembers.number()) {
@@ -971,8 +970,7 @@ void PathingSystem::incrementCanPaths() {
     ++numCanPathsValue;
 }
 
-int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY,
-                            int checkTerrain) {
+int PathingSystem::passable(RGE_Moving_Object* obj, float newX, float newY, int checkTerrain) {
     this->currentObject = obj;
     this->currentTerrainTable =
         this->worldValue->terrains[obj->master_obj->terrain];
