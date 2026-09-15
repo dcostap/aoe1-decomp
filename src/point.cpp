@@ -53,8 +53,7 @@ XYZ XYZ::operator-(XYZ const& p) const {
     return newP;
 }
 
-void XYZ::rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint,
-                          unsigned char facet) {
+void XYZ::rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint, unsigned char facet) {
     rPoint.xValue = this->xValue;
     rPoint.yValue = this->yValue;
     rPoint.zValue = this->zValue;
