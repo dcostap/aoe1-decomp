@@ -87,7 +87,7 @@ lifetime, unit, sentinel, or compatibility fact that needs a source comment.
 ## Code-generation risks and shared requests
 
 The source change only changes parameter identifiers and gives one unused
-parameter its recovered PDB name. It does not change types, declarations,
+parameter its recovered PDB name. It does not change types, declaration shape,
 storage, expressions, evaluation order, control flow, calls, literals, or
 layout. The output is expected to remain unchanged, but no compiler or object
 comparison was run.
