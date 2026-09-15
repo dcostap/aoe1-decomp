@@ -9,6 +9,13 @@ Do not overwrite that build or discard failed validation output.
 
 ## Started stages
 
+After all eight compilation repairs were integrated, root started fresh validation at `7f1921ab2`:
+
+- `bg-73`: `python tools/game.py build`.
+- `bg-74`: full function sweep with four jobs, output `build/source-cleanup-20260915/final-validation/functions-r2`.
+
+The first failed build and function sweep remain preserved. Matching investigations continue separately.
+
 | Stage | Command | Job | Result |
 | --- | --- | --- | --- |
 | Registry configuration | `python tools/validate_translation_units.py --no-build-checks` | `bg-66` | Passed, exit 0. Configuration only; no compilation or byte proof. |
