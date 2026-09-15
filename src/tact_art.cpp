@@ -13,33 +13,33 @@
 #include <stdlib.h>
 #include <string.h>
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(int id, RGE_Action_Object* object)
-    : RGE_Action(id, object, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x6B;
 }
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* object,
-                                               RGE_Task* task,
-                                               RGE_Static_Object* target)
-    : RGE_Action(object, 1) {
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
+                                               RGE_Task* task_in,
+                                               RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
     this->action_type = 0x6B;
-    this->task = task;
-    this->target_obj = target;
+    this->task = task_in;
+    this->target_obj = target_obj_in;
 }
 
-TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* file,
-                                               RGE_Task* task,
+TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* obj_in,
+                                               RGE_Task* task_in,
                                                float x, float y, float z)
-    : RGE_Action(file, 1) {
-    this->task = task;
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 0x6B;
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
 }
 
-void TRIBE_Action_Artifact::first_in_stack(unsigned char value) {
-    if (value == 0) {
+void TRIBE_Action_Artifact::first_in_stack(unsigned char first_time) {
+    if (first_time == 0) {
         return;
     }
     if (this->target_obj != 0) {
@@ -139,7 +139,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
 
-    short map_x = (short)(obj->world_x - DAT_00574f10 - master->radius_x);
+    short x1 = (short)(obj->world_x - DAT_00574f10 - master->radius_x);
     short map_y = (short)(obj->world_y - DAT_00574f10 - master->radius_y);
     short x0 = (short)(master->radius_x + obj->world_x - DAT_00574f14);
     short y0 = (short)(master->radius_y + obj->world_y - DAT_00574f14);
@@ -152,8 +152,8 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
         memset(player_list, 0, player_num);
     }
 
-    if (map_x < 0) {
-        map_x = 0;
+    if (x1 < 0) {
+        x1 = 0;
     }
     if (map_y < 0) {
         map_y = 0;
@@ -166,7 +166,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     }
 
     for (short y = map_y; y <= y0; ++y) {
-        for (short x = map_x; x <= x0; ++x) {
+        for (short x = x1; x <= x0; ++x) {
             RGE_Object_Node* node = map->map_row_offset[y][x].objects.list;
             while (node != 0) {
                 RGE_Static_Object* entity = node->node;
@@ -204,7 +204,7 @@ int TRIBE_Action_Artifact::stop() {
     return 1;
 }
 
-int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, float z) {
+int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -212,16 +212,16 @@ int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, flo
     return 1;
 }
 
-int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
-    if (param_1 != 0) {
-        this->target_obj = param_1;
+int TRIBE_Action_Artifact::work(RGE_Static_Object* obj_in, float x, float y, float z) {
+    if (obj_in != 0) {
+        this->target_obj = obj_in;
         this->set_state(5);
         return 1;
     }
 
-    this->target_x = param_2;
-    this->target_y = param_3;
-    this->target_z = param_4;
+    this->target_x = x;
+    this->target_y = y;
+    this->target_z = z;
     this->set_state(4);
     return 1;
 }
