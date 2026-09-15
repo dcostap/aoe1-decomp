@@ -6,17 +6,18 @@
 - Branch: `cleanup/staging-20260915-239`.
 - Report: `decomp_notes/source_cleanup/wave04/getdxver.md`.
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`.
-- Final source-cleanup commit: `6ba3b41613f37ac7e918aa5df166ab413b4fab3a`.
+- Final source-cleanup commit: `4c93f670b298833bf3c804f46fa2c551b77cf747`.
 - Base source blob SHA-1: `562d4736832c2c9b322c4d1268cdb9ee99076fb6`.
-- Final source blob SHA-1: `103144ba9e3924f8aa0666d588def3fc98290960`.
+- Final source blob SHA-1: `b25076a6bc37fb03ed6ff1b0aa5a3c09e4ac8fe9`.
 - Base source SHA256: `596d3977bffbd32892873925aa32ac3119c197ee2682b1bbe0fc6b382652cc45`.
-- Final source SHA256: `e469e7bb7d6c43db40eb00125d717feca14c6abafa146066dab5c69b134aacb1`.
+- Final source SHA256: `1c9098d729a0c48a7f1fb3d14daf4a63bc8b417ac236edb62b2e8519cfa76047`.
 - Changed files:
   - `src/getdxver.cpp`.
   - `decomp_notes/source_cleanup/wave04/getdxver.md`.
 
-The source commit contains only the assigned source file. The report is the
-second assigned-file commit.
+The correction commit contains only the assigned source file. The report
+update is a separate assigned-file commit. Earlier commits were not amended
+or removed.
 
 ## Scope and evidence
 
@@ -105,8 +106,9 @@ function, class, member, global, ABI name, or decorated symbol changed.
 I read the pinned VC5 SDK declarations before replacing API literals:
 
 - `C:/Program Files (x86)/DevStudio/VC/Include/winbase.h:7297-7304` defines
-  `_OSVERSIONINFOA`. Its five `DWORD` fields and 128-byte `CHAR` array give
-  the existing 148-byte (`0x94`) size. The source now uses `sizeof(osVer)`.
+  `_OSVERSIONINFOA`. Its five `DWORD` fields and 128-byte `CHAR` array prove
+  that `0x94` fits the structure. They do not prove the original source form.
+  The source retains the explicit `osVer.dwOSVersionInfoSize = 0x94`.
 - `C:/Program Files (x86)/DevStudio/VC/Include/winbase.h:7328-7329` defines
   `VER_PLATFORM_WIN32_WINDOWS` as `1` and `VER_PLATFORM_WIN32_NT` as `2`.
   The source now uses those names for the platform test and output.
@@ -123,8 +125,8 @@ I read the pinned VC5 SDK declarations before replacing API literals:
   the version-information APIs used by `IsDPlay501a`.
 
 The SDK names preserve the original numeric values at these assignments and
-calls. `sizeof(osVer)` remains the same compile-time value as `0x94`.
-No new shared constant or header mapping is needed.
+calls. The explicit `0x94` remains unchanged.
+No new shared constant or resource mapping is needed.
 
 ## Resources and DLL lookup
 
@@ -163,13 +165,16 @@ order, casts, scopes, storage, calls, and known failure paths.
 The identifier changes affect debug names only. They do not change types,
 storage, scopes, evaluation order, calls, boundaries, or decorated symbols.
 The SDK macros and enum value replace literals with the same 32-bit values.
-The `sizeof(osVer)` expression is a compile-time 148-byte value. No layout,
-vtable, calling convention, public interface, or resource data changed.
+The explicit `0x94` remains unchanged. No layout, vtable, calling convention,
+public interface, or resource data changed.
 The source was not compiled, so generated-code stability remains unverified.
 
 ## Shared requests and unresolved questions
 
-- Header request: none. `include/getdxver.h` remains unchanged.
+- Header request: the owner of `include/getdxver.h` should use
+  `void GetDXVersion(unsigned long* pdwDXVersion, unsigned long* pdwDXPlatform);`.
+  The PDB records these names at parameter homes `+0x4` and `+0x8`. This
+  changes declaration names only. The worker did not edit the header.
 - Resource mapping request: none.
 - The PDB records legacy `IDirectDrawSurface3*` and `IDirectPlay3*` homes,
   while the current source uses `IUnknown*` because the pinned headers do not
