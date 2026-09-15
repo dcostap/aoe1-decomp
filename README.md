@@ -72,6 +72,9 @@ Run `python tools/behavior_recovery.py --help` for preparation and collection co
 
 ## Common commands
 
+See [project testing](docs/testing.md) for the complete manual validation procedure and each stage's limits.
+There is no universal test command. Passing Python tests alone does not validate function claims or gameplay.
+
 Show the current project state:
 
 ```text

@@ -94,7 +94,8 @@ Use this explicit diagnostic for an existing v1 recording that needs the seriali
 game.cmd replay-original config/harness/human-candidate-20260915.json --runs 1 --upgrade-v1-to-v2
 ```
 
-The command first checks the complete v1 starting contract against the frozen v1 control template.
+The command checks the v1 starting contract against the frozen v1 control template.
+The asset comparison excludes unused saves, as described below.
 It then uses the v2 scheduler without changing the recording.
 The report records both policies, both template hashes, the upgrade rule, and the recording hash.
 It also records `same_policy_replay` as false.
