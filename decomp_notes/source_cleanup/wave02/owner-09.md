@@ -30,11 +30,12 @@ Owner header commit: `bbda14d8cb5026148b5d6450a6f018affda5df76`.
 
 ## Name mappings
 
-All listed recovered names come from procedure-scoped PDB records.
+The recovered-name bullets below use procedure-scoped PDB records.
+The separate descriptive-name bullet identifies invented cleanup names.
 
 - `ani_obj`: restored `tobj`, `obj_owner`, `infile`, `gworld`, `outfile`, `obj`, `work_obj`, `action_type`, `attack_flag`, and `caller`.
 - `dpl_obj`: restored parameter names and the mixed-style names `theObj`, `UMV_addr`, `Unified_Map_Value`, `TLast_Map_Value`, and `TObject_ids`.
-- `dpl_obj`: added clear local names such as `new_node`, `map_addr`, `map_value`, `check_value`, and `owner_id`.
+- `dpl_obj` invented descriptive names: `new_node`, `map_addr`, `map_value`, `check_value`, and `owner_id`.
 - `misl_obj`: restored `tobj`, `obj_owner`, `infile`, `gworld`, `outfile`, `launcher`, `target`, `in_range`, `delta`, `x1`, `x2`, and `check_list`.
 - `mst_play`: restored file names, `obj_type`, and the safe `temp_*` mappings in the text constructor.
 - `obj_list`: restored all recorded drawing, search, state, file, distance, and result names.
@@ -67,7 +68,8 @@ The source review found identifier and formatting changes only. It found no new 
 - `ani_obj`: the PDB does not name five existing `update` locals.
 - `dpl_obj`: `save` has reused `outfile` and `long_val` storage roles. The source mapping remains unchanged.
 - `dpl_obj`: the PDB `x` record in `perform_doppleganger_checks` uses reused storage. The loop name remains `i`.
-- `misl_obj`: several clear traversal locals have no PDB names. The `x2` stack home also has reuse evidence.
+- `misl_obj`: several clear traversal locals have no PDB names. The `x2` stack home holds the collision-list pointer.
+- `misl_obj`: the upper-y value remains `max_y` because no reliable declaration evidence names it.
 - `mst_play`: `finish_init` has an `obj_type` stack record with a conflicting source type. The existing `int temp` remains.
 - `obj_list`: many traversal and sorting locals have no PDB names. Existing descriptive names remain.
 - `tm_co_ob`: `temp_flag` and `temp_button_location` overlap parameter homes. The unusual existing aliases remain.

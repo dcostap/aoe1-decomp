@@ -19,8 +19,7 @@ public:
     short number_of_objects;
 
 protected:
-    virtual void load(unsigned char object_type, int infile,
-                      RGE_Game_World* world);
+    virtual void load(unsigned char object_type, int infile, RGE_Game_World* world);
     void invert();
 
 public:
@@ -29,12 +28,9 @@ public:
     void removeAllObjects();
     RGE_Object_Node* add_node(RGE_Static_Object* obj);
     void remove_node(RGE_Static_Object* obj, RGE_Object_Node* node);
-    void draw(TDrawArea* render_area, short x, short y,
-              unsigned char fogged_tile);
-    void shadow_draw(TDrawArea* render_area, short x, short y,
-                     unsigned char flag, unsigned char fog_flag);
-    void normal_draw(TDrawArea* render_area, short x, short y,
-                     unsigned char fog_flag);
+    void draw(TDrawArea* render_area, short x, short y, unsigned char fogged_tile);
+    void shadow_draw(TDrawArea* render_area, short x, short y, unsigned char flag, unsigned char fog_flag);
+    void normal_draw(TDrawArea* render_area, short x, short y, unsigned char fog_flag);
     void update();
     RGE_Object_Node* sort();
     RGE_Static_Object* find_by_group(long id);

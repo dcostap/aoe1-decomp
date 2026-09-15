@@ -10,15 +10,12 @@ class RGE_Sound;
 class RGE_Master_Player {
 public:
     virtual ~RGE_Master_Player();
-    virtual void finish_init(int infile, RGE_Sprite** sprites,
-                             RGE_Sound** sounds);
-    virtual void load_master_object(int infile, unsigned char obj_type,
-                                    RGE_Sprite** sprites, RGE_Sound** sounds,
-                                    short index);
+    virtual void finish_init(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    virtual void load_master_object(int infile, unsigned char obj_type, RGE_Sprite** sprites,
+                                    RGE_Sound** sounds, short index);
     virtual void create_master_object_space(short count);
-    virtual void load_object(FILE* infile, unsigned char obj_type,
-                             RGE_Sprite** sprites, RGE_Sound** sounds,
-                             short index);
+    virtual void load_object(FILE* infile, unsigned char obj_type, RGE_Sprite** sprites,
+                             RGE_Sound** sounds, short index);
     virtual void save(int outfile);
 
     char name[20];
