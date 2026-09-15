@@ -12,9 +12,7 @@ BuildItem::BuildItem()
     terrainAdjacencyValue[1] = -1;
 }
 
-BuildItem::BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name,
-                     float x, float y, float z, int tSet, int tOne, int tTwo,
-                     int pEle)
+BuildItem::BuildItem(int bc, int ti, int bi, int n, int p, int bf, char* name, float x, float y, float z, int tSet, int tOne, int tTwo, int pEle)
     : BaseItem(ti, -1, bi, name, -1.0f, -1.0f, -1.0f, x, y, z),
       next(0), prev(0), buildCategoryValue(bc), numberValue(n),
       priorityValue(p), progressValue(0), builtValue(0),
