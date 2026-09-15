@@ -172,6 +172,12 @@ The worker reports all 15 function sections equal to the preserved baseline afte
 Root started fresh full build `bg-89` and complete function sweep `bg-90` after integration.
 The sweep uses `build/source-cleanup-20260915/final-validation/functions-r3` and preserves earlier failures.
 Full baseline code/data comparison, linked checks, ownership, tests, and runtime validation remain pending.
+Fresh build `bg-89` passed: 226/226 sources, 1/1 assembly, zero unresolved symbols, and zero link errors.
+Build: `build/executable/user/20260915T231219030657Z/20260915T231219281343Z`.
+Runtime: `build/runtime/rebuilt-20260915T231427209558Z`.
+Root started linked dependency audit `bg-91` in `final-validation/dependencies-r3` against this build.
+Root started full pytest `bg-92` with `AOE_DEPENDENCY_BUILD` set to this build and output `final-validation/tests-r3.xml`.
+Successful linking alone does not establish baseline equality or gameplay correctness.
 
 ## Fresh linked dependency failures
 
