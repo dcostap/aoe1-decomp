@@ -14,6 +14,7 @@ This worker changed only the assigned source and report.
 No header change is needed.
 
 The source now uses 1TBS function braces.
+The `set_active` `else` keeps its separate-line placement because the repair restores a baseline token.
 The cleanup restores procedure-scoped PDB parameter names.
 It replaces the proven `AlignWordwrap` literal.
 It does not change control flow, storage, casts, calls, or layouts.
@@ -59,6 +60,28 @@ The baseline executable hash is `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee
 The requested reunification packet path was absent:
 `C:/Projects/my_decomps/aoe1_attempt3/build/source_reunification/packet/Pnl_txt_cpp`.
 The inventory packets supplied the original procedure evidence instead.
+
+## Post-cleanup validation repair
+
+The integrated root source and owner integration source matched before repair.
+Their SHA256 was `de0816b03e3f021267d2b97174190cddd7fb7f8c69664d163edd00548989d486`.
+The integrated root head was `44ce4a0da0e0e08bfef4f85fcdf23e04814b98ec`.
+The owner group head was `315dd545ea22c89c4bfedff7da6c8d69a7b1b93a`.
+
+The fresh build report was:
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+Its first diagnostic was `Pnl_txt.cpp(572) error C2143: missing ';' before '}'`.
+The later diagnostics were cascade errors.
+
+I compared the integrated source with pre-cleanup commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341`.
+At `src/Pnl_txt.cpp:568`, cleanup changed the baseline `else {` to `} else {`.
+The extra `}` closed the outer conditional before `else` and caused the syntax error.
+The repair removed only that extra `}`.
+The complete source diff was inspected for the same token-loss pattern.
+No other missing or extra baseline token was found.
+
+The repair did not run compilation, builds, audits, matching checks, tests, or the game.
 
 ## Every-function PDB coverage
 
@@ -289,8 +312,5 @@ No shared resource ID declaration is needed.
 
 I ran Git diff review and `git diff --check`.
 I inspected all 65 selected procedure packets and all 65 source-owner PDB records.
-I did not run compilation.
-I did not run matching checks.
-I did not run audits.
-I did not run tests.
-I did not run the game.
+The post-cleanup repair only inspected the failed build report and the complete source diff.
+No post-repair compilation, build, matching check, audit, test, or game run was performed.
