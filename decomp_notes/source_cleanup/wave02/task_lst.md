@@ -5,7 +5,8 @@
 - Module: `src/task_lst.cpp`
 - Branch: `cleanup/staging-20260915-33`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `11b723ce64894ffcbcfc43905ed9ea3a6640d51d`
+- Initial source commit: `11b723ce64894ffcbcfc43905ed9ea3a6640d51d`
+- Final source commit: `48d3d4fe00f58ba29df464a1317bd6b2fd772406`
 - Changed files: `src/task_lst.cpp` and this report.
 - Assigned header: `include/task_lst.h` (read only; not changed).
 - Registry: `config/functions/src/task_lst.cpp.json`; build flags `gx`.
@@ -38,6 +39,19 @@ Its SHA-256 is
 The source restores PDB parameter names and applies 1TBS function braces.
 The changes keep types, declarations, scopes, storage, statements, calls,
 literals, casts, evaluation order, and source order unchanged.
+
+## Root correction
+
+The source correction commit `48d3d4fe00f58ba29df464a1317bd6b2fd772406`
+formats `get_target_task` as a compact two-line signature. Its continuation
+aligns with the first parameter. It keeps `check_task` on one readable line.
+The held-attribute comment is now exactly:
+
+```cpp
+// Reject a missing held attribute or a non-positive amount.
+```
+
+No comparison, type, scope, expression, or behavior changed.
 
 - `RGE_Task_List::copy`: `src` became the recovered PDB name `other_list`.
 - Binary `RGE_Task_List::load`: `handle` became the recovered PDB name
