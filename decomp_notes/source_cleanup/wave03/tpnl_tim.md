@@ -4,7 +4,7 @@
 
 - Module: `src/tpnl_tim.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source/resource mapping commit: pending
+- Source/resource mapping commit: `5aca07cc7ac08068cbfa5a03a866213081dff99b`
 - Root approval commit: `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`
 - Worker header import commit: `c76e13f7e04debf152a6342fe4b435876f4a6130`
 - Changed files:
