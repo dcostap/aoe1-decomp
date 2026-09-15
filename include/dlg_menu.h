@@ -11,12 +11,11 @@ class TribeMenuDialog : public TDialogPanel {
 public:
     TButtonPanel* button[11];
 
-    TribeMenuDialog(TScreenPanel* parent);
+    TribeMenuDialog(TScreenPanel* parentPanel);
     virtual ~TribeMenuDialog();
 
 protected:
-    virtual long action(TPanel* panel, long id, unsigned long param3,
-                        unsigned long param4);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char dlg_menu_dialog_size_check[

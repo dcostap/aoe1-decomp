@@ -16,9 +16,10 @@ public:
     TTextPanel* title;
     TButtonPanel* buttons[7];
 
-    TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed*);
+    TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed* scenario_editor_in);
     virtual ~TRIBE_Dialog_Sed_Menu();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1,
+                        unsigned long action_val2);
 };
 
 typedef char dlg_sedm_dialog_size_check[

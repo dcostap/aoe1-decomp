@@ -42,9 +42,9 @@ public:
     long newMusicVolume;
     long newSoundVolume;
 
-    TribeConfigDialog(Mode, TScreenPanel*);
+    TribeConfigDialog(Mode m, TScreenPanel* parentPanel);
     virtual ~TribeConfigDialog();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char dlg_conf_dialog_size_check[
