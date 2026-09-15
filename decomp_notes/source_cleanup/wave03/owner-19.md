@@ -175,35 +175,55 @@ Commit `effb2bff93f0ffe3e76fcb5b66388c543526fdf4` updates:
 The commit adds procedure-scoped PDB parameter names only.
 It changes no type, order, qualifier, virtual slot, layout, or symbol.
 
-## Root-owned resource requests
+## Root resource approval and correction integration
 
-The source keeps all requested IDs numeric until root reviews shared definitions.
-Each module report records the DLL paths, full hashes, language, result status, lookup path, and name provenance.
+Root approved all ten resource names in commit
+`8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`.
+Commit `7323990a644362c1f77c23367b1406be97e264a9` imports only
+`include/resource_ids.h` from that root state. It does not import the root ledger.
 
-- `0x232A`: proposed `IDS_SELECT_OBJECT_TITLE`
-- `0x1D4ED`: proposed `IDS_HELP_FOOD`
-- `0x1D4EE`: proposed `IDS_HELP_WOOD`
-- `0x1D4EF`: proposed `IDS_HELP_GOLD`
-- `0x1D4F0`: proposed `IDS_HELP_STONE`
-- `0x2B2A`: proposed `IDS_POPULATION_PREFIX`
-- `0x2C25`: proposed `IDS_WONDER_YEARS_FORMAT`
-- `0x2C26`: proposed `IDS_ARTIFACTS_YEARS_FORMAT`
-- `0x2C27`: proposed `IDS_RUINS_YEARS_FORMAT`
+The affected workers applied these reviewed names:
 
-Two modules propose different names for `0x2C24`:
+- `0x232A`: `IDS_SELECT_OBJECT_TITLE`
+- `0x1D4ED`: `IDS_HELP_INVENTORY_FOOD_FORMAT`
+- `0x1D4EE`: `IDS_HELP_INVENTORY_WOOD_FORMAT`
+- `0x1D4EF`: `IDS_HELP_INVENTORY_GOLD_FORMAT`
+- `0x1D4F0`: `IDS_HELP_INVENTORY_STONE_FORMAT`
+- `0x2B2A`: `IDS_POPULATION_PREFIX`
+- `0x2C24`: `IDS_COUNTDOWN_YEARS_FORMAT`
+- `0x2C25`: `IDS_WONDER_YEARS_FORMAT`
+- `0x2C26`: `IDS_ARTIFACTS_YEARS_FORMAT`
+- `0x2C27`: `IDS_RUINS_YEARS_FORMAT`
 
-- `rpnl_tim` proposes `IDS_COUNTDOWN_TIMER_FORMAT` for a per-player countdown line.
-- `tpnl_tim` proposes `IDS_YEARS_FORMAT` for the default year display.
+The worker reports distinguish the root approval from each worker header import.
+They retain per-DLL hashes, language, payload status, and lookup paths.
+The inventory help payloads are missing in all reviewed DLLs.
+Their assigned call sites still prove the inventory format roles.
+The obsolete `src/dlg_dip.cpp` citation was removed.
 
-Both uses resolve to `%d Years` through the same expansion-first and base-fallback lookup.
-Root must select one shared name or retain the literal.
+Correction worker and integration history:
 
-No other cross-group or root-owned header request remains.
+- `rpnl_tbx` worker commits: `5f8c66e73c070e5356afaf918d80a4086f4a8ce9`, `e0bcde872fabd4bf789f442cb3b77916fac027ef`
+  - Integrated as `7d6192bcac1b5f78fdd7405763d420a7e4513de7`, `1f4e54753a2f7d3a1946ca5385677a4f0825171f`
+- `rpnl_tim` worker commits: `41efa7d4c061352bac05eaf0941b28fc047f67f8`, `b3a58115358d12eee737e333a237657653bfc9ff`
+  - Integrated as `951149a763ebf9771b0ceb34a48daf53226cd303`, `0a2e897ab603be8745e4b9fae0006164444cef38`
+- `tpnl_inv` worker commits: `769862964a5a4b0a3fd7e9d1a791df669c2e7b71`, `4b7416e02327df9bed113518e1b860de0f606b37`
+  - Integrated as `c3d0730d07a4ff37215713fe954717198e41c6c1`, `0ac545e427995451656f40781c6086d9017fe5d3`
+- `tpnl_pop` worker commits: `28f7534d0e03f68b30e85ec239fb0f1fc443bca9`, `0f5d7767f9adff82c1ad8c80ba0bf2fad48a20d2`
+  - Integrated as `d55365d1223b28d01f9b39c46e45b2e761ac2543`, `fb6c55abc7337b3c262a9c79a4dd0550f79245f7`
+- `tpnl_tim` worker commits: `5aca07cc7ac08068cbfa5a03a866213081dff99b`, `c6864192366a2bf43a2ea1d4fe8552561dd237b7`
+  - Integrated as `5136b1240d58598576c13b192f41f888f554e755`, `cbdba76ffaa1093fc2964573da9f26d0e1edc9f4`
+- `spnl_obj` worker commits: `cd11117b8b08172a17c8af3a35b4a3c75dd7a1d1`, `f5d26b237acda3c9b00bfff449964fdb3e46ffdf`, `20321ac6d95eba980771574aa374681bb92a61f4`
+  - Integrated as `3f8ee3479604ca5fa37da3dc31beea445aa41736`, `590326164a70858a4a9b4f2694943a334fe6ebab`, `3ffbba41971513ff21ac2939327c83673dc9745a`
+
+The `spnl_obj` correction changes only indentation in three `draw_item` calls.
+No resource or root-owned request remains.
 
 ## Review and validation status
 
-The final combined diff contains only the eight sources, eight reports, eight owned headers, and this ledger.
-`git diff --check` passed before this ledger commit.
+The final combined diff contains the eight sources, eight reports, eight owned headers,
+the imported root-owned resource header, and this ledger.
+`git diff --check` passed before the correction ledger commit.
 I reviewed the complete source and header changes against the common base.
 
 Compilation, matching checks, audits, tests, builds, and games were not run.
