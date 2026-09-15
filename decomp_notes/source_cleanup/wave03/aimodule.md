@@ -218,18 +218,15 @@ The same transcript records this exact removal command:
 rm -rf -- inventory orig build/asm build/validation/wave03-aimodule-functions build/validation/wave03-aimodule-functions-rerun
 ```
 
-After setup, `inventory` and `orig` were observed as ordinary directories.
+After setup, tools observed `inventory` and `orig` as ordinary directories.
 `ls -ld` and `stat` reported directory entries. Python reported
-`is_symlink=False`. `du` reported about 130 MB for `inventory` and 161 MB for
-`orig`, and directory listings showed copied file trees. This evidence supports
-copied directories, not symbolic links. It does not prove that every child
-was a copy. It does not include a Windows reparse-point check, so junction
-status is unknown.
+`is_symlink=False`. Windows junction, other reparse-point, and child-link
+types are unknown. No copy type or child type is inferred.
 
 For the observed ordinary-directory type, `rm -rf --` recursively removed the
-local directory trees named by the command. The evidence does not prove
-junction behavior or the link type of any child. No external-target traversal
-claim is made. The main-root evidence paths remained present in the later
+local directory trees named by the command. Junction, other reparse-point, and
+child-link traversal behavior is unknown. No external-target traversal claim
+is made. The main-root evidence paths remained present in the later
 transcript, but byte-level preservation is recorded separately as unknown.
 
 No path is removed by this incident-documentation update. The surviving
