@@ -18,8 +18,7 @@
 extern int confirmed_close;
 
 TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
-    : TScreenPanel("Achievements Screen")
-{
+    : TScreenPanel("Achievements Screen") {
     char info_file[260];
     char str[100];
     TPanel* tabList[8];
