@@ -130,40 +130,80 @@ BuildAIModule::~BuildAIModule() {
 
 int BuildAIModule::save(int outfile) {
     char tempString[257];
-    int tempInt; float tempFloat; int tempBOOL; unsigned char tempBYTE;
+    int tempInt;
+    float tempFloat;
+    int tempBOOL;
+    unsigned char tempBYTE;
     rge_write(outfile, &this->buildListLengthValue, 4);
-    strcpy(tempString, this->buildListNameValue); tempInt = strlen(tempString); rge_write(outfile, &tempInt, 4); rge_write(outfile, tempString, strlen(tempString));
-    strcpy(tempString, this->lastBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(outfile, &tempInt, 4); rge_write(outfile, tempString, strlen(tempString));
-    strcpy(tempString, this->currentBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(outfile, &tempInt, 4); rge_write(outfile, tempString, strlen(tempString));
-    strcpy(tempString, this->nextBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(outfile, &tempInt, 4); rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->buildListNameValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->lastBuildItemRequestedValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->currentBuildItemRequestedValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
+    strcpy(tempString, this->nextBuildItemRequestedValue);
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
     rge_write(outfile, &this->numberItemsIntoBuildListValue, 4);
     BuildItem* item = this->buildList.next;
     BuildItem* end = &this->buildList;
     while (item != end) {
         if (item == 0) return 1;
-        strcpy(tempString, item->name()); tempInt = strlen(tempString); rge_write(outfile, &tempInt, 4); rge_write(outfile, tempString, strlen(tempString));
-        tempInt = item->typeID(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->gameID(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->uniqueID(); rge_write(outfile, &tempInt, 4);
-        tempFloat = item->x(); rge_write(outfile, &tempFloat, 4);
-        tempFloat = item->y(); rge_write(outfile, &tempFloat, 4);
-        tempFloat = item->z(); rge_write(outfile, &tempFloat, 4);
-        tempFloat = item->xSize(); rge_write(outfile, &tempFloat, 4);
-        tempFloat = item->ySize(); rge_write(outfile, &tempFloat, 4);
-        tempFloat = item->zSize(); rge_write(outfile, &tempFloat, 4);
-        tempBOOL = item->skip(); rge_write(outfile, &tempBOOL, 4);
-        tempInt = item->buildCategory(); rge_write(outfile, &tempInt, 4);
-        tempBOOL = item->inProgress(); rge_write(outfile, &tempBOOL, 4);
-        tempBOOL = item->built(); rge_write(outfile, &tempBOOL, 4);
-        tempInt = item->buildAttempts(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->buildFrom(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->terrainSet(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->terrainAdjacency(1); rge_write(outfile, &tempInt, 4);
-        tempInt = item->terrainAdjacency(2); rge_write(outfile, &tempInt, 4);
-        tempBOOL = item->placeOnElevation(); rge_write(outfile, &tempBOOL, 4);
-        tempInt = item->numberBuilds(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->buildCap(); rge_write(outfile, &tempInt, 4);
-        tempInt = item->skipCycles(); rge_write(outfile, &tempInt, 4);
+        strcpy(tempString, item->name());
+        tempInt = strlen(tempString);
+        rge_write(outfile, &tempInt, 4);
+        rge_write(outfile, tempString, strlen(tempString));
+        tempInt = item->typeID();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->gameID();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->uniqueID();
+        rge_write(outfile, &tempInt, 4);
+        tempFloat = item->x();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->y();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->z();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->xSize();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->ySize();
+        rge_write(outfile, &tempFloat, 4);
+        tempFloat = item->zSize();
+        rge_write(outfile, &tempFloat, 4);
+        tempBOOL = item->skip();
+        rge_write(outfile, &tempBOOL, 4);
+        tempInt = item->buildCategory();
+        rge_write(outfile, &tempInt, 4);
+        tempBOOL = item->inProgress();
+        rge_write(outfile, &tempBOOL, 4);
+        tempBOOL = item->built();
+        rge_write(outfile, &tempBOOL, 4);
+        tempInt = item->buildAttempts();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->buildFrom();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->terrainSet();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->terrainAdjacency(1);
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->terrainAdjacency(2);
+        rge_write(outfile, &tempInt, 4);
+        tempBOOL = item->placeOnElevation();
+        rge_write(outfile, &tempBOOL, 4);
+        tempInt = item->numberBuilds();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->buildCap();
+        rge_write(outfile, &tempInt, 4);
+        tempInt = item->skipCycles();
+        rge_write(outfile, &tempInt, 4);
         tempBYTE = item->permanentSkip();
         rge_write(outfile, &tempBYTE, 1);
         item = (BuildItem*)item->next;
@@ -350,9 +390,7 @@ int BuildAIModule::haveBuildList() const {
 static const char s_SetGatherPercentage[] = "SetGatherPercentage";
 static const char s_AddedBuildListItem[] = "AddedBuildListItem";
 
-int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity,
-                              int buildCategory, int buildFrom, int buildCap,
-                              int insertAfterItemNumber) {
+int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int buildCategory, int buildFrom, int buildCap, int insertAfterItemNumber) {
     if (insertAfterItemNumber > this->buildListLengthValue) {
         return 0;
     }
