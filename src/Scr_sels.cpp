@@ -48,7 +48,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (this->create_text(this, &this->title, 0x25FA,
+    if (this->create_text(this, &this->title, IDS_SCENARIO_SELECTION_TITLE,
                           0x14, 0x0A, 0x258, 0x1E, 1, 1, 0, 0)) {
         this->scenarioListX = 0x14;
         this->scenarioListY = 0x46;
@@ -60,18 +60,19 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
             this->scenarioList->set_second_column_pos(
                 ((this->scenarioListWidth - 0x3C) * this->pnl_wid) /
                 this->ideal_width);
-            this->scenarioList->set_text(0x25FD);
+            this->scenarioList->set_text(IDS_SCENARIO_LIST_LOADING);
 
             if (this->create_auto_scrollbar(&this->scenarioScrollbar,
                                             this->scenarioList, 0x14)) {
                 this->scenarioScrollbar->set_help_info(-1, -1);
 
-                if (this->create_text(this, &this->scenarioTitle, 0x25FE,
+                if (this->create_text(this, &this->scenarioTitle,
+                                      IDS_SCENARIO_LIST_TITLE,
                                       this->scenarioListX,
                                       this->scenarioListY - 0x14,
                                       0x12C, 0x14, 4, 0, 0, 0)) {
                     if (this->create_text(this, &this->scenarioPlayersTitle,
-                                          0x25FF,
+                                          IDS_SCENARIO_PLAYERS_TITLE,
                                           this->scenarioListWidth - 0xDC +
                                               this->scenarioListX,
                                           this->scenarioListY - 0x14,
@@ -87,7 +88,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                         this->missionTextHeight = 0x3C;
 
                         if (this->create_text(this, &this->missionTitle,
-                                              0x2600, this->missionTextX,
+                                              IDS_SCENARIO_INSTRUCTIONS_TITLE,
+                                              this->missionTextX,
                                               this->missionTextY - 0x14,
                                               0x190, 0x14, 4, 0, 0, 0)) {
                             if (this->create_text(
