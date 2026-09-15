@@ -150,13 +150,23 @@ lifetime, cast, evaluation order, or call target changed.
 resource extraction was needed. No `inspect_pe_strings.py` lookup was run.
 There are no resource-ID mappings or header requests.
 
-The constructor comment now records the proven original lookup defect:
-`0050D6DC` and `0050D715` load the two serialized player IDs, while the calls
-at `0050D704` and `0050D73B` both index `players[target_player_id]`. The second
-lookup ignores `this_player_id`. The `add_attack` comment records that the
+The constructor comment records the proven original lookup defect:
+`0050D6DC` and `0050D715` load the two serialized player IDs. The exact source
+comment is:
+`//! @bug The second lookup tests this_player_id but indexes target_player_id.`
+Thus, `this_player_id` controls the second null/lookup branch, while the lookup
+indexes `players[target_player_id]`. The `add_attack` comment records that the
 calls at `0050DE28` and `0050DE3B` both pass `obj` to `find_id`, although the
 second call supplies `target_obj_id`. These comments describe preserved
 behavior. They do not claim a repair.
+
+### Reviewer correction history
+
+The initial constructor comment incorrectly said that `this_player_id` was
+ignored. Review corrected it to state that `this_player_id` controls the
+branch, while `target_player_id` supplies the player index. The source now
+uses the exact corrected wording requested by review. No executable statement
+changed.
 
 The source also uses 1TBS function braces and clearer signature wrapping. It
 keeps source order and executable statements in place.

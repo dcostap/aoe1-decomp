@@ -47,7 +47,7 @@ RGE_Timeline::RGE_Timeline(int infile, RGE_Game_World* gworld) {
             }
 
             if (this_player_id >= 0 && this->world != 0) {
-                //! @bug Both lookups use target_player_id; this_player_id is ignored here.
+                //! @bug The second lookup tests this_player_id but indexes target_player_id.
                 entry->target_obj = this->world->players[target_player_id]->objects->find_by_id(entry->target_obj_id);
             } else {
                 entry->target_obj = 0;
