@@ -4,15 +4,19 @@
 
 - Module: `src/act_misl.cpp`
 - Base commit from `git rev-parse`: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source commit from `git rev-parse`: `e535b4922722406b64cf3c162db65c97c27971e9`
+- Initial source commit from `git rev-parse`: `e535b4922722406b64cf3c162db65c97c27971e9`
+- Initial report commit from `git rev-parse`: `acddad1262218edaf66490f7dfcb1c3e5242c12f`
+- Style correction commit from `git rev-parse`: `93b7aa2b67535504d12e1a24609cbe1b0d81962b`
+- Final source commit from `git rev-parse`: `93b7aa2b67535504d12e1a24609cbe1b0d81962b`
 - Changed files: `src/act_misl.cpp`; this report.
 - Header request only: `include/act_misl.h` remains unchanged.
 - Registry: `config/functions/src/act_misl.cpp.json`, build flags `gx`.
 - Branch: `cleanup/staging-20260915-10`
-- Source SHA-256 after cleanup: `0fd7108ba40028312d4e1484451fd0ad850e5b0ad5ade4b0457fece261613219`.
+- Source SHA-256 after cleanup: `b99c63769053a10504fdf59a7a3ebd85941d1b6c64d1d1a9d96471e444b9e5d3`.
 
-The source commit contains the code cleanup.
-The report commit follows the source commit.
+The initial source commit contains the code cleanup.
+The style correction keeps the target constructor definition on one line.
+The report update follows the source correction.
 The report covers all seven assigned registry functions.
 
 ## Evidence
@@ -119,8 +123,7 @@ The owner of `include/act_misl.h` may add these PDB-proven parameter names witho
 
 ```cpp
 RGE_Action_Missile(int infile, RGE_Action_Object* obj_in);
-RGE_Action_Missile(RGE_Action_Object* obj_in, RGE_Static_Object* launcher,
-                   RGE_Static_Object* target, float x, float y, float z);
+RGE_Action_Missile(RGE_Action_Object* obj_in, RGE_Static_Object* launcher, RGE_Static_Object* target, float x, float y, float z);
 virtual void first_in_stack(unsigned char first_time);
 virtual unsigned char update();
 virtual void save(int outfile);
