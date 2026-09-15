@@ -1,5 +1,17 @@
 # Cleanup wave 04 root review
 
+## Owner 26: delegated review started
+
+- Delivered head: `5945b972778227cd419e66ae49f744e4cb2f5001`.
+- Base: `c22ba4258c45b1178181e185d60a3b09a1add617`.
+- Full diff: `build/source-cleanup-20260915/owner26-review.diff`, 9,390 lines.
+- Reviewer: `sa-e6faf4c1`, Sol medium, read only.
+
+The assignment covers all eight sources, eight headers, nine reports, and outstanding resource requests.
+It specifically checks the restored world declarations and types, plus the corrected positional parameters in `tworld`.
+Requests for `0x2775` and `0x277B` overlap Owner 25. Root will coordinate one shared definition per role.
+The group remains unmerged. Compiler and runtime validation remain deferred.
+
 ## Owner 25: delegated review started
 
 - Delivered head: `2f452e4958f5aa90f31de6ec64158ea71726bf82`.
