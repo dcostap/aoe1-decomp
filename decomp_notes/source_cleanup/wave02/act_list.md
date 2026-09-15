@@ -7,6 +7,7 @@
 - Final source commit from `git rev-parse`: `75a263bac24c04c07efe53787799a33b618f0b28`
 - Branch: `cleanup/staging-20260915-29`
 - Changed files: `src/act_list.cpp`; this report.
+- Registry: `config/functions/src/act_list.cpp.json`; build flags `gx` from `config/flags/gx.rsp`.
 - Header owner: owner 04 owns `include/act_list.h`. This worker did not edit it.
 
 The cleanup covers all 25 procedures in `config/functions/src/act_list.cpp.json`.
