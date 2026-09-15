@@ -158,7 +158,7 @@ void RGE_Sound::update_play() {
     }
 }
 
-void RGE_Sound::play(int add_to_list) {
+void RGE_Sound::play(int add_to_play_list) {
     char s[256];
 
     if (this->sound_num > 0) {
@@ -179,7 +179,7 @@ void RGE_Sound::play(int add_to_list) {
                         }
                     }
 
-                    if (add_to_list != 0) {
+                    if (add_to_play_list != 0) {
                         this->sounds[i].digital_sound->add_to_play_list();
                     } else {
                         this->sounds[i].digital_sound->play();
