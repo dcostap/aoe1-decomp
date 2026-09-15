@@ -4,10 +4,10 @@
 
 - Module: `src/map.cpp`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`, `e203c682ef21333de6d86b2283262d63fbb5c596`
-- Final source commit: `e203c682ef21333de6d86b2283262d63fbb5c596`
+- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`, `e203c682ef21333de6d86b2283262d63fbb5c596`, `673598b4d2b677635ff2c7c003ba3dbc830ecf76`
+- Final source commit: `673598b4d2b677635ff2c7c003ba3dbc830ecf76`
 - Initial report commit: `99f0fc6f4131bfc5028fb51cc5cdad3503980b59`
-- Report correction commit before this update: `c7b079d34a1675d6fd0c019a5f2dfbfd272e3240`
+- Report correction commit before this update: `6cc3489525953fbf3f167d3c909aa364643f8075`
 - Final report commit: this report correction commit.
 - Branch: `cleanup/staging-20260915-137`
 - Changed files: `src/map.cpp`; this report.
@@ -30,6 +30,7 @@ No expression, control flow, call, type, storage, data value, or ABI symbol chan
 - `6cca60ccb37be9e8a3f495b1fc00d73718f64004`: recorded the final name-cleanup evidence before formatting.
 - `823efaa9326ff318b22e6a024053ad2cdcaa95cd`: applied the first 1TBS format and corrected indentation.
 - `e203c682ef21333de6d86b2283262d63fbb5c596`: restored `Type* name`, `Type& name`, and `(Type*)` style and rewrapped long lines.
+- `673598b4d2b677635ff2c7c003ba3dbc830ecf76`: joined the short `clean_terrain` call on one line.
 
 The formatting commits change whitespace only.
 They use the module's `Type* name`, `Type& name`, and `(Type*)` presentation.
