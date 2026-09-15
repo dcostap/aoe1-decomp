@@ -9,7 +9,7 @@
 - Changed files:
   - `src/color.cpp`
   - `decomp_notes/source_cleanup/wave03/color.md`
-- Paired header: `include/color.h` (read only)
+- Paired header: `include/color.h` (read only; owner 22)
 - Registry: `config/functions/src/color.cpp.json`
 - Build profile: `default`
 
@@ -108,20 +108,21 @@ use 1TBS braces. Short signatures and calls stay on one line where practical.
 
 ## Unresolved declaration mappings
 
-The paired declaration in `include/color.h` remains unchanged because owner 20
-owns that header. The PDB supports these declaration names for an owner-20
-review:
+The paired declaration in `include/color.h` remains unchanged because owner 22
+owns that header. The PDB and the cleaned definitions support these declaration
+names for an owner-22 review:
 
 - `RGE_Color_Table(int infile)`
-- `RGE_Color_Table(FILE* infile, short in_id)`
+- `RGE_Color_Table(FILE* infile, short id_val)`
 - `RGE_Color_Table(char* filename)`
 - `RGE_Color_Table(TDrawArea* surface, long amount, tagPALETTEENTRY* in_color, tagPALETTEENTRY* palette1)`
 - `void save(int outfile)`
 
-The body of the `FILE*` constructor keeps `id_val` rather than forcing
-`in_id`, because the PDB records `in_id` and `temp_type` on the same stack
-slot. It also records `temp_map_color` on a reused nearby slot. The current
-body uses the existing aliased declarations and does not add fake locals.
+The body and the requested declaration keep `id_val` rather than forcing the
+PDB's `in_id` spelling. The PDB records `in_id` and `temp_type` on the same
+stack slot. It also records `temp_map_color` on a reused nearby slot. The
+current body uses the existing aliased declarations and does not add fake
+locals.
 
 The PDB does not prove original names for the loop indexes and temporary
 pointers listed above. Their mappings remain unresolved. No reused stack slot
@@ -129,8 +130,9 @@ was forced into a new declaration or name.
 
 ### Shared request
 
-Request owner 20 to review the `include/color.h` declaration names listed
-above. The request changes parameter spelling only. It does not change a
+Request owner 22 to review the `include/color.h` declaration names listed
+above. The request changes parameter spelling only. It keeps `id_val` in the
+FILE* constructor to match the cleaned definition. It does not change a
 signature, type, layout, calling convention, or ABI symbol. No request is
 needed from the root resource-ID owner.
 
