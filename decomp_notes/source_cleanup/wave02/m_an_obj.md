@@ -137,3 +137,21 @@ unit, sentinel, or compatibility fact that needs a source comment.
 I reviewed the complete Git diff and ran `git diff --check`. I did not run a
 compiler, build, matching check, audit, or test. I did not run the game.
 Compilation, matching, audits, and tests were not run.
+
+## Root formatting correction
+
+Root requested a formatting-only correction for the assigned source.
+
+- Correction base commit: `e4c7792626afa357aa1a5791bccac1f1997e4272`
+- Source correction head: `e460ef0325e1825fd5ed5c9e90eda477fc56b652`
+- Corrected source blob: `6ae5f5d8e9f128e61636fca9a9af312a958977e3`
+
+I reviewed the `setup`, `copy_obj`, `modify`, `modify_delta`, and
+`modify_percent` definitions. Each short signature now uses one line where it
+remains readable. The changed `setup`, `modify_delta`, and `modify_percent`
+signatures no longer use continuation lines. No token, type, scope, expression,
+call, literal, or behavior changed.
+
+I reviewed the full base-to-head diff for the correction. I ran `git diff --check`.
+I did not run a compiler, build, matching check, audit, or test. I did not run the
+game. Compilation, matching, audits, and tests were not run.
