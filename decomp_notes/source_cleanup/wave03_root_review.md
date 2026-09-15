@@ -1,5 +1,22 @@
 # Cleanup wave 03 root review
 
+## Owner 17: delegated approval and integration
+
+Reviewer `sa-33ff58a2` read all 8,322 diff lines, nine reports, eight sources, and the changed header.
+Reviewed base: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
+Reviewed head: `315dd545ea22c89c4bfedff7da6c8d69a7b1b93a`.
+The reviewer found no blocking issue and recommended approval.
+
+Root accepted the optional multi-line trivial function bodies without another formatting change.
+The report's extracted PDB path is worker-relative, not owner-relative.
+Root located it at `build/source-cleanup-20260915/wave-worktrees/slot-147/build/panel_ez_scoped_symbols.json`.
+Its SHA256 matches the report: `0e494d1a97f00fc86e2fc3bf0b7ea9ebb71ef40ec381ec2efd5054f09bcfb0bf`.
+The report also cites the complete shared PDB inventory. No evidence is missing for this finding.
+
+Root merged the group as `aa015e74070c995b3af3e1483e1bc4294a795781`.
+Main contains 104 assigned wave modules, plus the pilot. Final validation remains deferred.
+The available reviewer slot now handles Owner 11 corrections and resource requests as `sa-187152fa`.
+
 ## Delegated review queue
 
 The user authorized three concurrent read-only reviewers using `openai-codex-secondary/gpt-5.6-sol`, medium thinking.
