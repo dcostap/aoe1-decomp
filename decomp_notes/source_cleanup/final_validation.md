@@ -42,6 +42,16 @@ Root read the complete source and report diffs for three more repairs:
 These repairs add no new scopes, types, or storage. The brace repair restores the baseline structure.
 Post-repair compilation remains pending. The initial source review did not detect these defects.
 
+## Remaining compilation repair reviews
+
+Root read the full source and report diffs for the remaining four failed modules:
+
+- `c5643d7d6695277939871f4ea66dfd0146f0a337`: scenario load/save loops restore distinct baseline names.
+- `cc6944dbd83e2404f648f293a41fcf2c7d74df8a`: editor `set_player` restores its complete baseline `v` binding.
+- `07e1b741fbd7c60b18c7de222af7ad6f5d28decc`: AI lookup uses `gathererObj`; diplomacy loops restore `neutralPlayer` and `target`.
+
+The repairs preserve declarations, scopes, types, and statement order. They do not establish successful compilation until rerun.
+
 ## Terrain repair review
 
 Root read the complete correction diff to `844478cc9dcbee7d76fe7fad87065aff3c26bd17`.
