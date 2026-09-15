@@ -5,10 +5,11 @@
 - Source: `src/tm_b_obj.cpp`
 - Report: `decomp_notes/source_cleanup/wave02/tm_b_obj.md`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `bfeeaa062d35c6d0388e8c6d279a221779694253`
-- Source commit head was copied from `git rev-parse HEAD` after the source commit.
-- The source commit changed only `src/tm_b_obj.cpp`.
-- The report is a second commit because its final hash cannot appear inside itself.
+- Initial source commit: `bfeeaa062d35c6d0388e8c6d279a221779694253`
+- Final source commit: `b8759588ca43b4751cd656f4ed179c40c8f518e0`
+- The final source commit head was copied from `git rev-parse HEAD`.
+- Each source commit changed only `src/tm_b_obj.cpp`.
+- The report remains a separate commit because its final hash cannot appear inside itself.
 
 The source change recovers names from the procedure-scoped PDB data. It does not
 change types, statements, calls, literals, scopes, or storage declarations.
@@ -26,7 +27,7 @@ additional register symbol.
 | `0050E0C0` | integer constructor | `infile`, `sprites`, `sounds`, `do_setup` | none | Recovered `infile`; retained the other names. |
 | `0050E130` | file constructor | `infile`, `sprites`, `sounds`, `in_id`, `do_setup` | none | Recovered `infile` and `in_id`; retained the other names. |
 | `0050E1B0` | object `setup` | `other_object` | none | Recovered the parameter name. |
-| `0050E250` | binary-file `setup` | `infile`, `sprites`, `sounds` | `sound_num` at `+0xc`; `sprite_num` at `+0x10` | Recovered the parameter and both PDB local names. The `sound_num` slot overlaps the `sounds` parameter slot. |
+| `0050E250` | binary-file `setup` | `infile`, `sprites`, `sounds` | `sound_num` at `+0xc`; `sprite_num` at `+0x10` | Recovered the parameter. PDB local names use reused slots and conflict with the proved roles, so the source keeps `sprite_id` and `sound_id`. |
 | `0050E360` | text-file `setup` | `infile`, `sprites`, `sounds`, `in_id` | none | Recovered `infile` and `in_id`. Local declarations have no scoped PDB names. |
 | `0050E430` | destructor | none | none | No names to recover. |
 | `0050E440` | `copy_obj` | `source` | none | Retained the recovered parameter name. |
@@ -51,7 +52,7 @@ The following names come from the PDB, not from inference:
 - `0050E0C0`: `id` to `infile`.
 - `0050E130`: `file` to `infile`; `id` to `in_id`.
 - `0050E1B0`: `source` to `other_object`.
-- `0050E250`: `file` to `infile`; `sprite_id` to `sound_num`; `sound_id` to `sprite_num`.
+- `0050E250`: `file` to `infile`. The PDB local names are unresolved because reused stack slots conflict with the proved sprite and sound roles.
 - `0050E360`: `file` to `infile`; `id` to `in_id`.
 - `0050E4D0`, `0050E500`, and `0050E530`: `value` to `amount`; `attribute` to `flag`.
 - `0050E550`: `file` to `outfile`; `sound_id` to `sound_num`.
@@ -66,18 +67,19 @@ existing `do_setup`, `sprites`, `sounds`, `facet`, and coordinate names.
 
 ## Inferred and unresolved mappings
 
-These names remain inferred because the scoped PDB has no matching local symbol:
+These names remain unchanged because the scoped PDB has no usable declaration
+mapping:
 
-- `0050E250`: `selected_sprite` and `selected_sound`.
+- `0050E250`: `sprite_id` and `sound_id` remain descriptive names. The PDB reports `sound_num` at the `sounds` argument slot and `sprite_num` at `+0x10`, but those names contradict the local variables' proved sprite and sound roles. `selected_sprite` and `selected_sound` also have no scoped PDB symbols.
 - `0050E360`: `sprite_id`, `connect_flag`, `build_and_go_away`, `sound_id`, `selected_sprite`, and `selected_sound`.
 - `0050E440`: `building_source`, the downcast local for the proven building-master source.
 - `0050E550`: `sprite_id`.
 - `0050E7A0`: `sprite` and `map`.
 
 I left these declarations in place. I did not force a mapping through a reused
-stack slot. In `0050E250`, the PDB records `sound_num` at the `sounds` argument
-slot and `sprite_num` at `+0x10`; the source now uses those exact names without
-changing the declaration order or the lookup order.
+stack slot. In `0050E250`, the PDB names `sound_num` and `sprite_num` conflict
+with the proved roles of the first and second file values. The source keeps
+`sprite_id` and `sound_id` and preserves declaration and lookup order.
 
 No resource ID or numeric constant needed a new name. No unresolved resource
 purpose remains in this module.
@@ -102,8 +104,8 @@ building-master offsets support that note.
   duration, cast, evaluation order, call target, literal, or ABI symbol changed.
 - The recovered `uID` and `in_id` spellings preserve PDB capitalization.
 - Naming the unused `frame` parameter does not add a use.
-- The `0050E250` stack-slot overlap remains unresolved in layout terms. The
-  source keeps the existing two local declarations and their order.
+- The `0050E250` stack-slot overlap remains unresolved. Its PDB names conflict
+  with the proved roles, so the source keeps `sprite_id` and `sound_id`.
 - The source still uses the existing natural owner and real inheritance.
 
 ## Header and resource requests
