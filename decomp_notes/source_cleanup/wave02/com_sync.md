@@ -7,7 +7,8 @@
 - Header owner: owner 12, `include/com_sync.h`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Source cleanup commit: `ccf8c2ef4f8c259b2bcc229cdef7b11b9e8e4883`
-- Changed files: `src/com_sync.cpp`; this report
+- Changed files: `src/com_sync.cpp` and
+  `decomp_notes/source_cleanup/wave02/com_sync.md`
 
 The source registry lists 12 functions at `00432FF0`, `00433070`, `004330A0`,
 `00433180`, `00433290`, `00433450`, `00433460`, `00433A90`, `00433AA0`,
