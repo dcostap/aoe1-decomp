@@ -2,56 +2,67 @@
 
 ## Delivery
 
-- Module: `src/spanlist.cpp`
-- Report: `decomp_notes/source_cleanup/wave04/spanlist.md`
+- Module: `C:/Projects/my_decomps/aoe1_attempt3/src/spanlist.cpp`
+- Report: `C:/Projects/my_decomps/aoe1_attempt3/decomp_notes/source_cleanup/wave04/spanlist.md`
 - Branch: `cleanup/staging-20260915-205`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Source owner: `src/spanlist.cpp`
-- Header read only: `include/spanlist.h`
-- Source cleanup commit: `092cafdf5`
+- Source owner: `C:/Projects/my_decomps/aoe1_attempt3/src/spanlist.cpp`
+- Header read only: `C:/Projects/my_decomps/aoe1_attempt3/include/spanlist.h`
+- Source cleanup commit: `092cafdf58aa0e6be50e126a6a046b66ea29508e`
+- Initial report commit: `44841477e550b0a1e07180a7945d42f9a752be83`
+- Source correction commit: `324bf1c3c410408df64f3b65c1b3389ec37f9602`
+
+Correction history:
+
+- `092cafdf58aa0e6be50e126a6a046b66ea29508e`: initial identifier cleanup.
+- `44841477e550b0a1e07180a7945d42f9a752be83`: initial cleanup report.
+- `324bf1c3c410408df64f3b65c1b3389ec37f9602`: source correction. It moves
+  existing opening braces to 1TBS positions and joins clearly short signatures.
 
 This report covers all 29 normal PDB functions in the module. The cleanup only
 recovers names and does not change behavior.
 
 ## Evidence
 
-The name recovery uses `inventory/pdb/scoped_symbols.json`. The PDB source path
+The name recovery uses
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`. The PDB source path
 for every function is `C:\msdev\work\age1_x1\spanlist.cpp`. The PDB records include
 procedure boundaries, stack symbols, and the `this` register in `ecx`.
 
 The executable evidence packets were inspected for every function:
 
-- `inventory/functions/004B/004BD5E0_TSpan_Node_List.txt`
-- `inventory/functions/004B/004BD640_TSpan_Node_List.txt`
-- `inventory/functions/004B/004BD690_SetNumZones.txt`
-- `inventory/functions/004B/004BD720_InitNewZone.txt`
-- `inventory/functions/004B/004BD790_GetNode.txt`
-- `inventory/functions/004B/004BD800_FreeNode.txt`
-- `inventory/functions/004B/004BD820_FreeThread.txt`
-- `inventory/functions/004B/004BD880_ReclaimAllNodes.txt`
-- `inventory/functions/004B/004BD8A0_ResetStats.txt`
-- `inventory/functions/004B/004BD8B0_TSpan_List_Manager.txt`
-- `inventory/functions/004B/004BD9A0_TSpan_List_Manager.txt`
-- `inventory/functions/004B/004BDA00_SetSpanRegions.txt`
-- `inventory/functions/004B/004BDA70_ResetAll.txt`
-- `inventory/functions/004B/004BDB00_AddSpan.txt`
-- `inventory/functions/004B/004BDEA0_AddShape.txt`
-- `inventory/functions/004B/004BDFA0_AddShape_Align.txt`
-- `inventory/functions/004B/004BE090_AddLine_Align.txt`
-- `inventory/functions/004B/004BE1F0_AddMiniList.txt`
-- `inventory/functions/004B/004BE240_SubtractMiniList.txt`
-- `inventory/functions/004B/004BE290_DeleteSpan.txt`
-- `inventory/functions/004B/004BE4B0_DeleteShape.txt`
-- `inventory/functions/004B/004BE5B0_PointVisible.txt`
-- `inventory/functions/004B/004BE5F0_Merge_n_Align.txt`
-- `inventory/functions/004B/004BE690_AlignamizeSpans.txt`
-- `inventory/functions/004B/004BE750_ScrollSpansHorizontally.txt`
-- `inventory/functions/004B/004BE850_ScrollSpansVertically.txt`
-- `inventory/functions/004B/004BE9E0_ValidateSpan.txt`
-- `inventory/functions/004B/004BEAD0_DecodeLine.txt`
-- `inventory/functions/004B/004BEB10_take_snapshot.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD5E0_TSpan_Node_List.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD640_TSpan_Node_List.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD690_SetNumZones.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD720_InitNewZone.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD790_GetNode.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD800_FreeNode.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD820_FreeThread.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD880_ReclaimAllNodes.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD8A0_ResetStats.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD8B0_TSpan_List_Manager.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BD9A0_TSpan_List_Manager.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BDA00_SetSpanRegions.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BDA70_ResetAll.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BDB00_AddSpan.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BDEA0_AddShape.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BDFA0_AddShape_Align.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE090_AddLine_Align.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE1F0_AddMiniList.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE240_SubtractMiniList.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE290_DeleteSpan.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE4B0_DeleteShape.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE5B0_PointVisible.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE5F0_Merge_n_Align.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE690_AlignamizeSpans.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE750_ScrollSpansHorizontally.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE850_ScrollSpansVertically.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BE9E0_ValidateSpan.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BEAD0_DecodeLine.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/004B/004BEB10_take_snapshot.txt`
 
-The existing module note at `decomp_notes/spanlist.md` was read for matching and
+The existing module note at
+`C:/Projects/my_decomps/aoe1_attempt3/decomp_notes/spanlist.md` was read for matching and
 accepted-drift context. The original executable remains the behavior oracle.
 
 ## Original-name recovery
@@ -113,18 +124,61 @@ storage duration changed.
 ## Constants, resources, and comments
 
 No numeric constant changed. No constant or enum was added. No resource lookup
-exists in this module. No resource ID mapping or header request is needed. The
-snapshot file pattern remains unchanged.
+exists in this module. No resource ID mapping is needed. The snapshot file
+pattern remains unchanged. A non-blocking declaration-name request is listed
+below.
 
 No source comment was added. Existing code and this report provide enough
 context for this name-only cleanup.
 
+## Header request (non-blocking)
+
+The declarations for `TSpan_Node_List` and `TSpan_List_Manager` are owner-owned
+in `C:/Projects/my_decomps/aoe1_attempt3/include/drawarea.h`. Please update
+declaration parameter names to match the PDB-backed definitions. Keep all types,
+signatures, layouts, and ABI details unchanged.
+
+For `TSpan_Node_List`, the requested names are:
+
+- `TSpan_Node_List`: `InitialSize`, `GrowSize`, `szitem`
+- `SetNumZones`: `New_Size`
+- `InitNewZone`: `Zone_Size`
+- `FreeNode`: `theNode`
+- `FreeThread`: `HeadNode`, `TailNode`
+
+For `TSpan_List_Manager`, the requested names are:
+
+- `TSpan_List_Manager`: `Surface_Width`, `Surface_Height`
+- `SetSpanRegions`: `MinS`, `MinL`, `MaxS`, `MaxL`
+- `AddSpan`: `LeftPx`, `RightPx`, `Line`
+- `AddShape`: `theShape`, `shape_num`, `Xpos`, `Ypos`, `Mirror`
+- `AddShape_Align`: `Shape_Base`, `SI`, `Xpos`, `Ypos`, `Mirror`
+- `AddLine_Align`: `x1`, `y1`, `x2`, `y2`
+- `AddMiniList`: `theList`, `Xpos`, `Ypos`
+- `SubtractMiniList`: `theList`, `Xpos`, `Ypos`
+- `DeleteSpan`: `LeftPx`, `RightPx`, `Line`
+- `DeleteShape`: `theShape`, `shape_num`, `Xpos`, `Ypos`, `Mirror`
+- `PointVisible`: `x`, `Line`
+- `Merge_n_Align`: `List1`, `List2`
+- `ScrollSpansHorizontally`: `XOffset`, `ClipToCurrentRegion`
+- `ScrollSpansVertically`: `YOffset`, `ClipToCurrentRegion`
+- `ValidateSpan`: `Line`
+- `DecodeLine`: `LineBuf`, `Line`, `fillC`, `MaxX`
+- `take_snapshot`: `filespec`, `index_no`, `render_area`, `scolor`, `SpanArray`,
+  `colorArray`, `ArraySize`
+
+The PDB has no declaration-name records for the other methods. The declarations
+in `C:/Projects/my_decomps/aoe1_attempt3/include/spanlist.h` have no declarations
+to update for this request.
+
 ## Scope and preservation review
 
-The source changes are identifier renames only. They preserve statement order,
-control flow, expressions, casts, calls, types, declarations, storage, member
-access, function boundaries, ABI symbols, relocations, and known accepted drift.
-No wrapper, helper, assembly, or header change was made.
+The initial source changes are identifier renames only. The correction changes
+only opening-brace placement and definition-signature wrapping. Together they
+preserve statement order, control flow, expressions, casts, calls, types,
+declarations, storage, member access, function boundaries, ABI symbols,
+relocations, and known accepted drift. No wrapper, helper, assembly, or header
+change was made.
 
 `DecodeLine` keeps its unused `MaxX` parameter. The cleanup does not add a bound
 check or otherwise change its byte-update behavior. The nonexact functions
@@ -135,4 +189,4 @@ their existing bodies.
 
 Compilation, matching, audits, validation, tests, and runtime checks were not
 run, as required by the wave instructions. Only evidence inspection and the
-complete source diff review were performed.
+complete source diff review were performed before this correction.
