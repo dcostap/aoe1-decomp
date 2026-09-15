@@ -1635,7 +1635,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
         }
         return 1;
 
-    case 0x17D5:
+    case CHAT_RECEIVED:
         L->Log("$$$ USER_COMMAND: CHAT_RECEIVED (%d,%d)", wParam, lParam);
         this->fillChat(lParam);
         return 1;
