@@ -6,7 +6,7 @@
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Source owner: `src/world.cpp`
 - Changed files: `src/world.cpp`, this note
-- Cleanup commit: recorded in the delivery response after commit
+- Cleanup commit: `79849d74e4f02113e4a3ed48e7aa4c5234adac8f`
 - Headers changed: none
 
 This pass changes names and local presentation only. It does not change public
