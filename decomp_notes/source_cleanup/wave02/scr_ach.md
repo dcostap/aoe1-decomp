@@ -19,27 +19,27 @@ It does not change types, storage, calls, control flow, or resource values.
 The source owns eight functions in PDB module `.\\Release\\scr_ach.obj`.
 The procedure-scoped PDB is:
 
-- `inventory/pdb/scoped_symbols.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
 - SHA256: `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`
 
 The original executable is:
 
-- `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`
 - SHA256: `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`
 
 The function packets are the behavior evidence. They are under
-`inventory/functions/0048/`:
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/`:
 
 | VA | PDB size | Function | Packet |
 | --- | ---: | --- | --- |
-| `0048D530` | 3256 | `TribeAchievementsScreen::TribeAchievementsScreen` | `0048D530_TribeAchievementsScreen.txt` |
-| `0048E210` | 493 | `TribeAchievementsScreen::~TribeAchievementsScreen` | `0048E210_~TribeAchievementsScreen.txt` |
-| `0048E400` | 3236 | `TribeAchievementsScreen::set_mode` | `0048E400_set_mode.txt` |
-| `0048F0B0` | 215 | `TribeAchievementsScreen::draw` | `0048F0B0_draw.txt` |
-| `0048F190` | 226 | `TribeAchievementsScreen::handle_mouse_down` | `0048F190_handle_mouse_down.txt` |
-| `0048F280` | 638 | `TribeAchievementsScreen::action` | `0048F280_action.txt` |
-| `0048F500` | 33 | `TribeAchievementsScreen::handle_idle` | `0048F500_handle_idle.txt` |
-| `0048F530` | 146 | `TribeAchievementsScreen::wnd_proc` | `0048F530_wnd_proc.txt` |
+| `0048D530` | 3256 | `TribeAchievementsScreen::TribeAchievementsScreen` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048D530_TribeAchievementsScreen.txt` |
+| `0048E210` | 493 | `TribeAchievementsScreen::~TribeAchievementsScreen` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048E210_~TribeAchievementsScreen.txt` |
+| `0048E400` | 3236 | `TribeAchievementsScreen::set_mode` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048E400_set_mode.txt` |
+| `0048F0B0` | 215 | `TribeAchievementsScreen::draw` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F0B0_draw.txt` |
+| `0048F190` | 226 | `TribeAchievementsScreen::handle_mouse_down` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F190_handle_mouse_down.txt` |
+| `0048F280` | 638 | `TribeAchievementsScreen::action` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F280_action.txt` |
+| `0048F500` | 33 | `TribeAchievementsScreen::handle_idle` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F500_handle_idle.txt` |
+| `0048F530` | 146 | `TribeAchievementsScreen::wnd_proc` | `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0048/0048F530_wnd_proc.txt` |
 
 The scalar deleting destructor at `0048E1F0` is compiler-generated.
 It has no source body in this module and remains outside the cleanup set.
@@ -87,21 +87,27 @@ The base lookup clears the buffer when `LoadStringA` fails.
 
 The checked base-language file is the staged runtime input:
 
-- `runtime/language.dll`
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`
 - SHA256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
 - Resource type: `RT_STRING`
 - Language: `0x0409` (English, language ID `1033`)
 
 The checked override files are:
 
-- `runtime/languagex.dll`
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`
   - SHA256: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
-- `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`
   - SHA256: `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
 
 Both `languagex.dll` files have no entries for the IDs below.
 The base runtime file supplies every listed text payload.
-The exact extraction is in `build/resource-strings/scr_ach/`.
+The exact extraction directory is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/`.
+The extraction files are:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/language.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/languagex.json`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-92/build/resource-strings/scr_ach/languagex-orig.json`
 
 | ID | Base payload | Call-site purpose | Proposed cleanup name |
 | --- | --- | --- | --- |
@@ -216,6 +222,14 @@ No layout, lifetime, buffer size, or declaration scope was changed to resolve it
    Assign a separate shared domain only after the `RESFILE` namespace owner
    confirms names for `0xC389`, `0xC38A`, and `0xC38D`.
    Do not place these IDs in the base-language `IDS_*` group.
+
+## Correction history
+
+- Owner review found a split constructor brace after the initializer.
+  The constructor now follows one true brace style.
+- Owner review required absolute main-root evidence paths.
+  The PDB, packets, executable, DLLs, and extraction files now use them.
+- Resource payloads, hashes, and conclusions did not change.
 
 ## Validation
 
