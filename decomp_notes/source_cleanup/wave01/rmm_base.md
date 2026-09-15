@@ -4,7 +4,7 @@
 
 - Module: `src/rmm_base.cpp`.
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`.
-- Final source commit: `73a831ad2e4cac42d6bbc53ec2c76454150b7b4c`.
+- Final source commit: `9f359f970e6109d6308ad68c14ce1cbad4a40ac7`.
 - Changed files: `src/rmm_base.cpp` and this report.
 - Branch: `cleanup/staging-20260915-12`.
 - Header read: `include/rmm_base.h`. It was not changed.
@@ -76,8 +76,7 @@ The following names came from procedure-scoped PDB records:
 - `00480FB0`: `param_1` through `param_5` to `x`, `y`, `end_x`, `end_y`,
   and `terrain`.
 - `00481000`: `target_x` to `end_x`; `target_y` to `end_y`;
-  `terrain_cost` to `terrain`; `max_x` to `map_w`; `max_y` to `map_h`;
-  `path_cost` to `ty`; `distance` to `cost`; `adjusted_distance` to
+  `terrain_cost` to `terrain`; `distance` to `cost`; `adjusted_distance` to
   `hcost`; and `new_cost` to `calc_cost`.
 
 The `00481000` local mappings use the PDB names and the original assembly's
@@ -89,7 +88,11 @@ stack-slot mapping.
 
 - `side` could map to either PDB `left` or PDB `right`.
 - `next_x`, `next_y`, and `state` have no procedure-scoped PDB records.
-- The PDB records `tcost` and `tile_type` across overlapping homes.
+- PDB `map_h` and `map_w` do not map cleanly to the current `max_x` and
+  `max_y` roles. The assembly and PDB type records do not support a safe rename.
+- PDB `ty` reports `long`, while the current `path_cost` is `float`.
+  The source keeps `path_cost` because the type and role differ.
+- The PDB records `tcost` and `tile_type` across reused optimized homes.
   The source keeps the existing `tile_type` declaration and its type.
 - Locals such as `current`, `sorted`, `search`, `next`, `item`, `head`,
   `found`, `curr`, `pprev`, `i`, `j`, `count`, `node`, `x`, and `y` have
@@ -116,7 +119,7 @@ mapping request is needed.
 The changes rename parameters and locals and move function braces to 1TBS.
 They do not change types, storage, scopes, statement order, expressions, calls,
 relocations, data, or public symbols.
-The source keeps `ty` as `float`, despite the PDB record's reported type.
+The source keeps `path_cost` as `float`, despite the separate PDB `ty` record.
 No type change was authorized by this naming pass.
 The source keeps `side` because `left` and `right` reuse one PDB stack home.
 
