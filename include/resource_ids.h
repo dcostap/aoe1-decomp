@@ -388,4 +388,7 @@
 #define IDS_RESOURCE_LEVEL_HIGH 0x25E8
 #define IDS_DIFFICULTY_BASE 0x2BD0
 
+// Message-box caption.
+#define IDS_ERROR_TITLE 0x07D1
+
 #endif

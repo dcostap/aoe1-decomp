@@ -1,5 +1,28 @@
 # Cleanup wave 04 root review
 
+## Owner 27: source approved; final corrections requested
+
+Reviewer `sa-32cff643` read all 12,498 lines and all reports. No source blocker remains.
+Diff SHA256: `0c80da6bb7974ce446eee5f675add9c12c435d49c5735be8c346dc6886f52bad`.
+The `tribegam` report and owner ledger incorrectly claim all used macros existed at the common base.
+Twenty-two age, civilization, and dropped-player macros require later shared-header content already present in main.
+Import commit `3f5867e84cda53a3103593a0e74f952a3f0798b7` supplies resource-header blob `3670c49563f971137b89644d4a0069796cf3d2af`.
+That blob equals main's header before the new error-title definition. Reports must distinguish root approval from group imports.
+
+Root approved `IDS_ERROR_TITLE`, unsuffixed `0x07D1`, as a new cleanup name.
+The `main.cpp` lookup fills the caption passed to `MessageBoxA`.
+Runtime expansion has an empty slot; pinned expansion misses the ID. Runtime base supplies `Error` in language `0x0409`.
+Preserve the override-first lookup and base fallback. Evidence is under `build/source-cleanup-20260915/reviewer-owner27/`.
+
+Main already contains the shared chat header from `c0ce37473c32dfd6511e884ea1ead7dace6b5cce`.
+Original dispatch evidence at `00529DB9`, `00529DC7`, and `00529DDE` supports the exact notification value `0x17D5`.
+Do not import any other Owner 22 file.
+
+The historical help-window ID `0x03EB` remains numeric and pending at root.
+Its base payload is `Age of Empires Help`; both checked expansion modules miss it.
+The destructor passes the loaded title to `FindWindowA("MS_WINHELP", title)`.
+This deferred mapping does not block integration. Final validation remains deferred until cleanup closes.
+
 ## Owner 27: delegated review started
 
 - Delivered head: `54b83713c3ed08ec13f03739be043a1c99d9cf63`.
