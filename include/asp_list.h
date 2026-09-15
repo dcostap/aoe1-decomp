@@ -12,24 +12,19 @@ struct RGE_Active_Sprite_Node;
 class RGE_Active_Sprite {
 public:
     virtual ~RGE_Active_Sprite();
-    virtual void set_offset(long param_1, long param_2);
-    virtual void save(int param_1);
-    virtual void update(float param_1, float param_2);
-    virtual void draw(short param_1, long param_2, long param_3, long param_4,
-                       long param_5, RGE_Color_Table* param_6, TDrawArea* param_7);
-    virtual void normal_draw(short param_1, long param_2, long param_3,
-                             RGE_Color_Table* param_4, TDrawArea* param_5);
-    virtual void shadow_draw(short param_1, long param_2, long param_3,
-                             RGE_Color_Table* param_4, TDrawArea* param_5,
-                             unsigned char param_6);
+    virtual void set_offset(long x, long y);
+    virtual void save(int outfile);
+    virtual void update(float time, float speed);
+    virtual void draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void shadow_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
     virtual short what_frame();
     virtual unsigned char is_animating();
-    virtual void set_frame(short param_1);
-    virtual unsigned char frame_passed(short param_1);
+    virtual void set_frame(short new_frame);
+    virtual unsigned char frame_passed(short passed_frame);
     virtual unsigned char looped();
-    virtual short get_facetindex(short param_1);
-    virtual unsigned char get_frame(short& param_1, short& param_2, short& param_3,
-                                    short& param_4, long param_5);
+    virtual short get_facetindex(short facet);
+    virtual unsigned char get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet);
     virtual void setToFirstFrame();
 
     RGE_Sprite* sprite;
@@ -40,13 +35,13 @@ public:
     int check_for_shadows();
     unsigned char get_lowest_draw_level();
 
-    RGE_Active_Sprite(RGE_Sprite* sprite);
-    RGE_Active_Sprite(int param_1, RGE_Sprite** param_2);
+    RGE_Active_Sprite(RGE_Sprite* new_sprite);
+    RGE_Active_Sprite(int infile, RGE_Sprite** sprites);
 };
 
 class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
 public:
-    RGE_Active_Animated_Sprite(RGE_Sprite* sprite);
+    RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite);
     short frame;
     float animate_interval;
     float animate_last;
@@ -55,26 +50,21 @@ public:
     unsigned char frame_looped;
     unsigned char animate_flag;
 
-    RGE_Active_Animated_Sprite(int param_1, RGE_Sprite** param_2);
+    RGE_Active_Animated_Sprite(int infile, RGE_Sprite** sprites);
     virtual ~RGE_Active_Animated_Sprite();
 
-    virtual void save(int param_1);
-    virtual void update(float param_1, float param_2);
-    virtual void draw(short param_1, long param_2, long param_3, long param_4,
-                      long param_5, RGE_Color_Table* param_6, TDrawArea* param_7);
-    virtual void normal_draw(short param_1, long param_2, long param_3,
-                             RGE_Color_Table* param_4, TDrawArea* param_5);
-    virtual void shadow_draw(short param_1, long param_2, long param_3,
-                             RGE_Color_Table* param_4, TDrawArea* param_5,
-                             unsigned char param_6);
+    virtual void save(int outfile);
+    virtual void update(float time, float speed);
+    virtual void draw(short facet, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void normal_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void shadow_draw(short facet, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
     virtual short what_frame();
     virtual unsigned char is_animating();
-    virtual void set_frame(short param_1);
-    virtual unsigned char frame_passed(short param_1);
+    virtual void set_frame(short new_frame);
+    virtual unsigned char frame_passed(short passed_frame);
     virtual unsigned char looped();
-    virtual short get_facetindex(short param_1);
-    virtual unsigned char get_frame(short& param_1, short& param_2, short& param_3,
-                                    short& param_4, long param_5);
+    virtual short get_facetindex(short facet);
+    virtual unsigned char get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet);
     virtual void setToFirstFrame();
 };
 
@@ -89,41 +79,35 @@ public:
 class RGE_Active_Sprite_List {
 public:
     virtual ~RGE_Active_Sprite_List();
-    virtual short frame(RGE_Sprite* param_1);
-    virtual void update(float param_1, float param_2);
-    virtual void draw(short param_1, short param_2, short param_3, short param_4,
-                       short param_5, RGE_Color_Table* param_6, TDrawArea* param_7);
-    virtual void normal_draw(short param_1, short param_2, short param_3,
-                             RGE_Color_Table* param_4, TDrawArea* param_5);
-    virtual void shadow_draw(short param_1, short param_2, short param_3,
-                             RGE_Color_Table* param_4, TDrawArea* param_5,
-                             unsigned char param_6);
-    virtual unsigned char is_animating(RGE_Sprite* param_1);
-    virtual void set_frame(RGE_Sprite* param_1, short param_2);
-    virtual unsigned char frame_passed(RGE_Sprite* param_1, short param_2);
-    virtual unsigned char looped(RGE_Sprite* param_1);
-    virtual short get_facetindex(RGE_Sprite* param_1, short param_2);
+    virtual short frame(RGE_Sprite* sprite);
+    virtual void update(float time, float speed);
+    virtual void draw(short facet, short x, short y, short sx, short sy, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void normal_draw(short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    virtual void shadow_draw(short facet, short x, short y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
+    virtual unsigned char is_animating(RGE_Sprite* sprite);
+    virtual void set_frame(RGE_Sprite* sprite, short new_frame);
+    virtual unsigned char frame_passed(RGE_Sprite* sprite, short pass_frame);
+    virtual unsigned char looped(RGE_Sprite* sprite);
+    virtual short get_facetindex(RGE_Sprite* sprite, short facet);
 
 protected:
-    virtual unsigned char load_node(int param_1, unsigned char param_2,
-                                    RGE_Sprite** param_3);
+    virtual unsigned char load_node(int infile, unsigned char type, RGE_Sprite** sprites);
 
 public:
     RGE_Active_Sprite_Node* list;
     RGE_Static_Object* owner;
 
-    RGE_Active_Sprite_List(RGE_Static_Object* owner);
-    void load(int param_1, RGE_Sprite** param_2);
-    void save(int file);
+    RGE_Active_Sprite_List(RGE_Static_Object* owner_in);
+    void load(int infile, RGE_Sprite** sprites);
+    void save(int outfile);
     void delete_list();
     RGE_Active_Sprite_Node* copy_sprite_list();
-    void use_sprite_list(RGE_Active_Sprite_Node* list);
-    void add_sprite(RGE_Sprite* sprite, unsigned char order, long offset_x, long offset_y);
+    void use_sprite_list(RGE_Active_Sprite_Node* temp_list);
+    void add_sprite(RGE_Sprite* sprite, unsigned char order, long x, long y);
     void remove_sprite(RGE_Sprite* sprite);
     int check_for_shadows();
     unsigned char get_lowest_draw_level();
-    unsigned char get_frame(short& param_1, short& param_2, short& param_3,
-                            short& param_4, RGE_Sprite* param_5, long param_6);
+    unsigned char get_frame(short& min_x, short& min_y, short& max_x, short& max_y, RGE_Sprite* sprite, long facet);
 };
 
 typedef char asp_list_active_sprite_size_check[

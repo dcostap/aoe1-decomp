@@ -65,17 +65,17 @@ public:
     int NewZone_Count;
     int Reset_Count;
 
-    TSpan_Node_List(int initial_size, int grow_size, int item_size);
+    TSpan_Node_List(int InitialSize, int GrowSize, int szitem);
     ~TSpan_Node_List();
 
 private:
-    void SetNumZones(int new_count);
-    void InitNewZone(int grow_size);
+    void SetNumZones(int New_Size);
+    void InitNewZone(int Zone_Size);
 
 public:
     VSpan_Node* GetNode();
-    void FreeNode(VSpan_Node* node);
-    int FreeThread(VSpan_Node* first, VSpan_Node* last);
+    void FreeNode(VSpan_Node* theNode);
+    int FreeThread(VSpan_Node* HeadNode, VSpan_Node* TailNode);
     void ReclaimAllNodes();
     void ResetStats();
 };
@@ -95,27 +95,26 @@ public:
     int Min_Line;
     int Max_Line;
 
-    TSpan_List_Manager(int, int);
+    TSpan_List_Manager(int Surface_Width, int Surface_Height);
     ~TSpan_List_Manager();
     void ResetAll();
-    void SetSpanRegions(int, int, int, int);
-    void AddSpan(int, int, int);
-    void AddShape(TShape*, int, int, int, int);
-    void AddShape_Align(unsigned char*, Shape_Info*, int, int, int);
-    void AddLine_Align(int, int, int, int);
-    void AddMiniList(VSpanMiniList*, int, int);
-    void SubtractMiniList(VSpanMiniList*, int, int);
-    void DeleteSpan(int, int, int);
-    void DeleteShape(TShape*, int, int, int, int);
-    int PointVisible(int, int);
-    void Merge_n_Align(TSpan_List_Manager*, TSpan_List_Manager*);
+    void SetSpanRegions(int MinS, int MinL, int MaxS, int MaxL);
+    void AddSpan(int LeftPx, int RightPx, int Line);
+    void AddShape(TShape* theShape, int shape_num, int Xpos, int Ypos, int Mirror);
+    void AddShape_Align(unsigned char* Shape_Base, Shape_Info* SI, int Xpos, int Ypos, int Mirror);
+    void AddLine_Align(int x1, int y1, int x2, int y2);
+    void AddMiniList(VSpanMiniList* theList, int Xpos, int Ypos);
+    void SubtractMiniList(VSpanMiniList* theList, int Xpos, int Ypos);
+    void DeleteSpan(int LeftPx, int RightPx, int Line);
+    void DeleteShape(TShape* theShape, int shape_num, int Xpos, int Ypos, int Mirror);
+    int PointVisible(int x, int Line);
+    void Merge_n_Align(TSpan_List_Manager* List1, TSpan_List_Manager* List2);
     void AlignamizeSpans();
-    void ScrollSpansHorizontally(int, int);
-    void ScrollSpansVertically(int, int);
-    int ValidateSpan(int);
-    int DecodeLine(unsigned char*, int, unsigned char, int);
-    void take_snapshot(char*, int&, TDrawArea*, int, TSpan_List_Manager**,
-                       int*, int);
+    void ScrollSpansHorizontally(int XOffset, int ClipToCurrentRegion);
+    void ScrollSpansVertically(int YOffset, int ClipToCurrentRegion);
+    int ValidateSpan(int Line);
+    int DecodeLine(unsigned char* LineBuf, int Line, unsigned char fillC, int MaxX);
+    void take_snapshot(char* filespec, int& index_no, TDrawArea* render_area, int scolor, TSpan_List_Manager** SpanArray, int* colorArray, int ArraySize);
 };
 
 #endif  // AOE1_SPANLIST_TYPES_H
@@ -164,49 +163,45 @@ public:
     int ExtendedLines;                    // +0xF8
     unsigned char TransColor;             // +0xFC
 
-    TDrawArea(char*, int);
+    TDrawArea(char* SurfaceName, int ForceSystemMem);
     ~TDrawArea();
-    int Init(TDrawSystem*, long, long, int, int);
-    void SetSize(long, long, int);
+    int Init(TDrawSystem* draw_system_in, long wid_in, long hgt_in, int Extend, int isPrimary_in);
+    void SetSize(long wid_in, long hgt_in, int ExtendSurface);
     unsigned char CheckSurface();
-    unsigned char* Lock(char*, int);
-    void Unlock(char*);
-    void* GetDc(char*);
-    void ReleaseDc(char*);
+    unsigned char* Lock(char* caller_name, int wait);
+    void Unlock(char* caller_name);
+    void* GetDc(char* caller_name);
+    void ReleaseDc(char* caller_name);
     void SetInfo();
     void SetAccessOffsets();
-    void SetFloatOffsets(int, int);
-    void SetClipRect(tagRECT*);
-    void SetClipRect(long, long, long, long);
-    void Clear(tagRECT*, int);
+    void SetFloatOffsets(int X_Delta, int Y_Delta);
+    void SetClipRect(tagRECT* rect);
+    void SetClipRect(long x1, long y1, long x2, long y2);
+    void Clear(tagRECT* rect, int color);
     void PtrClear(tagRECT*, int);
     long AlignedWidth();
-    void Copy(TDrawArea*, long, long, RECT*, int);
+    void Copy(TDrawArea* dest_area, long dest_x, long dest_y, RECT* src_rect, int allow_trans);
     void PtrSpanCopy(TDrawArea*, long, long, tagRECT*, unsigned char**);
     void OverlayMemCopy(tagRECT&, tagRECT&, int, int, int, int);
-    void SetTrans(int, unsigned char);
-    void SetOverlayTrans(int, unsigned char);
-    void SetPixel(long, long, unsigned char);
-    void DrawLine(int, int, int, int, unsigned char);
-    void DrawRect(long, long, long, long, unsigned char);
-    void DrawRect(tagRECT*, unsigned char);
-    void DrawHorzLine(long, long, long, unsigned char);
-    void DrawVertLine(long, long, long, unsigned char);
-    void FillRect(long, long, long, long, unsigned char);
-    void DrawBevel(long, long, long, long, unsigned char, unsigned char);
-    void DrawBevel2(long, long, long, long, unsigned char, unsigned char,
-                    unsigned char, unsigned char);
-    void DrawBevel3(long, long, long, long, unsigned char, unsigned char,
-                    unsigned char, unsigned char, unsigned char, unsigned char);
-    void DrawBevel21(long, long, long, long, unsigned char, unsigned char,
-                     unsigned char, unsigned char);
-    void DrawBevel32(long, long, long, long, unsigned char, unsigned char,
-                     unsigned char, unsigned char, unsigned char, unsigned char);
-    void DrawShadowBox(long, long, long, long);
-    void SetShadowTable(RGE_Color_Table*);
-    void GetPalette(PALETTEENTRY*);
-    void SetPalette(PALETTEENTRY*);
-    void take_snapshot(char*, int&);
+    void SetTrans(int use_trans_in, unsigned char trans_color_in);
+    void SetOverlayTrans(int use_trans_in, unsigned char trans_color_in);
+    void SetPixel(long x, long y, unsigned char color);
+    void DrawLine(int x1, int y1, int x2, int y2, unsigned char color);
+    void DrawRect(long x1, long y1, long x2, long y2, unsigned char color);
+    void DrawRect(tagRECT* rect, unsigned char mode);
+    void DrawHorzLine(long x, long y, long len, unsigned char color);
+    void DrawVertLine(long x, long y, long len, unsigned char color);
+    void FillRect(long x1, long y1, long x2, long y2, unsigned char color);
+    void DrawBevel(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2);
+    void DrawBevel2(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
+    void DrawBevel3(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6);
+    void DrawBevel21(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4);
+    void DrawBevel32(long x1, long y1, long x2, long y2, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4, unsigned char c5, unsigned char c6);
+    void DrawShadowBox(long x1, long y1, long x2, long y2);
+    void SetShadowTable(RGE_Color_Table* color_table_in);
+    void GetPalette(PALETTEENTRY* palette1);
+    void SetPalette(PALETTEENTRY* palette1);
+    void take_snapshot(char* filespec, int& index_no);
 };
 
 class TDrawSystem {
@@ -250,31 +245,30 @@ public:
 
     TDrawSystem();
     ~TDrawSystem();
-    static long __stdcall CheckAvailModesCallback(_DDSURFACEDESC*, void*);
-    void CheckAvailModes(int);
-    int IsModeAvail(long, long, int);
-    int Init(void*, void*, void*, unsigned char, unsigned char, long, long,
-             unsigned long);
-    int SetDisplaySize(long, long, int);
+    static long __stdcall CheckAvailModesCallback(_DDSURFACEDESC* lpDDSurfaceDesc, void* lpContext);
+    void CheckAvailModes(int full_screen);
+    int IsModeAvail(long wid_in, long hgt_in, int color_bits);
+    int Init(void* inst_in, void* wnd_in, void* pal_in, unsigned char type_in, unsigned char mode_in, long wid_in, long hgt_in, unsigned long flags_in);
+    int SetDisplaySize(long wid_in, long hgt_in, int color_bits);
     void ClearPrimarySurface();
     void DeleteSurfaces();
     int CreateSurfaces();
-    void HandleSize(void*, unsigned int, unsigned int, long);
-    void HandlePaletteChanged(void*, unsigned int, unsigned int, long);
-    int HandleQueryNewPalette(void*, unsigned int, unsigned int, long);
-    void ModifyPalette(int, int, tagPALETTEENTRY*);
-    void SetPalette(void*);
-    int GetIsLostErrorNum(long);
-    int GetRestoreErrorNum(long);
-    int GetSetDispModeErrorNum(long);
-    int GetLockErrorNum(long);
-    int GetDCErrorNum(long);
-    int GetBlitErrorNum(long);
-    int GetCreateErrorNum(long);
-    int GetColorKeyErrorNum(long);
+    void HandleSize(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
+    void HandlePaletteChanged(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
+    int HandleQueryNewPalette(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
+    void ModifyPalette(int start_entry, int num_entries, tagPALETTEENTRY* pal_entries);
+    void SetPalette(void* pal_in);
+    int GetIsLostErrorNum(long ddrval);
+    int GetRestoreErrorNum(long ddrval);
+    int GetSetDispModeErrorNum(long ddrval);
+    int GetLockErrorNum(long ddrval);
+    int GetDCErrorNum(long ddrval);
+    int GetBlitErrorNum(long ddrval);
+    int GetCreateErrorNum(long ddrval);
+    int GetColorKeyErrorNum(long ddrval);
     unsigned char CheckSurfaces();
     void ClearRestored();
-    void Paint(tagRECT*);
+    void Paint(tagRECT* rect);
 };
 
 #endif

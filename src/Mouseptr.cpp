@@ -5,8 +5,7 @@ extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 #include <stdio.h>
 
-TMousePointer::TMousePointer(int mode)
-{
+TMousePointer::TMousePointer(int MouseModeIn) {
     this->custom_draw = 0;
     this->render_area = 0;
     this->save_area = 0;
@@ -48,7 +47,7 @@ TMousePointer::TMousePointer(int mode)
     this->Setup = 0;
     this->save_x = -32767;
     this->save_y = -32767;
-    this->Mouse_Mode = mode;
+    this->Mouse_Mode = MouseModeIn;
     this->restoreSurface = 0;
     this->renderSurface = 0;
     this->GameMode = 0;
@@ -69,8 +68,7 @@ TMousePointer::TMousePointer(int mode)
     this->LastddError = 0;
 }
 
-TMousePointer::~TMousePointer()
-{
+TMousePointer::~TMousePointer() {
     TShape* shape = this->Cursor_Shape;
 
     if (shape != 0) {
@@ -81,8 +79,7 @@ TMousePointer::~TMousePointer()
     MouseSystem = 0;
 }
 
-int TMousePointer::Shutdown_Mouse()
-{
+int TMousePointer::Shutdown_Mouse() {
     if (this->Shutdown != 0) {
         return 0;
     }
@@ -103,8 +100,7 @@ int TMousePointer::Shutdown_Mouse()
     return 1;
 }
 
-int TMousePointer::Restore_Mouse(TDrawArea* area)
-{
+int TMousePointer::Restore_Mouse(TDrawArea* render_area_in) {
     if (this->Shutdown == 0)
         return 0;
 
@@ -112,10 +108,10 @@ int TMousePointer::Restore_Mouse(TDrawArea* area)
         if (this->Setup == 0)
             return 0;
 
-        this->render_area = area;
-        this->renderSurface = area->DrawSurface;
-        this->PrimarySurface = area->DrawSystem->PrimarySurface;
-        this->primary_area = area->DrawSystem->PrimaryArea;
+        this->render_area = render_area_in;
+        this->renderSurface = render_area_in->DrawSurface;
+        this->PrimarySurface = render_area_in->DrawSystem->PrimarySurface;
+        this->primary_area = render_area_in->DrawSystem->PrimaryArea;
 
         if (this->LoadCursors(0, -1, 1) == 0)
             return 0;
@@ -126,36 +122,34 @@ int TMousePointer::Restore_Mouse(TDrawArea* area)
     return 1;
 }
 
-int TMousePointer::setup(int custom_draw, TDrawArea* render_area,
-                         char* base, int palette, int max_cursors)
-{
+int TMousePointer::setup(int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in) {
     char file_name[260];
     MouseSystem = this;
-    this->custom_draw = custom_draw;
-    this->render_area = render_area;
-    if (custom_draw == 0)
+    this->custom_draw = custom_draw_in;
+    this->render_area = render_area_in;
+    if (custom_draw_in == 0)
         return 1;
-    if (render_area->DrawSystem->DrawType == 1)
+    if (render_area_in->DrawSystem->DrawType == 1)
         return 0;
-    this->renderSurface = render_area->DrawSurface;
-    this->PrimarySurface = render_area->DrawSystem->PrimarySurface;
-    this->primary_area = render_area->DrawSystem->PrimaryArea;
+    this->renderSurface = render_area_in->DrawSurface;
+    this->PrimarySurface = render_area_in->DrawSystem->PrimarySurface;
+    this->primary_area = render_area_in->DrawSystem->PrimaryArea;
     SetCursor(0);
-    sprintf(file_name, "%s.slp", base);
-    this->Cursor_Shape = new TShape(file_name, palette);
+    sprintf(file_name, "%s.slp", cursor_file_name);
+    this->Cursor_Shape = new TShape(file_name, cursor_resId);
     if (this->Cursor_Shape == 0)
         return 0;
     if (!this->Cursor_Shape->is_loaded())
         return 0;
     if (this->Cursor_Shape->FShape == 0)
         return 0;
-    this->Max_Cursors = max_cursors;
-    if (max_cursors < 1 || max_cursors > 16)
+    this->Max_Cursors = maxCursors_in;
+    if (maxCursors_in < 1 || maxCursors_in > 16)
         return 0;
     this->Num_Cursors = this->Cursor_Shape->shape_count();
     if (this->Num_Cursors > this->Max_Cursors)
         return 0;
-    if (!this->LoadCursors(base, palette, 0))
+    if (!this->LoadCursors(cursor_file_name, cursor_resId, 0))
         return 0;
     this->set_facet(0);
     this->set_game_facet(0);
@@ -163,39 +157,33 @@ int TMousePointer::setup(int custom_draw, TDrawArea* render_area,
     return 1;
 }
 
-void TMousePointer::set_game_mode(int value)
-{
-    this->GameMode = value;
+void TMousePointer::set_game_mode(int mode) {
+    this->GameMode = mode;
 }
 
-void TMousePointer::set_game_enable(int value)
-{
-    this->GameEnabled = value;
+void TMousePointer::set_game_enable(int enable) {
+    this->GameEnabled = enable;
 }
 
-int TMousePointer::get_game_enable()
-{
+int TMousePointer::get_game_enable() {
     return this->GameEnabled;
 }
 
-int TMousePointer::in_game_mode()
-{
+int TMousePointer::in_game_mode() {
     if (this->GameMode && this->GameEnabled) {
         return 1;
     }
     return 0;
 }
 
-void TMousePointer::set_game_window(int left, int top, int right, int bottom)
-{
-    this->game_window.left = left;
-    this->game_window.top = top;
-    this->game_window.right = right;
-    this->game_window.bottom = bottom;
+void TMousePointer::set_game_window(int Left, int Top, int Right, int Bottom) {
+    this->game_window.left = Left;
+    this->game_window.top = Top;
+    this->game_window.right = Right;
+    this->game_window.bottom = Bottom;
 }
 
-int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
-{
+int TMousePointer::LoadCursors(char* cursor_file_name, int resId, int Reload) {
     int LoadOk = 1;
     int count;
     TShape* old = this->Cursor_Shape;
@@ -203,9 +191,9 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
         delete old;
     }
 
-    if (keep_name == 0) {
-        this->cursor_file_id = file_id;
-        sprintf(this->cursor_file, "%s.slp", base);
+    if (Reload == 0) {
+        this->cursor_file_id = resId;
+        sprintf(this->cursor_file, "%s.slp", cursor_file_name);
     }
 
     TShape* shape = new TShape(this->cursor_file, this->cursor_file_id);
@@ -290,8 +278,7 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
     return LoadOk;
 }
 
-void TMousePointer::delete_surfaces()
-{
+void TMousePointer::delete_surfaces() {
     TMousePointer* self = this;
     TDrawArea* t;
     int i;
@@ -311,8 +298,7 @@ void TMousePointer::delete_surfaces()
     }
 }
 
-int TMousePointer::create_surfaces()
-{
+int TMousePointer::create_surfaces() {
     int i;
     char NameBuf[32];
 
@@ -350,8 +336,7 @@ int TMousePointer::create_surfaces()
     return 1;
 }
 
-int TMousePointer::update_mouse_position()
-{
+int TMousePointer::update_mouse_position() {
     POINT point;
     int in_game;
     if (this->custom_draw == 0)
@@ -436,18 +421,17 @@ int TMousePointer::update_mouse_position()
     return 1;
 }
 
-void TMousePointer::draw(int forced)
-{
+void TMousePointer::draw(int dMode) {
     IDirectDrawClipper* lplpDDClipper;
     lplpDDClipper = 0;
     if (this->active != 0 && this->custom_draw != 0) {
         ulong t = debug_timeGetTime(
             "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 0x2e3);
-        if (this->GameMode != 0 && this->GameEnabled != 0 && forced == 0) {
+        if (this->GameMode != 0 && this->GameEnabled != 0 && dMode == 0) {
             if (t - this->LastDrawTime < 0x22)
                 return;
         }
-        if (this->update_mouse_position() != 0 || forced != 0) {
+        if (this->update_mouse_position() != 0 || dMode != 0) {
             this->LastDrawTime = t;
             if (this->save_area_valid != 0 &&
                 this->restoreSurface != this->PrimarySurface) {
@@ -534,8 +518,7 @@ void TMousePointer::draw(int forced)
     }
 }
 
-void TMousePointer::erase()
-{
+void TMousePointer::erase() {
     if (!active)
         return;
     if (!custom_draw)
@@ -565,13 +548,12 @@ void TMousePointer::erase()
     save_area_valid = 0;
 }
 
-void TMousePointer::set_facet(int f)
-{
-    if (f < 0 || f >= this->Num_Cursors)
+void TMousePointer::set_facet(int facet_in) {
+    if (facet_in < 0 || facet_in >= this->Num_Cursors)
         return;
 
-    this->facet = f;
-    Shape_Info* info = this->Cursor_Shape->shape_info + f;
+    this->facet = facet_in;
+    Shape_Info* info = this->Cursor_Shape->shape_info + facet_in;
     this->cWidth = info->Width;
     this->cHeight = info->Height;
     this->d_top = info->Hotspot_Y;
@@ -580,8 +562,7 @@ void TMousePointer::set_facet(int f)
     this->d_bottom = this->cHeight - info->Hotspot_Y;
 }
 
-void TMousePointer::set_game_facet(int facet_in)
-{
+void TMousePointer::set_game_facet(int facet_in) {
     if (facet_in >= 0 && facet_in < this->Num_Cursors) {
         TShape* shape = this->Cursor_Shape;
         this->game_facet = facet_in;
@@ -595,8 +576,7 @@ void TMousePointer::set_game_facet(int facet_in)
     }
 }
 
-void TMousePointer::off()
-{
+void TMousePointer::off() {
     if (this->Shutdown == 0) {
         if (this->custom_draw != 0 && this->drawn != 0 &&
             this->save_area_valid != 0) {
@@ -609,8 +589,7 @@ void TMousePointer::off()
     }
 }
 
-void TMousePointer::on(void)
-{
+void TMousePointer::on(void) {
     if (this->Shutdown == 0) {
         if (this->custom_draw == 0) {
             SetCursor(LoadCursorA(0, (const char*)0x7F00));
@@ -619,14 +598,12 @@ void TMousePointer::on(void)
     }
 }
 
-void TMousePointer::reset()
-{
+void TMousePointer::reset() {
     this->save_area_valid = 0;
     this->drawn = 0;
 }
 
-void TMousePointer::center()
-{
+void TMousePointer::center() {
     TDrawSystem* draw_system = this->render_area->DrawSystem;
     int x;
     int y;
@@ -643,8 +620,7 @@ void TMousePointer::center()
     SetCursorPos(x, y);
 }
 
-void TMousePointer::Poll()
-{
+void TMousePointer::Poll() {
     IDirectDrawClipper* lplpDDClipper;
     lplpDDClipper = 0;
     if (this->active != 0 && this->custom_draw != 0 &&
@@ -749,9 +725,8 @@ void TMousePointer::Poll()
     }
 }
 
-int TMousePointer::GetDDBltError(long a_hresult)
-{
-    switch (a_hresult) {
+int TMousePointer::GetDDBltError(long theError) {
+    switch (theError) {
     case 0x80004005: return 1;
     case 0x80004001: return 17;
     case 0x88760037: return 18;

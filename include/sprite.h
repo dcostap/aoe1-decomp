@@ -62,42 +62,28 @@ public:
     unsigned char mirror_flag;
     unsigned char gap_75[3];
 
-    RGE_Sprite(short id);
-    RGE_Sprite(int handle, RGE_Sound** sounds,
-               RGE_Color_Table** color_tables);
-    RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds);
+    RGE_Sprite(short in_id);
+    RGE_Sprite(int infile, RGE_Sound** sounds, RGE_Color_Table** c_tables);
+    RGE_Sprite(FILE* infile, short in_id, RGE_Sound** sounds);
     ~RGE_Sprite();
     void rehook(RGE_Sprite** sprites);
-    void save(int handle);
-    void load_facets(RGE_Sprite** facets);
-    void play_sound(short param_1, short param_2, short param_3);
-    unsigned char get_facetindex(long facet, long frame, long& frame_out);
-    void do_draw(long facet, long frame, long x, long y,
-                 RGE_Color_Table* color_table, TDrawArea* draw_area,
-                 unsigned char draw_level);
-    unsigned char draw(long facet, long param_2, long param_3, long param_4,
-                       long param_5, long param_6,
-                       RGE_Color_Table* color_table, TDrawArea* draw_area,
-                       unsigned char color_index);
-    unsigned char normal_draw(long facet, long param_2, long param_3,
-                              long param_4, RGE_Color_Table* color_table,
-                              TDrawArea* draw_area);
-    unsigned char shadow_draw(long facet, long param_2, long param_3,
-                              long param_4, RGE_Color_Table* color_table,
-                              TDrawArea* draw_area, unsigned char draw_level);
-    int get_size(long& min_x, long& min_y, long& max_x, long& max_y,
-                 long facet);
-    int get_frame(short& min_x, short& min_y, short& max_x, short& max_y,
-                  long frame, long facet);
-    int get_frame_min_max(short& min_x, short& min_y, short& max_x,
-                          short& max_y, long frame, long facet,
-                          short offset_x, short offset_y);
+    void save(int outfile);
+    void load_facets(RGE_Sprite** sprites);
+    void play_sound(short frame1, short frame2, short facet);
+    unsigned char get_facetindex(long facet, long frame, long& facetindex);
+    void do_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char min_draw_level);
+    unsigned char draw(long facet, long frame, long x, long y, long sx, long sy, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char min_draw_level);
+    unsigned char normal_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area);
+    unsigned char shadow_draw(long facet, long frame, long x, long y, RGE_Color_Table* player_color, TDrawArea* draw_area, unsigned char flag);
+    int get_size(long& xmin, long& ymin, long& xmax, long& ymax, long facet);
+    int get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet, long frame);
+    int get_frame_min_max(short& min_x, short& min_y, short& max_x, short& max_y, long facet, long frame, short pic_x, short pic_y);
     unsigned char get_lowest_draw_level(void);
-    unsigned char hit_test(short x, short y, long facet, long value);
-    unsigned char shape_hit_test(short x, short y, long facet, long value);
+    unsigned char hit_test(short x, short y, long facet, long frame);
+    unsigned char shape_hit_test(short x, short y, long facet, long frame);
     RGE_Active_Sprite* make_active_sprite();
     int check_for_shadows();
-    void update(unsigned long time);
+    void update(unsigned long curr_time);
 };
 
 typedef char sprite_size_check[(sizeof(RGE_Sprite) == 0x78) ? 1 : -1];

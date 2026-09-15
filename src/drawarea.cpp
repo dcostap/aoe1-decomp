@@ -27,8 +27,7 @@ extern void* __cdecl calloc(unsigned int, unsigned int);
 extern void* __cdecl operator new(unsigned int);
 #pragma function(memset)
 
-TDrawSystem::TDrawSystem()
-{
+TDrawSystem::TDrawSystem() {
     this->Inst = 0;
     this->Wnd = 0;
     this->Pal = 0;
@@ -65,8 +64,7 @@ TDrawSystem::TDrawSystem()
     ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
 }
 
-TDrawSystem::~TDrawSystem()
-{
+TDrawSystem::~TDrawSystem() {
     DDBLTFX ddbltfx;
     if (this->ScreenMode == 2 && this->PrimarySurface != 0) {
         IDirectDrawSurface* s = this->PrimarySurface;
@@ -99,9 +97,8 @@ TDrawSystem::~TDrawSystem()
     }
 }
 
-void TDrawSystem::CheckAvailModes(int param_1)
-{
-    if (param_1 == 0) {
+void TDrawSystem::CheckAvailModes(int full_screen) {
+    if (full_screen == 0) {
         this->ModeAvail640 = 1;
         void* dc = CreateICA("DISPLAY", 0, 0, 0);
         if (dc != 0) {
@@ -134,74 +131,72 @@ void TDrawSystem::CheckAvailModes(int param_1)
     }
 }
 
-long __stdcall TDrawSystem::CheckAvailModesCallback(
-    _DDSURFACEDESC* mode_desc, void* context)
-{
+long __stdcall TDrawSystem::CheckAvailModesCallback(_DDSURFACEDESC* lpDDSurfaceDesc, void* lpContext) {
     register long result = 1;
-    TDrawSystem* mode_info = (TDrawSystem*)context;
-    int bpp = mode_desc->ddpfPixelFormat.dwRGBBitCount;
+    TDrawSystem* mode_info = (TDrawSystem*)lpContext;
+    int bpp = lpDDSurfaceDesc->ddpfPixelFormat.dwRGBBitCount;
 
     if (bpp == 8) {
-        if (mode_desc->dwWidth == 640 && mode_desc->dwHeight == 480) {
+        if (lpDDSurfaceDesc->dwWidth == 640 && lpDDSurfaceDesc->dwHeight == 480) {
             mode_info->ModeAvail640 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 800 && mode_desc->dwHeight == 600) {
+        if (lpDDSurfaceDesc->dwWidth == 800 && lpDDSurfaceDesc->dwHeight == 600) {
             mode_info->ModeAvail800 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 1024 && mode_desc->dwHeight == 768) {
+        if (lpDDSurfaceDesc->dwWidth == 1024 && lpDDSurfaceDesc->dwHeight == 768) {
             mode_info->ModeAvail1024 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 1280 && mode_desc->dwHeight == 1024) {
+        if (lpDDSurfaceDesc->dwWidth == 1280 && lpDDSurfaceDesc->dwHeight == 1024) {
             mode_info->ModeAvail1280 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 320 && mode_desc->dwHeight == 200) {
+        if (lpDDSurfaceDesc->dwWidth == 320 && lpDDSurfaceDesc->dwHeight == 200) {
             mode_info->ModeAvail320_200 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 320 && mode_desc->dwHeight == 240) {
+        if (lpDDSurfaceDesc->dwWidth == 320 && lpDDSurfaceDesc->dwHeight == 240) {
             mode_info->ModeAvail320_240 = 1;
             goto done;
         }
     } else if (bpp == 16) {
-        if (mode_desc->dwWidth == 640 && mode_desc->dwHeight == 480) {
+        if (lpDDSurfaceDesc->dwWidth == 640 && lpDDSurfaceDesc->dwHeight == 480) {
             mode_info->ModeAvail640_16 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 800 && mode_desc->dwHeight == 600) {
+        if (lpDDSurfaceDesc->dwWidth == 800 && lpDDSurfaceDesc->dwHeight == 600) {
             mode_info->ModeAvail800_16 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 1024 && mode_desc->dwHeight == 768) {
+        if (lpDDSurfaceDesc->dwWidth == 1024 && lpDDSurfaceDesc->dwHeight == 768) {
             mode_info->ModeAvail1024_16 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 320 && mode_desc->dwHeight == 200) {
+        if (lpDDSurfaceDesc->dwWidth == 320 && lpDDSurfaceDesc->dwHeight == 200) {
             mode_info->ModeAvail320_200_16 = 1;
             goto done;
         }
-        if (mode_desc->dwWidth == 320 && mode_desc->dwHeight == 240) {
+        if (lpDDSurfaceDesc->dwWidth == 320 && lpDDSurfaceDesc->dwHeight == 240) {
             mode_info->ModeAvail320_240_16 = 1;
             goto done;
         }
     }
 done:
+    // DDENUMRET_OK keeps the DirectDraw mode enumeration running.
     return result;
 }
 
-int TDrawSystem::IsModeAvail(long width, long height, int bpp)
-{
-    if (bpp == 8) {
-        if (width <= 0x280) {
-            if (width != 0x280) {
-                if (width == 0x140) {
-                    if (height == 0xC8) {
+int TDrawSystem::IsModeAvail(long wid_in, long hgt_in, int color_bits) {
+    if (color_bits == 8) {
+        if (wid_in <= 0x280) {
+            if (wid_in != 0x280) {
+                if (wid_in == 0x140) {
+                    if (hgt_in == 0xC8) {
                         return this->ModeAvail320_200;
                     }
-                    if (height == 0xF0) {
+                    if (hgt_in == 0xF0) {
                         return this->ModeAvail320_240;
                     }
                 }
@@ -209,9 +204,9 @@ int TDrawSystem::IsModeAvail(long width, long height, int bpp)
                 return this->ModeAvail640;
             }
         } else {
-            if (width != 0x320) {
-                if (width != 0x400) {
-                    if (width == 0x500) {
+            if (wid_in != 0x320) {
+                if (wid_in != 0x400) {
+                    if (wid_in == 0x500) {
                         return this->ModeAvail1280;
                     }
                 } else {
@@ -221,14 +216,14 @@ int TDrawSystem::IsModeAvail(long width, long height, int bpp)
                 return this->ModeAvail800;
             }
         }
-    } else if (bpp == 0x10) {
-        if (width <= 0x280) {
-            if (width != 0x280) {
-                if (width == 0x140) {
-                    if (height == 0xC8) {
+    } else if (color_bits == 0x10) {
+        if (wid_in <= 0x280) {
+            if (wid_in != 0x280) {
+                if (wid_in == 0x140) {
+                    if (hgt_in == 0xC8) {
                         return this->ModeAvail320_200_16;
                     }
-                    if (height == 0xF0) {
+                    if (hgt_in == 0xF0) {
                         return this->ModeAvail320_240_16;
                     }
                 }
@@ -236,8 +231,8 @@ int TDrawSystem::IsModeAvail(long width, long height, int bpp)
                 return this->ModeAvail640_16;
             }
         } else {
-            if (width != 0x320) {
-                if (width == 0x400) {
+            if (wid_in != 0x320) {
+                if (wid_in == 0x400) {
                     return this->ModeAvail1024_16;
                 }
             } else {
@@ -248,25 +243,24 @@ int TDrawSystem::IsModeAvail(long width, long height, int bpp)
     return 0;
 }
 
-int TDrawSystem::Init(void* inst, void* wnd, void* pal,
-                      unsigned char draw_type, unsigned char screen_mode,
-                      long width, long height, unsigned long flags)
-{
+int TDrawSystem::Init(void* inst_in, void* wnd_in, void* pal_in,
+                      unsigned char type_in, unsigned char mode_in,
+                      long wid_in, long hgt_in, unsigned long flags_in) {
     DDSURFACEDESC ddsd;
     DDBLTFX ddbltfx;
     DDCAPS ddcaps;
     PALETTEENTRY color_table[256];
 
-    this->Inst = inst;
-    this->Wnd = wnd;
-    this->Pal = pal;
-    this->DrawType = draw_type;
-    this->ScreenMode = screen_mode;
-    this->ScreenWidth = width;
-    this->ScreenHeight = height;
-    this->Flags = flags;
+    this->Inst = inst_in;
+    this->Wnd = wnd_in;
+    this->Pal = pal_in;
+    this->DrawType = type_in;
+    this->ScreenMode = mode_in;
+    this->ScreenWidth = wid_in;
+    this->ScreenHeight = hgt_in;
+    this->Flags = flags_in;
 
-    if (draw_type == 1)
+    if (type_in == 1)
         return 0;
 
     if (DirectDrawCreate(0, &this->DirDraw, 0) != 0) {
@@ -292,8 +286,7 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
             this->ErrorCode = 2;
             return 0;
         }
-    }
-    else {
+    } else {
         if (this->DirDraw->SetCooperativeLevel(this->Wnd, 0x11) != 0) {
             this->ErrorCode = 1;
             return 0;
@@ -310,8 +303,7 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
 
     if (this->Pal != 0) {
         GetPaletteEntries(this->Pal, 0, 256, color_table);
-    }
-    else {
+    } else {
         for (int index = 0; index < 256; ++index) {
             color_table[index].peRed = 0;
             color_table[index].peBlue = 0;
@@ -369,8 +361,7 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
     return 1;
 }
 
-int TDrawSystem::SetDisplaySize(long wid, long hgt, int bits)
-{
+int TDrawSystem::SetDisplaySize(long wid_in, long hgt_in, int color_bits) {
     _DDBLTFX ddbltfx;
     long save_wid;
     long save_hgt;
@@ -384,10 +375,10 @@ int TDrawSystem::SetDisplaySize(long wid, long hgt, int bits)
     this->PrimarySurface->Blt(0, 0, 0, 0x1000400, &ddbltfx);
     save_wid = this->ScreenWidth;
     save_hgt = this->ScreenHeight;
-    this->ScreenWidth = wid;
-    this->ScreenHeight = hgt;
+    this->ScreenWidth = wid_in;
+    this->ScreenHeight = hgt_in;
 
-    if (this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, bits) != 0) {
+    if (this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, color_bits) != 0) {
         system_ignore_size_messages = 0;
         this->ScreenWidth = save_wid;
         this->ScreenHeight = save_hgt;
@@ -395,7 +386,7 @@ int TDrawSystem::SetDisplaySize(long wid, long hgt, int bits)
     }
 
     system_ignore_size_messages = 0;
-    this->ColorBits = bits;
+    this->ColorBits = color_bits;
     this->ChangedMode = 1;
 
     if (this->PrimarySurface != 0) {
@@ -407,12 +398,11 @@ int TDrawSystem::SetDisplaySize(long wid, long hgt, int bits)
     if (this->DrawArea != 0)
         this->DrawArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
 
-    SendMessageA(this->Wnd, 5, 0, MAKELONG(wid, hgt));
+    SendMessageA(this->Wnd, 5, 0, MAKELONG(wid_in, hgt_in));
     return 1;
 }
 
-void TDrawSystem::ClearPrimarySurface()
-{
+void TDrawSystem::ClearPrimarySurface() {
     if (this->ScreenMode != 2)
         return;
 
@@ -426,8 +416,7 @@ void TDrawSystem::ClearPrimarySurface()
     surface->Blt(0, 0, 0, 0x1000400, &ddbltfx);
 }
 
-unsigned char TDrawSystem::CheckSurfaces()
-{
+unsigned char TDrawSystem::CheckSurfaces() {
     if (this->DrawType != 2)
         return 0;
 
@@ -475,8 +464,7 @@ unsigned char TDrawSystem::CheckSurfaces()
     return 3;
 }
 
-void TDrawSystem::ClearRestored()
-{
+void TDrawSystem::ClearRestored() {
     DrawAreaNode* node;
 
     node = this->DrawAreaList;
@@ -487,8 +475,7 @@ void TDrawSystem::ClearRestored()
     }
 }
 
-void TDrawSystem::DeleteSurfaces()
-{
+void TDrawSystem::DeleteSurfaces() {
     if (this->DrawArea != 0) {
         delete this->DrawArea;
         this->DrawArea = 0;
@@ -504,8 +491,7 @@ void TDrawSystem::DeleteSurfaces()
     }
 }
 
-int TDrawSystem::CreateSurfaces()
-{
+int TDrawSystem::CreateSurfaces() {
     DDSURFACEDESC ddsd;
     DDBLTFX ddbltfx;
     RECT wnd_rect;
@@ -553,7 +539,7 @@ int TDrawSystem::CreateSurfaces()
     return 1;
 }
 
-void TDrawSystem::HandleSize(void* hwnd, unsigned int msg, unsigned int wparam, long lparam) {
+void TDrawSystem::HandleSize(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     if (this->DrawArea == 0) return;
 
     if (this->DrawType == 1 || this->ScreenMode == 1) {
@@ -570,14 +556,13 @@ void TDrawSystem::HandleSize(void* hwnd, unsigned int msg, unsigned int wparam, 
     this->DrawArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
 }
 
-void TDrawSystem::HandlePaletteChanged(void* hwnd, unsigned int msg, unsigned int wparam, long lparam) {
+void TDrawSystem::HandlePaletteChanged(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     if (hwnd != this->Wnd) {
-        HandleQueryNewPalette(hwnd, msg, wparam, lparam);
+        HandleQueryNewPalette(hwnd, msg, wParam, lParam);
     }
 }
 
-int TDrawSystem::HandleQueryNewPalette(void* param1, unsigned int param2, unsigned int param3, long param4)
-{
+int TDrawSystem::HandleQueryNewPalette(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     if (this->Pal != 0 && (this->DrawType == 1 || this->ScreenMode == 1)) {
         void* hdc = GetDC(this->Wnd);
         if (this->Pal != 0)
@@ -593,8 +578,7 @@ int TDrawSystem::HandleQueryNewPalette(void* param1, unsigned int param2, unsign
     return 0;
 }
 
-void TDrawSystem::Paint(tagRECT* rect)
-{
+void TDrawSystem::Paint(tagRECT* rect) {
     tagRECT dest;
     tagRECT src;
 
@@ -612,8 +596,7 @@ void TDrawSystem::Paint(tagRECT* rect)
 
         ClientToScreen(this->Wnd, (POINT*)&dest.left);
         ClientToScreen(this->Wnd, (POINT*)&dest.right);
-    }
-    else {
+    } else {
         src.left = 0;
         src.top = 0;
         src.right = this->ScreenWidth;
@@ -655,8 +638,8 @@ void TDrawSystem::Paint(tagRECT* rect)
                               0x1000000, 0);
 }
 
-int TDrawSystem::GetIsLostErrorNum(long error_num) {
-    switch (error_num) {
+int TDrawSystem::GetIsLostErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0x88760082: return 0x6A4;
     case 0x80070057: return 0x6A5;
     case 0x887601C2: return 0x6A6;
@@ -665,9 +648,8 @@ int TDrawSystem::GetIsLostErrorNum(long error_num) {
     }
 }
 
-int TDrawSystem::GetRestoreErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetRestoreErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0:
         return 0;
     case (long)0x80004005:
@@ -693,9 +675,8 @@ int TDrawSystem::GetRestoreErrorNum(long hr)
     }
 }
 
-int TDrawSystem::GetSetDispModeErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetSetDispModeErrorNum(long ddrval) {
+    switch (ddrval) {
     case (long)0x00000000: return 0;
     case (long)0x80004001: return 0x773;
     case (long)0x80004005: return 0x76C;
@@ -711,9 +692,8 @@ int TDrawSystem::GetSetDispModeErrorNum(long hr)
     }
 }
 
-int TDrawSystem::GetLockErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetLockErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0:
         return 0;
     case (long)0x80004005:
@@ -739,9 +719,8 @@ int TDrawSystem::GetLockErrorNum(long hr)
     }
 }
 
-int TDrawSystem::GetDCErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetDCErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0:
         return 0;
     case -2147467259L:
@@ -765,9 +744,8 @@ int TDrawSystem::GetDCErrorNum(long hr)
     }
 }
 
-int TDrawSystem::GetBlitErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetBlitErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0:
         return 0;
     case (long)0x80004005:
@@ -809,9 +787,8 @@ int TDrawSystem::GetBlitErrorNum(long hr)
     }
 }
 
-int TDrawSystem::GetCreateErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetCreateErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0:
         return 0;
     case (long)0x80004005:
@@ -851,9 +828,8 @@ int TDrawSystem::GetCreateErrorNum(long hr)
     }
 }
 
-int TDrawSystem::GetColorKeyErrorNum(long hr)
-{
-    switch (hr) {
+int TDrawSystem::GetColorKeyErrorNum(long ddrval) {
+    switch (ddrval) {
     case 0:
         return 0;
     case (long)0x80004005:
@@ -879,16 +855,15 @@ int TDrawSystem::GetColorKeyErrorNum(long hr)
     }
 }
 
-void TDrawSystem::SetPalette(void* hPal)
-{
+void TDrawSystem::SetPalette(void* pal_in) {
     tagPALETTEENTRY color_table[256];
     tagPALETTEENTRY* p;
     int count;
 
-    this->Pal = hPal;
+    this->Pal = pal_in;
 
-    if (hPal) {
-        GetPaletteEntries(hPal, 0, 0x100, color_table);
+    if (pal_in) {
+        GetPaletteEntries(pal_in, 0, 0x100, color_table);
     } else {
         p = color_table;
         count = 0x100;
@@ -915,27 +890,26 @@ void TDrawSystem::SetPalette(void* hPal)
     this->ModifyPalette(0, 0x100, color_table);
 }
 
-void TDrawSystem::ModifyPalette(int start, int count, PALETTEENTRY* entries) {
+void TDrawSystem::ModifyPalette(int start_entry, int num_entries, PALETTEENTRY* pal_entries) {
     PalSetRes = -99;
 
-    if (count == 256) {
+    if (num_entries == 256) {
         FullPalSets++;
     }
 
-    for (int i = start; i < start + count; i++) {
-        palette[i] = entries[i - start];
+    for (int i = start_entry; i < start_entry + num_entries; i++) {
+        palette[i] = pal_entries[i - start_entry];
     }
 
     if (DrawType != 1 && DirDrawPal != 0) {
-        if (count == 7) {
+        if (num_entries == 7) {
             AniPalSets++;
         }
-        DirDrawPal->SetEntries(0, start, count, entries);
+        DirDrawPal->SetEntries(0, start_entry, num_entries, pal_entries);
     }
 }
 
-TDrawArea::TDrawArea(char* name, int system_mem_only)
-{
+TDrawArea::TDrawArea(char* SurfaceName, int ForceSystemMem) {
     this->DrawSystem = 0;
     this->Wnd = 0;
     this->DrawSurface = 0;
@@ -953,7 +927,7 @@ TDrawArea::TDrawArea(char* name, int system_mem_only)
     this->Node = 0;
     this->Restored = 0;
     this->IsPrimarySurface = 0;
-    this->SystemMemOnly = system_mem_only;
+    this->SystemMemOnly = ForceSystemMem;
     this->ClipRect.left = 0;
     this->ClipRect.top = 0;
     this->ClipRect.right = 0;
@@ -975,18 +949,16 @@ TDrawArea::TDrawArea(char* name, int system_mem_only)
     this->CurSpanList = 0;
     this->shadow_color_table = 0;
 
-    int name_length = (int)strlen(name);
+    int name_length = (int)strlen(SurfaceName);
     if (name_length > 0) {
         this->Name = (char*)malloc(name_length + 1);
-        strcpy(this->Name, name);
-    }
-    else {
+        strcpy(this->Name, SurfaceName);
+    } else {
         this->Name = 0;
     }
 }
 
-TDrawArea::~TDrawArea()
-{
+TDrawArea::~TDrawArea() {
     DrawAreaNode* node = this->Node;
     if (node != 0) {
         TDrawSystem* draw_system = this->DrawSystem;
@@ -1014,8 +986,7 @@ TDrawArea::~TDrawArea()
             surface->Release();
             this->DrawSurface = 0;
         }
-    }
-    else if (this->DrawDc != 0) {
+    } else if (this->DrawDc != 0) {
         if (this->Bitmap != 0) {
             if (this->OldBitmap != 0) {
                 SelectObject(this->DrawDc, this->OldBitmap);
@@ -1045,16 +1016,15 @@ TDrawArea::~TDrawArea()
     }
 }
 
-int TDrawArea::Init(TDrawSystem* draw_system, long width, long height,
-                    int flags, int is_primary)
-{
+int TDrawArea::Init(TDrawSystem* draw_system_in, long wid_in, long hgt_in,
+                    int Extend, int isPrimary_in) {
     DrawAreaNode* node;
     DrawAreaNode* cur;
 
-    this->DrawSystem = draw_system;
-    this->IsPrimarySurface = is_primary;
-    if (draw_system != 0) {
-        this->Wnd = draw_system->Wnd;
+    this->DrawSystem = draw_system_in;
+    this->IsPrimarySurface = isPrimary_in;
+    if (draw_system_in != 0) {
+        this->Wnd = draw_system_in->Wnd;
         if (this->Node == 0) {
             node = (DrawAreaNode*)calloc(1, 0x0C);
             this->Node = node;
@@ -1082,12 +1052,11 @@ int TDrawArea::Init(TDrawSystem* draw_system, long width, long height,
         }
     }
 
-    this->SetSize(width, height, flags);
+    this->SetSize(wid_in, hgt_in, Extend);
     return 1;
 }
 
-unsigned char TDrawArea::CheckSurface()
-{
+unsigned char TDrawArea::CheckSurface() {
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 2) {
         if (this->DrawSurface == 0)
             return 3;
@@ -1132,8 +1101,7 @@ unsigned char TDrawArea::CheckSurface()
     return 0;
 }
 
-unsigned char* TDrawArea::Lock(char* name, int waitFlag)
-{
+unsigned char* TDrawArea::Lock(char* caller_name, int wait) {
     if (this->DrawSystem != 0) {
         if (this->DrawSystem->DrawType == 1)
             return this->Bits;
@@ -1149,10 +1117,9 @@ unsigned char* TDrawArea::Lock(char* name, int waitFlag)
         return 0;
 
     int hr;
-    if (waitFlag) {
+    if (wait) {
         hr = this->DrawSurface->Lock(0, &this->SurfaceDesc, 1, 0);
-    }
-    else {
+    } else {
         hr = this->DrawSurface->Lock(0, &this->SurfaceDesc, 0, 0);
     }
 
@@ -1168,8 +1135,7 @@ unsigned char* TDrawArea::Lock(char* name, int waitFlag)
     return this->Bits;
 }
 
-void TDrawArea::Unlock(char* name)
-{
+void TDrawArea::Unlock(char* caller_name) {
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 1)
         return;
 
@@ -1183,8 +1149,7 @@ void TDrawArea::Unlock(char* name)
     this->Bits = 0;
 }
 
-void* TDrawArea::GetDc(char* unused)
-{
+void* TDrawArea::GetDc(char* caller_name) {
     if (this->DrawSystem != 0) {
         if (this->DrawSystem->DrawType == 1)
             return this->DrawDc;
@@ -1204,8 +1169,7 @@ void* TDrawArea::GetDc(char* unused)
     return this->DrawDc;
 }
 
-void TDrawArea::ReleaseDc(char* name)
-{
+void TDrawArea::ReleaseDc(char* caller_name) {
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 1)
         return;
 
@@ -1219,39 +1183,37 @@ void TDrawArea::ReleaseDc(char* name)
     this->DrawDc = 0;
 }
 
-void TDrawArea::SetSize(long width, long height, int flags)
-{
+void TDrawArea::SetSize(long wid_in, long hgt_in, int ExtendSurface) {
     DDSURFACEDESC ddsd;
     DDBLTFX ddbltfx;
     TDrawSystem* draw_system = this->DrawSystem;
 
     if (draw_system != 0 && draw_system->DrawType != 1) {
         if (this->DrawSystem != 0 && this->DrawSystem->DirDraw != 0 &&
-            width != 0 && height != 0 &&
-            (width != this->Width || height != this->Height ||
+            wid_in != 0 && hgt_in != 0 &&
+            (wid_in != this->Width || hgt_in != this->Height ||
              this->DrawSurface == 0)) {
-            if (width < 1) {
-                width = 1;
+            if (wid_in < 1) {
+                wid_in = 1;
             }
-            if (height < 1) {
-                height = 1;
-            }
-
-            long surface_height = height + 10;
-            if (flags == 0) {
-                surface_height = height;
+            if (hgt_in < 1) {
+                hgt_in = 1;
             }
 
-            this->ExtendedLines = flags;
-            this->BitmapInfo->bmiHeader.biWidth = width;
+            long surface_height = hgt_in + 10;
+            if (ExtendSurface == 0) {
+                surface_height = hgt_in;
+            }
+
+            this->ExtendedLines = ExtendSurface;
+            this->BitmapInfo->bmiHeader.biWidth = wid_in;
             if (this->Orien == 1) {
                 this->BitmapInfo->bmiHeader.biHeight = -surface_height;
-            }
-            else {
+            } else {
                 this->BitmapInfo->bmiHeader.biHeight = surface_height;
             }
-            this->Width = width;
-            this->Height = height;
+            this->Width = wid_in;
+            this->Height = hgt_in;
 
             if (this->IsPrimarySurface == 0) {
                 if (this->DrawSurface != 0) {
@@ -1266,10 +1228,9 @@ void TDrawArea::SetSize(long width, long height, int flags)
                 ddsd.dwSize = 0x6C;
                 ddsd.dwFlags = 7;
                 if ((this->DrawSystem->Flags & 1) != 0 ||
-                    flags != 0 || this->SystemMemOnly != 0) {
+                    ExtendSurface != 0 || this->SystemMemOnly != 0) {
                     ddsd.ddsCaps.dwCaps = 0x840;
-                }
-                else {
+                } else {
                     ddsd.ddsCaps.dwCaps = 0x40;
                 }
                 ddsd.dwHeight = surface_height;
@@ -1287,13 +1248,11 @@ void TDrawArea::SetSize(long width, long height, int flags)
                         ddbltfx.dwFillColor = 0;
                         this->DrawSurface->Blt(0, 0, 0, 0x1000400,
                                                &ddbltfx);
-                    }
-                    else {
+                    } else {
                         this->DrawSystem->GetCreateErrorNum(hr);
                     }
                 }
-            }
-            else {
+            } else {
                 this->DrawSurface = this->DrawSystem->PrimarySurface;
             }
 
@@ -1306,22 +1265,21 @@ void TDrawArea::SetSize(long width, long height, int flags)
         delete this->SpanList;
     }
 
-    this->SpanList = new TSpan_List_Manager(width, height);
+    this->SpanList = new TSpan_List_Manager(wid_in, hgt_in);
     int i = 0;
-    if (height > 0) {
+    if (hgt_in > 0) {
         do {
-            this->SpanList->AddSpan(0, width - 1, i);
+            this->SpanList->AddSpan(0, wid_in - 1, i);
             ++i;
-        } while (i < height);
+        } while (i < hgt_in);
     }
     this->CurSpanList = this->SpanList;
 }
 
-void TDrawArea::Clear(tagRECT* rect, int color)
-{
+void TDrawArea::Clear(tagRECT* rect, int color) {
     RECT dest;
     DDBLTFX ddbltfx;
-    int width;
+    int wid;
 
     if (DDSys_CanColorFill == 0) {
         this->PtrClear(rect, color);
@@ -1366,13 +1324,12 @@ void TDrawArea::Clear(tagRECT* rect, int color)
         if (right <= left || bottom <= top)
             return;
 
-        width = right - left + 1;
+        wid = right - left + 1;
         int delta;
         if (this->Orien == 1) {
             bits += top * this->Pitch + left;
             delta = this->Pitch;
-        }
-        else {
+        } else {
             bits += (this->Height - top - 1) * this->Pitch + left;
             delta = -this->Pitch;
         }
@@ -1380,7 +1337,7 @@ void TDrawArea::Clear(tagRECT* rect, int color)
         if (top <= bottom) {
             int height = bottom - top + 1;
             do {
-                memset(bits, color, width);
+                memset(bits, color, wid);
                 bits += delta;
                 --height;
             } while (height != 0);
@@ -1408,8 +1365,7 @@ void TDrawArea::Clear(tagRECT* rect, int color)
     surface->Blt(&dest, 0, 0, 0x1000400, &ddbltfx);
 }
 
-void TDrawArea::SetAccessOffsets()
-{
+void TDrawArea::SetAccessOffsets() {
     int size = this->Height << 2;
     if (size != this->DisplayOffsetsSz) {
         if (this->DisplayOffsets != 0)
@@ -1422,6 +1378,7 @@ void TDrawArea::SetAccessOffsets()
     unsigned char* p;
     int delta;
     if (this->Orien == 1 || this->ExtendedLines != 0) {
+        // Extended surfaces place five extra rows before the visible rows.
         if (this->ExtendedLines == 0)
             p = this->Bits;
         else
@@ -1430,8 +1387,7 @@ void TDrawArea::SetAccessOffsets()
         delta = this->Pitch;
         if (this->ExtendedLines != 0)
             delta = this->Width;
-    }
-    else {
+    } else {
         p = this->Bits + (this->Height - 1) * this->Pitch;
         delta = -this->Pitch;
     }
@@ -1451,10 +1407,9 @@ void TDrawArea::SetAccessOffsets()
     this->LastBits = this->Bits;
 }
 
-void TDrawArea::SetFloatOffsets(int x, int y)
-{
+void TDrawArea::SetFloatOffsets(int X_Delta, int Y_Delta) {
     int size = this->Height << 2;
-    if (size != 0 && this->ExtendedLines != 0 && x >= 0 && y >= 0) {
+    if (size != 0 && this->ExtendedLines != 0 && X_Delta >= 0 && Y_Delta >= 0) {
         if (size != this->FloatOffsetsSz) {
             if (this->FloatOffsets != 0)
                 free(this->FloatOffsets);
@@ -1463,19 +1418,19 @@ void TDrawArea::SetFloatOffsets(int x, int y)
         }
 
         int out = 0;
-        int cur = y;
+        int cur = Y_Delta;
         if (this->Height > 0) {
             do {
                 this->FloatOffsets[out] =
-                    (void*)((unsigned char*)this->DisplayOffsets[cur] + x);
+                    (void*)((unsigned char*)this->DisplayOffsets[cur] + X_Delta);
                 cur++;
                 if (cur >= this->Height)
                     cur = 0;
                 out++;
             } while (out < this->Height);
         }
-        this->Float_X_Delta = x;
-        this->Float_Y_Delta = y;
+        this->Float_X_Delta = X_Delta;
+        this->Float_Y_Delta = Y_Delta;
         this->CurDisplayOffsets = this->FloatOffsets;
     }
 }
@@ -1490,13 +1445,11 @@ void TDrawArea::SetInfo(void) {
     this->UsingVidMem = 1;
 }
 
-long TDrawArea::AlignedWidth()
-{
+long TDrawArea::AlignedWidth() {
     return this->Pitch;
 }
 
-void TDrawArea::SetClipRect(tagRECT* rect)
-{
+void TDrawArea::SetClipRect(tagRECT* rect) {
     if (rect != 0) {
         this->ClipRect.left = rect->left;
         this->ClipRect.top = rect->top;
@@ -1505,29 +1458,25 @@ void TDrawArea::SetClipRect(tagRECT* rect)
 
         if (this->ClipRect.left < 0) {
             this->ClipRect.left = 0;
-        }
-        else if (this->ClipRect.left > this->Width - 1) {
+        } else if (this->ClipRect.left > this->Width - 1) {
             this->ClipRect.left = this->Width - 1;
         }
 
         if (this->ClipRect.right < 0) {
             this->ClipRect.right = 0;
-        }
-        else if (this->ClipRect.right > this->Width - 1) {
+        } else if (this->ClipRect.right > this->Width - 1) {
             this->ClipRect.right = this->Width - 1;
         }
 
         if (this->ClipRect.top < 0) {
             this->ClipRect.top = 0;
-        }
-        else if (this->ClipRect.top > this->Height - 1) {
+        } else if (this->ClipRect.top > this->Height - 1) {
             this->ClipRect.top = this->Height - 1;
         }
 
         if (this->ClipRect.bottom < 0) {
             this->ClipRect.bottom = 0;
-        }
-        else if (this->ClipRect.bottom > this->Height - 1) {
+        } else if (this->ClipRect.bottom > this->Height - 1) {
             this->ClipRect.bottom = this->Height - 1;
         }
 
@@ -1542,8 +1491,7 @@ void TDrawArea::SetClipRect(tagRECT* rect)
             this->ClipRect.bottom = this->ClipRect.top;
             this->ClipRect.top = temp;
         }
-    }
-    else {
+    } else {
         this->ClipRect.left = 0;
         this->ClipRect.top = 0;
         this->ClipRect.right = this->Width - 1;
@@ -1554,14 +1502,13 @@ void TDrawArea::SetClipRect(tagRECT* rect)
                       this->ClipRect.right, this->ClipRect.bottom);
 }
 
-void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
-{
+void TDrawArea::SetClipRect(long x1, long y1, long x2, long y2) {
     TSpan_List_Manager* span_list = this->SpanList;
 
-    this->ClipRect.left = left;
-    this->ClipRect.top = top;
-    this->ClipRect.right = right;
-    this->ClipRect.bottom = bottom;
+    this->ClipRect.left = x1;
+    this->ClipRect.top = y1;
+    this->ClipRect.right = x2;
+    this->ClipRect.bottom = y2;
 
     if (span_list != 0 && span_list->Num_Lines != this->Height) {
         if (this->SpanList != 0) {
@@ -1592,8 +1539,7 @@ void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
 }
 
 void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
-                     RECT* src_rect, int allow_trans)
-{
+                     RECT* src_rect, int allow_trans) {
     static long ddrval;
     static int err;
     tagRECT dest_rect2;
@@ -1612,8 +1558,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
             src_y = 0;
             width = this->Width;
             height = this->Height;
-        }
-        else {
+        } else {
             src_x = src_rect->left;
             src_y = src_rect->top;
             width = src_rect->right - src_x + 1;
@@ -1630,8 +1575,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
                         &dest_area->ClipRect, dest_x, dest_y, width, height,
                         this->BitmapInfo, this->Bits, 0, src_x, src_y, width,
                         height, 1, 0, 0, this->TransColor);
-        }
-        else {
+        } else {
             DibBlt(dest_area->BitmapInfo, dest_area->Bits,
                    &dest_area->ClipRect, dest_x, dest_y, width, height,
                    this->BitmapInfo, this->Bits, src_x, src_y, width, height,
@@ -1650,8 +1594,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
         src_rect2.top = 0;
         src_rect2.right = this->Width - 1;
         src_rect2.bottom = this->Height - 1;
-    }
-    else {
+    } else {
         src_rect2.left = src_rect->left;
         src_rect2.top = src_rect->top;
         src_rect2.right = src_rect->right;
@@ -1716,8 +1659,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
     if (this->UseTrans != 0 && allow_trans != 0) {
         ddrval = dest_area->DrawSurface->Blt(
             &dest_rect2, this->DrawSurface, &src_rect2, 0x1008000, 0);
-    }
-    else {
+    } else {
         ddrval = dest_area->DrawSurface->Blt(
             &dest_rect2, this->DrawSurface, &src_rect2, 0x1000000, 0);
     }
@@ -1730,16 +1672,15 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
     err = 0;
 }
 
-void TDrawArea::SetTrans(int useTrans, unsigned char transColor)
-{
-    this->UseTrans = useTrans;
+void TDrawArea::SetTrans(int use_trans_in, unsigned char trans_color_in) {
+    this->UseTrans = use_trans_in;
 
-    if (useTrans != 0)
-        this->TransColor = transColor;
+    if (use_trans_in != 0)
+        this->TransColor = trans_color_in;
     else
         this->TransColor = 0xFF;
 
-    if (useTrans == 0)
+    if (use_trans_in == 0)
         return;
 
     if (this->DrawSurface == 0)
@@ -1757,12 +1698,11 @@ void TDrawArea::SetTrans(int useTrans, unsigned char transColor)
     this->DrawSurface->SetColorKey(8, (DDCOLORKEY*)ddck);
 }
 
-void TDrawArea::SetOverlayTrans(int useTrans, unsigned char transColor)
-{
-    this->UseTrans = useTrans;
-    this->TransColor = transColor;
+void TDrawArea::SetOverlayTrans(int use_trans_in, unsigned char trans_color_in) {
+    this->UseTrans = use_trans_in;
+    this->TransColor = trans_color_in;
 
-    if (useTrans == 0)
+    if (use_trans_in == 0)
         return;
 
     if (this->DrawSurface == 0)
@@ -1775,8 +1715,8 @@ void TDrawArea::SetOverlayTrans(int useTrans, unsigned char transColor)
         return;
 
     int ddck[2];
-    ddck[0] = transColor;
-    ddck[1] = transColor;
+    ddck[0] = trans_color_in;
+    ddck[1] = trans_color_in;
     this->DrawSurface->SetColorKey(0x10, (DDCOLORKEY*)ddck);
 }
 
@@ -1795,15 +1735,13 @@ void TDrawArea::SetPixel(long x, long y, unsigned char color) {
 
     if (Orien == 1) {
         Bits[Pitch * y + x] = color;
-    }
-    else {
+    } else {
         Bits[((Height - y) - 1) * Pitch + x] = color;
     }
 }
 
 void TDrawArea::DrawLine(int x1, int y1, int x2, int y2,
-                         unsigned char color)
-{
+                         unsigned char color) {
     int temp;
 
     if (x1 == x2) {
@@ -1841,8 +1779,7 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2,
     if (y1 < y2) {
         y_length = y2 - y1 + 1;
         y_step = 1;
-    }
-    else {
+    } else {
         y_length = y1 - y2 + 1;
         y_step = -1;
     }
@@ -1881,8 +1818,7 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2,
 }
 
 void TDrawArea::DrawRect(long x1, long y1, long x2, long y2,
-                         unsigned char color)
-{
+                         unsigned char color) {
     // Ensure x1 <= x2
     if (x1 > x2) {
         int tmp = x1;
@@ -1917,8 +1853,7 @@ void TDrawArea::DrawRect(tagRECT* rect, unsigned char mode) {
 }
 
 
-void TDrawArea::DrawHorzLine(long x, long y, long w, unsigned char color)
-{
+void TDrawArea::DrawHorzLine(long x, long y, long len, unsigned char color) {
     if (this->Bits == 0)
         return;
 
@@ -1929,15 +1864,15 @@ void TDrawArea::DrawHorzLine(long x, long y, long w, unsigned char color)
         return;
 
     if (x < this->ClipRect.left) {
-        w += x - this->ClipRect.left;
+        len += x - this->ClipRect.left;
         x = this->ClipRect.left;
     }
 
-    if (x + w - 1 > this->ClipRect.right) {
-        w = this->ClipRect.right - x + 1;
+    if (x + len - 1 > this->ClipRect.right) {
+        len = this->ClipRect.right - x + 1;
     }
 
-    if (w < 1)
+    if (len < 1)
         return;
 
     int offset;
@@ -1946,28 +1881,45 @@ void TDrawArea::DrawHorzLine(long x, long y, long w, unsigned char color)
     else
         offset = (this->Height - y - 1) * this->Pitch;
 
-    memset(this->Bits + offset + x, color, w);
+    memset(this->Bits + offset + x, color, len);
 }
 
-void TDrawArea::DrawVertLine(long x, long y, long h, unsigned char color)
-{
+void TDrawArea::DrawVertLine(long x, long y, long len, unsigned char color) {
     unsigned char* bits = this->Bits;
-    if (bits == 0) return;
-    if (x < this->ClipRect.left || x > this->ClipRect.right) return;
-    if (y > this->ClipRect.bottom) return;
-    if (y < this->ClipRect.top) { h += y - this->ClipRect.top; y = this->ClipRect.top; }
-    if (y + h - 1 > this->ClipRect.bottom) h = this->ClipRect.bottom - y + 1;
-    if (h < 1) return;
-    unsigned char* dest; int step;
-    if (this->Orien == 1) { dest = bits + y * this->Pitch + x; step = this->Pitch; }
-    else { dest = bits + (this->Height - y - 1) * this->Pitch + x; step = -this->Pitch; }
-    while (h > 0) { *dest = color; dest += step; h--; }
+    if (bits == 0)
+        return;
+    if (x < this->ClipRect.left || x > this->ClipRect.right)
+        return;
+    if (y > this->ClipRect.bottom)
+        return;
+    if (y < this->ClipRect.top) {
+        len += y - this->ClipRect.top;
+        y = this->ClipRect.top;
+    }
+    if (y + len - 1 > this->ClipRect.bottom)
+        len = this->ClipRect.bottom - y + 1;
+    if (len < 1)
+        return;
+
+    unsigned char* dest;
+    int step;
+    if (this->Orien == 1) {
+        dest = bits + y * this->Pitch + x;
+        step = this->Pitch;
+    } else {
+        dest = bits + (this->Height - y - 1) * this->Pitch + x;
+        step = -this->Pitch;
+    }
+    while (len > 0) {
+        *dest = color;
+        dest += step;
+        len--;
+    }
 }
 
 void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
-                         unsigned char color)
-{
-    long width;
+                         unsigned char color) {
+    long rect_wid;
     long height;
     long delta;
     unsigned char* p;
@@ -1998,9 +1950,9 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
         if (y2 > this->ClipRect.bottom)
             y2 = this->ClipRect.bottom;
 
-        width = x2 - x1 + 1;
+        rect_wid = x2 - x1 + 1;
         height = y2 - y1 + 1;
-        if (width < 1 || height < 1)
+        if (rect_wid < 1 || height < 1)
             return;
 
         if (this->Orien == 1) {
@@ -2012,19 +1964,42 @@ void TDrawArea::FillRect(long x1, long y1, long x2, long y2,
         }
 
         while (height > 0) {
-            memset(p, color, width);
+            memset(p, color, rect_wid);
             p += delta;
             --height;
         }
     }
 }
 
-void TDrawArea::DrawBevel(long x1,long y1,long x2,long y2,unsigned char c1,unsigned char c2){ if(x1>x2){long t=x1;x1=x2;x2=t;} if(y1>y2){long t=y1;y1=y2;y2=t;} long w=x2-x1+1; if(w<1)return; long h=y2-y1+1; if(h<1)return; DrawHorzLine(x1+1,y1,w-1,c1); DrawVertLine(x2,y1+1,h-1,c1); DrawHorzLine(x1,y2,w,c2); DrawVertLine(x1,y1,h-1,c2);}
+void TDrawArea::DrawBevel(long x1, long y1, long x2, long y2,
+                          unsigned char c1, unsigned char c2) {
+    if (x1 > x2) {
+        long temp = x1;
+        x1 = x2;
+        x2 = temp;
+    }
+    if (y1 > y2) {
+        long temp = y1;
+        y1 = y2;
+        y2 = temp;
+    }
+
+    long w = x2 - x1 + 1;
+    if (w < 1)
+        return;
+    long rect_hgt = y2 - y1 + 1;
+    if (rect_hgt < 1)
+        return;
+
+    DrawHorzLine(x1 + 1, y1, w - 1, c1);
+    DrawVertLine(x2, y1 + 1, rect_hgt - 1, c1);
+    DrawHorzLine(x1, y2, w, c2);
+    DrawVertLine(x1, y1, rect_hgt - 1, c2);
+}
 
 void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
                            unsigned char c1, unsigned char c2,
-                           unsigned char c3, unsigned char c4)
-{
+                           unsigned char c3, unsigned char c4) {
     int width;
     int height;
     int x1_plus_one;
@@ -2063,8 +2038,7 @@ void TDrawArea::DrawBevel2(long x1, long y1, long x2, long y2,
 void TDrawArea::DrawBevel3(long x1, long y1, long x2, long y2,
                            unsigned char c1, unsigned char c2,
                            unsigned char c3, unsigned char c4,
-                           unsigned char c5, unsigned char c6)
-{
+                           unsigned char c5, unsigned char c6) {
     if (x1 > x2) {
         long temp = x1;
         x1 = x2;
@@ -2103,8 +2077,7 @@ void TDrawArea::DrawBevel3(long x1, long y1, long x2, long y2,
 
 void TDrawArea::DrawBevel21(long x1, long y1, long x2, long y2,
                             unsigned char c1, unsigned char c2,
-                            unsigned char c3, unsigned char c4)
-{
+                            unsigned char c3, unsigned char c4) {
     if (x1 > x2) {
         long temp = x1;
         x1 = x2;
@@ -2134,8 +2107,7 @@ void TDrawArea::DrawBevel21(long x1, long y1, long x2, long y2,
 void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2,
                             unsigned char c1, unsigned char c2,
                             unsigned char c3, unsigned char c4,
-                            unsigned char c5, unsigned char c6)
-{
+                            unsigned char c5, unsigned char c6) {
     if (x1 > x2) {
         long temp = x1;
         x1 = x2;
@@ -2166,13 +2138,11 @@ void TDrawArea::DrawBevel32(long x1, long y1, long x2, long y2,
     DrawVertLine(x1 + 1, y1 + 1, height - 3, c5);
 }
 
-void TDrawArea::SetShadowTable(RGE_Color_Table* table)
-{
-    this->shadow_color_table = table;
+void TDrawArea::SetShadowTable(RGE_Color_Table* color_table_in) {
+    this->shadow_color_table = color_table_in;
 }
 
-void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
-{
+void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2) {
     if (this->shadow_color_table == 0 || this->Bits == 0)
         return;
 
@@ -2202,8 +2172,7 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
         if (orientation < 1) {
             row_offset = y1 - this->Height + 1;
             row_offset *= row_size;
-        }
-        else {
+        } else {
             row_offset = row_size * y1;
         }
 
@@ -2229,92 +2198,90 @@ void TDrawArea::DrawShadowBox(long x1, long y1, long x2, long y2)
     }
 }
 
-void TDrawArea::GetPalette(tagPALETTEENTRY* entries)
-{
+void TDrawArea::GetPalette(tagPALETTEENTRY* palette1) {
     for (int i = 0; i < 256; ++i)
-        entries[i] = this->DrawSystem->Palette[i];
+        palette1[i] = this->DrawSystem->Palette[i];
 }
 
-void TDrawArea::SetPalette(tagPALETTEENTRY* entries)
-{
-    entries[0].peRed = 0;
-    entries[0].peGreen = 0;
-    entries[0].peBlue = 0;
-    entries[0].peFlags = 0;
+void TDrawArea::SetPalette(tagPALETTEENTRY* palette1) {
+    palette1[0].peRed = 0;
+    palette1[0].peGreen = 0;
+    palette1[0].peBlue = 0;
+    palette1[0].peFlags = 0;
 
-    entries[255].peRed = 0xFF;
-    entries[255].peGreen = 0xFF;
-    entries[255].peBlue = 0xFF;
-    entries[255].peFlags = 0;
+    palette1[255].peRed = 0xFF;
+    palette1[255].peGreen = 0xFF;
+    palette1[255].peBlue = 0xFF;
+    palette1[255].peFlags = 0;
 
-    this->DrawSystem->ModifyPalette(0, 256, entries);
+    this->DrawSystem->ModifyPalette(0, 256, palette1);
 }
 
-void TDrawArea::take_snapshot(char* file_name, int& snapshot_number)
-{
-    BITMAPFILEHEADER file_header;
-    BITMAPINFOHEADER info_header;
-    char bitmap_file[60];
-    RGBQUAD bitmap_palette[256];
-    PALETTEENTRY palette[256];
+void TDrawArea::take_snapshot(char* filespec, int& index_no) {
+    BITMAPFILEHEADER bmFH;
+    BITMAPINFOHEADER bmIH;
+    char BMPFile[60];
+    RGBQUAD bmPAL[256];
+    PALETTEENTRY thePal[256];
 
-    int bitmap_width = this->Width;
+    int bmWide = this->Width;
     int bitmap_height = this->Height;
-    int row_width = (bitmap_width + 3) & 0xFFFC;
+    int row_width = (bmWide + 3) & 0xFFFC;
 
-    file_header.bfType = 0x4D42;
-    file_header.bfSize = bitmap_height * row_width + 0x436;
-    file_header.bfReserved1 = 0;
-    file_header.bfReserved2 = 0;
-    file_header.bfOffBits = 0x436;
+    bmFH.bfType = 0x4D42;
+    bmFH.bfSize = bitmap_height * row_width + 0x436;
+    bmFH.bfReserved1 = 0;
+    bmFH.bfReserved2 = 0;
+    bmFH.bfOffBits = 0x436;
 
-    info_header.biSize = sizeof(info_header);
-    info_header.biWidth = bitmap_width;
-    info_header.biHeight = bitmap_height;
-    info_header.biPlanes = 1;
-    info_header.biBitCount = 8;
-    info_header.biCompression = 0;
-    info_header.biSizeImage = 0;
-    info_header.biXPelsPerMeter = 0;
-    info_header.biYPelsPerMeter = 0;
-    info_header.biClrUsed = 0;
-    info_header.biClrImportant = 0;
+    bmIH.biSize = sizeof(bmIH);
+    bmIH.biWidth = bmWide;
+    bmIH.biHeight = bitmap_height;
+    bmIH.biPlanes = 1;
+    bmIH.biBitCount = 8;
+    bmIH.biCompression = 0;
+    bmIH.biSizeImage = 0;
+    bmIH.biXPelsPerMeter = 0;
+    bmIH.biYPelsPerMeter = 0;
+    bmIH.biClrUsed = 0;
+    bmIH.biClrImportant = 0;
 
-    bitmap_file[0] = '\0';
-    this->GetPalette(palette);
+    BMPFile[0] = '\0';
+    this->GetPalette(thePal);
     for (int i = 0; i < 256; ++i) {
-        bitmap_palette[i].rgbBlue = palette[i].peBlue;
-        bitmap_palette[i].rgbGreen = palette[i].peGreen;
-        bitmap_palette[i].rgbRed = palette[i].peRed;
-        bitmap_palette[i].rgbReserved = 0;
+        bmPAL[i].rgbBlue = thePal[i].peBlue;
+        bmPAL[i].rgbGreen = thePal[i].peGreen;
+        bmPAL[i].rgbRed = thePal[i].peRed;
+        bmPAL[i].rgbReserved = 0;
     }
 
     int attempts = 0;
     for (;;) {
-        if (file_name == 0)
-            sprintf(bitmap_file, "C:\\AOE_%03d.BMP", snapshot_number);
+        if (filespec == 0)
+            sprintf(BMPFile, "C:\\AOE_%03d.BMP", index_no);
         else
-            sprintf(bitmap_file, file_name, snapshot_number);
+            sprintf(BMPFile, filespec, index_no);
 
         ++attempts;
-        int existing_file = _open(bitmap_file, 0);
+        int existing_file = _open(BMPFile, 0);
         if (existing_file == -1)
             break;
 
-        ++snapshot_number;
+        ++index_no;
         close(existing_file);
         if (attempts > 1000)
             return;
     }
 
     unsigned char* row = (unsigned char*)malloc(row_width);
-    int output_file = _open(bitmap_file, 0x8301, 0x180);
+    int output_file = _open(BMPFile, 0x8301, 0x180);
     if (output_file != -1) {
-        write(output_file, &file_header, sizeof(file_header));
-        write(output_file, &info_header, sizeof(info_header));
-        write(output_file, bitmap_palette, sizeof(bitmap_palette));
+        write(output_file, &bmFH, sizeof(bmFH));
+        write(output_file, &bmIH, sizeof(bmIH));
+        write(output_file, bmPAL, sizeof(bmPAL));
 
         if (this->Lock("take_snapshot", 1) != 0) {
+            // A positive BMP height stores the display rows from bottom to top.
             for (int y = bitmap_height - 1; y >= 0; --y) {
                 unsigned char* source =
                     (unsigned char*)this->CurDisplayOffsets[y];

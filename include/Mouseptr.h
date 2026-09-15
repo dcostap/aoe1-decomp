@@ -61,31 +61,30 @@ public:
     char cursor_file[0x104];
     int cursor_file_id;
 
-    TMousePointer(int mode);
+    TMousePointer(int MouseModeIn);
     ~TMousePointer();
     int Shutdown_Mouse();
-    int Restore_Mouse(TDrawArea* area);
-    int setup(int custom_draw, TDrawArea* area, char* base, int palette,
-              int max_cursors);
-    void set_game_mode(int value);
-    void set_game_enable(int value);
+    int Restore_Mouse(TDrawArea* render_area_in);
+    int setup(int custom_draw_in, TDrawArea* render_area_in, char* cursor_file_name, int cursor_resId, int maxCursors_in);
+    void set_game_mode(int mode);
+    void set_game_enable(int enable);
     int get_game_enable();
     int in_game_mode();
-    void set_game_window(int left, int top, int right, int bottom);
-    int LoadCursors(char* base, int file_id, int keep_name);
+    void set_game_window(int Left, int Top, int Right, int Bottom);
+    int LoadCursors(char* cursor_file_name, int resId, int Reload);
     void delete_surfaces();
     int create_surfaces();
     int update_mouse_position();
-    void draw(int forced);
+    void draw(int dMode);
     void erase();
-    void set_facet(int facet_value);
-    void set_game_facet(int facet_value);
+    void set_facet(int facet_in);
+    void set_game_facet(int facet_in);
     void off();
     void on();
     void reset();
     void center();
     void Poll();
-    int GetDDBltError(long result);
+    int GetDDBltError(long theError);
 };
 
 typedef char mouseptr_tmousepointer_size[
