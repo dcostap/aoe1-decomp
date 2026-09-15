@@ -28,6 +28,7 @@
 - Restored `first_any_color_index` because the original instructions use an
   unmapped `local_4` slot for that value. The packet `first_any_player` label
   has no instruction use.
+- Corrected the full eight-pointer readiness push sequence after owner review.
 
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
@@ -96,7 +97,7 @@ The original call at `004A2F84` is
 `GetClientReadiness(index, out0, out1, out2, out3, out4, out5, out6, out7)`.
 The original instructions push `index` at `004A2F83`, then push the output
 pointers in reverse order at `004A2F82`, `004A2F7B`, `004A2F72`, `004A2F6D`,
-`004A2F63`, `004A2F5E`, and `004A2F59`.
+`004A2F68`, `004A2F63`, `004A2F5E`, and `004A2F59`.
 
 The scoped PDB offsets below use the records in
 `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`.
@@ -106,11 +107,11 @@ renamed declarations.
 
 | Source declaration | Output position | Scoped PDB offset | Original address calculation and push | Later tests and consumers |
 | --- | --- | --- | --- | --- |
-| `user3` | `out1` | `-0x114` | `004A2F6E` computes `[ESP+0x38]`; `004A2F72` pushes it. | `004A2F89` tests it; `004A2F9D` compares it with civilization; `004A2FAD` stores it with `setCivilization`. |
-| `user6` | `out2` | `-0x108` | `004A2F69` computes `[ESP+0x40]`; `004A2F6D` pushes it. | `004A2FB4` tests it; `004A2FC3` subtracts one; `004A2FD5` pushes it to `setScenarioPlayer` at `004A2FD7`. |
-| `user7` | `out3` | `-0x110` | `004A2F64` computes `[ESP+0x34]`; `004A2F68` pushes it. | `004A2FDE` tests it; `004A2FE6` and `004A2FFE` compare values one and two; `004A301B` consumes the result in `setPlayerHasCD`. |
-| `user1` | `out4` | `-0x118` | `004A2F5F` computes `[ESP+0x28]`; `004A2F63` pushes it. | `004A3022` tests it; `004A3036` compares it with player color; `004A3046` stores it with `setPlayerColor`. |
-| `user4` | `out5` | `-0x11C` | `004A2F5A` computes `[ESP+0x20]`; `004A2F5E` pushes it. | `004A304D` tests it; `004A3061` compares it with player team; `004A3071` stores it with `setPlayerTeam`. |
+| `user3` | `out1` | `-0x114` | `004A2F6E` computes `[ESP+0x38]`; `004A2F7B` pushes it. | `004A2F89` tests it; `004A2F9D` compares it with civilization; `004A2FAD` stores it with `setCivilization`. |
+| `user6` | `out2` | `-0x108` | `004A2F69` computes `[ESP+0x40]`; `004A2F72` pushes it. | `004A2FB4` tests it; `004A2FC3` subtracts one; `004A2FD5` pushes it to `setScenarioPlayer` at `004A2FD7`. |
+| `user7` | `out3` | `-0x110` | `004A2F64` computes `[ESP+0x34]`; `004A2F6D` pushes it. | `004A2FDE` tests it; `004A2FE6` and `004A2FFE` compare values one and two; `004A301B` consumes the result in `setPlayerHasCD`. |
+| `user1` | `out4` | `-0x118` | `004A2F5F` computes `[ESP+0x28]`; `004A2F68` pushes it. | `004A3022` tests it; `004A3036` compares it with player color; `004A3046` stores it with `setPlayerColor`. |
+| `user4` | `out5` | `-0x11C` | `004A2F5A` computes `[ESP+0x20]`; `004A2F63` pushes it. | `004A304D` tests it; `004A3061` compares it with player team; `004A3071` stores it with `setPlayerTeam`. |
 | `user2` | `out7` | `-0x10C` | `004A2F51` computes `[ESP+0x2C]`; `004A2F59` pushes it. | `004A3086` tests it; `004A309A` consumes it in `setPlayerVersion`. |
 
 The packet's reverse push order also proves the two uncertain outputs. The
