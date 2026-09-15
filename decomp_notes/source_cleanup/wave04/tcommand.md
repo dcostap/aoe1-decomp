@@ -7,7 +7,7 @@
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Base source SHA-256 from Git: `8dd89f30402634a6bb4fe47fc8a9b57055b3e10162a186841b71fe20f661e899`
 - Final source SHA-256: `6f8af1ccdf56cf445f74cd2880d4c7df18d875c9df2136a59fbf2cc57c95b2a7`
-- Final commit: see the delivery record for the full Git hash.
+- Delivery history: commit `47c1f1ba9015c9bd92c144a13b2555694ed0976e` contains `src/tcommand.cpp` and the initial version of this report. The current commit contains this report correction only.
 - Changed files:
   - `src/tcommand.cpp`
   - `decomp_notes/source_cleanup/wave04/tcommand.md`
@@ -213,3 +213,8 @@ root reviews the shared mapping.
 Compilation, matching, audits, validation, and tests were not run. No compiler,
 build, matching, audit, validation, test, or game command was run for this
 assignment. The complete source diff was reviewed. `git diff --check` passed.
+
+## Correction history
+
+- Initial delivery: commit `47c1f1ba9015c9bd92c144a13b2555694ed0976e` contained the source cleanup and the initial report.
+- This correction updates the delivery-history entry in this report only.
