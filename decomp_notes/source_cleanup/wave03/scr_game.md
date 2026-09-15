@@ -12,6 +12,7 @@
 - Correction-hash record commit: `b08bf0343d663cc66c26e8d04e12900c6da39a02`
 - Hotkey-payload correction commit: `2c102c6dc0fa08035493388370fc6faa8a9617dd`
 - Approved resource substitution commit: `f8db2f87fe8e5745284d4c9986ccc464f9883d7f`
+- Score-label type correction commit: `7d50116c57c6bbab86f2448df4b3937d11d464ae`
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
@@ -133,8 +134,9 @@ its original stack argument order: `arg1` is cast to `b`, and `arg2` is cast to
 
 This section first records the worker requests. Root later approved the
 payload-backed names in `include/resource_ids.h` at commit
-`f5b7d6668f785b97811119493bea0e04403d1d10`. The source now uses those approved
-macros. Root owns the shared header, so this worker did not edit it.
+`f5b7d6668f785b97811119493bea0e04403d1d10`. The source now uses those
+approved macros where exact token-type preservation allows it. Root owns the
+shared header, so this worker did not edit it.
 
 The approved names are cleanup names, not original macro names. Numeric
 expressions and lookup calls remain unchanged.
@@ -253,13 +255,16 @@ Root approved the payload-backed names in commit
 `f5b7d6668f785b97811119493bea0e04403d1d10`. The approved header adds the
 score labels, hotkeys, age labels, command messages, overlay labels, and panel
 help names used below. The source applies these approved names in commit
-`f8db2f87fe8e5745284d4c9986ccc464f9883d7f` and includes
+`f8db2f87fe8e5745284d4c9986ccc464f9883d7f`, then restores `0x1023L` in
+type-correction commit `7d50116c57c6bbab86f2448df4b3937d11d464ae`. It includes
 `../include/resource_ids.h`.
 
 The source substitutions are:
 
-- `0x1023` and `0x1024`: `IDS_SCORE_BUTTON_LABEL` and
-  `IDS_SCORE_BUTTON_MESSAGE`.
+- `0x1024`: `IDS_SCORE_BUTTON_MESSAGE`.
+- Root approved `IDS_SCORE_BUTTON_LABEL` for `0x1023`, but the source keeps
+  `0x1023L` numeric because the macro has no `L` suffix. This preserves the
+  exact literal token type.
 - `0x1037`–`0x103B`, `0x103D`–`0x103F`, and `0x1048`–`0x104E`: the matching
   `IDS_HOTKEY_*` names. The source keeps `i +
   IDS_HOTKEY_SELECT_BUILDING_BASE` for the `0x1040` range.
