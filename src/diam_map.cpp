@@ -59,8 +59,7 @@ long RGE_Diamond_Map::setup(TDrawArea *render_area_in, TPanel *parent_panel_in,
                             TDrawArea *save_area_in) {
   this->save_area = save_area_in;
   this->own_save_area = 0;
-  TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in,
-                color_in);
+  TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, color_in);
   return 1;
 }
 
@@ -318,8 +317,7 @@ int RGE_Diamond_Map::create_surfaces() {
     if (da == 0) {
       return 0;
     }
-    if (!da->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt,
-                  0, 0)) {
+    if (!da->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0)) {
       delete this->save_area;
       this->save_area = 0;
       return 0;
@@ -484,8 +482,7 @@ void RGE_Diamond_Map::draw_explored_tiles() {
   }
 }
 
-void RGE_Diamond_Map::draw_tile(short col, short row, int fog,
-                                unsigned char override_color) {
+void RGE_Diamond_Map::draw_tile(short col, short row, int fog, unsigned char override_color) {
   RGE_Map_Tile_Row *tile_row =
       this->map_tile_rows + this->map_wid + row - col - 1;
   if (tile_row->draw == 0)
@@ -547,8 +544,7 @@ void RGE_Diamond_Map::draw_tile(short col, short row, int fog,
         long pixel_x = x;
         if (width > 0) {
           do {
-            this->render_area->SetPixel(pixel_x, y + draw_row,
-                                        this->fog_color);
+            this->render_area->SetPixel(pixel_x, y + draw_row, this->fog_color);
             ++pixel_x;
             --width;
           } while (width != 0);
@@ -646,8 +642,7 @@ void RGE_Diamond_Map::draw_selected_area(void) {
     return;
 
   long sel_col1, sel_row1, sel_col2, sel_row2;
-  if (!this->main_view->get_selection_area(sel_col1, sel_row1, sel_col2,
-                                           sel_row2, 1))
+  if (!this->main_view->get_selection_area(sel_col1, sel_row1, sel_col2, sel_row2, 1))
     return;
 
   if (!this->render_area->Lock("diam_map::draw_selected_area", 1))
@@ -735,9 +730,7 @@ void RGE_Diamond_Map::draw_objects() {
   this->render_area->Unlock("diam_map::draw_objects");
 }
 
-void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj,
-                                           unsigned char color1,
-                                           unsigned char color2) {
+void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj, unsigned char color1, unsigned char color2) {
   unsigned char visible;
   unsigned char draw_level;
   unsigned long map_value;
@@ -810,8 +803,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *game_obj,
   }
 }
 
-void RGE_Diamond_Map::draw_object(short col, short row, unsigned char color,
-                                  short size, RGE_Static_Object *game_obj) {
+void RGE_Diamond_Map::draw_object(short col, short row, unsigned char color, short size, RGE_Static_Object *game_obj) {
   short max_coord = row;
   int row_index = (int)this->map_wid + (int)row - (int)col;
   RGE_Map_Tile_Row *tile_row = this->map_tile_rows + row_index - 1;
@@ -851,9 +843,7 @@ void RGE_Diamond_Map::draw_object(short col, short row, unsigned char color,
   }
 }
 
-void RGE_Diamond_Map::draw_clipped_horz_line(
-    short x, short y, short len, unsigned char color,
-    RGE_Map_Image_Line *image_line) {
+void RGE_Diamond_Map::draw_clipped_horz_line(short x, short y, short len, unsigned char color, RGE_Map_Image_Line *image_line) {
   short start_x = image_line->start_x;
   int line_start = this->pnl_x + (int)start_x;
 
@@ -957,8 +947,7 @@ void RGE_Diamond_Map::draw_view_rect() {
   }
 }
 
-int RGE_Diamond_Map::pick_tile(long x, long y, short *col, short *row,
-                               RGE_Tile **tile) {
+int RGE_Diamond_Map::pick_tile(long x, long y, short *col, short *row, RGE_Tile **tile) {
   if (this->map == 0) {
     return 0;
   }
