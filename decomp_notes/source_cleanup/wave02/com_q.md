@@ -6,13 +6,20 @@
 - Branch: `cleanup/staging-20260915-104`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Source cleanup commit: `6ed37f20af52505b7d632bbddb6819378f11b1a7`
+- Formatting correction commit: `dfdfa04fda23e9c58af7354c684fbc5a27341a14`
 - Base source SHA256: `76c05dbf17eac0a9e098cddf026dc1b8ebee2aae77f704149e279edafbc55500`
-- Final source SHA256: `de762d5fe961603cb2055ba883b00e44b5775005b5075c7b0150be798cf91295`
+- Final source SHA256: `d4140e11e55cb7cadae2439363caaeee107980de7f78d4d1ee36745924509d72`
 - Changed files: `src/com_q.cpp`, this report
 - Header owner: owner 12 owns `include/com_q.h`
 
 The source commit changes names only. The report is a separate assigned-file commit.
 The final report commit hash is recorded in the delivery message after Git creates it.
+
+## Formatting correction
+
+The follow-up source commit changes two standalone `else` lines to `} else {`.
+It changes whitespace and brace placement only. It adds and removes no tokens.
+No validation command was run for this correction.
 
 ## Evidence
 
