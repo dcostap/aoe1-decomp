@@ -5,7 +5,7 @@
 - Module: `src/Scr_sels.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `f4c24344757acbb864d7deef11aad91759946e4a`
-- Final report commit: this report commit; record its full hash from Git output
+- Final report commit: `df983109a9635d1dad1543fc686d2bd5435dd4fa`
 - Branch: `cleanup/staging-20260915-187`
 - Changed files:
   - `src/Scr_sels.cpp`
