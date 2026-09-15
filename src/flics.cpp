@@ -1,6 +1,5 @@
 
 #include "../include/flics.h"
-#include <fcntl.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -9,7 +8,7 @@ typedef unsigned short ushort;
 
 RGE_Flic_Player::RGE_Flic_Player(char* filename) {
     register int size;
-    register int fd = open(filename, _O_BINARY);
+    register int fd = open(filename, 0x8000);
 
     if (fd > -1) {
         lseek(fd, 0, 2);
