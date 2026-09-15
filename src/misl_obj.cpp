@@ -17,37 +17,37 @@ extern float DAT_0057093c;
 extern float DAT_00570940;
 
 RGE_Missile_Object::RGE_Missile_Object(
-    RGE_Master_Combat_Object* master, RGE_Player* player,
+    RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner,
     float x, float y, float z, int do_setup)
-    : RGE_Combat_Object(master, player, x, y, z, 0) {
+    : RGE_Combat_Object(tobj, obj_owner, x, y, z, 0) {
     if (do_setup != 0) {
-        this->setup(master, player, x, y, z);
+        this->setup(tobj, obj_owner, x, y, z);
     }
     this->type = 0x3C;
 }
 
 RGE_Missile_Object::RGE_Missile_Object(
-    int mode, RGE_Game_World* world, int do_setup)
-    : RGE_Combat_Object(mode, world, 0) {
+    int infile, RGE_Game_World* gworld, int do_setup)
+    : RGE_Combat_Object(infile, gworld, 0) {
     if (do_setup != 0) {
-        this->setup(mode, world);
+        this->setup(infile, gworld);
     }
     this->type = 0x3C;
 }
 
 int RGE_Missile_Object::setup(
-    RGE_Master_Combat_Object* master, RGE_Player* player,
+    RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner,
     float x, float y, float z) {
-    RGE_Combat_Object::setup(master, player, x, y, z);
+    RGE_Combat_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x3C;
     return 1;
 }
 
-int RGE_Missile_Object::setup(int file, RGE_Game_World* world) {
-    RGE_Combat_Object::setup(file, world);
+int RGE_Missile_Object::setup(int infile, RGE_Game_World* gworld) {
+    RGE_Combat_Object::setup(infile, gworld);
     this->type = 0x3C;
     if (save_game_version > 7.09f) {
-        rge_read(file, &this->max_range, 4);
+        rge_read(infile, &this->max_range, 4);
     } else {
         this->max_range = static_cast<RGE_Master_Combat_Object*>(
             this->master_obj)->weapon_range;
@@ -59,9 +59,9 @@ void RGE_Missile_Object::rehook() {
     RGE_Action_Object::rehook();
 }
 
-void RGE_Missile_Object::save(int file) {
-    RGE_Combat_Object::save(file);
-    rge_write(file, &this->max_range, 4);
+void RGE_Missile_Object::save(int outfile) {
+    RGE_Combat_Object::save(outfile);
+    rge_write(outfile, &this->max_range, 4);
 }
 
 unsigned char RGE_Missile_Object::update() {
@@ -69,24 +69,24 @@ unsigned char RGE_Missile_Object::update() {
 }
 
 void RGE_Missile_Object::init_missile(
-    RGE_Combat_Object* target, RGE_Static_Object* source, float range) {
+    RGE_Combat_Object* launcher, RGE_Static_Object* target, float in_range) {
     RGE_Action_Missile* action = new RGE_Action_Missile(
-        static_cast<RGE_Action_Object*>(this), target, source,
-        source->world_x, source->world_y, source->world_z);
+        static_cast<RGE_Action_Object*>(this), launcher, target,
+        target->world_x, target->world_y, target->world_z);
     if (action != 0) {
         this->actions->add_action(action);
     }
-    this->max_range = range;
+    this->max_range = in_range;
 }
 
 void RGE_Missile_Object::init_missile(
-    RGE_Combat_Object* target, float x, float y, float z, float range) {
+    RGE_Combat_Object* launcher, float x, float y, float z, float in_range) {
     RGE_Action_Missile* action = new RGE_Action_Missile(
-        static_cast<RGE_Action_Object*>(this), target, 0, x, y, z);
+        static_cast<RGE_Action_Object*>(this), launcher, 0, x, y, z);
     if (action != 0) {
         this->actions->add_action(action);
     }
-    this->max_range = range;
+    this->max_range = in_range;
 }
 
 unsigned char RGE_Missile_Object::missile_move() {
@@ -108,7 +108,7 @@ unsigned char RGE_Missile_Object::missile_move() {
     return this->teleport(new_x, new_y, new_z) == this->world_z;
 }
 
-RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
+RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float delta) {
     float dx;
     float dy;
     float rx;
@@ -117,10 +117,10 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     float ry2;
     short min_x;
     short min_y;
-    short max_x;
-    short max_y;
+    short x1;
+    short x2;
     RGE_Map* map;
-    RGE_Check_List* list;
+    RGE_Check_List* check_list;
 
     rx = this->master_obj->radius_x;
     ry = this->master_obj->radius_y;
@@ -130,28 +130,28 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
 
     min_x = (short)(int)(this->world_x - DAT_00570938);
     min_y = (short)(int)(this->world_y - DAT_00570938);
-    max_x = (short)(int)(this->world_x - DAT_0057093c);
-    max_y = (short)(int)(this->world_y - DAT_0057093c);
+    x1 = (short)(int)(this->world_x - DAT_0057093c);
+    x2 = (short)(int)(this->world_y - DAT_0057093c);
 
     map = this->owner->world->map;
-    list = new RGE_Check_List;
+    check_list = new RGE_Check_List;
 
     if (min_x < 0) {
         min_x = 0;
     }
-    if ((int)max_x >= map->map_width) {
-        max_x = (short)(map->map_width - 1);
+    if ((int)x1 >= map->map_width) {
+        x1 = (short)(map->map_width - 1);
     }
     if (min_y < 0) {
         min_y = 0;
     }
-    if ((int)max_y >= map->map_height) {
-        max_y = (short)(map->map_height - 1);
+    if ((int)x2 >= map->map_height) {
+        x2 = (short)(map->map_height - 1);
     }
 
-    for (short row = min_y; row <= max_y; ++row) {
+    for (short row = min_y; row <= x2; ++row) {
         RGE_Tile* tile = map->map_row_offset[row] + min_x;
-        for (short column = min_x; column <= max_x; ++column) {
+        for (short column = min_x; column <= x1; ++column) {
             RGE_Object_Node* node = tile->objects.list;
 
             while (node != 0) {
@@ -172,10 +172,10 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
                             if (dy < DAT_00570934) {
                                 dy = -dy;
                             }
-                            dx = dx - (rx2 + rx + extra);
-                            dy = dy - (ry2 + ry + extra);
+                            dx = dx - (rx2 + rx + delta);
+                            dy = dy - (ry2 + ry + delta);
                             if (dx <= DAT_00570934 && dy <= DAT_00570934) {
-                                list->add_node(object, dx, dy, 0);
+                                check_list->add_node(object, dx, dy, 0);
                             }
                         }
                     }
@@ -186,9 +186,9 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
         }
     }
 
-    if (list->list == 0) {
-        delete list;
-        list = 0;
+    if (check_list->list == 0) {
+        delete check_list;
+        check_list = 0;
     }
-    return list;
+    return check_list;
 }
