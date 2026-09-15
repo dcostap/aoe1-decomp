@@ -52,7 +52,7 @@ The records identify `.\\Release\\zone_map.obj` and the `this` register as
 | `00546EB0` | `RGE_Zone_Map::get_zone_info` | existing `x`, `y` retained | stack records at `+0x4`, `+0x8` |
 | `00546ED0` | first `withinRange` overload | `start`, `goal`, `range` | stack records at `+0x4`, `+0xc`, `+0x14` |
 | `00546F00` | second `withinRange` overload | `startZone`, `goal`, `range`; `max` retained | parameters at `+0x4`, `+0x8`, `+0x10`; local at `-0x8` |
-| `00547000` | `RGE_Zone_Map::numberTilesInZone` | `zone`, `mapWidth`, `count` retained | stack records for `zone`, `count`; local record for `mapWidth` |
+| `00547000` | `RGE_Zone_Map::numberTilesInZone` | `zone`, `mapWidth` (from `width`), `count` retained | stack records for `zone`, `count`; local record for `mapWidth` |
 | `00547080` | `findClosestPointInTerrainType` | `p`, `rVal`, `type1`, `type2`, `range`; `min`, `max` retained | parameters at `+0x4` to `+0x18`; locals at `-0x8`, `-0x10` |
 | `00547180` | `RGE_Zone_Map_List::RGE_Zone_Map_List` | `infile`, `in_map` | stack records at `+0x4`, `+0x8` |
 | `00547240` | `RGE_Zone_Map_List::RGE_Zone_Map_List` | `in_map` | stack record at `+0x4` |
