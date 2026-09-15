@@ -4,15 +4,18 @@
 
 - Module: `src/act_atak.cpp`
 - Base commit from `git rev-parse`: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Source-review head from `git rev-parse`: `0fc09d6fdabd16933c324eac22fe873554ac341f`
-- Prior report commit: `a2c408e369d3e83c799dd988f108fdb244ff4e08`
-- Source-correction commit from `git rev-parse`: `d041e74f54f917cafeafd9628b0e903ee634f811`
-- The source-review head contains the source cleanup changes.
+- Initial source commit from `git rev-parse`: `0fc09d6fdabd16933c324eac22fe873554ac341f`
+- Initial report commit: `a2c408e369d3e83c799dd988f108fdb244ff4e08`
+- Final source commit from `git rev-parse`: `d041e74f54f917cafeafd9628b0e903ee634f811`
+- Prior report-correction commit: `b2b0ddde386ae7ce13edd28632f0fc89d01dfe09`
+- Prior commit sequence: `0fc09d6fdabd16933c324eac22fe873554ac341f`, `a2c408e369d3e83c799dd988f108fdb244ff4e08`, `d041e74f54f917cafeafd9628b0e903ee634f811`, `b2b0ddde386ae7ce13edd28632f0fc89d01dfe09`.
+- The final source commit contains the source cleanup changes.
 - The report commits follow the source commits.
 - Changed files: `src/act_atak.cpp`; this report.
 - Branch: `cleanup/staging-20260915-04`
 
-The report covers all 13 assigned registry functions. No function body or data changed.
+The report covers all 13 assigned registry functions.
+No expression, control flow, call, type, storage, or data value changed.
 
 ## Evidence
 
