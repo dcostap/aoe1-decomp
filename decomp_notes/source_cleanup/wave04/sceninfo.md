@@ -7,6 +7,7 @@
 - Branch: `cleanup/staging-20260915-231`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit: `fed8be14c04f867bfd65a07f23c6ea077adf7599`
+- Report commit: `20d5f1b6c4abb91c362d589366620aec17009a85`
 - Changed files:
   - `src/sceninfo.cpp`
   - `decomp_notes/source_cleanup/wave04/sceninfo.md`
