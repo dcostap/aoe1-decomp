@@ -1,7 +1,6 @@
 
 #include "../include/flics.h"
 #include <fcntl.h>
-#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -13,10 +12,10 @@ RGE_Flic_Player::RGE_Flic_Player(char* filename) {
     register int fd = open(filename, _O_BINARY);
 
     if (fd > -1) {
-        lseek(fd, 0, SEEK_END);
+        lseek(fd, 0, 2);
         size = tell(fd);
         flic_buffer = (unsigned char*)calloc(size, 1);
-        lseek(fd, 0, SEEK_SET);
+        lseek(fd, 0, 0);
         read(fd, flic_buffer, size);
         // The shipped constructor copies the complete 0x84-byte
         // FLIC header before it reads the width field.
@@ -57,7 +56,7 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette) {
 
     if (this->flic_handle > -1) {
         framehead = (FrameHead*)calloc(1, 0x10);
-        lseek(this->flic_handle, (int)this->flichead.oframe2, SEEK_SET);
+        lseek(this->flic_handle, (int)this->flichead.oframe2, 0);
         read(this->flic_handle, framehead, 0x10);
         chunk = (int*)calloc(framehead->size, 1);
         temp_buffer = chunk;
@@ -212,7 +211,7 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
 
     if (this->flic_handle > -1) {
         frame = (FrameHead*)calloc(1, sizeof(FrameHead));
-        lseek(this->flic_handle, (long)this->flichead.oframe2, SEEK_SET);
+        lseek(this->flic_handle, (long)this->flichead.oframe2, 0);
         read(this->flic_handle, frame, sizeof(FrameHead));
         chunk_base = (char*)calloc(frame->size, 1);
         temp_buffer = chunk_base;
