@@ -67,3 +67,24 @@ The remaining requested expansion IDs are absent, not empty slots.
 These definitions are descriptive cleanup names, not recovered original macros. They add no storage.
 Source substitutions return through owner 03 and the same module workers after receipt of the shared header commit.
 No source or report from owner 03 is integrated into main yet. Final generated-output validation remains deferred.
+
+## Owner 02: corrections approved and integrated
+
+Corrected head: `832af7ebb31570c60cd3f8406bacfaa0300e9ac2`.
+Root read the complete 583-line correction diff, including the updated module reports and owner ledger.
+This review supplements the initial complete group review recorded above.
+
+The correction restores `(unsigned char)land_zone` in `rmm_obj.cpp`.
+The report now records the initial cast removal and its repair.
+The terrain changes preserve the existing inner scope and statements while correcting brace placement and indentation.
+The elevation call and three header declarations now use the requested presentation.
+No blocking finding remains from source review. Compiler-output equality is not established by this review.
+
+Root merged the complete group as `2d8e893b66ca6e229d82d6c44550684e1b0955b1` without conflicts.
+This includes eight sources, seven changed headers, eight module reports, and the owner ledger.
+The initial commits, correction commits, and worktrees remain preserved.
+
+Sixteen wave modules are now integrated: eight action modules and eight random-map modules.
+The eight screen modules remain with owner 03 for corrections and resource substitutions.
+No new modules are assigned. No compilation, matching, audits, tests, builds, or games ran during this intake.
+All integrated cleanup remains reviewed and unvalidated against the preserved pre-cleanup build.
