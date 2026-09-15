@@ -5,7 +5,7 @@
 - Module: `src/taipbook.cpp`
 - PDB source: `C:\\msdev\\work\\age1_x1\\taipbook.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final commit: to be copied from Git after commit
+- Final source commit: `29283a1858f5fbc7ec6750d0e71db7ce38bb14c6`
 - Changed files:
   - `src/taipbook.cpp`
   - `decomp_notes/source_cleanup/wave03/taipbook.md`
