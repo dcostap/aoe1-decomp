@@ -35,6 +35,13 @@ sprite note. I checked every registered sprite procedure in the PDB and its
 function inventory packet. The PDB module is `.\\Release\\sprite.obj`, and its
 source is `C:\\msdev\\work\\age1_x1\\sprite.cpp`.
 
+Additional main-root evidence paths were:
+
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-206/src/sprite.cpp`
+- `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-206/include/sprite.h`
+- `C:/Projects/my_decomps/aoe1_attempt3/decomp_notes/sprite.md`
+- `C:/Projects/my_decomps/aoe1_attempt3/decomp_notes/source_cleanup/wave04_assignments.md`
+
 The original executable is the behavior oracle:
 
 - `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`
@@ -214,7 +221,8 @@ included as the behavior-oracle reference.
 | `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json` | `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335` |
 | `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe` | `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90` |
 
-The 22 function packets have these hashes:
+The 22 function packet paths below are relative to
+`C:/Projects/my_decomps/aoe1_attempt3/` and have these hashes:
 
 | VA | Packet path | SHA-256 |
 | --- | --- | --- |
