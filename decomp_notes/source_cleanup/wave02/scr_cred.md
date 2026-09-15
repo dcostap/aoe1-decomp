@@ -4,7 +4,7 @@
 
 - Module: `src/scr_cred.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `5b99767f8e35251ae5420efd086f1b5fda3d1ea1`
+- Final source commit: `5842248aa71cd3ccdf2f800902f44ad476f51210`
 - Changed files:
   - `src/scr_cred.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_cred.md`
