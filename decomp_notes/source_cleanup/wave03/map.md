@@ -34,6 +34,7 @@ No function boundary, ABI symbol, or member layout changed.
 - `e203c682ef21333de6d86b2283262d63fbb5c596`: restored `Type* name`, `Type& name`, and `(Type*)` style and rewrapped long lines.
 - `673598b4d2b677635ff2c7c003ba3dbc830ecf76`: joined the short `clean_terrain` call on one line.
 - `6a63d459c10a9cff2dcfad9f9161e2c9812602a9`: restored the five reviewed map source items listed below.
+- Current report correction: aligned the declaration-only `place_terrain_object` request with `obj_owner`.
 
 The formatting commits change whitespace only.
 They use the module's `Type* name`, `Type& name`, and `(Type*)` presentation.
@@ -386,7 +387,7 @@ void create_terrain_object(RGE_Player *obj_owner, RGE_Game_World *gworld,
 int clear_terrain_object(RGE_Game_World *gworld, short row, short col,
                          short old_terrain, int delete_obj,
                          int no_delete_start, int no_delete_end);
-void place_terrain_object(RGE_Player *player, RGE_Game_World *gworld,
+void place_terrain_object(RGE_Player *obj_owner, RGE_Game_World *gworld,
                           short row, short col, int obj_type_id,
                           int FillFlag);
 void create_terrain_objects(RGE_Player *obj_owner, RGE_Game_World *gworld);
