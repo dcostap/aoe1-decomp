@@ -318,8 +318,7 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(
         if (start_x <= max_x) {
             long column = start_x;
             while (column <= max_x) {
-                this->remove_stack_node(
-                    this->stack_offsets[y_index] + column);
+                this->remove_stack_node(this->stack_offsets[y_index] + column);
                 ++column;
             }
         }
