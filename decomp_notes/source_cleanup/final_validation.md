@@ -9,6 +9,16 @@ Do not overwrite that build or discard failed validation output.
 
 ## Started stages
 
+## First automated test result
+
+The full suite finished with five failures, 812 passes, and 31 passing subtests.
+All five failures assert literal source text containing names changed by the reviewed cleanup.
+Root inspected the current expressions: constants, operand order, pointer source, and mouse flags remain present.
+Root updated only the expected names in three test files. Both minimap functions still receive separate checks.
+No arithmetic assertion, forbidden-pointer assertion, or mouse flag check was removed.
+Job `bg-78` reruns those three test files; full-suite rerun remains required after final repairs.
+The failed full-suite report remains at `build/source-cleanup-20260915/final-validation/tests-r2.xml`.
+
 The second executable build passed: 226 sources compiled, one assembly source assembled, and the executable linked.
 It reports zero unresolved symbols and zero link errors.
 Fresh build: `build/executable/user/20260915T220344905797Z/20260915T220345159683Z`.

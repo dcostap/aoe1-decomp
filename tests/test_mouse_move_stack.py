@@ -38,7 +38,7 @@ def test_mouse_handler_passes_complete_point_and_all_flags():
     body = re.search(r"int RGE_Base_Game::handle_mouse_move\([^)]*\)\s*\{(.*?)^\}", source, re.S | re.M)[1]
     assert "tagPOINT point;" in body
     assert "int shift_key;" in body
-    assert "get_mouse_info(p3, p4, point, left_btn, right_btn, ctrl_key, shift_key);" in body
+    assert "get_mouse_info(wparam, lparam, point, left_btn, right_btn, ctrl_key, shift_key);" in body
     assert "action_mouse_move(point.x, point.y, left_btn, right_btn, ctrl_key, shift_key);" in body
     assert "reinterpret_cast" not in body
     assert "&point.y" not in body

@@ -59,13 +59,14 @@ console.log(JSON.stringify({calls,stops,messages,hooks,ticks:ctx.ticks}));
 
 def test_minimap_source_adds_original_negative_subtrahend():
     source=(ROOT/'src/diam_map.cpp').read_text()
-    assert 'set_view_loc((float)xs + 0.5f, (float)ys + 0.5f)' in source
-    assert 'set_view_loc((float)out_1 + 0.5f, (float)out_2 + 0.5f)' in source
+    for name in ('start_scroll_view', 'handle_scroll_view'):
+        body = source.split('void RGE_Diamond_Map::' + name + '(', 1)[1].split('\n}', 1)[0]
+        assert 'set_view_loc((float)col + 0.5f, (float)row + 0.5f)' in body
 
 
 def test_map_point_source_uses_original_negative_one_subtrahend():
     source=(ROOT/'src/map.cpp').read_text()
-    assert '(param_4 + 1.0f - param_3 - param_5)' in source
+    assert '(y + 1.0f - x - z)' in source
 
 
 @pytest.mark.parametrize(('address','expected'),[(0x56F608,-0.5),(0x5706EC,-1.0)])
