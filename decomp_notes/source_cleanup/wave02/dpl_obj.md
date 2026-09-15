@@ -56,7 +56,10 @@ They remain outside this source edit.
 
 Recovered names retain PDB spelling, including `theObj`, `UMV_addr`,
 `Unified_Map_Value`, `TLast_Map_Value`, and `TObject_ids`. New names describe
-known local roles and use snake_case.
+known local roles and use snake_case. The new descriptive names are
+`new_node`, `map_addr`, `map_draw_level`, `map_value`,
+`non_mutual_visible_mask`, `remove_visible_bits`, `check_value`, `owner_id`,
+`new_objects`, and `new_map_addresses`.
 
 The `save` procedure has PDB names `outfile` and `long_val`. The current source
 uses one parameter named `file` for the serialized value and a local named `handle`
