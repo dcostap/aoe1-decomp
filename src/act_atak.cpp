@@ -430,8 +430,7 @@ unsigned char RGE_Action_Attack::update() {
     return 0;
 }
 
-int RGE_Action_Attack::work(RGE_Static_Object* obj_in, float x, float y,
-                            float z) {
+int RGE_Action_Attack::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in == this->target_obj) {
             if (this->state == 4 || this->state == 6) {
@@ -585,8 +584,7 @@ void RGE_Action_Attack::do_attack() {
     this->need_to_attack = 0;
 }
 
-void RGE_Action_Attack::copy_obj_sprites(
-    RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task) {
+void RGE_Action_Attack::copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task) {
     if (this->move_sprite != 0) {
         if ((task != 0) && (new_task != 0) &&
             (this->move_sprite == task->move_sprite)) {
