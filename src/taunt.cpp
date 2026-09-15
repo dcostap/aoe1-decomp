@@ -7,15 +7,15 @@
 #include <string.h>
 
 extern "C" int __cdecl _strnicmp(const char*, const char*, unsigned int);
-// These are the anonymous MuteOn and MuteOff literals at
+// These anonymous literals are the !MUTE and !NOMUTE command strings.
 extern const char DAT_00576548[];
 extern const char DAT_00576550[];
 
 void __cdecl operator delete(void* ptr);
 
-TTaunt::TTaunt(TSound_Driver* sound_driver) {
+TTaunt::TTaunt(TSound_Driver* driver) {
     this->TauntDir[0] = 0;
-    RestartSoundSystem(sound_driver);
+    RestartSoundSystem(driver);
     this->Mute = 0;
 }
 
@@ -23,14 +23,14 @@ TTaunt::~TTaunt() {
     StopSoundSystem();
 }
 
-int TTaunt::PlayTauntStr(char* str, unsigned char allow_mute) {
+int TTaunt::PlayTauntStr(char* Msg, unsigned char Local) {
     int taunt_no;
 
-    if (_strnicmp(str, DAT_00576548, strlen(DAT_00576548)) == 0 && allow_mute) {
+    if (_strnicmp(Msg, DAT_00576548, strlen(DAT_00576548)) == 0 && Local) {
         this->Mute = 1;
     }
 
-    if (_strnicmp(str, DAT_00576550, strlen(DAT_00576550)) == 0 && allow_mute) {
+    if (_strnicmp(Msg, DAT_00576550, strlen(DAT_00576550)) == 0 && Local) {
         this->Mute = 0;
     }
 
@@ -38,20 +38,20 @@ int TTaunt::PlayTauntStr(char* str, unsigned char allow_mute) {
         return 0;
     }
 
-    taunt_no = this->GetTauntNo(str);
+    taunt_no = this->GetTauntNo(Msg);
     if (taunt_no) {
         this->PlayTauntNo(taunt_no);
     }
     return taunt_no;
 }
 
-int TTaunt::PlayTauntNo(int num) {
+int TTaunt::PlayTauntNo(int TauntNo) {
     char FName[128];
 
     if (this->Mute == 0) {
         if (this->TauntDir != 0) {
-            if (num != 0) {
-                sprintf(FName, "%sTaunt%.3d.wav", this->TauntDir, num);
+            if (TauntNo != 0) {
+                sprintf(FName, "%sTaunt%.3d.wav", this->TauntDir, TauntNo);
 
                 int i;
                 for (i = 0; i < 4; i++) {
@@ -76,20 +76,20 @@ int TTaunt::PlayTauntNo(int num) {
     return 0;
 }
 
-int TTaunt::GetTauntNo(char* text) {
+int TTaunt::GetTauntNo(char* Msg) {
     int value;
 
-    if (*text == '!') {
-        text++;
+    if (*Msg == '!') {
+        Msg++;
     }
-    value = atoi(text);
+    value = atoi(Msg);
     if (value == 0) {
         return 0;
     }
     return value & ((value > 999) - 1);
 }
 
-char* TTaunt::GetTauntText(int id) {
+char* TTaunt::GetTauntText(int TauntNo) {
     strcpy(this->TBuff, (const char*)0x588B88);
     return this->TBuff;
 }

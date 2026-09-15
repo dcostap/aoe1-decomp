@@ -16,24 +16,24 @@
 extern void __cdecl getstring(char** destination, char* source);
 extern int version_marker;
 
-RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {
-    rge_read(fd, this, 0xFF);
-    rge_read(fd, &current_scenario, 4);
-    rge_read(fd, &scenario_num, 4);
-    rge_read(fd, &last_scenario, 4);
+RGE_Campaign_Info::RGE_Campaign_Info(int infile, RGE_Campaign** campaigns, long campaign_num) {
+    rge_read(infile, this, 0xFF);
+    rge_read(infile, &current_scenario, 4);
+    rge_read(infile, &scenario_num, 4);
+    rge_read(infile, &last_scenario, 4);
 
     if (scenario_num > 0) {
         scenario_info = (RGE_Scenario_Info*)calloc(scenario_num, 1);
-        rge_read(fd, scenario_info, scenario_num);
+        rge_read(infile, scenario_info, scenario_num);
     } else {
         scenario_info = 0;
     }
 
     campaign = 0;
 
-    if (cnum > 0) {
-        RGE_Campaign** pcamp = camps;
-        while (cnum > 0) {
+    if (campaign_num > 0) {
+        RGE_Campaign** pcamp = campaigns;
+        while (campaign_num > 0) {
             if (strcmp((*pcamp)->get_name(), name) == 0) {
                 campaign = *pcamp;
                 if (scenario_num != campaign->scenario_number()) {
@@ -60,15 +60,15 @@ RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {
                 }
             }
             ++pcamp;
-            --cnum;
+            --campaign_num;
         }
     }
 }
 
-RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* camp) {
-    if (camp) {
-        campaign = camp;
-        strcpy(name, camp->get_name());
+RGE_Campaign_Info::RGE_Campaign_Info(RGE_Campaign* new_campaign) {
+    if (new_campaign) {
+        campaign = new_campaign;
+        strcpy(name, new_campaign->get_name());
         long snum = campaign->scenario_number();
         scenario_num = snum;
         if (snum > 0) {
@@ -98,22 +98,22 @@ RGE_Campaign_Info::~RGE_Campaign_Info() {
     }
 }
 
-void RGE_Campaign_Info::save(int fd) {
+void RGE_Campaign_Info::save(int outfile) {
     L->Log("  (PIF)Saving campaign - (%d) %s", last_scenario, this);
-    rge_write(fd, this, 0xFF);
-    rge_write(fd, &current_scenario, 4);
-    rge_write(fd, &scenario_num, 4);
-    rge_write(fd, &last_scenario, 4);
+    rge_write(outfile, this, 0xFF);
+    rge_write(outfile, &current_scenario, 4);
+    rge_write(outfile, &scenario_num, 4);
+    rge_write(outfile, &last_scenario, 4);
     if (scenario_num > 0) {
-        rge_write(fd, scenario_info, scenario_num);
+        rge_write(outfile, scenario_info, scenario_num);
     }
 }
 
-void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** list, long count) {
+void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign_num) {
     campaign = 0;
-    if (count <= 0) return;
-    RGE_Campaign** pp = list;
-    long remaining = count;
+    if (campaign_num <= 0) return;
+    RGE_Campaign** pp = campaigns;
+    long remaining = campaign_num;
     do {
         if (strcmp((*pp)->get_name(), name) == 0) {
             campaign = *pp;
@@ -142,35 +142,35 @@ void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** list, long count) {
     } while (remaining);
 }
 
-unsigned char RGE_Campaign_Info::set_current_scenario(long param_1) {
-    if (param_1 < scenario_num && scenario_info[param_1].scenario_status != 0) {
-        if (param_1 > last_scenario) {
+unsigned char RGE_Campaign_Info::set_current_scenario(long num) {
+    if (num < scenario_num && scenario_info[num].scenario_status != 0) {
+        if (num > last_scenario) {
             current_scenario = last_scenario;
         } else {
-            current_scenario = param_1;
+            current_scenario = num;
         }
         return 1;
     }
     return 0;
 }
 
-unsigned char RGE_Campaign_Info::verify_campaign_name(char* campaign) {
-    if (strcmp(this->name, campaign) != 0) {
+unsigned char RGE_Campaign_Info::verify_campaign_name(char* in_campaign_name) {
+    if (strcmp(this->name, in_campaign_name) != 0) {
         return 0;
     }
     return 1;
 }
 
-long RGE_Campaign_Info::get_scenario_list(char*** list, long& current) {
+long RGE_Campaign_Info::get_scenario_list(char*** list, long& curr_scenario) {
     if (campaign) {
         *list = (char**)calloc(last_scenario + 1, 4);
         for (int i = 0; i <= last_scenario; i++) {
             getstring((*list) + i, campaign->get_scenario_name(i));
         }
-        current = current_scenario;
+        curr_scenario = current_scenario;
         return last_scenario + 1;
     }
-    current = -1;
+    curr_scenario = -1;
     return -1;
 }
 
@@ -200,30 +200,30 @@ int RGE_Campaign_Info::open_scenario() {
     return -1;
 }
 
-RGE_Person_Info::RGE_Person_Info(int fd, RGE_Campaign** camps, long cnum) {
-    campaign_num = cnum;
-    campaigns = camps;
-    rge_read(fd, this, 0xFF);
-    rge_read(fd, &current_campaign, 4);
-    rge_read(fd, &campaign_info_num, 4);
+RGE_Person_Info::RGE_Person_Info(int infile, RGE_Campaign** in_campaigns, long in_campaign_num) {
+    campaign_num = in_campaign_num;
+    campaigns = in_campaigns;
+    rge_read(infile, this, 0xFF);
+    rge_read(infile, &current_campaign, 4);
+    rge_read(infile, &campaign_info_num, 4);
 
     if (campaign_info_num > 0) {
         campaign_info = (RGE_Campaign_Info**)calloc(campaign_info_num, 4);
         for (int i = 0; i < campaign_info_num; i++) {
-            campaign_info[i] = new RGE_Campaign_Info(fd, campaigns, campaign_num);
+            campaign_info[i] = new RGE_Campaign_Info(infile, campaigns, campaign_num);
         }
     } else {
         campaign_info = 0;
     }
 }
 
-RGE_Person_Info::RGE_Person_Info(char* name, RGE_Campaign** campaigns, long campaign_num) {
-    strcpy(this->name, name);
+RGE_Person_Info::RGE_Person_Info(char* in_name, RGE_Campaign** in_campaigns, long in_campaign_num) {
+    strcpy(this->name, in_name);
     this->current_campaign = -1;
-    this->campaign_num = campaign_num;
+    this->campaign_num = in_campaign_num;
     this->campaign_info_num = 0;
     this->campaign_info = 0;
-    this->campaigns = campaigns;
+    this->campaigns = in_campaigns;
 }
 
 RGE_Person_Info::~RGE_Person_Info() {
@@ -240,22 +240,22 @@ RGE_Person_Info::~RGE_Person_Info() {
     }
 }
 
-void RGE_Person_Info::save(int fd) {
+void RGE_Person_Info::save(int outfile) {
     L->Log("(PIF)Saving player - %s", this);
-    rge_write(fd, this, 0xFF);
-    rge_write(fd, &current_campaign, 4);
-    rge_write(fd, &campaign_info_num, 4);
+    rge_write(outfile, this, 0xFF);
+    rge_write(outfile, &current_campaign, 4);
+    rge_write(outfile, &campaign_info_num, 4);
     for (int i = 0; i < campaign_info_num; i++) {
-        campaign_info[i]->save(fd);
+        campaign_info[i]->save(outfile);
     }
 }
 
-void RGE_Person_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign_num) {
+void RGE_Person_Info::rehook_campaigns(RGE_Campaign** in_campaigns, long in_campaign_num) {
     int i;
 
     i = 0;
-    this->campaign_num = campaign_num;
-    this->campaigns = campaigns;
+    this->campaign_num = in_campaign_num;
+    this->campaigns = in_campaigns;
     if (this->campaign_info_num > 0) {
         do {
             this->campaign_info[i]->rehook_campaigns(this->campaigns, this->campaign_num);
@@ -266,26 +266,26 @@ void RGE_Person_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign_n
 
 char* RGE_Person_Info::get_name() { return this->name; }
 
-unsigned char RGE_Person_Info::set_current_campaign(long index) {
-    if (index < 0 || index >= campaign_num || campaigns[index] == 0) {
+unsigned char RGE_Person_Info::set_current_campaign(long num) {
+    if (num < 0 || num >= campaign_num || campaigns[num] == 0) {
         return 0;
     }
 
     for (int i = 0; i < campaign_info_num; i++) {
-        if (campaign_info[i]->verify_campaign_name(campaigns[index]->get_name())) {
+        if (campaign_info[i]->verify_campaign_name(campaigns[num]->get_name())) {
             current_campaign = i;
             return 1;
         }
     }
 
-    RGE_Campaign_Info** newlist = (RGE_Campaign_Info**)calloc(campaign_info_num + 1, 4);
+    RGE_Campaign_Info** new_campaign_info = (RGE_Campaign_Info**)calloc(campaign_info_num + 1, 4);
     if (campaign_info != 0) {
-        memcpy(newlist, campaign_info, campaign_info_num * 4);
+        memcpy(new_campaign_info, campaign_info, campaign_info_num * 4);
     }
     free(campaign_info);
-    campaign_info = newlist;
+    campaign_info = new_campaign_info;
 
-    campaign_info[campaign_info_num] = new RGE_Campaign_Info(campaigns[index]);
+    campaign_info[campaign_info_num] = new RGE_Campaign_Info(campaigns[num]);
     current_campaign = campaign_info_num;
     campaign_info_num++;
     return 1;
@@ -314,17 +314,17 @@ long RGE_Person_Info::get_current_scenario() {
     return -1;
 }
 
-unsigned char RGE_Person_Info::set_current_scenario(long scenario) {
+unsigned char RGE_Person_Info::set_current_scenario(long num) {
     int current_campaign = this->current_campaign;
     if ((current_campaign > -1) && (this->campaigns[current_campaign] != 0)) {
-        return this->campaign_info[current_campaign]->set_current_scenario(scenario);
+        return this->campaign_info[current_campaign]->set_current_scenario(num);
     }
     return 0;
 }
 
-long RGE_Person_Info::get_scenario_list(char*** list, long& count) {
+long RGE_Person_Info::get_scenario_list(char*** list, long& current_scenario) {
     if (this->current_campaign > -1)
-        return this->campaign_info[this->current_campaign]->get_scenario_list(list, count);
+        return this->campaign_info[this->current_campaign]->get_scenario_list(list, current_scenario);
     return 0;
 }
 
@@ -347,19 +347,19 @@ int RGE_Person_Info::open_scenario() {
     return -1;
 }
 
-RGE_Game_Info::RGE_Game_Info(char* path) {
-    int ver;
+RGE_Game_Info::RGE_Game_Info(char* filename) {
+    int version;
 
     people_info = 0;
     people_num = 0;
     campaign_num = 0;
     campaigns = 0;
     find_campaigns();
-    strcpy(save_filename, path);
-    int fd = rge_open(path, 0x8000);
+    strcpy(save_filename, filename);
+    int fd = rge_open(filename, 0x8000);
     if (fd > -1) {
-        rge_read(fd, &ver, 4);
-        if (ver == version_marker) {
+        rge_read(fd, &version, 4);
+        if (version == version_marker) {
             rge_read(fd, this, 4);
             rge_read(fd, &people_num, 4);
             if (people_num > 0) {
@@ -409,12 +409,12 @@ RGE_Game_Info::~RGE_Game_Info() {
     }
 }
 
-void RGE_Game_Info::save(char* path) {
+void RGE_Game_Info::save(char* filename) {
     L->Log("(PIF)Creating Player Info File");
 
-    strcpy(save_filename, path);
+    strcpy(save_filename, filename);
 
-    int fd = rge_open(path, 0x8309, 0x180);
+    int fd = rge_open(filename, 0x8309, 0x180);
     if (fd == -1) return;
 
     rge_write(fd, &version_marker, 4);
@@ -508,69 +508,69 @@ unsigned char RGE_Game_Info::add_new_person(char* name) {
     return 1;
 }
 
-unsigned char RGE_Game_Info::set_current_person(long person) {
-    if (person < this->people_num) {
-        this->current_person = person;
+unsigned char RGE_Game_Info::set_current_person(long num) {
+    if (num < this->people_num) {
+        this->current_person = num;
         return 1;
     }
     this->current_person = -1;
     return 0;
 }
 
-unsigned char RGE_Game_Info::set_current_campaign(long campaign) {
+unsigned char RGE_Game_Info::set_current_campaign(long num) {
     if (this->current_person < this->people_num && this->current_person >= 0)
-        return this->people_info[this->current_person]->set_current_campaign(campaign);
+        return this->people_info[this->current_person]->set_current_campaign(num);
     return 0;
 }
 
-unsigned char RGE_Game_Info::set_current_scenario(long scenario) {
+unsigned char RGE_Game_Info::set_current_scenario(long num) {
     if (this->current_person >= 0 && this->current_person < this->people_num)
-        return this->people_info[this->current_person]->set_current_scenario(scenario);
+        return this->people_info[this->current_person]->set_current_scenario(num);
     return 0;
 }
 
-long RGE_Game_Info::get_people_list(char*** out_list, long& out_current) {
+long RGE_Game_Info::get_people_list(char*** list, long& current_player) {
     char* name;
-    int iVar3;
-    char** ppcVar1;
+    int i;
+    char** new_list;
 
     if (0 < this->people_num) {
-        ppcVar1 = (char**)calloc(this->people_num, 4);
-        iVar3 = 0;
-        *out_list = ppcVar1;
+        new_list = (char**)calloc(this->people_num, 4);
+        i = 0;
+        *list = new_list;
         if (0 < this->people_num) {
             do {
-                name = this->people_info[iVar3]->get_name();
-                getstring(*out_list + iVar3, name);
-                iVar3 = iVar3 + 1;
-            } while (iVar3 < this->people_num);
+                name = this->people_info[i]->get_name();
+                getstring(*list + i, name);
+                i = i + 1;
+            } while (i < this->people_num);
         }
-        out_current = this->current_person;
+        current_player = this->current_person;
     }
     return this->people_num;
 }
 
-long RGE_Game_Info::get_campaign_list(char*** list, long& current) {
+long RGE_Game_Info::get_campaign_list(char*** list, long& current_campaign) {
     if (campaign_num > 0) {
         *list = (char**)calloc(campaign_num, 4);
         for (int i = 0; i < campaign_num; i++) {
             getstring(*list + i, campaigns[i]->get_name());
         }
         if (current_person < people_num && current_person >= 0) {
-            current = people_info[current_person]->get_current_campaign();
+            current_campaign = people_info[current_person]->get_current_campaign();
         }
     }
     return campaign_num;
 }
 
-long RGE_Game_Info::get_scenario_list(char*** param_1, long& param_2) {
+long RGE_Game_Info::get_scenario_list(char*** list, long& current_scenario) {
     if (this->current_person < this->people_num) {
         if (0 <= this->current_person) {
-            param_2 = this->people_info[this->current_person]->get_current_scenario();
-            return this->people_info[this->current_person]->get_scenario_list(param_1, param_2);
+            current_scenario = this->people_info[this->current_person]->get_current_scenario();
+            return this->people_info[this->current_person]->get_scenario_list(list, current_scenario);
         }
     }
-    param_2 = -1;
+    current_scenario = -1;
     return -1;
 }
 
@@ -629,16 +629,16 @@ int RGE_Game_Info::open_scenario() {
     return -1;
 }
 
-void RGE_Game_Info::remove_player(long person_index) {
-    if (person_index < 0) return;
-    if (person_index >= people_num) return;
+void RGE_Game_Info::remove_player(long id) {
+    if (id < 0) return;
+    if (id >= people_num) return;
 
-    RGE_Person_Info* person = people_info[person_index];
+    RGE_Person_Info* person = people_info[id];
     if (person != 0) {
         delete person;
     }
 
-    long idx = person_index;
+    long idx = id;
     long bound = people_num;
     if (idx < bound - 1) {
         do {

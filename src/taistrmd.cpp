@@ -12,8 +12,7 @@
 // Canonical context: the compiler now owns the proved virtual-table store.
 
 
-VictoryConditionRuleSystem::VictoryConditionRuleSystem()
-{
+VictoryConditionRuleSystem::VictoryConditionRuleSystem() {
     int* p = this->sn;
     p[0] = 34;
     p[1] = 0;
@@ -259,8 +258,7 @@ extern "C" int __cdecl _unlink(const char* filename);
 #pragma intrinsic(strcmp)
 #pragma intrinsic(strlen)
 
-int VictoryConditionRuleSystem::loadRules(char* filename)
-{
+int VictoryConditionRuleSystem::loadRules(char* rName) {
     char commentTemp1;
     char commentTemp2;
     int ruleIndex;
@@ -268,10 +266,10 @@ int VictoryConditionRuleSystem::loadRules(char* filename)
     char temp[256];
     FILE* file;
 
-    if (strcmp(filename, "NONE") != 0 &&
-        filename != 0 &&
-        strlen(filename) != 0) {
-        sprintf(temp, "%s", filename);
+    if (strcmp(rName, "NONE") != 0 &&
+        rName != 0 &&
+        strlen(rName) != 0) {
+        sprintf(temp, "%s", rName);
         file = fopen(temp, "r");
         if (file != 0) {
             while (fgets(temp, 0x100, file) != 0) {
@@ -293,8 +291,8 @@ int VictoryConditionRuleSystem::loadRules(char* filename)
                 }
             }
             fclose(file);
-            if (strstr(filename, ".tmp") != 0) {
-                _unlink(filename);
+            if (strstr(rName, ".tmp") != 0) {
+                _unlink(rName);
             }
             return 1;
         }
@@ -302,23 +300,23 @@ int VictoryConditionRuleSystem::loadRules(char* filename)
     return 0;
 }
 
-void VictoryConditionRuleSystem::setRule(int index, int val) {
-    if (index < 0 || index >= 226) return;
-    this->sn[index] = val;
+void VictoryConditionRuleSystem::setRule(int ruleIndex, int ruleValue) {
+    if (ruleIndex < 0 || ruleIndex >= 226) return;
+    this->sn[ruleIndex] = ruleValue;
 }
 
-int VictoryConditionRuleSystem::rule(int index) {
-    if (index < 0 || index >= 226) return -1;
-    return this->sn[index];
+int VictoryConditionRuleSystem::rule(int ruleIndex) {
+    if (ruleIndex < 0 || ruleIndex >= 226) return -1;
+    return this->sn[ruleIndex];
 }
 
 
-int VictoryConditionRuleSystem::evaluateAsInProgress(TRIBE_Player*, int) {
+int VictoryConditionRuleSystem::evaluateAsInProgress(TRIBE_Player* p, int ruleNumber) {
     return 0;
 }
 
-int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* player, int rule) {
-    switch (rule) {
+int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* p, int ruleNumber) {
+    switch (ruleNumber) {
         case 1:
         case 2:
         case 0x0C:
@@ -366,296 +364,295 @@ int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* player, in
 
 
 
-int VictoryConditionRuleSystem::execute(TRIBE_Player* player, int state, int command)
-{
-    if (state < 0 || state >= 0xD) {
+int VictoryConditionRuleSystem::execute(TRIBE_Player* p, int vcNumber, int ruleNumber) {
+    if (vcNumber < 0 || vcNumber >= 0xD) {
         return 0;
     }
 
-    switch (command) {
+    switch (ruleNumber) {
     case 1:
-        player->playerAI->tacticalAI.setStrategicNumber(0, this->sn[0]);
-        player->playerAI->tacticalAI.setStrategicNumber(1, this->sn[1]);
-        player->playerAI->tacticalAI.setStrategicNumber(2, this->sn[2]);
-        player->playerAI->tacticalAI.setStrategicNumber(3, this->sn[3]);
-        player->playerAI->tacticalAI.setStrategicNumber(4, this->sn[4]);
-        player->playerAI->tacticalAI.setStrategicNumber(5, this->sn[5]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x23, this->sn[0x23]);
-        player->playerAI->tacticalAI.setStrategicNumber(100, this->sn[100]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xe1, this->sn[0xe1]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x75, this->sn[0x75]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x76, this->sn[0x76]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x77, this->sn[0x77]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x78, this->sn[0x78]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x9c, this->sn[0x9c]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x9f, this->sn[0x9f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x9e, this->sn[0x9e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x9d, this->sn[0x9d]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa0, this->sn[0xa0]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x8e, this->sn[0x8e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x94, this->sn[0x94]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x95, this->sn[0x95]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xcb, this->sn[0xcb]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa3, this->sn[0xa3]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa4, this->sn[0xa4]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa6, this->sn[0xa6]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa5, this->sn[0xa5]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa7, this->sn[0xa7]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb3, this->sn[0xb3]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb4, this->sn[0xb4]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xcd, this->sn[0xcd]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xcf, this->sn[0xcf]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xce, this->sn[0xce]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xdc, this->sn[0xdc]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xde, this->sn[0xde]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd0, this->sn[0xd0]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd1, this->sn[0xd1]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd2, this->sn[0xd2]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd3, this->sn[0xd3]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xdf, this->sn[0xdf]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd4, this->sn[0xd4]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd5, this->sn[0xd5]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd6, this->sn[0xd6]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xe0, this->sn[0xe0]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa9, this->sn[0xa9]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xaa, this->sn[0xaa]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xab, this->sn[0xab]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xac, this->sn[0xac]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xad, this->sn[0xad]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xbe, this->sn[0xbe]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xbf, this->sn[0xbf]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc0, this->sn[0xc0]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc1, this->sn[0xc1]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xae, this->sn[0xae]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xcc, this->sn[0xcc]);
+        p->playerAI->tacticalAI.setStrategicNumber(0, this->sn[0]);
+        p->playerAI->tacticalAI.setStrategicNumber(1, this->sn[1]);
+        p->playerAI->tacticalAI.setStrategicNumber(2, this->sn[2]);
+        p->playerAI->tacticalAI.setStrategicNumber(3, this->sn[3]);
+        p->playerAI->tacticalAI.setStrategicNumber(4, this->sn[4]);
+        p->playerAI->tacticalAI.setStrategicNumber(5, this->sn[5]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x23, this->sn[0x23]);
+        p->playerAI->tacticalAI.setStrategicNumber(100, this->sn[100]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xe1, this->sn[0xe1]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x75, this->sn[0x75]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x76, this->sn[0x76]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x77, this->sn[0x77]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x78, this->sn[0x78]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x9c, this->sn[0x9c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x9f, this->sn[0x9f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x9e, this->sn[0x9e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x9d, this->sn[0x9d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa0, this->sn[0xa0]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x8e, this->sn[0x8e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x94, this->sn[0x94]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x95, this->sn[0x95]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xcb, this->sn[0xcb]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa3, this->sn[0xa3]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa4, this->sn[0xa4]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa6, this->sn[0xa6]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa5, this->sn[0xa5]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa7, this->sn[0xa7]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb3, this->sn[0xb3]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb4, this->sn[0xb4]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xcd, this->sn[0xcd]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xcf, this->sn[0xcf]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xce, this->sn[0xce]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xdc, this->sn[0xdc]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xde, this->sn[0xde]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd0, this->sn[0xd0]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd1, this->sn[0xd1]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd2, this->sn[0xd2]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd3, this->sn[0xd3]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xdf, this->sn[0xdf]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd4, this->sn[0xd4]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd5, this->sn[0xd5]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd6, this->sn[0xd6]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xe0, this->sn[0xe0]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa9, this->sn[0xa9]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xaa, this->sn[0xaa]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xab, this->sn[0xab]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xac, this->sn[0xac]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xad, this->sn[0xad]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xbe, this->sn[0xbe]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xbf, this->sn[0xbf]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc0, this->sn[0xc0]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc1, this->sn[0xc1]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xae, this->sn[0xae]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xcc, this->sn[0xcc]);
         break;
     case 2:
-        player->playerAI->tacticalAI.setStrategicNumber(0x10, this->sn[0x10]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x1a, this->sn[0x1a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x24, this->sn[0x24]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x25, this->sn[0x25]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x5d, this->sn[0x5d]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x5e, this->sn[0x5e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x62, this->sn[0x62]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x79, this->sn[0x79]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x83, this->sn[0x83]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x8f, this->sn[0x8f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa2, this->sn[0xa2]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x10, this->sn[0x10]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x1a, this->sn[0x1a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x24, this->sn[0x24]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x25, this->sn[0x25]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x5d, this->sn[0x5d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x5e, this->sn[0x5e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x62, this->sn[0x62]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x79, this->sn[0x79]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x83, this->sn[0x83]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x8f, this->sn[0x8f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa2, this->sn[0xa2]);
         break;
     case 0xc:
-        player->playerAI->tacticalAI.setStrategicNumber(0x12, this->sn[0x12]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x12, this->sn[0x12]);
         break;
     case 0xd:
-        player->playerAI->tacticalAI.setStrategicNumber(0x13, this->sn[0x13]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x13, this->sn[0x13]);
         break;
     case 0xe:
-        player->playerAI->tacticalAI.setStrategicNumber(0x14, this->sn[0x14]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x14, this->sn[0x14]);
         break;
     case 0x10:
-        player->playerAI->tacticalAI.setStrategicNumber(0x16, this->sn[0x16]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x48, this->sn[0x48]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x39, this->sn[0x39]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x5c, this->sn[0x5c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x16, this->sn[0x16]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x48, this->sn[0x48]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x39, this->sn[0x39]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x5c, this->sn[0x5c]);
         break;
     case 0x11:
-        player->playerAI->tacticalAI.setStrategicNumber(0x17, this->sn[0x17]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x17, this->sn[0x17]);
         break;
     case 0x12:
-        player->playerAI->tacticalAI.setStrategicNumber(0x18, this->sn[0x18]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x18, this->sn[0x18]);
         break;
     case 0x15:
-        player->playerAI->tacticalAI.setStrategicNumber(0x19, this->sn[0x19]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x1c, this->sn[0x1c]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x26, this->sn[0x26]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x27, this->sn[0x27]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x19, this->sn[0x19]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x1c, this->sn[0x1c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x26, this->sn[0x26]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x27, this->sn[0x27]);
         break;
     case 0x16:
-        player->playerAI->tacticalAI.setStrategicNumber(0x1d, this->sn[0x1d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x1d, this->sn[0x1d]);
         break;
     case 0x17:
-        player->playerAI->tacticalAI.setStrategicNumber(0x20, this->sn[0x20]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x91, this->sn[0x91]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x20, this->sn[0x20]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x91, this->sn[0x91]);
         break;
     case 0x18:
-        player->playerAI->tacticalAI.setStrategicNumber(0x22, this->sn[0x22]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x22, this->sn[0x22]);
         break;
     case 0x19:
-        player->playerAI->tacticalAI.setStrategicNumber(0x28, this->sn[0x28]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x4b, this->sn[0x4b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x28, this->sn[0x28]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x4b, this->sn[0x4b]);
         break;
     case 0x1a:
-        player->playerAI->tacticalAI.setStrategicNumber(0x29, this->sn[0x29]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x29, this->sn[0x29]);
         break;
     case 0x1b:
-        player->playerAI->tacticalAI.setStrategicNumber(0x2b, this->sn[0x2b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x2c, this->sn[0x2c]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x2a, this->sn[0x2a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x2d, this->sn[0x2d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x2b, this->sn[0x2b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x2c, this->sn[0x2c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x2a, this->sn[0x2a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x2d, this->sn[0x2d]);
         break;
     case 0x1c:
-        player->playerAI->tacticalAI.setStrategicNumber(0x1e, this->sn[0x1e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x1f, this->sn[0x1f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x5b, this->sn[0x5b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x5f, this->sn[0x5f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x60, this->sn[0x60]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x61, this->sn[0x61]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x1e, this->sn[0x1e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x1f, this->sn[0x1f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x5b, this->sn[0x5b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x5f, this->sn[0x5f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x60, this->sn[0x60]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x61, this->sn[0x61]);
         break;
     case 0x1d:
-        player->playerAI->tacticalAI.setStrategicNumber(0x2e, this->sn[0x2e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x66, this->sn[0x66]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x2f, this->sn[0x2f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x67, this->sn[0x67]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x68, this->sn[0x68]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x86, this->sn[0x86]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x2e, this->sn[0x2e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x66, this->sn[0x66]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x2f, this->sn[0x2f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x67, this->sn[0x67]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x68, this->sn[0x68]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x86, this->sn[0x86]);
         break;
     case 0x1e:
-        player->playerAI->tacticalAI.setStrategicNumber(0x30, this->sn[0x30]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x30, this->sn[0x30]);
         break;
     case 0x1f:
-        player->playerAI->tacticalAI.setStrategicNumber(0x31, this->sn[0x31]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x87, this->sn[0x87]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x88, this->sn[0x88]);
-        player->playerAI->tacticalAI.setStrategicNumber(200, this->sn[200]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x31, this->sn[0x31]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x87, this->sn[0x87]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x88, this->sn[0x88]);
+        p->playerAI->tacticalAI.setStrategicNumber(200, this->sn[200]);
         break;
     case 0x20:
-        player->playerAI->tacticalAI.setStrategicNumber(0x32, this->sn[0x32]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x33, this->sn[0x33]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x34, this->sn[0x34]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x35, this->sn[0x35]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x36, this->sn[0x36]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x37, this->sn[0x37]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x38, this->sn[0x38]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x46, this->sn[0x46]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x32, this->sn[0x32]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x33, this->sn[0x33]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x34, this->sn[0x34]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x35, this->sn[0x35]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x36, this->sn[0x36]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x37, this->sn[0x37]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x38, this->sn[0x38]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x46, this->sn[0x46]);
         break;
     case 0x21:
-        player->playerAI->tacticalAI.setStrategicNumber(0x3a, this->sn[0x3a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x3b, this->sn[0x3b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x3c, this->sn[0x3c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x3a, this->sn[0x3a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x3b, this->sn[0x3b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x3c, this->sn[0x3c]);
         break;
     case 0x22:
-        player->playerAI->tacticalAI.setStrategicNumber(0x3d, this->sn[0x3d]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x3e, this->sn[0x3e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x3f, this->sn[0x3f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x3d, this->sn[0x3d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x3e, this->sn[0x3e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x3f, this->sn[0x3f]);
         break;
     case 0x23:
-        player->playerAI->tacticalAI.setStrategicNumber(0x40, this->sn[0x40]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x41, this->sn[0x41]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x42, this->sn[0x42]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd8, this->sn[0xd8]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x40, this->sn[0x40]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x41, this->sn[0x41]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x42, this->sn[0x42]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd8, this->sn[0xd8]);
         break;
     case 0x24:
-        player->playerAI->tacticalAI.setStrategicNumber(0x43, this->sn[0x43]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x44, this->sn[0x44]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x45, this->sn[0x45]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x43, this->sn[0x43]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x44, this->sn[0x44]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x45, this->sn[0x45]);
         break;
     case 0x25:
-        player->playerAI->tacticalAI.setStrategicNumber(0x47, this->sn[0x47]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x47, this->sn[0x47]);
         break;
     case 0x26:
-        player->playerAI->tacticalAI.setStrategicNumber(0x49, this->sn[0x49]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x4a, this->sn[0x4a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x49, this->sn[0x49]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x4a, this->sn[0x4a]);
         break;
     case 0x27:
-        player->playerAI->tacticalAI.setStrategicNumber(0x4c, this->sn[0x4c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x4c, this->sn[0x4c]);
         break;
     case 0x28:
-        player->playerAI->tacticalAI.setStrategicNumber(0x4d, this->sn[0x4d]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x4e, this->sn[0x4e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x4f, this->sn[0x4f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x50, this->sn[0x50]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x51, this->sn[0x51]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x52, this->sn[0x52]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x53, this->sn[0x53]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x59, this->sn[0x59]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x5a, this->sn[0x5a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x6a, this->sn[0x6a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x6b, this->sn[0x6b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x6c, this->sn[0x6c]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x6d, this->sn[0x6d]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x6e, this->sn[0x6e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x6f, this->sn[0x6f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x7a, this->sn[0x7a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x7b, this->sn[0x7b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x90, this->sn[0x90]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb8, this->sn[0xb8]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb9, this->sn[0xb9]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x4d, this->sn[0x4d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x4e, this->sn[0x4e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x4f, this->sn[0x4f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x50, this->sn[0x50]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x51, this->sn[0x51]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x52, this->sn[0x52]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x53, this->sn[0x53]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x59, this->sn[0x59]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x5a, this->sn[0x5a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x6a, this->sn[0x6a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x6b, this->sn[0x6b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x6c, this->sn[0x6c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x6d, this->sn[0x6d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x6e, this->sn[0x6e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x6f, this->sn[0x6f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x7a, this->sn[0x7a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x7b, this->sn[0x7b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x90, this->sn[0x90]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb8, this->sn[0xb8]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb9, this->sn[0xb9]);
         break;
     case 0x29:
-        player->playerAI->tacticalAI.setStrategicNumber(0x54, this->sn[0x54]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x55, this->sn[0x55]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x89, this->sn[0x89]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x54, this->sn[0x54]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x55, this->sn[0x55]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x89, this->sn[0x89]);
         break;
     case 0x2a:
-        player->playerAI->tacticalAI.setStrategicNumber(0x56, this->sn[0x56]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x57, this->sn[0x57]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xca, this->sn[0xca]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x96, this->sn[0x96]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x97, this->sn[0x97]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x98, this->sn[0x98]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa1, this->sn[0xa1]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xa8, this->sn[0xa8]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x56, this->sn[0x56]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x57, this->sn[0x57]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xca, this->sn[0xca]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x96, this->sn[0x96]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x97, this->sn[0x97]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x98, this->sn[0x98]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa1, this->sn[0xa1]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xa8, this->sn[0xa8]);
         break;
     case 0x2b:
-        player->playerAI->tacticalAI.setStrategicNumber(0x58, this->sn[0x58]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x65, this->sn[0x65]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x9b, this->sn[0x9b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xaf, this->sn[0xaf]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb0, this->sn[0xb0]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb1, this->sn[0xb1]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb5, this->sn[0xb5]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb6, this->sn[0xb6]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb7, this->sn[0xb7]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xba, this->sn[0xba]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xbb, this->sn[0xbb]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc2, this->sn[0xc2]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc4, this->sn[0xc4]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc5, this->sn[0xc5]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xbc, this->sn[0xbc]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc3, this->sn[0xc3]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xbd, this->sn[0xbd]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc6, this->sn[0xc6]);
-        player->playerAI->tacticalAI.setStrategicNumber(199, this->sn[199]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd7, this->sn[0xd7]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xd9, this->sn[0xd9]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xda, this->sn[0xda]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xdb, this->sn[0xdb]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xdd, this->sn[0xdd]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x58, this->sn[0x58]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x65, this->sn[0x65]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x9b, this->sn[0x9b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xaf, this->sn[0xaf]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb0, this->sn[0xb0]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb1, this->sn[0xb1]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb5, this->sn[0xb5]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb6, this->sn[0xb6]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb7, this->sn[0xb7]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xba, this->sn[0xba]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xbb, this->sn[0xbb]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc2, this->sn[0xc2]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc4, this->sn[0xc4]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc5, this->sn[0xc5]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xbc, this->sn[0xbc]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc3, this->sn[0xc3]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xbd, this->sn[0xbd]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc6, this->sn[0xc6]);
+        p->playerAI->tacticalAI.setStrategicNumber(199, this->sn[199]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd7, this->sn[0xd7]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xd9, this->sn[0xd9]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xda, this->sn[0xda]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xdb, this->sn[0xdb]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xdd, this->sn[0xdd]);
         break;
     case 0x2c:
-        player->playerAI->tacticalAI.setStrategicNumber(99, this->sn[99]);
+        p->playerAI->tacticalAI.setStrategicNumber(99, this->sn[99]);
         break;
     case 0x2d:
-        player->playerAI->tacticalAI.setStrategicNumber(0x69, this->sn[0x69]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x69, this->sn[0x69]);
         break;
     case 0x2e:
-        player->playerAI->tacticalAI.setStrategicNumber(0x70, this->sn[0x70]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x70, this->sn[0x70]);
         break;
     case 0x2f:
-        player->playerAI->tacticalAI.setStrategicNumber(0x71, this->sn[0x71]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x72, this->sn[0x72]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x73, this->sn[0x73]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x74, this->sn[0x74]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x92, this->sn[0x92]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x93, this->sn[0x93]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x71, this->sn[0x71]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x72, this->sn[0x72]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x73, this->sn[0x73]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x74, this->sn[0x74]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x92, this->sn[0x92]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x93, this->sn[0x93]);
         break;
     case 0x30:
-        player->playerAI->tacticalAI.setStrategicNumber(0x7c, this->sn[0x7c]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x7d, this->sn[0x7d]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x7e, this->sn[0x7e]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x7f, this->sn[0x7f]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x80, this->sn[0x80]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x81, this->sn[0x81]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x82, this->sn[0x82]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x84, this->sn[0x84]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x85, this->sn[0x85]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xb2, this->sn[0xb2]);
-        player->playerAI->tacticalAI.setStrategicNumber(0xc9, this->sn[0xc9]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x7c, this->sn[0x7c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x7d, this->sn[0x7d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x7e, this->sn[0x7e]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x7f, this->sn[0x7f]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x80, this->sn[0x80]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x81, this->sn[0x81]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x82, this->sn[0x82]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x84, this->sn[0x84]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x85, this->sn[0x85]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xb2, this->sn[0xb2]);
+        p->playerAI->tacticalAI.setStrategicNumber(0xc9, this->sn[0xc9]);
         break;
     case 0x31:
-        player->playerAI->tacticalAI.setStrategicNumber(0x8a, this->sn[0x8a]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x8b, this->sn[0x8b]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x8c, this->sn[0x8c]);
-        player->playerAI->tacticalAI.setStrategicNumber(0x8d, this->sn[0x8d]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x8a, this->sn[0x8a]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x8b, this->sn[0x8b]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x8c, this->sn[0x8c]);
+        p->playerAI->tacticalAI.setStrategicNumber(0x8d, this->sn[0x8d]);
         break;
     default:
         return 0;
@@ -665,33 +662,32 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* player, int state, int com
 }
 
 
-int VictoryConditionRuleSystem::stopExecution(TRIBE_Player*, int) {
+int VictoryConditionRuleSystem::stopExecution(TRIBE_Player* p, int ruleNumber) {
     return 0;
 }
 
 
 struct ScaleLocals {
     float scale1;
-    float scale2;
+    float scale3;
     int tmp;
 };
 
-void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
-{
-    if (level != 0) {
+void VictoryConditionRuleSystem::modifyForDifficultyLevel(int dL) {
+    if (dL != 0) {
         int add1 = 0;
         int add2 = 0;
         int add3 = 0;
         ScaleLocals locals;
         locals.scale1 = 1.0f;
-        locals.scale2 = 1.0f;
+        locals.scale3 = 1.0f;
 
-        switch (level) {
+        switch (dL) {
         case 1:
             if (rge_base_game->scenarioGame() == 1) {
                 locals.scale1 = 0.8f;
                 add1 = 30;
-                locals.scale2 = 0.8f;
+                locals.scale3 = 0.8f;
                 add2 = 120;
                 add3 = 1;
             }
@@ -699,21 +695,21 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
         case 2:
             locals.scale1 = 0.6f;
             add1 = 60;
-            locals.scale2 = 0.6f;
+            locals.scale3 = 0.6f;
             add2 = 240;
             add3 = 2;
             break;
         case 3:
             locals.scale1 = 0.4f;
             add1 = 90;
-            locals.scale2 = 0.4f;
+            locals.scale3 = 0.4f;
             add2 = (rge_base_game->scenarioGame() == 1) ? 360 : 900;
             add3 = 3;
             break;
         case 4:
             locals.scale1 = 0.2f;
             add1 = 120;
-            locals.scale2 = 0.2f;
+            locals.scale3 = 0.2f;
             add2 = (rge_base_game->scenarioGame() == 1) ? 480 : 1260;
             add3 = 4;
             break;
@@ -751,7 +747,7 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
 
         locals.tmp = this->sn[0x13];
         if (locals.tmp > 0) {
-            locals.tmp = (long)((float)locals.tmp * locals.scale2);
+            locals.tmp = (long)((float)locals.tmp * locals.scale3);
             this->sn[0x13] = locals.tmp;
             if (locals.tmp == 0) {
                 this->sn[0x13] = 1;
@@ -759,7 +755,7 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
         }
         locals.tmp = this->sn[0x14];
         if (locals.tmp > 0) {
-            locals.tmp = (long)((float)locals.tmp * locals.scale2);
+            locals.tmp = (long)((float)locals.tmp * locals.scale3);
             this->sn[0x14] = locals.tmp;
             if (locals.tmp == 0) {
                 this->sn[0x14] = 1;
@@ -842,7 +838,7 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
         }
 
         this->sn[0x58] += add3;
-        if (level <= 3) {
+        if (dL <= 3) {
             this->sn[0x67] = 1;
         } else {
             this->sn[0x67] = 0;
@@ -853,8 +849,8 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
 
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
 
-TribeStrategyAIModule::TribeStrategyAIModule(void* object, int parameter)
-    : StrategyAIModule(object, parameter),
+TribeStrategyAIModule::TribeStrategyAIModule(void* pW, int playerID)
+    : StrategyAIModule(pW, playerID),
       md(0),
       currentVictoryConditionValue(-1),
       targetIDValue(-1),
@@ -868,8 +864,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* object, int parameter)
       executingRules(),
       idleRules(),
       vcRules(),
-      difficultyLevel(0)
-{
+      difficultyLevel(0) {
     this->targetPoint1Value.x = -1.0f;
     this->targetPoint1Value.y = -1.0f;
     this->targetPoint1Value.z = -1.0f;
@@ -891,8 +886,7 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
       executingRules(),
       idleRules(),
       vcRules(),
-      difficultyLevel(0)
-{
+      difficultyLevel(0) {
     rge_read(infile, &this->currentVictoryConditionValue, 4);
     rge_read(infile, &this->targetIDValue, 4);
     rge_read(infile, &this->secondTargetIDValue, 4);
@@ -945,14 +939,13 @@ extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
 
 
-int TribeStrategyAIModule::update(int)
-{
+int TribeStrategyAIModule::update(int timeLimit) {
     int i;
     int result;
-    int ruleToStart;
-    int ruleToStop;
+    int bestRule;
+    int worstRule;
     int bestResult;
-    int worstResult;
+    int worstRuleResult;
 
     this->victoryConditionChangeTimeout++;
     if (this->victoryConditionChangeTimeout >= 0) {
@@ -986,39 +979,39 @@ int TribeStrategyAIModule::update(int)
     }
 
     bestResult = 0;
-    ruleToStart = -1;
+    bestRule = -1;
     for (i = 0; i < this->idleRules.numberValue; i++) {
         result = this->vcRules.evaluateAsNonInProgress(
             this->md->aiPlayer, this->idleRules[i]);
         if (result > bestResult) {
-            ruleToStart = this->idleRules[i];
+            bestRule = this->idleRules[i];
             bestResult = result;
         }
     }
 
-    if (ruleToStart != -1 &&
+    if (bestRule != -1 &&
         this->vcRules.execute(this->md->aiPlayer,
                               this->currentVictoryConditionValue,
-                              ruleToStart) == 1) {
-        this->executingRules.add(ruleToStart);
-        this->idleRules.remove(ruleToStart);
+                              bestRule) == 1) {
+        this->executingRules.add(bestRule);
+        this->idleRules.remove(bestRule);
     }
 
-    ruleToStop = -1;
-    worstResult = 101;
+    worstRule = -1;
+    worstRuleResult = 101;
     for (i = 0; i < this->executingRules.numberValue; i++) {
         result = this->vcRules.evaluateAsInProgress(
             this->md->aiPlayer, this->executingRules[i]);
-        if (result < worstResult) {
-            ruleToStop = this->executingRules[i];
-            worstResult = result;
+        if (result < worstRuleResult) {
+            worstRule = this->executingRules[i];
+            worstRuleResult = result;
         }
     }
 
-    if (ruleToStop != -1 &&
-        this->vcRules.stopExecution(this->md->aiPlayer, ruleToStop) == 1) {
-        this->executingRules.remove(ruleToStop);
-        this->idleRules.add(ruleToStop);
+    if (worstRule != -1 &&
+        this->vcRules.stopExecution(this->md->aiPlayer, worstRule) == 1) {
+        this->executingRules.remove(worstRule);
+        this->idleRules.add(worstRule);
     }
 
     for (i = 0; i < this->vcRuleSet.numberValue; i++) {
@@ -1033,8 +1026,8 @@ int TribeStrategyAIModule::update(int)
     return 1;
 }
 
-void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
-    this->md = v;
+void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* m) {
+    this->md = m;
 }
 
 // and three grow-while-saving integer arrays mirroring UnitAIModule::save pattern.
@@ -1049,30 +1042,29 @@ void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* p);
 
 
-int TribeStrategyAIModule::save(int fd)
-{
-    int temp;
+int TribeStrategyAIModule::save(int outfile) {
+    int tempInt;
     char tempString[260];
     int i;
 
-    rge_write(fd, &this->currentVictoryConditionValue, 4);
-    rge_write(fd, &this->targetIDValue, 4);
-    rge_write(fd, &this->secondTargetIDValue, 4);
-    rge_write(fd, &this->secondTargetTypeValue, 4);
-    rge_write(fd, &this->targetPoint1Value, 16);
-    rge_write(fd, &this->targetPoint2Value, 16);
-    rge_write(fd, &this->targetAttributeValue, 4);
-    rge_write(fd, &this->targetNumberValue, 4);
-    rge_write(fd, &this->victoryConditionChangeTimeout, 4);
-    rge_write(fd, &this->difficultyLevel, 4);
+    rge_write(outfile, &this->currentVictoryConditionValue, 4);
+    rge_write(outfile, &this->targetIDValue, 4);
+    rge_write(outfile, &this->secondTargetIDValue, 4);
+    rge_write(outfile, &this->secondTargetTypeValue, 4);
+    rge_write(outfile, &this->targetPoint1Value, 16);
+    rge_write(outfile, &this->targetPoint2Value, 16);
+    rge_write(outfile, &this->targetAttributeValue, 4);
+    rge_write(outfile, &this->targetNumberValue, 4);
+    rge_write(outfile, &this->victoryConditionChangeTimeout, 4);
+    rge_write(outfile, &this->difficultyLevel, 4);
 
     strcpy(tempString, this->ruleSetNameValue);
-    temp = strlen(tempString);
-    rge_write(fd, &temp, 4);
-    rge_write(fd, tempString, strlen(tempString));
+    tempInt = strlen(tempString);
+    rge_write(outfile, &tempInt, 4);
+    rge_write(outfile, tempString, strlen(tempString));
 
-    temp = this->vcRuleSet.numberValue;
-    rge_write(fd, &temp, 4);
+    tempInt = this->vcRuleSet.numberValue;
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->vcRuleSet.numberValue; i++) {
         if (i > this->vcRuleSet.maximumSizeValue - 1) {
             int newMax = i + 1;
@@ -1087,12 +1079,12 @@ int TribeStrategyAIModule::save(int fd)
                 this->vcRuleSet.maximumSizeValue = newMax;
             }
         }
-        temp = this->vcRuleSet.value[i];
-        rge_write(fd, &temp, 4);
+        tempInt = this->vcRuleSet.value[i];
+        rge_write(outfile, &tempInt, 4);
     }
 
-    temp = this->executingRules.numberValue;
-    rge_write(fd, &temp, 4);
+    tempInt = this->executingRules.numberValue;
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->executingRules.numberValue; i++) {
         if (i > this->executingRules.maximumSizeValue - 1) {
             int newMax = i + 1;
@@ -1107,12 +1099,12 @@ int TribeStrategyAIModule::save(int fd)
                 this->executingRules.maximumSizeValue = newMax;
             }
         }
-        temp = this->executingRules.value[i];
-        rge_write(fd, &temp, 4);
+        tempInt = this->executingRules.value[i];
+        rge_write(outfile, &tempInt, 4);
     }
 
-    temp = this->idleRules.numberValue;
-    rge_write(fd, &temp, 4);
+    tempInt = this->idleRules.numberValue;
+    rge_write(outfile, &tempInt, 4);
     for (i = 0; i < this->idleRules.numberValue; i++) {
         if (i > this->idleRules.maximumSizeValue - 1) {
             int newMax = i + 1;
@@ -1127,8 +1119,8 @@ int TribeStrategyAIModule::save(int fd)
                 this->idleRules.maximumSizeValue = newMax;
             }
         }
-        temp = this->idleRules.value[i];
-        rge_write(fd, &temp, 4);
+        tempInt = this->idleRules.value[i];
+        rge_write(outfile, &tempInt, 4);
     }
 
     return 1;
@@ -1141,25 +1133,25 @@ char* TribeStrategyAIModule::ruleSetName() {
 char* strncpy(char* dest, const char* src, unsigned int count);
 
 
-int TribeStrategyAIModule::loadRules(char* name) {
-    if (name == 0) {
-        return (int)name;
+int TribeStrategyAIModule::loadRules(char* rName) {
+    if (rName == 0) {
+        return (int)rName;
     }
-    strncpy(this->ruleSetNameValue, name, 0xFF);
+    strncpy(this->ruleSetNameValue, rName, 0xFF);
     return ((VictoryConditionRuleSystem*)((char*)this + 0x268))->loadRules(this->ruleSetNameValue);
 }
 
-void TribeStrategyAIModule::setRule(int rule, int value) {
-    this->logCommonHistory((char*)"Setting SN[%d] to %d.", rule, value);
-    this->vcRules.setRule(rule, value);
+void TribeStrategyAIModule::setRule(int ruleIndex, int value) {
+    this->logCommonHistory((char*)"Setting SN[%d] to %d.", ruleIndex, value);
+    this->vcRules.setRule(ruleIndex, value);
 }
 
-int TribeStrategyAIModule::rule(int param) {
-    return this->vcRules.rule(param);
+int TribeStrategyAIModule::rule(int ruleIndex) {
+    return this->vcRules.rule(ruleIndex);
 }
 
-void TribeStrategyAIModule::setDifficultyLevel(int param) {
-    this->vcRules.modifyForDifficultyLevel(param);
+void TribeStrategyAIModule::setDifficultyLevel(int difficultyLevel) {
+    this->vcRules.modifyForDifficultyLevel(difficultyLevel);
 }
 
 int TribeStrategyAIModule::currentVictoryCondition() const {
@@ -1216,13 +1208,12 @@ class TRIBE_Player;
 // calls shown at 004EA6EF, 004EA71A, and 004EA72A.
 #pragma inline_depth(0)
 
-void TribeStrategyAIModule::setVictoryCondition(int value)
-{
+void TribeStrategyAIModule::setVictoryCondition(int vcNumber) {
     ManagedArray<int>* rules = &this->vcRuleSet;
     int v;
     int i;
 
-    this->currentVictoryConditionValue = value;
+    this->currentVictoryConditionValue = vcNumber;
     this->vcRuleSet.numberValue = 0;
 
     ADD_REQUIRED(1);
@@ -1288,14 +1279,14 @@ void TribeStrategyAIModule::setVictoryCondition(int value)
 
 
 
-int TribeStrategyAIModule::isRuleExecuting(int ruleId) {
+int TribeStrategyAIModule::isRuleExecuting(int ruleNumber) {
     int i;
 
     for (i = 0; i < this->executingRules.numberValue; i = i + 1) {
         if (i >= this->executingRules.maximumSizeValue) {
             return 0;
         }
-        if (this->executingRules.value[i] == ruleId) {
+        if (this->executingRules.value[i] == ruleNumber) {
             return 1;
         }
     }
@@ -1304,14 +1295,14 @@ int TribeStrategyAIModule::isRuleExecuting(int ruleId) {
 
 
 
-int TribeStrategyAIModule::isRuleIdle(int rule_id) {
+int TribeStrategyAIModule::isRuleIdle(int ruleNumber) {
     int i;
 
     for (i = 0; i < this->idleRules.numberValue; i = i + 1) {
         if (i >= this->idleRules.maximumSizeValue) {
             return 0;
         }
-        if (this->idleRules.value[i] == rule_id) {
+        if (this->idleRules.value[i] == ruleNumber) {
             return 1;
         }
     }

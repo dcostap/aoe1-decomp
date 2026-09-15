@@ -49,34 +49,33 @@ public:
     int requiredDiplomacyTributeAmount;
     int tributeGiven[9];
 
-    TribeMainDecisionAIModule(void* owner, int player, char* playerName,
-                              TRIBE_Player* tribePlayer, char* p5, char* p6,
-                              char* p7);
-    TribeMainDecisionAIModule(int player, char* playerName,
-                              TRIBE_Player* tribePlayer, int file);
+    TribeMainDecisionAIModule(void* pW, int playerID, char* playerName,
+                              TRIBE_Player* aiP, char* buildListName,
+                              char* cityPlanName, char* ruleSetName);
+    TribeMainDecisionAIModule(int playerID, char* playerName,
+                              TRIBE_Player* aiP, int infile);
     virtual ~TribeMainDecisionAIModule();
-    virtual void setLogHistory(int value);
-    virtual int update(int value);
-    virtual int save(int file);
-    virtual int addObject(RGE_Static_Object* object);
-    virtual int removeObject(int objectID);
-    virtual int objectGroupThatCanPerformAction(int action);
-    virtual int canPerformAction(int action, int target);
+    virtual void setLogHistory(int v);
+    virtual int update(int timeLimit);
+    virtual int save(int outfile);
+    virtual int addObject(RGE_Static_Object* bo);
+    virtual int removeObject(int id);
+    virtual int objectGroupThatCanPerformAction(int a);
+    virtual int canPerformAction(int id, int a);
 
-    void kick(int player);
-    int isMoveable(int objectID);
+    void kick(int m);
+    int isMoveable(int o);
     void updateBuildAIWithObjects();
-    void tributeNotify(int player, int notification, int amount);
+    void tributeNotify(int playerID, int resourceID, int amount);
     void revokeTributeAlliance();
 
 protected:
     void setTributeChat();
 
 public:
-    int processAICommand(int player, int command, int value, int amount,
-                         int extra);
-    int currentScore(int player);
-    void detask(int objectID);
+    int processAICommand(int caller, int mType, int p1, int p2, int p3);
+    int currentScore(int playerID);
+    void detask(int uID);
 };
 
 typedef char taimdmd_tribe_main_size[
