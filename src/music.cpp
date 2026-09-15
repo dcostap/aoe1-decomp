@@ -18,14 +18,13 @@ extern unsigned long debug_timeGetTime(char* file, int line);
 extern "C" int __cdecl open(const char*, int);
 extern "C" int __cdecl close(int);
 
-TMusic_System::TMusic_System(unsigned char type, void* instance_arg,
-                             void* window_arg, TSound_Driver* sound_system_arg,
-                             char* path_arg)
-{
-    this->music_type = type;
-    this->sound_system = sound_system_arg;
-    this->instance = instance_arg;
-    this->window = window_arg;
+TMusic_System::TMusic_System(unsigned char music_type_in, void* instance_in,
+                             void* window_in, TSound_Driver* sound_system_in,
+                             char* path_in) {
+    this->music_type = music_type_in;
+    this->sound_system = sound_system_in;
+    this->instance = instance_in;
+    this->window = window_in;
     this->device_open = 0;
     this->device_id = 0;
     this->playing_track = 0;
@@ -51,8 +50,8 @@ TMusic_System::TMusic_System(unsigned char type, void* instance_arg,
     this->midi_window = 0;
     this->file_name[0] = 0;
 
-    if (path_arg != 0) {
-        strcpy(this->path, path_arg);
+    if (path_in != 0) {
+        strcpy(this->path, path_in);
     } else {
         this->path[0] = 0;
     }
@@ -60,13 +59,11 @@ TMusic_System::TMusic_System(unsigned char type, void* instance_arg,
     this->open_device();
 }
 
-TMusic_System::~TMusic_System()
-{
+TMusic_System::~TMusic_System() {
     this->close_device();
 }
 
-int TMusic_System::open_device()
-{
+int TMusic_System::open_device() {
     MCI_STATUS_PARMS status_info;
     MCI_SET_PARMS set_info;
     MCI_OPEN_PARMSA open_info;
@@ -152,8 +149,7 @@ int TMusic_System::open_device()
     return 0;
 }
 
-void TMusic_System::close_device()
-{
+void TMusic_System::close_device() {
     if (this->device_open != 0) {
         this->stop_track();
 
@@ -188,8 +184,7 @@ void TMusic_System::close_device()
     }
 }
 
-int TMusic_System::open_mixer()
-{
+int TMusic_System::open_mixer() {
     UINT num_dev = mixerGetNumDevs();
     if (num_dev <= 0) {
         return 0;
@@ -257,8 +252,7 @@ int TMusic_System::open_mixer()
     return 0;
 }
 
-void TMusic_System::close_mixer(void)
-{
+void TMusic_System::close_mixer(void) {
     if (this->mixer_open != 0) {
         if (this->mixer_handle != 0) {
             mixerClose(this->mixer_handle);
@@ -268,32 +262,29 @@ void TMusic_System::close_mixer(void)
     }
 }
 
-int TMusic_System::set_music_type(unsigned char type)
-{
-    if (type == this->music_type) {
+int TMusic_System::set_music_type(unsigned char music_type_in) {
+    if (music_type_in == this->music_type) {
         return this->device_open;
     }
     this->close_device();
-    this->music_type = type;
+    this->music_type = music_type_in;
     return this->open_device();
 }
 
-void TMusic_System::set_fade_out(int fade_out, unsigned long fade_time)
-{
-    this->fade_out = fade_out;
-    this->fade_time = fade_time;
+void TMusic_System::set_fade_out(int fade_out_in, unsigned long fade_time_in) {
+    this->fade_out = fade_out_in;
+    this->fade_time = fade_time_in;
 }
 
-void TMusic_System::set_volume(long volume, int save)
-{
-    if (volume < -10000) {
-        volume = -10000;
-    } else if (volume > 0) {
-        volume = 0;
+void TMusic_System::set_volume(long volume_in, int permanent) {
+    if (volume_in < -10000) {
+        volume_in = -10000;
+    } else if (volume_in > 0) {
+        volume_in = 0;
     }
 
-    if (save) {
-        this->volume = volume;
+    if (permanent) {
+        this->volume = volume_in;
     }
 
     if (this->device_open == 0) {
@@ -315,7 +306,7 @@ void TMusic_System::set_volume(long volume, int save)
         if (this->sound_system == 0) {
             return;
         }
-        this->sound_system->set_stream_volume(volume);
+        this->sound_system->set_stream_volume(volume_in);
         return;
     default:
         return;
@@ -323,75 +314,72 @@ void TMusic_System::set_volume(long volume, int save)
 
     unsigned int delta = this->mixer_volume_control.Bounds.dwMaximum -
                          this->mixer_volume_control.Bounds.dwMinimum;
-    volume += 10000;
-    delta = (delta * volume) / 10000;
+    volume_in += 10000;
+    delta = (delta * volume_in) / 10000;
     this->mixer_volume_value.dwValue = delta;
     mixerSetControlDetails(this->mixer_handle,
                            &this->mixer_volume_details, 0);
 }
 
-int TMusic_System::play_track(int track, int loop, unsigned long position)
-{
+int TMusic_System::play_track(int track_in, int loop_in, unsigned long set_pos_in) {
     int was_playing = this->playing_track;
     this->file_name[0] = 0;
-    this->start_track = track;
-    this->end_track = track;
+    this->start_track = track_in;
+    this->end_track = track_in;
     this->make_cur_track = 0;
-    this->set_pos = position;
-    this->loop = loop;
+    this->set_pos = set_pos_in;
+    this->loop = loop_in;
 
     if (was_playing && this->fade_out && this->fade_time > 0UL) {
         start_fade();
         return 1;
     }
 
-    return play(track, track, 0, 0, position);
+    return play(track_in, track_in, 0, 0, set_pos_in);
 }
 
-int TMusic_System::play_file(char* file_name, int loop, unsigned long position)
-{
+int TMusic_System::play_file(char* file_name_in, int loop_in, unsigned long set_pos_in) {
     if (this->music_type == 1)
         return 0;
 
-    strcpy(this->file_name, file_name);
+    strcpy(this->file_name, file_name_in);
 
     this->start_track = 0;
     this->end_track = 0;
     this->make_cur_track = 0;
-    this->set_pos = position;
-    this->loop = loop;
+    this->set_pos = set_pos_in;
+    this->loop = loop_in;
 
     if (this->playing_track && this->fade_out && this->fade_time > 0UL) {
         start_fade();
         return 1;
     }
 
-    return play(0, 0, this->file_name, 0, position);
+    return play(0, 0, this->file_name, 0, set_pos_in);
 }
 
-int TMusic_System::play_tracks(int first, int last, int loop, int current,
-                                unsigned long position)
-{
+int TMusic_System::play_tracks(int start_track_in, int end_track_in, int loop_in,
+                                int make_cur_track_in, unsigned long set_pos_in) {
     int count;
 
-    this->loop = loop;
+    this->loop = loop_in;
     count = this->track_count;
     this->file_name[0] = 0;
-    this->start_track = first;
-    this->end_track = last;
-    this->make_cur_track = current;
-    this->set_pos = position;
+    this->start_track = start_track_in;
+    this->end_track = end_track_in;
+    this->make_cur_track = make_cur_track_in;
+    this->set_pos = set_pos_in;
 
     if (count == 0)
         return count;
 
-    if (first > count)
+    if (start_track_in > count)
         this->start_track = count;
 
-    first = this->start_track;
-    if (last < first) {
-        this->end_track = first;
-    } else if (last > count) {
+    start_track_in = this->start_track;
+    if (end_track_in < start_track_in) {
+        this->end_track = start_track_in;
+    } else if (end_track_in > count) {
         this->end_track = count;
     }
 
@@ -400,15 +388,15 @@ int TMusic_System::play_tracks(int first, int last, int loop, int current,
         return 1;
     }
 
-    return this->play(first, this->end_track, 0, current, position);
+    return this->play(start_track_in, this->end_track, 0,
+                      make_cur_track_in, set_pos_in);
 }
 
-int TMusic_System::play(int first, int last, char* file_name, int current,
-                        unsigned long position)
-{
+int TMusic_System::play(int start_track_in, int end_track_in, char* file_name_in,
+                        int make_cur_track_in, unsigned long set_pos_in) {
     MCI_SEND_COMMAND_PROC mci;
     char track_name[261];
-    char error_message[256];
+    char szErrorMsg[256];
     MCI_SEEK_PARMS seek_info;
     MCI_OPEN_PARMSA open_info;
 
@@ -420,21 +408,21 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
         this->stop_playing();
     }
 
-    if (!file_name || !*file_name) {
+    if (!file_name_in || !*file_name_in) {
         int count = this->track_count;
         if (!count) {
             return 0;
         }
-        if (first > count) {
+        if (start_track_in > count) {
             return 0;
         }
-        if (!first) {
+        if (!start_track_in) {
             return 0;
         }
-        if (current) {
-            this->current_track = current;
+        if (make_cur_track_in) {
+            this->current_track = make_cur_track_in;
         } else {
-            this->current_track = first;
+            this->current_track = start_track_in;
         }
     }
 
@@ -445,9 +433,9 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
         this->play_info.dwCallback = (unsigned long)this->window;
         unsigned int flags = 1;
 
-        if (position > 0) {
+        if (set_pos_in > 0) {
             seek_info.dwCallback = 0;
-            seek_info.dwTo = position;
+            seek_info.dwTo = set_pos_in;
             mci(this->device_id, 0x807, 10,
                 (unsigned long)&seek_info);
         } else {
@@ -455,9 +443,9 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
             this->play_info.dwFrom = (unsigned char)this->current_track;
         }
 
-        if (first < this->track_count && last < this->track_count) {
+        if (start_track_in < this->track_count && end_track_in < this->track_count) {
             flags |= 8;
-            this->play_info.dwTo = (unsigned char)(last + 1);
+            this->play_info.dwTo = (unsigned char)(end_track_in + 1);
         }
 
         result = mci(this->device_id, 0x806, flags,
@@ -466,8 +454,8 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
             this->playing_track = 1;
             ++this->notify_waiting;
         } else {
-            if (!mciGetErrorStringA(result, error_message, 0x100)) {
-                strcpy(error_message, MUSIC_ERROR);
+            if (!mciGetErrorStringA(result, szErrorMsg, 0x100)) {
+                strcpy(szErrorMsg, MUSIC_ERROR);
             }
         }
         break;
@@ -475,12 +463,12 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
 
     case 2: {
         MCIERROR result;
-        if (!file_name || !*file_name) {
+        if (!file_name_in || !*file_name_in) {
             sprintf(track_name, MUSIC_MID_FORMAT,
                     this->path, this->current_track);
         } else {
             sprintf(track_name, MUSIC_NAME_FORMAT,
-                    this->path, file_name);
+                    this->path, file_name_in);
             if (strchr(track_name, '.') == 0) {
                 strcat(track_name, MUSIC_MID_SUFFIX);
             }
@@ -496,8 +484,8 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
             result = mci(0, 0x803, 0x3200,
                          (unsigned long)&open_info);
             if (result) {
-                if (!mciGetErrorStringA(result, error_message, 0x100)) {
-                    strcpy(error_message, MUSIC_ERROR);
+                if (!mciGetErrorStringA(result, szErrorMsg, 0x100)) {
+                    strcpy(szErrorMsg, MUSIC_ERROR);
                 }
             }
             if (result) {
@@ -505,9 +493,9 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
             }
 
             this->device_id = (unsigned int)open_info.wDeviceID;
-            if (position > 0) {
+            if (set_pos_in > 0) {
                 seek_info.dwCallback = 0;
-                seek_info.dwTo = position;
+                seek_info.dwTo = set_pos_in;
                 mci((unsigned int)open_info.wDeviceID, 0x807, 8,
                     (unsigned long)&seek_info);
             }
@@ -525,12 +513,12 @@ int TMusic_System::play(int first, int last, char* file_name, int current,
 
     case 3:
         if (this->sound_system) {
-            if (!file_name || !*file_name) {
+            if (!file_name_in || !*file_name_in) {
                 sprintf(track_name, MUSIC_WAV_FORMAT,
                         this->path, this->current_track);
             } else {
                 sprintf(track_name, MUSIC_NAME_FORMAT,
-                        this->path, file_name);
+                        this->path, file_name_in);
             }
 
             if (!this->sound_system->stream_file(track_name, 0,
@@ -552,8 +540,7 @@ finish:
     return 0;
 }
 
-int TMusic_System::pause_play()
-{
+int TMusic_System::pause_play() {
     if (this->device_open == 0 || this->playing_track == 0) {
         return 0;
     }
@@ -587,8 +574,7 @@ int TMusic_System::pause_play()
     return 1;
 }
 
-int TMusic_System::resume_play()
-{
+int TMusic_System::resume_play() {
     if (this->device_open == 0 || this->playing_track == 0 || this->paused == 0) {
         return 0;
     }
@@ -628,8 +614,7 @@ int TMusic_System::resume_play()
     return 1;
 }
 
-int TMusic_System::stop_track(void)
-{
+int TMusic_System::stop_track(void) {
     this->loop = 0;
     this->start_track = 0;
     this->end_track = 0;
@@ -638,8 +623,7 @@ int TMusic_System::stop_track(void)
     return this->stop_playing();
 }
 
-int TMusic_System::stop_playing()
-{
+int TMusic_System::stop_playing() {
     if (playing_track == 0) {
         return 1;
     }
@@ -670,8 +654,7 @@ int TMusic_System::stop_playing()
     return 1;
 }
 
-int TMusic_System::fade_track(void)
-{
+int TMusic_System::fade_track(void) {
     unsigned char was_playing = this->playing_track;
 
     this->loop = 0;
@@ -685,8 +668,7 @@ int TMusic_System::fade_track(void)
     return 1;
 }
 
-void TMusic_System::start_fade(void)
-{
+void TMusic_System::start_fade(void) {
     if (this->fading_track == 0) {
         this->fade_volume = this->volume;
         this->last_fade_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 0x38C);
@@ -694,8 +676,7 @@ void TMusic_System::start_fade(void)
     }
 }
 
-void TMusic_System::do_fade()
-{
+void TMusic_System::do_fade() {
     if (this->paused == 0) {
         float time = (float)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 0x39E) - this->last_fade_time);
 
@@ -719,8 +700,7 @@ void TMusic_System::do_fade()
     }
 }
 
-void TMusic_System::end_fade(void)
-{
+void TMusic_System::end_fade(void) {
     this->fading_track = 0;
     this->set_volume(this->volume, 0);
     if ((this->start_track > 0 && this->end_track > 0) || this->file_name[0] != 0) {
@@ -729,13 +709,12 @@ void TMusic_System::end_fade(void)
     }
 }
 
-unsigned int TMusic_System::handle_messages(void* window, unsigned int message,
-                                            unsigned int value, long data)
-{
-    if (message <= 0x113) {
-        if (message != 0x113) {
-            if (message == 0x1c) {
-                if (value != 0) {
+unsigned int TMusic_System::handle_messages(void* wnd, unsigned int msg,
+                                             unsigned int wparam, long lparam) {
+    if (msg <= 0x113) {
+        if (msg != 0x113) {
+            if (msg == 0x1c) {
+                if (wparam != 0) {
                     if (this->inactivated != 0 && this->auto_paused != 0) {
                         this->resume_play();
                         this->auto_paused = 0;
@@ -750,8 +729,8 @@ unsigned int TMusic_System::handle_messages(void* window, unsigned int message,
         } else if (this->fading_track != 0) {
             this->do_fade();
         }
-    } else if (message != 0x3b9) {
-        if (message == 0x500 && this->music_type == 3 && this->paused == 0) {
+    } else if (msg != 0x3b9) {
+        if (msg == 0x500 && this->music_type == 3 && this->paused == 0) {
             this->playing_track = 0;
             this->after_end_track();
         }
@@ -773,8 +752,7 @@ unsigned int TMusic_System::handle_messages(void* window, unsigned int message,
     return 0;
 }
 
-void TMusic_System::after_end_track()
-{
+void TMusic_System::after_end_track() {
     switch (this->music_type) {
     case 1:
         if (this->fading_track == 0 && this->loop != 0) {
@@ -816,22 +794,21 @@ void TMusic_System::after_end_track()
     }
 }
 
-int TMusic_System::get_play_info(unsigned char* music_type,
-                                 int* first_track,
-                                 int* last_track,
-                                 int* current_track,
-                                 char* file_name,
-                                 int* loop,
-                                 unsigned long* position)
-{
+int TMusic_System::get_play_info(unsigned char* music_type_in,
+                                 int* track_from_in,
+                                 int* track_to_in,
+                                 int* cur_track_in,
+                                 char* music_file_in,
+                                 int* loop_in,
+                                 unsigned long* pos_in) {
     MCI_STATUS_PARMS status_info;
-    *music_type = this->music_type;
-    *first_track = 0;
-    *last_track = 0;
-    *current_track = 0;
-    *file_name = 0;
-    *loop = 0;
-    *position = 0;
+    *music_type_in = this->music_type;
+    *track_from_in = 0;
+    *track_to_in = 0;
+    *cur_track_in = 0;
+    *music_file_in = 0;
+    *loop_in = 0;
+    *pos_in = 0;
 
     if (this->device_open == 0) {
         return 0;
@@ -841,12 +818,12 @@ int TMusic_System::get_play_info(unsigned char* music_type,
         return 1;
     }
 
-    *first_track = this->start_track;
-    *last_track = this->end_track;
-    *current_track = this->current_track;
-    strcpy(file_name, this->file_name);
-    *loop = this->loop;
-    *position = 0;
+    *track_from_in = this->start_track;
+    *track_to_in = this->end_track;
+    *cur_track_in = this->current_track;
+    strcpy(music_file_in, this->file_name);
+    *loop_in = this->loop;
+    *pos_in = 0;
 
     switch (this->music_type) {
     case 2: {
@@ -854,7 +831,7 @@ int TMusic_System::get_play_info(unsigned char* music_type,
         int result = mciSendCommandA(this->device_id, 0x814, 0x102,
                                      (unsigned long)&status_info);
         if (result == 0)
-            *position = status_info.dwReturn;
+            *pos_in = status_info.dwReturn;
         break;
     }
     case 1: {
@@ -862,7 +839,7 @@ int TMusic_System::get_play_info(unsigned char* music_type,
         int result = mciSendCommandA(this->device_id, 0x814, 0x102,
                                      (unsigned long)&status_info);
         if (result == 0)
-            *position = status_info.dwReturn;
+            *pos_in = status_info.dwReturn;
         break;
     }
     default:
