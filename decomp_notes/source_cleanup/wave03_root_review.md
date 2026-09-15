@@ -19,6 +19,20 @@ Its complete 10,442-line diff is `build/source-cleanup-20260915/owner15-review.d
 
 ## Owner 13: intake and prohibited-command incident
 
+Incident-documentation head: `0e7a7d77e70b68069ff692a762887a8b3a5f6499`.
+Root read the complete incident additions. Only the module report and owner ledger changed.
+The records identify five jobs and five removed paths within slot 110.
+All jobs had already settled when the stop calls arrived; no successful interruption is proved.
+
+Root fingerprinted two preserved files after this report:
+
+- Baseline `baseline-build/empiresx.exe`: `492d0e00cd3435dad467c3eb3e4fb0dacf242a94054aaee98799a0b5d07cdcde`.
+- Pinned original `XPack/empiresx.exe`: `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`.
+
+Both equal the previously recorded hashes. This does not establish integrity for other files.
+Root requested exact evidence-directory creation and removal commands to establish whether links could expose outside paths.
+The owner must inspect surviving history only and preserve all remaining evidence.
+
 Delivered group head: `b7eab59996b20bd0cdddc73cb2eb48ab24a1e823`.
 Root saved the complete 7,638-line diff as `build/source-cleanup-20260915/owner13-review.diff`.
 Full root review remains pending. Five declaration-only header requests also need root review.
