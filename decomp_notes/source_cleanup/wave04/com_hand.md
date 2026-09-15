@@ -24,6 +24,7 @@
   `6d0a12480437318b0590c5f956844dcb3be8d30b`.
 - This correction follows review feedback. It moves every function opening
   brace to the definition line and expands the resource lookup evidence.
+- A follow-up correction moves the `if (InQ)` opening brace to the same line.
 - The final correction commit is reported by the delivery response.
 
 The source registry is `config/functions/src/com_hand.cpp.json`. It assigns 146

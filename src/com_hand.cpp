@@ -5161,8 +5161,7 @@ void TCommunications_Handler::InitPlayerInformation(unsigned int PlayerNo, unsig
     dwHundredBaud = 0;
     dwLatency = 0;
 
-    if (InQ)
-    {
+    if (InQ) {
         InQ->FlushForPlayer(PlayerNo);
     }
 
