@@ -5,8 +5,10 @@
 - Module: `src/act_atak.cpp`
 - Base commit from `git rev-parse`: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Source-review head from `git rev-parse`: `0fc09d6fdabd16933c324eac22fe873554ac341f`
+- Prior report commit: `a2c408e369d3e83c799dd988f108fdb244ff4e08`
+- Source-correction commit from `git rev-parse`: `d041e74f54f917cafeafd9628b0e903ee634f811`
 - The source-review head contains the source cleanup changes.
-- This report is committed after the source-review head.
+- The report commits follow the source commits.
 - Changed files: `src/act_atak.cpp`; this report.
 - Branch: `cleanup/staging-20260915-04`
 
@@ -78,7 +80,9 @@ The source restores these PDB names:
 - The `copy_obj_sprites` parameter `old_task` became `task`.
 
 `rangeDistance` and `z_change` both have PDB stack offset `-0x4`.
-The source keeps their separate declarations and scopes.
+The source keeps separate declarations in one function scope.
+Their uses do not overlap.
+Compiler and PDB evidence maps the reused slot.
 No reused stack-slot mapping was forced beyond the supported name mapping.
 
 ## Inferred names and unresolved mappings
@@ -140,8 +144,7 @@ RGE_Action_Attack(RGE_Action_Object* obj_in, float x, float y, float z,
 virtual void save(int outfile);
 virtual void first_in_stack(unsigned char first_time);
 virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
-virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task,
-                              RGE_Task* new_task);
+virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task);
 virtual void set_state(unsigned char new_state);
 ```
 
