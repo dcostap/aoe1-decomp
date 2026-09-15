@@ -328,8 +328,7 @@ int TRIBE_Action_Repair::stop() {
     return 1;
 }
 
-int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj_in,
-                                  float x, float y, float z) {
+int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
@@ -338,8 +337,7 @@ int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj_in,
     return 1;
 }
 
-int TRIBE_Action_Repair::work(RGE_Static_Object* obj_in,
-                               float x, float y, float z) {
+int TRIBE_Action_Repair::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in == this->target_obj) {
             unsigned char state = this->state;
