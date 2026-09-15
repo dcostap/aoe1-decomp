@@ -7,7 +7,7 @@
 - Source candidate before the declaration correction pass:
   `76180ec12a9cf731a9ddb5135f2caefdab780fd7`
 - Source SHA-256 after the declaration correction pass:
-  `7894d1e9a71a717e8862e91c8201cfd6463c2330f177f5848c3332feb7ea2f4b`
+  `51076e454e554097ac030189537d4540202cd5a3788a12df09118505f87695c5`
 - Changed files:
   - `src/taiinfmd.cpp`
   - `decomp_notes/source_cleanup/wave03/taiinfmd.md`
@@ -179,3 +179,33 @@ module.
 No local compilation, matching, audit, test, game execution, or validation command was run.
 An external fresh-main compilation report supplied the finding above, and this repair records
 the correction without claiming local validation.
+
+## Post-cleanup matching investigation
+
+The functions-r2 report recorded `loadLearnInfo` at `004E1260` as a matching regression:
+61 positional bytes differed and 279 aligned. The row is in
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/functions-r2/report.csv`.
+
+The preserved baseline object
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/taiinfmd.obj`
+and the fresh object
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/functions-r2/objects/taiinfmd.obj`
+both place `loadLearnInfo` in section 211 with 1216 bytes at raw offset `0x11160`. The
+baseline section hash is `d14a2a90be0692828775c0b4f4464a8613ad4d104056872d7c165da28908a053`.
+The fresh section hash is `74b7aceb23a6718dc4c1a33f759f79367c5e75f331fc192445d57e627a76e2b1`.
+
+The baseline and fresh source comparison used integrated main
+`07e1b741fbd7c60b18c7de222af7ad6f5d28decc7` and precleanup commit
+`6d46835cdc6e31ba879a2e6e31415327a7c7e341`. The cleanup added the separate
+`numMemoriesToLoad` declaration and used it for the first count. The precleanup source reused
+`numToLoad`. This is the only extra local in the function. The baseline object starts with
+`sub esp, 0x34`; the fresh object starts with `sub esp, 0x38`. The original executable bytes at
+`004E1260` in `C:/Projects/my_decomps/aoe1_attempt3/build/array-integration-worktree/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`
+also start with `sub esp, 0x34`. The changed instructions are stack-home offsets,
+which proves that the extra local caused this drift. Parameter and loop-counter renames did not
+cause the observed frame change.
+
+The source now removes only `numMemoriesToLoad` and reuses `numToLoad` for the first count and
+loop bound. It preserves the prior `name` parameter, `resource_index` loop, casts, calls, order,
+and all earlier corrections. The repair is cleanup-introduced, not preexisting in the preserved
+baseline object.

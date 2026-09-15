@@ -5059,7 +5059,6 @@ AttackMemory* TribeInformationAIModule::attackMemory(int id) {
 #include <stdio.h>
 
 void TribeInformationAIModule::loadLearnInfo(char* name) {
-    int numMemoriesToLoad;
     int numToLoad;
     int tempInt;
     int local_2c;
@@ -5078,10 +5077,10 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
     if (file != -1) {
         rge_read(file, &this->mapXSizeValue, 4);
         rge_read(file, &this->mapYSizeValue, 4);
-        rge_read(file, &numMemoriesToLoad, 4);
+        rge_read(file, &numToLoad, 4);
 
         int i = 0;
-        if (numMemoriesToLoad > 0) {
+        if (numToLoad > 0) {
             AttackMemory temp;
             do {
                 rge_read(file, &temp, 0x18);
@@ -5098,7 +5097,7 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
                     temp.timeStamp,
                     temp.play);
                 i++;
-            } while (i < numMemoriesToLoad);
+            } while (i < numToLoad);
         }
 
         rge_read(file, &numToLoad, 4);
