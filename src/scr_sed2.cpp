@@ -1284,34 +1284,34 @@ void TRIBE_Screen_Sed::position_panels() {
     for (int mode_row = 0; mode_row < 5; ++mode_row) {
         TButtonPanel* previous = mode_row == 0 ? 0 : this->scenario_mode_button[mode_row - 1];
         this->scenario_mode_button[mode_row]->set_positioning(
-            TPanel::PositionLeftTop, 2, 2, 2, 2, 0x32, 0x6d,
+            static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 0x32, 0x6d,
             0x16, 0x16, previous, 0, 0, 0);
     }
     for (int mode_col = 5; mode_col < 10; ++mode_col) {
         TButtonPanel* previous = mode_col == 5 ? 0 : this->scenario_mode_button[mode_col - 1];
         this->scenario_mode_button[mode_col]->set_positioning(
-            TPanel::PositionLeftTop, 2, 2, 2, 2, 0x32, 0x6d,
+            static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 0x32, 0x6d,
             0x16, 0x16, previous,
             this->scenario_mode_button[mode_col - 5], 0, 0);
     }
 
-    this->menu_button->set_positioning(TPanel::PositionRightTop, 2, 5, 3, 3, 0x3a, 0x3a, 0x14, 0x28, 0, 0, 0, 0);
-    this->help_button->set_positioning(TPanel::PositionRightBottom, 5, 5, 5, 5, 0x14, 0x1e, 0x14, 0x1e, 0, 0, 0, 0);
-    this->map_view->set_positioning(TPanel::PositionRightBottom, 0, 0, 0, 0, 0xe6, 0xe6, 0x87, 0x87, 0, 0, 0, 0);
-    this->bottom_panel->set_positioning(TPanel::PositionLeftBottom, 2, 2, 2, 2, 0, 0, 0x89, 0x89, 0, 0, this->map_view, 0);
-    this->unit_list->set_positioning(TPanel::PositionLeftTop, 0, 6, 0, 4, 0x7c, 200, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
-    this->object_panel->set_positioning(TPanel::PositionLeftBottom, 4, 4, 4, 4, 0x96, 0x96, 0x6c, 0x6c, 0, 0, 0, 0);
+    this->menu_button->set_positioning(static_cast<TPanel::PositionMode>(9), 2, 5, 3, 3, 0x3a, 0x3a, 0x14, 0x28, 0, 0, 0, 0);
+    this->help_button->set_positioning(static_cast<TPanel::PositionMode>(10), 5, 5, 5, 5, 0x14, 0x1e, 0x14, 0x1e, 0, 0, 0, 0);
+    this->map_view->set_positioning(static_cast<TPanel::PositionMode>(10), 0, 0, 0, 0, 0xe6, 0xe6, 0x87, 0x87, 0, 0, 0, 0);
+    this->bottom_panel->set_positioning(static_cast<TPanel::PositionMode>(8), 2, 2, 2, 2, 0, 0, 0x89, 0x89, 0, 0, this->map_view, 0);
+    this->unit_list->set_positioning(static_cast<TPanel::PositionMode>(7), 0, 6, 0, 4, 0x7c, 200, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
+    this->object_panel->set_positioning(static_cast<TPanel::PositionMode>(8), 4, 4, 4, 4, 0x96, 0x96, 0x6c, 0x6c, 0, 0, 0, 0);
 
     TScrollBarPanel* unit_panel = (TScrollBarPanel*)this->unit_list;
     int number_lines = ((TTextPanel*)unit_panel)->numberLines();
     int number_draw_lines = ((TTextPanel*)unit_panel)->numberDrawLines();
     if (number_lines > number_draw_lines) {
-        this->unit_list->set_positioning(TPanel::PositionLeftTop, 0, 6, 0, 4, 0x68, 0xdc, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
-        this->unit_scrollbar->set_positioning(TPanel::PositionLeftTop, 1, 1, 0, 2, 0x12, 0x12, 0, 0, this->unit_list, this->menu_button, 0, this->bottom_panel);
+        this->unit_list->set_positioning(static_cast<TPanel::PositionMode>(7), 0, 6, 0, 4, 0x68, 0xdc, 0, 0, 0, this->menu_button, 0, this->bottom_panel);
+        this->unit_scrollbar->set_positioning(static_cast<TPanel::PositionMode>(7), 1, 1, 0, 2, 0x12, 0x12, 0, 0, this->unit_list, this->menu_button, 0, this->bottom_panel);
         unit_panel = this->unit_scrollbar;
     }
-    this->main_view->set_positioning(TPanel::PositionLeftTop, 0, 6, 0, 4, 0, 0, 0, 0, unit_panel, this->menu_button, 0, this->bottom_panel);
-    this->message_panel->set_positioning(TPanel::PositionLeftBottom, 4, 4, 4, 4, 0, 0, 0x18, 0x18, 0, 0, 0, 0);
+    this->main_view->set_positioning(static_cast<TPanel::PositionMode>(7), 0, 6, 0, 4, 0, 0, 0, 0, unit_panel, this->menu_button, 0, this->bottom_panel);
+    this->message_panel->set_positioning(static_cast<TPanel::PositionMode>(8), 4, 4, 4, 4, 0, 0, 0x18, 0x18, 0, 0, 0, 0);
 
     this->map_type_label->set_fixed_position(4, 4, 0x78, 0x16);
     this->map_type_button[0]->set_fixed_position(4, 0x16, 0x16, 0x16);
@@ -1467,7 +1467,7 @@ void TRIBE_Screen_Sed::position_panels() {
         ++message_label;
     } while (message_y < 0x85);
 
-    this->message_input->set_positioning(TPanel::PositionLeftTop, 0xaf, 4, 0x28, 4, 0, 0, 0, 0, 0, 0, 0, 0);
+    this->message_input->set_positioning(static_cast<TPanel::PositionMode>(7), 0xaf, 4, 0x28, 4, 0, 0, 0, 0, 0, 0, 0, 0);
 
     int cinematic_y = 0x16;
     TDropDownPanel** cinematic_input = this->cinematic_input;
