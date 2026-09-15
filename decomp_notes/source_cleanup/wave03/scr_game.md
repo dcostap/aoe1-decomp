@@ -11,7 +11,7 @@
 - Report correction commit: `0adf5675caeeb2df4edf1c223235f6321776378a`
 - Correction-hash record commit: `b08bf0343d663cc66c26e8d04e12900c6da39a02`
 - Hotkey-payload correction commit: `2c102c6dc0fa08035493388370fc6faa8a9617dd`
-- Approved resource substitution commit: `f8db2f87f`
+- Approved resource substitution commit: `f8db2f87fe8e5745284d4c9986ccc464f9883d7f`
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
@@ -253,7 +253,8 @@ Root approved the payload-backed names in commit
 `f5b7d6668f785b97811119493bea0e04403d1d10`. The approved header adds the
 score labels, hotkeys, age labels, command messages, overlay labels, and panel
 help names used below. The source applies these approved names in commit
-`f8db2f87f` and includes `../include/resource_ids.h`.
+`f8db2f87fe8e5745284d4c9986ccc464f9883d7f` and includes
+`../include/resource_ids.h`.
 
 The source substitutions are:
 
