@@ -10,8 +10,8 @@ public:
     virtual ~TechnologyItem();
 
     TechnologyItem();
-    TechnologyItem(int, char*, ResourceItem);
-    TechnologyItem(const TechnologyItem&);
+    TechnologyItem(int i, char* n, ResourceItem r);
+    TechnologyItem(const TechnologyItem& ti);
 
     int id() const;
     char* name();
@@ -26,9 +26,9 @@ public:
 
 typedef char aitchitm_technology_item_size[(sizeof(TechnologyItem) == 0x54) ? 1 : -1];
 
-int __cdecl operator==(const TechnologyItem& lhs, const TechnologyItem& rhs);
-int __cdecl operator!=(const TechnologyItem& lhs, const TechnologyItem& rhs);
-int __cdecl operator<(const TechnologyItem& lhs, const TechnologyItem& rhs);
-int __cdecl operator>(const TechnologyItem& lhs, const TechnologyItem& rhs);
+int __cdecl operator==(const TechnologyItem& one, const TechnologyItem& two);
+int __cdecl operator!=(const TechnologyItem& one, const TechnologyItem& two);
+int __cdecl operator<(const TechnologyItem& one, const TechnologyItem& two);
+int __cdecl operator>(const TechnologyItem& one, const TechnologyItem& two);
 
 #endif

@@ -1,18 +1,15 @@
 #ifndef AOE1_AIBOBJ_H
 #define AOE1_AIBOBJ_H
 
-
 class BaseObject {
 public:
     virtual ~BaseObject();
 
     BaseObject();
-    BaseObject(int a, int category, int type, int game, char* name,
-               float xSize, float ySize, float zSize,
-               float xPos, float yPos, float zPos,
-               int hitPt, int minHit, int maxHit);
-    BaseObject(BaseObject* src);
-    BaseObject(const BaseObject& src);
+    BaseObject(int gri, int ci, int ti, int gi, char* nm, float xs, float ys, float zs, float xp, float yp, float zp,
+               int hp, int minp, int maxp);
+    BaseObject(BaseObject* bo);
+    BaseObject(const BaseObject& bo);
 
     BaseObject* next;                         // +0x04
     BaseObject* prev;                         // +0x08
@@ -40,10 +37,10 @@ public:
     float currentTargetZPositionValue;        // +0x9C
 
     int numberGroups() const;
-    int groupID(int index) const;
-    int inGroup(int groupId) const;
-    int addGroup(int groupId);
-    int removeGroup(int groupId);
+    int groupID(int v) const;
+    int inGroup(int v) const;
+    int addGroup(int v);
+    int removeGroup(int v);
     int categoryID() const;
     int typeID() const;
     const int& gameID() const;
@@ -64,33 +61,33 @@ public:
     float currentTargetXPosition() const;
     float currentTargetYPosition() const;
     float currentTargetZPosition() const;
-    void setXPosition(float value);
-    void setYPosition(float value);
-    void setZPosition(float value);
-    void setXSize(float value);
-    void setYSize(float value);
-    void setZSize(float value);
-    void setHitPoints(int value);
-    void incrementHitPoints(int value);
-    void decrementHitPoints(int value);
-    void setMinHitPoints(int value);
-    void incrementMinHitPoints(int value);
-    void decrementMinHitPoints(int value);
-    void setMaxHitPoints(int value);
-    void incrementMaxHitPoints(int value);
-    void decrementMaxHitPoints(int value);
-    void setBusy(int value);
-    void setCurrentTask(int value);
-    void setCurrentTarget(int value);
-    void setCurrentTargetType(int value);
-    void setCurrentTargetPosition(float a, float b, float c);
+    void setXPosition(float v);
+    void setYPosition(float v);
+    void setZPosition(float v);
+    void setXSize(float v);
+    void setYSize(float v);
+    void setZSize(float v);
+    void setHitPoints(int v);
+    void incrementHitPoints(int v);
+    void decrementHitPoints(int v);
+    void setMinHitPoints(int v);
+    void incrementMinHitPoints(int v);
+    void decrementMinHitPoints(int v);
+    void setMaxHitPoints(int v);
+    void incrementMaxHitPoints(int v);
+    void decrementMaxHitPoints(int v);
+    void setBusy(int v);
+    void setCurrentTask(int v);
+    void setCurrentTarget(int v);
+    void setCurrentTargetType(int v);
+    void setCurrentTargetPosition(float x, float y, float z);
 };
 
 typedef char aibobj_size_check[(sizeof(BaseObject) == 0xA0) ? 1 : -1];
 
-int __cdecl operator==(const BaseObject& left, const BaseObject& right);
-int __cdecl operator!=(const BaseObject& left, const BaseObject& right);
-int __cdecl operator<(const BaseObject& left, const BaseObject& right);
-int __cdecl operator>(const BaseObject& left, const BaseObject& right);
+int __cdecl operator==(const BaseObject& one, const BaseObject& two);
+int __cdecl operator!=(const BaseObject& one, const BaseObject& two);
+int __cdecl operator<(const BaseObject& one, const BaseObject& two);
+int __cdecl operator>(const BaseObject& one, const BaseObject& two);
 
 #endif  // AOE1_AIBOBJ_H

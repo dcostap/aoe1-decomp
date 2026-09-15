@@ -1,7 +1,6 @@
 #ifndef AOE1_AICONMOD_H
 #define AOE1_AICONMOD_H
 
-
 #include "aiconitm.h"
 #include "aimodule.h"
 
@@ -15,16 +14,14 @@ public:
     };
 
     virtual ~ConstructionAIModule();
-    virtual int save(int file);
-    virtual int loadConstructionPlan(char* name, int mapX, int mapY,
-                                     float xReference, float yReference,
-                                     float zReference);
-    virtual ConstructionItem* placeStructure(BuildItem* item);
-    virtual void setBuilt(ConstructionItem* item, int built);
-    virtual int unplaceStructure(ConstructionItem* item, int decrement);
-    virtual int unplaceStructure(float x, float y, int decrement);
-    virtual void decrementBuildAttempts(float x, float y, int count);
-    virtual void incrementBuildAttempts(float x, float y, int count);
+    virtual int save(int outfile);
+    virtual int loadConstructionPlan(char* pName, int mXSize, int mYSize, float xRef, float yRef, float zRef);
+    virtual ConstructionItem* placeStructure(BuildItem* bi);
+    virtual void setBuilt(ConstructionItem* ci, int v);
+    virtual int unplaceStructure(ConstructionItem* ci, int decBA);
+    virtual int unplaceStructure(float x, float y, int decBA);
+    virtual void decrementBuildAttempts(float x, float y, int n);
+    virtual void incrementBuildAttempts(float x, float y, int n);
 
     int numberConstructionLotsValue;             // +0xF0
     ConstructionItem constructionLots;           // +0xF4
@@ -38,12 +35,11 @@ public:
     int mapYSizeValue;                            // +0x30C
     PlacementResult lastPlacementReturnCodeValue; // +0x310
 
-    ConstructionAIModule(void* parameter, int player);
-    ConstructionAIModule(int player, int file);
+    ConstructionAIModule(void* pW, int playerID);
+    ConstructionAIModule(int playerID, int infile);
 
     char* constructionPlanName();
-    void setReferencePoint(int mapX, int mapY, float xReference,
-                           float yReference, float zReference);
+    void setReferencePoint(int mXSize, int mYSize, float x, float y, float z);
     float xReferencePoint();
     float yReferencePoint();
     PlacementResult lastPlacementReturnCode();
@@ -54,8 +50,7 @@ protected:
     void removeOldLots();
 };
 
-int __cdecl operator==(const ConstructionItem& left,
-                       const ConstructionItem& right);
+int __cdecl operator==(const ConstructionItem& one, const ConstructionItem& two);
 
 typedef char aiconmod_aimodule_size[(sizeof(AIModule) == 0xF0) ? 1 : -1];
 typedef char aiconmod_base_item_size[(sizeof(BaseItem) == 0x6C) ? 1 : -1];

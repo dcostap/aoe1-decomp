@@ -6,18 +6,18 @@ public:
     virtual ~ResourceItem();
 
     ResourceItem();
-    ResourceItem(int count);
-    ResourceItem(int count, int* values);
-    ResourceItem(const ResourceItem& source);
-    ResourceItem(ResourceItem* source);
+    ResourceItem(int n);
+    ResourceItem(int n, int* v);
+    ResourceItem(const ResourceItem& ri);
+    ResourceItem(ResourceItem* ri);
 
-    ResourceItem& operator+=(const ResourceItem& source);
-    int value(int index) const;
-    void setValue(int index, int value);
-    void incrementValue(int index, int value);
-    void setAllValues(int value);
+    ResourceItem& operator+=(const ResourceItem& ri);
+    int value(int n) const;
+    void setValue(int n, int v);
+    void incrementValue(int n, int v);
+    void setAllValues(int v);
     int number() const;
-    int largestValueIndex(int index);
+    int largestValueIndex(int num);
 
     ResourceItem* next;
     ResourceItem* prev;
@@ -35,7 +35,7 @@ typedef char airesitm_resource_item_size[
 typedef char airesitm_resource_item_pointer_width[
     (sizeof(void*) == 4) ? 1 : -1];
 
-int operator==(const ResourceItem& left, const ResourceItem& right);
-int operator!=(const ResourceItem& left, const ResourceItem& right);
+int operator==(const ResourceItem& one, const ResourceItem& two);
+int operator!=(const ResourceItem& one, const ResourceItem& two);
 
 #endif
