@@ -70,3 +70,7 @@ All three rows record prior state `UNKNOWN`, not a prior exact pass.
 Root resumed the original workers to compare the preserved baseline objects before attributing these differences to cleanup.
 Do not relabel matching claims or weaken checks. Preserve both new and preexisting differences explicitly.
 Job `bg-69` checks ownership against this fresh function report; compilation gaps remain part of its limits.
+The ownership tool rejected that report with exit 1 because the grouped audit has compile errors.
+Failure: `ValueError: .../functions/report.json: grouped audit has compile errors`.
+No ownership result was established. Rerun ownership after repairs and a fresh complete function sweep.
+Do not bypass this prerequisite or substitute stale per-function artifacts.
