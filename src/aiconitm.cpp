@@ -8,8 +8,7 @@ ConstructionItem::ConstructionItem() : BaseItem() {
     this->buildAttemptsValue = 0;
 }
 
-ConstructionItem::ConstructionItem(float x, float y, float z, float xs,
-                                   float ys, float zs, int ti, char* n)
+ConstructionItem::ConstructionItem(float x, float y, float z, float xs, float ys, float zs, int ti, char* n)
     : BaseItem(ti, -1, -1, n, x, y, z, xs, ys, zs) {
     this->next = 0;
     this->prev = 0;
