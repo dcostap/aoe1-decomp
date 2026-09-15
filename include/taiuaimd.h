@@ -16,139 +16,139 @@ typedef unsigned long ulong;
 
 class TribeHuntedAnimalUnitAIModule : public UnitAIModule {
 public:
-    TribeHuntedAnimalUnitAIModule(RGE_Static_Object*, int);
+    TribeHuntedAnimalUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribePreditorUnitAIModule : public UnitAIModule {
 public:
-    TribePreditorUnitAIModule(RGE_Static_Object*, int);
-    virtual int canAttackUnitAtNeutrality(int);
+    TribePreditorUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int canAttackUnitAtNeutrality(int oType);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
 };
 
 class TribeElephantUnitAIModule : public UnitAIModule {
 public:
-    TribeElephantUnitAIModule(RGE_Static_Object*, int);
+    TribeElephantUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribeLionUnitAIModule : public UnitAIModule {
 public:
-    TribeLionUnitAIModule(RGE_Static_Object*, int);
-    virtual int canAttackUnitAtNeutrality(int);
+    TribeLionUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int canAttackUnitAtNeutrality(int oType);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribeRangedUnitAIModule : public UnitAIModule {
 public:
-    TribeRangedUnitAIModule(RGE_Static_Object*, int);
+    TribeRangedUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
 };
 
 class TribeRangedUnitAIModule2 : public UnitAIModule {
 public:
-    TribeRangedUnitAIModule2(RGE_Static_Object*, int);
+    TribeRangedUnitAIModule2(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
 };
 
 class TribeCivilianUnitAIModule : public UnitAIModule {
 public:
-    TribeCivilianUnitAIModule(RGE_Static_Object*, int);
-    virtual int importantWhenDead(int);
-    virtual int attackObject(int, int);
-    virtual int canAttackUnit(RGE_Static_Object*);
-    virtual int canAttackUnitAtNeutrality(int);
-    virtual int retryableOrder(int);
-    virtual int convertToLOSResourceType(int);
+    TribeCivilianUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int importantWhenDead(int objectType);
+    virtual int attackObject(int targetID, int unconditional);
+    virtual int canAttackUnit(RGE_Static_Object* unit);
+    virtual int canAttackUnitAtNeutrality(int oType);
+    virtual int retryableOrder(int orderType);
+    virtual int convertToLOSResourceType(int oType);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
     virtual int processMisc();
 };
 
 class TribePriestUnitAIModule : public UnitAIModule {
 public:
-    TribePriestUnitAIModule(RGE_Static_Object*, int);
-    virtual int attackObject(int, int);
-    virtual int retryableOrder(int);
-    virtual int canConvert(int);
-    virtual int canAttackUnit(RGE_Static_Object*);
+    TribePriestUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int attackObject(int targetID, int unconditional);
+    virtual int retryableOrder(int orderType);
+    virtual int canConvert(int targetID);
+    virtual int canAttackUnit(RGE_Static_Object* unit);
 protected:
-    virtual int bestUnitToHeal(int, float*);
-    virtual int bestUnitToConvert(float*);
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int bestUnitToHeal(int idleHeal, float* allyDistance);
+    virtual int bestUnitToConvert(float* distance);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
     virtual int processMisc();
 };
 
 class TribeTradeShipUnitAIModule : public UnitAIModule {
 public:
-    TribeTradeShipUnitAIModule(RGE_Static_Object*, int);
+    TribeTradeShipUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribeTransportShipUnitAIModule : public UnitAIModule {
 public:
-    TribeTransportShipUnitAIModule(RGE_Static_Object*, int);
+    TribeTransportShipUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribeFishingShipUnitAIModule : public UnitAIModule {
 public:
-    TribeFishingShipUnitAIModule(RGE_Static_Object*, int);
-    virtual int importantWhenDead(int);
-    virtual int convertToLOSResourceType(int);
+    TribeFishingShipUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int importantWhenDead(int objectType);
+    virtual int convertToLOSResourceType(int oType);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribeSoldierUnitAIModule : public UnitAIModule {
 public:
-    TribeSoldierUnitAIModule(RGE_Static_Object*, int);
-    virtual int canAttackUnit(RGE_Static_Object*);
-    virtual int canAttackUnitAtNeutrality(int);
+    TribeSoldierUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int canAttackUnit(RGE_Static_Object* unit);
+    virtual int canAttackUnitAtNeutrality(int oType);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 class TribeArtifactUnitAIModule : public UnitAIModule {
 public:
-    TribeArtifactUnitAIModule(RGE_Static_Object*, int);
+    TribeArtifactUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
     virtual int processMisc();
 };
 
 class TribeTowerUnitAIModule : public UnitAIModule {
 public:
-    TribeTowerUnitAIModule(RGE_Static_Object*, int);
-    virtual int canAttackUnit(RGE_Static_Object*);
-    virtual int canAttackUnitAtNeutrality(int);
+    TribeTowerUnitAIModule(RGE_Static_Object* o, int iQS);
+    virtual int canAttackUnit(RGE_Static_Object* unit);
+    virtual int canAttackUnitAtNeutrality(int oType);
 };
 
 class TribeBuildingUnitAIModule : public UnitAIModule {
 public:
-    TribeBuildingUnitAIModule(RGE_Static_Object*, int);
+    TribeBuildingUnitAIModule(RGE_Static_Object* o, int iQS);
 protected:
-    virtual int processNotify(NotifyEvent*, unsigned long);
-    virtual int processIdle(int);
+    virtual int processNotify(NotifyEvent* nEvent, unsigned long uTime);
+    virtual int processIdle(int doSearch);
 };
 
 extern const char str_taiuaimd_path[];

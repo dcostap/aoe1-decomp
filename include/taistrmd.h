@@ -40,15 +40,15 @@ public:
     int difficultyLevel;
 
     virtual ~TribeStrategyAIModule();
-    virtual int update(int parameter);
-    virtual int save(int fileHandle);
-    TribeStrategyAIModule(void* object, int parameter);
+    virtual int update(int timeLimit);
+    virtual int save(int outfile);
+    TribeStrategyAIModule(void* pW, int playerID);
     TribeStrategyAIModule(int playerID, int infile);
-    void setMainDecisionAI(TribeMainDecisionAIModule* value);
-    int loadRules(char* name);
-    void setDifficultyLevel(int level);
-    void setRule(int rule, int value);
-    int rule(int index);
+    void setMainDecisionAI(TribeMainDecisionAIModule* m);
+    int loadRules(char* rName);
+    void setDifficultyLevel(int difficultyLevel);
+    void setRule(int ruleIndex, int value);
+    int rule(int ruleIndex);
     char* ruleSetName();
     int currentVictoryCondition() const;
     int targetID() const;
@@ -59,9 +59,9 @@ public:
     const Waypoint& targetPoint2() const;
     int targetAttribute() const;
     int targetNumber() const;
-    void setVictoryCondition(int value);
-    int isRuleExecuting(int ruleID);
-    int isRuleIdle(int ruleID);
+    void setVictoryCondition(int vcNumber);
+    int isRuleExecuting(int ruleNumber);
+    int isRuleIdle(int ruleNumber);
 };
 
 typedef char taistrmd_strategy_size[

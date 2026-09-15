@@ -13,12 +13,12 @@ public:
     unsigned char _pad_193;
     int Mute;
 
-    TTaunt(TSound_Driver* sound_driver);
+    TTaunt(TSound_Driver* driver);
     ~TTaunt();
-    int PlayTauntStr(char* str, unsigned char allow_mute);
-    int PlayTauntNo(int num);
-    int GetTauntNo(char* text);
-    char* GetTauntText(int id);
+    int PlayTauntStr(char* Msg, unsigned char Local);
+    int PlayTauntNo(int TauntNo);
+    int GetTauntNo(char* Msg);
+    char* GetTauntText(int TauntNo);
     void StopSoundSystem();
     int RestartSoundSystem(TSound_Driver* driver);
 };
