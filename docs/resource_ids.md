@@ -28,6 +28,9 @@ Request further local extraction support when a different resource type is neede
 Always specify the file. Similar DLL names do not prove interchangeable contents.
 In a lean worktree, use the absolute shared evidence path supplied in the assignment.
 Determine which resource module the game loads at the call site.
+Inspect override and fallback paths, not just a file that happens to contain the ID.
+In `src/tribegam.cpp`, `TRIBE_Game::get_string` tries `StringTableX` before the base game's string lookup.
+For that path, inspect both actual runtime DLLs and record which lookup supplies the text.
 Prefer repo-local original evidence; inspect staged runtime files when they are the actual resource input.
 Record their provenance and hashes. Do not describe a runtime file as the pinned original without evidence.
 
@@ -63,6 +66,8 @@ Do not expand data-driven resource fields into thousands of speculative constant
 Use `IDS_` for the established base-language namespace.
 Use a stable domain qualifier for a distinct resource namespace, such as `IDS_LANGX_` or `IDS_GAME_`.
 Confirm the module and domain before selecting the qualifier.
+An expansion override and its base fallback can represent one logical resource namespace.
+Do not create separate names merely because both files contain that logical ID.
 Do not merge IDs solely because their numbers or English strings match.
 Different roles can require different names even when their text is equal.
 
