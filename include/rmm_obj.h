@@ -50,22 +50,26 @@ protected:
     uchar terrain_table[32];
     uchar add_terrain;
 
-    void generate_objects(RGE_Object_Info_Line&);
-    void make_placement_stack(Map_Stack&, long, long, long, long);
-    uchar to_close(RGE_Object_Info_Line&, long, long);
-    void remove_area_from_lists(long, long, long);
-    void place_objects(RGE_Object_Info_Line&);
-    void place_avoid_objects(RGE_Object_Info_Line&, long);
-    void place_land_objects(RGE_Object_Info_Line&, long, long, long, long,
-                            long);
-    void place_group(RGE_Object_Info_Line&, long, long, RGE_Player*);
-    void place_cluster(RGE_Object_Info_Line&, long, long, RGE_Player*);
-    void set_search_area(long, long, long, uchar);
+    void generate_objects(RGE_Object_Info_Line& info_line);
+    void make_placement_stack(Map_Stack& stack, long x, long y,
+        long inner_radius, long outer_radius);
+    uchar to_close(RGE_Object_Info_Line& info_line, long x, long y);
+    void remove_area_from_lists(long x, long y, long spacing);
+    void place_objects(RGE_Object_Info_Line& info_line);
+    void place_avoid_objects(RGE_Object_Info_Line& info_line, long inner_radius);
+    void place_land_objects(RGE_Object_Info_Line& info_line, long map_x,
+        long map_y, long inner_radius, long outer_radius, long land_id);
+    void place_group(RGE_Object_Info_Line& info_line, long map_x, long map_y,
+        RGE_Player* player);
+    void place_cluster(RGE_Object_Info_Line& info_line, long map_x, long map_y,
+        RGE_Player* player);
+    void set_search_area(long x, long y, long radius, uchar set_num);
 
 public:
-    RGE_RMM_Object_Generator(RGE_Map*, RGE_Random_Map_Module*,
-                             RGE_Game_World*, RGE_Object_Info*, uchar);
-    void add_quick_obj(long, long, long);
+    RGE_RMM_Object_Generator(RGE_Map* in_map,
+        RGE_Random_Map_Module* parent_module, RGE_Game_World* in_world,
+        RGE_Object_Info* in_info, uchar add_terrain_objects);
+    void add_quick_obj(long obj_id, long count, long er);
     virtual uchar generate();
 };
 

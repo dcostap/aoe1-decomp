@@ -9,15 +9,14 @@
 extern int __cdecl debug_rand(char* file, int line);
 
 RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
-    RGE_Map* map, RGE_Random_Map_Module* parent, RGE_Elevation_Info* info)
-    : RGE_Random_Map_Module(map, parent, 1)
-{
-    memcpy(&this->info, info, 0x3E0 * sizeof(long));
+    RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
+    RGE_Elevation_Info* in_info)
+    : RGE_Random_Map_Module(in_map, parent_module, 1) {
+    memcpy(&this->info, in_info, 0x3E0 * sizeof(long));
     this->schedule = 1.5f;
 }
 
-uchar RGE_RMM_Elevation_Generator::generate()
-{
+uchar RGE_RMM_Elevation_Generator::generate() {
     this->clear_stack();
 
     if (this->info.elevation_num > 0) {
@@ -56,17 +55,16 @@ uchar RGE_RMM_Elevation_Generator::generate()
 }
 
 uchar RGE_RMM_Elevation_Generator::check_start_elevation(
-    long x, long y, uchar terrain, uchar elevation, uchar range)
-{
-    long x0 = x - range;
-    long y0 = y - range;
+    long x, long y, uchar base_terrain, uchar base_elevation, uchar spacing) {
+    long x0 = x - spacing;
+    long y0 = y - spacing;
     RGE_Tile** row_ptr;
     RGE_Tile* row_base;
     long index1;
     long y1;
     long x1;
-    y1 = y + range;
-    x1 = x + range;
+    y1 = y + spacing;
+    x1 = x + spacing;
 
     if (x0 < 0) {
         x0 = 0;
@@ -89,9 +87,9 @@ uchar RGE_RMM_Elevation_Generator::check_start_elevation(
             RGE_Tile* cell = row_base;
             long col = x0;
             do {
-                if (terrain == 0xFF
-                    || cell->terrain_type != terrain
-                    || cell->height < elevation) {
+                if (base_terrain == 0xFF
+                    || cell->terrain_type != base_terrain
+                    || cell->height < base_elevation) {
                     return 0;
                 }
                 ++col;
@@ -106,10 +104,10 @@ uchar RGE_RMM_Elevation_Generator::check_start_elevation(
 }
 
 uchar RGE_RMM_Elevation_Generator::check_elevation(
-    uchar elev, long x, long y, long radius, uchar terrain, uchar min_elev)
-{
+    uchar target, long x, long y, long spacing, uchar base_terrain,
+    uchar base_elevation) {
     long count = 0;
-    if (radius > 0) {
+    if (spacing > 0) {
         long x1;
         long y1;
         long x2;
@@ -117,10 +115,10 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
         RGE_Tile** row_ptr;
         RGE_Tile* row;
         long index1;
-        x1 = x - radius;
-        y1 = y - radius;
-        x2 = radius + x;
-        y2 = y + radius;
+        x1 = x - spacing;
+        y1 = y - spacing;
+        x2 = spacing + x;
+        y2 = y + spacing;
         if (x1 < 0) {
             x1 = 0;
         }
@@ -141,8 +139,9 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
                 RGE_Tile* cell = row;
                 long xx = x1;
                 do {
-                    if (terrain == 0xFF || cell->terrain_type != terrain
-                        || cell->height < min_elev) {
+                    if (base_terrain == 0xFF
+                        || cell->terrain_type != base_terrain
+                        || cell->height < base_elevation) {
                         return 0;
                     }
                     ++xx;
@@ -184,7 +183,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
                     RGE_Tile* cell = row_base2;
                     long cols_left = x2 - x1 + 1;
                     do {
-                        if (cell->height == elev) {
+                        if (cell->height == target) {
                             ++count;
                         }
                         ++cell;
@@ -201,8 +200,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
     return (uchar)count;
 }
 
-void RGE_RMM_Elevation_Generator::generate_modifiers()
-{
+void RGE_RMM_Elevation_Generator::generate_modifiers() {
     long modifier;
 
     long map_size = this->map_height;
@@ -251,18 +249,16 @@ void RGE_RMM_Elevation_Generator::generate_modifiers()
     }
 }
 
-float RGE_RMM_Elevation_Generator::fig_chance(long p0, long p1, long p2)
-{
-    return (float)(0xFA - p0 * 15);
+float RGE_RMM_Elevation_Generator::fig_chance(long count, long x, long y) {
+    return (float)(0xFA - count * 15);
 }
 
-long RGE_RMM_Elevation_Generator::count_map_tiles(uchar tile_type)
-{
+long RGE_RMM_Elevation_Generator::count_map_tiles(uchar terrain) {
     RGE_Tile* tile = this->map_row_offset[0];
     RGE_Tile* end = tile + this->map_width * this->map_height;
     long count = 0;
     while (tile < end) {
-        if (tile->terrain_type == tile_type) {
+        if (tile->terrain_type == terrain) {
             ++count;
         }
         ++tile;
@@ -270,8 +266,7 @@ long RGE_RMM_Elevation_Generator::count_map_tiles(uchar tile_type)
     return count;
 }
 
-void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1)
-{
+void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* loc_stack) {
     Map_Stack* stack;
     long width = this->map_width;
     long height = this->map_height;
@@ -279,7 +274,7 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1)
     long max_x = width - 1;
     long max_y = height - 1;
 
-    stack->prev = param_1;
+    stack->prev = loc_stack;
     Map_Stack* last = &stack[height * width - 1];
     stack->next = &stack[1];
     last->next = 0;
@@ -298,16 +293,15 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* param_1)
             * max_x / 0x7FFF;
         long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFB)
             * max_y / 0x7FFF;
-        this->add_stack_node(param_1, &this->stack_offsets[y][x]);
+        this->add_stack_node(loc_stack, &this->stack_offsets[y][x]);
     }
 }
 
 void RGE_RMM_Elevation_Generator::remove_area_from_lists(
-    long x, long y, long radius)
-{
-    long start_x = x - radius;
-    long start_y = y - radius;
-    long max_x = x + radius;
+    long x, long y, long spacing) {
+    long start_x = x - spacing;
+    long start_y = y - spacing;
+    long max_x = x + spacing;
 
     if (start_x < 0) {
         start_x = 0;
@@ -319,22 +313,21 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(
         max_x = this->map_width - 1;
     }
 
-    long row = start_y;
-    while (row <= max_x) {
+    long y_index = start_y;
+    while (y_index <= max_x) {
         if (start_x <= max_x) {
             long column = start_x;
             while (column <= max_x) {
-                this->remove_stack_node(this->stack_offsets[row] + column);
+                this->remove_stack_node(this->stack_offsets[y_index] + column);
                 ++column;
             }
         }
-        ++row;
+        ++y_index;
     }
 }
 
 uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
-    RGE_Elevation_Info_Line line)
-{
+    RGE_Elevation_Info_Line info_line) {
     long x;
     long y;
     long chance_count = 0;
@@ -342,15 +335,15 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
     long area;
     long max_x = this->map_width - 1;
     long max_y = this->map_height - 1;
-    float cost;
+    float in_zone;
     float chance;
     uchar done;
     Map_Stack loc_stack;
     Map_Stack stack[99];
 
-    if (line.clumps > 0) {
+    if (info_line.clumps > 0) {
         Map_Stack* stack_ptr = stack;
-        long count = line.clumps;
+        long count = info_line.clumps;
         do {
             this->init_stack(*stack_ptr);
             ++stack_ptr;
@@ -363,28 +356,29 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
     this->link_stack_randomly(&loc_stack);
 
     area = (long)sqrt(
-        (double)line.elevation_size / (double)line.clumps);
+        (double)info_line.elevation_size / (double)info_line.clumps);
     area /= 2;
     if (area < 2) {
         area = 2;
     }
 
     clump_count = 0;
-    if (clump_count < line.clumps) {
+    if (clump_count < info_line.clumps) {
         Map_Stack* stack_ptr = stack;
         do {
-            if (this->pop_stack(loc_stack, x, y, cost) == 0) {
+            if (this->pop_stack(loc_stack, x, y, in_zone) == 0) {
                 break;
             }
 
             if (this->search_map_rows[y][x] == 0 &&
                 this->check_start_elevation(
-                    x, y, (uchar)line.base_terrain_type,
-                    (uchar)line.base_elevation, (uchar)line.spacing) != 0) {
+                    x, y, (uchar)info_line.base_terrain_type,
+                    (uchar)info_line.base_elevation,
+                    (uchar)info_line.spacing) != 0) {
                 this->remove_area_from_lists(x, y, area);
 
                 this->map_row_offset[y][x].height =
-                    (uchar)line.elevation;
+                    (uchar)info_line.elevation;
 
                 if (x > 0) {
                     this->push_stack(*stack_ptr, x - 1, y,
@@ -407,17 +401,17 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                 ++clump_count;
                 ++stack_ptr;
             }
-        } while (clump_count < line.clumps);
+        } while (clump_count < info_line.clumps);
     }
 
     do {
         done = 1;
-        if (line.clumps > 0) {
+        if (info_line.clumps > 0) {
             Map_Stack* stack_ptr = stack;
-            long count = line.clumps;
+            long count = info_line.clumps;
             do {
-                if (chance_count < line.elevation_size &&
-                    this->pop_stack(*stack_ptr, x, y, cost) != 0) {
+                if (chance_count < info_line.elevation_size &&
+                    this->pop_stack(*stack_ptr, x, y, in_zone) != 0) {
                     done = 0;
 
                     uchar* modifier = &this->search_map_rows[y][x];
@@ -429,19 +423,20 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                     if (*modifier <= random_value) {
                         RGE_Tile* tile = &this->map_row_offset[y][x];
                         uchar elevation_count = this->check_elevation(
-                            (uchar)line.elevation, x, y, line.spacing,
-                            (uchar)line.base_terrain_type,
-                            (uchar)line.base_elevation);
+                            (uchar)info_line.elevation, x, y,
+                            info_line.spacing,
+                            (uchar)info_line.base_terrain_type,
+                            (uchar)info_line.base_elevation);
 
-                        if (tile->height == line.base_elevation &&
+                        if (tile->height == info_line.base_elevation &&
                             elevation_count != 0) {
                             chance = this->fig_chance(
                                 elevation_count, x, y);
-                            tile->height = (uchar)line.elevation;
+                            tile->height = (uchar)info_line.elevation;
 
                             if (x > 0 &&
                                 tile[-1].height ==
-                                    line.base_elevation) {
+                                    info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
@@ -453,7 +448,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                             }
                             if (x < max_x &&
                                 tile[1].height ==
-                                    line.base_elevation) {
+                                    info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
@@ -465,7 +460,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                             }
                             if (y > 0 &&
                                 tile[-this->map_width].height ==
-                                    line.base_elevation) {
+                                    info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
@@ -477,7 +472,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                             }
                             if (y < max_y &&
                                 tile[this->map_width].height ==
-                                    line.base_elevation) {
+                                    info_line.base_elevation) {
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
@@ -499,9 +494,9 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
         }
     } while (done == 0);
 
-    if (line.clumps > 0) {
+    if (info_line.clumps > 0) {
         Map_Stack* stack_ptr = stack;
-        long count = line.clumps;
+        long count = info_line.clumps;
         do {
             this->deinit_stack(*stack_ptr);
             ++stack_ptr;

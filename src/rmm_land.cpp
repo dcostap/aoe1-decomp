@@ -7,10 +7,11 @@
 extern int __cdecl debug_rand(char* file, int line);
 
 RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
-    RGE_Map* map, RGE_Random_Map_Module* module, RGE_Land_Info* info)
-    : RGE_Random_Map_Module(map, module, 1) {
+    RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
+    RGE_Land_Info* in_info)
+    : RGE_Random_Map_Module(in_map, parent_module, 1) {
     this->schedule = 1.0f;
-    this->info = *info;
+    this->info = *in_info;
 }
 
 extern "C" void* memset(void* dst, int value, unsigned int size);
@@ -28,20 +29,20 @@ unsigned char RGE_RMM_Land_Generator::generate() {
 }
 
 unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
-    uchar unused, uchar land_id, long x, long y)
-{
+    uchar target, uchar land_num, long x, long y) {
     long count = 0;
-    long area = this->info.land[land_id].area;
+    long area = this->info.land[land_num].area;
     long x0 = x - area;
     long y0 = y - area;
     long x1 = x + area;
     long y1 = y + area;
+    // The converted radius remains separate from the fixed +/-2 scan bounds.
     volatile long octogon = (long)(area * DAT_00571ed0);
     long cx0 = x - 2;
     long cy0 = y - 2;
     long cx1 = x + 2;
     long cy1 = y + 2;
-    uchar zone = this->info.land[land_id].zone;
+    uchar zone = this->info.land[land_num].zone;
 
     if (this->search_map_rows[y][x] != this->info.land_num) {
         return 0;
@@ -92,17 +93,15 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     return (unsigned char)count;
 }
 
-// boundary under the canonical header.
-unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
-{
+unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_type) {
     unsigned char fade;
     long wall_1;
     long wall_3;
 
-    fade = this->info.land[land_id].wall_fade;
+    fade = this->info.land[land_type].wall_fade;
     if (fade > 0) {
-        wall_1 = this->info.land[land_id].wall_1_avoidance_line;
-        wall_3 = this->info.land[land_id].wall_3_avoidance_line;
+        wall_1 = this->info.land[land_type].wall_1_avoidance_line;
+        wall_3 = this->info.land[land_type].wall_3_avoidance_line;
         long a = wall_1 - x;
         long xpos = x - wall_3;
         long x_chance = a;
@@ -116,16 +115,16 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
         if (a <= xpos)
             a = xpos;
 
-        long wall_2 = this->info.land[land_id].wall_2_avoidance_line;
+        long wall_2 = this->info.land[land_type].wall_2_avoidance_line;
         if (a > 0) {
-            long wall_4 = this->info.land[land_id].wall_4_avoidance_line;
+            long wall_4 = this->info.land[land_type].wall_4_avoidance_line;
             wall_2 += a;
             a -= wall_4;
             wall_2 -= y;
             a += y;
         } else {
             a = y;
-            long wall_4 = this->info.land[land_id].wall_4_avoidance_line;
+            long wall_4 = this->info.land[land_type].wall_4_avoidance_line;
             wall_2 -= a;
             a -= wall_4;
         }
@@ -146,25 +145,24 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
     return 0;
 }
 
-uchar RGE_RMM_Land_Generator::base_land_generate()
-{
+uchar RGE_RMM_Land_Generator::base_land_generate() {
     long land_size[99];
     Map_Stack stack[99];
     long x;
     long y;
-    long index;
+    long index3;
     long max_x = this->map_width - 1;
     long max_y = this->map_height - 1;
     float stack_cost;
     uchar done;
 
-    index = 0;
+    index3 = 0;
     if (this->info.land_num > 0) {
         RGE_Land_Info_Line* line = this->info.land;
         Map_Stack* stack_ptr = stack;
         do {
             this->init_stack(*stack_ptr);
-            land_size[index] = 0;
+            land_size[index3] = 0;
 
             long x0 = line->x - line->base_size;
             long y0 = line->y - line->base_size;
@@ -204,48 +202,48 @@ uchar RGE_RMM_Land_Generator::base_land_generate()
             if (x0 > 0 && y0 <= y1) {
                 for (long row = y0; row <= y1; ++row) {
                     this->push_stack(*stack_ptr, x0 - 1, row,
-                        (float)index, 0.0f);
+                        (float)index3, 0.0f);
                 }
             }
             if (y0 > 0 && x0 <= x1) {
                 for (long column = x0; column <= x1; ++column) {
                     this->push_stack(*stack_ptr, column, y0 - 1,
-                        (float)index, 0.0f);
+                        (float)index3, 0.0f);
                 }
             }
             if (x1 < max_x && y0 <= y1) {
                 for (long row = y0; row <= y1; ++row) {
                     this->push_stack(*stack_ptr, x1 + 1, row,
-                        (float)index, 0.0f);
+                        (float)index3, 0.0f);
                 }
             }
             if (y1 < max_y && x0 <= x1) {
                 for (long column = x0; column <= x1; ++column) {
                     this->push_stack(*stack_ptr, column, y1 + 1,
-                        (float)index, 0.0f);
+                        (float)index3, 0.0f);
                 }
             }
 
-            ++index;
+            ++index3;
             ++line;
             ++stack_ptr;
-        } while (index < this->info.land_num);
+        } while (index3 < this->info.land_num);
     }
 
     do {
         done = 1;
-        index = 0;
+        index3 = 0;
         if (this->info.land_num > 0) {
             long* size_ptr = land_size;
             RGE_Land_Info_Line* line = this->info.land;
             Map_Stack* stack_ptr = stack;
             do {
-                long current_size = *size_ptr;
-                if (current_size < line->land_size) {
+                long index2 = *size_ptr;
+                if (index2 < line->land_size) {
                     if (this->pop_stack(*stack_ptr, x, y, stack_cost) != 0) {
                         done = 0;
 
-                        uchar placement_chance = this->chance(x, y, index);
+                        uchar placement_chance = this->chance(x, y, index3);
                         long random_value = debug_rand(
                             (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
                             0x12B);
@@ -256,7 +254,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate()
                             RGE_Tile* tile = &this->map_row_offset[y][x];
                             uchar terrain = (uchar)line->terrain_type;
                             uchar count = this->check_terrain_and_zone(
-                                terrain, (uchar)index, x, y);
+                                terrain, (uchar)index3, x, y);
 
                             if (this->search_map_rows[y][x] ==
                                     this->info.land_num && count > 0) {
@@ -315,26 +313,26 @@ uchar RGE_RMM_Land_Generator::base_land_generate()
                                     this->push_stack(*stack_ptr, x, y + 1,
                                         0.0f, (float)cost);
                                 }
-                                *size_ptr = current_size + 1;
+                                *size_ptr = index2 + 1;
                             }
                         }
                     }
                 }
 
-                ++index;
+                ++index3;
                 ++line;
                 ++size_ptr;
                 ++stack_ptr;
-            } while (index < this->info.land_num);
+            } while (index3 < this->info.land_num);
         }
     } while (done == 0);
 
-    index = 0;
+    index3 = 0;
     if (this->info.land_num > 0) {
         Map_Stack* stack_ptr = stack;
         do {
-            uchar terrain = (uchar)this->info.land[index].terrain_type;
-            uchar zone = this->info.land[index].zone;
+            uchar terrain = (uchar)this->info.land[index3].terrain_type;
+            uchar zone = this->info.land[index3].zone;
             while (this->pop_stack(*stack_ptr, x, y, stack_cost) != 0) {
                 RGE_Tile* tile = &this->map_row_offset[y][x];
                 if ((x > 0 &&
@@ -348,19 +346,19 @@ uchar RGE_RMM_Land_Generator::base_land_generate()
                     tile->terrain_type = terrain;
                 }
             }
-            ++index;
+            ++index3;
             ++stack_ptr;
-        } while (index < this->info.land_num);
+        } while (index3 < this->info.land_num);
     }
 
-    index = 0;
+    index3 = 0;
     if (this->info.land_num > 0) {
         Map_Stack* stack_ptr = stack;
         do {
             this->deinit_stack(*stack_ptr);
-            ++index;
+            ++index3;
             ++stack_ptr;
-        } while (index < this->info.land_num);
+        } while (index3 < this->info.land_num);
     }
 
     return 1;

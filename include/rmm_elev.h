@@ -36,21 +36,21 @@ typedef char rmm_elev_info_size_check[
 
 class RGE_RMM_Elevation_Generator : public RGE_Random_Map_Module {
 public:
-    RGE_RMM_Elevation_Generator(RGE_Map* map,
-        RGE_Random_Map_Module* parent, RGE_Elevation_Info* info);
+    RGE_RMM_Elevation_Generator(RGE_Map* in_map,
+        RGE_Random_Map_Module* parent_module, RGE_Elevation_Info* in_info);
     virtual uchar generate();
 
 protected:
-    uchar check_start_elevation(long x, long y, uchar terrain,
-        uchar elevation, uchar range);
-    uchar check_elevation(uchar elevation, long x, long y, long radius,
-        uchar terrain, uchar min_elevation);
+    uchar check_start_elevation(long x, long y, uchar base_terrain,
+        uchar base_elevation, uchar spacing);
+    uchar check_elevation(uchar target, long x, long y, long spacing,
+        uchar base_terrain, uchar base_elevation);
     void generate_modifiers();
-    float fig_chance(long p0, long p1, long p2);
-    long count_map_tiles(uchar tile_type);
-    void link_stack_randomly(Map_Stack* stack);
-    void remove_area_from_lists(long x, long y, long radius);
-    uchar base_elevation_generate(RGE_Elevation_Info_Line line);
+    float fig_chance(long count, long x, long y);
+    long count_map_tiles(uchar terrain);
+    void link_stack_randomly(Map_Stack* loc_stack);
+    void remove_area_from_lists(long x, long y, long spacing);
+    uchar base_elevation_generate(RGE_Elevation_Info_Line info_line);
 
     RGE_Elevation_Info info;
 };

@@ -9,34 +9,31 @@
 extern int __cdecl debug_rand(char* file, int line);
 static char s_rmm_cntr_path[] = "C:\\msdev\\work\\age1_x1\\rmm_cntr.cpp";
 
-RGE_RMM_Controller::RGE_RMM_Controller(RGE_Map* map, RGE_Game_World* world,
-    uchar map_type, long number_of_players)
-    : RGE_Random_Map_Module(map, 0, 1)
-{
-    int type = map_type;
+RGE_RMM_Controller::RGE_RMM_Controller(RGE_Map* in_map, RGE_Game_World* world,
+    uchar type, long player_num)
+    : RGE_Random_Map_Module(in_map, 0, 1) {
+    int map_type = type;
     RGE_Terrain_Info terrain_info;
     RGE_Land_Info land_info;
-    this->add_land_module(land_info, type, number_of_players);
-    this->add_terrain_module(terrain_info, land_info, type);
+    this->add_land_module(land_info, map_type, player_num);
+    this->add_terrain_module(terrain_info, land_info, map_type);
     this->add_object_module(world, land_info);
 }
 
-uchar RGE_RMM_Controller::generate()
-{
+uchar RGE_RMM_Controller::generate() {
     return RGE_Random_Map_Module::generate();
 }
 
 void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
-    long type, long number_of_players)
-{
+    long type, long player_num) {
     long land_percent;
     long index;
     long previous;
     long x;
     long y;
-    bool retry;
+    bool not_done;
 
-    info.land_num = number_of_players;
+    info.land_num = player_num;
 
     switch (type) {
     default:
@@ -88,7 +85,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
     long land_tile_num =
         land_percent * this->map_height * this->map_width / 100;
     float bound =
-        (float)(this->map_width - 16) / sqrt((float)number_of_players) * .8;
+        (float)(this->map_width - 16) / sqrt((float)player_num) * .8;
     float bound_square = bound * bound;
     long minimum_x = (long)(this->map_width / 2 - bound * .9);
     long minimum_y = (long)(this->map_height / 2 - bound * .9);
@@ -105,7 +102,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
         maximum_y = this->map_height - 10;
 
     index = 0;
-    if (0 < number_of_players) {
+    if (0 < player_num) {
         do {
             switch (type) {
             case 2:
@@ -130,7 +127,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
             }
 
             do {
-                retry = false;
+                not_done = false;
                 x = debug_rand(s_rmm_cntr_path, 0xD1) *
                     (this->map_width - 16) / 0x7FFF + 8;
                 y = debug_rand(s_rmm_cntr_path, 0xD2) *
@@ -138,7 +135,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
 
                 if (x > minimum_x && x < maximum_x &&
                     y > minimum_y && y < maximum_y) {
-                    retry = true;
+                    not_done = true;
                 } else {
                     previous = 0;
                     if (0 < index) {
@@ -151,17 +148,17 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
                                 delta_y = -delta_y;
                             if ((float)(delta_x * delta_x +
                                 delta_y * delta_y) <= bound_square) {
-                                if (!retry && previous == index - 1) {
+                                if (!not_done && previous == index - 1) {
                                     info.land[previous].y = y;
                                     info.land[previous].x = x;
                                 }
-                                retry = true;
+                                not_done = true;
                             }
                             ++previous;
                         } while (previous < index);
                     }
                 }
-            } while (retry);
+            } while (not_done);
 
             info.land[index].x = x;
             info.land[index].y = y;
@@ -174,8 +171,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
 }
 
 void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& info,
-    RGE_Land_Info& land_info, long type)
-{
+    RGE_Land_Info& land_info, long type) {
     info.terrain_num = 2;
     switch (type) {
     case 3:
@@ -230,14 +226,12 @@ void RGE_RMM_Controller::add_terrain_module(RGE_Terrain_Info& info,
     }
 }
 
-long RGE_RMM_Controller::count_map_tiles(uchar ignored)
-{
+long RGE_RMM_Controller::count_map_tiles(uchar terrain) {
     return this->map_width * this->map_height;
 }
 
 void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
-    RGE_Land_Info& land_info)
-{
+    RGE_Land_Info& land_info) {
     RGE_Object_Info object_info;
     object_info.object_num = 6;
 
