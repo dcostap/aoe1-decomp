@@ -118,6 +118,16 @@ Root inspected its four operand replacements. They change baseline program behav
 Keep this finding separate from cleanup-induced drift and retain the unchanged baseline during comparison.
 Root requested precise relocation and referenced-data evidence, since section-payload equality alone does not prove dependency equality.
 The matching claims remain failed; no status was relabeled and no check was weakened.
+Owner 15 supplied complete object evidence: baseline and fresh objects differ only at COFF timestamp bytes 4–5.
+Baseline `baseline-build/t_b_obj.obj` SHA256: `f947d6502ab18511cc198bcd66e9220497daeba8aedf59147b8171d4675de4c1`.
+Fresh `functions/objects/t_b_obj.obj` SHA256: `afe090cfc6825036f15a3eed846ee93f7ba72ead92237543f40039f58848d400`.
+Both paths are relative to `build/source-cleanup-20260915/preparation/` and `build/source-cleanup-20260915/final-validation/`, respectively.
+Target section hashes are `419b8bd99b9bb42dda1dc983843d7d165b89919c10ecc75f0744676d13ac96db` and `0e39196495add7321b3a34ce85fdb7beee4bbc72f8706d7be046c1029dcdb9ed`.
+Both objects have identical relocations at offsets 64 and 98 to `$T37030`, section 32, offset 4.
+That target contains `00002041` (`10.0f`) in both objects.
+Original address `005749F0` contains `0ad7233c`, approximately `0.01f`.
+Original references occur at `004C926E`, `004C9290`, `004C939E`, and `004C93C0`.
+This evidence establishes that these two mismatches predate cleanup. The separate proposed repair remains uncompiled and unverified.
 
 ## Fresh linked dependency failures
 
