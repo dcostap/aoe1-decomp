@@ -2,22 +2,22 @@
 #include "../include/t_tre_ob.h"
 
 TRIBE_Tree_Object::TRIBE_Tree_Object(
-    TRIBE_Master_Tree_Object* param_1, RGE_Player* param_2,
-    float param_3, float param_4, float param_5, int param_6)
-    : RGE_Static_Object(param_1, param_2, param_3, param_4, param_5, 0) {
-    if (param_6 != 0) {
-        setup(param_1, param_2, param_3, param_4, param_5);
+    TRIBE_Master_Tree_Object* tobj, RGE_Player* obj_owner,
+    float x, float y, float z, int do_setup)
+    : RGE_Static_Object(tobj, obj_owner, x, y, z, 0) {
+    if (do_setup != 0) {
+        setup(tobj, obj_owner, x, y, z);
     }
 }
 
 TRIBE_Tree_Object::TRIBE_Tree_Object(
-    int param_1, RGE_Game_World* world, int do_setup)
-    : RGE_Static_Object(param_1, world, 0) {
+    int infile, RGE_Game_World* gworld, int do_setup)
+    : RGE_Static_Object(infile, gworld, 0) {
     if (do_setup != 0) {
-        setup(param_1, world);
+        setup(infile, gworld);
     }
 }
 
-void TRIBE_Tree_Object::set_object_state(unsigned char value) {
-    RGE_Static_Object::set_object_state(value);
+void TRIBE_Tree_Object::set_object_state(unsigned char new_object_state) {
+    RGE_Static_Object::set_object_state(new_object_state);
 }

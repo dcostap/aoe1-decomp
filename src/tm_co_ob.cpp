@@ -10,69 +10,69 @@ extern float save_game_version;
 extern float DAT_0057677c;
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
-    TRIBE_Master_Combat_Object* source, int do_setup)
-    : RGE_Master_Combat_Object(source, 0) {
+    TRIBE_Master_Combat_Object* other_object, int do_setup)
+    : RGE_Master_Combat_Object(other_object, 0) {
     if (do_setup != 0) {
-        setup(source);
+        setup(other_object);
     }
 }
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
-    int id, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
-    : RGE_Master_Combat_Object(id, sprites, sounds, 0) {
+    int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
+    : RGE_Master_Combat_Object(infile, sprites, sounds, 0) {
     if (do_setup != 0) {
-        setup(id, sprites, sounds);
+        setup(infile, sprites, sounds);
     }
 }
 
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
-    FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id,
+    FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id,
     int do_setup)
-    : RGE_Master_Combat_Object(file, sprites, sounds, id, 0) {
+    : RGE_Master_Combat_Object(infile, sprites, sounds, in_id, 0) {
     if (do_setup != 0) {
-        setup(file, sprites, sounds, id);
+        setup(infile, sprites, sounds, in_id);
     }
 }
 
-int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* source) {
-    RGE_Master_Combat_Object::setup(source);
+int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* other_object) {
+    RGE_Master_Combat_Object::setup(other_object);
     master_type = 0x46;
 
     int i;
     for (i = 0; i < 3; i++) {
-        build_inventory[i] = source->build_inventory[i];
+        build_inventory[i] = other_object->build_inventory[i];
     }
 
-    build_pts_required = source->build_pts_required;
-    id_of_building_obj = source->id_of_building_obj;
-    button_location = source->button_location;
-    orig_pierce_armor = source->orig_pierce_armor;
+    build_pts_required = other_object->build_pts_required;
+    id_of_building_obj = other_object->id_of_building_obj;
+    button_location = other_object->button_location;
+    orig_pierce_armor = other_object->orig_pierce_armor;
 
     return 1;
 }
 
-int TRIBE_Master_Combat_Object::setup(int fd, RGE_Sprite** sprites,
+int TRIBE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites,
                                       RGE_Sound** sounds) {
     int armor_count;
     int left;
 
-    RGE_Master_Combat_Object::setup(fd, sprites, sounds);
+    RGE_Master_Combat_Object::setup(infile, sprites, sounds);
     master_type = 0x46;
 
     Attribute_Cost* cost = build_inventory;
     int remaining = 3;
     do {
-        rge_read(fd, cost, 6);
+        rge_read(infile, cost, 6);
         cost++;
         remaining--;
     } while (remaining != 0);
 
-    rge_read(fd, &build_pts_required, 2);
-    rge_read(fd, &id_of_building_obj, 2);
-    rge_read(fd, &button_location, 1);
+    rge_read(infile, &build_pts_required, 2);
+    rge_read(infile, &id_of_building_obj, 2);
+    rge_read(infile, &button_location, 1);
 
     if (save_game_version >= DAT_0057677c) {
-        rge_read(fd, &orig_pierce_armor, 2);
+        rge_read(infile, &orig_pierce_armor, 2);
         return 1;
     }
 
@@ -105,26 +105,26 @@ int TRIBE_Master_Combat_Object::setup(int fd, RGE_Sprite** sprites,
     return 1;
 }
 
-int TRIBE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
-                                      RGE_Sound** sounds, short id) {
+int TRIBE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites,
+                                      RGE_Sound** sounds, short in_id) {
     int armor_count;
     int left;
 
-    RGE_Master_Combat_Object::setup(file, sprites, sounds, id);
+    RGE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
     master_type = 0x46;
 
     Attribute_Cost* cost = build_inventory;
     int remaining = 3;
     do {
-        fscanf(file, "%hd %hd %hd", &cost->type, &cost->amount, &id);
-        cost->flag = (unsigned char)id;
+        fscanf(infile, "%hd %hd %hd", &cost->type, &cost->amount, &in_id);
+        cost->flag = (unsigned char)in_id;
         cost++;
         remaining--;
     } while (remaining != 0);
 
     // The original uses the unused sounds parameter home for the final scan
     // destination. Keep this store order and width.
-    fscanf(file, "%hd %hd %hd", &build_pts_required, &id_of_building_obj,
+    fscanf(infile, "%hd %hd %hd", &build_pts_required, &id_of_building_obj,
            &sounds);
 
     armor_count = (int)armor_num;
@@ -180,8 +180,8 @@ void TRIBE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     orig_pierce_armor = tribe_source->orig_pierce_armor;
 }
 
-void TRIBE_Master_Combat_Object::modify(float value,
-                                        unsigned char attribute) {
+void TRIBE_Master_Combat_Object::modify(float amount,
+                                        unsigned char flag) {
     short* type;
     short* types;
     float* current_value;
@@ -189,11 +189,11 @@ void TRIBE_Master_Combat_Object::modify(float value,
     int remaining;
     int i;
 
-    switch (attribute) {
+    switch (flag) {
     case 'd':
         for (i = 0; i < 3; i++) {
             if (build_inventory[i].flag) {
-                build_inventory[i].amount = (short)(int)value;
+                build_inventory[i].amount = (short)(int)amount;
             }
         }
         break;
@@ -201,7 +201,7 @@ void TRIBE_Master_Combat_Object::modify(float value,
     case 'e':
         for (i = 0; i < 3; i++) {
             if (!build_inventory[i].flag) {
-                build_inventory[i].amount = (short)(int)(-value);
+                build_inventory[i].amount = (short)(int)(-amount);
             }
         }
 
@@ -212,7 +212,7 @@ void TRIBE_Master_Combat_Object::modify(float value,
         type = types;
         do {
             if (*type == 4) {
-                *current_value = value;
+                *current_value = amount;
             }
             type++;
             current_value++;
@@ -224,7 +224,7 @@ void TRIBE_Master_Combat_Object::modify(float value,
         type = types;
         do {
             if (*type == 0x0B) {
-                *current_value = -value;
+                *current_value = -amount;
             }
             type++;
             current_value++;
@@ -236,7 +236,7 @@ void TRIBE_Master_Combat_Object::modify(float value,
         type = types;
         do {
             if (*type == 0x13) {
-                *current_value = -value;
+                *current_value = -amount;
             }
             type++;
             current_value++;
@@ -245,15 +245,15 @@ void TRIBE_Master_Combat_Object::modify(float value,
         break;
 
     default:
-        RGE_Master_Combat_Object::modify(value, attribute);
+        RGE_Master_Combat_Object::modify(amount, flag);
         break;
     }
 }
 
-void TRIBE_Master_Combat_Object::modify_delta(float value,
-                                              unsigned char attribute) {
-    if (attribute != 0x64) {
-        RGE_Master_Combat_Object::modify_delta(value, attribute);
+void TRIBE_Master_Combat_Object::modify_delta(float amount,
+                                              unsigned char flag) {
+    if (flag != 0x64) {
+        RGE_Master_Combat_Object::modify_delta(amount, flag);
         return;
     }
 
@@ -261,16 +261,16 @@ void TRIBE_Master_Combat_Object::modify_delta(float value,
     int remaining = 3;
     do {
         if (entry->flag != 0) {
-            entry->amount = entry->amount + (short)value;
+            entry->amount = entry->amount + (short)amount;
         }
         ++entry;
     } while (--remaining != 0);
 }
 
-void TRIBE_Master_Combat_Object::modify_percent(float value,
-                                                unsigned char attribute) {
-    if (attribute != 0x64) {
-        RGE_Master_Combat_Object::modify_percent(value, attribute);
+void TRIBE_Master_Combat_Object::modify_percent(float amount,
+                                                unsigned char flag) {
+    if (flag != 0x64) {
+        RGE_Master_Combat_Object::modify_percent(amount, flag);
         return;
     }
 
@@ -278,30 +278,30 @@ void TRIBE_Master_Combat_Object::modify_percent(float value,
     int remaining = 3;
     do {
         if (entry->flag != 0) {
-            entry->amount = (short)((float)entry->amount * value);
+            entry->amount = (short)((float)entry->amount * amount);
         }
         entry++;
         remaining--;
     } while (remaining != 0);
 }
 
-void TRIBE_Master_Combat_Object::save(int fd) {
-    RGE_Master_Combat_Object::save(fd);
+void TRIBE_Master_Combat_Object::save(int outfile) {
+    RGE_Master_Combat_Object::save(outfile);
 
     int i;
     for (i = 0; i < 3; i++) {
-        rge_write(fd, &build_inventory[i], 6);
+        rge_write(outfile, &build_inventory[i], 6);
     }
 
-    rge_write(fd, &build_pts_required, 2);
-    rge_write(fd, &id_of_building_obj, 2);
-    rge_write(fd, &button_location, 1);
-    rge_write(fd, &orig_pierce_armor, 2);
+    rge_write(outfile, &build_pts_required, 2);
+    rge_write(outfile, &id_of_building_obj, 2);
+    rge_write(outfile, &button_location, 1);
+    rge_write(outfile, &orig_pierce_armor, 2);
 }
 
 RGE_Static_Object* TRIBE_Master_Combat_Object::make_new_obj(
-    RGE_Player* player, float x, float y, float z) {
-    return new TRIBE_Combat_Object(this, player, x, y, z, 1);
+    RGE_Player* owner, float x, float y, float z) {
+    return new TRIBE_Combat_Object(this, owner, x, y, z, 1);
 }
 
 RGE_Master_Static_Object* TRIBE_Master_Combat_Object::make_new_master() {

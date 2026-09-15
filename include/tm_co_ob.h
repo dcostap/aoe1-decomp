@@ -27,27 +27,23 @@ public:
     unsigned char button_location;
     short orig_pierce_armor;
 
-    TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Object* source,
-                               int do_setup);
-    TRIBE_Master_Combat_Object(int id, RGE_Sprite** sprites,
-                               RGE_Sound** sounds, int flag);
-    TRIBE_Master_Combat_Object(FILE* file, RGE_Sprite** sprites,
-                               RGE_Sound** sounds, short id, int flag);
+    TRIBE_Master_Combat_Object(TRIBE_Master_Combat_Object* other_object, int do_setup);
+    TRIBE_Master_Combat_Object(int infile, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup);
+    TRIBE_Master_Combat_Object(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds,
+                               short in_id, int do_setup);
 
 protected:
-    int setup(TRIBE_Master_Combat_Object* source);
-    int setup(int fd, RGE_Sprite** sprites, RGE_Sound** sounds);
-    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds,
-              short id);
+    int setup(TRIBE_Master_Combat_Object* other_object);
+    int setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    int setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id);
 
 public:
     virtual void copy_obj(RGE_Master_Static_Object* source);
-    virtual void modify(float value, unsigned char attribute);
-    virtual void modify_delta(float value, unsigned char attribute);
-    virtual void modify_percent(float value, unsigned char attribute);
-    virtual void save(int file);
-    virtual RGE_Static_Object* make_new_obj(RGE_Player* player,
-                                             float x, float y, float z);
+    virtual void modify(float amount, unsigned char flag);
+    virtual void modify_delta(float amount, unsigned char flag);
+    virtual void modify_percent(float amount, unsigned char flag);
+    virtual void save(int outfile);
+    virtual RGE_Static_Object* make_new_obj(RGE_Player* owner, float x, float y, float z);
     virtual RGE_Master_Static_Object* make_new_master();
     virtual RGE_Task_List* create_task_list();
 };

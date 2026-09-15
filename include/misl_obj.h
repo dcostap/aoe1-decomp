@@ -14,24 +14,22 @@ class RGE_Check_List;
 // virtual slots come from the canonical RGE_Combat_Object owner.
 class RGE_Missile_Object : public RGE_Combat_Object {
 public:
-    RGE_Missile_Object(RGE_Master_Combat_Object*, RGE_Player*, float, float,
-                       float, int);
-    RGE_Missile_Object(int, RGE_Game_World*, int);
+    RGE_Missile_Object(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
+    RGE_Missile_Object(int infile, RGE_Game_World* gworld, int do_setup);
 
 protected:
-    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float,
-                      float);
-    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Combat_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
+    virtual int setup(int infile, RGE_Game_World* gworld);
 
 public:
     virtual void rehook();
-    virtual void save(int);
+    virtual void save(int outfile);
     virtual unsigned char update();
 
-    void init_missile(RGE_Combat_Object*, RGE_Static_Object*, float);
-    void init_missile(RGE_Combat_Object*, float, float, float, float);
+    void init_missile(RGE_Combat_Object* launcher, RGE_Static_Object* target, float in_range);
+    void init_missile(RGE_Combat_Object* launcher, float x, float y, float z, float in_range);
     unsigned char missile_move();
-    RGE_Check_List* make_object_collision_list(float);
+    RGE_Check_List* make_object_collision_list(float delta);
 
     float max_range;
 };
