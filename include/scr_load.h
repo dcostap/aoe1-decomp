@@ -21,7 +21,7 @@ public:
     TribeLoadSavedGameScreen();
     virtual ~TribeLoadSavedGameScreen();
     virtual long handle_idle();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 
 protected:
     void fillList();
