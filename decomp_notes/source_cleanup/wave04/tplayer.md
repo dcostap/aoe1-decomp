@@ -7,19 +7,21 @@ This correction changes only these two files:
 - `src/tplayer.cpp`
 - `decomp_notes/source_cleanup/wave04/tplayer.md`
 
-Relative to the initial cleanup commit, the source change moves opening braces only.
+Relative to the initial cleanup commit, the first correction moved opening braces only.
 Every function definition in `src/tplayer.cpp` now uses one true brace style (1TBS).
-The correction does not change names, types, scopes, calls, literals, control flow, or data flow.
+This follow-up also restores the baseline variable ownership in `TRIBE_Player::save`.
+It does not change types, scopes, calls, literals, control flow, or data flow.
 
 The common base is `c22ba4258c45b1178181e185d60a3b09a1add617`.
 The full initial cleanup commit is `b55b6d4e480488bf47d0a8ceed53639dc70ca6ae` (`Clean up tplayer source names`).
-This correction has that initial cleanup commit as its parent.
+The first correction commit is `93bec630cac14f33d4dcab822779006a3d114ec4` (`Normalize tplayer function braces`).
+The current correction follows that commit.
 
 Source blob hashes:
 
 - Common-base source: `bd436aa1bd57a02ca1c26ab69a5e3ce63aced680`.
 - Initial cleaned source: `31f7862b3b78d76f7fa056bcee982c71d958d1ba`.
-- Corrected 1TBS source: `745ade2a349b64351529a4188aae284c002795ed`.
+- Corrected source after the save-variable restoration: `ea4b2c8f9f392be483be1d830767a06acb449ac8`.
 
 The initial cleanup recovered evidence-supported names for AI, command, cost, scenario,
 mouse, Gaia, and civilization setup code. It also recorded the proposed resource names
@@ -54,7 +56,7 @@ Please review these additions in the root-owned `include/resource_ids.h`:
 | `IDS_CIVILIZATION_NAME_BASE` | `0x27F6` | The source adds this base to `master_player_id` before the civilization lookup. The lookup range is `0x27F7..0x2806`. |
 | `IDS_BUILD_LIST_NAME_BASE` | `0x26930` | The source adds this base to `selectedBuildList`. The inspected range is `0x26930..0x269AC`. |
 
-The source uses these values at `src/tplayer.cpp:1611-1612`, `2075`, and `2210`.
+The source uses these values at `src/tplayer.cpp:1611-1612`, `2075`, `2210`, and `3129`.
 No resource header was changed in this worker tree.
 
 ## Complete resource evidence
@@ -172,6 +174,10 @@ temporary. The source keeps existing types, scopes, and declarations for those c
 
 - Common base: `c22ba4258c45b1178181e185d60a3b09a1add617`.
 - Initial cleanup: `b55b6d4e480488bf47d0a8ceed53639dc70ca6ae`.
-- Current correction: parent `b55b6d4e480488bf47d0a8ceed53639dc70ca6ae`; brace placement only in `src/tplayer.cpp`, plus this report update.
+- 1TBS correction: `93bec630cac14f33d4dcab822779006a3d114ec4`.
+- Current correction: parent `93bec630cac14f33d4dcab822779006a3d114ec4`.
+  In `TRIBE_Player::save`, `save_file` retains the file handle, and `outfile`
+  is overwritten with the AI-present flag before `rge_write`.
+  All file operations use `save_file`, including `playerAI->save(save_file)`.
 
 No build, compiler check, matching check, audit, test, or game run was performed.
