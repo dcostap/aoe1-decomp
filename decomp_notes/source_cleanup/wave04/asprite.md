@@ -8,7 +8,7 @@
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Initial source cleanup commit from `git rev-parse`: `a99d06fa03378a6f7758b2a19322377d52f36200`
 - Review correction commit from `git rev-parse`: `cee47c1b02e097b46319df648e3b89907b49aa75`
-- Final source commit: `cee47c1b02e097b46319df648e3b89907b49aa75`
+- Final source commit: `78e2ff19c76cebe290eb3b74abc8e8c6fdd74166`
 - Changed files: `src/asprite.cpp` and this report.
 - Registry: `config/functions/src/asprite.cpp.json`
 - Build flags: `gx`
@@ -31,6 +31,10 @@ next line. The longer draw signatures remain wrapped.
 Source correction commit: `cee47c1b02e097b46319df648e3b89907b49aa75`.
 This correction changes presentation only. It does not change expressions,
 types, calls, declarations, or storage.
+
+The updated diff review also requested the animated `get_frame` return call on
+one line. Source correction commit: `78e2ff19c76cebe290eb3b74abc8e8c6fdd74166`.
+This correction changes presentation only.
 
 ## Evidence inspected
 
