@@ -170,6 +170,10 @@ Root reviewed candidate `74c3e01993c9095b2f09a2fd56ff208b3eb3b900`, which restor
 The source sum operands, declarations, types, and calls remain unchanged.
 The proposed name-sensitive scheduling cause remains a hypothesis until a fresh object confirms it.
 The worker's report alone does not prove that this repair restores relocation order.
+Focused job `bg-83` compiled successfully, but `setup_help` still has two direct-target mismatches.
+Its five matching results belong to other functions. Exit 0 does not resolve the linked failure in this nonmatching-status function.
+The local-name restoration did not establish a repair. Root resumed cause isolation with targeted VC5 experiments.
+Report: `build/source-cleanup-20260915/final-validation/dlg-help-repair/report.csv`.
 
 ## Second function sweep
 
