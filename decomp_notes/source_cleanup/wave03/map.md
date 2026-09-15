@@ -4,10 +4,10 @@
 
 - Module: `src/map.cpp`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`
-- Final source commit: `823efaa9326ff318b22e6a024053ad2cdcaa95cd`
+- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`, `e203c682ef21333de6d86b2283262d63fbb5c596`
+- Final source commit: `e203c682ef21333de6d86b2283262d63fbb5c596`
 - Initial report commit: `99f0fc6f4131bfc5028fb51cc5cdad3503980b59`
-- Report correction commit before this update: `6cca60ccb37be9e8a3f495b1fc00d73718f64004`
+- Report correction commit before this update: `c7b079d34a1675d6fd0c019a5f2dfbfd272e3240`
 - Final report commit: this report correction commit.
 - Branch: `cleanup/staging-20260915-137`
 - Changed files: `src/map.cpp`; this report.
@@ -28,10 +28,14 @@ No expression, control flow, call, type, storage, data value, or ABI symbol chan
 - `99f0fc6f4131bfc5028fb51cc5cdad3503980b59`: recorded the initial report.
 - `e36684052cf94fa7185151aad858092386cf9753`: recorded the initial report metadata correction.
 - `6cca60ccb37be9e8a3f495b1fc00d73718f64004`: recorded the final name-cleanup evidence before formatting.
-- `823efaa9326ff318b22e6a024053ad2cdcaa95cd`: reformatted `src/map.cpp` with 1TBS braces and corrected indentation.
+- `823efaa9326ff318b22e6a024053ad2cdcaa95cd`: applied the first 1TBS format and corrected indentation.
+- `e203c682ef21333de6d86b2283262d63fbb5c596`: restored `Type* name`, `Type& name`, and `(Type*)` style and rewrapped long lines.
 
-The formatting commit changes whitespace only.
-It does not add or remove braces.
+The formatting commits change whitespace only.
+They use the module's `Type* name`, `Type& name`, and `(Type*)` presentation.
+Short signatures and calls stay on one line.
+Long `fscanf` lists, `debug_rand` expressions, and declarations use readable wraps.
+The formatting does not add or remove braces.
 It does not change scopes or non-whitespace tokens.
 
 ## Evidence
@@ -265,7 +269,7 @@ No inline assembly or wrapper was added.
 
 The complete base-to-head diff was reviewed.
 It contains only `src/map.cpp` and this report.
-The source diff contains the earlier name cleanup and the final whitespace-only format.
+The source diff contains the earlier name cleanup and the whitespace-only formatting passes.
 The report contains the evidence, correction history, and declaration-only header request.
 No `include/map.h` edit is present.
 No build, compiler, check, match, test, or game run was used for this review.
