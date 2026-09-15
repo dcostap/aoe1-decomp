@@ -6,7 +6,7 @@
 - Worktree: `slot-189`
 - Branch: `cleanup/staging-20260915-189`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source-cleanup commit: `8fc5420596ec5025b05f8b802b1a1e3035aad8f4`
+- Final source-cleanup commit: `7a215da761716b64223ba9efa7009c1c6a5d6c01`
 - Changed files:
   - `src/dlg_smsg.cpp`
   - `decomp_notes/source_cleanup/wave03/dlg_smsg.md`
@@ -19,6 +19,10 @@ The source commit hash above is copied from Git.
 Follow-up correction commit `8fc5420596ec5025b05f8b802b1a1e3035aad8f4`
 moved both constructor opening braces onto their initializer-list lines.
 The correction changes formatting only. It changes no token or behavior.
+
+Follow-up commit `7a215da761716b64223ba9efa7009c1c6a5d6c01` replaced direct
+dialog and help resource literals with the root-approved macros below.
+It preserves all arguments, types, buffers, order, and source structure.
 
 ## Scope and method
 
@@ -169,9 +173,17 @@ The macro is in `include/resource_ids.h`. It expands to the original literal.
 It adds no storage. It is a new descriptive cleanup name, not a recovered
 original macro name.
 
-The other source IDs remain numeric. The source must keep these literals until
-root reviews and adds shared declarations. Proposed names are cleanup names,
-not recovered names.
+Root approved payload-backed declarations in commit
+`f5b7d6668f785b97811119493bea0e04403d1d10`. I read the approved header at
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/wave-worktrees/slot-181/include/resource_ids.h`.
+The direct IDs `0x2667`-`0x266E` and `0x767A`-`0x767F` now use those macros.
+The source keeps the `0x69` `get_string2` selector and all master-player values.
+The approved civilization macros are not used because civilization IDs are
+selected inside `get_string2`; they are not direct source literals here.
+
+The worker resource evidence below remains unchanged. It records the staged
+runtime base hash, missing IDs, empty slots, base fallback, and expansion
+overrides. The approved header is declaration evidence, not resource evidence.
 
 The checked base runtime file is
 `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`.
@@ -204,7 +216,7 @@ The exact extraction outputs are under `build/resource-strings/`:
 - `dlg_smsg-languagex-all.json`
 - `dlg_smsg-original-languagex-all.json`
 
-| ID | Proposed name and source use | Lookup path | Base DLL: full SHA-256, language, result | Runtime expansion DLL: full SHA-256, language, result | Pinned original expansion DLL: full SHA-256, language, result |
+| ID | Approved name and source use | Lookup path | Base DLL: full SHA-256, language, result | Runtime expansion DLL: full SHA-256, language, result | Pinned original expansion DLL: full SHA-256, language, result |
 | --- | --- | --- | --- | --- | --- |
 | `0x2667` | `IDS_SEND_MESSAGE_TITLE`; main dialog title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Send Messages to` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
 | `0x2668` | `IDS_SEND_MESSAGE_CHAT`; chat title and quick-chat title | `create_text` -> `TRIBE_Game::get_string` | `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`, `0x0409`, `Chat` | `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`, `0x0409`, missing ID | `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`, `0x0409`, missing ID |
@@ -255,7 +267,8 @@ short comment that states the observed behavior. The original action packet
 supports that empty branch. No bug repair or structural rewrite was added.
 
 Parameter and local-name changes do not change ABI types, order, layout, or
-symbol identity. `IDS_HELP_OK` expands to the existing `0x7531` value.
+symbol identity. `IDS_HELP_OK` and the approved macros expand to their existing
+numeric values. They add no storage.
 The added include and formatting can change debug line records or compiler
 output. Generated code, relocations, direct targets, and runtime behavior are
 unvalidated.
@@ -263,13 +276,13 @@ unvalidated.
 No header change is needed for the source names. The assigned header uses
 unnamed declarations. The group owner still owns `include/dlg_smsg.h`.
 
-## Shared-file requests
+## Shared-file requests and root approval
 
-### Request to root: `include/resource_ids.h`
+### Resolved request to root: `include/resource_ids.h`
 
-Add these base-language macros. They are new cleanup names, not recovered
-original symbols. Keep the listed values and leave the source literals numeric
-until the declarations exist.
+The worker requested these base-language macros. Root approved them in
+`f5b7d6668f785b97811119493bea0e04403d1d10`. They are new cleanup names, not
+recovered original symbols. The listed values are unchanged.
 
 ```cpp
 #define IDS_SEND_MESSAGE_TITLE              0x2667
