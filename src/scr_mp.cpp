@@ -19,8 +19,7 @@ extern TCommunications_Handler* comm;
 
 
 TribeMPStartupScreen::TribeMPStartupScreen()
-    : TScreenPanel("MP Startup Screen")
-{
+    : TScreenPanel("MP Startup Screen") {
     TButtonPanel** cancel_button;
     TButtonPanel** ok_button;
     TButtonPanel* cancel;
@@ -174,8 +173,7 @@ long TribeMPStartupScreen::handle_idle() {
 }
 
 
-long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn,
-                                  unsigned long a1, unsigned long a2) {
+long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel != 0) {
         if (fromPanel == this->list && actionIn == 3) {
             this->action(this->okButton, 1, 0, 0);
