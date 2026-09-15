@@ -6,8 +6,10 @@
 - Header read: `include/scr_game.h`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Cleanup commit: `fcf4ac9da7d74531e4012e0b60bf06047e83f329`
-- Source correction commit: `d12cc4a7c2a7b0bdf26df0df6d4d61db2b87ec35`
+- Source layout correction commit: `d12cc4a7c2a7b0bdf26df0df6d4d61db2b87ec35`
+- Source brace correction commit: `3415854c8d148ce993b285c57c4e68639fe54362`
 - Report correction commit: `0adf5675caeeb2df4edf1c223235f6321776378a`
+- Correction-hash record commit: `b08bf0343d663cc66c26e8d04e12900c6da39a02`
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
@@ -249,6 +251,9 @@ their button roles, but the checked language DLLs provide no text for them.
 - The source correction restores the common-base `setup_buttons` layout. Its
   control flow, declaration scopes, statement order, and expressions now
   differ from the base only through supported identifier names and formatting.
+- The brace correction removes four extra braces from the earlier 1TBS edit.
+  They surrounded existing standalone `else` lines. The common-base brace
+  structure is now restored.
 - `command_game_speed` now uses the PDB names `new_speed` and `cur_speed` for
   the existing target and current speed roles. The comparisons and command
   calls keep their original order.
@@ -281,6 +286,8 @@ Allowed checks run:
 - Reviewed the complete correction diff against base commit
   `76037279ee11dde077bb7d55aeb46b518b2bb27c`, with special attention to
   `setup_buttons`.
+- Compared normalized source tokens against the base. Both files contain
+  29,691 tokens, with no non-identifier token difference.
 
 Not run, as required by the wave contract:
 
