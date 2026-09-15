@@ -37,29 +37,25 @@ ConstructionItem::ConstructionItem(const ConstructionItem& ci)
 ConstructionItem::~ConstructionItem() {
 }
 
-int __cdecl operator==(const ConstructionItem& one,
-                       const ConstructionItem& two) {
+int __cdecl operator==(const ConstructionItem& one, const ConstructionItem& two) {
     if (one.xValue == two.xValue && one.yValue == two.yValue) {
         return 1;
     }
     return 0;
 }
 
-int __cdecl operator!=(const ConstructionItem& one,
-                       const ConstructionItem& two) {
+int __cdecl operator!=(const ConstructionItem& one, const ConstructionItem& two) {
     if (one.xValue == two.xValue && one.yValue == two.yValue) {
         return 0;
     }
     return 1;
 }
 
-int __cdecl operator<(const ConstructionItem& one,
-                      const ConstructionItem& two) {
+int __cdecl operator<(const ConstructionItem& one, const ConstructionItem& two) {
     return one.typeIDValue < two.typeIDValue;
 }
 
-int __cdecl operator>(const ConstructionItem& one,
-                      const ConstructionItem& two) {
+int __cdecl operator>(const ConstructionItem& one, const ConstructionItem& two) {
     return one.typeIDValue > two.typeIDValue;
 }
 
