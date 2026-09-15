@@ -90,18 +90,13 @@ void TMessagePanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-void TMessagePanel::set_justification(TMessagePanel::JustType horz_just_in,
-                                      TMessagePanel::JustType vert_just_in,
-                                      int word_wrap_in) {
+void TMessagePanel::set_justification(TMessagePanel::JustType horz_just_in, TMessagePanel::JustType vert_just_in, int word_wrap_in) {
     this->horz_just = horz_just_in;
     this->vert_just = vert_just_in;
     this->word_wrap = word_wrap_in;
 }
 
-void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in,
-                                  char* text_in, unsigned char colorIn,
-                                  unsigned char backColorIn, void* font_in,
-                                  long font_wid_in, long font_hgt_in) {
+void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, char* text_in, unsigned char colorIn, unsigned char backColorIn, void* font_in, long font_wid_in, long font_hgt_in) {
     if (this->showing_message && this->message_type == message_type_in &&
         strncmp(text_in, this->text, 0x1ff) == 0) {
         if (font_in == 0) {
