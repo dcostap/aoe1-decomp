@@ -4,7 +4,7 @@
 
 - Module: `src/scr_cam.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source-cleanup commit: `ae4a399ba4bfb97f3e4906dff4cbc984e40ed152`
+- Final source-cleanup commit: `0578264c4ab2c307e74c2f6f3f905fa7fdf46202`
 - Branch: `cleanup/staging-20260915-25`
 - Changed files:
   - `src/scr_cam.cpp`
@@ -26,9 +26,10 @@ C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-lo
 C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/pilot2-scr-load/build/resource-strings/original-xpack-languagex.json
 ```
 
-I did not edit that worktree or any of its artifacts. I previously wrote only
-the assigned source and report in the slot-25 worktree. The old paths were read
-as evidence, not written by this worker.
+I did not edit that worktree or any of its artifacts. Before this correction,
+I had written only the assigned source and report in the slot-25 worktree. The
+old paths were read as evidence, not written by this worker. This correction
+wrote temporary extractor output only under slot-25 `build/`.
 
 After reading the extractor help, I ran the read-only PE extractor again. The
 correct artifacts are under this slot-25 worktree:
@@ -210,15 +211,24 @@ symbol was renamed.
 
 ## Resource IDs
 
-The source now reuses the existing cleanup macros `IDS_BUTTON_OK` and
+The source now uses the existing cleanup macros `IDS_BUTTON_OK` and
 `IDS_BUTTON_CANCEL` for numeric IDs `0x0FA1` and `0x0FA2`. These macros are
 already defined in the root-owned `include/resource_ids.h`. They are new
-cleanup names, not recovered original macro names. The source adds the include
-but does not add a competing definition.
+cleanup names, not recovered original macro names.
 
-The source still uses numeric literals for the other campaign-editor resource
-IDs. I did not edit the root-owned resource header. The following mappings are
-requests for the root owner.
+The source now applies all 13 proved campaign-editor substitutions from the
+root-approved shared resource commit. The source has no remaining numeric use
+of these 13 IDs. The two existing button macros above were already applied in
+the earlier source cleanup.
+
+Shared resource commit tracking:
+
+- Root-approved shared commit: `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`
+- Worker-local cherry-pick commit: `b2fabf8d2e4834afa166ba35f9148b286a33a50d`
+- The cherry-pick changes only `include/resource_ids.h`.
+- I did not edit `include/resource_ids.h`.
+- The shared-header cherry-pick is separate from the module source and report
+  commits. Owner integration should cherry-pick it as a shared dependency.
 
 Resource provenance for every request:
 
@@ -244,7 +254,7 @@ Resource provenance for every request:
   `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
   The base `language.dll` therefore supplies the text on the checked path.
 
-| Numeric ID | Call-site purpose | Exact base text | Proposed cleanup macro |
+| Numeric ID | Call-site purpose | Exact base text | Applied cleanup macro |
 | --- | --- | --- | --- |
 | `0x2BC1` | Campaign editor screen title | `Campaign Editor` | `IDS_CAMPAIGN_EDITOR_TITLE` |
 | `0x2BC2` | Campaign filename label | `Campaign Filename ` | `IDS_CAMPAIGN_FILENAME_LABEL` |
@@ -262,9 +272,9 @@ Resource provenance for every request:
 
 The exact text came from local PE extraction with
 `tools/inspect_pe_strings.py`. The source uses the IDs as title, button,
-format, edit-default, and error arguments. The proposed macros preserve the
-base resource namespace and literal values. Pending macro requests do not
-block this cleanup; their numeric uses remain unchanged.
+format, edit-default, and error arguments. The applied macros preserve the
+base resource namespace and literal values. The two `0x2BC9` call sites use
+the same applied macro. No geometry or unrelated literal was replaced.
 
 For the reused IDs, the same extraction found `0x0FA1` as `OK` and `0x0FA2`
 as `Cancel`. The constructor passes them to the OK and Cancel button creation
@@ -286,9 +296,9 @@ codes, dialog codes, buffer sizes, and file extensions unchanged.
 
 - Local identifier changes do not change types, scopes, storage, calls, or
   relocations.
-- `IDS_BUTTON_OK` and `IDS_BUTTON_CANCEL` are macros with the same integer
-  literals as the replaced IDs. They add no storage. The new include can still
-  affect preprocessing, so final compiler validation is required.
+- The 15 applied resource macros have the same integer literals as the
+  replaced IDs. They add no storage. The shared header can still affect
+  preprocessing, so final compiler validation is required.
 - Function-brace and signature formatting can change debug line records. It
   does not move statements or change control flow.
 - The `make_campaign` rename keeps the existing reused-stack-slot arrangement.
@@ -297,7 +307,7 @@ codes, dialog codes, buffer sizes, and file extensions unchanged.
 - No inline assembly, structural rewrite, helper, layout change, or bug repair
   was made.
 
-## Header and resource requests
+## Header request and resource status
 
 Header owner 03 should update `include/scr_cam.h` only as follows:
 
@@ -317,8 +327,9 @@ virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned
 This restores the procedure-scoped PDB parameter names. It preserves parameter
 types, order, calling convention, and ABI. The worker did not edit the header.
 
-The root owner should review the 13 resource mappings above. The source leaves
-those numeric IDs unchanged until shared definitions are approved.
+The root owner approved the 13 resource mappings in commit
+`c9ba20d160541d928b5d9e55e1d02dce5a784e0c`. The source applies them. The
+shared header remains separate from the module commits.
 
 ## Validation status
 
