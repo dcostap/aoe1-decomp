@@ -215,22 +215,16 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
 
                 if (unit_level == 2) {
                     draw_item(0, 7, ValueTypeBonus,
-                              static_cast<RGE_Master_Combat_Object*>(master)
-                                  ->orig_weapon,
-                              static_cast<RGE_Master_Combat_Object*>(master)
-                                  ->orig_weapon);
+                              static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon,
+                              static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon);
                     draw_item(1, 8, ValueTypeBonus,
-                              static_cast<RGE_Master_Combat_Object*>(
-                                  master_game_obj)->orig_armor,
-                              static_cast<RGE_Master_Combat_Object*>(
-                                  master_game_obj)->orig_armor);
+                              static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor,
+                              static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor);
                     draw_item(2, 6, ValueTypeBonus,
                               static_cast<int>(
-                                  static_cast<RGE_Master_Combat_Object*>(
-                                      master_game_obj)->weapon_range),
+                                  static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range),
                               static_cast<int>(
-                                  static_cast<RGE_Master_Combat_Object*>(
-                                      master_game_obj)->weapon_range));
+                                  static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range));
                     draw_finish();
                     return;
                 }

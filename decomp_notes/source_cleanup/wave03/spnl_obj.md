@@ -7,7 +7,7 @@
 - Header owner: `include/spnl_obj.h` (not changed)
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Changed files: `src/spnl_obj.cpp`, this report
-- Final commit: `c7ed04ebb817ac45a38e38824fd6bae556ba365a`
+- Final commit: `cd11117b8b08172a17c8af3a35b4a3c75dd7a1d1`
 
 The source owns the seven normal `TRIBE_Scenario_Editor_Panel_Object` bodies at
 `004BEDC0`, `004BEE30`, `004BEE40`, `004BEE70`, `004BF4D0`, `004BF6C0`, and
@@ -74,7 +74,9 @@ void set_master_info(RGE_Master_Static_Object* master_game_object_in,
 The root correction request flagged misleading indentation near source lines
 222 and 227. The three `draw_item` calls in that block now share the same
 block indentation, and their continued arguments use matching hanging
-indentation. The correction changes whitespace only.
+indentation. The short cast/member expressions stay on one continuation line;
+only the long outer casts remain wrapped. The correction changes whitespace
+only.
 
 I reviewed the evidence under
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner19/`:
