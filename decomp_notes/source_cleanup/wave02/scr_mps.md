@@ -5,7 +5,7 @@
 - Module: `src/scr_mps.cpp`
 - Header owner: owner 11 owns `include/scr_mps.h`; this worker did not edit it.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: `fde8c5eba4496a503f4b863a4e3c482a099b5fb6`
+- Final source commit: `7055f9aaf33d4d7e0b1d354a36932de41f81acb0`
 - Changed files in the source commit: `src/scr_mps.cpp`
 - This report is the only file in the follow-up report commit.
 - Temporary evidence is under `build/evidence/` and is not tracked.
@@ -37,6 +37,13 @@
   source substitution commit `fde8c5eba4496a503f4b863a4e3c482a099b5fb6`.
 - Recorded reviewer resource extraction provenance from
   `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
+- Owner 22 approved `CHAT_RECEIVED` in commit
+  `c0ce37473c32dfd6511e884ea1ead7dace6b5cce`.
+- Owner 11 imported only `include/chat.h` at integration commit
+  `7bdb70a283f4eb9679c321593bd44158bb678f5c`. This worker did not edit the
+  header.
+- Replaced only `case 0x17D5` with `case CHAT_RECEIVED` in worker source commit
+  `7055f9aaf33d4d7e0b1d354a36932de41f81acb0`.
 
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
@@ -267,6 +274,8 @@ Formatting moved selected opening braces and changed no executable statement.
 It can change debug line records. No compiler output claim is made.
 The source keeps the existing readiness alias uncertainty and all existing
 narrowing casts and resource lookup order.
+The `CHAT_RECEIVED` macro has value `0x17D5`. It is a new cleanup name, not a
+proved original source name. The dispatch logic remains unchanged.
 
 ## Validation
 
