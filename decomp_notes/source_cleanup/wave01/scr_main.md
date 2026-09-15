@@ -107,11 +107,23 @@ All requests use these lookup facts:
 | `0x07D7` | `IDS_ERROR_LOAD_GAME_DATA` | Developer-mode database reload reports this error. | `Could not load game data.` | Empty; falls back to base. | Missing. |
 | `0x07D8` | `IDS_ERROR_INSERT_CD_SINGLE_PLAYER` | The single-player path reports a missing game CD. | `You must insert a game CD to play a single player game, and then restart Age of Empires` | Empty; falls back to base. | Missing. |
 | `0x07DA` | `IDS_ERROR_INSERT_CD_SCENARIO_BUILDER` | The scenario-builder path reports a missing game CD. | `You must insert a game CD to use the scenario builder.` | Empty; falls back to base. | Missing. |
-| `0x1D4F7` | `IDS_HELP_DIALOG_TITLE` | The Help button passes this ID to the `Confirm Dialog` title before `WinHelpA`. | Missing. | Missing. | Missing. |
+| `0x1D4F7` | `IDS_HELP_NOTICE` | The Help button loads this ID into the `Confirm Dialog` message before `WinHelpA`. | Missing. | Missing. | Missing. |
 
-The checked DLLs contain no text for `0x1D4F7`. Its resource type remains
-inferred from `popupOKDialog(long, char*, int, int)`. Its call path proves the
-help-dialog title role, but not its text.
+The checked DLLs contain no text for `0x1D4F7`. The main-menu action passes the
+ID to `TEasy_Panel::popupOKDialog(long, char*, int, int)`. That overload loads
+the string into its local `title[256]` buffer, then passes the buffer to the
+character overload.
+
+The character overload uses `"Confirm Dialog"` as the panel name. It constructs
+`TMessageDialog` with that panel name, then passes the loaded buffer as the
+`message` argument to `TMessageDialog::setup`. The `TMessageDialog::setup`
+packet `0043FD50` passes `message` to `create_text`, so the dialog displays the
+loaded text in its text panel. The integer overload packet `0043FFF0` confirms
+the same ID-to-message path through a local `str[256]` buffer.
+
+The later `Confirm Dialog` action closes this notice and calls `WinHelpA`.
+Therefore, the proven role is a displayed Help notice. The internal buffer name
+`title` does not prove a window-title role. The exact text remains unknown.
 
 The numeric values `0xC383` and `0xC4E6` are passed to screen and picture
 setup calls. They are not `RT_STRING` lookups. This report does not propose
