@@ -1231,27 +1231,27 @@ int PathingSystem::copyPath(int stepSize) {
 
         if (this->currentUnobstructibleGroupID != -1) {
             int minX = fooX - 1;
-            int maxX = fooX + 1;
+            int tWX2 = fooX + 1;
             if (minX < 0) {
                 minX = 0;
-                ++maxX;
-            } else if (maxX >= this->xSizeValue) {
+                ++tWX2;
+            } else if (tWX2 >= this->xSizeValue) {
                 --minX;
-                maxX = this->xSizeValue - 1;
+                tWX2 = this->xSizeValue - 1;
             }
 
-            int minY = fooY - 1;
-            int maxY = fooY + 1;
-            if (minY < 0) {
-                minY = 0;
-                ++maxY;
-            } else if (maxY >= this->ySizeValue) {
-                --minY;
-                maxY = this->ySizeValue - 1;
+            int tWY1 = fooY - 1;
+            int tWY2 = fooY + 1;
+            if (tWY1 < 0) {
+                tWY1 = 0;
+                ++tWY2;
+            } else if (tWY2 >= this->ySizeValue) {
+                --tWY1;
+                tWY2 = this->ySizeValue - 1;
             }
 
-            for (int tileX = minX; tileX <= maxX; ++tileX) {
-                for (int tileY = minY; tileY <= maxY; ++tileY) {
+            for (int tileX = minX; tileX <= tWX2; ++tileX) {
+                for (int tileY = tWY1; tileY <= tWY2; ++tileY) {
                     int objectCountOnTile = 0;
                     int id = this->worldValue->objectGroupOnTile(
                         this->currentUnobstructiblePlayerID,
