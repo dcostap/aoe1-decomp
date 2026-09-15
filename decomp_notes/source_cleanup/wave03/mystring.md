@@ -29,24 +29,30 @@ I inspected the complete source and read-only header:
 The registry selects four normal owners with default flags. I inspected each
 registry-selected original packet:
 
-- `inventory/functions/0046/00462D70_convert_us.txt`
-- `inventory/functions/0046/00462D90_unconvert_us.txt`
-- `inventory/functions/0046/00462DB0_addstring.txt`
-- `inventory/functions/0046/00462E30_getstring.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0046/00462D70_convert_us.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0046/00462D90_unconvert_us.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0046/00462DB0_addstring.txt`
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/functions/0046/00462E30_getstring.txt`
 
 I also inspected the original module evidence:
 
 - Source path: `C:\msdev\work\age1_x1\mystring.cpp`
-- `inventory/pdb/scoped_symbols.json`, SHA-256
+- `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`,
+  SHA-256
   `adb5adc77fd4265ca449cfa6d9baf38660ce769cacc7a7972594939e42ff0335`
-- Original PDB, `orig/age1_x1.pdb`, SHA-256
+- Original PDB,
+  `C:/Projects/my_decomps/aoe1_attempt3/orig/age1_x1.pdb`, SHA-256
   `3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40`
-- Original listing, `orig/ghidra_decomp/mystring.cpp.asm`, SHA-256
+- Original listing,
+  `C:/Projects/my_decomps/aoe1_attempt3/orig/ghidra_decomp/mystring.cpp.asm`,
+  SHA-256
   `6e17c3b9853dd3579459ac9f71ba4629a9b4f5f307835b4cb1dbe177e64937cc`
-- Original decompiler excerpt, `orig/ghidra_decomp/mystring.cpp.decomp`,
-  SHA-256 `e7fbdb16d785cd5c63ef08b05db309a2228a0bd1b9b6239c2cdb52b6a5f76f54`
+- Original decompiler excerpt,
+  `C:/Projects/my_decomps/aoe1_attempt3/orig/ghidra_decomp/mystring.cpp.decomp`,
+  SHA-256
+  `e7fbdb16d785cd5c63ef08b05db309a2228a0bd1b9b6239c2cdb52b6a5f76f54`
 - Original executable,
-  `orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`,
+  `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe`,
   SHA-256 `88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90`
 
 The original module has four owners in source order. Their boundaries are
