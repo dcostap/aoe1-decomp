@@ -188,6 +188,8 @@ Both retain the previously documented pre-cleanup numeric-value mismatch; no sta
 Other results: 208 accepted drift, 178 new verified logic, 49 relocation problems, 18 boundary problems, and eight grouped-review results.
 The sweep confirms the repaired matching targets. It does not establish baseline equality for every emitted function or data section.
 Root started ownership audit `bg-93` against the complete `functions-r3/report.json`, with output `final-validation/owners-r3.json`.
+Ownership audit `bg-93` passed for 4,965 functions: zero owner mismatches and zero class/free mismatches.
+Its repair queue retains the two documented terrain failures. Ownership success does not clear those matching failures.
 
 ## Fresh linked dependency failures
 
