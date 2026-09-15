@@ -35,6 +35,8 @@
   `bdb8bc1af`. This worker did not edit the header.
 - Replaced every approved numeric string ID with its exact header macro in the
   source substitution commit `fde8c5eba4496a503f4b863a4e3c482a099b5fb6`.
+- Recorded reviewer resource extraction provenance from
+  `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
 
 The source commit keeps the existing source structure. It recovers PDB names,
 uses reviewed shared resource names, and applies 1TBS to changed definitions.
@@ -234,6 +236,12 @@ Resource extraction outputs are `build/evidence/request_base.json`,
 `build/evidence/request_runtime_expansion.json`, and
 `build/evidence/request_pinned_expansion.json`. The source lookup evidence is
 `src/tribegam.cpp:812-818` and `src/basegame.cpp:766-773`.
+
+The approved string payloads come from the runtime base file. Both checked
+expansion files miss every approved ID. The pinned original set has no base
+language file; its checked language file is the pinned expansion file above.
+The reviewer extraction directory is
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/reviewer-owner11/`.
 
 ## Shared-file requests
 
