@@ -3,6 +3,8 @@
 
 #include "taunt.h"
 
+#define CHAT_RECEIVED 0x17D5
+
 class TChat {
 public:
     void* HostWnd;
