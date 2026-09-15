@@ -154,3 +154,28 @@ No first-pilot worktree, original asset, or preserved build was changed.
 
 The new worker must use the updated guidance and supplied evidence without copying the first pilot's result.
 Compare complete results before any broader launch. Validation remains deferred.
+
+### Fresh pilot intake
+
+The worker completed and stopped. Its worktree status is clean.
+
+- Source commit: `18d952270bcbd8354a567dc7078a647456f0030e`.
+- Report commit and final HEAD: `7b6579796d9ec46a64ec007969af812ca21278b6`.
+
+The orchestrator read the complete source/header diff and the complete new report.
+The reported hashes agree with Git output. All four changed paths are assigned paths.
+
+Compared with the first pilot, the fresh result:
+
+- Retains the same PDB-backed parameter and local recoveries.
+- Names both help IDs despite missing text, with separate evidence for their roles.
+- Uses 1TBS function braces and joins the action signature and several short calls.
+- Reports name-recovery coverage for all five functions and preserves unresolved storage mappings.
+- Adds no redundant source comments and makes no visible structural changes.
+
+Some calls remain wrapped, including the constructor's `setup` call and the saved-game path `sprintf` call.
+The formatting is improved, but those are possible further presentation changes for user review.
+The resource naming differs slightly from the first pilot; these are descriptive names, not recovered macro names.
+
+Neither pilot is integrated. No compiler checks, builds, matching checks, audits, tests, or games ran during this intake.
+Generated-output equality remains unvalidated. No broader worker launch is authorized by this result alone.
