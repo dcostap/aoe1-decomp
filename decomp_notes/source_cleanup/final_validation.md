@@ -182,6 +182,12 @@ Linked audit `bg-91` completed: 7,760 passed, zero failed, and 47,025 unknown.
 The two help-dialog linked target failures are resolved in the fresh executable.
 These counts equal the historical pre-cleanup dependency counts; they do not prove whole-image equivalence.
 Unknown checks remain unknown. This audit does not establish runtime behavior or complete image ownership.
+Full sweep `bg-90` compiled all 225 groups and checked 5,426 normal functions.
+Of 4,965 exact targets, 4,963 match. The two failures are `004C9230` and `004C9360` in `t_b_obj`.
+Both retain the previously documented pre-cleanup numeric-value mismatch; no status or behavior change was applied.
+Other results: 208 accepted drift, 178 new verified logic, 49 relocation problems, 18 boundary problems, and eight grouped-review results.
+The sweep confirms the repaired matching targets. It does not establish baseline equality for every emitted function or data section.
+Root started ownership audit `bg-93` against the complete `functions-r3/report.json`, with output `final-validation/owners-r3.json`.
 
 ## Fresh linked dependency failures
 
