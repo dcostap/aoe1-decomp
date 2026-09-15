@@ -31,10 +31,10 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     if (master_id == -1)
         return;
 
-    TRIBE_Master_Building_Object* master =
+    TRIBE_Master_Building_Object* master_bldg =
         static_cast<TRIBE_Master_Building_Object*>(
             this->player->master_objects[master_id]);
-    if (master == 0)
+    if (master_bldg == 0)
         return;
 
     this->render_area->SetClipRect(&this->clip_rect);
@@ -71,7 +71,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
                 col = end_col;
                 row = end_row;
                 do {
-                    this->draw_wall_outline(col, row, master, 2);
+                    this->draw_wall_outline(col, row, master_bldg, 2);
                     col++;
                     row++;
                 } while (col <= start_col);
@@ -79,7 +79,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
                 col = start_col;
                 row = start_row;
                 do {
-                    this->draw_wall_outline(col, row, master, 2);
+                    this->draw_wall_outline(col, row, master_bldg, 2);
                     col--;
                     row++;
                 } while (col >= end_col);
@@ -88,7 +88,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             col = end_col;
             row = end_row;
             do {
-                this->draw_wall_outline(col, row, master, 2);
+                this->draw_wall_outline(col, row, master_bldg, 2);
                 col--;
                 row++;
             } while (col >= start_col);
@@ -96,7 +96,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             col = start_col;
             row = start_row;
             do {
-                this->draw_wall_outline(col, row, master, 2);
+                this->draw_wall_outline(col, row, master_bldg, 2);
                 col++;
                 row++;
             } while (col <= end_col);
@@ -130,7 +130,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             long col = last_col;
             do {
                 long mode = (col == start_col || col == end_col) ? 2 : 0;
-                this->draw_wall_outline(col, main_row, master, mode);
+                this->draw_wall_outline(col, main_row, master_bldg, mode);
                 col--;
             } while (col >= first_col);
         }
@@ -139,7 +139,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             long row = first_row;
             do {
                 long mode = (row == start_row || row == end_row) ? 2 : 1;
-                this->draw_wall_outline(start_col, row, master, mode);
+                this->draw_wall_outline(start_col, row, master_bldg, mode);
                 row++;
             } while (row <= last_row);
         }
@@ -149,7 +149,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             long col = last_col;
             do {
                 long mode = (col == start_col || col == end_col) ? 2 : 0;
-                this->draw_wall_outline(col, main_row, master, mode);
+                this->draw_wall_outline(col, main_row, master_bldg, mode);
                 col--;
             } while (col >= first_col);
         }
@@ -182,7 +182,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             long row = first_row;
             do {
                 long mode = (row == start_row || row == end_row) ? 2 : 1;
-                this->draw_wall_outline(main_col, row, master, mode);
+                this->draw_wall_outline(main_col, row, master_bldg, mode);
                 row++;
             } while (row <= last_row);
         }
@@ -191,7 +191,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             long col = last_col;
             do {
                 long mode = (col == start_col || col == end_col) ? 2 : 0;
-                this->draw_wall_outline(col, start_row, master, mode);
+                this->draw_wall_outline(col, start_row, master_bldg, mode);
                 col--;
             } while (col >= first_col);
         }
@@ -201,7 +201,7 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             long row = first_row;
             do {
                 long mode = (row == start_row || row == end_row) ? 2 : 1;
-                this->draw_wall_outline(main_col, row, master, mode);
+                this->draw_wall_outline(main_col, row, master_bldg, mode);
                 row++;
             } while (row <= last_row);
         }
@@ -210,29 +210,28 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     this->render_area->SetClipRect(0);
 }
 
-int TRIBE_Main_View::draw_wall_outline(
-    long x, long y, TRIBE_Master_Building_Object* master, long mode) {
+int TRIBE_Main_View::draw_wall_outline(long col, long row, TRIBE_Master_Building_Object* master_bldg, long facet) {
     short x4;
     short y3;
     short x2;
     short y1;
     short scr_y;
-    short local_12;
+    short y2;
     short scr_x;
     short x3;
     short y4;
     short local_4[2];
 
     if (this->get_tile_screen_coords(
-            static_cast<short>(x), static_cast<short>(y), &x3, &scr_x, 0) != 0) {
-        float coordinate_x = static_cast<float>(x) + 0.5f;
-        master->alignment_box(
-            this->world, coordinate_x, static_cast<float>(y) + 0.5f,
-            x4, local_12, scr_y, y3, y4, y1, x2, local_4[0]);
+            static_cast<short>(col), static_cast<short>(row), &x3, &scr_x, 0) != 0) {
+        float world_x = static_cast<float>(col) + 0.5f;
+        master_bldg->alignment_box(
+            this->world, world_x, static_cast<float>(row) + 0.5f,
+            x4, y2, scr_y, y3, y4, y1, x2, local_4[0]);
 
-        if (master->check_placement(
-                this->player, coordinate_x, static_cast<float>(y) + 0.5f,
-                0, 1, master->elevation_flag, 0, 1, 1, 1) == 0) {
+        if (master_bldg->check_placement(
+                this->player, world_x, static_cast<float>(row) + 0.5f,
+                0, 1, master_bldg->elevation_flag, 0, 1, 1, 1) == 0) {
             fog_next_shape = 5;
         } else {
             unsigned int time =
@@ -244,16 +243,16 @@ int TRIBE_Main_View::draw_wall_outline(
             fog_next_shape = (time << 4) | 9;
         }
 
-        if (master->sprite != 0) {
+        if (master_bldg->sprite != 0) {
             x3 = static_cast<short>(x3 + (x4 - y4) / 2 + y4);
             scr_x = static_cast<short>(scr_x +
                 (y3 - local_4[0]) / 2 + local_4[0]);
             SDI_Draw_Line = scr_x;
-            master->draw(
+            master_bldg->draw(
                 this->render_area,
                 x3, scr_x,
                 rge_base_game->get_player()->color_table,
-                mode + 1, 0, 0, 0);
+                facet + 1, 0, 0, 0);
         }
     }
 
@@ -261,7 +260,7 @@ int TRIBE_Main_View::draw_wall_outline(
     return 1;
 }
 
-int TRIBE_Main_View::command_place_object(long x, long y, int param_3) {
+int TRIBE_Main_View::command_place_object(long x, long y, int reset_mode) {
     int object_id;
     RGE_Master_Static_Object* master_obj;
     RGE_Pick_Info pick_info;
@@ -281,7 +280,7 @@ int TRIBE_Main_View::command_place_object(long x, long y, int param_3) {
                 if (master_obj->check_placement(
                         this->player, pick_info.x, pick_info.y, 0,
                         1, master_obj->elevation_flag, 0, 1, 1, 1) == 0) {
-                    if (param_3 != 0 || object_id == 0x6D) {
+                    if (reset_mode != 0 || object_id == 0x6D) {
                         rge_base_game->set_game_mode(0, 0);
                     }
                     if (static_cast<TRIBE_Player*>(this->player)->command_make_building(
@@ -295,8 +294,7 @@ int TRIBE_Main_View::command_place_object(long x, long y, int param_3) {
     return 0;
 }
 
-int TRIBE_Main_View::command_place_multi_object(
-    long param_1, long param_2, long param_3, long param_4, int mode) {
+int TRIBE_Main_View::command_place_multi_object(long x1, long y1, long x2, long y2, int reset_mode) {
     int result = 0;
 
     if (allow_user_commands == 0)
@@ -311,10 +309,10 @@ int TRIBE_Main_View::command_place_multi_object(
                 static_cast<TRIBE_Player*>(this->player)->master_objects[master_id]);
 
         if (master != 0) {
-            int end_y = static_cast<int>(param_4);
-            int start_y = static_cast<int>(param_2);
-            int end_x = static_cast<int>(param_3);
-            int start_x = static_cast<int>(param_1);
+            int end_y = static_cast<int>(y2);
+            int start_y = static_cast<int>(y1);
+            int end_x = static_cast<int>(x2);
+            int start_x = static_cast<int>(x1);
 
             int row_distance = abs(end_y - start_y);
             int col_distance = abs(end_x - start_x);
@@ -362,11 +360,11 @@ int TRIBE_Main_View::command_place_multi_object(
         if (master_id != -1 &&
             static_cast<TRIBE_Player*>(this->player)->master_objects[master_id] != 0) {
             if (static_cast<TRIBE_Player*>(this->player)->command_make_wall(
-                    master_id, param_1, param_2, param_3, param_4) != 0)
+                    master_id, x1, y1, x2, y2) != 0)
                 result = 1;
         }
 
-        if (mode != 0)
+        if (reset_mode != 0)
             rge_base_game->set_game_mode(0, 0);
     }
 
@@ -377,7 +375,7 @@ int TRIBE_Main_View::command_place_multi_object(
 
 void TRIBE_Main_View::place_line_of_walls(
     TRIBE_Player* player,
-    TRIBE_Master_Building_Object* master,
+    TRIBE_Master_Building_Object* master_obj,
     int x1,
     int y1,
     int x2,
@@ -403,23 +401,23 @@ void TRIBE_Main_View::place_line_of_walls(
     y = y1;
 
     for (;;) {
-        float coordinate_x = static_cast<float>(x) + 0.5f;
-        float coordinate_y = static_cast<float>(y) + 0.5f;
-        if (master->check_placement(
+        float world_x = static_cast<float>(x) + 0.5f;
+        float world_y = static_cast<float>(y) + 0.5f;
+        if (master_obj->check_placement(
                 player,
-                coordinate_x,
-                coordinate_y,
+                world_x,
+                world_y,
                 0,
                 1,
-                master->elevation_flag,
+                master_obj->elevation_flag,
                 0,
                 1,
                 1,
                 1) == 0) {
             player->make_new_object(
-                static_cast<int>(static_cast<short>(master->id)),
-                coordinate_x,
-                coordinate_y,
+                static_cast<int>(static_cast<short>(master_obj->id)),
+                world_x,
+                world_y,
                 0,
                 1);
         }
@@ -433,8 +431,7 @@ void TRIBE_Main_View::place_line_of_walls(
     }
 }
 
-long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
-                                           int param_3, int param_4) {
+long TRIBE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
     RGE_Pick_Info pick_info;
     RGE_Static_Object* object;
@@ -451,14 +448,14 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->pick1(0x28, 0, param_1, param_2, &pick_info, 0, 1) == 0x33) {
+        if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
             this->fixup_pick_info(&pick_info);
             if (static_cast<TRIBE_Player*>(this->player)->command_attack_ground(pick_info.x, pick_info.y) != 0) {
                 this->reset_display_object_selection(2);
                 this->add_overlay_sprite(
                     rge_base_game->shapes[2], 0,
-                    this->map_scr_x_offset + param_1,
-                    this->map_scr_y_offset + param_2,
+                    this->map_scr_x_offset + x,
+                    this->map_scr_y_offset + y,
                     0, 0x0F, 0, 2, 0x7D);
                 this->set_redraw(TPanel::RedrawNormal);
                 goto done_b;
@@ -470,7 +467,7 @@ long TRIBE_Main_View::mouse_left_up_action(long param_1, long param_2,
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x69) != 0)
+        if (this->command_make_do(x, y, 0, 0x69) != 0)
             goto done_a;
         rge_base_game->play_sound(3);
         goto done_a;
@@ -486,13 +483,13 @@ error_a:
 
 default_action:
         return RGE_Main_View::mouse_left_up_action(
-            param_1, param_2, param_3, param_4);
+            x, y, ctrl_key, shift_key);
 
     case 101:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x68) == 0)
+        if (this->command_make_do(x, y, 0, 0x68) == 0)
             goto error_b;
         goto done_b;
 
@@ -506,7 +503,7 @@ done_b:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 7) != 0)
+        if (this->command_make_do(x, y, 0, 7) != 0)
             goto done_a;
         goto error_a;
 
@@ -514,7 +511,7 @@ done_b:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        object = this->pick_best_target(param_1, param_2, 0, -1);
+        object = this->pick_best_target(x, y, 0, -1);
         if (object != 0 && static_cast<TRIBE_Player*>(this->player)->command_make_repair(object) != 0) {
             this->display_object_selection(object->id, 0x5DC, 2, 2);
             this->reset_overlay_sprites();
@@ -527,14 +524,14 @@ done_b:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->pick1(0x28, 0, param_1, param_2, &pick_info, 0, 1) == 0x33) {
+        if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
             this->fixup_pick_info(&pick_info);
             if (static_cast<TRIBE_Player*>(this->player)->command_make_unload(pick_info.x, pick_info.y) != 0) {
                 this->reset_display_object_selection(2);
                 this->add_overlay_sprite(
                     rge_base_game->shapes[2], 0,
-                    this->map_scr_x_offset + param_1,
-                    this->map_scr_y_offset + param_2,
+                    this->map_scr_x_offset + x,
+                    this->map_scr_y_offset + y,
                     0, 0x0F, 0, 2, 0x7D);
                 this->set_redraw(TPanel::RedrawNormal);
                 goto done_a;
@@ -550,8 +547,7 @@ invalid_action:
     goto return_one;
 }
 
-long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
-                                            int param_3, int param_4) {
+long TRIBE_Main_View::mouse_right_up_action(long x, long y, int ctrl_key, int shift_key) {
     int mode = rge_base_game->prog_mode;
     RGE_Pick_Info pick_info;
 
@@ -567,14 +563,14 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->pick1(0x28, 0, param_1, param_2, &pick_info, 0, 1) == 0x33) {
+        if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
             this->fixup_pick_info(&pick_info);
             if (static_cast<TRIBE_Player*>(this->player)->command_attack_ground(pick_info.x, pick_info.y) != 0) {
                 this->reset_display_object_selection(2);
                 this->add_overlay_sprite(
                     rge_base_game->shapes[2], 0,
-                    this->map_scr_x_offset + param_1,
-                    this->map_scr_y_offset + param_2,
+                    this->map_scr_x_offset + x,
+                    this->map_scr_y_offset + y,
                     0, 0x0F, 0, 2, 0x7D);
                 this->set_redraw(TPanel::RedrawNormal);
                 goto done_b;
@@ -586,7 +582,7 @@ long TRIBE_Main_View::mouse_right_up_action(long param_1, long param_2,
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x69) != 0)
+        if (this->command_make_do(x, y, 0, 0x69) != 0)
             goto done_a;
         goto error_a;
 
@@ -600,13 +596,13 @@ invalid_action:
     default:
 default_action:
         return RGE_Main_View::mouse_right_up_action(
-            param_1, param_2, param_3, param_4);
+            x, y, ctrl_key, shift_key);
 
     case 101:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 0x68) != 0)
+        if (this->command_make_do(x, y, 0, 0x68) != 0)
             goto done_b;
         goto error_b;
 
@@ -620,7 +616,7 @@ done_b:
         this->release_mouse();
         if (this->mouse_action != 1 && this->mouse_action != 2)
             goto invalid_action;
-        if (this->command_make_do(param_1, param_2, 0, 7) != 0)
+        if (this->command_make_do(x, y, 0, 7) != 0)
             goto done_a;
         goto error_a;
 
@@ -630,7 +626,7 @@ done_b:
             goto invalid_action;
         {
             RGE_Static_Object* object = this->pick_best_target(
-                param_1, param_2, 0, -1);
+                x, y, 0, -1);
             if (object != 0 && static_cast<TRIBE_Player*>(this->player)->command_make_repair(object) != 0) {
                 this->display_object_selection(object->id, 0x5DC, 2, 2);
                 this->reset_overlay_sprites();
@@ -646,14 +642,14 @@ done_b:
             if (this->mouse_action != 2)
                 goto invalid_action;
         }
-        if (this->pick1(0x28, 0, param_1, param_2, &pick_info, 0, 1) == 0x33) {
+        if (this->pick1(0x28, 0, x, y, &pick_info, 0, 1) == 0x33) {
             this->fixup_pick_info(&pick_info);
             if (static_cast<TRIBE_Player*>(this->player)->command_make_unload(pick_info.x, pick_info.y) != 0) {
                 this->reset_display_object_selection(2);
                 this->add_overlay_sprite(
                     rge_base_game->shapes[2], 0,
-                    this->map_scr_x_offset + param_1,
-                    this->map_scr_y_offset + param_2,
+                    this->map_scr_x_offset + x,
+                    this->map_scr_y_offset + y,
                     0, 0x0F, 0, 2, 0x7D);
                 this->set_redraw(TPanel::RedrawNormal);
                 goto done_a;
@@ -671,18 +667,18 @@ int TRIBE_Main_View::pick_through_fog(RGE_Static_Object* obj) {
     return RGE_View::pick_through_fog(obj);
 }
 
-int TRIBE_Main_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
-    unsigned char select_level = param_1->master_obj->select_level;
+int TRIBE_Main_View::pick_weight(RGE_Static_Object* obj, int confidence) {
+    unsigned char select_level = obj->master_obj->select_level;
 
-    if (param_1->master_obj->id == 0x4F ||
-        param_1->master_obj->id == 0xC7 ||
-        param_1->master_obj->id == 0x45 ||
-        param_1->master_obj->id == 0x116) {
+    if (obj->master_obj->id == 0x4F ||
+        obj->master_obj->id == 0xC7 ||
+        obj->master_obj->id == 0x45 ||
+        obj->master_obj->id == 0x116) {
         select_level = 3;
     }
 
     int touched;
-    if (this->UC_ObjectTouched != 0 && this->UC_TouchedObj == param_1->id)
+    if (this->UC_ObjectTouched != 0 && this->UC_TouchedObj == obj->id)
         touched = 1;
     else
         touched = 0;
@@ -692,27 +688,27 @@ int TRIBE_Main_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
         case 4:
             if (touched)
                 return 5;
-            if (param_2 == 1 || param_2 == 2)
+            if (confidence == 1 || confidence == 2)
                 return 4;
-            if (param_2 == 3)
+            if (confidence == 3)
                 return 3;
             return 2;
 
         case 3:
             if (touched)
                 return 5;
-            if (param_2 == 1 || param_2 == 2)
+            if (confidence == 1 || confidence == 2)
                 result = 3;
-            else if (param_2 == 3 && param_1->object_state < 2)
+            else if (confidence == 3 && obj->object_state < 2)
                 result = 2;
             break;
 
         case 2:
             if (touched)
                 return 5;
-            if (param_2 == 1 || param_2 == 2)
+            if (confidence == 1 || confidence == 2)
                 result = 3;
-            else if (param_2 == 3)
+            else if (confidence == 3)
                 result = 2;
             break;
 
@@ -723,19 +719,17 @@ int TRIBE_Main_View::pick_weight(RGE_Static_Object* param_1, int param_2) {
     return result;
 }
 
-int TRIBE_Main_View::command_make_do(
-    long x, long y, int mode, short flag) {
-    return RGE_Main_View::command_make_do(x, y, mode, flag);
+int TRIBE_Main_View::command_make_do(long x, long y, int work_on_tile, short action_type) {
+    return RGE_Main_View::command_make_do(x, y, work_on_tile, action_type);
 }
 
-long TRIBE_Main_View::mouse_left_dbl_click_action(long x, long y,
-                                                   int key, int flags) {
+long TRIBE_Main_View::mouse_left_dbl_click_action(long x, long y, int ctrl_key, int shift_key) {
     RGE_Pick_Info pick_info;
 
     if (this->pick1(0x29, 1, x, y, &pick_info, 0, 1) == 0x34) {
         if ((pick_info.object->master_obj->select_level == 4) &&
             (pick_info.object->owner == this->player)) {
-            if ((key == 0) && (flags == 0)) {
+            if ((ctrl_key == 0) && (shift_key == 0)) {
                 this->player->unselect_object();
             }
 
