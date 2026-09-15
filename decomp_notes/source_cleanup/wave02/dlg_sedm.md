@@ -6,10 +6,16 @@
 - Branch: `cleanup/staging-20260915-90`
 - Base commit from `git rev-parse`:
   `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source head from `git rev-parse`:
+- Initial source head from `git rev-parse`:
   `b43aab2ed74523e70c0a514fa59be3807540d245`
-- Source commit: `Recover dlg_sedm parameter names`
-- The report commit follows the source commit.
+- Initial report commit:
+  `8243d31a4276905a4a367c411916ef6716e9f98b`
+- Approved resource-header commit from root:
+  `3bff68f3de98c7273f9a41faf3398b68cc17f15a`
+- Correction source head from `git rev-parse`:
+  `bc983e07915b974a17516dde307dab8a6d6be818`
+- Correction source commit: `Apply dlg_sedm resource IDs`
+- The correction report commit follows the correction source commit.
 
 Changed files:
 
@@ -98,9 +104,9 @@ control flow, evaluation order, literal values, and storage.
 
 ## Constants, resources, and comments
 
-No numeric constant changed. No enum, macro, helper, or shared declaration was
-added. The seven button IDs remain numeric until the root-owned resource header
-receives the requested names.
+The seven button IDs now use the approved macros from the root-owned
+`include/resource_ids.h`. The macro values equal the original numeric
+expressions. No enum, helper, or source-owned shared declaration was added.
 
 No source comment was added. The names and existing control flow make the code
 clear without a speculative comment.
@@ -110,15 +116,15 @@ clear without a speculative comment.
 The constructor passes these IDs to the long-ID overload of
 `TEasy_Panel::create_button`:
 
-| ID | Button role | Proposed cleanup name | Provenance |
+| Applied macro and ID | Button role | Name status | Provenance |
 | --- | --- | --- | --- |
-| `0x2443` | button 0, Quit to Main Menu | `IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU` | new cleanup name |
-| `0x2441` | button 1, Save | `IDS_SCENARIO_MENU_SAVE` | new cleanup name |
-| `0x2442` | button 2, Save As | `IDS_SCENARIO_MENU_SAVE_AS` | new cleanup name |
-| `0x2445` | button 3, Edit Scenario | `IDS_SCENARIO_MENU_EDIT_SCENARIO` | new cleanup name |
-| `0x242E` | button 4, Create Scenario | `IDS_SCENARIO_MENU_CREATE_SCENARIO` | new cleanup name |
-| `0x2446` | button 5, Test | `IDS_SCENARIO_MENU_TEST` | new cleanup name |
-| `0x2444` | button 6, Cancel | `IDS_SCENARIO_MENU_CANCEL` | new cleanup name |
+| `IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU` (`0x2443`) | button 0, Quit to Main Menu | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_SAVE` (`0x2441`) | button 1, Save | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_SAVE_AS` (`0x2442`) | button 2, Save As | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_EDIT_SCENARIO` (`0x2445`) | button 3, Edit Scenario | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_CREATE_SCENARIO` (`0x242E`) | button 4, Create Scenario | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_TEST` (`0x2446`) | button 5, Test | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
+| `IDS_SCENARIO_MENU_CANCEL` (`0x2444`) | button 6, Cancel | applied approved cleanup name | root header commit `3bff68f3de98c7273f9a41faf3398b68cc17f15a` |
 
 The current base resource file is:
 
@@ -170,11 +176,13 @@ slot and the six missing slots remain separate findings.
 
 ## Code-generation, type, layout, and symbol review
 
-The source changes rename parameters and adjust whitespace and brace placement.
-They do not change parameter types, member layout, declaration scope, storage,
-ABI signatures, virtual slots, calls, relocations, boundaries, or symbol names.
-The seven resource IDs remain the original `long` arguments and keep their
-lookup and fallback behavior.
+The source changes rename parameters, apply equal-valued resource macros, and
+adjust whitespace and brace placement. The source includes the approved
+resource header. The macros keep the original unsuffixed integer values and
+the `long` overload selection. The changes do not change parameter types,
+member layout, declaration scope, storage, ABI signatures, virtual slots,
+calls, relocations, boundaries, or symbol names. The lookup and fallback
+behavior stays unchanged.
 
 The original behavior oracle is:
 
@@ -217,9 +225,10 @@ virtual long action(TPanel* from_panel, long action_in,
 The request is supported by the procedure-scoped PDB records for `00440140`
 and `00440400`. This worker did not edit the header.
 
-### Root-owned resource request
+### Applied root-owned resource mappings
 
-The owner of `include/resource_ids.h` should add these base-language mappings:
+The root owner added these base-language mappings in commit
+`3bff68f3de98c7273f9a41faf3398b68cc17f15a`:
 
 ```cpp
 #define IDS_SCENARIO_MENU_QUIT_TO_MAIN_MENU 0x2443
@@ -231,11 +240,12 @@ The owner of `include/resource_ids.h` should add these base-language mappings:
 #define IDS_SCENARIO_MENU_CANCEL            0x2444
 ```
 
-These are proposed cleanup names. No original macro names were recovered.
+These are cleanup names. No original macro names were recovered.
 The evidence and exact payloads are listed above. The lookup path is the
 expansion-first `TRIBE_Game::get_string` path with base-language fallback.
 
-No other shared-file request exists. No unresolved parameter mapping exists.
+No resource-header request remains. No other shared-file request exists. No
+unresolved parameter mapping exists.
 The unrecorded source locals remain descriptive names without original-name
 claims.
 
