@@ -11,14 +11,14 @@
 #include "../include/campaign.h"
 #include "../include/scr_sedm.h"
 #include "../include/main.h"
+#include "../include/resource_ids.h"
 #include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
-    : TScreenPanel("Campaign Editor Screen")
-{
+    : TScreenPanel("Campaign Editor Screen") {
     this->title = 0;
     this->scenarios_title = 0;
     this->scenarios = 0;
@@ -78,9 +78,9 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->create_auto_scrollbar(&this->campaign_scenarios_bar,
                                 this->campaign_scenarios, 0x14);
 
-    this->create_button(this, &this->ok_button, 0xFA1,
+    this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
                         0, 0x14, 0x1BD, 0x118, 0x1E, 0, 0, 0);
-    this->create_button(this, &this->cancel_button, 0xFA2,
+    this->create_button(this, &this->cancel_button, IDS_BUTTON_CANCEL,
                         0, 0x154, 0x1BD, 0x118, 0x1E, 0, 0, 0);
     TButtonPanel* cancel = this->cancel_button;
     cancel->hotkey = 0x1B;
@@ -91,16 +91,16 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->create_button(this, &this->move_scenario_down_button, 0x2BD6,
                         0, 0x212, 0x154, 0x5A, 0x1E, 0, 0, 0);
 
-    TPanel* tab_list[8];
-    tab_list[0] = this->filename_drop;
-    tab_list[1] = this->save_button;
-    tab_list[2] = this->scenarios;
-    tab_list[3] = this->add_button;
-    tab_list[4] = this->remove_button;
-    tab_list[5] = this->campaign_scenarios;
-    tab_list[6] = this->ok_button;
-    tab_list[7] = this->cancel_button;
-    this->set_tab_order(tab_list, 8);
+    TPanel* tabList[8];
+    tabList[0] = this->filename_drop;
+    tabList[1] = this->save_button;
+    tabList[2] = this->scenarios;
+    tabList[3] = this->add_button;
+    tabList[4] = this->remove_button;
+    tabList[5] = this->campaign_scenarios;
+    tabList[6] = this->ok_button;
+    tabList[7] = this->cancel_button;
+    this->set_tab_order(tabList, 8);
 
     this->filename_drop->set_curr_child(this->filename);
     this->set_curr_child(this->filename_drop);
@@ -111,8 +111,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->need_to_save = 0;
 }
 
-TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen()
-{
+TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen() {
     panel_system.destroyPanel("Cancel Dialog");
     panel_system.destroyPanel("Load Dialog");
 
@@ -135,8 +134,7 @@ TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen()
     delete this->move_scenario_down_button;
 }
 
-void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
-{
+void TRIBE_Campaign_Editor_Screen::fill_campaign_drop() {
     char file_name[256];
     _finddata_t file_info;
     long handle;
@@ -170,8 +168,7 @@ void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
     }
 }
 
-void TRIBE_Campaign_Editor_Screen::fill_scenario_list()
-{
+void TRIBE_Campaign_Editor_Screen::fill_scenario_list() {
     char file_name[256];
     _finddata_t file_info;
     long handle;
@@ -205,8 +202,7 @@ void TRIBE_Campaign_Editor_Screen::fill_scenario_list()
     }
 }
 
-void TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list()
-{
+void TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list() {
     if (this->campaign == 0)
         return;
 
@@ -225,8 +221,7 @@ void TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list()
     }
 }
 
-unsigned char TRIBE_Campaign_Editor_Screen::check_lists()
-{
+unsigned char TRIBE_Campaign_Editor_Screen::check_lists() {
     int count = campaign_scenarios->numberLines();
 
     for (int i = 0; i < count; i++) {
@@ -247,8 +242,7 @@ unsigned char TRIBE_Campaign_Editor_Screen::check_lists()
     return 1;
 }
 
-void TRIBE_Campaign_Editor_Screen::load_campaign()
-{
+void TRIBE_Campaign_Editor_Screen::load_campaign() {
     char* text = 0;
     char* text2 = 0;
     _finddata_t file_info;
@@ -284,11 +278,10 @@ void TRIBE_Campaign_Editor_Screen::load_campaign()
     this->need_to_save = 0;
 }
 
-void TRIBE_Campaign_Editor_Screen::make_campaign()
-{
-    char* name;
+void TRIBE_Campaign_Editor_Screen::make_campaign() {
+    char* campaign_filename;
     char* text = 0;
-    char** campaign_filename;
+    char** scenarios_filenames;
     char** scenarios_text;
     char test[260];
     _finddata_t file_info;
@@ -296,37 +289,38 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
     int i;
     RGE_Campaign* new_campaign;
 
-    name = this->filename->get_text();
-    if (name != 0) {
-        if (*name == 0 || *name == ' ') {
+    campaign_filename = this->filename->get_text();
+    if (campaign_filename != 0) {
+        if (*campaign_filename == 0 || *campaign_filename == ' ') {
             this->popupOKDialog(0x2BCC, 0, 0x1C2, 100);
             // An invalid name returns without clearing need_to_save.
             return;
         } else {
-            addstring(&text, name, ".cpx");
+            addstring(&text, campaign_filename, ".cpx");
             count = this->campaign_scenarios->numberLines();
             if (count > 0) {
                 scenarios_text = static_cast<char**>(calloc(count, 4));
-                campaign_filename = static_cast<char**>(calloc(count, 4));
+                scenarios_filenames = static_cast<char**>(calloc(count, 4));
                 for (i = 0; i < count; ++i) {
                     getstring(&scenarios_text[i],
                               this->campaign_scenarios->get_text(i));
-                    getstring(&campaign_filename[i],
+                    getstring(&scenarios_filenames[i],
                               this->campaign_scenarios->get_text(i));
                     sprintf(test, "%s%s.scn",
                             rge_base_game->prog_info->scenario_dir,
-                            campaign_filename[i]);
+                            scenarios_filenames[i]);
                     if (_findfirst(test, &file_info) == -1) {
-                        addstring(&campaign_filename[i], campaign_filename[i],
+                        addstring(&scenarios_filenames[i], scenarios_filenames[i],
                                   ".scx");
                     } else {
-                        addstring(&campaign_filename[i], campaign_filename[i],
+                        addstring(&scenarios_filenames[i], scenarios_filenames[i],
                                   ".scn");
                     }
                 }
 
                 new_campaign = new RGE_Campaign(
-                    text, name, count, campaign_filename, scenarios_text);
+                    text, campaign_filename, count, scenarios_filenames,
+                    scenarios_text);
                 this->campaign = new_campaign;
                 if (new_campaign != 0) {
                     delete new_campaign;
@@ -335,10 +329,10 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
 
                 for (i = 0; i < count; ++i) {
                     free(scenarios_text[i]);
-                    free(campaign_filename[i]);
+                    free(scenarios_filenames[i]);
                 }
                 free(scenarios_text);
-                free(campaign_filename);
+                free(scenarios_filenames);
             } else {
                 this->popupOKDialog(0x2BCB, 0, 0x1C2, 100);
             }
@@ -350,8 +344,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
     this->need_to_save = 0;
 }
 
-void TRIBE_Campaign_Editor_Screen::add_scenario()
-{
+void TRIBE_Campaign_Editor_Screen::add_scenario() {
     char* text = this->scenarios->get_text();
 
     if (text != 0 && *text != '\0') {
@@ -370,8 +363,7 @@ void TRIBE_Campaign_Editor_Screen::add_scenario()
     this->need_to_save = 1;
 }
 
-void TRIBE_Campaign_Editor_Screen::remove_scenario()
-{
+void TRIBE_Campaign_Editor_Screen::remove_scenario() {
     char* text = this->campaign_scenarios->get_text();
     if (text != 0 && text[0] != 0) {
         this->scenarios->append_line(text, 0);
@@ -385,8 +377,7 @@ void TRIBE_Campaign_Editor_Screen::remove_scenario()
     this->need_to_save = 1;
 }
 
-void TRIBE_Campaign_Editor_Screen::move_scenario_up()
-{
+void TRIBE_Campaign_Editor_Screen::move_scenario_up() {
     if (this->campaign_scenarios->get_line() <= 0) {
         return;
     }
@@ -409,8 +400,7 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_up()
     this->need_to_save = 1;
 }
 
-void TRIBE_Campaign_Editor_Screen::move_scenario_down()
-{
+void TRIBE_Campaign_Editor_Screen::move_scenario_down() {
     int last_line = this->campaign_scenarios->numberLines() - 1;
     long line = this->campaign_scenarios->get_line();
 
@@ -430,30 +420,27 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_down()
     }
 }
 
-long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code,
-                                          unsigned long p3,
-                                          unsigned long p4)
-{
+long TRIBE_Campaign_Editor_Screen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     char str[256];
     char text[300];
 
-    if (panel == 0)
-        return this->TEasy_Panel::action(panel, code, p3, p4);
+    if (fromPanel == 0)
+        return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 
-    if (panel == this->filename_drop && code == 2) {
+    if (fromPanel == this->filename_drop && actionIn == 2) {
         this->filename_drop->set_curr_child(this->filename);
         this->set_curr_child(this->filename_drop);
     }
 
-    if (code == 3) {
-        if (panel == this->scenarios) {
+    if (actionIn == 3) {
+        if (fromPanel == this->scenarios) {
             this->add_scenario();
-        } else if (panel == this->campaign_scenarios) {
+        } else if (fromPanel == this->campaign_scenarios) {
             this->remove_scenario();
         }
     }
 
-    if (panel == this->filename_drop && code == 0) {
+    if (fromPanel == this->filename_drop && actionIn == 0) {
         if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
             this->get_string(0x2bc9, str, 0x100);
             sprintf(text, str, this->filename->get_text());
@@ -464,8 +451,8 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code,
         }
     }
 
-    if (code == 1) {
-        if (panel == this->ok_button) {
+    if (actionIn == 1) {
+        if (fromPanel == this->ok_button) {
             if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
                 this->get_string(0x2bc9, str, 0x100);
                 sprintf(text, str, this->filename->get_text());
@@ -476,30 +463,31 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code,
                 panel_system.destroyPanel("Campaign Editor Screen");
                 return 1;
             }
-        } else if (panel == this->save_button) {
+        } else if (fromPanel == this->save_button) {
             this->make_campaign();
-        } else if (panel == this->cancel_button) {
+        } else if (fromPanel == this->cancel_button) {
             new TRIBE_Screen_Sed_Menu;
             panel_system.setCurrentPanel("Scenario Editor Menu", 0);
             panel_system.destroyPanel("Campaign Editor Screen");
             return 1;
-        } else if (panel == this->add_button) {
+        } else if (fromPanel == this->add_button) {
             this->add_scenario();
-        } else if (panel == this->remove_button) {
+        } else if (fromPanel == this->remove_button) {
             this->remove_scenario();
-        } else if (panel == this->move_scenario_up_button) {
+        } else if (fromPanel == this->move_scenario_up_button) {
             this->move_scenario_up();
-        } else if (panel == this->move_scenario_down_button) {
+        } else if (fromPanel == this->move_scenario_down_button) {
             this->move_scenario_down();
         }
     }
 
-    if (panel->panelName() && strcmp(panel->panelName(), "Cancel Dialog") == 0) {
+    if (fromPanel->panelName() &&
+        strcmp(fromPanel->panelName(), "Cancel Dialog") == 0) {
         panel_system.destroyPanel("Cancel Dialog");
-        if (code == 0) {
+        if (actionIn == 0) {
             this->make_campaign();
         }
-        if (code == 0 || code == 1) {
+        if (actionIn == 0 || actionIn == 1) {
             new TRIBE_Screen_Sed_Menu;
             panel_system.setCurrentPanel("Scenario Editor Menu", 0);
             panel_system.destroyPanel("Campaign Editor Screen");
@@ -507,17 +495,18 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* panel, long code,
         return 1;
     }
 
-    if (panel->panelName() && strcmp(panel->panelName(), "Load Dialog") == 0) {
+    if (fromPanel->panelName() &&
+        strcmp(fromPanel->panelName(), "Load Dialog") == 0) {
         panel_system.destroyPanel("Load Dialog");
-        if (code == 0) {
+        if (actionIn == 0) {
             this->make_campaign();
         }
-        if (code == 0 || code == 1) {
+        if (actionIn == 0 || actionIn == 1) {
             this->filename->set_text(this->filename_drop->get_text());
             this->load_campaign();
         }
         return 1;
     }
 
-    return this->TEasy_Panel::action(panel, code, p3, p4);
+    return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
