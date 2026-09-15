@@ -7,8 +7,10 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\tpnl_pop.cpp`
 - Build flags: `config/flags/gx.rsp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final module commit: `0371f2d3521df1cc4c835dfc526b099694686695`
+- Final module commit: `28f7534d0e03f68b30e85ec239fb0f1fc443bca9`
 - The report is a follow-up report-only commit after the module commit.
+- Root resource approval commit: `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`
+- Worker header import commit: `4f9d0935285f4196aad52dcf1fd929349ae2a132`
 - Changed files:
   - `src/tpnl_pop.cpp`
   - `decomp_notes/source_cleanup/wave03/tpnl_pop.md`
@@ -81,6 +83,11 @@ control flow, or behavior repair was added. No source comment was added. The
 existing `tpnl_tim` debug strings remain unchanged because the original
 packets show those literal values.
 
+The source includes `include/resource_ids.h` and replaces only the
+`0x2B2A` literal in the two population-label calls with
+`IDS_POPULATION_PREFIX`. The format string, buffers, fallback behavior, and
+extra population arguments remain unchanged.
+
 ## Resource ID investigation and request
 
 The source investigates resource ID `0x2B2A` (decimal `11050`). Its call sites
@@ -108,15 +115,18 @@ Extraction outputs are in the worker build directory:
 
 Header requests:
 
-- Root owns `include/resource_ids.h`. Add one shared logical game-string
-  namespace mapping: `#define IDS_POPULATION_PREFIX 0x2B2A`. The lookup checks
-  the expansion string table first and uses the base table as fallback.
+- Root owns `include/resource_ids.h`. Root approved the shared logical
+  game-string mapping `#define IDS_POPULATION_PREFIX 0x2B2A` in commit
+  `8a5c5ef8de2613e7f46e84f70a18dce0bbe76340`. The worker imported only that
+  header in commit `4f9d0935285f4196aad52dcf1fd929349ae2a132`.
+  The lookup checks the expansion string table first and uses the base table
+  as fallback.
 - Owner 19 owns `include/tpnl_pop.h`. Preserve these recovered declaration
   parameter names:
   - `TRIBE_Panel_Pop(TDrawArea* render_area_in, TPanel* parent_in);`
   - `virtual void set_rect(long x_in, long y_in, long wid_in, long hgt_in);`
   - `virtual void get_true_render_rect(tagRECT& drawRect);`
-- The source keeps the numeric ID until the shared mapping is reviewed. No
+- The source now uses the approved macro in both original call paths. No
   competing macro or local resource definition was added.
 
 ## Supporting evidence
