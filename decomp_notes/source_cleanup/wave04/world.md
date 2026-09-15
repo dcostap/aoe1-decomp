@@ -6,9 +6,9 @@
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Source owner: `src/world.cpp`
 - Changed files: `src/world.cpp`, this note
-- Previous source cleanup commit: `79849d74e4f02113e4a3ed48e7aa4c5234adac8f`
+- Previous source cleanup commit: `79849d74ecf5ec1c5fa84cd08d1c38b4169b65c5`
 - Previous report commit: `b659e2e1d9e1a92e8e7fb95c64329346896a0562`
-- Correction commit: recorded in the delivery response
+- Correction commit: `a76d02bdb0e6470c6906f7c1b032a43adc693db5`
 - Headers changed: none
 
 This correction keeps base declaration types, scope, storage, order, and
