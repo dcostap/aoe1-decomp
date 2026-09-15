@@ -5,7 +5,7 @@
 - Module: `src/pathsys.cpp`
 - PDB source: `C:\\msdev\\work\\age1_x1\\pathsys.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `d9cd60d02a02d893a4a16f65d3149f9e675428ad`
+- Final source commit: `64fffbe78c0c2d09fc0ff7f291bbba352039a4e9`
 - Changed files:
   - `src/pathsys.cpp`
   - `decomp_notes/source_cleanup/wave04/pathsys.md`
@@ -31,7 +31,7 @@ The PDB source map records these normal owners:
 
 | VA | Procedure | PDB parameter and local coverage |
 | --- | --- | --- |
-| `0046B0F0` | `PathingSystem::PathingSystem` | Parameters `x`, `y`, `aiPSInit`, `map`, `world`; local `i`. Recovered all. |
+| `0046B0F0` | `PathingSystem::PathingSystem` | PDB parameters are `x`, `y`, `aiPSInit`, `map`, `world`; PDB local `i`. The source keeps `aiPS` as the loop counter and merges these lifetimes. The `aiPSInit` and `i` mapping remains unresolved. |
 | `0046B270` | `PathingSystem::~PathingSystem` | No stack locals. `this` only. Unchanged. |
 | `0046B310` | `initialize` | Parameters `x`, `y`, `map`, `world`. Recovered `x` and `y`; others already matched. |
 | `0046B360` | `printToFile` | Parameter `filename`. Already matched. |
@@ -76,13 +76,25 @@ PDB record, so the existing `minX` name remains. The PDB names its `BYTEPoint` t
 
 ## Names and source changes
 
-Recovered names preserve the PDB spelling, including `aiPSInit`, `cTargetID`,
+Recovered names preserve the PDB spelling, including `cTargetID`,
 `copyPathWhenDone`, `MGP_goalTolerance`, `SkipBit`, `MaxY`, `stepSize`, and `wp`.
-No invented descriptive names were added. The constructor now declares the
-PDB-local `i` instead of reusing the parameter name as a loop counter.
+No invented descriptive names were added. The constructor keeps the existing
+`aiPS` parameter and uses it as the diagonal-distance loop counter. The PDB's
+separate `aiPSInit` and `i` records cannot be mapped to separate source
+declarations without changing the existing declaration arrangement.
 
-I moved function braces to 1TBS form in this source. I did not change literals,
-strings, control flow, call order, casts, types, storage, or public symbols.
+I moved function braces to 1TBS form and kept the constructor and passable
+signatures on one line. I corrected two over-indented cleanup calls. I did not
+change literals, strings, control flow, call order, casts, types, storage, or
+public symbols.
+
+## Correction history
+
+The full diff review rejected the added constructor `int i` declaration. The
+correction restores `this->aiPS = aiPS`, `aiPS = 0`, and the loop's `aiPS` uses.
+The PDB distinction between `aiPSInit` and `i` is now recorded as unresolved.
+The review also required one-line constructor and passable signatures. The
+incorrect indentation before two `path->killPath()` statements is fixed.
 
 ## Constants, resources, and comments
 
@@ -94,15 +106,15 @@ needed.
 ## Possible effects and unresolved items
 
 Parameter and local renames do not change ABI types, object layout, or decorated
-symbols. The constructor local declaration and the `MaxY` declaration shape can
-change VC5 local allocation or register scheduling. This remains unvalidated.
+symbols. The `MaxY` declaration shape can change VC5 local allocation or register
+scheduling. This remains unvalidated.
 Brace movement can change debug line records, but the source has no `__LINE__`
 use. No header layout or shared declaration changed.
 
 The header owner is owner 24. Please review these parameter-name updates in
 `include/pathsys.h`:
 
-- Constructor: `x`, `y`, `aiPSInit`.
+- Constructor: `x`, `y`; keep `aiPS` until the merged-lifetime mapping is resolved.
 - `initialize`: `x`, `y`.
 - `lookupMisc`: `x`, `y`.
 - `setMisc`: `x`, `y`, `v`.
