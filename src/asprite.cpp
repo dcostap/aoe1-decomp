@@ -92,9 +92,7 @@ short RGE_Active_Sprite::get_facetindex(short facet) {
     return (short)facet_index;
 }
 
-unsigned char RGE_Active_Sprite::get_frame(short& min_x, short& min_y,
-                                            short& max_x, short& max_y,
-                                            long facet) {
+unsigned char RGE_Active_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet) {
     int result;
 
     result = this->sprite->get_frame(min_x, min_y, max_x, max_y, facet, 0);
@@ -156,8 +154,7 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite)
     animate_flag = 1;
 }
 
-RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int infile,
-                                                       RGE_Sprite** sprites)
+RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(int infile, RGE_Sprite** sprites)
     : RGE_Active_Sprite(infile, sprites) {
     this->type = 2;
     rge_read(infile, &this->frame, 2);
@@ -317,9 +314,7 @@ short RGE_Active_Animated_Sprite::get_facetindex(short facet) {
     return (short)facet_index;
 }
 
-unsigned char RGE_Active_Animated_Sprite::get_frame(short& min_x, short& min_y,
-                                                    short& max_x, short& max_y,
-                                                    long facet) {
+unsigned char RGE_Active_Animated_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y, long facet) {
     return (unsigned char)this->sprite->get_frame(min_x, min_y, max_x, max_y,
                                                    facet, this->frame);
 }
