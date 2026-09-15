@@ -7,6 +7,11 @@ The complete 1,631-line correction diff is `build/source-cleanup-20260915/owner2
 Original reviewer `sa-68c501de` resumed to review all three blockers, resource substitutions, and changed reports.
 The assignment specifically checks retained long literals, unrelated help values, and civilization lookup arithmetic.
 The group remains unmerged and unvalidated until that review completes.
+Reviewer `sa-68c501de` completed all 1,631 lines and found no source blocker.
+Correction diff SHA256: `d193a2834e25f560a51ff8eb123c31e391b3fd8c3dc49c4767ed647b27ee1601`.
+The imported resource header matches approved blob `50d832800f3c7d0775c36af272924ca6d03b12e1`.
+Two report corrections remain: remove the stale enum-substitution claim in `scr_sed2.md` and update the `scr_vc.md` table heading.
+Root returned these report-only changes to the same workers. No source or header change is requested.
 
 ## Owner 16: final report correction approved
 
