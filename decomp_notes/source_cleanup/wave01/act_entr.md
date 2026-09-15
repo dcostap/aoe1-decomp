@@ -6,6 +6,9 @@
 - Header read: `include/act_entr.h`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
 - Source cleanup commit: `68033d452b2e3ee60d74d444bb4f66e9e16d1655`
+- Report commit: `c63f5d9aba2f1b3525256b3137d9f16293fa8f37`
+- Style correction commit: `492989668d2779d488659dfc9425d8fa3e8e55b7`
+  (joins the three-parameter constructor definition and report declaration).
 - Changed files: `src/act_entr.cpp` and this report.
 - No registry or header file changed.
 
@@ -66,8 +69,7 @@ PDB records without changing types or ABI:
 
 ```cpp
 RGE_Action_Enter(int infile, RGE_Action_Object* obj_in);
-RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                 RGE_Static_Object* target_obj_in);
+RGE_Action_Enter(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in);
 virtual void first_in_stack(unsigned char first_time);
 virtual void set_state(unsigned char new_state);
 ```
