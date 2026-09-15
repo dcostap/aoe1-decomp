@@ -4,7 +4,7 @@
 
 - Module: `src/scr_ach.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final source commit: pending
+- Final source commit: `7f952f638fd0b1878b080638cb609f2df9d8f6c0`
 - Changed files:
   - `src/scr_ach.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_ach.md`
@@ -177,7 +177,8 @@ The source comment now states that mode 3 reads victory IDs 16 and 15.
 The packet call order supports this statement.
 The comment also records that mode 6 appears before mode 5 in the original handler.
 
-Three incomplete signature fragments were removed near the last three functions.
+Three incomplete signature fragments were removed before `handle_mouse_down`,
+`action`, and `wnd_proc`.
 Their full declarations and PDB records provide the same type facts.
 They did not explain behavior.
 
