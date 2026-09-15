@@ -7,7 +7,7 @@
 - Final source commit: `81c9c0021f91a9b63fb38448f87bb51379763d67`
 - Changed files: `src/com_obj.cpp` and this report.
 - Branch: `cleanup/staging-20260915-222`
-- Header owner: root owns `include/com_obj.h`. This worker did not edit it.
+- Header owner: owner 25 owns `include/com_obj.h`. This worker did not edit it.
 - Registry: `config/functions/src/com_obj.cpp.json`, build flags `gx`.
 
 The original executable evidence is:
