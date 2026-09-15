@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
@@ -6,10 +5,8 @@
 #include "../include/tribegam.h"
 #include "../include/game_globals.h"
 
-extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
-                                  char* cmdLine, int nShow)
-{
-    int error_code;
+extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char* cmd_line, int show_wnd_flag) {
+    int retval;
     TRIBE_Game* game;
     RGE_Prog_Info info;
     char title[256];
@@ -22,7 +19,7 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     strcpy(info.game_data_file, "data2\\empires.dat");
     strcpy(info.registry_key,
            "Software\\Microsoft\\Games\\Age of Empires\\1.00");
-    strcpy(info.cmd_line, cmdLine);
+    strcpy(info.cmd_line, cmd_line);
     strcpy(info.icon_name, "AppIcon");
     strcpy(info.menu_name, "");
     strcpy(info.pal_file, "palette");
@@ -31,9 +28,9 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     info.vol_ser_num = 0;
     info.verify_cd = 1;
     info.max_players_per_cd = 3;
-    info.instance = hInst;
-    info.prev_instance = hPrev;
-    info.show_wnd_flag = nShow;
+    info.instance = prog_inst;
+    info.prev_instance = prev_inst;
+    info.show_wnd_flag = show_wnd_flag;
 
     info.mouse_scroll_interval = 0x54;
     info.key_scroll_interval = 0x54;
@@ -78,22 +75,23 @@ extern "C" int __stdcall WinMain(HINSTANCE hInst, HINSTANCE hPrev,
     strcpy(info.ai_dir, "data2\\");
     strcpy(info.avi_dir, "avi\\");
 
-    error_code = 0;
+    retval = 0;
 
     game = new TRIBE_Game(&info, 1);
     if (game != 0) {
-        int result = game->get_error_code();
-        if (result == 0) {
-            error_code = game->run();
+        int error_code = game->get_error_code();
+        if (error_code == 0) {
+            retval = game->run();
+            // The original code discards this second status query.
             game->get_error_code();
             delete game;
         }
-        else if (result != 4) {
+        else if (error_code != 4) {
             game->get_string(0x7D1, title, 0x100);
-            game->get_string2(1, result, 0, msg, 0x100);
+            game->get_string2(1, error_code, 0, msg, 0x100);
             delete game;
-            MessageBoxA(0, msg, title, 0x10);
+            MessageBoxA(0, msg, title, MB_ICONHAND);
         }
     }
-    return error_code;
+    return retval;
 }
