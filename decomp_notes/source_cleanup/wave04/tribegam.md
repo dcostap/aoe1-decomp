@@ -24,7 +24,7 @@ The cleanup makes these source changes:
 - It restores PDB names for parameters and named locals listed in the coverage
   ledger below.
 - It adds the existing `../include/resource_ids.h` include.
-- It uses existing resource names for age, civilization, save-error, status,
+- It uses approved resource names for age, civilization, save-error, status,
   and dropped-player IDs.
 - It adds one comment for expansion-table fallback order.
 - It adds one comment for the packed `vidc` and `iv41` identifiers.
@@ -219,10 +219,13 @@ The override has empty requested slots at `0x1020`-`0x1022`,
 `0x2800`-`0x2802`, `0x2804`, `0x296A`-`0x296E`, and `0x2973`-`0x2977`.
 The source does not infer a meaning from an empty slot.
 
-### IDs changed to existing names
+### IDs changed to approved names
 
-The source uses names already present in `include/resource_ids.h`. The header
-was read-only for this assignment.
+The source uses names supplied by the approved root header. The header was
+read-only for this assignment. The 22 age, civilization, and dropped-player
+mappings came from root approval/import commit
+`3f5867e84cda53a3103593a0e74f952a3f0798b7`. Its
+`include/resource_ids.h` blob is `3670c49563f971137b89644d4a0069796cf3d2af`.
 
 | Source name | ID | Base payload or role | Override state |
 | --- | ---: | --- | --- |
@@ -279,9 +282,20 @@ chat body still calls `handleChatReceived(val2)`. Root must integrate the
 header commit before compiling this source. This worker did not edit
 `include/chat.h`.
 
-`include/resource_ids.h` is root-owned. It already contains every resource
-macro used here. No new resource macro request is needed. Root must keep this
-existing header available when it integrates `src/tribegam.cpp`.
+`include/resource_ids.h` is root-owned. The 22 age, civilization, and
+dropped-player mappings used here came from root approval/import commit
+`3f5867e84cda53a3103593a0e74f952a3f0798b7`, with header blob
+`3670c49563f971137b89644d4a0069796cf3d2af`. Owner 27 imports the later root
+header from commit `0aa69b43219d638bf1a6667b832257d633635ccf`. That header
+retains these mappings and adds `IDS_ERROR_TITLE`. No new resource macro
+request is needed for this source. Root must keep this later header available
+when it integrates `src/tribegam.cpp`.
+
+### Correction history
+
+This report corrects an earlier claim that every used resource macro existed
+in the common base header. That claim was false. The 22 mappings came from
+the later root approval/import commit listed above.
 
 ### Header parameter-label request
 
