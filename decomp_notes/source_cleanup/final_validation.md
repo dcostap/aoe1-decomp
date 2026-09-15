@@ -9,6 +9,16 @@ Do not overwrite that build or discard failed validation output.
 
 ## Started stages
 
+The second executable build passed: 226 sources compiled, one assembly source assembled, and the executable linked.
+It reports zero unresolved symbols and zero link errors.
+Fresh build: `build/executable/user/20260915T220344905797Z/20260915T220345159683Z`.
+Prepared runtime: `build/runtime/rebuilt-20260915T220549867370Z`.
+This establishes compilation and linking, not baseline equality or gameplay correctness.
+
+- `bg-75`: linked dependency audit, output `build/source-cleanup-20260915/final-validation/dependencies-r2`.
+- `bg-76`: full `pytest -q`, with `AOE_DEPENDENCY_BUILD` selecting that fresh build.
+- Test XML: `build/source-cleanup-20260915/final-validation/tests-r2.xml`.
+
 After all eight compilation repairs were integrated, root started fresh validation at `7f1921ab2`:
 
 - `bg-73`: `python tools/game.py build`.
