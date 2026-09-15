@@ -93,8 +93,8 @@ invented.
 ## Constants, resources, and comments
 
 No constants changed. Existing object-type values `10`, `20`, `25`, `30`, `40`,
-`50`, `60`, and fog value `0x19` remain unchanged. No existing symbol was
-replaced without role and value evidence.
+`50`, `60`, and the `0x19` object-type check remain unchanged. No existing
+symbol was replaced without role and value evidence.
 
 No resource lookup occurs in this module. No resource ID request is needed.
 No comments were added. The source has no comment that needs correction.
