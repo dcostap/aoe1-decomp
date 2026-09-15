@@ -58,69 +58,77 @@ public:
         WaitingOnPathingCap = 2
     };
 
-    virtual float teleport(float, float, float);
-    RGE_Moving_Object(RGE_Master_Moving_Object*, RGE_Player*, float, float, float, int);
-    RGE_Moving_Object(int, RGE_Game_World*, int);
+    virtual float teleport(float x, float y, float z);
+    RGE_Moving_Object(RGE_Master_Moving_Object* tobj, RGE_Player* obj_owner, float x, float y, float z, int do_setup);
+    RGE_Moving_Object(int infile, RGE_Game_World* gworld, int do_setup);
     virtual ~RGE_Moving_Object();
     void destroy();
 public:
-    void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
-    void save(int);
-    void new_sprite(RGE_Sprite*);
+    void recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
+    void save(int outfile);
+    void new_sprite(RGE_Sprite* nsprite);
     RGE_Static_Object* spawn_death_obj();
-    void transform(RGE_Master_Static_Object*);
+    void transform(RGE_Master_Static_Object* obj);
     unsigned char is_moving();
     virtual void stop_moving();
     int movement_state() const;
     virtual float getAngle() const { return this->angle; }
     virtual unsigned char waitingToMove() const;
-    float angle_to_object(RGE_Static_Object*, float, float);
-    virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
+    float angle_to_object(RGE_Static_Object* to_object, float x, float y);
+    virtual unsigned char turn_towards(RGE_Static_Object* obj, float x, float y);
 protected:
-    virtual int setup(int, RGE_Game_World*);
-    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+    virtual int setup(int infile, RGE_Game_World* gworld);
+    virtual int setup(RGE_Master_Moving_Object* tobj, RGE_Player* obj_owner, float x, float y, float z);
 public:
-    void set_velocity(float, float, float);
-    void new_angle(float);
+    void set_velocity(float x, float y, float z);
+    void new_angle(float new_angle);
     const Path& getPath() const;
     virtual unsigned char facetToNextWaypoint() const;
-    void setGoal(float, float, float);
-    void setActionRange(float);
-    void setTargetID(int);
-    void setTargetRadius(float, float);
-    virtual void setWaitingToMove(unsigned char);
-    virtual XYZBYTEPoint* userDefinedWaypoint(int);
-    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
-    virtual void removeAllUserDefinedWaypoints(int);
-    virtual void removeUserDefinedWaypoint(int);
-    virtual int numberUserDefinedWaypoints() const
-    {
+    void setGoal(float gX, float gY, float gZ);
+    void setActionRange(float r);
+    void setTargetID(int tid);
+    void setTargetRadius(float x, float y);
+    virtual void setWaitingToMove(unsigned char w);
+    virtual XYZBYTEPoint* userDefinedWaypoint(int v);
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint* p, int stopObject);
+    virtual void removeAllUserDefinedWaypoints(int stopObject);
+    virtual void removeUserDefinedWaypoint(int v);
+    virtual int numberUserDefinedWaypoints() const {
         return this->numberUserDefinedWaypointsValue;
     }
     void setFinalUserDefinedWaypoint();
-    void setInitialPoints(XYPoint&, XYPoint&);
-    void copy_obj(RGE_Master_Static_Object*);
-    virtual void rotate(long);
+    void setInitialPoints(XYPoint& min, XYPoint& max);
+    void copy_obj(RGE_Master_Static_Object* source2);
+    virtual void rotate(long amount);
     virtual long get_waypoint_checksum();
-    void boundAngle(float*, int);
+    void boundAngle(float* x, int numFacets);
     void set_angle();
-    int doTrivialMove(float, float);
+    int doTrivialMove(float x, float y);
     int doMove();
     PathResult findPath();
-    virtual Path* findAvoidancePath(XYZPoint&, float, int);
-    virtual int passableTile(float, float, int);
+    virtual Path* findAvoidancePath(XYZPoint& goalPoint, float aRange, int targetID);
+    virtual int passableTile(float x, float y, int aiCheck);
     virtual float maximumSpeed();
-    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
-    virtual int canPath(int, float, float*, int, int, int);
-    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
-    virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>&);
-    virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
-    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
-    virtual int canLinePath(int, int, int, int, float, int);
-    virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int);
-    virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int, int, int);
-    void setStart(float, float, float);
-    void displayPath(int);
+    virtual int canPath(XYZPoint p, float aRange, int targetID, float* pathDistance, int aiCheck,
+                        int unobstructiblePlayerID, int unobstructibleGroupID);
+    virtual int canPath(int targetID, float aRange, float* pathDistance, int aiCheck,
+                        int unobstructiblePlayerID, int unobstructibleGroupID);
+    virtual int canBidirectionPath(int targetID, int targetID2, float aRange, float* pathDistance,
+                                   int aiCheck, int unobstructiblePlayerID, int unobstructibleGroupID);
+    virtual int canPathWithObstructions(int targetID, float aRange, float* pathDistance, int aiCheck,
+                                        int unobstructiblePlayerID, int unobstructibleGroupID,
+                                        ManagedArray<int>& obstructions);
+    virtual int canPathWithAdditionalPassability(XYZPoint p, float aRange, int targetID,
+                                                 float* pathDistance, int eTerrain1, int eTerrain2,
+                                                 int aiCheck, int unobstructiblePlayerID,
+                                                 int unobstructibleGroupID);
+    virtual int findFirstTerrainAlongExceptionPath(int eTerrain, float* rX, float* rY);
+    virtual int canLinePath(int sX, int sY, int dX, int dY, float range, int aiCheck);
+    virtual int canLinePath(const XYPoint& s, const XYPoint& d, float range, XYPoint& rPoint, int aiCheck);
+    virtual int firstTileAlongLine(const XYPoint& s, const XYPoint& d, XYPoint& rPoint,
+                                   int tType1, int tType2, int checkPassability);
+    void setStart(float x, float y, float z);
+    void displayPath(int object_id);
 };
 
 typedef char rge_moving_object_size_check[
