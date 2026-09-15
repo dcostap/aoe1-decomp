@@ -20,10 +20,8 @@ public:
     long setup(TPanel* parent_panel_in, char* info_file_in, long info_id_in,
                long wid_in, long hgt_in, unsigned char dlg_type_in, int text_id,
                long btn_wid_in, long btn_hgt_in);
-    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1,
-                        unsigned long action_val2);
-    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key,
-                                 int shift_key);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
     virtual long handle_idle();
 };
 
