@@ -5162,13 +5162,13 @@ void TribeInformationAIModule::loadLearnInfo(char* name)
             } while (i < numToLoad);
         }
 
-        for (int resourceIndex = 0; resourceIndex < 4; resourceIndex++) {
-            rge_read(file, &this->maxResources[resourceIndex], 4);
-            rge_read(file, &this->numResources[resourceIndex], 4);
-            this->resources[resourceIndex] = (ResourceMemory*)operator new(
-                this->maxResources[resourceIndex] * sizeof(ResourceMemory));
-            rge_read(file, this->resources[resourceIndex],
-                     this->maxResources[resourceIndex] * sizeof(ResourceMemory));
+        for (int resource_index = 0; resource_index < 4; resource_index++) {
+            rge_read(file, &this->maxResources[resource_index], 4);
+            rge_read(file, &this->numResources[resource_index], 4);
+            this->resources[resource_index] = (ResourceMemory*)operator new(
+                this->maxResources[resource_index] * sizeof(ResourceMemory));
+            rge_read(file, this->resources[resource_index],
+                     this->maxResources[resource_index] * sizeof(ResourceMemory));
         }
 
         rge_read(file, &numMemoriesToLoad, 4);
@@ -5651,8 +5651,8 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                     (int)(DAT_005755bc - distance * DAT_005755b8);
                 this->resources[resourceType][i].dropsiteID = dropsiteID;
 
-                int objectGroup = obj->master_obj->object_group;
-                if (objectGroup == 0x0f) {
+                int object_group = obj->master_obj->object_group;
+                if (object_group == 0x0f) {
                     int value = (int)distance;
                     if (value >= this->closestDropsiteValue[1] &&
                         this->closestDropsiteValue[1] != -1) {
@@ -5662,7 +5662,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                     this->closestDropsiteResourceID[1] = this->resources[resourceType][i].id;
                     return 1;
                 }
-                if (objectGroup == 0x20) {
+                if (object_group == 0x20) {
                     int value = (int)distance;
                     if (value >= this->closestDropsiteValue[3] &&
                         this->closestDropsiteValue[3] != -1) {
@@ -5672,7 +5672,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                     this->closestDropsiteResourceID[3] = this->resources[resourceType][i].id;
                     return 1;
                 }
-                if (objectGroup == 8) {
+                if (object_group == 8) {
                     int value = (int)distance;
                     if (value >= this->closestDropsiteValue[2] &&
                         this->closestDropsiteValue[2] != -1) {
@@ -5682,7 +5682,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
                     this->closestDropsiteResourceID[2] = this->resources[resourceType][i].id;
                     return 1;
                 }
-                if (objectGroup == 7) {
+                if (object_group == 7) {
                     int value = (int)distance;
                     if (value >= this->closestDropsiteValue[0] &&
                         this->closestDropsiteValue[0] != -1) {
@@ -5717,8 +5717,8 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
         (int)(10.0f - distance * -2.0f);
     this->numResources[resourceType]++;
 
-    int objectGroup = obj->master_obj->object_group;
-    if (objectGroup == 0x0f) {
+    int object_group = obj->master_obj->object_group;
+    if (object_group == 0x0f) {
         int value = (int)distance;
         if (value < this->closestDropsiteValue[1] ||
             this->closestDropsiteValue[1] == -1) {
@@ -5726,7 +5726,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
             this->closestDropsiteResourceID[1] = obj->id;
             return 1;
         }
-    } else if (objectGroup == 0x20) {
+    } else if (object_group == 0x20) {
         int value = (int)distance;
         if (value < this->closestDropsiteValue[3] ||
             this->closestDropsiteValue[3] == -1) {
@@ -5734,7 +5734,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
             this->closestDropsiteResourceID[3] = obj->id;
             return 1;
         }
-    } else if (objectGroup == 8) {
+    } else if (object_group == 8) {
         int value = (int)distance;
         if (value < this->closestDropsiteValue[2] ||
             this->closestDropsiteValue[2] == -1) {
@@ -5742,7 +5742,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
             this->closestDropsiteResourceID[2] = obj->id;
             return 1;
         }
-    } else if (objectGroup == 7) {
+    } else if (object_group == 7) {
         int value = (int)distance;
         if (value < this->closestDropsiteValue[0] ||
             this->closestDropsiteValue[0] == -1) {
@@ -6481,12 +6481,12 @@ void TribeInformationAIModule::lookAtMap()
                         gMap->map_row_offset[y][x].objects.list;
                     while (node != 0) {
                         RGE_Static_Object* object = node->node;
-                        int objectGroup = object->master_obj->object_group;
+                        int object_group = object->master_obj->object_group;
 
-                        if (this->importantObject(objectGroup) == 1)
+                        if (this->importantObject(object_group) == 1)
                             this->addImportantObject(object, 0);
 
-                        if (objectGroup == 0x0F)
+                        if (object_group == 0x0F)
                             numberTreesOnTile++;
 
                         node = node->next;
@@ -6733,10 +6733,10 @@ int TribeInformationAIModule::acceptablePotentialDropsiteArea(int x, int y)
             short type = this->importantObjectMemory[i].type;
             if (type == 0x6D || type == 0x67 || type == 0x44 ||
                 type == 0x4F || type == 0xC7 || type == 0x45) {
-                int objectX = (int)this->importantObjectMemory[i].x;
-                int objectY = (int)this->importantObjectMemory[i].y;
-                int dx = objectX - x;
-                int dy = objectY - y;
+                int object_x = (int)this->importantObjectMemory[i].x;
+                int object_y = (int)this->importantObjectMemory[i].y;
+                int dx = object_x - x;
+                int dy = object_y - y;
                 if (dx * dx + dy * dy <= s)
                     return 0;
             }
