@@ -10,11 +10,11 @@ class TRIBE_Screen_Status_Message : public TScreenPanel {
 public:
     TTextPanel* message;
 
-    TRIBE_Screen_Status_Message(char*, char*, char*, long);
-    TRIBE_Screen_Status_Message(char*, long, char*, long);
+    TRIBE_Screen_Status_Message(char* name, char* message_in, char* info_file_in, long info_id_in);
+    TRIBE_Screen_Status_Message(char* name, long message_in, char* info_file_in, long info_id_in);
     virtual ~TRIBE_Screen_Status_Message();
-    void set_text(char*);
-    void set_text(long);
+    void set_text(char* message_in);
+    void set_text(long message_in);
 };
 
 typedef char scr_stms_screen_size_check[

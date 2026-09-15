@@ -92,10 +92,10 @@ protected:
     int startGame();
     void calcRandomPositions();
     void showNetInfo();
-    void cancelScreen(int);
-    void fillChat(int);
-    void kickPlayer(int);
-    void handleKickedPlayer(int);
+    void cancelScreen(int lobbyTimeout);
+    void fillChat(int line_no);
+    void kickPlayer(int p);
+    void handleKickedPlayer(int really_kicked);
     void activateVictoryPanels();
     void setupTabOrder();
     void setupSinglePlayerPlayers();
@@ -104,10 +104,10 @@ protected:
 
 public:
     virtual long handle_idle();
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual long handle_user_command(unsigned int, long);
-    virtual long handle_timer_command(unsigned int, long);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+    virtual long handle_user_command(unsigned int wParam, long lParam);
+    virtual long handle_timer_command(unsigned int wParam, long lParam);
     void fillPlayers();
     void updateSummary();
 };
@@ -125,9 +125,9 @@ public:
 
     TRIBE_Screen_Wait();
     virtual ~TRIBE_Screen_Wait();
-    void set_text(char*);
-    void set_text(long);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    void set_text(char* message_in);
+    void set_text(long message_in);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2);
     virtual long handle_idle();
 };
 
@@ -141,11 +141,11 @@ public:
     TButtonPanel* cancel_button;
     TButtonPanel* close_button;
 
-    TRIBE_Screen_Disconnect(int);
+    TRIBE_Screen_Disconnect(int mode_in);
     virtual ~TRIBE_Screen_Disconnect();
-    void set_text(char*);
-    void set_text(long);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    void set_text(char* message_in);
+    void set_text(long message_in);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long val1, unsigned long val2);
     virtual long handle_idle();
 };
 

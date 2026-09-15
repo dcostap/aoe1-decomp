@@ -22,10 +22,9 @@ public:
     TribeSelectTribeScreen();
 
 protected:
-    virtual long action(TPanel* sender, long actionType, unsigned long param3,
-                        unsigned long param4);
-    void fillTribeText(int index);
-    char* tribeName(int index);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+    void fillTribeText(int t);
+    char* tribeName(int i);
 };
 
 typedef char scr_trb_screen_size_check[
