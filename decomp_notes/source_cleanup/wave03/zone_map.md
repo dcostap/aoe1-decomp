@@ -5,7 +5,8 @@
 - Module: `src/zone_map.cpp`
 - Header owner: owner 16 owns `include/zone_map.h`; this worker did not edit it.
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final commit: see the full Git hash in the delivery record.
+- Source commit: `2fba8cad86516cbbdc3b8709f29a0078b1c6a941`
+- Final report commit: see the full Git hash in the delivery record.
 - Changed files:
   - `src/zone_map.cpp`
   - `decomp_notes/source_cleanup/wave03/zone_map.md`
