@@ -98,6 +98,17 @@ Restore baseline name bindings and distinct declarations. Do not add scopes to b
 Root will review repairs and rerun validation. No failed output will be removed.
 Runtime tests cannot validate this failed build. They await a fresh linked executable.
 
+## Fresh linked dependency failures
+
+The second-build dependency audit reports 7,758 passes, two failures, and 47,025 unknowns.
+Both failures are in `0043E9E0 THelpDialog::setup_help`, at relative instruction offsets 246 and 255.
+The audit reports `width` and `xPosition` direct call targets in the opposite order from the original.
+The preserved earlier dependency result had 7,760 passes and zero failures, with the same unknown count.
+Root resumed Owner 10 and the original `dlg_help` worker to compare source forms and preserved objects.
+Do not dismiss this as harmless arithmetic commutation: call order is part of the cleanup contract.
+Report: `build/source-cleanup-20260915/final-validation/dependencies-r2/checks.csv`.
+No linked-equivalence pass is established while these failures remain.
+
 ## First function sweep
 
 The sweep includes 4,942 normal functions: 4,537 exact targets and 405 other configured functions.
