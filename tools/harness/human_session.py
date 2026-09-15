@@ -150,10 +150,11 @@ def session_contract(report, policy=None):
 
 
 def verify_starting_contract(session, report):
+    from replay import gameplay_contract
     plan = execution_plan(session)
     actual = session_contract({**report, 'script_sha256':plan['recorded_script_sha256']},
                               policy=plan['recorded_policy'])
-    if actual != session['contract']:
+    if gameplay_contract(actual) != gameplay_contract(session['contract']):
         raise ValueError('Recording starting contract differs; refusing to launch replay.')
     return plan
 

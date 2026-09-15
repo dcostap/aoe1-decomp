@@ -57,7 +57,7 @@ def test_preserved_candidate_recording_and_explicit_upgrade_plan():
     assert (data['contract'],data['events']) == before
 
 
-def test_upgrade_verifies_complete_recorded_starting_contract():
+def test_upgrade_verifies_gameplay_starting_contract():
     path=ROOT/'config/harness/human-candidate-20260915.json'
     recording=load_recording(path)
     contract=recording['contract']
@@ -70,6 +70,14 @@ def test_upgrade_verifies_complete_recorded_starting_contract():
                 {'path':name,'sha256':value} for name,value in contract['assets'].items()],
                 **copy.deepcopy(contract['graphics'])}}
     assert verify_starting_contract(session,report)['same_policy_replay'] is False
+    unchanged_contract = copy.deepcopy(contract)
+    changed = copy.deepcopy(report)
+    rows = changed['manifest']['copied_files_before_exe_replacement']
+    rows[:] = [row for row in rows if not row['path'].lower().endswith('.gmx')]
+    rows.extend([{'path':'savegame/old release save.gmx','sha256':'additional'},
+                 {'path':'SAVEGAME\\another.gam','sha256':'additional'}])
+    assert verify_starting_contract(session,changed)['same_policy_replay'] is False
+    assert contract == unchanged_contract
     for field in ('clock','registry_inputs','arguments','frida_version'):
         changed=copy.deepcopy(report)
         changed[field]=None

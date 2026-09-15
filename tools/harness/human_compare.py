@@ -86,7 +86,8 @@ def compare_captures(left,right):
     comparable = [{key:value for key,value in control.items() if key != 'identity_source'} for control in controls]
     if comparable[0] != comparable[1]:
         raise ValueError('Capture control identities differ.')
-    if session_contract(a) != session_contract(b):
+    from replay import gameplay_contract
+    if gameplay_contract(session_contract(a)) != gameplay_contract(session_contract(b)):
         raise ValueError('Capture starting contracts differ.')
     scenarios = [r['fixture']['human'] for r in (a,b)]
     if any(s.get('mode') != 'replay' for s in scenarios) or any(

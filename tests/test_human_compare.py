@@ -42,7 +42,7 @@ def test_full_rng_comparison_is_not_limited_to_status_prefix(tmp_path,monkeypatc
     import json
     import struct
     import human_compare
-    monkeypatch.setattr(human_compare,'session_contract',lambda report:{})
+    monkeypatch.setattr(human_compare,'session_contract',lambda report:{'assets':{}})
     captures=[]
     for name,value in [('left',7),('right',right_value)]:
         folder=tmp_path/name
@@ -73,7 +73,7 @@ def test_full_rng_comparison_is_not_limited_to_status_prefix(tmp_path,monkeypatc
 
 def test_explicit_upgrade_identity_is_visible_and_strict(monkeypatch):
     import human_compare
-    monkeypatch.setattr(human_compare,'session_contract',lambda report:{})
+    monkeypatch.setattr(human_compare,'session_contract',lambda report:{'assets':{}})
     scenario={'mode':'replay','schema':1,'duration_ms':1000,'events':[],
               'contract':{'original_sha256':ORIGINAL_SHA256,'policy':V1_POLICY,
                           'script_sha256':V1_TEMPLATE_SHA256},

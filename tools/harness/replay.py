@@ -16,6 +16,17 @@ from linker_map import parse_symbols
 from replay_capture import compare_captures
 
 
+def gameplay_assets(assets):
+    """Ignore unused saves during new-game replay comparisons."""
+    return {name: value for name, value in assets.items()
+            if not (name.replace('\\', '/').lower().startswith('savegame/')
+                    and name.lower().endswith(('.gmx', '.gam')))}
+
+
+def gameplay_contract(contract):
+    return {**contract, 'assets': gameplay_assets(contract['assets'])}
+
+
 def recording_contract(report):
     return {**{key:report[key] for key in ('clock', 'script_sha256', 'registry_inputs', 'arguments', 'frida_version')},
             'assets':{row['path']:row['sha256'] for row in report['manifest']['copied_files_before_exe_replacement']},
@@ -69,7 +80,7 @@ def compare_reports(left, right):
             return {'passed':False, 'classification':'incompatible', 'reason':key}
     assets = [{row['path']:row['sha256'] for row in report['manifest'].get('copied_files_before_exe_replacement', [])}
               for report in (left, right)]
-    if assets[0] != assets[1] or left['manifest'].get('overrides') != right['manifest'].get('overrides'):
+    if gameplay_assets(assets[0]) != gameplay_assets(assets[1]) or left['manifest'].get('overrides') != right['manifest'].get('overrides'):
         return {'passed':False, 'classification':'incompatible', 'reason':'assets'}
     for report in (left, right):
         if report['errors'] or not report['shared_assets_unchanged'] or not observations(report) or not any(

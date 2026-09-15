@@ -201,6 +201,9 @@ Unsupported input messages, including wheel and extra mouse-button messages, sto
 Input records have explicit size, count, route, and time limits. Limit failures cannot produce a complete recording.
 
 The starting contract checks assets, graphics configuration, registry inputs, instrumentation, and the original executable.
+New-game replay checks exclude `.gmx` and `.gam` files beneath `savegame`.
+Adding, removing, or changing these unused saves does not block replay. All other asset checks remain.
+Recording files and full asset manifests remain unchanged for reference.
 An incompatible contract stops replay before the game resumes. The harness does not silently update the contract.
 An explicit v1-to-v2 upgrade retains the recorded contract and reports the different executed policy.
 
