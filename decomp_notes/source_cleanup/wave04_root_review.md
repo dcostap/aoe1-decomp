@@ -1,5 +1,13 @@
 # Cleanup wave 04 root review
 
+## Owner 27: correction review started
+
+Corrected head: `332ab7bcd59f316425a9a75b3013f8d7c2bf26c1`.
+The complete 475-line correction diff is `build/source-cleanup-20260915/owner27-corrections.diff`.
+Original reviewer `sa-32cff643` resumed to check the error-caption substitution, shared-header imports, and report provenance.
+The historical help-window request remains numeric and pending at root.
+The group remains unmerged. Full validation must wait for both final group reviews and integrations.
+
 ## Owner 27: source approved; final corrections requested
 
 Reviewer `sa-32cff643` read all 12,498 lines and all reports. No source blocker remains.
