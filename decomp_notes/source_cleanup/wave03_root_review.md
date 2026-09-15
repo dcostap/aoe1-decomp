@@ -1,5 +1,45 @@
 # Cleanup wave 03 root review
 
+## Owner 21: corrections and resource approval
+
+Reviewer `sa-68c501de` read all 8,462 diff lines, eight sources, eight headers, and nine reports.
+Reviewed head: `d10df838a1d32b18667be00c8d8ab63a887f508a`.
+Diff SHA256: `09f3feb5f8abf456f953161ef16c661c5fd79535aabd47cd499fa866519293de`.
+The rejected `scr_game` structural rewrite is fully corrected.
+Root resumed the same workers for three blockers:
+
+- Restore all 13 baseline position-mode casts in `scr_sed2.cpp`.
+- Correct hotkey payloads: `0x1048` E, `0x1049` C, `0x104A` M. Work is `0x104B` W.
+- Exclude empty, unused `0x103C` from the requested hotkey ranges.
+
+Root approved the reviewed payload-backed resource names, with two existing-name substitutions:
+
+- Use existing `IDS_SCENARIO_MENU_CREATE_SCENARIO` for `0x242E`.
+- Use existing `IDS_GAME_SPEED_CHANGED` for `0x0BF3`.
+
+Keep `IDS_SCENARIO_OPEN_TITLE` (`0x24CD`) distinct from `IDS_SCENARIO_LIST_TITLE` (`0x25FE`).
+Both say `Select Scenario`, but their callers assign different title roles.
+Only the building hotkey base has a definition. Preserve the existing index arithmetic.
+Preserve master-player IDs and `get_string2` lookup logic; civilization resource IDs are not master-player IDs.
+Keep the unresolved `scr_game` use of `0x0FA9` numeric. Preserve the unrelated scrollbar use of `0x7532`.
+Purpose-only help names remain deferred; the checked DLLs lack their text.
+
+Evidence is under `build/source-cleanup-20260915/reviewer-owner21/`, using language `0x0409`.
+Base runtime DLL SHA256: `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+Runtime expansion SHA256: `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`.
+Original expansion SHA256: `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
+The pinned original tree lacks the base language file; base payload evidence is staged runtime data.
+
+Expansion entries normally miss the approved IDs. These exceptions retain separate missing/empty records:
+
+- Runtime expansion has empty slots at `0x242D` through `0x242F`; original expansion lacks them.
+- Both expansions have empty slots at `0x1023`, `0x1024`, and `0x1040` through `0x104E`.
+- Civilization slots `0x2800`, `0x2801`, `0x2802`, and `0x2804` are empty in expansion evidence.
+- Expansion supplies Roman, Carthaginian, Macedonian, and Palmyran at `0x2806` through `0x2809`; base slots are empty.
+
+Lookup checks expansion first, then base on a missing or empty result. Do not change that behavior.
+The group remains unmerged and unvalidated until the corrections and substitutions receive review.
+
 ## Owner 19: resource-substitution review
 
 Corrected head: `b02bf34c8a0ef850b9f73b04cf6dcc73df87e3c2`.
