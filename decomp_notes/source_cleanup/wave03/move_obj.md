@@ -6,8 +6,10 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `819293c71043fd471befad2dbfc7d3f86395d19e`
 - Source correction commit: `d9571240fb921b11820edc5d4b93203da2ba2f7d`
+- Source evidence correction commit: `2df1282e383cdebb37459ee573392cbf3e904616`
 - Final report commit: `be26cbf860b59dc718fecb84402284206ddb67d1`
 - Correction report commit: `ff6f42778162569c3559f6cf89588bfabc1c2125`
+- Evidence report correction commit: this report commit; record its full hash from Git output
 - Branch: `cleanup/staging-20260915-129`
 - Changed files:
   - `src/move_obj.cpp`
@@ -81,6 +83,16 @@ The correction restores four accurate evidence notes from the base source:
 - The floor results are cast before subtracting the float tile bias.
 
 The original packets and PDB evidence support these constraints.
+
+The later correction restores two more evidence notes:
+
+- `copy_obj` calls the virtual sprite method at `00460D99`, then directly calls
+  `RGE_Static_Object::copy_obj` at `00460D9F`, targeting `004C4FB0`.
+- `get_waypoint_checksum` keeps both `currentWaypoint` calls at `00460F72` and
+  `00460F7B`. It preserves `y(first) + x(second) + temp` at `00460F80`,
+  `00460F83`, and `00460F88`.
+
+These notes preserve the original calls and evaluation order.
 
 ## Code-generation and ownership notes
 
