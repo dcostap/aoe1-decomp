@@ -3,7 +3,7 @@
 - Module: `src/m_mi_obj.cpp`
 - Branch: `cleanup/staging-20260915-69`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final code commit: `b2861ab787d90ff506f335358ef02d97419cd31d`
+- Final code commit: `407a300caf49d7a368cbe52bbd13d8e77faac650`
 - Assigned header: `include/m_mi_obj.h` (read only; not changed)
 - Registry: `config/functions/src/m_mi_obj.cpp.json`
 - PDB source: `C:\\msdev\\work\\age1_x1\\m_mi_obj.cpp`
@@ -15,8 +15,8 @@
 - `src/m_mi_obj.cpp`
 - `decomp_notes/source_cleanup/wave02/m_mi_obj.md`
 
-The source commit changes recovered parameter and local names. It also moves
-opening braces to 1TBS positions. It keeps types, scopes, storage, statements,
+The source commits change recovered parameter and local names. They also move
+opening braces to 1TBS positions. They keep types, scopes, storage, statements,
 calls, casts, literals, source order, and evaluation order.
 
 ## PDB recovery coverage
