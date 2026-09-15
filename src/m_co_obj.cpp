@@ -87,8 +87,7 @@ int RGE_Master_Combat_Object::setup(RGE_Master_Combat_Object* other_object) {
 }
 
 // m_co_obj.cpp lines 104-177.
-int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds) {
+int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     int count;
 
     RGE_Master_Action_Object::setup(infile, sprites, sounds);
@@ -174,8 +173,7 @@ int RGE_Master_Combat_Object::setup(int infile, RGE_Sprite** sprites,
 }
 
 // m_co_obj.cpp lines 182-262.
-int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites,
-                                    RGE_Sound** sounds, short in_id) {
+int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds, short in_id) {
     FILE* input = infile;
     short temp_base_armor;
     short temp_area_effect_level;
@@ -398,8 +396,7 @@ void RGE_Master_Combat_Object::modify(float amount, unsigned char flag) {
 }
 
 // m_co_obj.cpp lines 406-468.
-void RGE_Master_Combat_Object::modify_delta(float amount,
-                                             unsigned char flag) {
+void RGE_Master_Combat_Object::modify_delta(float amount, unsigned char flag) {
     switch (flag) {
     case 8: {
         int encoded = (int)amount;
@@ -461,8 +458,7 @@ void RGE_Master_Combat_Object::modify_delta(float amount,
 }
 
 // m_co_obj.cpp lines 472-504.
-void RGE_Master_Combat_Object::modify_percent(float amount,
-                                                unsigned char flag) {
+void RGE_Master_Combat_Object::modify_percent(float amount, unsigned char flag) {
     switch (flag) {
     case 8:
     case 9:
@@ -536,11 +532,11 @@ void RGE_Master_Combat_Object::save(int outfile) {
 long RGE_Master_Combat_Object::calc_base_damage_ability(
     RGE_Master_Combat_Object* attacker) {
     float total = DAT_00570504;
-    int tot_armor = attacker->weapon_num;
+    int count = attacker->weapon_num;
     RGE_Armor_Weapon_Info* weapon = attacker->weapon;
 
-    if (tot_armor > 0) {
-        int remaining = tot_armor;
+    if (count > 0) {
+        int remaining = count;
         int armor_count = this->armor_num;
         int base_armor = this->base_armor;
         do {
