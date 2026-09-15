@@ -130,8 +130,7 @@ RGE_Action* RGE_Action_List::create_task_action(
                     target_obj->id, target_obj->world_x, target_obj->world_y,
                     target_obj->world_z);
             } else {
-                this->obj->unitAI()->setCurrentTarget(
-                    -1, target_x, target_y, target_z);
+                this->obj->unitAI()->setCurrentTarget(-1, target_x, target_y, target_z);
             }
         }
 
@@ -353,16 +352,14 @@ int RGE_Action_List::action_stop() {
     return 0;
 }
 
-int RGE_Action_List::action_move_to(
-    RGE_Static_Object* obj_in, float x, float y, float z) {
+int RGE_Action_List::action_move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (this->list != 0) {
         return this->list->action->move_to(obj_in, x, y, z);
     }
     return 0;
 }
 
-int RGE_Action_List::action_work(
-    RGE_Static_Object* obj_in, float x, float y, float z) {
+int RGE_Action_List::action_work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (this->list != 0) {
         return this->list->action->work(obj_in, x, y, z);
     }
