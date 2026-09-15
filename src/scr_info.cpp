@@ -28,13 +28,11 @@ long TRIBE_Screen_Info::handle_idle() {
 
     if (auto_close != 0) {
         if (last_time == 0) {
-            last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_info.cpp", 0x48);
+            last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_info.cpp", 0x48);
             return TPanel::handle_idle();
         }
 
-        unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_info.cpp", 0x4B);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_info.cpp", 0x4B);
         if (now - last_time > timer) {
             close_screen();
             return 0;
@@ -44,16 +42,14 @@ long TRIBE_Screen_Info::handle_idle() {
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Info::key_down_action(long key, short count, int alt_key,
-                                        int ctrl_key, int shift_key) {
+long TRIBE_Screen_Info::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     if (key != 0x12 && key != 0x11 && key != 0x10) {
         close_screen();
     }
     return 0;
 }
 
-long TRIBE_Screen_Info::mouse_left_down_action(long x, long y, int ctrl_key,
-                                               int shift_key) {
+long TRIBE_Screen_Info::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     close_screen();
     return 0;
 }
