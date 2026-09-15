@@ -59,8 +59,8 @@ const TEditPanel::FormatType FormatMultiLine = TEditPanel::FormatMultiLine;
 
 
 void TRIBE_Screen_Sed::SaveDisabledItemsInScenario() {
-    short pn0 = this->player_num;
-    if (pn0 == 0) {
+    short player_number = this->player_num;
+    if (player_number == 0) {
         this->player_num = 1;
     }
 
@@ -79,8 +79,6 @@ void TRIBE_Screen_Sed::SaveDisabledItemsInScenario() {
     this->player_num = (short)(line + 1);
 }
 
-// The named getter result preserves the source line split and
-
 void TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) {
     TButtonPanel** button;
     int i;
@@ -90,8 +88,7 @@ void TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) {
         disabled = static_cast<T_Scenario*>(this->world->scenario)->GetDisabledTechnology(this->player_num - 1, i);
         if (disabled != 0) {
             (*button)->set_state(0);
-        }
-        else {
+        } else {
             (*button)->set_state(1);
         }
     }
@@ -104,8 +101,7 @@ void TRIBE_Screen_Sed::save_info_in_scenario() {}
 
 // The victory setters use the typed T_Scenario surface.
 
-void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
-{
+void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario() {
     switch (this->mp_victory_type) {
     case 1:
         static_cast<T_Scenario*>(this->world->scenario)->SetMPVictory(0);
@@ -193,8 +189,7 @@ void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
 }
 
 
-void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which)
-{
+void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
     long x1, y1, x2, y2;
     int VictoryType;
     int ObjectNumber;
@@ -353,8 +348,7 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which)
 // Case 1 tests the amount home, not the destination-object
 // home. The shipped UI can select a line from the amount value.
 
-void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
-{
+void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int which) {
     char str[40];
     RGE_Static_Object* destobj;
     int Amount;
@@ -362,8 +356,8 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
     long x1, y1, x2, y2;
     RGE_Static_Object* obj;
 
-    int all = static_cast<T_Scenario*>(this->world->scenario)->Get_victory_all_flag();
-    if (all != 0) {
+    int all_players = static_cast<T_Scenario*>(this->world->scenario)->Get_victory_all_flag();
+    if (all_players != 0) {
         this->victory_and_or[0]->set_state(0);
         this->victory_and_or[1]->set_state(1);
     } else {
@@ -371,23 +365,23 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
         this->victory_and_or[1]->set_state(0);
     }
 
-    if (index < 0) return;
+    if (which < 0) return;
     this->SelectedObject = 0;
     this->DestinationObject = 0;
     static_cast<T_Scenario*>(this->world->scenario)->rehook();
     static_cast<T_Scenario*>(this->world->scenario)->SetSPWhich((int)this->player_num - 1);
-    Amount = static_cast<T_Scenario*>(this->world->scenario)->GetSPAmount(index);
+    Amount = static_cast<T_Scenario*>(this->world->scenario)->GetSPAmount(which);
     itoa(Amount, str, 10);
     this->victory_amount_input->set_text(str);
-    this->victory_enemy_player_list->set_line(static_cast<T_Scenario*>(this->world->scenario)->GetSPPlayerID(index) - 1);
-    this->victory_object_list->setCurrentLineNumber(this->victory_object_list->get_line(static_cast<T_Scenario*>(this->world->scenario)->GetSPObjectType(index)));
-    obj = static_cast<T_Scenario*>(this->world->scenario)->GetSPObject(index);
-    destobj = static_cast<T_Scenario*>(this->world->scenario)->GetSPDestObjectID(index);
+    this->victory_enemy_player_list->set_line(static_cast<T_Scenario*>(this->world->scenario)->GetSPPlayerID(which) - 1);
+    this->victory_object_list->setCurrentLineNumber(this->victory_object_list->get_line(static_cast<T_Scenario*>(this->world->scenario)->GetSPObjectType(which)));
+    obj = static_cast<T_Scenario*>(this->world->scenario)->GetSPObject(which);
+    destobj = static_cast<T_Scenario*>(this->world->scenario)->GetSPDestObjectID(which);
     this->SelectedObject = obj;
     this->DestinationObject = destobj;
-    VictoryType = static_cast<T_Scenario*>(this->world->scenario)->GetSPVictoryType(index);
-    int AttributeType = static_cast<T_Scenario*>(this->world->scenario)->GetSPAttribType(index);
-    static_cast<T_Scenario*>(this->world->scenario)->GetSPRectangle(index, &this->px1, &this->py1, &this->px2, &this->py2);
+    VictoryType = static_cast<T_Scenario*>(this->world->scenario)->GetSPVictoryType(which);
+    int AttributeType = static_cast<T_Scenario*>(this->world->scenario)->GetSPAttribType(which);
+    static_cast<T_Scenario*>(this->world->scenario)->GetSPRectangle(which, &this->px1, &this->py1, &this->px2, &this->py2);
     x1 = (long)this->px1; y1 = (long)this->py1; x2 = (long)this->px2; y2 = (long)this->py2;
     this->main_view->set_selection_area(-1,-1,-1,-1);
     if (this->px2 != 0.0f) this->main_view->set_selection_area(x1,y1,x2,y2);
@@ -402,7 +396,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
         case 4: this->victory_drop_down->setCurrentLineNumber(14); break;
         case 5:
             this->victory_drop_down->setCurrentLineNumber(15);
-            this->victory_ages_list->setCurrentLineNumber(static_cast<T_Scenario*>(this->world->scenario)->GetSPAmount(index)-1);
+            this->victory_ages_list->setCurrentLineNumber(static_cast<T_Scenario*>(this->world->scenario)->GetSPAmount(which)-1);
             return;
         case 6: this->victory_drop_down->setCurrentLineNumber(16); break;
         default: return;
@@ -424,11 +418,11 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
         // The destination object does not select line 5 in this case.
         if (Amount != 0) this->victory_drop_down->setCurrentLineNumber(5);
         else if (obj != 0) this->victory_drop_down->setCurrentLineNumber(6);
-        else if (static_cast<T_Scenario*>(this->world->scenario)->GetSPAllFlag(index)) this->victory_drop_down->setCurrentLineNumber(7);
+        else if (static_cast<T_Scenario*>(this->world->scenario)->GetSPAllFlag(which)) this->victory_drop_down->setCurrentLineNumber(7);
         else this->victory_drop_down->setCurrentLineNumber(8);
         break;
     case 2:
-        static_cast<T_Scenario*>(this->world->scenario)->GetSPRectangle(index, &this->px1, &this->py1, &this->px2, &this->py2);
+        static_cast<T_Scenario*>(this->world->scenario)->GetSPRectangle(which, &this->px1, &this->py1, &this->px2, &this->py2);
         if (this->px2 > 0.0) this->victory_drop_down->setCurrentLineNumber(4);
         else this->victory_drop_down->setCurrentLineNumber(3);
         break;
@@ -445,8 +439,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
 
 // Zero score and time values use the default entries.
 
-void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
-{
+void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario() {
     char str[20];
     int value = static_cast<T_Scenario*>(this->world->scenario)->GetMPVictory();
 
@@ -549,58 +542,55 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
 
 
 
-void TRIBE_Screen_Sed::save_diplomacy_in_scenario(int param_1)
-{
-    if (param_1 < 0) return;
+void TRIBE_Screen_Sed::save_diplomacy_in_scenario(int which) {
+    if (which < 0) return;
 
     for (int i = 0; i < 8; i++) {
-        int st = Diplomacy_friend_box[i][0]->get_state();
-        if (st == 1) {
-            static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(param_1, i, 0);
+        int state = Diplomacy_friend_box[i][0]->get_state();
+        if (state == 1) {
+            static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(which, i, 0);
         } else {
-            st = Diplomacy_friend_box[i][1]->get_state();
-            if (st == 1) {
-                static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(param_1, i, 1);
+            state = Diplomacy_friend_box[i][1]->get_state();
+            if (state == 1) {
+                static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(which, i, 1);
             } else {
-                st = Diplomacy_friend_box[i][2]->get_state();
-                if (st == 1) {
-                    static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(param_1, i, 3);
+                state = Diplomacy_friend_box[i][2]->get_state();
+                if (state == 1) {
+                    static_cast<T_Scenario*>(world->scenario)->Set_player_attitude(which, i, 3);
                 }
             }
         }
     }
 
-    int av = Diplomacy_AlliedVictory[param_1]->get_state();
-    static_cast<T_Scenario*>(world->scenario)->SetPlayerAlliedVictory(param_1, av);
+    int allied_victory = Diplomacy_AlliedVictory[which]->get_state();
+    static_cast<T_Scenario*>(world->scenario)->SetPlayerAlliedVictory(which, allied_victory);
 }
 
 // TRIBE_Screen_Sed::load_diplomacy_from_scenario
 // Each diplomacy row clears its allied-victory button before
 // the selected attitude and final player-specific state are applied.
 
-void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int player)
-{
-    if (player >= 0) {
+void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int which) {
+    if (which >= 0) {
         int i = 0;
         do {
-            int att = static_cast<T_Scenario*>(this->world->scenario)->Get_player_attitude(player, i);
-            if (att == 0)
+            int attitude = static_cast<T_Scenario*>(this->world->scenario)->Get_player_attitude(which, i);
+            if (attitude == 0)
                 this->Diplomacy_friend_box[i][0]->set_radio_button();
-            if (att == 1)
+            if (attitude == 1)
                 this->Diplomacy_friend_box[i][1]->set_radio_button();
-            if (att == 3)
+            if (attitude == 3)
                 this->Diplomacy_friend_box[i][2]->set_radio_button();
             this->Diplomacy_AlliedVictory[i]->set_state(0);
             i++;
         } while (i < 8);
-        this->Diplomacy_AlliedVictory[player]->set_state(
-            static_cast<T_Scenario*>(this->world->scenario)->GetPlayerAlliedVictory(player));
+        this->Diplomacy_AlliedVictory[which]->set_state(
+            static_cast<T_Scenario*>(this->world->scenario)->GetPlayerAlliedVictory(which));
     }
 }
 
 
-void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int activate)
-{
+void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int activate) {
     TPanel* ptr[2];
 
     this->SelectRegionFlag = TRIBE_Screen_Sed::SelectOff;
@@ -731,10 +721,9 @@ void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int act
 
 // The paired panel arrays are cleared in declared field order.
 
-void TRIBE_Screen_Sed::init_module_variables()
-{
-    TButtonPanel** ppTVar3;
-    int iVar6;
+void TRIBE_Screen_Sed::init_module_variables() {
+    TButtonPanel** button_cursor;
+    int index;
 
     this->background_pic = (TShape*)0;
     this->main_view = (TRIBE_Main_View*)0;
@@ -742,17 +731,17 @@ void TRIBE_Screen_Sed::init_module_variables()
     this->message_panel = (TMessagePanel*)0;
     this->bottom_panel = (TPanel*)0;
     this->set_player_first_flag = 0;
-    ppTVar3 = this->scenario_mode_button;
-    for (iVar6 = 10; iVar6 != 0; iVar6 = iVar6 + -1) {
-        *ppTVar3 = (TButtonPanel*)0;
-        ppTVar3 = ppTVar3 + 1;
+    button_cursor = this->scenario_mode_button;
+    for (index = 10; index != 0; index = index + -1) {
+        *button_cursor = (TButtonPanel*)0;
+        button_cursor = button_cursor + 1;
     }
     this->menu_button = (TButtonPanel*)0;
     this->help_button = (TButtonPanel*)0;
     this->map_type_label = (TTextPanel*)0;
-    for (iVar6 = 0; iVar6 < 3; ++iVar6) {
-        this->map_type_button[iVar6] = (TButtonPanel*)0;
-        this->map_type_text[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 3; ++index) {
+        this->map_type_button[index] = (TButtonPanel*)0;
+        this->map_type_text[index] = (TTextPanel*)0;
     }
     this->default_terrain_drop = (TDropDownPanel*)0;
     this->default_terrain_label = (TTextPanel*)0;
@@ -769,13 +758,13 @@ void TRIBE_Screen_Sed::init_module_variables()
     this->brush_size_label = (TTextPanel*)0;
     this->paint_type_label = (TTextPanel*)0;
     this->paint_terrain_label = (TTextPanel*)0;
-    for (iVar6 = 0; iVar6 < 5; ++iVar6) {
-        this->brush_size_button[iVar6] = (TButtonPanel*)0;
-        this->brush_size_button_label[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 5; ++index) {
+        this->brush_size_button[index] = (TButtonPanel*)0;
+        this->brush_size_button_label[index] = (TTextPanel*)0;
     }
-    for (iVar6 = 0; iVar6 < 3; ++iVar6) {
-        this->paint_type_button[iVar6] = (TButtonPanel*)0;
-        this->paint_type_button_label[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 3; ++index) {
+        this->paint_type_button[index] = (TButtonPanel*)0;
+        this->paint_type_button_label[index] = (TTextPanel*)0;
     }
     this->paint_terrain_list = (TListPanel*)0;
     this->paint_terrain_scrollbar = (TScrollBarPanel*)0;
@@ -788,38 +777,38 @@ void TRIBE_Screen_Sed::init_module_variables()
     this->player_city_text = (TTextPanel*)0;
     this->player_list = (TDropDownPanel*)0;
     this->player_number_list = (TDropDownPanel*)0;
-    for (iVar6 = 0; iVar6 < 5; ++iVar6) {
-        this->player_inven_label[iVar6] = (TTextPanel*)0;
-        this->player_inven_input[iVar6] = (TEditPanel*)0;
+    for (index = 0; index < 5; ++index) {
+        this->player_inven_label[index] = (TTextPanel*)0;
+        this->player_inven_input[index] = (TEditPanel*)0;
     }
-    for (iVar6 = 0; iVar6 < 2; ++iVar6) {
-        this->player_setting_label[iVar6] = (TTextPanel*)0;
-        this->player_setting_drop[iVar6] = (TDropDownPanel*)0;
+    for (index = 0; index < 2; ++index) {
+        this->player_setting_label[index] = (TTextPanel*)0;
+        this->player_setting_drop[index] = (TDropDownPanel*)0;
     }
     this->BuildList = (TDropDownPanel*)0;
     this->CityLayout = (TDropDownPanel*)0;
     this->AiRules = (TDropDownPanel*)0;
     this->unit_player_list = (TDropDownPanel*)0;
-    for (iVar6 = 0; iVar6 < 4; ++iVar6) {
-        this->unit_mode_select[iVar6] = (TButtonPanel*)0;
-        this->unit_mode_select_label[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 4; ++index) {
+        this->unit_mode_select[index] = (TButtonPanel*)0;
+        this->unit_mode_select_label[index] = (TTextPanel*)0;
     }
     this->unit_list = (TListPanel*)0;
     this->unit_scrollbar = (TScrollBarPanel*)0;
     this->unit_list_info = (List_Info*)0;
     this->button_unit_pics = (TShape*)0;
-    for (iVar6 = 0; iVar6 < 5; ++iVar6)
-        this->button_bldg_pics[iVar6] = (TShape*)0;
+    for (index = 0; index < 5; ++index)
+        this->button_bldg_pics[index] = (TShape*)0;
     this->object_panel = (TRIBE_Scenario_Editor_Panel_Object*)0;
     this->unit_list_size = 0;
-    ppTVar3 = this->victory_cond_on;
-    for (iVar6 = 6; iVar6 != 0; iVar6 = iVar6 + -1) {
-        *ppTVar3 = (TButtonPanel*)0;
-        ppTVar3 = ppTVar3 + 1;
+    button_cursor = this->victory_cond_on;
+    for (index = 6; index != 0; index = index + -1) {
+        *button_cursor = (TButtonPanel*)0;
+        button_cursor = button_cursor + 1;
     }
-    for (iVar6 = 0; iVar6 < 2; ++iVar6) {
-        this->victory_and_or[iVar6] = (TButtonPanel*)0;
-        this->victory_text_and_or[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 2; ++index) {
+        this->victory_and_or[index] = (TButtonPanel*)0;
+        this->victory_text_and_or[index] = (TTextPanel*)0;
     }
     this->victory_amount_label = (TTextPanel*)0;
     this->victory_long_label = (TTextPanel*)0;
@@ -836,18 +825,18 @@ void TRIBE_Screen_Sed::init_module_variables()
     this->victory_condition_artifacts = (TEditPanel*)0;
     this->victory_condition_discoveries = (TEditPanel*)0;
     this->victory_condition_gold = (TEditPanel*)0;
-    for (iVar6 = 0; iVar6 < 5; ++iVar6) {
-        this->victory_cond_type_label[iVar6] = (TTextPanel*)0;
-        this->victory_cond_type[iVar6] = (TButtonPanel*)0;
+    for (index = 0; index < 5; ++index) {
+        this->victory_cond_type_label[index] = (TTextPanel*)0;
+        this->victory_cond_type[index] = (TButtonPanel*)0;
     }
     this->victory_score_label = (TTextPanel*)0;
     this->victory_score = (TDropDownPanel*)0;
     this->victory_time_label = (TTextPanel*)0;
     this->victory_time = (TDropDownPanel*)0;
-    ppTVar3 = this->victory_button;
-    for (iVar6 = 0xc; iVar6 != 0; iVar6 = iVar6 + -1) {
-        *ppTVar3 = (TButtonPanel*)0;
-        ppTVar3 = ppTVar3 + 1;
+    button_cursor = this->victory_button;
+    for (index = 0xc; index != 0; index = index + -1) {
+        *button_cursor = (TButtonPanel*)0;
+        button_cursor = button_cursor + 1;
     }
     this->victory_drop_down = (TDropDownPanel*)0;
     this->victory_object_list = (TDropDownPanel*)0;
@@ -865,32 +854,32 @@ void TRIBE_Screen_Sed::init_module_variables()
     this->victory_attribute_list = (TDropDownPanel*)0;
     this->victory_which_enemy_text = (TTextPanel*)0;
     this->victory_object_scrollbar = (TScrollBarPanel*)0;
-    for (iVar6 = 0; iVar6 < 5; ++iVar6) {
-        this->message_button[iVar6] = (TButtonPanel*)0;
-        this->message_button_label[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 5; ++index) {
+        this->message_button[index] = (TButtonPanel*)0;
+        this->message_button_label[index] = (TTextPanel*)0;
     }
     this->message_input = (TEditPanel*)0;
-    for (iVar6 = 0; iVar6 < 4; ++iVar6) {
-        this->cinematic_label[iVar6] = (TTextPanel*)0;
-        this->cinematic_input[iVar6] = (TDropDownPanel*)0;
+    for (index = 0; index < 4; ++index) {
+        this->cinematic_label[index] = (TTextPanel*)0;
+        this->cinematic_input[index] = (TDropDownPanel*)0;
     }
-    for (iVar6 = 0; iVar6 < 1; ++iVar6) {
-        this->options_label[iVar6] = (TTextPanel*)0;
-        this->options_button[iVar6] = (TButtonPanel*)0;
+    for (index = 0; index < 1; ++index) {
+        this->options_label[index] = (TTextPanel*)0;
+        this->options_button[index] = (TButtonPanel*)0;
     }
     this->options_player_list = (TDropDownPanel*)0;
     this->options_disable_tech_text = (TTextPanel*)0;
-    for (iVar6 = 0; iVar6 < 0x10; ++iVar6) {
-        this->options_disable_button[iVar6] = (TButtonPanel*)0;
-        this->options_disable_text[iVar6] = (TTextPanel*)0;
+    for (index = 0; index < 0x10; ++index) {
+        this->options_disable_button[index] = (TButtonPanel*)0;
+        this->options_disable_text[index] = (TTextPanel*)0;
     }
     this->Diplomacy_player_list = (TDropDownPanel*)0;
-    for (iVar6 = 0; iVar6 < 8; ++iVar6) {
-        this->Diplomacy_player_text[iVar6] = (TTextPanel*)0;
-        this->Diplomacy_friend_box[iVar6][0] = (TButtonPanel*)0;
-        this->Diplomacy_friend_box[iVar6][1] = (TButtonPanel*)0;
-        this->Diplomacy_friend_box[iVar6][2] = (TButtonPanel*)0;
-        this->Diplomacy_AlliedVictory[iVar6] = (TButtonPanel*)0;
+    for (index = 0; index < 8; ++index) {
+        this->Diplomacy_player_text[index] = (TTextPanel*)0;
+        this->Diplomacy_friend_box[index][0] = (TButtonPanel*)0;
+        this->Diplomacy_friend_box[index][1] = (TButtonPanel*)0;
+        this->Diplomacy_friend_box[index][2] = (TButtonPanel*)0;
+        this->Diplomacy_AlliedVictory[index] = (TButtonPanel*)0;
     }
     this->Diplomacy_status_label[0] = (TTextPanel*)0;
     this->Diplomacy_status_label[1] = (TTextPanel*)0;
@@ -900,8 +889,7 @@ void TRIBE_Screen_Sed::init_module_variables()
 }
 
 
-void TRIBE_Screen_Sed::create_all_buttons_etc()
-{
+void TRIBE_Screen_Sed::create_all_buttons_etc() {
     int i;
     TButtonPanel** pp;
     int count;
@@ -1289,8 +1277,7 @@ bad:
 // The panel cursor loops follow the adjacent array layout shown
 // by the executable.
 
-void TRIBE_Screen_Sed::position_panels()
-{
+void TRIBE_Screen_Sed::position_panels() {
     if (this->main_view == 0)
         return;
 
@@ -1551,24 +1538,23 @@ void TRIBE_Screen_Sed::position_panels()
 }
 
 
-void TRIBE_Screen_Sed::activate_victory_panel(int flag)
-{
+void TRIBE_Screen_Sed::activate_victory_panel(int activate) {
     int i = 0;
     TButtonPanel** pp = this->victory_button;
     do {
-        (*pp)->set_active(flag);
-        int val = ((static_cast<T_Scenario*>(this->world->scenario)->GetSPVictoryType(i) ? -1 : 0) & 2) + (this->CurrentVictory == i);
-        if (flag) {
-            (*pp)->set_state(val);
+        (*pp)->set_active(activate);
+        int state = ((static_cast<T_Scenario*>(this->world->scenario)->GetSPVictoryType(i) ? -1 : 0) & 2) + (this->CurrentVictory == i);
+        if (activate) {
+            (*pp)->set_state(state);
         }
         ++i;
         ++pp;
     } while (i < 12);
 
-    this->victory_drop_down->set_active(flag);
-    this->victory_condition_text->set_active(flag);
-    this->victory_player_list->set_active(flag);
-    if (flag) {
+    this->victory_drop_down->set_active(activate);
+    this->victory_condition_text->set_active(activate);
+    this->victory_player_list->set_active(activate);
+    if (activate) {
         this->victory_player_list->set_line((int)this->player_num - 1);
     } else {
         this->player_num = (short)(this->victory_player_list->get_line() + 1);
@@ -1576,45 +1562,43 @@ void TRIBE_Screen_Sed::activate_victory_panel(int flag)
 }
 
 
-int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* list, char* directory,
-                                   char* extension, unsigned char show_none,
-                                   unsigned char show_random)
-{
+int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* drop_down, char* dir,
+                                   char* extension, unsigned char append_none,
+                                   unsigned char append_random) {
     char path[260];
     char file_name[260];
-    _finddata_t file_info;
+    _finddata_t fileInfo;
     int count;
     int extension_strlen;
     long handle;
 
     count = 0;
-    list->empty_list();
-    if (show_none) {
-        list->append_line(0x2775, 0);
+    drop_down->empty_list();
+    if (append_none) {
+        drop_down->append_line(0x2775, 0);
     }
-    if (show_random) {
-        list->append_line(0x277B, 0);
+    if (append_random) {
+        drop_down->append_line(0x277B, 0);
     }
 
-    sprintf(path, "%s*%s", directory, extension);
-    handle = _findfirst(path, &file_info);
+    sprintf(path, "%s*%s", dir, extension);
+    handle = _findfirst(path, &fileInfo);
     extension_strlen = strlen(extension);
     if (handle != -1) {
         do {
             ++count;
-            int length = strlen(file_info.name);
+            int length = strlen(fileInfo.name);
             length -= extension_strlen;
-            strncpy(file_name, file_info.name, length);
+            strncpy(file_name, fileInfo.name, length);
             file_name[length] = 0;
-            list->append_line(file_name, 0);
-        } while (_findnext(handle, &file_info) != -1);
+            drop_down->append_line(file_name, 0);
+        } while (_findnext(handle, &fileInfo) != -1);
     }
     return count;
 }
 
 
-int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int)
-{
+int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int newmode) {
     this->player_advance_civilization_drop->empty_list();
     this->player_advance_civilization_drop->append_line(0x1069, 0);
     this->player_advance_civilization_drop->append_line(0x106A, 1);
@@ -1627,8 +1611,7 @@ int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int)
 }
 
 
-void TRIBE_Screen_Sed::SavePlayerActiveStatus()
-{
+void TRIBE_Screen_Sed::SavePlayerActiveStatus() {
     int active_players = this->player_number_list->get_line() + 1;
     int i = 0;
 
@@ -1670,33 +1653,31 @@ void TRIBE_Screen_Sed::SavePlayerActiveStatus()
 }
 
 
-int TRIBE_Screen_Sed::create_check_box(TPanel* parent, TButtonPanel** out)
-{
-    int ok = TEasy_Panel::create_check_box(parent, out, 0, 0, 0, 0, 1, 0);
+int TRIBE_Screen_Sed::create_check_box(TPanel* parent, TButtonPanel** button) {
+    int ok = TEasy_Panel::create_check_box(parent, button, 0, 0, 0, 0, 1, 0);
     if (!ok) return 0;
-    (*out)->set_z_order(1, 0);
-    (*out)->set_active(0);
+    (*button)->set_z_order(1, 0);
+    (*button)->set_active(0);
     if (this->use_bevels) {
-        (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                              this->bevel_color3, this->bevel_color4,
-                              this->bevel_color5, this->bevel_color6);
+        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
+                                  this->bevel_color3, this->bevel_color4,
+                                  this->bevel_color5, this->bevel_color6);
     }
     return 1;
 }
 
 
-int TRIBE_Screen_Sed::create_radio_button(TPanel* parent, TButtonPanel** out)
-{
-    if (!TEasy_Panel::create_radio_button(parent, out, 0, 0, 0, 0, 1, 0))
+int TRIBE_Screen_Sed::create_radio_button(TPanel* parent, TButtonPanel** button) {
+    if (!TEasy_Panel::create_radio_button(parent, button, 0, 0, 0, 0, 1, 0))
         return 0;
 
-    (*out)->set_z_order(1, 0);
-    (*out)->set_active(0);
+    (*button)->set_z_order(1, 0);
+    (*button)->set_active(0);
 
     if (this->use_bevels) {
-        (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                              this->bevel_color3, this->bevel_color4,
-                              this->bevel_color5, this->bevel_color6);
+        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
+                                  this->bevel_color3, this->bevel_color4,
+                                  this->bevel_color5, this->bevel_color6);
     }
 
     return 1;

@@ -13,17 +13,14 @@
 #include "../include/main.h"
 #include "../include/sounddrv.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 
-TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
-                                           unsigned char game_flag,
-                                           TPicture* vc_back_bmp)
-    : TScreenPanel("Mission Dialog")
-{
+TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_game, TPicture* background_bmp) : TScreenPanel("Mission Dialog") {
     char adjusted_name[260];
-    char setup_file[260];
+    char info_file[260];
     unsigned char starting_description = 0;
 
-    this->game_flag = game_flag;
+    this->game_flag = from_game;
     this->title = 0;
     this->ok_button = 0;
     this->list = 0;
@@ -32,9 +29,9 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
     memset(this->text_buttons, 0, sizeof(this->text_buttons));
 
     panel_system.currentPanel();
-    strcpy(setup_file, "scr9");
+    strcpy(info_file, "scr9");
 
-    if (!setup(rge_base_game->draw_area, setup_file, 0xC38C, 1)) {
+    if (!setup(rge_base_game->draw_area, info_file, 0xC38C, 1)) {
         this->error_code = 1;
         return;
     }
@@ -48,12 +45,12 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
         // The shipped executable truncates the copied name by four bytes.
         adjusted_name[strlen(scenario_name) - 4] = 0;
     } else {
-        strcpy(adjusted_name, get_string(0x2655));
+        strcpy(adjusted_name, get_string(IDS_MISSION_TITLE_INSTRUCTIONS));
     }
 
     create_text(this, &this->title, adjusted_name, 10, 0xF, 0x26C,
                 0x14, 4, 1, 1, 0);
-    create_text(this, &this->list, info_file, 0xF, 0x46, 0x12C,
+    create_text(this, &this->list, text_in, 0xF, 0x46, 0x12C,
                 0x154, 0xB, 0, 0, 1);
     create_auto_scrollbar(&this->scroll_bar, this->list, 0x14);
 
@@ -63,14 +60,14 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
                                    this->bevel_color5, this->bevel_color6);
     }
 
-    create_button(this, &this->ok_button, 0xFA1, 0, 0xC8, 0x1B8,
+    create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0xC8, 0x1B8,
                   0xF0, 0x1E, 0, 0, 0);
-    create_button(this, &this->text_buttons[0], 0x2A31, 0, 0x145,
+    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 0x145,
                   0x13C, 0xB4, 0x1E, 0, -1, 0);
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(this, text_button_1, 0x2A32, 0, 0x145, 0x15C,
+    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 0x145, 0x15C,
                   0xB4, 0x1E, 0, -1, 0);
-    create_button(this, &this->text_buttons[2], 0x2A37, 0, 0x145,
+    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 0x145,
                   0x17C, 0xB4, 0x1E, 0, -1, 0);
 
     for (int i = 0; i < 3; i++) {
@@ -140,11 +137,10 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
     }
 
     set_curr_child(this->ok_button);
-    this->vc_back_bmp = vc_back_bmp;
+    this->vc_back_bmp = background_bmp;
 }
 
-TRIBE_Mission_Screen::~TRIBE_Mission_Screen()
-{
+TRIBE_Mission_Screen::~TRIBE_Mission_Screen() {
     if (this->game_flag == 0) {
         RGE_Base_Game* game = rge_base_game;
         if (game->prog_info->use_sound != 0 && game->sound_system != 0) {
@@ -162,16 +158,14 @@ TRIBE_Mission_Screen::~TRIBE_Mission_Screen()
     }
 }
 
-long TRIBE_Mission_Screen::handle_idle()
-{
+long TRIBE_Mission_Screen::handle_idle() {
     if (!rge_base_game->input_enabled) {
         rge_base_game->enable_input();
     }
     return TPanel::handle_idle();
 }
 
-void TRIBE_Mission_Screen::draw()
-{
+void TRIBE_Mission_Screen::draw() {
     TScreenPanel::draw();
 
     if (this->vc_back_bmp != 0) {
@@ -203,24 +197,21 @@ void TRIBE_Mission_Screen::draw()
     }
 }
 
-long TRIBE_Mission_Screen::action(TPanel* sender, long actionType,
-                                  unsigned long param3,
-                                  unsigned long param4)
-{
-    if (actionType == 1) {
-        if (sender == this->text_buttons[0]) {
+long TRIBE_Mission_Screen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (actionIn == 1) {
+        if (fromPanel == this->text_buttons[0]) {
             this->list->set_text(rge_base_game->world->scenario->Get_message(4));
         }
 
-        if (sender == this->text_buttons[1]) {
+        if (fromPanel == this->text_buttons[1]) {
             this->list->set_text(rge_base_game->world->scenario->Get_message(0));
         }
 
-        if (sender == this->text_buttons[2]) {
+        if (fromPanel == this->text_buttons[2]) {
             this->list->set_text(rge_base_game->world->scenario->Get_message(1));
         }
 
-        if (sender == this->ok_button) {
+        if (fromPanel == this->ok_button) {
             if (this->game_flag != 0) {
                 panel_system.setCurrentPanel("Game Screen", 0);
                 if (rge_base_game->singlePlayerGame() == 1 &&
@@ -236,14 +227,11 @@ long TRIBE_Mission_Screen::action(TPanel* sender, long actionType,
         }
     }
 
-    return TEasy_Panel::action(sender, actionType, param3, param4);
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-long TRIBE_Mission_Screen::key_down_action(long param_1, short param_2,
-                                           int param_3, int param_4,
-                                           int param_5)
-{
-    if (param_4 == 0 || param_1 != 0x56) {
+long TRIBE_Mission_Screen::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
+    if (ctrl_key == 0 || key != 0x56) {
         return 0;
     }
 

@@ -180,31 +180,31 @@ protected:
     void handle_terrain_sound();
 
 public:
-    long handle_size(long, long);
+    long handle_size(long win_wid, long win_hgt);
     void handle_game_update();
-    long key_down_action(long, short, int, int, int);
-    long action(TPanel*, long, unsigned long, unsigned long);
+    long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
+    long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
 
 protected:
-    void do_button_action(int, int, int);
+    void do_button_action(int action_in, int action2_in, int right_btn);
 
 public:
     void setup_buttons();
     void reset_score_display();
-    void player_changed(int, int);
+    void player_changed(int old_player_id, int new_player_id);
     void reset_clocks();
 
 protected:
-    void command_score(int);
-    void command_group_by_number(int);
-    void command_select_group(int, int);
-    void command_formation(int);
-    void command_tab_selected(int);
+    void command_score(int show);
+    void command_group_by_number(int id);
+    void command_select_group(int id, int unsel_prior);
+    void command_formation(int formationID);
+    void command_tab_selected(int forward);
     void command_view_selected();
-    void command_building(int);
-    void command_select_building(int);
-    void command_player(int);
-    void command_add_attribute(int);
+    void command_building(int id);
+    void command_select_building(int id);
+    void command_player(int id);
+    void command_add_attribute(int attr_id);
     void command_tool_box();
     void command_quick_build();
     void command_work();
@@ -228,41 +228,39 @@ public:
     void disable_unused_buttons();
 
 protected:
-    char* calc_text_msg(char*, Item_Avail*, long, long);
-    short calc_button_loc(unsigned char);
-    void set_button(TShape*, short, short, long, long, long, long, long,
-                    unsigned char*, char*, char*, int);
+    char* calc_text_msg(char* msg_str, Item_Avail* item, long button_action_id, long message_string_id);
+    short calc_button_loc(unsigned char button_loc);
+    void set_button(TShape* buttons, short button, short pic_index, long id, long id2, long help_string_id, long help_page_id,
+                    long hotkey, unsigned char* color_table, char* text2, char* text_msg, int make_disabled);
 
 public:
-    virtual void set_redraw(TPanel::RedrawMode);
-    virtual void set_overlapped_redraw(TPanel*, TPanel*,
-                                       TPanel::RedrawMode);
-    void set_map_buttons_redraw(TPanel::RedrawMode);
+    virtual void set_redraw(TPanel::RedrawMode redraw_mode);
+    virtual void set_overlapped_redraw(TPanel* redraw_panel, TPanel* calling_panel, TPanel::RedrawMode redraw_mode);
+    void set_map_buttons_redraw(TPanel::RedrawMode redraw_mode);
     long handle_paint();
     long handle_idle();
-    long wnd_proc(void*, unsigned int, unsigned int, long);
-    long handle_mouse_down(unsigned char, long, long, int, int);
-    virtual long handle_user_command(unsigned int, long);
+    long wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
+    long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
+    virtual long handle_user_command(unsigned int wParam, long lParam);
     void handle_pause();
     void handle_resume();
-    void handleChatReceived(int);
+    void handleChatReceived(int line_no);
 
 protected:
     void handle_mouse_pointing_at();
 
 public:
-    void display_system_message(char*);
-    long char_action(long, short);
-    void show_timings(char*, char*);
-    void show_comm(char*, char*, char*, char*, char*, char*);
-    void show_ai(char*, char*, char*, char*, char*, char*);
-    void show_message(TMessagePanel::MessageType, char*, unsigned char,
-                      unsigned char);
+    void display_system_message(char* msg);
+    long char_action(long key, short count);
+    void show_timings(char* str1, char* str2);
+    void show_comm(char* str, char* str2, char* str3, char* str4, char* str5, char* str6);
+    void show_ai(char* str, char* str2, char* str3, char* str4, char* str5, char* str6);
+    void show_message(TMessagePanel::MessageType message_type, char* str, unsigned char font_color_in, unsigned char back_color_in);
     void reset_buttons();
-    void game_mode_changed(int, int);
+    void game_mode_changed(int old_mode, int new_mode);
 
 protected:
-    void command_game_speed(int);
+    void command_game_speed(int increase_speed);
 
 protected:
     void command_build();
@@ -271,13 +269,13 @@ protected:
     void command_heal();
     void command_convert();
     void command_diplomacy();
-    void command_research(int);
+    void command_research(int id);
     void command_save_game();
     void command_save_scenario();
     void command_stop();
     void command_trade();
-    void command_trade_with(int);
-    void command_train(int, short);
+    void command_trade_with(int id);
+    void command_train(int id, short train_count);
     void command_unload();
     void command_view_tribe();
     void command_outline();
@@ -287,14 +285,14 @@ protected:
     void command_group();
     void command_attack_ground();
     void command_stand_ground();
-    void command_trade_attribute(long);
+    void command_trade_attribute(long attribute);
     void command_quit();
     void stop_sound_system();
     virtual int restart_sound_system();
 
 public:
-    void add_log(char*);
-    virtual void set_focus(int);
+    void add_log(char* text);
+    virtual void set_focus(int have_focus_in);
 };
 
 typedef char scr_game_size_check[

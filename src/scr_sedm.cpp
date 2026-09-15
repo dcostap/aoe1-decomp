@@ -8,6 +8,7 @@
 #include "../include/scr_cam.h"
 #include "../include/scr_main.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 
 extern char s_Scenario_Editor_Menu[];
 extern char s_scr4[];
@@ -18,8 +19,7 @@ extern char s_Main_Menu[];
 extern TPanelSystem panel_system;
 
 TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
-    : TScreenPanel(s_Scenario_Editor_Menu)
-{
+    : TScreenPanel(s_Scenario_Editor_Menu) {
     title = 0;
     for (int j = 0; j < 4; j++)
         button[j] = 0;
@@ -32,7 +32,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
 
     set_ideal_size(0x280, 0x1E0);
 
-    if (!create_text(this, &title, 0x242D, 0x14, 0x14, 0x258, 0x1E,
+    if (!create_text(this, &title, IDS_SCENARIO_EDITOR_TITLE, 0x14, 0x14, 0x258, 0x1E,
                      1, 1, 0, 0))
         return;
 
@@ -43,7 +43,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
             return;
     }
 
-    if (!create_button(this, &close_button, 0x3EA, 0,
+    if (!create_button(this, &close_button, IDS_BUTTON_CLOSE, 0,
                        0, 0, 0, 0, -1, -1, 0))
         return;
 
@@ -52,60 +52,54 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
                                   0x11, 0x11, 0x11, 0x11,
                                   0, 0, 0, 0);
 
-    button[0]->set_text(0, 0x242E);
-    button[1]->set_text(0, 0x242F);
-    button[2]->set_text(0, 0x2431);
-    button[3]->set_text(0, 0x2430);
+    button[0]->set_text(0, IDS_SCENARIO_MENU_CREATE_SCENARIO);
+    button[1]->set_text(0, IDS_BUTTON_EDIT_SCENARIO);
+    button[2]->set_text(0, IDS_MENU_CAMPAIGN_EDITOR);
+    button[3]->set_text(0, IDS_SCENARIO_EDITOR_CANCEL);
 
     TButtonPanel* cancel = button[3];
-    cancel->hotkey = 0x1B;
+    cancel->hotkey = VK_ESCAPE;
     cancel->hotkey_shift = 0;
 
     set_tab_order(reinterpret_cast<TPanel**>(button), 4);
     set_curr_child(button[0]);
 }
 
-TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu()
-{
+TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu() {
     delete_panel(reinterpret_cast<TPanel**>(&title));
     for (int i = 0; i < 4; i++)
         delete_panel(reinterpret_cast<TPanel**>(&button[i]));
     delete_panel(reinterpret_cast<TPanel**>(&close_button));
 }
 
-long TRIBE_Screen_Sed_Menu::handle_idle()
-{
+long TRIBE_Screen_Sed_Menu::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
 }
 
-long TRIBE_Screen_Sed_Menu::action(
-    TPanel* param_1, long param_2, unsigned long param_3,
-    unsigned long param_4)
-{
-    if (param_1 != 0 && param_2 == 1) {
-        if (param_1 == button[0]) {
-            static_cast<TRIBE_Game*>(rge_base_game)
-                ->start_scenario_editor(0, 0);
+long TRIBE_Screen_Sed_Menu::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0 && actionIn == 1) {
+        if (fromPanel == button[0]) {
+            static_cast<TRIBE_Game*>(rge_base_game)->start_scenario_editor(0, 0);
             return 1;
         }
 
-        if (param_1 == button[1]) {
+        if (fromPanel == button[1]) {
             new TRIBE_Screen_Sed_Open();
             panel_system.setCurrentPanel(s_Scenario_Editor_Open, 0);
             panel_system.destroyPanel(s_Scenario_Editor_Menu);
             return 1;
         }
 
-        if (param_1 == button[2]) {
+        if (fromPanel == button[2]) {
             new TRIBE_Campaign_Editor_Screen();
             panel_system.setCurrentPanel(s_Campaign_Editor_Screen, 0);
             panel_system.destroyPanel(s_Scenario_Editor_Menu);
             return 1;
         }
 
-        if (param_1 == button[3]) {
+        if (fromPanel == button[3]) {
             rge_base_game->disable_input();
             new TRIBE_Screen_Main_Menu();
             panel_system.setCurrentPanel(s_Main_Menu, 0);
@@ -113,11 +107,11 @@ long TRIBE_Screen_Sed_Menu::action(
             return 1;
         }
 
-        if (param_1 == close_button) {
+        if (fromPanel == close_button) {
             rge_base_game->close();
             return 1;
         }
     }
 
-    return TEasy_Panel::action(param_1, param_2, param_3, param_4);
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }

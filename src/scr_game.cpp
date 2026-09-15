@@ -1,6 +1,7 @@
 
 #include "../include/scr_game.h"
 #include "../include/game_globals.h"
+#include "../include/resource_ids.h"
 #include "../include/dsutil.h"
 #include <new.h>
 #include <stdio.h>
@@ -21,8 +22,7 @@ static char s_game_b_format[] = "gameb%d.shp";
 static char s_game_c_format[] = "gamec%d.shp";
 
 TRIBE_Screen_Game::TRIBE_Screen_Game()
-    : TScreenPanel(s_Game_Screen)
-{
+    : TScreenPanel(s_Game_Screen) {
     displayPathingFlags = 0;
     allow_user_commands = (do_fixed_update == 0);
     die_die_die = 0;
@@ -111,14 +111,14 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->last_view_time = debug_timeGetTime(s_scr_game_cpp, 0x142);
     this->player_quit = 0;
 
-    this->view_town_center_hotkey = *this->get_string(0x103f);
+    this->view_town_center_hotkey = *this->get_string(IDS_HOTKEY_VIEW_TOWN_CENTER);
     this->work_hotkey = 0;
-    this->move_hotkey = *this->get_string(0x104a);
+    this->move_hotkey = *this->get_string(IDS_HOTKEY_MOVE);
     this->attack_hotkey = 0;
-    this->ungroup_hotkey = *this->get_string(0x103a);
+    this->ungroup_hotkey = *this->get_string(IDS_HOTKEY_UNGROUP);
     this->watch_hotkey = 0x41;
     for (i = 0; i < 8; i++) {
-        this->select_building_hotkey[i] = *this->get_string(i + 0x1040);
+        this->select_building_hotkey[i] = *this->get_string(i + IDS_HOTKEY_SELECT_BUILDING_BASE);
     }
     this->reset_after_update = 1;
     this->score_interval = 3000;
@@ -190,7 +190,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    this->map_view->set_help_info(0x4e33, -1);
+    this->map_view->set_help_info(IDS_HELP_DIAMOND_MAP, -1);
     this->map_view->set_world(this->world);
     this->map_view->set_bitmap(s_map_bmp, 0xc4e1);
     this->map_view->set_player(rge_base_game->get_player());
@@ -205,7 +205,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    this->inven_panel->set_help_info(0x4e25, -1);
+    this->inven_panel->set_help_info(IDS_HELP_INVENTORY, -1);
 
     font = rge_base_game->get_font(7);
     this->object_panel = new TRIBE_Panel_Object(
@@ -263,7 +263,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[16]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[16]->tribe_button_type = 3;
     this->button_panel[16]->set_text(0, 0x1023L);
-    this->get_string(0x1024, str, 0x200);
+    this->get_string(IDS_SCORE_BUTTON_MESSAGE, str, 0x200);
     this->button_panel[16]->set_text_msg(str);
 
     {
@@ -281,13 +281,13 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
                                              TMessagePanel::BottomJust, 1);
     this->main_view->message_panel = this->text_line_panel;
 
-    this->create_text(this->main_view, &this->quit_message_panel, 0x232e, 0, 0,
+    this->create_text(this->main_view, &this->quit_message_panel, IDS_GAME_OVER_MESSAGE, 0, 0,
                       600, 0x3c, 0x0b, 1, 1, 0);
     if (this->quit_message_panel != 0) {
         this->quit_message_panel->set_text_color(0xffffff, 0);
         this->quit_message_panel->set_active(0);
     }
-    this->create_text(this->main_view, &this->pause_text, 0x2329, 0, 0, 600,
+    this->create_text(this->main_view, &this->pause_text, IDS_GAME_PAUSED, 0, 0, 600,
                       0x3c, 1, 1, 1, 0);
     if (this->pause_text != 0) {
         this->pause_text->set_text_color(0xffffff, 0);
@@ -379,7 +379,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     this->age_panel->set_alignment(TTextPanel::AlignCenter,
                                    TTextPanel::AlignCenter);
-    this->age_panel->set_help_info(0x4e35, -1);
+    this->age_panel->set_help_info(IDS_HELP_AGE, -1);
     if (do_color_log) {
         this->age_panel->set_active(0);
     }
@@ -710,16 +710,14 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     }
 }
 
-void TRIBE_Screen_Game::set_redraw(TPanel::RedrawMode p) {
-    this->TPanel::set_redraw(p);
+void TRIBE_Screen_Game::set_redraw(TPanel::RedrawMode redraw_mode) {
+    this->TPanel::set_redraw(redraw_mode);
 }
 
-void TRIBE_Screen_Game::set_overlapped_redraw(
-    TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3)
-{
+void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* redraw_panel, TPanel* calling_panel, TPanel::RedrawMode redraw_mode) {
     TPanel* dialog = panel_system.modalPanel();
     if (dialog != 0) {
-        tagRECT this_rect = param_1->clip_rect;
+        tagRECT this_rect = redraw_panel->clip_rect;
         tagRECT other_rect = dialog->clip_rect;
 
         if ((
@@ -758,22 +756,22 @@ void TRIBE_Screen_Game::set_overlapped_redraw(
                  (this_rect.bottom > other_rect.bottom))
             )
         )) {
-            dialog->set_redraw(param_3);
+            dialog->set_redraw(redraw_mode);
         }
     }
 }
 
-void TRIBE_Screen_Game::set_map_buttons_redraw(TPanel::RedrawMode mode) {
+void TRIBE_Screen_Game::set_map_buttons_redraw(TPanel::RedrawMode redraw_mode) {
     if (this->pnl_wid < 0x320) {
-        this->button_panel[5]->set_redraw(mode);
-        this->button_panel[11]->set_redraw(mode);
+        this->button_panel[5]->set_redraw(redraw_mode);
+        this->button_panel[11]->set_redraw(redraw_mode);
     }
-    this->button_panel[15]->set_redraw(mode);
-    this->button_panel[16]->set_redraw(mode);
+    this->button_panel[15]->set_redraw(redraw_mode);
+    this->button_panel[16]->set_redraw(redraw_mode);
 }
 
-long TRIBE_Screen_Game::handle_size(long width, long height) {
-    TPanel::handle_size(width, height);
+long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
+    TPanel::handle_size(win_wid, win_hgt);
 
     if (this->main_view == 0) {
         return 0;
@@ -1154,8 +1152,8 @@ void TRIBE_Screen_Game::handle_game_update() {
 
     color_log(0x24, 0x24, 5);
 
-    unsigned long now = debug_timeGetTime(s_scr_game_cpp, 0x63f);
-    if (now - this->last_update_time < this->update_interval) {
+    unsigned long calc_game_time = debug_timeGetTime(s_scr_game_cpp, 0x63f);
+    if (calc_game_time - this->last_update_time < this->update_interval) {
         color_log(0x24, 0x5f, 5);
         return;
     }
@@ -1235,10 +1233,10 @@ void TRIBE_Screen_Game::handle_game_update() {
                 return;
             }
 
-            now = debug_timeGetTime(s_scr_game_cpp, 0x6bb);
-            this->last_update_time = now;
+            calc_game_time = debug_timeGetTime(s_scr_game_cpp, 0x6bb);
+            this->last_update_time = calc_game_time;
             if (this->world->world_time_delta != 0) {
-                rge_base_game->add_to_timing(1, now - update_start);
+                rge_base_game->add_to_timing(1, calc_game_time - update_start);
                 rge_base_game->increment_world_update_count();
             }
 
@@ -1370,7 +1368,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 
     if (panel_system.currentPanel() == this) {
         color_log(0x16, 0x4c, 5);
-        now = debug_timeGetTime(s_scr_game_cpp, 0x79c);
+        calc_game_time = debug_timeGetTime(s_scr_game_cpp, 0x79c);
 
         if (update_counter != 0) {
             if (static_cast<long>(rge_base_game->get_player()->attributes[6]) !=
@@ -1380,7 +1378,7 @@ void TRIBE_Screen_Game::handle_game_update() {
 
             if (this->score_panel[0] != 0 &&
                 this->score_panel[0]->active != 0 &&
-                now - this->last_score_time >= this->score_interval) {
+                calc_game_time - this->last_score_time >= this->score_interval) {
                 this->reset_score_display();
                 this->last_score_time =
                     debug_timeGetTime(s_scr_game_cpp, 0x7a8);
@@ -1393,14 +1391,14 @@ void TRIBE_Screen_Game::handle_game_update() {
             color_log(0x16, 0x54, 5);
 
             if (update_counter != 0 ||
-                now - this->last_view_time >= this->view_interval) {
+                calc_game_time - this->last_view_time >= this->view_interval) {
                 this->main_view->set_redraw(TPanel::RedrawNormal);
-                this->last_view_time = now;
+                this->last_view_time = calc_game_time;
             }
             if (update_counter != 0 &&
-                now - this->last_map_redraw_time >= this->map_redraw_interval) {
+                calc_game_time - this->last_map_redraw_time >= this->map_redraw_interval) {
                 this->map_view->set_redraw(TPanel::RedrawNormal);
-                this->last_map_redraw_time = now;
+                this->last_map_redraw_time = calc_game_time;
             }
 
             color_log(0x16, 0x24, 5);
@@ -1413,17 +1411,16 @@ void TRIBE_Screen_Game::handle_game_update() {
     color_log(0x24, 0x5f, 5);
 }
 
-long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,
-                                 unsigned int wparam, long lparam) {
-    if (message == 0x104 && wparam == 0x79 &&
+long TRIBE_Screen_Game::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
+    if (msg == 0x104 && wParam == 0x79 &&
         this->have_focus != 0 && this->curr_child == this->main_view) {
         this->command_menu();
         return 1;
     }
 
-    if (message == 0x101 && this->have_focus != 0 &&
+    if (msg == 0x101 && this->have_focus != 0 &&
         this->main_view->get_focus() != 0) {
-        if (wparam == 0x72 || wparam == 0x13) {
+        if (wParam == 0x72 || wParam == 0x13) {
             short (__stdcall *get_key_state)(int) = GetKeyState;
             int alt = get_key_state(0x12) < 0;
             int ctrl = get_key_state(0x11) < 0;
@@ -1432,7 +1429,7 @@ long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,
                 this->command_pause();
             }
         }
-    } else if (message == 0x10) {
+    } else if (msg == 0x10) {
         if (confirmed_close == 0) {
             confirmed_close = 1;
             int mode = rge_base_game->prog_mode;
@@ -1444,29 +1441,29 @@ long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,
                 }
             }
         }
-    } else if (message == 0x208) {
+    } else if (msg == 0x208) {
         static_cast<TRIBE_Game*>(rge_base_game)->goto_notification_loc();
     }
 
-    return TPanel::wnd_proc(window, message, wparam, lparam);
+    return TPanel::wnd_proc(hwnd, msg, wParam, lParam);
 }
 
-long TRIBE_Screen_Game::handle_mouse_down(unsigned char param1, long param2, long param3, int param4, int param5) {
+long TRIBE_Screen_Game::handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key) {
     message_panel->remove_message();
     message_panel2->remove_message();
     message_panel3->remove_message();
     message_panel4->remove_message();
     message_panel5->remove_message();
     message_panel6->remove_message();
-    return TEasy_Panel::handle_mouse_down(param1, param2, param3, param4, param5);
+    return TEasy_Panel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
 }
 
-long TRIBE_Screen_Game::handle_user_command(unsigned int command, long value) {
-    return TPanel::handle_user_command(command, value);
+long TRIBE_Screen_Game::handle_user_command(unsigned int wParam, long lParam) {
+    return TPanel::handle_user_command(wParam, lParam);
 }
 
 void TRIBE_Screen_Game::handle_pause(void) {
-    this->pause_text->set_text(0x2329);
+    this->pause_text->set_text(IDS_GAME_PAUSED);
     if (this->pause_text->active == 0) {
         this->pause_text->set_active(1);
         this->pause_text->set_redraw(TPanel::RedrawNormal);
@@ -1482,11 +1479,10 @@ void TRIBE_Screen_Game::handle_resume(void) {
     }
 }
 
-void TRIBE_Screen_Game::handleChatReceived(int chatIndex)
-{
+void TRIBE_Screen_Game::handleChatReceived(int line_no) {
     char chat_msg[256];
 
-    strcpy(chat_msg, chat->GetChatMsg(chatIndex));
+    strcpy(chat_msg, chat->GetChatMsg(line_no));
     L->Log("$$$ RECEIVED CHAT @%u: %s", this->world->world_time, chat_msg);
     this->chat_panel[this->chat_line]->show_message(
         TMessagePanel::ChatMessage, chat_msg, 0xff, 0, 0, 0, 0);
@@ -1497,18 +1493,16 @@ void TRIBE_Screen_Game::handleChatReceived(int chatIndex)
     }
 }
 
-void TRIBE_Screen_Game::display_system_message(char* text) {
+void TRIBE_Screen_Game::display_system_message(char* msg) {
     this->chat_panel[this->chat_line]->show_message(
-        TMessagePanel::ChatMessage, text, 0xFF, 0, 0, 0, 0);
+        TMessagePanel::ChatMessage, msg, 0xFF, 0, 0, 0, 0);
     this->chat_line++;
     if (this->chat_line >= 8) {
         this->chat_line = 0;
     }
 }
 
-long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
-                                        int param_3, int param_4, int param_5)
-{
+long TRIBE_Screen_Game::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
     int game_over;
     long result;
     char str[512];
@@ -1519,27 +1513,27 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
 
     RGE_Panel_Tool_Box* tool_box = this->tool_box;
     if (tool_box->active != 0 &&
-        tool_box->key_down_action(param_1, param_2, param_3, param_4, param_5) != 0) {
+        tool_box->key_down_action(key, count, alt_key, ctrl_key, shift_key) != 0) {
         return 1;
     }
 
     game_over = (rge_base_game->prog_mode == 5);
 
-    if (param_4 != 0 && param_5 != 0 && param_3 != 0) {
+    if (ctrl_key != 0 && shift_key != 0 && alt_key != 0) {
         if (game_over == 0) {
-            if ((param_1 <= 0x7A) && (param_1 >= 0x61)) {
-                param_1 -= 0x20;
-            } else if (((param_1 > 0x5A) || (param_1 < 0x41)) &&
-                       ((param_1 < 0x30) || (param_1 > 0x39))) {
-                param_1 = 0;
+            if ((key <= 0x7A) && (key >= 0x61)) {
+                key -= 0x20;
+            } else if (((key > 0x5A) || (key < 0x41)) &&
+                       ((key < 0x30) || (key > 0x39))) {
+                key = 0;
             }
 
-            if (param_1 != 0) {
+            if (key != 0) {
                 if (this->cheat_code_entry == 0x32) {
-                    this->cheat_code_entry_str[0x32] = static_cast<char>(param_1);
+                    this->cheat_code_entry_str[0x32] = static_cast<char>(key);
                     memcpy(this->cheat_code_entry_str, this->cheat_code_entry_str + 1, 0x33);
                 } else {
-                    this->cheat_code_entry_str[this->cheat_code_entry] = static_cast<char>(param_1);
+                    this->cheat_code_entry_str[this->cheat_code_entry] = static_cast<char>(key);
                     this->cheat_code_entry++;
                     this->cheat_code_entry_str[this->cheat_code_entry] = 0;
                 }
@@ -1556,20 +1550,20 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     }
 
     if (rge_base_game->gameDeveloperMode() != 0 && comm->IsHost() != 0) {
-        if (param_4 != 0 && param_5 != 0 &&
-            param_1 >= 0x32 && param_1 <= 0x38) {
-            comm->Kick(param_1 - 0x30);
+        if (ctrl_key != 0 && shift_key != 0 &&
+            key >= 0x32 && key <= 0x38) {
+            comm->Kick(key - 0x30);
             return 1;
         }
     }
-    if (param_4 != 0 && param_1 >= 0x30 && param_1 <= 0x39) {
-        param_1 -= 0x30;
-        this->command_group_by_number(static_cast<int>(param_1));
+    if (ctrl_key != 0 && key >= 0x30 && key <= 0x39) {
+        key -= 0x30;
+        this->command_group_by_number(static_cast<int>(key));
         return 1;
     }
 
-    if (param_5 != 0) {
-        switch (param_1) {
+    if (shift_key != 0) {
+        switch (key) {
         case 0x30:
         case 0x31:
         case 0x32:
@@ -1580,8 +1574,8 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x37:
         case 0x38:
         case 0x39:
-            param_1 -= 0x30;
-            this->command_select_group(static_cast<int>(param_1), 0);
+            key -= 0x30;
+            this->command_select_group(static_cast<int>(key), 0);
             return 1;
         case 0x70:
             this->setup_popup_help();
@@ -1625,8 +1619,8 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     }
 
     // Ctrl and Alt 0x49 use different game fields.
-    if (param_3 != 0) {
-        switch (param_1) {
+    if (alt_key != 0) {
+        switch (key) {
         case 0x30:
         case 0x31:
         case 0x32:
@@ -1637,8 +1631,8 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x37:
         case 0x38:
         case 0x39:
-            param_1 -= 0x30;
-            this->command_select_group(static_cast<int>(param_1), 1);
+            key -= 0x30;
+            this->command_select_group(static_cast<int>(key), 1);
             this->command_view_selected();
             return 1;
         case 0x49:
@@ -1683,7 +1677,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     }
 
     result = 1;
-    if (param_4 == 0) {
+    if (ctrl_key == 0) {
         if (rge_base_game->get_paused() == 0 &&
             rge_base_game->game_mode == 6 &&
             rge_base_game->sub_game_mode == 1) {
@@ -1691,7 +1685,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
                 RGE_Master_Static_Object* master =
                     rge_base_game->get_player()->master_objects[
                         this->bldg_list[i].id];
-                if (param_1 == *this->get_string(master->hotkey_id)) {
+                if (key == *this->get_string(master->hotkey_id)) {
                     TDigital* sound = rge_base_game->get_sound(1);
                     if (sound != 0) {
                         sound->play();
@@ -1703,11 +1697,11 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         }
     }
 
-    if (param_4 != 0) {
+    if (ctrl_key != 0) {
         int i = 0;
         long* hotkey = this->select_building_hotkey;
         while (i < 8) {
-            if (param_1 == *hotkey) {
+            if (key == *hotkey) {
                 this->command_select_building(i);
                 return result;
             }
@@ -1717,17 +1711,17 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     }
 
     if (this->view_town_center_hotkey != 0 &&
-        param_1 == this->view_town_center_hotkey) {
+        key == this->view_town_center_hotkey) {
         this->command_select_building(0);
         return 0;
     }
 
-    if (param_4 != 0) {
+    if (ctrl_key != 0) {
         if (rge_base_game->gameDeveloperMode() == 0) {
             return 0;
         }
 
-        switch (param_1) {
+        switch (key) {
         case 0x70:
             this->command_player(1);
             return result;
@@ -1863,32 +1857,32 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         if (rge_base_game->game_mode != 6 ||
             rge_base_game->sub_game_mode != 1) {
             // a matched work key returns; a miss reaches the next switch.
-            if (this->work_hotkey != 0 && param_1 == this->work_hotkey &&
+            if (this->work_hotkey != 0 && key == this->work_hotkey &&
                 game_over == 0) {
                 if (allow_user_commands != 0) {
                     this->command_work();
                 }
                 return 0;
-            } else if (this->move_hotkey != 0 && param_1 == this->move_hotkey &&
+            } else if (this->move_hotkey != 0 && key == this->move_hotkey &&
                        game_over == 0) {
                 if (allow_user_commands != 0) {
                     this->command_move();
                 }
                 return 0;
-            } else if (this->attack_hotkey != 0 && param_1 == this->attack_hotkey &&
+            } else if (this->attack_hotkey != 0 && key == this->attack_hotkey &&
                        game_over == 0) {
                 if (allow_user_commands != 0) {
                     this->command_attack();
                 }
                 return 0;
-            } else if (this->ungroup_hotkey != 0 && param_1 == this->ungroup_hotkey) {
+            } else if (this->ungroup_hotkey != 0 && key == this->ungroup_hotkey) {
                 this->command_ungroup();
                 return 0;
             }
         }
 
         // this switch is after the work-key fall-through blocks.
-        switch (param_1) {
+        switch (key) {
         case 0x30:
         case 0x31:
         case 0x32:
@@ -1899,8 +1893,8 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         case 0x37:
         case 0x38:
         case 0x39:
-            param_1 = param_1 + (-0x30);
-            this->command_select_group(static_cast<int>(param_1), result);
+            key = key + (-0x30);
+            this->command_select_group(static_cast<int>(key), result);
             break;
         case 9:
             this->command_tab_selected(result);
@@ -1966,9 +1960,9 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     return 0;
 }
 
-long TRIBE_Screen_Game::char_action(long action, short param_2) {
-    static_cast<void>(param_2);
-    switch (action) {
+long TRIBE_Screen_Game::char_action(long key, short count) {
+    static_cast<void>(count);
+    switch (key) {
     case 0x2B:
     case 0x3D:
         if (allow_user_commands != 0) {
@@ -1985,79 +1979,77 @@ long TRIBE_Screen_Game::char_action(long action, short param_2) {
     }
 }
 
-long TRIBE_Screen_Game::action(TPanel* panel, long id,
-                               unsigned long p3, unsigned long p4)
-{
+long TRIBE_Screen_Game::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
     RGE_Panel_Tool_Box* tool_box;
     RGE_Base_Game* cleanup_game;
 
-    if (panel == 0) {
+    if (from_panel == 0) {
         goto null_base_action;
     }
 
     tool_box = this->tool_box;
-    if (panel != tool_box && tool_box->active != 0 &&
-        tool_box->action(panel, id, p3, p4) != 0) {
+    if (from_panel != tool_box && tool_box->active != 0 &&
+        tool_box->action(from_panel, action_in, action_val1, action_val2) != 0) {
         return 1;
     }
 
-        if (id == 1 || id == 4) {
-            for (int i = 0; i < 17; ++i) {
-                if (panel == this->button_panel[i]) {
-                    this->do_button_action(p3, p4, id == 4);
-                    return 1;
-                }
+    if (action_in == 1 || action_in == 4) {
+        for (int i = 0; i < 17; ++i) {
+            if (from_panel == this->button_panel[i]) {
+                this->do_button_action(action_val1, action_val2, action_in == 4);
+                return 1;
             }
         }
+    }
 
-        if (panel == this->object_panel && id == 1) {
-            this->object_changed();
-            return 1;
-        }
+    if (from_panel == this->object_panel && action_in == 1) {
+        this->object_changed();
+        return 1;
+    }
 
-    if (panel->panelName() == 0) {
+    if (from_panel->panelName() == 0) {
         goto named_base_action;
     }
 
-    if (strcmp(panel->panelName(), "RestartDialog") == 0) {
+    if (strcmp(from_panel->panelName(), "RestartDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("RestartDialog");
         cleanup_game = rge_base_game;
-        if (id != 0) {
+        if (action_in != 0) {
             goto pause_loaded;
         }
         static_cast<TRIBE_Game*>(cleanup_game)->restart_game();
         return 1;
-    } else if (strcmp(panel->panelName(), "QuitGameDialog") == 0) {
+    } else if (strcmp(from_panel->panelName(), "QuitGameDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("QuitGameDialog");
-        if (id == 0) {
+        if (action_in == 0) {
             static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
             return 1;
         }
         goto clear_cleanup;
-    } else if (strcmp(panel->panelName(), "CloseProgramDialog") == 0) {
+    } else if (strcmp(from_panel->panelName(), "CloseProgramDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("CloseProgramDialog");
-        if (id == 0) {
+        if (action_in == 0) {
             rge_base_game->close();
             return 1;
         }
         goto clear_cleanup;
-    } else if (strcmp(panel->panelName(), "ResignDialog") == 0) {
+    } else if (strcmp(from_panel->panelName(), "ResignDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("ResignDialog");
-        if (id == 0) {
+        if (action_in == 0) {
             this->player_quit = 1;
             RGE_Player* player = rge_base_game->get_player();
-            player->command_resign(comm->WhoAmI(), id);
+            player->command_resign(comm->WhoAmI(), action_in);
             return 1;
         }
         goto pause_cleanup;
-    } else if (strcmp(panel->panelName(), "QuitAndLoadDialog") == 0) {
+    } else if (strcmp(from_panel->panelName(), "QuitAndLoadDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("QuitAndLoadDialog");
-        if (id == 0) {
+        if (action_in == 0) {
             new TribeLoadSavedGameScreen();
             panel_system.setCurrentPanel("Load Saved Game Screen", 0);
             return 1;
@@ -2089,15 +2081,15 @@ finish:
     return 1;
 
 null_base_action:
-    return TEasy_Panel::action(panel, id, p3, p4);
+    return TEasy_Panel::action(from_panel, action_in, action_val1, action_val2);
 
 named_base_action:
-    return TEasy_Panel::action(panel, id, p3, p4);
+    return TEasy_Panel::action(from_panel, action_in, action_val1, action_val2);
 }
 
-void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
+void TRIBE_Screen_Game::do_button_action(int action_in, int action2_in, int right_btn) {
     if (allow_user_commands != 0) {
-        switch (action) {
+        switch (action_in) {
         case 1:
             this->command_work();
             return;
@@ -2141,16 +2133,16 @@ void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
             this->command_menu();
             return;
         case 0x10:
-            this->command_trade_with(value);
+            this->command_trade_with(action2_in);
             return;
         case 0x11:
-            this->command_research(value);
+            this->command_research(action2_in);
             return;
         case 0x12:
-            this->command_train(value, flag ? -1 : 1);
+            this->command_train(action2_in, right_btn ? -1 : 1);
             return;
         case 0x13:
-            this->command_building(value);
+            this->command_building(action2_in);
             return;
         case 0x14:
             this->command_cancel_building();
@@ -2189,17 +2181,17 @@ void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
             this->command_repair();
             return;
         case 0x20:
-            this->command_train(value, 1);
+            this->command_train(action2_in, 1);
             return;
         case 0x21:
-            this->command_train(value, -1);
+            this->command_train(action2_in, -1);
             return;
         default:
             return;
         }
     }
 
-    switch (action) {
+    switch (action_in) {
     case 6:
         this->command_unselect();
         return;
@@ -2235,16 +2227,16 @@ void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
     }
 }
 
-void TRIBE_Screen_Game::game_mode_changed(int a, int b) {
+void TRIBE_Screen_Game::game_mode_changed(int old_mode, int new_mode) {
     if (this->tool_box != 0) {
-        this->tool_box->game_mode_changed(a, b);
+        this->tool_box->game_mode_changed(old_mode, new_mode);
     }
     if (this->button_panel[0] != 0) {
         this->reset_buttons();
     }
 }
 
-void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
+void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
     char str[512];
     RGE_Player* player = rge_base_game->get_player();
 
@@ -2472,51 +2464,48 @@ void TRIBE_Screen_Game::age_changed() {
 
         switch (this->save_age) {
         case 1:
-            this->age_panel->set_help_info(0x1069, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_STONE, -1);
             break;
         case 2:
-            this->age_panel->set_help_info(0x106A, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_TOOL, -1);
             break;
         case 3:
-            this->age_panel->set_help_info(0x106B, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_BRONZE, -1);
             break;
         case 4:
-            this->age_panel->set_help_info(0x106C, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_IRON, -1);
             break;
         }
     }
 }
 
-void TRIBE_Screen_Game::show_timings(char* param_1, char* param_2) {
+void TRIBE_Screen_Game::show_timings(char* str1, char* str2) {
     char* current = this->fps_panel->get_text();
-    if (current == 0 || strcmp(current, param_2) != 0) {
-        this->fps_panel->set_text(param_2);
+    if (current == 0 || strcmp(current, str2) != 0) {
+        this->fps_panel->set_text(str2);
     }
 }
 
-void TRIBE_Screen_Game::show_comm(char* p1, char* p2, char* p3, char* p4, char* p5, char* p6) {
-    message_panel->show_message(TMessagePanel::DebugMessage, p1, 0x56, 0, 0, 0, 0);
-    message_panel2->show_message(TMessagePanel::DebugMessage, p2, 0x56, 0, 0, 0, 0);
-    message_panel3->show_message(TMessagePanel::DebugMessage, p3, 0x56, 0, 0, 0, 0);
-    message_panel4->show_message(TMessagePanel::DebugMessage, p4, 0x56, 0, 0, 0, 0);
-    message_panel5->show_message(TMessagePanel::DebugMessage, p5, 0x56, 0, 0, 0, 0);
-    message_panel6->show_message(TMessagePanel::DebugMessage, p6, 0x56, 0, 0, 0, 0);
+void TRIBE_Screen_Game::show_comm(char* str, char* str2, char* str3, char* str4, char* str5, char* str6) {
+    message_panel->show_message(TMessagePanel::DebugMessage, str, 0x56, 0, 0, 0, 0);
+    message_panel2->show_message(TMessagePanel::DebugMessage, str2, 0x56, 0, 0, 0, 0);
+    message_panel3->show_message(TMessagePanel::DebugMessage, str3, 0x56, 0, 0, 0, 0);
+    message_panel4->show_message(TMessagePanel::DebugMessage, str4, 0x56, 0, 0, 0, 0);
+    message_panel5->show_message(TMessagePanel::DebugMessage, str5, 0x56, 0, 0, 0, 0);
+    message_panel6->show_message(TMessagePanel::DebugMessage, str6, 0x56, 0, 0, 0, 0);
 }
 
-void TRIBE_Screen_Game::show_ai(char* a1, char* a2, char* a3, char* a4, char* a5, char* a6)
-{
-    this->message_panel->show_message(TMessagePanel::DebugMessage, a1, 0x56, 0, 0, 0, 0);
-    this->message_panel2->show_message(TMessagePanel::DebugMessage, a2, 0x56, 0, 0, 0, 0);
-    this->message_panel3->show_message(TMessagePanel::DebugMessage, a3, 0x56, 0, 0, 0, 0);
-    this->message_panel4->show_message(TMessagePanel::DebugMessage, a4, 0x56, 0, 0, 0, 0);
-    this->message_panel5->show_message(TMessagePanel::DebugMessage, a5, 0x56, 0, 0, 0, 0);
-    this->message_panel6->show_message(TMessagePanel::DebugMessage, a6, 0x56, 0, 0, 0, 0);
+void TRIBE_Screen_Game::show_ai(char* str, char* str2, char* str3, char* str4, char* str5, char* str6) {
+    this->message_panel->show_message(TMessagePanel::DebugMessage, str, 0x56, 0, 0, 0, 0);
+    this->message_panel2->show_message(TMessagePanel::DebugMessage, str2, 0x56, 0, 0, 0, 0);
+    this->message_panel3->show_message(TMessagePanel::DebugMessage, str3, 0x56, 0, 0, 0, 0);
+    this->message_panel4->show_message(TMessagePanel::DebugMessage, str4, 0x56, 0, 0, 0, 0);
+    this->message_panel5->show_message(TMessagePanel::DebugMessage, str5, 0x56, 0, 0, 0, 0);
+    this->message_panel6->show_message(TMessagePanel::DebugMessage, str6, 0x56, 0, 0, 0, 0);
 }
 
-void TRIBE_Screen_Game::show_message(TMessagePanel::MessageType type,
-                                     char* text, unsigned char a3,
-                                     unsigned char a4) {
-    this->message_panel->show_message(type, text, a3, a4, 0, 0, 0);
+void TRIBE_Screen_Game::show_message(TMessagePanel::MessageType message_type, char* str, unsigned char font_color_in, unsigned char back_color_in) {
+    this->message_panel->show_message(message_type, str, font_color_in, back_color_in, 0, 0, 0);
 }
 
 void TRIBE_Screen_Game::reset_buttons() {
@@ -2524,8 +2513,7 @@ void TRIBE_Screen_Game::reset_buttons() {
     this->setup_buttons();
 }
 
-void TRIBE_Screen_Game::setup_buttons()
-{
+void TRIBE_Screen_Game::setup_buttons() {
     char name[512];
     char msg_str[512];
     TRIBE_Player* player;
@@ -2534,8 +2522,8 @@ void TRIBE_Screen_Game::setup_buttons()
     this->item_cnt = 0;
     this->last_item = -1;
 
-    for (int i0 = 0; i0 < 12; ++i0) {
-        this->button_panel[i0]->in_use = 0;
+    for (int button_index = 0; button_index < 12; ++button_index) {
+        this->button_panel[button_index]->in_use = 0;
     }
 
     this->mouse_last_x = -1;
@@ -2554,53 +2542,53 @@ void TRIBE_Screen_Game::setup_buttons()
     if ((rge_base_game->game_mode == 6) &&
         (rge_base_game->sub_game_mode == 1)) {
         short building_count;
-        short inv_2 = -1;
-        short tech_count = -1;
-        int show_more = 0;
+        short tc_num = -1;
+        short range_num = -1;
+        int any_more = 0;
 
         player->interface_item_avail(&this->bldg_list,
                                      &this->item_cnt, 0x76);
         building_count = this->item_cnt;
 
-        for (short i1 = 0; i1 < building_count; ++i1) {
-            if (this->bldg_list[i1].id == 0x6D) {
-                inv_2 = i1;
+        for (short building_index = 0; building_index < building_count; ++building_index) {
+            if (this->bldg_list[building_index].id == 0x6D) {
+                tc_num = building_index;
             }
-            if (this->bldg_list[i1].id == 0x57) {
-                tech_count = i1;
+            if (this->bldg_list[building_index].id == 0x57) {
+                range_num = building_index;
             }
         }
 
-        for (short i2 = 0; i2 < this->item_cnt; ++i2) {
-            short item_id = this->bldg_list[i2].id;
+        for (short item_index = 0; item_index < this->item_cnt; ++item_index) {
+            short item_id = this->bldg_list[item_index].id;
             RGE_Master_Static_Object* base_master =
                 player->master_objects[item_id];
             TRIBE_Master_Building_Object* master =
                 static_cast<TRIBE_Master_Building_Object*>(base_master);
-            unsigned char button_location =
+            unsigned char btn_loc =
                 static_cast<TRIBE_Master_Combat_Object*>(base_master)
                     ->button_location;
 
-            if ((i2 == inv_2) && (tech_count == -1)) {
-                button_location = 6;
+            if ((item_index == tc_num) && (range_num == -1)) {
+                btn_loc = 6;
             }
 
             if (this->start_item == 0) {
-                if (button_location > 10) {
-                    show_more = 1;
+                if (btn_loc > 10) {
+                    any_more = 1;
                     continue;
                 }
-            } else if (button_location < 11) {
-                show_more = 1;
+            } else if (btn_loc < 11) {
+                any_more = 1;
                 continue;
             }
 
             rge_base_game->get_string(master->string_id, name + 4, 0x200);
-            this->calc_text_msg(msg_str + 4, &this->bldg_list[i2], 0x13,
+            this->calc_text_msg(msg_str + 4, &this->bldg_list[item_index], 0x13,
                                 master->string_id2);
-            short index = this->calc_button_loc(button_location);
-            Item_Avail* item = &this->bldg_list[i2];
-            this->set_button(this->button_bldg_pics[culture], index,
+            short button = this->calc_button_loc(btn_loc);
+            Item_Avail* item = &this->bldg_list[item_index];
+            this->set_button(this->button_bldg_pics[culture], button,
                              static_cast<short>(master->building_facet + item->pict),
                              0x13, item->id,
                              master->string_id2 + 100000,
@@ -2609,7 +2597,7 @@ void TRIBE_Screen_Game::setup_buttons()
                              msg_str + 4, 0);
         }
 
-        if (show_more != 0) {
+        if (any_more != 0) {
             this->set_button(this->more_cancel_pic, 5, this->more_frame,
                              0x0C, 0, 0x1D4D7, -1, 0,
                              0, 0, 0, 0);
@@ -2634,7 +2622,7 @@ void TRIBE_Screen_Game::setup_buttons()
 
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, IDS_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
@@ -2709,7 +2697,7 @@ void TRIBE_Screen_Game::setup_buttons()
 
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, IDS_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
@@ -2815,32 +2803,32 @@ void TRIBE_Screen_Game::setup_buttons()
                 } else if ((object_state == 2) &&
                            ((work_type != 0x66) ||
                             (production_queues_is_use != 0))) {
-                    short tech_count_local;
-                    short make_count;
+                    short tech_cnt;
+                    short make_cnt;
                     player->interface_tech_avail(&this->tech_list,
-                                                 &tech_count_local,
+                                                 &tech_cnt,
                                                  this->game_obj->master_obj->id);
                     player->interface_item_avail(&this->make_list,
-                                                 &make_count,
+                                                 &make_cnt,
                                                  this->game_obj->master_obj->id);
-                    this->item_cnt = make_count + tech_count_local;
+                    this->item_cnt = make_cnt + tech_cnt;
 
-                    bool show_queue =
+                    bool queue_active =
                         (production_queues_is_use != 0) &&
                         (building->production_queue_count > 0);
-                    if (show_queue) {
+                    if (queue_active) {
                         this->set_button(this->button_cmd_pic, 6, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
                     }
 
-                    for (short i3 = 0; i3 < make_count; ++i3) {
-                        short item_id = this->make_list[i3].id;
+                    for (short make_index = 0; make_index < make_cnt; ++make_index) {
+                        short item_id = this->make_list[make_index].id;
                         RGE_Master_Static_Object* base_master =
                             player->master_objects[item_id];
                         TRIBE_Master_Combat_Object* master =
                             static_cast<TRIBE_Master_Combat_Object*>(base_master);
                         int queued = 0;
 
-                        if (show_queue) {
+                        if (queue_active) {
                             short queue_count =
                                 building->production_queue_count;
                             if (queue_count > 0) {
@@ -2856,37 +2844,37 @@ void TRIBE_Screen_Game::setup_buttons()
                             }
                         }
 
-                        if ((!show_queue) || (queued > 0)) {
+                        if ((!queue_active) || (queued > 0)) {
                             rge_base_game->get_string(master->string_id,
                                                       name + 4, 0x200);
                             this->calc_text_msg(msg_str + 4,
-                                                &this->make_list[i3], 0x12,
+                                                &this->make_list[make_index], 0x12,
                                                 master->string_id2);
-                            short index = this->calc_button_loc(
+                            short button = this->calc_button_loc(
                                 master->button_location);
-                            Item_Avail* item = &this->make_list[i3];
-                            this->set_button(this->button_unit_pic, index,
+                            Item_Avail* item = &this->make_list[make_index];
+                            this->set_button(this->button_unit_pic, button,
                                              item->pict, 0x12, item->id,
                                              master->string_id2 + 100000,
                                              item->help_page_id,
                                              master->hotkey_id,
                                              player->color_table->table,
                                              name + 4, msg_str + 4, 0);
-                            if ((!show_queue) || (queued < 1)) {
-                                this->button_panel[index]->set_display_garrison(0);
+                            if ((!queue_active) || (queued < 1)) {
+                                this->button_panel[button]->set_display_garrison(0);
                             } else {
-                                this->button_panel[index]->set_display_garrison(1);
-                                this->button_panel[index]->set_garrison_number(queued);
+                                this->button_panel[button]->set_display_garrison(1);
+                                this->button_panel[button]->set_garrison_number(queued);
                             }
                         }
                     }
 
-                    int tech_disabled = 0;
-                    if (show_queue) {
+                    int make_disabled = 0;
+                    if (queue_active) {
                         continue_setup = 0;
                     } else {
                         if ((building->master_obj->id == 0x6D) &&
-                            (tech_count_local == 0) &&
+                            (tech_cnt == 0) &&
                             (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
                             short tech_id =
                                 static_cast<short>(
@@ -2898,28 +2886,28 @@ void TRIBE_Screen_Game::setup_buttons()
                                 this->tech_list = static_cast<Item_Avail*>(
                                     calloc(1, sizeof(Item_Avail)));
                                 if (this->tech_list != 0) {
-                                    tech_count_local = 1;
-                                    tech_disabled = 1;
+                                    tech_cnt = 1;
+                                    make_disabled = 1;
                                     short inv_1;
-                                    short amt_1;
+                                    short inv_amt_1;
                                     short inv_2;
-                                    short amt_2;
+                                    short inv_amt_2;
                                     short inv_3;
-                                    short amt_3;
+                                    short inv_amt_3;
                                     player->tech_tree->tech_cost(
-                                        tech_id, inv_1, amt_1, inv_2,
-                                        amt_2, inv_3, amt_3);
+                                        tech_id, inv_1, inv_amt_1, inv_2,
+                                        inv_amt_2, inv_3, inv_amt_3);
                                     Tech_Tree* tech =
                                         &this->world->tech->tech_tree[tech_id];
                                     this->tech_list->id = tech_id;
                                     this->tech_list->name = tech->name;
                                     this->tech_list->pict = tech->icon;
                                     this->tech_list->inventory_item_1 = inv_1;
-                                    this->tech_list->inventory_cost_1 = static_cast<float>(amt_1);
+                                    this->tech_list->inventory_cost_1 = static_cast<float>(inv_amt_1);
                                     this->tech_list->inventory_item_2 = inv_2;
-                                    this->tech_list->inventory_cost_2 = static_cast<float>(amt_2);
+                                    this->tech_list->inventory_cost_2 = static_cast<float>(inv_amt_2);
                                     this->tech_list->inventory_item_3 = inv_3;
-                                    this->tech_list->inventory_cost_3 = static_cast<float>(amt_3);
+                                    this->tech_list->inventory_cost_3 = static_cast<float>(inv_amt_3);
                                     this->tech_list->help_string_id =
                                         player->tech_tree->get_help_message(tech_id);
                                     this->tech_list->help_page_id =
@@ -2928,43 +2916,43 @@ void TRIBE_Screen_Game::setup_buttons()
                             }
                         }
 
-                        for (int i4 = 0; i4 < tech_count_local; ++i4) {
-                            short item_id = this->tech_list[i4].id;
+                        for (int tech_index = 0; tech_index < tech_cnt; ++tech_index) {
+                            short item_id = this->tech_list[tech_index].id;
                             short string_id =
                                 player->tech_tree->get_string_id(item_id);
                             rge_base_game->get_string(string_id, name + 4,
                                                       0x200);
                             short string_id2 =
                                 player->tech_tree->get_string_id2(
-                                    this->tech_list[i4].id);
+                                    this->tech_list[tech_index].id);
                             this->calc_text_msg(msg_str + 4,
-                                                &this->tech_list[i4],
+                                                &this->tech_list[tech_index],
                                                 0x11, string_id2);
-                            unsigned char button_location =
+                            unsigned char btn_loc =
                                 player->tech_tree->get_button_location(
-                                    this->tech_list[i4].id);
-                            short index = this->calc_button_loc(button_location);
-                            Item_Avail* item = &this->tech_list[i4];
+                                    this->tech_list[tech_index].id);
+                            short button = this->calc_button_loc(btn_loc);
+                            Item_Avail* item = &this->tech_list[tech_index];
                             unsigned char* color_table =
                                 player->color_table->table;
                             long hotkey =
                                 player->tech_tree->get_hotkey(item->id);
-                            this->set_button(this->button_tech_pic, index,
+                            this->set_button(this->button_tech_pic, button,
                                              item->pict, 0x11, item->id,
                                              item->help_string_id,
                                              item->help_page_id,
                                              hotkey, color_table,
                                              name + 4, msg_str + 4,
-                                             tech_disabled);
+                                             make_disabled);
                         }
 
-                        if ((make_count == 0) && (tech_count_local == 0)) {
+                        if ((make_cnt == 0) && (tech_cnt == 0)) {
                             if (player->sel_count > 1) {
                                 this->set_button(this->button_cmd_pic, 6, 7, 8,
                                                  0, 0x1D4E1, -1, 0,
                                                  0, 0, 0, 0);
                                 this->set_button(this->button_cmd_pic, 7, 8, 9,
-                                                 0, 0x4E43, -1, 0,
+                                                 0, IDS_HELP_UNGROUP_BUTTON, -1, 0,
                                                  0, 0, 0, 0);
                             } else if (this->game_obj->selected_group != 0) {
                                 this->set_button(this->button_cmd_pic, 6, 8, 9,
@@ -2985,14 +2973,14 @@ void TRIBE_Screen_Game::setup_buttons()
             if (continue_setup != 0) {
                 bool special_selection =
                     (level == 0) && (player->sel_count > 1);
-                bool all_known = true;
+                bool all_moveable_units = true;
                 bool have_action = false;
                 if (special_selection) {
                     short selected = 0;
-                    for (short i5 = 0;
-                         (i5 < 25) && (selected < player->sel_count); ++i5) {
+                    for (short j = 0;
+                         (j < 25) && (selected < player->sel_count); ++j) {
                         RGE_Action_Object* object =
-                            static_cast<RGE_Action_Object*>(player->sel_list[i5]);
+                            static_cast<RGE_Action_Object*>(player->sel_list[j]);
                         if (object != 0) {
                             unsigned char object_level = object->master_obj->unit_level;
                             if ((object_level != 3) &&
@@ -3002,7 +2990,7 @@ void TRIBE_Screen_Game::setup_buttons()
                                 (object_level != 6) &&
                                 (object_level != 7) &&
                                 (object_level != 8)) {
-                                all_known = false;
+                                all_moveable_units = false;
                                 break;
                             }
                             if (!have_action) {
@@ -3014,7 +3002,7 @@ void TRIBE_Screen_Game::setup_buttons()
                 }
 
                 int group;
-                bool special_known = special_selection && all_known;
+                bool special_known = special_selection && all_moveable_units;
                 if (special_known) {
                     group = player->is_group_selected(4);
                     if (group != 0) {
@@ -3035,7 +3023,7 @@ void TRIBE_Screen_Game::setup_buttons()
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
                     this->set_button(this->button_cmd_pic, 7, 8, 9, 0,
-                                     special_known ? 0x1D4E3 : 0x4E43,
+                                     special_known ? 0x1D4E3 : IDS_HELP_UNGROUP_BUTTON,
                                      -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
@@ -3063,7 +3051,7 @@ void TRIBE_Screen_Game::setup_buttons()
         this->set_button(final_pic, 0x0B, final_frame, final_type, 0,
                          0x1D4D9, -1, 0, 0, 0, 0, 0);
     }
-    }
+}
     this->disable_unused_buttons();
 }
 
@@ -3083,16 +3071,15 @@ void TRIBE_Screen_Game::disable_unused_buttons(void) {
     } while (--button_count != 0);
 }
 
-char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
-                                       long unused, long command_id) {
+char* TRIBE_Screen_Game::calc_text_msg(char* msg_str, Item_Avail* item, long button_action_id, long message_string_id) {
     char command_str[512];
-    char str[512];
+    char cost_str3[512];
     char cost_str[512];
     char cost_str1[512];
     char cost_str2[512];
     char inven_str[512];
 
-    rge_base_game->get_string(command_id, command_str, 0x200);
+    rge_base_game->get_string(message_string_id, command_str, 0x200);
     cost_str1[0] = 0;
 
     if (item != 0) {
@@ -3100,8 +3087,8 @@ char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
             cost_str2[0] = 0;
         } else {
             rge_base_game->get_string2(0x64, item->inventory_item_1, 0,
-                                       str, 0x200);
-            sprintf(cost_str2, "%s: %d", str,
+                                       cost_str3, 0x200);
+            sprintf(cost_str2, "%s: %d", cost_str3,
                     static_cast<int>(item->inventory_cost_1));
         }
 
@@ -3109,8 +3096,8 @@ char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
             inven_str[0] = 0;
         } else {
             rge_base_game->get_string2(0x64, item->inventory_item_2, 0,
-                                       str, 0x200);
-            sprintf(inven_str, "  %s: %d", str,
+                                       cost_str3, 0x200);
+            sprintf(inven_str, "  %s: %d", cost_str3,
                     static_cast<int>(item->inventory_cost_2));
         }
 
@@ -3118,8 +3105,8 @@ char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
             cost_str[0] = 0;
         } else {
             rge_base_game->get_string2(0x64, item->inventory_item_3, 0,
-                                       str, 0x200);
-            sprintf(cost_str, "  %s: %d", str,
+                                       cost_str3, 0x200);
+            sprintf(cost_str, "  %s: %d", cost_str3,
                     static_cast<int>(item->inventory_cost_3));
         }
 
@@ -3129,121 +3116,121 @@ char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
     }
 
     if (command_str[0] != 0 && cost_str1[0] != 0) {
-        sprintf(text, "%s %s", command_str, cost_str1);
+        sprintf(msg_str, "%s %s", command_str, cost_str1);
     } else if (command_str[0] != 0) {
-        sprintf(text, "%s", command_str);
+        sprintf(msg_str, "%s", command_str);
     } else {
-        text[0] = 0;
+        msg_str[0] = 0;
     }
-    return text;
+    return msg_str;
 }
 
-short TRIBE_Screen_Game::calc_button_loc(unsigned char param_1) {
-    if (param_1 >= 1 && param_1 <= 5) {
-        return param_1 - 1;
+short TRIBE_Screen_Game::calc_button_loc(unsigned char button_loc) {
+    if (button_loc >= 1 && button_loc <= 5) {
+        return button_loc - 1;
     }
-    if (param_1 >= 6 && param_1 <= 10) {
-        return param_1;
+    if (button_loc >= 6 && button_loc <= 10) {
+        return button_loc;
     }
-    if (param_1 >= 11 && param_1 <= 15) {
-        return param_1 - 0xB;
+    if (button_loc >= 11 && button_loc <= 15) {
+        return button_loc - 0xB;
     }
-    if (param_1 >= 16 && param_1 <= 20) {
-        return param_1 - 0xA;
+    if (button_loc >= 16 && button_loc <= 20) {
+        return button_loc - 0xA;
     }
     return 0;
 }
 
 void TRIBE_Screen_Game::set_button(
-    TShape* picture, short index, short frame,
-    long id, long id2, long string_id, long help_page_id,
-    long hotkey_id, unsigned char* color_table,
-    char* name, char* text, int disabled_value) {
+    TShape* buttons, short button, short pic_index,
+    long id, long id2, long help_string_id, long help_page_id,
+    long hotkey, unsigned char* color_table,
+    char* text2, char* text_msg, int make_disabled) {
     char text1[512];
-    TRIBE_Panel_Button* button = this->button_panel[index];
+    TRIBE_Panel_Button* button_panel = this->button_panel[button];
 
-    button->in_use = 1;
-    if (button->disabled != disabled_value) {
-        button->set_disabled(disabled_value);
+    button_panel->in_use = 1;
+    if (button_panel->disabled != make_disabled) {
+        button_panel->set_disabled(make_disabled);
     }
 
-    if (button->get_id() != id || button->get_id2() != id2) {
-        button->reset();
-        button->set_display_garrison(0);
+    if (button_panel->get_id() != id || button_panel->get_id2() != id2) {
+        button_panel->reset();
+        button_panel->set_display_garrison(0);
         rge_base_game->get_string2(0x66, id, id2, text1, 0x200);
-        button->set_picture(0, picture, frame);
-        button->set_id(0, id, id2);
-        button->color_table = color_table;
-        button->set_text(0, text1, name);
-        button->set_help_info(string_id, help_page_id);
+        button_panel->set_picture(0, buttons, pic_index);
+        button_panel->set_id(0, id, id2);
+        button_panel->color_table = color_table;
+        button_panel->set_text(0, text1, text2);
+        button_panel->set_help_info(help_string_id, help_page_id);
 
-        if (text != 0) {
-            button->set_text_msg(text);
+        if (text_msg != 0) {
+            button_panel->set_text_msg(text_msg);
         } else {
-            button->set_text_msg(text1);
+            button_panel->set_text_msg(text1);
         }
 
         if (id == 0x11) {
-            button->border_frame = 2;
+            button_panel->border_frame = 2;
         } else {
-            button->border_frame = 0;
+            button_panel->border_frame = 0;
         }
 
         switch (id) {
         case 3:
-            hotkey_id = 0x1037;
+            hotkey = IDS_HOTKEY_BUILD;
             break;
         case 5:
-            hotkey_id = 0x1038;
+            hotkey = IDS_HOTKEY_STOP;
             break;
         case 8:
-            hotkey_id = 0x1039;
+            hotkey = IDS_HOTKEY_GROUP;
             break;
         case 9:
-            hotkey_id = 0x103A;
+            hotkey = IDS_HOTKEY_UNGROUP;
             break;
         case 0x0C:
-            hotkey_id = 0x103B;
+            hotkey = IDS_HOTKEY_MORE;
             break;
         case 0x16:
-            hotkey_id = 0x103D;
+            hotkey = IDS_HOTKEY_STAND_GROUND;
             break;
         case 0x17:
-            hotkey_id = 0x103E;
+            hotkey = IDS_HOTKEY_ATTACK_GROUND;
             break;
         case 0x1C:
-            hotkey_id = 0x1048;
+            hotkey = IDS_HOTKEY_HEAL;
             break;
         case 0x1D:
-            hotkey_id = 0x1049;
+            hotkey = IDS_HOTKEY_CONVERT;
             break;
         case 1:
-            hotkey_id = 0x104B;
+            hotkey = IDS_HOTKEY_WORK;
             break;
         case 2:
-            hotkey_id = 0x104A;
+            hotkey = IDS_HOTKEY_MOVE;
             break;
         case 0x1E:
-            hotkey_id = 0x104C;
+            hotkey = IDS_HOTKEY_ATTACK;
             break;
         case 0x1F:
-            hotkey_id = 0x104D;
+            hotkey = IDS_HOTKEY_REPAIR;
             break;
         case 7:
-            hotkey_id = 0x104E;
+            hotkey = IDS_HOTKEY_UNLOAD;
             break;
         }
 
-        if (hotkey_id != 0) {
-            hotkey_id = static_cast<int>(*this->get_string(hotkey_id));
+        if (hotkey != 0) {
+            hotkey = static_cast<int>(*this->get_string(hotkey));
         }
         if (id == 6 || id == 0x0B) {
-            hotkey_id = 0x1B;
+            hotkey = 0x1B;
         }
 
-        button->hotkey = hotkey_id;
-        button->hotkey_shift = 0;
-        button->set_active(1);
+        button_panel->hotkey = hotkey;
+        button_panel->hotkey_shift = 0;
+        button_panel->set_active(1);
     }
 }
 
@@ -3275,7 +3262,7 @@ void TRIBE_Screen_Game::reset_clocks() {
 
             if (static_cast<TRIBE_Player*>(this->world->players[player_id])
                     ->artifact_held_time != -1.0f) {
-                int countdown = 0;
+                int found = 0;
                 if (static_cast<TRIBE_Player*>(this->world->players[player_id])
                         ->allied_victory != 0) {
                     int other_player = 1;
@@ -3287,13 +3274,13 @@ void TRIBE_Screen_Game::reset_clocks() {
                                 ->relation(player_id) == 0 &&
                             this->world->players[other_player]
                                 ->allied_victory != 0) {
-                            countdown = 1;
+                            found = 1;
                             break;
                         }
                     }
                 }
 
-                if (countdown == 0) {
+                if (found == 0) {
                     ++clock_count;
                     (*clock++)->set_clock_type(5, player_id);
                     if (clock_count > 9) {
@@ -3304,7 +3291,7 @@ void TRIBE_Screen_Game::reset_clocks() {
 
             if (static_cast<TRIBE_Player*>(this->world->players[player_id])
                     ->ruin_held_time != -1.0f) {
-                int countdown = 0;
+                int found = 0;
                 if (static_cast<TRIBE_Player*>(this->world->players[player_id])
                         ->allied_victory != 0) {
                     int other_player = 1;
@@ -3316,13 +3303,13 @@ void TRIBE_Screen_Game::reset_clocks() {
                                 ->relation(player_id) == 0 &&
                             this->world->players[other_player]
                                 ->allied_victory != 0) {
-                            countdown = 1;
+                            found = 1;
                             break;
                         }
                     }
                 }
 
-                if (countdown == 0) {
+                if (found == 0) {
                     ++clock_count;
                     (*clock++)->set_clock_type(6, player_id);
                     if (clock_count > 9) {
@@ -3345,9 +3332,9 @@ void TRIBE_Screen_Game::reset_clocks() {
     }
 }
 
-int scr_game_score_compare(const void* param_b, const void* param_a) {
-    const PLAYER_SCORE* a = static_cast<const PLAYER_SCORE*>(param_a);
-    const PLAYER_SCORE* b = static_cast<const PLAYER_SCORE*>(param_b);
+int scr_game_score_compare(const void* arg1, const void* arg2) {
+    const PLAYER_SCORE* a = static_cast<const PLAYER_SCORE*>(arg2);
+    const PLAYER_SCORE* b = static_cast<const PLAYER_SCORE*>(arg1);
 
     DAT_0086babc = a;
     DAT_0086bac0 = b;
@@ -3568,11 +3555,10 @@ void TRIBE_Screen_Game::reset_score_display() {
     }
 }
 
-void TRIBE_Screen_Game::draw()
-{
+void TRIBE_Screen_Game::draw() {
     if (do_color_log) {
         tagRECT* r = &this->clip_rect;
-        tagRECT old = *r;
+        tagRECT save_clip_rect = *r;
         this->draw_setup(0);
         if (this->inven_panel) {
             if (this->render_area->Lock(s_scr_game_draw, 1)) {
@@ -3602,7 +3588,7 @@ void TRIBE_Screen_Game::draw()
             }
         }
         this->draw_finish();
-        *r = old;
+        *r = save_clip_rect;
         this->render_area->SetClipRect(r);
     } else {
         int flag;
@@ -3629,8 +3615,7 @@ void TRIBE_Screen_Game::draw()
 }
 
 
-void TRIBE_Screen_Game::handle_anim_pal()
-{
+void TRIBE_Screen_Game::handle_anim_pal() {
     unsigned long time;
     PALETTEENTRY pal_entries[7];
 
@@ -3793,11 +3778,11 @@ void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     }
 }
 
-void TRIBE_Screen_Game::command_add_attribute(int value) {
+void TRIBE_Screen_Game::command_add_attribute(int attr_id) {
     if (rge_base_game->get_paused() == 0) {
         if (rge_base_game->allowCheatCodes() != 0) {
             RGE_Player* player = rge_base_game->get_player();
-            player->command_add_attribute(value, 1000.0f);
+            player->command_add_attribute(attr_id, 1000.0f);
         }
     }
 }
@@ -3832,7 +3817,7 @@ void TRIBE_Screen_Game::command_attack(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE2), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x67, 0);
 }
@@ -3846,19 +3831,19 @@ void TRIBE_Screen_Game::command_build(void) {
     }
 }
 
-void TRIBE_Screen_Game::command_building(int obj_id) {
+void TRIBE_Screen_Game::command_building(int id) {
     short attr;
     char msg[512];
 
     int paused = rge_base_game->get_paused();
     if (paused == 0) {
         if (static_cast<TRIBE_Player*>(rge_base_game->get_player())
-                ->check_obj_cost(obj_id, &attr, 1.0f, paused)) {
+                ->check_obj_cost(id, &attr, 1.0f, paused)) {
             RGE_Base_Game* game = rge_base_game;
-            game->master_obj_id = obj_id;
+            game->master_obj_id = id;
             TRIBE_Player* player =
                 static_cast<TRIBE_Player*>(rge_base_game->get_player());
-            RGE_Master_Static_Object* object = player->master_objects[obj_id];
+            RGE_Master_Static_Object* object = player->master_objects[id];
             TRIBE_Master_Building_Object* building =
                 static_cast<TRIBE_Master_Building_Object*>(object);
             if (building->building_connect_flag) {
@@ -3909,7 +3894,7 @@ void TRIBE_Screen_Game::command_chat() {
     }
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         message_panel->show_message(
-            TMessagePanel::BadMessage, get_string(0xBFE), 0x32,
+            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), 0x32,
             0, 0, 0, 0);
         return;
     }
@@ -3919,7 +3904,7 @@ void TRIBE_Screen_Game::command_chat() {
 void TRIBE_Screen_Game::command_quick_chat() {
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         message_panel->show_message(
-            TMessagePanel::BadMessage, get_string(0xBFE), 0x32,
+            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), 0x32,
             0, 0, 0, 0);
         return;
     }
@@ -3954,7 +3939,7 @@ void TRIBE_Screen_Game::command_convert(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE4), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_CONVERT), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x65, 0);
 }
@@ -3993,9 +3978,9 @@ void TRIBE_Screen_Game::command_fps() {
     }
 }
 
-void TRIBE_Screen_Game::command_game_speed(int param_1) {
+void TRIBE_Screen_Game::command_game_speed(int increase_speed) {
+    float new_speed;
     float cur_speed;
-    float old_speed;
 
     unsigned long t = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x13FE);
@@ -4007,52 +3992,52 @@ void TRIBE_Screen_Game::command_game_speed(int param_1) {
 
     this->last_game_speed_change = t;
     if (rge_base_game->prog_mode != 5) {
-        cur_speed = 0.0f;
-        old_speed = this->world->game_speed;
+        new_speed = 0.0f;
+        cur_speed = this->world->game_speed;
 
-        if (param_1 != 0) {
-            if (old_speed == 1.0f) {
-                cur_speed = 1.5f;
-            } else if (old_speed == 1.5f) {
-                cur_speed = 2.0f;
+        if (increase_speed != 0) {
+            if (cur_speed == 1.0f) {
+                new_speed = 1.5f;
+            } else if (cur_speed == 1.5f) {
+                new_speed = 2.0f;
             } else {
                 if (rge_base_game->singlePlayerGame() != 0 &&
                     rge_base_game->gameDeveloperMode() != 0) {
-                    if (old_speed == 2.0f) {
-                        cur_speed = 4.0f;
-                    } else if (old_speed == 4.0f) {
-                        cur_speed = 8.0f;
-                    } else if (old_speed == 8.0f) {
-                        cur_speed = 16.0f;
+                    if (cur_speed == 2.0f) {
+                        new_speed = 4.0f;
+                    } else if (cur_speed == 4.0f) {
+                        new_speed = 8.0f;
+                    } else if (cur_speed == 8.0f) {
+                        new_speed = 16.0f;
                     }
                 }
             }
         } else {
-            if (old_speed == 16.0f) {
-                cur_speed = 8.0f;
-            } else if (old_speed == 8.0f) {
-                cur_speed = 4.0f;
-            } else if (old_speed == 4.0f) {
-                cur_speed = 2.0f;
-            } else if (old_speed == 2.0f) {
-                cur_speed = 1.5f;
-            } else if (old_speed == 1.5f) {
-                cur_speed = 1.0f;
+            if (cur_speed == 16.0f) {
+                new_speed = 8.0f;
+            } else if (cur_speed == 8.0f) {
+                new_speed = 4.0f;
+            } else if (cur_speed == 4.0f) {
+                new_speed = 2.0f;
+            } else if (cur_speed == 2.0f) {
+                new_speed = 1.5f;
+            } else if (cur_speed == 1.5f) {
+                new_speed = 1.0f;
             }
         }
 
-        if (cur_speed != 0.0f) {
+        if (new_speed != 0.0f) {
             if (rge_base_game->multiplayerGame() != 0) {
                 char message[256];
-                const char* text = this->get_string(0xBF3);
+                const char* text = this->get_string(IDS_GAME_SPEED_CHANGED);
                 sprintf(message, text);
                 comm->SendChatMsgAll(message);
             }
 
             static_cast<TRIBE_Command*>(this->world->commands)
-                ->command_game_speed(cur_speed);
+                ->command_game_speed(new_speed);
             if (rge_base_game->singlePlayerGame() != 0) {
-                rge_base_game->set_game_speed(cur_speed);
+                rge_base_game->set_game_speed(new_speed);
             }
         }
     }
@@ -4064,12 +4049,12 @@ void TRIBE_Screen_Game::command_group(void) {
     }
 }
 
-void TRIBE_Screen_Game::command_group_by_number(int group) {
+void TRIBE_Screen_Game::command_group_by_number(int id) {
     if (rge_base_game->get_paused() == 0) {
-        if (group == 0) {
-            group = 10;
+        if (id == 0) {
+            id = 10;
         }
-        (rge_base_game->get_player())->group_objects(group);
+        (rge_base_game->get_player())->group_objects(id);
     }
 }
 
@@ -4078,7 +4063,7 @@ void TRIBE_Screen_Game::command_heal(void) {
         return;
     }
 
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE3), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_HEAL), 0x32, 0, 0, 0, 0);
         rge_base_game->set_game_mode(0x66, 0);
 }
 
@@ -4086,26 +4071,25 @@ void TRIBE_Screen_Game::command_repair(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBEC), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_REPAIR), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x68, 0);
 }
 
-void TRIBE_Screen_Game::command_score(int a1)
-{
-    this->world->score_displayed = static_cast<unsigned char>(a1);
+void TRIBE_Screen_Game::command_score(int show) {
+    this->world->score_displayed = static_cast<unsigned char>(show);
     int score_count = 8;
     TMessagePanel** score_panel = this->score_panel;
     do {
         TMessagePanel* b = *score_panel;
         if (b != 0) {
-            b->set_active(a1);
+            b->set_active(show);
         }
         ++score_panel;
         --score_count;
     } while (score_count != 0);
 
-    if (a1 != 0) {
+    if (show != 0) {
         this->reset_score_display();
     }
 
@@ -4119,17 +4103,17 @@ void TRIBE_Screen_Game::command_score(int a1)
     this->main_view->set_redraw(TPanel::RedrawNormal);
 }
 
-void TRIBE_Screen_Game::command_select_group(int group, int unselect) {
+void TRIBE_Screen_Game::command_select_group(int id, int unsel_prior) {
     if (rge_base_game->get_paused()) {
         return;
     }
-    if (unselect != 0) {
+    if (unsel_prior != 0) {
         rge_base_game->get_player()->unselect_object();
     }
-    if (group == 0) {
-        group = 10;
+    if (id == 0) {
+        id = 10;
     }
-    rge_base_game->get_player()->select_group(group);
+    rge_base_game->get_player()->select_group(id);
     this->main_view->set_redraw(TPanel::RedrawNormal);
 }
 
@@ -4172,7 +4156,7 @@ void TRIBE_Screen_Game::command_move() {
                 &list, &list_num, -1, -1, -1, -1)) {
             free(list);
             this->message_panel->show_message(
-                TMessagePanel::BadMessage, this->get_string(0xBE0),
+                TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_MOVE),
                 0x32, 0, 0, 0, 0);
             rge_base_game->set_game_mode(4, 0);
         }
@@ -4181,23 +4165,23 @@ void TRIBE_Screen_Game::command_move() {
 
 void TRIBE_Screen_Game::command_outline() {
     RGE_Base_Game* game;
-    unsigned char t;
+    unsigned char outline_type;
 
     game = rge_base_game;
-    t = game->outline_type;
-    switch (t) {
+    outline_type = game->outline_type;
+    switch (outline_type) {
     case 0:
     case 3:
-        t = 2;
+        outline_type = 2;
         break;
     case 2:
-        t = 1;
+        outline_type = 1;
         break;
     case 1:
-        t = 0;
+        outline_type = 0;
         break;
     }
-    game->outline_type = t;
+    game->outline_type = outline_type;
 }
 
 void TRIBE_Screen_Game::command_pause() {
@@ -4214,7 +4198,7 @@ void TRIBE_Screen_Game::command_pause() {
 
     if (rge_base_game->prog_mode != 5) {
         if (rge_base_game->multiplayerGame() != 0) {
-            const char* s = get_string(0xBF4);
+            const char* s = get_string(IDS_MESSAGE_GAME_PAUSED);
             sprintf(msg, s);
             comm->SendChatMsgAll(msg);
         }
@@ -4222,7 +4206,7 @@ void TRIBE_Screen_Game::command_pause() {
     }
 }
 
-void TRIBE_Screen_Game::command_player(int param_1) {
+void TRIBE_Screen_Game::command_player(int id) {
     if (!rge_base_game->allowCheatCodes()) {
         return;
     }
@@ -4234,7 +4218,7 @@ void TRIBE_Screen_Game::command_player(int param_1) {
         rge_base_game->set_game_mode(0, 0);
     }
 
-    rge_base_game->set_player(static_cast<short>(param_1));
+    rge_base_game->set_player(static_cast<short>(id));
 }
 
 void TRIBE_Screen_Game::command_quick_build(void) {
@@ -4250,15 +4234,15 @@ void TRIBE_Screen_Game::command_quit() {
     static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
 }
 
-void TRIBE_Screen_Game::command_research(int tech_id) {
+void TRIBE_Screen_Game::command_research(int id) {
     short attr;
     char msg[512];
 
     if (rge_base_game->get_paused() == 0) {
         if (static_cast<TRIBE_Player*>(rge_base_game->get_player())
-                ->check_tech_cost(static_cast<short>(tech_id), &attr)) {
+                ->check_tech_cost(static_cast<short>(id), &attr)) {
             static_cast<TRIBE_Player*>(rge_base_game->get_player())
-                ->command_building_make_tech(static_cast<short>(tech_id));
+                ->command_building_make_tech(static_cast<short>(id));
             return;
         }
         rge_base_game->get_string2(0x67, 1, static_cast<int>(attr), msg, 0x200);
@@ -4283,11 +4267,11 @@ void TRIBE_Screen_Game::command_save_scenario() {
     panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
 }
 
-void TRIBE_Screen_Game::command_select_building(int value) {
+void TRIBE_Screen_Game::command_select_building(int id) {
     int object_id;
 
     if (rge_base_game->get_paused() == 0) {
-        switch (value) {
+        switch (id) {
         case 0:
             object_id = 0x6D;
             break;
@@ -4358,24 +4342,24 @@ void TRIBE_Screen_Game::command_tool_box() {
 
 void TRIBE_Screen_Game::command_trade() {}
 
-void TRIBE_Screen_Game::command_trade_with(int p0) {}
+void TRIBE_Screen_Game::command_trade_with(int id) {}
 
-void TRIBE_Screen_Game::command_train(int player_id, short train_id) {
+void TRIBE_Screen_Game::command_train(int id, short train_count) {
     short attr;
     char msg[512];
 
     if (rge_base_game->get_paused() == 0) {
         if (production_queues_is_use) {
             static_cast<TRIBE_Command*>(this->world->commands)
-                ->command_queue(this->game_obj, player_id, train_id);
+                ->command_queue(this->game_obj, id, train_count);
             return;
         }
         if (static_cast<TRIBE_Player*>(rge_base_game->get_player())
-                ->check_obj_cost(static_cast<short>(player_id), &attr, 1.0f, 0)) {
+                ->check_obj_cost(static_cast<short>(id), &attr, 1.0f, 0)) {
             RGE_Base_Game* game = rge_base_game;
-            game->master_obj_id = static_cast<short>(player_id);
+            game->master_obj_id = static_cast<short>(id);
             static_cast<TRIBE_Player*>(rge_base_game->get_player())
-                ->command_building_make_obj(static_cast<short>(player_id));
+                ->command_building_make_obj(static_cast<short>(id));
             return;
         }
         rge_base_game->get_string2(0x67, 1, static_cast<int>(attr), msg, 0x200);
@@ -4393,7 +4377,7 @@ void TRIBE_Screen_Game::command_ungroup(void) {
 void TRIBE_Screen_Game::command_unload(void) {
     if (!rge_base_game->get_paused()) {
         this->message_panel->show_message(TMessagePanel::BadMessage,
-                                          this->get_string(0xBED),
+                                          this->get_string(IDS_MESSAGE_UNLOAD),
                                           0x32, 0, 0, 0, 0);
         rge_base_game->set_game_mode(0x69, 0);
     }
@@ -4420,8 +4404,7 @@ void TRIBE_Screen_Game::command_view_selected() {
         static_cast<short>(static_cast<int>(selected->world_y)));
 }
 
-void TRIBE_Screen_Game::command_view_tribe()
-{
+void TRIBE_Screen_Game::command_view_tribe() {
     if (rge_base_game->get_paused() == 0) {
         RGE_Static_Object* obj =
             static_cast<TRIBE_Player*>(rge_base_game->get_player())
@@ -4456,16 +4439,16 @@ void TRIBE_Screen_Game::command_work() {
                 &list, &list_num, -1, -1, -1, -1)) {
             free(list);
             this->message_panel->show_message(
-                TMessagePanel::BadMessage, this->get_string(0xBE1),
+                TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_WORK),
                 0x32, 0, 0, 0, 0);
             rge_base_game->set_game_mode(5, 0);
         }
     }
 }
 
-void TRIBE_Screen_Game::command_formation(int value) {
+void TRIBE_Screen_Game::command_formation(int formationID) {
     if (rge_base_game->get_paused() == 0) {
-        (rge_base_game->get_player())->command_formation(value);
+        (rge_base_game->get_player())->command_formation(formationID);
     }
 }
 
@@ -4479,19 +4462,19 @@ void TRIBE_Screen_Game::command_attack_ground(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE5), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK_GROUND), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x64, 0);
 }
 
-void TRIBE_Screen_Game::command_trade_attribute(long value) {
+void TRIBE_Screen_Game::command_trade_attribute(long attribute) {
     if (rge_base_game->get_paused() == 0) {
         static_cast<TRIBE_Player*>(rge_base_game->get_player())
-            ->command_trade_attribute(value);
+            ->command_trade_attribute(attribute);
     }
 }
 
-void TRIBE_Screen_Game::command_tab_selected(int value) {
+void TRIBE_Screen_Game::command_tab_selected(int forward) {
     RGE_Player* player = rge_base_game->get_player();
     int found = 0;
     RGE_Static_Object* candidate = 0;
@@ -4502,7 +4485,7 @@ void TRIBE_Screen_Game::command_tab_selected(int value) {
         if (selected_count >= 2) {
             short slot;
             short count;
-            if (value != 0) {
+            if (forward != 0) {
                 slot = 0;
                 count = 0;
                 while (slot < 25) {
@@ -4579,8 +4562,8 @@ int TRIBE_Screen_Game::any_selected_have_action() {
     return 0;
 }
 
-void TRIBE_Screen_Game::set_focus(int value) {
-    TScreenPanel::set_focus(value);
+void TRIBE_Screen_Game::set_focus(int have_focus_in) {
+    TScreenPanel::set_focus(have_focus_in);
     if (this->have_focus != 0) {
         rge_base_game->set_windows_mouse(0);
     } else {
@@ -4600,4 +4583,4 @@ void TRIBE_Screen_Game::stop_sound_system(void) {
 
 int TRIBE_Screen_Game::restart_sound_system() { return TPanel::restart_sound_system(); }
 
-void TRIBE_Screen_Game::add_log(char* p0) {}
+void TRIBE_Screen_Game::add_log(char* text) {}

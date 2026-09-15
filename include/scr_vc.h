@@ -20,15 +20,12 @@ public:
     unsigned char game_flag;
     TPicture* vc_back_bmp;
 
-    TRIBE_Mission_Screen(char* info_file, unsigned char game_flag,
-                         TPicture* vc_back_bmp);
+    TRIBE_Mission_Screen(char* text_in, unsigned char from_game, TPicture* background_bmp);
     virtual ~TRIBE_Mission_Screen();
     virtual long handle_idle();
     virtual void draw();
-    virtual long action(TPanel* sender, long actionType,
-                        unsigned long param3, unsigned long param4);
-    virtual long key_down_action(long param_1, short param_2, int param_3,
-                                 int param_4, int param_5);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
 };
 
 typedef char scr_vc_screen_size_check[

@@ -27,7 +27,7 @@ extern char scenario_default_file_name[260];
 
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
-    TRIBE_Screen_Sed(char*, int);
+    TRIBE_Screen_Sed(char* scenario_name_in, int is_multi_player_in);
 
     enum ScenarioMode {
         ScenarioModeNone = 0,
@@ -240,74 +240,73 @@ public:
 
     virtual ~TRIBE_Screen_Sed();
     virtual void draw();
-    virtual long handle_size(long, long);
+    virtual long handle_size(long win_wid, long win_hgt);
     virtual long handle_idle();
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
 protected:
-    virtual void set_focus(int);
+    virtual void set_focus(int have_focus_in);
 public:
     void position_panels();
 protected:
-    int create_button(TPanel*, TButtonPanel**, long, int);
-    int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
-    int create_text(TPanel*, TTextPanel**, long);
-    int create_text(TPanel*, TTextPanel**, char*);
-    int create_drop_down(TPanel*, TDropDownPanel**);
-    int create_input(TPanel*, TInputPanel**, char*, short,
-                     TInputPanel::FormatType);
-    int create_edit(TPanel*, TEditPanel**, char*, short,
-                    TEditPanel::FormatType, int, int);
-    int create_list(TPanel*, TListPanel**, TScrollBarPanel**);
-    int create_radio_button(TPanel*, TButtonPanel**);
-    int create_check_box(TPanel*, TButtonPanel**);
-    int Set_player_advance_civilization_text(int);
+    int create_button(TPanel* parent, TButtonPanel** button, long text_id, int ButtonSelectFlag);
+    int create_button(TPanel* parent, TButtonPanel** button, char* text1, char* text2, char* text3, char* text4);
+    int create_text(TPanel* parent, TTextPanel** text_panel, long text_id);
+    int create_text(TPanel* parent, TTextPanel** text_panel, char* text);
+    int create_drop_down(TPanel* parent, TDropDownPanel** drop_panel);
+    int create_input(TPanel* parent, TInputPanel** input_panel, char* value, short max_len, TInputPanel::FormatType format_type);
+    int create_edit(TPanel* parent, TEditPanel** edit_panel, char* value, short max_len,
+                    TEditPanel::FormatType format_type, int enable_ime, int turn_ime_on);
+    int create_list(TPanel* parent, TListPanel** list_panel, TScrollBarPanel** scrollbar_panel);
+    int create_radio_button(TPanel* parent, TButtonPanel** button);
+    int create_check_box(TPanel* parent, TButtonPanel** button);
+    int Set_player_advance_civilization_text(int newmode);
     void SaveDisabledItemsInScenario();
     void LoadDisabledItemsFromScenario();
     void save_info_in_scenario();
     void save_multi_victory_cond_in_scenario();
 protected:
-    void save_victory_cond_in_scenario(int);
-    void load_victory_cond_from_scenario(int);
+    void save_victory_cond_in_scenario(int which);
+    void load_victory_cond_from_scenario(int which);
     void load_multi_victory_cond_from_scenario();
-    void save_diplomacy_in_scenario(int);
-    void load_diplomacy_from_scenario(int);
-    void activate_victory_proper_fields(int, int);
+    void save_diplomacy_in_scenario(int which);
+    void load_diplomacy_from_scenario(int which);
+    void activate_victory_proper_fields(int TypeOfVictory, int activate);
     void init_module_variables();
     void create_all_buttons_etc();
-    int SetupListOfTerrain(TListPanel*);
-    void activate_victory_panel(int);
-    int MakeFileList(TDropDownPanel*, char*, char*, unsigned char, unsigned char);
+    int SetupListOfTerrain(TListPanel* list);
+    void activate_victory_panel(int activate);
+    int MakeFileList(TDropDownPanel* drop_down, char* dir, char* extension, unsigned char append_none, unsigned char append_random);
     void SavePlayerActiveStatus();
 protected:
-    void set_player(short, unsigned char, unsigned char);
-    void set_map_type(MapType, int);
-    void set_mp_victory_type(VictoryType, int);
-    void set_paint_type(PaintType, int);
-    void set_unit_player(short);
+    void set_player(short val, unsigned char save_player, unsigned char load_player);
+    void set_map_type(MapType new_val, int activate_panels);
+    void set_mp_victory_type(VictoryType new_val, int activate_panels);
+    void set_paint_type(PaintType new_val, int activate_panels);
+    void set_unit_player(short val);
 public:
-    void set_scenario_mode(ScenarioMode);
+    void set_scenario_mode(ScenarioMode new_mode);
 protected:
     void set_panel_info();
-    void set_string(char*, long, int);
-    void set_brush_size(BrushSize);
-    void set_terrain(short);
-    void set_elevation(short);
-    void set_player_active(short, int);
-    void set_unit(short);
-    void set_message_type(MessageType, int);
+    void set_string(char* text, long text_id, int max_size);
+    void set_brush_size(BrushSize new_val);
+    void set_terrain(short val);
+    void set_elevation(short val);
+    void set_player_active(short player_num_in, int active_in);
+    void set_unit(short val);
+    void set_message_type(MessageType new_val, int activate_panels);
     void set_paint_object_mode();
 public:
-    int command_new_map(char*, int, int, int, int, int);
+    int command_new_map(char* scenario_name_in, int is_multi_player_in, int random_seed_in, int width, int height, int display_in);
     void command_cancel();
     int command_menu();
     void command_new();
     void command_open();
     void command_quit();
-    void command_save(unsigned char, unsigned char);
-    void command_save_as(unsigned char);
+    void command_save(unsigned char kill_menu, unsigned char quit_after_save);
+    void command_save_as(unsigned char quit_after_save);
     void command_quick_save();
-    void command_player(int);
+    void command_player(int id);
     void command_outline();
     unsigned char need_to_save();
     char* scenario_get_default_name();
