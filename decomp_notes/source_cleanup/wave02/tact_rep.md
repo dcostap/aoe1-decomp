@@ -6,8 +6,8 @@
 - Registry: `config/functions/src/tact_rep.cpp.json`
 - PDB source: `C:\\msdev\\work\\age1_x1\\tact_rep.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final module commit: `57b1f2e3fc4b104f46ab826744974e5d4aae5929`
-- The report is a follow-up commit on the final module commit.
+- Final module commit: `3ae68b20c4796eb17c7ed00d1b6e08ec9cc83386`
+- The report correction is a follow-up commit on the final module commit.
 - Changed files:
   - `src/tact_rep.cpp`
   - `decomp_notes/source_cleanup/wave02/tact_rep.md`
@@ -16,6 +16,14 @@
 The registry selects 12 source owners from `004D1680` through `004D2020`.
 The registry marks 11 owners `matching` and `004D1BB0` `accepted_drift`.
 Those claims were not rechecked in this wave.
+
+## Correction history
+
+- Initial source cleanup: `57b1f2e3fc4b104f46ab826744974e5d4aae5929`.
+- Initial cleanup report: `8d02b5c3f7a1a807bd3591322ccdac200fe1d9e3`.
+- Root formatting correction: `3ae68b20c4796eb17c7ed00d1b6e08ec9cc83386`.
+- The correction joins the short `move_to` and `work` signatures onto one line.
+- It changes no expression, type, cast, scope, or statement.
 
 ## Original-name recovery
 
