@@ -28,25 +28,21 @@ public:
     unsigned long PlayerExploredMaskInvertValue;
     unsigned long input_csum;
 
-    RGE_Visible_Map(RGE_Map* map, RGE_Player* player);
-    RGE_Visible_Map(int file, RGE_Game_World* world);
+    RGE_Visible_Map(RGE_Map* in_map, RGE_Player* in_player);
+    RGE_Visible_Map(int infile, RGE_Game_World* theWorld);
     ~RGE_Visible_Map();
 
-    void save(int handle);
-    unsigned char get_visible(int x, int y) const;
-    void set_all(unsigned char value);
+    void save(int outfile);
+    unsigned char get_visible(int map_col, int map_row) const;
+    void set_all(unsigned char vis_flag);
     void explore_all(void);
     float percentExplored(void) const;
     void recomputeExplored(void);
-    LOSTBL* get_los_table(int distance, int diagonal);
-    int explore_terrain(int x, int y, int radius, int square,
-                        int update_tiles, int p6);
-    void unexplore_terrain(int x, int y, int radius, int square,
-                           int update_tiles, int p6);
-    int explore_terrain_sq(int x1, int y1, int x2, int y2,
-                           int update_tiles, int p6);
-    void unexplore_terrain_sq(int x1, int y1, int x2, int y2,
-                              int update_tiles, int p6);
+    LOSTBL* get_los_table(int radius, int Square);
+    int explore_terrain(int tx, int ty, int radius, int Square, int UpdateMap, int id);
+    void unexplore_terrain(int tx, int ty, int radius, int Square, int UpdateMap, int id);
+    int explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int UpdateMap, int id);
+    void unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int UpdateMap, int id);
     unsigned long checksum_visible_inputs(void);
     long checksumVisible(void);
     unsigned long checksumUnifiedVisible(void);
@@ -58,19 +54,19 @@ public:
     int mapHeight;
     unsigned long* UnifiedVisibleMap;
 
-    RGE_Unified_Visible_Map(int mapWidth, int mapHeight);
-    RGE_Unified_Visible_Map(int map, RGE_Game_World* world);
+    RGE_Unified_Visible_Map(int width, int height);
+    RGE_Unified_Visible_Map(int infile, RGE_Game_World* world);
     ~RGE_Unified_Visible_Map();
 
-    void load(int handle);
-    void save(int handle);
+    void load(int infile);
+    void save(int outfile);
     void reset(void);
 
 private:
     void Set_Map_Offsets(void);
 
 public:
-    void suppress_updates(int value);
+    void suppress_updates(int mode);
 };
 
 class VC_LOG {

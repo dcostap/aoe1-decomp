@@ -9,34 +9,37 @@ class InfluenceMap {
 public:
     virtual ~InfluenceMap();
 
-    InfluenceMap(int xSize, int ySize, unsigned char fillValue);
-    InfluenceMap(int fd);
+    InfluenceMap(int x, int y, unsigned char initialValue);
+    InfluenceMap(int infile);
 
-    int initialize(unsigned char value);
-    void save(int fd);
-    void load(int fd);
+    int initialize(unsigned char initialValue);
+    void save(int outfile);
+    void load(int infile);
     void printToFile(char* filename);
     void setReferencePoint(int x, int y);
     int lookupValue(int x, int y);
 
-    int setValue(int x, int y, unsigned char value);
-    int setValue(int x1, int y1, int x2, int y2, unsigned char value);
-    int incrementValue(int x, int y, unsigned char amount);
-    int incrementValue(int x1, int y1, int x2, int y2, unsigned char amount);
-    int decrementValue(int x, int y, unsigned char amount);
-    int decrementValue(int x1, int y1, int x2, int y2, unsigned char amount);
+    int setValue(int x, int y, unsigned char v);
+    int setValue(int minX, int minY, int maxX, int maxY, unsigned char v);
+    int incrementValue(int x, int y, unsigned char v);
+    int incrementValue(int minX, int minY, int maxX, int maxY, unsigned char v);
+    int decrementValue(int x, int y, unsigned char v);
+    int decrementValue(int minX, int minY, int maxX, int maxY, unsigned char v);
 
-    int setCoverageCount(const XYPoint& from, const XYPoint& to, int threshold);
-    int setConnectionCount(const XYPoint& from, const XYPoint& to,
-                           int minimum, int edgeHorizontal, int edgeVertical,
-                           int allDirections);
-    int coverageIncluding(const XYPoint& from, const XYPoint& to,
-                          unsigned char minimum, unsigned char amount);
-    int connectionsIncluding(const XYPoint& from, const XYPoint& to,
-                             unsigned char minimum, unsigned char amount,
-                             int mode1, int mode2, int allDirections);
+    int setCoverageCount(const XYPoint& min, const XYPoint& max, int valueLevel);
+    int setConnectionCount(const XYPoint& min, const XYPoint& max, int valueLevel,
+                           int countOrthogonalEdgesAsConnections,
+                           int countDiagonalEdgesAsConnections,
+                           int countDiagonalConnections);
+    int coverageIncluding(const XYPoint& min, const XYPoint& max,
+                          unsigned char valueLevel, unsigned char newValueLevel);
+    int connectionsIncluding(const XYPoint& min, const XYPoint& max,
+                             unsigned char valueLevel, unsigned char newValueLevel,
+                             int countOrthogonalEdgesAsConnections,
+                             int countDiagonalEdgesAsConnections,
+                             int countDiagonalConnections);
 
-    void setUnchangeableLimit(unsigned char value);
+    void setUnchangeableLimit(unsigned char uL);
     int maxValue();
 
     int xSizeValue;

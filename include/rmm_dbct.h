@@ -142,25 +142,24 @@ public:
     RGE_Elevation_Info elevation_info;
     RGE_Map_Data map_info;
 
-    RGE_RMM_Database_Controller(int file);
+    RGE_RMM_Database_Controller(int infile);
     RGE_RMM_Database_Controller(char* land_file, char* terrain_file,
         char* object_file, char* map_file);
     ~RGE_RMM_Database_Controller();
     virtual uchar generate();
 
 protected:
-    virtual void add_land_module(uchar value);
+    virtual void add_land_module(uchar fixed_positions);
     virtual void add_terrain_module();
     virtual void add_object_module();
     virtual void add_elevation_module();
-    void calc_land_start(long start, long radius, long count,
-        RGE_Land_Data_Entry* land);
+    void calc_land_start(long land_index, long edge, long land_num, RGE_Land_Data_Entry* info);
 
 public:
-    virtual uchar init(RGE_Map* map, RGE_Game_World* world,
-        uchar map_type, long players, uchar value);
+    virtual uchar init(RGE_Map* in_map, RGE_Game_World* in_world, uchar type,
+                       long player_num, uchar fixed_positions);
     virtual uchar de_init();
-    uchar save(int file);
+    uchar save(int outfile);
 };
 
 typedef char rmm_dbct_controller_size_check[

@@ -38,14 +38,14 @@ protected:
     unsigned char* distanceTable;
 
 public:
-    Visible_Unit_Manager(int player_count, int category_count);
+    Visible_Unit_Manager(int Num_Players, int Num_Categories);
     ~Visible_Unit_Manager();
     void Build_Distance_Table();
-    void Update_Unit_Info(int object_id, int player, int x, int y, int category,
-                          unsigned long old_mask, unsigned long new_mask,
-                          VISIBLE_UNIT_REC** refs);
-    int GetVisibleUnits(int x, int y, int distance, int player,
-                        int* categories, int category_count, int* player_map);
+    void Update_Unit_Info(int Object_Id, int player_id, int Xpos, int Ypos, int Category,
+                          unsigned long PriorUnifiedMap, unsigned long NewUnifiedMap,
+                          VISIBLE_UNIT_REC** ObjectPtrs);
+    int GetVisibleUnits(int Xpos, int Ypos, int LOS, int player, int* DesiredTypes,
+                        int DesiredCount, int* PlayerListMap);
 };
 
 typedef char aoe1_visible_unit_manager_size_check[
@@ -71,16 +71,16 @@ public:
     RGE_Player* owner;
     int num_visible_resource_lists;
 
-    Visible_Resource_Manager(RGE_Player* owner, int count);
-    Visible_Resource_Manager(int handle, RGE_Player* owner);
+    Visible_Resource_Manager(RGE_Player* list_owner, int num_lists);
+    Visible_Resource_Manager(int infile, RGE_Player* list_owner);
     ~Visible_Resource_Manager();
-    void save(int handle);
-    void Process_New_Tiles(RGE_Tile_List* list);
-    void AddResource(int object_id, int type);
-    int Remove_Resource(int object_id, int type);
-    VISIBLE_RESOURCE_REC* Get_Closest_Resource(int x, int y, int param3,
-                                                int type, int* reject_list,
-                                                int reject_count);
+    void save(int outfile);
+    void Process_New_Tiles(RGE_Tile_List* tile_list);
+    void AddResource(int Obj_Id, int ObjGroup);
+    int Remove_Resource(int Obj_Id, int ObjGroup);
+    VISIBLE_RESOURCE_REC* Get_Closest_Resource(int Xpos, int Ypos, int Zone,
+                                                int ResType, int* excList,
+                                                int elSize);
 };
 
 typedef char aoe1_visible_resource_manager_size_check[
