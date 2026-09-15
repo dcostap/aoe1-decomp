@@ -23,7 +23,7 @@ The common base is `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 
 | Module | Reviewed worker head | Result |
 | --- | --- | --- |
-| `taiinfmd` | `44bff3342082f36035287dfb343ade136afc03b1` | Approved after declaration reviews and a post-cleanup binding repair. |
+| `taiinfmd` | `421668fb67ef8abd3c52dde0d63db944d80d15e0` | Approved after declaration, binding, and matching repairs. |
 | `taimdmd` | `3c2d4a7914ba1a6c24d7424442a63cdaca5f3bb0` | Approved after storage and VC5 scope repairs. |
 | `tairesmd` | `f9a3b91cd91120610cb363989a00c7502ee86967` | Approved. |
 | `taistrmd` | `afe72c51515b825f5f2508f76d8f433285619e2d` | Approved after formatting correction. |
@@ -50,6 +50,10 @@ The owner reviewed each complete worker diff and report against the common base.
   `requiredZone` is an unsafe reused-home record, not a source declaration.
   The final source correction restored the baseline local declaration order in
   `dropsitesWithinRequiredDistance`.
+  A later object review found that an added `numMemoriesToLoad` local changed
+  the `loadLearnInfo` frame from `0x34` to `0x38` bytes.
+  The repair restores baseline `numToLoad` storage reuse.
+  `numMemoriesToLoad` is a reused-home PDB record, not a distinct declaration.
   Report corrections now state these limits and rejected forms accurately.
   The retained formatting uses 1TBS and four-space indentation.
 - `taimdmd`: The correction restored the separate `diplomacy_start_time` local.
@@ -70,6 +74,11 @@ A root fresh-main compilation later found two incorrect cleanup bindings.
 
 The external report is
 `C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
+
+The later functions-r2 report compiled all 225 selected functions. It found a
+matching regression in `loadLearnInfo` at `004E1260`. The row is in
+`C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/functions-r2/report.csv`.
+Preserved baseline and fresh objects proved that the extra local caused the drift.
 
 No prohibited compiler, build, matching, audit, test, or game command occurred.
 
@@ -122,7 +131,8 @@ No change is requested for `include/resource_ids.h` or `include/game_globals.h`.
 
 The owner and workers performed evidence extraction and Git diff review only.
 Root ran the fresh-main compilation that found the two errors recorded above.
+Root also ran functions-r2, which found the `loadLearnInfo` matching regression.
 The workers did not run compilation, matching, audits, tests, or game execution.
 
-The two repairs have not received a later validation run.
+The later repairs have not received another validation run.
 Generated-code equality remains unknown.
