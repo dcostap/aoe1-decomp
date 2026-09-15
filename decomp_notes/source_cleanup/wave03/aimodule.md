@@ -16,8 +16,8 @@ The generated deleting destructors are not source owners and were not changed.
 - First delivery commit: `b4154ff6514fe5156b204a4556289514f24340f1`
   - `src/aimodule.cpp`
   - `decomp_notes/source_cleanup/wave03/aimodule.md`
-- Correction commit: this report correction. Its full hash is recorded after
-  the correction commit.
+- Correction commit: `206641938e5a16c38afb70b47b5da7f770fd6e32`
+  - `decomp_notes/source_cleanup/wave03/aimodule.md`
 
 ## Evidence
 
