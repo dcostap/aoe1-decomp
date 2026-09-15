@@ -8,12 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern void __cdecl rge_read(int file_handle, void* buffer, int size);
-extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
-extern void __cdecl rge_write(int fd, void* buffer, int size);
+extern void __cdecl rge_read(int handle, void* data, int size);
+extern unsigned long __cdecl debug_timeGetTime(char* source_name, int source_line);
+extern void __cdecl rge_write(int handle, void* data, int size);
 
-TPicture::TPicture(char* file_name, long resource_id, int palette_id,
-    void* palette, int palette_flags) {
+TPicture::TPicture(char* FileName, long res_id, int UseTrans,
+    void* MapToPal, int ZeroIsTrans) {
     this->Dib = 0;
     this->BitmapInfo = 0;
     this->Bits = 0;
@@ -22,10 +22,10 @@ TPicture::TPicture(char* file_name, long resource_id, int palette_id,
     this->Width = 0;
     this->Height = 0;
     this->Orien = 1;
-    this->Load(file_name, resource_id, palette_id, palette, palette_flags);
+    this->Load(FileName, res_id, UseTrans, MapToPal, ZeroIsTrans);
 }
 
-TPicture::TPicture(int file_handle, int param_2) {
+TPicture::TPicture(int infile, int UseTrans) {
     this->Dib = 0;
     this->BitmapInfo = 0;
     this->Bits = 0;
@@ -35,10 +35,10 @@ TPicture::TPicture(int file_handle, int param_2) {
     this->Height = 0;
     this->Orien = 1;
 
-    rge_read(file_handle, &this->OwnMemory, 4);
-    rge_read(file_handle, &this->Width, 4);
-    rge_read(file_handle, &this->Height, 4);
-    rge_read(file_handle, &this->Orien, 2);
+    rge_read(infile, &this->OwnMemory, 4);
+    rge_read(infile, &this->Width, 4);
+    rge_read(infile, &this->Height, 4);
+    rge_read(infile, &this->Orien, 2);
 
     if (this->OwnMemory != 0) {
         this->OwnMemory = 2;
@@ -47,7 +47,7 @@ TPicture::TPicture(int file_handle, int param_2) {
     if (this->Width > 0 && this->Height > 0) {
         void* dib = calloc(this->AlignedWidth() * this->Height + 0x428, 1);
         this->Dib = (tagBITMAPINFOHEADER*)dib;
-        rge_read(file_handle, this->Dib,
+        rge_read(infile, this->Dib,
             this->AlignedWidth() * this->Height + 0x428);
         this->BitmapInfo = (BITMAPINFO256*)this->Dib;
         this->Bits = (unsigned char*)this->Dib + 0x428;
@@ -59,7 +59,7 @@ TPicture::TPicture(int file_handle, int param_2) {
 
     this->TransInfo = 0;
 
-    if (param_2 != 0 && this->Dib != 0) {
+    if (UseTrans != 0 && this->Dib != 0) {
         TRANSINFO* trans_info = (TRANSINFO*)malloc(0x18);
         this->TransInfo = trans_info;
         if (trans_info != 0) {
@@ -121,21 +121,21 @@ TPicture::~TPicture() {
     }
 }
 
-void TPicture::Save(int fd) {
-    rge_write(fd, &this->OwnMemory, 4);
-    rge_write(fd, &this->Width, 4);
-    rge_write(fd, &this->Height, 4);
-    rge_write(fd, &this->Orien, 2);
+void TPicture::Save(int outfile) {
+    rge_write(outfile, &this->OwnMemory, 4);
+    rge_write(outfile, &this->Width, 4);
+    rge_write(outfile, &this->Height, 4);
+    rge_write(outfile, &this->Orien, 2);
 
     if (this->Width > 0 && this->Height > 0) {
-        rge_write(fd, this->BitmapInfo, 0x428);
-        rge_write(fd, this->Bits,
+        rge_write(outfile, this->BitmapInfo, 0x428);
+        rge_write(outfile, this->Bits,
             this->AlignedWidth() * this->Height);
     }
 }
 
-void TPicture::Load(char* file_name, long resource_id, int palette_id,
-    void* palette, int palette_flags) {
+void TPicture::Load(char* FileName, long res_id, int UseTrans,
+    void* MapToPal, int ZeroIsTrans) {
     BITMAPINFO256* bitmap;
     TRANSINFO* info;
     char temp_file_name[260];
@@ -147,11 +147,11 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
     this->OwnMemory = 1;
 
     if (shape_file_first != 0) {
-        this->Dib = DibOpenFile(file_name);
+        this->Dib = DibOpenFile(FileName);
     }
 
-    if (this->Dib == 0 && resource_id != -1) {
-        if (RESFILE_Extract_to_File(0x62696e61, resource_id,
+    if (this->Dib == 0 && res_id != -1) {
+        if (RESFILE_Extract_to_File(0x62696e61, res_id,
             temp_file_name, temp_file) != 0) {
             fclose(temp_file);
             this->Dib = DibOpenFile(temp_file_name);
@@ -160,7 +160,7 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
     }
 
     if (shape_file_first == 0 && this->Dib == 0) {
-        this->Dib = DibOpenFile(file_name);
+        this->Dib = DibOpenFile(FileName);
     }
 
     bitmap = (BITMAPINFO256*)this->Dib;
@@ -186,11 +186,11 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
             this->Orien = -1;
         }
 
-        if (palette != 0) {
-            DibMapToPalette((tagBITMAPINFOHEADER*)bitmap, palette,
-                palette_id, palette_flags);
+        if (MapToPal != 0) {
+            DibMapToPalette((tagBITMAPINFOHEADER*)bitmap, MapToPal,
+                UseTrans, ZeroIsTrans);
         }
-        if (palette_id == 0) {
+        if (UseTrans == 0) {
             return;
         }
 
@@ -228,17 +228,17 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
     this->Orien = 1;
 }
 
-void TPicture::Init(BITMAPINFO256* info, unsigned char* bits,
-    TRANSINFO* trans) {
+void TPicture::Init(BITMAPINFO256* FromInfo, unsigned char* FromBits,
+    TRANSINFO* FromTrans) {
     int height;
 
-    this->Dib = &info->bmiHeader;
-    this->BitmapInfo = info;
-    this->Bits = bits;
-    this->TransInfo = trans;
+    this->Dib = &FromInfo->bmiHeader;
+    this->BitmapInfo = FromInfo;
+    this->Bits = FromBits;
+    this->TransInfo = FromTrans;
     this->OwnMemory = 0;
-    this->Width = info->bmiHeader.biWidth;
-    height = info->bmiHeader.biHeight;
+    this->Width = FromInfo->bmiHeader.biWidth;
+    height = FromInfo->bmiHeader.biHeight;
     this->Height = height;
     if (height < 0) {
         this->Orien = 1;
@@ -252,32 +252,32 @@ long TPicture::AlignedWidth() {
     return (this->Width + 3) & ~3;
 }
 
-void TPicture::Draw(TDrawArea* draw_area, long x, long y, int dst_x,
-    int dst_y) {
+void TPicture::Draw(TDrawArea* DrawArea, long DestX, long DestY, int Mirror,
+    int Flip) {
     if (this->TransInfo != 0) {
-        TransDibBlt(draw_area->BitmapInfo, draw_area->Bits,
-            &draw_area->ClipRect, x, y, this->Width, this->Height,
+        TransDibBlt(DrawArea->BitmapInfo, DrawArea->Bits,
+            &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height,
             this->BitmapInfo, this->Bits, this->TransInfo, 0, 0,
-            this->Width, this->Height, 1, dst_x, dst_y, 0);
+            this->Width, this->Height, 1, Mirror, Flip, 0);
     } else {
-        DibBlt(draw_area->BitmapInfo, draw_area->Bits, &draw_area->ClipRect,
-            x, y, this->Width, this->Height, this->BitmapInfo, this->Bits,
-            0, 0, this->Width, this->Height, 1, dst_x, dst_y);
+        DibBlt(DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect,
+            DestX, DestY, this->Width, this->Height, this->BitmapInfo,
+            this->Bits, 0, 0, this->Width, this->Height, 1, Mirror, Flip);
     }
 }
 
-long TPicture::Tile(TDrawArea* draw_area, long param_2, long param_3,
-    long param_4, long param_5, long param_6, long param_7, long param_8,
-    long param_9, long param_10, long param_11) {
-    return TileDibBlt(draw_area->BitmapInfo, draw_area->Bits,
-        &draw_area->ClipRect, param_2, param_3, param_4, param_5, param_6,
-        param_7, this->BitmapInfo, this->Bits, this->TransInfo, param_8,
-        param_9, param_10, param_11, (this->TransInfo != 0), 0, 0);
+long TPicture::Tile(TDrawArea* DrawArea, long DestX, long DestY,
+    long DestWid, long DestHgt, long BlockWid, long BlockHgt, long SrcX,
+    long SrcY, long SrcWid, long SrcHgt) {
+    return TileDibBlt(DrawArea->BitmapInfo, DrawArea->Bits,
+        &DrawArea->ClipRect, DestX, DestY, DestWid, DestHgt, BlockWid,
+        BlockHgt, this->BitmapInfo, this->Bits, this->TransInfo, SrcX,
+        SrcY, SrcWid, SrcHgt, (this->TransInfo != 0), 0, 0);
 }
 
-unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
+unsigned char TPicture::GetPixel(long x, long y, int Mirror, int Flip) {
     char orientation = (char)this->Orien;
-    if (param_4 != 0) {
+    if (Flip != 0) {
         orientation = (orientation != 1) ? 1 : -1;
     }
 
@@ -285,7 +285,7 @@ unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
         return 0;
     }
 
-    if (param_3 != 0) {
+    if (Mirror != 0) {
         if (orientation == 1) {
             unsigned char* row = this->Bits + this->AlignedWidth() * y;
             return *(row - x + this->Width - 1);
