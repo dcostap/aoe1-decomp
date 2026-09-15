@@ -533,6 +533,8 @@ void RGE_Moving_Object::set_velocity(float x, float y, float z) {
 }
 
 void RGE_Moving_Object::new_angle(float new_angle) {
+    // The direct float assignment preserves the executable's bit-copy store
+    // and direct symbol.
     this->angle = new_angle;
     this->set_angle();
 }
@@ -604,6 +606,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
         return PathFound;
     }
 
+    // The executable keeps this constant guard and its unreachable cleanup arm.
     void (RGE_Moving_Object::*waitFunction)(uchar) =
         &RGE_Moving_Object::setWaitingToMove;
     if (waitFunction == 0) {
@@ -631,6 +634,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
     int found;
     if (this->numberUserDefinedWaypointsValue > 0) {
         found = pathSystem.findTilePath(
+            // Natural casts keep __ftol input on x87 ST0.
             (int)this->startValue.x, (int)this->startValue.y,
             this->userDefinedWaypoints->x, this->userDefinedWaypoints->y,
             this, this->actionRange, this->targetIDValue,
@@ -662,6 +666,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath() {
         this->pathValue.moveToNextWaypoint();
     }
 
+    // Cast each floor result before subtracting the float tile bias.
     if (!found && this->pathValue.numberOfWaypoints() == 1) {
         if (pathSystem.passable(this,
                                 (float)floor((double)this->world_x) - DAT_00570b80,
