@@ -4,7 +4,7 @@
 
 - Group branch: `cleanup/staging-20260915-136`
 - Shared base: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Reviewed code and header head: `21f342d1d8be6bc22153f8a515c010c47d7ce9b4`
+- Reviewed code and header head: `ad18e3fc4b5bb3d89465c018d4229b0425ba5e40`
 - Modules: `map`, `tmap`, `infmap`, `visible`, `vis_unit`, `zone_map`, `fractal`, and `rmm_dbct`
 - Owned headers: the eight matching headers under `include/`
 
@@ -19,7 +19,7 @@ I read each complete base-to-head diff and each module report.
 
 | Module | Worker | Worker head | Review result |
 | --- | --- | --- | --- |
-| `src/map.cpp` | `sa-959dcdc9` | `a96a6b75532bfc56fda16ea39269684876e87b55` | Approved after three source correction rounds. |
+| `src/map.cpp` | `sa-959dcdc9` | `5264364c07eb6cb6e00a1ac04376bc65e99e5061` | Approved after owner and independent reviewer corrections. |
 | `src/tmap.cpp` | `sa-029166df` | `e6d057666df925b3bf6111c6c428139e52247abf` | Approved after one correction round. |
 | `src/infmap.cpp` | `sa-6888a065` | `7e825092e5af5da525e1c1a1bef4c0b64babf81a` | Approved after one report correction. |
 | `src/visible.cpp` | `sa-f17ac0bc` | `38d82bb82af1198139607c4c68bc89cbcaf080a1` | Approved without correction. |
@@ -54,6 +54,11 @@ The same worker applied 1TBS and supplied full hashes and declarations.
 A later round restored repository pointer style and readable wrapping.
 The final round joined one short terrain call.
 
+Independent review then found five map blockers.
+The same worker restored the `scenario_load` alias and the omitted border local.
+It also restored one format-string token and two PDB-backed names.
+The corrected report withdraws its earlier inaccurate completeness claims.
+
 The `map` reminder-only run made no project change.
 It restated the cleanup command restrictions.
 
@@ -86,6 +91,8 @@ The source names already matched the PDB, but the worker request omitted this de
 - `bbd77d048094b622ed2d72d34c8712bb28c82ceb`
 - `2285e72eedc825142232bdaaacf3cd4343275975`
 - `4e85a504daa058adc3f3115b8d76fbf67701e1f9`
+- `60e86cdce663bb06acde10004d870dc9d570ead1`
+- `158092d9ddd691a9c4395fdc888d40bce463ee48`
 
 ### `tmap`
 
@@ -146,6 +153,10 @@ Commit `21f342d1d8be6bc22153f8a515c010c47d7ce9b4` updates:
 
 The commit adds recovered parameter names and adjusts declaration wrapping.
 It changes no type, order, overload, virtual slot, layout, or ABI symbol.
+
+Commit `ad18e3fc4b5bb3d89465c018d4229b0425ba5e40` changes the
+`place_terrain_object` parameter from `player` to PDB name `obj_owner`.
+This declaration-only correction changes no type, order, or ABI symbol.
 
 ## Shared requests and open items
 
