@@ -114,3 +114,36 @@ Root requested per-loop evidence or baseline names, without type, storage, or be
 
 Root also requested normal loop spacing, constructor continuation indentation, and separate lines for existing `aibldmod::save` statements.
 Owner 06 resumed with the same workers. Integration and validation remain pending.
+
+## Owner 07: reviewed and integrated
+
+Root completed the 3,097-line group review, including the reports and headers.
+Root checked the disputed AI mappings against scoped PDB records and original instruction packets.
+Root merged `bedc8b4cd3fd6b0a83201c444acf753b4642d1c0` as `ce978edb0b49c34a91482d2eaaa0af048a8906ce`.
+The help-window constant request remains separate and pending.
+Resource extraction found `Age of Empires Help` at base ID `0x03EB`; the expansion ID was absent.
+
+## Owner 06: corrections reviewed and integrated
+
+Corrected head: `e3443a53a3e80099011e1df13488033417f07012`.
+Root read the complete 579-line correction diff, including all changed reports.
+The corrections restore unsupported constructor names and change presentation without changing expressions or declaration order.
+Root merged the complete group as `76e162f525f5dbb4346c5a5a71516475beb2a300`.
+Main now contains 56 assigned wave modules, plus the earlier pilot. All remain unvalidated.
+
+## Owner 08: full review complete; corrections requested
+
+Root read the complete 4,907-line group diff, including reports and headers.
+The `00451000` change from `count` to `tot_armor` lacks declaration evidence.
+The PDB lists `tot_armor` at `+0x8`; the weapon countdown uses instructions `0045100D`, `0045102B`, and `0045108A`.
+Root requested baseline `count` unless stronger evidence proves this mapping.
+Root also requested original-save evidence for reversed moving-sprite names and corrected signature presentation.
+Owner 08 resumed with the same workers. No part of this group is integrated.
+
+## Owner 04: correction review
+
+Root read all 272 lines of the correction diff for `89e6677deb4cbe1eb59d88de3e811c2912f8be96`.
+The comment and compact signatures preserve executable expressions.
+The task signature continuation columns still need correction. Integration remains pending.
+
+No compiler, build, matching, audit, test, or game command ran during these reviews or integrations.

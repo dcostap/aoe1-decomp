@@ -54,9 +54,14 @@ Owner 22 remains held; this resume authorization covers the two stopped owners o
 | 17 | Core panels | Launched | `sa-70058a7e` |
 | 18 | Panel and dialog support | Launched | `sa-0acc3514` |
 | 19 | Tribe panels | Launched | `sa-cdd1c097` |
-| 20 | Audio and image support | Stopped for RAM use | `sa-704a4bba` |
-| 21 | Game and editor screens | Stopped for RAM use | `sa-2b87499f` |
+| 20 | Audio and image support | Resumed, run 2 | `sa-704a4bba` |
+| 21 | Game and editor screens | Resumed, run 2 | `sa-2b87499f` |
 | 22 | Text and file support | Held for RAM use | Not launched |
 
 No compilation, builds, matching, audits, tests, or games ran during assignment and preparation.
 The same full-diff review and unchanged-output requirements remain active.
+
+Root resumed owner 20 after counting 32 active agents: eight owners and 24 workers.
+Root then checked again before resuming owner 21: eight owners and 22 workers, or 30 total.
+Both owners received instructions to restart failed workers, including RAM failures, without resetting trees or duplicating running workers.
+Owner 22 remains held.
