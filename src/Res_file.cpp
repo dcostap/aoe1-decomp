@@ -3,10 +3,12 @@
 #include "../include/debuglog.h"
 #include "../include/game_globals.h"
 #include <ctype.h>
+#include <fcntl.h>
 #include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 static ResFileHdr* Res_Files;
 static int resource_missing_flag;
@@ -20,49 +22,48 @@ extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned size);
 
-void __cdecl RESFILE_open_new_resource_file(
-    char* name, char* cmpName, char* path, int isMapped)
-{
+void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, char* path, int open_mode) {
     char resFile[260];
     char error_msg[80];
     resfile_header rHeader;
     int fHandle = -1;
     unsigned char* mapped_file_data = 0;
 
-    sprintf(resFile, "%s%s", path, name);
+    sprintf(resFile, "%s%s", path, resFileName);
 
-    if (isMapped == 0) {
-        fHandle = (int)CreateFileA(resFile, 0x80000000, 1, 0, 4, 0x80, 0);
+    if (open_mode == 0) {
+        fHandle = (int)CreateFileA(resFile, GENERIC_READ, FILE_SHARE_READ, 0,
+            OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
         if (fHandle == -1) {
             sprintf(error_msg,
-                "Error: Open_new_ResFile, mapped file %s not Found.", name);
-            MessageBoxA(0, error_msg, "RESOURCE ERROR", 0x30);
+                "Error: Open_new_ResFile, mapped file %s not Found.", resFileName);
+            MessageBoxA(0, error_msg, "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
 
-        HANDLE mapping = CreateFileMappingA((HANDLE)fHandle, 0, 2, 0, 0, 0);
+        HANDLE mapping = CreateFileMappingA((HANDLE)fHandle, 0, PAGE_READONLY, 0, 0, 0);
         CloseHandle((HANDLE)fHandle);
         if (mapping == 0) {
             MessageBoxA(0,
                 "Error: Open_Mapped_ResFile, Could not map file(1).",
-                "RESOURCE ERROR", 0x30);
+                "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
 
-        mapped_file_data = (unsigned char*)MapViewOfFile(mapping, 4, 0, 0, 0);
+        mapped_file_data = (unsigned char*)MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
         if (mapped_file_data == 0) {
             MessageBoxA(0,
                 "Error: Open_Mapped_ResFile, Could not map file to addr.",
-                "RESOURCE ERROR", 0x30);
+                "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
         CloseHandle(mapping);
     } else {
-        fHandle = _open(resFile, 0x8000);
+        fHandle = _open(resFile, _O_BINARY);
         if (fHandle == -1) {
             sprintf(error_msg,
-                "Error: Open_new_ResFile, file %s not Found.", name);
-            MessageBoxA(0, error_msg, "RESOURCE ERROR", 0x30);
+                "Error: Open_new_ResFile, file %s not Found.", resFileName);
+            MessageBoxA(0, error_msg, "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
     }
@@ -70,14 +71,14 @@ void __cdecl RESFILE_open_new_resource_file(
     ResFileHdr* newFile = (ResFileHdr*)malloc(sizeof(ResFileHdr));
     if (newFile == 0) {
         MessageBoxA(0, "Error: Out of memory in Open_resfile.",
-            "RESOURCE ERROR", 0x30);
+            "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return;
     }
 
-    strcpy(newFile->res_name, name);
+    strcpy(newFile->res_name, resFileName);
     newFile->next = 0;
 
-    if (isMapped == 0) {
+    if (open_mode == 0) {
         newFile->handle = -1;
         newFile->mapped_file = mapped_file_data;
         newFile->header = (resfile_header*)mapped_file_data;
@@ -88,7 +89,7 @@ void __cdecl RESFILE_open_new_resource_file(
         if (read(fHandle, &rHeader, 0x40) != 0x40) {
             __asm int 3
             MessageBoxA(0, "Error: Reading resfile header.",
-                "RESOURCE ERROR", 0x30);
+                "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
         newFile->header = (resfile_header*)malloc(rHeader.directory_size);
@@ -96,7 +97,7 @@ void __cdecl RESFILE_open_new_resource_file(
         if (read(fHandle, newFile->header, rHeader.directory_size) !=
             rHeader.directory_size) {
             MessageBoxA(0, "Error: Reading resfile header data.",
-                "RESOURCE ERROR", 0x30);
+                "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
     }
@@ -111,26 +112,25 @@ void __cdecl RESFILE_open_new_resource_file(
         cur->next = newFile;
     }
 
-    if (strcmp(newFile->header->password, cmpName) != 0) {
+    if (strcmp(newFile->header->password, password) != 0) {
         MessageBoxA(0,
             "Error: Open_ResFile, Corruption detected in resfile.",
-            "RESOURCE ERROR", 0x30);
+            "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return;
     }
 
     if (strncmp(newFile->header->version, "1.00", 4) != 0) {
         MessageBoxA(0, "Error: Open_ResFile, Resfile not correct.",
-            "RESOURCE ERROR", 0x30);
+            "RESOURCE ERROR", MB_ICONEXCLAMATION);
     }
 }
 
-void __cdecl RESFILE_close_new_resource_file(char* name)
-{
+void __cdecl RESFILE_close_new_resource_file(char* res_file) {
     ResFileHdr* cur = Res_Files;
     ResFileHdr* prev = 0;
 
     while (cur) {
-        if (strcmp(name, cur->res_name) == 0) {
+        if (strcmp(res_file, cur->res_name) == 0) {
             goto found;
         }
         prev = cur;
@@ -160,47 +160,41 @@ found:
     free(cur);
 }
 
-int __cdecl RESFILE_locate_resource(
-    unsigned long type_id,
-    unsigned long res_id,
-    int& out_fd,
-    int& out_field1,
-    unsigned char*& out_data,
-    int& out_field2)
-{
-    ResFileHdr* cur = Res_Files;
-    out_fd = -1;
-    out_field1 = 0;
-    out_data = 0;
-    out_field2 = 0;
+int __cdecl RESFILE_locate_resource(unsigned long rType, unsigned long rId,
+    int& file, int& offset, unsigned char*& mapped_file, int& size) {
+    ResFileHdr* p = Res_Files;
+    file = -1;
+    offset = 0;
+    mapped_file = 0;
+    size = 0;
 
-    if (!cur) {
+    if (!p) {
         return 0;
     }
 
-    while (cur) {
-        resfile_header* hdr = cur->header;
+    while (p) {
+        resfile_header* hdr = p->header;
         resfile_type_dir_node* dir =
             (resfile_type_dir_node*)((char*)hdr + 0x40);
 
-        for (int i = 0; i < hdr->num_res_types; i++) {
-            if (dir[i].type == type_id) {
+        for (int x = 0; x < hdr->num_res_types; x++) {
+            if (dir[x].type == rType) {
                 resfile_id_dir_node* sub =
-                    (resfile_id_dir_node*)((char*)hdr + dir[i].dirOffset);
+                    (resfile_id_dir_node*)((char*)hdr + dir[x].dirOffset);
 
-                for (int j = 0; j < dir[i].numID; j++) {
-                    if (sub[j].id == res_id) {
-                        out_fd = cur->handle;
-                        out_field1 = sub[j].itemOffset;
-                        out_data = cur->mapped_file;
-                        out_field2 = sub[j].itemSize;
+                for (int j = 0; j < dir[x].numID; j++) {
+                    if (sub[j].id == rId) {
+                        file = p->handle;
+                        offset = sub[j].itemOffset;
+                        mapped_file = p->mapped_file;
+                        size = sub[j].itemSize;
                         return 1;
                     }
                 }
             }
         }
 
-        cur = cur->next;
+        p = p->next;
     }
 
     return 0;
@@ -210,8 +204,7 @@ unsigned char* __cdecl RESFILE_load(
     unsigned long rType,
     unsigned long rId,
     int& rLoadType,
-    int& rDataSize)
-{
+    int& rDataSize) {
     int infile;
     int offset;
     unsigned char* mapped_file;
@@ -227,7 +220,7 @@ unsigned char* __cdecl RESFILE_load(
             sprintf(error_string,
                 "ERROR: res_read_bin, resource type %4.4c , id %d, not found",
                 rType, rId);
-            MessageBoxA(0, error_string, "RESOURCE ERROR", 0x30);
+            MessageBoxA(0, error_string, "RESOURCE ERROR", MB_ICONEXCLAMATION);
         }
         return 0;
     }
@@ -243,78 +236,70 @@ unsigned char* __cdecl RESFILE_load(
     rDataSize = datalength;
     if (data == 0) {
         MessageBoxA(0, "Error: Out of memory in res_read_bin.",
-            "RESOURCE ERROR", 0x30);
+            "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return 0;
     }
 
     lseek(infile, offset, 0);
     if (read(infile, data, datalength) != datalength) {
         MessageBoxA(0, "Error: unable to read resource",
-            "RESOURCE ERROR", 0x30);
+            "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return 0;
     }
 
     return data;
 }
 
-int __cdecl RESFILE_Extract_to_File(
-    unsigned long type,
-    unsigned long id,
-    char* name,
-    FILE*& file)
-{
-    int load_type;
-    int data_size;
+int __cdecl RESFILE_Extract_to_File(unsigned long rType, unsigned long rId,
+    char* file_name, FILE*& file) {
+    int rLoadType;
+    int rDataSize;
     char temp_path[260];
     unsigned char* data;
 
     file = 0;
-    data = RESFILE_load(type, id, load_type, data_size);
+    data = RESFILE_load(rType, rId, rLoadType, rDataSize);
     if (data == 0) {
         return 0;
     }
 
-    if (GetTempPathA(0x104, temp_path) == 0) {
+    if (GetTempPathA(MAX_PATH, temp_path) == 0) {
         strcpy(temp_path, ".");
     }
 
-    if (GetTempFileNameA(temp_path, "temp", 0, name) != 0) {
-        file = fopen(name, "w+");
-        if (file != 0 && data_size > 0) {
-            fwrite(data, data_size, 1, file);
+    if (GetTempFileNameA(temp_path, "temp", 0, file_name) != 0) {
+        file = fopen(file_name, "w+");
+        if (file != 0 && rDataSize > 0) {
+            fwrite(data, rDataSize, 1, file);
             fseek(file, 0, 0);
         }
     }
 
-    if (load_type == 1) {
+    if (rLoadType == 1) {
         free(data);
     }
 
     return file != 0;
 }
 
-void __cdecl RESFILE_Set_Missing_Flag(int flag)
-{
-    resource_missing_flag = flag;
+void __cdecl RESFILE_Set_Missing_Flag(int FlagVal) {
+    resource_missing_flag = FlagVal;
 }
 
-int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size)
-{
-    if ((address != 0) && (size > 0)) {
-        return VirtualFree(address, size, 0x4000);
+int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* ResData, int resSize) {
+    if ((ResData != 0) && (resSize > 0)) {
+        return VirtualFree(ResData, resSize, MEM_DECOMMIT);
     }
     return 0;
 }
 
 char header_message[] = "Copyright (c) 1997 Ensemble Studios.\x1a";
 
-int __cdecl RESFILE_build_res_file(
-    char* build_list_file, char* source_path, char* target_path)
-{
+int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, char* target_path) {
     BuildRes_type_node* ID_List = 0;
     BuildRes_type_node* typeNode;
     BuildRes_type_node* lastType;
-    BuildRes_id_node* idNode;
+    BuildRes_id_node* iq;
     BuildRes_id_node* lastId;
     FILE* buildFile;
     int resHandle;
@@ -394,45 +379,45 @@ int __cdecl RESFILE_build_res_file(
         }
 
         lastId = 0;
-        idNode = typeNode->idList;
-        while (idNode != 0) {
-            if (idNode->id == rId) {
+        iq = typeNode->idList;
+        while (iq != 0) {
+            if (iq->id == rId) {
                 L->Log("Error: duplicate resources: %s & %s",
-                    idNode->fName, data_filename);
+                    iq->fName, data_filename);
                 return 0;
             }
-            if (idNode->id < rId) {
-                lastId = idNode;
+            if (iq->id < rId) {
+                lastId = iq;
             }
-            idNode = idNode->next;
+            iq = iq->next;
         }
 
-        idNode = new BuildRes_id_node;
-        if (idNode == 0) {
+        iq = new BuildRes_id_node;
+        if (iq == 0) {
             L->Log("Error: out of memory #2");
             return 0;
         }
 
-        idNode->id = rId;
-        idNode->dataOffset = 0;
-        idNode->resData = 0;
-        idNode->resSize = 0;
-        idNode->next = 0;
-        strcpy(idNode->fName, data_filename);
+        iq->id = rId;
+        iq->dataOffset = 0;
+        iq->resData = 0;
+        iq->resSize = 0;
+        iq->next = 0;
+        strcpy(iq->fName, data_filename);
 
-        int dataHandle = _open(data_filename, 0x8000);
+        int dataHandle = _open(data_filename, _O_BINARY);
         if (dataHandle == -1) {
             L->Log("Error: unable to open file: %s", data_filename);
-            delete idNode;
+            delete iq;
             continue;
         }
 
         if (lastId == 0) {
-            idNode->next = typeNode->idList;
-            typeNode->idList = idNode;
+            iq->next = typeNode->idList;
+            typeNode->idList = iq;
         } else {
-            idNode->next = lastId->next;
-            lastId->next = idNode;
+            iq->next = lastId->next;
+            lastId->next = iq;
         }
         typeNode->nIds++;
 
@@ -443,14 +428,14 @@ int __cdecl RESFILE_build_res_file(
             return 0;
         }
 
-        idNode->resData = (unsigned char*)malloc(fileSize);
-        if (idNode->resData == 0) {
+        iq->resData = (unsigned char*)malloc(fileSize);
+        if (iq->resData == 0) {
             L->Log("Error: out of memory #3");
             return 0;
         }
 
-        idNode->resSize = fileSize;
-        if (read(dataHandle, idNode->resData, fileSize) != fileSize) {
+        iq->resSize = fileSize;
+        if (read(dataHandle, iq->resData, fileSize) != fileSize) {
             L->Log("Error: error reading file: %s", data_filename);
             return 0;
         }
@@ -459,7 +444,9 @@ int __cdecl RESFILE_build_res_file(
 
     fclose(buildFile);
 
-    resHandle = _open(resource_filename, 0x8301, 0x180);
+    resHandle = _open(resource_filename,
+        _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+        _S_IREAD | _S_IWRITE);
     if (resHandle == -1) {
         L->Log("Error: unable to create resource file file: %s",
             resource_filename);
@@ -478,11 +465,11 @@ int __cdecl RESFILE_build_res_file(
     typeNode = ID_List;
     filePos = dataPos;
     while (typeNode != 0) {
-        idNode = typeNode->idList;
-        while (idNode != 0) {
-            idNode->dataOffset = filePos;
-            filePos += idNode->resSize;
-            idNode = idNode->next;
+        iq = typeNode->idList;
+        while (iq != 0) {
+            iq->dataOffset = filePos;
+            filePos += iq->resSize;
+            iq = iq->next;
         }
         typeNode = typeNode->next;
     }
@@ -521,38 +508,38 @@ int __cdecl RESFILE_build_res_file(
             return 0;
         }
 
-        idNode = typeNode->idList;
-        while (idNode != 0) {
-            idDirNode.id = idNode->id;
-            idDirNode.itemOffset = idNode->dataOffset;
-            idDirNode.itemSize = idNode->resSize;
+        iq = typeNode->idList;
+        while (iq != 0) {
+            idDirNode.id = iq->id;
+            idDirNode.itemOffset = iq->dataOffset;
+            idDirNode.itemSize = iq->resSize;
             if (write(resHandle, &idDirNode, sizeof(idDirNode)) !=
                 sizeof(idDirNode)) {
                 L->Log("Error writing resource file header: id node");
                 return 0;
             }
             filePos += sizeof(idDirNode);
-            idNode = idNode->next;
+            iq = iq->next;
         }
         typeNode = typeNode->next;
     }
 
     typeNode = ID_List;
     while (typeNode != 0) {
-        idNode = typeNode->idList;
-        while (idNode != 0) {
-            if (filePos != idNode->dataOffset) {
+        iq = typeNode->idList;
+        while (iq != 0) {
+            if (filePos != iq->dataOffset) {
                 L->Log(
                     "Error writing resource file data: pos out of sync 2");
                 return 0;
             }
-            if (write(resHandle, idNode->resData, idNode->resSize) !=
-                idNode->resSize) {
+            if (write(resHandle, iq->resData, iq->resSize) !=
+                iq->resSize) {
                 L->Log("Error writing resource file data");
                 return 0;
             }
-            filePos += idNode->resSize;
-            idNode = idNode->next;
+            filePos += iq->resSize;
+            iq = iq->next;
         }
         typeNode = typeNode->next;
     }
@@ -561,14 +548,14 @@ int __cdecl RESFILE_build_res_file(
 
     typeNode = ID_List;
     while (typeNode != 0) {
-        idNode = typeNode->idList;
-        while (idNode != 0) {
-            if (idNode->resData != 0) {
-                free(idNode->resData);
+        iq = typeNode->idList;
+        while (iq != 0) {
+            if (iq->resData != 0) {
+                free(iq->resData);
             }
-            BuildRes_id_node* nextId = idNode->next;
-            delete idNode;
-            idNode = nextId;
+            BuildRes_id_node* nextId = iq->next;
+            delete iq;
+            iq = nextId;
         }
         BuildRes_type_node* nextType = typeNode->next;
         delete typeNode;
@@ -578,18 +565,17 @@ int __cdecl RESFILE_build_res_file(
     return 1;
 }
 
-unsigned long __cdecl BUILDRES_get_files_resource_type(char* name)
-{
-    int len = strlen(name);
+unsigned long __cdecl BUILDRES_get_files_resource_type(char* filename) {
+    int len = strlen(filename);
     int dotPos;
-    char extBuf[8];
+    char extension[8];
 
     if (len < 5 || len >= 0x104) {
         return 0;
     }
 
     for (dotPos = len - 1; dotPos > 0; dotPos--) {
-        if (name[dotPos] == '.') {
+        if (filename[dotPos] == '.') {
             break;
         }
     }
@@ -606,17 +592,17 @@ unsigned long __cdecl BUILDRES_get_files_resource_type(char* name)
         int i;
         int extLen = len - dotPos - 1;
         for (i = 0; i <= extLen; i++) {
-            char c = name[dotPos + 1 + i];
+            char c = filename[dotPos + 1 + i];
             if (isupper(c)) {
                 c = tolower(c);
             }
-            extBuf[i] = c;
+            extension[i] = c;
         }
 
         res_file_type_info* base = res_extension_table;
         unsigned long next = res_extension_table[0].rType;
         while (next != 0) {
-            if (strncmp(base->extension, extBuf, extLen + 1) == 0) {
+            if (strncmp(base->extension, extension, extLen + 1) == 0) {
                 return base->rType;
             }
             next = (base + 1)->rType;
