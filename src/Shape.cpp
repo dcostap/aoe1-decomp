@@ -21,8 +21,7 @@ extern int shape_version_110;
 
 
 
-TShape::TShape()
-{
+TShape::TShape() {
     shape = 0;
     shape_header = 0;
     head = 0;
@@ -33,9 +32,8 @@ TShape::TShape()
     load_size = 0;
 }
 
-TShape::TShape(char* filename, long resource_id)
-{
-    char next_file[260];
+TShape::TShape(char* filename, long resource_file_id) {
+    char NextFile[260];
     int file_handle;
     int file_size;
 
@@ -45,12 +43,12 @@ TShape::TShape(char* filename, long resource_id)
     offsets = 0;
     FShape = 0;
 
-    if (shape_file_first != 0 || resource_id < 0) {
+    if (shape_file_first != 0 || resource_file_id < 0) {
         color_log('T', 'T', 1);
-        strcpy(next_file, filename);
-        strcpy(next_file + strlen(next_file) - 3, "SLP");
+        strcpy(NextFile, filename);
+        strcpy(NextFile + strlen(NextFile) - 3, "SLP");
         ++Shape_Loads;
-        file_handle = open(next_file, 0x8000);
+        file_handle = open(NextFile, 0x8000);
         if (file_handle != -1) {
             lseek(file_handle, 0, 2);
             file_size = tell(file_handle);
@@ -64,8 +62,8 @@ TShape::TShape(char* filename, long resource_id)
         }
 
         if (FShape == 0) {
-            strcpy(next_file + strlen(next_file) - 3, "SHP");
-            file_handle = open(next_file, 0x8000);
+            strcpy(NextFile + strlen(NextFile) - 3, "SHP");
+            file_handle = open(NextFile, 0x8000);
             if (file_handle != -1) {
                 lseek(file_handle, 0, 2);
                 file_size = tell(file_handle);
@@ -82,9 +80,9 @@ TShape::TShape(char* filename, long resource_id)
         color_log('T', '_', 1);
     }
 
-    if (FShape == 0 && shape == 0 && resource_id >= 0) {
+    if (FShape == 0 && shape == 0 && resource_file_id >= 0) {
         ++Shape_Loads;
-        shape = RESFILE_load(0x73687020, resource_id,
+        shape = RESFILE_load(0x73687020, resource_file_id,
             load_type, load_size);
         if (shape != 0) {
             if (((Shape_File_Header*)shape)->version == shape_version_110) {
@@ -92,7 +90,7 @@ TShape::TShape(char* filename, long resource_id)
                 offsets = (Shape_Offsets*)(head + 1);
             }
         } else {
-            shape = RESFILE_load(0x736c7020, resource_id,
+            shape = RESFILE_load(0x736c7020, resource_file_id,
                 load_type, load_size);
             if (shape != 0) {
                 FShape = (SLhape_File_Header*)shape;
@@ -103,8 +101,7 @@ TShape::TShape(char* filename, long resource_id)
     }
 }
 
-TShape::~TShape()
-{
+TShape::~TShape() {
     if (FShape != 0) {
         if (load_type == 1) {
             free(FShape);
@@ -128,8 +125,7 @@ TShape::~TShape()
     FShape = 0;
 }
 
-byte TShape::Check_shape(long param_1, char* param_2)
-{
+byte TShape::Check_shape(long shape_num, char* proc) {
     char* msg = 0;
 
     if (this->shape == 0 && this->FShape == 0) {
@@ -137,32 +133,32 @@ byte TShape::Check_shape(long param_1, char* param_2)
     }
 
     if (this->shape != 0) {
-        Shape_File_Header* h = this->head;
-        if (h == 0) {
-            addstring(&msg, "ERROR: (", param_2);
+        Shape_File_Header* shape_file_header = this->head;
+        if (shape_file_header == 0) {
+            addstring(&msg, "ERROR: (", proc);
             addstring(&msg, msg, ") Bad shape");
             free(msg);
             return 1;
         }
 
-        if (param_1 < 0 || param_1 < h->shape_num) {
-            if (h->version != shape_version_110) {
-                addstring(&msg, "ERROR: (", param_2);
+        if (shape_num < 0 || shape_num < shape_file_header->shape_num) {
+            if (shape_file_header->version != shape_version_110) {
+                addstring(&msg, "ERROR: (", proc);
                 addstring(&msg, msg, ") shape version wrong");
                 free(msg);
                 return 1;
             }
         } else {
-            addstring(&msg, "ERROR: (", param_2);
+            addstring(&msg, "ERROR: (", proc);
             addstring(&msg, msg, ") shape number out of bounds");
             free(msg);
             return 1;
         }
     }
 
-    if (this->FShape != 0 && param_1 >= 0 &&
-        param_1 >= this->FShape->Num_Shapes) {
-        addstring(&msg, "ERROR: (", param_2);
+    if (this->FShape != 0 && shape_num >= 0 &&
+        shape_num >= this->FShape->Num_Shapes) {
+        addstring(&msg, "ERROR: (", proc);
         addstring(&msg, msg, ") Fshape number out of bounds");
         free(msg);
         return 1;
@@ -171,28 +167,26 @@ byte TShape::Check_shape(long param_1, char* param_2)
     return 0;
 }
 
-int TShape::is_loaded()
-{
+int TShape::is_loaded() {
     if (this->shape || this->FShape)
         return 1;
     return 0;
 }
 
-byte TShape::shape_bounds(long index, short& out_width, short& out_height)
-{
+byte TShape::shape_bounds(long shape_num, short& width, short& height) {
     if (this->FShape != 0) {
-        out_width = (short)this->shape_info[index].Width;
-        out_height = (short)this->shape_info[index].Height;
+        width = (short)this->shape_info[shape_num].Width;
+        height = (short)this->shape_info[shape_num].Height;
         return 1;
     }
 
-    if (index >= 0) {
-        unsigned char result = Check_shape(index, "RGL_shape_resolution");
+    if (shape_num >= 0) {
+        unsigned char result = Check_shape(shape_num, "RGL_shape_resolution");
         if (result == 0) {
             this->shape_header =
-                (Shape_Header*)(this->shape + this->offsets[index].shape);
-            out_width = (short)(this->shape_header->bounds >> 16);
-            out_height = (short)this->shape_header->bounds;
+                (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
+            width = (short)(this->shape_header->bounds >> 16);
+            height = (short)this->shape_header->bounds;
             return 1;
         }
     }
@@ -200,8 +194,7 @@ byte TShape::shape_bounds(long index, short& out_width, short& out_height)
     return 0;
 }
 
-long TShape::shape_count()
-{
+long TShape::shape_count() {
     if (Check_shape(-1, "RGL_shape_count") != 0) {
         return 0;
     }
@@ -211,22 +204,21 @@ long TShape::shape_count()
     return this->head->shape_num;
 }
 
-byte TShape::shape_minmax(long& out_minx, long& out_miny,
-                          long& out_maxx, long& out_maxy, long facet)
-{
-    if (facet >= 0) {
-        if (!Check_shape(facet, "RGL_shape_minxy")) {
+byte TShape::shape_minmax(long& x_min, long& y_min,
+                          long& x_max, long& y_max, long shape_num) {
+    if (shape_num >= 0) {
+        if (!Check_shape(shape_num, "RGL_shape_minxy")) {
             if (FShape != 0) {
-                out_minx = -shape_info[facet].Hotspot_X;
-                out_miny = -shape_info[facet].Hotspot_Y;
-                out_maxx = shape_info[facet].Width - shape_info[facet].Hotspot_X - 1;
-                out_maxy = shape_info[facet].Height - shape_info[facet].Hotspot_Y - 1;
+                x_min = -shape_info[shape_num].Hotspot_X;
+                y_min = -shape_info[shape_num].Hotspot_Y;
+                x_max = shape_info[shape_num].Width - shape_info[shape_num].Hotspot_X - 1;
+                y_max = shape_info[shape_num].Height - shape_info[shape_num].Hotspot_Y - 1;
             } else {
-                shape_header = (Shape_Header*)(shape + offsets[facet].shape);
-                out_minx = shape_header->xmin;
-                out_miny = shape_header->ymin;
-                out_maxx = shape_header->xmax;
-                out_maxy = shape_header->ymax;
+                shape_header = (Shape_Header*)(shape + offsets[shape_num].shape);
+                x_min = shape_header->xmin;
+                y_min = shape_header->ymin;
+                x_max = shape_header->xmax;
+                y_max = shape_header->ymax;
             }
             return 1;
         }
@@ -234,19 +226,18 @@ byte TShape::shape_minmax(long& out_minx, long& out_miny,
     return 0;
 }
 
-byte TShape::shape_check(long x, long y, long frame)
-{
-    if (frame < 0 ||
-        this->Check_shape(frame, (char*)"RGL_shape_draw") != 0)
+byte TShape::shape_check(long check_x, long check_y, long shape_num) {
+    if (shape_num < 0 ||
+        this->Check_shape(shape_num, (char*)"RGL_shape_draw") != 0)
         return 0;
 
     if (this->FShape != 0) {
-        Shape_Info* info = this->shape_info + frame;
-        long shape_x = info->Hotspot_X + x;
-        long shape_y = info->Hotspot_Y + y;
+        Shape_Info* info = this->shape_info + shape_num;
+        long shape_x0 = info->Hotspot_X + check_x;
+        long shape_y = info->Hotspot_Y + check_y;
         long width = info->Width;
 
-        if (shape_x >= 0 && shape_y >= 0 && shape_x < width &&
+        if (shape_x0 >= 0 && shape_y >= 0 && shape_x0 < width &&
             shape_y < info->Height) {
             short* outline =
                 (short*)(this->FShape->Version +
@@ -254,8 +245,8 @@ byte TShape::shape_check(long x, long y, long frame)
             long left = outline[shape_y * 2];
             long right = outline[shape_y * 2 + 1];
 
-            if (left >= 0 && left <= shape_x &&
-                shape_x <= width - right) {
+            if (left >= 0 && left <= shape_x0 &&
+                shape_x0 <= width - right) {
                 long* data_offsets =
                     (long*)(this->FShape->Version +
                             info->Shape_Data_Offsets);
@@ -264,7 +255,7 @@ byte TShape::shape_check(long x, long y, long frame)
 
                 if (left < width) {
                     long count;
-                    while (left <= shape_x) {
+                    while (left <= shape_x0) {
                         byte command = *source++;
 
                         switch (command & 0x0f) {
@@ -274,7 +265,7 @@ byte TShape::shape_check(long x, long y, long frame)
                         case 0x0c:
                             count = command >> 2;
                             left += count;
-                            if (shape_x < left)
+                            if (shape_x0 < left)
                                 return 1;
                             source += count;
                             break;
@@ -287,7 +278,7 @@ byte TShape::shape_check(long x, long y, long frame)
                         case 2:
                             count = ((command & 0xff) << 4) | *source++;
                             left += count;
-                            if (shape_x < left)
+                            if (shape_x0 < left)
                                 return 1;
                             source += count;
                             break;
@@ -300,7 +291,7 @@ byte TShape::shape_check(long x, long y, long frame)
                             if (count == 0)
                                 count = *source++;
                             left += count;
-                            if (shape_x < left)
+                            if (shape_x0 < left)
                                 return 1;
                             source += count;
                             break;
@@ -310,7 +301,7 @@ byte TShape::shape_check(long x, long y, long frame)
                             if (count == 0)
                                 count = *source++;
                             left += count;
-                            if (shape_x < left)
+                            if (shape_x0 < left)
                                 return 1;
                             ++source;
                             break;
@@ -319,7 +310,7 @@ byte TShape::shape_check(long x, long y, long frame)
                             if (count == 0)
                                 count = *source++;
                             left += count;
-                            if (shape_x < left)
+                            if (shape_x0 < left)
                                 return 1;
                             break;
                         default:
@@ -334,17 +325,17 @@ byte TShape::shape_check(long x, long y, long frame)
         }
     } else {
         Shape_Header* header =
-            (Shape_Header*)(this->shape + this->offsets[frame].shape);
+            (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
         this->shape_header = header;
 
-        long shape_x = header->xmin;
+        long r = header->xmin;
         long shape_y = header->ymin;
         byte* source = (byte*)(header + 1);
 
-        if (shape_y <= y && y <= header->ymax && shape_x <= x &&
-            x <= header->xmax) {
-            if (shape_y < y) {
-                long rows = y - shape_y;
+        if (shape_y <= check_y && check_y <= header->ymax && r <= check_x &&
+            check_x <= header->xmax) {
+            if (shape_y < check_y) {
+                long rows = check_y - shape_y;
                 do {
                     byte done = 0;
                     do {
@@ -372,13 +363,13 @@ byte TShape::shape_check(long x, long y, long frame)
                 if ((command & 1) == 1) {
                     command >>= 1;
                     if (command == 0) {
-                        shape_x += *source;
-                        if (x < shape_x)
+                        r += *source;
+                        if (check_x < r)
                             return 0;
                         ++source;
                     } else {
-                        shape_x += command;
-                        if (x < shape_x)
+                        r += command;
+                        if (check_x < r)
                             return 1;
                         source += command;
                     }
@@ -387,8 +378,8 @@ byte TShape::shape_check(long x, long y, long frame)
                     if (command == 0) {
                         done = 1;
                     } else {
-                        shape_x += command;
-                        if (x < shape_x)
+                        r += command;
+                        if (check_x < r)
                             return 1;
                         ++source;
                     }
@@ -400,9 +391,8 @@ byte TShape::shape_check(long x, long y, long frame)
     return 0;
 }
 
-byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
-                        byte mode, byte* table)
-{
+byte TShape::shape_draw(TDrawArea* drawarea, long x, long y, long shape_num,
+                        byte flags, byte* color_table) {
     long shape_y1;
     byte ret_num = 0;
     long clip_y0;
@@ -416,14 +406,14 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                 SDI_List->AddDrawNode(
                     this->FShape, info, SDI_Draw_Line,
                     x - info->Hotspot_X, y - info->Hotspot_Y,
-                    fog_next_shape, table, ASMGet_Color_Xform(),
+                    fog_next_shape, color_table, ASMGet_Color_Xform(),
                     SDI_Draw_Level, SDI_Object_ID);
                 return 1;
             }
 
-            TSpan_List_Manager* span_list = td->SpanList;
+            TSpan_List_Manager* span_list = drawarea->SpanList;
             int span_lines = span_list->Num_Lines;
-            TSpan_List_Manager* current = td->CurSpanList;
+            TSpan_List_Manager* current = drawarea->CurSpanList;
             int current_lines = current->Num_Lines;
             int end_line;
             if (span_lines < current_lines)
@@ -431,11 +421,11 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
             else
                 end_line = current_lines - 1;
             ASMSet_Surface_Info(
-                td->CurDisplayOffsets, current->Line_Head_Ptrs,
+                drawarea->CurDisplayOffsets, current->Line_Head_Ptrs,
                 current->Line_Tail_Ptrs, 0, 0, current->Max_Span_Px,
                 end_line);
-            if (table != 0)
-                ASMSet_Xlate_Table(table);
+            if (color_table != 0)
+                ASMSet_Xlate_Table(color_table);
 
             Shape_Info* info = (Shape_Info*)(this->FShape + shape_num + 1);
             ASMDraw_Sprite(
@@ -446,7 +436,7 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
             return 1;
         }
 
-        rect = td->ClipRect;
+        rect = drawarea->ClipRect;
         if (this->shape != 0) {
             this->shape_header =
                 (Shape_Header*)(this->shape + this->offsets[shape_num].shape);
@@ -456,7 +446,7 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
             clip_y0 = raw_y0;
             long shape_x1 = x + shape_header->xmax;
             shape_y1 = y + shape_header->ymax;
-            long clipped_x1 = shape_x1;
+            long clip_x1 = shape_x1;
             long clipped_y1 = shape_y1;
             x = shape_x0;
             y = clipped_y1;
@@ -465,49 +455,49 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                 x = rect.left;
             if (clip_y0 < rect.top)
                 clip_y0 = rect.top;
-            if (clipped_x1 > rect.right)
-                clipped_x1 = rect.right;
+            if (clip_x1 > rect.right)
+                clip_x1 = rect.right;
             if (y > rect.bottom)
                 y = rect.bottom;
             if (x < 0)
                 x = 0;
             if (clip_y0 < 0)
                 clip_y0 = 0;
-            if (clipped_x1 >= td->Width)
-                clipped_x1 = td->Width - 1;
-            if (y >= td->Height)
-                y = td->Height - 1;
+            if (clip_x1 >= drawarea->Width)
+                clip_x1 = drawarea->Width - 1;
+            if (y >= drawarea->Height)
+                y = drawarea->Height - 1;
 
-            if (x <= clipped_x1 && clip_y0 <= y) {
+            if (x <= clip_x1 && clip_y0 <= y) {
                 if (x != shape_x0 || clip_y0 != raw_y0 ||
-                    clipped_x1 != shape_x1 || y != shape_y1) {
-                    switch ((unsigned char)mode) {
+                    clip_x1 != shape_x1 || y != shape_y1) {
+                    switch ((unsigned char)flags) {
                     case 2:
-                        if (table != 0) {
+                        if (color_table != 0) {
                             ret_num = this->shape_shadow_clipped(
-                                td, shape_x0, raw_y0, x, clip_y0,
-                                clipped_x1, y, table);
+                                drawarea, shape_x0, raw_y0, x, clip_y0,
+                                clip_x1, y, color_table);
                         } else {
                             ret_num = this->shape_draw_clipped(
-                                td, shape_x0, raw_y0, x, clip_y0,
-                                clipped_x1, y);
+                                drawarea, shape_x0, raw_y0, x, clip_y0,
+                                clip_x1, y);
                         }
                         break;
                     case 1:
-                        if (table != 0) {
+                        if (color_table != 0) {
                             ret_num = this->shape_color_trans_clipped(
-                                td, shape_x0, raw_y0, shape_num, x,
-                                clip_y0, clipped_x1, y, table);
+                                drawarea, shape_x0, raw_y0, shape_num, x,
+                                clip_y0, clip_x1, y, color_table);
                         } else {
                             ret_num = this->shape_draw_clipped(
-                                td, shape_x0, raw_y0, x, clip_y0,
-                                clipped_x1, y);
+                                drawarea, shape_x0, raw_y0, x, clip_y0,
+                                clip_x1, y);
                         }
                         break;
                     case 0:
                         ret_num = this->shape_draw_clipped(
-                            td, shape_x0, raw_y0, x, clip_y0,
-                            clipped_x1, y);
+                            drawarea, shape_x0, raw_y0, x, clip_y0,
+                            clip_x1, y);
                         break;
                     default:
                         break;
@@ -515,28 +505,28 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                     return ret_num;
                 }
 
-                switch ((unsigned char)mode) {
+                switch ((unsigned char)flags) {
                 case 2:
-                    if (table == 0) {
+                    if (color_table == 0) {
                         ret_num = this->shape_draw_unclipped(
-                            td, shape_x0, raw_y0, shape_num);
+                            drawarea, shape_x0, raw_y0, shape_num);
                     } else {
                         ret_num = this->shape_shadow_unclipped(
-                            td, shape_x0, raw_y0, table);
+                            drawarea, shape_x0, raw_y0, color_table);
                     }
                     break;
                 case 1:
-                    if (table == 0) {
+                    if (color_table == 0) {
                         ret_num = this->shape_draw_unclipped(
-                            td, shape_x0, raw_y0, shape_num);
+                            drawarea, shape_x0, raw_y0, shape_num);
                     } else {
                         ret_num = this->shape_color_trans_unclipped(
-                            td, shape_x0, raw_y0, shape_num, table);
+                            drawarea, shape_x0, raw_y0, shape_num, color_table);
                     }
                     break;
                 case 0:
                     ret_num = this->shape_draw_unclipped(
-                        td, shape_x0, raw_y0, shape_num);
+                        drawarea, shape_x0, raw_y0, shape_num);
                     break;
                 default:
                     break;
@@ -548,32 +538,31 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
     return ret_num;
 }
 
-byte TShape::shape_draw_unclipped(TDrawArea* da, long y, long x,
-                                   long table)
-{
+byte TShape::shape_draw_unclipped(TDrawArea* drawarea, long shape_x0,
+                                  long shape_y0, long shape_num) {
     Shape_Header* sh = this->shape_header;
     int height = sh->ymax - sh->ymin + 1;
     byte* p = (byte*)(sh + 1);
-    long pitch = da->AlignedWidth() * da->Orien;
+    long width = drawarea->AlignedWidth() * drawarea->Orien;
     long rows;
     byte* d;
     byte c;
 
-    if (da->Orien < 1)
-        d = da->Bits + (x - da->Height + 1) * pitch + y;
+    if (drawarea->Orien < 1)
+        d = drawarea->Bits + (shape_y0 - drawarea->Height + 1) * width + shape_x0;
     else
-        d = da->Bits + x * pitch + y;
+        d = drawarea->Bits + shape_y0 * width + shape_x0;
 
-    y = (long)d;
+    shape_x0 = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
             byte done = 0;
             do {
-                byte b = *p++;
-                if ((b & 1) == 1) {
-                    c = b >> 1;
+                byte command = *p++;
+                if ((command & 1) == 1) {
+                    c = command >> 1;
                     if (c == 0) {
                         d += *p;
                         p++;
@@ -583,7 +572,7 @@ byte TShape::shape_draw_unclipped(TDrawArea* da, long y, long x,
                         p += c;
                     }
                 } else {
-                    c = b >> 1;
+                    c = command >> 1;
                     if (c == 0) {
                         done = 1;
                     } else {
@@ -594,8 +583,8 @@ byte TShape::shape_draw_unclipped(TDrawArea* da, long y, long x,
                     }
                 }
             } while (!done);
-            y += pitch;
-            d = (byte*)y;
+            shape_x0 += width;
+            d = (byte*)shape_x0;
         } while (--rows);
     }
 
@@ -604,8 +593,7 @@ byte TShape::shape_draw_unclipped(TDrawArea* da, long y, long x,
 
 byte TShape::shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0,
                                          long shape_y0, long shape_num,
-                                         byte* color_table)
-{
+                                         byte* color_table) {
     Shape_Header* hdr = this->shape_header;
     long height = (hdr->ymax - hdr->ymin) + 1;
     byte* src = (byte*)(hdr + 1);
@@ -664,9 +652,8 @@ byte TShape::shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0,
     return 1;
 }
 
-byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y,
-                                    byte* table)
-{
+byte TShape::shape_shadow_unclipped(TDrawArea* drawarea, long shape_x0,
+                                    long shape_y0, byte* color_table) {
     Shape_Header* sh = shape_header;
     byte* p = (byte*)(sh + 1);
     long height = sh->ymax - sh->ymin + 1;
@@ -674,19 +661,19 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y,
     long rows;
     long width;
 
-    width = da->AlignedWidth() * da->Orien;
+    width = drawarea->AlignedWidth() * drawarea->Orien;
 
-    if (da->Orien < 1)
-        save_buffer = da->Bits + ((y - da->Height) + 1) * width + x;
+    if (drawarea->Orien < 1)
+        save_buffer = drawarea->Bits + ((shape_y0 - drawarea->Height) + 1) * width + shape_x0;
     else
-        save_buffer = da->Bits + y * width + x;
+        save_buffer = drawarea->Bits + shape_y0 * width + shape_x0;
 
-    x = (long)save_buffer;
+    shape_x0 = (long)save_buffer;
 
     if (height > 0) {
         rows = height;
         do {
-            byte* dst = (byte*)x;
+            byte* dst = (byte*)shape_x0;
             byte done = 0;
 
             do {
@@ -699,7 +686,7 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y,
                     } else {
                         byte* e = dst + (command & 0xFF);
                         while (dst < e) {
-                            *dst = table[*dst];
+                            *dst = color_table[*dst];
                             dst++;
                         }
                         p += command;
@@ -711,7 +698,7 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y,
                     } else {
                         byte* e = dst + (command & 0xFF);
                         while (dst < e) {
-                            *dst = table[*dst];
+                            *dst = color_table[*dst];
                             dst++;
                         }
                         p++;
@@ -719,32 +706,31 @@ byte TShape::shape_shadow_unclipped(TDrawArea* da, long x, long y,
                 }
             } while (!done);
 
-            x += width;
+            shape_x0 += width;
         } while (--rows);
     }
 
     return 1;
 }
 
-byte TShape::shape_draw_clipped(TDrawArea* draw_area, long shape_x1,
-                                long shape_y1, long clip_x0, long clip_y0,
-                                long clip_x1, long clip_y1)
-{
-    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+byte TShape::shape_draw_clipped(TDrawArea* drawarea, long shape_x0,
+                                long shape_y0, long clip_x0, long clip_y0,
+                                long clip_x1, long clip_y1) {
+    long pitch = drawarea->AlignedWidth() * drawarea->Orien;
     byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
 
-    if (draw_area->Orien < 1)
-        dst = draw_area->Bits +
-              (clip_y0 - draw_area->Height + 1) * pitch + clip_x0;
+    if (drawarea->Orien < 1)
+        dst = drawarea->Bits +
+              (clip_y0 - drawarea->Height + 1) * pitch + clip_x0;
     else
-        dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
+        dst = drawarea->Bits + clip_y0 * pitch + clip_x0;
 
     byte* save_buffer = dst;
 
-    if (shape_y1 < clip_y0) {
-        long skip_rows = clip_y0 - shape_y1;
-        shape_y1 += skip_rows;
+    if (shape_y0 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y0;
+        shape_y0 += skip_rows;
         do {
             byte done = 0;
             do {
@@ -765,12 +751,12 @@ byte TShape::shape_draw_clipped(TDrawArea* draw_area, long shape_x1,
         } while (--skip_rows != 0);
     }
 
-    if (shape_y1 > clip_y1)
+    if (shape_y0 > clip_y1)
         return 1;
 
-    long rows = clip_y1 - shape_y1 + 1;
+    long rows = clip_y1 - shape_y0 + 1;
     do {
-        long xpos = shape_x1;
+        long xpos = shape_x0;
         byte state;
 
         if (xpos < clip_x0) {
@@ -900,26 +886,25 @@ byte TShape::shape_draw_clipped(TDrawArea* draw_area, long shape_x1,
 }
 
 byte TShape::shape_color_trans_clipped(
-    TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_num,
+    TDrawArea* drawarea, long shape_x0, long shape_y0, long shape_num,
     long clip_x0, long clip_y0, long clip_x1, long clip_y1,
-    byte* color_table)
-{
-    long orientation = draw_area->Orien;
-    long pitch = draw_area->AlignedWidth() * orientation;
+    byte* color_table) {
+    long orientation = drawarea->Orien;
+    long pitch = drawarea->AlignedWidth() * orientation;
     byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
 
     if (orientation < 1)
-        dst = draw_area->Bits +
-              (clip_y0 - draw_area->Height + 1) * pitch + clip_x0;
+        dst = drawarea->Bits +
+              (clip_y0 - drawarea->Height + 1) * pitch + clip_x0;
     else
-        dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
+        dst = drawarea->Bits + clip_y0 * pitch + clip_x0;
 
-    byte* save_buffer = dst;
+    byte* temp_buffer = dst;
 
-    if (shape_y1 < clip_y0) {
-        long skip_rows = clip_y0 - shape_y1;
-        shape_y1 += skip_rows;
+    if (shape_y0 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y0;
+        shape_y0 += skip_rows;
         do {
             byte done = 0;
             do {
@@ -940,12 +925,12 @@ byte TShape::shape_color_trans_clipped(
         } while (--skip_rows != 0);
     }
 
-    if (shape_y1 > clip_y1)
+    if (shape_y0 > clip_y1)
         return 1;
 
-    long rows = clip_y1 - shape_y1 + 1;
+    long rows = clip_y1 - shape_y0 + 1;
     do {
-        long xpos = shape_x1;
+        long xpos = shape_x0;
         byte state;
 
         if (xpos < clip_x0) {
@@ -1077,33 +1062,33 @@ byte TShape::shape_color_trans_clipped(
             }
         }
 
-        save_buffer += pitch;
-        dst = save_buffer;
+        temp_buffer += pitch;
+        dst = temp_buffer;
     } while (--rows != 0);
 
     return 1;
 }
 
-byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
-                                  long shape_y1, long clip_x0, long clip_y0,
-                                  long clip_x1, long clip_y1, byte* table)
-{
-    long orientation = draw_area->Orien;
-    long pitch = draw_area->AlignedWidth() * orientation;
+byte TShape::shape_shadow_clipped(TDrawArea* drawarea, long shape_x0,
+                                  long shape_y0, long clip_x0, long clip_y0,
+                                  long clip_x1, long clip_y1,
+                                  byte* color_table) {
+    long orientation = drawarea->Orien;
+    long pitch = drawarea->AlignedWidth() * orientation;
     byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
 
     if (orientation < 1)
-        dst = draw_area->Bits +
-              (clip_y0 - draw_area->Height + 1) * pitch + clip_x0;
+        dst = drawarea->Bits +
+              (clip_y0 - drawarea->Height + 1) * pitch + clip_x0;
     else
-        dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
+        dst = drawarea->Bits + clip_y0 * pitch + clip_x0;
 
     byte* save_buffer = dst;
 
-    if (shape_y1 < clip_y0) {
-        long skip_rows = clip_y0 - shape_y1;
-        shape_y1 += skip_rows;
+    if (shape_y0 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y0;
+        shape_y0 += skip_rows;
         do {
             byte done = 0;
             do {
@@ -1124,10 +1109,10 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
         } while (--skip_rows != 0);
     }
 
-    if (shape_y1 <= clip_y1) {
-        long rows = clip_y1 - shape_y1 + 1;
+    if (shape_y0 <= clip_y1) {
+        long rows = clip_y1 - shape_y0 + 1;
         do {
-            long xpos = shape_x1;
+            long xpos = shape_x0;
             byte state;
 
             if (xpos < clip_x0) {
@@ -1156,7 +1141,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                     while (dst < end) {
                                         byte value = *dst;
                                         ++dst;
-                                        *(dst - 1) = table[value];
+                                        *(dst - 1) = color_table[value];
                                     }
                                 } else {
                                     state = 1;
@@ -1165,7 +1150,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                     while (dst < end) {
                                         byte value = *dst;
                                         ++dst;
-                                        *(dst - 1) = table[value];
+                                        *(dst - 1) = color_table[value];
                                     }
                                 }
                             }
@@ -1185,7 +1170,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                     while (dst < end) {
                                         byte value = *dst;
                                         ++dst;
-                                        *(dst - 1) = table[value];
+                                        *(dst - 1) = color_table[value];
                                     }
                                 } else {
                                     state = 1;
@@ -1194,7 +1179,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                     while (dst < end) {
                                         byte value = *dst;
                                         ++dst;
-                                        *(dst - 1) = table[value];
+                                        *(dst - 1) = color_table[value];
                                     }
                                 }
                             }
@@ -1226,14 +1211,14 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                             while (dst < end) {
                                 byte value = *dst;
                                 ++dst;
-                                *(dst - 1) = table[value];
+                                *(dst - 1) = color_table[value];
                             }
                         } else {
                             byte* end = dst + command;
                             while (dst < end) {
                                 byte value = *dst;
                                 ++dst;
-                                *(dst - 1) = table[value];
+                                *(dst - 1) = color_table[value];
                             }
                         }
                         src += command;
@@ -1251,14 +1236,14 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                             while (dst < end) {
                                 byte value = *dst;
                                 ++dst;
-                                *(dst - 1) = table[value];
+                                *(dst - 1) = color_table[value];
                             }
                         } else {
                             byte* end = dst + command;
                             while (dst < end) {
                                 byte value = *dst;
                                 ++dst;
-                                *(dst - 1) = table[value];
+                                *(dst - 1) = color_table[value];
                             }
                         }
                         ++src;
@@ -1291,9 +1276,8 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
     return 1;
 }
 
-byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
-                          long shape_num, byte mode, byte* table)
-{
+byte TShape::shape_mirror(TDrawArea* drawarea, long x, long y,
+                          long shape_num, byte flags, byte* color_table) {
     byte ret_num;
     long shape_y1;
     long shape_x1;
@@ -1309,25 +1293,25 @@ byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
                 SDI_List->AddDrawNode(
                     this->FShape, info, SDI_Draw_Line,
                     info->Hotspot_X - info->Width + x,
-                    y - info->Hotspot_Y, fog_next_shape + 2, table,
+                    y - info->Hotspot_Y, fog_next_shape + 2, color_table,
                     ASMGet_Color_Xform(), SDI_Draw_Level, SDI_Object_ID);
                 return 1;
             }
 
-            TSpan_List_Manager* span_list = draw_area->SpanList;
-            TSpan_List_Manager* cur_span_list = draw_area->CurSpanList;
+            TSpan_List_Manager* span_list = drawarea->SpanList;
+            TSpan_List_Manager* cur_span_list = drawarea->CurSpanList;
             int line_count;
             if (span_list->Num_Lines < cur_span_list->Num_Lines)
                 line_count = span_list->Num_Lines - 1;
             else
                 line_count = cur_span_list->Num_Lines - 1;
-            ASMSet_Surface_Info(draw_area->CurDisplayOffsets,
+            ASMSet_Surface_Info(drawarea->CurDisplayOffsets,
                                 cur_span_list->Line_Head_Ptrs,
                                 cur_span_list->Line_Tail_Ptrs,
                                 0, 0, cur_span_list->Max_Span_Px,
                                 line_count);
-            if (table != 0)
-                ASMSet_Xlate_Table(table);
+            if (color_table != 0)
+                ASMSet_Xlate_Table(color_table);
 
             Shape_Info* info = (Shape_Info*)((char*)this->FShape +
                                              ((shape_num + 1) << 5));
@@ -1339,7 +1323,7 @@ byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
             ++ASM_Fast_Count;
             return 1;
         } else {
-            rect = draw_area->ClipRect;
+            rect = drawarea->ClipRect;
             if (this->shape != 0) {
                 Shape_Header* frame =
                     (Shape_Header*)(this->shape +
@@ -1368,40 +1352,40 @@ byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
                     x = 0;
                 if (y < 0)
                     y = 0;
-                if (shape_x1 >= draw_area->Width)
-                    shape_x1 = draw_area->Width - 1;
-                if (shape_y1 >= draw_area->Height)
-                    shape_y1 = draw_area->Height - 1;
+                if (shape_x1 >= drawarea->Width)
+                    shape_x1 = drawarea->Width - 1;
+                if (shape_y1 >= drawarea->Height)
+                    shape_y1 = drawarea->Height - 1;
 
                 if (x <= shape_x1 && y <= shape_y1) {
                     if (x == x0 && y == y0 &&
                         shape_x1 == original_x1 &&
                         shape_y1 == original_y1) {
-                        switch ((unsigned char)mode) {
+                        switch ((unsigned char)flags) {
                         case 2:
-                            if (table == 0) {
+                            if (color_table == 0) {
                                 ret_num = this->shape_mirror_unclipped(
-                                    draw_area, original_x1, original_y0);
+                                    drawarea, original_x1, original_y0);
                             } else {
                                 ret_num = this->shape_mirror_shadow_unclipped(
-                                    draw_area, original_x1, original_y0,
-                                    table);
+                                    drawarea, original_x1, original_y0,
+                                    color_table);
                             }
                             break;
                         case 1:
-                            if (table == 0) {
+                            if (color_table == 0) {
                                 ret_num = this->shape_mirror_unclipped(
-                                    draw_area, original_x1, original_y0);
+                                    drawarea, original_x1, original_y0);
                             } else {
                                 ret_num =
                                     this->shape_mirror_color_trans_unclipped(
-                                        draw_area, original_x1, original_y0,
-                                        shape_num, table);
+                                        drawarea, original_x1, original_y0,
+                                        shape_num, color_table);
                             }
                             break;
                         case 0:
                             ret_num = this->shape_mirror_unclipped(
-                                draw_area, original_x1, original_y0);
+                                drawarea, original_x1, original_y0);
                             break;
                         default:
                             break;
@@ -1409,18 +1393,19 @@ byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
                         return ret_num;
                     }
 
-                    switch ((unsigned char)mode) {
+                    switch ((unsigned char)flags) {
                     case 2:
-                        if (table != 0)
+                        if (color_table != 0)
                             return this->shape_mirror_shadow_clipped(
-                                draw_area, original_x1, original_y0, x, y,
-                                shape_x1, shape_y1, table);
+                                drawarea, original_x1, original_y0, x, y,
+                                shape_x1, shape_y1, color_table);
                         break;
                     case 1:
-                        if (table != 0)
+                        if (color_table != 0)
                             return this->shape_mirror_color_trans_clipped(
-                                draw_area, original_x1, original_y0,
-                                shape_num, x, y, shape_x1, shape_y1, table);
+                                drawarea, original_x1, original_y0,
+                                shape_num, x, y, shape_x1, shape_y1,
+                                color_table);
                         break;
                     case 0:
                         break;
@@ -1428,7 +1413,7 @@ byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
                         return ret_num;
                     }
                     return this->shape_mirror_clipped(
-                        draw_area, original_x1, original_y0, x, y,
+                        drawarea, original_x1, original_y0, x, y,
                         shape_x1, shape_y1);
                 }
             }
@@ -1438,9 +1423,9 @@ byte TShape::shape_mirror(TDrawArea* draw_area, long x, long y,
     return ret_num;
 }
 
-byte TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
-{
-    long pitch = da->AlignedWidth() * da->Orien;
+byte TShape::shape_mirror_unclipped(TDrawArea* drawarea, long shape_x1,
+                                    long shape_y0) {
+    long pitch = drawarea->AlignedWidth() * drawarea->Orien;
     Shape_Header* sh = this->shape_header;
     long height = sh->ymax - sh->ymin + 1;
     byte* p = (byte*)(sh + 1);
@@ -1448,21 +1433,21 @@ byte TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
     byte* d;
     byte c;
 
-    if (da->Orien < 1)
-        d = da->Bits + ((y - da->Height) + 1) * pitch + x + 1;
+    if (drawarea->Orien < 1)
+        d = drawarea->Bits + ((shape_y0 - drawarea->Height) + 1) * pitch + shape_x1 + 1;
     else
-        d = da->Bits + y * pitch + x + 1;
+        d = drawarea->Bits + shape_y0 * pitch + shape_x1 + 1;
 
-    x = (long)d;
+    shape_x1 = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
             byte done = 0;
             do {
-                byte b = *p++;
-                if ((b & 1) == 1) {
-                    c = b >> 1;
+                byte command = *p++;
+                if ((command & 1) == 1) {
+                    c = command >> 1;
                     if (c == 0) {
                         d -= *p;
                         p++;
@@ -1473,7 +1458,7 @@ byte TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
                         }
                     }
                 } else {
-                    c = b >> 1;
+                    c = command >> 1;
                     if (c == 0) {
                         done = 1;
                     } else {
@@ -1484,19 +1469,18 @@ byte TShape::shape_mirror_unclipped(TDrawArea* da, long x, long y)
                     }
                 }
             } while (!done);
-            x += pitch;
-            d = (byte*)x;
+            shape_x1 += pitch;
+            d = (byte*)shape_x1;
         } while (--rows);
     }
 
     return 1;
 }
 
-byte TShape::shape_mirror_color_trans_unclipped(TDrawArea* draw_area, long x,
-                                                long y, long shape_idx,
-                                                byte* table)
-{
-    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+byte TShape::shape_mirror_color_trans_unclipped(
+    TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num,
+    byte* color_table) {
+    long pitch = drawarea->AlignedWidth() * drawarea->Orien;
     Shape_Header* sh = this->shape_header;
     long height = sh->ymax - sh->ymin + 1;
     byte* p = (byte*)(sh + 1);
@@ -1505,55 +1489,54 @@ byte TShape::shape_mirror_color_trans_unclipped(TDrawArea* draw_area, long x,
     byte* d;
     byte c;
 
-    if (draw_area->Orien < 1)
-        d = draw_area->Bits +
-            (y - draw_area->Height + 1) * pitch + x + 1;
+    if (drawarea->Orien < 1)
+        d = drawarea->Bits +
+            (shape_y0 - drawarea->Height + 1) * pitch + shape_x1 + 1;
     else
-        d = draw_area->Bits + y * pitch + x + 1;
+        d = drawarea->Bits + shape_y0 * pitch + shape_x1 + 1;
 
-    x = (long)d;
+    shape_x1 = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
             byte done = 0;
             do {
-                byte b = *p++;
-                if ((b & 1) == 1) {
-                    c = b >> 1;
+                byte command = *p++;
+                if ((command & 1) == 1) {
+                    c = command >> 1;
                     if (c == 0) {
                         d -= *p;
                         p++;
                     } else {
                         while (c > 0) {
-                            *--d = table[*p++];
+                            *--d = color_table[*p++];
                             c--;
                         }
                     }
                 } else {
-                    c = b >> 1;
+                    c = command >> 1;
                     if (c == 0) {
                         done = 1;
                     } else {
-                        byte t = table[*p];
+                        byte t = color_table[*p];
                         d -= c;
                         memset(d, t, c);
                         p++;
                     }
                 }
             } while (!done);
-            x += pitch;
-            d = (byte*)x;
+            shape_x1 += pitch;
+            d = (byte*)shape_x1;
         } while (--rows);
     }
 
     return 1;
 }
 
-byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
-                                           long y, byte* table)
-{
-    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+byte TShape::shape_mirror_shadow_unclipped(TDrawArea* drawarea, long shape_x1,
+                                           long shape_y0, byte* color_table) {
+    long pitch = drawarea->AlignedWidth() * drawarea->Orien;
 
     Shape_Header* hdr = this->shape_header;
     long height = hdr->ymax - hdr->ymin + 1;
@@ -1562,22 +1545,22 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
     byte* d;
     byte c;
 
-    if (draw_area->Orien < 1)
-        d = draw_area->Bits +
-            ((y - draw_area->Height) + 1) * pitch + x + 1;
+    if (drawarea->Orien < 1)
+        d = drawarea->Bits +
+            ((shape_y0 - drawarea->Height) + 1) * pitch + shape_x1 + 1;
     else
-        d = draw_area->Bits + y * pitch + x + 1;
+        d = drawarea->Bits + shape_y0 * pitch + shape_x1 + 1;
 
-    x = (long)d;
+    shape_x1 = (long)d;
 
     if (height > 0) {
         rows = height;
         do {
             byte done = 0;
             do {
-                byte b = *src++;
-                if ((b & 1) == 1) {
-                    c = b >> 1;
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    c = command >> 1;
                     if (c == 0) {
                         d -= *src++;
                     } else {
@@ -1585,13 +1568,13 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
                             unsigned int count = c;
                             do {
                                 --d;
-                                *d = table[*d];
+                                *d = color_table[*d];
                             } while (--count);
                         }
                         src += c;
                     }
                 } else {
-                    c = b >> 1;
+                    c = command >> 1;
                     if (c == 0) {
                         done = 1;
                     } else {
@@ -1599,39 +1582,38 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
                             unsigned int count = c;
                             do {
                                 --d;
-                                *d = table[*d];
+                                *d = color_table[*d];
                             } while (--count);
                         }
                         src++;
                     }
                 }
             } while (!done);
-            x += pitch;
-            d = (byte*)x;
+            shape_x1 += pitch;
+            d = (byte*)shape_x1;
         } while (--rows);
     }
     return 1;
 }
 
-byte TShape::shape_mirror_clipped(TDrawArea* draw_area, long shape_x1,
-                                  long shape_y1, long clip_x0, long clip_y0,
-                                  long clip_x1, long clip_y1)
-{
-    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+byte TShape::shape_mirror_clipped(TDrawArea* drawarea, long shape_x1,
+                                  long shape_y0, long clip_x0, long clip_y0,
+                                  long clip_x1, long clip_y1) {
+    long pitch = drawarea->AlignedWidth() * drawarea->Orien;
     byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
 
-    if (draw_area->Orien < 1)
-        dst = draw_area->Bits +
-              (clip_y0 - draw_area->Height + 1) * pitch + clip_x1 + 1;
+    if (drawarea->Orien < 1)
+        dst = drawarea->Bits +
+              (clip_y0 - drawarea->Height + 1) * pitch + clip_x1 + 1;
     else
-        dst = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
+        dst = drawarea->Bits + clip_y0 * pitch + clip_x1 + 1;
 
     byte* save_buffer = dst;
 
-    if (shape_y1 < clip_y0) {
-        long skip_rows = clip_y0 - shape_y1;
-        shape_y1 += skip_rows;
+    if (shape_y0 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y0;
+        shape_y0 += skip_rows;
         do {
             byte done = 0;
             do {
@@ -1652,10 +1634,10 @@ byte TShape::shape_mirror_clipped(TDrawArea* draw_area, long shape_x1,
         } while (--skip_rows != 0);
     }
 
-    if (shape_y1 > clip_y1)
+    if (shape_y0 > clip_y1)
         return 1;
 
-    long rows = clip_y1 - shape_y1 + 1;
+    long rows = clip_y1 - shape_y0 + 1;
     do {
         long xpos = shape_x1;
         byte state;
@@ -1816,9 +1798,9 @@ byte TShape::shape_mirror_clipped(TDrawArea* draw_area, long shape_x1,
 }
 
 byte TShape::shape_mirror_color_trans_clipped(
-    TDrawArea* draw_area, long shape_x1, long shape_y1, long shape_idx,
-    long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* table)
-{
+    TDrawArea* drawarea, long shape_x1, long shape_y0, long shape_num,
+    long clip_x0, long clip_y0, long clip_x1, long clip_y1,
+    byte* color_table) {
     byte command;
     byte count;
     char state;
@@ -1830,21 +1812,21 @@ byte TShape::shape_mirror_color_trans_clipped(
     long xpos;
     unsigned int transform_count;
 
-    width = draw_area->AlignedWidth();
-    width *= draw_area->Orien;
+    width = drawarea->AlignedWidth();
+    width *= drawarea->Orien;
     header = this->shape_header;
     src = (Shape_Payload*)(header + 1);
 
-    if (draw_area->Orien < 1)
-        save_buffer = draw_area->Bits +
-                      (clip_y0 - draw_area->Height + 1) * width + clip_x1 + 1;
+    if (drawarea->Orien < 1)
+        save_buffer = drawarea->Bits +
+                      (clip_y0 - drawarea->Height + 1) * width + clip_x1 + 1;
     else
-        save_buffer = draw_area->Bits + clip_y0 * width + clip_x1 + 1;
+        save_buffer = drawarea->Bits + clip_y0 * width + clip_x1 + 1;
     dst = save_buffer;
 
-    if (shape_y1 < clip_y0) {
-        long skip_rows = clip_y0 - shape_y1;
-        shape_y1 += skip_rows;
+    if (shape_y0 < clip_y0) {
+        long skip_rows = clip_y0 - shape_y0;
+        shape_y0 += skip_rows;
         do {
             byte done = 0;
             do {
@@ -1865,10 +1847,10 @@ byte TShape::shape_mirror_color_trans_clipped(
         } while (--skip_rows != 0);
     }
 
-    if (shape_y1 > clip_y1)
+    if (shape_y0 > clip_y1)
         return 1;
 
-    long rows = clip_y1 - shape_y1 + 1;
+    long rows = clip_y1 - shape_y0 + 1;
     do {
         xpos = shape_x1;
         if (clip_x1 < xpos) {
@@ -1900,7 +1882,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                                 unsigned int n = transform_count & 0xff;
                                 do {
                                     --dst;
-                                    *dst = table[src++->value];
+                                    *dst = color_table[src++->value];
                                 } while (--n != 0);
                             }
                             src += clip_x0 - xpos;
@@ -1912,7 +1894,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                                 unsigned int n = transform_count & 0xff;
                                 do {
                                     --dst;
-                                    *dst = table[src++->value];
+                                    *dst = color_table[src++->value];
                                 } while (--n != 0);
                             }
                         }
@@ -1932,7 +1914,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                                 transform_count = clip_x1 - xpos;
                             }
                             dst -= transform_count;
-                            memset(dst, table[src->value], transform_count);
+                            memset(dst, color_table[src->value], transform_count);
                         }
                         ++src;
                     }
@@ -1963,7 +1945,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                                 unsigned int n = transform_count & 0xff;
                                 do {
                                     --dst;
-                                    *dst = table[src++->value];
+                                    *dst = color_table[src++->value];
                                 } while (--n != 0);
                             }
                             src += count - transform_count;
@@ -1973,7 +1955,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                                 unsigned int n = transform_count & 0xff;
                                 do {
                                     --dst;
-                                    *dst = table[src++->value];
+                                    *dst = color_table[src++->value];
                                 } while (--n != 0);
                             }
                         }
@@ -1991,7 +1973,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                             transform_count = count;
                         }
                         dst -= transform_count;
-                        memset(dst, table[src->value], transform_count);
+                        memset(dst, color_table[src->value], transform_count);
                         ++src;
                     }
                 }
@@ -2025,25 +2007,24 @@ byte TShape::shape_mirror_color_trans_clipped(
 }
 
 byte TShape::shape_mirror_shadow_clipped(
-    TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0,
-    long clip_y0, long clip_x1, long clip_y1, byte* table)
-{
-    long pitch = draw_area->AlignedWidth() * draw_area->Orien;
+    TDrawArea* drawarea, long shape_x1, long shape_y0, long clip_x0,
+    long clip_y0, long clip_x1, long clip_y1, byte* color_table) {
+    long pitch = drawarea->AlignedWidth() * drawarea->Orien;
     byte* src = (byte*)(this->shape_header + 1);
     byte* dst;
     byte count;
 
-    if (draw_area->Orien < 1)
-        dst = draw_area->Bits +
-              (clip_y0 - draw_area->Height + 1) * pitch + clip_x1 + 1;
+    if (drawarea->Orien < 1)
+        dst = drawarea->Bits +
+              (clip_y0 - drawarea->Height + 1) * pitch + clip_x1 + 1;
     else
-        dst = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
+        dst = drawarea->Bits + clip_y0 * pitch + clip_x1 + 1;
 
     byte* save_buffer = dst;
 
-    if (shape_y1 < clip_y0) {
-        long skip = clip_y0 - shape_y1;
-        shape_y1 += skip;
+    if (shape_y0 < clip_y0) {
+        long skip = clip_y0 - shape_y0;
+        shape_y0 += skip;
         do {
             byte done = 0;
             do {
@@ -2064,8 +2045,8 @@ byte TShape::shape_mirror_shadow_clipped(
         } while (--skip != 0);
     }
 
-    if (shape_y1 <= clip_y1) {
-        long rows = clip_y1 - shape_y1 + 1;
+    if (shape_y0 <= clip_y1) {
+        long rows = clip_y1 - shape_y0 + 1;
         do {
             long xpos = shape_x1;
             char state;
@@ -2102,7 +2083,7 @@ byte TShape::shape_mirror_shadow_clipped(
                                     transform_count &= 0xff;
                                     do {
                                         --dst;
-                                        *dst = table[*dst];
+                                        *dst = color_table[*dst];
                                     } while (--transform_count != 0);
                                 }
                             }
@@ -2128,7 +2109,7 @@ byte TShape::shape_mirror_shadow_clipped(
                                     transform_count &= 0xff;
                                     do {
                                         --dst;
-                                        *dst = table[*dst];
+                                        *dst = color_table[*dst];
                                     } while (--transform_count != 0);
                                 }
                             }
@@ -2161,14 +2142,14 @@ byte TShape::shape_mirror_shadow_clipped(
                                 transform_count &= 0xff;
                                 do {
                                     --dst;
-                                    *dst = table[*dst];
+                                    *dst = color_table[*dst];
                                 } while (--transform_count != 0);
                             }
                         } else {
                             unsigned int transform_count = count;
                             do {
                                 --dst;
-                                *dst = table[*dst];
+                                *dst = color_table[*dst];
                             } while (--transform_count != 0);
                         }
                         src += count;
@@ -2187,14 +2168,14 @@ byte TShape::shape_mirror_shadow_clipped(
                                 transform_count &= 0xff;
                                 do {
                                     --dst;
-                                    *dst = table[*dst];
+                                    *dst = color_table[*dst];
                                 } while (--transform_count != 0);
                             }
                         } else {
                             unsigned int transform_count = count;
                             do {
                                 --dst;
-                                *dst = table[*dst];
+                                *dst = color_table[*dst];
                             } while (--transform_count != 0);
                         }
                         ++src;
@@ -2227,13 +2208,12 @@ byte TShape::shape_mirror_shadow_clipped(
     return 1;
 }
 
-byte TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num,
-                          long dither_x, long dither_y)
-{
+byte TShape::shape_dither(TDrawArea* drawarea, long x, long y, long shape_num,
+                          long dx, long dy) {
     long clip_y1;
     tagRECT rect;
 
-    rect = area->ClipRect;
+    rect = drawarea->ClipRect;
     if (this->Check_shape(shape_num, (char*)"RGL_shape_draw") != 0)
         return 0;
 
@@ -2263,50 +2243,49 @@ byte TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num,
         clip_x0 = 0;
     if (clip_y0 < 0)
         clip_y0 = 0;
-    if (area->Width <= clip_x1)
-        clip_x1 = area->Width - 1;
-    if (area->Height <= clip_y1)
-        clip_y1 = area->Height - 1;
+    if (drawarea->Width <= clip_x1)
+        clip_x1 = drawarea->Width - 1;
+    if (drawarea->Height <= clip_y1)
+        clip_y1 = drawarea->Height - 1;
 
     if (clip_x0 <= clip_x1 && clip_y0 <= clip_y1) {
         if (clip_x0 == shape_x0 && clip_y0 == shape_y0 &&
             clip_x1 == shape_x1 && clip_y1 == shape_y1) {
             return this->shape_dithered_unclipped(
-                area, shape_x0, shape_y0, dither_x, dither_y);
+                drawarea, shape_x0, shape_y0, dx, dy);
         }
 
         return this->shape_dithered_clipped(
-            area, shape_x0, shape_y0, clip_x0, clip_y0, clip_x1, clip_y1,
-            dither_x, dither_y);
+            drawarea, shape_x0, shape_y0, clip_x0, clip_y0, clip_x1, clip_y1,
+            dx, dy);
     }
 
     return 0;
 }
 
-byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
-                                      long p8, long p9)
-{
-    long orientation = area->Orien;
-    long width = area->AlignedWidth() * orientation;
+byte TShape::shape_dithered_unclipped(TDrawArea* drawarea, long shape_x0,
+                                      long shape_y0, long dx, long dy) {
+    long orientation = drawarea->Orien;
+    long width = drawarea->AlignedWidth() * orientation;
     Shape_Header* header = this->shape_header;
     long height = header->ymax - header->ymin + 1;
     byte* src = (byte*)(header + 1);
-    long row_offset;
+    long save_flag;
 
     if (orientation < 1)
-        row_offset = (y - area->Height + 1) * width;
+        save_flag = (shape_y0 - drawarea->Height + 1) * width;
     else
-        row_offset = y * width;
+        save_flag = shape_y0 * width;
 
-    byte* save_buffer = area->Bits + x + row_offset;
-    byte dither = (byte)((p8 + x) & 1);
-    if (((p9 + y) & 1U) != 0)
-        dither = (byte)(dither != 1);
+    byte* save_buffer = drawarea->Bits + shape_x0 + save_flag;
+    byte index1 = (byte)((dx + shape_x0) & 1);
+    if (((dy + shape_y0) & 1U) != 0)
+        index1 = (byte)(index1 != 1);
 
     if (height > 0) {
         long rows = height;
         do {
-            byte row_dither = (byte)(dither != 1);
+            byte row_dither = (byte)(index1 != 1);
             byte* dst = save_buffer;
             byte done = 0;
 
@@ -2318,20 +2297,20 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                         byte count = *src++;
                         dst += count;
                         if ((count & 1) != 0)
-                            dither = (byte)(dither != 1);
+                            index1 = (byte)(index1 != 1);
                     } else {
                         byte count = source_count;
-                        if (dither != 0) {
+                        if (index1 != 0) {
                             --count;
                             ++dst;
                         }
-                        dither = (byte)(count & 1);
+                        index1 = (byte)(count & 1);
                         byte* end = dst + count;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if (dither != 0)
+                        if (index1 != 0)
                             --dst;
                         src += source_count;
                     }
@@ -2341,17 +2320,17 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                         done = 1;
                     } else {
                         byte count = source_count;
-                        if (dither != 0) {
+                        if (index1 != 0) {
                             --count;
                             ++dst;
                         }
-                        dither = (byte)(count & 1);
+                        index1 = (byte)(count & 1);
                         byte* end = dst + count;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if (dither != 0)
+                        if (index1 != 0)
                             --dst;
                         ++src;
                     }
@@ -2359,35 +2338,34 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
             } while (done == 0);
 
             save_buffer += width;
-            dither = row_dither;
+            index1 = row_dither;
         } while (--rows != 0);
     }
 
     return 1;
 }
 
-byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
+byte TShape::shape_dithered_clipped(TDrawArea* drawarea, long shape_x0,
                                     long shape_y0, long clip_x0,
                                     long clip_y0, long clip_x1,
-                                    long clip_y1, long dx, long dy)
-{
-    long orientation = area->Orien;
-    long width = area->AlignedWidth() * orientation;
+                                    long clip_y1, long dx, long dy) {
+    long orientation = drawarea->Orien;
+    long width = drawarea->AlignedWidth() * orientation;
     byte* src = (byte*)(this->shape_header + 1);
-    long row = clip_y0;
+    long y = clip_y0;
 
     if (orientation < 1)
-        row = clip_y0 - area->Height + 1;
+        y = clip_y0 - drawarea->Height + 1;
 
-    byte* save_buffer = area->Bits + clip_x0 + row * width;
-    byte dither = (byte)((dx + clip_x0) & 1);
+    byte* save_buffer = drawarea->Bits + clip_x0 + y * width;
+    byte save_flag = (byte)((dx + clip_x0) & 1);
     if (((dy + clip_y0) & 1U) != 0)
-        dither = (byte)(dither != 1);
+        save_flag = (byte)(save_flag != 1);
 
-    row = shape_y0;
+    y = shape_y0;
     if (shape_y0 < clip_y0) {
         long skip_rows = clip_y0 - shape_y0;
-        row += skip_rows;
+        y += skip_rows;
         do {
             byte done = 0;
             do {
@@ -2408,11 +2386,11 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
         } while (--skip_rows != 0);
     }
 
-    if (row > clip_y1)
+    if (y > clip_y1)
         return 1;
 
     do {
-        byte next_dither = (byte)(dither != 1);
+        byte index1 = (byte)(save_flag != 1);
         byte* dst = save_buffer;
         long x = shape_x0;
         byte state;
@@ -2434,7 +2412,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
                                 byte count = (byte)(x - clip_x0);
                                 dst += count;
                                 if ((count & 1) != 0)
-                                    dither = (byte)(dither != 1);
+                                    save_flag = (byte)(save_flag != 1);
                             }
                         }
                     } else {
@@ -2449,17 +2427,17 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
                                 count = (byte)(x - clip_x0);
                             }
 
-                            if (dither != 0) {
+                            if (save_flag != 0) {
                                 --count;
                                 ++dst;
                             }
-                            dither = (byte)(count & 1);
+                            save_flag = (byte)(count & 1);
                             byte* end = dst + count;
                             while (dst < end) {
                                 *dst = 0;
                                 dst += 2;
                             }
-                            if (dither != 0)
+                            if (save_flag != 0)
                                 --dst;
                         }
                         src += command;
@@ -2480,17 +2458,17 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
                                 count = (byte)(x - clip_x0);
                             }
 
-                            if (dither != 0) {
+                            if (save_flag != 0) {
                                 --count;
                                 ++dst;
                             }
-                            dither = (byte)(count & 1);
+                            save_flag = (byte)(count & 1);
                             byte* end = dst + count;
                             while (dst < end) {
                                 *dst = 0;
                                 dst += 2;
                             }
-                            if (dither != 0)
+                            if (save_flag != 0)
                                 --dst;
                         }
                         ++src;
@@ -2510,7 +2488,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
                     command = *src++;
                     x += command;
                     if ((command & 1) != 0)
-                        dither = (byte)(dither != 1);
+                        save_flag = (byte)(save_flag != 1);
                     dst += command;
                     if (x > clip_x1)
                         state = 1;
@@ -2522,17 +2500,17 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
                         count = (byte)(clip_x1 - x + command + 1);
                     }
 
-                    if (dither != 0) {
+                    if (save_flag != 0) {
                         --count;
                         ++dst;
                     }
-                    dither = (byte)(count & 1);
+                    save_flag = (byte)(count & 1);
                     byte* end = dst + count;
                     while (dst < end) {
                         *dst = 0;
                         dst += 2;
                     }
-                    if (dither != 0)
+                    if (save_flag != 0)
                         --dst;
                     src += command;
                 }
@@ -2548,17 +2526,17 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
                         count = (byte)(clip_x1 - x + command + 1);
                     }
 
-                    if (dither != 0) {
+                    if (save_flag != 0) {
                         --count;
                         ++dst;
                     }
-                    dither = (byte)(count & 1);
+                    save_flag = (byte)(count & 1);
                     byte* end = dst + count;
                     while (dst < end) {
                         *dst = 0;
                         dst += 2;
                     }
-                    if (dither != 0)
+                    if (save_flag != 0)
                         --dst;
                     ++src;
                 }
@@ -2583,9 +2561,9 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long shape_x0,
         }
 
         save_buffer += width;
-        ++row;
-        dither = next_dither;
-    } while (row <= clip_y1);
+        ++y;
+        save_flag = index1;
+    } while (y <= clip_y1);
 
     return 1;
 }
