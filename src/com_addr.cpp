@@ -5,9 +5,8 @@
 // comm is at +0x00, Status is at +0x214, and pIPAD is at +0x220.
 // The constructor calls EraseInformation, WSAStartup, the IPAD
 // array construction, GetHostName, both address loaders, and buffer cleanup.
-RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* handler)
-{
-    this->comm = handler;
+RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* CommIn) {
+    this->comm = CommIn;
     this->EraseInformation();
 
     int wsResult = WSAStartup(0x101, &this->wsaData);
@@ -39,16 +38,14 @@ RGE_Communications_Addresses::~RGE_Communications_Addresses() {
 }
 
 // hostname begins at +0x194 after the WSADATA member.
-char* RGE_Communications_Addresses::GetHostName()
-{
+char* RGE_Communications_Addresses::GetHostName() {
     gethostname(this->hostname, 0x80);
     return this->hostname;
 }
 
 // The method publishes a zero through the caller buffer, scans
 // host aliases, copies each alias, and updates AliasesAvailable.
-int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
-{
+int RGE_Communications_Addresses::SetIPAliases(char* sz) {
     if (!hostname)
         return 0;
 
@@ -56,7 +53,7 @@ int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
     if (!he)
         return 0;
 
-    *out_buffer = 0;
+    *sz = 0;
 
     char** alias_ptr = he->h_aliases;
     AliasesAvailable = 0;
@@ -71,27 +68,27 @@ int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
     return AliasesAvailable;
 }
 
-// pIPAD[index] is formed before the count check. The fallback is
+// pIPAD[Num] is formed before the count check. The fallback is
 // the natural empty string literal used by the original source.
-char* RGE_Communications_Addresses::GetAddress(unsigned int index) {
-    if (this->pIPAD + index != 0 &&
-        index <= this->AddressesAvailable) {
-        return this->pIPAD[index].DottedIPAddress;
+char* RGE_Communications_Addresses::GetAddress(unsigned int Num) {
+    if (this->pIPAD + Num != 0 &&
+        Num <= this->AddressesAvailable) {
+        return this->pIPAD[Num].DottedIPAddress;
     }
     return "";
 }
 
 // The count check, indexed record access, null test, and fallback
 // keep the shipped fault order.
-char* RGE_Communications_Addresses::GetAlias(unsigned int index) {
+char* RGE_Communications_Addresses::GetAlias(unsigned int Num) {
     char* alias;
 
     // The alias count itself passes this test and selects the next record.
     // A >= correction would reject that shipped case and change malformed-input behavior.
-    if (index > this->AliasesAvailable) {
+    if (Num > this->AliasesAvailable) {
         return "";
     }
-    alias = this->pIPAD[index].Alias;
+    alias = this->pIPAD[Num].Alias;
     if (alias == 0) {
         return "";
     }
@@ -99,9 +96,8 @@ char* RGE_Communications_Addresses::GetAlias(unsigned int index) {
 }
 
 // The method tests hostname, resolves the address list, publishes
-// a zero through out_buffer, and then copies each formatted address.
-int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
-{
+// a zero through sz, and then copies each formatted address.
+int RGE_Communications_Addresses::SetIPAddresses(char* sz) {
     char temp[25];
 
     if (!hostname)
@@ -111,7 +107,7 @@ int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
     if (!host)
         return 0;
 
-    *out_buffer = 0;
+    *sz = 0;
 
     char** address_ptr = host->h_addr_list;
     AddressesAvailable = 0;
@@ -120,7 +116,7 @@ int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
     while ((address = (unsigned char*)*address_ptr) != 0) {
         sprintf(temp, "%d.%d.%d.%d\n",
                 address[0], address[1], address[2], address[3]);
-        strcat(out_buffer, temp);
+        strcat(sz, temp);
         strcpy(pIPAD[AddressesAvailable].DottedIPAddress, temp);
         AddressesAvailable++;
         address_ptr++;
