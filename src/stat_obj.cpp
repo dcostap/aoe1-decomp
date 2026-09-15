@@ -336,7 +336,7 @@ int RGE_Static_Object::setup(int infile, RGE_Game_World* gworld) {
     long long_val;
     int byte_val;
     int numberUnits;
-    int temp_int;
+    int tempInt;
     short short_val;
 
     this->type = 10;
@@ -354,11 +354,11 @@ int RGE_Static_Object::setup(int infile, RGE_Game_World* gworld) {
     }
 
     this->old_sprite = 0;
-    rge_read(infile, &temp_int, 4);
-    if (temp_int == -1) {
+    rge_read(infile, &tempInt, 4);
+    if (tempInt == -1) {
         this->inside_obj = 0;
     } else {
-        this->inside_obj = (RGE_Static_Object*)temp_int;
+        this->inside_obj = (RGE_Static_Object*)tempInt;
     }
 
     rge_read(infile, &this->hp, 4);
@@ -392,8 +392,9 @@ int RGE_Static_Object::setup(int infile, RGE_Game_World* gworld) {
         rge_read(infile, &numberUnits, 4);
         rge_read(infile, &numberUnits, 4);
         {
-            rge_read(infile, &temp_int, 4);
+            int temp_int;
             int temp_dword;
+            rge_read(infile, &temp_int, 4);
             rge_read(infile, &temp_dword, 4);
             rge_read(infile, &temp_dword, 4);
         }
