@@ -4,7 +4,8 @@
 
 - Module: `src/Panel_ez.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `de5e4d1c14e9a524652b9dcd4b47268024382600`
+- Initial source commit: `de5e4d1c14e9a524652b9dcd4b47268024382600`
+- Correction commit: this final correction commit
 - Changed files:
   - `src/Panel_ez.cpp`
   - `decomp_notes/source_cleanup/wave03/Panel_ez.md`
@@ -64,7 +65,8 @@ uses these names where the declaration and use mapping is direct:
 - `setup_shadow_area`: `force_redraw`, `area_name`, and the four bounds.
 - `draw_setup`: `clear`.
 - `draw_background`: `use_background2`, `x_min`, `x_max`, `y_min`, `y_max`,
-  `pic`, `pic_y`, and `pic_hgt`.
+  and `pic`. The PDB records `pic_y` and `pic_hgt` at one reused stack home.
+  The source keeps the prior `tile_w` and `pic_w` names for those lifetimes.
 - Mouse and focus paths: `mouse_button_in`, `ctrl_key`, `shift_key`,
   `have_focus_in`, `mouse_x`, and `mouse_y`.
 - Resource setters: `file_name`, `file_name2`, `resource_id`,
@@ -87,11 +89,25 @@ uses these names where the declaration and use mapping is direct:
   `a1`, and `a2`.
 - System colors: `pe`, `cols`, and `elems`.
 
-The PDB records reused stack homes for several locals. The source keeps the
-existing declarations and scopes where the current source cannot map a name
-without changing structure. This applies to scaling temporaries, panel
-pointer temporaries, and the reused `pic_y`/`pic_hgt` home in
-`draw_background`. No uncertain local name was forced into another scope.
+The PDB records reused positive parameter homes for several locals. The source
+does not treat those homes as proof of a source name. It keeps prior names for
+these unresolved mappings:
+
+- The char* `create_button` `ideal_y` record shares the `y` parameter home;
+  the source keeps `sy`.
+- `create_check_box` records `ideal_y` and `ideal_w` share parameter homes;
+  the source keeps `sy` and `sw`.
+- `create_radio_button` records `ideal_y` and `ideal_w` share parameter homes;
+  the source keeps `sx` and `sy`. Its negative-slot `ideal_x` remains.
+- `create_list` records `list` at a reused parameter home; the source keeps
+  `list_items`.
+- `create_scrollbar` records `ideal_h` at a reused parameter home; the source
+  keeps `h`.
+- `create_edit` records `ideal_w` at a reused parameter home. The source uses
+  `scaled_width` because the PDB `width` parameter occupies that identifier.
+
+In `draw_background`, `pic_y` and `pic_hgt` share `-0x18`; the source keeps
+`tile_w` and `pic_w`. No uncertain local name was forced into another scope.
 
 ## Constants, resources, comments, and formatting
 

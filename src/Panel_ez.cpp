@@ -407,7 +407,7 @@ void TEasy_Panel::draw_background(int use_background2) {
         if (this->need_redraw == 2)
             this->render_area->Clear(&this->clip_rect, this->background_color2);
 
-        int pic_y = this->shadow_area->Width;
+        int tile_w = this->shadow_area->Width;
         pic_hgt = this->shadow_area->Height;
         switch (this->background_pos) {
         case 0:
@@ -415,7 +415,7 @@ void TEasy_Panel::draw_background(int use_background2) {
             break;
         case 1: {
             short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
-            short xx = this->pnl_x + this->pnl_wid / 2 - pic_y / 2;
+            short xx = this->pnl_x + this->pnl_wid / 2 - tile_w / 2;
             this->shadow_area->Copy(this->render_area, (long)xx, (long)yy, 0, 0);
             break;
         }
@@ -427,7 +427,7 @@ void TEasy_Panel::draw_background(int use_background2) {
                     if (this->pnl_wid >= 0) {
                         do {
                             this->shadow_area->Copy(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0);
-                            xx += pic_y;
+                            xx += tile_w;
                         } while (xx <= this->pnl_wid);
                     }
                     yy += pic_hgt;
@@ -455,16 +455,16 @@ void TEasy_Panel::draw_background(int use_background2) {
 
     if (this->render_area->Lock("panel_ez::draw_background", 1)) {
         pic->shape_minmax(x_min, y_min, x_max, y_max, 0);
-        long pic_y = x_max - x_min + 1;
+        long pic_w = x_max - x_min + 1;
         pic_hgt = y_max - y_min + 1;
         switch (this->background_pos) {
         case 1: {
             short yy = this->pnl_y + this->pnl_hgt / 2 - pic_hgt / 2;
-            short xx = this->pnl_x + this->pnl_wid / 2 - pic_y / 2;
+            short xx = this->pnl_x + this->pnl_wid / 2 - pic_w / 2;
             pic->shape_draw(this->render_area, (long)xx, (long)yy, 0, 0, 0);
             if (use_background2 && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox((long)xx, (long)yy, xx + pic_y - 1, yy + pic_hgt - 1);
+                this->render_area->DrawShadowBox((long)xx, (long)yy, xx + pic_w - 1, yy + pic_hgt - 1);
             }
             break;
         }
@@ -476,7 +476,7 @@ void TEasy_Panel::draw_background(int use_background2) {
                     if (this->pnl_wid >= 0) {
                         do {
                             pic->shape_draw(this->render_area, this->pnl_x + xx, this->pnl_y + yy, 0, 0, 0);
-                            xx += pic_y;
+                            xx += pic_w;
                         } while (xx <= this->pnl_wid);
                     }
                     yy += pic_hgt;
@@ -492,7 +492,7 @@ void TEasy_Panel::draw_background(int use_background2) {
             pic->shape_draw(this->render_area, this->pnl_x, this->pnl_y, 0, 0, 0);
             if (use_background2 && this->shadow_color_table) {
                 this->render_area->SetShadowTable(this->shadow_color_table);
-                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + pic_y - 1, this->pnl_y + pic_hgt - 1);
+                this->render_area->DrawShadowBox(this->pnl_x, this->pnl_y, this->pnl_x + pic_w - 1, this->pnl_y + pic_hgt - 1);
             }
             break;
         }
@@ -820,14 +820,14 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
                                long sound_num, long action_id) {
     TDigital* sound;
     long ideal_x;
-    long ideal_y;
+    long sy;
     long sw;
     long sh;
     int i;
 
     sound = 0;
     ideal_x = (x * this->pnl_wid) / this->ideal_width;
-    ideal_y = (y * this->pnl_hgt) / this->ideal_height;
+    sy = (y * this->pnl_hgt) / this->ideal_height;
     sw = (width * this->pnl_wid) / this->ideal_width;
     sh = (height * this->pnl_hgt) / this->ideal_height;
 
@@ -838,7 +838,7 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
             sound = rge_base_game->get_sound(sound_num);
         }
 
-        if ((*button)->setup(this->render_area, parent, ideal_x, ideal_y, sw, sh,
+        if ((*button)->setup(this->render_area, parent, ideal_x, sy, sw, sh,
                           TButtonPanel::DrawText, sound,
                           TButtonPanel::NotifyAction, action_id) != 0) {
             (*button)->set_sound_number(sound_num);
@@ -880,20 +880,20 @@ int TEasy_Panel::create_check_box(TPanel* parent, TButtonPanel** button,
                                  long sound_num, long action_id) {
     TDigital* sound;
     long ideal_x;
-    long ideal_y;
+    long sy;
     long sw;
     long sh;
 
     sound = 0;
     ideal_x = x * this->pnl_wid / this->ideal_width;
-    ideal_y = y * this->pnl_hgt / this->ideal_height;
+    sy = y * this->pnl_hgt / this->ideal_height;
     sw = width * this->pnl_wid / this->ideal_width;
     sh = height * this->pnl_hgt / this->ideal_height;
     TButtonPanel* button_panel = new TButtonPanel;
     *button = button_panel;
     if (button_panel != 0 && button_panel->error_code == 0) {
         if (sound_num >= 0) sound = rge_base_game->get_sound(sound_num);
-        if ((*button)->setup(this->render_area, parent, ideal_x, ideal_y, sw, sh,
+        if ((*button)->setup(this->render_area, parent, ideal_x, sy, sw, sh,
                              TButtonPanel::DrawBevelPicture, sound,
                              TButtonPanel::NotifyAction, action_id)) {
             (*button)->set_sound_number(sound_num);
@@ -928,14 +928,14 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
     long ideal_x = x;
     TButtonPanel* button_panel;
     TDigital* sound;
-    long ideal_y;
-    long ideal_w;
+    long sx;
+    long sy;
     long sw;
     long sh;
 
     sound = 0;
-    ideal_y = (ideal_x * this->pnl_wid) / this->ideal_width;
-    ideal_w = (y * this->pnl_hgt) / this->ideal_height;
+    sx = (ideal_x * this->pnl_wid) / this->ideal_width;
+    sy = (y * this->pnl_hgt) / this->ideal_height;
     sw = (width * this->pnl_wid) / this->ideal_width;
     sh = (height * this->pnl_hgt) / this->ideal_height;
 
@@ -946,7 +946,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** button,
             sound = rge_base_game->get_sound(sound_num);
         }
 
-        if ((*button)->setup(this->render_area, parent, ideal_y, ideal_w, sw, sh,
+        if ((*button)->setup(this->render_area, parent, sx, sy, sw, sh,
                           TButtonPanel::DrawPicture, sound,
                           TButtonPanel::NotifyAction, action_id)) {
             (*button)->set_sound_number(sound_num);
@@ -995,7 +995,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
-    long ideal_h = (height * this->pnl_hgt) / this->ideal_height;
+    long h = (height * this->pnl_hgt) / this->ideal_height;
 
     *text_panel = new TTextPanel;
     if (*text_panel != 0 && (*text_panel)->error_code == 0) {
@@ -1115,7 +1115,7 @@ int TEasy_Panel::create_edit(TPanel* parent, TEditPanel** edit_panel,
                              int enable_ime, int turn_ime_on) {
     int scaled_x = (x * this->pnl_wid) / this->ideal_width;
     int scaled_y = (this->pnl_hgt * y) / this->ideal_height;
-    int ideal_w = (width * this->pnl_wid) / this->ideal_width;
+    int scaled_width = (width * this->pnl_wid) / this->ideal_width;
 
     *edit_panel = new TEditPanel;
     if (*edit_panel != 0 && (*edit_panel)->error_code == 0) {
@@ -1129,7 +1129,7 @@ int TEasy_Panel::create_edit(TPanel* parent, TEditPanel** edit_panel,
         int multiline = (format_type != 7) ? 1 : 0;
 
         if ((*edit_panel)->setup(this->render_area, parent, scaled_x, scaled_y,
-                                 ideal_w, height, font->font, max_len, value,
+                                 scaled_width, height, font->font, max_len, value,
                                  format_type, multiline)) {
 
             if (this->use_bevels) {
@@ -1211,7 +1211,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
 
     ideal.x = (x * this->pnl_wid) / this->ideal_width;
     ideal.y = (y * this->pnl_hgt) / this->ideal_height;
-    char** list;
+    char** list_items;
     RGE_Font* font;
 
     width = (width * this->pnl_wid) / this->ideal_width;
@@ -1223,23 +1223,23 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
         rge_base_game->get_font(10);
     }
 
-    list = (char**)calloc(1, sizeof(char*));
-    if (list == 0) {
+    list_items = (char**)calloc(1, sizeof(char*));
+    if (list_items == 0) {
         this->error_code = 1;
         return 0;
     }
-    list[0] = (char*)calloc(0x14, 1);
-    if (list[0] == 0) {
+    list_items[0] = (char*)calloc(0x14, 1);
+    if (list_items[0] == 0) {
         goto cleanup_fail;
     }
-    strcpy(list[0], " ");
+    strcpy(list_items[0], " ");
 
     if (this->error_code == 0) {
         TListPanel* list_panel_instance = new TListPanel;
         *list_panel = list_panel_instance;
         if (list_panel_instance != 0 && list_panel_instance->error_code == 0) {
             font = rge_base_game->get_font(font_num);
-            if ((*list_panel)->setup(this->render_area, parent, ideal.x, ideal.y, width, ideal_h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list, 1) != 0) {
+            if ((*list_panel)->setup(this->render_area, parent, ideal.x, ideal.y, width, ideal_h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
                 (*list_panel)->scroll_cur_line(1, 0, 1);
                 goto cleanup_success;
             }
@@ -1249,7 +1249,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
 
 cleanup_success: {
         int n = 1;
-        char** p = list;
+        char** p = list_items;
         do {
             if (*p != 0) {
                 free(*p);
@@ -1259,7 +1259,7 @@ cleanup_success: {
             --n;
         } while (n != 0);
     }
-    free(list);
+    free(list_items);
     if (this->use_bevels != 0) {
         TListPanel* list_panel_instance = *list_panel;
         list_panel_instance->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
@@ -1278,13 +1278,13 @@ int TEasy_Panel::create_scrollbar(TPanel* parent,
                                   long x, long y, long width, long height) {
     long scaled_x = (this->pnl_wid * x) / this->ideal_width;
     long scaled_y = (y * this->pnl_hgt) / this->ideal_height;
-    long ideal_h = (height * this->pnl_hgt) / this->ideal_height;
+    long h = (height * this->pnl_hgt) / this->ideal_height;
     TScrollBarPanel* sb = new TScrollBarPanel;
     *scrollbar_panel = sb;
 
     if (sb != 0) {
         if (sb->error_code == 0) {
-            if (sb->setup(this->render_area, parent, scaled_x, scaled_y, width, ideal_h, 0, 0, 0, 0, width, width, list_panel, list_size, TScrollBarPanel::Vertical) != 0) {
+            if (sb->setup(this->render_area, parent, scaled_x, scaled_y, width, h, 0, 0, 0, 0, width, width, list_panel, list_size, TScrollBarPanel::Vertical) != 0) {
                 if (list_panel != 0) {
                     list_panel->set_scrollbar(*scrollbar_panel, 0);
                 }
