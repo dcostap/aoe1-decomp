@@ -1,4 +1,5 @@
 #include "../include/tpnl_pop.h"
+#include "../include/resource_ids.h"
 #include "../include/tribegam.h"
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
@@ -188,7 +189,7 @@ void TRIBE_Panel_Pop::draw() {
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
         old_font = SelectObject(this->render_area->DrawDc, this->font);
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
-        sprintf(str, "%s%ld/%ld", this->get_string(0x2B2A),
+        sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX),
                 this->pop, this->max_pop);
 
         SetTextColor(this->render_area->DrawDc, this->color2);
@@ -261,7 +262,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, TRANSPARENT);
 
-    sprintf(str, "%s%ld/%ld", this->get_string(0x2B2A), this->pop,
+    sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop,
             this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
 
