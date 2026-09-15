@@ -5,17 +5,27 @@
 - Module: `src/scr_sedm.cpp`
 - Branch: `cleanup/staging-20260915-185`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source-cleanup commit: `67137c7ae8e5d06f3c1f7610150b132ebd350920`
+- Final source-cleanup commit: `e749f5516dc100bf3d06f20475a453c2dacaae36`
 - Changed files:
   - `src/scr_sedm.cpp`
   - `decomp_notes/source_cleanup/wave03/scr_sedm.md`
 - `include/scr_sedm.h` was read but not changed.
 
 The first source-cleanup commit contains only the assigned source file. The
-final source-format correction and first report version are in
+earlier source-format correction and first report version are in
 `67137c7ae8e5d06f3c1f7610150b132ebd350920`. Both commits touch assigned paths
 only. A report-only correction follows. The handoff response records its full
 hash.
+
+## Follow-up correction record
+
+The final combined review found three non-1TBS function openings in the
+source. Commit `e749f5516dc100bf3d06f20475a453c2dacaae36` moved only the
+constructor, destructor, and `handle_idle` opening braces onto their function
+or initializer lines. It changed no token, statement, scope, or behavior.
+
+This report update records that correction. No compiler, build, matching check,
+audit, validation, test, or game was run.
 
 ## Scope and evidence
 
@@ -238,5 +248,6 @@ The result is reviewed but unvalidated.
 - Base: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Initial source cleanup: `9649a6df2ff1ff8be90ae9acc5a546746b026cbb`
 - Final source-format correction and first report version: `67137c7ae8e5d06f3c1f7610150b132ebd350920`
+- 1TBS opening-brace correction: `e749f5516dc100bf3d06f20475a453c2dacaae36`
 - Report-only correction: committed after this source tree; its full hash is
   recorded in the handoff response.
