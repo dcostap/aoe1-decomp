@@ -23,65 +23,65 @@ extern "C" int __cdecl atoi(const char*);
 #pragma function(memcpy)
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 
-void __cdecl DibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
-                    long dx, long dy, long dw, long dh,
-                    BITMAPINFO256* srcInfo, uchar* src,
-                    long sx, long sy, long sw, long sh,
-                    int doClip, int flipX, int flipY)
+void __cdecl DibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect,
+                    long DestX, long DestY, long DestWid, long DestHgt,
+                    BITMAPINFO256* SrcInfo, uchar* SrcBits,
+                    long SrcX, long SrcY, long SrcWid, long SrcHgt,
+                    int Clip, int Mirror, int Flip)
 {
-    if (doClip != 0 &&
-        ClipDibBlt(dstInfo, dstRect, dx, dy, dw, dh,
-                   sx, sy, sw, sh, flipX, flipY) == 0)
+    if (Clip != 0 &&
+        ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt,
+                   SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip) == 0)
         return;
 
-    long dstStride;
-    long dstHeight;
-    long dstOrientation;
-    long srcStride;
-    long srcHeight;
-    long srcOrientation;
+    long DestTotWid;
+    long DestTotHgt;
+    long DestOrien;
+    long SrcTotWid;
+    long SrcTotHgt;
+    long SrcOrien;
 
-    GetDibDim(dstInfo, dstStride, dstHeight, dstOrientation);
-    GetDibDim(srcInfo, srcStride, srcHeight, srcOrientation);
-    if (flipY != 0)
-        srcOrientation = -srcOrientation;
+    GetDibDim(DestInfo, DestTotWid, DestTotHgt, DestOrien);
+    GetDibDim(SrcInfo, SrcTotWid, SrcTotHgt, SrcOrien);
+    if (Flip != 0)
+        SrcOrien = -SrcOrien;
 
-    long xStep = (sw << 8) / dw;
-    long yStep = (sh << 8) / dh;
-    long dstRow;
-    if (dstOrientation == 1)
-        dstRow = dy;
+    long xStep = (SrcWid << 8) / DestWid;
+    long yStep = (SrcHgt << 8) / DestHgt;
+    long dy;
+    if (DestOrien == 1)
+        dy = DestY;
     else
-        dstRow = dstHeight - dy - 1;
-    uchar* dstLine = dst + dstRow * dstStride + dx;
+        dy = DestTotHgt - DestY - 1;
+    uchar* dstLine = DestBits + dy * DestTotWid + DestX;
 
-    if (xStep == 0x100 && yStep == 0x100 && flipX == 0) {
+    if (xStep == 0x100 && yStep == 0x100 && Mirror == 0) {
         long srcRow;
-        if (srcOrientation == 1)
-            srcRow = sy;
+        if (SrcOrien == 1)
+            srcRow = SrcY;
         else
-            srcRow = srcHeight - sy - 1;
+            srcRow = SrcTotHgt - SrcY - 1;
 
-        uchar* srcLine = src + srcRow * srcStride + sx;
-        long dstLineStep = dstOrientation * dstStride;
-        long srcLineStep = srcOrientation * srcStride;
+        uchar* srcLine = SrcBits + srcRow * SrcTotWid + SrcX;
+        long dstLineStep = DestOrien * DestTotWid;
+        long srcLineStep = SrcOrien * SrcTotWid;
         long row = 0;
-        if (dh > 0) {
+        if (DestHgt > 0) {
             do {
-                memcpy(dstLine, srcLine, dw);
+                memcpy(dstLine, srcLine, DestWid);
                 dstLine += dstLineStep;
                 srcLine += srcLineStep;
                 ++row;
-            } while (row < dh);
+            } while (row < DestHgt);
         }
         return;
     }
 
-    long srcPosition = sx;
-    if (flipX == 0) {
-        if (dw > 0) {
+    long srcPosition = SrcX;
+    if (Mirror == 0) {
+        if (DestWid > 0) {
             long* entry = SrcXTbl;
-            long remaining = dw;
+            long remaining = DestWid;
             do {
                 *entry++ = srcPosition >> 8;
                 srcPosition += xStep;
@@ -89,7 +89,7 @@ void __cdecl DibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
             } while (remaining != 0);
         }
     } else {
-        long remaining = dw - 1;
+        long remaining = DestWid - 1;
         if (remaining >= 0) {
             long* entry = SrcXTbl + remaining;
             ++remaining;
@@ -101,81 +101,81 @@ void __cdecl DibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
         }
     }
 
-    long dstLineStep = dstOrientation * dstStride;
-    long srcY = sy << 8;
+    long dstLineStep = DestOrien * DestTotWid;
+    long sySkip = SrcY << 8;
     long row = 0;
-    if (dh > 0) {
+    if (DestHgt > 0) {
         do {
             long srcRow;
-            if (srcOrientation == 1)
-                srcRow = srcY >> 8;
+            if (SrcOrien == 1)
+                srcRow = sySkip >> 8;
             else
-                srcRow = srcHeight - (srcY >> 8) - 1;
+                srcRow = SrcTotHgt - (sySkip >> 8) - 1;
 
-            uchar* srcLine = src + srcRow * srcStride + sx;
+            uchar* srcLine = SrcBits + srcRow * SrcTotWid + SrcX;
             long x = 0;
-            if (dw > 0) {
+            if (DestWid > 0) {
                 long* entry = SrcXTbl;
                 do {
                     dstLine[x] = srcLine[*entry++];
                     ++x;
-                } while (x < dw);
+                } while (x < DestWid);
             }
-            srcY += yStep;
+            sySkip += yStep;
             dstLine += dstLineStep;
             ++row;
-        } while (row < dh);
+        } while (row < DestHgt);
     }
 }
 
-void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
-                         long dx, long dy, long dw, long dh,
-                         BITMAPINFO256* srcInfo, uchar* src,
-                         TRANSINFO* transInfo,
-                         long sx, long sy, long sw, long sh,
-                         int doClip, int flipX, int flipY, int transColor)
+void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect,
+                         long DestX, long DestY, long DestWid, long DestHgt,
+                         BITMAPINFO256* SrcInfo, uchar* SrcBits,
+                         TRANSINFO* TransInfo,
+                         long SrcX, long SrcY, long SrcWid, long SrcHgt,
+                         int Clip, int Mirror, int Flip, int TransColor)
 {
-    if (transInfo != 0 && transInfo->AnyTrans == 0) {
-        DibBlt(dstInfo, dst, dstRect, dx, dy, dw, dh,
-               srcInfo, src, sx, sy, sw, sh, doClip, flipX, flipY);
+    if (TransInfo != 0 && TransInfo->AnyTrans == 0) {
+        DibBlt(DestInfo, DestBits, ClipRect, DestX, DestY, DestWid, DestHgt,
+               SrcInfo, SrcBits, SrcX, SrcY, SrcWid, SrcHgt, Clip, Mirror, Flip);
         return;
     }
 
-    if (transColor < 0)
-        transColor = 0;
+    if (TransColor < 0)
+        TransColor = 0;
 
-    if (doClip != 0 &&
-        ClipDibBlt(dstInfo, dstRect, dx, dy, dw, dh,
-                   sx, sy, sw, sh, flipX, flipY) == 0)
+    if (Clip != 0 &&
+        ClipDibBlt(DestInfo, ClipRect, DestX, DestY, DestWid, DestHgt,
+                   SrcX, SrcY, SrcWid, SrcHgt, Mirror, Flip) == 0)
         return;
 
-    long xStep = (sw << 8) / dw;
-    long yStep = (sh << 8) / dh;
-    long dstStride;
-    long dstHeight;
-    long dstOrientation;
-    long srcStride;
-    long srcHeight;
-    long srcOrientation;
+    long xStep = (SrcWid << 8) / DestWid;
+    long yStep = (SrcHgt << 8) / DestHgt;
+    long DestTotWid;
+    long DestTotHgt;
+    long DestOrien;
+    long SrcTotWid;
+    long SrcTotHgt;
+    long SrcOrien;
 
-    GetDibDim(dstInfo, dstStride, dstHeight, dstOrientation);
-    GetDibDim(srcInfo, srcStride, srcHeight, srcOrientation);
-    if (flipY != 0)
-        srcOrientation = -srcOrientation;
+    GetDibDim(DestInfo, DestTotWid, DestTotHgt, DestOrien);
+    GetDibDim(SrcInfo, SrcTotWid, SrcTotHgt, SrcOrien);
+    if (Flip != 0)
+        SrcOrien = -SrcOrien;
 
-    long dstPerSrc = (dw << 8) / sw;
-    long dstRow;
-    if (dstOrientation == 1)
-        dstRow = dy;
+    long dstPerSrc = (DestWid << 8) / SrcWid;
+    long dy;
+    if (DestOrien == 1)
+        dy = DestY;
     else
-        dstRow = dstHeight - dy - 1;
-    uchar* dstLine = dst + dstRow * dstStride + dx;
+        dy = DestTotHgt - DestY - 1;
+    uchar* dstLine = DestBits + dy * DestTotWid + DestX;
 
-    long srcPosition = sx;
-    if (flipX == 0) {
-        if (dw > 0) {
+    long srcPosition = SrcX;
+    if (Mirror == 0) {
+        if (DestWid > 0) {
             long* entry = SrcXTbl;
-            long remaining = dw;
+            long remaining = DestWid;
             do {
                 *entry++ = srcPosition >> 8;
                 srcPosition += xStep;
@@ -183,7 +183,7 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
             } while (remaining != 0);
         }
     } else {
-        long remaining = dw - 1;
+        long remaining = DestWid - 1;
         if (remaining >= 0) {
             long* entry = SrcXTbl + remaining;
             ++remaining;
@@ -195,45 +195,45 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
         }
     }
 
-    long dstLineStep = dstOrientation * dstStride;
-    long srcY = sy << 8;
+    long dstLineStep = DestOrien * DestTotWid;
+    long sy = SrcY << 8;
     long row = 0;
 
-    if (flipX == 0 && transInfo != 0 && transInfo->LineInfo != 0) {
-        LINEINFO* lineInfo = transInfo->LineInfo;
-        if (dh > 0) {
+    if (Mirror == 0 && TransInfo != 0 && TransInfo->LineInfo != 0) {
+        LINEINFO* lineInfo = TransInfo->LineInfo;
+        if (DestHgt > 0) {
             do {
-                long srcLineNumber = srcY >> 8;
+                long srcLineNumber = sy >> 8;
                 long srcRow;
-                if (srcOrientation == 1)
+                if (SrcOrien == 1)
                     srcRow = srcLineNumber;
                 else
-                    srcRow = srcHeight - srcLineNumber - 1;
-                uchar* srcLine = src + srcRow * srcStride + sx;
+                    srcRow = SrcTotHgt - srcLineNumber - 1;
+                uchar* srcLine = SrcBits + srcRow * SrcTotWid + SrcX;
                 LINEINFO* line = lineInfo + srcLineNumber;
 
                 if (line->AllTrans == 0) {
-                    long first;
-                    if (line->StartX < sx)
-                        first = 0;
+                    long dxSkip;
+                    if (line->StartX < SrcX)
+                        dxSkip = 0;
                     else
-                        first = ((line->StartX - sx) * dstPerSrc) >> 8;
+                        dxSkip = ((line->StartX - SrcX) * dstPerSrc) >> 8;
 
-                    long last = ((line->EndX - sx + 1) * dstPerSrc) >> 8;
-                    if (last > dw)
-                        last = dw;
+                    long last = ((line->EndX - SrcX + 1) * dstPerSrc) >> 8;
+                    if (last > DestWid)
+                        last = DestWid;
 
-                    if (first < last) {
+                    if (dxSkip < last) {
                         if (dstPerSrc == 0x100 && line->MidSolid != 0) {
-                            memcpy(dstLine + first, srcLine + first,
-                                   last - first);
+                            memcpy(dstLine + dxSkip, srcLine + dxSkip,
+                                   last - dxSkip);
                         } else {
-                            long x = first;
+                            long x = dxSkip;
                             do {
-                                uchar color = srcLine[SrcXTbl[x]];
-                                if ((unsigned int)color !=
-                                    (unsigned int)transColor)
-                                    dstLine[x] = color;
+                                uchar b = srcLine[SrcXTbl[x]];
+                                if ((unsigned int)b !=
+                                    (unsigned int)TransColor)
+                                    dstLine[x] = b;
                                 ++x;
                             } while (x < last);
                         }
@@ -241,129 +241,129 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                 }
 
                 dstLine += dstLineStep;
-                srcY += yStep;
+                sy += yStep;
                 ++row;
-            } while (row < dh);
+            } while (row < DestHgt);
         }
         return;
     }
 
-    if (dh > 0) {
+    if (DestHgt > 0) {
         do {
-            long srcLineNumber = srcY >> 8;
+            long srcLineNumber = sy >> 8;
             long srcRow;
-            if (srcOrientation == 1)
+            if (SrcOrien == 1)
                 srcRow = srcLineNumber;
             else
-                srcRow = srcHeight - srcLineNumber - 1;
-            uchar* srcLine = src + srcRow * srcStride + sx;
+                srcRow = SrcTotHgt - srcLineNumber - 1;
+            uchar* srcLine = SrcBits + srcRow * SrcTotWid + SrcX;
 
             long x = 0;
-            if (dw > 0) {
+            if (DestWid > 0) {
                 do {
-                    uchar color = srcLine[SrcXTbl[x]];
-                    if ((unsigned int)color != (unsigned int)transColor)
-                        dstLine[x] = color;
+                    uchar b = srcLine[SrcXTbl[x]];
+                    if ((unsigned int)b != (unsigned int)TransColor)
+                        dstLine[x] = b;
                     ++x;
-                } while (x < dw);
+                } while (x < DestWid);
             }
 
             dstLine += dstLineStep;
-            srcY += yStep;
+            sy += yStep;
             ++row;
-        } while (row < dh);
+        } while (row < DestHgt);
     }
 }
 
-int __cdecl ClipDibBlt(BITMAPINFO256* dib, RECT* rect,
-    LONG& x, LONG& y, LONG& width, LONG& height,
-    LONG& src_x, LONG& src_y, LONG& src_width, LONG& src_height,
-    int flip_x, int flip_y)
+int __cdecl ClipDibBlt(BITMAPINFO256* DestInfo, RECT* ClipRect,
+    LONG& DestX, LONG& DestY, LONG& DestWid, LONG& DestHgt,
+    LONG& SrcX, LONG& SrcY, LONG& SrcWid, LONG& SrcHgt,
+    int Mirror, int Flip)
 {
     LONG left;
     LONG top;
-    LONG right;
-    LONG bottom;
+    LONG ex;
+    LONG ey;
 
-    if (rect != 0) {
-        left = rect->left;
-        top = rect->top;
-        right = rect->right + 1;
-        bottom = rect->bottom + 1;
+    if (ClipRect != 0) {
+        left = ClipRect->left;
+        top = ClipRect->top;
+        ex = ClipRect->right + 1;
+        ey = ClipRect->bottom + 1;
     } else {
         left = 0;
         top = 0;
-        right = dib->bmiHeader.biWidth;
-        bottom = dib->bmiHeader.biHeight;
+        ex = DestInfo->bmiHeader.biWidth;
+        ey = DestInfo->bmiHeader.biHeight;
     }
 
-    if (bottom < 0)
-        bottom = -bottom;
-    right--;
-    bottom--;
+    if (ey < 0)
+        ey = -ey;
+    ex--;
+    ey--;
 
-    if (x <= right && y <= bottom &&
-        width + x - 1 >= left &&
-        height + y - 1 >= top && width >= 1 && height >= 1) {
-        LONG x_scale = (src_width << 8) / width;
-        LONG y_scale = (src_height << 8) / height;
+    if (DestX <= ex && DestY <= ey &&
+        DestWid + DestX - 1 >= left &&
+        DestHgt + DestY - 1 >= top && DestWid >= 1 && DestHgt >= 1) {
+        LONG x_scale = (SrcWid << 8) / DestWid;
+        LONG y_scale = (SrcHgt << 8) / DestHgt;
 
-        if (x < left) {
-            LONG delta = left - x;
-            x = left;
-            width -= delta;
+        if (DestX < left) {
+            LONG delta = left - DestX;
+            DestX = left;
+            DestWid -= delta;
             LONG scaled = (delta << 8) * x_scale >> 16;
-            if (flip_x == 0)
-                src_x += scaled;
-            src_width -= scaled;
+            if (Mirror == 0)
+                SrcX += scaled;
+            SrcWid -= scaled;
         }
 
-        if (y < top) {
-            LONG delta = top - y;
-            y = top;
-            height -= delta;
+        if (DestY < top) {
+            LONG delta = top - DestY;
+            DestY = top;
+            DestHgt -= delta;
             LONG scaled = (delta << 8) * y_scale >> 16;
-            if (flip_y == 0)
-                src_y += scaled;
-            src_height -= scaled;
+            if (Flip == 0)
+                SrcY += scaled;
+            SrcHgt -= scaled;
         }
 
-        LONG end = x + width;
-        if (end - 1 > right) {
-            LONG delta = end - right - 1;
-            width -= delta;
+        LONG end = DestX + DestWid;
+        if (end - 1 > ex) {
+            LONG delta = end - ex - 1;
+            DestWid -= delta;
             LONG scaled = (delta << 8) * x_scale >> 16;
-            src_width -= scaled;
-            if (flip_x != 0)
-                src_x += scaled;
+            SrcWid -= scaled;
+            if (Mirror != 0)
+                SrcX += scaled;
         }
 
-        end = y + height;
-        if (end - 1 > bottom) {
-            LONG delta = end - bottom - 1;
-            height -= delta;
+        end = DestY + DestHgt;
+        if (end - 1 > ey) {
+            LONG delta = end - ey - 1;
+            DestHgt -= delta;
             LONG scaled = (delta << 8) * y_scale >> 16;
-            src_height -= scaled;
-            if (flip_y != 0)
-                src_y += scaled;
+            SrcHgt -= scaled;
+            if (Flip != 0)
+                SrcY += scaled;
         }
 
-        if (width >= 1 && height >= 1 && src_width >= 1 && src_height >= 1)
+        if (DestWid >= 1 && DestHgt >= 1 && SrcWid >= 1 && SrcHgt >= 1)
             return 1;
     }
     return 0;
 }
 
-void __cdecl GetDibDim(BITMAPINFO256* param_1, long& param_2, long& param_3, long& param_4)
+void __cdecl GetDibDim(BITMAPINFO256* Info, long& TotWid, long& TotHgt, long& Orien)
 {
-    param_2 = (param_1->bmiHeader.biWidth + 3) & 0xFFFFFFFC;
-    param_3 = param_1->bmiHeader.biHeight;
-    if (param_3 < 0) {
-        param_3 = -param_3;
-        param_4 = 1;
+    TotWid = (Info->bmiHeader.biWidth + 3) & 0xFFFFFFFC;
+    TotHgt = Info->bmiHeader.biHeight;
+    if (TotHgt < 0) {
+        TotHgt = -TotHgt;
+        Orien = 1;
         return;
     }
-    param_4 = -1;
+    Orien = -1;
 }
 
 long __cdecl TileDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits,
@@ -596,35 +596,35 @@ int __cdecl DibCheckTrans(BITMAPINFO256* DibInfo, TRANSINFO* TransInfo,
     return AnyTrans;
 }
 
-void* __cdecl GetPaletteFromDib(char* path, int make_identity)
+void* __cdecl GetPaletteFromDib(char* FileName, int MakeIdentity)
 {
-    BITMAPINFOHEADER* dib = DibOpenFile(path);
+    BITMAPINFOHEADER* dib = DibOpenFile(FileName);
     if (dib == 0)
         return 0;
 
     void* palette = DibCreatePalette(dib);
-    if (make_identity != 0)
+    if (MakeIdentity != 0)
         CreateIdentityPalette(palette);
 
     DibFree(dib);
     return palette;
 }
 
-void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
+void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity)
 {
     unsigned char* data;
     void* own_mem = 0;
     int owns_memory = -1;
-    void* result = 0;
-    int data_size;
+    void* hpal = 0;
+    int resDataSize;
     char* tok = 0;
     int n = 0;
     struct LOGPAL { unsigned short ver; unsigned short cnt; unsigned char e[1]; };
     LOGPAL* lp = 0;
     int i = 0;
     unsigned char* out = 0;
-    if (filename && *filename && shape_file_first) {
-        int fd = _open(filename, 0x8000);
+    if (FileName && *FileName && shape_file_first) {
+        int fd = _open(FileName, 0x8000);
         if (fd != -1) {
             _lseek(fd, 0, 2);
             int size = _tell(fd);
@@ -637,12 +637,12 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
             _close(fd);
         }
     }
-    if (!own_mem && res_id != -1) {
-        data = RESFILE_load(0x62696e61, (unsigned long)res_id,
-            owns_memory, data_size);
+    if (!own_mem && ResourceId != -1) {
+        data = RESFILE_load(0x62696e61, (unsigned long)ResourceId,
+            owns_memory, resDataSize);
         if (owns_memory == 0) {
-            own_mem = malloc(data_size);
-            memcpy(own_mem, data, data_size);
+            own_mem = malloc(resDataSize);
+            memcpy(own_mem, data, resDataSize);
             owns_memory = 1;
         } else {
             own_mem = data;
@@ -658,7 +658,7 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
     if (tok == 0) goto cleanup;
     n = (int)atol(tok);
     lp = (LOGPAL*)malloc(n * 4 + 8);
-    res_id = 0;
+    ResourceId = 0;
     if (lp) {
         i = 0;
         lp->cnt = (unsigned short)n;
@@ -670,14 +670,14 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
             tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[0] = (unsigned char)atoi(tok);
             tok = strtok(0, seps); if (!tok) goto palette_entries_done; out[1] = (unsigned char)atoi(tok);
             out[2] = 0;
-            if (i == n-1) res_id = 1;
+            if (i == n-1) ResourceId = 1;
             ++i;
             out += 4;
             if (i >= n) goto palette_entries_done;
         }
 palette_entries_done:
         ;
-        if (res_id && n == 0x100 && System_color_Table[0].index >= 0) {
+        if (ResourceId && n == 0x100 && System_color_Table[0].index >= 0) {
             int idx = System_color_Table[0].index;
             PAL_TABLE* g = System_color_Table;
             while (idx >= 0) {
@@ -689,32 +689,32 @@ palette_entries_done:
                 idx = g->index;
             }
         }
-        if (res_id) {
-            result = CreatePalette((const tagLOGPALETTE*)lp);
-            if (do_gamma) {
+        if (ResourceId) {
+            hpal = CreatePalette((const tagLOGPALETTE*)lp);
+            if (MakeIdentity) {
                 if (rge_base_game->draw_system->DrawType == 1 ||
                     rge_base_game->draw_system->ScreenMode == 1)
-                    CreateIdentityPalette(result);
+                    CreateIdentityPalette(hpal);
             }
         }
         free(lp);
     }
 cleanup:
     if (owns_memory == 1) free(own_mem);
-    return result;
+    return hpal;
 }
 
-BITMAPINFOHEADER* __cdecl DibOpenFile(char* name)
+BITMAPINFOHEADER* __cdecl DibOpenFile(char* szFile)
 {
     int fh;
     OFSTRUCT of;
     BITMAPINFOHEADER* dib;
     DWORD dwBits;
 
-    fh = OpenFile(name, &of, OF_READ);
+    fh = OpenFile(szFile, &of, OF_READ);
     if (fh == -1) {
-        HRSRC resource = FindResourceA(GetModuleHandleA(0), name,
-            MAKEINTRESOURCEA(2));
+        HRSRC resource = FindResourceA(GetModuleHandleA(0), szFile,
+            RT_BITMAP);
         if (resource != 0) {
             resource = LoadResource(GetModuleHandleA(0), resource);
             return (BITMAPINFOHEADER*)LockResource(resource);
@@ -756,12 +756,12 @@ BITMAPINFOHEADER* __cdecl DibOpenFile(char* name)
     return dib;
 }
 
-unsigned char* __cdecl ReadDibBits(char* param_1)
+unsigned char* __cdecl ReadDibBits(char* szFile)
 {
     OFSTRUCT of;
     unsigned char* result = 0;
 
-    HFILE hf = OpenFile(param_1, &of, OF_READ);
+    HFILE hf = OpenFile(szFile, &of, OF_READ);
     if (hf == HFILE_ERROR) return 0;
 
     BITMAPINFOHEADER* info = DibReadBitmapInfo(hf);
@@ -778,10 +778,10 @@ unsigned char* __cdecl ReadDibBits(char* param_1)
     return result;
 }
 
-int __cdecl DibWriteClipped(BITMAPINFOHEADER* dib, char* name,
-    long src_x, long src_y, long width, long height)
+int __cdecl DibWriteClipped(BITMAPINFOHEADER* pDIB, char* szFile,
+    long x, long y, long w, long h)
 {
-    BITMAPINFO256* clipped = (BITMAPINFO256*)DibCreate(8, width, height);
+    BITMAPINFO256* clipped = (BITMAPINFO256*)DibCreate(8, w, h);
     unsigned long colors;
     unsigned char* src_bits;
     unsigned char* dst_bits;
@@ -789,17 +789,17 @@ int __cdecl DibWriteClipped(BITMAPINFOHEADER* dib, char* name,
     if (clipped == 0)
         return 0;
 
-    colors = dib->biClrUsed;
-    if (colors == 0 && dib->biBitCount <= 8)
-        colors = 1 << dib->biBitCount;
+    colors = pDIB->biClrUsed;
+    if (colors == 0 && pDIB->biBitCount <= 8)
+        colors = 1 << pDIB->biBitCount;
 
     memcpy((char*)clipped + clipped->bmiHeader.biSize,
-        (char*)dib + dib->biSize, colors << 2);
+        (char*)pDIB + pDIB->biSize, colors << 2);
 
-    if (dib->biCompression == 3)
-        src_bits = (unsigned char*)dib + dib->biSize + 12;
+    if (pDIB->biCompression == 3)
+        src_bits = (unsigned char*)pDIB + pDIB->biSize + 12;
     else
-        src_bits = (unsigned char*)dib + dib->biSize + dib->biClrUsed * 4;
+        src_bits = (unsigned char*)pDIB + pDIB->biSize + pDIB->biClrUsed * 4;
 
     if (clipped->bmiHeader.biCompression == 3)
         dst_bits = (unsigned char*)clipped + clipped->bmiHeader.biSize + 12;
@@ -807,15 +807,15 @@ int __cdecl DibWriteClipped(BITMAPINFOHEADER* dib, char* name,
         dst_bits = (unsigned char*)clipped + clipped->bmiHeader.biSize +
             clipped->bmiHeader.biClrUsed * 4;
 
-    DibBlt(clipped, dst_bits, 0, 0, 0, width, height,
-        (BITMAPINFO256*)dib, src_bits, src_x, src_y, width, height,
+    DibBlt(clipped, dst_bits, 0, 0, 0, w, h,
+        (BITMAPINFO256*)pDIB, src_bits, x, y, w, h,
         1, 0, 0);
-    DibWriteFile(&clipped->bmiHeader, name);
+    DibWriteFile(&clipped->bmiHeader, szFile);
     DibFree(&clipped->bmiHeader);
     return 1;
 }
 
-int __cdecl DibWriteFile(BITMAPINFOHEADER* dib, char* name)
+int __cdecl DibWriteFile(BITMAPINFOHEADER* pdib, char* szFile)
 {
     HFILE file;
     int size;
@@ -823,31 +823,31 @@ int __cdecl DibWriteFile(BITMAPINFOHEADER* dib, char* name)
     OFSTRUCT of;
     int colors;
 
-    if (dib == 0)
+    if (pdib == 0)
         return 0;
 
-    file = OpenFile(name, &of, OF_CREATE | OF_READWRITE);
+    file = OpenFile(szFile, &of, OF_CREATE | OF_READWRITE);
     if (file == (HFILE)-1)
         return 0;
 
     hdr.bfType = 0x4d42;
     hdr.bfReserved1 = 0;
-    size = dib->biSizeImage + dib->biClrUsed * 4 + dib->biSize;
+    size = pdib->biSizeImage + pdib->biClrUsed * 4 + pdib->biSize;
     hdr.bfReserved2 = 0;
     hdr.bfSize = size + sizeof(BITMAPFILEHEADER);
 
-    colors = dib->biClrUsed;
-    if (colors == 0 && dib->biBitCount <= 8)
-        colors = 1 << dib->biBitCount;
+    colors = pdib->biClrUsed;
+    if (colors == 0 && pdib->biBitCount <= 8)
+        colors = 1 << pdib->biBitCount;
 
-    hdr.bfOffBits = dib->biSize + colors * 4 + sizeof(BITMAPFILEHEADER);
+    hdr.bfOffBits = pdib->biSize + colors * 4 + sizeof(BITMAPFILEHEADER);
     _lwrite(file, (char*)&hdr, sizeof(BITMAPFILEHEADER));
-    _hwrite(file, (char*)dib, size);
+    _hwrite(file, (char*)pdib, size);
     _lclose(file);
     return 1;
 }
 
-HPALETTE __cdecl DibCreatePalette(BITMAPINFOHEADER* dib)
+HPALETTE __cdecl DibCreatePalette(BITMAPINFOHEADER* pdib)
 {
     HPALETTE hpal = 0;
     int colors;
@@ -855,17 +855,17 @@ HPALETTE __cdecl DibCreatePalette(BITMAPINFOHEADER* dib)
     RGBQUAD* rgb;
     HDC dc;
 
-    if (dib == 0)
+    if (pdib == 0)
         return 0;
 
-    colors = dib->biClrUsed;
-    if (colors == 0 && dib->biBitCount <= 8)
-        colors = 1 << dib->biBitCount;
-    if (colors == 3 && dib->biCompression == BI_BITFIELDS)
+    colors = pdib->biClrUsed;
+    if (colors == 0 && pdib->biBitCount <= 8)
+        colors = 1 << pdib->biBitCount;
+    if (colors == 3 && pdib->biCompression == BI_BITFIELDS)
         colors = 0;
 
     if (colors > 0) {
-        rgb = (RGBQUAD*)((char*)dib + dib->biSize);
+        rgb = (RGBQUAD*)((char*)pdib + pdib->biSize);
         log_palette = (LOGPALETTE*)LocalAlloc(LPTR, colors * 4 + 8);
         if (log_palette != 0) {
             log_palette->palNumEntries = (WORD)colors;
@@ -1023,7 +1023,7 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh)
         (int)(1 << (int)(lpbi)->biBitCount) : (int)(lpbi)->biClrUsed)
 
 BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
-    UINT biBits, HPALETTE hpal, UINT usage)
+    UINT biBits, HPALETTE hpal, UINT wUsage)
 {
     BITMAP bm;
     int nColors;
@@ -1085,10 +1085,10 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     hdc = CreateCompatibleDC(NULL);
     hpal = (HPALETTE)SelectPalette(hdc, palette, FALSE);
     RealizePalette(hdc);
-    SetStretchBltMode(hdc, 4);
+    SetStretchBltMode(hdc, STRETCH_HALFTONE);
 
     GetDIBits(hdc, hbm, 0, lpbi->biHeight, NULL,
-        (LPBITMAPINFO)lpbi, usage);
+        (LPBITMAPINFO)lpbi, wUsage);
 
     lpbi->biClrUsed = DibFromBitmapNumColors(lpbi);
 
@@ -1119,7 +1119,7 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
                 lpbiNew->biClrUsed * sizeof(RGBQUAD);
 
         result = GetDIBits(hdc, hbm, 0, lpbiNew->biHeight, bits,
-            (LPBITMAPINFO)lpbiNew, usage);
+            (LPBITMAPINFO)lpbiNew, wUsage);
 
         lpbiNew->biClrUsed = DibFromBitmapNumColors(lpbiNew);
 
@@ -1197,47 +1197,47 @@ BOOL __cdecl DibSetUsage(UsagePDIB pdib, HPALETTE hpal, UINT wUsage)
 }
 
 int __cdecl DibDraw(
-    void* a1, int a2, int a3, int a4, int a5,
-    BITMAPINFOHEADER* a6, int a7, int a8, int a9, int a10,
-    long a11, unsigned int a12)
+    void* hdc, int x, int y, int dx, int dy,
+    BITMAPINFOHEADER* pdib, int x0, int y0, int dx0, int dy0,
+    long rop, unsigned int wUsage)
 {
-    if (a6 == 0)
+    if (pdib == 0)
         return 0;
 
-    if (a9 == -1 && a10 == -1) {
-        a9 = a6->biWidth;
-        a10 = a6->biHeight;
+    if (dx0 == -1 && dy0 == -1) {
+        dx0 = pdib->biWidth;
+        dy0 = pdib->biHeight;
     }
-    if (a4 == -1 && a5 == -1) {
-        a4 = a9;
-        a5 = a10;
+    if (dx == -1 && dy == -1) {
+        dx = dx0;
+        dy = dy0;
     }
 
     void* bits;
-    if (a6->biCompression == 3) {
-        bits = (char*)a6 + a6->biSize + 12;
+    if (pdib->biCompression == 3) {
+        bits = (char*)pdib + pdib->biSize + 12;
     } else {
-        bits = (char*)a6 + a6->biSize + a6->biClrUsed * 4;
+        bits = (char*)pdib + pdib->biSize + pdib->biClrUsed * 4;
     }
 
-    return StretchDIBits(a1, a2, a3, a4, a5,
-                         a7, a8, a9, a10,
-                         bits, (const BITMAPINFO*)a6, a12, a11);
+    return StretchDIBits(hdc, x, y, dx, dy,
+                         x0, y0, dx0, dy0,
+                         bits, (const BITMAPINFO*)pdib, wUsage, rop);
 }
 
-BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* dib)
+BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* pdib)
 {
     tagBITMAPINFOHEADER* copy;
 
-    if (dib == 0) {
+    if (pdib == 0) {
         return 0;
     }
 
-    copy = (tagBITMAPINFOHEADER*)GlobalLock(GlobalAlloc(2,
-        dib->biSize + dib->biClrUsed * 4 + dib->biSizeImage));
+    copy = (tagBITMAPINFOHEADER*)GlobalLock(GlobalAlloc(GMEM_MOVEABLE,
+        pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage));
     if (copy != 0) {
-        memcpy(copy, dib,
-            dib->biSize + dib->biClrUsed * 4 + dib->biSizeImage);
+        memcpy(copy, pdib,
+            pdib->biSize + pdib->biClrUsed * 4 + pdib->biSizeImage);
     }
     return copy;
 }
@@ -1328,16 +1328,16 @@ static void __cdecl xlatClut4(unsigned char *pb, unsigned long dwSize,
     } while (dwSize != 0);
 }
 
-static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned char* xlat)
+static void __cdecl xlatRle8(unsigned char* pb, unsigned long dwSize, unsigned char* xlat)
 {
-    unsigned char* p = data;
+    unsigned char* p = pb;
     while (1) {
         unsigned char code = p[0];
-        unsigned char value = p[1];
+        unsigned char b = p[1];
         ++p;
         if (code == 0) {
             ++p;
-            switch (value) {
+            switch (b) {
             case 0:
                 continue;
             case 1:
@@ -1346,8 +1346,8 @@ static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned
                 p += 2;
                 continue;
             }
-            unsigned int count = value;
-            if (value > 0) {
+            unsigned int count = b;
+            if (b > 0) {
                 do {
                     unsigned int c = *p;
                     ++p;
@@ -1355,18 +1355,19 @@ static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned
                     p[-1] = xlat[c];
                 } while (count != 0);
             }
-            if (value & 1) {
+            if (b & 1) {
                 ++p;
             }
         } else {
-            unsigned int v = value;
+            unsigned int v = b;
             ++p;
             p[-1] = xlat[v];
         }
     }
 }
 
-static void __cdecl xlatRle4(unsigned char*, unsigned long, unsigned char*) {}
+static void __cdecl xlatRle4(unsigned char* pb, unsigned long dwSize,
+    unsigned char* xlat) {}
 
 namespace {
 
@@ -1535,7 +1536,7 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* pdib, void* hpal,
     }
 }
 
-void __cdecl CreateIdentityPalette(void* palette)
+void __cdecl CreateIdentityPalette(void* hpal)
 {
     union {
         PALETTEENTRY new_pal[256];
@@ -1557,7 +1558,7 @@ void __cdecl CreateIdentityPalette(void* palette)
 
     if (GetSystemPaletteEntries(hdc, 0, 0x100, palette_locals.new_pal + 1) == 0)
         system_palette_failed = 1;
-    if (GetPaletteEntries((HPALETTE)palette, 0, 0x100, from_locals.entries + 1) == 0)
+    if (GetPaletteEntries((HPALETTE)hpal, 0, 0x100, from_locals.entries + 1) == 0)
         source_palette_failed = 1;
 
     for (int i = 11; i < 247; ++i) {
@@ -1582,35 +1583,35 @@ void __cdecl CreateIdentityPalette(void* palette)
     }
 
     ReleaseDC(palette_locals.hwnd, hdc);
-    ResizePalette((HPALETTE)palette, 0x100);
-    SetPaletteEntries((HPALETTE)palette, 0, 0x100, palette_locals.new_pal + 1);
+    ResizePalette((HPALETTE)hpal, 0x100);
+    SetPaletteEntries((HPALETTE)hpal, 0, 0x100, palette_locals.new_pal + 1);
 }
 
-void* __cdecl CopyPalette(void* param_1)
+void* __cdecl CopyPalette(void* hpal)
 {
     int nNumEntries = 0;
 
-    if (!param_1) return 0;
+    if (!hpal) return 0;
 
-    GetObjectA((HGDIOBJ)param_1, 4, &nNumEntries);
+    GetObjectA((HGDIOBJ)hpal, 4, &nNumEntries);
     if (!nNumEntries) return 0;
 
-    void* pal = LocalAlloc(0x40, nNumEntries * 4 + 8);
+    void* pal = LocalAlloc(LMEM_ZEROINIT, nNumEntries * 4 + 8);
     if (!pal) return 0;
 
     *(short*)pal = 0x300;
     *(short*)((char*)pal + 2) = (short)nNumEntries;
 
-    GetPaletteEntries((HPALETTE)param_1, 0, nNumEntries, (PALETTEENTRY*)((char*)pal + 4));
+    GetPaletteEntries((HPALETTE)hpal, 0, nNumEntries, (PALETTEENTRY*)((char*)pal + 4));
     void* result = CreatePalette((const tagLOGPALETTE*)pal);
     LocalFree((HLOCAL)pal);
     return result;
 }
 
-void __cdecl DibFree(BITMAPINFOHEADER* param_1)
+void __cdecl DibFree(BITMAPINFOHEADER* pdib)
 {
-    void* handle = GlobalHandle(param_1);
+    void* handle = GlobalHandle(pdib);
     GlobalUnlock(handle);
-    handle = GlobalHandle(param_1);
+    handle = GlobalHandle(pdib);
     GlobalFree(handle);
 }
