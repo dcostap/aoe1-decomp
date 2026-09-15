@@ -166,7 +166,8 @@ Resource file provenance and hashes:
 
 The proposed names are new cleanup names. No original macro spelling is known.
 The purpose is proven by the four hit bands in the original packet and by the
-resource indices in `src/tplayer.cpp`. The text remains unknown.
+named resource fields in `src/dlg_dip.cpp` lines `585-596`. The text remains
+unknown.
 
 ## Comments and unusual behavior
 
