@@ -16,18 +16,19 @@ public:
     // The destructor is nonvirtual in the original ABI.
     ~RGE_Task_List();
 
-    void copy(RGE_Task_List*);
-    void load(int, RGE_Sprite**, RGE_Sound**);
-    void load(FILE*, RGE_Sprite**, RGE_Sound**);
-    void save(int);
+    void copy(RGE_Task_List* other_list);
+    void load(int infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void load(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds);
+    void save(int outfile);
     void delete_list();
 
-    virtual RGE_Task* create_task(short, short);
-    virtual RGE_Task* get_target_task(RGE_Action_Object*, RGE_Static_Object*, float, float, float);
-    virtual int is_attack_task(RGE_Task*);
+    virtual RGE_Task* create_task(short task_type, short index);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* obj, RGE_Static_Object* target_obj,
+                                      float target_x, float target_y, float target_z);
+    virtual int is_attack_task(RGE_Task* task);
 
 protected:
-    virtual int check_task(RGE_Task*, RGE_Action_Object*, RGE_Static_Object*);
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* obj, RGE_Static_Object* target_obj);
 
 public:
     RGE_Task** list;
