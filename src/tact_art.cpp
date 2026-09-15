@@ -139,7 +139,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
 
-    short x1 = (short)(obj->world_x - DAT_00574f10 - master->radius_x);
+    short map_x = (short)(obj->world_x - DAT_00574f10 - master->radius_x);
     short map_y = (short)(obj->world_y - DAT_00574f10 - master->radius_y);
     short x0 = (short)(master->radius_x + obj->world_x - DAT_00574f14);
     short y0 = (short)(master->radius_y + obj->world_y - DAT_00574f14);
@@ -152,8 +152,8 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
         memset(player_list, 0, player_num);
     }
 
-    if (x1 < 0) {
-        x1 = 0;
+    if (map_x < 0) {
+        map_x = 0;
     }
     if (map_y < 0) {
         map_y = 0;
@@ -166,7 +166,7 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     }
 
     for (short y = map_y; y <= y0; ++y) {
-        for (short x = x1; x <= x0; ++x) {
+        for (short x = map_x; x <= x0; ++x) {
             RGE_Object_Node* node = map->map_row_offset[y][x].objects.list;
             while (node != 0) {
                 RGE_Static_Object* entity = node->node;
