@@ -42,6 +42,8 @@ This pass corrected them on the source branch. The earlier history above now rec
 form, not the rejected form.
 
 - `setupWalls` now has `centerX` and `centerY` parameters, with separate `x` and `y` locals.
+- `setupWalls` retains baseline `wallShape` and `setupGates`; PDB `pattern` and `townWalls`
+  cannot replace them without colliding with the required `x` and `y` locals.
 - `save` now reuses `outfile` for the list counts and string length.
 - The destructor now assigns `file` to `local_14` before its first file test.
 - `update` now retains the explicit `RGE_Visible_Map*` cast.
@@ -99,7 +101,7 @@ These names come from the procedure-scoped PDB records:
   `targetDistance`, `inProgressCount`, `unobstructibleGroupID`, `unitID`, `oType`,
   `oGroup`, `bestDefendValue`, and `objPoint`.
 - Lot, wall, and placement helpers: `one`, `two`, `countDiagonal`, `typeID`, `status`,
-  `newStatus`, `overlapSize`, `x`, `y`, `pattern`, `townWalls`, and `numGates`.
+  `newStatus`, `overlapSize`, `x`, `y`, and `numGates`.
 - Learning and resource helpers: `name`, `numToLoad`, `numMemoriesToLoad`, `requiredZone`,
   `point`, `pathDistance`, `playerID`, `numTiles`, `victimID`, `objY`, `oT1`, `oT2`,
   `oT3`, `oT4`, `rDistance`, `rID`, `startPoint`, `rPoint`, `useTransport`,
