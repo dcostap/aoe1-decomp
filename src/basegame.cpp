@@ -39,16 +39,14 @@ extern char draw_log_name[260];
 extern int do_draw_log;
 extern int safe_draw_log;
 
-void __cdecl write_draw_log(char* s)
-{
+void __cdecl write_draw_log(char* s) {
     if (draw_log != 0) {
         fprintf(draw_log, "%s", s);
         fflush(draw_log);
     }
 }
 
-void __cdecl write_draw_log2(char* s)
-{
+void __cdecl write_draw_log2(char* s) {
     if (draw_log != 0) {
         fprintf(draw_log, "%s", s);
         fclose(draw_log);
@@ -57,8 +55,7 @@ void __cdecl write_draw_log2(char* s)
 }
 
 LRESULT CALLBACK rge_base_game_wnd_proc(
-    HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+    HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     RGE_Base_Game* game = rge_base_game;
     if (game != 0)
         return game->wnd_proc(wnd, msg, wparam, lparam);
@@ -71,8 +68,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup)
       random_map_seed(-1),
       save_random_game_seed(-1),
       save_random_map_seed(-1),
-      quick_build(0)
-{
+      quick_build(0) {
     int i;
 
     do_draw_log = 0;
@@ -230,11 +226,8 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* prog_info_in, int do_setup)
     this->display_selected_ids = 0;
 }
 
-
-
-
 void __cdecl debug_srand(char* file, int line,
-                                     unsigned int seed);
+                         unsigned int seed);
 extern void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern int debugActions;
 extern int do_draw_log;
@@ -242,8 +235,7 @@ extern char draw_log_name[260];
 extern FILE* draw_log;
 extern int do_fps_log;
 extern FILE* fps_log;
-int RGE_Base_Game::setup()
-{
+int RGE_Base_Game::setup() {
     int temp_val;
     MEMORYSTATUS ms;
     char filename[260];
@@ -256,20 +248,20 @@ int RGE_Base_Game::setup()
     temp_val = this->registry->RegGetInt(1, "Screen Size");
     switch (temp_val) {
     case 0x280:
-            this->prog_info->main_wid = 0x280;
-            this->prog_info->main_hgt = 0x1E0;
+        this->prog_info->main_wid = 0x280;
+        this->prog_info->main_hgt = 0x1E0;
         break;
     case 0x320:
-            this->prog_info->main_wid = 0x320;
-            this->prog_info->main_hgt = 0x258;
+        this->prog_info->main_wid = 0x320;
+        this->prog_info->main_hgt = 0x258;
         break;
     case 0x400:
-            this->prog_info->main_wid = 0x400;
-            this->prog_info->main_hgt = 0x300;
+        this->prog_info->main_wid = 0x400;
+        this->prog_info->main_hgt = 0x300;
         break;
     case 0x500:
-            this->prog_info->main_wid = temp_val;
-            this->prog_info->main_hgt = 0x400;
+        this->prog_info->main_wid = temp_val;
+        this->prog_info->main_hgt = 0x400;
         break;
     }
 
@@ -309,170 +301,154 @@ int RGE_Base_Game::setup()
 
     if (_findfirst("empires.exe", &file_info) == -1) {
         this->error_code = 0x17;
-    }
-    else {
+    } else {
         if (!this->setup_cmd_options()) {
             this->error_code = 2;
-        }
-        else {
+        } else {
             StringTable = LoadLibraryA(this->string_dll_name);
             if (StringTable == 0) {
                 this->error_code = 1;
-            }
-            else {
+            } else {
                 GlobalMemoryStatus(&ms);
                 if ((ms.dwTotalPageFile >= 0x1400000 &&
                      ms.dwTotalVirtual >= 0xA00000) ||
                     (ms.dwTotalPageFile >= 0xA00000 &&
                      ms.dwTotalVirtual >= 0x1400000) ||
                     ms.dwTotalVirtual >= 0x1E00000) {
-                this->set_interface_messages();
+                    this->set_interface_messages();
 
-                if (debugActions == 1)
-                    actionFile = fopen("c:\\aoeact.txt", "w");
+                    if (debugActions == 1)
+                        actionFile = fopen("c:\\aoeact.txt", "w");
 
-                unsigned long DXVersion;
-                unsigned long DXPlatform;
-                if (this->prog_info->check_expiration != 0 &&
-                    this->check_expiration() == 0) {
-                    this->error_code = 3;
-                }
-                else if (this->prog_info->check_multi_copies != 0 &&
-                         this->check_multi_copies() == 0) {
-                    this->error_code = 4;
-                }
-                else if (this->check_prog_argument("NODXCHECK") == 0 &&
-                         (GetDXVersion(&DXVersion, &DXPlatform),
-                          DXVersion < 0x501)) {
-                    this->error_code = 0x14;
-                }
-                else {
-                    SystemParametersInfoA(0x10, 0,
-                                           &this->screen_saver_enabled, 0);
-                    if (this->screen_saver_enabled != 0)
-                        SystemParametersInfoA(0x11, 0, 0, 2);
-                    SystemParametersInfoA(0x53, 0,
-                                           &this->low_power_enabled, 0);
-                    if (this->low_power_enabled != 0)
-                        SystemParametersInfoA(0x55, 0, 0, 2);
+                    unsigned long DXVersion;
+                    unsigned long DXPlatform;
+                    if (this->prog_info->check_expiration != 0 &&
+                        this->check_expiration() == 0) {
+                        this->error_code = 3;
+                    } else if (this->prog_info->check_multi_copies != 0 &&
+                               this->check_multi_copies() == 0) {
+                        this->error_code = 4;
+                    } else if (this->check_prog_argument("NODXCHECK") == 0 &&
+                               (GetDXVersion(&DXVersion, &DXPlatform),
+                                DXVersion < 0x501)) {
+                        this->error_code = 0x14;
+                    } else {
+                        SystemParametersInfoA(0x10, 0,
+                                              &this->screen_saver_enabled, 0);
+                        if (this->screen_saver_enabled != 0)
+                            SystemParametersInfoA(0x11, 0, 0, 2);
+                        SystemParametersInfoA(0x53, 0,
+                                              &this->low_power_enabled, 0);
+                        if (this->low_power_enabled != 0)
+                            SystemParametersInfoA(0x55, 0, 0, 2);
 
-                    this->save_check_for_cd = this->check_for_cd(0);
-                    if (!this->setup_class())
-                        this->error_code = 5;
-                    else if (!this->setup_main_window())
-                        this->error_code = 6;
-                    else if (!this->setup_graphics_system()) {
-                        if (this->error_code == 0)
+                        this->save_check_for_cd = this->check_for_cd(0);
+                        if (!this->setup_class())
+                            this->error_code = 5;
+                        else if (!this->setup_main_window())
+                            this->error_code = 6;
+                        else if (!this->setup_graphics_system()) {
+                            if (this->error_code == 0)
+                                this->error_code = 7;
+                        } else if (!this->setup_palette())
+                            this->error_code = 0x11;
+                        else if (!this->setup_shapes())
                             this->error_code = 7;
-                    }
-                    else if (!this->setup_palette())
-                        this->error_code = 0x11;
-                    else if (!this->setup_shapes())
-                        this->error_code = 7;
-                    else if (!this->setup_map_save_area())
-                        this->error_code = 7;
-                    else if (!this->setup_mouse())
-                        this->error_code = 8;
-                    else if (!this->setup_sound_system())
-                        this->error_code = 0x0A;
-                    else if (!this->setup_chat())
-                        this->error_code = 0x10;
-                    else if (!this->setup_comm())
-                        this->error_code = 9;
-                    else if (!this->setup_fonts())
-                        this->error_code = 0x0B;
-                    else if (!this->setup_sounds())
-                        this->error_code = 0x0C;
-                    else {
-                        driveInfo = new DriveInformation;
-                        if (driveInfo != 0) {
-                            if (!this->setup_blank_screen()) {
-                                this->error_code = 0x0D;
-                            }
-                            else {
-                            int file_number;
-                            this->set_prog_mode(0);
-                            this->setup_timings();
-                            this->handle_size(this->prog_window, 0, 0, 0);
-                            this->prog_ready = 1;
-                            ShowWindow(this->prog_window, 5);
-                            SetFocus(this->prog_window);
-                            this->mouse_on();
-                            this->is_timer = SetTimer(this->prog_window,
-                                                      1, 0x32, 0);
+                        else if (!this->setup_map_save_area())
+                            this->error_code = 7;
+                        else if (!this->setup_mouse())
+                            this->error_code = 8;
+                        else if (!this->setup_sound_system())
+                            this->error_code = 0x0A;
+                        else if (!this->setup_chat())
+                            this->error_code = 0x10;
+                        else if (!this->setup_comm())
+                            this->error_code = 9;
+                        else if (!this->setup_fonts())
+                            this->error_code = 0x0B;
+                        else if (!this->setup_sounds())
+                            this->error_code = 0x0C;
+                        else {
+                            driveInfo = new DriveInformation;
+                            if (driveInfo != 0) {
+                                if (!this->setup_blank_screen()) {
+                                    this->error_code = 0x0D;
+                                } else {
+                                    int file_number;
+                                    this->set_prog_mode(0);
+                                    this->setup_timings();
+                                    this->handle_size(this->prog_window, 0, 0, 0);
+                                    this->prog_ready = 1;
+                                    ShowWindow(this->prog_window, 5);
+                                    SetFocus(this->prog_window);
+                                    this->mouse_on();
+                                    this->is_timer = SetTimer(this->prog_window,
+                                                              1, 0x32, 0);
 
-                            file_number = this->registry->RegGetInt(
-                                0, "Game File Number");
-                            if (file_number >= 0) {
-                                file_number = this->registry->RegGetInt(
-                                    0, "Game File Number");
-                                sprintf(filename, "game%d.nfo",
-                                        file_number);
-                                this->player_game_info =
-                                    new RGE_Game_Info(filename);
-                            }
-                            else {
-                                int i;
-                                for (i = 0; i < 9999; ++i) {
-                                    sprintf(filename, "game%d.nfo", i);
-                                    if (_findfirst(
-                                            filename, &file_info) == -1) {
-                                        this->registry->RegSetInt(
-                                            0, "Game File Number", i);
+                                    file_number = this->registry->RegGetInt(
+                                        0, "Game File Number");
+                                    if (file_number >= 0) {
+                                        file_number = this->registry->RegGetInt(
+                                            0, "Game File Number");
+                                        sprintf(filename, "game%d.nfo",
+                                                file_number);
                                         this->player_game_info =
                                             new RGE_Game_Info(filename);
-                                        break;
-                                    }
-                                }
-                            }
-                            sprintf(filename, "%sscenario.inf",
-                                    this->prog_info->scenario_dir);
-                            this->scenario_info = new RGE_Scenario_File_Info(
-                                filename);
-
-                            if (do_draw_log != 0) {
-                                if (draw_log_name[0] == 0) {
-                                    int i;
-                                    for (i = 0; i < 1000; ++i) {
-                                        sprintf(s, "drawlog%d.txt", i);
-                                        if (OpenFile(s, &of,
-                                                     0x4000) == -1) {
-                                            draw_log = fopen(s, "w");
-                                            strcpy(draw_log_name, s);
-                                            break;
+                                    } else {
+                                        int i;
+                                        for (i = 0; i < 9999; ++i) {
+                                            sprintf(filename, "game%d.nfo", i);
+                                            if (_findfirst(
+                                                    filename, &file_info) == -1) {
+                                                this->registry->RegSetInt(
+                                                    0, "Game File Number", i);
+                                                this->player_game_info =
+                                                    new RGE_Game_Info(filename);
+                                                break;
+                                            }
                                         }
                                     }
-                                }
-                                else {
-                                    draw_log = fopen(draw_log_name, "w");
-                                }
-                            }
+                                    sprintf(filename, "%sscenario.inf",
+                                            this->prog_info->scenario_dir);
+                                    this->scenario_info = new RGE_Scenario_File_Info(
+                                        filename);
 
-                            if (do_fps_log != 0) {
-                                fps_log = fopen("c:\\fps.txt", "w");
-                                if (fps_log == 0)
-                                    do_fps_log = 0;
-                            }
+                                    if (do_draw_log != 0) {
+                                        if (draw_log_name[0] == 0) {
+                                            int i;
+                                            for (i = 0; i < 1000; ++i) {
+                                                sprintf(s, "drawlog%d.txt", i);
+                                                if (OpenFile(s, &of,
+                                                             0x4000) == -1) {
+                                                    draw_log = fopen(s, "w");
+                                                    strcpy(draw_log_name, s);
+                                                    break;
+                                                }
+                                            }
+                                        } else {
+                                            draw_log = fopen(draw_log_name, "w");
+                                        }
+                                    }
 
-                                return 1;
+                                    if (do_fps_log != 0) {
+                                        fps_log = fopen("c:\\fps.txt", "w");
+                                        if (fps_log == 0)
+                                            do_fps_log = 0;
+                                    }
+
+                                    return 1;
+                                }
                             }
                         }
                     }
+                } else {
+                    this->error_code = 0x16;
                 }
-            }
-            else {
-                this->error_code = 0x16;
             }
         }
     }
-    }
     return 0;
 }
-
-
-
-
-
 
 extern void __cdecl debug_random_write(void);
 extern void __cdecl dump_vismap_log(void);
@@ -481,19 +457,7 @@ extern int wrote_debug_random_log;
 extern FILE* fps_log;
 extern FILE* draw_log;
 
-
-
-
-
-
-
-
-
-
-
-
-RGE_Base_Game::~RGE_Base_Game()
-{
+RGE_Base_Game::~RGE_Base_Game() {
     int i;
     char filename[13];
     char str[256];
@@ -508,7 +472,7 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 
     this->registry->RegSetInt(1, "Rollover Text",
-        2 + (this->rollover ? -1 : 0));
+                              2 + (this->rollover ? -1 : 0));
 
     if (this->prog_info->interface_style == 2)
         this->registry->RegSetInt(1, "Mouse Style", 2);
@@ -516,7 +480,7 @@ RGE_Base_Game::~RGE_Base_Game()
         this->registry->RegSetInt(1, "Mouse Style", 1);
 
     this->registry->RegSetInt(1, "Game Speed",
-        (int)(this->game_speed * 10.0f));
+                              (int)(this->game_speed * 10.0f));
     this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
     this->registry->RegSetInt(1, "Path Finding", this->pathFinding() + 1);
     this->registry->RegSetInt(1, "MP Path Finding", this->mpPathFinding() + 1);
@@ -655,7 +619,6 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 }
 
-
 void RGE_Base_Game::reset_timings() {
     this->frame_count = 0;
     this->world_update_count = 0;
@@ -677,9 +640,6 @@ void RGE_Base_Game::reset_timings() {
     }
 }
 
-
-
-
 void RGE_Base_Game::add_to_timing(int id, unsigned long time) {
     timings[id].accum_time += time;
     timings[id].last_single_time = time;
@@ -688,81 +648,65 @@ void RGE_Base_Game::add_to_timing(int id, unsigned long time) {
     }
 }
 
-
 void RGE_Base_Game::increment_world_update_count() {
     this->world_update_count++;
 }
-
 
 void RGE_Base_Game::increment_view_update_count() {
     this->view_update_count++;
 }
 
-
 void RGE_Base_Game::set_last_single_time(int id, unsigned long time) {
     this->timings[id].last_single_time = time;
 }
-
 
 unsigned long RGE_Base_Game::get_last_time(int id) {
     return this->timings[id].last_time;
 }
 
-
 unsigned long RGE_Base_Game::get_last_single_time(int id) {
     return this->timings[id].last_single_time;
 }
-
 
 unsigned long RGE_Base_Game::get_accum_time(int id) {
     return this->timings[id].accum_time;
 }
 
-
 unsigned long RGE_Base_Game::get_max_time(int id) {
     return this->timings[id].max_time;
 }
-
 
 unsigned long RGE_Base_Game::get_last_max_time(int id) {
     return this->timings[id].last_max_time;
 }
 
-
 unsigned long RGE_Base_Game::get_last_world_update_count() {
     return this->last_world_update_count;
 }
-
 
 unsigned long RGE_Base_Game::get_last_view_update_count() {
     return this->last_view_update_count;
 }
 
-
 unsigned long RGE_Base_Game::get_world_update_count() {
     return this->world_update_count;
 }
-
 
 unsigned long RGE_Base_Game::get_view_update_count() {
     return this->view_update_count;
 }
 
-
 int RGE_Base_Game::get_error_code() {
     return this->error_code;
 }
 
-
 static char g_string_buffer[0x200];
 
-char* RGE_Base_Game::get_string(long text_id)
-{
+char* RGE_Base_Game::get_string(long text_id) {
     // The next get_string(long) call overwrites this shared buffer.
     this->get_string(text_id, g_string_buffer, 0x200);
     return g_string_buffer;
 }
-
 
 char* RGE_Base_Game::get_string(long string_id, char* str, int max_len) {
     int result = LoadStringA(StringTable, string_id, str, max_len);
@@ -773,32 +717,38 @@ char* RGE_Base_Game::get_string(long string_id, char* str, int max_len) {
     return str;
 }
 
-
-char* RGE_Base_Game::get_string(int string_type, long id, char* str, int max_len)
-{
+char* RGE_Base_Game::get_string(int string_type, long id, char* str, int max_len) {
     return this->get_string2(string_type, id, 0, str, max_len);
 }
 
-
-
-
-char* RGE_Base_Game::get_string2(int string_type, long id, long id2, char* str, int max_len)
-{
+char* RGE_Base_Game::get_string2(int string_type, long id, long id2, char* str, int max_len) {
     *str = 0;
 
     switch (string_type) {
     case 1:
         switch (id) {
-        case 1: case 2: case 3: case 4: case 5: case 6:
-        case 0x0E: case 0x0F:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 0x0E:
+        case 0x0F:
             return this->get_string(0x7D2, str, max_len);
-        case 7: case 8: case 0x0B: case 0x0D: case 0x11:
+        case 7:
+        case 8:
+        case 0x0B:
+        case 0x0D:
+        case 0x11:
             return this->get_string(0x7D3, str, max_len);
         case 0x13:
             return this->get_string(0x7DB, str, max_len);
-        case 9: case 0x10:
+        case 9:
+        case 0x10:
             return this->get_string(0x7D5, str, max_len);
-        case 0x0A: case 0x0C:
+        case 0x0A:
+        case 0x0C:
             return this->get_string(0x7D4, str, max_len);
         case 0x12:
             return this->get_string(0x7DC, str, max_len);
@@ -824,18 +774,12 @@ char* RGE_Base_Game::get_string2(int string_type, long id, long id2, char* str, 
     return str;
 }
 
-
-
 extern int rge_open(char* path, int flags);
 extern void rge_read_uncompressed(int fd, void* buf, int len);
 extern void rge_read(int fd, void* buf, int len);
 extern int rge_close(int fd);
 
-
-
-
-RGE_Scenario* RGE_Base_Game::get_scenario_info(char* scenario_file, int from_campaign)
-{
+RGE_Scenario* RGE_Base_Game::get_scenario_info(char* scenario_file, int from_campaign) {
     char temp_name[300];
     int fd;
     int version;
@@ -877,17 +821,11 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* scenario_file, int from_cam
     return result;
 }
 
-
-
 extern int rge_open(char* path, int flags);
 extern void rge_read_uncompressed(int fd, void* buf, int len);
 extern int rge_close(int fd);
 
-
-
-
-RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* scenario_file, int from_campaign)
-{
+RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* scenario_file, int from_campaign) {
     char temp_name[300];
     long version;
     int fd;
@@ -917,8 +855,7 @@ RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* scenario_file, int
         version == *(const long*)"1.08" ||
         version == *(const long*)"1.09" ||
         version == *(const long*)"1.10" ||
-        version == *(const long*)"1.11")
-    {
+        version == *(const long*)"1.11") {
         result = this->new_scenario_header(fd);
     }
 
@@ -926,9 +863,7 @@ RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* scenario_file, int
     return result;
 }
 
-
-void RGE_Base_Game::write_scenario_header(int outfile)
-{
+void RGE_Base_Game::write_scenario_header(int outfile) {
     RGE_Scenario_Header* header = new_scenario_header(world->scenario);
 
     if (header != 0) {
@@ -940,29 +875,17 @@ void RGE_Base_Game::write_scenario_header(int outfile)
     }
 }
 
-
-
-
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(int infile) {
     return new RGE_Scenario_Header(infile);
 }
-
-
 
 RGE_Scenario_Header* RGE_Base_Game::new_scenario_header(RGE_Scenario* scenario_info) {
     return new RGE_Scenario_Header(scenario_info);
 }
 
-
-
-
-
 RGE_Scenario* RGE_Base_Game::new_scenario_info(int infile) {
     return new RGE_Scenario(infile, 0);
 }
-
-
-
 
 void RGE_Base_Game::get_campaign_info(long& campaign, long& campaign_player, long& campaign_scenario) {
     int c = this->player_game_info->get_current_campaign();
@@ -972,7 +895,6 @@ void RGE_Base_Game::get_campaign_info(long& campaign, long& campaign_player, lon
     int n = this->player_game_info->get_current_scenario();
     campaign_scenario = n;
 }
-
 
 unsigned char RGE_Base_Game::set_campaign_info(long campaign, long campaign_player, long campaign_scenario) {
     unsigned char ok;
@@ -990,15 +912,11 @@ unsigned char RGE_Base_Game::set_campaign_info(long campaign, long campaign_play
     return 0;
 }
 
-
 void RGE_Base_Game::set_campaign_win() {
     this->player_game_info->notify_of_scenario_complete();
 }
 
-
-
-int RGE_Base_Game::run()
-{
+int RGE_Base_Game::run() {
     MSG msg;
 
     while (1) {
@@ -1027,8 +945,6 @@ int RGE_Base_Game::run()
         DispatchMessageA(&msg);
     }
 }
-
-
 
 extern int startLoggingAI;
 
@@ -1067,8 +983,7 @@ extern int log_output;
 extern int DDSys_CanColorFill;
 extern unsigned char do_color_log;
 
-int RGE_Base_Game::setup_cmd_options()
-{
+int RGE_Base_Game::setup_cmd_options() {
     char cmd_line[256];
     char temp_str[256];
     char character;
@@ -1622,7 +1537,6 @@ int RGE_Base_Game::setup_cmd_options()
     return 1;
 }
 
-
 int RGE_Base_Game::setup_class() {
     if (prog_info->prev_instance != 0) {
         return 1;
@@ -1648,10 +1562,7 @@ int RGE_Base_Game::setup_class() {
     return RegisterClassA(&cls) != 0;
 }
 
-
-
-int RGE_Base_Game::setup_main_window()
-{
+int RGE_Base_Game::setup_main_window() {
     int screen_width = GetSystemMetrics(0);
     int screen_height = GetSystemMetrics(1);
     RECT win_rect;
@@ -1665,8 +1576,7 @@ int RGE_Base_Game::setup_main_window()
             0x02CA0000, 0, 0,
             this->prog_info->main_wid, this->prog_info->main_hgt,
             0, 0, this->prog_info->instance, 0);
-    }
-    else {
+    } else {
         this->prog_window = CreateWindowExA(
             0, this->prog_info->prog_name, this->prog_info->prog_title,
             0x82080000, 0, 0, screen_width, screen_height,
@@ -1701,15 +1611,7 @@ int RGE_Base_Game::setup_main_window()
     return 1;
 }
 
-
-
-
-
-
-
-
-int RGE_Base_Game::setup_graphics_system()
-{
+int RGE_Base_Game::setup_graphics_system() {
     TDrawSystem* draw_system;
 
     if (this->prog_info->use_dir_draw != 0) {
@@ -1798,25 +1700,14 @@ init_fail:
     return 0;
 }
 
-
-
-
-
-int RGE_Base_Game::setup_palette()
-{
+int RGE_Base_Game::setup_palette() {
     HPALETTE result = static_cast<HPALETTE>(
         panel_system.get_palette(this->prog_info->pal_file, 0xC544));
     this->prog_palette = result;
     return result != 0;
 }
 
-
-
-
-
-
-int RGE_Base_Game::setup_mouse()
-{
+int RGE_Base_Game::setup_mouse() {
     register int result;
     int custom_type;
     TMousePointer* mouse_pointer;
@@ -1825,14 +1716,11 @@ int RGE_Base_Game::setup_mouse()
     if (result == -1) {
         this->registry->RegSetInt(0, "Custom Mouse", 0);
         custom_type = 0;
-    }
-    else if (result == 1) {
+    } else if (result == 1) {
         custom_type = result;
-    }
-    else if (result == 2) {
+    } else if (result == 2) {
         this->custom_mouse = 0;
-    }
-    else {
+    } else {
         custom_type = 0;
     }
 
@@ -1858,20 +1746,15 @@ int RGE_Base_Game::setup_chat() {
     return new_chat != 0;
 }
 
-int RGE_Base_Game::setup_registry()
-{
+int RGE_Base_Game::setup_registry() {
     TRegistry* reg = new TRegistry(this->prog_info->registry_key);
     this->registry = reg;
     return reg != 0;
 }
 
-
 extern int log_output;
 
-
-
-int RGE_Base_Game::setup_debugging_log()
-{
+int RGE_Base_Game::setup_debugging_log() {
     TDebuggingLog* log = new TDebuggingLog;
     debugLog = log;
     if (log == 0)
@@ -1883,12 +1766,10 @@ int RGE_Base_Game::setup_debugging_log()
     return 1;
 }
 
-
 extern int speed_val1;
 extern int speed_val2;
 
-int RGE_Base_Game::setup_comm()
-{
+int RGE_Base_Game::setup_comm() {
     TCommunications_Handler* new_comm;
 
     new_comm = new TCommunications_Handler(
@@ -1927,8 +1808,7 @@ int RGE_Base_Game::reset_comm() {
     }
     return setup_comm();
 }
-int RGE_Base_Game::setup_sound_system()
-{
+int RGE_Base_Game::setup_sound_system() {
     if (this->prog_info->use_sound != 0) {
         TSound_Driver* driver = new TSound_Driver(this->prog_window, this->prog_info->sounds_dir);
         this->sound_system = driver;
@@ -1951,14 +1831,7 @@ int RGE_Base_Game::setup_sound_system()
     return 1;
 }
 
-
-
-
-
-
-
-int RGE_Base_Game::setup_music_system()
-{
+int RGE_Base_Game::setup_music_system() {
     if (this->prog_info->use_music != 0) {
         int volume = -5000;
         int result = this->registry->RegGetInt(1, "Music Volume");
@@ -1972,8 +1845,7 @@ int RGE_Base_Game::setup_music_system()
                 delete music;
                 this->music_system = 0;
             }
-        }
-        else if (this->music_system == 0) {
+        } else if (this->music_system == 0) {
             unsigned char music_type;
             char music_path[260];
 
@@ -2015,9 +1887,7 @@ int RGE_Base_Game::setup_music_system()
     return 1;
 }
 
-
-int RGE_Base_Game::setup_shapes()
-{
+int RGE_Base_Game::setup_shapes() {
     TShape* shape;
     TShape** shape_array;
     int i;
@@ -2043,9 +1913,7 @@ int RGE_Base_Game::setup_shapes()
     return 1;
 }
 
-
-int RGE_Base_Game::setup_sounds()
-{
+int RGE_Base_Game::setup_sounds() {
     TDigital* sound;
     int i;
 
@@ -2075,9 +1943,7 @@ int RGE_Base_Game::setup_sounds()
     return 1;
 }
 
-
-int RGE_Base_Game::setup_fonts()
-{
+int RGE_Base_Game::setup_fonts() {
     short i;
     TEXTMETRICA tm;
 
@@ -2140,16 +2006,7 @@ int RGE_Base_Game::setup_fonts()
     return 1;
 }
 
-
-
-
-
-
-
-
-
-int RGE_Base_Game::setup_blank_screen()
-{
+int RGE_Base_Game::setup_blank_screen() {
     TScreenPanel* panel;
 
     panel = new TScreenPanel("Blank Screen");
@@ -2165,7 +2022,6 @@ int RGE_Base_Game::setup_blank_screen()
     return 1;
 }
 
-
 void RGE_Base_Game::setup_timings(void) {
     int val = 1;
     this->timings[1].include_in_total = val;
@@ -2176,7 +2032,6 @@ void RGE_Base_Game::setup_timings(void) {
     this->timings[0].is_summary = val;
     this->timings[4].is_summary = val;
 }
-
 
 void RGE_Base_Game::stop_sound_system(void) {
     if (chat != 0)
@@ -2208,9 +2063,7 @@ void RGE_Base_Game::stop_sound_system(void) {
     }
 }
 
-
-int RGE_Base_Game::restart_sound_system()
-{
+int RGE_Base_Game::restart_sound_system() {
     if (this->sound_system != 0)
         goto done;
 
@@ -2235,10 +2088,6 @@ done:
     return 1;
 }
 
-
-
-
-
 void RGE_Base_Game::stop_music_system(void) {
     if (this->music_system != 0) {
         this->music_system->get_play_info(&this->save_music_type, &this->save_music_track_from, &this->save_music_track_to, &this->save_music_cur_track, this->save_music_file, &this->save_music_loop, &this->save_music_pos);
@@ -2246,12 +2095,7 @@ void RGE_Base_Game::stop_music_system(void) {
     }
 }
 
-
-
-
-
-int RGE_Base_Game::restart_music_system()
-{
+int RGE_Base_Game::restart_music_system() {
     TMusic_System* music_system = this->music_system;
     if (music_system == 0)
         return 1;
@@ -2280,20 +2124,16 @@ int RGE_Base_Game::restart_music_system()
     return 1;
 }
 
-
-
 void RGE_Base_Game::shutdown_music_system() {
-    if (music_system == 0) return;
+    if (music_system == 0)
+        return;
     this->stop_music_system();
     registry->RegSetInt(1, "Music Volume", -music_system->volume);
     delete music_system;
     music_system = 0;
 }
 
-
-
-HFONT RGE_Base_Game::make_font(HDC dc, long string_id, int strike_out)
-{
+HFONT RGE_Base_Game::make_font(HDC dc, long string_id, int strike_out) {
     char face_name[256];
     char point_size_str[10];
     char style[10];
@@ -2316,9 +2156,7 @@ HFONT RGE_Base_Game::make_font(HDC dc, long string_id, int strike_out)
     return this->make_font(dc, face_name, point_size, weight, strike_out);
 }
 
-
-HFONT RGE_Base_Game::make_font(HDC dc, char* face_name, int point_size, int wgt, int strike_out)
-{
+HFONT RGE_Base_Game::make_font(HDC dc, char* face_name, int point_size, int wgt, int strike_out) {
     char str[256];
     LOGFONTA logfont;
     char charset;
@@ -2343,15 +2181,9 @@ HFONT RGE_Base_Game::make_font(HDC dc, char* face_name, int point_size, int wgt,
     return CreateFontIndirectA(&logfont);
 }
 
-
 extern int force_cd;
 
-
-
-
-
-int RGE_Base_Game::check_for_cd(int num_players)
-{
+int RGE_Base_Game::check_for_cd(int num_players) {
     char vol_name[256];
     char file_sys_name[256];
     unsigned long vol_ser_num;
@@ -2386,14 +2218,12 @@ int RGE_Base_Game::check_for_cd(int num_players)
         return 0;
 
     if (GetVolumeInformationA(path, vol_name, 256, &vol_ser_num,
-                               &max_comp_len, &file_sys_flags,
-                               file_sys_name, 256) == 0)
+                              &max_comp_len, &file_sys_flags,
+                              file_sys_name, 256) == 0)
         return 0;
 
     return stricmp(vol_name, this->prog_info->vol_name) == 0;
 }
-
-
 
 int RGE_Base_Game::check_expiration() {
     struct tm kill_def;
@@ -2410,10 +2240,7 @@ int RGE_Base_Game::check_expiration() {
     return cur_date <= expiration_time;
 }
 
-
-
-int RGE_Base_Game::check_multi_copies()
-{
+int RGE_Base_Game::check_multi_copies() {
     this->prog_mutex = CreateMutexA(0, 1, this->prog_info->prog_name);
     if (GetLastError() == 0xB7) {
         HWND window = FindWindowA(this->prog_info->prog_name,
@@ -2444,10 +2271,7 @@ int RGE_Base_Game::check_multi_copies()
     return 1;
 }
 
-
-
-int RGE_Base_Game::check_paint()
-{
+int RGE_Base_Game::check_paint() {
     tagRECT update_rect;
     unsigned char surface_status;
 
@@ -2488,9 +2312,6 @@ int RGE_Base_Game::check_paint()
     return 1;
 }
 
-
-
-
 void RGE_Base_Game::clear_window() {
     RECT rect;
     HDC dc;
@@ -2505,20 +2326,13 @@ void RGE_Base_Game::clear_window() {
     }
 }
 
-
 RGE_Game_World* RGE_Base_Game::create_world() {
     return new RGE_Game_World;
 }
 
-
-void RGE_Base_Game::close()
-{
+void RGE_Base_Game::close() {
     PostMessageA(this->prog_window, 0x10, 0, 0);
 }
-
-
-
-
 
 int RGE_Base_Game::create_dialog(TPanel** dialog_ptr, TPanel* new_dialog) {
     *dialog_ptr = 0;
@@ -2533,83 +2347,57 @@ int RGE_Base_Game::create_dialog(TPanel** dialog_ptr, TPanel* new_dialog) {
     return 1;
 }
 
-
-
-
-
-void RGE_Base_Game::delete_dialog(TPanel** dialog_ptr)
-{
+void RGE_Base_Game::delete_dialog(TPanel** dialog_ptr) {
     if (*dialog_ptr) {
         delete *dialog_ptr;
         *dialog_ptr = 0;
     }
 }
 
-
-
-
 void RGE_Base_Game::set_game_mode(int new_mode, int new_sub_mode) {
     this->game_mode = new_mode;
     this->sub_game_mode = new_sub_mode;
 }
 
-
-
-
-
-
 void RGE_Base_Game::set_player(short new_player_id) {
     RGE_Game_World* w = this->world;
-    if (w == 0) return;
-    if (new_player_id >= w->player_num) return;
+    if (w == 0)
+        return;
+    if (new_player_id >= w->player_num)
+        return;
     w->curr_player = new_player_id;
     this->world->map->clear_map_view_info();
 }
 
-
-int RGE_Base_Game::get_paused()
-{
+int RGE_Base_Game::get_paused() {
     if (this->prog_mode == 7)
         return 0;
     return this->comm_handler->IsPaused();
 }
 
-
-
-
-RGE_Font* RGE_Base_Game::get_font(int font_id)
-{
+RGE_Font* RGE_Base_Game::get_font(int font_id) {
     if (!this->fonts)
         return 0;
     return this->fonts + font_id;
 }
 
-
 TShape* RGE_Base_Game::get_shape(int shape_id) {
-    if (!this->shapes) return 0;
+    if (!this->shapes)
+        return 0;
     return this->shapes[shape_id];
 }
 
-
 TDigital* RGE_Base_Game::get_sound(int sound_id) {
-    if (!this->sounds) return 0;
+    if (!this->sounds)
+        return 0;
     return this->sounds[sound_id];
 }
 
-
-
-
-
-
-void RGE_Base_Game::request_pause()
-{
+void RGE_Base_Game::request_pause() {
     this->comm_handler->TogglePauseGame();
     if (this->world)
         this->world->temp_pause = 1;
 }
-
-
-
 
 void RGE_Base_Game::set_paused(int paused_in, int non_user_pause_in) {
     this->save_paused = this->get_paused();
@@ -2622,10 +2410,6 @@ void RGE_Base_Game::set_paused(int paused_in, int non_user_pause_in) {
         this->request_pause();
     }
 }
-
-
-
-
 
 void RGE_Base_Game::get_mouse_info(WPARAM wparam, LPARAM lparam, tagPOINT& point, int& left_btn, int& right_btn, int& ctrl_key, int& shift_key) {
     int x = lparam & 0xFFFF;
@@ -2644,7 +2428,6 @@ void RGE_Base_Game::get_mouse_info(WPARAM wparam, LPARAM lparam, tagPOINT& point
     shift_key = wparam & 4;
 }
 
-
 void RGE_Base_Game::get_mouse_pos(tagPOINT& point) {
     GetCursorPos(&point);
     if (this->prog_info->full_screen == 0) {
@@ -2658,15 +2441,16 @@ void RGE_Base_Game::get_mouse_pos(tagPOINT& point) {
     }
 }
 
-
 RGE_Player* RGE_Base_Game::get_player(void) {
     RGE_Game_World* w = this->world;
-    if (!w) return 0;
-    if (!w->player_num) return 0;
-    if (w->curr_player >= w->player_num) return 0;
+    if (!w)
+        return 0;
+    if (!w->player_num)
+        return 0;
+    if (w->curr_player >= w->player_num)
+        return 0;
     return w->players[(int)(short)w->curr_player];
 }
-
 
 void RGE_Base_Game::draw_window() {
     UpdateWindow(this->prog_window);
@@ -2747,13 +2531,9 @@ void RGE_Base_Game::set_mouse_cursor(HCURSOR val) {
                   reinterpret_cast<LONG>(this->mouse_cursor));
 }
 
-
-void RGE_Base_Game::set_mouse_facet(long facet)
-{
+void RGE_Base_Game::set_mouse_facet(long facet) {
     this->mouse_pointer->set_facet(facet);
 }
-
-
 
 int __stdcall enum_wnd_proc(void* hwnd, long lParam) {
     char wnd_title[256];
@@ -2761,23 +2541,17 @@ int __stdcall enum_wnd_proc(void* hwnd, long lParam) {
     return 1;
 }
 
-
-
 int __stdcall enum_child_proc(void* hwnd, long lParam) {
     char wnd_title[256];
     GetWindowTextA(hwnd, wnd_title, 255);
     return 1;
 }
 
-
-
 int __stdcall enum_thread_proc(void* hwnd, long lParam) {
     char wnd_title[256];
     GetWindowTextA(hwnd, wnd_title, 255);
     return 1;
 }
-
-
 
 int __stdcall close_thread_windows(void* hwnd, long lParam) {
     if (hwnd != AppWnd) {
@@ -2788,10 +2562,7 @@ int __stdcall close_thread_windows(void* hwnd, long lParam) {
     return 1;
 }
 
-
-
-int __stdcall close_child_windows(void* hwnd, long lParam)
-{
+int __stdcall close_child_windows(void* hwnd, long lParam) {
     char str[256];
 
     str[0] = 0;
@@ -2804,18 +2575,10 @@ int __stdcall close_child_windows(void* hwnd, long lParam)
     return 1;
 }
 
-
 extern void color_log(unsigned char a, unsigned char b, int c);
 
-
-
-
-
-
-
 LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
-                                         WPARAM wparam, LPARAM lparam)
-{
+                                         WPARAM wparam, LPARAM lparam) {
     LRESULT retval = 0;
     int mouse_down;
     int save_debug_timeGetTime_on;
@@ -3091,9 +2854,7 @@ handled:
 
 extern void color_log(unsigned char a, unsigned char b, int c);
 
-
-int RGE_Base_Game::handle_idle()
-{
+int RGE_Base_Game::handle_idle() {
     if (!this->prog_ready || !this->prog_window)
         return 0;
 
@@ -3108,11 +2869,11 @@ int RGE_Base_Game::handle_idle()
         if ((t - restore_palette_timer) >= static_cast<unsigned long>(delay)) {
             if (this->draw_system) {
                 this->draw_system->ModifyPalette(0, 0x100,
-                    this->draw_system->palette);
+                                                 this->draw_system->palette);
             }
             do_restore_palette--;
             restore_palette_timer = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp",
-                                                       0xFA4);
+                                                      0xFA4);
         }
     }
 
@@ -3154,15 +2915,7 @@ int RGE_Base_Game::handle_idle()
     return 1;
 }
 
-
-
-
-
-
-
-
-int RGE_Base_Game::handle_mouse_move(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_mouse_move(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     int ctrl_key;
     int right_btn;
     int left_btn;
@@ -3186,24 +2939,14 @@ int RGE_Base_Game::handle_mouse_move(HWND wnd, UINT msg, WPARAM wparam, LPARAM l
     return 1;
 }
 
-
-
 extern int snapshot_number;
 
-
-
-
-
-
-
-
-int RGE_Base_Game::handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     if (this->prog_ready == 0) {
         return 1;
     }
 
-    short (__stdcall *get_key_state)(int) = GetKeyState;
+    short(__stdcall * get_key_state)(int) = GetKeyState;
 
     basegame_key_message = wparam;
     basegame_key_parameter = lparam & 0xFFFF;
@@ -3231,15 +2974,9 @@ int RGE_Base_Game::handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
                                  basegame_shift_key_down) != 0;
 }
 
-
-
 extern int out_of_sync;
 
-
-
-
-int RGE_Base_Game::handle_user_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_user_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     if (this->comm_handler->MultiplayerGameStart() != 0 && out_of_sync == 0) {
         if (wparam == 0x17B3) {
             this->world->players[this->playerID(lparam)]->command_resign((int)lparam, 1);
@@ -3264,26 +3001,17 @@ int RGE_Base_Game::handle_user_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM
     return this->action_user_command(wparam, lparam) != 0;
 }
 
-
-
-
-int RGE_Base_Game::handle_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     return this->action_command(static_cast<unsigned long>(wparam),
                                 static_cast<unsigned long>(lparam)) != 0;
 }
-
-
-
 
 int RGE_Base_Game::handle_music_done(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     return this->action_music_done() != 0;
 }
 
-
 extern void color_log(unsigned char a, unsigned char b, int c);
-int RGE_Base_Game::handle_paint(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_paint(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     unsigned long time_a;
     unsigned long time_b;
     unsigned long time_c;
@@ -3423,16 +3151,7 @@ paint_done:
     return 1;
 }
 
-
-
-
-
-
-
-
-
-int RGE_Base_Game::handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     if (wparam != 0) {
         this->prog_active = 1;
     } else {
@@ -3465,31 +3184,17 @@ int RGE_Base_Game::handle_activate(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
     return 1;
 }
 
-
-
-
 int RGE_Base_Game::handle_init_menu(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     return this->action_init_menu() != 0;
 }
-
-
-
 
 int RGE_Base_Game::handle_exit_menu(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     return this->action_exit_menu() != 0;
 }
 
-
-
-
-
-
-
-
-
-int RGE_Base_Game::handle_size(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-    if (wparam == 1) return 1;
+int RGE_Base_Game::handle_size(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+    if (wparam == 1)
+        return 1;
 
     if (this->draw_system != 0) {
         this->draw_system->HandleSize(wnd, msg, wparam, lparam);
@@ -3510,10 +3215,6 @@ int RGE_Base_Game::handle_size(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 1;
 }
 
-
-
-
-
 int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     if (this->draw_system != 0) {
         this->draw_system->HandlePaletteChanged(wnd, msg, wparam, lparam);
@@ -3523,8 +3224,7 @@ int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPA
         TDrawSystem* ds = this->draw_system;
         if (ds->DrawType == 1 || ds->ScreenMode == 1 || ds == 0) {
             this->handle_query_new_palette(wnd, msg, wparam, lparam);
-        }
-        else if (this->prog_mode != 1) {
+        } else if (this->prog_mode != 1) {
             ds->ModifyPalette(0, 0x100, ds->palette);
             return 1;
         }
@@ -3533,16 +3233,7 @@ int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPA
     return 1;
 }
 
-
-
-
-
-
-
-
-
-int RGE_Base_Game::handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+int RGE_Base_Game::handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     TDrawSystem* ds = this->draw_system;
     if (ds != 0 && ds->DrawType != 1 && ds->ScreenMode != 1) {
         InvalidateRect(wnd, 0, 0);
@@ -3567,11 +3258,6 @@ int RGE_Base_Game::handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, L
     return 1;
 }
 
-
-
-
-
-
 int RGE_Base_Game::handle_close(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     if (this->action_close() == 0) {
         return 0;
@@ -3592,7 +3278,6 @@ int RGE_Base_Game::handle_destroy(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpar
     return 1;
 }
 
-
 extern int do_fps_log;
 extern FILE* fps_log;
 extern unsigned long start_mem_total;
@@ -3600,14 +3285,7 @@ extern unsigned long start_mem_high;
 extern unsigned long cur_mem_total;
 extern unsigned long cur_mem_high;
 
-
-
-
-
-
-
-void RGE_Base_Game::calc_timings()
-{
+void RGE_Base_Game::calc_timings() {
     unsigned long total_time = 0;
     for (int i = 0; i < 30; ++i) {
         if (this->timings[i].is_summary == 0) {
@@ -3625,7 +3303,8 @@ void RGE_Base_Game::calc_timings()
 
     if (this->timings[0].start_time > 0) {
         this->timings[0].last_time = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12BE) - this->timings[0].start_time;
+                                         "C:\\msdev\\work\\age1_x1\\basegame.cpp", 0x12BE) -
+                                     this->timings[0].start_time;
     } else {
         this->timings[0].last_time = total_time;
     }
@@ -3709,28 +3388,35 @@ void RGE_Base_Game::calc_timings()
             this->world_update_fps,
             this->view_update_fps,
             this->world_update_count == 0
-                ? 0 : this->timings[6].last_time / this->world_update_count,
+                ? 0
+                : this->timings[6].last_time / this->world_update_count,
             this->timings[6].last_max_time,
             this->world_update_count == 0
-                ? 0 : this->timings[7].last_time / this->world_update_count,
+                ? 0
+                : this->timings[7].last_time / this->world_update_count,
             this->timings[7].last_max_time,
             this->world_update_count == 0
-                ? 0 : this->timings[3].last_time / this->world_update_count,
+                ? 0
+                : this->timings[3].last_time / this->world_update_count,
             this->timings[3].last_max_time,
             this->world_update_count == 0
-                ? 0 : this->timings[1].last_time / this->world_update_count,
+                ? 0
+                : this->timings[1].last_time / this->world_update_count,
             this->timings[1].last_max_time,
             this->world_update_count == 0
-                ? 0 : (this->timings[10].last_time +
-                       this->timings[12].last_time) /
+                ? 0
+                : (this->timings[10].last_time +
+                   this->timings[12].last_time) /
                       this->world_update_count,
             this->timings[10].last_max_time +
                 this->timings[12].last_max_time,
             this->world_update_count == 0
-                ? 0 : this->timings[13].last_time / this->world_update_count,
+                ? 0
+                : this->timings[13].last_time / this->world_update_count,
             this->timings[13].last_max_time,
             this->world_update_count == 0
-                ? 0 : this->timings[4].last_time / this->world_update_count,
+                ? 0
+                : this->timings[4].last_time / this->world_update_count,
             this->timings[4].last_max_time,
             0,
             -1,
@@ -3745,27 +3431,25 @@ void RGE_Base_Game::calc_timings()
     this->world_update_count = 0;
     this->view_update_count = 0;
 }
-void RGE_Base_Game::calc_timing_text()
-{
+void RGE_Base_Game::calc_timing_text() {
     unsigned long divisor = this->frame_count;
     if (divisor == 0)
         divisor = 1;
 
     sprintf(this->timing_text,
-        "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu",
-        this->fps,
-        this->timings[2].last_time / divisor,
-        this->timings[6].last_time / divisor,
-        this->timings[7].last_time / divisor,
-        this->timings[3].last_time / divisor,
-        this->timings[1].last_time / divisor,
-        this->timings[10].last_time / divisor,
-        this->timings[13].last_time / divisor,
-        this->timings[4].last_time / divisor,
-        this->timings[0].last_time / divisor);
+            "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu",
+            this->fps,
+            this->timings[2].last_time / divisor,
+            this->timings[6].last_time / divisor,
+            this->timings[7].last_time / divisor,
+            this->timings[3].last_time / divisor,
+            this->timings[1].last_time / divisor,
+            this->timings[10].last_time / divisor,
+            this->timings[13].last_time / divisor,
+            this->timings[4].last_time / divisor,
+            this->timings[0].last_time / divisor);
 }
-void RGE_Base_Game::show_timings()
-{
+void RGE_Base_Game::show_timings() {
     SetWindowTextA(this->prog_window, this->timing_text);
 }
 void RGE_Base_Game::show_comm(void) {
@@ -3780,17 +3464,13 @@ void RGE_Base_Game::show_ai(void) {
     SetWindowTextA(this->prog_window, str);
 }
 
-
-void RGE_Base_Game::send_game_options()
-{
+void RGE_Base_Game::send_game_options() {
     if (this->comm_handler)
         this->comm_handler->SetMyGameOptions(
             reinterpret_cast<char*>(&this->rge_game_options), 0xA8);
 }
 
-
-void RGE_Base_Game::receive_game_options(void)
-{
+void RGE_Base_Game::receive_game_options(void) {
     if (this->comm_handler != 0) {
         unsigned long size = 0;
         void* options = this->comm_handler->GetMyGameOptions(&size);
@@ -3799,9 +3479,7 @@ void RGE_Base_Game::receive_game_options(void)
     }
 }
 
-
-void RGE_Base_Game::set_game_options(RGE_Game_Options* options)
-{
+void RGE_Base_Game::set_game_options(RGE_Game_Options* options) {
     int i;
 
     this->setVersion(options->versionValue);
@@ -3827,9 +3505,7 @@ void RGE_Base_Game::set_game_options(RGE_Game_Options* options)
     }
 }
 
-
-void RGE_Base_Game::get_game_options(RGE_Game_Options* options)
-{
+void RGE_Base_Game::get_game_options(RGE_Game_Options* options) {
     options->versionValue = this->version();
     options->scenarioGameValue = (unsigned char)this->scenarioGame();
     strcpy(options->scenarioNameValue, this->scenarioName());
@@ -3855,264 +3531,202 @@ void RGE_Base_Game::get_game_options(RGE_Game_Options* options)
     }
 }
 
-
-
-
 float RGE_Base_Game::version() const {
     return this->rge_game_options.versionValue;
 }
-
 
 int RGE_Base_Game::scenarioGame() const {
     return this->rge_game_options.scenarioGameValue;
 }
 
-
-
-
 int RGE_Base_Game::randomGame() const {
     return !this->rge_game_options.scenarioGameValue;
 }
-
-
-
 
 int RGE_Base_Game::campaignGame() const {
     return this->campaignGameValue;
 }
 
-
-
-
 int RGE_Base_Game::savedGame() const {
     return this->savedGameValue;
 }
-
-
-
 
 char* RGE_Base_Game::scenarioName() {
     return this->rge_game_options.scenarioNameValue;
 }
 
-
 int RGE_Base_Game::singlePlayerGame() const {
     return this->rge_game_options.singlePlayerGameValue;
 }
-
 
 int RGE_Base_Game::multiplayerGame() const {
     return this->rge_game_options.multiplayerGameValue;
 }
 
-
-
-
 int RGE_Base_Game::mapXSize() const {
     return this->rge_game_options.mapXSizeValue;
 }
-
-
-
 
 int RGE_Base_Game::mapYSize() const {
     return this->rge_game_options.mapYSizeValue;
 }
 
-
-
-
 int RGE_Base_Game::mapZSize() const {
     return this->rge_game_options.mapZSizeValue;
 }
-
-
-
 
 int RGE_Base_Game::allowCheatCodes() const {
     return this->rge_game_options.allowCheatCodesValue;
 }
 
-
-
-
 int RGE_Base_Game::cheatNotification() const {
     return this->rge_game_options.cheatNotificationValue;
 }
-
-
-
 
 int RGE_Base_Game::fullVisibility() const {
     return this->rge_game_options.fullVisibilityValue;
 }
 
-
-
-
 int RGE_Base_Game::fogOfWar() const {
     return this->rge_game_options.fogOfWarValue;
 }
-
-
-
 
 int RGE_Base_Game::coloredChat() const {
     return this->rge_game_options.coloredChatValue;
 }
 
-
-
-
 int RGE_Base_Game::gameDeveloperMode() const {
     return this->rge_game_options.gameDeveloperModeValue;
 }
-
 
 int RGE_Base_Game::playerHasCD(int player_num) {
     return this->rge_game_options.playerCDAndVersionValue[player_num] & 1;
 }
 
-
 unsigned char RGE_Base_Game::playerVersion(int player_num) {
     return this->rge_game_options.playerCDAndVersionValue[player_num] >> 1;
 }
 
-
-
-
-char* RGE_Base_Game::playerVersionString(int player_num)
-{
+char* RGE_Base_Game::playerVersionString(int player_num) {
     unsigned char ver = playerVersion(player_num);
 
     switch (ver) {
-        case 0:   return "";
-        case 1:   return "1.0";
-        case 2:   return "1.0a";
-        case 3:   return "1.0b";
-        case 4:   return "1.0c";
-        case 5:   return "1.0d";
-        case 6:   return "1.0e";
-        case 7:   return "1.1";
-        case 8:   return "1.1a";
-        case 9:   return "1.1b";
-        case 10:  return "1.1c";
-        case 11:  return "1.2";
-        case 12:  return "1.2a";
-        case 13:  return "1.2b";
-        case 14:  return "1.2c";
-        case 15:  return "1.3";
-        case 16:  return "1.3a";
-        case 17:  return "1.3b";
-        case 18:  return "1.3c";
-        case 19:  return "1.4";
-        case 20:  return "1.4a";
-        case 21:  return "1.4b";
-        case 22:  return "1.4c";
-        default:  return "1.X";
+    case 0:
+        return "";
+    case 1:
+        return "1.0";
+    case 2:
+        return "1.0a";
+    case 3:
+        return "1.0b";
+    case 4:
+        return "1.0c";
+    case 5:
+        return "1.0d";
+    case 6:
+        return "1.0e";
+    case 7:
+        return "1.1";
+    case 8:
+        return "1.1a";
+    case 9:
+        return "1.1b";
+    case 10:
+        return "1.1c";
+    case 11:
+        return "1.2";
+    case 12:
+        return "1.2a";
+    case 13:
+        return "1.2b";
+    case 14:
+        return "1.2c";
+    case 15:
+        return "1.3";
+    case 16:
+        return "1.3a";
+    case 17:
+        return "1.3b";
+    case 18:
+        return "1.3c";
+    case 19:
+        return "1.4";
+    case 20:
+        return "1.4a";
+    case 21:
+        return "1.4b";
+    case 22:
+        return "1.4c";
+    default:
+        return "1.X";
     }
 }
-
-
-
 
 unsigned char RGE_Base_Game::playerCDAndVersion(int player_num) {
     return this->rge_game_options.playerCDAndVersionValue[player_num];
 }
 
-
 int RGE_Base_Game::difficulty() {
     return this->rge_game_options.difficultyValue;
 }
-
 
 int RGE_Base_Game::numberPlayers() const {
     return this->rge_game_options.numberPlayersValue;
 }
 
-
 int RGE_Base_Game::playerTeam(int player_num) {
     return this->rge_game_options.playerTeamValue[player_num];
 }
-
-
-
 
 unsigned char RGE_Base_Game::pathFinding() {
     return this->pathFindingValue;
 }
 
-
-
-
 unsigned char RGE_Base_Game::mpPathFinding() {
     return this->rge_game_options.mpPathFindingValue;
 }
 
-
 static char temp;
-
 
 char* RGE_Base_Game::gameSummary() {
     temp = 0;
     return &temp;
 }
 
-
 void RGE_Base_Game::find_campaigns() {
     this->player_game_info->find_campaigns();
 }
-
-
-
 
 void RGE_Base_Game::setScenarioGame(int v) {
     this->rge_game_options.scenarioGameValue = v;
 }
 
-
-
-
 void RGE_Base_Game::setVersion(float val) {
     this->rge_game_options.versionValue = val;
 }
-
 
 void RGE_Base_Game::setScenarioName(char* n) {
     strncpy(this->rge_game_options.scenarioNameValue, n, 0x80);
     this->rge_game_options.scenarioNameValue[0x7F] = 0;
 }
 
-
-
-
 void RGE_Base_Game::setCampaignGame(int v) {
     this->campaignGameValue = v;
 }
-
-
-
 
 void RGE_Base_Game::setSavedGame(int v) {
     this->savedGameValue = v;
 }
 
-
-void RGE_Base_Game::setSinglePlayerGame(int v)
-{
+void RGE_Base_Game::setSinglePlayerGame(int v) {
     this->rge_game_options.singlePlayerGameValue = (unsigned char)v;
     this->rge_game_options.multiplayerGameValue = (unsigned char)(v == 0);
 }
 
-
-void RGE_Base_Game::setMultiplayerGame(int v)
-{
+void RGE_Base_Game::setMultiplayerGame(int v) {
     this->rge_game_options.multiplayerGameValue = (unsigned char)v;
     this->rge_game_options.singlePlayerGameValue = (unsigned char)(v == 0);
 }
-
-
-
 
 void RGE_Base_Game::setMapSize(int x, int y, int z) {
     this->rge_game_options.mapXSizeValue = x;
@@ -4120,62 +3734,39 @@ void RGE_Base_Game::setMapSize(int x, int y, int z) {
     this->rge_game_options.mapZSizeValue = z;
 }
 
-
-
-
 void RGE_Base_Game::setAllowCheatCodes(int v) {
     this->rge_game_options.allowCheatCodesValue = v;
 }
-
-
-
 
 void RGE_Base_Game::setCheatNotification(int v) {
     this->rge_game_options.cheatNotificationValue = v;
 }
 
-
-
-
 void RGE_Base_Game::setFullVisibility(int v) {
     this->rge_game_options.fullVisibilityValue = v;
 }
-
-
-
 
 void RGE_Base_Game::setFogOfWar(int v) {
     this->rge_game_options.fogOfWarValue = v;
 }
 
-
-
-
 void RGE_Base_Game::setColoredChat(int v) {
     this->rge_game_options.coloredChatValue = v;
 }
-
-
-
 
 void RGE_Base_Game::setNumberPlayers(int v) {
     this->rge_game_options.numberPlayersValue = v;
 }
 
-
-
-
 void RGE_Base_Game::setGameDeveloperMode(int v) {
     this->rge_game_options.gameDeveloperModeValue = v;
 }
-
 
 void RGE_Base_Game::setPlayerHasCD(int player_num, int has_cd) {
     unsigned char val = this->rge_game_options.playerCDAndVersionValue[player_num];
     val = (val & 0xFE) | has_cd;
     this->rge_game_options.playerCDAndVersionValue[player_num] = val;
 }
-
 
 void RGE_Base_Game::setPlayerVersion(int player_num, unsigned char player_version) {
     unsigned char v = player_version << 1;
@@ -4184,65 +3775,43 @@ void RGE_Base_Game::setPlayerVersion(int player_num, unsigned char player_versio
     this->rge_game_options.playerCDAndVersionValue[player_num] = v;
 }
 
-
 void RGE_Base_Game::setPlayerCDAndVersion(int player_num, unsigned char val) {
     this->rge_game_options.playerCDAndVersionValue[player_num] = val;
 }
-
-
-
 
 void RGE_Base_Game::setDifficulty(int difficulty) {
     this->rge_game_options.difficultyValue = difficulty;
 }
 
-
 void RGE_Base_Game::setPlayerTeam(int player_num, int team) {
     this->rge_game_options.playerTeamValue[player_num] = team;
 }
-
-
-
 
 void RGE_Base_Game::setPathFinding(unsigned char val) {
     this->pathFindingValue = val;
 }
 
-
-
-
 void RGE_Base_Game::setMpPathFinding(unsigned char val) {
     this->rge_game_options.mpPathFindingValue = val;
 }
 
-
-void RGE_Base_Game::set_map_visible(unsigned char flag)
-{
+void RGE_Base_Game::set_map_visible(unsigned char flag) {
     if (this->world)
         this->world->set_map_visible((unsigned char)flag);
 }
 
-
-void RGE_Base_Game::set_map_fog(unsigned char flag)
-{
+void RGE_Base_Game::set_map_fog(unsigned char flag) {
     if (this->world)
         this->world->set_map_fog((unsigned char)flag);
 }
-
 
 void RGE_Base_Game::turn_world_sound_off() {
     this->world->turn_sound_off();
 }
 
-
 int RGE_Base_Game::campaign_open_scenario() {
     return this->player_game_info->open_scenario();
 }
-
-
-
-
-
 
 long RGE_Base_Game::GetChecksum(long player) {
     RGE_Game_World* world = this->world;
@@ -4257,13 +3826,7 @@ long RGE_Base_Game::GetChecksum(long player) {
     return 0;
 }
 
-
-
-
-
-
-unsigned char RGE_Base_Game::GetWorldChecksums(long& new_checksum, long& new_position_checksum, long& new_action_checksum)
-{
+unsigned char RGE_Base_Game::GetWorldChecksums(long& new_checksum, long& new_position_checksum, long& new_action_checksum) {
     long checksum1;
     long checksum2;
     long checksum3;
@@ -4294,11 +3857,6 @@ unsigned char RGE_Base_Game::GetWorldChecksums(long& new_checksum, long& new_pos
     return 0;
 }
 
-
-
-
-
-
 long RGE_Base_Game::GetWorldChecksum(void) {
     long sum;
     RGE_Game_World* world;
@@ -4319,9 +3877,6 @@ long RGE_Base_Game::GetWorldChecksum(void) {
     return 0;
 }
 
-
-
-
 void RGE_Base_Game::disable_input() {
     if (this->is_mouse_on != 0) {
         HCURSOR cursor = LoadCursorA(0, IDC_WAIT);
@@ -4337,10 +3892,6 @@ void RGE_Base_Game::disable_input() {
     }
 }
 
-
-
-
-
 void RGE_Base_Game::enable_input() {
     if (this->input_disabled_window != 0) {
         if (GetCapture()) {
@@ -4355,9 +3906,7 @@ void RGE_Base_Game::enable_input() {
     }
 }
 
-
-void RGE_Base_Game::set_screen_size(long wid, long hgt)
-{
+void RGE_Base_Game::set_screen_size(long wid, long hgt) {
     RECT win_rect;
     RECT client_rect;
 
@@ -4401,10 +3950,10 @@ void RGE_Base_Game::set_screen_size(long wid, long hgt)
 
             if (client_rect.right != wid || client_rect.bottom != hgt) {
                 SetWindowPos(this->prog_window, 0,
-                    win_rect.left, win_rect.top,
-                    wid + win_rect.right - win_rect.left - client_rect.right,
-                    hgt + win_rect.bottom - win_rect.top - client_rect.bottom,
-                    0);
+                             win_rect.left, win_rect.top,
+                             wid + win_rect.right - win_rect.left - client_rect.right,
+                             hgt + win_rect.bottom - win_rect.top - client_rect.bottom,
+                             0);
             }
         }
     }
@@ -4422,47 +3971,36 @@ unsigned char RGE_Base_Game::check_prog_argument(char* argument) {
     return 0;
 }
 
-
 long RGE_Base_Game::get_scenario_checksum(char* scenario_file) {
     RGE_Scenario_Header* hdr = this->get_scenario_header(scenario_file, 0);
-    if (!hdr) return 0;
+    if (!hdr)
+        return 0;
     unsigned long checksum = hdr->checksum;
     delete hdr;
     return checksum;
 }
 
-
-
-
 unsigned char RGE_Base_Game::check_scenario_checksum(char* scenario, long checksum) {
     long cs = this->get_scenario_checksum(scenario);
-    if (cs != 0 && cs == checksum) return 1;
+    if (cs != 0 && cs == checksum)
+        return 1;
     return 0;
 }
 
-
-
-
 void RGE_Base_Game::dump_memory_usage(char* file_name) {
 }
-
-
-
 
 int RGE_Base_Game::playerID(int player_index) {
     return this->playerIDValue[player_index];
 }
 
-
 void RGE_Base_Game::setPlayerID(int player_index, int player_id) {
     this->playerIDValue[player_index] = player_id;
 }
 
-
 void RGE_Base_Game::reset_countdown_timer(long in_countdown_player_id) {
     this->countdown_timer[in_countdown_player_id] = -1;
 }
-
 
 void RGE_Base_Game::set_countdown_timer(long in_countdown_player_id, long in_countdown_timer) {
     long current = this->countdown_timer[in_countdown_player_id];
@@ -4471,41 +4009,21 @@ void RGE_Base_Game::set_countdown_timer(long in_countdown_player_id, long in_cou
     }
 }
 
-
-
-
-void RGE_Base_Game::get_countdown_timer(long out_countdown_player_id, long& out_countdown_timer)
-{
+void RGE_Base_Game::get_countdown_timer(long out_countdown_player_id, long& out_countdown_timer) {
     out_countdown_timer = this->countdown_timer[out_countdown_player_id];
 }
-
-
-
 
 int RGE_Base_Game::play_video(char* file_name) {
     return 0;
 }
 
-
-
-
-void RGE_Base_Game::close_video(void)
-{
+void RGE_Base_Game::close_video(void) {
 }
 
-
-
-
-void RGE_Base_Game::handle_video_notify(void)
-{
+void RGE_Base_Game::handle_video_notify(void) {
 }
 
-
-
-
-
-int RGE_Base_Game::play_sound(int sound_id)
-{
+int RGE_Base_Game::play_sound(int sound_id) {
     if (this->sounds == 0)
         return 0;
 
@@ -4518,40 +4036,23 @@ int RGE_Base_Game::play_sound(int sound_id)
     return this->sounds[sound_id]->play();
 }
 
-
-
-
 float RGE_Base_Game::get_game_speed() {
     return this->game_speed;
 }
-
-
-
 
 void RGE_Base_Game::set_game_speed(float val) {
     this->game_speed = val;
 }
 
-
-
-
 int RGE_Base_Game::get_single_player_difficulty() {
     return this->single_player_difficulty;
 }
-
-
-
 
 void RGE_Base_Game::set_single_player_difficulty(int val) {
     this->single_player_difficulty = val;
 }
 
-
-
-
-
-int RGE_Base_Game::setup_map_save_area()
-{
+int RGE_Base_Game::setup_map_save_area() {
     TDrawArea* area = new TDrawArea("Diamond Map Save Area", 0);
     this->map_save_area = area;
 
@@ -4571,25 +4072,17 @@ int RGE_Base_Game::setup_map_save_area()
     return 1;
 }
 
-
 void RGE_Base_Game::reload_scenarios_info() {
     this->scenario_info->reload_scenarios();
 }
 
-
-
-
-void RGE_Base_Game::set_interface_messages(void)
-{
+void RGE_Base_Game::set_interface_messages(void) {
 }
 
-
-void RGE_Base_Game::set_render_all()
-{
+void RGE_Base_Game::set_render_all() {
     this->render_all = 1;
     panel_system.set_restore();
 }
-
 
 extern char debug_random_log[5000][100];
 extern int debug_random_index;
@@ -4599,7 +4092,6 @@ void __cdecl debug_random_reset() {
         debug_random_log[index][0] = 0;
     debug_random_index = -1;
 }
-
 
 extern int debug_random_index;
 extern int wrote_debug_random_log;
@@ -4618,8 +4110,7 @@ void debug_random_write(void) {
     while (index < 5000) {
         if (index == debug_random_index) {
             marker = ">";
-        }
-        else {
+        } else {
             marker = " ";
         }
         fprintf(file, "%s%d - %s\n", marker, index,
@@ -4631,14 +4122,12 @@ void debug_random_write(void) {
     wrote_debug_random_log = 1;
 }
 
-
 extern int do_debug_random;
 extern int debug_random_on;
 extern int debug_random_index;
 extern char debug_random_log[5000][100];
 
-int __cdecl debug_rand(char* source_name, int source_line)
-{
+int __cdecl debug_rand(char* source_name, int source_line) {
     int rv = rand();
     if (do_debug_random && debug_random_on) {
         char temp_name[9];
@@ -4665,23 +4154,31 @@ int __cdecl debug_rand(char* source_name, int source_line)
     return rv;
 }
 
-
 extern int do_debug_random;
 extern int debug_random_on;
 extern int debug_random_index;
 extern char debug_random_log[5000][100];
 
-
-
 void __cdecl debug_srand(char* source_name, int source_line,
-                                     unsigned int seed)
-{
+                         unsigned int seed) {
     if (do_debug_random && debug_random_on) {
-        char temp_name[9]; source_name += 10; char* d = temp_name; char* end = source_name + 8; char c = *source_name;
-        while (c != '.' && source_name < end) { *d = c; c = source_name[1]; d++; source_name++; }
+        char temp_name[9];
+        source_name += 10;
+        char* d = temp_name;
+        char* end = source_name + 8;
+        char c = *source_name;
+        while (c != '.' && source_name < end) {
+            *d = c;
+            c = source_name[1];
+            d++;
+            source_name++;
+        }
         *d = 0;
         int idx = debug_random_index;
-        if (idx < 4999) idx++; else idx = 0;
+        if (idx < 4999)
+            idx++;
+        else
+            idx = 0;
         debug_random_index = idx;
         sprintf(debug_random_log[idx], "t%d,%s,l%d,s%u", rge_base_game->world->world_time, temp_name, source_line, seed);
     }
