@@ -4,7 +4,8 @@
 
 - Module: `src/dlg_menu.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source head commit: `89164609b53506a51edc3473a2bf3bfe92479ea1`
+- Source head commit: `d26604d77fcf83b0b61a08b467c5ab30df85f3dc`
+- Applied resource definitions: `5bc93fcb069dce227999254757e001423ec4959e`
 - Assigned report: `decomp_notes/source_cleanup/wave02/dlg_menu.md`
 - Changed files: `src/dlg_menu.cpp`, this report
 - Header owner: owner 10 owns `include/dlg_menu.h`. This worker did not edit it.
@@ -80,12 +81,19 @@ no entries for these IDs:
 - `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA256
   `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`.
 
-The following requests go to the root owner of `include/resource_ids.h`.
-They are new cleanup names, not recovered original macro names. Each ID is an
-RT_STRING lookup through the panel/game string path. The base-language result
-is from the file and language listed above.
+Root applied the following definitions in `include/resource_ids.h` in commit
+`5bc93fcb069dce227999254757e001423ec4959e`. They are new cleanup names, not
+recovered original macro names. Each ID is an RT_STRING lookup through the
+panel/game string path. The base-language result is from the file and
+language listed above.
 
-| ID | exact base text | call-site purpose | proposed cleanup name |
+`TEasy_Panel::popupYesNoDialog(long, char*, int, int)` loads the confirmation
+ID into a text buffer, then passes that text to the dialog overload. These
+confirmation resources are message text. The adjacent `QuitAndLoadDialog`,
+`QuitGameDialog`, `RestartDialog`, and `ResignDialog` strings select dialog
+resources; they are not the confirmation message IDs.
+
+| ID | exact base text | call-site purpose | applied cleanup name |
 | --- | --- | --- | --- |
 | `0x23F9` | `About` | menu button label | `IDS_MENU_ABOUT` |
 | `0x2437` | `Achievements` | menu button label | `IDS_MENU_ACHIEVEMENTS` |
@@ -98,10 +106,10 @@ is from the file and language listed above.
 | `0x243F` | `Restart` | menu button label | `IDS_MENU_RESTART` |
 | `0x2440` | `Resign` | multiplayer menu button label | `IDS_MENU_RESIGN` |
 | `0x269E` | `Achievements` | title passed to `TribeAchievementsScreen` | `IDS_ACHIEVEMENTS_TITLE` |
-| `0x0C1C` | `Are you sure you want to quit and load a new game?` | quit-and-load confirmation title | `IDS_CONFIRM_QUIT_AND_LOAD` |
-| `0x0C1D` | `Are you sure you want to quit this game?` | quit confirmation title | `IDS_CONFIRM_QUIT_GAME` |
-| `0x0C1E` | `Are you sure you want to restart this game?` | restart confirmation title | `IDS_CONFIRM_RESTART_GAME` |
-| `0x0C1F` | `Are you sure you want to resign?` | resign confirmation title | `IDS_CONFIRM_RESIGN` |
+| `0x0C1C` | `Are you sure you want to quit and load a new game?` | quit-and-load confirmation message text | `IDS_CONFIRM_QUIT_AND_LOAD` |
+| `0x0C1D` | `Are you sure you want to quit this game?` | quit confirmation message text | `IDS_CONFIRM_QUIT_GAME` |
+| `0x0C1E` | `Are you sure you want to restart this game?` | restart confirmation message text | `IDS_CONFIRM_RESTART_GAME` |
+| `0x0C1F` | `Are you sure you want to resign?` | resign confirmation message text | `IDS_CONFIRM_RESIGN` |
 
 The runtime expansion and pinned original expansion returned missing entries,
 not empty slots, for every requested ID. The missing expansion results do not
@@ -125,8 +133,9 @@ Shared requests:
 
 1. Owner 10 may update the unassigned declaration names in `include/dlg_menu.h`
    to `parentPanel`, `fromPanel`, `actionIn`, `a1`, and `a2`.
-2. Root should review the proposed resource IDs before adding them to
-   `include/resource_ids.h`. `IDS_MENU_HELP` is already present and was reused.
+2. Root applied all approved resource IDs in
+   `5bc93fcb069dce227999254757e001423ec4959e`. `IDS_MENU_HELP` was already
+   present and remains reused.
 
 The preserved pre-cleanup reference is under
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/preparation/baseline-build/`.
