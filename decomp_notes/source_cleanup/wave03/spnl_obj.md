@@ -7,7 +7,7 @@
 - Header owner: `include/spnl_obj.h` (not changed)
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Changed files: `src/spnl_obj.cpp`, this report
-- Final commit: `cd11117b8b08172a17c8af3a35b4a3c75dd7a1d1`
+- Final commit: `f5d26b237acda3c9b00bfff449964fdb3e46ffdf`
 
 The source owns the seven normal `TRIBE_Scenario_Editor_Panel_Object` bodies at
 `004BEDC0`, `004BEE30`, `004BEE40`, `004BEE70`, `004BF4D0`, `004BF6C0`, and
