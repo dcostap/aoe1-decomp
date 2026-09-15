@@ -4,8 +4,9 @@
 
 - Module: `src/tworld.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `891a0e6263b753a59f3caef970c66311498d9328`
-- Report commit: `cde37ac57e36cdfff6644ef18080ddc908440250`
+- Final prior report commit: `cad41fd0133f640144cb7cfb774f39c4a12be364`
+- Final correction commit: `72fe153494f42409f66797cd6fbd39e68422e8eb`
+- Report commit: pending until this correction report is committed
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
@@ -13,8 +14,9 @@
 - Registry: `config/functions/src/tworld.cpp.json`
 - Header owner: group owner 26 owns `include/tworld.h`.
 
-The source commit contains only the assigned source. This report is a
-separate assigned-file commit.
+The prior source commit contains only the assigned source. This correction
+commit contains only the assigned source. This report is a separate
+assigned-file commit.
 
 ## Evidence checked
 
@@ -117,6 +119,12 @@ These are recovered original names. I did not rename public functions, class
 members, globals, or ABI symbols. The current `map_row` loop name is a new
 cleanup name. It prevents the restored `row` parameter from being shadowed by
 the map-row loop.
+
+In `scenario_make_player`, the positional uses remain those of the base
+source. Position 2, named `player_type`, supplies `master_players[...]` and
+the constructor argument. Position 3, named `info_type`, controls the `0` and
+`4` tests. Position 4, named `master_player_id`, remains unused. This avoids a
+semantic change during parameter renaming.
 
 The PDB records `x1` and `x2` in `check_destructables` at parameter-home
 offsets. It also records `rx`, `ry`, and `ry2` at slots that the assembly uses
@@ -258,9 +266,42 @@ original macro names:
   `0x2BD6` entries are `Up` and `Down`, and `0x2BD7`-`0x2BD9` are empty.
   The source does not prove those entries are valid difficulty values.
 
-No header declaration request is needed for `include/tworld.h`. Its assigned
-function declarations omit parameter names. The source and header owners keep
-all types and signatures unchanged.
+Please update `include/tworld.h` with a declaration-name-only change for owner
+26. Its declarations omit parameter names. Add the PDB names from the table to
+all declarations that have parameters:
+
+```cpp
+void logStatus(FILE* out, int firstTime);
+void data_load_players_type(short id, short type, FILE* infile);
+void data_load_map(char* border_file, char* overlay_file, char* terrain_file,
+                   char* map_file, short tile_width, short tile_height,
+                   short elev_height, RGE_Sound** sounds, char* terr_obj_file);
+unsigned char data_load_world(FILE* infile);
+unsigned char init_player_type(int infile, short index, unsigned char type);
+void load_player(int infile, unsigned char type, short index);
+void setup_players(RGE_Player_Info& info);
+void save(int outfile);
+void scenario_make_player(short index, unsigned char player_type,
+                          unsigned char info_type,
+                          unsigned char master_player_id, char* name);
+unsigned char init(char* base_name, TSound_Driver* sound_dvr,
+                   TCommunications_Handler* com_hand);
+unsigned char load_world(int infile1);
+unsigned char new_game(RGE_Player_Info& info, int myPlayerNum);
+unsigned char new_scenario(RGE_Player_Info& info, int random_seed_in);
+void base_save(int outfile);
+void scenario_init(int infile, RGE_Game_World* world);
+void scenario_init(RGE_Game_World* world);
+long get_achievement(unsigned char achievement, char** info);
+void send_cheat(short cheat_code);
+void cheat(short player, short cheat_code);
+void fill_in_score(TRIBE_Zone_High_Score_Info& info, long score_group);
+```
+
+Also add `infile` and `sound_dvr` to `map_init`, `infile` and `com_hand` to
+`command_init`, `infile` to `effects_init`, and `infile`, `sound_dvr`, and
+`com_hand` to `world_init`. These edits do not change types, layouts, calling
+conventions, decorated names, or interfaces.
 
 The existing comment in `check_destructables` records the proven `+3.0` and
 `-3.0` constants. I kept it. I added no new behavior comment. Function
