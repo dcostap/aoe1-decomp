@@ -16,8 +16,7 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
 RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
 }
 
-int RGE_Dialog_List::setup(TScreenPanel* parent_screen, char* info_file_in,
-                           long info_id_in, int list_type_in, char* title_in) {
+int RGE_Dialog_List::setup(TScreenPanel* parent_screen, char* info_file_in, long info_id_in, int list_type_in, char* title_in) {
     this->list_type = list_type_in;
     this->list_info = 0;
     this->list_text = 0;
@@ -146,8 +145,7 @@ int RGE_Dialog_List::create_object_list() {
 }
 
 int __cdecl rdlg_list_compare(const void* arg1, const void* arg2) {
-    int result = CompareStringA(0x400, 1, (const char*)arg1, -1,
-                                (const char*)arg2, -1);
+    int result = CompareStringA(0x400, 1, (const char*)arg1, -1, (const char*)arg2, -1);
     if (result == 1)
         return -1;
     return result == 3;
