@@ -5,7 +5,7 @@
 - Module: `src/pnl_lst.cpp`
 - Branch: `cleanup/staging-20260915-151`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: `05c3c1d5f1085073dcd3aa11e119efe914ab66aa`
+- Final source commit: `be24585a0b8ea3828e55704f40b0af80fbd67917`
 - Report commit: recorded in the delivery message after this report commit.
 - Changed files:
   - `src/pnl_lst.cpp`
@@ -13,7 +13,7 @@
 - No header changed. `include/pnl_lst.h` was read only.
 
 The base source SHA256 is `63c0c05e172367f9cd639784dc67ea6f20dd1ad5d6189c1e4be393b7bb0f2858`.
-The final source SHA256 is `3bee8a8a35ab5e851218cc2a01796d1b56d24f5e92356108706eea83e063e892`.
+The final source SHA256 is `56b8ee94140ffac684c1460524ef96c41d1d5dfc40980cc2e476cac4c7735b9b`.
 The base source hash matches `C:/Projects/my_decomps/aoe1_attempt3/src/pnl_lst.cpp`.
 
 The preserved baseline object is:
