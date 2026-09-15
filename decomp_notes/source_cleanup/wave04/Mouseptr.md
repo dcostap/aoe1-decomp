@@ -6,7 +6,7 @@
 - Owner: owner 23, worker slot 203.
 - Branch: `cleanup/staging-20260915-203`.
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`.
-- Final source commit: `bc965c6300baff1c6e00e5894ef6240cb08a3ce1`.
+- Final source commit: `b178b76537813a721d1a30e6fb55d96c3a6b3bef`.
 - Changed files:
   - `src/Mouseptr.cpp`
   - `decomp_notes/source_cleanup/wave04/Mouseptr.md`
@@ -14,12 +14,15 @@
 - Registry: `config/functions/src/Mouseptr.cpp.json`.
 - Registry build flags: `gx`.
 - Source SHA-256 before cleanup: `6629579017fd4b84cd4e1146939870664fe2568fdce2068f4ad02e5c32a172a5`.
-- Source SHA-256 after cleanup: `42c6c35b955ecd88c90e84e45c1fb2a3f4c02472fdda0de5e9b1202bca17bf42`.
+- Source SHA-256 after cleanup: `5e11a861cfc5c4412c899d7fa89e6ee4238d6e6c665ea3d0634d5fd1d72cc949`.
 
 The source keeps all 24 registry procedures in PDB source order. The cleanup
 recovers procedure-scoped PDB parameter names and applies 1TBS function braces.
 It keeps types, scopes, storage, declarations, expressions, calls, literals,
 source order, and public symbols unchanged.
+
+Correction: the short five-parameter `setup` definition signature is now on
+one line. No other source change was made.
 
 ## Evidence inspected
 
