@@ -5,9 +5,15 @@
 - Module: `src/taibldmd.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `67db444c5c8c35c1e93b85efbd0ee366562547e7`
-- Report commit: follow-up commit after this report
+- Prior report commit: `07066d21dee5bed973851e7d536028991c751a02`
 - Branch: `cleanup/staging-20260915-114`
 - Changed files: `src/taibldmd.cpp` and this report
+
+Delivery history:
+
+1. Source cleanup: `67db444c5c8c35c1e93b85efbd0ee366562547e7`.
+2. First report: `07066d21dee5bed973851e7d536028991c751a02`.
+3. This commit corrects the report and is the final report commit.
 
 The source owner remains `src/taibldmd.cpp`. The header owner remains
 `include/taibldmd.h`. This cleanup did not edit the header or any other source
