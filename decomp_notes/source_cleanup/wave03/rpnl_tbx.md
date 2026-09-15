@@ -5,7 +5,7 @@
 - Module: `src/rpnl_tbx.cpp`
 - Branch: `cleanup/staging-20260915-164`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit from `git rev-parse`: `5343cdd8279add2e0b1b97f08af65879b8f8f082`
+- Final source commit from `git rev-parse`: `23c837a6b03c0aa6556d7688715b5ffdb29b8ede`
 - The report is committed separately from the source.
 - Changed files:
   - `src/rpnl_tbx.cpp`
@@ -120,8 +120,21 @@ assembly, layout change, or behavior repair was added.
 
 ## Header and shared-file requests
 
-- `include/rpnl_tbx.h` remains unchanged. Its parameters are unnamed, so no
-header rename is required.
+- `include/rpnl_tbx.h` remains unchanged. Its owner should apply these exact
+parameter names without changing types or ABI:
+
+```cpp
+RGE_Panel_Tool_Box(TDrawArea* draw_area_in, TPanel* parent_in, long x,
+                   long y, long wid, long hgt, void* font, long font_wid,
+                   long font_hgt, TDigital* sound, TScreenPanel* screen_panel_in,
+                   RGE_View* view_in, RGE_Diamond_Map* map_in);
+virtual long action(TPanel* from_panel, long action_in,
+                    unsigned long action_val1, unsigned long action_val2);
+virtual long key_down_action(long key, short count, int alt_key, int ctrl_key,
+                             int shift_key);
+void game_mode_changed(int old_mode, int new_mode);
+```
+
 - Root owns `include/resource_ids.h`. Route the proposed
 `IDS_SELECT_OBJECT_TITLE` definition through root.
 - No other shared declaration request exists.
