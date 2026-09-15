@@ -218,6 +218,9 @@ The PDB does not name these other existing locals: `result` in `setup`,
 mouse handler. They remain concise descriptive cleanup names. They are not
 claimed as original names. No reused stack-slot mapping was forced.
 
+Unresolved questions remain limited to the `00474880` local mapping described
+above. No other source declaration needs a name recovery decision.
+
 All names recovered from PDB records are original spellings. The names listed
 as existing locals above are inferred cleanup names. No public function, class,
 member, global, or ABI symbol was renamed.
