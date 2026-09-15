@@ -385,16 +385,16 @@ void TListPanel::draw_highlight_bar() {
 
     void* dc = this->render_area->GetDc(s_pnl_lst__draw_highlight_bar);
     if (dc != 0) {
-        tagRECT rect;
+        tagRECT r;
         this->calc_line_pos(dc, this->cur_line - this->top_line, this->cur_line,
-                            &rect, 0);
+                            &r, 0);
         this->render_area->ReleaseDc(s_pnl_lst__draw_highlight_bar);
 
         if (this->render_area->Lock(s_pnl_lst__draw_highlight_bar, 1) != 0) {
             long left = this->pnl_x + this->border_size;
             long right = this->pnl_x + this->pnl_wid - this->border_size - 1;
-            long top = rect.top - this->spacer_size;
-            long bottom = rect.bottom + this->spacer_size;
+            long top = r.top - this->spacer_size;
+            long bottom = r.bottom + this->spacer_size;
 
             switch (this->bevel_type) {
             case 0:
