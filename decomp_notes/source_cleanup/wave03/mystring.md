@@ -6,7 +6,7 @@
 - Branch: `cleanup/staging-20260915-197`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Final source commit: `ec9343cfb6a4d2874c1399789aba470a747aed9c`
-- Report commit: this report commit; Git output gives its full hash.
+- Report commit: `98ca0160b64133b83ea500455c68e2ffe2ecffbb`
 - Changed files:
   - `src/mystring.cpp`
   - `decomp_notes/source_cleanup/wave03/mystring.md`
@@ -98,7 +98,7 @@ needed.
 
 ## Shared requests and unresolved questions
 
-Root owns `include/mystring.h`. Please review these declaration-name updates;
+Owner 22 owns `include/mystring.h`. Please review these declaration-name updates;
 they do not change the ABI or types:
 
 ```cpp
