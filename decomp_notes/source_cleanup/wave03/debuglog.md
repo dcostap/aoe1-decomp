@@ -4,7 +4,7 @@
 
 - Module: `src/debuglog.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final source commit: pending until commit
+- Final source commit: `9c198c919984ccec10464adde8caca37c3a6ae82`
 - Changed files:
   - `src/debuglog.cpp`
   - `decomp_notes/source_cleanup/wave03/debuglog.md`
