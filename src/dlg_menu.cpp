@@ -13,8 +13,7 @@
 extern int confirmed_close;
 
 TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
-    : TDialogPanel("Menu Dialog")
-{
+    : TDialogPanel("Menu Dialog") {
     int i;
     for (i = 0; i < 11; ++i)
         this->button[i] = 0;
@@ -101,8 +100,7 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
     this->set_tab_order(reinterpret_cast<TPanel**>(this->button), bi);
 }
 
-TribeMenuDialog::~TribeMenuDialog()
-{
+TribeMenuDialog::~TribeMenuDialog() {
     int count = 11;
     TButtonPanel** pp = this->button;
 
@@ -113,8 +111,7 @@ TribeMenuDialog::~TribeMenuDialog()
     } while (count != 0);
 }
 
-long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2)
-{
+long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel != 0) {
         if (actionIn == 1) {
             if (a1 == 1) {
