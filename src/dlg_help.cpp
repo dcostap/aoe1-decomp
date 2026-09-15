@@ -1,5 +1,4 @@
 #include "../include/dlg_help.h"
-#include "../include/resource_ids.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -86,7 +85,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     if (rge_base_game->singlePlayerGame() && in_help_page_id >= 0) {
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
-            this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0,
+            this->create_button(this, &this->encyclopedia_button, 0x243D, 0,
                                 0x19,
                                 line_height * rge_text_font->font_hgt + 0x14,
                                 0x78, 0x19, 0x0B, 0, 0);
@@ -94,11 +93,11 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     }
 
     if (this->encyclopedia_button == 0) {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0x6E,
+        this->create_button(this, &this->ok_button, 0xFA1, 0, 0x6E,
                             line_height * rge_text_font->font_hgt + 0x14,
                             0x78, 0x19, 0x0B, 0, 0);
     } else {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0xC3,
+        this->create_button(this, &this->ok_button, 0xFA1, 0, 0xC3,
                             line_height * rge_text_font->font_hgt + 0x14,
                             0x78, 0x19, 0x0B, 0, 0);
     }
