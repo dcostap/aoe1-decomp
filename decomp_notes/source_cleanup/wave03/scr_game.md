@@ -5,8 +5,9 @@
 - Module: `src/scr_game.cpp`
 - Header read: `include/scr_game.h`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commit: copy the full source commit hash from Git after commit.
-- Final report commit: the commit that adds this file; copy its full hash from Git.
+- Cleanup commit: `fcf4ac9da7d74531e4012e0b60bf06047e83f329`
+- Source correction commit: `d12cc4a7c2a7b0bdf26df0df6d4d61db2b87ec35`
+- Report correction commit: copy the full hash from Git after commit.
 - Changed files: `src/scr_game.cpp` and this report only.
 - Header owner: owner 21 owns `include/scr_game.h`. This worker did not edit it.
 - Shared resource owner: root owns `include/resource_ids.h`. This worker did not edit it.
@@ -112,7 +113,7 @@ recovered names.
 
 The main evidence is the module-scoped PDB inventory:
 
-`C:/Projects/my_decomps/aoe1_attempt3/build/accepted-drift-rereview/review-04/worktree/inventory/pdb/scoped_symbols.json`
+`C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`
 
 The function packets used for the two highest-risk mappings are:
 
@@ -133,13 +134,12 @@ original macro names. Numeric expressions and lookup calls remain unchanged.
 `TRIBE_Game::get_string` first calls `LoadStringA` on `StringTableX` and then
 falls back to `RGE_Base_Game::get_string`. The runtime files checked were:
 
-- `runtime/language.dll`, SHA256
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/language.dll`, SHA256
   `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`
-- `runtime/languagex.dll`, SHA256
+- `C:/Projects/my_decomps/aoe1_attempt3/runtime/languagex.dll`, SHA256
   `4d574896a6b94a451fc5c20497e1d34c440f3b7d8a93219d4c82470516155a39`
-- Checked original XPack `languagex.dll`, SHA256
+- `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA256
   `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`
-  at `C:/Projects/my_decomps/aoe1_attempt3/build/array-caller-worktree/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`
 
 The first two files are the staged runtime inputs. The third file is the
 checked original XPack evidence. The extraction output is in the worker build
@@ -220,7 +220,7 @@ accepts the help-resource namespace.
 | `0x1D4CF` | Chat button help | `IDS_HELP_CHAT` |
 | `0x1D4D1` | Diplomacy button help | `IDS_HELP_DIPLOMACY` |
 | `0x1D4D7` | More button help | `IDS_HELP_MORE` |
-| `0x1D4D9` | Cancel button help | `IDS_HELP_CANCEL` |
+| `0x1D4D9` | Cancel button help | `IDS_HELP_CANCEL_COMMAND` |
 | `0x1D4DB` | Help button help | `IDS_HELP_HELP` |
 | `0x1D4DC` | Score button help | `IDS_HELP_SCORE` |
 | `0x1D4DD` | Stop button help | `IDS_HELP_STOP` |
@@ -246,6 +246,9 @@ their button roles, but the checked language DLLs provide no text for them.
 - No declaration type, cast, class layout, calling convention, ABI symbol,
   call target, relocation expression, control-flow statement, or source order
   was intentionally changed.
+- The source correction restores the common-base `setup_buttons` layout. Its
+  control flow, declaration scopes, statement order, and expressions now
+  differ from the base only through supported identifier names and formatting.
 - `command_game_speed` now uses the PDB names `new_speed` and `cur_speed` for
   the existing target and current speed roles. The comparisons and command
   calls keep their original order.
@@ -275,6 +278,9 @@ Allowed checks run:
 - Ran `python tools/inspect_pe_strings.py --help` before resource extraction.
 - Extracted the listed IDs from the staged runtime language DLLs.
 - Ran `git diff --check` and reviewed the complete source diff.
+- Reviewed the complete correction diff against base commit
+  `76037279ee11dde077bb7d55aeb46b518b2bb27c`, with special attention to
+  `setup_buttons`.
 
 Not run, as required by the wave contract:
 
