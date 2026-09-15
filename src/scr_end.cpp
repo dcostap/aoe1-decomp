@@ -7,8 +7,7 @@
 #include "../include/scr_ach.h"
 #include <string.h>
 
-TribeEndScreen::TribeEndScreen(char* titleText, char** textText,
-                               int textLineCount)
+TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCount)
     : TScreenPanel("End Screen") {
     char backgroundName[10];
 
@@ -105,8 +104,7 @@ TribeEndScreen::~TribeEndScreen() {
     delete background;
 }
 
-long TribeEndScreen::action(TPanel* fromPanel, long actionIn,
-                            unsigned long a1, unsigned long a2) {
+long TribeEndScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
     if (fromPanel == 0 || actionIn != 1) {
         return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
     }
