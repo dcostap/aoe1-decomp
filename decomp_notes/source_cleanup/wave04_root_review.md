@@ -1,5 +1,39 @@
 # Cleanup wave 04 root review
 
+## Owner 26: corrections and resource decisions
+
+Reviewer `sa-e6faf4c1` read all 9,390 lines and all reports.
+Diff SHA256: `3e5826f8f2ce24775c9db8e1094e413a8e1aeabaae6ac20a6b4bb5da014421b2`.
+Root returned two blockers to the same workers:
+
+- Restore the complete baseline nested scope for `tworld` case 101 before case 102.
+- Restore the combined `int index, j;` declaration in `world::load_scenario6`.
+
+The ledger must correct its full-restoration claim. The positional `scenario_make_player` mapping passed review.
+
+Root broadens the new `0x2775` name to `IDS_FILE_NONE`, without a duplicate alias.
+Scenario consumers use it for cinematic, bitmap, and city-plan defaults, not only AI files.
+Owner 25 received the name correction. `0x277B` remains `IDS_AI_FILE_RANDOM`.
+
+Root approved the payload-backed world resource definitions in `include/resource_ids.h`.
+These include victory descriptions, map bases, format strings, Nomad, default, resource levels, and difficulty base.
+Preserve all enum-offset arithmetic and format arguments. Reuse existing population and path-finding format names.
+Difficulty reaches only `0x2BD0` through `0x2BD4`; the next two IDs mean Up and Down.
+The resource-level offset overlaps `0x25E5`, which is also a format ID. Preserve the exact original expression.
+
+Root defers the empty victory-log range and keeps its numeric base.
+Root also defers the four option-age substitutions at `0x1069` through `0x106C`.
+Existing `IDS_HELP_AGE_*` names describe another caller role; no duplicate numeric aliases will be added.
+These deferred names do not block source integration.
+
+Evidence uses runtime base SHA256 `3fca20f2f48dc029c0793f32a906a82c5e0fd99292a9f9843c4266d3aba5d0f5`.
+The pinned original corpus lacks the base language DLL. Payloads come from staged runtime evidence.
+Runtime and original expansion files miss `0x2775` and `0x277B`; neither slot is empty.
+Victory descriptions and the approved formats also use base fallback after expansion misses.
+Expansion supplies the last four map types and Gigantic; base supplies the first five types and sizes.
+Lookup checks expansion first, then base. A `STRING=` override remains unchecked.
+Both groups remain unmerged and unvalidated pending correction review.
+
 ## Owner 25: corrections and resource decisions
 
 Reviewer `sa-4261f9a4` read all 15,378 lines and all 25 changed files.
