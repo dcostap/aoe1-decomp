@@ -19,36 +19,36 @@
 extern float DAT_0056e278;
 extern double DAT_0056e290;
 
-RGE_Action_Gather::RGE_Action_Gather(int file, RGE_Action_Object* object)
-    : RGE_Action(file, object, 1) {
+RGE_Action_Gather::RGE_Action_Gather(int infile, RGE_Action_Object* obj_in)
+    : RGE_Action(infile, obj_in, 1) {
     this->action_type = 5;
-    rge_read(file, &this->targetType, 4);
+    rge_read(infile, &this->targetType, 4);
 }
 
 // The empty derived destructor emits the 00402F30 thunk.
 RGE_Action_Gather::~RGE_Action_Gather() {
 }
 
-RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object,
-                                     RGE_Task* task,
-                                     RGE_Static_Object* target)
-    : RGE_Action(object, 1) {
-    this->task = task;
+RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in,
+                                     RGE_Task* task_in,
+                                     RGE_Static_Object* target_obj_in)
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 5;
-    this->set_target_obj(target);
-    if (target != 0) {
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
-        this->targetType = target->master_obj->id;
+    this->set_target_obj(target_obj_in);
+    if (target_obj_in != 0) {
+        this->target_x = target_obj_in->world_x;
+        this->target_y = target_obj_in->world_y;
+        this->target_z = target_obj_in->world_z;
+        this->targetType = target_obj_in->master_obj->id;
     }
 }
 
-RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object,
-                                     RGE_Task* task,
+RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in,
+                                     RGE_Task* task_in,
                                      float x, float y, float z)
-    : RGE_Action(object, 1) {
-    this->task = task;
+    : RGE_Action(obj_in, 1) {
+    this->task = task_in;
     this->action_type = 5;
     this->target_x = x;
     this->target_y = y;
@@ -61,13 +61,13 @@ void RGE_Action_Gather::save(int outfile) {
     rge_write(outfile, &this->targetType, 4);
 }
 
-void RGE_Action_Gather::first_in_stack(unsigned char param1) {
+void RGE_Action_Gather::first_in_stack(unsigned char first_time) {
     short attr = this->task->attribute_type;
     if (this->obj->attribute_type_held != attr) {
         this->obj->set_attribute(attr, 0);
     }
 
-    if (param1 != 0) {
+    if (first_time != 0) {
         RGE_Static_Object* target = this->target_obj;
         if (target != 0) {
             if (target->owner == this->obj->owner) {
@@ -98,11 +98,11 @@ void RGE_Action_Gather::first_in_stack(unsigned char param1) {
     this->set_state(3);
 }
 
-void RGE_Action_Gather::set_state(unsigned char param1) {
+void RGE_Action_Gather::set_state(unsigned char new_state) {
     this->sub_actions->delete_list();
-    this->state = param1;
+    this->state = new_state;
 
-    switch (param1) {
+    switch (new_state) {
     case 3:
         this->obj->notify((int)this->obj->id, (int)this->obj->id,
                           (int)0x202, 0x261L,
@@ -375,11 +375,11 @@ unsigned char RGE_Action_Gather::update() {
             give_amount = this->target_obj->attribute_amount_held;
         }
 
-        short attribute = this->task->attribute_type2;
-        if (attribute == -1) {
+        short attr = this->task->attribute_type2;
+        if (attr == -1) {
             modifier = 1.0f;
         } else {
-            modifier = this->obj->owner->attributes[attribute];
+            modifier = this->obj->owner->attributes[attr];
         }
 
         max_hold = (float)this->obj->master_obj->attribute_max_amount;
@@ -523,24 +523,24 @@ int RGE_Action_Gather::stop() {
     return 1;
 }
 
-int RGE_Action_Gather::move_to(RGE_Static_Object* target,
+int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in,
                                float x, float y, float z) {
-    if (target != 0) {
-        if (target->owner == this->obj->owner) {
-            short id = target->master_obj->id;
+    if (obj_in != 0) {
+        if (obj_in->owner == this->obj->owner) {
+            short id = obj_in->master_obj->id;
             RGE_Master_Action_Object* object_master =
                 (RGE_Master_Action_Object*)this->obj->master_obj;
             if (id == object_master->drop_site ||
                 id == object_master->backup_drop_site) {
                 if (this->obj->attribute_amount_held > 0.0f) {
-                    if (target == this->target_obj2 && this->state == 8) {
+                    if (obj_in == this->target_obj2 && this->state == 8) {
                         return 1;
                     }
                     this->set_target_obj(0);
                     this->target_x = -1.0f;
                     this->target_y = -1.0f;
                     this->target_z = -1.0f;
-                    this->set_target_obj2(target);
+                    this->set_target_obj2(obj_in);
                     this->set_state(8);
                     return 1;
                 }
@@ -556,16 +556,16 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* target,
     return 1;
 }
 
-int RGE_Action_Gather::work(RGE_Static_Object* target,
+int RGE_Action_Gather::work(RGE_Static_Object* obj_in,
                             float x, float y, float z) {
-    if (target != 0) {
-        if (target == this->target_obj &&
+    if (obj_in != 0) {
+        if (obj_in == this->target_obj &&
             (this->state == 4 || this->state == 6 || this->state == 7)) {
             return 1;
         }
 
-        if (target->owner == this->obj->owner) {
-            short id = target->master_obj->id;
+        if (obj_in->owner == this->obj->owner) {
+            short id = obj_in->master_obj->id;
             RGE_Master_Action_Object* object_master =
                 (RGE_Master_Action_Object*)this->obj->master_obj;
             if ((id == object_master->drop_site ||
@@ -576,16 +576,16 @@ int RGE_Action_Gather::work(RGE_Static_Object* target,
                 this->target_x = -1.0f;
                 this->target_y = -1.0f;
                 this->target_z = -1.0f;
-                this->set_target_obj2(target);
+                this->set_target_obj2(obj_in);
                 this->set_state(8);
                 return 1;
             }
         }
 
-        this->set_target_obj(target);
-        this->target_x = target->world_x;
-        this->target_y = target->world_y;
-        this->target_z = target->world_z;
+        this->set_target_obj(obj_in);
+        this->target_x = obj_in->world_x;
+        this->target_y = obj_in->world_y;
+        this->target_z = obj_in->world_z;
         this->set_target_obj2(0);
         this->set_state(4);
     } else {
