@@ -153,9 +153,15 @@ The following replacements preserve the original values and their API roles:
 - Mixer line-controls flag `2` became `MIXER_GETLINECONTROLSF_ONEBYTYPE`.
 - Mixer details flags `0` became `MIXER_GETCONTROLDETAILSF_VALUE` and
   `MIXER_SETCONTROLDETAILSF_VALUE` at their respective calls.
-- The resource type `0x77617620` became
-  `MAKEFOURCC('w', 'a', 'v', ' ')`. The same value identifies `wav` in
-  `src/game_globals.cpp`'s `res_extension_table`.
+- The resource type remains the numeric literal `0x77617620`. No new symbol
+  applies. Original `004BD0B2` pushes `0x77617620` in the
+  `004BCD30_load.txt` packet near line 433. `src/game_globals.cpp` line 142
+  uses the same value.
+
+The attempted `MAKEFOURCC('w', 'a', 'v', ' ')` substitution was incorrect.
+Pinned `MMSYSTEM.H` evaluates that macro as `0x20766177`, not `0x77617620`.
+The original executable and the shared resource-type table prove the latter
+value and byte order. The source keeps `0x77617620`.
 
 No fixed resource ID or RT_STRING lookup occurs in this module. `res_id` is a
 caller-supplied ID passed to `RESFILE_load`. No DLL resource text, language,
@@ -178,8 +184,8 @@ local type spelling. It keeps the PDB-proven 44-byte layout and all fields.
 
 The SDK symbols expand to the values used by the original assembly. The mixer
 macros use `long` constants, and the destination fields and API parameters are
-32-bit values. `MAKEFOURCC` returns the same 32-bit `wav ` value required by
-`RESFILE_load`; the call has no overload.
+32-bit values. No symbol replaces the custom resource-type literal because the
+pinned `MAKEFOURCC` byte order differs from the original value.
 
 No declaration scope, evaluation order, expression, cast, loop, branch, or
 lifetime changed. The existing bug and fallback behavior remain. Debug line

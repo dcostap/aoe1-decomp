@@ -551,8 +551,7 @@ int TDigital::load(char* file_name, long res_id) {
     }
 
     if (res_id <= -1 || (resource_data = RESFILE_load(
-                            MAKEFOURCC('w', 'a', 'v', ' '), res_id,
-                            load_type, resDataSize)) == 0) {
+                            0x77617620, res_id, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
         memcpy(&wave_hdr.szRIFF, resource_data, 0x2C);
