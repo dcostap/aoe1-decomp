@@ -1,5 +1,18 @@
 # Cleanup wave 03 root review
 
+## Owner 15: restore two evidence comments
+
+Reviewer `sa-cc2cddfa` read all 10,442 diff lines and all group reports at `0d72737ebab2a2e084ce4d5ee63eca45a697141a`.
+The reviewer found two blocking comment removals in `move_obj.cpp`.
+
+- Preserve the distinction between the virtual sprite call at `00460D99` and direct base copy call at `00460D9F`.
+- Explain the duplicate `currentWaypoint` calls and the deliberate `y + x + temp` checksum order at `00460F72`–`00460F88`.
+
+Root resumed Owner 15 with the same worker for comment-only corrections and report updates.
+The reviewer found no other source defect. `LIMIT`, bug comments, types, casts, and original fault order remain supported.
+Some module reports use handoff placeholders, but the owner ledger supplies their exact integrated hashes.
+The group remains unmerged until the correction diff is reviewed. No validation ran.
+
 ## Owner 20: corrected and integrated
 
 Root read the complete correction diff to `c7319027417fbc7d5fc53a82ae3ad021fdff2b5b`.
