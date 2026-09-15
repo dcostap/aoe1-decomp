@@ -21,9 +21,9 @@ extern float DAT_00570418;
 extern FILE* DDlogf;
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(
-    RGE_Master_Doppleganger_Object* master, RGE_Player* player, float x,
-    float y, float z, int doSetup, RGE_Static_Object* doppled)
-    : RGE_Animated_Object(master, player, x, y, z, 0)
+    RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x,
+    float y, float z, int do_setup, RGE_Static_Object* obj_to_dopple)
+    : RGE_Animated_Object(tobj, obj_owner, x, y, z, 0)
 {
     this->doppled_object = 0;
     this->draw_color = 0;
@@ -36,11 +36,11 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
     this->map_color = 0;
     this->doppledObjectID = -1;
 
-    if (doSetup != 0) {
-        this->setup(master, player, x, y, z);
+    if (do_setup != 0) {
+        this->setup(tobj, obj_owner, x, y, z);
     }
 
-    this->doppled_object = doppled;
+    this->doppled_object = obj_to_dopple;
     if (this->doppled_object != 0) {
         this->doppled_master_obj = this->doppled_object->master_obj;
         this->doppled_player = this->doppled_object->owner->id;
@@ -70,10 +70,10 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
 }
 
 RGE_Doppleganger_Object::RGE_Doppleganger_Object(
-    int handle, RGE_Game_World* world, int param_3)
-    : RGE_Animated_Object(handle, world, 0)
+    int infile, RGE_Game_World* gworld, int do_setup)
+    : RGE_Animated_Object(infile, gworld, 0)
 {
-    int value;
+    int long_val;
 
     this->doppled_object = 0;
     this->draw_color = 0;
@@ -86,31 +86,31 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
     this->map_color = 0;
     this->doppledObjectID = -1;
 
-    if (param_3 != 0) {
-        this->setup(handle, world);
+    if (do_setup != 0) {
+        this->setup(infile, gworld);
     }
 
-    rge_read(handle, &value, 4);
-    this->doppled_object = (RGE_Static_Object*)(size_t)value;
+    rge_read(infile, &long_val, 4);
+    this->doppled_object = (RGE_Static_Object*)(size_t)long_val;
     this->doppledObjectID = -1;
-    rge_read(handle, &this->map_draw_level, 1);
-    rge_read(handle, &this->map_color, 4);
-    rge_read(handle, &value, 4);
-    this->doppled_master_obj = (RGE_Master_Static_Object*)(size_t)value;
-    rge_read(handle, &this->doppled_player, 4);
+    rge_read(infile, &this->map_draw_level, 1);
+    rge_read(infile, &this->map_color, 4);
+    rge_read(infile, &long_val, 4);
+    this->doppled_master_obj = (RGE_Master_Static_Object*)(size_t)long_val;
+    rge_read(infile, &this->doppled_player, 4);
 
     if (save_game_version >= 7.06f) {
-        rge_read(handle, &this->CantSeeBits, 4);
+        rge_read(infile, &this->CantSeeBits, 4);
     }
 }
 
 void RGE_Doppleganger_Object::recycle_in_to_game(
-    RGE_Master_Static_Object* param_1,
-    RGE_Player* param_2,
-    float param_3,
-    float param_4,
-    float param_5,
-    RGE_Static_Object* param_6)
+    RGE_Master_Static_Object* tobj,
+    RGE_Player* obj_owner,
+    float x,
+    float y,
+    float z,
+    RGE_Static_Object* obj_to_dopple)
 {
     this->doppled_object = 0;
     this->draw_color = 0;
@@ -123,43 +123,42 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
     this->map_color = 0;
     this->doppledObjectID = -1;
 
-    RGE_Animated_Object::recycle_in_to_game(param_1, param_2, param_3,
-                                            param_4, param_5);
+    RGE_Animated_Object::recycle_in_to_game(tobj, obj_owner, x, y, z);
 
     this->type = 0x19;
 
-    this->doppled_object = param_6;
+    this->doppled_object = obj_to_dopple;
 
-    if (param_6 != 0) {
-        this->doppled_master_obj = param_6->master_obj;
-        this->doppled_player = param_6->owner->id;
-        this->doppledObjectID = param_6->id;
-        this->sprite = param_6->sprite;
+    if (obj_to_dopple != 0) {
+        this->doppled_master_obj = obj_to_dopple->master_obj;
+        this->doppled_player = obj_to_dopple->owner->id;
+        this->doppledObjectID = obj_to_dopple->id;
+        this->sprite = obj_to_dopple->sprite;
 
-        RGE_Active_Sprite_Node* newNode =
-            param_6->sprite_list->copy_sprite_list();
-        this->sprite_list->use_sprite_list(newNode);
+        RGE_Active_Sprite_Node* new_node =
+            obj_to_dopple->sprite_list->copy_sprite_list();
+        this->sprite_list->use_sprite_list(new_node);
 
         RGE_Static_Object* obj = this->doppled_object;
         this->facet = obj->facet;
         this->draw_color = obj->owner->color_table;
 
-        unsigned char ml = obj->master_obj->map_draw_level;
-        this->map_draw_level = ml;
+        unsigned char map_draw_level = obj->master_obj->map_draw_level;
+        this->map_draw_level = map_draw_level;
 
-        if (ml == 3) {
+        if (map_draw_level == 3) {
             this->map_color = obj->master_obj->map_color;
         } else {
             this->map_color = obj->owner->color_table->map_color;
         }
 
-        int row = (int)(long)param_4;
-        int col = (int)(long)param_3;
-        unsigned long* mapAddr = unified_map_offsets[row] + col;
+        int row = (int)(long)y;
+        int col = (int)(long)x;
+        unsigned long* map_addr = unified_map_offsets[row] + col;
 
         this->LastMapValue = 0;
         this->CantSeeBits = 0;
-        this->MapAddress = mapAddr;
+        this->MapAddress = map_addr;
 
         if (obj->object_state >= 7) {
             this->doppled_object = 0;
@@ -178,10 +177,10 @@ void RGE_Doppleganger_Object::recycle_in_to_game(
 }
 
 int RGE_Doppleganger_Object::setup(
-    RGE_Master_Doppleganger_Object* master, RGE_Player* player, float x,
+    RGE_Master_Doppleganger_Object* tobj, RGE_Player* obj_owner, float x,
     float y, float z)
 {
-    this->RGE_Animated_Object::setup(master, player, x, y, z);
+    this->RGE_Animated_Object::setup(tobj, obj_owner, x, y, z);
     this->type = 0x19;
     int y_i = (int)y;
     int x_i = (int)x;
@@ -191,9 +190,9 @@ int RGE_Doppleganger_Object::setup(
     return 1;
 }
 
-int RGE_Doppleganger_Object::setup(int param_1, RGE_Game_World* param_2)
+int RGE_Doppleganger_Object::setup(int infile, RGE_Game_World* gworld)
 {
-    RGE_Animated_Object::setup(param_1, param_2);
+    RGE_Animated_Object::setup(infile, gworld);
     int x = (int)(long)(this->world_y);
     this->type = 0x19;
     int y = (int)(long)(this->world_x);
@@ -251,9 +250,9 @@ unsigned char RGE_Doppleganger_Object::update()
         this->doppledObjectID = -1;
     }
 
-    unsigned long uVar1 = *this->MapAddress;
-    if (uVar1 != this->LastMapValue) {
-        if ((this->owner->mutualVisibleMask & uVar1) != 0 &&
+    unsigned long map_value = *this->MapAddress;
+    if (map_value != this->LastMapValue) {
+        if ((this->owner->mutualVisibleMask & map_value) != 0 &&
             this->object_state < 3) {
             if (DDlogf != 0) {
                 fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n",
@@ -264,18 +263,19 @@ unsigned char RGE_Doppleganger_Object::update()
             this->destroy_obj();
         }
 
-        unsigned long uVar4 = this->owner->nonMutualVisibleMask & uVar1;
-        if (uVar4 != 0) {
-            unsigned long* puVar5 = this->owner->RemoveVisibleBits;
+        unsigned long non_mutual_visible_mask =
+            this->owner->nonMutualVisibleMask & map_value;
+        if (non_mutual_visible_mask != 0) {
+            unsigned long* remove_visible_bits = this->owner->RemoveVisibleBits;
             do {
-                if ((uVar4 & 1) == 1) {
-                    this->CantSeeBits |= *puVar5;
+                if ((non_mutual_visible_mask & 1) == 1) {
+                    this->CantSeeBits |= *remove_visible_bits;
                 }
-                puVar5++;
-                uVar4 >>= 1;
-            } while (uVar4 != 0);
+                remove_visible_bits++;
+                non_mutual_visible_mask >>= 1;
+            } while (non_mutual_visible_mask != 0);
         }
-        this->LastMapValue = uVar1;
+        this->LastMapValue = map_value;
     }
 
     return result;
@@ -317,7 +317,7 @@ void RGE_Doppleganger_Object::validate()
         this->owner->world->map->map_row_offset[row][col].objects.list;
 
     if (entry != 0) {
-        unsigned char checkVal = 2;
+        unsigned char check_value = 2;
 
         do {
             RGE_Doppleganger_Object* obj =
@@ -326,13 +326,13 @@ void RGE_Doppleganger_Object::validate()
                 obj->type == 0x19 &&
                 obj->id != this->id &&
                 obj->doppledObjectID == this->doppledObjectID &&
-                obj->object_state == checkVal) {
+                obj->object_state == check_value) {
 
-                short s = this->owner->id;
-                if (obj->owner->id == s) {
+                short owner_id = this->owner->id;
+                if (obj->owner->id == owner_id) {
                     obj->destroy_obj();
                 } else {
-                    obj->CantSeeBits |= 1 << s;
+                    obj->CantSeeBits |= 1 << owner_id;
                     this->CantSeeBits |= 1 << obj->owner->id;
                 }
             }
@@ -342,13 +342,13 @@ void RGE_Doppleganger_Object::validate()
 }
 
 RGE_Doppleganger_Creator::RGE_Doppleganger_Creator(
-    RGE_Player* player, int count)
+    RGE_Player* player, int initial_size)
 {
-    this->Objects = (RGE_Static_Object**)calloc(count, 4);
-    this->Map_Addresses = (unsigned long**)calloc(count, 4);
-    this->Last_Map_Value = (unsigned long*)calloc(count, 4);
-    this->Object_ids = (int*)calloc(count, 4);
-    this->allocated_size = count;
+    this->Objects = (RGE_Static_Object**)calloc(initial_size, 4);
+    this->Map_Addresses = (unsigned long**)calloc(initial_size, 4);
+    this->Last_Map_Value = (unsigned long*)calloc(initial_size, 4);
+    this->Object_ids = (int*)calloc(initial_size, 4);
+    this->allocated_size = initial_size;
     this->active_size = 0;
     this->owner = player;
     if (DDlogf == 0) {
@@ -377,54 +377,54 @@ RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator()
 }
 
 int RGE_Doppleganger_Creator::add_doppleganger_check(
-    RGE_Static_Object* obj, unsigned long* map_addr)
+    RGE_Static_Object* theObj, unsigned long* UMV_addr)
 {
     if (DDlogf) {
         fprintf(DDlogf, "ADC (@%d) p=%d  id=%d\n",
             this->owner->world->world_time,
             (int)this->owner->id,
-            obj->id);
+            theObj->id);
     }
 
     if (this->active_size >= this->allocated_size) {
         this->expand_allocations(30);
     }
 
-    if (obj->owner->id != this->owner->id) {
+    if (theObj->owner->id != this->owner->id) {
         return 0;
     }
 
     int count = this->active_size;
     if (count > 0) {
         for (int i = 0; i < count; i++) {
-            if (this->Objects[i] == obj) {
+            if (this->Objects[i] == theObj) {
                 return 0;
             }
         }
     }
 
-    this->Objects[this->active_size] = obj;
-    this->Map_Addresses[this->active_size] = map_addr;
-    this->Last_Map_Value[this->active_size] = *map_addr;
-    this->Object_ids[this->active_size] = obj->id;
+    this->Objects[this->active_size] = theObj;
+    this->Map_Addresses[this->active_size] = UMV_addr;
+    this->Last_Map_Value[this->active_size] = *UMV_addr;
+    this->Object_ids[this->active_size] = theObj->id;
     this->active_size++;
 
     return 1;
 }
 
 int RGE_Doppleganger_Creator::remove_doppleganger_check(
-    RGE_Static_Object* obj)
+    RGE_Static_Object* theObj)
 {
     if (DDlogf) {
         fprintf(DDlogf, "RDC (@%d)  p=%d  id=%d\n",
-            owner->world->world_time, owner->id, obj->id);
+            owner->world->world_time, owner->id, theObj->id);
     }
 
     if (active_size <= 0)
         return 0;
 
     for (int i = 0; i < active_size; i++) {
-        if (Objects[i] == obj) {
+        if (Objects[i] == theObj) {
             active_size--;
             if (i < active_size) {
                 Objects[i] = Objects[active_size];
@@ -445,19 +445,19 @@ int RGE_Doppleganger_Creator::remove_doppleganger_check(
 
 void RGE_Doppleganger_Creator::perform_doppleganger_checks()
 {
-    unsigned long map_value;
+    unsigned long Unified_Map_Value;
     int i;
     RGE_Static_Object* remove_me = 0;
 
     if (this->active_size > 0) {
         for (i = 0; i < this->active_size; i++) {
-            map_value = *this->Map_Addresses[i];
-            if (map_value != this->Last_Map_Value[i]) {
+            Unified_Map_Value = *this->Map_Addresses[i];
+            if (Unified_Map_Value != this->Last_Map_Value[i]) {
                 if (this->Objects[i] != 0 &&
                     this->owner->world->object(this->Object_ids[i]) ==
                         this->Objects[i]) {
                     unsigned long mask =
-                        ((this->Last_Map_Value[i] ^ map_value) >> 1) &
+                        ((this->Last_Map_Value[i] ^ Unified_Map_Value) >> 1) &
                         (this->Last_Map_Value[i] >> 1) & 0x7fff;
                     for (int player_id = 1; mask != 0;
                          player_id++, mask >>= 1) {
@@ -496,7 +496,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks()
                             this->Object_ids[i]);
                     }
                 }
-                this->Last_Map_Value[i] = map_value;
+                this->Last_Map_Value[i] = Unified_Map_Value;
             }
         }
         if (remove_me != 0) {
@@ -518,23 +518,23 @@ void RGE_Doppleganger_Creator::expand_allocations(int grow_size)
 
     this->allocated_size += grow_size;
 
-    void* r0 = calloc(this->allocated_size, 4);
-    void* r1 = calloc(this->allocated_size, 4);
-    void* r2 = calloc(this->allocated_size, 4);
-    void* r3 = calloc(this->allocated_size, 4);
+    void* new_objects = calloc(this->allocated_size, 4);
+    void* new_map_addresses = calloc(this->allocated_size, 4);
+    void* TLast_Map_Value = calloc(this->allocated_size, 4);
+    void* TObject_ids = calloc(this->allocated_size, 4);
 
-    memcpy(r0, this->Objects, this->active_size * 4);
-    memcpy(r1, this->Map_Addresses, this->active_size * 4);
-    memcpy(r2, this->Last_Map_Value, this->active_size * 4);
-    memcpy(r3, this->Object_ids, this->active_size * 4);
+    memcpy(new_objects, this->Objects, this->active_size * 4);
+    memcpy(new_map_addresses, this->Map_Addresses, this->active_size * 4);
+    memcpy(TLast_Map_Value, this->Last_Map_Value, this->active_size * 4);
+    memcpy(TObject_ids, this->Object_ids, this->active_size * 4);
 
     free(this->Objects);
     free(this->Map_Addresses);
     free(this->Last_Map_Value);
     free(this->Object_ids);
 
-    this->Objects = (RGE_Static_Object**)r0;
-    this->Map_Addresses = (unsigned long**)r1;
-    this->Last_Map_Value = (unsigned long*)r2;
-    this->Object_ids = (int*)r3;
+    this->Objects = (RGE_Static_Object**)new_objects;
+    this->Map_Addresses = (unsigned long**)new_map_addresses;
+    this->Last_Map_Value = (unsigned long*)TLast_Map_Value;
+    this->Object_ids = (int*)TObject_ids;
 }
