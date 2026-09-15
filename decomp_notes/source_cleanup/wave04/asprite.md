@@ -6,8 +6,9 @@
 - Report: `decomp_notes/source_cleanup/wave04/asprite.md`
 - Branch: `cleanup/staging-20260915-201`
 - Base commit from `git rev-parse`: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Source cleanup commit from `git rev-parse`: `a99d06fa03378a6f7758b2a19322377d52f36200`
-- Final source commit: `a99d06fa03378a6f7758b2a19322377d52f36200`
+- Initial source cleanup commit from `git rev-parse`: `a99d06fa03378a6f7758b2a19322377d52f36200`
+- Review correction commit from `git rev-parse`: `cee47c1b02e097b46319df648e3b89907b49aa75`
+- Final source commit: `cee47c1b02e097b46319df648e3b89907b49aa75`
 - Changed files: `src/asprite.cpp` and this report.
 - Registry: `config/functions/src/asprite.cpp.json`
 - Build flags: `gx`
@@ -19,6 +20,17 @@ literals.
 
 The report is committed after the source commit. Its commit hash is returned
 with the delivery because a report cannot contain its own final hash.
+
+## Review correction
+
+The full diff review requested three short definition signatures on one line:
+the two-parameter animated-sprite constructor and both five-parameter
+`get_frame` definitions. The constructor keeps its initializer list on the
+next line. The longer draw signatures remain wrapped.
+
+Source correction commit: `cee47c1b02e097b46319df648e3b89907b49aa75`.
+This correction changes presentation only. It does not change expressions,
+types, calls, declarations, or storage.
 
 ## Evidence inspected
 
