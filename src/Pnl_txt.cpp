@@ -565,7 +565,7 @@ void TTextPanel::set_active(int activ_in) {
         if (this->active != 0) {
             this->scbar_panel->set_active(this->scbar_active);
         }
-        } else {
+        else {
             this->scbar_panel->set_active(0);
         }
     }
