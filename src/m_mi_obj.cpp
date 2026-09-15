@@ -31,8 +31,7 @@ RGE_Master_Missile_Object::RGE_Master_Missile_Object(
     }
 }
 
-int RGE_Master_Missile_Object::setup(
-    RGE_Master_Missile_Object* other_object) {
+int RGE_Master_Missile_Object::setup(RGE_Master_Missile_Object* other_object) {
     RGE_Master_Combat_Object::setup(other_object);
     master_type = 0x3C;
     missile_type = other_object->missile_type;
