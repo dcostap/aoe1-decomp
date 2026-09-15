@@ -106,7 +106,7 @@ It keeps the original `free(0)` call in `Set_message`; the original packet prove
 It also keeps the existing cross-field checks in `Get_CityPlan` and `Get_player_AI`.
 No behavior repair or structural rewrite was made.
 
-## Resource evidence and shared-file request
+## Resource evidence and shared-file approval
 
 `InitializeTextValues`, `Get_BuildList`, `Get_CityPlan`, and `Get_player_AI` call the virtual `rge_base_game->get_string` path.
 The code passes bare DLL names to `LoadLibraryA`; the inspected file paths do not prove which file a running process loads.
@@ -125,6 +125,11 @@ The two text entries have resource type `RT_STRING` and language `0x0409`.
 The missing results mean that the requested IDs have no resource row.
 They do not mean that a present row has empty text.
 
+Root approved the shared resource names in commit `bf943f3339643ee5beca7dd74e98b4cb729e48d3`.
+The broad `0x2775` None role uses the approved name `IDS_FILE_NONE`.
+The `0x277B` AI-file Random role uses the approved name `IDS_AI_FILE_RANDOM`.
+These are approved cleanup names, not recovered original macro names.
+
 `RGE_Base_Game` sets the base DLL name to `language.dll` and loads it into `StringTable`.
 Its `get_string` calls `LoadStringA(StringTable, ...)` and writes an empty buffer on failure.
 `TRIBE_Game` defaults the override DLL name to `languagex.dll`.
@@ -138,15 +143,9 @@ The IDs are used as follows:
 - `0x2775` returns the padded `" <None> "` sentinel for scenario text and file names.
 - `0x277B` returns `"Random"` as the default and file-name sentinel.
 
-The payload does not prove original macro names.
-
-The shared header owner should add these new cleanup names to `include/resource_ids.h`:
-
-- `IDS_SCENARIO_NONE` for `0x2775`.
-- `IDS_SCENARIO_RANDOM` for `0x277B`.
-
-These names are cleanup proposals, not recovered original macro names.
-The source worker did not edit the shared header or replace the calls until the owner reviews the mapping.
+The source now includes `../include/resource_ids.h` and uses the approved names.
+The source preserves the exact payloads, missing and empty distinction, staged-runtime provenance limit,
+and languagex override with language.dll fallback.
 
 ## Possible generated-code effects
 
@@ -161,6 +160,6 @@ I did not run a compiler, build, matching check, audit, test, or game.
 
 Open items:
 
-- The shared resource-ID owner must review and add the two requested names.
+- Root resource approval is recorded in `bf943f3339643ee5beca7dd74e98b4cb729e48d3`.
 - The PDB `val` records remain unresolved because their recorded types do not map to the existing source declarations.
 - Final executable comparison remains required after integration.

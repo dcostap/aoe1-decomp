@@ -4,6 +4,7 @@
 #include "../include/basegame.h"
 #include "../include/main.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 
 #include <stddef.h>
 #include <fcntl.h>
@@ -333,8 +334,8 @@ void RGE_Scenario::InitializeTextValues() {
     char default_string[30];
     char pad2[2];
 
-    rge_base_game->get_string(0x2775, none_string, 30);
-    rge_base_game->get_string(0x277B, default_string, 30);
+    rge_base_game->get_string(IDS_FILE_NONE, none_string, 30);
+    rge_base_game->get_string(IDS_AI_FILE_RANDOM, default_string, 30);
 
     this->description = 0;
     this->hints = 0;
@@ -508,8 +509,8 @@ char* RGE_Scenario::Get_BuildList(int which_player, int WithExtension) {
     char temp_path[MAX_PATH];
     int fd = -1;
 
-    rge_base_game->get_string(0x277b, random_str, 50);
-    rge_base_game->get_string(0x2775, none_str, 50);
+    rge_base_game->get_string(IDS_AI_FILE_RANDOM, random_str, 50);
+    rge_base_game->get_string(IDS_FILE_NONE, none_str, 50);
     if (GetTempPathA(MAX_PATH, temp_path) == 0) {
         strcpy(temp_path, ".");
     }
@@ -547,8 +548,8 @@ char* RGE_Scenario::Get_CityPlan(int which_player, int WithExtension) {
     char temp_path[MAX_PATH];
     int fd = -1;
 
-    rge_base_game->get_string(0x277b, random_str, 50);
-    rge_base_game->get_string(0x2775, none_str, 50);
+    rge_base_game->get_string(IDS_AI_FILE_RANDOM, random_str, 50);
+    rge_base_game->get_string(IDS_FILE_NONE, none_str, 50);
     if (GetTempPathA(MAX_PATH, temp_path) == 0) {
         strcpy(temp_path, ".");
     }
@@ -589,8 +590,8 @@ char* RGE_Scenario::Get_player_AI(int which_player, int WithExtension) {
     int fd;
 
     fd = -1;
-    rge_base_game->get_string(0x277b, random_str, 0x32);
-    rge_base_game->get_string(0x2775, none_str, 0x32);
+    rge_base_game->get_string(IDS_AI_FILE_RANDOM, random_str, 0x32);
+    rge_base_game->get_string(IDS_FILE_NONE, none_str, 0x32);
 
     if (GetTempPathA(MAX_PATH, temp_path) == 0) {
         strcpy(temp_path, ".");
