@@ -8,7 +8,10 @@
 - Shared resource header owner: root (`include/resource_ids.h`)
 - Branch: `cleanup/staging-20260915-86`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source commit: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Inherited shared resource commit: `08038221ea7047376f742814ca1185dbf31268e8`
+- Earlier source commit: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Earlier report commit: `9e873050d6241e2e75bf9dde6f99f52943eb3d3c`
+- Source correction commit: `1c75a1dd6757a05fc717fd9dfe44860656a02905`
 - Final report commit: the commit that adds this report; copy its full hash from Git.
 - Changed files:
   - `src/dlg_help.cpp`
@@ -16,8 +19,8 @@
 - `include/dlg_help.h` was not changed.
 - `include/resource_ids.h` was not changed.
 
-The source cleanup changes names, formatting, and one existing resource macro
-use. It does not change types, storage, control flow, calls, or source order.
+The source cleanup changes names, formatting, and two resource macro uses. It
+does not change types, storage, control flow, calls, or source order.
 
 ## Scope and evidence
 
@@ -90,11 +93,35 @@ register `this` in `ecx`. It has no handwritten source owner and was not edited.
   local type, scope, storage duration, or initialization point changed.
 - No public function, class, member, global, ABI symbol, or layout changed.
 
+### Reused stack-home evidence
+
+The raw PDB BPREL offsets do not equal the entry-relative assembly stack slots.
+Do not treat them as simple home equality.
+
+The PDB names `panel_height` at raw offset `+0x8` and `dialog_x` at raw offset
+`+0xc`. In the original instructions, the panel-height value is stored at
+`0043EAD1` in `[esp+20h]`. The x value is stored at `0043EB50` and `0043EB58`
+in `[esp+24h]`.
+
+These assembly homes are reused after the prologue and later stack pushes. The
+`panel_height` mapping remains supported because the value computed from
+`line_height * rge_text_font->font_hgt + 0x37` is stored at `0043EAD1` and is
+passed as the panel height. The `dialog_x` mapping remains supported because
+the x candidates, clamp, and final `set_fixed_position` argument use the value
+stored at `0043EB50` and `0043EB58`.
+
+The source retains `panel_height` and `dialog_x` as declaration mappings. This
+does not claim that their raw PDB offsets equal those entry-relative homes.
+
 ## Resource and constant evidence
 
 The source now includes `../include/resource_ids.h` and uses the existing
 `IDS_BUTTON_OK` macro for both OK-button caption calls. The macro is not claimed
 as a recovered original symbol.
+
+The inherited shared resource commit `08038221ea7047376f742814ca1185dbf31268e8`
+adds `IDS_BUTTON_MORE_HELP` for `0x243D`. The source now uses this macro for the
+optional More Help button. It is a new cleanup name, not an original macro.
 
 The existing macro maps `0x0FA1` to the OK caption. The source calls
 `create_button` with this ID at original `0043ECCC` and the two branch paths
@@ -120,21 +147,22 @@ All checked resources use `RT_STRING` and language `0x0409` (`1033`).
 The checked runtime expansion therefore falls back to the base runtime DLL.
 The checked original XPack expansion also lacks both entries.
 
-The source keeps numeric `0x243D` because no shared macro exists yet. The
-original setup call at `0043EC88` passes it as the caption ID for the optional
-single-player More Help button. The caption role is proved by the call site,
-the branch, and the exact base resource text.
+The original setup call at `0043EC88` passes `0x243D` as the caption ID for the
+optional single-player More Help button. The caption role is proved by the
+call site, the branch, and the exact base resource text. The macro expands to
+the same numeric value.
 
-### Shared resource request
+### Applied shared resource mapping
 
-Root should add this one mapping to `include/resource_ids.h`:
+Root added this mapping to `include/resource_ids.h` in commit
+`08038221ea7047376f742814ca1185dbf31268e8`:
 
 | Numeric ID | Proposed cleanup name | Resource type | Language | Exact text and files | Lookup path | Purpose |
 | --- | --- | --- | --- | --- | --- | --- |
 | `0x243D` (`9277`) | `IDS_BUTTON_MORE_HELP` | `RT_STRING` | `0x0409` (`1033`) | `runtime/language.dll`: `More Help`; `runtime/languagex.dll`: missing; original XPack `languagex.dll`: missing | `TPanel::get_string` -> virtual `TRIBE_Game::get_string`; expansion table first, base table fallback | Caption passed to `create_button` for the optional More Help button in `THelpDialog::setup_help` |
 
-The proposed name is a new cleanup name. It is not a recovered original macro.
-Keep the numeric expression until root reviews and adds this shared definition.
+The name is a new cleanup name. It is not a recovered original macro. The source
+now substitutes it for the original numeric expression.
 
 The source retains `0x101` in `WinHelpA`. Pinned `WINUSER.H` identifies it as
 `HELP_KEY` with value `0x0101L`. No replacement was made because this pass did
@@ -153,9 +181,10 @@ casts, literals, declarations, scopes, and evaluation order unchanged.
 - Identifier changes can alter debug names and line records.
 - The 1TBS formatting changes can alter line records.
 - `IDS_BUTTON_OK` expands to the existing `0x0FA1` literal. It adds no storage.
+- `IDS_BUTTON_MORE_HELP` expands to `0x243D`. It adds no storage.
 - The new resource include changes preprocessing but adds no runtime state.
-- The recovered positive PDB homes remain reused-home evidence. No forced stack
-  layout or compiler steering was added.
+- The PDB positive offsets and assembly stack homes differ. The report records
+  both forms. No forced stack layout or compiler steering was added.
 - The existing module note records `setup_help` as nonexact in prior checks.
   This cleanup does not claim to repair that mismatch.
 - No structural rewrite, helper, bug fix, layout change, or assembly was added.
@@ -196,5 +225,8 @@ build, matcher, audit, automated test, menu suite, gameplay suite, or game.
 ## Commits
 
 - Base: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source cleanup: `7333ff58036a73e1d7fac31869df3bed37d9604b`
-- Report: committed after this source commit. Copy its full hash from Git.
+- Inherited shared resource header: `08038221ea7047376f742814ca1185dbf31268e8`
+- Earlier source cleanup: `7333ff58036a73e1d7fac31869df3bed37d9604b`
+- Earlier report: `9e873050d6241e2e75bf9dde6f99f52943eb3d3c`
+- Source correction: `1c75a1dd6757a05fc717fd9dfe44860656a02905`
+- Report correction: committed after this source correction. Copy its full hash from Git.
