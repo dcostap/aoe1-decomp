@@ -1,5 +1,6 @@
 
 #include "../include/tcommand.h"
+#include "../include/resource_ids.h"
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -439,7 +440,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
             draw_system->SetPalette(panel->get_palette());
             rge_base_game->set_render_all();
             rge_base_game->draw_window();
-            panel->popupOKDialog(0x966, 0, 0x1C2, 100);
+            panel->popupOKDialog(IDS_ERROR_SYNC, 0, 0x1C2, 100);
         }
         panel_system.destroyPanel("Temp Screen");
         break;
