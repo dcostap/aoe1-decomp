@@ -17,7 +17,16 @@
 - No other file was changed.
 
 The source changes recover PDB names and replace a few generated local names.
-They do not change types, storage, control flow, calls, literals, or source order.
+The follow-up correction applies 1TBS to all 22 function definitions. It moves
+existing opening braces only. The changes do not alter types, storage, control
+flow, calls, literals, or source order.
+
+## Correction history
+
+Full diff review found that the source still used next-line opening braces.
+The correction moves each of the 22 function opening braces onto its definition
+line. It does not add or remove braces or move statements. Existing `} else {`
+forms remain unchanged.
 
 ## Scope and evidence
 
@@ -201,10 +210,10 @@ The existing root sprite note also records earlier context concerns for
 `shadow_draw` and `hit_test`, plus accepted drift and the `update` review. This
 cleanup does not claim to repair those issues.
 
-The source diff changes identifiers and one signature line break. It preserves
-all declarations, types, scopes, casts, literals, calls, branches, loops,
-source order, and explicit `this->` use. It adds no wrapper, helper, assembly,
-header, binary dependency, or compiler steering.
+The source diff changes identifiers, brace placement, and one signature line
+break. It preserves all declarations, types, scopes, casts, literals, calls,
+branches, loops, source order, and explicit `this->` use. It adds no wrapper,
+helper, assembly, header, binary dependency, or compiler steering.
 
 Identifier changes can change debug names and line records. The source does
 not claim generated-code equality until final validation.
@@ -270,3 +279,5 @@ or game. The cleanup remains unvalidated until final comparison.
 - Source cleanup: `e08c04ec673f459c01a049107868db2aecf4a4d5`
 - Source name correction: `080c03fc194a7587c3550de7593aaf5228b78b22`
 - Report: the commit that adds this report; copy its full hash from Git.
+- 1TBS correction: the commit that applies the reviewed brace correction; copy
+  its full hash from Git.
