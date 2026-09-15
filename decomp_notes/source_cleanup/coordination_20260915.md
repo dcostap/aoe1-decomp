@@ -119,4 +119,10 @@ The orchestrator reads the report and the entire worktree diff.
 Corrections resume the same worker. Do not silently accept only selected hunks.
 No automatic expansion to the larger wave follows completion.
 
-Current state: preparation complete; pilot launch pending.
+Launch base: `ce65dc808eee23c3d07acb7a5c4366890b933da1`.
+Managed agent: `sa-af9710e1`, using the exact model and thinking level above.
+Current state: pilot launched; all other cleanup assignments remain held.
+
+The new worktree uses a limited checkout for source, headers, config, tools, guides, and relevant notes.
+Its initial empty index was populated from the launch commit before the worker started.
+The worker began with a clean index and worktree. Main-tree original assets were not changed.
