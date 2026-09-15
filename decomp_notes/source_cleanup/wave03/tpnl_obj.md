@@ -7,7 +7,7 @@
 - Header: `include/tpnl_obj.h` (read-only for this worker)
 - PDB source: `C:\msdev\work\age1_x1\tpnl_obj.cpp`
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Final module commit: pending
+- Final module commit: `23febc8712ab7129c8f9453ffed450903344dd02`
 - Changed files:
   - `src/tpnl_obj.cpp`
   - `decomp_notes/source_cleanup/wave03/tpnl_obj.md`
