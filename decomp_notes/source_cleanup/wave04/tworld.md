@@ -5,7 +5,7 @@
 - Module: `src/tworld.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit: `891a0e6263b753a59f3caef970c66311498d9328`
-- Report commit: pending until this report is committed
+- Report commit: `cde37ac57e36cdfff6644ef18080ddc908440250`
 - Changed files:
   - `src/tworld.cpp`
   - `decomp_notes/source_cleanup/wave04/tworld.md`
