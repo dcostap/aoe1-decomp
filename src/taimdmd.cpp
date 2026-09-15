@@ -437,27 +437,29 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                     break;
                 }
 
-                for (int i = 1; i < world->player_num; i++) {
-                    RGE_Player* other = world->players[i];
+                for (int neutralPlayer = 1;
+                     neutralPlayer < world->player_num;
+                     neutralPlayer++) {
+                    RGE_Player* other = world->players[neutralPlayer];
                     if (other->computerPlayer() == 0 ||
-                        neutralList[i] == 0)
+                        neutralList[neutralPlayer] == 0)
                         continue;
 
-                    if (swayableCPs.contains(i)) {
+                    if (swayableCPs.contains(neutralPlayer)) {
                         other->sendAICommand(
                             this->player->id, 7, resAmount, 0, 0);
                         resAmount *= 2;
                     }
 
                     for (int j = 1; j < world->player_num; j++) {
-                        if (j == i)
+                        if (j == neutralPlayer)
                             continue;
-                        RGE_Player* temp2 = world->players[j];
-                        if (temp2->computerPlayer() == 0 &&
-                            !swayableCPs.contains(i)) {
+                        RGE_Player* target = world->players[j];
+                        if (target->computerPlayer() == 0 &&
+                            !swayableCPs.contains(neutralPlayer)) {
                             other->sendAICommand(
                                 this->player->id, 6, j, 0, 0);
-                        } else if (temp2->computerPlayer() == 1) {
+                        } else if (target->computerPlayer() == 1) {
                             other->sendAICommand(
                                 this->player->id, 6, j, 2, 0);
                         }

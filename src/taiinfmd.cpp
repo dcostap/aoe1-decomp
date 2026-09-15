@@ -1096,8 +1096,8 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                     ((char*)this->resources[rType] +
                                      resource_offset);
                                 if (gathererZone ==
-                                        gatherer->lookupZone(resource->x,
-                                                             resource->y) &&
+                                        gathererObj->lookupZone(resource->x,
+                                                                 resource->y) &&
                                     (bestObject == 0 || value < bestValue)) {
                                     resource = (ResourceMemory*)
                                         ((char*)this->resources[rType] +

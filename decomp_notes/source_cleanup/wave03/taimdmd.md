@@ -30,7 +30,7 @@ The packet names, VAs, and source order agree with the registry.
 | `004E4B80` | load constructor | `playerID`, `playerName`, `aiP`, `infile` |
 | `004E4EC0` | destructor | No parameters or locals in the procedure record. |
 | `004E4FA0` | `setLogHistory` | `v` |
-| `004E5050` | `update` | `timeLimit`, `tempString`, `i`, `world`, `numberComputerPlayers`, `numberHumanPlayers`, `numberNeutralCPs`, `neutralList`, `numberSwayable`, `swayableCPs`, `resAmount`, `temp2`, and `newEnemy` are supported by the scoped record and source use. |
+| `004E5050` | `update` | `timeLimit`, `tempString`, `i`, `world`, `numberComputerPlayers`, `numberHumanPlayers`, `numberNeutralCPs`, `neutralList`, `numberSwayable`, `swayableCPs`, `resAmount`, `temp2`, and `newEnemy` are supported by the scoped record and source use. The final neutral-player loop keeps the baseline `neutralPlayer` and `target` names for VC5 scope compatibility. |
 | `004E5DB0` | `save` | `outfile` |
 | `004E5F30` | `kick` | `m` |
 | `004E5FA0` | `addObject` | `bo` |
@@ -153,6 +153,13 @@ Full diff review found that the recovered `timeLimit` parameter name did not
 authorize reuse of that parameter as storage. The local declaration is now
 `diplomacy_start_time` again. Its declaration and storage remain distinct from
 the unused `timeLimit` parameter.
+
+Post-cleanup compilation then found VC5 error C2374 near `taimdmd.cpp:440`.
+The final loop's `i` declaration collided with an earlier for-initializer.
+The repair restores the baseline `neutralPlayer` and `target` names without
+adding a scope or changing declarations, types, storage, or statement order.
+The finding is recorded in
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
 
 ## Code-generation and ownership risks
 
