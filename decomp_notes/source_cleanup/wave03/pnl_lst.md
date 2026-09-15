@@ -92,7 +92,7 @@ The PDB records no function statics for these procedures.
 | `00478900` | `action` | `from_panel: TPanel*`; `action_in: long`; `action_val1, action_val2: unsigned long` | none | recovered parameters |
 | `00478920` | `scroll_cur_line` | `scroll_type: unsigned char`; `scroll_val: short`; `update_scrollbar: int` | none | recovered parameters |
 | `00478BA0` | `draw` | none | `old_font: void*` | unchanged; already matched |
-| `00478CD0` | `draw_highlight_bar` | none | `r: tagRECT` | unchanged; already matched |
+| `00478CD0` | `draw_highlight_bar` | none | `r: tagRECT` | recovered local `r` |
 | `00478EE0` | `setDrawHighlightBar` | `v: int` | none | unchanged; already matched |
 | `00478EF0` | `set_focus` | `have_focus_in: int` | none | recovered parameter |
 
@@ -105,12 +105,13 @@ No new descriptive parameter or local names were invented.
 The existing locals `now`, `item`, `rowsize`, `ch`, `node`, `i`, `old_cur`, `new_cur`,
 `cur`, `line`, and `line_index` have no procedure-scoped PDB records here.
 I did not force an original mapping for those names.
-The `old_font` and `r` locals already use the PDB names.
+The `old_font` local already used the PDB name.
+The `r` local was recovered from the PDB record in this cleanup.
 
 ## Cleanup changes
 
 I replaced generated or substitute parameter names with the exact PDB spellings.
-The changes cover 47 parameters in 13 source functions.
+The changes cover 47 parameters in 13 source functions and one local, `r`.
 The parameter types, order, storage, and calls remain unchanged.
 The unused mouse and keyboard parameters now have their recorded names.
 The source keeps the existing 1TBS layout and readable line wrapping.
