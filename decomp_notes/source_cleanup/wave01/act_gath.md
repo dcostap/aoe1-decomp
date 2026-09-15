@@ -4,7 +4,10 @@
 
 - Module: `src/act_gath.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Source head commit: `b8ddcf77fdc325ca73b7ed5e35c78462a8425cde`
+- Source name commit: `b8ddcf77fdc325ca73b7ed5e35c78462a8425cde`
+- Initial report commit: `1460e86a4e3a1d98f47ec2d608467a11bf0aee57`
+- Correction commit: `50d398bbb25aca687a636f42b7390c1ab46ac6d3`
+- Final source head: `50d398bbb25aca687a636f42b7390c1ab46ac6d3`
 - Changed files:
   - `src/act_gath.cpp`
   - `decomp_notes/source_cleanup/wave01/act_gath.md`
@@ -107,12 +110,11 @@ below without changing the interface:
 
 ```cpp
 RGE_Action_Gather(int infile, RGE_Action_Object* obj_in);
-RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                  RGE_Static_Object* target_obj_in);
-RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                  float x, float y, float z);
+RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in);
+RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
 virtual void save(int outfile);
 virtual void first_in_stack(unsigned char first_time);
+virtual void set_state(unsigned char new_state);
 virtual int move_to(RGE_Static_Object* obj_in, float x, float y, float z);
 virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
 ```
