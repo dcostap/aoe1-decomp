@@ -1,5 +1,15 @@
 # Cleanup wave 03 root review
 
+## Owner 22: corrected and integrated
+
+Root read the full seven-file correction diff to `a9509d501035039ca7fb4e3a33d4f78843d44f7c`.
+The chat macro preserves literal `0x17D5`; the one source substitution preserves the call.
+Report corrections now include the retained incident traceback and explicit unknown timestamp and exit code.
+Root merged the group as `3e989ce9e98a551b7d7594fd1ef5e7973cd1faed`.
+Owners 11 and 27 received header commit `c0ce37473c32dfd6511e884ea1ead7dace6b5cce` for the two remaining consumers.
+Main contains 144 assigned modules plus the pilot: 145 of 225, approximately 64.4%.
+The cleanup remains unvalidated.
+
 ## Owner 21: corrections and resource approval
 
 Reviewer `sa-68c501de` read all 8,462 diff lines, eight sources, eight headers, and nine reports.
