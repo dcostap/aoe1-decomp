@@ -1,6 +1,7 @@
 
 #include "../include/scr_game.h"
 #include "../include/game_globals.h"
+#include "../include/resource_ids.h"
 #include "../include/dsutil.h"
 #include <new.h>
 #include <stdio.h>
@@ -110,14 +111,14 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->last_view_time = debug_timeGetTime(s_scr_game_cpp, 0x142);
     this->player_quit = 0;
 
-    this->view_town_center_hotkey = *this->get_string(0x103f);
+    this->view_town_center_hotkey = *this->get_string(IDS_HOTKEY_VIEW_TOWN_CENTER);
     this->work_hotkey = 0;
-    this->move_hotkey = *this->get_string(0x104a);
+    this->move_hotkey = *this->get_string(IDS_HOTKEY_MOVE);
     this->attack_hotkey = 0;
-    this->ungroup_hotkey = *this->get_string(0x103a);
+    this->ungroup_hotkey = *this->get_string(IDS_HOTKEY_UNGROUP);
     this->watch_hotkey = 0x41;
     for (i = 0; i < 8; i++) {
-        this->select_building_hotkey[i] = *this->get_string(i + 0x1040);
+        this->select_building_hotkey[i] = *this->get_string(i + IDS_HOTKEY_SELECT_BUILDING_BASE);
     }
     this->reset_after_update = 1;
     this->score_interval = 3000;
@@ -189,7 +190,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    this->map_view->set_help_info(0x4e33, -1);
+    this->map_view->set_help_info(IDS_HELP_DIAMOND_MAP, -1);
     this->map_view->set_world(this->world);
     this->map_view->set_bitmap(s_map_bmp, 0xc4e1);
     this->map_view->set_player(rge_base_game->get_player());
@@ -204,7 +205,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    this->inven_panel->set_help_info(0x4e25, -1);
+    this->inven_panel->set_help_info(IDS_HELP_INVENTORY, -1);
 
     font = rge_base_game->get_font(7);
     this->object_panel = new TRIBE_Panel_Object(
@@ -261,8 +262,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[16]->setDrawType(TButtonPanel::DrawText);
     this->button_panel[16]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[16]->tribe_button_type = 3;
-    this->button_panel[16]->set_text(0, 0x1023L);
-    this->get_string(0x1024, str, 0x200);
+    this->button_panel[16]->set_text(0, IDS_SCORE_BUTTON_LABEL);
+    this->get_string(IDS_SCORE_BUTTON_MESSAGE, str, 0x200);
     this->button_panel[16]->set_text_msg(str);
 
     {
@@ -280,13 +281,13 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
                                              TMessagePanel::BottomJust, 1);
     this->main_view->message_panel = this->text_line_panel;
 
-    this->create_text(this->main_view, &this->quit_message_panel, 0x232e, 0, 0,
+    this->create_text(this->main_view, &this->quit_message_panel, IDS_GAME_OVER_MESSAGE, 0, 0,
                       600, 0x3c, 0x0b, 1, 1, 0);
     if (this->quit_message_panel != 0) {
         this->quit_message_panel->set_text_color(0xffffff, 0);
         this->quit_message_panel->set_active(0);
     }
-    this->create_text(this->main_view, &this->pause_text, 0x2329, 0, 0, 600,
+    this->create_text(this->main_view, &this->pause_text, IDS_GAME_PAUSED, 0, 0, 600,
                       0x3c, 1, 1, 1, 0);
     if (this->pause_text != 0) {
         this->pause_text->set_text_color(0xffffff, 0);
@@ -378,7 +379,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     this->age_panel->set_alignment(TTextPanel::AlignCenter,
                                    TTextPanel::AlignCenter);
-    this->age_panel->set_help_info(0x4e35, -1);
+    this->age_panel->set_help_info(IDS_HELP_AGE, -1);
     if (do_color_log) {
         this->age_panel->set_active(0);
     }
@@ -1462,7 +1463,7 @@ long TRIBE_Screen_Game::handle_user_command(unsigned int wParam, long lParam) {
 }
 
 void TRIBE_Screen_Game::handle_pause(void) {
-    this->pause_text->set_text(0x2329);
+    this->pause_text->set_text(IDS_GAME_PAUSED);
     if (this->pause_text->active == 0) {
         this->pause_text->set_active(1);
         this->pause_text->set_redraw(TPanel::RedrawNormal);
@@ -2463,16 +2464,16 @@ void TRIBE_Screen_Game::age_changed() {
 
         switch (this->save_age) {
         case 1:
-            this->age_panel->set_help_info(0x1069, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_STONE, -1);
             break;
         case 2:
-            this->age_panel->set_help_info(0x106A, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_TOOL, -1);
             break;
         case 3:
-            this->age_panel->set_help_info(0x106B, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_BRONZE, -1);
             break;
         case 4:
-            this->age_panel->set_help_info(0x106C, -1);
+            this->age_panel->set_help_info(IDS_HELP_AGE_IRON, -1);
             break;
         }
     }
@@ -2621,7 +2622,7 @@ void TRIBE_Screen_Game::setup_buttons() {
 
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, IDS_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
@@ -2696,7 +2697,7 @@ void TRIBE_Screen_Game::setup_buttons() {
 
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, IDS_HELP_UNGROUP_BUTTON, -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
                 }
@@ -2951,7 +2952,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                                                  0, 0x1D4E1, -1, 0,
                                                  0, 0, 0, 0);
                                 this->set_button(this->button_cmd_pic, 7, 8, 9,
-                                                 0, 0x4E43, -1, 0,
+                                                 0, IDS_HELP_UNGROUP_BUTTON, -1, 0,
                                                  0, 0, 0, 0);
                             } else if (this->game_obj->selected_group != 0) {
                                 this->set_button(this->button_cmd_pic, 6, 8, 9,
@@ -3022,7 +3023,7 @@ void TRIBE_Screen_Game::setup_buttons() {
                 if (player->sel_count > 1) {
                     this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
                     this->set_button(this->button_cmd_pic, 7, 8, 9, 0,
-                                     special_known ? 0x1D4E3 : 0x4E43,
+                                     special_known ? 0x1D4E3 : IDS_HELP_UNGROUP_BUTTON,
                                      -1, 0, 0, 0, 0, 0);
                 } else if (this->game_obj->selected_group != 0) {
                     this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
@@ -3177,46 +3178,46 @@ void TRIBE_Screen_Game::set_button(
 
         switch (id) {
         case 3:
-            hotkey = 0x1037;
+            hotkey = IDS_HOTKEY_BUILD;
             break;
         case 5:
-            hotkey = 0x1038;
+            hotkey = IDS_HOTKEY_STOP;
             break;
         case 8:
-            hotkey = 0x1039;
+            hotkey = IDS_HOTKEY_GROUP;
             break;
         case 9:
-            hotkey = 0x103A;
+            hotkey = IDS_HOTKEY_UNGROUP;
             break;
         case 0x0C:
-            hotkey = 0x103B;
+            hotkey = IDS_HOTKEY_MORE;
             break;
         case 0x16:
-            hotkey = 0x103D;
+            hotkey = IDS_HOTKEY_STAND_GROUND;
             break;
         case 0x17:
-            hotkey = 0x103E;
+            hotkey = IDS_HOTKEY_ATTACK_GROUND;
             break;
         case 0x1C:
-            hotkey = 0x1048;
+            hotkey = IDS_HOTKEY_HEAL;
             break;
         case 0x1D:
-            hotkey = 0x1049;
+            hotkey = IDS_HOTKEY_CONVERT;
             break;
         case 1:
-            hotkey = 0x104B;
+            hotkey = IDS_HOTKEY_WORK;
             break;
         case 2:
-            hotkey = 0x104A;
+            hotkey = IDS_HOTKEY_MOVE;
             break;
         case 0x1E:
-            hotkey = 0x104C;
+            hotkey = IDS_HOTKEY_ATTACK;
             break;
         case 0x1F:
-            hotkey = 0x104D;
+            hotkey = IDS_HOTKEY_REPAIR;
             break;
         case 7:
-            hotkey = 0x104E;
+            hotkey = IDS_HOTKEY_UNLOAD;
             break;
         }
 
@@ -3816,7 +3817,7 @@ void TRIBE_Screen_Game::command_attack(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE2), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x67, 0);
 }
@@ -3893,7 +3894,7 @@ void TRIBE_Screen_Game::command_chat() {
     }
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         message_panel->show_message(
-            TMessagePanel::BadMessage, get_string(0xBFE), 0x32,
+            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), 0x32,
             0, 0, 0, 0);
         return;
     }
@@ -3903,7 +3904,7 @@ void TRIBE_Screen_Game::command_chat() {
 void TRIBE_Screen_Game::command_quick_chat() {
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         message_panel->show_message(
-            TMessagePanel::BadMessage, get_string(0xBFE), 0x32,
+            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), 0x32,
             0, 0, 0, 0);
         return;
     }
@@ -3938,7 +3939,7 @@ void TRIBE_Screen_Game::command_convert(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE4), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_CONVERT), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x65, 0);
 }
@@ -4028,7 +4029,7 @@ void TRIBE_Screen_Game::command_game_speed(int increase_speed) {
         if (new_speed != 0.0f) {
             if (rge_base_game->multiplayerGame() != 0) {
                 char message[256];
-                const char* text = this->get_string(0xBF3);
+                const char* text = this->get_string(IDS_GAME_SPEED_CHANGED);
                 sprintf(message, text);
                 comm->SendChatMsgAll(message);
             }
@@ -4062,7 +4063,7 @@ void TRIBE_Screen_Game::command_heal(void) {
         return;
     }
 
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE3), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_HEAL), 0x32, 0, 0, 0, 0);
         rge_base_game->set_game_mode(0x66, 0);
 }
 
@@ -4070,7 +4071,7 @@ void TRIBE_Screen_Game::command_repair(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBEC), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_REPAIR), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x68, 0);
 }
@@ -4155,7 +4156,7 @@ void TRIBE_Screen_Game::command_move() {
                 &list, &list_num, -1, -1, -1, -1)) {
             free(list);
             this->message_panel->show_message(
-                TMessagePanel::BadMessage, this->get_string(0xBE0),
+                TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_MOVE),
                 0x32, 0, 0, 0, 0);
             rge_base_game->set_game_mode(4, 0);
         }
@@ -4197,7 +4198,7 @@ void TRIBE_Screen_Game::command_pause() {
 
     if (rge_base_game->prog_mode != 5) {
         if (rge_base_game->multiplayerGame() != 0) {
-            const char* s = get_string(0xBF4);
+            const char* s = get_string(IDS_MESSAGE_GAME_PAUSED);
             sprintf(msg, s);
             comm->SendChatMsgAll(msg);
         }
@@ -4376,7 +4377,7 @@ void TRIBE_Screen_Game::command_ungroup(void) {
 void TRIBE_Screen_Game::command_unload(void) {
     if (!rge_base_game->get_paused()) {
         this->message_panel->show_message(TMessagePanel::BadMessage,
-                                          this->get_string(0xBED),
+                                          this->get_string(IDS_MESSAGE_UNLOAD),
                                           0x32, 0, 0, 0, 0);
         rge_base_game->set_game_mode(0x69, 0);
     }
@@ -4438,7 +4439,7 @@ void TRIBE_Screen_Game::command_work() {
                 &list, &list_num, -1, -1, -1, -1)) {
             free(list);
             this->message_panel->show_message(
-                TMessagePanel::BadMessage, this->get_string(0xBE1),
+                TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_WORK),
                 0x32, 0, 0, 0, 0);
             rge_base_game->set_game_mode(5, 0);
         }
@@ -4461,7 +4462,7 @@ void TRIBE_Screen_Game::command_attack_ground(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE5), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK_GROUND), 0x32, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x64, 0);
 }
