@@ -29,11 +29,11 @@ public:
     TShape* backgroundPics;
     int commPlayers[8];
 
-    TribeSendMessageDialog(TScreenPanel*);
+    TribeSendMessageDialog(TScreenPanel* parentPanel);
     virtual ~TribeSendMessageDialog();
 
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     virtual void draw();
     void checkButtons();
 };
@@ -49,10 +49,10 @@ public:
     TTextPanel* chatTitle;
     Mode modeValue;
 
-    TribeSendQuickMessageDialog(TScreenPanel*, Mode);
+    TribeSendQuickMessageDialog(TScreenPanel* parentPanel, Mode m);
     virtual ~TribeSendQuickMessageDialog();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+    virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
 };
 
 typedef char dlg_smsg_quick_size[

@@ -17,7 +17,7 @@ public:
 
 protected:
     virtual long handle_idle();
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char scr_sedm_screen_size_check[

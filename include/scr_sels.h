@@ -43,8 +43,7 @@ public:
     virtual long handle_idle();
 
 protected:
-    virtual long action(TPanel* panel, long event, unsigned long p3,
-                        unsigned long p4);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
     void init_vars();
     void fillScenarios();
     void getSettings();
