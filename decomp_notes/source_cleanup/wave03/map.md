@@ -4,9 +4,10 @@
 
 - Module: `src/map.cpp`
 - Base commit from `git rev-parse`: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
-- Source commits: `312a3a1d3`, `e64f320a6`
-- Final source commit: `e64f320a6`
-- Initial report commit: `99f0fc6f4`
+- Source commits: `312a3a1d3c51dfda6485c03df12777a95dbafbd6`, `e64f320a6e9a02878db26feb07099348cdbc3927`, `823efaa9326ff318b22e6a024053ad2cdcaa95cd`
+- Final source commit: `823efaa9326ff318b22e6a024053ad2cdcaa95cd`
+- Initial report commit: `99f0fc6f4131bfc5028fb51cc5cdad3503980b59`
+- Report correction commit before this update: `6cca60ccb37be9e8a3f495b1fc00d73718f64004`
 - Final report commit: this report correction commit.
 - Branch: `cleanup/staging-20260915-137`
 - Changed files: `src/map.cpp`; this report.
@@ -15,9 +16,23 @@ The report covers all 64 assigned registry functions.
 The vector-deleting destructor at `00455080` is compiler-generated.
 It is not an assigned normal function.
 
-The source commit changes names only.
+The name-cleanup source commits change names only.
+The final source commit changes whitespace only.
 No expression, control flow, call, type, storage, data value, or ABI symbol changed.
 `include/map.h` was read and was not changed.
+
+## Correction history
+
+- `312a3a1d3c51dfda6485c03df12777a95dbafbd6`: applied the PDB-guided source name cleanup.
+- `e64f320a6e9a02878db26feb07099348cdbc3927`: corrected a local declaration layout without changing behavior.
+- `99f0fc6f4131bfc5028fb51cc5cdad3503980b59`: recorded the initial report.
+- `e36684052cf94fa7185151aad858092386cf9753`: recorded the initial report metadata correction.
+- `6cca60ccb37be9e8a3f495b1fc00d73718f64004`: recorded the final name-cleanup evidence before formatting.
+- `823efaa9326ff318b22e6a024053ad2cdcaa95cd`: reformatted `src/map.cpp` with 1TBS braces and corrected indentation.
+
+The formatting commit changes whitespace only.
+It does not add or remove braces.
+It does not change scopes or non-whitespace tokens.
 
 ## Evidence
 
@@ -246,17 +261,140 @@ The `TileWid`, `TileHgt`, `ElevHgt`, and `FillFlag` spellings preserve PDB case.
 The `passabilty` spelling preserves the PDB misspelling.
 No inline assembly or wrapper was added.
 
+## Diff review
+
+The complete base-to-head diff was reviewed.
+It contains only `src/map.cpp` and this report.
+The source diff contains the earlier name cleanup and the final whitespace-only format.
+The report contains the evidence, correction history, and declaration-only header request.
+No `include/map.h` edit is present.
+No build, compiler, check, match, test, or game run was used for this review.
+
 ## Header requests
 
 `include/map.h` is owned outside this assignment.
 It was read and not edited.
-Its declarations omit parameter names.
-A later header cleanup may add the names listed in the PDB table.
-No type or signature change is requested.
+Owner 16 may apply parameter names to declarations only.
+Use these exact declarations for the definitions changed in this wave:
+
+```cpp
+RGE_Map(int infile, RGE_Sound **sounds, unsigned char setup);
+RGE_Map(char *border_tbl, char *terrain_tbl, char *map_tbl, short TileWid,
+        short TileHgt, short ElevHgt, RGE_Sound **sounds);
+virtual ~RGE_Map();
+virtual void data_load_random_map(int infile);
+virtual void load_random_map(char *rmm_map_file, char *rmm_land_file,
+                             char *rmm_terr_file, char *rmm_obj_file);
+virtual unsigned char do_terrain_brush(long x, long y, long brush_size,
+                                       unsigned char terrain_id);
+virtual unsigned char do_terrain_brush_stroke(long x1, long y1, long x2,
+                                              long y2, long brush_size,
+                                              unsigned char terrain_id);
+virtual unsigned char do_elevation_brush(long x, long y, long brush_size,
+                                         unsigned char elevation_height);
+virtual unsigned char do_elevation_brush_stroke(long x1, long y1, long x2,
+                                                long y2, long brush_size,
+                                                unsigned char elevation_height);
+virtual unsigned char do_cliff_brush(long x, long y, unsigned char cliff_id,
+                                     unsigned char delete_cliff);
+virtual unsigned char do_cliff_brush_stroke(long x1, long y1, long x2,
+                                             long y2, unsigned char cliff_id,
+                                             unsigned char delete_cliff);
+virtual void map_generate(RGE_Player *owner, RGE_Game_World *gworld,
+                          RGE_Player_Info *player_info,
+                          unsigned char *zone_terrain);
+virtual void map_generate2(RGE_Game_World *gworld, long new_width,
+                           long new_height, unsigned char type,
+                           long player_num);
+virtual void save(int outfile);
+
+void init_tile_sizes();
+void set_map_visible(unsigned char flag);
+void set_map_fog(unsigned char flag);
+void clear_map(RGE_Player *player, RGE_Game_World *world,
+               unsigned char new_terrain, long width, long height);
+void clear_map(unsigned char terrain, unsigned char elev);
+void new_map(long width, long height);
+void request_redraw(int x1, int y1, int x2, int y2, unsigned char attribute);
+void clear_map_view_info();
+void coordinate_map();
+void set_map_screen_pos(int x1, int y1, int x2, int y2);
+void scenario_save(int outfile);
+void scenario_load(int infile, unsigned char *zone_terrain);
+RGE_Tile **give_up_map_offsets();
+long get_map_width();
+long get_map_height();
+void preclean_elevation(long x1, long y1, long x2, long y2,
+                        unsigned char elevation_height);
+unsigned char postclean_elevation(long x1, long y1, long x2, long y2,
+                                  unsigned char elevation_height);
+void clean_elevation(long x1, long y1, long x2, long y2,
+                     unsigned char elevation_height);
+void clean_terrain(long x1, long y1, long x2, long y2,
+                   unsigned char replacement_terrain);
+void clean_borders(long x1, long y1, long x2, long y2);
+long clean_border_tile(long this_terrain, long other_terrain,
+                       long (* const matrix)[32]);
+void load_map(int infile);
+void save_map(int outfile);
+void load_terrain_types(char *terrain_table, RGE_Sound **sounds);
+void load_terrain_types(RGE_Sound **sounds);
+void load_border_types(char *border_table, RGE_Sound **sounds);
+void load_border_types(RGE_Sound **sounds);
+void load_terrain_obj_types(char *terr_obj_tbl);
+void delete_objects_on_tile(RGE_Player *obj_owner, RGE_Game_World *gworld,
+                            int x, int y, int no_delete_start,
+                            int no_delete_end);
+void delete_all_objects_on_tile(int x, int y);
+void create_terrain_object(RGE_Player *obj_owner, RGE_Game_World *gworld,
+                           short row, short col, short old_terrain,
+                           int delete_obj, int no_delete_start,
+                           int no_delete_end);
+int clear_terrain_object(RGE_Game_World *gworld, short row, short col,
+                         short old_terrain, int delete_obj,
+                         int no_delete_start, int no_delete_end);
+void place_terrain_object(RGE_Player *player, RGE_Game_World *gworld,
+                          short row, short col, int obj_type_id,
+                          int FillFlag);
+void create_terrain_objects(RGE_Player *obj_owner, RGE_Game_World *gworld);
+void set_tile_size(unsigned char tile_type, short width, short height,
+                   short y_delta);
+void tile_map_coords(short x, short y, RGE_Tile *tile, float *offset_x,
+                     float *offset_y);
+unsigned char check_map_coords(short mapcol, short maprow);
+unsigned char get_elev(short mapcol, short maprow);
+unsigned char get_terrain(short mapcol, short maprow);
+unsigned char get_border(short mapcol, short maprow);
+void set_terrain_passablity(short mapcol1, short maprow1, short mapcol2,
+                            short maprow2, unsigned char passabilty);
+void set_elev(short mapcol1, short maprow1, short mapcol2, short maprow2,
+              unsigned char elev, short delta, unsigned char set_flag);
+void set_terrain(RGE_Game_World *gworld, short mapcol, short maprow,
+                 unsigned char terrain, int no_delete_start,
+                 int no_delete_end);
+void set_terrain_absolute(RGE_Game_World *gworld, short mapcol, short maprow,
+                          unsigned char terrain, int no_delete_start,
+                          int no_delete_end);
+void set_terrain(RGE_Player *obj_owner, RGE_Game_World *gworld,
+                 short mapcol1, short maprow1, short mapcol2, short maprow2,
+                 unsigned char terrain, unsigned char set_flag, int delete_obj);
+unsigned char get_tile_type(short map_col, short map_row);
+void get_border_type(short map_col, short map_row);
+void check_for_border(unsigned char cur_ter, unsigned char &bor_ter);
+void update(unsigned long world_time);
+void get_point(short &screen_x, short &screen_y, float x, float y, float z,
+               short x_offset, short y_offset);
+```
+
+The existing `RGE_Map(RGE_Game_World *, long, long)` declaration has no
+assigned source definition in this wave. Leave that declaration unchanged.
+Add names only. Keep all types, parameter order, overloads, virtual slots,
+function boundaries, ABI symbols, and calling conventions unchanged.
+Keep all class members, declaration order, and layout assertions unchanged.
 
 ## Validation
 
 Compilation, matching, audits, and tests were not run.
 No build, compiler check, game, or runtime harness was run.
 The source commit contains only the assigned source file.
-The report commit will contain only this report.
+The report correction commit contains only this report.
