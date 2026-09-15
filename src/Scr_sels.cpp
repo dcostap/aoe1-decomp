@@ -1,4 +1,5 @@
 #include "../include/scr_sels.h"
+#include "../include/resource_ids.h"
 #include "../include/panel.h"
 #include "../include/panel_ez.h"
 #include "../include/pnl_btn.h"
@@ -22,8 +23,7 @@ static const char s_fmt_range[] = "%d - %d";
 static const char s_fmt_num[] = "%d";
 
 TribeSelectScenarioScreen::TribeSelectScenarioScreen()
-    : TScreenPanel("Select Scenario Screen")
-{
+    : TScreenPanel("Select Scenario Screen") {
     char* setup_file;
     TDrawArea* draw_area;
     int multiplayer;
@@ -109,18 +109,19 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                         0x7532, -1);
 
                                     if (this->create_button(
-                                            this, &this->okButton, 0x0FA1,
+                                            this, &this->okButton, IDS_BUTTON_OK,
                                             0, 0x46, 0x1B8, 0xF0, 0x1E,
                                             0, 0, 0)) {
                                         this->okButton->set_help_info(
-                                            0x7531, -1);
+                                            IDS_HELP_OK, -1);
 
                                         if (this->create_button(
                                                 this, &this->cancelButton,
-                                                0x0FA2, 0, 0x14A, 0x1B8,
+                                                IDS_BUTTON_CANCEL, 0, 0x14A,
+                                                0x1B8,
                                                 0xF0, 0x1E, 0, 0, 0)) {
                                             this->cancelButton->set_help_info(
-                                                0x7532, -1);
+                                                IDS_HELP_CANCEL, -1);
                                             TButtonPanel* cancel =
                                                 this->cancelButton;
                                             cancel->hotkey = 0x1B;
@@ -128,7 +129,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
 
                                             if (this->create_button(
                                                     this, &this->close_button,
-                                                    0x03EA, 0, 0, 0, 0, 0,
+                                                    IDS_BUTTON_CLOSE, 0, 0, 0,
+                                                    0, 0,
                                                     -1, -1, 0)) {
                                                 this->close_button->set_active(1);
                                                 this->close_button->set_positioning(
@@ -203,11 +205,9 @@ long TribeSelectScenarioScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-long TribeSelectScenarioScreen::action(TPanel* panel, long event,
-                                        unsigned long p3, unsigned long p4)
-{
-    if (panel != 0 && this->scenariosLoaded != 0) {
-        if (panel == this->okButton && event == 1) {
+long TribeSelectScenarioScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0 && this->scenariosLoaded != 0) {
+        if (fromPanel == this->okButton && actionIn == 1) {
             this->set_curr_child(this->scenarioList);
             this->sendSettings();
             rge_base_game->disable_input();
@@ -216,7 +216,7 @@ long TribeSelectScenarioScreen::action(TPanel* panel, long event,
             panel_system.destroyPanel("Select Scenario Screen");
             return 1;
         }
-        if (panel == this->cancelButton && event == 1) {
+        if (fromPanel == this->cancelButton && actionIn == 1) {
             this->set_curr_child(this->scenarioList);
             rge_base_game->disable_input();
             new TribeSPMenuScreen;
@@ -224,27 +224,26 @@ long TribeSelectScenarioScreen::action(TPanel* panel, long event,
             panel_system.destroyPanel("Select Scenario Screen");
             return 1;
         }
-        if (panel == this->close_button && event == 1) {
+        if (fromPanel == this->close_button && actionIn == 1) {
             rge_base_game->close();
             return 1;
         }
-        if (panel == this->scenarioList) {
-            if (event == 3) {
+        if (fromPanel == this->scenarioList) {
+            if (actionIn == 3) {
                 this->action(this->okButton, 1, 0, 0);
                 return 1;
             }
-            if (event == 1) {
+            if (actionIn == 1) {
                 this->fillMissionText();
                 this->activatePanels();
                 return 1;
             }
         }
     }
-    return TEasy_Panel::action(panel, event, p3, p4);
+    return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-void TribeSelectScenarioScreen::fillScenarios()
-{
+void TribeSelectScenarioScreen::fillScenarios() {
     RGE_Scenario_File_Info* scenario_info_file;
     char* name;
     int i;
