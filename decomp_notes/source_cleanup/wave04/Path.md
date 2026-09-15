@@ -4,14 +4,24 @@
 
 - Module: `src/Path.cpp`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
-- Final source commit: `67af8d2f4413adea5af92136602734a987d61fc8`
+- Initial source commit: `67af8d2f4413adea5af92136602734a987d61fc8`
+- Initial report commit: `410ccb2b4cf99559d65c6dc4bbbce7ca8fb7740c`
+- Correction source commit: `dd36d9b93d668bb6a833937e71147b3d62998787`
 - Changed files:
   - `src/Path.cpp`
   - `decomp_notes/source_cleanup/wave04/Path.md`
 
-The source commit restores PDB parameter names. It also renames one inferred
-stream pointer to avoid a collision with the recovered `out` parameter.
-The report commit records this review.
+The initial source commit restores PDB parameter names. It also renames one
+inferred stream pointer to avoid a collision with the recovered `out` parameter.
+The correction source commit applies 1TBS across the module.
+
+## Correction history
+
+- `dd36d9b93d668bb6a833937e71147b3d62998787` moves every function-definition
+  opening brace onto its signature line.
+- The same commit joins two short allocation calls.
+- No executable token, declaration type, control-flow scope, or source order
+  changed in the correction.
 
 ## Scope and original-name recovery
 
