@@ -5,6 +5,7 @@
 - Source: `src/m_mo_obj.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
 - Head commit for the source cleanup: `d629aef2d27fc767934b4ec04acdc05ba50cf962`
+- Correction source head before this report commit: `caa4b29540d24510b1922e9e000926aeffe59066`
 - Branch: `cleanup/staging-20260915-70`
 - Worker slot: 70
 - Changed files:
@@ -14,13 +15,62 @@
 The source commit contains only the assigned source file. This report is the
 second assigned commit. The final delivery hash is returned with this report.
 
+## Root correction review
+
+Root review requested address proof for the sprite temporary names. The prior
+source commit was `d629aef2d27fc767934b4ec04acdc05ba50cf962`. The correction
+source commit is `caa4b29540d24510b1922e9e000926aeffe59066`.
+
+I inspected the original `00452040` packet at
+`inventory/functions/0045/00452040_save.txt` and its original instruction
+addresses. The prologue at `00452040` reserves eight bytes. After the saved
+register pushes, the first local address is `[esp+0x8]` and the second is
+`[esp+0xc]`.
+
+- `0045204A` loads `move_sprite` from `[edi+0xBC]`.
+- `00452054` reads `[eax+0x72]`, which is `move_sprite->id`.
+- `00452058` stores that ID at `[esp+0x8]`. The null path at `0045205E`
+  stores the `-1` sentinel at the same address.
+- `00452080` loads `[esp+0x8]` into the first `rge_write` buffer. The first
+  write calls `rge_write` at `00452088` with size `2`.
+- `00452062` loads `run_sprite` from `[edi+0xC0]`.
+- `0045206C` reads `[eax+0x72]`, which is `run_sprite->id`.
+- `00452074` stores that ID at `[esp+0xc]`. The null path keeps the `-1`
+  sentinel and stores it at the same address.
+- `00452090` loads `[esp+0xc]` into the second `rge_write` buffer. The second
+  write calls `rge_write` at `00452098` with size `2`.
+
+This proves the field and serialized-write order. It does not prove both PDB
+declaration names. The Ghidra packet labels `[esp+0x8]` as `temp_run_sprite`
+at `00452058`, `0045205E`, and `00452080`, but labels the second address as
+`local_4` at `00452074` and `00452090`. The scoped PDB record lists
+`temp_run_sprite` and `temp_move_sprite`, but its home offsets do not resolve
+that conflicting optimized alias.
+
+I therefore reverted the sprite pair to the prior descriptive names
+`move_sprite_id` and `run_sprite_id` in the two setup functions and `save`.
+The earlier report claim that the reversed PDB names were proven is
+superseded. The current source does not claim either unresolved PDB mapping.
+
+The PDB table and earlier name list retain the prior names as historical
+evidence. The current source uses supported PDB names except for this
+unresolved sprite pair.
+The earlier table sentence about mapping the pair by serialized order is also
+historical and superseded.
+
+The correction also compacts all three `setup` signatures, `copy_obj`, and
+the three `modify` signatures onto one line where readable. It does not apply
+an 80-column limit. Long signatures remain readable and keep their tokens.
+
+I reviewed the complete base-to-head diff and ran `git diff --check`.
+
 ## Scope and source changes
 
 The module has 14 normal functions. I recovered procedure-scoped names from
 `inventory/pdb/scoped_symbols.json`. I also inspected all 14 packets under
 `inventory/functions/0045/` for addresses `00451A20` through `00452040`.
 
-The source now uses the recovered PDB names. It keeps types, declarations,
+The source uses supported recovered PDB names. It keeps types, declarations,
 order, calls, casts, literals, evaluation order, and storage behavior. It also
 uses 1TBS braces. No helper, layout, or control-flow rewrite was made.
 
