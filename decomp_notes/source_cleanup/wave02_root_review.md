@@ -1,5 +1,27 @@
 # Cleanup wave 02 root review
 
+## Latest review: Owners 08 and 11
+
+Root read all 922 lines of Owner 08's correction diff and the changed reports.
+Corrected head: `c619c6082658e8e8dd9f91d168f32a36aea8f4ea`.
+The correction restores `count`, `move_sprite_id`, and `run_sprite_id` where PDB declaration mapping remains uncertain.
+Other source corrections change signature formatting only.
+Root merged the complete group as `84175ac4d5b4f22ac357cee6076ec55df0d7cca9`.
+Main contains 80 assigned wave modules, plus the pilot. These changes remain unvalidated.
+
+Root finished Owner 11's complete 3,768-line diff review.
+Owner `sa-296217b8` resumed in run 2 with the same workers for corrections.
+Root requested compact short handlers and supporting original-instruction evidence for these local names:
+
+- `scr_cred::draw_scrolled_line`: `x2` and `x`.
+- `scr_mps::handle_user_command`: the renamed `userN` declarations.
+- `scr_mps::calcRandomPositions`: `pos`.
+- `scr_mps::setupSinglePlayerPlayers`: `first_any_player`.
+
+Unproved mappings must retain baseline names, types, scopes, and storage.
+Root has not approved Owner 11's 78 string requests or three binary resource requests.
+No compilation, builds, matching checks, audits, tests, or games ran.
+
 ## Owner 09: returned for corrections
 
 - Delivered head: `619a4b8099a99d03b686c3f140a88d76e10d1cfb`.
