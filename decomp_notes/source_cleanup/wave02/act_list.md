@@ -15,6 +15,14 @@ The source change recovers procedure-scoped PDB names. It does not change types,
 storage, declaration order, control flow, calls, literal values, or ABI symbols.
 The final source commit contains the source cleanup. The report commit follows it.
 
+## Correction
+
+Root review requested presentation-only corrections. Source commit
+`76d321c4d1bece12f17f6904e3d1c787dc12259e` keeps the `action_move_to` and
+`action_work` definitions as readable one-line signatures. It also keeps the
+short `setCurrentTarget(-1, target_x, target_y, target_z)` call on one line.
+No type, comparison, expression, scope, or behavior changed.
+
 ## Evidence
 
 Name evidence comes from the shared procedure-scoped PDB inventory:
