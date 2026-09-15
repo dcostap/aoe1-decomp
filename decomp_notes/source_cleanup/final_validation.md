@@ -166,6 +166,10 @@ Root resumed Owner 10 and the original `dlg_help` worker to compare source forms
 Do not dismiss this as harmless arithmetic commutation: call order is part of the cleanup contract.
 Report: `build/source-cleanup-20260915/final-validation/dependencies-r2/checks.csv`.
 No linked-equivalence pass is established while these failures remain.
+Root reviewed candidate `74c3e01993c9095b2f09a2fd56ff208b3eb3b900`, which restores only local name `x` and its uses.
+The source sum operands, declarations, types, and calls remain unchanged.
+The proposed name-sensitive scheduling cause remains a hypothesis until a fresh object confirms it.
+The worker's report alone does not prove that this repair restores relocation order.
 
 ## Second function sweep
 
