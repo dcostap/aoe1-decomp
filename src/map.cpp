@@ -486,11 +486,12 @@ void RGE_Map::scenario_save(int outfile) {
 }
 
 void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
+    int iVar3 = infile;
     long map_height;
     long w;
 
-    rge_read(infile, &map_height, 4);
-    rge_read(infile, &w, 4);
+    rge_read(iVar3, &map_height, 4);
+    rge_read(iVar3, &w, 4);
     this->new_map(map_height, w);
 
     long height_count = this->map_height;
@@ -506,9 +507,9 @@ void RGE_Map::scenario_load(int infile, unsigned char* zone_terrain) {
                     unsigned char height_info;
                     unsigned char overlay_info;
 
-                    rge_read(infile, &terrain_info, 1);
-                    rge_read(infile, &height_info, 1);
-                    rge_read(infile, &overlay_info, 1);
+                    rge_read(iVar3, &terrain_info, 1);
+                    rge_read(iVar3, &height_info, 1);
+                    rge_read(iVar3, &overlay_info, 1);
 
                     this->map_row_offset[x][i].terrain_type = terrain_info;
                     this->map_row_offset[x][i].height = height_info;
@@ -1430,8 +1431,7 @@ void RGE_Map::load_terrain_types(char* terrain_table, RGE_Sound** sounds) {
                 short id;
                 short shape_index = 0;
                 if (fscanf(infile,
-                           "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd "
-                           "%hd %hd",
+                           "%hd %s %s %d %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %hd %hd",
                            &id, name, pict_name, &resource_id, &random, &med_color, &hi_color,
                            &low_color, &sound_id, &is_animated, &animation_frames, &interval,
                            &pause_between_loops, &terrain_to_draw, &row, &col, &lt_cliff_color,
@@ -1819,7 +1819,7 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* gworld, short row, short col, 
     return object_type;
 }
 
-void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* gworld, short row, short col,
+void RGE_Map::place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld, short row, short col,
                                    int obj_type_id, int FillFlag) {
     RGE_Master_Static_Object* master_obj;
     int end_i;
@@ -1833,7 +1833,7 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* gworld, s
     for (i = 0; i < end_i; ++i) {
         int object_type = (short)this->terrain_types[terrain].obj_types[i];
         if (object_type != -1) {
-            master_obj = player->master_objects[object_type];
+            master_obj = obj_owner->master_objects[object_type];
             short obj_density = this->terrain_types[terrain].obj_density[i];
             unsigned char obj_flag = this->terrain_types[terrain].obj_placement_flag[i];
 
@@ -1866,8 +1866,8 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* gworld, s
                             }
 
                             if (place_it) {
-                                if (!master_obj->check_placement(player, x, y, 0, 0, 1, 0, 1, 0, 1))
-                                    master_obj->make_new_obj(player, x, y, 0);
+                                if (!master_obj->check_placement(obj_owner, x, y, 0, 0, 1, 0, 1, 0, 1))
+                                    master_obj->make_new_obj(obj_owner, x, y, 0);
                             }
                             obj_density -= 1000;
                             density_left -= 1000;
@@ -1886,8 +1886,8 @@ void RGE_Map::place_terrain_object(RGE_Player* player, RGE_Game_World* gworld, s
                                 -3.051851e-05f;
                     }
 
-                    if (!master_obj->check_placement(player, x, y, 0, 0, 1, 0, 1, 0, 1)) {
-                        master_obj->make_new_obj(player, x, y, 0);
+                    if (!master_obj->check_placement(obj_owner, x, y, 0, 0, 1, 0, 1, 0, 1)) {
+                        master_obj->make_new_obj(obj_owner, x, y, 0);
                         return;
                     }
                 }
@@ -2048,11 +2048,11 @@ unsigned char RGE_Map::get_elev(short mapcol, short maprow) {
 }
 
 unsigned char RGE_Map::get_terrain(short mapcol, short maprow) {
-    unsigned char id = this->map_row_offset[maprow][mapcol].terrain_type & 0x1F;
-    if (id <= 0x20) {
-        unsigned int idx = id;
+    unsigned char type = this->map_row_offset[maprow][mapcol].terrain_type & 0x1F;
+    if (type <= 0x20) {
+        unsigned int idx = type;
         if (this->terrain_types[idx].loaded != 0 || this->terrain_types[idx].terrain_to_draw >= 0)
-            return id;
+            return type;
     }
     return 0;
 }
@@ -2415,15 +2415,16 @@ void RGE_Map::get_border_type(short map_col, short map_row) {
     unsigned char ter_top_lft;
     unsigned char ter_lft;
     unsigned char ter_rgt;
+    unsigned char ter_top_rgt;
     unsigned char ter_bot;
     unsigned char ter_bot_lft;
     unsigned char ter_bot_rgt;
-    unsigned char ter_top_rgt;
     int yMax;
     int xMax;
     int xi;
     unsigned char ter_top;
     unsigned char ter_cur;
+    unsigned char ter_top_rgt_unused;
 
     if (map_col < 0 || map_col >= this->map_width || map_row < 0 || map_row >= this->map_height)
         return;
