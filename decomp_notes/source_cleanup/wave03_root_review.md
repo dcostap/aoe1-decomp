@@ -1,5 +1,12 @@
 # Cleanup wave 03 root review
 
+## Owner 14: final correction review resumed
+
+Final head: `fafc408fd43285ad1f9e778282cca9443b474b0f`.
+The complete 92-line diff is `build/source-cleanup-20260915/owner14-final-corrections.diff`.
+Original reviewer `sa-e8937a55` resumed to check the declaration move and final report corrections.
+The group remains unmerged until approval. Full validation remains deferred.
+
 ## Owner 14: final declaration-order correction required
 
 Reviewer `sa-e8937a55` read all 361 correction lines.
