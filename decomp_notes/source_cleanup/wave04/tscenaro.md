@@ -4,8 +4,9 @@
 - Assigned report: `decomp_notes/source_cleanup/wave04/tscenaro.md`
 - Base commit: `c22ba4258c45b1178181e185d60a3b09a1add617`
 - Final source commit: `e896c380c3d7bbb45736022ccc5004250870896e`
+- Delivery report commit: `93c60e96615042ecf88d2c55563892933cb1fb04`
 - Changed files: `src/tscenaro.cpp`; this report
-- Header owner: group owner 26 owns `include/tscenaro.h`. No header change is requested.
+- Header owner: group owner 26 owns `include/tscenaro.h`.
 
 ## PDB coverage
 
@@ -124,7 +125,10 @@ This module has no resource-ID lookup. No DLL resource was inspected, and no res
 
 ## Requests, risks, and validation limits
 
-- Shared requests: none.
+- Header request to owner 26: add the PDB parameter names from the complete table
+  to the matching declarations in `include/tscenaro.h`. This is a
+  declaration-name-only request. Keep all types, order, storage, and interfaces
+  unchanged.
 - Unresolved mapping: compiler locals without PDB records remain unchanged. Their original source spellings cannot be proved from the available procedure-scoped inventory.
 - Type, code-generation, layout, and symbol-identity risk: parameter and local renames do not change types, storage, ABI signatures, layouts, or mangled symbols. Brace movement is presentation-only. The source was not compiled in this phase.
 - Compilation, matching, audits, and tests were not run. No validation or byte-equality claim is made.
