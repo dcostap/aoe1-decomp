@@ -16,7 +16,7 @@ Commits in this module before correction:
 
 - `7100dba106396fd1574ee33e78143a9e12f6deee` — Clean up scr_cams source
 
-The correction commit contains this report and the source-formatting correction.
+The correction commit contains this report and the source name-formatting correction.
 Its full hash is reported with the final delivery.
 
 Changed files:
@@ -79,15 +79,17 @@ Recovered from procedure scope and storage:
 - `campaigns` and `currentCampaign` in `fillCampaigns`.
 - `scenarios` and `currentScenario` in `fillScenarios`.
 
-The following names are new descriptive names, not recovered originals:
+The `startGame` mapping was rejected.
+The packet warns that `scenario_info` should be unmapped.
+Its stack and machine-local evidence do not prove the three attempted names.
+The source therefore retains the baseline names `scen`, `first_human`, and
+`first_color`.
+Their original status is not claimed.
 
-- `scenario_info` describes the scenario pointer used by `startGame`.
-- `first_any_color` describes the saved color value.
-- `first_any_color_index` describes the saved scenario-player index.
-
-The packet and machine-local evidence do not prove those three names.
-The earlier names `scen`, `first_human`, and `first_color` were also cleanup
-names, not recovered originals. The semantic replacements remain explicit.
+The rejected names were `scenario_info`, `first_any_color`, and
+`first_any_color_index`.
+The last name was also less precise than the first human scenario-player
+index. No uncertain naming churn remains in `startGame`.
 
 Other locals, such as `player_count`, `color`, `count`, `num`, `line`, `ok`,
 `i`, `j`, `p`, and `q`, are descriptive source names.
@@ -100,12 +102,13 @@ The source keeps the approved resource macro substitutions:
 - `0x0FA1` uses existing `IDS_BUTTON_OK`.
 - `0x0FA2` uses existing `IDS_BUTTON_CANCEL`.
 
-The source includes the existing `resource_ids.h` declaration owner.
+The source includes the existing shared `resource_ids.h`.
 No new resource macro was added.
 
 The correction applies 1TBS to the assigned source file.
 It joins short definitions and the `action` signature where readable.
-It does not change statements, scopes, or declarations.
+The round-two correction restores the three baseline `startGame` names.
+It changes no statements, scopes, types, or storage.
 
 No wrapper, copied context, raw address, raw vptr, fallback declaration, or
 inline assembly was added.
@@ -149,7 +152,7 @@ This worker did not edit the header.
 No resource-header request is needed. The existing OK and Cancel macros suffice.
 
 The original local names and stack mapping in `startGame` remain unresolved.
-Do not promote its three descriptive names to recovered-original status.
+The baseline names remain in place without recovered-original claims.
 
 ## Validation
 
