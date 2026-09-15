@@ -177,5 +177,17 @@ Some calls remain wrapped, including the constructor's `setup` call and the save
 The formatting is improved, but those are possible further presentation changes for user review.
 The resource naming differs slightly from the first pilot; these are descriptive names, not recovered macro names.
 
-Neither pilot is integrated. No compiler checks, builds, matching checks, audits, tests, or games ran during this intake.
+At intake, neither pilot was integrated. No compiler checks, builds, matching checks, audits, tests, or games ran during this intake.
 Generated-output equality remains unvalidated. No broader worker launch is authorized by this result alone.
+
+### Approved integration
+
+The user approved integration of the complete second pilot.
+Main received the source commit as `41d5f9f84` and the report commit as `38a24af8d`.
+Both original worker commits and both pilot worktrees remain preserved.
+Status: reviewed and integrated, but unvalidated. No compiler or runtime checks ran.
+
+Twenty clean staging worktrees were prepared under `build/source-cleanup-20260915/wave-worktrees/`, slots 01 through 20.
+Their initial base was `ad1e4ae14649adf8d9b9bab3ad54be8ef0499b9e`.
+Advance those unassigned branches by fast-forward to this integration before assigning workers.
+Keep module and shared-header ownership pending; preparation does not authorize worker launches.
