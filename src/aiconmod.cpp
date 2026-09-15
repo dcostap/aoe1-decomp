@@ -65,36 +65,36 @@ ConstructionAIModule::ConstructionAIModule(int playerID, int infile)
     rge_read(infile, &this->mapXSizeValue, 4);
     rge_read(infile, &this->mapYSizeValue, 4);
 
-    for (i=0; i<this->numberConstructionLotsValue; i++) {
-        IntFloat y, z, uniqueID, xSize, buildAttemptsValue, ySize, inProgressValue, zSize;
-        IntFloat skipValue;
+    for (i = 0; i < this->numberConstructionLotsValue; i++) {
+        IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
+        IntFloat skip;
         int typeID;
-        int builtValue;
+        int built;
         IntFloat gameID, i_value;
 
         rge_read(infile, &x.i, 4);
         rge_read(infile, name, x.i);
         name[x.i] = 0;
         rge_read(infile, &typeID, 4);
-        rge_read(infile, &inProgressValue.i, 4);
-        rge_read(infile, &skipValue.i, 4);
+        rge_read(infile, &inProgress.i, 4);
+        rge_read(infile, &skip.i, 4);
         rge_read(infile, &y.f, 4);
         rge_read(infile, &zSize.f, 4);
         rge_read(infile, &gameID.i, 4);
         rge_read(infile, &ySize.f, 4);
         rge_read(infile, &i_value.i, 4);
         rge_read(infile, &xSize.f, 4);
-        rge_read(infile, &builtValue, 4);
+        rge_read(infile, &built, 4);
         rge_read(infile, &z.f, 4);
         rge_read(infile, &uniqueID.i, 4);
-        rge_read(infile, &buildAttemptsValue.i, 4);
+        rge_read(infile, &buildAttempts.i, 4);
         item = new ConstructionItem(y.f, zSize.f, gameID.f, ySize.f, i_value.f, xSize.f, typeID, name);
         item->setInProgress(z.i);
         item->setBuilt(uniqueID.i);
-        item->setBuildAttempts(buildAttemptsValue.i);
-        item->setGameID(inProgressValue.i);
-        item->setUniqueID(skipValue.i);
-        item->setSkip(builtValue);
+        item->setBuildAttempts(buildAttempts.i);
+        item->setGameID(inProgress.i);
+        item->setUniqueID(skip.i);
+        item->setSkip(built);
         item->next = &this->constructionLots;
         prev = this->constructionLots.prev;
         item->prev = prev;
@@ -103,30 +103,30 @@ ConstructionAIModule::ConstructionAIModule(int playerID, int infile)
     }
 
     rge_read(infile, &this->numberRandomConstructionLotsValue, 4);
-    for (i=0; i<this->numberRandomConstructionLotsValue; i++) {
-        IntFloat y, z, uniqueID, xSize, buildAttemptsValue, ySize, inProgressValue, zSize;
-        IntFloat skipValue;
+    for (i = 0; i < this->numberRandomConstructionLotsValue; i++) {
+        IntFloat y, z, uniqueID, xSize, buildAttempts, ySize, inProgress, zSize;
+        IntFloat skip;
         int typeID;
-        int builtValue;
+        int built;
         IntFloat gameID, i_value;
 
         rge_read(infile, &x.i, 4);
         rge_read(infile, name, x.i);
         name[x.i] = 0;
-        rge_read(infile, &builtValue, 4);
+        rge_read(infile, &built, 4);
         rge_read(infile, &i_value.i, 4);
         rge_read(infile, &xSize.i, 4);
         rge_read(infile, &y.f, 4);
         rge_read(infile, &z.f, 4);
         rge_read(infile, &uniqueID.i, 4);
-        rge_read(infile, &buildAttemptsValue.i, 4);
-        rge_read(infile, &inProgressValue.i, 4);
-        rge_read(infile, &skipValue.i, 4);
+        rge_read(infile, &buildAttempts.i, 4);
+        rge_read(infile, &inProgress.i, 4);
+        rge_read(infile, &skip.i, 4);
         rge_read(infile, &typeID, 4);
         rge_read(infile, &zSize.i, 4);
         rge_read(infile, &gameID.i, 4);
         rge_read(infile, &ySize.i, 4);
-        item = new ConstructionItem(y.f, z.f, uniqueID.f, buildAttemptsValue.f, inProgressValue.f, skipValue.f, builtValue, name);
+        item = new ConstructionItem(y.f, z.f, uniqueID.f, buildAttempts.f, inProgress.f, skip.f, built, name);
         item->setInProgress(zSize.i);
         item->setBuilt(gameID.i);
         item->setBuildAttempts(ySize.i);
