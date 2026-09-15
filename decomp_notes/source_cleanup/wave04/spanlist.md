@@ -11,6 +11,7 @@
 - Source cleanup commit: `092cafdf58aa0e6be50e126a6a046b66ea29508e`
 - Initial report commit: `44841477e550b0a1e07180a7945d42f9a752be83`
 - Source correction commit: `324bf1c3c410408df64f3b65c1b3389ec37f9602`
+- Source formatting correction commit: `2c9e9c7737e4362a25f9168c8d8906d123f85ab4`
 
 Correction history:
 
@@ -18,6 +19,8 @@ Correction history:
 - `44841477e550b0a1e07180a7945d42f9a752be83`: initial cleanup report.
 - `324bf1c3c410408df64f3b65c1b3389ec37f9602`: source correction. It moves
   existing opening braces to 1TBS positions and joins clearly short signatures.
+- `2c9e9c7737e4362a25f9168c8d8906d123f85ab4`: source formatting correction.
+  It joins the remaining short definitions and calls.
 
 This report covers all 29 normal PDB functions in the module. The cleanup only
 recovers names and does not change behavior.
@@ -189,4 +192,4 @@ their existing bodies.
 
 Compilation, matching, audits, validation, tests, and runtime checks were not
 run, as required by the wave instructions. Only evidence inspection and the
-complete source diff review were performed before this correction.
+complete source diff review were performed after this correction.
