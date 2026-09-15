@@ -29,11 +29,11 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (!this->create_text(this, &this->title, 0x29FE,
+    if (!this->create_text(this, &this->title, IDS_SELECT_PLAYER_TITLE,
                            0x14, 0x14, 0x258, 0x1E, 1, 1, 0, 0)) {
         return;
     }
-    if (!this->create_text(this, &this->name_text, 0x29FF,
+    if (!this->create_text(this, &this->name_text, IDS_PLAYER_NAME_LABEL,
                            0x3C, 0x50, 0x8C, 0x14, 4, 0, 0, 0)) {
         return;
     }
@@ -45,19 +45,19 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
         return;
     }
 
-    this->name_scrollbar->set_help_info(0x765C, -1);
+    this->name_scrollbar->set_help_info(IDS_HELP_PLAYER_NAME_LIST, -1);
 
-    if (!this->create_button(this, &this->new_button, 0x2A00,
+    if (!this->create_button(this, &this->new_button, IDS_BUTTON_NEW_PLAYER,
                              0, 0x190, 0x64, 0xB4, 0x1E, 0, 0, 0)) {
         return;
     }
-    this->new_button->set_help_info(0x765D, -1);
+    this->new_button->set_help_info(IDS_HELP_ADD_PLAYER_NAME, -1);
 
-    if (!this->create_button(this, &this->remove_button, 0x2A01,
+    if (!this->create_button(this, &this->remove_button, IDS_BUTTON_REMOVE_PLAYER,
                              0, 0x190, 0x8C, 0xB4, 0x1E, 0, 0, 0)) {
         return;
     }
-    this->remove_button->set_help_info(0x765E, -1);
+    this->remove_button->set_help_info(IDS_HELP_REMOVE_PLAYER_NAME, -1);
 
     if (!this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
                              0, 0x46, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
@@ -74,7 +74,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
     cancel->hotkey = 0x1B;
     cancel->hotkey_shift = 0;
 
-    if (!this->create_button(this, &this->close_button, 0x03EA,
+    if (!this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE,
                              0, 0, 0, 0, 0, -1, -1, 0)) {
         return;
     }
@@ -225,7 +225,7 @@ long TRIBE_Screen_Name::action(TPanel* from_panel, long action_in, unsigned long
 
         if (from_panel == this->remove_button && action_in == 1) {
             if (this->name_list->get_line() != -1) {
-                sprintf(str, this->get_string(0x2A02),
+                sprintf(str, this->get_string(IDS_CONFIRM_REMOVE_PLAYER),
                         this->name_list->get_text());
                 this->popupYesNoDialog(str, 0, 0x1C2, 100);
                 return action_in;
@@ -274,10 +274,10 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_panel_in) : TDialogPan
                      parent_panel_in->get_popup_info_file(), parent_panel_in->get_popup_info_id(),
                      1))
         return;
-    if (!this->create_text(this, &this->title, 0x2a03,
+    if (!this->create_text(this, &this->title, IDS_NAME_DIALOG_TITLE,
                            0x14, 0x14, 0x1cc, 0x1e, 1, 1, 1, 0))
         return;
-    if (!this->create_text(this, &this->name_text, 0x2a04,
+    if (!this->create_text(this, &this->name_text, IDS_NEW_PLAYER_NAME_LABEL,
                            0x28, 0x55, 0x1a4, 0x14, 4, 0, 1, 0))
         return;
     if (!this->create_edit(this, &this->name_input, "", 0x0f,

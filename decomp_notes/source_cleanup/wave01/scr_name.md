@@ -4,7 +4,8 @@
 
 - Module: `src/scr_name.cpp`
 - Base commit: `ad338a7faf75ffdfff8fec846133b4aa8da3fa44`
-- Final source-cleanup commit: `78712f28a6170cc700e25fed568dc7cc42cc5503`
+- Initial source-cleanup commit: `78712f28a6170cc700e25fed568dc7cc42cc5503`
+- Shared resource commit: `c9ba20d160541d928b5d9e55e1d02dce5a784e0c` (cherry-picked locally as `08253bca4342fefa97129a115b95bd36c97438ef`)
 - Branch: `cleanup/staging-20260915-21`
 - Assigned header: `include/scr_name.h` (read only)
 - Changed paths:
@@ -91,9 +92,8 @@ The source now reuses these existing macros from the root-owned
 - `0x7531` -> `IDS_HELP_OK`
 - `0x7532` -> `IDS_HELP_CANCEL`
 
-No new resource macro was defined in this worktree. The following new mappings
-are proposed for the root owner. The names are new cleanup names. No name is
-claimed as an original macro name.
+The shared resource commit defines the following new mappings. The names are
+new cleanup names. No name is claimed as an original macro name.
 
 The common resource evidence for every row is:
 
@@ -106,23 +106,22 @@ The common resource evidence for every row is:
 - Pinned XPack expansion reference: `C:/Projects/my_decomps/aoe1_attempt3/orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/languagex.dll`, SHA-256 `a246118b980e4016b1cf87311efa04bd960799fd1b5ea29746ee6dc971c99dc2`; all requested IDs are missing.
 - Fallback: a miss in `StringTableX` calls `RGE_Base_Game::get_string`, which reads the base `language.dll` table. The help IDs are missing in all checked files, so their text remains unknown.
 
-| Numeric ID | Purpose evidence in `src/scr_name.cpp` | Exact text or status in base DLL | Proposed macro |
+| Numeric ID | Purpose evidence in `src/scr_name.cpp` | Exact text or status in base DLL | Applied macro |
 | --- | --- | --- | --- |
-| `0x29FE` | Screen title passed to `create_text` for `title`. | `Select Player` | `IDS_SELECT_PLAYER_TITLE` |
-| `0x29FF` | Player-name list label passed to `create_text` for `name_text`. | `Name` | `IDS_PLAYER_NAME_LABEL` |
-| `0x2A00` | New-player button caption passed to `create_button`. | `New` | `IDS_BUTTON_NEW_PLAYER` |
-| `0x2A01` | Remove-player button caption passed to `create_button`. | `Remove` | `IDS_BUTTON_REMOVE_PLAYER` |
-| `0x2A02` | Format string passed to `get_string` before `sprintf`; the format consumes the selected player name. | `Are you sure you want to remove player %s?` | `IDS_CONFIRM_REMOVE_PLAYER` |
-| `0x2A03` | New-player dialog heading passed to `create_text` for `title`. | `Name` | `IDS_NAME_DIALOG_TITLE` |
-| `0x2A04` | New-player dialog name label passed to `create_text` for `name_text`. | `New Player` | `IDS_NEW_PLAYER_NAME_LABEL` |
-| `0x03EA` | Close control caption passed to `create_button` for `close_button`. | `X` | `IDS_BUTTON_CLOSE` |
-| `0x765C` | Help ID passed to `set_help_info` for the player-name scrollbar. | `Select a player name.` | `IDS_HELP_PLAYER_NAME_LIST` |
-| `0x765D` | Help ID passed to `set_help_info` for the New button. | `Click to add a new player name.` | `IDS_HELP_ADD_PLAYER_NAME` |
-| `0x765E` | Help ID passed to `set_help_info` for the Remove button. | `Click to remove a player name.` | `IDS_HELP_REMOVE_PLAYER_NAME` |
+| `0x29FE` | Screen title passed to `create_text` for `title`. | `Select Player` | `IDS_SELECT_PLAYER_TITLE` (applied) |
+| `0x29FF` | Player-name list label passed to `create_text` for `name_text`. | `Name` | `IDS_PLAYER_NAME_LABEL` (applied) |
+| `0x2A00` | New-player button caption passed to `create_button`. | `New` | `IDS_BUTTON_NEW_PLAYER` (applied) |
+| `0x2A01` | Remove-player button caption passed to `create_button`. | `Remove` | `IDS_BUTTON_REMOVE_PLAYER` (applied) |
+| `0x2A02` | Format string passed to `get_string` before `sprintf`; the format consumes the selected player name. | `Are you sure you want to remove player %s?` | `IDS_CONFIRM_REMOVE_PLAYER` (applied) |
+| `0x2A03` | New-player dialog heading passed to `create_text` for `title`. | `Name` | `IDS_NAME_DIALOG_TITLE` (applied) |
+| `0x2A04` | New-player dialog name label passed to `create_text` for `name_text`. | `New Player` | `IDS_NEW_PLAYER_NAME_LABEL` (applied) |
+| `0x03EA` | Close control caption passed to `create_button` for `close_button`. | `X` | `IDS_BUTTON_CLOSE` (applied) |
+| `0x765C` | Help ID passed to `set_help_info` for the player-name scrollbar. | `Select a player name.` | `IDS_HELP_PLAYER_NAME_LIST` (applied) |
+| `0x765D` | Help ID passed to `set_help_info` for the New button. | `Click to add a new player name.` | `IDS_HELP_ADD_PLAYER_NAME` (applied) |
+| `0x765E` | Help ID passed to `set_help_info` for the Remove button. | `Click to remove a player name.` | `IDS_HELP_REMOVE_PLAYER_NAME` (applied) |
 
-The source leaves these pending IDs numeric. The source uses only the existing
-OK and Cancel macros because root owns `include/resource_ids.h`. The pending
-mapping requests do not block this cleanup.
+The source now uses these shared macros. It also uses the existing OK and
+Cancel macros. The shared header remains outside this module's commit.
 
 The extraction tool was run with an explicit DLL path. It reads PE bytes and
 does not load or execute the DLL. The exact strings and hashes above come from
@@ -148,7 +147,8 @@ source cleanup. Root owns all new resource definitions.
 ## Source changes and output risk
 
 - Restored procedure-scoped PDB parameter and local names.
-- Reused four existing resource macros. Their expansions retain the original
+- Reused four existing resource macros and applied 11 reviewed resource
+  macros from the shared commit. Their expansions retain the original
   literals and effective integer types.
 - Added the existing resource-ID header include. It adds macros only.
 - Applied 1TBS function braces and joined short calls and signatures.
@@ -168,9 +168,21 @@ equality remain unvalidated.
   `line`, or either `cancel` local. I left those declarations unchanged.
 - The PDB function-static list is empty, so the existing static names are not
   claimed as recovered original names.
-- New mappings for the 11 numeric IDs above need root review and declaration
-  ownership. Their numeric source uses remain unchanged.
+- The 11 resource mappings are applied from shared commit
+  `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`. Their text and purpose evidence
+  remain recorded above.
 - The proposed header names need owner-03 integration.
+
+## Shared-header integration note
+
+I cherry-picked shared commit
+`c9ba20d160541d928b5d9e55e1d02dce5a784e0c` locally. Git created worker-local
+commit `08253bca4342fefa97129a115b95bd36c97438ef`, which changes only
+`include/resource_ids.h`.
+
+Owner integration must use the shared commit already approved by root. Exclude
+worker-local cherry-pick `08253bca4342fefa97129a115b95bd36c97438ef` from the
+scr_name module commits. This worker does not edit `include/resource_ids.h`.
 
 ## Validation status
 
@@ -180,6 +192,9 @@ I performed only evidence extraction and source/Git diff review.
 
 ## Commit record
 
-- Source cleanup commit: `78712f28a6170cc700e25fed568dc7cc42cc5503`
-- Report commit: this report commit; Git records its full hash in the delivery summary.
-- Final source-cleanup commit: `78712f28a6170cc700e25fed568dc7cc42cc5503`
+- Initial source cleanup commit: `78712f28a6170cc700e25fed568dc7cc42cc5503`
+- Initial report commit: `5345cb57e024f094e4e78c389e0c05850cbda1d7`
+- Shared root commit: `c9ba20d160541d928b5d9e55e1d02dce5a784e0c`
+- Worker-local shared-header cherry-pick: `08253bca4342fefa97129a115b95bd36c97438ef` (exclude from module integration)
+- Resource substitution and report update: this commit; Git records its full hash in the delivery summary.
+- Final source-cleanup commit: this report-update commit; Git records its full hash in the delivery summary.
