@@ -18,7 +18,14 @@ Corrected head: `37a917a6b19236131e49d91da7384d5f8bed1f4c`.
 The complete 780-line correction diff is `build/source-cleanup-20260915/owner26-corrections.diff`.
 Original reviewer `sa-e6faf4c1` resumed to check both structural corrections, resource substitutions, and changed reports.
 The review retains numeric age/resource expressions, victory-log base, and direct map IDs where substitutions were deferred.
-The group remains unmerged. Full validation must wait for all cleanup work to finish.
+Reviewer `sa-e6faf4c1` approved all 780 correction lines with no blockers.
+Correction diff SHA256: `88e1a5d9e2f6bfb7e70727a30abe5869a292ec2959853c8c902298b73a2cce62`.
+Final scope tokens and declaration grouping match the baseline. The original 9,390-line review remains applicable.
+The resource header matches root approval and main; substitutions preserve values, types, arguments, and lookup behavior.
+Reports correct the prior restoration claim and record resource provenance and lookup limits.
+Full validation must wait for all cleanup work to finish.
+Root merged the group as `934caf33b82827462dfe667b869eec20c37d77a6`.
+Main contains 192 assigned modules plus the pilot: 193 of 225, approximately 85.8%.
 
 ## Final validation authorization
 
