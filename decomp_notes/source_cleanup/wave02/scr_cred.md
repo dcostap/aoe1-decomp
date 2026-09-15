@@ -9,7 +9,7 @@
   - `src/scr_cred.cpp`
   - `decomp_notes/source_cleanup/wave02/scr_cred.md`
 - Base source SHA256: `ef7120cdf9b3dfcb3b5d872bd5d57834ca1c4e9ef336b95055e1f8cf08c74126`
-- Final source SHA256 before commit: `604c8e1c5c039b4e27324ccc51234b59c35d71a43d5e3fd820836546984ae609`
+- Final source SHA256 before commit: `5c9aa568171750cdd351e22d31c9f3af9f43b30fdc49aa76c6b8c37ad9146d66`
 
 The source keeps the sixteen normal registry owners in address order. No header changed.
 
@@ -19,8 +19,16 @@ This correction compacts the short `action` signature and delegated call.
 It also compacts the `draw_scrolled_line` call and signature while preserving
 aligned continuation lines where wrapping remains.
 
-The direct packet trace below was added to prove the `x2` and `x` mappings.
+The direct packet trace below proves `x2` and records why the PDB `x` mapping
+is not safe.
 No structural change was made.
+
+## Correction history
+
+- `5842248aa71cd3ccdf2f800902f44ad476f51210` compacted short signatures and
+  calls and added the first direct coordinate trace.
+- This correction restored baseline `second_text_x` because the packet store
+  uses the `draw_row` home at `S+08h`, not the PDB `x` home at `S+10h`.
 
 ## PDB coverage
 
@@ -112,11 +120,14 @@ pushes it at `00493393`, and calls TextOutA at `00493395`. The other text
 styles read the same cell at `004933B6`, `004933D5`, and `004933FF` before
 their TextOutA calls at `004933C3`, `004933DE`, and `00493408`.
 
-This direct instruction trace proves `text_x` maps to the first-column PDB
-name `x2`, and `second_text_x` maps to the second-column PDB name `x`.
-The PDB reports reused homes at `+0Ch` and `+10h`; the packet uses dynamic
-`[esp+40h]` and `[esp+3Ch]` cells after the call. The mapping does not rely
-only on those reused homes or on another function.
+This direct instruction trace proves that `text_x` maps to the first-column
+PDB name `x2`. It does not prove that `second_text_x` maps to PDB name `x`.
+The scoped PDB places `x` at `+10h` (`S+10h`), while `00493216` stores the
+second-column value in `[esp+3Ch]` (`S+08h`). That cell is the incoming
+`draw_row` home. The stack reuse prevents a safe source declaration mapping.
+The source therefore retains baseline name `second_text_x` for that local and
+all second-column uses. The trace uses direct packet instructions, but it does
+not claim that the reused stack cell proves the PDB `x` declaration.
 
 The constructor PDB records `size` as `long`. The source retains its existing
 `int` type because this wave forbids type changes. Both types are 32-bit here.
