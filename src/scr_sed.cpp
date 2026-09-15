@@ -1494,18 +1494,18 @@ void TRIBE_Screen_Sed::set_player(short val, uchar save_player, uchar load_playe
         this->player_list->set_line(p);
         rge_base_game->set_player(val);
         if (load_player == 1) {
-            int amount;
-            amount = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Food(p);
-            sprintf(str, "%d", amount);
+            int v;
+            v = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Food(p);
+            sprintf(str, "%d", v);
             this->player_inven_input[0]->set_text(str);
-            amount = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Wood(p);
-            sprintf(str, "%d", amount);
+            v = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Wood(p);
+            sprintf(str, "%d", v);
             this->player_inven_input[1]->set_text(str);
-            amount = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Stone(p);
-            sprintf(str, "%d", amount);
+            v = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Stone(p);
+            sprintf(str, "%d", v);
             this->player_inven_input[2]->set_text(str);
-            amount = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Gold(p);
-            sprintf(str, "%d", amount);
+            v = static_cast<T_Scenario *>(this->world->scenario)->Get_player_Gold(p);
+            sprintf(str, "%d", v);
             this->player_inven_input[3]->set_text(str);
             this->player_inven_input[4]->set_text(this->world->scenario->GetPlayerName(p));
             this->player_setting_drop[0]->setCurrentLineNumber(this->world->scenario->Get_player_Type(p));

@@ -7,7 +7,7 @@
 - Common base: `76037279ee11dde077bb7d55aeb46b518b2bb27c`.
 - Owner headers: `include/scr_game.h`, `include/scr_sed.h`, `include/scr_sed2.h`, `include/scr_sedm.h`, `include/scr_sedo.h`, `include/scr_sels.h`, `include/scr_vc.h`, and `include/dlg_smsg.h`.
 - Header commit: `4c5feee491544158f7c4a077a1cfa815a7849ce9`.
-- Validation state: reviewed but unvalidated.
+- Validation state: source repair integrated; root validation rerun pending.
 
 The owner inspected the complete worker diffs and reports. The owner also inspected the assigned PDB parameter records in `C:/Projects/my_decomps/aoe1_attempt3/inventory/pdb/scoped_symbols.json`.
 
@@ -16,7 +16,7 @@ The owner inspected the complete worker diffs and reports. The owner also inspec
 | Module | Worker | Worker commits | Integration commits | Result |
 | --- | --- | --- | --- | --- |
 | `src/scr_game.cpp` | `sa-7592d2d5` | `fcf4ac9da7d74531e4012e0b60bf06047e83f329`, `d12cc4a7c2a7b0bdf26df0df6d4d61db2b87ec35`, `3415854c8d148ce993b285c57c4e68639fe54362`, `0adf5675caeeb2df4edf1c223235f6321776378a`, `b08bf0343d663cc66c26e8d04e12900c6da39a02`, `924992b4bb6947b0b1155588d09d6832d730dbe7`, `2c102c6dc0fa08035493388370fc6faa8a9617dd`, `b67b99de2fbc67991645445df80d99df6e18f939`, `f8db2f87fe8e5745284d4c9986ccc464f9883d7f`, `446d208c8e95720105750c6438fe0d437b0e47b0`, `edfd6f7454df0d6a487c96f2912f6be01e5fbe61`, `7d50116c57c6bbab86f2448df4b3937d11d464ae`, `25ec757f0b00deda0019a35b724bf47ce8a0ff49` | `7710a7426f82cdf4961516d13710ae3559cd80d5`, `cb6e02ac3e89f1407e3614d3f7ff7fec2c986328`, `685dac4ee8a3150253f51bb733708ae7a4b7cfcd`, `5442da315447ea37b391c437a71dde43ba958b5f`, `b01b29a1ffcb24c82111c71dc45655c161a529a5`, `4febe3b21cf3b1c5e093262bf12f7791969379b9`, `80de0725fb83b4237702bc8eb8c63aa7c211ca44`, `993150c0b0b43955ada5c87f4c6fa8b9e846ba31`, `ddc6fa7a7ecd4e508e51b0cbc3424ca8923e5ba5`, `c67d2821cd54e565416514987eee97ec65c908e2`, `db71485881628c1889ba6f12031b84802b734812`, `4975a1d0e20fe3dc608896583d6ca585674ea553`, `29ea470a85bed1b616c7d7c58ae2e69fdbb560af` | Integrated after structural, evidence, and type corrections. |
-| `src/scr_sed.cpp` | `sa-14dbeaf6` | `03c9158e16142b5e246a646d0e08605d2e3f924a`, `f560fa3a68d804b9978a38d55e1c6cda569b7465`, `785eac73d03094f363c74d56d381c635c844c0ca`, `2d1978a607c033ceaa0c80f964fdf0c0ed0f63e1` | `97ba25c18f5c3fd4e1ed5935f12d47ef5c1f41ea`, `cb434a15e09404f8e6e298a1737dd1394d4765dc`, `6c83322f0f3c3b126a806a108744066ba5e9051f`, `33204bbc6286f2cb0b58606d2100688c61f15883` | Integrated after 1TBS correction. |
+| `src/scr_sed.cpp` | `sa-14dbeaf6` | `03c9158e16142b5e246a646d0e08605d2e3f924a`, `f560fa3a68d804b9978a38d55e1c6cda569b7465`, `785eac73d03094f363c74d56d381c635c844c0ca`, `2d1978a607c033ceaa0c80f964fdf0c0ed0f63e1`, `031c3db9e458b59ff85a96bc122013e0e0095309`, `4be6dcc77f802e67d824b1a9de580f9479861ed0` | `97ba25c18f5c3fd4e1ed5935f12d47ef5c1f41ea`, `cb434a15e09404f8e6e298a1737dd1394d4765dc`, `6c83322f0f3c3b126a806a108744066ba5e9051f`, `33204bbc6286f2cb0b58606d2100688c61f15883`, `856bb3bd6a065f5b005cbb2eff3e77410c35fa19`, `4e7a0ee8618e1bc0eba26ce12e74a7f0113d64b9` | Integrated after 1TBS and local-name corrections. |
 | `src/scr_sed2.cpp` | `sa-ce4cceef` | `990afb1a237c12b38a9b88ccbf3bd0d56f7c5bb1`, `1992ad258c67006b91896e4efdd37f62f20881df`, `e763d0635fd57058de43f03b04ff46317fb54131`, `65cf5c008b93eb4cd8857612b4d0b54d2920100e`, `2496be3a4a7ffa0340d96afa5a7e9c1581072e06` | `b9e9aa30b9be47cc1292cea29ef5fc62065a5ed9`, `8a7895b2be0606258c1d6a736c2c505aa69c5492`, `20842fd0e11fb4009d5184bbd85d3da5b1f02c8b`, `4ffa0fc15638b1c248d40571b6d29f610e2e0b34`, `f09a10d7615983b027bde1f008a22e2994d6ff4a` | Integrated after cast and report corrections. |
 | `src/scr_sedm.cpp` | `sa-2cfdeec0` | `9649a6df2ff1ff8be90ae9acc5a546746b026cbb`, `67137c7ae8e5d06f3c1f7610150b132ebd350920`, `38cc53fad625c7d1bf79122fdf3ef577539b933a`, `e749f5516dc100bf3d06f20475a453c2dacaae36`, `798426c809e09cbabd6b7570014046cacc92f406`, `583dd22308e40f66a78eb00d1d4ba291d7d141ea`, `7a2e6283a3476c9a280598ff2ebfe57aa4fca748` | `ccb6776269fad743a576e356e72903bcd380a526`, `b30ff5a454901641d2ab498609dd2d736a2ad291`, `5e2cbb4f42d674f85b75cbb945d284e19d6417f8`, `670dbf3e357228a78d8fbfa85f1d7fce11a7b153`, `c622b47bd7b9990cc38f1b18c2ecbd2a69c055e0`, `e14373fbe67fc8fcdf70a338900b3510ad521704`, `ef8f1b41639038bba7277143de007af3de65b9fa` | Integrated after 1TBS correction and resource approval. |
 | `src/scr_sedo.cpp` | `sa-cfd7a24e` | `0fff4f5e95f094dd31ce9439f0ec2bb6c54a15a9`, `76816578b5f66645eed000fdb6926f7b247aa0bb`, `b249684deea3ff2fb648ad376804ba5ea770b763`, `e194ebfef2e0da76b57209086ab864c4b460ca40`, `cc350e5cbab2079d151ef0c88b5c0299e765445f`, `8737fa5a2126f2afb1be1eb6664d414fa14167a4` | `9b98e65d36f1a0fe00c670ec7782f6fcbf6ebfed`, `7dd407d785df14fd3fd0738cd91b220657c4dbbb`, `b7c78672e54677449e785c6b1e2ffc27598b7842`, `b331440deac4df3b1a5147c094a373710d68ddfe`, `704b18880a828c22173fe075d0ed625fa930cd62`, `176c792bc3ae0df7d5c58688436f5c9597b3eb38` | Integrated after ownership correction and resource approval. |
@@ -39,6 +39,7 @@ The owner inspected the complete worker diffs and reports. The owner also inspec
 - Slot `0x103C` is empty. Reviewed source has no call for it and requests no macro.
 - Resource substitution first changed the `0x1023L` token type. The same worker restored that literal.
 - Final review corrected stale cast wording in `scr_sed2.md` and one heading in `scr_vc.md`.
+- Root validation found undeclared `v` in `scr_sed.cpp`. The same worker restored the complete precleanup local binding name.
 - All correction commits remain in history.
 - No worker reported a prohibited command incident.
 
@@ -74,4 +75,11 @@ substitution.
 
 ## Validation limits
 
-The owner performed evidence extraction and full Git diff review only. Compilation, builds, matching checks, audits, validation commands, tests, and games were not run. Historical artifacts do not validate this cleanup.
+The owner performed evidence extraction and full Git diff review only. The
+worker ran no compilation, build, matching check, audit, validation command,
+test, or game.
+
+Root's report at
+`C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`
+found C2065 for undeclared `v` in `scr_sed.cpp`. The integrated source repair
+changes only that local binding name. Root owns the validation rerun.
