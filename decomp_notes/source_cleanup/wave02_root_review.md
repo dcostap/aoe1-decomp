@@ -83,3 +83,34 @@ No compilation, builds, matching, audits, tests, or games ran during these intak
   It restores artifact `map_x`, restores discovery loop `x`, and maps the supported discovery bound to `x1`.
   It also corrects caller paths, short signatures, constructor indentation, and reports.
   Integration remains pending. No new validation ran.
+
+## Owner 05: integrated after correction review
+
+Root merged the complete corrected group as `5b2ff32c1a885c07b9ea5da111422630fd1dda13` without conflicts.
+The initial full review and complete correction review cover all delivered source, headers, and reports.
+Main now contains 40 assigned wave modules, plus the earlier pilot. All remain unvalidated.
+
+## Owner 04: full review complete; corrections requested
+
+Root read the complete 3,717-line diff and all nine reports.
+No removed cast or changed executable expression was found.
+Root confirmed the two `act_move` y-coordinate stores at `00405A5F` and `00405B17` in packet `00405850`.
+The `yDiff` mappings can remain.
+
+Root requested compact signatures and correct continuation indentation in source and headers.
+Root also requested a narrower `task_lst` comment: the code rejects non-positive amounts, not every non-positive-or-unordered value.
+The existing comparison must remain unchanged. Owner 04 resumed with the same workers for these corrections.
+No compiler, build, matching, audit, test, or game command ran.
+
+## Owner 06: full review complete; corrections requested
+
+Root read the complete 3,674-line diff and all nine reports.
+No removed cast or changed executable expression was found.
+Several new `aiconmod` local names need stronger declaration evidence in constructor `0040ABB0`.
+For example, the first loop passes `inProgressValue.i` to `setGameID` and `skipValue.i` to `setUniqueID`.
+The second loop uses several newly named state locals as floating-point sizes.
+Reused PDB homes alone do not prove these source declarations.
+Root requested per-loop evidence or baseline names, without type, storage, or behavior changes.
+
+Root also requested normal loop spacing, constructor continuation indentation, and separate lines for existing `aibldmod::save` statements.
+Owner 06 resumed with the same workers. Integration and validation remain pending.
