@@ -75,7 +75,7 @@ A root fresh-main compilation later found two incorrect cleanup bindings.
 The external report is
 `C:/Projects/my_decomps/aoe1_attempt3/build/executable/user/20260915T215425319815Z/20260915T215425568371Z/report.json`.
 
-The later functions-r2 report compiled all 225 selected functions. It found a
+The later functions-r2 report compiled all 225 selected groups. It found a
 matching regression in `loadLearnInfo` at `004E1260`. The row is in
 `C:/Projects/my_decomps/aoe1_attempt3/build/source-cleanup-20260915/final-validation/functions-r2/report.csv`.
 Preserved baseline and fresh objects proved that the extra local caused the drift.

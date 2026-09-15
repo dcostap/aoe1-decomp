@@ -129,6 +129,15 @@ Original address `005749F0` contains `0ad7233c`, approximately `0.01f`.
 Original references occur at `004C926E`, `004C9290`, `004C939E`, and `004C93C0`.
 This evidence establishes that these two mismatches predate cleanup. The separate proposed repair remains uncompiled and unverified.
 
+## AI learning storage repair
+
+Root read the complete correction to `c35a112b7e8410b0dafa2a0609bc2b6686965145`.
+Cleanup added a distinct `numMemoriesToLoad` local in `loadLearnInfo`, enlarging the frame from `0x34` to `0x38`.
+The preserved baseline uses the existing `numToLoad` storage for both counts.
+The repair removes only the added declaration and restores its three uses to `numToLoad`.
+This is a cleanup-induced storage change, not a preexisting mismatch. Earlier source reviews failed to detect it.
+Post-repair compilation and matching are required before calling the regression resolved.
+
 ## Flic resolution drift investigation
 
 Owner 20 confirmed baseline bytes `0fbf41100fbf4912c1e0100bc1c3` versus fresh bytes `0fbf41120fbf4910c1e1000bc1c3`.
