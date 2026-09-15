@@ -8,10 +8,8 @@
 
 #include <string.h>
 
-TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
-    char* panel_name, char* text, char* source_info_file, long source_info_id)
-    : TScreenPanel(panel_name)
-{
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* message_in, char* info_file_in, long info_id_in)
+    : TScreenPanel(name) {
     char info_file[260];
     long info_id;
     TEasy_Panel* current_panel;
@@ -19,7 +17,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
     message = 0;
     current_panel = (TEasy_Panel*)panel_system.currentPanel();
 
-    if (source_info_file == 0 && source_info_id == -1) {
+    if (info_file_in == 0 && info_id_in == -1) {
         if (current_panel != 0 &&
             current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
             strcpy(info_file, current_panel->get_info_file());
@@ -29,8 +27,8 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
             info_id = -1;
         }
     } else {
-        strcpy(info_file, source_info_file);
-        info_id = source_info_id;
+        strcpy(info_file, info_file_in);
+        info_id = info_id_in;
     }
 
     if (info_file[0] == 0) {
@@ -47,15 +45,13 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
         error_code = 1;
     } else {
         set_ideal_size(0x280, 0x1E0);
-        create_text(this, &message, text,
+        create_text(this, &message, message_in,
                     0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
     }
 }
 
-TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
-    char* panel_name, long text_id, char* source_info_file, long source_info_id)
-    : TScreenPanel(panel_name)
-{
+TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long message_in, char* info_file_in, long info_id_in)
+    : TScreenPanel(name) {
     char info_file[260];
     long info_id;
     TEasy_Panel* current_panel;
@@ -63,7 +59,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
     message = 0;
     current_panel = (TEasy_Panel*)panel_system.currentPanel();
 
-    if (source_info_file == 0 && source_info_id == -1) {
+    if (info_file_in == 0 && info_id_in == -1) {
         if (current_panel != 0 &&
             current_panel != (TEasy_Panel*)panel_system.panel("Achievements Screen")) {
             strcpy(info_file, current_panel->get_info_file());
@@ -73,8 +69,8 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
             info_id = -1;
         }
     } else {
-        strcpy(info_file, source_info_file);
-        info_id = source_info_id;
+        strcpy(info_file, info_file_in);
+        info_id = info_id_in;
     }
 
     if (info_file[0] == 0) {
@@ -91,22 +87,19 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(
         error_code = 1;
     } else {
         set_ideal_size(0x280, 0x1E0);
-        create_text(this, &message, text_id,
+        create_text(this, &message, message_in,
                     0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
     }
 }
 
-TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message()
-{
+TRIBE_Screen_Status_Message::~TRIBE_Screen_Status_Message() {
     delete_panel((TPanel**)&message);
 }
 
-void TRIBE_Screen_Status_Message::set_text(char* text)
-{
-    message->set_text(text);
+void TRIBE_Screen_Status_Message::set_text(char* message_in) {
+    message->set_text(message_in);
 }
 
-void TRIBE_Screen_Status_Message::set_text(long text_id)
-{
-    message->set_text(text_id);
+void TRIBE_Screen_Status_Message::set_text(long message_in) {
+    message->set_text(message_in);
 }
