@@ -20,14 +20,13 @@ TListPanel::TListPanel() : drawHighlightBar(1) {
 TListPanel::~TListPanel() {
 }
 
-void TListPanel::set_auto_track(int v) {
-    this->auto_track = v;
+void TListPanel::set_auto_track(int auto_track_in) {
+    this->auto_track = auto_track_in;
 }
 
-void TListPanel::set_bevel_info(int param_1, int param_2, int param_3,
-                                int param_4, int param_5, int param_6,
-                                int param_7) {
-    switch (param_1) {
+void TListPanel::set_bevel_info(int bevel_type_in, int c1, int c2, int c3,
+                                int c4, int c5, int c6) {
+    switch (bevel_type_in) {
     case 3:
     case 6:
         this->spacer_size = 2;
@@ -46,8 +45,7 @@ void TListPanel::set_bevel_info(int param_1, int param_2, int param_3,
         break;
     }
 
-    TTextPanel::set_bevel_info(param_1, param_2, param_3, param_4,
-                               param_5, param_6, param_7);
+    TTextPanel::set_bevel_info(bevel_type_in, c1, c2, c3, c4, c5, c6);
     if (this->border_size == 0) {
         this->border_size = 1;
         ((TTextPanel*)this)->calc_draw_info(1);
@@ -78,45 +76,44 @@ long TListPanel::handle_idle() {
     return 0;
 }
 
-long TListPanel::mouse_move_action(long param_1, long param_2, int, int) {
+long TListPanel::mouse_move_action(long x, long y, int ctrl_key, int shift_key) {
     if (this->auto_track == 0) {
         return 0;
     }
 
-    if (this->is_inside(param_1, param_2) == 0) {
+    if (this->is_inside(x, y) == 0) {
         return 0;
     }
 
-    short item = this->item_at(param_1, param_2);
+    short item = this->item_at(x, y);
     if (item < this->top_line) {
         return 1;
     }
     if (item > this->bot_line) {
         return 1;
     }
-    this->goto_item(param_1, param_2);
+    this->goto_item(x, y);
 
     return 1;
 }
 
-long TListPanel::mouse_left_down_action(long p1, long p2, int p3, int p4) {
+long TListPanel::mouse_left_down_action(long x, long y, int ctrl_key, int shift_key) {
     capture_mouse();
-    goto_item(p1, p2);
+    goto_item(x, y);
     return 1;
 }
 
-long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3,
-                                        int param_4) {
-    if (param_2 >= this->pnl_y) {
-        if (param_2 < this->pnl_y + this->pnl_hgt) {
+long TListPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shift_key) {
+    if (y >= this->pnl_y) {
+        if (y < this->pnl_y + this->pnl_hgt) {
             this->mouse_scroll_up = 0;
             this->mouse_scroll_down = 0;
-            this->goto_item(param_1, param_2);
+            this->goto_item(x, y);
             return 1;
         }
     }
 
-    if (param_2 < this->pnl_y) {
+    if (y < this->pnl_y) {
         this->mouse_scroll_down = 0;
         if (this->mouse_scroll_up != 0)
             return 1;
@@ -124,7 +121,7 @@ long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3,
         this->mouse_scroll_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 0xB1) - this->mouse_scroll_interval;
         return 1;
     } else {
-        if (param_2 > this->pnl_y + this->pnl_hgt - 1) {
+        if (y > this->pnl_y + this->pnl_hgt - 1) {
             this->mouse_scroll_up = 0;
             if (this->mouse_scroll_down != 0)
                 return 1;
@@ -139,8 +136,7 @@ long TListPanel::mouse_left_move_action(long param_1, long param_2, int param_3,
     }
 }
 
-long TListPanel::mouse_left_up_action(long param_1, long param_2, int param_3,
-                                      int param_4) {
+long TListPanel::mouse_left_up_action(long x, long y, int ctrl_key, int shift_key) {
     release_mouse();
     this->mouse_scroll_up = 0;
     this->mouse_scroll_down = 0;
@@ -150,16 +146,15 @@ long TListPanel::mouse_left_up_action(long param_1, long param_2, int param_3,
     return 1;
 }
 
-long TListPanel::mouse_left_dbl_click_action(long param_1, long param_2,
-                                             int param_3, int param_4) {
-    this->goto_item(param_1, param_2);
+long TListPanel::mouse_left_dbl_click_action(long x, long y, int ctrl_key, int shift_key) {
+    this->goto_item(x, y);
     if (this->parent_panel != 0 && this->cur_line > -1 && this->cur_line < this->num_lines) {
         this->parent_panel->action(this, 3, this->cur_line, 0);
     }
     return 1;
 }
 
-short TListPanel::item_at(long, long param_2) {
+short TListPanel::item_at(long x, long y) {
     int rowsize = this->spacer_size;
     if (rowsize == 0) {
         rowsize = this->text_hgt;
@@ -167,16 +162,16 @@ short TListPanel::item_at(long, long param_2) {
         rowsize = this->text_hgt + rowsize + rowsize - 1;
     }
 
-    return (short)((((param_2 - this->border_size) - this->pnl_y) - this->spacer_size) / rowsize) + this->top_line;
+    return (short)((((y - this->border_size) - this->pnl_y) - this->spacer_size) / rowsize) + this->top_line;
 }
 
-void TListPanel::goto_item(long p1, long p2) {
-    scroll_cur_line(1, item_at(p1, p2), 1);
+void TListPanel::goto_item(long x, long y) {
+    scroll_cur_line(1, item_at(x, y), 1);
 }
 
-long TListPanel::key_down_action(long vk, short param_2, int param_3, int param_4,
-                                 int param_5) {
-    switch (vk) {
+long TListPanel::key_down_action(long key, short count, int alt_key, int ctrl_key,
+                                 int shift_key) {
+    switch (key) {
     case 0x28:
         this->scroll_cur_line(2, 0, 1);
         return 1;
@@ -204,8 +199,8 @@ long TListPanel::key_down_action(long vk, short param_2, int param_3, int param_
     return 0;
 }
 
-long TListPanel::char_action(long param_1, short param_2) {
-    int ch = toupper((int)param_1);
+long TListPanel::char_action(long key, short count) {
+    int ch = toupper((int)key);
     TTextPanel::TextNode* node = this->list;
     int i = 0;
 
@@ -238,17 +233,17 @@ found:
     return 1;
 }
 
-long TListPanel::action(TPanel* panel, long value, unsigned long index,
-                        unsigned long zero) {
-    return TTextPanel::action(panel, value, index, zero);
+long TListPanel::action(TPanel* from_panel, long action_in, unsigned long action_val1,
+                        unsigned long action_val2) {
+    return TTextPanel::action(from_panel, action_in, action_val1, action_val2);
 }
 
-void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
+void TListPanel::scroll_cur_line(unsigned char scroll_type, short scroll_val, int update_scrollbar) {
     short old_cur = this->cur_line;
 
-    switch (action) {
+    switch (scroll_type) {
     case 1: {
-        short new_cur = line;
+        short new_cur = scroll_val;
         this->cur_line = new_cur;
         if (new_cur < 0) {
             this->cur_line = 0;
@@ -256,9 +251,10 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
             this->cur_line = this->num_lines - 1;
         }
         if (this->cur_line < this->top_line) {
-            this->scroll(1, this->cur_line, flag);
+            this->scroll(1, this->cur_line, update_scrollbar);
         } else if (this->cur_line > this->bot_line) {
-            this->scroll(0, this->cur_line - this->bot_line, flag);
+            this->scroll(0, this->cur_line - this->bot_line,
+                         update_scrollbar);
         }
         break;
     }
@@ -274,7 +270,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         } else if (cur < this->num_lines - 1) {
             cur++;
             this->cur_line = cur;
-            this->scroll(2, 0, flag);
+            this->scroll(2, 0, update_scrollbar);
         }
         break;
     }
@@ -290,7 +286,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         } else if (cur > 0) {
             cur--;
             this->cur_line = cur;
-            this->scroll(3, 0, flag);
+            this->scroll(3, 0, update_scrollbar);
         }
         break;
     }
@@ -300,7 +296,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
             this->cur_line = this->bot_line;
         }
         if (this->cur_line == this->bot_line) {
-            this->scroll(4, 0, flag);
+            this->scroll(4, 0, update_scrollbar);
             this->cur_line = this->bot_line;
         } else {
             this->cur_line = this->bot_line;
@@ -313,7 +309,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
             this->cur_line = this->top_line;
         }
         if (this->cur_line == this->top_line) {
-            this->scroll(5, 0, flag);
+            this->scroll(5, 0, update_scrollbar);
             this->cur_line = this->top_line;
         } else {
             this->cur_line = this->top_line;
@@ -321,11 +317,11 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         break;
     }
     case 6:
-        this->scroll(6, 0, flag);
+        this->scroll(6, 0, update_scrollbar);
         this->cur_line = this->top_line;
         break;
     case 7:
-        this->scroll(7, 0, flag);
+        this->scroll(7, 0, update_scrollbar);
         this->cur_line = this->bot_line;
         break;
     }
@@ -452,8 +448,8 @@ void TListPanel::setDrawHighlightBar(int v) {
     this->drawHighlightBar = v;
 }
 
-void TListPanel::set_focus(int focus) {
-    TPanel::set_focus(focus);
+void TListPanel::set_focus(int have_focus_in) {
+    TPanel::set_focus(have_focus_in);
     if (this->have_focus != 0 && this->parent_panel != 0 &&
         this->cur_line > -1 && this->cur_line < this->num_lines) {
         this->parent_panel->action(this, 1, this->cur_line, 0);
