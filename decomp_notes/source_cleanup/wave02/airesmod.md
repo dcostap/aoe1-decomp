@@ -4,13 +4,17 @@
 
 - Module: `src/airesmod.cpp`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Source cleanup head: `239fcbdfccf99122ed33a2f6650d3661a34f68ba`
-- Changed files in the source cleanup commit: `src/airesmod.cpp`
+- Source cleanup head: `feb214c7eb6d4ed17346f4b530fc893d6860f6a6`
+- Parameter recovery commit: `239fcbdfccf99122ed33a2f6650d3661a34f68ba`
+- Evidence report commit: `909aa4f121da5a43806119b2f6491ee45707f03b`
+- Formatting correction commit: `feb214c7eb6d4ed17346f4b530fc893d6860f6a6`
+- Changed files in the source cleanup commits: `src/airesmod.cpp`, this report
 - Report file: `decomp_notes/source_cleanup/wave02/airesmod.md`
 - Header owner: `include/airesmod.h` remains unchanged.
 
-The source cleanup commit restores procedure-scoped PDB parameter names. It also
-moves function opening braces to 1TBS form. It does not change declarations,
+The source cleanup commits restore procedure-scoped PDB parameter names. They also
+move function opening braces to 1TBS form and join short calls. The formatting
+correction changes whitespace only. The cleanup does not change declarations,
 types, calls, statement order, literals, or storage layout.
 
 ## Evidence
