@@ -11,23 +11,26 @@ class RGE_Task;
 
 class RGE_Action_Attack : public RGE_Action {
 public:
-    RGE_Action_Attack(int, RGE_Action_Object*);
-    RGE_Action_Attack(RGE_Action_Object*, RGE_Static_Object*, RGE_Sprite*,
-                      RGE_Sprite*, RGE_Sprite*, float, float, short, short);
-    RGE_Action_Attack(RGE_Action_Object*, float, float, float, RGE_Sprite*,
-                      RGE_Sprite*, RGE_Sprite*, float, float, short, short);
+    RGE_Action_Attack(int infile, RGE_Action_Object* obj_in);
+    RGE_Action_Attack(RGE_Action_Object* obj_in, RGE_Static_Object* target_obj_in,
+                      RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
+                      RGE_Sprite* wait_sprite_in, float range_in, float min_range_in,
+                      short missile_id_in, short fire_missile_at_frame_in);
+    RGE_Action_Attack(RGE_Action_Object* obj_in, float x, float y, float z,
+                      RGE_Sprite* move_sprite_in, RGE_Sprite* fight_sprite_in,
+                      RGE_Sprite* wait_sprite_in, float range_in, float min_range_in,
+                      short missile_id_in, short fire_missile_at_frame_in);
     virtual ~RGE_Action_Attack();
 
-    virtual void save(int);
-    virtual void first_in_stack(unsigned char);
+    virtual void save(int outfile);
+    virtual void first_in_stack(unsigned char first_time);
     virtual unsigned char update();
     virtual int stop();
-    virtual int work(RGE_Static_Object*, float, float, float);
+    virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
 
 protected:
-    virtual void copy_obj_sprites(RGE_Master_Action_Object*, RGE_Task*,
-                                  RGE_Task*);
-    virtual void set_state(unsigned char);
+    virtual void copy_obj_sprites(RGE_Master_Action_Object* source, RGE_Task* task, RGE_Task* new_task);
+    virtual void set_state(unsigned char new_state);
 
     RGE_Sprite* move_sprite;
     RGE_Sprite* fight_sprite;
@@ -40,7 +43,7 @@ protected:
     unsigned char was_same_owner;
     unsigned char indirect_fire_flag;
 
-    int ready_to_attack(int&);
+    int ready_to_attack(int& rangeState);
     void do_attack();
 };
 
