@@ -15,9 +15,7 @@ RGE_Action_Transport::RGE_Action_Transport(int infile, RGE_Action_Object* obj_in
     this->action_type = 0x0C;
 }
 
-RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in,
-                                           RGE_Task* task_in,
-                                           float x, float y, float z)
+RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 0x0C;
@@ -174,8 +172,7 @@ int RGE_Action_Transport::stop() {
     return 1;
 }
 
-int RGE_Action_Transport::move_to(RGE_Static_Object* obj_in,
-                                  float x, float y, float z) {
+int RGE_Action_Transport::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
     this->target2ID = 0;
@@ -184,8 +181,7 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* obj_in,
     return 1;
 }
 
-int RGE_Action_Transport::work(RGE_Static_Object* obj_in,
-                               float x, float y, float z) {
+int RGE_Action_Transport::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     this->target2ID = 1;
 
     int zone = (int)this->obj->lookupZone((int)x, (int)y);

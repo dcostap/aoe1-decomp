@@ -107,8 +107,7 @@ calling conventions, virtual slots, and ABI symbols unchanged:
 
 ```cpp
 RGE_Action_Transport(int infile, RGE_Action_Object* obj_in);
-RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in,
-                     float x, float y, float z);
+RGE_Action_Transport(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z);
 virtual void first_in_stack(unsigned char first_time);
 virtual int move_to(RGE_Static_Object* obj_in, float x, float y, float z);
 virtual int work(RGE_Static_Object* obj_in, float x, float y, float z);
