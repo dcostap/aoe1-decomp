@@ -29,9 +29,7 @@ RGE_Action_Gather::RGE_Action_Gather(int infile, RGE_Action_Object* obj_in)
 RGE_Action_Gather::~RGE_Action_Gather() {
 }
 
-RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in,
-                                     RGE_Task* task_in,
-                                     RGE_Static_Object* target_obj_in)
+RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in, RGE_Static_Object* target_obj_in)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 5;
@@ -44,9 +42,7 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in,
     }
 }
 
-RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in,
-                                     RGE_Task* task_in,
-                                     float x, float y, float z)
+RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* obj_in, RGE_Task* task_in, float x, float y, float z)
     : RGE_Action(obj_in, 1) {
     this->task = task_in;
     this->action_type = 5;
@@ -523,8 +519,7 @@ int RGE_Action_Gather::stop() {
     return 1;
 }
 
-int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in,
-                               float x, float y, float z) {
+int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in->owner == this->obj->owner) {
             short id = obj_in->master_obj->id;
@@ -556,8 +551,7 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* obj_in,
     return 1;
 }
 
-int RGE_Action_Gather::work(RGE_Static_Object* obj_in,
-                            float x, float y, float z) {
+int RGE_Action_Gather::work(RGE_Static_Object* obj_in, float x, float y, float z) {
     if (obj_in != 0) {
         if (obj_in == this->target_obj &&
             (this->state == 4 || this->state == 6 || this->state == 7)) {
