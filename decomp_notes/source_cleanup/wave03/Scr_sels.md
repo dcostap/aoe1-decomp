@@ -6,7 +6,7 @@
 - Base commit: `76037279ee11dde077bb7d55aeb46b518b2bb27c`
 - Source cleanup commit: `f4c24344757acbb864d7deef11aad91759946e4a`
 - Scenario-ID follow-up commit: `43d87a91f0eb0b1d8070c7df1b588880bbd26d56`
-- Final report commit: `43d87a91f0eb0b1d8070c7df1b588880bbd26d56`
+- Final report commit: `a9c6d6d4ff638a2b6f0fe45965619f571e9759ca`
 - Branch: `cleanup/staging-20260915-187`
 - Changed files:
   - `src/Scr_sels.cpp`
