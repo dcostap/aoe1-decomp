@@ -32,13 +32,14 @@ extern TDrawArea* DAT_0086bab0;
 
 void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*,
                            tagPALETTEENTRY, long, int, int);
-void RGE_fade_palette_start(TDrawArea*, tagPALETTEENTRY, float,
-                            unsigned char, tagPALETTEENTRY*, int, int);
+void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
+                            float fade_time_in, unsigned char direction_in,
+                            tagPALETTEENTRY* new_palette,
+                            int ignore_color1_in, int ignore_color2_in);
 int RGE_fade_palette_step();
 
 TRIBE_Credits_Screen::TRIBE_Credits_Screen()
-    : TScreenPanel("Credits Screen")
-{
+    : TScreenPanel("Credits Screen") {
     int zero = 0;
     int one = 1;
 
@@ -104,8 +105,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     }
 }
 
-TRIBE_Credits_Screen::~TRIBE_Credits_Screen()
-{
+TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     for (int i = 0; i < 7; i++) {
         if (this->back_pics[i] != 0) {
             delete this->back_pics[i];
@@ -126,14 +126,13 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen()
     }
 }
 
-long TRIBE_Credits_Screen::handle_mouse_down(unsigned char, long, long, int, int)
-{
+long TRIBE_Credits_Screen::handle_mouse_down(unsigned char mouse_button_in, long x,
+                                             long y, int ctrl_key, int shift_key) {
     this->close_screen();
     return 1;
 }
 
-long TRIBE_Credits_Screen::handle_idle()
-{
+long TRIBE_Credits_Screen::handle_idle() {
     int current_mode = this->mode;
 
     if (current_mode == 1) {
@@ -255,8 +254,8 @@ void TRIBE_Credits_Screen::draw() {
     TScreenPanel::draw();
 }
 
-long TRIBE_Credits_Screen::key_down_action(long key, short, int, int, int)
-{
+long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key,
+                                           int ctrl_key, int shift_key) {
     if (key == 0xD || key == 0x1B) {
         this->close_screen();
         return 1;
@@ -264,22 +263,19 @@ long TRIBE_Credits_Screen::key_down_action(long key, short, int, int, int)
     return 0;
 }
 
-long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2,
-                                  unsigned long param_3,
-                                  unsigned long param_4) {
-    long lVar1;
+long TRIBE_Credits_Screen::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {
+    long action_result;
 
-    if (param_1 != 0 && param_1 == this->text_panel &&
-        (param_2 == 1)) {
+    if (from_panel != 0 && from_panel == this->text_panel &&
+        (action_in == 1)) {
         this->text_done = 1;
         return 1;
     }
-    lVar1 = this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
-    return lVar1;
+    action_result = this->TEasy_Panel::action(from_panel, action_in, action_val1, action_val2);
+    return action_result;
 }
 
-void TRIBE_Credits_Screen::close_screen()
-{
+void TRIBE_Credits_Screen::close_screen() {
     if (panel_system.panel("Game Screen")) {
         if (rge_base_game->singlePlayerGame() == 1 &&
             rge_base_game->save_paused == 0) {
@@ -293,40 +289,39 @@ void TRIBE_Credits_Screen::close_screen()
     panel_system.destroyPanel("Credits Screen");
 }
 
-TScrollTextPanel::TScrollTextPanel(TPanel* parent, TDrawArea* draw_area,
-                                   long x, long y, long width, long height,
-                                   int speed_value, void* font, long font_wid,
-                                   long font_hgt, char* text)
-    : TTextPanel()
-{
-    this->speed = speed_value;
+TScrollTextPanel::TScrollTextPanel(TPanel* parent_in,
+                                   TDrawArea* render_area_in, long x, long y,
+                                   long wid, long hgt, int speed_in,
+                                   void* font_in, long font_wid_in,
+                                   long font_hgt_in, char* text_in)
+    : TTextPanel() {
+    this->speed = speed_in;
     this->scroll = 0;
     this->last_time = 0;
     this->done = 0;
 
     char* no_text = 0;
-    if (this->setup(draw_area, parent, x, y, width, height, font, font_wid,
-                    font_hgt, 0, 0, 0, 0, 0, 0, no_text) != 0) {
+    if (this->setup(render_area_in, parent_in, x, y, wid, hgt, font_in,
+                    font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0,
+                    no_text) != 0) {
         this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
         this->set_word_wrap(1);
-        this->set_text(text);
+        this->set_text(text_in);
         this->set_text_color(this->text_color1, this->text_color2);
     }
 }
 
-TScrollTextPanel::~TScrollTextPanel()
-{
+TScrollTextPanel::~TScrollTextPanel() {
 }
 
-void TScrollTextPanel::set_text(char* text) {
-    TTextPanel::set_text(text);
+void TScrollTextPanel::set_text(char* text_in) {
+    TTextPanel::set_text(text_in);
     this->last_time = 0;
     this->scroll = 0;
     this->done = 0;
 }
 
-long TScrollTextPanel::handle_idle()
-{
+long TScrollTextPanel::handle_idle() {
     if (this->last_time == 0) {
         this->last_time = debug_timeGetTime(
             "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x1DC);
@@ -349,23 +344,18 @@ long TScrollTextPanel::handle_idle()
     return this->TPanel::handle_idle();
 }
 
-void TScrollTextPanel::draw()
-{
+void TScrollTextPanel::draw() {
     this->need_redraw = 0;
-    if (this->render_area != 0 && this->visible != 0 && this->active != 0)
-    {
+    if (this->render_area != 0 && this->visible != 0 && this->active != 0) {
         this->draw_background();
         this->draw_setup(0);
         void* dc = this->render_area->GetDc(s_scr_cred_draw_005862e0);
-        if (dc != 0)
-        {
+        if (dc != 0) {
             SelectClipRgn(dc, this->clip_rgn);
             void* old_font = SelectObject(dc, this->font);
             SetBkMode(dc, 1);
-            for (short i = 0; i < this->num_lines; i++)
-            {
-                this->draw_scrolled_line(dc, i, i,
-                                         this->text_color1, this->text_color2);
+            for (short i = 0; i < this->num_lines; i++) {
+                this->draw_scrolled_line(dc, i, i, this->text_color1, this->text_color2);
             }
             SelectObject(dc, old_font);
             SelectClipRgn(dc, 0);
@@ -376,21 +366,20 @@ void TScrollTextPanel::draw()
     }
 }
 
-void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
-                                          short line_index,
-                                          unsigned long color1,
+void TScrollTextPanel::draw_scrolled_line(void* dc, short draw_row,
+                                          short text_line, unsigned long color1,
                                           unsigned long color2) {
     char* text;
     short text_len;
     char* temp_text2;
-    short text2_length;
+    short text2_len;
     RECT line_rect;
-    long text_x;
+    long x2;
     long text_y;
     text_len = 0;
-    text2_length = 0;
-    text = this->get_text((long)line_index);
-    temp_text2 = this->get_text2((long)line_index);
+    text2_len = 0;
+    text = this->get_text((long)text_line);
+    temp_text2 = this->get_text2((long)text_line);
     if (text == 0) {
         if (temp_text2 == 0) return;
     }
@@ -398,51 +387,51 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
         text_len = (short)strlen(text);
     }
     if (temp_text2 != 0) {
-        text2_length = (short)strlen(temp_text2);
+        text2_len = (short)strlen(temp_text2);
     }
 
-    this->calc_line_pos(hdc, draw_index, line_index, &line_rect, 0);
+    this->calc_line_pos(dc, draw_row, text_line, &line_rect, 0);
 
-    text_x = line_rect.left;
+    x2 = line_rect.left;
     if ((this->horz_align != 0) && (this->horz_align != 6)) {
-        text_x += 5;
+        x2 += 5;
     }
-    long second_text_x = this->second_column_pos + text_x;
+    long second_text_x = this->second_column_pos + x2;
     text_y = this->pnl_hgt - this->scroll + line_rect.top;
-    if ((line_index == (short)this->num_lines - 1) &&
+    if ((text_line == (short)this->num_lines - 1) &&
         (this->font_hgt + text_y < this->pnl_y)) {
         this->done = 1;
     }
 
     if (this->clip_rgn2 != 0) {
-        SelectClipRgn(hdc, this->clip_rgn2);
+        SelectClipRgn(dc, this->clip_rgn2);
     }
 
     switch (this->text_style) {
     case 0:
-        SetTextColor(hdc, color1);
+        SetTextColor(dc, color1);
         if (text != 0) {
-            TextOutA(hdc, text_x, text_y, text, (int)text_len);
+            TextOutA(dc, x2, text_y, text, (int)text_len);
         }
         break;
     case 1:
-        SetTextColor(hdc, color1);
+        SetTextColor(dc, color1);
         if (text != 0) {
-            TextOutA(hdc, text_x - 1, text_y + 1, text, (int)text_len);
+            TextOutA(dc, x2 - 1, text_y + 1, text, (int)text_len);
         }
-        SetTextColor(hdc, color2);
+        SetTextColor(dc, color2);
         if (text != 0) {
-            TextOutA(hdc, text_x, text_y, text, (int)text_len);
+            TextOutA(dc, x2, text_y, text, (int)text_len);
         }
         break;
     case 2:
-        SetTextColor(hdc, color2);
+        SetTextColor(dc, color2);
         if (text != 0) {
-            TextOutA(hdc, text_x - 1, text_y + 1, text, (int)text_len);
+            TextOutA(dc, x2 - 1, text_y + 1, text, (int)text_len);
         }
-        SetTextColor(hdc, color1);
+        SetTextColor(dc, color1);
         if (text != 0) {
-            TextOutA(hdc, text_x, text_y, text, (int)text_len);
+            TextOutA(dc, x2, text_y, text, (int)text_len);
         }
         break;
     default:
@@ -452,43 +441,41 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
     if (temp_text2 == 0) return;
 
     if (this->clip_rgn2 != 0) {
-        SelectClipRgn(hdc, this->clip_rgn);
+        SelectClipRgn(dc, this->clip_rgn);
     }
 
     switch (this->text_style) {
     case 0:
-        SetTextColor(hdc, color1);
-        TextOutA(hdc, second_text_x, text_y, temp_text2, (int)text2_length);
+        SetTextColor(dc, color1);
+        TextOutA(dc, second_text_x, text_y, temp_text2, (int)text2_len);
         return;
     case 1:
-        SetTextColor(hdc, color1);
-        TextOutA(hdc, second_text_x - 1, text_y + 1,
-                 temp_text2, (int)text2_length);
-        SetTextColor(hdc, color2);
-        TextOutA(hdc, second_text_x, text_y, temp_text2, (int)text2_length);
+        SetTextColor(dc, color1);
+        TextOutA(dc, second_text_x - 1, text_y + 1, temp_text2, (int)text2_len);
+        SetTextColor(dc, color2);
+        TextOutA(dc, second_text_x, text_y, temp_text2, (int)text2_len);
         return;
     case 2:
-        SetTextColor(hdc, color2);
-        TextOutA(hdc, second_text_x - 1, text_y + 1,
-                 temp_text2, (int)text2_length);
-        SetTextColor(hdc, color1);
-        TextOutA(hdc, second_text_x, text_y, temp_text2, (int)text2_length);
+        SetTextColor(dc, color2);
+        TextOutA(dc, second_text_x - 1, text_y + 1, temp_text2, (int)text2_len);
+        SetTextColor(dc, color1);
+        TextOutA(dc, second_text_x, text_y, temp_text2, (int)text2_len);
         return;
     default:
         return;
     }
 }
 
-void RGE_fade_palette_start(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
-                            float fade_time, unsigned char fade_type,
-                            tagPALETTEENTRY* palette, int first, int last)
-{
-    DAT_0086bab0 = draw_area;
-    DAT_0086b2a8 = fade_color;
-    DAT_0086b290 = fade_time;
-    DAT_0086b2a4 = fade_type;
-    DAT_0086b298 = first;
-    DAT_0086b29c = last;
+void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
+                            float fade_time_in, unsigned char direction_in,
+                            tagPALETTEENTRY* new_palette,
+                            int ignore_color1_in, int ignore_color2_in) {
+    DAT_0086bab0 = surface_in;
+    DAT_0086b2a8 = color_in;
+    DAT_0086b290 = fade_time_in;
+    DAT_0086b2a4 = direction_in;
+    DAT_0086b298 = ignore_color1_in;
+    DAT_0086b29c = ignore_color2_in;
 
     for (int i = 0; i < 256; i++) {
         DAT_0086b2b0[i].peRed = 0;
@@ -501,11 +488,11 @@ void RGE_fade_palette_start(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
         DAT_0086b6b0[i].peFlags = 0;
     }
 
-    if (palette == 0) {
-        draw_area->GetPalette(DAT_0086b2b0);
+    if (new_palette == 0) {
+        surface_in->GetPalette(DAT_0086b2b0);
     } else {
         tagPALETTEENTRY* target = DAT_0086b2b0;
-        tagPALETTEENTRY* source = palette;
+        tagPALETTEENTRY* source = new_palette;
         do {
             target->peRed = source->peRed;
             target->peBlue = source->peBlue;
@@ -526,21 +513,21 @@ void RGE_fade_palette_start(TDrawArea* draw_area, tagPALETTEENTRY fade_color,
     }
 }
 
-int RGE_fade_palette_step()
-{
-    float delta;
+int RGE_fade_palette_step() {
+    float delta_time;
     int amount;
     unsigned char done = 0;
 
     if (DAT_0086b2a4 == 1) {
         unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x2C8);
         int ticks = cur - DAT_0086b294;
-        delta = (float)ticks * 0.001f;
+        delta_time = (float)ticks * 0.001f;
 
-        if (DAT_0086b290 <= 0.0 || delta > DAT_0086b290 || delta < 0.0f) {
+        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 ||
+            delta_time < 0.0f) {
             amount = 100;
         } else {
-            float v = delta * delta / DAT_0086b2ac * DAT_0057297c;
+            float v = delta_time * delta_time / DAT_0086b2ac * DAT_0057297c;
             amount = (long)v;
         }
         DAT_0086b2a0 = amount;
@@ -551,12 +538,13 @@ int RGE_fade_palette_step()
     } else {
         unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x2DC);
         int ticks = cur - DAT_0086b294;
-        delta = DAT_0086b290 - (float)ticks * 0.001f;
+        delta_time = DAT_0086b290 - (float)ticks * 0.001f;
 
-        if (DAT_0086b290 <= 0.0 || delta > DAT_0086b290 || delta < 0.0f) {
+        if (DAT_0086b290 <= 0.0 || delta_time > DAT_0086b290 ||
+            delta_time < 0.0f) {
             amount = 0;
         } else {
-            float v = delta * delta / DAT_0086b2ac * DAT_0057297c;
+            float v = delta_time * delta_time / DAT_0086b2ac * DAT_0057297c;
             amount = (long)v;
         }
         DAT_0086b2a0 = amount;

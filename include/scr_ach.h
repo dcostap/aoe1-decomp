@@ -36,18 +36,18 @@ public:
     TShape* win_decal;
     Time_Line_Panel* time_line;
 
-    TribeAchievementsScreen(char*, int);
+    TribeAchievementsScreen(char* titleText, int end_flag);
     virtual ~TribeAchievementsScreen();
 
 protected:
-    void set_mode(long);
+    void set_mode(long new_mode);
 
 public:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
+    virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y, int ctrl_key, int shift_key);
     virtual void draw();
     virtual long handle_idle();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam);
 };
 
 typedef char tribe_achievements_screen_size_check[

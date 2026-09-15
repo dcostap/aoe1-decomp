@@ -2,6 +2,7 @@
 #include <string.h>
 #include <io.h>
 #include "../include/com_serv.h"
+#include "../include/resource_ids.h"
 #include "../include/scr_mp.h"
 #include "../include/Pnl_btn.h"
 #include "../include/pnl_lst.h"
@@ -18,8 +19,7 @@ extern TCommunications_Handler* comm;
 
 
 TribeMPStartupScreen::TribeMPStartupScreen()
-    : TScreenPanel("MP Startup Screen")
-{
+    : TScreenPanel("MP Startup Screen") {
     TButtonPanel** cancel_button;
     TButtonPanel** ok_button;
     TButtonPanel* cancel;
@@ -45,9 +45,11 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (this->create_text(this, &this->title, 0x258B,
+    if (this->create_text(this, &this->title,
+                          IDS_MULTIPLAYER_CONNECTION_TITLE,
                           0x14, 0x14, 600, 0x1E, 1, 1, 0, 0) &&
-        this->create_text(this, &this->inputTitle, 0x258C,
+        this->create_text(this, &this->inputTitle,
+                          IDS_MULTIPLAYER_NAME_LABEL,
                           0x14, 0x4B, 500, 0x14, 4, 0, 0, 0)) {
         if (Regs->RegGetAscii(1, "Default Age Of Empires Player Name") != 0) {
             strcpy(str, Regs->RegGetAscii(
@@ -59,32 +61,36 @@ TribeMPStartupScreen::TribeMPStartupScreen()
         if (this->create_edit(this, &this->input, str, 0x0F,
                               TEditPanel::FormatText,
                               0x14, 100, 600, 0x17, 0x0B, 1, 0)) {
-            this->input->set_help_info(0x7595, -1);
-            if (this->create_text(this, &this->connectionTitle, 0x258D,
+            this->input->set_help_info(IDS_HELP_MULTIPLAYER_PLAYER_NAME, -1);
+            if (this->create_text(this, &this->connectionTitle,
+                                  IDS_MULTIPLAYER_CONNECTION_TYPE_LABEL,
                                   0x14, 0xA5, 600, 0x14, 4, 0, 0, 0) &&
                 this->create_list(this, &this->list,
                                   0x14, 0xBE, 600, 0xD2, 0x0B) &&
                 this->create_auto_scrollbar(&this->scrollbar, this->list,
                                             0x14)) {
-                this->list->set_help_info(0x7596, 0x25F08);
+                this->list->set_help_info(
+                    IDS_HELP_MULTIPLAYER_CONNECTION_TYPE, 0x25F08);
                 ok_button = &this->okButton;
-                if (this->create_button(this, ok_button, 0x0FA1,
+                if (this->create_button(this, ok_button, IDS_BUTTON_OK,
                                         0, 0x46, 0x1B8, 0xF0, 0x1E,
                                         0, 0, 0)) {
-                    (*ok_button)->set_help_info(0x7531, -1);
-                    if (this->create_button(this, cancel_button, 0x0FA2,
+                    (*ok_button)->set_help_info(IDS_HELP_OK, -1);
+                    if (this->create_button(this, cancel_button,
+                                            IDS_BUTTON_CANCEL,
                                             0, 0x14A, 0x1B8, 0xF0, 0x1E,
                                             0, 0, 0)) {
-                        (*cancel_button)->set_help_info(0x7532, -1);
+                        (*cancel_button)->set_help_info(IDS_HELP_CANCEL, -1);
                         cancel = *cancel_button;
                         cancel->hotkey = 0x1B;
                         cancel->hotkey_shift = 0;
                         if (this->create_button(this, &this->help_button,
-                                                0x0FA9, 0, 0x244, 0x1B8,
+                                                IDS_BUTTON_HELP, 0, 0x244, 0x1B8,
                                                 0x1E, 0x1E, 0, 0, 0)) {
                             if (this->create_button(this,
                                                     &this->close_button,
-                                                    0x03EA, 0, 0, 0, 0, 0,
+                                                    IDS_BUTTON_CLOSE, 0, 0, 0,
+                                                    0, 0,
                                                     -1, -1, 0)) {
                                 this->close_button->set_active(1);
                                 this->close_button->set_positioning(
@@ -171,27 +177,27 @@ long TribeMPStartupScreen::handle_idle() {
 }
 
 
-long TribeMPStartupScreen::action(TPanel* panel, long event,
-                                  unsigned long param3, unsigned long param4)
-{
-    if (panel != 0) {
-        if (panel == this->list && event == 3) {
+long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel != 0) {
+        if (fromPanel == this->list && actionIn == 3) {
             this->action(this->okButton, 1, 0, 0);
             return 1;
         }
 
-        if (panel == this->close_button && event == 1) {
+        if (fromPanel == this->close_button && actionIn == 1) {
             rge_base_game->close();
             return 1;
         }
 
-        if (panel == this->okButton && event == 1) {
+        if (fromPanel == this->okButton && actionIn == 1) {
             rge_base_game->setMultiplayerGame(1);
             if (*this->input->get_text() == 0) {
-                this->popupOKDialog(0x258F, "Name Error", 0x1C2, 100);
-                return event;
+                this->popupOKDialog(IDS_ERROR_PLAYER_NAME_REQUIRED,
+                                    "Name Error", 0x1C2, 100);
+                return actionIn;
             } else if (this->list->numberLines() == 0) {
-                this->popupOKDialog(0x2592, "List Error", 0x1C2, 100);
+                this->popupOKDialog(IDS_ERROR_NO_MULTIPLAYER_CONNECTIONS,
+                                    "List Error", 0x1C2, 100);
                 return 1;
             } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
                 rge_base_game->disable_input();
@@ -207,9 +213,9 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
                     strlen(this->list->get_text()) + 1);
                 comm->SetMyPlayerName(this->input->currentLine());
 
-                TCommunications_Services services;
+                TCommunications_Services Serv;
                 comm->SetServiceGUID(
-                    services.GetServiceGUID(this->list->get_id()));
+                    Serv.GetServiceGUID(this->list->get_id()));
                 comm->InitJoinGame();
 
                 new TribeJoinScreen;
@@ -217,13 +223,14 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
                 panel_system.destroyPanel("MP Startup Screen");
                 return 1;
             } else {
-                this->popupYesNoDialog(0x2593, "Start Zone", 0x1C2, 100);
+                this->popupYesNoDialog(IDS_CONFIRM_START_GAMING_ZONE,
+                                       "Start Zone", 0x1C2, 100);
                 return 1;
             }
         }
 
-        if ((panel == this->cancelButton && event == 1) ||
-            (panel == this->input && event == 1)) {
+        if ((fromPanel == this->cancelButton && actionIn == 1) ||
+            (fromPanel == this->input && actionIn == 1)) {
             rge_base_game->disable_input();
             comm->UnlinkToLevel(SINGLE_PLAYER);
             new TRIBE_Screen_Main_Menu;
@@ -232,32 +239,32 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
             return 1;
         }
 
-        if (panel == this->help_button && event == 1) {
+        if (fromPanel == this->help_button && actionIn == 1) {
             this->setup_popup_help();
-            return event;
+            return actionIn;
         }
 
-        if (panel->panelName() != 0 &&
-            strcmp(panel->panelName(), "List Error") == 0) {
+        if (fromPanel->panelName() != 0 &&
+            strcmp(fromPanel->panelName(), "List Error") == 0) {
             panel_system.destroyPanel("List Error");
             this->set_curr_child(this->list);
-            event = 1;
-            return event;
+            actionIn = 1;
+            return actionIn;
         }
 
-        if (panel->panelName() != 0 &&
-            strcmp(panel->panelName(), "Name Error") == 0) {
+        if (fromPanel->panelName() != 0 &&
+            strcmp(fromPanel->panelName(), "Name Error") == 0) {
             panel_system.destroyPanel("Name Error");
             this->set_curr_child(this->input);
-            event = 1;
-            return event;
+            actionIn = 1;
+            return actionIn;
         }
 
-        if (panel->panelName() != 0 &&
-            strcmp(panel->panelName(), "Start Zone") == 0) {
+        if (fromPanel->panelName() != 0 &&
+            strcmp(fromPanel->panelName(), "Start Zone") == 0) {
             panel_system.destroyPanel("Start Zone");
             this->set_curr_child(this->list);
-            if (event == 0) {
+            if (actionIn == 0) {
                 rge_base_game->disable_input();
                 WinExec(this->zone_exec, 3);
                 rge_base_game->close();
@@ -266,7 +273,7 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
         }
     }
 
-    return this->TEasy_Panel::action(panel, event, param3, param4);
+    return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
 
@@ -303,7 +310,7 @@ void TribeMPStartupScreen::fillList() {
 
     if (_findfirst(this->browser_exec, &file_info) != -1 &&
         this->zone_exec[0]) {
-        this->list->append_line(0x258E, -1);
+        this->list->append_line(IDS_MULTIPLAYER_GAMING_ZONE, -1);
     }
 
     if (lastServiceNumber != -1) {
@@ -312,6 +319,6 @@ void TribeMPStartupScreen::fillList() {
 }
 
 
-long TribeMPStartupScreen::handle_user_command(unsigned int p0, long p1) {
+long TribeMPStartupScreen::handle_user_command(unsigned int wParam, long lParam) {
     return 1;
 }

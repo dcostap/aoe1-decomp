@@ -6,12 +6,8 @@
 #include "../include/pnl_pic.h"
 #include "../include/basegame.h"
 
-// scr_trb.cpp lines 37-157
-// constructor's new expressions. The fixed tab-list copy is a REP MOVSD block.
-
 TribeSelectTribeScreen::TribeSelectTribeScreen()
-    : TScreenPanel("Select Tribe Screen")
-{
+    : TScreenPanel("Select Tribe Screen") {
     char backgroundName[10];
     TPanel* tabList[10];
     RGE_Font* font;
@@ -80,8 +76,6 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     i = 0;
     TButtonPanel** button = this->tribeButton;
 
-    // The shipped loop re-enters through a zero-register reset.
-    // LIKELY INTENT: The initial zero state makes this guard equivalent to do/while.
     while (i < 9) {
         *button = new TButtonPanel;
         if (*button == 0) {
@@ -145,7 +139,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
 
     this->cancelButton = new TButtonPanel;
     if (this->cancelButton == 0) {
-            this->error_code = 1;
+        this->error_code = 1;
         return;
     }
     this->cancelButton->setup(
@@ -163,14 +157,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     this->background->set_curr_child(this->tribeButton[0]);
     this->fillTribeText(0);
 
-    // Nine button pointers are copied by one REP MOVSD block.
     memcpy(tabList, this->tribeButton, 9 * sizeof(this->tribeButton[0]));
     tabList[9] = this->okButton;
-    // The shipped call targets TPanel::set_tab_order directly.
     this->TPanel::set_tab_order(tabList, 10);
 }
-
-// scr_trb.cpp lines 162-172
 
 extern void __cdecl free(void* ptr);
 
@@ -194,37 +184,28 @@ TribeSelectTribeScreen::~TribeSelectTribeScreen() {
     free(screenText);
 }
 
-// The direct member helper declarations preserve the shipped thiscall calls.
-
-long TribeSelectTribeScreen::action(TPanel* sender, long actionType,
-                                    unsigned long param3,
-                                    unsigned long param4)
-{
-    if (sender == (TPanel*)this->okButton || sender == (TPanel*)this->cancelButton) {
-        if (actionType == 1) {
+long TribeSelectTribeScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel == (TPanel*)this->okButton || fromPanel == (TPanel*)this->cancelButton) {
+        if (actionIn == 1) {
             panel_system.setCurrentPanel("MP Setup Screen", 0);
             panel_system.destroyPanel("Select Tribe Screen");
             return 1;
         }
-    } else if (actionType == 1) {
+    } else if (actionIn == 1) {
         int i;
         for (i = 0; i < 9; i++) {
-            if (sender == (TPanel*)this->tribeButton[i]) {
+            if (fromPanel == (TPanel*)this->tribeButton[i]) {
                 this->fillTribeText(i);
                 return 1;
             }
         }
     }
 
-    return this->TEasy_Panel::action(sender, actionType, param3, param4);
+    return this->TEasy_Panel::action(fromPanel, actionIn, a1, a2);
 }
 
-// scr_trb.cpp lines 202-233
-// TribeSelectTribeScreen::tribeText is +0x480. The text setter is the proved
-// TTextPanel virtual at +0xE8. Scroll is a direct TTextPanel member call.
-
-void TribeSelectTribeScreen::fillTribeText(int tribeIdx) {
-    switch (tribeIdx) {
+void TribeSelectTribeScreen::fillTribeText(int t) {
+    switch (t) {
     case 0:
         this->tribeText->set_text("Assyrian information here.");
         break;
@@ -257,9 +238,8 @@ void TribeSelectTribeScreen::fillTribeText(int tribeIdx) {
     this->tribeText->scroll(6, 0, 1);
 }
 
-
-char* TribeSelectTribeScreen::tribeName(int param_1) {
-    switch (param_1) {
+char* TribeSelectTribeScreen::tribeName(int i) {
+    switch (i) {
     case 0: return "Assyrian";
     case 1: return "Babylonian";
     case 2: return "Egyptian";

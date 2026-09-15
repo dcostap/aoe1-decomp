@@ -4,14 +4,13 @@
 #include "../include/pnl_lst.h"
 #include "../include/pnl_pic.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/resource_ids.h"
 #include "../include/scr_ach.h"
 #include <string.h>
 
-TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
-                               int text_count)
-    : TScreenPanel("End Screen")
-{
-    char background_name[10];
+TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCount)
+    : TScreenPanel("End Screen") {
+    char backgroundName[10];
 
     if (setup(rge_base_game->draw_area, 0, 0, 1) == 0) {
         error_code = 1;
@@ -19,11 +18,11 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
     }
 
     if (render_area->Width < 0x320) {
-        strcpy(background_name, "bgA640");
+        strcpy(backgroundName, "bgA640");
     } else if (render_area->Width < 0x400) {
-        strcpy(background_name, "bgA800");
+        strcpy(backgroundName, "bgA800");
     } else {
-        strcpy(background_name, "bgA1024");
+        strcpy(backgroundName, "bgA1024");
     }
 
     background = new TPicturePanel;
@@ -31,7 +30,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
         error_code = 1;
         return;
     }
-    if (background->setup(render_area, this, 0, 0, 0, 0, background_name,
+    if (background->setup(render_area, this, 0, 0, 0, 0, backgroundName,
                           -1, 0, 1) == 0) {
         error_code = 1;
         return;
@@ -58,7 +57,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
         pnl_wid * 600 / 0x280,
         pnl_hgt * 0x1E / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
-        0, 0, 0, 0, 0, 0, title_text);
+        0, 0, 0, 0, 0, 0, titleText);
 
     text = new TTextPanel;
     if (text == 0) {
@@ -74,7 +73,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
         pnl_hgt * 0x154 / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, static_cast<char*>(0));
-    text->set_text(text_list, static_cast<short>(text_count));
+    text->set_text(textText, static_cast<short>(textLineCount));
     text->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     text->scroll(6, 0, 1);
 
@@ -99,22 +98,19 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
     background->set_curr_child(text);
 }
 
-TribeEndScreen::~TribeEndScreen()
-{
+TribeEndScreen::~TribeEndScreen() {
     delete title;
     delete text;
     delete okButton;
     delete background;
 }
 
-long TribeEndScreen::action(TPanel* panel, long id, unsigned long param3,
-                            unsigned long param4)
-{
-    if (panel == 0 || id != 1) {
-        return TEasy_Panel::action(panel, id, param3, param4);
+long TribeEndScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2) {
+    if (fromPanel == 0 || actionIn != 1) {
+        return TEasy_Panel::action(fromPanel, actionIn, a1, a2);
     }
 
-    new TribeAchievementsScreen(get_string(0x269E), 1);
+    new TribeAchievementsScreen(get_string(IDS_ACHIEVEMENTS_TITLE), 1);
     panel_system.setCurrentPanel("Achievements Screen", 0);
     panel_system.destroyPanel("End Screen");
     return 1;

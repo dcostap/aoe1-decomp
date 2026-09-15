@@ -14,11 +14,11 @@ public:
     TTextPanel* text;
     TButtonPanel* okButton;
 
-    TribeEndScreen(char* title_text, char** text_list, int text_count);
+    TribeEndScreen(char* titleText, char** textText, int textLineCount);
     virtual ~TribeEndScreen();
 
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long action(TPanel* fromPanel, long actionIn, unsigned long a1, unsigned long a2);
 };
 
 typedef char tribe_end_screen_size_check[

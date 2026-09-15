@@ -15,14 +15,15 @@ public:
     int done;
 
     virtual ~TScrollTextPanel();
-    virtual void set_text(char*);
+    virtual void set_text(char* text_in);
     virtual long handle_idle();
     virtual void draw();
 
-    TScrollTextPanel(TPanel*, TDrawArea*, long, long, long, long, int,
-                     void*, long, long, char*);
-    void draw_scrolled_line(void*, short, short, unsigned long,
-                            unsigned long);
+    TScrollTextPanel(TPanel* parent_in, TDrawArea* render_area_in, long x, long y,
+                     long wid, long hgt, int speed_in, void* font_in,
+                     long font_wid_in, long font_hgt_in, char* text_in);
+    void draw_scrolled_line(void* dc, short draw_row, short text_line, unsigned long color1,
+                            unsigned long color2);
 };
 
 typedef char scr_cred_scroll_text_panel_size_check[
@@ -44,11 +45,12 @@ public:
 
     TRIBE_Credits_Screen();
     virtual ~TRIBE_Credits_Screen();
-    virtual long handle_mouse_down(unsigned char, long, long, int, int);
+    virtual long handle_mouse_down(unsigned char mouse_button_in, long x, long y,
+                                   int ctrl_key, int shift_key);
     virtual long handle_idle();
     virtual void draw();
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
+    virtual long key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key);
+    virtual long action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2);
     void close_screen();
 };
 
