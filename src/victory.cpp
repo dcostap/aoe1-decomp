@@ -16,29 +16,29 @@ extern "C" void __cdecl free(void* block);
 
 
 RGE_Victory_Conditions::RGE_Victory_Conditions(
-    RGE_Player* player, int handle, long* version_map, unsigned char version_flag) {
+    RGE_Player* in_player, int infile, long* player_id_hash, unsigned char version_control) {
     long index;
-    long version;
-    float save_version;
-    long point_count;
+    long target_player;
+    float version;
+    long temp_num;
     long* list_num_ptr;
-    RGE_Victory_Entry** tail;
-    int file_handle = handle;
-    long target_object_id;
+    RGE_Victory_Entry** temp2;
+    int file_handle = infile;
+    long target_obj;
 
-    if (version_flag == 1) {
-        rge_read(file_handle, &save_version, 4);
+    if (version_control == 1) {
+        rge_read(file_handle, &version, 4);
     } else {
-        save_version = 0.0f;
+        version = 0.0f;
     }
 
     list_num_ptr = &this->list_num;
     rge_read(file_handle, list_num_ptr, 4);
     rge_read(file_handle, &this->victory, 1);
 
-    tail = &this->victory_list;
-    *tail = 0;
-    this->player = player;
+    temp2 = &this->victory_list;
+    *temp2 = 0;
+    this->player = in_player;
     index = 0;
 
     while (index < *list_num_ptr) {
@@ -47,15 +47,15 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
 
         rge_read(file_handle, entry, 1);
         rge_read(file_handle, &entry->obj_type, 4);
-        rge_read(file_handle, &version, 4);
+        rge_read(file_handle, &target_player, 4);
         rge_read(file_handle, &entry->x0, 4);
         rge_read(file_handle, &entry->y0, 4);
         rge_read(file_handle, &entry->x1, 4);
         rge_read(file_handle, &entry->y1, 4);
         rge_read(file_handle, &entry->number, 4);
         rge_read(file_handle, &entry->count, 4);
-        rge_read(file_handle, &handle, 4);
-        rge_read(file_handle, &target_object_id, 4);
+        rge_read(file_handle, &infile, 4);
+        rge_read(file_handle, &target_obj, 4);
         rge_read(file_handle, &entry->victory_group, 1);
         rge_read(file_handle, &entry->ally_flag, 1);
         rge_read(file_handle, &entry->state, 1);
@@ -63,42 +63,42 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
         entry->target_obj = 0;
         entry->this_obj = 0;
         entry->target_player = 0;
-        *tail = entry;
-        tail = &entry->next;
+        *temp2 = entry;
+        temp2 = &entry->next;
 
-        if (handle >= 0) {
+        if (infile >= 0) {
             int player_index = 0;
             RGE_Game_World* world = this->player->world;
             while (player_index < world->player_num) {
                 entry->this_obj =
-                    world->players[player_index]->objects->find_by_id(handle);
+                    world->players[player_index]->objects->find_by_id(infile);
                 if (entry->this_obj != 0) {
                     break;
                 }
                 player_index++;
                 world = this->player->world;
             }
-            if (handle >= 0 && entry->this_obj == 0) {
+            if (infile >= 0 && entry->this_obj == 0) {
                 entry->state = 3;
             }
         }
 
-        if (target_object_id >= 0) {
-            entry->target_obj = this->player->objects->find_by_id(target_object_id);
+        if (target_obj >= 0) {
+            entry->target_obj = this->player->objects->find_by_id(target_obj);
         }
 
-        if (version >= 0) {
-            if (version_map != 0) {
-                version = version_map[version];
+        if (target_player >= 0) {
+            if (player_id_hash != 0) {
+                target_player = player_id_hash[target_player];
             }
-            if (version >= 0) {
+            if (target_player >= 0) {
                 RGE_Player* reference_player =
-                    this->player->world->players[version];
+                    this->player->world->players[target_player];
                 entry->target_player = reference_player;
                 if (reference_player != 0 && entry->target_obj == 0 &&
-                    target_object_id >= 0) {
+                    target_obj >= 0) {
                     entry->target_obj =
-                        reference_player->objects->find_by_id(target_object_id);
+                        reference_player->objects->find_by_id(target_obj);
                 }
             } else {
                 entry->state = 3;
@@ -107,7 +107,7 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
             entry->target_player = 0;
         }
 
-        if (target_object_id >= 0 && entry->target_obj == 0) {
+        if (target_obj >= 0 && entry->target_obj == 0) {
             entry->state = 3;
         }
 
@@ -117,13 +117,13 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
     this->victory_point_list = 0;
     this->point_list_num = 0;
 
-    if (save_version >= 1.0) {
+    if (version >= 1.0) {
         long* total_points = &this->tot_victory_points;
         rge_read(file_handle, total_points, 4);
-        rge_read(file_handle, &point_count, 4);
+        rge_read(file_handle, &temp_num, 4);
 
         index = 0;
-        while (index < point_count) {
+        while (index < temp_num) {
             RGE_Victory_Point_Entry* point = this->add_point(0, 0);
             rge_read(file_handle, point, 1);
             rge_read(file_handle, &point->state, 1);
@@ -150,8 +150,8 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
 }
 
 
-RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* player) {
-    this->player = player;
+RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* in_Player) {
+    this->player = in_Player;
     this->list_num = 0;
     this->victory_list = 0;
     this->victory_point_list = 0;
@@ -336,12 +336,12 @@ unsigned char RGE_Victory_Conditions::update() {
 }
 
 
-void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* object) {
+void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* obj) {
     RGE_Victory_Entry* entry = this->victory_list;
 
     while (entry != 0) {
         RGE_Victory_Entry* next = entry->next;
-        if ((entry->this_obj == object) || (entry->target_obj == object)) {
+        if ((entry->this_obj == obj) || (entry->target_obj == obj)) {
             this->sub(entry);
         }
         entry = next;
@@ -349,22 +349,22 @@ void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* object) {
 }
 
 
-void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* param_1) {
-    switch (param_1->command) {
+void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* node) {
+    switch (node->command) {
     case 0:
-        this->handle_points_attribute_amount(param_1);
+        this->handle_points_attribute_amount(node);
         return;
     case 1:
-        this->handle_points_attribute_first(param_1);
+        this->handle_points_attribute_first(node);
         return;
     case 2:
-        this->handle_points_highest_attribute(param_1);
+        this->handle_points_highest_attribute(node);
         return;
     case 3:
-        this->handle_points_high_attribute_once(param_1);
+        this->handle_points_high_attribute_once(node);
         return;
     case 4:
-        this->handle_points_high_attribute_amount(param_1);
+        this->handle_points_high_attribute_amount(node);
         return;
     }
 }
@@ -372,74 +372,74 @@ void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* par
 
 
 
-void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* entry) {
-    switch (entry->command) {
+void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* node) {
+    switch (node->command) {
     case 0:
-        handle_capture(entry);
+        handle_capture(node);
         return;
     case 1:
-        handle_create(entry);
+        handle_create(node);
         return;
     case 8:
-        handle_create_in_area(entry);
+        handle_create_in_area(node);
         return;
     case 2:
-        handle_destroy(entry);
+        handle_destroy(node);
         return;
     case 3:
-        handle_destroy_multiple(entry);
+        handle_destroy_multiple(node);
         return;
     case 9:
-        handle_destroy_all(entry);
+        handle_destroy_all(node);
         return;
     case 10:
-        handle_destroy_player(entry);
+        handle_destroy_player(node);
         return;
     case 4:
-        handle_bring_area(entry);
+        handle_bring_area(node);
         return;
     case 5:
-        handle_bring_object(entry);
+        handle_bring_object(node);
         return;
     case 6:
-        handle_attribute(entry);
+        handle_attribute(node);
         return;
     case 7:
-        handle_explore(entry);
+        handle_explore(node);
         return;
     case 12:
-        handle_victory_points(entry);
+        handle_victory_points(node);
         return;
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* entry) {
-    RGE_Static_Object* obj = (RGE_Static_Object*)entry->target_obj;
+void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* node) {
+    RGE_Static_Object* obj = (RGE_Static_Object*)node->target_obj;
     if (obj) {
         if (obj->object_state > 2) {
-            entry->target_obj = 0;
-            if (entry->state == 0) {
-                entry->state = 1;
+            node->target_obj = 0;
+            if (node->state == 0) {
+                node->state = 1;
                 return;
             }
         } else {
-            if (entry->state == 0) {
+            if (node->state == 0) {
                 RGE_Player* owner = obj->owner;
                 RGE_Player* self = this->player;
                 if (owner == self ||
-                    (entry->ally_flag && self->allied_victory &&
+                    (node->ally_flag && self->allied_victory &&
                      self->relations[owner->id] == 0 &&
                      owner->relations[self->id] == 0 && owner->allied_victory)) {
-                    entry->state = 2;
+                    node->state = 2;
                     return;
                 }
-            } else if (entry->state == 2) {
+            } else if (node->state == 2) {
                 RGE_Player* owner = obj->owner;
                 RGE_Player* self = this->player;
-                if (owner != self && (!entry->ally_flag || self->relations[owner->id] != 0)) {
-                    entry->state = 0;
+                if (owner != self && (!node->ally_flag || self->relations[owner->id] != 0)) {
+                    node->state = 0;
                 }
             }
         }
@@ -448,20 +448,20 @@ void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* entry) {
 
 
 
-void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
+void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* node) {
     RGE_Player* self = this->player;
     int count = 0;
-    RGE_Object_Node* node = self->objects->list;
+    RGE_Object_Node* object_node = self->objects->list;
 
-    while (node != 0) {
-        if (node->node->master_obj->copy_id == entry->obj_type &&
-            node->node->object_state == 2) {
+    while (object_node != 0) {
+        if (object_node->node->master_obj->copy_id == node->obj_type &&
+            object_node->node->object_state == 2) {
             count++;
         }
-        node = node->next;
+        object_node = object_node->next;
     }
 
-    if (entry->ally_flag != 0 && self->allied_victory != 0) {
+    if (node->ally_flag != 0 && self->allied_victory != 0) {
         RGE_Game_World* world = self->world;
         RGE_Player** players = world->players;
         int i = 1;
@@ -473,13 +473,13 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
                     players[i]->relations[self->id] == 0 &&
                     i != self->id &&
                     players[i]->allied_victory != 0) {
-                    RGE_Object_Node* n = players[i]->objects->list;
-                    while (n != 0) {
-                        if (n->node->master_obj->copy_id == entry->obj_type &&
-                            n->node->object_state == 2) {
+                    RGE_Object_Node* object_node = players[i]->objects->list;
+                    while (object_node != 0) {
+                        if (object_node->node->master_obj->copy_id == node->obj_type &&
+                            object_node->node->object_state == 2) {
                             count++;
                         }
-                        n = n->next;
+                        object_node = object_node->next;
                     }
                 }
                 i++;
@@ -487,34 +487,34 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
         }
     }
 
-    if (count >= entry->number) {
-        entry->state = 2;
+    if (count >= node->number) {
+        node->state = 2;
     } else {
-        entry->state = 0;
+        node->state = 0;
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
+void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* node) {
     int count = 0;
     RGE_Player* player = this->player;
 
-    RGE_Object_Node* node = player->objects->list;
-    while (node != 0) {
-        RGE_Static_Object* obj = node->node;
-        if (obj->master_obj->copy_id == entry->obj_type &&
+    RGE_Object_Node* object_node = player->objects->list;
+    while (object_node != 0) {
+        RGE_Static_Object* obj = object_node->node;
+        if (obj->master_obj->copy_id == node->obj_type &&
             obj->object_state == 2 &&
-            obj->world_x >= entry->x0 &&
-            obj->world_x <= entry->x1 &&
-            obj->world_y >= entry->y0 &&
-            obj->world_y <= entry->y1) {
+            obj->world_x >= node->x0 &&
+            obj->world_x <= node->x1 &&
+            obj->world_y >= node->y0 &&
+            obj->world_y <= node->y1) {
             count++;
         }
-        node = node->next;
+        object_node = object_node->next;
     }
 
-    if (entry->ally_flag != 0 && player->allied_victory != 0) {
+    if (node->ally_flag != 0 && player->allied_victory != 0) {
         RGE_Game_World* world = player->world;
         int i = 1;
         RGE_Player** players = world->players;
@@ -527,18 +527,18 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
                     if (p->relations[player->id] == 0 &&
                         i != player->id &&
                         p->allied_victory != 0) {
-                        node = p->objects->list;
-                        while (node != 0) {
-                            RGE_Static_Object* obj = node->node;
-                            if (obj->master_obj->copy_id == entry->obj_type &&
+                        object_node = p->objects->list;
+                        while (object_node != 0) {
+                            RGE_Static_Object* obj = object_node->node;
+                            if (obj->master_obj->copy_id == node->obj_type &&
                                 obj->object_state == 2 &&
-                                obj->world_x >= entry->x0 &&
-                                obj->world_x <= entry->x1 &&
-                                obj->world_y >= entry->y0 &&
-                                obj->world_y <= entry->y1) {
+                                obj->world_x >= node->x0 &&
+                                obj->world_x <= node->x1 &&
+                                obj->world_y >= node->y0 &&
+                                obj->world_y <= node->y1) {
                                 count++;
                             }
-                            node = node->next;
+                            object_node = object_node->next;
                         }
                     }
                 }
@@ -548,32 +548,32 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
         }
     }
 
-    if (count >= entry->number) {
-        entry->state = 2;
+    if (count >= node->number) {
+        node->state = 2;
     } else {
-        entry->state = 0;
+        node->state = 0;
     }
 }
 
 
-void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* entry) {
-    if (entry->target_obj && entry->target_obj->object_state == 7) {
-        entry->state = 2;
-        entry->target_obj = 0;
+void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* node) {
+    if (node->target_obj && node->target_obj->object_state == 7) {
+        node->state = 2;
+        node->target_obj = 0;
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* entry) {
-    if (entry->state) return;
+void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* node) {
+    if (node->state) return;
 
-    if (entry->target_player) {
-        RGE_Object_Node* node = entry->target_player->objects->list;
-        while (node) {
-            if (node->node->master_obj->copy_id == entry->obj_type && node->node->object_state == 7)
-                entry->count++;
-            node = node->next;
+    if (node->target_player) {
+        RGE_Object_Node* object_node = node->target_player->objects->list;
+        while (object_node) {
+            if (object_node->node->master_obj->copy_id == node->obj_type && object_node->node->object_state == 7)
+                node->count++;
+            object_node = object_node->next;
         }
     } else {
         RGE_Player* player = this->player;
@@ -583,12 +583,12 @@ void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* entry) {
             RGE_Player** current_players = players;
             do {
                 if (player->relations[i]) {
-                    RGE_Object_Node* node = current_players[0]->objects->list;
-                    while (node) {
-                        if (node->node->master_obj->copy_id == entry->obj_type &&
-                            node->node->object_state == 7)
-                            entry->count++;
-                        node = node->next;
+                    RGE_Object_Node* object_node = current_players[0]->objects->list;
+                    while (object_node) {
+                        if (object_node->node->master_obj->copy_id == node->obj_type &&
+                            object_node->node->object_state == 7)
+                            node->count++;
+                        object_node = object_node->next;
                     }
                 }
                 player = this->player;
@@ -598,25 +598,25 @@ void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* entry) {
         }
     }
 
-    if (entry->count >= entry->number) {
-        entry->state = 2;
+    if (node->count >= node->number) {
+        node->state = 2;
     }
 }
 
 
 
 
-void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* entry) {
-    if (entry->target_player != 0) {
-        RGE_Object_Node* node = entry->target_player->objects->list;
-        while (node != 0) {
-            if (node->node->master_obj->copy_id == entry->obj_type) {
-                entry->state = 0;
+void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* node) {
+    if (node->target_player != 0) {
+        RGE_Object_Node* object_node = node->target_player->objects->list;
+        while (object_node != 0) {
+            if (object_node->node->master_obj->copy_id == node->obj_type) {
+                node->state = 0;
                 return;
             }
-            node = node->next;
+            object_node = object_node->next;
         }
-        entry->state = 2;
+        node->state = 2;
         return;
     }
 
@@ -629,94 +629,93 @@ void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* entry) {
             continue;
         }
 
-        RGE_Object_Node* node = players[i]->objects->list;
-        while (node != 0) {
-            if (node->node->master_obj->copy_id == entry->obj_type) {
-                entry->state = 0;
+        RGE_Object_Node* object_node = players[i]->objects->list;
+        while (object_node != 0) {
+            if (object_node->node->master_obj->copy_id == node->obj_type) {
+                node->state = 0;
                 return;
             }
-            node = node->next;
+            object_node = object_node->next;
         }
     }
 
-    entry->state = 2;
+    node->state = 2;
 }
 
 
-void RGE_Victory_Conditions::handle_destroy_player(RGE_Victory_Entry* entry) {
-    if (entry->target_player) {
-        if (entry->target_player->game_status != 2)
-            entry->state = 0;
+void RGE_Victory_Conditions::handle_destroy_player(RGE_Victory_Entry* node) {
+    if (node->target_player) {
+        if (node->target_player->game_status != 2)
+            node->state = 0;
         else
-            entry->state = 2;
+            node->state = 2;
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* entry) {
-    RGE_Static_Object* obj = entry->this_obj;
+void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* node) {
+    RGE_Static_Object* obj = node->this_obj;
 
     if (obj) {
         if (obj->object_state >= 3) {
-            if (entry->state == 0) {
-                entry->state = 1;
+            if (node->state == 0) {
+                node->state = 1;
             }
-            entry->this_obj = 0;
+            node->this_obj = 0;
             return;
         }
 
-        if (obj->world_x < entry->x0 || obj->world_x > entry->x1 ||
-            obj->world_y < entry->y0 || obj->world_y > entry->y1) {
-            entry->state = 0;
+        if (obj->world_x < node->x0 || obj->world_x > node->x1 ||
+            obj->world_y < node->y0 || obj->world_y > node->y1) {
+            node->state = 0;
         } else {
-            entry->state = 2;
+            node->state = 2;
         }
         return;
     } else {
-        entry->state = 3;
+        node->state = 3;
         return;
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* entry) {
-    if (entry->this_obj == 0 || entry->target_obj == 0) {
-        entry->state = 3;
+void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* node) {
+    if (node->this_obj == 0 || node->target_obj == 0) {
+        node->state = 3;
         return;
     }
 
-    if (entry->this_obj->object_state >= 3 || entry->target_obj->object_state >= 3) {
-        entry->this_obj = 0;
-        entry->target_obj = 0;
-        if (entry->state == 0) {
-            entry->state = 1;
+    if (node->this_obj->object_state >= 3 || node->target_obj->object_state >= 3) {
+        node->this_obj = 0;
+        node->target_obj = 0;
+        if (node->state == 0) {
+            node->state = 1;
         }
         return;
     }
 
-    float dx = entry->this_obj->world_x - entry->target_obj->world_x;
-    float dy = entry->this_obj->world_y - entry->target_obj->world_y;
+    float dx = node->this_obj->world_x - node->target_obj->world_x;
+    float dy = node->this_obj->world_y - node->target_obj->world_y;
 
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    RGE_Static_Object* this_object = entry->this_obj;
-    float range_x = entry->target_obj->master_obj->radius_x + this_object->master_obj->radius_x + 1.0f;
-    float range_y = entry->target_obj->master_obj->radius_y + this_object->master_obj->radius_y + 1.0f;
+    RGE_Static_Object* this_object = node->this_obj;
+    float range_x = node->target_obj->master_obj->radius_x + this_object->master_obj->radius_x + 1.0f;
+    float range_y = node->target_obj->master_obj->radius_y + this_object->master_obj->radius_y + 1.0f;
 
     if (dx <= range_x && dy <= range_y) {
-        entry->state = 2;
+        node->state = 2;
     } else {
-        entry->state = 0;
+        node->state = 0;
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
-{
+void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* node) {
     RGE_Player* p = this->player;
     RGE_Victory_Entry* e;
     int attribute_index;
@@ -725,7 +724,7 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
     if (p == 0)
         return;
 
-    e = entry;
+    e = node;
     attribute_index = e->number;
     total = p->attributes[attribute_index];
 
@@ -756,11 +755,11 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
 
 
 
-void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
-    if (entry->state != 0) return;
+void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* node) {
+    if (node->state != 0) return;
 
     if (this->player) {
-        if (entry->ally_flag != 0 && this->player->allied_victory != 0) {
+        if (node->ally_flag != 0 && this->player->allied_victory != 0) {
             RGE_Game_World* world = this->player->world;
             int num = world->player_num;
             RGE_Player** players = world->players;
@@ -772,8 +771,8 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
                      (*pp)->relations[this->player->id] == 0 &&
                      (*pp)->allied_victory != 0) || i == this->player->id) {
                     float explored = (*pp)->visible->percentExplored();
-                    if (explored * 100.0f >= (float)entry->count) {
-                        entry->state = 2;
+                    if (explored * 100.0f >= (float)node->count) {
+                        node->state = 2;
                         return;
                     }
                 }
@@ -782,8 +781,8 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
             }
         } else {
             float explored = this->player->visible->percentExplored();
-            if (explored * 100.0f >= (float)entry->count) {
-                entry->state = 2;
+            if (explored * 100.0f >= (float)node->count) {
+                node->state = 2;
             }
         }
     }
@@ -791,12 +790,12 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
 
 
 
-void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
+void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* node) {
     if (this->player != 0) {
         long total = this->tot_victory_points;
-        int count = 1;
+        int player_count = 1;
 
-        if (entry->ally_flag != 0 && this->player->allied_victory != 0) {
+        if (node->ally_flag != 0 && this->player->allied_victory != 0) {
             RGE_Game_World* world = this->player->world;
             RGE_Player** players = world->players;
             int i = world->player_num - 1;
@@ -808,7 +807,7 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
                         if (other->relations[this->player->id] == 0 &&
                             i != this->player->id && other->allied_victory != 0) {
                             total += other->victory_conditions->get_victory_points();
-                            count++;
+                            player_count++;
                         }
                     }
                     i--;
@@ -817,8 +816,8 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
             }
         }
 
-        if (total / count >= entry->count) {
-            entry->state = 2;
+        if (total / player_count >= node->count) {
+            node->state = 2;
         }
     }
 }
@@ -826,12 +825,12 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
 
 
 
-RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char param_1, unsigned char param_2) {
+RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char v_group, unsigned char alliance) {
     RGE_Victory_Entry* entry = (RGE_Victory_Entry*)calloc(1, 0x34);
     if (entry != 0) {
         entry->state = 0;
-        entry->victory_group = param_1;
-        entry->ally_flag = param_2;
+        entry->victory_group = v_group;
+        entry->ally_flag = alliance;
         entry->count = 0;
         entry->next = this->victory_list;
         this->victory_list = entry;
@@ -841,128 +840,128 @@ RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char param_1, unsigned c
 }
 
 
-unsigned char RGE_Victory_Conditions::add_capture(unsigned char param_1, RGE_Static_Object* param_2, unsigned char param_3) {
-    RGE_Victory_Entry* entry = this->add(param_1, param_3);
+unsigned char RGE_Victory_Conditions::add_capture(unsigned char v_group, RGE_Static_Object* obj, unsigned char alliance) {
+    RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 0;
-        entry->target_obj = param_2;
-        entry->target_player = param_2->owner;
+        entry->target_obj = obj;
+        entry->target_player = obj->owner;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long param_2, long param_3, unsigned char param_4) {
-    RGE_Victory_Entry* entry = this->add(param_1, param_4);
+unsigned char RGE_Victory_Conditions::add_create(unsigned char v_group, long obj_type, long number, unsigned char alliance) {
+    RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 1;
-        entry->obj_type = param_2;
-        entry->number = param_3;
+        entry->obj_type = obj_type;
+        entry->number = number;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long param_2, long param_3, float param_4, float param_5, float param_6, float param_7, unsigned char param_8) {
-    RGE_Victory_Entry* entry = this->add(param_1, param_8);
+unsigned char RGE_Victory_Conditions::add_create(unsigned char v_group, long obj_type, long number, float x0, float y0, float x1, float y1, unsigned char alliance) {
+    RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry != 0) {
-        entry->obj_type = param_2;
-        entry->number = param_3;
-        entry->x0 = param_4;
-        entry->y0 = param_5;
+        entry->obj_type = obj_type;
+        entry->number = number;
+        entry->x0 = x0;
+        entry->y0 = y0;
         entry->command = 8;
-        entry->x1 = param_6;
-        entry->y1 = param_7;
+        entry->x1 = x1;
+        entry->y1 = y1;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, RGE_Static_Object* param_2) {
-    RGE_Victory_Entry* entry = this->add(param_1, 0);
+unsigned char RGE_Victory_Conditions::add_destroy(unsigned char v_group, RGE_Static_Object* obj) {
+    RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry) {
         entry->command = 2;
-        entry->target_obj = param_2;
-        entry->target_player = param_2->owner;
+        entry->target_obj = obj;
+        entry->target_player = obj->owner;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long param_2, long param_3, RGE_Player* param_4) {
-    RGE_Victory_Entry* entry = this->add(param_1, 0);
+unsigned char RGE_Victory_Conditions::add_destroy(unsigned char v_group, long obj_type, long num, RGE_Player* player) {
+    RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry) {
-        entry->obj_type = param_2;
+        entry->obj_type = obj_type;
         entry->command = 3;
-        entry->number = param_3;
-        entry->target_player = param_4;
+        entry->number = num;
+        entry->target_player = player;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long param_2, RGE_Player* param_3) {
-    RGE_Victory_Entry* entry = this->add(param_1, 0);
+unsigned char RGE_Victory_Conditions::add_destroy(unsigned char v_group, long obj_type, RGE_Player* player) {
+    RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry) {
         entry->command = 9;
-        entry->obj_type = param_2;
-        entry->target_player = param_3;
+        entry->obj_type = obj_type;
+        entry->target_player = player;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, RGE_Player* param_2) {
-    RGE_Victory_Entry* entry = this->add(param_1, 0);
+unsigned char RGE_Victory_Conditions::add_destroy(unsigned char v_group, RGE_Player* player) {
+    RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry) {
         entry->command = 0x0A;
-        entry->target_player = param_2;
+        entry->target_player = player;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Static_Object* param_2, RGE_Static_Object* param_3) {
-    RGE_Victory_Entry* entry = this->add(param_1, 0);
+unsigned char RGE_Victory_Conditions::add_bring(unsigned char v_group, RGE_Static_Object* obj, RGE_Static_Object* target) {
+    RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry) {
         entry->command = 5;
-        entry->this_obj = param_2;
-        entry->target_obj = param_3;
-        entry->target_player = param_3->owner;
+        entry->this_obj = obj;
+        entry->target_obj = target;
+        entry->target_player = target->owner;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5, float param_6) {
-    RGE_Victory_Entry* entry = this->add(param_1, 0);
+unsigned char RGE_Victory_Conditions::add_bring(unsigned char v_group, RGE_Static_Object* obj, float x0, float y0, float x1, float y1) {
+    RGE_Victory_Entry* entry = this->add(v_group, 0);
     if (entry != 0) {
         entry->command = 4;
-        entry->this_obj = param_2;
-        entry->x0 = param_3;
-        entry->y0 = param_4;
-        entry->x1 = param_5;
-        entry->y1 = param_6;
+        entry->this_obj = obj;
+        entry->x0 = x0;
+        entry->y0 = y0;
+        entry->x1 = x1;
+        entry->y1 = y1;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_attributes(unsigned char param_1, long param_2, long param_3, unsigned char param_4) {
-    RGE_Victory_Entry* entry = this->add(param_1, param_4);
+unsigned char RGE_Victory_Conditions::add_attributes(unsigned char v_group, long attribute, long count, unsigned char alliance) {
+    RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 6;
-        entry->number = param_2;
-        entry->count = param_3;
+        entry->number = attribute;
+        entry->count = count;
         return 1;
     }
     return 0;
@@ -970,28 +969,28 @@ unsigned char RGE_Victory_Conditions::add_attributes(unsigned char param_1, long
 
 
 
-unsigned char RGE_Victory_Conditions::add_explore(unsigned char param_1, long param_2, unsigned char param_3) {
-    RGE_Victory_Entry* entry = this->add(param_1, param_3);
+unsigned char RGE_Victory_Conditions::add_explore(unsigned char v_group, long count, unsigned char alliance) {
+    RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry != 0) {
         entry->command = 7;
-        if (param_2 < 1) {
-            param_2 = 1;
+        if (count < 1) {
+            count = 1;
         }
-        if (100 < param_2) {
-            param_2 = 100;
+        if (100 < count) {
+            count = 100;
         }
-        entry->count = param_2;
+        entry->count = count;
         return 1;
     }
     return 0;
 }
 
 
-unsigned char RGE_Victory_Conditions::add_victory_points(unsigned char param_1, long param_2, unsigned char param_3) {
-    RGE_Victory_Entry* entry = this->add(param_1, param_3);
+unsigned char RGE_Victory_Conditions::add_victory_points(unsigned char v_group, long count, unsigned char alliance) {
+    RGE_Victory_Entry* entry = this->add(v_group, alliance);
     if (entry) {
         entry->command = 0x0C;
-        entry->count = param_2;
+        entry->count = count;
         return 1;
     }
     return 0;
@@ -1032,78 +1031,78 @@ void RGE_Victory_Conditions::destroy_all() {
 }
 
 
-unsigned char RGE_Victory_Conditions::condition_info(long index, char** outEntry, unsigned char& outCommand) {
+unsigned char RGE_Victory_Conditions::condition_info(long condition, char** description, unsigned char& type) {
     RGE_Victory_Entry* entry = this->victory_list;
     int i = 0;
     char* text = 0;
 
     if (entry) {
         while (entry != 0) {
-            if (i == index) {
+            if (i == condition) {
                 text = this->condition_description(entry);
-                *outEntry = text;
-                outCommand = entry->command;
+                *description = text;
+                type = entry->command;
                 return 1;
             }
             entry = entry->next;
             i++;
         }
     }
-    *outEntry = text;
+    *description = text;
     return 0;
 }
 
 
 
-char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
+char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* node) {
     char* description = 0;
     char temp[200];
 
-    switch (entry->command) {
+    switch (node->command) {
     case 0:
-        sprintf(temp, "Capture %s", entry->this_obj->master_obj->name);
+        sprintf(temp, "Capture %s", node->this_obj->master_obj->name);
         break;
     case 1:
-        sprintf(temp, "Create %d %s", entry->number,
-            entry->target_player->master_objects[entry->obj_type]->name);
+        sprintf(temp, "Create %d %s", node->number,
+            node->target_player->master_objects[node->obj_type]->name);
         break;
     case 8:
         sprintf(temp, "Create %d %s in area (%f, %f) - (%f, %f)",
-            entry->number,
-            entry->target_player->master_objects[entry->obj_type]->name,
-            (double)entry->x0, (double)entry->y0,
-            (double)entry->x1, (double)entry->y1);
+            node->number,
+            node->target_player->master_objects[node->obj_type]->name,
+            (double)node->x0, (double)node->y0,
+            (double)node->x1, (double)node->y1);
         break;
     case 2:
-        sprintf(temp, "Destroy %s", entry->this_obj->master_obj->name);
+        sprintf(temp, "Destroy %s", node->this_obj->master_obj->name);
         break;
     case 3:
-        sprintf(temp, "Destroy %d %s of player %d", entry->number,
-            entry->target_player->master_objects[entry->obj_type]->name,
-            entry->target_player->id);
+        sprintf(temp, "Destroy %d %s of player %d", node->number,
+            node->target_player->master_objects[node->obj_type]->name,
+            node->target_player->id);
         break;
     case 9:
         sprintf(temp, "Destroy all %s of player %d",
-            entry->target_player->master_objects[entry->obj_type]->name,
-            entry->target_player->id);
+            node->target_player->master_objects[node->obj_type]->name,
+            node->target_player->id);
         break;
     case 4:
         sprintf(temp, "Bring %s to area (%f, %f) - (%f, %f)",
-            entry->this_obj->master_obj->name,
-            (double)entry->x0, (double)entry->y0,
-            (double)entry->x1, (double)entry->y1);
+            node->this_obj->master_obj->name,
+            (double)node->x0, (double)node->y0,
+            (double)node->x1, (double)node->y1);
         break;
     case 5:
         sprintf(temp, "Bring %s to %s",
-            entry->this_obj->master_obj->name,
-            entry->target_obj->master_obj->name);
+            node->this_obj->master_obj->name,
+            node->target_obj->master_obj->name);
         break;
     case 6:
-        sprintf(temp, "aqquire %d of attribute %d", entry->count,
-            entry->number);
+        sprintf(temp, "aqquire %d of attribute %d", node->count,
+            node->number);
         break;
     case 7:
-        sprintf(temp, "explore %d percent of the map", entry->count);
+        sprintf(temp, "explore %d percent of the map", node->count);
         break;
     }
 
@@ -1113,13 +1112,13 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
 
 
 
-RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long index) {
+RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long condition) {
     RGE_Victory_Entry* entry;
     long wanted;
     long count;
 
     entry = this->victory_list;
-    wanted = index;
+    wanted = condition;
     count = 0;
     while (entry != 0) {
         if (count == wanted) {
@@ -1132,7 +1131,7 @@ RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long index) {
 }
 
 
-long RGE_Victory_Conditions::condition_number(long p0) { return this->list_num; }
+long RGE_Victory_Conditions::condition_number(long condition) { return this->list_num; }
 
 
 unsigned char RGE_Victory_Conditions::victory_achieved(void) {
@@ -1143,11 +1142,11 @@ unsigned char RGE_Victory_Conditions::victory_achieved(void) {
 }
 
 
-unsigned char RGE_Victory_Conditions::remove_condition(long index) {
+unsigned char RGE_Victory_Conditions::remove_condition(long condition) {
     int i = 0;
     RGE_Victory_Entry* entry = this->victory_list;
     while (entry) {
-        if (i == index) {
+        if (i == condition) {
             this->sub(entry);
             return 1;
         }
@@ -1159,7 +1158,7 @@ unsigned char RGE_Victory_Conditions::remove_condition(long index) {
 
 
 
-RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char p1, unsigned char p2) {
+RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char id, unsigned char group) {
     RGE_Victory_Point_Entry* entry = (RGE_Victory_Point_Entry*)calloc(1, 0x1c);
     if (entry != 0) {
         entry->state = 0;
@@ -1169,8 +1168,8 @@ RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char p1, uns
         entry->points = 0;
         entry->curr_points = 0;
         entry->next = this->victory_point_list;
-        entry->id = p1;
-        entry->group = p2;
+        entry->id = id;
+        entry->group = group;
         this->victory_point_list = entry;
         this->point_list_num++;
     }
@@ -1198,12 +1197,12 @@ void RGE_Victory_Conditions::sub_point(RGE_Victory_Point_Entry* entry) {
 }
 
 
-unsigned char RGE_Victory_Conditions::add_points_attribute_amount(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
-    RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
+unsigned char RGE_Victory_Conditions::add_points_attribute_amount(unsigned char group, unsigned char id, long attribute, long count, long points) {
+    RGE_Victory_Point_Entry* entry = this->add_point(id, group);
     if (entry != 0) {
         entry->attribute = attribute;
         entry->command = 0;
-        entry->amount = amount;
+        entry->amount = count;
         entry->points = points;
         return 1;
     }
@@ -1211,12 +1210,12 @@ unsigned char RGE_Victory_Conditions::add_points_attribute_amount(unsigned char 
 }
 
 
-unsigned char RGE_Victory_Conditions::add_points_attribute_first(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
-    RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
+unsigned char RGE_Victory_Conditions::add_points_attribute_first(unsigned char group, unsigned char id, long attribute, long count, long points) {
+    RGE_Victory_Point_Entry* entry = this->add_point(id, group);
     if (entry != 0) {
         entry->attribute = attribute;
         entry->command = 1;
-        entry->amount = amount;
+        entry->amount = count;
         entry->points = points;
         return 1;
     }
@@ -1224,12 +1223,12 @@ unsigned char RGE_Victory_Conditions::add_points_attribute_first(unsigned char p
 }
 
 
-unsigned char RGE_Victory_Conditions::add_points_highest_attribute(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
-    RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
+unsigned char RGE_Victory_Conditions::add_points_highest_attribute(unsigned char group, unsigned char id, long attribute, long count, long points) {
+    RGE_Victory_Point_Entry* entry = this->add_point(id, group);
     if (entry != 0) {
         entry->attribute = attribute;
         entry->command = 2;
-        entry->amount = amount;
+        entry->amount = count;
         entry->points = points;
         return 1;
     }
@@ -1237,12 +1236,12 @@ unsigned char RGE_Victory_Conditions::add_points_highest_attribute(unsigned char
 }
 
 
-unsigned char RGE_Victory_Conditions::add_points_high_attribute_once(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
-    RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
+unsigned char RGE_Victory_Conditions::add_points_high_attribute_once(unsigned char group, unsigned char id, long attribute, long count, long points) {
+    RGE_Victory_Point_Entry* entry = this->add_point(id, group);
     if (entry != 0) {
         entry->attribute = attribute;
         entry->command = 3;
-        entry->amount = amount;
+        entry->amount = count;
         entry->points = points;
         return 1;
     }
@@ -1250,12 +1249,12 @@ unsigned char RGE_Victory_Conditions::add_points_high_attribute_once(unsigned ch
 }
 
 
-unsigned char RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
-    RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
+unsigned char RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned char group, unsigned char id, long attribute, long count, long points) {
+    RGE_Victory_Point_Entry* entry = this->add_point(id, group);
     if (entry != 0) {
         entry->attribute = attribute;
         entry->command = 4;
-        entry->amount = amount;
+        entry->amount = count;
         entry->points = points;
         return 1;
     }
@@ -1263,51 +1262,51 @@ unsigned char RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned 
 }
 
 
-void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_Entry* param_1) {
-    if (param_1->state == 0) {
-        int iVar1 = (int)this->player->attributes[param_1->attribute];
-        int iVar2 = iVar1 / param_1->amount;
-        param_1->curr_attribute_amount = (float)iVar1;
-        if (iVar2 < 0) {
-            iVar2 = 0;
+void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_Entry* node) {
+    if (node->state == 0) {
+        int amount = (int)this->player->attributes[node->attribute];
+        int calculated_points = amount / node->amount;
+        node->curr_attribute_amount = (float)amount;
+        if (calculated_points < 0) {
+            calculated_points = 0;
         }
-        iVar2 = param_1->points * iVar2;
-        if (iVar2 != param_1->curr_points) {
-            this->tot_victory_points += iVar2 - param_1->curr_points;
-            param_1->curr_points = iVar2;
+        calculated_points = node->points * calculated_points;
+        if (calculated_points != node->curr_points) {
+            this->tot_victory_points += calculated_points - node->curr_points;
+            node->curr_points = calculated_points;
         }
     }
 }
 
 
 
-void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Entry* entry) {
+void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Entry* node) {
     RGE_Player* player;
     RGE_Victory_Point_Entry* p;
-    if (entry->state == 0) {
+    if (node->state == 0) {
         player = this->player;
-        p = entry;
-        int val = (int)player->attributes[p->attribute];
+        p = node;
+        int amount = (int)player->attributes[p->attribute];
         int points = p->points;
         RGE_Player** players = player->world->players;
-        p->curr_attribute_amount = (float)val;
-        if (val < p->amount) return;
+        p->curr_attribute_amount = (float)amount;
+        if (amount < p->amount) return;
 
-        val = 0;
+        amount = 0;
         int count = this->player->world->player_num;
         if (0 < count) {
             do {
-                if (val == this->player->id) {
-                    val = val + 1;
+                if (amount == this->player->id) {
+                    amount = amount + 1;
                     players = players + 1;
                 } else if ((float)p->amount > (*players)->attributes[p->attribute]) {
-                    val = val + 1;
+                    amount = amount + 1;
                     players = players + 1;
                 } else {
                     p->state = 1;
                     return;
                 }
-            } while (val < count);
+            } while (amount < count);
         }
         this->tot_victory_points += points - p->curr_points;
         p->curr_points = points;
