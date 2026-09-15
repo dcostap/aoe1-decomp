@@ -419,9 +419,9 @@ uchar RGE_Random_Map_Module::find_path(
 uchar RGE_Random_Map_Module::find_path(
     Map_Stack& path_stack, long x, long y, long& end_x, long& end_y,
     float* terrain) {
-    long map_w = this->map_width - 1;
-    long map_h = this->map_height - 1;
-    float ty = 0.0f;
+    long max_x = this->map_width - 1;
+    long max_y = this->map_height - 1;
+    float path_cost = 0.0f;
 
     this->clear_stack();
     memset(this->search_map, 0, this->map_height * this->map_width);
@@ -455,7 +455,7 @@ uchar RGE_Random_Map_Module::find_path(
         long next_y;
         uchar state;
 
-        if (y < map_h) {
+        if (y < max_y) {
             hcost = cost -
                 ((y < end_y) ? 1.0f : -1.0f);
             next_y = y + 1;
@@ -463,7 +463,7 @@ uchar RGE_Random_Map_Module::find_path(
             if (state == 0) {
                 tile_type = this->map_row_offset[next_y][x].terrain_type;
                 if (terrain[tile_type] > 0.0) {
-                    calc_cost = ty + terrain[tile_type];
+                    calc_cost = path_cost + terrain[tile_type];
                     this->search_map_rows[next_y][x] = 7;
                     this->push_stack(path_stack, x, next_y, calc_cost,
                                      calc_cost + hcost);
@@ -492,7 +492,7 @@ uchar RGE_Random_Map_Module::find_path(
             if (state == 0) {
                 tile_type = this->map_row_offset[next_y][x].terrain_type;
                 if (terrain[tile_type] > 0.0) {
-                    calc_cost = ty + terrain[tile_type];
+                    calc_cost = path_cost + terrain[tile_type];
                     this->search_map_rows[next_y][x] = 6;
                     this->push_stack(path_stack, x, next_y, calc_cost,
                                      calc_cost + hcost);
@@ -521,7 +521,7 @@ uchar RGE_Random_Map_Module::find_path(
             if (state == 0) {
                 tile_type = this->map_row_offset[y][next_x].terrain_type;
                 if (terrain[tile_type] > 0.0f) {
-                    calc_cost = ty + terrain[tile_type];
+                    calc_cost = path_cost + terrain[tile_type];
                     this->search_map_rows[y][next_x] = 4;
                     this->push_stack(path_stack, next_x, y, calc_cost,
                                      calc_cost + hcost);
@@ -548,7 +548,7 @@ uchar RGE_Random_Map_Module::find_path(
                     if (!(terrain[tile_type] > 0.0f)) {
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (up && side) {
-                        calc_cost = ty -
+                        calc_cost = path_cost -
                             terrain[tile_type] * DAT_00571e50;
                         this->search_map_rows[next_y][next_x] = 8;
                         this->push_stack(path_stack, next_x, next_y, calc_cost,
@@ -564,7 +564,7 @@ uchar RGE_Random_Map_Module::find_path(
                 }
             }
 
-            if (y < map_h) {
+            if (y < max_y) {
                 next_y = y + 1;
                 state = this->search_map_rows[next_y][next_x];
                 if (state == 0) {
@@ -573,7 +573,7 @@ uchar RGE_Random_Map_Module::find_path(
                     if (!(terrain[tile_type] > 0.0f)) {
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (down && side) {
-                        calc_cost = ty -
+                        calc_cost = path_cost -
                             terrain[tile_type] * DAT_00571e50;
                         this->search_map_rows[next_y][next_x] = 9;
                         this->push_stack(path_stack, next_x, next_y, calc_cost,
@@ -590,7 +590,7 @@ uchar RGE_Random_Map_Module::find_path(
             }
         }
 
-        if (x < map_w) {
+        if (x < max_x) {
             hcost = cost -
                 ((x < end_x) ? 1.0f : -1.0f);
             next_x = x + 1;
@@ -598,7 +598,7 @@ uchar RGE_Random_Map_Module::find_path(
             if (state == 0) {
                 tile_type = this->map_row_offset[y][next_x].terrain_type;
                 if (terrain[tile_type] > 0.0f) {
-                    calc_cost = ty + terrain[tile_type];
+                    calc_cost = path_cost + terrain[tile_type];
                     this->search_map_rows[y][next_x] = 5;
                     this->push_stack(path_stack, next_x, y, calc_cost,
                                      calc_cost + hcost);
@@ -625,7 +625,7 @@ uchar RGE_Random_Map_Module::find_path(
                     if (!(terrain[tile_type] > 0.0f)) {
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (up && side) {
-                        calc_cost = ty -
+                        calc_cost = path_cost -
                             terrain[tile_type] * DAT_00571e50;
                         this->search_map_rows[next_y][next_x] = 10;
                         this->push_stack(path_stack, next_x, next_y, calc_cost,
@@ -641,7 +641,7 @@ uchar RGE_Random_Map_Module::find_path(
                 }
             }
 
-            if (y < map_h) {
+            if (y < max_y) {
                 next_y = y + 1;
                 state = this->search_map_rows[next_y][next_x];
                 if (state == 0) {
@@ -650,7 +650,7 @@ uchar RGE_Random_Map_Module::find_path(
                     if (!(terrain[tile_type] > 0.0f)) {
                         this->search_map_rows[next_y][next_x] = 1;
                     } else if (down && side) {
-                        calc_cost = ty -
+                        calc_cost = path_cost -
                             terrain[tile_type] * DAT_00571e50;
                         this->search_map_rows[next_y][next_x] = 11;
                         this->push_stack(path_stack, next_x, next_y, calc_cost,
@@ -667,7 +667,7 @@ uchar RGE_Random_Map_Module::find_path(
             }
         }
 
-        if (this->pop_stack(path_stack, x, y, ty) == 0) {
+        if (this->pop_stack(path_stack, x, y, path_cost) == 0) {
             return 0;
         }
     }
