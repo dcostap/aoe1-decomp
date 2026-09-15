@@ -5,7 +5,7 @@
 - Module: `src/aibldmod.cpp`
 - Branch: `cleanup/staging-20260915-53`
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final module code commit: `9f6b6017a31a4474860ff7c0af427fe088f3cfe3`
+- Final module code commit: `022396649e084d169c083353c5438e98e087700f`
 - Durable report follows the module code commit in a separate commit.
 - Changed files:
   - `src/aibldmod.cpp`
@@ -42,6 +42,18 @@ Recovered PDB names changed in the source:
 The source had no new cleanup names. Existing local names without a PDB
 mapping remain unchanged. This includes loop, sentinel, item, and `saveID`
 locals. No reused stack-slot mapping was forced.
+
+## Correction history
+
+- Round `r2` source commit: `022396649e084d169c083353c5438e98e087700f`.
+- Split the four `save` declarations into separate existing declaration
+  lines.
+- Split each packed `save` statement into its original statements, in the
+  same order.
+- Kept the constructor continuation indentation and compacted the readable
+  `insertItem` definition signature to one line.
+- No declaration, type, scope, call, argument, expression, or control-flow
+  change was made.
 
 ## PDB coverage
 
