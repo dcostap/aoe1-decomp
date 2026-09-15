@@ -5,7 +5,7 @@
 - Source: `src/m_s_obj.cpp`
 - Header owner: owner 08 owns `include/m_s_obj.h`.
 - Base commit: `ef1c4d2e33bac077e7e4e21598f1c18722a721c6`
-- Final cleanup commit: recorded after the source and report commit.
+- Final cleanup commit: `09b834b0424fafd7c2ff0a9075379b8d1c205592`
 - Changed files:
   - `src/m_s_obj.cpp`
   - `decomp_notes/source_cleanup/wave02/m_s_obj.md`
@@ -119,4 +119,4 @@ No resource-ID or shared declaration request is pending.
 
 I reviewed the complete source diff. I ran `git diff --check`.
 Compilation, matching, audits, and tests were not run, as required for this wave.
-The final commit hash is recorded in the delivery update after commit.
+The cleanup commit hash above was copied from Git after commit.
