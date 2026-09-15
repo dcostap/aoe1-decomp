@@ -995,7 +995,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
     long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     long ideal_w = (width * this->pnl_wid) / this->ideal_width;
-    long h = (height * this->pnl_hgt) / this->ideal_height;
+    long ideal_h = (height * this->pnl_hgt) / this->ideal_height;
 
     *text_panel = new TTextPanel;
     if (*text_panel != 0 && (*text_panel)->error_code == 0) {
