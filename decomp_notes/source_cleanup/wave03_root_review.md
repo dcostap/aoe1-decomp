@@ -1,5 +1,13 @@
 # Cleanup wave 03 root review
 
+## Owner 21: final correction review started
+
+Delivered head: `3e9996a496dd7b2bd934698a46fa4e2effb628f2`.
+The complete 1,631-line correction diff is `build/source-cleanup-20260915/owner21-corrections.diff`.
+Original reviewer `sa-68c501de` resumed to review all three blockers, resource substitutions, and changed reports.
+The assignment specifically checks retained long literals, unrelated help values, and civilization lookup arithmetic.
+The group remains unmerged and unvalidated until that review completes.
+
 ## Owner 16: final report correction approved
 
 Root read the complete final diff to `41abb6751ca915b6136b8a1c6c777baeb988ab3d`.
