@@ -1,5 +1,12 @@
 # Cleanup wave 03 root review
 
+## Owner 16: delegated review started
+
+Delivered head: `71a6c8c56b8891e235f120a437be575c7b19d71b`.
+Root saved the complete 10,009-line diff as `build/source-cleanup-20260915/owner16-review.diff`.
+Reviewer `sa-63de0de9` now reviews the complete group and its evidence.
+This uses the third reviewer slot. The group remains unmerged and unvalidated.
+
 ## Owner 15: restore two evidence comments
 
 Reviewer `sa-cc2cddfa` read all 10,442 diff lines and all group reports at `0d72737ebab2a2e084ce4d5ee63eca45a697141a`.
