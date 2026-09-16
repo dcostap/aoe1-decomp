@@ -370,6 +370,10 @@ Supporting results and limits: [array recovery evidence](decomp_notes/array_reco
 - Source case order can control emitted handler order.
 - PDB line order can reveal handler order when decompiler output sorts cases.
 - Stacked case labels share one body. Separate cases can duplicate it.
+- One dispatch table slot covers each run of adjacent case values. Count the runs
+  to prove how many labels the original source held.
+- A dense case group that shares one body can hide a missing fall-through to the
+  default body. Compare the resolved target of every state.
 - Use `break` to one post-switch return when the executable has a shared tail.
 - Use per-case helper returns when helper tails are duplicated.
 - Mixed return placement can produce required handler merge groups.

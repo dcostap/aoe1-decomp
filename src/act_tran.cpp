@@ -83,7 +83,7 @@ void RGE_Action_Transport::set_state(unsigned char new_state) {
 
 unsigned char RGE_Action_Transport::update(void) {
     switch (this->state) {
-    case 4: {
+    case 0x0B: {
         unsigned char result = this->sub_actions->update();
         if (result > 0 && result <= 5) {
             this->set_state(2);
@@ -92,7 +92,7 @@ unsigned char RGE_Action_Transport::update(void) {
         return 0;
     }
 
-    case 0x0B: {
+    case 4: {
         unsigned char result = this->sub_actions->update();
         if (result > 0 && result <= 5) {
             this->set_state(6);

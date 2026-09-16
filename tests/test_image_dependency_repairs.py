@@ -12,7 +12,7 @@ import sys
 import pefile
 import pytest
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
-from capstone.x86 import X86_OP_IMM
+from capstone.x86 import X86_OP_IMM, X86_OP_MEM
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from audit_image_dependencies import check_code
@@ -24,6 +24,7 @@ from reference_identity import original_identities
 ORIGINAL_HASH = '88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90'
 # Original instruction offsets, read widths, and stored bytes.
 LITERALS = {
+    0x42FC90: (9, {0: (4, '0000803f')}),
     0x460EB0: (143, {11: (8, 'f1d4c853fb211940'), 50: (4, 'db0fc9c0'),
                      73: (8, 'f1d4c853fb211940'), 86: (4, 'db0fc940'),
                      92: (8, 'f1d4c853fb211940')}),
@@ -81,9 +82,9 @@ def test_exact_numeric_operands(image, original, va):
     assert set(reads) == set(expected), 'A lost aligned window is not a passing repair'
     for offset, (width, value) in expected.items():
         row = reads[offset]
+        assert row['result'] == 'pass', row
         assert row['size'] == width
         assert row['original_hex'] == row['rebuilt_hex'] == value
-        assert row['result'] == 'pass'
 
 
 def test_modify_percent_case_meanings(image):
@@ -125,6 +126,97 @@ def test_draw_front_frame_case_meanings(image):
     for target in targets[2:]:
         assert direct_target(pe, target + 15) == address(0x4C2B50)
     assert raw(pe, start + 0x7A, 3).hex() == 'c20c00'  # default: return
+
+
+def test_conversion_action_state_dispatch(image):
+    pe, address = image
+    start = address(0x4CE070)
+    # The unsigned state selects one of seven handlers through a byte table.
+    assert raw(pe, start + 0xD7, 11).hex() == '33c08a460c4883f80c0f87'
+    fallback = start + 0xE6 + struct.unpack('<i', raw(pe, start + 0xE2, 4))[0]
+    assert fallback == start + 0x382
+    assert raw(pe, start + 0xE6, 4).hex() == '33c98a88'
+    selector = struct.unpack('<I', raw(pe, start + 0xEA, 4))[0]
+    indices = raw(pe, selector, 13)
+    assert raw(pe, start + 0xEE, 3).hex() == 'ff248d'
+    table = struct.unpack('<I', raw(pe, start + 0xF1, 4))[0]
+    targets = struct.unpack('<7I', raw(pe, table, 28))
+    expected = {1: 0x34B, 4: 0x124, 6: 0x17C, 7: 0x1BD,
+                11: 0xF5, 13: 0x353}
+    for state in range(256):
+        index = (state - 1) & 0xFFFFFFFF
+        target = fallback if index > 12 else targets[indices[index]]
+        assert target == start + expected.get(state, 0x382), f'state {state}'
+    # Original tables 004CE428 and 004CE43C assign different move results.
+    for jump, offsets in [(0x10C, (0x1C4, 0x1C4, 0x113, 0x142, 0x1C4)),
+                          (0x13B, (0x16B, 0x16B, 0x15A, 0x142, 0x142))]:
+        assert raw(pe, start + jump, 3).hex() == 'ff2485'
+        table = struct.unpack('<I', raw(pe, start + jump + 3, 4))[0]
+        assert struct.unpack('<5I', raw(pe, table, 20)) == tuple(start + n for n in offsets)
+    # Successful state-4 movement must select turning, not idle.
+    assert raw(pe, start + 0x16B, 4).hex() == '8b066a06'
+    assert raw(pe, start + 0x1C4, 4).hex() == '8b166a03'
+
+
+def test_transport_action_state_dispatch(image):
+    pe, address = image
+    start = address(0x406F90)
+    decoder = Cs(CS_ARCH_X86, CS_MODE_32)
+    decoder.detail = True
+    head = list(decoder.disasm(raw(pe, start, 48), start))
+    # The byte at offset 0x0C selects one of six handlers through two tables.
+    byte_loads = [ins.operands[1].mem.disp for ins in head if ins.mnemonic == 'mov'
+                  and len(ins.operands) == 2 and ins.operands[1].type == X86_OP_MEM
+                  and ins.operands[0].size == 1]
+    jump = next(ins for ins in head if ins.mnemonic == 'jmp'
+                and ins.operands[0].type == X86_OP_MEM)
+    table = jump.operands[0].mem.disp
+    assert byte_loads[0] == 0xC
+    selector = next(disp for disp in byte_loads[1:] if disp != table)
+    assert raw(pe, selector, 13).hex() == '00050501050205050505030504'
+    targets = struct.unpack('<6I', raw(pe, table, 24))
+    offsets = {state: targets[index] - start
+               for state, index in ((n, raw(pe, selector + n - 1, 1)[0]) for n in range(1, 14))}
+    # States 4 and 0x0B run the same sub-action, but they end in different states.
+    assert offsets == {1: 360, 2: 409, 3: 409, 4: 72, 5: 409, 6: 110,
+                       7: 409, 8: 409, 9: 409, 10: 409, 11: 34, 12: 409, 13: 365}
+    for state, destination in ((4, 6), (0x0B, 2)):
+        handler = []
+        for ins in decoder.disasm(raw(pe, start + offsets[state], 40), start + offsets[state]):
+            handler.append(ins)
+            if ins.mnemonic == 'ret':
+                break
+        pushed = [ins.operands[0].imm for ins in handler if ins.mnemonic == 'push']
+        assert pushed == [destination], f'state {state}'
+        assert handler[-1].mnemonic == 'ret'
+
+
+def test_selector_table_dispatch_is_compared(image, original):
+    pe, address = image
+    rows = check_code(original, pe, 0x406F90, address(0x406F90), 464, {}, [])
+    tables = [row for row in rows if row['kind'] == 'selector_table']
+    assert len(tables) == 13, rows[:3]
+    assert all(row['result'] == 'pass' for row in tables), \
+        [row for row in tables if row['result'] != 'pass']
+
+
+def test_artifact_notify_dispatch_keeps_the_default_body(image, original):
+    # The original switch covers event types 0x1F4..0x2BB. Only 28 of the 200
+    # values return at once. The other 167 fall through to the default body,
+    # which clears the target, stops the object, and notifies the commander.
+    pe, address = image
+    rows = check_code(original, pe, 0x507A30, address(0x507A30), 848, {}, [])
+    tables = [row for row in rows if row['kind'] == 'selector_table']
+    assert len(tables) == 200, len(tables)
+    assert all(row['result'] == 'pass' for row in tables), \
+        [row for row in tables if row['result'] != 'pass'][:3]
+    default = [row for row in tables if row['original_target'] == '00507D2C']
+    direct = [row for row in tables if row['original_target'] == '00507D74']
+    assert len(default) == 167 and len(direct) == 28
+    assert len({row['rebuilt_target'] for row in default}) == 1
+    assert len({row['rebuilt_target'] for row in direct}) == 1
+    assert set(row['rebuilt_target'] for row in default) != \
+        set(row['rebuilt_target'] for row in direct)
 
 
 @pytest.mark.parametrize('va,count', [(0x438670, 2), (0x438720, 2),
