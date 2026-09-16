@@ -1,4 +1,4 @@
-"""Run scripted smoke and both permanent human-input cases on both executables."""
+"""Run scripted smoke, human-input cases, and native feature maps on both executables."""
 import argparse
 import hashlib
 import json
@@ -9,22 +9,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from game import ROOT, run_worker, stamp
 from human_session import load_recording, compare_inputs, inputs
 from human_compare import load_batch, compare_captures
-from human_session import V1_TO_V4_UPGRADE, V4_POLICY, V4_TEMPLATE_SHA256
+from human_session import V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE, execution_plan
 from human_repeatability import compare as compare_repeatability
+from prepare_runtime import save_fixtures
 import itertools
 
 RECORDING = ROOT / 'config/harness/human-accepted-20260914.json'
 RECORDING_SHA256 = 'a320c5d68b8b6f2e49d5d9963e60bc3455c177deac2909d5795ab19e02510e4d'
 SCOPE = ('Exact observed comparisons, including clock differences. No pixel masks or timing tolerances. '
          'Full RNG capture uses the read-only observer. Observer neutrality and full hidden-state equivalence remain unproved.')
-CONTROLLED_SCOPE = ('Original and rebuilt executions use the same explicit v4 control profile. '
-    'The unchanged v1 recordings supply messages, routes, and turn/panel schedules, not expected v4 clocks or world-update counts. '
+CONTROLLED_SCOPE = ('Each human case uses the same controlled profile on both executables: v4 for v1 inputs, v6 for v5 saved-game inputs. '
+    'Unchanged recordings supply messages, routes, and turn/panel schedules, not expected controlled clocks or world-update counts. '
     'Historical recording fidelity stays visible. All cross-run clock, state, RNG, and RGB checks remain exact. '
     'This does not reproduce the missing v1 timer history or prove complete hidden-state equivalence.')
 CONTROLLED_CASES = (
     ('accepted', RECORDING, RECORDING_SHA256, 324),
     ('candidate', ROOT / 'config/harness/human-candidate-20260915.json',
      '60c04e651b19d144cd033ffcc5ed2bdff1bfe75629b036f493d8db497e4b832e', 1361),
+    ('late-game-match', ROOT / 'config/harness/human-late-game-match.json',
+     '07f2a4900af0f0c769224f1c9d5c9f561fce7d2aff16cdfdcaf300797f0fb5a6', 559),
 )
 
 
@@ -147,24 +150,39 @@ def controlled_recordings():
         recording = load_recording(path)
         if recording.get('automated_smoke') is not False or len(recording['events']) != count:
             raise ValueError(f'Invalid {name} input recording.')
+        if recording['policy'] == V5_POLICY:
+            recorded_saves = {key:value for key,value in recording['contract']['assets'].items()
+                              if key.replace('\\', '/').lower().startswith('savegame/')}
+            current_saves = {'savegame/' + row['name']:row['sha256'] for _,row in save_fixtures()}
+            if recorded_saves != current_saves:
+                raise ValueError(f'The {name} save fixtures differ from its recording contract.')
         recordings[name] = recording
     return recordings
+
+
+def feature_fixtures():
+    from feature_lab import FIXTURES, validate_fixture
+    return {name: validate_fixture(path) for name, path in FIXTURES}
 
 
 def controlled_result(original_path, rebuilt_path, recording, recording_sha):
     result = {'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE,
               'recording_sha256':recording_sha, 'recording_fidelity':[]}
     try:
+        expected_control = execution_plan({'schema':1, 'mode':'replay',
+            **{key:recording[key] for key in ('duration_ms','events','contract')},
+            'recording_sha256':recording_sha,
+            'upgrade_rule':V5_TO_V6_UPGRADE if recording['policy'] == V5_POLICY else V1_TO_V4_UPGRADE})
         captures = load_batch(original_path, True) + load_batch(rebuilt_path, False)
         for capture in captures:
             report = capture['report']
             session = report['fixture']['human']
             control = report.get('human_control') or {}
             if (session.get('observe') is not True or session.get('combat') is not True or session.get('rng_only') or session.get('message_noise') or
-                    control.get('upgrade_rule') != V1_TO_V4_UPGRADE or control.get('same_policy_replay') is not False or
-                    control.get('executed_policy') != V4_POLICY or control.get('executed_script_sha256') != V4_TEMPLATE_SHA256 or
-                    control.get('recording_sha256') != recording_sha):
-                raise ValueError('The controlled case requires its explicit v4 profile and world/RNG observers.')
+                    control.get('same_policy_replay') is not False or
+                    any(control.get(key) != value for key,value in expected_control.items()) or
+                    report.get('script_sha256') != expected_control['executed_script_sha256']):
+                raise ValueError('The controlled case requires its pinned profile and world/RNG observers.')
             if any(session[key] != recording[key] for key in ('duration_ms','events','contract')):
                 raise ValueError('Capture does not use the pinned input recording.')
             result['recording_fidelity'].append(compare_inputs(recording['events'], inputs(report)))
@@ -182,6 +200,7 @@ def run_suite(output, runner=run_worker):
     result = {'schema':2, 'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE, 'workers':[], 'human':{}}
     try:
         recordings = controlled_recordings()
+        feature_fixtures()
         python = str(ROOT / 'build/harness-env/Scripts/python.exe')
         scripted = output / 'scripted'
         commands = [('scripted', [python, str(ROOT / 'tools/harness/replay.py'),
@@ -192,7 +211,9 @@ def run_suite(output, runner=run_worker):
                 label = name + '-' + target
                 commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
                     '--recording',str(path),'--target',target,'--runs','3','--observe','--combat',
-                    '--upgrade-v1-to-v4','--output',str(output / label)], 1170))
+                    '--controlled','--output',str(output / label)], 1170))
+        commands.append(('native-features', [python, str(ROOT / 'tools/harness/feature_lab.py'),
+            'test-all', '--runs', '3', '--output', str(output / 'native-features')], 3600))
         for name, command, timeout in commands:
             row = {'name':name,'command':command,'returncode':None}
             result['workers'].append(row)
@@ -207,10 +228,16 @@ def run_suite(output, runner=run_worker):
         for name, path, sha, count in CONTROLLED_CASES:
             result['human'][name] = controlled_result(output / (name + '-original/report.json'),
                 output / (name + '-rebuilt/report.json'), recordings[name], sha)
+        try:
+            result['features'] = json.loads((output / 'native-features/report.json').read_text())
+        except (OSError,ValueError) as error:
+            result['features'] = {'complete':False, 'passed':False, 'error':str(error)}
         result['complete'] = ('error' not in result['scripted'] and all(case['complete'] for case in result['human'].values()) and
+                              result['features'].get('complete') is True and
                               all(row['returncode'] is not None for row in result['workers']))
         result['passed'] = (result['complete'] and result['scripted'].get('passed') is True and
                             all(case['passed'] for case in result['human'].values()) and
+                            result['features'].get('passed') is True and
                             all(row['returncode'] == 0 for row in result['workers']))
     except (OSError,ValueError) as error:
         result['error'] = str(error)
@@ -221,11 +248,13 @@ def run_suite(output, runner=run_worker):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path)
-    parser.add_argument('--check-fixtures', action='store_true', help='Check both permanent recordings without running games')
-    parser.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite instead of controlled v4 cases')
+    parser.add_argument('--check-fixtures', action='store_true', help='Check all permanent recordings and required saves without running games')
+    parser.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite instead of controlled cases')
     args = parser.parse_args()
     if args.check_fixtures:
         accepted_recording() if args.legacy else controlled_recordings()
+        if not args.legacy:
+            feature_fixtures()
         print('Pinned input fixtures checked; no games started.')
         return 0
     output = args.output or ROOT / 'build/runtime' / ('parity-' + stamp())

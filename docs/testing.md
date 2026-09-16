@@ -113,16 +113,18 @@ game.cmd test-parity
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
 See [the runtime harness](runtime_harness.md) for its setup, reports, and coverage.
 
-`test-parity` runs the short new-game script and the 324-message and 1,361-message human-input cases.
+`test-parity` runs the short new-game script and three permanent human-input cases.
+The new-game recordings contain 324 and 1,361 messages. The `late-game-match` saved-game recording contains 559 messages.
 Each case runs three originals and three rebuilt games.
 Each human case checks all 15 pairs, including within-executable and cross-executable comparisons.
 It compares inputs, clocks, all captured state observations, terminal observations, complete RNG records, and raw RGB hashes.
 Missing world entry/exit observations or complete RNG evidence fail the check.
 Reports and videos remain under `build/runtime/`.
 
-`game.cmd test-parity --check-fixtures` checks both permanent fixtures without running games.
+`game.cmd test-parity --check-fixtures` checks all three recording hashes and required save hashes without running games.
 It is not a gameplay pass.
-The human cases now use explicit v4 control. They suppress native timer messages and control queued paint delivery.
+The new-game cases use explicit v4 control. The saved-game case uses v6 control with its strict save contract.
+Both profiles suppress native timer messages and control queued paint delivery.
 They use an input-relative terminal turn and preserve synchronous game-requested paints.
 They compare new executions under the same profile, not historical v1 clocks or world-update counts.
 The recorded messages, routes, turns, and target panels remain required.
@@ -130,9 +132,18 @@ The recordings remain unchanged. Reports keep their historical timing difference
 Use `game.cmd test-parity --legacy` for the old same-policy v1 suite and its known repeatability failures.
 An unexpected control profile still fails validation. No state alignment, pixel masks, or timing tolerances apply.
 
-New-game starting-asset comparisons ignore `.gam` and `.gmx` files beneath `savegame`.
-Adding personal saves does not block these replays. Other asset checks and full manifests remain.
-This does not establish saved-game loading coverage.
+Harness runs stage only the repository saves pinned by `config/harness/savegames.json`.
+They exclude the local runtime's `savegame` directory. Each run uses private fixture copies.
+Legacy new-game comparisons still ignore save hashes. New v5/v6 human profiles check all save inputs.
+The supplied `late_game_match.gmx` and its 559-message recording are now part of the default parity suite.
+Its recorded input case passed three original repeat comparisons under v6 with the required observers.
+See [the saved-game check record](../decomp_notes/saved_game_fixture_20260916.md).
+The first rebuilt replay failed on RNG, clock, state, and image differences.
+After the score-name, conversion-state, and attack-multiplier repairs, three rebuilt runs matched the three qualified originals.
+All 559 inputs, 15,991 RNG records, captured clocks and state, and 3,898 image samples matched.
+All 15 pair checks passed in `build/validation/late-game-suite/qualification.json`.
+This qualification used fresh rebuilt runs and the earlier qualified original captures, not a fresh complete suite run.
+General saved-game coverage remains unproved.
 
 See [gameplay replay](behavior_replay.md) and [human recording/replay](human_replay.md).
 

@@ -129,3 +129,114 @@ def test_game_command_routes_to_standard_suite(monkeypatch):
     monkeypatch.setattr(game.subprocess, 'run', run)
     assert game.main() == 1
     assert calls[0][1].endswith('parity_suite.py')
+
+
+def test_default_fixtures_include_the_pinned_saved_game():
+    recordings = suite.controlled_recordings()
+    assert set(recordings) == {'accepted', 'candidate', 'late-game-match'}
+    recording = recordings['late-game-match']
+    assert len(recording['events']) == 559
+    assert recording['policy'] == suite.V5_POLICY
+    assert recording['contract']['assets']['savegame/late_game_match.gmx'] == (
+        'fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4')
+
+
+@pytest.mark.parametrize('failure', [None, 'scripted', 'late-game-match-original', 'late-game-match-rebuilt', 'native-features'])
+def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch, failure):
+    commands = []
+    def runner(command, log, timeout, visible):
+        commands.append(command)
+        output = Path(command[command.index('--output') + 1])
+        output.mkdir()
+        passed = output.name != failure
+        (output / 'report.json').write_text(json.dumps({'complete': True, 'passed': passed}))
+        assert timeout > 0 and visible is False
+        return 0 if passed else 1
+    monkeypatch.setattr(suite, 'controlled_result', lambda *args: {'complete': True, 'passed': True})
+    result = suite.run_suite(tmp_path / 'run', runner)
+    assert len(commands) == 8
+    assert set(result['human']) == {'accepted', 'candidate', 'late-game-match'}
+    expected = [(path, target) for _,path,_,_ in suite.CONTROLLED_CASES for target in ('original', 'rebuilt')]
+    for command, (path, target) in zip(commands[1:-1], expected):
+        assert command[command.index('--recording') + 1] == str(path)
+        assert command[command.index('--target') + 1] == target
+        assert command[command.index('--runs') + 1] == '3'
+        assert all(flag in command for flag in ('--controlled', '--observe', '--combat'))
+        assert '--upgrade-v1-to-v4' not in command and '--rng-only' not in command
+    assert commands[-1][1].endswith('feature_lab.py') and commands[-1][2] == 'test-all'
+    assert commands[-1][commands[-1].index('--runs') + 1] == '3'
+    assert result['complete'] is True
+    assert result['passed'] is (failure is None)
+
+
+def test_native_fixture_failure_starts_no_suite_games(tmp_path, monkeypatch):
+    def reject():
+        raise ValueError('Changed native save fixture')
+    monkeypatch.setattr(suite, 'feature_fixtures', reject)
+    result = suite.run_suite(tmp_path / 'run', lambda *args: pytest.fail('Started a game'))
+    assert result['passed'] is False and result['workers'] == []
+
+
+def test_all_native_fixtures_are_permanent():
+    fixtures = suite.feature_fixtures()
+    assert set(fixtures) == {'civilizations-1-8', 'civilizations-9-16', 'chaos-battle'}
+    assert {row['generator']['civilization_offset'] for row in fixtures.values()} == {0, 8}
+    assert fixtures['chaos-battle']['layout'] == 'chaos'
+
+
+def test_changed_saved_recording_starts_no_games(tmp_path, monkeypatch):
+    name, original, sha, count = suite.CONTROLLED_CASES[-1]
+    changed = tmp_path / 'changed.json'
+    changed.write_bytes(original.read_bytes() + b' ')
+    monkeypatch.setattr(suite, 'CONTROLLED_CASES', ((name, changed, sha, count),))
+    result = suite.run_suite(tmp_path / 'run', lambda *args: pytest.fail('Started a game'))
+    assert result['passed'] is False and result['workers'] == []
+    assert 'recording changed' in result['error']
+
+
+def test_changed_save_set_starts_no_games(tmp_path, monkeypatch):
+    monkeypatch.setattr(suite, 'save_fixtures', lambda: [])
+    result = suite.run_suite(tmp_path / 'run', lambda *args: pytest.fail('Started a game'))
+    assert result['passed'] is False and result['workers'] == []
+    assert 'save fixtures differ' in result['error']
+
+
+@pytest.mark.parametrize('case', ['accepted', 'late-game-match'])
+@pytest.mark.parametrize('change', [None, 'profile', 'upgrade', 'same_policy', 'recording', 'script', 'observer', 'save', 'pair'])
+def test_controlled_case_requires_its_profile_and_all_pairs(monkeypatch, case, change):
+    import human_session as human
+    name, path, sha, count = next(row for row in suite.CONTROLLED_CASES if row[0] == case)
+    recording = suite.controlled_recordings()[name]
+    session = {key: copy.deepcopy(recording[key]) for key in ('duration_ms', 'events', 'contract')}
+    session.update(schema=1, mode='replay', observe=True, combat=True, recording_sha256=sha,
+                   upgrade_rule=human.V5_TO_V6_UPGRADE if case == 'late-game-match' else human.V1_TO_V4_UPGRADE)
+    control = human.execution_plan(session)
+    assert control['executed_policy'] == (human.V6_POLICY if case == 'late-game-match' else human.V4_POLICY)
+    capture = {'report': {'fixture': {'human': session}, 'human_control': control,
+        'script_sha256': control['executed_script_sha256'],
+        'events': [dict(event, kind='human-input') for event in recording['events']]}}
+    captures = [copy.deepcopy(capture) for _ in range(6)]
+    report = captures[0]['report']
+    if change == 'profile':
+        report['human_control']['executed_policy'] = 'wrong-profile'
+    elif change == 'upgrade':
+        report['human_control']['upgrade_rule'] = None
+    elif change == 'same_policy':
+        report['human_control']['same_policy_replay'] = 0
+    elif change == 'recording':
+        report['human_control']['recording_sha256'] = '0' * 64
+    elif change == 'script':
+        report['script_sha256'] = '0' * 64
+    elif change == 'observer':
+        report['fixture']['human']['combat'] = False
+    elif change == 'save':
+        report['fixture']['human']['contract']['assets']['savegame/late_game_match.gmx'] = 'changed'
+    pairs = []
+    def compare(left, right):
+        pairs.append((left, right))
+        return {'passed': not (change == 'pair' and len(pairs) == 15)}
+    monkeypatch.setattr(suite, 'load_batch', lambda path, original: captures[:3] if original else captures[3:])
+    monkeypatch.setattr(suite, 'compare_repeatability', compare)
+    result = suite.controlled_result(Path('original'), Path('rebuilt'), recording, sha)
+    assert result['passed'] is (change is None)
+    assert len(pairs) == (15 if change in (None, 'pair') else 0)

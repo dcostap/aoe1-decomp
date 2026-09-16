@@ -8,13 +8,19 @@ This experimental mode compares game behavior beyond pixels. It does not replace
 game.cmd test-parity
 ```
 
-Use this command for gameplay parity checks. It runs the short script and two controlled human-input cases.
-Each case runs three fresh originals and three fresh rebuilt games: 18 executions in total.
-The human cases use `config/harness/human-accepted-20260914.json` and `config/harness/human-candidate-20260915.json`.
-Their 324 and 1,361 messages remain unchanged. The suite checks both pinned hashes before starting games.
+Use this command for gameplay parity checks. It runs the short script and three controlled human-input cases.
+Each case runs three fresh originals and three fresh rebuilt games: 24 executions in total.
+The human cases use these unchanged recordings under `config/harness/`:
+
+- `human-accepted-20260914.json`: 324 messages, new game.
+- `human-candidate-20260915.json`: 1,361 messages, new game.
+- `human-late-game-match.json`: 559 messages, loads the pinned `late_game_match.gmx` save.
+
+The suite checks all recording hashes and required save hashes before starting games.
 The historical `source_report` path records provenance. Replay does not need that old report.
-The human cases explicitly use v4 control, not the original v1 timing.
-V4 suppresses native game-thread timer messages and controls queued root-window paints at idle boundaries.
+The new-game cases upgrade v1 inputs to v4 control. The saved-game case upgrades v5 inputs to v6 control.
+Both controlled profiles suppress native game-thread timer messages and control queued root-window paints at idle boundaries.
+V6 also preserves the strict repository-save contract. Personal saves cannot enter the test.
 Synchronous game-requested paints remain intact. Replay stops eight idle turns after the final recorded input.
 The original executable supplies expected behavior under this shared control profile.
 The reports preserve historical recording fidelity, including its different clock values and world-update counts.
@@ -32,15 +38,15 @@ Observer neutrality and complete hidden-state equivalence remain unproved.
 Reports and videos remain under `build/runtime/`. The suite report uses `build/runtime/parity-*/report.json`.
 Only exact equality of the checked observations returns zero. Missing evidence or observed differences return one.
 A failure does not by itself prove a game-code defect. Original repeatability can also fail.
-Both human cases still run when the short script finds differences.
+All human cases still run when an earlier case finds differences.
 
 Use `game.cmd test-parity --legacy` to run the former same-policy v1 suite.
 It retains its strict old timing checks and known repeatability failures. V1 recordings and templates remain unchanged.
-Recording new user input still uses v2. Use `--controlled` when replaying it for repeatable controlled-input comparisons.
+Recording new user input uses v5. Use `--controlled` when replaying it for controlled-input comparisons.
 See [human replay](human_replay.md#controlled-input-replay-v4) for commands and limits.
 
 `python -m pytest -q` checks the fixture and suite routing without starting games.
-`game.cmd test-parity --check-fixtures` checks both permanent recordings without starting games.
+`game.cmd test-parity --check-fixtures` checks all three recordings and required saves without starting games.
 The commands below are focused checks, not substitutes for the standard suite.
 
 ## Run a short replay
