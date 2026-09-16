@@ -3351,6 +3351,7 @@ int scr_game_score_compare(const void* arg1, const void* arg2) {
 
 void TRIBE_Screen_Game::reset_score_display() {
     int player_count;
+    int low_fps_player;
     int team_count;
     int team;
     int player_num;
@@ -3433,7 +3434,7 @@ void TRIBE_Screen_Game::reset_score_display() {
 
     qsort(player_score, rge_base_game->numberPlayers(), sizeof(PLAYER_SCORE),
           scr_game_score_compare);
-    player_score[0].comm_id = 0;
+    low_fps_player = 0;
 
     if (rge_base_game->multiplayerGame() != 0) {
         unsigned int best_speed = 0x0B;
@@ -3452,7 +3453,7 @@ void TRIBE_Screen_Game::reset_score_display() {
                     speed = 1;
                 }
                 if (speed < best_speed) {
-                    player_score[0].comm_id = player_score[score_index].comm_id;
+                    low_fps_player = player_score[score_index].comm_id;
                     best_speed = speed;
                 }
             }
@@ -3535,7 +3536,7 @@ void TRIBE_Screen_Game::reset_score_display() {
             comm->GetPlayerHumanity(score->comm_id) == 2) {
             unsigned long latency =
                 comm->Speed->GetPlayerLatency(score->comm_id);
-            if (score->comm_id == player_score[0].comm_id) {
+            if (score->comm_id == low_fps_player) {
                 icon2 = this->button_pics;
                 icon_frame2 = 0x11;
             }

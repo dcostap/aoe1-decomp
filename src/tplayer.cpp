@@ -53,7 +53,7 @@ unsigned long tribe_group_properties[0x28] = {
 };
 int tribe_group_properties_num = 0x28;
 
-static char tplayerSourceName[] = "C:/msdev/work/age1_x1/tplayer.cpp";
+static char tplayerSourceName[] = "C:\\msdev\\work\\age1_x1\\tplayer.cpp";
 static char tplayerEmptyName[] = "";
 static char tplayerRandomName[] = "Random";
 static char tplayerDefaultPlan[] = "default";

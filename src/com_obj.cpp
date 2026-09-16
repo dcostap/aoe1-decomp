@@ -21,9 +21,6 @@
 #include <stddef.h>
 #include <stdio.h>
 
-extern "C" {
-    float g_attack_modifier;
-}
 int __cdecl debug_rand(char*, int);
 
 
@@ -113,7 +110,7 @@ void RGE_Combat_Object::stop() {
 }
 
 float RGE_Combat_Object::calc_attack_modifier(RGE_Static_Object* target) {
-    return g_attack_modifier;
+    return 1.0f;
 }
 
 unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Combat_Object* attacker, RGE_Static_Object* ignore_object) {

@@ -229,6 +229,9 @@ void TCommunications_Handler::Step(int Numsteps) {
 
 
 
+// The original recorded these four sites in com_hand.h, not in this translation unit.
+static char com_hand_header_path[] = "C:\\msdev\\work\\age1_x1\\com_hand.h";
+
 TCommunications_Handler::TCommunications_Handler(void* WinHandle, unsigned char MaxPlayers, TChat* ChatHandle, GUID AppGuid) {
     L->FlushToDisk(1);
 
@@ -319,7 +322,7 @@ TCommunications_Handler::TCommunications_Handler(void* WinHandle, unsigned char 
     this->Speed = new RGE_Communications_Speed(this);
     this->Sync = new RGE_Communications_Synchronize(this);
 
-    unsigned long startTime = debug_timeGetTime(com_hand_source_path, 0x267);
+    unsigned long startTime = debug_timeGetTime(com_hand_header_path, 0x267);
 
     this->RXPacketLength = 0;
     this->RXPacketLengthHigh = 0;
@@ -4068,7 +4071,7 @@ sent:
 
 void TCommunications_Handler::DestroyMultiplayerGame() {
     this->DestroyMyPlayer();
-    long t = debug_timeGetTime(com_hand_source_path, 0x267);
+    long t = debug_timeGetTime(com_hand_header_path, 0x267);
     int zero = 0;
     this->RXPacketLength = zero;
     this->RXPacketLengthHigh = zero;
@@ -4182,7 +4185,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 
     case SINGLE_PLAYER: {
         this->Multiplayer = 0;
-        unsigned long t = debug_timeGetTime(com_hand_source_path, 0x267);
+        unsigned long t = debug_timeGetTime(com_hand_header_path, 0x267);
         this->RXPacketLength = 0;
         this->RXPacketLengthHigh = 0;
         this->TXPacketLength = 0;
@@ -4262,7 +4265,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 
     case MULTIPLAYER_RESET: {
         this->Multiplayer = 0;
-        unsigned long t = debug_timeGetTime(com_hand_source_path, 0x267);
+        unsigned long t = debug_timeGetTime(com_hand_header_path, 0x267);
         this->RXPacketLength = 0;
         this->RXPacketLengthHigh = 0;
         this->TXPacketLength = 0;

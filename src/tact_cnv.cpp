@@ -259,7 +259,8 @@ uchar TRIBE_Action_Convert::update() {
     }
 
     switch (this->state) {
-    case 4:
+    // Original table 004CE3FC assigns these handlers to states 11 and 4.
+    case 11:
         switch (this->sub_actions->update()) {
         case 3:
             this->set_state(13);
@@ -276,7 +277,7 @@ uchar TRIBE_Action_Convert::update() {
         }
         break;
 
-    case 11:
+    case 4:
         switch (this->sub_actions->update()) {
         case 4:
         case 5:

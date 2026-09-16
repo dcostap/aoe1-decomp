@@ -33,3 +33,16 @@ def test_game_screen_label_buttons_use_text_drawing():
     # The loop configures three buttons; the two later calls configure S and ?.
     assert source.count('setDrawType(TButtonPanel::DrawText)') == 3
     assert 'setDrawType(TButtonPanel::DrawPicture)' not in source
+
+
+def test_score_latency_marker_does_not_overwrite_first_player_id():
+    source = (ROOT/'src/scr_game.cpp').read_text()
+    function = source.split('void TRIBE_Screen_Game::reset_score_display()', 1)[1].split(
+        'void TRIBE_Screen_Game::draw()', 1)[0]
+    after_sort = function.split('qsort(', 1)[1]
+    # Original array starts at stable ESP+30. The low-FPS local is at ESP+2C.
+    # Stores at 0049B294 and 0049B30A must not change the sorted score record.
+    assert 'player_score[0].comm_id' not in after_sort
+    assert 'low_fps_player = 0;' in after_sort
+    assert 'low_fps_player = player_score[score_index].comm_id;' in after_sort
+    assert 'score->comm_id == low_fps_player' in after_sort
