@@ -17,6 +17,11 @@ The other files provide the complete release installation. Do not replace
 `tools/prepare_runtime.py` uses this folder by default. It copies the files to
 `build/runtime/` before it starts a test. It does not change this folder.
 
+Harness runs do not copy this folder's `savegame` directory.
+They use only the repository saves pinned by `config/harness/savegames.json`.
+Normal `game.cmd original` and `game.cmd rebuilt` launches still copy local saves.
+See [save fixtures](../config/harness/savegames/README.md) for setup and replay limits.
+
 The game files are ignored by Git. Keep this README tracked. Do not modify the
 original files under `orig/` or the user's installed game.
 

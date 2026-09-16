@@ -111,3 +111,74 @@ def test_hardlink_failure_falls_back_to_copy(inputs, monkeypatch):
 def test_unknown_asset_mode_rejected(inputs):
     with pytest.raises(ValueError, match="Asset mode"):
         prepare_runtime.prepare(*inputs, assets="overlay")
+
+
+@pytest.fixture
+def harness_inputs(inputs):
+    source, exe, output = inputs
+    folder = prepare_runtime.ROOT / 'config/harness/savegames'
+    folder.mkdir(parents=True)
+    fixture = folder / 'late_game_match.gmx'
+    fixture.write_bytes(b'fixture')
+    folder.with_suffix('.json').write_text(json.dumps({'schema':1, 'files':[
+        {'name':fixture.name, 'size':fixture.stat().st_size, 'sha256':prepare_runtime.digest(fixture)}]}))
+    (source / 'SaveGame/nested').mkdir(parents=True)
+    (source / 'SaveGame/personal.gmx').write_bytes(b'personal')
+    (source / 'SaveGame/nested/private.gam').write_bytes(b'private')
+    return source, exe, output, fixture
+
+
+def test_harness_uses_only_private_copies_of_repository_saves(harness_inputs):
+    source, exe, output, fixture = harness_inputs
+    report = prepare_runtime.prepare(source, exe, output, assets='hardlink', harness_saves=True)
+    save = output / 'savegame' / fixture.name
+    assert list((output / 'savegame').iterdir()) == [save]
+    assert save.read_bytes() == fixture.read_bytes()
+    assert not save.samefile(fixture)
+    assert (source / 'SaveGame/personal.gmx').read_bytes() == b'personal'
+    prepare_runtime.verify_harness_saves(output, report)
+    save.write_bytes(b'changed during play')
+    assert fixture.read_bytes() == b'fixture'
+    with pytest.raises(ValueError, match='Runtime save fixture differs'):
+        prepare_runtime.verify_harness_saves(output, report)
+    fresh = output.with_name('fresh')
+    fresh_report = prepare_runtime.prepare(source, exe, fresh, harness_saves=True)
+    prepare_runtime.verify_harness_saves(fresh, fresh_report)
+
+
+def test_plain_game_keeps_local_saves(harness_inputs):
+    source, exe, output, fixture = harness_inputs
+    report = prepare_runtime.prepare(source, exe, output)
+    assert report['savegame_source'] == 'local-runtime'
+    assert (output / 'SaveGame/personal.gmx').read_bytes() == b'personal'
+    assert not (output / 'SaveGame' / fixture.name).exists()
+
+
+def test_changed_fixture_fails_before_staging(harness_inputs):
+    source, exe, output, fixture = harness_inputs
+    fixture.write_bytes(b'changed')
+    with pytest.raises(ValueError, match='Save fixture hash or size differs'):
+        prepare_runtime.prepare(source, exe, output, harness_saves=True)
+    assert not output.exists()
+
+
+def test_extra_runtime_save_is_rejected(harness_inputs):
+    source, exe, output, fixture = harness_inputs
+    report = prepare_runtime.prepare(source, exe, output, harness_saves=True)
+    (output / 'savegame/extra.gmx').write_bytes(b'personal')
+    with pytest.raises(ValueError, match='Runtime save set differs'):
+        prepare_runtime.verify_harness_saves(output, report)
+
+
+@pytest.mark.parametrize('name', ['../escape.gmx', 'C:escape.gmx', 'nested/private.gmx', 'bad.txt'])
+def test_save_fixture_paths_are_bounded(harness_inputs, name):
+    source, exe, output, fixture = harness_inputs
+    fixture.parent.with_suffix('.json').write_text(json.dumps({'schema':1, 'files':[{'name':name}]}))
+    with pytest.raises(ValueError, match='save fixture name'):
+        prepare_runtime.prepare(source, exe, output, harness_saves=True)
+
+
+def test_repository_save_fixture_identity():
+    fixtures = prepare_runtime.save_fixtures()
+    assert [row['name'] for _, row in fixtures] == ['late_game_match.gmx']
+    assert fixtures[0][1]['sha256'] == 'fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4'

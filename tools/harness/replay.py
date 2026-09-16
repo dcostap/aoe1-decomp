@@ -17,13 +17,19 @@ from replay_capture import compare_captures
 
 
 def gameplay_assets(assets):
-    """Ignore unused saves during new-game replay comparisons."""
+    """Ignore the save directory during new-game replay comparisons.
+
+    The harness stages saves itself, and it refuses personal saves. A new-game
+    recording neither loads nor writes them, so the recorded save directory is not
+    a gameplay input. Recordings that load a save keep every input file compared.
+    """
     return {name: value for name, value in assets.items()
-            if not (name.replace('\\', '/').lower().startswith('savegame/')
-                    and name.lower().endswith(('.gmx', '.gam')))}
+            if not name.replace('\\', '/').lower().startswith('savegame/')}
 
 
 def gameplay_contract(contract):
+    if contract.get('savegame_source') == 'repository-fixtures':
+        return contract  # These recordings can load saves. Check every input file.
     return {**contract, 'assets': gameplay_assets(contract['assets'])}
 
 

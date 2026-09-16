@@ -20,7 +20,46 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy") -> dict:
+def save_fixtures():
+    """Verify the complete repository save set before staging a harness runtime."""
+    folder = ROOT / 'config/harness/savegames'
+    manifest = json.loads((folder.with_suffix('.json')).read_text())
+    if manifest.get('schema') != 1 or not isinstance(manifest.get('files'), list):
+        raise ValueError('Invalid save fixture manifest.')
+    names = set()
+    result = []
+    for row in manifest['files']:
+        name = row.get('name', '')
+        if not isinstance(name, str) or not name or '/' in name or '\\' in name or ':' in name or \
+                Path(name).suffix.lower() not in ('.gmx', '.gam') or name.lower() in names:
+            raise ValueError('Invalid or duplicate save fixture name.')
+        path = folder / name
+        if path.is_symlink() or path.stat().st_size != row.get('size') or digest(path) != row.get('sha256'):
+            raise ValueError(f'Save fixture hash or size differs: {name}')
+        names.add(name.lower())
+        result.append((path, row))
+    return result
+
+
+def verify_harness_saves(runtime, manifest):
+    """Reject private saves and changed fixtures before starting the game."""
+    if manifest.get('savegame_source') != 'repository-fixtures':
+        raise ValueError('Saved-game input requires repository save fixtures.')
+    expected = {row['name']: row['sha256'] for _, row in save_fixtures()}
+    folder = runtime / 'savegame'
+    if {path.name for path in folder.iterdir()} != set(expected):
+        raise ValueError('Runtime save set differs from repository fixtures.')
+    for name, sha256 in expected.items():
+        path = folder / name
+        if not path.is_file() or path.is_symlink() or digest(path) != sha256:
+            raise ValueError(f'Runtime save fixture differs: {name}')
+    recorded = {row['path']: row['sha256'] for row in manifest['copied_files_before_exe_replacement']
+                if row['path'].replace('\\', '/').lower().startswith('savegame/')}
+    if recorded != {'savegame/' + name: sha256 for name, sha256 in expected.items()}:
+        raise ValueError('Runtime save manifest differs from repository fixtures.')
+
+
+def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy", harness_saves=False) -> dict:
     if assets not in ("copy", "hardlink"):
         raise ValueError("Asset mode must be copy or hardlink.")
     source, exe, output = source.resolve(), exe.resolve(), output.resolve()
@@ -39,6 +78,7 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy") -> d
     for name in ("data", "data2", "avi", "sound", "EMPIRES.EXE", "language.dll", "languagex.dll"):
         if not (source / name).exists():
             raise ValueError(f"Missing installed runtime input: {name}")
+    fixtures = save_fixtures() if harness_saves else []
     exe_hash = digest(exe)
     files = []
 
@@ -61,10 +101,24 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy") -> d
                       "method": method, "size": src.stat().st_size})
         return str(dst)
 
-    # Repository documentation is not an installed game input.
+    # Harness saves come only from the checked-in fixture set.
+    def ignored(directory, names):
+        if Path(directory) != source:
+            return set()
+        return {name for name in names if name == 'README.md' or
+                (harness_saves and name.lower() == 'savegame')}
+
     shutil.copytree(source, output, copy_function=copy_verified,
-                    ignore=lambda directory, names: {"README.md"}
-                    if Path(directory) == source else set())
+                    ignore=ignored)
+    if harness_saves:
+        (output / 'savegame').mkdir()
+        for src, row in fixtures:
+            dst = output / 'savegame' / row['name']
+            shutil.copy2(src, dst)
+            if digest(dst) != row['sha256']:
+                raise ValueError(f'Save fixture copy verification failed: {src}')
+            files.append({'path': 'savegame/' + row['name'], 'sha256': row['sha256'],
+                          'size': row['size'], 'method': 'copy'})
     shutil.copy2(exe, output / "empiresx.exe")
     if digest(output / "empiresx.exe") != exe_hash:
         raise ValueError("Selected EXE copy verification failed.")
@@ -82,6 +136,7 @@ def prepare(source: Path, exe: Path, output: Path, *, assets: str = "copy") -> d
         "copied_files_before_exe_replacement": sorted(files, key=lambda row: row["path"]),
         "launcher": "Launch.cmd", "game_arguments": [],
         "asset_mode": assets,
+        "savegame_source": "repository-fixtures" if harness_saves else "local-runtime",
         "shared_bytes": sum(row["size"] for row in files if row["method"] == "hardlink"),
     }
     (output / "runtime_manifest.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
