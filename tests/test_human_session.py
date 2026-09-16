@@ -24,7 +24,7 @@ def event():
 def session():
     return {'schema':1,'mode':'replay','duration_ms':1000,'events':[event()],
             'contract':{'original_sha256':ORIGINAL_SHA256,'policy':POLICY,
-                        'script_sha256':template_sha256(POLICY)}}
+                        'script_sha256':template_sha256(POLICY), 'savegame_source':'repository-fixtures'}}
 
 
 def test_valid_record_and_replay():
@@ -35,7 +35,7 @@ def test_valid_record_and_replay():
 def test_frozen_v1_and_current_v2_template_hashes():
     harness = ROOT/'tools/harness'
     legacy = (harness/'human-v1-template.js').read_bytes()
-    current = '\n'.join((harness/name).read_text() for name in ('menu.js','offline.js','human.js')).encode()
+    current = '\n'.join((harness/name).read_text() for name in ('menu.js','offline.js','human-v2-core.js')).encode()
     assert hashlib.sha256(legacy).hexdigest() == V1_TEMPLATE_SHA256
     assert hashlib.sha256(current).hexdigest() == V2_TEMPLATE_SHA256
 
@@ -229,7 +229,9 @@ def test_new_profile_keeps_existing_menu_guard():
     code=(ROOT/'tools/harness/ui.js').read_text()
     assert "if (cfg.replay && name === 'forbidStart') continue;" in code
     human=(ROOT/'tools/harness/human.js').read_text()
-    assert "['forbidLoad','forbidScenario','forbidEditor']" in human
+    assert "['forbidScenario','forbidEditor']" in human
+    assert 'forbidLoad' not in human
+    assert "['forbidLoad','forbidScenario','forbidEditor']" in (ROOT/'tools/harness/human-v2-core.js').read_text()
     assert 'TranslateMessage' in human
 
 

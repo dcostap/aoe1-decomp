@@ -40,7 +40,7 @@ def test_marked_noise_rejects_the_timer_only_v3_profile():
 
 def test_v4_template_hash():
     template='\n'.join((ROOT/'tools/harness'/name).read_text() for name in
-                      ('menu.js','offline.js','human.js','human-v3.js','human-v4.js'))
+                      ('menu.js','offline.js','human-v2-core.js','human-v3.js','human-v4.js'))
     assert hashlib.sha256(template.encode()).hexdigest()==V4_TEMPLATE_SHA256
 
 

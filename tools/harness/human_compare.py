@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from human_session import V1_POLICY, V3_POLICY, V4_POLICY, compare_inputs, execution_plan, inputs, session_contract
+from human_session import V1_POLICY, V3_POLICY, V4_POLICY, V6_POLICY, compare_inputs, execution_plan, inputs, session_contract
 
 
 def compare_rows(left, right):
@@ -117,6 +117,7 @@ def compare_captures(left,right):
             'control_identity':{'left':controls[0],'right':controls[1],
                                 'same_policy_replay':same_policy,
                                 'classification':('same-policy' if same_policy else
+                                    'explicit-v5-to-v6-upgrade' if controls[0]['executed_policy'] == V6_POLICY else
                                     ('explicit-v1-to-v4-upgrade' if controls[0]['recorded_policy'] == V1_POLICY else
                                      'explicit-v2-to-v4-upgrade') if controls[0]['executed_policy'] == V4_POLICY else
                                     ('explicit-v1-to-v3-upgrade' if controls[0]['recorded_policy'] == V1_POLICY else

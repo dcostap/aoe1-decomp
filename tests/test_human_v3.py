@@ -37,7 +37,7 @@ def test_v3_rejects_a_different_recording_policy():
 
 def test_v3_template_hash():
     folder = ROOT / 'tools/harness'
-    template = '\n'.join((folder / name).read_text() for name in ('menu.js','offline.js','human.js','human-v3.js'))
+    template = '\n'.join((folder / name).read_text() for name in ('menu.js','offline.js','human-v2-core.js','human-v3.js'))
     assert hashlib.sha256(template.encode()).hexdigest() == V3_TEMPLATE_SHA256
 
 

@@ -17,7 +17,11 @@ V1_POLICY = 'human-idle20-clock1-paced-v1-message-driven-polling'
 V2_POLICY = 'human-idle20-clock1-paced-v2-serialized-message-driven-polling'
 V3_POLICY = 'human-idle20-clock1-paced-v3-no-native-timers'
 V4_POLICY = 'human-idle20-clock1-paced-v4-controlled-paint'
-POLICY = V2_POLICY
+V5_POLICY = 'human-idle20-clock1-paced-v5-save-fixtures'
+V6_POLICY = 'human-idle20-clock1-paced-v6-controlled-save-fixtures'
+# The editor profile records the scenario editor as well as the game screen.
+V7_POLICY = 'human-idle20-clock1-paced-v7-editor-screens'
+POLICY = V5_POLICY
 V1_TEMPLATE_SHA256 = '6312fbd5ebb7d82dd91abe775e8c4c15c538743f276dba03ab61bbb8a1043db4'
 V2_TEMPLATE_SHA256 = '1112a4ab54fef13f766d20da7fc1815b20f43aa844bbfdde23ce14eeabc862f4'
 V1_TO_V2_UPGRADE = 'v1-to-v2-serialized-dispatch-20260915'
@@ -27,9 +31,13 @@ V2_TO_V3_UPGRADE = 'v2-to-v3-no-native-timers-turn-stop-20260915'
 V4_TEMPLATE_SHA256 = '17752944a9ed945df3a3d0e34bea6f7ac7aabbdcde68a6ae8ad0c65797c5e99e'
 V1_TO_V4_UPGRADE = 'v1-to-v4-controlled-paint-turn-stop-20260915'
 V2_TO_V4_UPGRADE = 'v2-to-v4-controlled-paint-turn-stop-20260915'
+V5_TEMPLATE_SHA256 = 'c4a88062d17a54ae852ec6acc709530691f021dc22eeefe9a3a608862768f5c3'
+V6_TEMPLATE_SHA256 = 'f8a9fa538f78495bef80dd9579573e688d4ee7433ea18dbd5123c27357f67687'
+V7_TEMPLATE_SHA256 = '9b3d3f53d79e54fd66161b33736bec203ec90622883463d2cadd201bb4bb9031'
+V5_TO_V6_UPGRADE = 'v5-to-v6-controlled-paint-save-fixtures'
 UPGRADES = {V1_TO_V2_UPGRADE:(V1_POLICY,V2_POLICY), V1_TO_V3_UPGRADE:(V1_POLICY,V3_POLICY),
             V2_TO_V3_UPGRADE:(V2_POLICY,V3_POLICY), V1_TO_V4_UPGRADE:(V1_POLICY,V4_POLICY),
-            V2_TO_V4_UPGRADE:(V2_POLICY,V4_POLICY)}
+            V2_TO_V4_UPGRADE:(V2_POLICY,V4_POLICY), V5_TO_V6_UPGRADE:(V5_POLICY,V6_POLICY)}
 MAX_RECORDING_BYTES = 32*1024*1024
 
 
@@ -42,7 +50,45 @@ def template_sha256(policy):
         return V3_TEMPLATE_SHA256
     if policy == V4_POLICY:
         return V4_TEMPLATE_SHA256
+    if policy == V5_POLICY:
+        return V5_TEMPLATE_SHA256
+    if policy == V6_POLICY:
+        return V6_TEMPLATE_SHA256
+    if policy == V7_POLICY:
+        return V7_TEMPLATE_SHA256
     raise ValueError('Unknown human input policy.')
+
+
+def startup_blocks(policy):
+    """Startup paths a profile refuses. Only the current core reads this value."""
+    template_sha256(policy)  # Reject unknown profiles.
+    if policy in (V1_POLICY, V2_POLICY):
+        return ['forbidLoad', 'forbidScenario', 'forbidEditor']
+    if policy == V7_POLICY:
+        return []
+    return ['forbidScenario', 'forbidEditor']
+
+
+def control_template(policy):
+    """Keep the pinned pre-save profiles unchanged."""
+    folder = Path(__file__).parent
+    template_sha256(policy)  # Reject unknown profiles.
+    if policy == V1_POLICY:
+        return (folder / 'human-v1-template.js').read_text()
+    if policy in (V5_POLICY, V6_POLICY):
+        core = 'human-v5-core.js'
+    elif policy == V7_POLICY:
+        core = 'human.js'
+    else:
+        core = 'human-v2-core.js'
+    names = ['menu.js', 'offline.js', core]
+    if policy in (V3_POLICY, V4_POLICY, V6_POLICY):
+        names.append('human-v3.js')
+    if policy in (V4_POLICY, V6_POLICY):
+        names.append('human-v4.js')
+    if policy == V7_POLICY:
+        names.append('human-v7-editor.js')
+    return '\n'.join((folder / name).read_text() for name in names)
 
 
 def integer(value, minimum, maximum):
@@ -74,12 +120,14 @@ def validate_session(session):
         if not isinstance(contract,dict) or contract.get('original_sha256') != ORIGINAL_SHA256:
             raise ValueError('A replay requires its original starting contract.')
         policy = contract.get('policy')
-        if policy not in (V1_POLICY,V2_POLICY) or contract.get('script_sha256') != template_sha256(policy):
+        if policy not in (V1_POLICY,V2_POLICY,V5_POLICY,V7_POLICY) or contract.get('script_sha256') != template_sha256(policy):
             raise ValueError('Unknown human replay policy or control-script hash.')
+        if policy in (V5_POLICY, V7_POLICY) and contract.get('savegame_source') != 'repository-fixtures':
+            raise ValueError('Saved-game replay requires repository save fixtures.')
         if upgrade is not None:
             required_policy = UPGRADES[upgrade][0]
             if policy != required_policy:
-                version = 'v2' if required_policy == V2_POLICY else 'v1'
+                version = {V1_POLICY:'v1', V2_POLICY:'v2', V5_POLICY:'v5'}[required_policy]
                 raise ValueError(f'The scheduler upgrade requires the exact {version} policy and script hash.')
         recording_sha = session.get('recording_sha256')
         if recording_sha is not None and (not isinstance(recording_sha,str) or len(recording_sha) != 64 or
@@ -131,7 +179,7 @@ def load_recording_with_sha256(path):
     if len(data) > MAX_RECORDING_BYTES:
         raise ValueError('Recording exceeds the size limit.')
     recording = json.loads(data)
-    if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY):
+    if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY,V5_POLICY):
         raise ValueError('Unsupported original recording contract.')
     if not all(key in recording for key in ('duration_ms','events','contract')):
         raise ValueError('Recording is missing required fields.')
@@ -148,8 +196,9 @@ def load_recording(path):
 def execution_plan(session):
     validate_session(session)
     if session['mode'] == 'record':
+        policy = V7_POLICY if session.get('editor') else V5_POLICY
         return {'recorded_policy':None, 'recorded_script_sha256':None,
-                'executed_policy':V2_POLICY, 'executed_script_sha256':V2_TEMPLATE_SHA256,
+                'executed_policy':policy, 'executed_script_sha256':template_sha256(policy),
                 'upgrade_rule':None, 'recording_sha256':None, 'same_policy_replay':None}
     contract = session['contract']
     upgrade = session.get('upgrade_rule')
@@ -168,7 +217,12 @@ def session_contract(report, policy=None):
         policy = (report.get('human_control') or {}).get('executed_policy')
     if policy is None:
         policy = (((report.get('fixture') or {}).get('human') or {}).get('contract') or {}).get('policy', POLICY)
-    return dict(recording_contract(report), policy=policy, original_sha256=ORIGINAL_SHA256)
+    contract = dict(recording_contract(report), policy=policy, original_sha256=ORIGINAL_SHA256)
+    if policy in (V5_POLICY, V6_POLICY, V7_POLICY):
+        if report['manifest'].get('savegame_source') != 'repository-fixtures':
+            raise ValueError('Saved-game input requires repository save fixtures.')
+        contract['savegame_source'] = 'repository-fixtures'
+    return contract
 
 
 def verify_starting_contract(session, report):
@@ -271,10 +325,12 @@ def main():
     parser.add_argument('--upgrade-v1-to-v3',action='store_true',
                         help='Experimental: suppress native timers and stop eight turns after the final input')
     parser.add_argument('--controlled',action='store_true',
-                        help='Use v1 or v2 recorded inputs under the explicit v4 control profile')
+                        help='Use controlled paint timing; preserve the recording save policy')
     parser.add_argument('--upgrade-v1-to-v4',action='store_true',help='Experiment with controlled queued paints as well as timers')
     parser.add_argument('--message-noise',action='store_true',help='Diagnostic: add queued timer/paint messages during controlled replay')
     parser.add_argument('--smoke', action='store_true', help='Private automated plumbing test, not human qualification')
+    parser.add_argument('--editor', action='store_true',
+                        help='Record or replay the scenario editor profile; the editor and scenarios may open')
     parser.add_argument('--cursor-check',action='store_true',help='Private stationary-cursor and normal-close check; requires smoke')
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
@@ -290,7 +346,8 @@ def main():
     try:
         if args.record:
             print('Recording starts at launch. Press F10 or close the game window to save. Do not resize or switch windows.', flush=True)
-            session = {'schema':1,'mode':'record','duration_ms':args.seconds*1000,'smoke':args.smoke,'cursor_check':args.cursor_check}
+            session = {'schema':1,'mode':'record','duration_ms':args.seconds*1000,'smoke':args.smoke,
+                       'cursor_check':args.cursor_check,'editor':args.editor}
             report = run_session(result['runs'],session,not args.smoke)
             if args.cursor_check:
                 camera_changes = [row for row in report['events'] if row.get('kind') == 'human-camera' and row['updates'] > 0]
@@ -309,7 +366,8 @@ def main():
             recording, recording_sha256 = load_recording_with_sha256(args.recording)
             upgrade_rule = V1_TO_V3_UPGRADE if args.upgrade_v1_to_v3 else (V1_TO_V2_UPGRADE if args.upgrade_v1_to_v2 else None)
             if args.controlled:
-                upgrade_rule = V1_TO_V4_UPGRADE if recording['policy'] == V1_POLICY else V2_TO_V4_UPGRADE
+                upgrade_rule = {V1_POLICY:V1_TO_V4_UPGRADE, V2_POLICY:V2_TO_V4_UPGRADE,
+                                V5_POLICY:V5_TO_V6_UPGRADE}[recording['policy']]
             if args.upgrade_v1_to_v4:
                 upgrade_rule = V1_TO_V4_UPGRADE
             session = {'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],

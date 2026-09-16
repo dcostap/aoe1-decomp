@@ -163,9 +163,12 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     human = scenario.get('human')
     human_control = None
     if human:
-        from human_session import V1_POLICY, V3_POLICY, V4_POLICY, execution_plan, validate_session
+        from human_session import V1_POLICY, V5_POLICY, V6_POLICY, execution_plan, validate_session, control_template
         validate_session(human)
         human_control = execution_plan(human)
+        if human_control['executed_policy'] in (V5_POLICY, V6_POLICY):
+            from prepare_runtime import verify_harness_saves
+            verify_harness_saves(runtime, manifest)
         original_target = human.get('target','original') == 'original'
         if replay or ui or (manifest['selected_exe_sha256'] == ORIGINAL_SHA256) != original_target or clock != 'calls':
             raise ValueError('Human recording requires the selected executable and controlled-clock profile.')
@@ -187,6 +190,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     config = hook_config(runtime / 'empiresx.exe', manifest, ui or bool(human), probes)
     config['replay'] = replay
     config['human'] = human
+    if human:
+        from human_session import startup_blocks
+        # The current core installs only the blocks its profile refuses.
+        config['blockedStartups'] = startup_blocks(human_control['executed_policy'])
     config['humanControl'] = human_control
     config['actions'] = scenario.get('actions', [])
     config['uiSteps'] = scenario.get('steps', [])
@@ -202,8 +209,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         legacy_template = Path(__file__).with_name('human-v1-template.js').read_text()
         if hashlib.sha256(legacy_template.encode()).hexdigest() != human_control['recorded_script_sha256']:
             raise ValueError('Frozen v1 human control template changed.')
-    if human and human_control['executed_policy'] == V1_POLICY:
-        template = legacy_template
+    if human:
+        template = control_template(human_control['executed_policy'])
     else:
         template = (Path(__file__).with_name('menu.js')).read_text()
         if ui:
@@ -211,13 +218,6 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
             template += '\n' + Path(__file__).with_name('ui.js').read_text()
         if replay:
             template += '\n' + Path(__file__).with_name('replay.js').read_text()
-        if human:
-            template += '\n' + Path(__file__).with_name('offline.js').read_text()
-            template += '\n' + Path(__file__).with_name('human.js').read_text()
-            if human_control['executed_policy'] in (V3_POLICY,V4_POLICY):
-                template += '\n' + Path(__file__).with_name('human-v3.js').read_text()
-            if human_control['executed_policy'] == V4_POLICY:
-                template += '\n' + Path(__file__).with_name('human-v4.js').read_text()
     template_sha256 = hashlib.sha256(template.encode()).hexdigest()
     if human and template_sha256 != human_control['executed_script_sha256']:
         raise ValueError('Selected human control template differs from its policy hash.')
@@ -245,10 +245,13 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     started = time.monotonic()
     registry_base = None
     registry_snapshot = None
+    registry_machine = None
     process_desktop = None
     game_job = None
     try:
-        registry_base, registry_snapshot = registry_state.create()
+        # A pinned recording supplies the settings, so the run does not depend on the machine.
+        supplied = ((human or {}).get('contract') or {}).get('registry_inputs')
+        registry_base, registry_snapshot, registry_machine = registry_state.create(supplied)
         if human and human.get('contract'):
             from human_session import verify_starting_contract
             verify_starting_contract(human, {'clock':clock, 'registry_inputs':registry_snapshot,
@@ -476,7 +479,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
                       'observer_sha256':hashlib.sha256(observer.encode()).hexdigest() if observer else None,
                       'noise_sha256':hashlib.sha256(noise.encode()).hexdigest() if noise else None,
                       'instrumentation_sha256':digest(output/'instrumentation.js') if (output/'instrumentation.js').exists() else None,
-                      'registry_inputs': registry_snapshot, 'shared_assets_unchanged': not changed_assets,
+                      'registry_inputs': registry_snapshot, 'registry_machine': registry_machine,
+                      'shared_assets_unchanged': not changed_assets,
                       'desktop': process_desktop,
                       'arguments': arguments, 'fixture': scenario, 'clock': clock, 'duration': time.monotonic()-started,
                       'frida_version': frida.__version__, 'status': status,

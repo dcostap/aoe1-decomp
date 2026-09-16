@@ -30,6 +30,7 @@ const controlId = ha(hu, 'GetDlgCtrlID', 'int', ['pointer']);
 const classOf = ha(hu, 'GetClassNameA', 'int', ['pointer','pointer','int']);
 const setKeys = ha(hu, 'SetKeyboardState', 'int', ['pointer']);
 const invalidate = ha(hu, 'InvalidateRect', 'int', ['pointer','pointer','int']);
+const isVisible = ha(hu, 'IsWindowVisible', 'int', ['pointer']);
 let pumping = false;
 function pumpReplay() {
     if (!isReplay || pumping || human.stopped || waiting.length) return;
@@ -50,18 +51,30 @@ function windowClass(hwnd) {
     if (!classOf(hwnd, text, 256)) throw new Error('Cannot identify input window');
     return text.readCString();
 }
+function childIdentity(hwnd) {
+    return {id:controlId(hwnd), cls:windowClass(hwnd), vis:isVisible(hwnd) ? 1 : 0};
+}
 function route(hwnd) {
     const result = [];
     while (!hwnd.equals(gameWindow)) {
         if (hwnd.isNull() || result.length >= 8) throw new Error('Input window is not an owned game child');
-        const parent = parentOf(hwnd), id = controlId(hwnd), cls = windowClass(hwnd);
-        let matches = 0, found = false;
+        const parent = parentOf(hwnd), want = childIdentity(hwnd);
+        let found = false, matches = 0, siblings = 0;
         for (let child = windowAt(parent, 5), n = 0; !child.isNull() && n < 512; child = windowAt(child, 2), n++) {
+            const other = childIdentity(child);
             if (child.equals(hwnd)) found = true;
-            if (controlId(child) === id && windowClass(child) === cls) matches++;
+            if (other.id === want.id && other.cls === want.cls) {
+                siblings++;
+                if (other.vis === want.vis) matches++;
+            }
         }
-        if (!found || matches !== 1) throw new Error('Child input route is missing or ambiguous');
-        result.unshift({id, cls, index:0}); hwnd = parent;
+        // The editor keeps hidden edit panels beside the visible one, so one class and
+        // one control id repeat. Visibility separates them. Input reaches only the visible one.
+        if (!found || matches !== 1)
+            throw new Error('Child input route is ' + (found ? 'ambiguous' : 'missing') +
+                ': id ' + want.id + ', class ' + want.cls + ', visible ' + want.vis +
+                ', ' + matches + ' of ' + siblings + ' matching siblings');
+        result.unshift(want); hwnd = parent;
     }
     return result;
 }
@@ -70,7 +83,8 @@ function resolveRoute(path) {
     for (const part of path) {
         let match = NULL, matches = 0;
         for (let child = windowAt(hwnd, 5), n = 0; !child.isNull() && n < 512; child = windowAt(child, 2), n++) {
-            if (controlId(child) === part.id && windowClass(child) === part.cls) { match = child; matches++; }
+            const other = childIdentity(child);
+            if (other.id === part.id && other.cls === part.cls && other.vis === part.vis) { match = child; matches++; }
         }
         if (match.isNull() || matches !== 1) throw new Error('Recorded input window is missing or ambiguous');
         hwnd = match;
@@ -121,7 +135,9 @@ function humanStop(error) {
     send({kind:'human-done', error:error || null, status:rpc.exports.status()});
     hs(0xffffffff);
 }
-for (const name of ['forbidLoad','forbidScenario','forbidEditor']) {
+// Saves come from the hash-checked repository fixture set in this profile.
+// The profile selects its startup blocks. Editor recordings pass an empty list.
+for (const name of (cfg.blockedStartups || ['forbidScenario','forbidEditor'])) {
     Interceptor.attach(target(name), {onEnter() { humanStop('Unsupported startup: ' + name); }});
 }
 Interceptor.attach(target('wndproc'), {onEnter(args) {
@@ -246,7 +262,6 @@ rpc.exports.status = () => Object.assign(previousHumanStatus(), {human:{...human
     world, camera:lastCamera, cursor:[hx,hy]}});
 // Composite visible owned native controls through WM_PRINTCLIENT into memory DCs only.
 const hg = Process.getModuleByName('gdi32.dll');
-const hv = ha(hu,'IsWindowVisible','int',['pointer']);
 const hrect = ha(hu,'GetClientRect','int',['pointer','pointer']);
 const hsend = ha(hu,'SendMessageA','int',['pointer','uint','pointer','pointer']);
 const hdc = ha(hg,'CreateCompatibleDC','pointer',['pointer']);
@@ -260,7 +275,7 @@ function humanNativeFrames() {
         if (depth > 8) throw new Error('Native control depth limit');
         for (let hwnd = windowAt(parent,5), n = 0; !hwnd.isNull(); hwnd = windowAt(hwnd,2)) {
             if (++n > 512) throw new Error('Native control count limit');
-            if (!hv(hwnd)) continue;
+            if (!isVisible(hwnd)) continue;
             const rect = Memory.alloc(16), point = Memory.alloc(8);
             if (!hrect(hwnd,rect) || !cts(hwnd,point) || !stc(gameWindow,point)) throw new Error('Cannot measure native child');
             const w = rect.add(8).readS32(), h = rect.add(12).readS32();

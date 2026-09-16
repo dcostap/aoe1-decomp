@@ -13,7 +13,7 @@ game.cmd record-original --seconds 60
 ```
 
 Recording starts at launch. This includes the menu inputs needed to start the match.
-Select Single Player, then Random Map. Play in the game window.
+Select Single Player, then Random Map or Saved Game. Play in the game window.
 Press **F10** to stop. The recorder reserves this key; the game does not receive it.
 The normal window close button also saves the recording before the worker closes the game.
 
@@ -22,14 +22,65 @@ The default limit is 60 controlled seconds. The maximum requested limit is 180 s
 An independent process deadline stops a stalled worker and its game and encoder processes.
 
 Do not resize or move the game window. Do not switch applications during recording.
-Use a new random-map game. Saved games, scenarios, and the editor remain blocked.
+Saved Game shows only the repository fixtures, currently `late_game_match`.
+Scenarios and the editor remain blocked in this profile.
 The profile blocks game network sockets and disables sound and music.
+
+### Record with the scenario editor
+
+```cmd
+game.cmd record-original --editor --seconds 120
+```
+
+`--editor` selects the v7 editor profile. The scenario editor and scenarios open normally.
+Everything else matches the command above: F10 stops, the limit is 180 controlled seconds, and the mouse wheel is unsupported.
+The recording carries its profile, so replay uses the editor profile without another flag.
+A v7 recording compares delivered inputs and video frames. It does not claim world or RNG observation.
 
 For the first human check, record camera movement, unit selection, a selection drag, movement orders, and gathering.
 Keep that first session short. More gameplay coverage comes after input replay qualification.
 
 The command prints paths for `recording.json`, `report.json`, and `video.mp4`.
 Keep the whole recording directory and its referenced runtime capture directory.
+
+## Repository save inputs
+
+Harness runs exclude the local runtime's entire `savegame` directory.
+They copy only the files pinned by `config/harness/savegames.json` into each new runtime.
+Each run gets private copies. The harness checks their hashes before recording or replay.
+Missing, changed, or extra runtime saves stop the new profile before game startup.
+Normal `game.cmd original` and `game.cmd rebuilt` launches still copy local saves.
+
+The supplied save is `config/harness/savegames/late_game_match.gmx`.
+See its [fixture notes](../config/harness/savegames/README.md) for identity and clone setup.
+The save file alone is not an input sequence or proof of equal behavior.
+
+New recordings use v5. It keeps v2 input scheduling and permits saved-game loading.
+Their starting contracts include all saves. Save changes no longer pass as unused inputs.
+`--controlled` upgrades v5 recordings to v6, which applies the existing controlled-paint timing rules.
+V6 keeps the strict save contract. Neither profile establishes saved-game repeatability by itself.
+
+The frozen v1 through v4 profiles retain their exact script hashes and loading blocks.
+The permanent new-game recordings remain unchanged.
+`human-v2-core.js` preserves the old shared input code for v2 through v4.
+Do not edit that frozen file when changing the current recorder.
+
+The saved-game input case is `config/harness/human-late-game-match.json`.
+It preserves 559 messages from a 180,027-millisecond recording.
+Its SHA-256 is `07f2a4900af0f0c769224f1c9d5c9f561fce7d2aff16cdfdcaf300797f0fb5a6`.
+It is a default case in `game.cmd test-parity`. No recording path or extra option is required.
+The suite runs three originals and three rebuilt games with v6 control and checks all 15 pairs.
+See [the saved-game check record](../decomp_notes/saved_game_fixture_20260916.md) for results and limits.
+
+Run the strict observation mode before checking saved-game repeatability:
+
+```cmd
+build\harness-env\Scripts\python.exe tools/harness/human_session.py --recording config/harness/human-late-game-match.json --target original --runs 3 --observe --combat --controlled
+```
+
+The strict checker requires clock-call counters. The current observer enables those counters only with `--combat`.
+`--observe` alone captures world events, but does not supply those counters.
+Do not treat equal observations from that mode as a strict repeatability pass.
 
 ## Permanent regression case
 
@@ -119,7 +170,8 @@ game.cmd replay-rebuilt build/runtime/human-EXAMPLE/recording.json --controlled
 ```
 
 This accepts unchanged v1 or v2 recordings as input scenarios under explicit v4 control.
-New user recordings still use v2; v4 currently supports replay, not recording.
+New user recordings use v5; their controlled replays use v6.
+V4 still handles the preserved v1/v2 recordings. Controlled profiles support replay, not recording.
 The lower-level session tool also accepts the v1-only `--upgrade-v1-to-v4` flag.
 The `--upgrade-v1-to-v3` flag preserves the rejected timer-only experiment for reproduction.
 
@@ -148,7 +200,7 @@ build\harness-env\Scripts\python.exe tools/harness/human_session.py --recording 
 
 Use `tools/harness/human_repeatability.py --help` to compare complete capture reports.
 It checks every pair and returns failure for any difference or missing world/RNG evidence.
-Use `game.cmd test-parity` to run both permanent cases on both executables with these observations.
+Use `game.cmd test-parity` to run all three permanent cases on both executables with these observations.
 
 The session tool's `--message-noise` option adds queued timers and paints every 37 wall-time milliseconds.
 This is an explicit robustness stimulus, not a read-only observer or recorded user input.
@@ -158,7 +210,9 @@ The repeatability tool requires matching perturbation modes unless the explicit 
 Use its explicit `--noise-resistance` flag to compare quiet and perturbed captures without relaxing any output check.
 That mode requires both quiet and perturbed captures. Earlier unmarked noise evidence remains preserved but cannot meet this stronger gate.
 
-The qualified cases are bounded new-game scenarios. Saved-game loading and native blocking modal loops are not qualified.
+The suite covers bounded new-game scenarios and the pinned saved-game recording.
+This does not establish general saved-game compatibility. Native blocking modal loops remain unqualified.
+The new save profiles permit loading, but this permission is not replay qualification.
 Do not interpret a stalled unsupported recording as a game-code defect.
 Observer neutrality and complete hidden-state equality remain separate questions.
 See [the repair record](../decomp_notes/replay_control_repair_20260915.md) for experiments and exact results.
@@ -224,13 +278,20 @@ The clock starts at 1000 milliseconds.
 It advances 20 milliseconds at each main-loop idle return and one millisecond per debug-clock call.
 The harness paces that clock against wall time. Slow execution does not skip controlled time.
 Idle advancement prevents the clock from stopping in static menus.
-New recordings use the serialized v2 policy.
+New recordings use the v5 save-fixture policy with the serialized v2 scheduler.
+An editor recording uses the v7 editor-screens policy. Its core installs no startup block, so the editor may open.
 A normal replay uses its recorded policy. Neither replaces RNG values or restores original game state.
 
 Recording captures queued mouse movement, button transitions, double-clicks, keyboard transitions, and character messages.
 Both modes derive game cursor and key polling from received messages, not unrelated desktop input.
 Cursor polling uses the pinned graphics wrapper's logical game coordinates, not desktop coordinates.
 This normalized polling model does not reproduce every Windows keyboard-state feature.
+
+A routed input names its target by control id, window class, and visibility.
+The editor creates one native edit window for each edit panel, and a hidden panel keeps its window.
+So one control id and one class can repeat among the siblings.
+Visibility separates them, and Windows sends mouse input to the visible window only.
+The same rule drops the game's hidden `InputDisabledWindow`.
 
 The v2 scheduler keeps one recorded message in flight.
 It resolves the next window after the exact prior `DispatchMessage` call returns.
@@ -257,7 +318,8 @@ Unsupported input messages, including wheel and extra mouse-button messages, sto
 Input records have explicit size, count, route, and time limits. Limit failures cannot produce a complete recording.
 
 The starting contract checks assets, graphics configuration, registry inputs, instrumentation, and the original executable.
-New-game replay checks exclude `.gmx` and `.gam` files beneath `savegame`.
+Legacy new-game replay checks exclude `.gmx` and `.gam` files beneath `savegame`.
+The v5/v6 profiles instead check all save inputs exactly.
 Adding, removing, or changing these unused saves does not block replay. All other asset checks remain.
 Recording files and full asset manifests remain unchanged for reference.
 An incompatible contract stops replay before the game resumes. The harness does not silently update the contract.

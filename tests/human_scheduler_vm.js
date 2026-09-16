@@ -97,9 +97,9 @@ function makeHarness(events) {
   let nextMessage = 1;
   let failPost = false;
 
-  function addWindow(parent, id, cls) {
+  function addWindow(parent, id, cls, visible = true) {
     const hwnd = new Pointer(`${cls}-${id}-generation-${nextWindow++}`);
-    windows.set(hwnd, {parent, id, cls});
+    windows.set(hwnd, {parent, id, cls, visible});
     children.set(hwnd, []);
     children.get(parent).push(hwnd);
     return hwnd;
@@ -125,6 +125,7 @@ function makeHarness(events) {
       return NULL;
     };
     if (name === 'GetDlgCtrlID') return hwnd => windows.get(hwnd)?.id ?? -1;
+    if (name === 'IsWindowVisible') return hwnd => (windows.get(hwnd)?.visible ? 1 : 0);
     if (name === 'GetClassNameA') return (hwnd, buffer) => {
       const row = windows.get(hwnd);
       if (!row) return 0;
@@ -195,10 +196,17 @@ function drain(harness, effect) {
   }
 }
 
+// The candidate recording keeps its older route shape. This core records and
+// resolves the visible window, so the replay events carry the current shape.
+function currentRoutes(events) {
+  return events.map(event => ({...event,
+                              route: event.route.map(part => ({id: part.id, cls: part.cls, vis: 1}))}));
+}
+
 // The real candidate sequence creates Edit during Return key-down dispatch.
 // Return key-up can destroy it before the next root event is resolved.
 {
-  const harness = makeHarness(enterEvents);
+  const harness = makeHarness(currentRoutes(enterEvents));
   harness.evaluate('human.turn=2770');
   harness.pump();
   assert.deepStrictEqual([harness.state().human.posted, harness.state().pending, harness.queue.length], [1, 1, 1]);
@@ -216,7 +224,7 @@ function drain(harness, effect) {
 
 // Resolve each route after its predecessor returns. Do not retain a destroyed HWND.
 {
-  const route = [{id: 1, cls: 'Edit', index: 0}];
+  const route = [{id: 1, cls: 'Edit', vis: 1}];
   const events = [
     {turn: 1, route: [], message: 0x100, value: 1, parameter: 0, time_ms: 1},
     {turn: 1, route, message: 0x101, value: 1, parameter: 0, time_ms: 1},
@@ -328,7 +336,7 @@ function drain(harness, effect) {
 
 // Missing and ambiguous routes fail. They do not retry or advance the posted count.
 for (const ambiguous of [false, true]) {
-  const events = [{turn: 1, route: [{id: 1, cls: 'Edit', index: 0}],
+  const events = [{turn: 1, route: [{id: 1, cls: 'Edit', vis: 1}],
                    message: 0x100, value: 5, parameter: 0, time_ms: 1}];
   const harness = makeHarness(events);
   harness.evaluate('human.turn=1');
@@ -338,6 +346,20 @@ for (const ambiguous of [false, true]) {
   }
   assert.throws(() => harness.pump(), /Recorded input window is missing or ambiguous/);
   assert.deepStrictEqual([harness.state().human.posted, harness.state().pending], [0, 0]);
+}
+
+// A hidden sibling of the same class and control id does not make the route
+// ambiguous. The editor keeps hidden edit panels beside the visible one.
+{
+  const events = [{turn: 1, route: [{id: 1, cls: 'Edit', vis: 1}],
+                   message: 0x100, value: 9, parameter: 0, time_ms: 1}];
+  const harness = makeHarness(events);
+  const hidden = harness.addWindow(harness.rootWindow, 1, 'Edit', false);
+  const visible = harness.addWindow(harness.rootWindow, 1, 'Edit');
+  harness.evaluate('human.turn=1');
+  harness.pump();
+  assert.deepStrictEqual(harness.queue.map(message => message.hwnd.name), [visible.name]);
+  assert.notStrictEqual(harness.queue[0].hwnd.name, hidden.name);
 }
 
 // A failed PostMessage removes pending state and does not count the event as posted.
