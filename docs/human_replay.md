@@ -37,6 +37,17 @@ Everything else matches the command above: F10 stops, the limit is 180 controlle
 The recording carries its profile, so replay uses the editor profile without another flag.
 A v7 recording compares delivered inputs and video frames. It does not claim world or RNG observation.
 
+The permanent V7 recording is `config/harness/human-editor-20260916.json`.
+It contains 3,729 delivered inputs and has SHA-256
+`4cac2eb68eb4ef6202eecbf3dacf23fb7c4bc9c48d08fc34618f8976779ed953`.
+Run `game.cmd test-parity --editor` to run three original and three rebuilt
+replays. This case compares delivered inputs, camera values and receipts, and
+exact pre-encode RGB hashes. It does not install world or RNG observers.
+The first qualification completed all six runs and preserved all input
+messages and game boundaries. Its camera and RGB checks found differences,
+including differences between original runs. See
+`decomp_notes/human_editor_recording_20260916.md`.
+
 For the first human check, record camera movement, unit selection, a selection drag, movement orders, and gathering.
 Keep that first session short. More gameplay coverage comes after input replay qualification.
 

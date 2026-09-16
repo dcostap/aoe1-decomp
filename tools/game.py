@@ -197,6 +197,7 @@ def main():
     p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the saved-game recording')
     p.add_argument('--check-fixtures', action='store_true', help='Validate all permanent recordings and required saves without running games')
     p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
+    p.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
     p = subs.add_parser('feature-lab', help='Generate, open, or compare a native feature map')
     p.add_argument('operation', choices=('generate', 'replay', 'test', 'test-all', 'open'))
     p.add_argument('options', nargs=argparse.REMAINDER, help='Options for the feature-map operation')
@@ -253,6 +254,8 @@ def main():
                 command.append('--check-fixtures')
             if args.legacy:
                 command.append('--legacy')
+            if args.editor:
+                command.append('--editor')
             return subprocess.run(command, cwd=ROOT).returncode
         if args.command in ('record-original','replay-original','replay-rebuilt'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]

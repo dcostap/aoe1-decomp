@@ -167,7 +167,14 @@ def validate_session(session):
         if not isinstance(route, list) or len(route) > 8:
             raise ValueError('Invalid owned-window route.')
         for part in route:
-            if not isinstance(part, dict) or not integer(part.get('id'), -0x80000000, 0x7fffffff) or not integer(part.get('index'), 0, 0) or not isinstance(part.get('cls'), str) or not 1 <= len(part['cls']) <= 255:
+            if not isinstance(part, dict) or not integer(part.get('id'), -0x80000000, 0x7fffffff) or \
+                    not isinstance(part.get('cls'), str) or not 1 <= len(part['cls']) <= 255:
+                raise ValueError('Invalid child-window identity.')
+            if 'index' in part:
+                valid_identity = integer(part.get('index'), 0, 0)
+            else:
+                valid_identity = integer(part.get('vis'), 0, 1)
+            if not valid_identity:
                 raise ValueError('Invalid child-window identity.')
 
 
@@ -179,7 +186,7 @@ def load_recording_with_sha256(path):
     if len(data) > MAX_RECORDING_BYTES:
         raise ValueError('Recording exceeds the size limit.')
     recording = json.loads(data)
-    if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY,V5_POLICY):
+    if not isinstance(recording,dict) or type(recording.get('schema')) is not int or recording.get('schema') != 1 or recording.get('policy') not in (V1_POLICY,V2_POLICY,V5_POLICY,V7_POLICY):
         raise ValueError('Unsupported original recording contract.')
     if not all(key in recording for key in ('duration_ms','events','contract')):
         raise ValueError('Recording is missing required fields.')
@@ -355,7 +362,8 @@ def main():
                                                     'stop_reason':report['status']['human'].get('stop_reason')}
                 if camera_changes or report['status']['human']['updates'] < 10 or report['status']['human'].get('stop_reason') != 'window-close':
                     raise ValueError('Stationary-cursor or normal-close check failed.')
-            recording = {'schema':1,'policy':POLICY,'contract':session_contract(report),
+            policy = V7_POLICY if args.editor else POLICY
+            recording = {'schema':1,'policy':policy,'contract':session_contract(report, policy=policy),
                          'duration_ms':report['status']['human']['time_ms'], 'events':inputs(report),
                          'source_report':result['runs'][0]['capture'], 'automated_smoke':args.smoke}
             validate_session({'schema':1,'mode':'replay','duration_ms':recording['duration_ms'],

@@ -83,3 +83,18 @@ def test_replay_keeps_the_recorded_profile():
     plan = hs.execution_plan(session)
     assert plan['executed_policy'] == hs.V7_POLICY
     assert plan['same_policy_replay'] is True
+
+
+def test_editor_recording_accepts_visible_window_routes(tmp_path):
+    recording = {'schema': 1, 'policy': hs.V7_POLICY,
+                 'contract': {'policy': hs.V7_POLICY, 'script_sha256': hs.V7_TEMPLATE_SHA256,
+                              'savegame_source': 'repository-fixtures',
+                              'original_sha256': hs.ORIGINAL_SHA256},
+                 'duration_ms': 1,
+                 'events': [{'time_ms': 0, 'turn': 0, 'updates': 0, 'panel': 'Editor',
+                             'route': [{'id': 0, 'cls': 'Static', 'vis': 0}],
+                             'message': 512, 'value': 0, 'parameter': 0}]}
+    path = tmp_path / 'editor-recording.json'
+    path.write_text(__import__('json').dumps(recording))
+    loaded, _ = hs.load_recording_with_sha256(path)
+    assert loaded['policy'] == hs.V7_POLICY

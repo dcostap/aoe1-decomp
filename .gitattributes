@@ -11,3 +11,4 @@ logic_matching/**/*.zip -diff
 config/harness/human-accepted-20260914.json -text
 config/harness/human-candidate-20260915.json -text
 config/harness/human-late-game-match.json -text
+config/harness/human-editor-20260916.json -text

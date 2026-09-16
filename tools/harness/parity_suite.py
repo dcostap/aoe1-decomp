@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from game import ROOT, run_worker, stamp
 from human_session import load_recording, compare_inputs, inputs
 from human_compare import load_batch, compare_captures
-from human_session import V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE, execution_plan
+from human_session import V1_TO_V4_UPGRADE, V5_POLICY, V5_TO_V6_UPGRADE, V7_POLICY, V7_TEMPLATE_SHA256, execution_plan
 from human_repeatability import compare as compare_repeatability
 from prepare_runtime import save_fixtures
 import itertools
@@ -29,6 +29,9 @@ CONTROLLED_CASES = (
     ('late-game-match', ROOT / 'config/harness/human-late-game-match.json',
      '07f2a4900af0f0c769224f1c9d5c9f561fce7d2aff16cdfdcaf300797f0fb5a6', 559),
 )
+EDITOR_RECORDING = ROOT / 'config/harness/human-editor-20260916.json'
+EDITOR_RECORDING_SHA256 = '4cac2eb68eb4ef6202eecbf3dacf23fb7c4bc9c48d08fc34618f8976779ed953'
+EDITOR_EVENT_COUNT = 3729
 
 
 def accepted_recording(path=RECORDING):
@@ -160,6 +163,70 @@ def controlled_recordings():
     return recordings
 
 
+def editor_recording():
+    if hashlib.sha256(EDITOR_RECORDING.read_bytes()).hexdigest() != EDITOR_RECORDING_SHA256:
+        raise ValueError('The editor input recording changed.')
+    recording = load_recording(EDITOR_RECORDING)
+    if recording.get('automated_smoke') is not False or recording.get('policy') != V7_POLICY or \
+            recording.get('contract', {}).get('script_sha256') != V7_TEMPLATE_SHA256 or \
+            len(recording.get('events', [])) != EDITOR_EVENT_COUNT:
+        raise ValueError('Invalid editor input recording.')
+    return recording
+
+
+def editor_comparison_checks(row):
+    return {
+        'input_messages': row['inputs']['same_messages'],
+        'game_input_boundaries': row['inputs']['same_game_boundaries'],
+        'camera_values': row['camera_values']['equal'],
+        'camera_receipts': row['camera_receipts']['equal'],
+        'video_rgb': row['video_samples']['equal'],
+    }
+
+
+def editor_result(original_path, rebuilt_path, recording, recording_sha):
+    result = {'complete': False, 'passed': False,
+              'scope': 'Delivered inputs, camera values and receipts, and exact pre-encode RGB hashes. No world or RNG observers.',
+              'recording_sha256': recording_sha, 'recording_fidelity': []}
+    try:
+        captures = load_batch(original_path, True) + load_batch(rebuilt_path, False)
+        expected_control = execution_plan({'schema': 1, 'mode': 'replay',
+            **{key: recording[key] for key in ('duration_ms', 'events', 'contract')},
+            'recording_sha256': recording_sha, 'upgrade_rule': None})
+        for capture in captures:
+            report = capture['report']
+            session = report['fixture']['human']
+            control = report.get('human_control') or {}
+            if (session.get('observe') or session.get('rng_only') or session.get('combat') or
+                    session.get('message_noise') or report.get('observer_sha256') is not None or
+                    report.get('rng_recording') is not None):
+                raise ValueError('The editor case forbids world and RNG observers.')
+            if (control != expected_control or report.get('script_sha256') != V7_TEMPLATE_SHA256 or
+                    any(session[key] != recording[key] for key in ('duration_ms', 'events', 'contract'))):
+                raise ValueError('Capture does not use the pinned editor recording and profile.')
+            result['recording_fidelity'].append(compare_inputs(recording['events'], inputs(report)))
+        result['pairs'] = []
+        for name, left, others in (
+                ('original_repeat', captures[0], captures[1:3]),
+                ('rebuilt_repeat', captures[3], captures[4:6]),
+                ('cross_build', captures[0], captures[3:6])):
+            result[name] = []
+            for right in others:
+                row = compare_captures(left, right)
+                row['checks'] = editor_comparison_checks(row)
+                row['passed'] = all(value is True for value in row['checks'].values())
+                result[name].append(row)
+                result['pairs'].append(row)
+        result['complete'] = True
+        result['passed'] = (all(row['same_messages'] and row['same_game_boundaries']
+                                for row in result['recording_fidelity']) and
+                            all(row['passed'] for row in result['pairs']))
+        result['classification'] = 'visual-match' if result['passed'] else 'visual-differences'
+    except (OSError, ValueError, KeyError, TypeError, IndexError) as error:
+        result['error'] = str(error)
+    return result
+
+
 def feature_fixtures():
     from feature_lab import FIXTURES, validate_fixture
     return {name: validate_fixture(path) for name, path in FIXTURES}
@@ -195,11 +262,12 @@ def controlled_result(original_path, rebuilt_path, recording, recording_sha):
     return result
 
 
-def run_suite(output, runner=run_worker):
+def run_suite(output, runner=run_worker, include_editor=False):
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema':2, 'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE, 'workers':[], 'human':{}}
     try:
         recordings = controlled_recordings()
+        editor = editor_recording() if include_editor else None
         feature_fixtures()
         python = str(ROOT / 'build/harness-env/Scripts/python.exe')
         scripted = output / 'scripted'
@@ -212,6 +280,12 @@ def run_suite(output, runner=run_worker):
                 commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
                     '--recording',str(path),'--target',target,'--runs','3','--observe','--combat',
                     '--controlled','--output',str(output / label)], 1170))
+        if include_editor:
+            for target in ('original', 'rebuilt'):
+                label = 'editor-' + target
+                commands.append((label, [python, str(ROOT / 'tools/harness/human_session.py'),
+                    '--recording', str(EDITOR_RECORDING), '--target', target, '--runs', '3',
+                    '--output', str(output / label)], 1170))
         commands.append(('native-features', [python, str(ROOT / 'tools/harness/feature_lab.py'),
             'test-all', '--runs', '3', '--output', str(output / 'native-features')], 3600))
         for name, command, timeout in commands:
@@ -228,15 +302,20 @@ def run_suite(output, runner=run_worker):
         for name, path, sha, count in CONTROLLED_CASES:
             result['human'][name] = controlled_result(output / (name + '-original/report.json'),
                 output / (name + '-rebuilt/report.json'), recordings[name], sha)
+        if include_editor:
+            result['editor'] = editor_result(output / 'editor-original/report.json',
+                output / 'editor-rebuilt/report.json', editor, EDITOR_RECORDING_SHA256)
         try:
             result['features'] = json.loads((output / 'native-features/report.json').read_text())
         except (OSError,ValueError) as error:
             result['features'] = {'complete':False, 'passed':False, 'error':str(error)}
         result['complete'] = ('error' not in result['scripted'] and all(case['complete'] for case in result['human'].values()) and
+                              (not include_editor or result['editor']['complete']) and
                               result['features'].get('complete') is True and
                               all(row['returncode'] is not None for row in result['workers']))
         result['passed'] = (result['complete'] and result['scripted'].get('passed') is True and
                             all(case['passed'] for case in result['human'].values()) and
+                            (not include_editor or result['editor']['passed']) and
                             result['features'].get('passed') is True and
                             all(row['returncode'] == 0 for row in result['workers']))
     except (OSError,ValueError) as error:
@@ -250,15 +329,17 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--check-fixtures', action='store_true', help='Check all permanent recordings and required saves without running games')
     parser.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite instead of controlled cases')
+    parser.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
     args = parser.parse_args()
     if args.check_fixtures:
         accepted_recording() if args.legacy else controlled_recordings()
         if not args.legacy:
             feature_fixtures()
+            editor_recording()
         print('Pinned input fixtures checked; no games started.')
         return 0
     output = args.output or ROOT / 'build/runtime' / ('parity-' + stamp())
-    result = (run_legacy_suite if args.legacy else run_suite)(output)
+    result = (run_legacy_suite if args.legacy else run_suite)(output, include_editor=args.editor) if not args.legacy else run_legacy_suite(output)
     print(f'Gameplay parity: {"PASS" if result["passed"] else "FAIL"}')
     print(f'Report: {output / "report.json"}')
     return 0 if result['passed'] else 1

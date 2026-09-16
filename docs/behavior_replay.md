@@ -49,6 +49,13 @@ See [human replay](human_replay.md#controlled-input-replay-v4) for commands and 
 `game.cmd test-parity --check-fixtures` checks all three recordings and required saves without starting games.
 The commands below are focused checks, not substitutes for the standard suite.
 
+The optional editor case uses `game.cmd test-parity --editor`.
+It adds three original and three rebuilt V7 replays. It installs no world or
+RNG observers. The case checks delivered input messages and game boundaries,
+camera values and receipts, and exact pre-encode RGB hashes. It reports visual
+differences instead of hiding them. The permanent input is
+`config/harness/human-editor-20260916.json`.
+
 ## Run a short replay
 
 ```cmd

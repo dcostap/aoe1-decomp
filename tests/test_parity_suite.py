@@ -141,6 +141,26 @@ def test_default_fixtures_include_the_pinned_saved_game():
         'fccd0ca0ccd98a6658a1eeb3b306c89afee3af9caf58ab518ee04eae434687f4')
 
 
+def test_editor_fixture_is_pinned_and_observer_free():
+    recording = suite.editor_recording()
+    assert len(recording['events']) == 3729
+    assert recording['policy'] == suite.V7_POLICY
+    assert recording['contract']['script_sha256'] == suite.V7_TEMPLATE_SHA256
+    assert recording['automated_smoke'] is False
+
+
+def test_editor_comparison_checks_only_its_declared_outputs():
+    row = matching_comparison()
+    checks = suite.editor_comparison_checks(row)
+    assert set(checks) == {'input_messages', 'game_input_boundaries', 'camera_values',
+                           'camera_receipts', 'video_rgb'}
+    assert all(checks.values())
+    row['terminal_world']['equal'] = False
+    row['rng_prefix']['equal'] = False
+    row['observer_sha256'] = [None, None]
+    assert all(suite.editor_comparison_checks(row).values())
+
+
 @pytest.mark.parametrize('failure', [None, 'scripted', 'late-game-match-original', 'late-game-match-rebuilt', 'native-features'])
 def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch, failure):
     commands = []
@@ -167,6 +187,25 @@ def test_default_suite_runs_every_case_and_keeps_failures(tmp_path, monkeypatch,
     assert commands[-1][commands[-1].index('--runs') + 1] == '3'
     assert result['complete'] is True
     assert result['passed'] is (failure is None)
+
+
+def test_editor_option_adds_two_unobserved_workers(tmp_path, monkeypatch):
+    commands = []
+    def runner(command, log, timeout, visible):
+        commands.append(command)
+        output = Path(command[command.index('--output') + 1])
+        output.mkdir()
+        (output / 'report.json').write_text(json.dumps({'complete': True, 'passed': True}))
+        return 0
+    monkeypatch.setattr(suite, 'controlled_result', lambda *args: {'complete': True, 'passed': True})
+    monkeypatch.setattr(suite, 'editor_result', lambda *args: {'complete': True, 'passed': True})
+    result = suite.run_suite(tmp_path / 'run', runner, include_editor=True)
+    assert len(commands) == 10
+    assert [command[command.index('--output') + 1] for command in commands[-3:-1]] == [
+        str(tmp_path / 'run/editor-original'), str(tmp_path / 'run/editor-rebuilt')]
+    assert all('--observe' not in command and '--combat' not in command
+               for command in commands[-3:-1])
+    assert result['complete'] is True and result['passed'] is True
 
 
 def test_native_fixture_failure_starts_no_suite_games(tmp_path, monkeypatch):
