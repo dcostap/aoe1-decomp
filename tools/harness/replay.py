@@ -1,6 +1,7 @@
 """Compare repeated original and rebuilt replays, checking variation separately."""
 import argparse
 from bisect import bisect_right
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
 from pathlib import Path
@@ -9,8 +10,7 @@ import sys
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
-from game import ROOT, stage
-from capture import capture
+from game import ROOT, run_worker, stage
 from behavior import first_difference, observations, validate_replay
 from linker_map import parse_symbols
 from replay_capture import compare_captures
@@ -174,7 +174,7 @@ def batch_classification(original, rebuilt, cross):
     return cross['classification']
 
 
-def run(fixture, output, seconds, runs=3):
+def run(fixture, output, seconds, runs=3, jobs=None):
     scenario = json.loads(fixture.read_text())
     recording = scenario if 'scenario' in scenario else None
     if recording:
@@ -185,22 +185,37 @@ def run(fixture, output, seconds, runs=3):
     output.mkdir(parents=True, exist_ok=False)
     frozen = output / 'scenario.json'
     frozen.write_text(json.dumps(scenario, indent=2) + '\n')
-    paths, reports = [], []
     targets = ['original'] * runs + ['rebuilt'] * runs
-    codes = []
-    for target in targets:
-        runtime = stage(target)
+    if jobs is not None and jobs < 1:
+        raise ValueError('The replay worker count must be positive.')
+    worker_count = min(len(targets), jobs if jobs is not None else len(targets))
+
+    def one(index, target):
         try:
-            code = capture(runtime, seconds, frozen, 'calls')
+            runtime = stage(target)
+            command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/capture.py'),
+                       '--runtime', str(runtime), '--fixture', str(frozen.resolve()),
+                       '--clock', 'calls', '--seconds', str(seconds)]
+            code = run_worker(command, runtime / 'hidden-worker.log', seconds + 30, False)
         except Exception as error:
             code = 1
             print(f'Capture failed: {error}', flush=True)
-        path = runtime / 'capture/report.json'
-        paths.append(path)
-        codes.append(code)
-        reports.append(json.loads(path.read_text()) if path.exists() else None)
-        print(f'{target}: capture exit {code}', flush=True)
-    result = {'schema':2, 'runs_per_executable':runs, 'targets':targets, 'capture_exit_codes':codes,
+            path = output / f'{index:02d}-{target}-missing-report.json'
+        else:
+            path = runtime / 'capture/report.json'
+        return index, path, code
+
+    completed = [None] * len(targets)
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        futures = [executor.submit(one, index, target) for index, target in enumerate(targets)]
+        for future in as_completed(futures):
+            index, path, code = future.result()
+            completed[index] = (path, code)
+            print(f'{targets[index]} {index + 1}/{len(targets)}: capture exit {code}', flush=True)
+    paths = [row[0] for row in completed]
+    codes = [row[1] for row in completed]
+    reports = [json.loads(path.read_text()) if path.exists() else None for path in paths]
+    result = {'schema':2, 'runs_per_executable':runs, 'jobs':worker_count, 'targets':targets, 'capture_exit_codes':codes,
               'captures':[str(path) for path in paths], 'passed':False,
               'scope':'Configured fields, full debug RNG sequence, and requested game-client captures; not all game state'}
     result['original_repeat'] = repeat_group(paths[:runs], reports[:runs])
@@ -234,12 +249,13 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--seconds', type=float, default=90)
     parser.add_argument('--runs', type=int, default=3, help='Runs per executable')
+    parser.add_argument('--jobs', type=int, help='Maximum replay captures to start at once; default is all captures')
     args = parser.parse_args()
-    if not 1 <= args.seconds <= 300:
-        parser.error('Capture deadline must be 1..300 seconds.')
+    if not 1 <= args.seconds <= 300 or (args.jobs is not None and args.jobs < 1):
+        parser.error('Use a 1..300 second deadline and a positive worker count.')
     if not 3 <= args.runs <= 30:
         parser.error('Use 3..30 runs per executable.')
-    return run(args.fixture, args.output, args.seconds, args.runs)
+    return run(args.fixture, args.output, args.seconds, args.runs, args.jobs)
 
 
 if __name__ == '__main__':

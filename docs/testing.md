@@ -110,6 +110,10 @@ game.cmd test-captures
 game.cmd test-parity
 ```
 
+The independent workers in both suites run in parallel by default. Use
+`--jobs N` to limit the worker count. Set `--jobs` to one for a serial diagnostic.
+Each hidden worker owns its private desktop and output folder.
+
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
 See [the runtime harness](runtime_harness.md) for its setup, reports, and coverage.
 

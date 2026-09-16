@@ -8,6 +8,10 @@ This experimental mode compares game behavior beyond pixels. It does not replace
 game.cmd test-parity
 ```
 
+Independent parity workers run in parallel by default. Use `--jobs N` to set
+the limit. The replay and human workers also run their independent captures in
+parallel. Set `--jobs` to one for a serial diagnostic run.
+
 Use this command for gameplay parity checks. It runs the short script and three controlled human-input cases.
 Each case runs three fresh originals and three fresh rebuilt games: 24 executions in total.
 The human cases use these unchanged recordings under `config/harness/`:
@@ -61,6 +65,10 @@ differences instead of hiding them. The permanent input is
 ```cmd
 game.cmd replay
 ```
+
+The six replay captures run in parallel by default. Use `--jobs N` to limit
+them. Each capture uses a private runtime, desktop, registry namespace, and
+process job.
 
 The default script opens Single Player, selects Random Map, and starts the game.
 It moves the cursor to the right edge after five world-update calls, then moves it back after fifteen.

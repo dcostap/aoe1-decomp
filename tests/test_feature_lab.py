@@ -292,7 +292,7 @@ def test_all_civilizations_continue_after_a_failed_case(tmp_path, monkeypatch):
         (output / 'report.json').write_text(json.dumps(dict(complete=True, passed=passed)))
         return type('Result', (), dict(returncode=0 if passed else 1))()
     monkeypatch.setattr(lab.subprocess, 'run', run)
-    result = lab.test_all(tmp_path / 'results')
+    result = lab.test_all(tmp_path / 'results', jobs=1)
     assert len(calls) == len(lab.FIXTURES)
     assert result['complete'] is True and result['passed'] is False
     assert [command[command.index('--fixture') + 1] for command in calls] == [str(p) for _, p in lab.FIXTURES]

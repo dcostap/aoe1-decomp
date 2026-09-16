@@ -125,8 +125,9 @@ Use the printed recording path:
 game.cmd replay-original build/runtime/human-EXAMPLE/recording.json
 ```
 
-This runs three fresh originals, sequentially, on private desktops. It does not switch your desktop.
+This runs three fresh originals in parallel by default, on private desktops. It does not switch your desktop.
 Each run produces its own game-window video. Open the printed `video.mp4` files in your video player.
+Set `--jobs` to one for a serial diagnostic run.
 
 For a targeted development check, use one run:
 
@@ -144,7 +145,7 @@ After accepting the original replay, run the same recording on the selected rebu
 game.cmd replay-rebuilt build/runtime/human-EXAMPLE/recording.json
 ```
 
-This runs three fresh rebuilt processes. It keeps the recorded inputs, clock policy, and starting-contract checks.
+This runs three fresh rebuilt processes in parallel by default. It keeps the recorded inputs, clock policy, and starting-contract checks.
 The harness validates the rebuilt executable and linker map before resolving its corresponding function hooks.
 It does not insert original game state, RNG results, or rendered output into rebuilt execution.
 The accepted recording does not need to change when selecting the other executable.

@@ -1,5 +1,6 @@
 """Record original play and replay it on fresh original or rebuilt processes, with game-window video."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import ctypes as C
 from ctypes import wintypes as W
 import hashlib
@@ -323,6 +324,7 @@ def main():
     source.add_argument('--recording', type=Path)
     parser.add_argument('--seconds', type=int, default=60, help='Maximum controlled recording duration')
     parser.add_argument('--runs', type=int, default=3)
+    parser.add_argument('--jobs', type=int, help='Maximum replay runs to start at once; default is all runs')
     parser.add_argument('--target',choices=('original','rebuilt'),default='original')
     parser.add_argument('--observe',action='store_true',help='Add full RNG and focused read-only diagnostics during replay')
     parser.add_argument('--rng-only',action='store_true',help='Keep only full RNG diagnostics; requires --observe')
@@ -345,11 +347,13 @@ def main():
         parser.error('--message-noise requires controlled replay')
     if ((args.controlled or args.upgrade_v1_to_v3 or args.upgrade_v1_to_v4) and args.record) or sum((args.controlled,args.upgrade_v1_to_v2,args.upgrade_v1_to_v3,args.upgrade_v1_to_v4)) > 1:
         parser.error('Select one replay upgrade; v3/v4 do not record new inputs yet.')
-    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe or args.upgrade_v1_to_v2)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
+    if not 1 <= args.seconds <= 180 or not 1 <= args.runs <= 3 or (args.jobs is not None and not 1 <= args.jobs <= args.runs) or (args.smoke and not args.record) or (args.cursor_check and not args.smoke) or (args.record and (args.target != 'original' or args.observe or args.upgrade_v1_to_v2)) or (args.rng_only and not args.observe) or (args.combat and (not args.observe or args.rng_only)):
         parser.error('Use 1..180 seconds, 1..3 runs, and smoke only with record.')
     output = args.output or ROOT/'build/runtime'/('human-'+stamp())
     output.mkdir(parents=True, exist_ok=False)
-    result = {'schema':1,'original_only':args.target == 'original','target':args.target,'runs':[], 'complete':False}
+    result = {'schema':1,'original_only':args.target == 'original','target':args.target,
+              'jobs':1 if args.record else min(args.runs, args.jobs if args.jobs is not None else args.runs),
+              'runs':[], 'complete':False}
     try:
         if args.record:
             print('Recording starts at launch. Press F10 or close the game window to save. Do not resize or switch windows.', flush=True)
@@ -385,16 +389,37 @@ def main():
                        'recording_sha256':recording_sha256,
                        'upgrade_rule':upgrade_rule}
             result['human_control'] = execution_plan(session)
-            first = None
-            for _ in range(args.runs):
-                report = run_session(result['runs'],session,False)
-                received = inputs(report)
-                result['runs'][-1]['recording_fidelity'] = compare_inputs(recording['events'],received)
-                result['runs'][-1]['dropped_unrequested_messages'] = report['status']['human']['dropped']
-                if first is None:
-                    first = received
-                else:
-                    result['runs'][-1]['input_repeatability'] = compare_inputs(first,received)
+
+            def one(index):
+                rows = []
+                try:
+                    report = run_session(rows, session, False)
+                    row = rows[0]
+                    received = inputs(report)
+                    row['recording_fidelity'] = compare_inputs(recording['events'], received)
+                    row['dropped_unrequested_messages'] = report['status']['human']['dropped']
+                    return index, row, received, None
+                except (OSError, ValueError) as error:
+                    return index, None, None, str(error)
+
+            completed = [None] * args.runs
+            received_runs = [None] * args.runs
+            failures = []
+            with ThreadPoolExecutor(max_workers=min(args.runs, args.jobs or args.runs)) as executor:
+                futures = [executor.submit(one, index) for index in range(args.runs)]
+                for future in as_completed(futures):
+                    index, row, received, error = future.result()
+                    if row is not None:
+                        completed[index] = row
+                        received_runs[index] = received
+                    if error is not None:
+                        failures.append(error)
+            result['runs'] = completed
+            if failures:
+                raise ValueError(failures[0])
+            first = received_runs[0]
+            for row, received in zip(result['runs'][1:], received_runs[1:]):
+                row['input_repeatability'] = compare_inputs(first, received)
             result['scope'] = 'Input fidelity and repeatability only. Review videos; hidden-state equivalence is not checked.'
             result['input_sequence_preserved'] = all(row['recording_fidelity']['same_messages'] for row in result['runs'])
             result['input_repeatable'] = (all(row['input_repeatability']['exact_boundaries'] for row in result['runs'][1:]) if args.runs > 1 else None)

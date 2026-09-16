@@ -182,6 +182,11 @@ game.cmd test-captures --case "settings-*"
 game.cmd test-captures --case campaign-name-mouse --original-runs 2
 ```
 
+Independent cases run in parallel by default. Each hidden UI case uses its own
+desktop, process job, registry namespace, and output folder. Limit concurrency
+with `--jobs N`. Set `--jobs` to one for a serial diagnostic run. Visible mode stays
+serial because all visible cases share the interactive desktop.
+
 The permanent group lives in `config/harness/game-ui-main-menu.json`.
 It defines 41 cases. These include three safety tests that must stop before game or map execution.
 The default run uses two fresh original processes and one rebuilt process per case.

@@ -1,5 +1,6 @@
 """Run scripted smoke, human-input cases, and native feature maps on both executables."""
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
 from pathlib import Path
@@ -32,6 +33,33 @@ CONTROLLED_CASES = (
 EDITOR_RECORDING = ROOT / 'config/harness/human-editor-20260916.json'
 EDITOR_RECORDING_SHA256 = '4cac2eb68eb4ef6202eecbf3dacf23fb7c4bc9c48d08fc34618f8976779ed953'
 EDITOR_EVENT_COUNT = 3729
+
+
+def run_commands(commands, output, runner, jobs=None):
+    """Run independent suite workers together and keep report order stable."""
+    if not commands:
+        return []
+    if jobs is not None and jobs < 1:
+        raise ValueError('The suite worker count must be positive.')
+    worker_count = min(len(commands), jobs if jobs is not None else len(commands))
+
+    def one(index, name, command, timeout):
+        row = {'name': name, 'command': command, 'returncode': None}
+        try:
+            row['returncode'] = runner(command, output / (name + '.log'), timeout, False)
+        except Exception as error:
+            row['error'] = str(error)
+        return index, row
+
+    rows = [None] * len(commands)
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        futures = [executor.submit(one, index, name, command, timeout)
+                   for index, (name, command, timeout) in enumerate(commands)]
+        for future in as_completed(futures):
+            index, row = future.result()
+            rows[index] = row
+            print(f"Harness worker: {row['name']}: exit {row['returncode']}", flush=True)
+    return rows
 
 
 def accepted_recording(path=RECORDING):
@@ -104,7 +132,7 @@ def human_result(original_path, rebuilt_path, recording):
     return result
 
 
-def run_legacy_suite(output, runner=run_worker):
+def run_legacy_suite(output, runner=run_worker, jobs=None):
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema': 1, 'complete': False, 'passed': False, 'scope': SCOPE,
               'recording': str(RECORDING), 'recording_sha256': RECORDING_SHA256, 'workers': []}
@@ -123,13 +151,8 @@ def run_legacy_suite(output, runner=run_worker):
                              '--recording', str(RECORDING), '--target', target, '--runs', '3',
                              '--observe', '--rng-only', '--output', str(destination)], deadline))
         # Run both cases even when the scripted case finds differences.
-        for name, command, timeout in commands:
-            row = {'name': name, 'command': command, 'returncode': None}
-            result['workers'].append(row)
-            try:
-                row['returncode'] = runner(command, output / (name + '.log'), timeout, False)
-            except OSError as error:
-                row['error'] = str(error)
+        result['jobs'] = min(len(commands), jobs if jobs is not None else len(commands))
+        result['workers'] = run_commands(commands, output, runner, jobs)
         try:
             result['scripted'] = json.loads((scripted / 'report.json').read_text())
         except (OSError, ValueError) as error:
@@ -262,7 +285,7 @@ def controlled_result(original_path, rebuilt_path, recording, recording_sha):
     return result
 
 
-def run_suite(output, runner=run_worker, include_editor=False):
+def run_suite(output, runner=run_worker, include_editor=False, jobs=None):
     output.mkdir(parents=True, exist_ok=False)
     result = {'schema':2, 'complete':False, 'passed':False, 'scope':CONTROLLED_SCOPE, 'workers':[], 'human':{}}
     try:
@@ -288,13 +311,8 @@ def run_suite(output, runner=run_worker, include_editor=False):
                     '--output', str(output / label)], 1170))
         commands.append(('native-features', [python, str(ROOT / 'tools/harness/feature_lab.py'),
             'test-all', '--runs', '3', '--output', str(output / 'native-features')], 3600))
-        for name, command, timeout in commands:
-            row = {'name':name,'command':command,'returncode':None}
-            result['workers'].append(row)
-            try:
-                row['returncode'] = runner(command, output / (name + '.log'), timeout, False)
-            except OSError as error:
-                row['error'] = str(error)
+        result['jobs'] = min(len(commands), jobs if jobs is not None else len(commands))
+        result['workers'] = run_commands(commands, output, runner, jobs)
         try:
             result['scripted'] = json.loads((scripted / 'report.json').read_text())
         except (OSError,ValueError) as error:
@@ -330,7 +348,10 @@ def main():
     parser.add_argument('--check-fixtures', action='store_true', help='Check all permanent recordings and required saves without running games')
     parser.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite instead of controlled cases')
     parser.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
+    parser.add_argument('--jobs', type=int, help='Maximum independent workers to run at once; default is all workers')
     args = parser.parse_args()
+    if args.jobs is not None and args.jobs < 1:
+        parser.error('--jobs must be positive.')
     if args.check_fixtures:
         accepted_recording() if args.legacy else controlled_recordings()
         if not args.legacy:
@@ -339,7 +360,8 @@ def main():
         print('Pinned input fixtures checked; no games started.')
         return 0
     output = args.output or ROOT / 'build/runtime' / ('parity-' + stamp())
-    result = (run_legacy_suite if args.legacy else run_suite)(output, include_editor=args.editor) if not args.legacy else run_legacy_suite(output)
+    result = (run_legacy_suite if args.legacy else run_suite)(
+        output, include_editor=args.editor, jobs=args.jobs) if not args.legacy else run_legacy_suite(output, jobs=args.jobs)
     print(f'Gameplay parity: {"PASS" if result["passed"] else "FAIL"}')
     print(f'Report: {output / "report.json"}')
     return 0 if result['passed'] else 1

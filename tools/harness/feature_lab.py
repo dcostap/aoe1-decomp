@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import gzip
 import hashlib
 import itertools
@@ -384,24 +385,39 @@ def run_one(output, mode, target='original', fixture=None, turns=800, civilizati
     return run_worker(command, output / 'worker.log', 270, False)
 
 
-def test_all(output, runs=3, turns=800):
+def test_all(output, runs=3, turns=800, jobs=None):
     for _, fixture in FIXTURES:
         validate_fixture(fixture)
     output.mkdir(parents=True, exist_ok=False)
     cases = {}
-    for name, fixture in FIXTURES:
+    if jobs is not None and jobs < 1:
+        raise ValueError('The feature-lab worker count must be positive.')
+    worker_count = min(len(FIXTURES), jobs if jobs is not None else len(FIXTURES))
+
+    def one(name, fixture):
         destination = output / name
-        code = subprocess.run([sys.executable, str(Path(__file__).resolve()), 'test',
-            '--fixture', str(fixture), '--output', str(destination), '--runs', str(runs),
-            '--turns', str(turns)], cwd=ROOT).returncode
+        command = [sys.executable, str(Path(__file__).resolve()), 'test',
+                   '--fixture', str(fixture), '--output', str(destination), '--runs', str(runs),
+                   '--turns', str(turns)]
+        if jobs is not None:
+            command += ['--jobs', str(jobs)]
+        code = subprocess.run(command, cwd=ROOT).returncode
         try:
             result = json.loads((destination / 'report.json').read_text())
         except (OSError, ValueError) as error:
             result = dict(passed=False, error=str(error))
-        cases[name] = dict(returncode=code, report=str(destination / 'report.json'),
-                           complete=result.get('complete') is True,
-                           passed=code == 0 and result.get('passed') is True)
-    report = dict(schema=1, cases=cases, complete=all(row['complete'] for row in cases.values()),
+        return name, dict(returncode=code, report=str(destination / 'report.json'),
+                          complete=result.get('complete') is True,
+                          passed=code == 0 and result.get('passed') is True)
+
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        futures = [executor.submit(one, name, fixture) for name, fixture in FIXTURES]
+        for future in as_completed(futures):
+            name, row = future.result()
+            cases[name] = row
+    cases = {name: cases[name] for name, _ in FIXTURES}
+    report = dict(schema=1, jobs=worker_count, cases=cases,
+                  complete=all(row['complete'] for row in cases.values()),
                   passed=all(row['passed'] for row in cases.values()))
     write_json(output / 'report.json', report)
     return report
@@ -427,6 +443,7 @@ def main():
             p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
         if name == 'test':
             p.add_argument('--runs', type=int, choices=(2, 3), default=3)
+            p.add_argument('--jobs', type=int, help='Maximum feature-lab captures to start at once; default is all captures')
     p = sub.add_parser('open', help='Stage a private game. Load feature_lab from its Load Game menu.')
     p.add_argument('--fixture', type=Path, default=DEFAULT_FIXTURE)
     p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
@@ -435,6 +452,7 @@ def main():
     p.add_argument('--output', type=Path, default=ROOT / 'build/feature-lab' / stamp())
     p.add_argument('--runs', type=int, choices=(2,3), default=3)
     p.add_argument('--turns', type=int, default=800)
+    p.add_argument('--jobs', type=int, help='Maximum feature-lab workers to start at once; default is all workers')
     p = sub.add_parser('worker', help='Internal private-desktop worker.')
     p.add_argument('--runtime', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
@@ -465,7 +483,9 @@ def main():
     if not output.is_relative_to((ROOT / 'build').resolve()):
         parser.error('Generated output must stay under build/.')
     if args.command == 'test-all':
-        return 0 if test_all(output, args.runs, args.turns)['passed'] else 1
+        if args.jobs is not None and args.jobs < 1:
+            parser.error('--jobs must be positive.')
+        return 0 if test_all(output, args.runs, args.turns, args.jobs)['passed'] else 1
     if args.command == 'generate':
         return run_one(output, 'generate', civilization_offset=args.civilization_offset, layout=args.layout)
     fixture = args.fixture.resolve()
@@ -474,10 +494,28 @@ def main():
         return run_one(output, 'replay', args.target, fixture, args.turns)
     output.mkdir(parents=True, exist_ok=False)
     captures, codes, targets = [], [], ['original'] * args.runs + ['rebuilt'] * args.runs
-    for index, target in enumerate(targets):
+    if args.jobs is not None and args.jobs < 1:
+        parser.error('--jobs must be positive.')
+    worker_count = min(len(targets), args.jobs if args.jobs is not None else len(targets))
+    completed = [None] * len(targets)
+
+    def one(index, target):
         path = output / f'{index:02d}-{target}'
-        codes.append(run_one(path, 'replay', target, fixture, args.turns))
-        captures.append(path / 'report.json')
+        try:
+            code = run_one(path, 'replay', target, fixture, args.turns)
+            error = None
+        except Exception as failure:
+            code, error = 1, str(failure)
+        return index, path, code, error
+
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        futures = [executor.submit(one, index, target) for index, target in enumerate(targets)]
+        for future in as_completed(futures):
+            index, path, code, error = future.result()
+            completed[index] = (path, code, error)
+            print(f'{targets[index]} {index + 1}/{len(targets)}: worker exit {code}', flush=True)
+    captures = [path / 'report.json' for path, _, _ in completed]
+    codes = [code for _, code, _ in completed]
     pairs = []
     for left, right in itertools.combinations(range(len(captures)), 2):
         try:
@@ -485,7 +523,7 @@ def main():
         except (OSError, ValueError, KeyError) as error:
             comparison = {'passed': False, 'error': str(error)}
         pairs.append(dict(left=left, right=right, **comparison))
-    result = dict(schema=1, captures=[str(p) for p in captures], targets=targets, exit_codes=codes,
+    result = dict(schema=1, jobs=worker_count, captures=[str(p) for p in captures], targets=targets, exit_codes=codes,
                   pairs=pairs, complete=not any(codes) and all('error' not in p for p in pairs),
                   comparison_passed=not any(codes) and all(p['passed'] for p in pairs))
     result['coverage'] = []

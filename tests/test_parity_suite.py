@@ -2,11 +2,37 @@ import json
 import copy
 from pathlib import Path
 import sys
+import threading
+import time
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools/harness'))
 import parity_suite as suite
+
+
+def test_independent_suite_workers_run_in_parallel(tmp_path):
+    commands = [(f'worker-{index}', [f'worker-{index}'], 10) for index in range(3)]
+    barrier = threading.Barrier(3)
+    lock = threading.Lock()
+    active = 0
+    peak = 0
+
+    def runner(command, log, timeout, visible):
+        nonlocal active, peak
+        with lock:
+            active += 1
+            peak = max(peak, active)
+        barrier.wait(timeout=2)
+        time.sleep(0.03)
+        with lock:
+            active -= 1
+        return 0
+
+    rows = suite.run_commands(commands, tmp_path, runner, jobs=3)
+    assert peak == 3
+    assert [row['name'] for row in rows] == ['worker-0', 'worker-1', 'worker-2']
+    assert all(row['returncode'] == 0 for row in rows)
 
 
 def test_permanent_recording_is_the_unchanged_accepted_input():

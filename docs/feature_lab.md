@@ -23,6 +23,10 @@ game.cmd feature-lab test-all
 game.cmd feature-lab test --fixture config/harness/feature_lab --runs 3
 ```
 
+Independent feature workers run in parallel by default. Use `--jobs N` to
+limit capture workers. `test-all --jobs N` applies the same limit to each set.
+Set `--jobs` to one for a serial diagnostic run.
+
 `test-all` runs both civilization sets. Each set uses three originals and three rebuilt games by default.
 Each set checks all 15 capture pairs. A failed case does not skip the other civilization set.
 

@@ -12,6 +12,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.request
+import uuid
 import zipfile
 
 from prepare_runtime import DEFAULT_SOURCE, ORIGINAL_SHA256, digest, prepare
@@ -23,7 +24,8 @@ DEFAULT_ARGUMENTS = ["NOSTARTUP", "GAMECD"]
 
 
 def stamp():
-    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    # Clock values can repeat across threads and Windows processes.
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + '-' + uuid.uuid4().hex[:12]
 
 
 def save_selection(path, value):
@@ -181,6 +183,7 @@ def main():
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
+    p.add_argument('--jobs',type=int,help='Maximum replay runs to start at once; default is all runs')
     p.add_argument('--upgrade-v1-to-v2',action='store_true',
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
@@ -189,6 +192,7 @@ def main():
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
+    p.add_argument('--jobs',type=int,help='Maximum replay runs to start at once; default is all runs')
     p.add_argument('--upgrade-v1-to-v2',action='store_true',
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
@@ -198,6 +202,7 @@ def main():
     p.add_argument('--check-fixtures', action='store_true', help='Validate all permanent recordings and required saves without running games')
     p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
     p.add_argument('--editor', action='store_true', help='Also run the V7 editor input, camera, and RGB case')
+    p.add_argument('--jobs', type=int, help='Maximum independent harness workers to run at once; default is all workers')
     p = subs.add_parser('feature-lab', help='Generate, open, or compare a native feature map')
     p.add_argument('operation', choices=('generate', 'replay', 'test', 'test-all', 'open'))
     p.add_argument('options', nargs=argparse.REMAINDER, help='Options for the feature-map operation')
@@ -205,6 +210,7 @@ def main():
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
     p.add_argument('--runs', type=int, default=3, help='Runs per executable; at least three')
+    p.add_argument('--jobs', type=int, help='Maximum replay captures to start at once; default is all captures')
     p = subs.add_parser('replay-repeat', help='Check one executable in parallel private processes')
     p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
@@ -215,6 +221,7 @@ def main():
     p.add_argument('--list', action='store_true')
     p.add_argument('--case', action='append', default=[], help='Test ID or wildcard; may be repeated')
     p.add_argument('--original-runs', type=int, choices=(1, 2, 3), default=2)
+    p.add_argument('--jobs', type=int, help='Maximum UI cases to run at once; default is all cases')
     p = subs.add_parser('override', help='Replace an asset without writing through its shared hard link')
     p.add_argument('runtime', type=Path)
     p.add_argument('relative', type=Path)
@@ -256,6 +263,8 @@ def main():
                 command.append('--legacy')
             if args.editor:
                 command.append('--editor')
+            if getattr(args, 'jobs', None) is not None:
+                command += ['--jobs', str(args.jobs)]
             return subprocess.run(command, cwd=ROOT).returncode
         if args.command in ('record-original','replay-original','replay-rebuilt'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
@@ -268,6 +277,8 @@ def main():
                 command.append('--upgrade-v1-to-v3')
             if args.command != 'record-original' and args.controlled:
                 command.append('--controlled')
+            if getattr(args, 'jobs', None) is not None:
+                command += ['--jobs', str(args.jobs)]
             return subprocess.run(command,cwd=ROOT).returncode
         if args.command == 'replay-repeat':
             output = ROOT / 'build/runtime' / ('replay-repeat-' + stamp())
@@ -282,6 +293,8 @@ def main():
             command = [str(ROOT / 'build/harness-env/Scripts/python.exe'),
                        str(ROOT / 'tools/harness/replay.py'), '--fixture', str(args.fixture.resolve()),
                        '--seconds', str(args.seconds), '--runs', str(args.runs), '--output', str(output)]
+            if args.jobs is not None:
+                command += ['--jobs', str(args.jobs)]
             code = run_worker(command, output.with_suffix('.log'), 2 * args.runs * (args.seconds + 30) + 60, False)
             report_path = output / 'report.json'
             if report_path.exists():
@@ -317,6 +330,8 @@ def main():
             command = [str(ROOT / 'build/harness-env/Scripts/python.exe'),
                        str(ROOT / 'tools/harness/suite.py'), '--output', str(output),
                        '--original-runs', str(args.original_runs)]
+            if args.jobs is not None:
+                command += ['--jobs', str(args.jobs)]
             for pattern in args.case:
                 command += ['--case', pattern]
             code = run_worker(command, output.with_suffix('.log'),

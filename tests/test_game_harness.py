@@ -33,6 +33,10 @@ def test_failed_build_rejected_even_with_correct_hash(tmp_path):
         game.validate_build(exe)
 
 
+def test_parallel_runtime_names_are_unique():
+    assert len({game.stamp() for _ in range(128)}) == 128
+
+
 def test_capture_excludes_pitch_padding_but_keeps_raw_data(tmp_path):
     meta = {'width': 2, 'height': 2, 'pitch': 4, 'count': 1}
     palette = bytes(1024)
