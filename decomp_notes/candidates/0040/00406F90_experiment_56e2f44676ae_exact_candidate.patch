@@ -1,0 +1,24 @@
+# Experiment 56e2f44676ae1245b96c6e97cf6252f02182c51b9692569cf441508defd63689
+# Base cacb607c8d30eccc2506d2d92e02744b3a1eb7d0
+diff --git a/src/act_tran.cpp b/src/act_tran.cpp
+index 6e65b3c70..5c28a8eb1 100644
+--- a/src/act_tran.cpp
++++ b/src/act_tran.cpp
+@@ -83,7 +83,7 @@ void RGE_Action_Transport::set_state(unsigned char new_state) {
+ 
+ unsigned char RGE_Action_Transport::update(void) {
+     switch (this->state) {
+-    case 4: {
++    case 0x0B: {
+         unsigned char result = this->sub_actions->update();
+         if (result > 0 && result <= 5) {
+             this->set_state(2);
+@@ -92,7 +92,7 @@ unsigned char RGE_Action_Transport::update(void) {
+         return 0;
+     }
+ 
+-    case 0x0B: {
++    case 4: {
+         unsigned char result = this->sub_actions->update();
+         if (result > 0 && result <= 5) {
+             this->set_state(6);
