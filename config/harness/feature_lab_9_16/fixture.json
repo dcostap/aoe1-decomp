@@ -1,0 +1,17 @@
+{
+  "schema": 2,
+  "name": "feature_lab.gmx",
+  "sha256": "fdbef1a5c11b0155b7be6a4bd8d91c880dec34371d356e742a7ef4047ea1f9b3",
+  "size": 346322,
+  "original_sha256": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+  "generator_sha256": "e90b9d7df6c549051421e57418336adafa60dea952da1d6367cf1ce3c7b987ec",
+  "generator": {
+    "seed": 24681357,
+    "size": 240,
+    "civilization_offset": 8
+  },
+  "metadata": {
+    "setup.json": "1af84337b5c4a30dc6cb0850b143593a38cccfa68b29c432e6f5ea6bcc34da15",
+    "catalog.json": "96a83fd3e9610663ac4224bad417ab67a91203766a7f144f58c0689b78760ee7"
+  }
+}

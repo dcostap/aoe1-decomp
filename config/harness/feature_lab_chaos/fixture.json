@@ -1,0 +1,18 @@
+{
+  "schema": 2,
+  "name": "feature_lab.gmx",
+  "layout": "chaos",
+  "sha256": "5af991a3dc7b0c26d3cfc395506f762e00c6c025497bb53d0daaa8022ef8d6e4",
+  "size": 447276,
+  "original_sha256": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+  "generator_sha256": "c4327fe810081181152542986b667d23035f98d65d0a1e616671172d737fe88d",
+  "generator": {
+    "seed": 24681357,
+    "size": 240,
+    "civilization_offset": 0
+  },
+  "metadata": {
+    "setup.json": "0ecbf3cf9654ecdcf9bfeff9e3a9ae162415e89bfb78cb8dd9cafcaf0c2144c8",
+    "catalog.json": "ceace057d9d665e60c8b1c9b91d54d2fea5976c45b97c05c2d2bc42061d215e1"
+  }
+}

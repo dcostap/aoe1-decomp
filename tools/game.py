@@ -129,7 +129,7 @@ def build():
     return validate_build(reports[0].with_name("empiresx.exe"))
 
 
-def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets="hardlink"):
+def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets="hardlink", harness_saves=True):
     if target == "original":
         exe = ORIGINAL
         if digest(exe) != ORIGINAL_SHA256:
@@ -145,7 +145,7 @@ def stage(target: str, exe: Path | None = None, *, graphics="cnc-ddraw", assets=
         if not wrapper_path().exists() or digest(wrapper_path()) != dependencies()["dll_sha256"]:
             raise ValueError("Pinned graphics DLL is missing. Run game.cmd setup.")
     output = ROOT / "build/runtime" / f"{target}-{stamp()}"
-    report = prepare(DEFAULT_SOURCE, exe, output, assets=assets)
+    report = prepare(DEFAULT_SOURCE, exe, output, assets=assets, harness_saves=harness_saves)
     if graphics == "cnc-ddraw":
         shutil.copy2(wrapper_path(), output / "ddraw.dll")
         shutil.copy2(ROOT / "config/harness/ddraw.ini", output / "ddraw.ini")
@@ -176,6 +176,8 @@ def main():
     subs.add_parser("setup", help="Install pinned graphics and isolated instrumentation dependencies")
     p = subs.add_parser('record-original', help='Record original gameplay with video; F10 or window close saves')
     p.add_argument('--seconds',type=int,default=60,help='Maximum controlled recording duration, at most 180 seconds')
+    p.add_argument('--editor',action='store_true',
+                   help='Allow the scenario editor and scenarios; records with the v7 editor profile')
     p = subs.add_parser('replay-original', help='Replay a human recording on fresh originals with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
@@ -183,7 +185,7 @@ def main():
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
                    help='Use controlled v3 timing; this does not reproduce historical v1 clock values')
-    p.add_argument('--controlled',action='store_true',help='Use recorded v1/v2 inputs under controlled v4 timing')
+    p.add_argument('--controlled',action='store_true',help='Use controlled paint timing with the recorded save policy')
     p = subs.add_parser('replay-rebuilt', help='Replay a human recording on fresh rebuilt games with video')
     p.add_argument('recording',type=Path)
     p.add_argument('--runs',type=int,default=3,choices=(1,2,3))
@@ -191,10 +193,13 @@ def main():
                    help='Diagnostic only: use the serialized v2 scheduler for an exact v1 recording')
     p.add_argument('--upgrade-v1-to-v3',action='store_true',
                    help='Use controlled v3 timing; this does not reproduce historical v1 clock values')
-    p.add_argument('--controlled',action='store_true',help='Use recorded v1/v2 inputs under controlled v4 timing')
-    p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the accepted human recording')
-    p.add_argument('--check-fixtures', action='store_true', help='Validate the permanent fixture without running games')
+    p.add_argument('--controlled',action='store_true',help='Use controlled paint timing with the recorded save policy')
+    p = subs.add_parser('test-parity', help='Run the standard gameplay suite, including the saved-game recording')
+    p.add_argument('--check-fixtures', action='store_true', help='Validate all permanent recordings and required saves without running games')
     p.add_argument('--legacy', action='store_true', help='Run the old same-policy v1 suite with its known repeatability limits')
+    p = subs.add_parser('feature-lab', help='Generate, open, or compare a native feature map')
+    p.add_argument('operation', choices=('generate', 'replay', 'test', 'test-all', 'open'))
+    p.add_argument('options', nargs=argparse.REMAINDER, help='Options for the feature-map operation')
     p = subs.add_parser('replay', help='Compare repeated original and rebuilt gameplay replays')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
@@ -239,6 +244,9 @@ def main():
         p.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     try:
+        if args.command == 'feature-lab':
+            return subprocess.run([str(ROOT/'build/harness-env/Scripts/python.exe'),
+                str(ROOT/'tools/harness/feature_lab.py'), args.operation, *args.options], cwd=ROOT).returncode
         if args.command == 'test-parity':
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/parity_suite.py')]
             if args.check_fixtures:
@@ -248,7 +256,7 @@ def main():
             return subprocess.run(command, cwd=ROOT).returncode
         if args.command in ('record-original','replay-original','replay-rebuilt'):
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'),str(ROOT/'tools/harness/human_session.py')]
-            command += (['--record','--seconds',str(args.seconds)] if args.command == 'record-original' else
+            command += (['--record','--seconds',str(args.seconds)] + (['--editor'] if args.editor else []) if args.command == 'record-original' else
                         ['--recording',str(args.recording.resolve()),'--runs',str(args.runs),
                          '--target','rebuilt' if args.command == 'replay-rebuilt' else 'original'])
             if args.command != 'record-original' and args.upgrade_v1_to_v2:
@@ -337,7 +345,8 @@ def main():
             return run_worker(command, log, (args.seconds + 15) * args.count + 30, args.visible)
         target = args.target if args.command == "capture" else ("original" if args.command == "original" else "rebuilt")
         exe = build() if args.command == "build" else getattr(args, "exe", None)
-        output = stage(target, exe, graphics=args.graphics, assets=args.assets)
+        output = stage(target, exe, graphics=args.graphics, assets=args.assets,
+                       harness_saves=args.command == 'capture')
         if args.command == "capture":
             if args.prepare_only:
                 return 0
