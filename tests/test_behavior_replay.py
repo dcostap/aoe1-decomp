@@ -150,15 +150,16 @@ def test_asset_differences_reject_comparison():
     assert compare_reports(a, b)['reason'] == 'assets'
 
 
-def test_unused_save_files_do_not_reject_new_game_comparison():
+def test_save_directory_is_not_a_new_game_input():
     from replay import gameplay_assets
     a, b = report(), report()
     b['manifest']['copied_files_before_exe_replacement'] = [
         {'path':'savegame/imported.gmx', 'sha256':'different'},
+        {'path':'savegame/SaveGame.txt', 'sha256':'different'},
         {'path':'SAVEGAME\\old.gam', 'sha256':'different'}]
     assert compare_reports(a, b) == compare_reports(a, a)
     assert gameplay_assets({'savegame/rules.dat':'keep', 'data/test.gmx':'keep'}) == {
-        'savegame/rules.dat':'keep', 'data/test.gmx':'keep'}
+        'data/test.gmx':'keep'}
 
 
 def test_input_update_timing_is_compared():
