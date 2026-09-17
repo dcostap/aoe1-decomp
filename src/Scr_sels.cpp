@@ -108,7 +108,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                         &this->missionScrollbar,
                                         this->missionText, 20)) {
                                     this->missionScrollbar->set_help_info(
-                                        0x7532, -1);
+                                        IDS_HELP_CANCEL, -1);
 
                                     if (this->create_button(
                                             this, &this->okButton, IDS_BUTTON_OK,

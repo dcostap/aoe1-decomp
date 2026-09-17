@@ -70,7 +70,8 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                 this->create_auto_scrollbar(&this->scrollbar, this->list,
                                             20)) {
                 this->list->set_help_info(
-                    IDS_HELP_MULTIPLAYER_CONNECTION_TYPE, 0x25F08);
+                    IDS_HELP_MULTIPLAYER_CONNECTION_TYPE,
+                    IDS_HELP_MP_CONNECTION_TYPE_MORE);
                 ok_button = &this->okButton;
                 if (this->create_button(this, ok_button, IDS_BUTTON_OK,
                                         0, 70, 440, 240, 30,
