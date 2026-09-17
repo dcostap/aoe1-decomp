@@ -43,6 +43,15 @@ class LineState:
     join_after: bool = False
 
 
+@dataclass
+class ParenGroup:
+    """An open parenthesis tracked while reindenting continuation lines."""
+
+    call_like: bool
+    first_arg_column: Optional[int]
+    open_line: int
+
+
 def split_body(line: str) -> tuple[str, str]:
     """Return a line without its ending and the original ending."""
 
@@ -269,8 +278,163 @@ def join_lines(left: str, right: str) -> str:
     return left_body + separator(left_body, right_body) + right_body + right_ending
 
 
+def reindent_call_continuations(text: str) -> tuple[str, int]:
+    """Align continued call arguments below the first argument."""
+
+    lines = text.splitlines(keepends=True)
+    if len(lines) < 2:
+        return text, 0
+
+    groups: list[ParenGroup] = []
+    lexical_state = "normal"
+    preprocessor_continuation = False
+    previous_kind: Optional[str] = None
+    previous_value: Optional[str] = None
+    output: list[str] = []
+    changes = 0
+
+    for line_index, line in enumerate(lines):
+        body, ending = split_body(line)
+        stripped = body.lstrip(" \t")
+        is_preprocessor = preprocessor_continuation or stripped.startswith("#")
+        target_column: Optional[int] = None
+
+        if not is_preprocessor and lexical_state == "normal" and stripped:
+            for group in reversed(groups):
+                if group.call_like and group.first_arg_column is not None:
+                    if group.open_line < line_index and groups[-1] is group:
+                        target_column = group.first_arg_column
+                    break
+
+        if target_column is not None and not stripped.startswith(")"):
+            new_body = (" " * target_column) + stripped
+            if new_body != body:
+                body = new_body
+                changes += 1
+
+        output.append(body + ending)
+
+        if is_preprocessor:
+            preprocessor_continuation = body.rstrip(" \t").endswith("\\")
+            lexical_state = "normal"
+            previous_kind = None
+            previous_value = None
+            continue
+
+        preprocessor_continuation = False
+        index = 0
+        length = len(body)
+        saw_comment = False
+
+        while index < length:
+            char = body[index]
+
+            if lexical_state == "line_comment":
+                saw_comment = True
+                break
+            if lexical_state == "block_comment":
+                saw_comment = True
+                if body.startswith("*/", index):
+                    lexical_state = "normal"
+                    index += 2
+                else:
+                    index += 1
+                continue
+            if lexical_state == "string" or lexical_state == "character":
+                quote = '"' if lexical_state == "string" else "'"
+                if char == "\\":
+                    index += 2
+                    continue
+                if char == quote:
+                    lexical_state = "normal"
+                index += 1
+                continue
+
+            if body.startswith("//", index):
+                saw_comment = True
+                lexical_state = "line_comment"
+                break
+            if body.startswith("/*", index):
+                saw_comment = True
+                lexical_state = "block_comment"
+                index += 2
+                continue
+            if char == '"':
+                lexical_state = "string"
+                index += 1
+                continue
+            if char == "'":
+                lexical_state = "character"
+                index += 1
+                continue
+            if char.isspace():
+                index += 1
+                continue
+
+            if char.isalpha() or char == "_":
+                end = index + 1
+                while end < length and (body[end].isalnum() or body[end] == "_"):
+                    end += 1
+                previous_kind = "identifier"
+                previous_value = body[index:end]
+                index = end
+                continue
+            if char.isdigit():
+                end = index + 1
+                while end < length and (body[end].isalnum() or body[end] in "._"):
+                    end += 1
+                previous_kind = "number"
+                previous_value = body[index:end]
+                index = end
+                continue
+
+            if char == "(":
+                signature = is_function_signature_prefix(
+                    body[:index], previous_kind, previous_value
+                )
+                call_like = False if signature else is_call_open(previous_kind, previous_value)
+                first_arg_column: Optional[int] = None
+                after_open = index + 1
+                while after_open < length and body[after_open] in " \t":
+                    after_open += 1
+                if after_open < length and body[after_open] != ")":
+                    first_arg_column = visual_width(body[:after_open])
+                groups.append(ParenGroup(call_like, first_arg_column, line_index))
+                previous_kind = "punctuation"
+                previous_value = char
+                index += 1
+                continue
+            if char == ")":
+                if groups:
+                    groups.pop()
+                previous_kind = "punctuation"
+                previous_value = char
+                index += 1
+                continue
+
+            previous_kind = "punctuation"
+            previous_value = char
+            index += 1
+
+        if lexical_state == "line_comment":
+            lexical_state = "normal"
+            previous_kind = None
+            previous_value = None
+        elif lexical_state == "string" or lexical_state == "character":
+            previous_kind = None
+            previous_value = None
+        elif saw_comment:
+            previous_kind = None
+            previous_value = None
+
+        if body.rstrip(" \t").endswith("\\"):
+            preprocessor_continuation = is_preprocessor
+
+    return "".join(output), changes
+
+
 def transform(text: str, max_column: int) -> tuple[str, int]:
-    """Return transformed text and the number of removed newlines."""
+    """Return transformed text and the number of layout changes."""
 
     lines = text.splitlines(keepends=True)
     if len(lines) < 2:
@@ -290,7 +454,9 @@ def transform(text: str, max_column: int) -> tuple[str, int]:
                 continue
         output.append(line)
 
-    return "".join(output), changes
+    joined = "".join(output)
+    reindented, indentation_changes = reindent_call_continuations(joined)
+    return reindented, changes + indentation_changes
 
 
 def collect_paths(paths: Iterable[Path], extensions: frozenset[str]) -> list[Path]:
@@ -391,7 +557,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         changed_files += 1
         total_changes += changes
         mode = "apply" if args.apply else "dry-run"
-        print(f"{mode}: {path}: {changes} newline(s)")
+        print(f"{mode}: {path}: {changes} layout change(s)")
 
         if args.diff:
             diff = difflib.unified_diff(
@@ -410,7 +576,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             path.write_bytes(transformed.encode("latin-1"))
 
     action = "changed" if args.apply else "would change"
-    print(f"Summary: {action} {changed_files} file(s), {total_changes} newline(s).")
+    print(f"Summary: {action} {changed_files} file(s), {total_changes} layout change(s).")
     return 0
 
 
