@@ -43,30 +43,30 @@ TribeJoinScreen::TribeJoinScreen()
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     if (this->create_text(this, &this->title, IDS_MULTIPLAYER_GAMES_TITLE,
-                          0x14, 0x14, 0x258, 0x1E, 1, 1, 0, 0)) {
+                          20, 20, 600, 30, 1, 1, 0, 0)) {
         this->create_text(this, &this->listTitle, IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN,
-                          0x14, 0x41, 0x258, 0x14, 4, 0, 0, 0);
+                          20, 65, 600, 20, 4, 0, 0, 0);
         if (this->create_list(this, &this->list,
-                              0x14, 0x5A, 0x258, 0x10E, 0x0B)) {
+                              20, 90, 600, 270, 0x0B)) {
             if (this->create_auto_scrollbar(&this->scrollbar,
-                                            this->list, 0x14)) {
+                                            this->list, 20)) {
                 this->listFilled = 1;
                 this->list->set_text(IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS);
                 if (this->create_button(this, &this->refreshButton,
-                                        IDS_MULTIPLAYER_SHOW_GAMES, 0, 0xD2, 0x172,
-                                        0xDC, 0x1E, 0, 0, 0)) {
+                                        IDS_MULTIPLAYER_SHOW_GAMES, 0, 210, 370,
+                                        220, 30, 0, 0, 0)) {
                     if (this->create_button(this, &this->joinButton,
-                                            IDS_MULTIPLAYER_JOIN, 0, 0x0A, 0x1B8,
-                                            0xC8, 0x1E, 0, 0, 0)) {
+                                            IDS_MULTIPLAYER_JOIN, 0, 10, 440,
+                                            200, 30, 0, 0, 0)) {
                         if (this->create_button(this, &this->createButton,
-                                                IDS_MULTIPLAYER_CREATE, 0, 0xDC, 0x1B8,
-                                                0xC8, 0x1E, 0, 0, 0)) {
+                                                IDS_MULTIPLAYER_CREATE, 0, 220, 440,
+                                                200, 30, 0, 0, 0)) {
                             if (this->create_button(this, &this->cancelButton,
-                                                    IDS_BUTTON_CANCEL, 0, 0x1AE,
-                                                    0x1B8, 0xC8, 0x1E,
+                                                    IDS_BUTTON_CANCEL, 0, 430,
+                                                    440, 200, 30,
                                                     0, 0, 0)) {
                                 TButtonPanel* cancel = this->cancelButton;
                                 cancel->hotkey = 0x1B;
@@ -79,8 +79,8 @@ TribeJoinScreen::TribeJoinScreen()
                                     this->close_button->set_active(1);
                                     this->close_button->set_positioning(
                                         TPanel::PositionRightTop, 4, 4, 4, 4,
-                                        0x11, 0x11,
-                                        0x11, 0x11, 0, 0, 0, 0);
+                                        17, 17,
+                                        17, 17, 0, 0, 0, 0);
                                     this->set_curr_child(this->refreshButton);
 
                                     TPanel* tabList[5];
@@ -287,9 +287,9 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel)
                     static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_file(),
                     static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_id(), 1)) {
         if (this->create_text(this, &this->title, IDS_MULTIPLAYER_CREATE_GAME_TITLE,
-                              20, 20, 0x1cc, 0x1e, 1, 1, 1, 0)) {
+                              20, 20, 460, 30, 1, 1, 1, 0)) {
             if (this->create_text(this, &this->input_title, IDS_MULTIPLAYER_GAME_NAME,
-                                  40, 0x55, 0x1a4, 20, 4, 0, 1, 0)) {
+                                  40, 85, 420, 20, 4, 0, 1, 0)) {
                 char str[256];
                 char* s = Regs->RegGetAscii(
                     1, "Default Age Of Empires MP Gamename");
@@ -301,14 +301,14 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel)
                 }
                 if (this->create_edit(this, inputGamename, str,
                                       40, TEditPanel::FormatText,
-                                      40, 0x6e, 0x1a4, 0x17,
+                                      40, 110, 420, 23,
                                       0xb, 1, 0)) {
                     if (this->create_button(this, &this->okButton,
-                                            IDS_BUTTON_OK, 0, 0x3c, 0xb4,
-                                            0xb4, 0x1e, 0, 0, 0)) {
+                                            IDS_BUTTON_OK, 0, 60, 180,
+                                            180, 30, 0, 0, 0)) {
                         if (this->create_button(this, &this->cancelButton,
-                                                IDS_BUTTON_CANCEL, 0, 0x104, 0xb4,
-                                                0xb4, 0x1e, 0, 0, 0)) {
+                                                IDS_BUTTON_CANCEL, 0, 260, 180,
+                                                180, 30, 0, 0, 0)) {
                             TButtonPanel* cancel = this->cancelButton;
                             cancel->hotkey = 0x1b;
                             cancel->hotkey_shift = 0;

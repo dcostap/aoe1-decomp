@@ -22,17 +22,17 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
         return;
     }
     setup_shadow_area(0);
-    set_ideal_size(0x280, 0x1E0);
-    if (create_text(this, &title, IDS_CAMPAIGN_LABEL, 0x14, 10, 600, 0x1E, 1, 1, 0, 0)) {
+    set_ideal_size(640, 480);
+    if (create_text(this, &title, IDS_CAMPAIGN_LABEL, 20, 10, 600, 30, 1, 1, 0, 0)) {
         campaignListX = 0x14;
         campaignListY = 0x46;
         campaignListWidth = 600;
         campaignListHeight = 0x82;
-        if (create_list(this, &campaignList, 0x14, 0x46, 600, 0x82, 0x0B)) {
-            if (create_auto_scrollbar(&campaignScrollbar, campaignList, 0x14)) {
+        if (create_list(this, &campaignList, 20, 70, 600, 130, 0x0B)) {
+            if (create_auto_scrollbar(&campaignScrollbar, campaignList, 20)) {
                 if (create_text(this, &campaignTitle, IDS_SELECT_CAMPAIGN,
-                                campaignListX - 5, campaignListY - 0x14,
-                                200, 0x14, 4, 0, 0, 0)) {
+                                campaignListX - 5, campaignListY - 20,
+                                200, 20, 4, 0, 0, 0)) {
                     campaignList->set_text(IDS_CAMPAIGN_LIST_LOADING);
                     scenarioListX = 0x14;
                     scenarioListY = campaignListY + campaignListHeight + 0x1E;
@@ -42,18 +42,18 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                     scenarioListY, scenarioListWidth,
                                     scenarioListHeight, 0x0B)) {
                         if (create_auto_scrollbar(&scenarioScrollbar,
-                                                  scenarioList, 0x14)) {
+                                                  scenarioList, 20)) {
                             if (create_text(this, &scenarioTitle, IDS_SCENARIO_LIST_TITLE,
                                             scenarioListX - 5,
-                                            scenarioListY - 0x14, 200, 0x14,
+                                            scenarioListY - 20, 200, 20,
                                             4, 0, 0, 0)) {
                                 scenarioList->sorted = 0;
                                 if (create_text(this, &difficultyTitle, IDS_DIFFICULTY_LABEL,
-                                                0x0F, 0x172, 200, 0x14, 4,
+                                                15, 370, 200, 20, 4,
                                                 0, 0, 0)) {
                                     if (create_drop_down(this, &difficultyDrop,
-                                                         0x82, 100, 0x14,
-                                                         0x186, 0x82, 0x18,
+                                                         130, 100, 20,
+                                                         390, 0x82, 0x18,
                                                          0x0B)) {
                                         difficultyDrop->empty_list();
                                         difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
@@ -66,12 +66,12 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                 rge_base_game->difficulty()));
                                         if (create_button(this, &okButton,
                                                           IDS_BUTTON_OK, 0,
-                                                          0x46, 0x1B8, 0x0F0,
-                                                          0x1E, 0, 0, 0)) {
+                                                          70, 440, 240,
+                                                          30, 0, 0, 0)) {
                                             if (create_button(this, &cancelButton,
                                                               IDS_BUTTON_CANCEL,
-                                                              0, 0x14A, 0x1B8,
-                                                              0x0F0, 0x1E, 0, 0,
+                                                              0, 330, 440,
+                                                              240, 30, 0, 0,
                                                               0)) {
                                                 TButtonPanel* cancel =
                                                     cancelButton;
@@ -84,8 +84,8 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                     close_button->set_active(1);
                                                     close_button->set_positioning(
                                                         TPanel::PositionRightTop,
-                                                        4, 4, 4, 4, 0x11, 0x11,
-                                                        0x11, 0x11, 0, 0, 0, 0);
+                                                        4, 4, 4, 4, 17, 17,
+                                                        17, 17, 0, 0, 0, 0);
                                                     TPanel* tabList[5];
                                                     tabList[0] = campaignList;
                                                     tabList[1] = scenarioList;

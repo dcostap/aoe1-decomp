@@ -46,37 +46,37 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     if (this->create_text(this, &this->title, IDS_SCENARIO_SELECTION_TITLE,
-                          0x14, 0x0A, 0x258, 0x1E, 1, 1, 0, 0)) {
+                          20, 10, 600, 30, 1, 1, 0, 0)) {
         this->scenarioListX = 0x14;
         this->scenarioListY = 0x46;
         this->scenarioListWidth = 0x258;
         this->scenarioListHeight = 0x107;
 
         if (this->create_list(this, &this->scenarioList,
-                              0x14, 0x46, 0x258, 0x107, 0x0B)) {
+                              20, 70, 600, 263, 0x0B)) {
             this->scenarioList->set_second_column_pos(
-                ((this->scenarioListWidth - 0x3C) * this->pnl_wid) /
+                ((this->scenarioListWidth - 60) * this->pnl_wid) /
                 this->ideal_width);
             this->scenarioList->set_text(IDS_SCENARIO_LIST_LOADING);
 
             if (this->create_auto_scrollbar(&this->scenarioScrollbar,
-                                            this->scenarioList, 0x14)) {
+                                            this->scenarioList, 20)) {
                 this->scenarioScrollbar->set_help_info(-1, -1);
 
                 if (this->create_text(this, &this->scenarioTitle,
                                       IDS_SCENARIO_LIST_TITLE,
                                       this->scenarioListX,
-                                      this->scenarioListY - 0x14,
-                                      0x12C, 0x14, 4, 0, 0, 0)) {
+                                      this->scenarioListY - 20,
+                                      300, 20, 4, 0, 0, 0)) {
                     if (this->create_text(this, &this->scenarioPlayersTitle,
                                           IDS_SCENARIO_PLAYERS_TITLE,
-                                          this->scenarioListWidth - 0xDC +
+                                          this->scenarioListWidth - 220 +
                                               this->scenarioListX,
-                                          this->scenarioListY - 0x14,
-                                          0xC8, 0x14, 4, 0, 0, 0)) {
+                                          this->scenarioListY - 20,
+                                          200, 20, 4, 0, 0, 0)) {
                         this->scenarioPlayersTitle->set_alignment(
                             TTextPanel::AlignTop,
                             TTextPanel::AlignRight);
@@ -90,8 +90,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                         if (this->create_text(this, &this->missionTitle,
                                               IDS_SCENARIO_INSTRUCTIONS_TITLE,
                                               this->missionTextX,
-                                              this->missionTextY - 0x14,
-                                              0x190, 0x14, 4, 0, 0, 0)) {
+                                              this->missionTextY - 20,
+                                              400, 20, 4, 0, 0, 0)) {
                             if (this->create_text(
                                     this, &this->missionText,
                                     "", this->missionTextX,
@@ -106,22 +106,22 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
 
                                 if (this->create_auto_scrollbar(
                                         &this->missionScrollbar,
-                                        this->missionText, 0x14)) {
+                                        this->missionText, 20)) {
                                     this->missionScrollbar->set_help_info(
                                         0x7532, -1);
 
                                     if (this->create_button(
                                             this, &this->okButton, IDS_BUTTON_OK,
-                                            0, 0x46, 0x1B8, 0xF0, 0x1E,
+                                            0, 70, 440, 240, 30,
                                             0, 0, 0)) {
                                         this->okButton->set_help_info(
                                             IDS_HELP_OK, -1);
 
                                         if (this->create_button(
                                                 this, &this->cancelButton,
-                                                IDS_BUTTON_CANCEL, 0, 0x14A,
-                                                0x1B8,
-                                                0xF0, 0x1E, 0, 0, 0)) {
+                                                IDS_BUTTON_CANCEL, 0, 330,
+                                                440,
+                                                240, 30, 0, 0, 0)) {
                                             this->cancelButton->set_help_info(
                                                 IDS_HELP_CANCEL, -1);
                                             TButtonPanel* cancel =
@@ -137,8 +137,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                                 this->close_button->set_active(1);
                                                 this->close_button->set_positioning(
                                                     TPanel::PositionRightTop,
-                                                    4, 4, 4, 4, 0x11,
-                                                    0x11, 0x11, 0x11, 0, 0,
+                                                    4, 4, 4, 4, 17,
+                                                    17, 17, 17, 0, 0,
                                                     0, 0);
                                                 this->fillScenarios();
                                                 this->scenariosLoaded = 1;

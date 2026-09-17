@@ -59,11 +59,11 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
                      parentPanel->get_popup_info_id(), 1))
         return;
 
-    if (!this->create_text(this, &this->title, IDS_GAME_SETTINGS_TITLE, 0x67, 0x0A,
-                           0x18B, 0x1E, 1, 1, 1, 0))
+    if (!this->create_text(this, &this->title, IDS_GAME_SETTINGS_TITLE, 103, 10,
+                           395, 30, 1, 1, 1, 0))
         return;
-    if (!this->create_text(this, &this->speedTitle[0], IDS_GAME_SPEED_TITLE, 0x14,
-                           0x32, 0x6E, 0x1E, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, &this->speedTitle[0], IDS_GAME_SPEED_TITLE, 20,
+                           50, 110, 30, 0x0B, 0, 1, 0))
         return;
 
     for (i = 0; i < 3; ++i) {
@@ -83,10 +83,10 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
         }
         y = i * 0x23 + 0x55;
         if (!this->create_text(this, &this->speedTitle[i + 1], string_id,
-                               0x37, y, 0x6E, 0x1E, 0x0B, 0, 1, 0))
+                               55, y, 110, 30, 0x0B, 0, 1, 0))
             return;
         if (!this->create_radio_button(this, &this->speedButton[i],
-                                       0x14, y, 0x1E, 0x1E, 0, 0))
+                                       20, y, 30, 30, 0, 0))
             return;
     }
 
@@ -109,14 +109,14 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
         this->speedButton[0]->set_radio_button();
     }
 
-    if (!this->create_text(this, this->musicTitle, IDS_MUSIC_VOLUME_TITLE, 0xA5, 0x2D,
-                           0x6E, 0x28, 0x0B, 0, 1, 1))
+    if (!this->create_text(this, this->musicTitle, IDS_MUSIC_VOLUME_TITLE, 165, 45,
+                           110, 40, 0x0B, 0, 1, 1))
         return;
-    if (!this->create_text(this, &this->musicTitle[1], IDS_AUDIO_VOLUME_HIGH, 0xBE,
-                           0x55, 0x6E, 0x14, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, &this->musicTitle[1], IDS_AUDIO_VOLUME_HIGH, 190,
+                           85, 110, 20, 0x0B, 0, 1, 0))
         return;
-    if (!this->create_text(this, &this->musicTitle[2], IDS_AUDIO_VOLUME_OFF, 0xBE,
-                           0xA5, 0x6E, 0x14, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, &this->musicTitle[2], IDS_AUDIO_VOLUME_OFF, 190,
+                           165, 110, 20, 0x0B, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->musicSlider, 100, 10,
                                   0x14, 0xAA, 0x55, 0x14, 100))
@@ -130,14 +130,14 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     this->musicSlider->set_tab_pos(this->musicVolume);
     this->newMusicVolume = this->musicVolume;
 
-    if (!this->create_text(this, this->soundTitle, IDS_SOUND_VOLUME_TITLE, 0x131, 0x2D,
-                           0x6E, 0x28, 0x0B, 0, 1, 1))
+    if (!this->create_text(this, this->soundTitle, IDS_SOUND_VOLUME_TITLE, 305, 45,
+                           110, 40, 0x0B, 0, 1, 1))
         return;
-    if (!this->create_text(this, &this->soundTitle[1], IDS_AUDIO_VOLUME_HIGH, 0x14A,
-                           0x55, 0x6E, 0x14, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, &this->soundTitle[1], IDS_AUDIO_VOLUME_HIGH, 330,
+                           85, 110, 20, 0x0B, 0, 1, 0))
         return;
-    if (!this->create_text(this, &this->soundTitle[2], IDS_AUDIO_VOLUME_OFF, 0x14A,
-                           0xA5, 0x6E, 0x14, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, &this->soundTitle[2], IDS_AUDIO_VOLUME_OFF, 330,
+                           165, 110, 20, 0x0B, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->soundSlider, 100, 10,
                                   0x14, 0x136, 0x55, 0x14, 100))
@@ -151,14 +151,14 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     this->soundSlider->set_tab_pos(this->soundVolume);
     this->newSoundVolume = this->soundVolume;
 
-    if (!this->create_text(this, this->scrollSpeedTitle, IDS_SCROLL_SPEED_TITLE, 0x1BD,
-                           0x2D, 0x6E, 0x28, 0x0B, 0, 1, 1))
+    if (!this->create_text(this, this->scrollSpeedTitle, IDS_SCROLL_SPEED_TITLE, 445,
+                           45, 110, 40, 0x0B, 0, 1, 1))
         return;
     if (!this->create_text(this, &this->scrollSpeedTitle[1], IDS_SCROLL_SPEED_FAST,
-                           0x1D6, 0x55, 0x6E, 0x14, 0x0B, 0, 1, 0))
+                           470, 85, 110, 20, 0x0B, 0, 1, 0))
         return;
     if (!this->create_text(this, &this->scrollSpeedTitle[2], IDS_SCROLL_SPEED_SLOW,
-                           0x1D6, 0xA5, 0x6E, 0x14, 0x0B, 0, 1, 0))
+                           470, 165, 110, 20, 0x0B, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->scrollSpeedSlider, 100, 10,
                                   0x14, 0x1C2, 0x55, 0x14, 100))
@@ -167,8 +167,8 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     this->scrollSpeed = rge_base_game->prog_info->mouse_scroll_interval;
     this->scrollSpeedSlider->set_tab_pos(this->scrollSpeed - 10);
 
-    if (!this->create_text(this, this->sizeTitle, IDS_SCREEN_SIZE_TITLE, 0x14, 0xBE,
-                           200, 0x1E, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, this->sizeTitle, IDS_SCREEN_SIZE_TITLE, 20, 190,
+                           200, 30, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 3; ++i) {
         switch (i) {
@@ -184,10 +184,10 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
         }
         y = i * 0x23 + 0xE1;
         if (!this->create_text(this, &this->sizeTitle[i + 1], string_id,
-                               0x37, y, 100, 0x1E, 0x0B, 0, 1, 0))
+                               55, y, 100, 30, 0x0B, 0, 1, 0))
             return;
         if (!this->create_radio_button(this, &this->sizeButton[i],
-                                       0x14, y, 0x1E, 0x1E, 0, 0))
+                                       20, y, 30, 30, 0, 0))
             return;
     }
     for (i = 0; i < 3; ++i)
@@ -213,24 +213,24 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     if (!this->render_area->DrawSystem->IsModeAvail(0x400, 0, 8))
         this->sizeButton[2]->set_disabled(1);
 
-    if (!this->create_text(this, this->mouseTitle, IDS_MOUSE_INTERFACE_TITLE, 0xAA, 0xBE,
-                           0xD2, 0x1E, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, this->mouseTitle, IDS_MOUSE_INTERFACE_TITLE, 170, 190,
+                           210, 30, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
             if (!this->create_text(this, &this->mouseTitle[i + 1],
-                                   IDS_MOUSE_INTERFACE_TWO_BUTTONS, 0xCD, 0xE1, 0x78, 0x1E,
+                                   IDS_MOUSE_INTERFACE_TWO_BUTTONS, 205, 225, 120, 30,
                                    0x0B, 0, 1, 0))
                 return;
         } else {
             if (!this->create_text(this, &this->mouseTitle[i + 1],
-                                   IDS_MOUSE_INTERFACE_ONE_BUTTON, 0xCD, i * 0x23 + 0xE1,
-                                   0x78, 0x1E, 0x0B, 0, 1, 0))
+                                   IDS_MOUSE_INTERFACE_ONE_BUTTON, 205, i * 35 + 225,
+                                   120, 30, 0x0B, 0, 1, 0))
                 return;
         }
         if (!this->create_radio_button(this, &this->mouseButton[i],
-                                       0xAA, i * 0x23 + 0xE1,
-                                       0x1E, 0x1E, 0, 0))
+                                       170, i * 35 + 225,
+                                       30, 30, 0, 0))
             return;
     }
     for (i = 0; i < 2; ++i)
@@ -240,24 +240,24 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     else
         this->mouseButton[1]->set_radio_button();
 
-    if (!this->create_text(this, this->rolloverTitle, IDS_ROLLOVER_HELP_TITLE, 0x14A,
-                           0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, this->rolloverTitle, IDS_ROLLOVER_HELP_TITLE, 330,
+                           190, 210, 30, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 2; ++i) {
         if (i == 0) {
             if (!this->create_text(this, &this->rolloverTitle[i + 1],
-                                   IDS_ROLLOVER_HELP_ON, 0x16D, 0xE1, 0x78, 0x1E,
+                                   IDS_ROLLOVER_HELP_ON, 365, 225, 120, 30,
                                    0x0B, 0, 1, 0))
                 return;
         } else {
             if (!this->create_text(this, &this->rolloverTitle[i + 1],
-                                   IDS_ROLLOVER_HELP_OFF, 0x16D, i * 0x23 + 0xE1,
-                                   0x78, 0x1E, 0x0B, 0, 1, 0))
+                                   IDS_ROLLOVER_HELP_OFF, 365, i * 35 + 225,
+                                   120, 30, 0x0B, 0, 1, 0))
                 return;
         }
         if (!this->create_radio_button(this, &this->rolloverButton[i],
-                                       0x14A, i * 0x23 + 0xE1,
-                                       0x1E, 0x1E, 0, 0))
+                                       330, i * 35 + 225,
+                                       30, 30, 0, 0))
             return;
     }
     for (i = 0; i < 2; ++i)
@@ -267,18 +267,18 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     else
         this->rolloverButton[1]->set_radio_button();
 
-    if (!this->create_text(this, this->pathFindingTitle, IDS_PATH_FINDING_TITLE, 0x1CC,
-                           0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
+    if (!this->create_text(this, this->pathFindingTitle, IDS_PATH_FINDING_TITLE, 460,
+                           190, 210, 30, 0x0B, 0, 1, 0))
         return;
     for (i = 0; i < 3; ++i) {
         string_id = IDS_PATH_FINDING_OPTION_BASE + i;
         if (!this->create_text(this, &this->pathFindingTitle[i + 1],
-                               string_id, 0x1EF, i * 0x23 + 0xE1, 0x78, 0x1E,
+                               string_id, 495, i * 35 + 225, 120, 30,
                                0x0B, 0, 1, 0))
             return;
         if (!this->create_radio_button(this, &this->pathFindingButton[i],
-                                       0x1CC, i * 0x23 + 0xE1,
-                                       0x1E, 0x1E, 0, 0))
+                                       460, i * 35 + 225,
+                                       30, 30, 0, 0))
             return;
         if (rge_base_game->multiplayerGame())
             this->pathFindingButton[i]->set_disabled(1);
@@ -293,11 +293,11 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
     if (val <= 2)
         this->pathFindingButton[val]->set_radio_button();
 
-    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 0x78,
-                             0x159, 0xAA, 0x1E, 0, 0, 0))
+    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 120,
+                             345, 170, 30, 0, 0, 0))
         return;
     if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                             0x136, 0x159, 0xAA, 0x1E, 0, 0, 0))
+                             310, 345, 170, 30, 0, 0, 0))
         return;
 
     TButtonPanel* cancel_button = this->cancelButton;

@@ -38,21 +38,21 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     if (this->create_text(this, &this->screenTitle, IDS_SAVED_GAMES_TITLE,
-                          0x14, 0x0A, 0x258, 0x1E, 1, 1, 0, 0) == 0) {
+                          20, 10, 600, 30, 1, 1, 0, 0) == 0) {
         return;
     }
     if (this->create_text(this, &this->listTitle, IDS_SELECT_SAVED_GAME_TITLE,
-                          0x14, 0x2D, 0x258, 0x14, 4, 0, 0, 0) == 0) {
+                          20, 45, 600, 20, 4, 0, 0, 0) == 0) {
         return;
     }
     if (this->create_list(this, &this->list,
-                          0x14, 0x41, 0x258, 0x160, 0x0B) == 0) {
+                          20, 65, 600, 352, 0x0B) == 0) {
         return;
     }
-    if (this->create_auto_scrollbar(&this->scrollbar, this->list, 0x14) == 0) {
+    if (this->create_auto_scrollbar(&this->scrollbar, this->list, 20) == 0) {
         return;
     }
 
@@ -60,15 +60,15 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
 
     TButtonPanel** ok_button = &this->okButton;
     if (this->create_button(this, ok_button, IDS_BUTTON_OK,
-                            0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0) == 0) {
+                            0, 30, 440, 180, 30, 0, 0, 0) == 0) {
         return;
     }
     if (this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE,
-                            0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0) == 0) {
+                            0, 230, 440, 180, 30, 0, 0, 0) == 0) {
         return;
     }
     if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL,
-                            0, 0x1AE, 0x1B8, 0xB4, 0x1E, 0, 0, 0) == 0) {
+                            0, 430, 440, 180, 30, 0, 0, 0) == 0) {
         return;
     }
 

@@ -41,24 +41,24 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     }
 
     setup_shadow_area(0);
-    set_ideal_size(0x280, 0x1E0);
+    set_ideal_size(640, 480);
 
-    if (!create_text(this, &title, IDS_SCENARIO_OPEN_TITLE, 0x14, 0x14, 600, 0x1E, 1, 1, 0, 0))
+    if (!create_text(this, &title, IDS_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, 1, 1, 0, 0))
         return;
 
-    if (!create_list(this, &list, 0x14, 0x46, 600, 0x154, 0x0B))
+    if (!create_list(this, &list, 20, 70, 600, 340, 0x0B))
         return;
 
-    if (!create_auto_scrollbar(&scrollbar, list, 0x14))
+    if (!create_auto_scrollbar(&scrollbar, list, 20))
         return;
 
-    if (!create_button(this, &okButton, IDS_BUTTON_OK, 0, 0x1E, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+    if (!create_button(this, &okButton, IDS_BUTTON_OK, 0, 30, 440, 180, 30, 0, 0, 0))
         return;
 
-    if (!create_button(this, &deleteButton, IDS_BUTTON_DELETE, 0, 0xE6, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+    if (!create_button(this, &deleteButton, IDS_BUTTON_DELETE, 0, 230, 440, 180, 30, 0, 0, 0))
         return;
 
-    if (!create_button(this, &cancelButton, IDS_BUTTON_CANCEL, 0, 0x1AE, 0x1B8, 0xB4, 0x1E, 0, 0, 0))
+    if (!create_button(this, &cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 180, 30, 0, 0, 0))
         return;
 
     TButtonPanel* cancel = cancelButton;

@@ -44,55 +44,55 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     this->create_text(this, &this->title, IDS_CAMPAIGN_EDITOR_TITLE,
-                      10, 10, 0x26C, 0x32, 1, 3, 0, 0);
+                      10, 10, 620, 50, 1, 3, 0, 0);
     this->create_text(this, &this->filename_title, IDS_CAMPAIGN_FILENAME_LABEL,
-                      0x14, 0x28, 0x104, 0x14, 4, 0, 0, 0);
+                      20, 40, 260, 20, 4, 0, 0, 0);
     this->create_drop_down(this, &this->filename_drop,
-                           0x17C, 0xC8, 0x14, 0x3C, 0x17C,
+                           380, 200, 20, 60, 0x17C,
                            (this->ideal_height * 30) / this->pnl_hgt, 0xB);
 
     this->create_edit(this->filename_drop, &this->filename,
                       this->get_string(IDS_DEFAULT_CAMPAIGN_NAME),
                       100, TEditPanel::FormatFileNoExt,
-                      0, 0, 0x168, 0x1E, 0xB, 1, 1);
+                      0, 0, 360, 30, 0xB, 1, 1);
 
     this->create_button(this, &this->save_button, IDS_BUTTON_SAVE,
-                        0, 0x1A4, 0x3C, 0xC8, 0x1E, 0, 0, 0);
+                        0, 420, 60, 200, 30, 0, 0, 0);
     this->create_button(this, &this->add_button, IDS_BUTTON_ADD,
-                        0, 0x118, 0x104, 0xA0, 0x1E, 0, 0, 0);
+                        0, 280, 260, 160, 30, 0, 0, 0);
     this->create_button(this, &this->remove_button, IDS_BUTTON_REMOVE,
-                        0, 0x1CC, 0x104, 0xA0, 0x1E, 0, 0, 0);
+                        0, 460, 260, 160, 30, 0, 0, 0);
     this->create_text(this, &this->scenarios_title, IDS_SCENARIOS_TITLE,
-                      0x14, 0x64, 0xC8, 0x14, 4, 0, 0, 0);
+                      20, 100, 200, 20, 4, 0, 0, 0);
     this->create_list(this, &this->scenarios,
-                      0x14, 0x78, 0x258, 0x82, 0xB);
+                      20, 120, 600, 130, 0xB);
     this->create_auto_scrollbar(&this->scenarios_bar,
-                                this->scenarios, 0x14);
+                                this->scenarios, 20);
     this->create_text(this, &this->campaign_scenarios_title,
                       IDS_CAMPAIGN_SCENARIOS_TITLE,
-                      0x14, 0x118, 0xC8, 0x14, 4, 0, 0, 0);
+                      20, 280, 200, 20, 4, 0, 0, 0);
     this->create_list(this, &this->campaign_scenarios,
-                      0x14, 0x12C, 0x1F4, 0x82, 0xB);
+                      20, 300, 500, 130, 0xB);
     this->create_auto_scrollbar(&this->campaign_scenarios_bar,
-                                this->campaign_scenarios, 0x14);
+                                this->campaign_scenarios, 20);
 
     this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
-                        0, 0x14, 0x1BD, 0x118, 0x1E, 0, 0, 0);
+                        0, 20, 445, 280, 30, 0, 0, 0);
     this->create_button(this, &this->cancel_button, IDS_BUTTON_CANCEL,
-                        0, 0x154, 0x1BD, 0x118, 0x1E, 0, 0, 0);
+                        0, 340, 445, 280, 30, 0, 0, 0);
     TButtonPanel* cancel = this->cancel_button;
     cancel->hotkey = 0x1B;
     cancel->hotkey_shift = 0;
 
     this->create_button(this, &this->move_scenario_up_button,
                         IDS_BUTTON_MOVE_SCENARIO_UP,
-                        0, 0x212, 0x12C, 0x5A, 0x1E, 0, 0, 0);
+                        0, 530, 300, 90, 30, 0, 0, 0);
     this->create_button(this, &this->move_scenario_down_button,
                         IDS_BUTTON_MOVE_SCENARIO_DOWN,
-                        0, 0x212, 0x154, 0x5A, 0x1E, 0, 0, 0);
+                        0, 530, 340, 90, 30, 0, 0, 0);
 
     TPanel* tabList[8];
     tabList[0] = this->filename_drop;

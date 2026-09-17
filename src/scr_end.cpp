@@ -38,10 +38,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
 
     background->set_positioning(
         TPanel::PositionCentered, 0, 0, 0, 0,
-        pnl_wid * 0x280 / 0x280,
-        pnl_wid * 0x280 / 0x280,
-        pnl_hgt * 0x1E0 / 0x1E0,
-        pnl_hgt * 0x1E0 / 0x1E0,
+        pnl_wid * 640 / 640,
+        pnl_wid * 640 / 640,
+        pnl_hgt * 480 / 480,
+        pnl_hgt * 480 / 480,
         0, 0, 0, 0);
 
     RGE_Font* font = rge_base_game->get_font(1);

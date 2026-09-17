@@ -44,9 +44,9 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* messa
     if (!setup(rge_base_game->draw_area, info_file, info_id, 0)) {
         error_code = 1;
     } else {
-        set_ideal_size(0x280, 0x1E0);
+        set_ideal_size(640, 480);
         create_text(this, &message, message_in,
-                    0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
+                    40, 40, 560, 400, 4, 1, 1, 1);
     }
 }
 
@@ -86,9 +86,9 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long messag
     if (!setup(rge_base_game->draw_area, info_file, info_id, 0)) {
         error_code = 1;
     } else {
-        set_ideal_size(0x280, 0x1E0);
+        set_ideal_size(640, 480);
         create_text(this, &message, message_in,
-                    0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
+                    40, 40, 560, 400, 4, 1, 1, 1);
     }
 }
 

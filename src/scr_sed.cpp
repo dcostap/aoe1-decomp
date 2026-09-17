@@ -638,7 +638,7 @@ int TRIBE_Screen_Sed::create_list(TPanel *parent, TListPanel **list_panel, TScro
     (*list_panel)->set_active(0);
     (*list_panel)->empty_list();
 
-    if (this->TEasy_Panel::create_auto_scrollbar(scrollbar_panel, *list_panel, 0x14) == 0)
+    if (this->TEasy_Panel::create_auto_scrollbar(scrollbar_panel, *list_panel, 20) == 0)
         return 0;
 
     if (list_panel == &this->paint_elevation_list) {

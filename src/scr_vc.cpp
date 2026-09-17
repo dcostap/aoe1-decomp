@@ -37,7 +37,7 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
     }
 
     setup_shadow_area(0);
-    set_ideal_size(0x280, 0x1E0);
+    set_ideal_size(640, 480);
 
     char* scenario_name = rge_base_game->world->scenario->Get_scenario_name();
     if (scenario_name != 0 && scenario_name[0] != 0) {
@@ -48,11 +48,11 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
         strcpy(adjusted_name, get_string(IDS_MISSION_TITLE_INSTRUCTIONS));
     }
 
-    create_text(this, &this->title, adjusted_name, 10, 0xF, 0x26C,
-                0x14, 4, 1, 1, 0);
-    create_text(this, &this->list, text_in, 0xF, 0x46, 0x12C,
-                0x154, 0xB, 0, 0, 1);
-    create_auto_scrollbar(&this->scroll_bar, this->list, 0x14);
+    create_text(this, &this->title, adjusted_name, 10, 15, 620,
+                20, 4, 1, 1, 0);
+    create_text(this, &this->list, text_in, 15, 70, 300,
+                340, 0xB, 0, 0, 1);
+    create_auto_scrollbar(&this->scroll_bar, this->list, 20);
 
     if (this->use_bevels) {
         this->list->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
@@ -60,43 +60,43 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
                                    this->bevel_color5, this->bevel_color6);
     }
 
-    create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0xC8, 0x1B8,
-                  0xF0, 0x1E, 0, 0, 0);
-    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 0x145,
-                  0x13C, 0xB4, 0x1E, 0, -1, 0);
+    create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 200, 440,
+                  240, 30, 0, 0, 0);
+    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 325,
+                  316, 180, 30, 0, -1, 0);
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 0x145, 0x15C,
-                  0xB4, 0x1E, 0, -1, 0);
-    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 0x145,
-                  0x17C, 0xB4, 0x1E, 0, -1, 0);
+    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 325, 348,
+                  180, 30, 0, -1, 0);
+    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 325,
+                  380, 180, 30, 0, -1, 0);
 
     for (int i = 0; i < 3; i++) {
         this->text_buttons[i]->set_radio_info(this->text_buttons, 3);
     }
 
     if (this->pnl_wid <= 0x280) {
-        this->title->set_fixed_position(3, 0xF, 0x27A, 0x14);
-        this->list->set_fixed_position(0x14, 0x32, 0x258, 0x73);
-        this->text_buttons[0]->set_fixed_position(5, 0x1BD, 0x96, 0x1E);
-        (*text_button_1)->set_fixed_position(0xA5, 0x1BD, 0x96, 0x1E);
-        this->text_buttons[2]->set_fixed_position(0x145, 0x1BD, 0x96, 0x1E);
-        this->ok_button->set_fixed_position(0x1E5, 0x1BD, 0x96, 0x1E);
+        this->title->set_fixed_position(3, 15, 634, 20);
+        this->list->set_fixed_position(20, 50, 600, 115);
+        this->text_buttons[0]->set_fixed_position(5, 445, 150, 30);
+        (*text_button_1)->set_fixed_position(165, 445, 150, 30);
+        this->text_buttons[2]->set_fixed_position(325, 445, 150, 30);
+        this->ok_button->set_fixed_position(485, 445, 150, 30);
     } else if (this->pnl_wid <= 0x320) {
-        set_ideal_size(0x320, 0x280);
-        this->title->set_fixed_position(3, 0xF, 0x31A, 0x14);
-        this->list->set_fixed_position(0x1E, 0x2D, 0x2E4, 0xE6);
-        this->text_buttons[0]->set_fixed_position(5, 0x235, 0xBE, 0x1E);
-        (*text_button_1)->set_fixed_position(0xCD, 0x235, 0xBE, 0x1E);
-        this->text_buttons[2]->set_fixed_position(0x195, 0x235, 0xBE, 0x1E);
-        this->ok_button->set_fixed_position(0x25D, 0x235, 0xBE, 0x1E);
+        set_ideal_size(800, 640);
+        this->title->set_fixed_position(3, 15, 794, 20);
+        this->list->set_fixed_position(30, 45, 740, 230);
+        this->text_buttons[0]->set_fixed_position(5, 565, 190, 30);
+        (*text_button_1)->set_fixed_position(205, 565, 190, 30);
+        this->text_buttons[2]->set_fixed_position(405, 565, 190, 30);
+        this->ok_button->set_fixed_position(605, 565, 190, 30);
     } else {
-        set_ideal_size(0x400, 0x300);
-        this->title->set_fixed_position(3, 0xF, 0x3FA, 0x14);
-        this->list->set_fixed_position(0x28, 0x41, 0x3B0, 0x136);
-        this->text_buttons[0]->set_fixed_position(10, 0x2B2, 0xF0, 0x32);
-        (*text_button_1)->set_fixed_position(0x10A, 0x2B2, 0xF0, 0x32);
-        this->text_buttons[2]->set_fixed_position(0x20A, 0x2B2, 0xF0, 0x32);
-        this->ok_button->set_fixed_position(0x306, 0x2B2, 0xF0, 0x32);
+        set_ideal_size(1024, 768);
+        this->title->set_fixed_position(3, 15, 1018, 20);
+        this->list->set_fixed_position(40, 65, 944, 310);
+        this->text_buttons[0]->set_fixed_position(10, 690, 240, 50);
+        (*text_button_1)->set_fixed_position(266, 690, 240, 50);
+        this->text_buttons[2]->set_fixed_position(522, 690, 240, 50);
+        this->ok_button->set_fixed_position(774, 690, 240, 50);
     }
 
     if (rge_base_game->world->scenario->Get_message(0) != 0) {

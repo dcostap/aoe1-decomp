@@ -38,14 +38,14 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
         return;
     }
 
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     long button_width = 0xB2;
     clear_button = this->button;
     for (; button_width < 0x1AC;
          button_width += 0x32, ++clear_button) {
-        if (this->create_button(this, clear_button, "", 0, 0xAA,
-                                button_width, 0x12C, 0x28, 0, 0, 0) == 0) {
+        if (this->create_button(this, clear_button, "", 0, 170,
+                                button_width, 300, 40, 0, 0, 0) == 0) {
             return;
         }
     }
@@ -60,14 +60,14 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     long panel_height = this->pnl_hgt - 0x3C;
     this->create_text(this, &this->ms_title_text, IDS_PRODUCT_TITLE, 5,
-                      panel_height, this->pnl_wid - 0x0A,
-                      0x12, 10, 1, 0, 0);
+                      panel_height, this->pnl_wid - 10,
+                      18, 10, 1, 0, 0);
 
     this->get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == 0) {
         TTextPanel** copy1 = &this->ms_copy_text1;
         this->create_text(this, copy1, IDS_COPYRIGHT_PREFIX, 5,
-                          panel_height + 0x12, 0x32, 0x12,
+                          panel_height + 18, 50, 18,
                           10, 0, 0, 0);
 
         if ((*copy1)->get_text_rect(&rect) != 0) {
@@ -83,7 +83,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
                     this, copy2, IDS_COPYRIGHT_SUFFIX,
                     this->circle_p_pic->xPosition() - this->pnl_x +
                         this->circle_p_pic->width(),
-                    rect.top, 0x1F4, 0x12, 10, 0, 0, 0);
+                    rect.top, 500, 18, 10, 0, 0, 0);
 
                 if ((*copy2)->get_text_rect(&rect) != 0) {
                     diff = (this->pnl_wid - rect.right - 5) / 2;
@@ -114,15 +114,15 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
         strcat(temp_str, this->get_string(IDS_COPYRIGHT_SUFFIX));
 
         this->create_text(this, &this->ms_copy_text1, temp_str, 5,
-                          panel_height + 0x12, this->pnl_wid - 0x0A,
-                          0x12, 10, 1, 0, 0);
+                          panel_height + 18, this->pnl_wid - 10,
+                          18, 10, 1, 0, 0);
     }
 
     this->create_text(this, &this->warning_text, IDS_COPYRIGHT_WARNING, 5,
-                      panel_height + 0x24, this->pnl_wid - 0x0A,
-                      0x12, 10, 1, 0, 0);
+                      panel_height + 36, this->pnl_wid - 10,
+                      18, 10, 1, 0, 0);
 
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     TPanel** tab_dst = tabList;
     TButtonPanel** tab_src = this->button;
@@ -271,19 +271,19 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
         return;
     }
 
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
-    this->create_text(this, &this->message, "", 0x28, 0x28,
-                      0x230, 0x190, 4, 1, 1, 1);
+    this->create_text(this, &this->message, "", 40, 40,
+                      560, 400, 4, 1, 1, 1);
     this->create_button(this, &this->cancel_button, IDS_BUTTON_OK, 0,
-                        0xC8, 0x1B8, 0xF0, 0x1E, 0, 0, 0);
+                        200, 440, 240, 30, 0, 0, 0);
 
     if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0,
                             0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
         this->close_button->set_active(1);
         this->close_button->set_positioning(TPanel::PositionRightTop,
-                                            4, 4, 4, 4, 0x11, 0x11,
-                                            0x11, 0x11, 0, 0, 0, 0);
+                                            4, 4, 4, 4, 17, 17,
+                                            17, 17, 0, 0, 0, 0);
     }
 }
 

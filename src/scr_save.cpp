@@ -62,7 +62,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     }
     this->input->set_help_info(IDS_HELP_SAVED_GAME_NAME, -1);
 
-    if (!this->create_list(this, &this->list, 20, 0x6E, 600, 300, 11)) {
+    if (!this->create_list(this, &this->list, 20, 110, 600, 300, 11)) {
         return;
     }
     if (!this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {

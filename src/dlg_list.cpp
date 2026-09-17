@@ -54,7 +54,7 @@ long TListDialog::setup(TPanel* parent_panel_in, char* info_file_in,
         return 0;
     }
 
-    result = create_auto_scrollbar(&scroll_bar, list, 0x14);
+    result = create_auto_scrollbar(&scroll_bar, list, 20);
     if (result == 0) {
         return 0;
     }

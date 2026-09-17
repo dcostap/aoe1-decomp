@@ -43,14 +43,14 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     if (this->create_text(this, &this->title,
                           IDS_MULTIPLAYER_CONNECTION_TITLE,
-                          0x14, 0x14, 600, 0x1E, 1, 1, 0, 0) &&
+                          20, 20, 600, 30, 1, 1, 0, 0) &&
         this->create_text(this, &this->inputTitle,
                           IDS_MULTIPLAYER_NAME_LABEL,
-                          0x14, 0x4B, 500, 0x14, 4, 0, 0, 0)) {
+                          20, 75, 500, 20, 4, 0, 0, 0)) {
         if (Regs->RegGetAscii(1, "Default Age Of Empires Player Name") != 0) {
             strcpy(str, Regs->RegGetAscii(
                 1, "Default Age Of Empires Player Name"));
@@ -60,33 +60,33 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 
         if (this->create_edit(this, &this->input, str, 0x0F,
                               TEditPanel::FormatText,
-                              0x14, 100, 600, 0x17, 0x0B, 1, 0)) {
+                              20, 100, 600, 23, 0x0B, 1, 0)) {
             this->input->set_help_info(IDS_HELP_MULTIPLAYER_PLAYER_NAME, -1);
             if (this->create_text(this, &this->connectionTitle,
                                   IDS_MULTIPLAYER_CONNECTION_TYPE_LABEL,
-                                  0x14, 0xA5, 600, 0x14, 4, 0, 0, 0) &&
+                                  20, 165, 600, 20, 4, 0, 0, 0) &&
                 this->create_list(this, &this->list,
-                                  0x14, 0xBE, 600, 0xD2, 0x0B) &&
+                                  20, 190, 600, 210, 0x0B) &&
                 this->create_auto_scrollbar(&this->scrollbar, this->list,
-                                            0x14)) {
+                                            20)) {
                 this->list->set_help_info(
                     IDS_HELP_MULTIPLAYER_CONNECTION_TYPE, 0x25F08);
                 ok_button = &this->okButton;
                 if (this->create_button(this, ok_button, IDS_BUTTON_OK,
-                                        0, 0x46, 0x1B8, 0xF0, 0x1E,
+                                        0, 70, 440, 240, 30,
                                         0, 0, 0)) {
                     (*ok_button)->set_help_info(IDS_HELP_OK, -1);
                     if (this->create_button(this, cancel_button,
                                             IDS_BUTTON_CANCEL,
-                                            0, 0x14A, 0x1B8, 0xF0, 0x1E,
+                                            0, 330, 440, 240, 30,
                                             0, 0, 0)) {
                         (*cancel_button)->set_help_info(IDS_HELP_CANCEL, -1);
                         cancel = *cancel_button;
                         cancel->hotkey = 0x1B;
                         cancel->hotkey_shift = 0;
                         if (this->create_button(this, &this->help_button,
-                                                IDS_BUTTON_HELP, 0, 0x244, 0x1B8,
-                                                0x1E, 0x1E, 0, 0, 0)) {
+                                                IDS_BUTTON_HELP, 0, 580, 440,
+                                                30, 30, 0, 0, 0)) {
                             if (this->create_button(this,
                                                     &this->close_button,
                                                     IDS_BUTTON_CLOSE, 0, 0, 0,
@@ -95,7 +95,7 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                                 this->close_button->set_active(1);
                                 this->close_button->set_positioning(
                                     TPanel::PositionRightTop, 4, 4, 4, 4,
-                                    0x11, 0x11, 0x11, 0x11, 0, 0, 0, 0);
+                                    17, 17, 17, 17, 0, 0, 0, 0);
 
                                 this->zone_exec[0] = 0;
                                 this->browser_exec[0] = 0;

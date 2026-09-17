@@ -27,46 +27,46 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     if (!this->create_text(this, &this->title, IDS_SELECT_PLAYER_TITLE,
-                           0x14, 0x14, 0x258, 0x1E, 1, 1, 0, 0)) {
+                           20, 20, 600, 30, 1, 1, 0, 0)) {
         return;
     }
     if (!this->create_text(this, &this->name_text, IDS_PLAYER_NAME_LABEL,
-                           0x3C, 0x50, 0x8C, 0x14, 4, 0, 0, 0)) {
+                           60, 80, 140, 20, 4, 0, 0, 0)) {
         return;
     }
     if (!this->create_list(this, &this->name_list,
-                           0x3C, 0x64, 0x14A, 0x12C, 0x0B)) {
+                           60, 100, 330, 300, 0x0B)) {
         return;
     }
-    if (!this->create_auto_scrollbar(&this->name_scrollbar, this->name_list, 0x14)) {
+    if (!this->create_auto_scrollbar(&this->name_scrollbar, this->name_list, 20)) {
         return;
     }
 
     this->name_scrollbar->set_help_info(IDS_HELP_PLAYER_NAME_LIST, -1);
 
     if (!this->create_button(this, &this->new_button, IDS_BUTTON_NEW_PLAYER,
-                             0, 0x190, 0x64, 0xB4, 0x1E, 0, 0, 0)) {
+                             0, 400, 100, 180, 30, 0, 0, 0)) {
         return;
     }
     this->new_button->set_help_info(IDS_HELP_ADD_PLAYER_NAME, -1);
 
     if (!this->create_button(this, &this->remove_button, IDS_BUTTON_REMOVE_PLAYER,
-                             0, 0x190, 0x8C, 0xB4, 0x1E, 0, 0, 0)) {
+                             0, 400, 140, 180, 30, 0, 0, 0)) {
         return;
     }
     this->remove_button->set_help_info(IDS_HELP_REMOVE_PLAYER_NAME, -1);
 
     if (!this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
-                             0, 0x46, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
+                             0, 70, 440, 240, 30, 0, 0, 0)) {
         return;
     }
     this->ok_button->set_help_info(IDS_HELP_OK, -1);
 
     if (!this->create_button(this, &this->cancel_button, IDS_BUTTON_CANCEL,
-                             0, 0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
+                             0, 330, 440, 240, 30, 0, 0, 0)) {
         return;
     }
     this->cancel_button->set_help_info(IDS_HELP_CANCEL, -1);
@@ -78,8 +78,8 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
                              0, 0, 0, 0, 0, -1, -1, 0)) {
         return;
     }
-    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 0x11, 0x11,
-                                        0x11, 0x11, 0, 0, 0, 0);
+    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17,
+                                        17, 17, 0, 0, 0, 0);
     this->setup_tab_order();
     this->get_player_names();
     this->started_input = 0;
@@ -275,20 +275,20 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_panel_in) : TDialogPan
                      1))
         return;
     if (!this->create_text(this, &this->title, IDS_NAME_DIALOG_TITLE,
-                           0x14, 0x14, 0x1cc, 0x1e, 1, 1, 1, 0))
+                           20, 20, 460, 30, 1, 1, 1, 0))
         return;
     if (!this->create_text(this, &this->name_text, IDS_NEW_PLAYER_NAME_LABEL,
-                           0x28, 0x55, 0x1a4, 0x14, 4, 0, 1, 0))
+                           40, 85, 420, 20, 4, 0, 1, 0))
         return;
     if (!this->create_edit(this, &this->name_input, "", 0x0f,
-                           TEditPanel::FormatText, 0x28, 0x6e, 0x1a4,
-                           0x17, 0x0b, 1, 1))
+                           TEditPanel::FormatText, 40, 110, 420,
+                           23, 0x0b, 1, 1))
         return;
     if (!this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
-                             0, 0x3c, 0x0b4, 0x0b4, 0x1e, 0, 0, 0))
+                             0, 60, 180, 180, 30, 0, 0, 0))
         return;
     if (!this->create_button(this, &this->cancel_button, IDS_BUTTON_CANCEL,
-                             0, 0x104, 0x0b4, 0x0b4, 0x1e, 0, 0, 0))
+                             0, 260, 180, 180, 30, 0, 0, 0))
         return;
 
     TButtonPanel* cancel = this->cancel_button;

@@ -30,15 +30,15 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
         return;
     }
 
-    set_ideal_size(0x280, 0x1E0);
+    set_ideal_size(640, 480);
 
-    if (!create_text(this, &title, IDS_SCENARIO_EDITOR_TITLE, 0x14, 0x14, 0x258, 0x1E,
+    if (!create_text(this, &title, IDS_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30,
                      1, 1, 0, 0))
         return;
 
     for (int i = 0; i < 4; i++) {
         if (!create_button(this, &button[i], s_592A40, 0,
-                           0xAA, 0xAA + i * 0x32, 0x12C, 0x28,
+                           170, 170 + i * 50, 300, 40,
                            0, 0, 0))
             return;
     }
@@ -49,7 +49,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
 
     close_button->set_active(1);
     close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4,
-                                  0x11, 0x11, 0x11, 0x11,
+                                  17, 17, 17, 17,
                                   0, 0, 0, 0);
 
     button[0]->set_text(0, IDS_SCENARIO_MENU_CREATE_SCENARIO);

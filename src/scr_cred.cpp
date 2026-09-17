@@ -61,7 +61,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
         return;
     }
 
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     RGE_Font* font = rge_base_game->get_font(4);
     char* file_buf = 0;

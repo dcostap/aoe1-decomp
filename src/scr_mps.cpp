@@ -72,36 +72,36 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     }
 
     this->setup_shadow_area(0);
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     if (!this->create_text(
             this, &this->title,
             0x25CF - (rge_base_game->multiplayerGame() != 0),
-            0x14, 6, 0x258, 0x1E, 1, 1, 0, 0)) {
+            20, 6, 600, 30, 1, 1, 0, 0)) {
         return;
     }
     if (!this->create_text(this, &this->playerTitle, IDS_MP_PLAYER_NAME_LABEL,
-                           0x1A, 0x32, 0xA0, 0x1E, 0, 0, 1, 0)) {
+                           26, 50, 160, 30, 0, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->civTitle, IDS_MP_CIV_LABEL,
-                           0xBD, 0x32, 0xA0, 0x1E, 0, 0, 1, 0)) {
+                           189, 50, 160, 30, 0, 0, 1, 0)) {
         return;
     }
     if (rge_base_game->singlePlayerGame() == 0 && !comm->IsHost()) {
         if (!this->create_text(this, &this->settingsTitle, IDS_MP_SETTINGS_LABEL,
-                               0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 1, 0)) {
+                               420, 50, 210, 30, 0, 0, 1, 0)) {
             return;
         }
     }
     if (!this->create_text(this, &this->colorTitle, IDS_MP_PLAYER_COLOR_LABEL,
-                           0xF0, 0x32, 0x64, 0x1E, 0, 0, 1, 0)) {
+                           240, 50, 100, 30, 0, 0, 1, 0)) {
         return;
     }
     this->colorTitle->set_alignment(TTextPanel::AlignCenter,
                                      TTextPanel::AlignRight);
     if (!this->create_text(this, &this->teamTitle, IDS_MP_TEAM_LABEL,
-                           0x136, 0x32, 0x64, 0x1E, 0, 0, 1, 0)) {
+                           310, 50, 100, 30, 0, 0, 1, 0)) {
         return;
     }
     this->teamTitle->set_alignment(TTextPanel::AlignCenter,
@@ -111,7 +111,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     for (i = 0; y < 0x115; ++i, y += 0x18) {
         if (!this->create_drop_down(
                 this, &this->playerNameDrop[i],
-                0x9E, 0x64, 7, y - 1, 0x9E, 0x18, 0x0B)) {
+                158, 100, 7, y - 1, 0x9E, 0x18, 0x0B)) {
             return;
         }
         this->playerNameDrop[i]->set_draw_style(
@@ -130,7 +130,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_drop_down(
                 this, &this->playerCivDrop[i],
-                0x80, 0x64, 0xAA, y - 1, 0x80, 0x18, 0x0B)) {
+                128, 100, 170, y - 1, 0x80, 0x18, 0x0B)) {
             return;
         }
         this->playerCivDrop[i]->set_draw_style(
@@ -160,7 +160,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_drop_down(
                 this, &this->scenarioPlayerDrop[i],
-                0x28, 0x64, 0x144, y - 1, 0x28, 0x18, 0x0B)) {
+                40, 100, 324, y - 1, 0x28, 0x18, 0x0B)) {
             return;
         }
         this->scenarioPlayerDrop[i]->set_draw_style(
@@ -170,19 +170,19 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_button(
                 this, &this->playerColor[i], "", 0,
-                0x136, y, 0x1E, 0x14, 0x0B, 0, 1)) {
+                310, y, 30, 20, 0x0B, 0, 1)) {
             return;
         }
         this->playerColor[i]->set_help_info(IDS_HELP_MP_PLAYER_COLOR, -1);
         if (!this->create_text(
                 this, &this->playerColorText[i], "",
-                0x131, y, 0x28, 0x16, 0x0B, 1, 1, 0)) {
+                305, y, 40, 22, 0x0B, 1, 1, 0)) {
             return;
         }
 
         if (!this->create_button(
                 this, &this->playerTeam[i], 0x25B0, 0,
-                0x17C, y, 0x1E, 0x14, 0x0B, 0, 1)) {
+                380, y, 30, 20, 0x0B, 0, 1)) {
             return;
         }
         this->playerTeam[i]->set_help_info(IDS_HELP_MP_TEAM, -1);
@@ -195,32 +195,32 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_text(
                 this, &this->playerTeamText[i], "",
-                0x177, y, 0x28, 0x16, 0x0B, 1, 1, 0)) {
+                375, y, 40, 22, 0x0B, 1, 1, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->playerNameText[i], "",
-                0x1C, y + 2, 0x8B, 0x16, 0x0B, 0, 0, 0)) {
+                28, y + 2, 139, 22, 0x0B, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->playerCivText[i], "",
-                0xBF, y + 2, 0x6D, 0x16, 0x0B, 0, 0, 0)) {
+                191, y + 2, 109, 22, 0x0B, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->scenarioPlayerText[i], "",
-                0x159, y + 2, 0x28, 0x16, 0x0B, 0, 0, 0)) {
+                345, y + 2, 40, 22, 0x0B, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->playerCDText[i], 0x25DF,
-                0x151, y + 3, 0x14, 0x16, 6, 0, 0, 0)) {
+                337, y + 3, 20, 22, 6, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->playerVersionText[i], "",
-                0x161, y + 3, 0x1D, 0x16, 6, 0, 0, 0)) {
+                353, y + 3, 29, 22, 6, 0, 0, 0)) {
             return;
         }
         this->playerCDText[i]->set_active(0);
@@ -229,21 +229,21 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     if (rge_base_game->singlePlayerGame() != 0 || comm->IsHost()) {
         if (!this->create_button(
                 this, &this->gameSettingsButton, IDS_MP_SETTINGS_LABEL, 0,
-                0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 0)) {
+                420, 50, 210, 30, 0, 0, 0)) {
             return;
         }
         this->gameSettingsButton->set_help_info(IDS_HELP_MP_SETTINGS, -1);
     }
 
     if (!this->create_text(this, &this->scenarioName, "",
-                           0x1A4, 0x54, 0xDC, 0x44,
+                           420, 84, 220, 68,
                            0x0B, 0, 0, 1)) {
         return;
     }
     y = 0x53;
     for (i = 0; y < 0x233; ++i, y += 0x18) {
         if (!this->create_text(this, &this->settingText[i], "",
-                               0x1A4, y, 0xDC, 0x14,
+                               420, y, 220, 20,
                                0x0B, 0, 0, 0)) {
             return;
         }
@@ -251,22 +251,22 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     if (rge_base_game->multiplayerGame() != 0) {
         if (!this->create_text(this, &this->chatTitle, IDS_MP_CHAT_LABEL,
-                               10, 0x118, 0x64, 0x14,
+                               10, 280, 100, 20,
                                4, 0, 1, 0)) {
             return;
         }
         if (!this->create_text(this, &this->chatBox, "",
-                               10, 0x12C, 0x190, 0x60,
+                               10, 300, 400, 96,
                                10, 0, 0, 0)) {
             return;
         }
         if (!this->create_auto_scrollbar(
-                &this->chatScrollbar, this->chatBox, 0x14)) {
+                &this->chatScrollbar, this->chatBox, 20)) {
             return;
         }
         if (!this->create_edit(
                 this, &this->chatInput, "", 0xF7,
-                TEditPanel::FormatText, 10, 0x192, 0x190, 0x17,
+                TEditPanel::FormatText, 10, 402, 400, 23,
                 10, 1, 0)) {
             return;
         }
@@ -282,12 +282,12 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     if (rge_base_game->singlePlayerGame() != 0) {
         if (!this->create_text(
                 this, &this->numberPlayersTitle, IDS_MP_NUMBER_PLAYERS_LABEL,
-                0x1A, 0x127, 0x14F, 0x14, 0, 0, 1, 0)) {
+                26, 295, 335, 20, 0, 0, 1, 0)) {
             return;
         }
         if (!this->create_drop_down(
                 this, &this->numberPlayersDrop,
-                0x46, 0x64, 0x1F, 0x142, 0x46, 0x18, 0x0B)) {
+                70, 100, 31, 322, 0x46, 0x18, 0x0B)) {
             return;
         }
         this->numberPlayersDrop->set_help_info(IDS_HELP_MP_PLAYER_COUNT, -1);
@@ -297,7 +297,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     if (rge_base_game->singlePlayerGame() != 0) {
         if (!this->create_button(
                 this, &this->startButton, "", 0,
-                0x46, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
+                70, 440, 240, 30, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, IDS_START_GAME);
@@ -305,25 +305,25 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         this->set_curr_child(this->startButton);
         if (!this->create_button(
                 this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
+                330, 440, 240, 30, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
     } else if (comm->IsHost()) {
         if (!this->create_check_box(
                 this, &this->ready_button,
-                10, 0x1B8, 0x1E, 0x1E, 0, 0)) {
+                10, 440, 30, 30, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->ready_button_label, IDS_MP_READY_LABEL,
-                0x2D, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0)) {
+                45, 440, 150, 30, 0, 0, 1, 0)) {
             return;
         }
         this->ready_button->set_help_info(IDS_HELP_MP_READY, -1);
         if (!this->create_button(
                 this, &this->startButton, "", 0,
-                0xC3, 0x1B8, 0xC8, 0x1E, 0, 0, 0)) {
+                195, 440, 200, 30, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, IDS_START_GAME);
@@ -331,13 +331,13 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         this->startButton->set_disabled(1);
         if (!this->create_button(
                 this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                0x195, 0x1B8, 0xB4, 0x1E, 0, 0, 0)) {
+                405, 440, 180, 30, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
         if (!this->create_button(
                 this, &this->netInfoButton, IDS_IP_LABEL, 0,
-                0x258, 0x190, 0x1E, 0x1E, 0, 0, 0)) {
+                600, 400, 30, 30, 0, 0, 0)) {
             return;
         }
         this->netInfoButton->set_help_info(IDS_HELP_MP_NETWORK_INFO, -1);
@@ -345,18 +345,18 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     } else {
         if (!this->create_check_box(
                 this, &this->ready_button,
-                0x64, 0x1B8, 0x1E, 0x1E, 0, 0)) {
+                100, 440, 30, 30, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->ready_button_label, IDS_MP_READY_LABEL,
-                0x87, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0)) {
+                135, 440, 150, 30, 0, 0, 1, 0)) {
             return;
         }
         this->ready_button->set_help_info(IDS_HELP_MP_READY, -1);
         if (!this->create_button(
                 this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
+                330, 440, 240, 30, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
@@ -364,7 +364,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     if (!this->create_button(
             this, &this->help_button, IDS_BUTTON_HELP, 0,
-            0x258, 0x1B8, 0x1E, 0x1E, 0, 0, 0)) {
+            600, 440, 30, 30, 0, 0, 0)) {
         return;
     }
     if (!this->create_button(
@@ -375,7 +375,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     this->close_button->set_active(1);
     this->close_button->set_positioning(
         TPanel::PositionRightTop, 4, 4, 4, 4,
-        0x11, 0x11, 0x11, 0x11, 0, 0, 0, 0);
+        17, 17, 17, 17, 0, 0, 0, 0);
 
     TButtonPanel* cancel = this->cancelButton;
     cancel->hotkey = 0x1B;
@@ -2555,21 +2555,21 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         return;
     }
 
-    this->set_ideal_size(0x280, 0x1E0);
+    this->set_ideal_size(640, 480);
 
     this->create_text(this, &this->message, "",
-                     0x14, 0x28, 0x17C, 0x190, 4, 1, 1, 1);
+                     20, 40, 380, 400, 4, 1, 1, 1);
     if (this->create_button(this, &this->close_button, 0x3EA,
                             0, 0, 0, 0, 0, -1, -1, 0) == 0) {
         return;
     }
     this->close_button->set_active(1);
     this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4,
-                                        4, 0x11, 0x11, 0x11,
-                                        0x11, 0, 0, 0, 0);
+                                        4, 17, 17, 17,
+                                        17, 0, 0, 0, 0);
 
     if (this->create_text(this, &this->scenarioName, "",
-                          0x1A4, 0x54, 0xDC, 0x44, 0xB, 0, 0, 1) == 0) {
+                          420, 84, 220, 68, 0xB, 0, 0, 1) == 0) {
         return;
     }
 
@@ -2577,7 +2577,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     int k = 0;
     for (; y < 0x233; y += 0x18, k++) {
         if (this->create_text(this, &this->settingText[k], "",
-                              0x1A4, y, 0xDC, 0x14, 0xB, 0, 0, 0) == 0) {
+                              420, y, 220, 20, 0xB, 0, 0, 0) == 0) {
             return;
         }
     }
@@ -2804,9 +2804,9 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode_in) : TScreenPanel("Mu
     if (this->setup(rge_base_game->draw_area, "scr3", 0xC385, 0) == 0) {
         this->error_code = 1;
     } else {
-        this->set_ideal_size(0x280, 0x1E0);
+        this->set_ideal_size(640, 480);
         this->create_text(this, &this->message, IDS_STATUS_DISCONNECTING_MULTIPLAYER,
-                          0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
+                          40, 40, 560, 400, 4, 1, 1, 1);
     }
 }
 

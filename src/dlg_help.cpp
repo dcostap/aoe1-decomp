@@ -49,7 +49,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
         return;
     }
 
-    this->create_text(this, &this->list, help_string, 10, 10, 0x14A, 0x186,
+    this->create_text(this, &this->list, help_string, 10, 10, 330, 390,
                       0x0B, 0, 0, 1);
 
     line_height = this->list->bot_line + 2;
@@ -78,29 +78,29 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
         y = 0;
     }
 
-    this->set_fixed_position(dialog_x, y, 0x154, panel_height);
+    this->set_fixed_position(dialog_x, y, 340, panel_height);
     this->set_ideal_size(this->max_wid, this->max_hgt);
-    this->list->set_fixed_position(10, 10, 0x14A,
+    this->list->set_fixed_position(10, 10, 330,
                                    line_height * rge_text_font->font_hgt);
 
     if (rge_base_game->singlePlayerGame() && in_help_page_id >= 0) {
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
             this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0,
-                                0x19,
-                                line_height * rge_text_font->font_hgt + 0x14,
-                                0x78, 0x19, 0x0B, 0, 0);
+                                25,
+                                line_height * rge_text_font->font_hgt + 20,
+                                120, 25, 0x0B, 0, 0);
         }
     }
 
     if (this->encyclopedia_button == 0) {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0x6E,
-                            line_height * rge_text_font->font_hgt + 0x14,
-                            0x78, 0x19, 0x0B, 0, 0);
+        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 110,
+                            line_height * rge_text_font->font_hgt + 20,
+                            120, 25, 0x0B, 0, 0);
     } else {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 0xC3,
-                            line_height * rge_text_font->font_hgt + 0x14,
-                            0x78, 0x19, 0x0B, 0, 0);
+        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 195,
+                            line_height * rge_text_font->font_hgt + 20,
+                            120, 25, 0x0B, 0, 0);
     }
     TButtonPanel* button = this->ok_button;
     button->hotkey = 0x1B;
