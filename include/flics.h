@@ -56,8 +56,8 @@ public:
 
 class RGE_Flic_Player {
 public:
-    unsigned char* flic_buffer;  // +0x00
-    int flic_handle;             // +0x04
+    unsigned char* flic_buffer;   // +0x00
+    int flic_handle;              // +0x04
     FlicHead flichead;            // +0x08
     TDrawArea* drawarea;          // +0x8C
     long drawarea_width;          // +0x90

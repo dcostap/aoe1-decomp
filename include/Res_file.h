@@ -8,7 +8,7 @@ class resfile_header;
 
 class ResFileHdr {
 public:
-    unsigned char* mapped_file; // +0x00
+    unsigned char* mapped_file;  // +0x00
     int handle;                  // +0x04
     resfile_header* header;      // +0x08
     ResFileHdr* next;            // +0x0C

@@ -7,19 +7,19 @@
 class RGE_Map;
 
 struct RGE_Land_Info_Line {
-    long land_size;                         // +0x00
-    long terrain_type;                      // +0x04
+    long land_size;                          // +0x00
+    long terrain_type;                       // +0x04
     long x;                                  // +0x08
     long y;                                  // +0x0C
-    long base_size;                         // +0x10
-    long area;                              // +0x14
-    uchar zone;                             // +0x18
-    long clumpiness_factor;                 // +0x1C
-    long wall_1_avoidance_line;             // +0x20
-    long wall_2_avoidance_line;             // +0x24
-    long wall_3_avoidance_line;             // +0x28
-    long wall_4_avoidance_line;             // +0x2C
-    uchar wall_fade;                        // +0x30
+    long base_size;                          // +0x10
+    long area;                               // +0x14
+    uchar zone;                              // +0x18
+    long clumpiness_factor;                  // +0x1C
+    long wall_1_avoidance_line;              // +0x20
+    long wall_2_avoidance_line;              // +0x24
+    long wall_3_avoidance_line;              // +0x28
+    long wall_4_avoidance_line;              // +0x2C
+    uchar wall_fade;                         // +0x30
 };
 
 typedef char rmm_land_info_line_size_check[

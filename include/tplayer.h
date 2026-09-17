@@ -52,8 +52,8 @@ public:
     virtual void setDiplomaticStance(int playerNum, int rType);   // vt[10]
     virtual void loadAIInformation(char* bL, char* cP, char* rS,
                                    int mood, int mapType);         // vt[11]
-    virtual void kickAI(int m);                                   // vt[14]
-    virtual int strategicNumber(int sN);                          // vt[15]
+    virtual void kickAI(int m);                                    // vt[14]
+    virtual int strategicNumber(int sN);                           // vt[15]
     virtual int sendAICommand(int caller, int mType, int p1,
                               int p2, int p3);                    // vt[21]
     virtual int objectCostByType(int id);                         // vt[22]
@@ -76,7 +76,7 @@ public:
     virtual void random_start();                                  // vt[36]
     virtual RGE_Static_Object* make_new_object(
         long obj_id, float x, float y, float z,
-        int build_all_the_way);                                  // vt[37]
+        int build_all_the_way);                                   // vt[37]
     virtual void analyize_selected_objects();                     // vt[38]
     virtual int get_mouse_pointer_action_vars(int Obj_id, int& newFacet,
                                               int& text_id);      // vt[39]
@@ -191,22 +191,22 @@ public:
     void setupMacedonian(int* b, int mapType, int gameType, int mapSize);
     void get_achievement(unsigned char achievement, char* info);
 
-    TRIBE_Player_Tech* tech_tree;                 // +0x220
-    long fog_update;                              // +0x224
-    long update_count;                            // +0x228
-    long update_history_count;                    // +0x22C
-    long updateCountNeedHelp;                     // +0x230
+    TRIBE_Player_Tech* tech_tree;                  // +0x220
+    long fog_update;                               // +0x224
+    long update_count;                             // +0x228
+    long update_history_count;                     // +0x22C
+    long updateCountNeedHelp;                      // +0x230
     float update_time;                             // +0x234
-    TribeMainDecisionAIModule* playerAI;          // +0x238
+    TribeMainDecisionAIModule* playerAI;           // +0x238
     char aiStatusInformationValue[256];            // +0x23C
     char aiStatusInformationValue2[256];           // +0x33C
     char aiStatusInformationValue3[256];           // +0x43C
     char aiStatusInformationValue4[256];           // +0x53C
     char aiStatusInformationValue5[256];           // +0x63C
     char aiStatusInformationValue6[256];           // +0x73C
-    TRIBE_History_Info* history;                  // +0x83C
+    TRIBE_History_Info* history;                   // +0x83C
     float ruin_held_time;                          // +0x840
-    float artifact_held_time;                     // +0x844
+    float artifact_held_time;                      // +0x844
 };
 
 typedef char tribe_player_size_check[

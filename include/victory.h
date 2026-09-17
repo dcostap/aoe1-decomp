@@ -11,35 +11,35 @@ class RGE_Victory_Conditions;
 
 struct RGE_Victory_Entry {
 public:
-    unsigned char command; // +0x00
-    long obj_type; // +0x04
-    RGE_Player* target_player; // +0x08
-    float x0; // +0x0C
-    float y0; // +0x10
-    float x1; // +0x14
-    float y1; // +0x18
-    long number; // +0x1C
-    long count; // +0x20
-    RGE_Static_Object* this_obj; // +0x24
+    unsigned char command;         // +0x00
+    long obj_type;                 // +0x04
+    RGE_Player* target_player;     // +0x08
+    float x0;                      // +0x0C
+    float y0;                      // +0x10
+    float x1;                      // +0x14
+    float y1;                      // +0x18
+    long number;                   // +0x1C
+    long count;                    // +0x20
+    RGE_Static_Object* this_obj;   // +0x24
     RGE_Static_Object* target_obj; // +0x28
-    unsigned char victory_group; // +0x2C
-    unsigned char ally_flag; // +0x2D
-    unsigned char state; // +0x2E
-    unsigned char checked_flag; // +0x2F
-    RGE_Victory_Entry* next; // +0x30
+    unsigned char victory_group;   // +0x2C
+    unsigned char ally_flag;       // +0x2D
+    unsigned char state;           // +0x2E
+    unsigned char checked_flag;    // +0x2F
+    RGE_Victory_Entry* next;       // +0x30
 };
 
 struct RGE_Victory_Point_Entry {
 public:
-    unsigned char command; // +0x00
-    unsigned char state; // +0x01
-    unsigned char id; // +0x02
-    unsigned char group; // +0x03
-    long attribute; // +0x04
-    long amount; // +0x08
-    long points; // +0x0C
-    long curr_points; // +0x10
-    float curr_attribute_amount; // +0x14
+    unsigned char command;         // +0x00
+    unsigned char state;           // +0x01
+    unsigned char id;              // +0x02
+    unsigned char group;           // +0x03
+    long attribute;                // +0x04
+    long amount;                   // +0x08
+    long points;                   // +0x0C
+    long curr_points;              // +0x10
+    float curr_attribute_amount;   // +0x14
     RGE_Victory_Point_Entry* next; // +0x18
 };
 
@@ -134,13 +134,13 @@ public:
     unsigned char victory_achieved();
 
 public:
-    RGE_Victory_Entry* victory_list; // +0x04
-    long list_num; // +0x08
-    RGE_Player* player; // +0x0C
-    unsigned char victory; // +0x10
+    RGE_Victory_Entry* victory_list;             // +0x04
+    long list_num;                               // +0x08
+    RGE_Player* player;                          // +0x0C
+    unsigned char victory;                       // +0x10
     RGE_Victory_Point_Entry* victory_point_list; // +0x14
-    long point_list_num; // +0x18
-    long tot_victory_points; // +0x1C
+    long point_list_num;                         // +0x18
+    long tot_victory_points;                     // +0x1C
 };
 
 typedef char rge_victory_conditions_size_check[

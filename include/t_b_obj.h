@@ -61,25 +61,25 @@ public:
     virtual void give_building_attribute_to_owner();
     void transform(TRIBE_Master_Building_Object* obj);
 
-    Production_Queue_Record* production_queue; // +0x1C8
-    short production_queue_size;               // +0x1CC
-    short production_queue_count;              // +0x1CE
-    unsigned char production_queue_enabled;    // +0x1D0
-    RGE_Action_List* production_queue_actions; // +0x1D4
-    unsigned char production_queue_change_flag; // +0x1D8
-    unsigned char production_queue_auto_paused; // +0x1D9
-    short production_queue_need_attr;           // +0x1DA
-    float build_pts;                            // +0x1DC
-    int unique_build_id;                        // +0x1E0
+    Production_Queue_Record* production_queue;   // +0x1C8
+    short production_queue_size;                 // +0x1CC
+    short production_queue_count;                // +0x1CE
+    unsigned char production_queue_enabled;      // +0x1D0
+    RGE_Action_List* production_queue_actions;   // +0x1D4
+    unsigned char production_queue_change_flag;  // +0x1D8
+    unsigned char production_queue_auto_paused;  // +0x1D9
+    short production_queue_need_attr;            // +0x1DA
+    float build_pts;                             // +0x1DC
+    int unique_build_id;                         // +0x1E0
     unsigned char culture;                       // +0x1E4
     unsigned char built;                         // +0x1E5
-    int DoppleInstalled;                        // +0x1E8
-    unsigned long PriorMap1;                    // +0x1EC
-    unsigned long PriorMap2;                    // +0x1F0
-    unsigned long PriorMap3;                    // +0x1F4
-    long PriorTurn1;                            // +0x1F8
-    long PriorTurn2;                            // +0x1FC
-    long PriorTurn3;                            // +0x200
+    int DoppleInstalled;                         // +0x1E8
+    unsigned long PriorMap1;                     // +0x1EC
+    unsigned long PriorMap2;                     // +0x1F0
+    unsigned long PriorMap3;                     // +0x1F4
+    long PriorTurn1;                             // +0x1F8
+    long PriorTurn2;                             // +0x1FC
+    long PriorTurn3;                             // +0x200
 
 protected:
     virtual int setup(TRIBE_Master_Building_Object* tobj, RGE_Player* obj_owner,

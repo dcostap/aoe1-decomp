@@ -23,14 +23,14 @@ public:
     virtual void decrementBuildAttempts(float x, float y, int n);
     virtual void incrementBuildAttempts(float x, float y, int n);
 
-    int numberConstructionLotsValue;             // +0xF0
-    ConstructionItem constructionLots;           // +0xF4
-    int numberRandomConstructionLotsValue;       // +0x174
-    ConstructionItem randomConstructionLots;     // +0x178
-    char constructionPlanNameValue[257];        // +0x1F8
-    float xReferencePointValue;                  // +0x2FC (natural alignment)
-    float yReferencePointValue;                  // +0x300
-    float zReferencePointValue;                  // +0x304
+    int numberConstructionLotsValue;              // +0xF0
+    ConstructionItem constructionLots;            // +0xF4
+    int numberRandomConstructionLotsValue;        // +0x174
+    ConstructionItem randomConstructionLots;      // +0x178
+    char constructionPlanNameValue[257];          // +0x1F8
+    float xReferencePointValue;                   // +0x2FC (natural alignment)
+    float yReferencePointValue;                   // +0x300
+    float zReferencePointValue;                   // +0x304
     int mapXSizeValue;                            // +0x308
     int mapYSizeValue;                            // +0x30C
     PlacementResult lastPlacementReturnCodeValue; // +0x310

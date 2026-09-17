@@ -137,10 +137,10 @@ public:
     int Height;                           // +0x1C
     int Pitch;                            // +0x20
     int Orien;                            // +0x24
-    tagRECT ClipRect;                    // +0x28
+    tagRECT ClipRect;                     // +0x28
     void* DrawDc;                         // +0x38
-    IDirectDrawSurface* DrawSurface;     // +0x3C
-    _DDSURFACEDESC SurfaceDesc;         // +0x40
+    IDirectDrawSurface* DrawSurface;      // +0x3C
+    _DDSURFACEDESC SurfaceDesc;           // +0x40
     DrawAreaNode* Node;                   // +0xAC
     char* Name;                           // +0xB0
     unsigned char* LastBits;              // +0xB4
@@ -148,7 +148,7 @@ public:
     void** DisplayOffsets;                // +0xBC
     void** CurDisplayOffsets;             // +0xC0
     void** FloatOffsets;                  // +0xC4
-    RGE_Color_Table* shadow_color_table; // +0xC8
+    RGE_Color_Table* shadow_color_table;  // +0xC8
     TSpan_List_Manager* SpanList;         // +0xCC
     TSpan_List_Manager* CurSpanList;      // +0xD0
     int Float_X_Delta;                    // +0xD4
@@ -206,36 +206,36 @@ public:
 
 class TDrawSystem {
 public:
-    void* Inst;                          // +0x00
-    void* Wnd;                           // +0x04
-    void* Pal;                           // +0x08
-    TDrawArea* DrawArea;                 // +0x0C
-    TDrawArea* PrimaryArea;              // +0x10
+    void* Inst;                           // +0x00
+    void* Wnd;                            // +0x04
+    void* Pal;                            // +0x08
+    TDrawArea* DrawArea;                  // +0x0C
+    TDrawArea* PrimaryArea;               // +0x10
     DrawAreaNode* DrawAreaList;           // +0x14
-    IDirectDraw* DirDraw;                // +0x18
-    IDirectDrawSurface* PrimarySurface;  // +0x1C
-    IDirectDrawClipper* Clipper;         // +0x20
-    IDirectDrawPalette* DirDrawPal;      // +0x24
-    unsigned long Flags;                 // +0x28
-    long ScreenWidth;                    // +0x2C
-    long ScreenHeight;                   // +0x30
-    long ColorBits;                      // +0x34
-    long ErrorCode;                      // +0x38
-    long ChangedMode;                    // +0x3C
-    long IsBanked;                       // +0x40
-    long CanSrcBlt;                      // +0x44
-    long Restored;                       // +0x48
-    long ModeAvail640;                   // +0x4C
-    long ModeAvail800;                   // +0x50
-    long ModeAvail1024;                  // +0x54
-    long ModeAvail1280;                  // +0x58
-    long ModeAvail320_200;               // +0x5C
-    long ModeAvail320_240;               // +0x60
-    long ModeAvail320_200_16;            // +0x64
-    long ModeAvail320_240_16;            // +0x68
-    long ModeAvail640_16;                // +0x6C
-    long ModeAvail800_16;                // +0x70
-    long ModeAvail1024_16;               // +0x74
+    IDirectDraw* DirDraw;                 // +0x18
+    IDirectDrawSurface* PrimarySurface;   // +0x1C
+    IDirectDrawClipper* Clipper;          // +0x20
+    IDirectDrawPalette* DirDrawPal;       // +0x24
+    unsigned long Flags;                  // +0x28
+    long ScreenWidth;                     // +0x2C
+    long ScreenHeight;                    // +0x30
+    long ColorBits;                       // +0x34
+    long ErrorCode;                       // +0x38
+    long ChangedMode;                     // +0x3C
+    long IsBanked;                        // +0x40
+    long CanSrcBlt;                       // +0x44
+    long Restored;                        // +0x48
+    long ModeAvail640;                    // +0x4C
+    long ModeAvail800;                    // +0x50
+    long ModeAvail1024;                   // +0x54
+    long ModeAvail1280;                   // +0x58
+    long ModeAvail320_200;                // +0x5C
+    long ModeAvail320_240;                // +0x60
+    long ModeAvail320_200_16;             // +0x64
+    long ModeAvail320_240_16;             // +0x68
+    long ModeAvail640_16;                 // +0x6C
+    long ModeAvail800_16;                 // +0x70
+    long ModeAvail1024_16;                // +0x74
     union {
         PALETTEENTRY palette[256];       // +0x78
         PALETTEENTRY Palette[256];       // +0x78

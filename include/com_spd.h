@@ -10,22 +10,22 @@ class RGE_Communications_Speed {
     friend class TCommunications_Handler;
 
 private:
-    char TBuff[255];                            // +0x00
-    RGE_TimeSinceLastCall* TurnTSLC;            // +0x100
-    RGE_TimeSinceLastCall* FrameTSLC;           // +0x104
-    TCommunications_Handler* Comm;              // +0x108
-    double AccumDiff;                           // +0x110
-    int SpeedControlEnabled;                    // +0x118
-    unsigned int CurrentBufferFrames;           // +0x11C
-    unsigned int FutureBufferFrames;            // +0x120
-    unsigned int TotalBufferFramesRemaining;    // +0x124
-    unsigned int TargetTurnLengthMsec;          // +0x128
-    unsigned int CurrentBufferGranularity;      // +0x12C
-    unsigned int FutureBufferGranularity;       // +0x130
-    unsigned int OverheadFactor;                // +0x134
-    unsigned long TimeSinceLastBuffer;          // +0x138
-    unsigned long FutureSpeedChangeTurn;        // +0x13C
-    unsigned long NextLatencyChangeTurn;        // +0x140
+    char TBuff[255];                             // +0x00
+    RGE_TimeSinceLastCall* TurnTSLC;             // +0x100
+    RGE_TimeSinceLastCall* FrameTSLC;            // +0x104
+    TCommunications_Handler* Comm;               // +0x108
+    double AccumDiff;                            // +0x110
+    int SpeedControlEnabled;                     // +0x118
+    unsigned int CurrentBufferFrames;            // +0x11C
+    unsigned int FutureBufferFrames;             // +0x120
+    unsigned int TotalBufferFramesRemaining;     // +0x124
+    unsigned int TargetTurnLengthMsec;           // +0x128
+    unsigned int CurrentBufferGranularity;       // +0x12C
+    unsigned int FutureBufferGranularity;        // +0x130
+    unsigned int OverheadFactor;                 // +0x134
+    unsigned long TimeSinceLastBuffer;           // +0x138
+    unsigned long FutureSpeedChangeTurn;         // +0x13C
+    unsigned long NextLatencyChangeTurn;         // +0x140
     unsigned int ActualLatency[10];              // +0x144
     unsigned int AverageTSLC[10];                // +0x16C
     unsigned char PlayerOptimalFrames[10];       // +0x194

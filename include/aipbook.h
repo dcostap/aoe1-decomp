@@ -12,20 +12,20 @@ class AIPlayStatus;
 
 class AIPlay {
 public:
-    char nameValue[65];                  // +0x000
-    unsigned char minimumNumberUnitsValue; // +0x041
-    unsigned char maximumNumberUnitsValue; // +0x042
-    unsigned char typeValue;             // +0x043
-    unsigned char targetTypeValue[5];    // +0x044
+    char nameValue[65];                         // +0x000
+    unsigned char minimumNumberUnitsValue;      // +0x041
+    unsigned char maximumNumberUnitsValue;      // +0x042
+    unsigned char typeValue;                    // +0x043
+    unsigned char targetTypeValue[5];           // +0x044
     unsigned char targetCharacteristicValue[5]; // +0x049
-    unsigned char powerValue;            // +0x04E
-    unsigned char overflowValue;         // +0x04F
-    unsigned char intelligenceValue;     // +0x050
-    unsigned char deathPercentageValue;  // +0x051
-    unsigned char numberGroupsValue;     // +0x052
-    AIPlayGroup groups[5];               // +0x053
-    unsigned char pad_08F;               // +0x08F
-    AIPlayPhase phases[10];              // +0x090
+    unsigned char powerValue;                   // +0x04E
+    unsigned char overflowValue;                // +0x04F
+    unsigned char intelligenceValue;            // +0x050
+    unsigned char deathPercentageValue;         // +0x051
+    unsigned char numberGroupsValue;            // +0x052
+    AIPlayGroup groups[5];                      // +0x053
+    unsigned char pad_08F;                      // +0x08F
+    AIPlayPhase phases[10];                     // +0x090
 
     AIPlay();
     void setName(char* n);
@@ -57,23 +57,23 @@ class AIPlayStatus {
 public:
     class GroupingStruct {
     public:
-        int id;                         // +0x00
+        int id;                          // +0x00
         unsigned char groupID;           // +0x04
         unsigned char type;              // +0x05
-        unsigned char pad_06[2];        // +0x06
+        unsigned char pad_06[2];         // +0x06
     };
 
-    GroupingStruct groupings[50];       // +0x000
-    int playNumberValue;                // +0x190
-    int targetValue;                    // +0x194
-    XYZ originalPointValue;             // +0x198
-    int originalHitPointsValue[5];      // +0x1A4
-    unsigned char currentPhaseValue;    // +0x1B8
-    unsigned char pad_1B9[3];           // +0x1B9
-    int savedAttackerValue;             // +0x1BC
+    GroupingStruct groupings[50];           // +0x000
+    int playNumberValue;                    // +0x190
+    int targetValue;                        // +0x194
+    XYZ originalPointValue;                 // +0x198
+    int originalHitPointsValue[5];          // +0x1A4
+    unsigned char currentPhaseValue;        // +0x1B8
+    unsigned char pad_1B9[3];               // +0x1B9
+    int savedAttackerValue;                 // +0x1BC
     unsigned long lastPhaseChangeTimeValue; // +0x1C0
-    unsigned char deviationValue;       // +0x1C4
-    unsigned char pad_1C5[3];           // +0x1C5
+    unsigned char deviationValue;           // +0x1C4
+    unsigned char pad_1C5[3];               // +0x1C5
 
     AIPlayStatus();
     int originalHitPoints(int n) const;

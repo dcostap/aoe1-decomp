@@ -19,12 +19,12 @@ public:
     };
 
 protected:
-    unsigned char typeValue;  // +0x00
-    int value1Value;          // +0x04
-    int value2Value;          // +0x08
-    unsigned char phaseValue; // +0x0C
+    unsigned char typeValue;      // +0x00
+    int value1Value;              // +0x04
+    int value2Value;              // +0x08
+    unsigned char phaseValue;     // +0x0C
     unsigned char nextPhaseValue; // +0x0D
-    int randomnessValue;      // +0x10
+    int randomnessValue;          // +0x10
 
 public:
     AIPlayPhaseTrigger();
