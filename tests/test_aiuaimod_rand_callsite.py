@@ -44,8 +44,8 @@ def test_closest_undiscovered_tile_uses_original_cpp_path():
     body = source.split("int UnitAIModule::closestUndiscoveredTile", 1)[1].split(
         "Waypoint* UnitAIModule::waypoint", 1
     )[0]
-    assert '"C:\\\\msdev\\\\work\\\\age1_x1\\\\aiuaimod.cpp", 0xB2E' in body
-    assert '"C:\\\\msdev\\\\work\\\\age1_x1\\\\aiuaimod.c", 0xB2E' not in body
+    assert '"C:\\\\msdev\\\\work\\\\age1_x1\\\\aiuaimod.cpp", 2862' in body
+    assert '"C:\\\\msdev\\\\work\\\\age1_x1\\\\aiuaimod.c", 2862' not in body
 
 
 def test_debug_rand_gets_rng_value_before_it_reads_log_identity():

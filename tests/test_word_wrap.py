@@ -43,7 +43,7 @@ def test_wrap_source_preserves_cursor_and_buffer_boundaries():
     assert fitting.index("len = _mbsinc(next_char)") < fitting.index("if (text_size.cx > max_wid)")
     assert fitting.index("if (text_size.cx > max_wid)") < fitting.index("next_char = _mbsinc(next_char);")
     assert "unsigned char temp_text[256];" in body
-    assert "memset(temp_text, 0, 0x100);" in body
+    assert "memset(temp_text, 0, 256);" in body
     assert "_mbsncpy(temp_text," in body
     assert "append_line((char*)temp_text, 0);" in body
     assert not re.search(r"temp_text\s*\+", body)
