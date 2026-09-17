@@ -700,16 +700,13 @@ void PointMaker::AddingCircle(int x1, int y1, int radius) {
 
             lasty = lastx;
             W = curx;
-            int random = debug_rand(
-                (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 497);
+            int random = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 497);
             if (random % 2) {
                 x = trig.sin360(angle) * (float)radius;
-                offset = debug_rand(
-                    (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499) %
+                offset = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 499) %
                     2 + x - 1.0f;
                 float y = trig.cos360(angle) * (float)radius;
-                int random_2 = debug_rand(
-                    (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
+                int random_2 = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 500) % 2;
                 loc = (int)(width * ((float)random_2 + y - 1.0f) + offset);
                 int addp1 = ProbabilityAdd + 1;
                 if (loc >= 1 && loc < SizeArrays - 1) {

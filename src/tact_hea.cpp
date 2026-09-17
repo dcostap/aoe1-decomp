@@ -63,8 +63,7 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x202, 0x25B, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x25B, 0, 0);
         this->obj->new_sprite(this->obj->master_obj->sprite);
         return;
 
@@ -73,13 +72,8 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
         return;
 
     case 11: {
-        RGE_Action_Move_To* move_to = new RGE_Action_Move_To(
-            this->obj,
-            this->target_x,
-            this->target_y,
-            this->target_z,
-            0.0f,
-            this->task->move_sprite);
+        RGE_Action_Move_To* move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
+                                                             0.0f, this->task->move_sprite);
         if (move_to == 0) {
             this->set_state(0x0D);
             return;
@@ -93,11 +87,7 @@ void TRIBE_Action_Heal::set_state(unsigned char new_state) {
         this->target_x = this->target_obj->world_x;
         this->target_y = this->target_obj->world_y;
         this->target_z = this->target_obj->world_z;
-        RGE_Action_Move_To* move_to = new RGE_Action_Move_To(
-            this->obj,
-            this->target_obj,
-            0.4f,
-            this->task->move_sprite);
+        RGE_Action_Move_To* move_to = new RGE_Action_Move_To(this->obj, this->target_obj, 0.4f, this->task->move_sprite);
         if (move_to == 0) {
             this->set_state(0x0D);
             return;
@@ -152,8 +142,7 @@ unsigned char TRIBE_Action_Heal::update() {
     if (this->target_obj != 0 &&
         this->obj->owner->isAlly(this->target_obj->owner->id) == 0) {
         this->set_state(1);
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1FB, 0x25B, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x25B, 0, 0);
         return 4;
     }
 
@@ -235,8 +224,7 @@ unsigned char TRIBE_Action_Heal::update() {
             return 0;
         }
         if (result == 2) {
-            this->obj->notify(this->obj->id, this->obj->id,
-                              0x1FB, 0x25B, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x25B, 0, 0);
             this->set_state(2);
             return 0;
         }
@@ -247,8 +235,7 @@ unsigned char TRIBE_Action_Heal::update() {
         return 1;
 
     case 0x0D:
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1F9, 0x25B, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x25B, 0, 0);
         this->set_state(2);
         return 3;
     }

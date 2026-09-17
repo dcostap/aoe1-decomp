@@ -78,23 +78,18 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             }
             target_id = this->target_obj->master_obj->id;
             if (target_id == 0x6d) {
-                rge_base_game->notification(0x79,
-                                            (int)this->obj->owner->id,
-                                            0, 0, 0);
+                rge_base_game->notification(0x79, (int)this->obj->owner->id, 0, 0, 0);
                 return;
             }
             if (target_id == 0x114) {
-                rge_base_game->notification(0x7a,
-                                            (int)this->obj->owner->id,
-                                            0, 0, 0);
+                rge_base_game->notification(0x7a, (int)this->obj->owner->id, 0, 0, 0);
                 return;
             }
             return;
         }
         if (object->attribute_amount_held < 100.0) {
             this->set_state(0x0d);
-            rge_base_game->notification(0x76,
-                                        (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x76, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == 3) {
@@ -115,8 +110,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(0x77,
-                                        (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x77, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
         if (object_group == 3 && object->owner->attributes[0x1c] <= 0.0f) {
@@ -125,8 +119,7 @@ void TRIBE_Action_Convert::first_in_stack(uchar first_time) {
             } else {
                 this->set_state(0x0d);
             }
-            rge_base_game->notification(0x78,
-                                        (int)this->obj->owner->id, 0, 0, 0);
+            rge_base_game->notification(0x78, (int)this->obj->owner->id, 0, 0, 0);
             return;
         }
     }
@@ -147,20 +140,13 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
     this->state = new_state;
     switch (new_state) {
     case 3:
-        this->obj->notify(
-            static_cast<int>(this->obj->id),
-            static_cast<int>(this->obj->id), 0x202,
-            static_cast<long>(0x25C), 0L, 0L);
+        this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), 0x202,
+                          static_cast<long>(0x25C), 0L, 0L);
         goto master_sprite;
 
     case 11: {
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj,
-            this->target_x,
-            this->target_y,
-            this->target_z,
-            this->requiredRange,
-            this->task->move_sprite);
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
+                                                            this->requiredRange, this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -174,11 +160,8 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
         this->target_x = this->target_obj->world_x;
         this->target_y = this->target_obj->world_y;
         this->target_z = this->target_obj->world_z;
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj,
-            this->target_obj,
-            this->requiredRange,
-            this->task->move_sprite);
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->requiredRange,
+                                                            this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -200,9 +183,7 @@ void TRIBE_Action_Convert::set_state(uchar new_state) {
         if (this->task->work_sound != 0)
             this->task->work_sound->play(1);
         if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
-            this->target_obj->owner->make_new_object(
-                0x70, this->obj->world_x, this->obj->world_y,
-                this->obj->world_z, 0);
+            this->target_obj->owner->make_new_object(0x70, this->obj->world_x, this->obj->world_y, this->obj->world_z, 0);
         }
         this->timer = this->task->work_val2;
         return;
@@ -251,10 +232,8 @@ uchar TRIBE_Action_Convert::update() {
             this->obj->set_attribute(0x22, 0);
         }
         this->set_state(1);
-        this->obj->notify(
-            static_cast<int>(this->obj->id),
-            static_cast<int>(this->obj->id), 0x1fb,
-            static_cast<long>(0x25c), 0L, 0L);
+        this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), 0x1fb,
+                          static_cast<long>(0x25c), 0L, 0L);
         return 4;
     }
 
@@ -310,22 +289,17 @@ uchar TRIBE_Action_Convert::update() {
             this->set_state(3);
             return 0;
         }
-        this->target_obj->notify(
-            static_cast<int>(this->obj->id),
-            static_cast<int>(this->target_obj->id), 500,
-            static_cast<long>(this->obj->id),
-            static_cast<long>(this->target_obj->hp),
-            static_cast<long>(this->target_obj->master_obj->hp));
+        this->target_obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->target_obj->id), 500,
+                                 static_cast<long>(this->obj->id), static_cast<long>(this->target_obj->hp),
+                                 static_cast<long>(this->target_obj->master_obj->hp));
         this->timer = this->timer -
                       this->obj->owner->world->world_time_delta_seconds;
         if (this->timer <= 0.0f) {
             if (this->target_obj != 0 && this->target_obj->owner->id > 0) {
-                this->target_obj->owner->make_new_object(
-                    0x70, this->obj->world_x, this->obj->world_y,
-                    this->obj->world_z, 0);
+                this->target_obj->owner->make_new_object(0x70, this->obj->world_x, this->obj->world_y,
+                                                         this->obj->world_z, 0);
             }
-            int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp",
-                               471);
+            int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp", 471);
             float chance = (float)r * DAT_00574ffc;
             RGE_Player* tplayer = this->target_obj->owner;
             if (tplayer->master_player_id == 0x10) {
@@ -341,10 +315,8 @@ uchar TRIBE_Action_Convert::update() {
             }
             // Direct field ownership preserves the original x87 order.
             if (chance <= this->task->work_val1 *
-                           static_cast<RGE_Master_Action_Object*>(
-                               this->obj->master_obj)->work_rate) {
-                rge_base_game->notification(0x7b, this->obj->owner->id,
-                                             this->target_obj->owner->id, 0, 0);
+                           static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate) {
+                rge_base_game->notification(0x7b, this->obj->owner->id, this->target_obj->owner->id, 0, 0);
                 this->target_obj->change_ownership(this->obj->owner);
                 this->obj->owner->add_attribute_num(0x29, 1.0f, 0);
                 this->obj->set_attribute(0x22, 0);
@@ -360,10 +332,8 @@ uchar TRIBE_Action_Convert::update() {
         return 1;
 
     case 13:
-        this->obj->notify(
-            static_cast<int>(this->obj->id),
-            static_cast<int>(this->obj->id), 0x1f9,
-            static_cast<long>(0x25c), 0L, 0L);
+        this->obj->notify(static_cast<int>(this->obj->id), static_cast<int>(this->obj->id), 0x1f9,
+                          static_cast<long>(0x25c), 0L, 0L);
         this->set_state(2);
         return 3;
     }

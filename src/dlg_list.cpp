@@ -41,16 +41,14 @@ long TListDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     }
 
     if (title_in != 0 && *title_in != 0) {
-        result = create_text((TPanel*)this, &title, title_in,
-                             title_x_in, title_y_in, title_wid_in, title_hgt_in,
+        result = create_text((TPanel*)this, &title, title_in, title_x_in, title_y_in, title_wid_in, title_hgt_in,
                              4, 1, 1, 1);
         if (result == 0) {
             return 0;
         }
     }
 
-    if (create_list((TPanel*)this, &list, list_x_in, list_y_in, list_wid_in,
-                    list_hgt_in, 0xB) == 0) {
+    if (create_list((TPanel*)this, &list, list_x_in, list_y_in, list_wid_in, list_hgt_in, 0xB) == 0) {
         return 0;
     }
 
@@ -66,15 +64,13 @@ long TListDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     list_id = (short)list_id_in;
     list->scroll_cur_line(1, list_id_in, 1);
 
-    if (create_button((TPanel*)this, &ok_btn, IDS_BUTTON_OK, 0,
-                      ok_btn_x_in, btn_y_in, btn_wid_in, btn_hgt_in,
+    if (create_button((TPanel*)this, &ok_btn, IDS_BUTTON_OK, 0, ok_btn_x_in, btn_y_in, btn_wid_in, btn_hgt_in,
                       0, 0, 0) == 0) {
         return 0;
     }
 
     result = create_button((TPanel*)this, &cancel_btn, IDS_BUTTON_CANCEL, 0,
-                           cancel_btn_x_in, btn_y_in, btn_wid_in, btn_hgt_in,
-                           0, 0, 0);
+                           cancel_btn_x_in, btn_y_in, btn_wid_in, btn_hgt_in, 0, 0, 0);
     if (result == 0) {
         return 0;
     }
@@ -99,8 +95,7 @@ long TListDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     return setup(parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in,
                  title_x_in, title_y_in, title_wid_in, title_hgt_in, str,
                  list_x_in, list_y_in, list_wid_in, list_hgt_in, list_in,
-                 list_num_lines_in, list_id_in, ok_btn_x_in, cancel_btn_x_in,
-                 btn_y_in, btn_wid_in, btn_hgt_in);
+                 list_num_lines_in, list_id_in, ok_btn_x_in, cancel_btn_x_in, btn_y_in, btn_wid_in, btn_hgt_in);
 }
 
 long TListDialog::key_down_action(long key, short count, int alt_key, int ctrl_key,

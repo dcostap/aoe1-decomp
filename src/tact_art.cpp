@@ -68,8 +68,7 @@ void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
         break;
     case 4: {
         sub_actions->delete_list();
-        RGE_Action_Move_To* move = new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f,
-            task->move_sprite);
+        RGE_Action_Move_To* move = new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f, task->move_sprite);
         if (move != 0) {
             sub_actions->add_action(move);
             this->set_state(6);
@@ -82,8 +81,7 @@ void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
         target_y = target_obj->world_y;
         target_z = target_obj->world_z;
         target_obj = 0;
-        RGE_Action_Move_To* move = new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f,
-            task->move_sprite);
+        RGE_Action_Move_To* move = new RGE_Action_Move_To(this->obj, target_x, target_y, target_z, 0.0f, task->move_sprite);
         if (move != 0) {
             sub_actions->add_action(move);
             this->set_state(6);

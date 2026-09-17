@@ -41,8 +41,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    if (this->background->setup(this->render_area, this, 0, 0,
-                                0, 0, backgroundName, -1, 0, 1) == 0) {
+    if (this->background->setup(this->render_area, this, 0, 0, 0, 0, backgroundName, -1, 0, 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -50,9 +49,8 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     backgroundPanel = this->background;
     secondHeight = this->pnl_hgt * 480 / 480;
     secondWidth = this->pnl_wid * 640 / 640;
-    backgroundPanel->set_positioning(
-        TPanel::PositionCentered, 0, 0, 0, 0, secondWidth, secondWidth,
-        secondHeight, secondHeight, 0, 0, 0, 0);
+    backgroundPanel->set_positioning(TPanel::PositionCentered, 0, 0, 0, 0, secondWidth, secondWidth,
+                                     secondHeight, secondHeight, 0, 0, 0, 0);
 
     font = rge_base_game->get_font(1);
     this->title = new TTextPanel;
@@ -60,14 +58,9 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    this->title->setup(
-        this->render_area, this->background,
-        this->pnl_wid * 20 / 640,
-        this->pnl_hgt * 20 / 480,
-        this->pnl_wid * 600 / 640,
-        this->pnl_hgt * 30 / 480,
-        font->font, font->font_wid, font->font_hgt,
-        0, 0, 0, 0, 0, 0, "Civilization Selection");
+    this->title->setup(this->render_area, this->background, this->pnl_wid * 20 / 640, this->pnl_hgt * 20 / 480,
+                       this->pnl_wid * 600 / 640, this->pnl_hgt * 30 / 480, font->font, font->font_wid, font->font_hgt,
+                       0, 0, 0, 0, 0, 0, "Civilization Selection");
 
     buttonSound = rge_base_game->get_sound(0);
     font = rge_base_game->get_font(0);
@@ -83,17 +76,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
             return;
         }
 
-        (*button)->setup(
-            this->render_area, this->background,
-            this->pnl_wid * 20 / 640 + secondWidth * this->pnl_wid / 640,
-            this->pnl_hgt * 50 / 480 +
-                secondHeight * this->pnl_hgt * 115 / 480,
-            this->pnl_wid * 200 / 640,
-            this->pnl_hgt * 110 / 480,
-            TButtonPanel::DrawText, buttonSound,
-            TButtonPanel::NotifyAction, 0);
-        (*button)->set_text_info(this->tribeName(i), font->font,
-                                 font->font_wid, font->font_hgt, -1, -1);
+        (*button)->setup(this->render_area, this->background, this->pnl_wid * 20 / 640 + secondWidth * this->pnl_wid / 640,
+                         this->pnl_hgt * 50 / 480 + secondHeight * this->pnl_hgt * 115 / 480, this->pnl_wid * 200 / 640,
+                         this->pnl_hgt * 110 / 480, TButtonPanel::DrawText, buttonSound, TButtonPanel::NotifyAction, 0);
+        (*button)->set_text_info(this->tribeName(i), font->font, font->font_wid, font->font_hgt, -1, -1);
 
         if (i == 2 || i == 5) {
             secondHeight = -1;
@@ -110,48 +96,30 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->error_code = 1;
         return;
     }
-    this->tribeText->setup(
-        this->render_area, this->background,
-        this->pnl_wid * 20 / 640,
-        this->pnl_hgt * 400 / 480,
-        this->pnl_wid * 510 / 640,
-        this->pnl_hgt * 60 / 480,
-        font->font, font->font_wid, font->font_hgt,
-        0, 0, 0, 0, 0, 0, "");
-    this->tribeText->set_alignment(TTextPanel::AlignTop,
-                                   TTextPanel::AlignWordwrap);
+    this->tribeText->setup(this->render_area, this->background, this->pnl_wid * 20 / 640, this->pnl_hgt * 400 / 480,
+                           this->pnl_wid * 510 / 640, this->pnl_hgt * 60 / 480, font->font, font->font_wid, font->font_hgt,
+                           0, 0, 0, 0, 0, 0, "");
+    this->tribeText->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignWordwrap);
 
     this->okButton = new TButtonPanel;
     if (this->okButton == 0) {
         this->error_code = 1;
         return;
     }
-    this->okButton->setup(
-        this->render_area, this->background,
-        this->pnl_wid * 500 / 640,
-        this->pnl_hgt * 400 / 480,
-        this->pnl_wid * 120 / 640,
-        this->pnl_hgt * 30 / 480,
-        TButtonPanel::DrawText, buttonSound,
-        TButtonPanel::NotifyAction, 0);
-    this->okButton->set_text_info("Previous Screen", font->font,
-                                  font->font_wid, font->font_hgt, -1, -1);
+    this->okButton->setup(this->render_area, this->background, this->pnl_wid * 500 / 640, this->pnl_hgt * 400 / 480,
+                          this->pnl_wid * 120 / 640, this->pnl_hgt * 30 / 480, TButtonPanel::DrawText, buttonSound,
+                          TButtonPanel::NotifyAction, 0);
+    this->okButton->set_text_info("Previous Screen", font->font, font->font_wid, font->font_hgt, -1, -1);
 
     this->cancelButton = new TButtonPanel;
     if (this->cancelButton == 0) {
         this->error_code = 1;
         return;
     }
-    this->cancelButton->setup(
-        this->render_area, this->background,
-        this->pnl_wid * 500 / 640,
-        this->pnl_hgt * 440 / 480,
-        this->pnl_wid * 120 / 640,
-        this->pnl_hgt * 30 / 480,
-        TButtonPanel::DrawText, buttonSound,
-        TButtonPanel::NotifyAction, 0);
-    this->cancelButton->set_text_info("Cancel", font->font,
-                                      font->font_wid, font->font_hgt, -1, -1);
+    this->cancelButton->setup(this->render_area, this->background, this->pnl_wid * 500 / 640, this->pnl_hgt * 440 / 480,
+                              this->pnl_wid * 120 / 640, this->pnl_hgt * 30 / 480, TButtonPanel::DrawText, buttonSound,
+                              TButtonPanel::NotifyAction, 0);
+    this->cancelButton->set_text_info("Cancel", font->font, font->font_wid, font->font_hgt, -1, -1);
 
     this->set_curr_child(this->background);
     this->background->set_curr_child(this->tribeButton[0]);

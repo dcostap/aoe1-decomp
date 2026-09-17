@@ -11,8 +11,7 @@ extern char s_pnl_txt__draw[];
 extern char s_pnl_txt__word_wrap_append[];
 extern char s_pnl_txt__get_text_rect[];
 extern "C" __declspec(dllimport) int __stdcall CompareStringA(
-    unsigned long locale, unsigned long flags, const char* string1,
-    int length1, const char* string2, int length2);
+    unsigned long locale, unsigned long flags, const char* string1, int length1, const char* string2, int length2);
 
 TTextPanel::TTextPanel()
     : list(0),
@@ -158,11 +157,8 @@ void TTextPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
             y = this->pnl_y;
         }
 
-        this->scbar_panel->set_fixed_position(
-            x + this->full_width - this->scbar_width,
-            y,
-            this->scbar_width,
-            this->pnl_hgt);
+        this->scbar_panel->set_fixed_position(x + this->full_width - this->scbar_width, y, this->scbar_width,
+                                              this->pnl_hgt);
     }
 
     this->calc_draw_info(1);
@@ -180,11 +176,7 @@ void TTextPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
             if (clip_rect2.right > this->clip_rect.right) {
                 clip_rect2.right = this->clip_rect.right;
             }
-            this->clip_rgn2 = CreateRectRgn(
-                clip_rect2.left,
-                clip_rect2.top,
-                clip_rect2.right,
-                clip_rect2.bottom);
+            this->clip_rgn2 = CreateRectRgn(clip_rect2.left, clip_rect2.top, clip_rect2.right, clip_rect2.bottom);
         }
     }
 }
@@ -393,15 +385,12 @@ int TTextPanel::word_wrap_append(char* text_in) {
         }
 
         memset(temp_text, 0, 256);
-        _mbsncpy(temp_text,
-                  (const unsigned char*)text, chars);
+        _mbsncpy(temp_text, (const unsigned char*)text, chars);
         if (found_linefeed) {
-            _mbscat(temp_text,
-                     (const unsigned char*)" ");
+            _mbscat(temp_text, (const unsigned char*)" ");
         }
         if (found_return) {
-            _mbscat(temp_text,
-                     (const unsigned char*)" ");
+            _mbscat(temp_text, (const unsigned char*)" ");
         }
         if (found_bad_return) {
             unsigned char* p = temp_text;
@@ -631,9 +620,7 @@ void TTextPanel::calc_draw_info(int update_scbar) {
 
     if (this->scbar_panel != 0) {
         if (update_scbar != 0) {
-            this->scbar_panel->set_list_len(
-                (int)number_lines - (int)visible_lines + 1,
-                (int)this->top_line);
+            this->scbar_panel->set_list_len((int)number_lines - (int)visible_lines + 1, (int)this->top_line);
         }
 
         if (this->auto_scbar != 0) {
@@ -710,31 +697,27 @@ long TTextPanel::key_down_action(long key, short count, int alt_key,
     case 0x28:
         this->scroll(2, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(key, count, alt_key,
-                                                 ctrl_key, shift_key);
+            this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
             return 1;
         }
         return 1;
     case 0x26:
         this->scroll(3, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(key, count, alt_key,
-                                                 ctrl_key, shift_key);
+            this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
             return 1;
         }
         return 1;
     case 0x22:
         this->scroll(4, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(key, count, alt_key,
-                                                 ctrl_key, shift_key);
+            this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
         }
         return 1;
     case 0x21:
         this->scroll(5, 0, 1);
         if (this->parent_panel != 0 && this->tab_stop != 0) {
-            this->parent_panel->key_down_action(key, count, alt_key,
-                                                 ctrl_key, shift_key);
+            this->parent_panel->key_down_action(key, count, alt_key, ctrl_key, shift_key);
         }
         return 1;
     case 0x24:
@@ -791,12 +774,9 @@ void TTextPanel::draw() {
              line <= this->bot_line; ++line, ++line_index) {
             if ((this->tab_stop != 0 && this->have_focus != 0) ||
                 this->mouse_captured != 0) {
-                this->draw_line(dc, line_index, line,
-                                this->highlightTextColor1,
-                                this->highlightTextColor2);
+                this->draw_line(dc, line_index, line, this->highlightTextColor1, this->highlightTextColor2);
             } else {
-                this->draw_line(dc, line_index, line,
-                                this->text_color1, this->text_color2);
+                this->draw_line(dc, line_index, line, this->text_color1, this->text_color2);
             }
         }
 
@@ -844,10 +824,7 @@ void TTextPanel::draw_background() {
                     do {
                         int draw_y = row * this->back_pic_hgt + this->pnl_y;
                         int draw_x = col * this->back_pic_wid + this->pnl_x;
-                        this->back_pic->shape_draw(
-                            this->render_area,
-                            draw_x, draw_y,
-                            0, 0, 0);
+                        this->back_pic->shape_draw(this->render_area, draw_x, draw_y, 0, 0, 0);
                         col++;
                         col_count--;
                     } while (col_count != 0);
@@ -865,11 +842,8 @@ void TTextPanel::draw_background() {
         if (this->render_area->Lock("pnl_txt::draw_background2", 1) == 0) {
             return;
         }
-        this->render_area->FillRect(
-            this->pnl_x, this->pnl_y,
-            this->pnl_x + this->pnl_wid - 1,
-            this->pnl_y + this->pnl_hgt - 1,
-            this->back_color);
+        this->render_area->FillRect(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                    this->pnl_y + this->pnl_hgt - 1, this->back_color);
         this->render_area->Unlock("pnl_txt::draw_background2");
         return;
     }
@@ -890,59 +864,36 @@ void TTextPanel::draw_border() {
         if (this->render_area->Lock("pnl_txt::draw_border", 1) != 0) {
             switch (this->bevel_type) {
             case 1:
-                this->render_area->DrawRect(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->outline_color);
+                this->render_area->DrawRect(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                            this->pnl_y + this->pnl_hgt - 1, this->outline_color);
                 break;
             case 2:
-                this->render_area->DrawBevel(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color6, this->bevel_color1);
+                this->render_area->DrawBevel(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                             this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color1);
                 break;
             case 3:
-                this->render_area->DrawBevel2(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color6, this->bevel_color5,
-                    this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel2(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color5,
+                                              this->bevel_color2, this->bevel_color1);
                 break;
             case 4:
-                this->render_area->DrawBevel3(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color6, this->bevel_color5,
-                    this->bevel_color4, this->bevel_color3,
-                    this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color5,
+                                              this->bevel_color4, this->bevel_color3, this->bevel_color2, this->bevel_color1);
                 break;
             case 5:
-                this->render_area->DrawBevel(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1, this->bevel_color6);
+                this->render_area->DrawBevel(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                             this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color6);
                 break;
             case 6:
-                this->render_area->DrawBevel2(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1, this->bevel_color2,
-                    this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel2(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color2,
+                                              this->bevel_color5, this->bevel_color6);
                 break;
             case 7:
-                this->render_area->DrawBevel3(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1, this->bevel_color2,
-                    this->bevel_color3, this->bevel_color4,
-                    this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color2,
+                                              this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
                 break;
             }
         }
@@ -999,8 +950,7 @@ void TTextPanel::draw_line(void* dc, short draw_row, short text_line,
     case 1:
         SetTextColor(dc, color1);
         if (text != 0) {
-            TextOutA(dc, text_x - 1, text_y + 1,
-                     text, (int)text_len);
+            TextOutA(dc, text_x - 1, text_y + 1, text, (int)text_len);
         }
         SetTextColor(dc, color2);
         if (text != 0) {
@@ -1010,8 +960,7 @@ void TTextPanel::draw_line(void* dc, short draw_row, short text_line,
     case 2:
         SetTextColor(dc, color2);
         if (text != 0) {
-            TextOutA(dc, text_x - 1, text_y + 1,
-                     text, (int)text_len);
+            TextOutA(dc, text_x - 1, text_y + 1, text, (int)text_len);
         }
         SetTextColor(dc, color1);
         if (text != 0) {
@@ -1033,24 +982,19 @@ void TTextPanel::draw_line(void* dc, short draw_row, short text_line,
     switch (panel->text_style) {
     case 0:
         SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x, text_y,
-                 text2, (int)text2_len);
+        TextOutA(dc, second_text_x, text_y, text2, (int)text2_len);
         return;
     case 1:
         SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x - 1, text_y + 1,
-                 text2, (int)text2_len);
+        TextOutA(dc, second_text_x - 1, text_y + 1, text2, (int)text2_len);
         SetTextColor(dc, color2);
-        TextOutA(dc, second_text_x, text_y,
-                 text2, (int)text2_len);
+        TextOutA(dc, second_text_x, text_y, text2, (int)text2_len);
         return;
     case 2:
         SetTextColor(dc, color2);
-        TextOutA(dc, second_text_x - 1, text_y + 1,
-                 text2, (int)text2_len);
+        TextOutA(dc, second_text_x - 1, text_y + 1, text2, (int)text2_len);
         SetTextColor(dc, color1);
-        TextOutA(dc, second_text_x, text_y,
-                 text2, (int)text2_len);
+        TextOutA(dc, second_text_x, text_y, text2, (int)text2_len);
         return;
     default:
         return;
@@ -1081,8 +1025,7 @@ void TTextPanel::calc_line_pos(void* dc, short draw_row, short text_line,
                 GetTextExtentPoint32A((HDC)dc, text, len, &text_size);
             } else {
                 memset(temp_text2, 0, sizeof(temp_text2));
-                _mbsncpy(temp_text2, (const unsigned char*)text,
-                         this->cur_col);
+                _mbsncpy(temp_text2, (const unsigned char*)text, this->cur_col);
                 len = (short)strlen((const char*)temp_text2);
                 GetTextExtentPoint32A((HDC)dc, text, len, &text_size);
             }
@@ -1269,9 +1212,7 @@ int TTextPanel::insert_line(long line_in, char* text_in, char* text2_in, long id
     } else if (this->sorted != 0) {
         TextNode* previous = 0;
         while (node != 0) {
-            if (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                               new_node->text, -1,
-                               node->text, -1) == 1) {
+            if (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE, new_node->text, -1, node->text, -1) == 1) {
                 new_node->next_node = node;
                 if (previous == 0) {
                     this->list = new_node;

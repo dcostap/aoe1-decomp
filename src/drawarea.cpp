@@ -289,15 +289,13 @@ int TDrawSystem::Init(void* inst_in, void* wnd_in, void* pal_in,
             return 0;
         }
     } else {
-        if (this->DirDraw->SetCooperativeLevel(
-                this->Wnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE) != 0) {
+        if (this->DirDraw->SetCooperativeLevel(this->Wnd, DDSCL_FULLSCREEN | DDSCL_EXCLUSIVE) != 0) {
             this->ErrorCode = 1;
             return 0;
         }
 
         this->ColorBits = 8;
-        if (this->DirDraw->SetDisplayMode(this->ScreenWidth,
-                                          this->ScreenHeight, 8) != 0) {
+        if (this->DirDraw->SetDisplayMode(this->ScreenWidth, this->ScreenHeight, 8) != 0) {
             this->ErrorCode = 1;
             return 0;
         }
@@ -322,9 +320,7 @@ int TDrawSystem::Init(void* inst_in, void* wnd_in, void* pal_in,
         this->palette[index].peFlags = 0;
     }
 
-    if (this->DirDraw->CreatePalette(
-            DDPCAPS_8BIT | DDPCAPS_ALLOW256, color_table,
-                                     &this->DirDrawPal, 0) != 0) {
+    if (this->DirDraw->CreatePalette(DDPCAPS_8BIT | DDPCAPS_ALLOW256, color_table, &this->DirDrawPal, 0) != 0) {
         this->ErrorCode = 1;
         return 0;
     }
@@ -359,8 +355,7 @@ int TDrawSystem::Init(void* inst_in, void* wnd_in, void* pal_in,
     if (this->ScreenMode == 2) {
         ddbltfx.dwSize = sizeof(ddbltfx);
         ddbltfx.dwFillColor = 0;
-        this->PrimarySurface->Blt(0, 0, 0,
-                                  DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
+        this->PrimarySurface->Blt(0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
     }
 
     return 1;
@@ -377,8 +372,7 @@ int TDrawSystem::SetDisplaySize(long wid_in, long hgt_in, int color_bits) {
     system_ignore_size_messages = 1;
     ddbltfx.dwSize = sizeof(ddbltfx);
     ddbltfx.dwFillColor = 0;
-    this->PrimarySurface->Blt(0, 0, 0,
-                              DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
+    this->PrimarySurface->Blt(0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
     save_wid = this->ScreenWidth;
     save_hgt = this->ScreenHeight;
     this->ScreenWidth = wid_in;
@@ -455,9 +449,7 @@ unsigned char TDrawSystem::CheckSurfaces() {
             result = 2;
             ddbltfx.dwSize = sizeof(ddbltfx);
             ddbltfx.dwFillColor = 0;
-            this->PrimarySurface->Blt(0, 0, 0,
-                                      DDBLT_WAIT | DDBLT_COLORFILL,
-                                      &ddbltfx);
+            this->PrimarySurface->Blt(0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
         }
 
         DrawAreaNode* node = this->DrawAreaList;
@@ -514,9 +506,7 @@ int TDrawSystem::CreateSurfaces() {
             if (this->ScreenMode == 2) {
                 ddbltfx.dwSize = sizeof(ddbltfx);
                 ddbltfx.dwFillColor = 0;
-                this->PrimarySurface->Blt(0, 0, 0,
-                                          DDBLT_WAIT | DDBLT_COLORFILL,
-                                          &ddbltfx);
+                this->PrimarySurface->Blt(0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
             }
             if (this->ColorBits == 8) {
                 if (this->PrimarySurface->SetPalette(this->DirDrawPal)) return 0;
@@ -644,8 +634,7 @@ void TDrawSystem::Paint(tagRECT* rect) {
         src.bottom = bottom + 1;
     }
 
-    this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src,
-                              DDBLT_WAIT, 0);
+    this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface, &src, DDBLT_WAIT, 0);
 }
 
 int TDrawSystem::GetIsLostErrorNum(long ddrval) {
@@ -1103,9 +1092,7 @@ unsigned char TDrawArea::CheckSurface() {
 
             ddbltfx.dwSize = sizeof(ddbltfx);
             ddbltfx.dwFillColor = 0;
-            this->DrawSurface->Blt(0, 0, 0,
-                                   DDBLT_WAIT | DDBLT_COLORFILL,
-                                   &ddbltfx);
+            this->DrawSurface->Blt(0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
             this->Restored = 1;
             return 2;
         }
@@ -1249,18 +1236,15 @@ void TDrawArea::SetSize(long wid_in, long hgt_in, int ExtendSurface) {
                 ddsd.dwHeight = surface_height;
                 ddsd.dwWidth = this->Width;
 
-                if (this->DrawSystem->DirDraw->CreateSurface(
-                        &ddsd, &this->DrawSurface, 0) == 0) {
+                if (this->DrawSystem->DirDraw->CreateSurface(&ddsd, &this->DrawSurface, 0) == 0) {
                     this->SurfaceDesc.dwSize = sizeof(this->SurfaceDesc);
-                    long hr = this->DrawSurface->GetSurfaceDesc(
-                        &this->SurfaceDesc);
+                    long hr = this->DrawSurface->GetSurfaceDesc(&this->SurfaceDesc);
                     if (hr == 0) {
                         this->SetInfo();
                         this->SetAccessOffsets();
                         ddbltfx.dwSize = sizeof(ddbltfx);
                         ddbltfx.dwFillColor = 0;
-                        this->DrawSurface->Blt(
-                            0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
+                        this->DrawSurface->Blt(0, 0, 0, DDBLT_WAIT | DDBLT_COLORFILL, &ddbltfx);
                     } else {
                         this->DrawSystem->GetCreateErrorNum(hr);
                     }
@@ -1511,8 +1495,7 @@ void TDrawArea::SetClipRect(tagRECT* rect) {
         this->ClipRect.bottom = this->Height - 1;
     }
 
-    this->SetClipRect(this->ClipRect.left, this->ClipRect.top,
-                      this->ClipRect.right, this->ClipRect.bottom);
+    this->SetClipRect(this->ClipRect.left, this->ClipRect.top, this->ClipRect.right, this->ClipRect.bottom);
 }
 
 void TDrawArea::SetClipRect(long x1, long y1, long x2, long y2) {
@@ -1537,8 +1520,7 @@ void TDrawArea::SetClipRect(long x1, long y1, long x2, long y2) {
 
     this->SpanList->ResetAll();
     span_list = this->SpanList;
-    span_list->SetSpanRegions(this->ClipRect.left, this->ClipRect.top,
-                              this->ClipRect.right, this->ClipRect.bottom);
+    span_list->SetSpanRegions(this->ClipRect.left, this->ClipRect.top, this->ClipRect.right, this->ClipRect.bottom);
 
     int y = this->ClipRect.top;
     if (y <= this->ClipRect.bottom) {
@@ -1584,15 +1566,11 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
             height = this->Height - src_y;
 
         if (this->UseTrans != 0 && allow_trans != 0) {
-            TransDibBlt(dest_area->BitmapInfo, dest_area->Bits,
-                        &dest_area->ClipRect, dest_x, dest_y, width, height,
-                        this->BitmapInfo, this->Bits, 0, src_x, src_y, width,
-                        height, 1, 0, 0, this->TransColor);
+            TransDibBlt(dest_area->BitmapInfo, dest_area->Bits, &dest_area->ClipRect, dest_x, dest_y, width, height,
+                        this->BitmapInfo, this->Bits, 0, src_x, src_y, width, height, 1, 0, 0, this->TransColor);
         } else {
-            DibBlt(dest_area->BitmapInfo, dest_area->Bits,
-                   &dest_area->ClipRect, dest_x, dest_y, width, height,
-                   this->BitmapInfo, this->Bits, src_x, src_y, width, height,
-                   1, 0, 0);
+            DibBlt(dest_area->BitmapInfo, dest_area->Bits, &dest_area->ClipRect, dest_x, dest_y, width, height,
+                   this->BitmapInfo, this->Bits, src_x, src_y, width, height, 1, 0, 0);
         }
         err = 0;
         return;
@@ -1616,8 +1594,7 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
 
     ++src_rect2.right;
     ++src_rect2.bottom;
-    SetRect(&dest_rect2, dest_x, dest_y,
-            dest_x + src_rect2.right - src_rect2.left,
+    SetRect(&dest_rect2, dest_x, dest_y, dest_x + src_rect2.right - src_rect2.left,
             dest_y + src_rect2.bottom - src_rect2.top);
 
     if (src_rect2.left < 0) {
@@ -1670,12 +1647,9 @@ void TDrawArea::Copy(TDrawArea* dest_area, long dest_x, long dest_y,
 
     ddrval = 1;
     if (this->UseTrans != 0 && allow_trans != 0) {
-        ddrval = dest_area->DrawSurface->Blt(
-            &dest_rect2, this->DrawSurface, &src_rect2,
-            DDBLT_WAIT | DDBLT_KEYSRC, 0);
+        ddrval = dest_area->DrawSurface->Blt(&dest_rect2, this->DrawSurface, &src_rect2, DDBLT_WAIT | DDBLT_KEYSRC, 0);
     } else {
-        ddrval = dest_area->DrawSurface->Blt(
-            &dest_rect2, this->DrawSurface, &src_rect2, DDBLT_WAIT, 0);
+        ddrval = dest_area->DrawSurface->Blt(&dest_rect2, this->DrawSurface, &src_rect2, DDBLT_WAIT, 0);
     }
 
     err = 0;
@@ -2288,9 +2262,7 @@ void TDrawArea::take_snapshot(char* filespec, int& index_no) {
     }
 
     unsigned char* row = (unsigned char*)malloc(row_width);
-    int output_file = _open(BMPFile,
-                            _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-                            _S_IREAD | _S_IWRITE);
+    int output_file = _open(BMPFile, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (output_file != -1) {
         write(output_file, &bmFH, sizeof(bmFH));
         write(output_file, &bmIH, sizeof(bmIH));

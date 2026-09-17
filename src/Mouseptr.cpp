@@ -62,8 +62,7 @@ TMousePointer::TMousePointer(int MouseModeIn) {
         this->cursors[i] = 0;
     }
 
-    this->LastDrawTime = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 100) - 36;
+    this->LastDrawTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 100) - 36;
     this->save_area_valid = 0;
     this->LastddError = 0;
 }
@@ -257,13 +256,10 @@ int TMousePointer::LoadCursors(char* cursor_file_name, int resId, int Reload) {
                 (*pp)->SetTrans(1, (unsigned char)0);
                 if (cur < this->Num_Cursors) {
                     if ((*pp)->Lock("mouseptr::LoadCursors", 1)) {
-                        (*pp)->FillRect(0, 0, this->Max_CX, this->Max_CY,
-                                        (unsigned char)0);
+                        (*pp)->FillRect(0, 0, this->Max_CX, this->Max_CY, (unsigned char)0);
                         Shape_Info* si =
                             (Shape_Info*)((char*)this->Cursor_Shape->shape_info + off);
-                        this->Cursor_Shape->shape_draw(
-                            *pp, si->Hotspot_X, si->Hotspot_Y, cur,
-                            (unsigned char)0, 0);
+                        this->Cursor_Shape->shape_draw(*pp, si->Hotspot_X, si->Hotspot_Y, cur, (unsigned char)0, 0);
                         (*pp)->Unlock("mouseptr::LoadCursors");
                     } else {
                         LoadOk = 0;
@@ -311,8 +307,7 @@ int TMousePointer::create_surfaces() {
         if (this->save_area == 0) {
             return 0;
         }
-        if (this->save_area->Init(this->render_area->DrawSystem,
-                                  this->Max_CX, this->Max_CY, 0, 0) == 0) {
+        if (this->save_area->Init(this->render_area->DrawSystem, this->Max_CX, this->Max_CY, 0, 0) == 0) {
             return 0;
         }
     }
@@ -325,8 +320,7 @@ int TMousePointer::create_surfaces() {
                 if (this->cursors[i] == 0) {
                     return 0;
                 }
-                if (this->cursors[i]->Init(this->render_area->DrawSystem,
-                                           this->Max_CX, this->Max_CY, 0, 0) == 0) {
+                if (this->cursors[i]->Init(this->render_area->DrawSystem, this->Max_CX, this->Max_CY, 0, 0) == 0) {
                     return 0;
                 }
             }
@@ -425,8 +419,7 @@ void TMousePointer::draw(int dMode) {
     IDirectDrawClipper* lplpDDClipper;
     lplpDDClipper = 0;
     if (this->active != 0 && this->custom_draw != 0) {
-        ulong t = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 739);
+        ulong t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 739);
         if (this->GameMode != 0 && this->GameEnabled != 0 && dMode == 0) {
             if (t - this->LastDrawTime < 0x22)
                 return;
@@ -435,9 +428,8 @@ void TMousePointer::draw(int dMode) {
             this->LastDrawTime = t;
             if (this->save_area_valid != 0 &&
                 this->restoreSurface != this->PrimarySurface) {
-                long err = this->restoreSurface->Blt(
-                    &this->restore_rect, this->save_area->DrawSurface,
-                    &this->save_rect, DDBLT_WAIT, 0);
+                long err = this->restoreSurface->Blt(&this->restore_rect, this->save_area->DrawSurface,
+                                                     &this->save_rect, DDBLT_WAIT, 0);
                 if (err != 0) {
                     this->LastddError = err;
                     return;
@@ -445,9 +437,8 @@ void TMousePointer::draw(int dMode) {
             }
             if (this->MouseOnScreen != 0) {
                 RECT* ptVar1 = &this->mouse_rect;
-                long err = this->save_area->DrawSurface->Blt(
-                    &this->new_save_rect, this->renderSurface, ptVar1,
-                    DDBLT_WAIT, 0);
+                long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->renderSurface, ptVar1,
+                                                             DDBLT_WAIT, 0);
                 if (err != 0) {
                     this->LastddError = err;
                     return;
@@ -475,26 +466,20 @@ void TMousePointer::draw(int dMode) {
                     }
                 }
                 if (this->Mouse_Mode == 1) {
-                    uchar* p = this->render_area->Lock(
-                        "mouseptr::draw", 1);
+                    uchar* p = this->render_area->Lock("mouseptr::draw", 1);
                     if (p != 0) {
                         long f = this->next_facet;
                         Shape_Info* si = this->Cursor_Shape->shape_info;
-                        this->Cursor_Shape->shape_draw(
-                            this->render_area,
-                            si[f].Hotspot_X + ptVar1->left,
-                            si[f].Hotspot_Y + this->mouse_rect.top,
-                            f, 0, 0);
+                        this->Cursor_Shape->shape_draw(this->render_area, si[f].Hotspot_X + ptVar1->left,
+                                                       si[f].Hotspot_Y + this->mouse_rect.top, f, 0, 0);
                         this->render_area->Unlock("mouseptr::draw");
                     }
                 }
                 if (this->Mouse_Mode == 0) {
                     this->cursors[this->next_facet]->SetTrans(1, 0);
-                    err = this->renderSurface->BltFast(
-                        ptVar1->left, this->mouse_rect.top,
-                        this->cursors[this->next_facet]->DrawSurface,
-                        &this->cursor_rect,
-                        DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
+                    err = this->renderSurface->BltFast(ptVar1->left, this->mouse_rect.top,
+                                                       this->cursors[this->next_facet]->DrawSurface, &this->cursor_rect,
+                                                       DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
                     if (err != 0) {
                         this->LastddError = err;
                         return;
@@ -531,8 +516,7 @@ void TMousePointer::erase() {
     if (restoreSurface == PrimarySurface)
         return;
 
-    long result = restoreSurface->Blt(
-        &restore_rect, save_area->DrawSurface, &save_rect, DDBLT_WAIT, 0);
+    long result = restoreSurface->Blt(&restore_rect, save_area->DrawSurface, &save_rect, DDBLT_WAIT, 0);
 
     if (result != 0) {
         LastddError = result;
@@ -626,14 +610,12 @@ void TMousePointer::Poll() {
     lplpDDClipper = 0;
     if (this->active != 0 && this->custom_draw != 0 &&
         this->GameMode != 0 && this->GameEnabled != 0) {
-        ulong t = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 1070);
+        ulong t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 1070);
         if (t - this->LastDrawTime >= 0x22) {
             if (this->update_mouse_position() != 0) {
                 this->LastDrawTime = t;
                 if (this->Mouse_Mode == 0) {
-                    long err = this->PrimarySurface->GetClipper(
-                        &lplpDDClipper);
+                    long err = this->PrimarySurface->GetClipper(&lplpDDClipper);
                     if (err == (long)0x88760238) {
                         err = 0;
                         lplpDDClipper = 0;
@@ -651,17 +633,15 @@ void TMousePointer::Poll() {
                     }
                 }
                 if (this->save_area_valid != 0) {
-                    long err = this->restoreSurface->Blt(
-                        &this->restore_rect, this->save_area->DrawSurface,
-                    &this->save_rect, DDBLT_WAIT, 0);
+                    long err = this->restoreSurface->Blt(&this->restore_rect, this->save_area->DrawSurface,
+                                                         &this->save_rect, DDBLT_WAIT, 0);
                     if (err != 0) {
                         this->LastddError = err;
                         return;
                     }
                     if (this->restoreSurface != this->PrimarySurface) {
-                        err = this->PrimarySurface->Blt(
-                            &this->restore_rect, this->save_area->DrawSurface,
-                        &this->save_rect, DDBLT_WAIT, 0);
+                        err = this->PrimarySurface->Blt(&this->restore_rect, this->save_area->DrawSurface,
+                                                        &this->save_rect, DDBLT_WAIT, 0);
                         if (err != 0) {
                             this->LastddError = err;
                             return;
@@ -670,9 +650,8 @@ void TMousePointer::Poll() {
                 }
                 if (this->MouseOnScreen != 0) {
                     RECT* ptVar1 = &this->mouse_rect;
-                    long err = this->save_area->DrawSurface->Blt(
-                        &this->new_save_rect, this->PrimarySurface, ptVar1,
-                        DDBLT_WAIT, 0);
+                    long err = this->save_area->DrawSurface->Blt(&this->new_save_rect, this->PrimarySurface, ptVar1,
+                                                                 DDBLT_WAIT, 0);
                     if (err != 0) {
                         this->LastddError = err;
                         this->LastddError = this->GetDDBltError(err);
@@ -684,28 +663,22 @@ void TMousePointer::Poll() {
                     this->save_area_valid = 1;
                     if (this->Mouse_Mode == 0) {
                         this->cursors[this->next_facet]->SetTrans(1, 0);
-                        err = this->PrimarySurface->BltFast(
-                            ptVar1->left, this->mouse_rect.top,
-                            this->cursors[this->next_facet]->DrawSurface,
-                            &this->cursor_rect,
-                            DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
+                        err = this->PrimarySurface->BltFast(ptVar1->left, this->mouse_rect.top,
+                                                            this->cursors[this->next_facet]->DrawSurface, &this->cursor_rect,
+                                                            DDBLTFAST_SRCCOLORKEY | DDBLTFAST_WAIT);
                         if (err != 0) {
                             this->LastddError = err;
                             return;
                         }
                     }
                     if (this->Mouse_Mode == 1) {
-                        uchar* p = this->primary_area->Lock(
-                            "mouseptr::poll", 1);
+                        uchar* p = this->primary_area->Lock("mouseptr::poll", 1);
                         if (p != 0) {
                             Shape_Info* si =
                                 this->Cursor_Shape->shape_info +
                                 this->next_facet;
-                            this->Cursor_Shape->shape_draw(
-                                this->primary_area,
-                                si->Hotspot_X + ptVar1->left,
-                                this->mouse_rect.top + si->Hotspot_Y,
-                                this->next_facet, 0, 0);
+                            this->Cursor_Shape->shape_draw(this->primary_area, si->Hotspot_X + ptVar1->left,
+                                                           this->mouse_rect.top + si->Hotspot_Y, this->next_facet, 0, 0);
                             this->primary_area->Unlock("mouseptr::poll");
                         }
                     }
@@ -714,8 +687,7 @@ void TMousePointer::Poll() {
                     this->save_area_valid = 0;
                 }
                 if (this->Mouse_Mode == 0 && lplpDDClipper != 0) {
-                    long err = this->PrimarySurface->SetClipper(
-                        lplpDDClipper);
+                    long err = this->PrimarySurface->SetClipper(lplpDDClipper);
                     if (err != 0) {
                         this->LastddError = err;
                         return;

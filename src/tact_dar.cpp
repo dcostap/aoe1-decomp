@@ -17,8 +17,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     int infile, RGE_Action_Object* obj_in)
     : RGE_Action(infile, obj_in, 1) {
     this->action_type = 0x6C;
-    this->flags = (unsigned char*)calloc(
-        this->obj->owner->world->player_num, 1);
+    this->flags = (unsigned char*)calloc(this->obj->owner->world->player_num, 1);
     rge_read(infile, this->flags, this->obj->owner->world->player_num);
 }
 
@@ -28,8 +27,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     this->task = task_in;
     this->action_type = 0x6C;
     RGE_Action::set_target_obj(target_obj_in);
-    this->flags = (unsigned char*)calloc(
-        this->obj->owner->world->player_num, 1);
+    this->flags = (unsigned char*)calloc(this->obj->owner->world->player_num, 1);
 }
 
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
@@ -41,8 +39,7 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     this->target_x = x;
     this->target_y = y;
     this->target_z = z;
-    this->flags = (unsigned char*)calloc(
-        this->obj->owner->world->player_num, 1);
+    this->flags = (unsigned char*)calloc(this->obj->owner->world->player_num, 1);
 }
 
 void TRIBE_Action_Discovery_Artifact::save(int outfile) {
@@ -122,11 +119,8 @@ void TRIBE_Action_Discovery_Artifact::check_objects() {
                 if (node->node->owner != this->obj->owner &&
                     this->flags[node->node->owner->id] == 0) {
                     this->flags[node->node->owner->id] = 1;
-                    node->node->owner->master_objects[162]->make_new_obj(
-                        node->node->owner,
-                        node->node->world_x,
-                        node->node->world_y,
-                        node->node->world_z);
+                    node->node->owner->master_objects[162]->make_new_obj(node->node->owner, node->node->world_x,
+                                                                         node->node->world_y, node->node->world_z);
                 }
                 node = node->next;
             }

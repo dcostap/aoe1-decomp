@@ -31,10 +31,8 @@ RGE_Campaign::RGE_Campaign(char* in_filename) {
     if (handle >= 0) {
         read(handle, this, 264);
         if (this->campaign_header.scenario_num > 0) {
-            this->scenario_offsets = (RGE_Scenario_Offset*)calloc(
-                this->campaign_header.scenario_num, 520);
-            read(handle, this->scenario_offsets,
-                this->campaign_header.scenario_num * 520);
+            this->scenario_offsets = (RGE_Scenario_Offset*)calloc(this->campaign_header.scenario_num, 520);
+            read(handle, this->scenario_offsets, this->campaign_header.scenario_num * 520);
         } else {
             this->scenario_offsets = 0;
         }
@@ -85,15 +83,13 @@ void RGE_Campaign::create_file() {
     if (handle >= 0) {
         write(handle, this, 264);
         if (this->campaign_header.scenario_num > 0) {
-            write(handle, this->scenario_offsets,
-                this->campaign_header.scenario_num * 520);
+            write(handle, this->scenario_offsets, this->campaign_header.scenario_num * 520);
             current_offset = 0;
             index = this->campaign_header.scenario_num * 0x208 + 0x108;
             if (this->campaign_header.scenario_num > 0) {
                 do {
-                    sprintf(tempname, "%s%s",
-                        rge_base_game->prog_info->scenario_dir,
-                        this->scenario_offsets[current_offset].file_name);
+                    sprintf(tempname, "%s%s", rge_base_game->prog_info->scenario_dir,
+                            this->scenario_offsets[current_offset].file_name);
                     int scenario_file = _open(tempname, _O_BINARY);
                     if (scenario_file > -1) {
                         lseek(scenario_file, 0, SEEK_END);
@@ -112,8 +108,7 @@ void RGE_Campaign::create_file() {
                 } while (current_offset < this->campaign_header.scenario_num);
             }
             lseek(handle, 0x108, SEEK_SET);
-            write(handle, this->scenario_offsets,
-                this->campaign_header.scenario_num * 520);
+            write(handle, this->scenario_offsets, this->campaign_header.scenario_num * 520);
         }
         close(handle);
     }
@@ -140,8 +135,7 @@ long RGE_Campaign::scenario_number() {
 }
 
 long RGE_Campaign::scenario_info(char*** scenario_names) {
-    char** strings = (char**)calloc(
-        (unsigned int)this->campaign_header.scenario_num, 4);
+    char** strings = (char**)calloc((unsigned int)this->campaign_header.scenario_num, 4);
     *scenario_names = strings;
 
     int i = 0;

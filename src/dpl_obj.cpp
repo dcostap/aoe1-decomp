@@ -45,8 +45,7 @@ RGE_Doppleganger_Object::RGE_Doppleganger_Object(
         this->doppled_player = this->doppled_object->owner->id;
         this->doppledObjectID = this->doppled_object->id;
         this->sprite = this->doppled_object->sprite;
-        this->sprite_list->use_sprite_list(
-            this->doppled_object->sprite_list->copy_sprite_list());
+        this->sprite_list->use_sprite_list(this->doppled_object->sprite_list->copy_sprite_list());
         this->facet = this->doppled_object->facet;
         this->draw_color = this->doppled_object->owner->color_table;
         this->map_draw_level = this->doppled_object->master_obj->map_draw_level;
@@ -238,10 +237,7 @@ unsigned char RGE_Doppleganger_Object::update() {
         if ((this->owner->mutualVisibleMask & map_value) != 0 &&
             this->object_state < 3) {
             if (DDlogf != 0) {
-                fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n",
-                    this->owner->world->world_time,
-                    this->id,
-                    this->owner->id);
+                fprintf(DDlogf, "DIE DOP (@%d) id=%d own=%d\n", this->owner->world->world_time, this->id, this->owner->id);
             }
             this->destroy_obj();
         }
@@ -356,10 +352,7 @@ RGE_Doppleganger_Creator::~RGE_Doppleganger_Creator() {
 
 int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* theObj, unsigned long* UMV_addr) {
     if (DDlogf) {
-        fprintf(DDlogf, "ADC (@%d) p=%d  id=%d\n",
-            this->owner->world->world_time,
-            (int)this->owner->id,
-            theObj->id);
+        fprintf(DDlogf, "ADC (@%d) p=%d  id=%d\n", this->owner->world->world_time, (int)this->owner->id, theObj->id);
     }
 
     if (this->active_size >= this->allocated_size) {
@@ -390,8 +383,7 @@ int RGE_Doppleganger_Creator::add_doppleganger_check(RGE_Static_Object* theObj, 
 
 int RGE_Doppleganger_Creator::remove_doppleganger_check(RGE_Static_Object* theObj) {
     if (DDlogf) {
-        fprintf(DDlogf, "RDC (@%d)  p=%d  id=%d\n",
-            owner->world->world_time, owner->id, theObj->id);
+        fprintf(DDlogf, "RDC (@%d)  p=%d  id=%d\n", owner->world->world_time, owner->id, theObj->id);
     }
 
     if (active_size <= 0)
@@ -438,35 +430,23 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
                             int owner_id = (int)this->owner->id;
                             if (player_id != owner_id) {
                                 if (DDlogf) {
-                                    fprintf(DDlogf,
-                                        "NEW DOP (@%d) by p=%d for p=%d of id=%d (x=%d, y=%d)\n",
-                                        this->owner->world->world_time,
-                                        owner_id,
-                                        player_id,
-                                        this->Objects[i]->id,
-                                        (long)this->Objects[i]->world_x,
-                                        (long)this->Objects[i]->world_y);
+                                    fprintf(DDlogf, "NEW DOP (@%d) by p=%d for p=%d of id=%d (x=%d, y=%d)\n",
+                                            this->owner->world->world_time, owner_id, player_id, this->Objects[i]->id,
+                                            (long)this->Objects[i]->world_x, (long)this->Objects[i]->world_y);
                                 }
                                 RGE_Player* player =
                                     this->owner->world->players[player_id];
                                 ((RGE_Master_Doppleganger_Object*)
-                                    player->master_objects[0xf3])->make_new_obj(
-                                        player,
-                                        this->Objects[i]->world_x,
-                                        this->Objects[i]->world_y,
-                                        this->Objects[i]->world_z,
-                                        this->Objects[i]);
+                                    player->master_objects[0xf3])->make_new_obj(player, this->Objects[i]->world_x,
+                                                                                this->Objects[i]->world_y, this->Objects[i]->world_z, this->Objects[i]);
                             }
                         }
                     }
                 } else {
                     remove_me = this->Objects[i];
                     if (DDlogf) {
-                        fprintf(DDlogf,
-                            "*** REMOVE CHECK (@%d) by p=%d id=%d\n",
-                            this->owner->world->world_time,
-                            (int)this->owner->id,
-                            this->Object_ids[i]);
+                        fprintf(DDlogf, "*** REMOVE CHECK (@%d) by p=%d id=%d\n", this->owner->world->world_time,
+                                (int)this->owner->id, this->Object_ids[i]);
                     }
                 }
                 this->Last_Map_Value[i] = Unified_Map_Value;
@@ -482,10 +462,7 @@ void RGE_Doppleganger_Creator::perform_doppleganger_checks() {
 
 void RGE_Doppleganger_Creator::expand_allocations(int grow_size) {
     if (DDlogf != 0) {
-        fprintf(DDlogf, "RESIZE (@%d) p=%d  grow=%d\n",
-            this->owner->world->world_time,
-            (int)this->owner->id,
-            grow_size);
+        fprintf(DDlogf, "RESIZE (@%d) p=%d  grow=%d\n", this->owner->world->world_time, (int)this->owner->id, grow_size);
     }
 
     this->allocated_size += grow_size;

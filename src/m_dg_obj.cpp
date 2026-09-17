@@ -56,8 +56,7 @@ RGE_Static_Object* RGE_Master_Doppleganger_Object::make_new_obj(
     RGE_Static_Object* obj_to_dopple) {
     if (this->recyclable != 0) {
         RGE_Doppleganger_Object* recycled =
-            (RGE_Doppleganger_Object*)owner->world->recycle_object_in_to_game(
-                this->master_type);
+            (RGE_Doppleganger_Object*)owner->world->recycle_object_in_to_game(this->master_type);
         if (recycled != 0) {
             recycled->recycle_in_to_game(this, owner, x, y, z, obj_to_dopple);
             return recycled;

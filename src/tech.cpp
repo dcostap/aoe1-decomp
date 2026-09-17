@@ -83,15 +83,9 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
                     short tech_id;
 
                     fscanf(file, "%hd", &j);
-                    fscanf(file, "%s %hd %hd %hd %hd %hd %hd %hd",
-                           name_buf,
-                           &this->tech_tree[j].pre_reqs_required,
-                           &this->tech_tree[j].research,
-                           &this->tech_tree[j].effect,
-                           &this->tech_tree[j].track,
-                           &this->tech_tree[j].icon,
-                           &button_temp,
-                           &this->tech_tree[j].build_obj_id);
+                    fscanf(file, "%s %hd %hd %hd %hd %hd %hd %hd", name_buf, &this->tech_tree[j].pre_reqs_required,
+                           &this->tech_tree[j].research, &this->tech_tree[j].effect, &this->tech_tree[j].track,
+                           &this->tech_tree[j].icon, &button_temp, &this->tech_tree[j].build_obj_id);
                     this->tech_tree[j].button_location = button_temp;
                     used_read = strlen(name_buf);
                     for (k = 0; k < used_read; k++) {
@@ -105,18 +99,13 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
                         fscanf(file, "%hd", &this->tech_tree[j].pre_reqs[tech_id]);
                     }
                     for (tech_id = 0; tech_id < 3; tech_id++) {
-                        fscanf(file, "%hd %hd %hd",
-                               &this->tech_tree[j].attribute[tech_id],
-                               &this->tech_tree[j].attribute_cost[tech_id],
-                               &len);
+                        fscanf(file, "%hd %hd %hd", &this->tech_tree[j].attribute[tech_id],
+                               &this->tech_tree[j].attribute_cost[tech_id], &len);
                         this->tech_tree[j].attribute_used[tech_id] =
                             (unsigned char)len;
                     }
-                    fscanf(file, "%hd %hd %ld %ld %ld",
-                           &this->tech_tree[j].string_id,
-                           &this->tech_tree[j].string_id2,
-                           &this->tech_tree[j].help_string_id,
-                           &this->tech_tree[j].help_page_id,
+                    fscanf(file, "%hd %hd %ld %ld %ld", &this->tech_tree[j].string_id, &this->tech_tree[j].string_id2,
+                           &this->tech_tree[j].help_string_id, &this->tech_tree[j].help_page_id,
                            &this->tech_tree[j].hotkey_id);
                 }
             }
@@ -330,8 +319,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
             cost1 = tech->attribute_cost[0];
             if (this->owner->attributes[attr1] < (float)(int)cost1 &&
                 can_use_carry) {
-                total += (short)(cost1 -
-                    (short)this->owner->attributes[attr1]);
+                total += (short)(cost1 - (short)this->owner->attributes[attr1]);
                 cost1 = (short)this->owner->attributes[attr1];
             }
         }
@@ -343,8 +331,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
             cost2 = tech->attribute_cost[1];
             if (this->owner->attributes[attr2] < (float)(int)cost2 &&
                 can_use_carry) {
-                total += (short)(cost2 -
-                    (short)this->owner->attributes[attr2]);
+                total += (short)(cost2 - (short)this->owner->attributes[attr2]);
                 cost2 = (short)this->owner->attributes[attr2];
             }
         }
@@ -356,8 +343,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1, sho
             cost3 = tech->attribute_cost[2];
             if (this->owner->attributes[attr3] < (float)(int)cost3 &&
                 can_use_carry) {
-                total += (short)(cost3 -
-                    (short)this->owner->attributes[attr3]);
+                total += (short)(cost3 - (short)this->owner->attributes[attr3]);
                 cost3 = (short)this->owner->attributes[attr3];
             }
         }
@@ -558,7 +544,7 @@ short TRIBE_Player_Tech::get_progress(short tech_id) {
 
     if (this->tech_player_tree[tech_id].state == 2) {
         progress = (short)(long)(this->tech_player_tree[tech_id].research_done *
-            100.0f / (float)(int)this->base_tech->tech_tree[tech_id].research);
+                                 100.0f / (float)(int)this->base_tech->tech_tree[tech_id].research);
     } else if (this->tech_player_tree[tech_id].state == 3) {
         progress = 100;
     } else {

@@ -91,9 +91,8 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
         break;
 
     case 11: {
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_x, this->target_y, this->target_z,
-            0.0f, this->task->move_sprite);
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
+                                                            0.0f, this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0d);
             return;
@@ -109,10 +108,8 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
             this->target_y = this->target_obj->world_y;
             this->target_z = this->target_obj->world_z;
         }
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_obj,
-            ((RGE_Master_Combat_Object*)this->obj->master_obj)->weapon_range,
-            this->task->move_sprite);
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj,
+                                                            ((RGE_Master_Combat_Object*)this->obj->master_obj)->weapon_range, this->task->move_sprite);
         if (action == 0) {
             this->set_state(0x0d);
             return;
@@ -131,8 +128,7 @@ void TRIBE_Action_Repair::set_state(unsigned char new_state) {
         if (id != 2 && id != 0x14 && id != 0x15 && id != 0x16) return;
         if (((RGE_Action_Object*)target)->command_flag !=
             this->save_target_command_flag) return;
-        target->moveTo(this->obj->world_x, this->obj->world_y,
-                       this->obj->world_z, 0, 1);
+        target->moveTo(this->obj->world_x, this->obj->world_y, this->obj->world_z, 0, 1);
         return;
     }
 
@@ -268,19 +264,16 @@ unsigned char TRIBE_Action_Repair::update() {
             return 0;
         }
 
-        unsigned char result = this->target_obj->heal(
-            (float)(this->task->work_val1 *
-                    this->obj->owner->world->world_time_delta_seconds) *
-            ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate);
+        unsigned char result = this->target_obj->heal((float)(this->task->work_val1 *
+                                                              this->obj->owner->world->world_time_delta_seconds) *
+                                                      ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate);
         if (result == 1) {
             this->set_state(1);
             return 0;
         }
         if (result == 2) {
-            this->obj->notify(this->obj->id, this->obj->id,
-                              0x1FB, 0x26A, 0, 0);
-            rge_base_game->notification(0x6B, this->obj->owner->id,
-                                        this->target_obj->id, 0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x26A, 0, 0);
+            rge_base_game->notification(0x6B, this->obj->owner->id, this->target_obj->id, 0, 0);
             this->set_state(2);
             return 0;
         }
@@ -308,8 +301,7 @@ unsigned char TRIBE_Action_Repair::update() {
         return 1;
 
     case 11:
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1F9, 0x26A, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x26A, 0, 0);
         this->set_state(2);
         return 3;
     }
@@ -398,9 +390,7 @@ void TRIBE_Action_Repair::meet_target() {
         if (this->obj->firstTileAlongLine(dest, start, rVal, 2, 2, 1) == 1) {
             this->target_x = (float)rVal.x + 0.5f;
             this->target_y = (float)rVal.y + 0.5f;
-            this->target_obj->moveTo((float)rVal.x + 0.5f,
-                                     (float)rVal.y + 0.5f,
-                                     this->target_obj->world_z, 0.0f, 1);
+            this->target_obj->moveTo((float)rVal.x + 0.5f, (float)rVal.y + 0.5f, this->target_obj->world_z, 0.0f, 1);
             this->save_target_command_flag =
                 ((RGE_Action_Object*)this->target_obj)->command_flag;
         }

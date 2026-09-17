@@ -47,24 +47,20 @@ void RGE_Active_Sprite::update(float time, float speed) {
 void RGE_Active_Sprite::draw(short facet, long x, long y, long sx, long sy,
                              RGE_Color_Table* player_color,
                              TDrawArea* draw_area) {
-    this->sprite->draw((long)facet, 0, x + this->offset_x,
-                       y + this->offset_y, sx + this->offset_x,
+    this->sprite->draw((long)facet, 0, x + this->offset_x, y + this->offset_y, sx + this->offset_x,
                        sy + this->offset_y, player_color, draw_area, 0);
 }
 
 void RGE_Active_Sprite::normal_draw(short facet, long x, long y,
                                     RGE_Color_Table* player_color,
                                     TDrawArea* draw_area) {
-    this->sprite->normal_draw((long)facet, 0, this->offset_x + x,
-                              this->offset_y + y, player_color, draw_area);
+    this->sprite->normal_draw((long)facet, 0, this->offset_x + x, this->offset_y + y, player_color, draw_area);
 }
 
 void RGE_Active_Sprite::shadow_draw(short facet, long x, long y,
                                     RGE_Color_Table* player_color,
                                     TDrawArea* draw_area, unsigned char flag) {
-    this->sprite->shadow_draw((long)facet, 0, this->offset_x + x,
-                              this->offset_y + y, player_color, draw_area,
-                              flag);
+    this->sprite->shadow_draw((long)facet, 0, this->offset_x + x, this->offset_y + y, player_color, draw_area, flag);
 }
 
 short RGE_Active_Sprite::what_frame() {
@@ -238,8 +234,7 @@ void RGE_Active_Animated_Sprite::update(float time, float speed) {
 void RGE_Active_Animated_Sprite::draw(short facet, long x, long y, long sx,
                                       long sy, RGE_Color_Table* player_color,
                                       TDrawArea* draw_area) {
-    this->sprite->draw((int)facet, (int)this->frame, x, y, sx, sy,
-                       player_color, draw_area, '\0');
+    this->sprite->draw((int)facet, (int)this->frame, x, y, sx, sy, player_color, draw_area, '\0');
     if (this->frame_changed != 0) {
         if (fog_next_shape == 0) {
             this->sprite->play_sound(this->last_frame, this->frame, facet);
@@ -251,8 +246,7 @@ void RGE_Active_Animated_Sprite::draw(short facet, long x, long y, long sx,
 void RGE_Active_Animated_Sprite::normal_draw(short facet, long x, long y,
                                              RGE_Color_Table* player_color,
                                              TDrawArea* draw_area) {
-    this->sprite->normal_draw((long)facet, (long)this->frame, x, y,
-                              player_color, draw_area);
+    this->sprite->normal_draw((long)facet, (long)this->frame, x, y, player_color, draw_area);
     if (this->frame_changed != 0) {
         this->sprite->play_sound(this->last_frame, this->frame, facet);
         this->frame_changed = 0;
@@ -263,8 +257,7 @@ void RGE_Active_Animated_Sprite::shadow_draw(short facet, long x, long y,
                                              RGE_Color_Table* player_color,
                                              TDrawArea* draw_area,
                                              unsigned char flag) {
-    this->sprite->shadow_draw((int)facet, (int)this->frame, x, y,
-                              player_color, draw_area, flag);
+    this->sprite->shadow_draw((int)facet, (int)this->frame, x, y, player_color, draw_area, flag);
 }
 
 short RGE_Active_Animated_Sprite::what_frame() {

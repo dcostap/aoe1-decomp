@@ -167,8 +167,7 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int ctrl_key, i
         short col;
         short row;
         if (this->pick_tile(x, y, &col, &row, &tile) != 0) {
-            this->player->command_add_waypoint(
-                (float)col + 0.5f, (float)row + 0.5f, 1.0f);
+            this->player->command_add_waypoint((float)col + 0.5f, (float)row + 0.5f, 1.0f);
         }
         return 1;
     }

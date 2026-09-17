@@ -121,8 +121,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     sprintf(temp_name, "default%d.scx", game_file_number);
     if (scenario_name_in && strcmp(scenario_name_in, temp_name) == 0)
         this->need_to_save_flag = 1;
-    if (!this->TScreenPanel::setup(rge_base_game->draw_area,
-                                   "scr5", 0xC387, 1)) {
+    if (!this->TScreenPanel::setup(rge_base_game->draw_area, "scr5", 0xC387, 1)) {
         this->error_code = 1;
         return;
     }
@@ -132,9 +131,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
         this->error_code = 1;
         return;
     }
-    if (!this->main_view->RGE_View::setup(this->render_area, this,
-                                          0, 0, 0, 0, 0xA1, 0,
-                                          "bordline")) {
+    if (!this->main_view->RGE_View::setup(this->render_area, this, 0, 0, 0, 0, 0xA1, 0, "bordline")) {
         this->error_code = 1;
         return;
     }
@@ -143,9 +140,8 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
         this->error_code = 1;
         return;
     }
-    if (!this->map_view->RGE_Diamond_Map::setup(
-            this->render_area, this, 0, 0, 0, 0, 0xA1, 0,
-            rge_base_game->map_save_area)) {
+    if (!this->map_view->RGE_Diamond_Map::setup(this->render_area, this, 0, 0, 0, 0, 0xA1, 0,
+                                                rge_base_game->map_save_area)) {
         this->error_code = 1;
         return;
     }
@@ -162,14 +158,12 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     }
     this->main_view->set_help_info(-1, -1);
     RGE_Font *font = rge_base_game->get_font(RGE_FONT_STANDARD);
-    this->message_panel = new TMessagePanel(font->font, font->font_wid,
-                                            font->font_hgt);
+    this->message_panel = new TMessagePanel(font->font, font->font_wid, font->font_hgt);
     if (this->message_panel == 0 || this->message_panel->error_code != 0) {
         this->error_code = 1;
         return;
     }
-    if (!this->message_panel->setup(this->render_area, this->main_view,
-                                    0, 0, 0, 0, 0)) {
+    if (!this->message_panel->setup(this->render_area, this->main_view, 0, 0, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }
@@ -178,8 +172,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
         this->error_code = 1;
         return;
     }
-    if (!this->bottom_panel->setup(this->render_area, this,
-                                   0, 0, 0, 0, 0)) {
+    if (!this->bottom_panel->setup(this->render_area, this, 0, 0, 0, 0, 0)) {
         this->error_code = 1;
         return;
     }
@@ -246,8 +239,7 @@ int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button, long 
 int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button,
                                     char *text1, char *text2,
                                     char *text3, char *text4) {
-    if (this->TEasy_Panel::create_button(parent, button, text1, text2,
-                                         0, 0, 0, 0, 10, 1, 0) == 0)
+    if (this->TEasy_Panel::create_button(parent, button, text1, text2, 0, 0, 0, 0, 10, 1, 0) == 0)
         return 0;
 
     if (text3 != 0)
@@ -259,13 +251,8 @@ int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button,
     (*button)->set_active(0);
 
     if (this->use_bevels != 0) {
-        (*button)->set_bevel_info(3,
-                                  this->bevel_color1,
-                                  this->bevel_color2,
-                                  this->bevel_color3,
-                                  this->bevel_color4,
-                                  this->bevel_color5,
-                                  this->bevel_color6);
+        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                                  this->bevel_color5, this->bevel_color6);
     }
 
     return 1;
@@ -292,10 +279,8 @@ int TRIBE_Screen_Sed::create_text(TPanel *parent, TTextPanel **text_panel, char 
 int TRIBE_Screen_Sed::create_input(TPanel *parent, TInputPanel **input_panel,
                                    char *value, short max_len,
                                    TInputPanel::FormatType format_type) {
-    if (this->TEasy_Panel::create_input(
-            parent, input_panel, value, max_len,
-            static_cast<TInputPanel::FormatType>(format_type),
-            0, 0, 0, 0, 10) == 0) {
+    if (this->TEasy_Panel::create_input(parent, input_panel, value, max_len,
+                                        static_cast<TInputPanel::FormatType>(format_type), 0, 0, 0, 0, 10) == 0) {
         return 0;
     }
     (*input_panel)->set_z_order(1, 0);
@@ -307,10 +292,8 @@ int TRIBE_Screen_Sed::create_edit(TPanel *parent, TEditPanel **edit_panel,
                                   char *value, short max_len,
                                   TEditPanel::FormatType format_type, int enable_ime,
                                   int turn_ime_on) {
-    int result = this->TEasy_Panel::create_edit(
-        parent, edit_panel, value, max_len,
-        static_cast<TEditPanel::FormatType>(format_type),
-        0, 0, 0, 0, 10, enable_ime, turn_ime_on);
+    int result = this->TEasy_Panel::create_edit(parent, edit_panel, value, max_len,
+                                                static_cast<TEditPanel::FormatType>(format_type), 0, 0, 0, 0, 10, enable_ime, turn_ime_on);
     if (result == 0)
         return 0;
     (*edit_panel)->set_z_order(1, 0);
@@ -361,8 +344,7 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel *parent, TDropDownPanel **drop_pan
 
 create:
 
-    if (this->TEasy_Panel::create_drop_down(parent, drop_panel, height, 100, 0, 0,
-                                            height, 22, 10) == 0) {
+    if (this->TEasy_Panel::create_drop_down(parent, drop_panel, height, 100, 0, 0, height, 22, 10) == 0) {
         return 0;
     }
 
@@ -514,8 +496,7 @@ create:
                                                     do {
                                                         Tech_Tree *tree = static_cast<TRIBE_World *>(rge_base_game->world)->tech->tech_tree;
                                                         Tech_Tree *entry = (Tech_Tree *)((char *)tree + offset);
-                                                        char *text = this->get_string(
-                                                            entry->string_id);
+                                                        char *text = this->get_string(entry->string_id);
                                                         if (text != 0 && *text != 0) {
                                                             (*list)->append_line(text, i);
                                                         }
@@ -527,24 +508,21 @@ create:
                                                 goto done;
                                             } else {
                                                 if (drop_panel == &this->AiRules) {
-                                                    this->MakeFileList(this->AiRules,
-                                                                       rge_base_game->prog_info->ai_dir,
+                                                    this->MakeFileList(this->AiRules, rge_base_game->prog_info->ai_dir,
                                                                        (char *)".per", 0, 1);
                                                     (*drop_panel)->set_line(0);
                                                     goto done;
                                                 } else {
                                                     list = &this->BuildList;
                                                     if (drop_panel == list) {
-                                                        this->MakeFileList(*list,
-                                                                           rge_base_game->prog_info->ai_dir,
+                                                        this->MakeFileList(*list, rge_base_game->prog_info->ai_dir,
                                                                            (char *)".ai", 1, 1);
                                                         (*drop_panel)->set_line(0);
                                                         goto done;
                                                     } else {
                                                         list = &this->CityLayout;
                                                         if (drop_panel == list) {
-                                                            this->MakeFileList(*list,
-                                                                               rge_base_game->prog_info->ai_dir,
+                                                            this->MakeFileList(*list, rge_base_game->prog_info->ai_dir,
                                                                                (char *)".cty", 1, 0);
                                                             (*drop_panel)->set_line(0);
                                                             goto done;
@@ -559,8 +537,7 @@ create:
                                                                 goto done;
                                                             } else {
                                                                 if (drop_panel == this->cinematic_input + 3) {
-                                                                    this->MakeFileList(*drop_panel,
-                                                                                       s_592A40,
+                                                                    this->MakeFileList(*drop_panel, s_592A40,
                                                                                        (char *)".bmp", 1, 0);
                                                                     (*drop_panel)->set_line(0);
                                                                     goto done;
@@ -1542,8 +1519,7 @@ void TRIBE_Screen_Sed::set_player_active(short player_num_in, int active_in) {
 }
 
 int __cdecl TRIBE_Screen_Sed_unit_list_compare(const void *arg1, const void *arg2) {
-    int result = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                                static_cast<const char *>(arg1), -1,
+    int result = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE, static_cast<const char *>(arg1), -1,
                                 static_cast<const char *>(arg2), -1);
     if (result == 1) {
         return -1;
@@ -1593,8 +1569,7 @@ void TRIBE_Screen_Sed::set_unit_player(short val) {
         }
         if (this->unit_list_size == 0)
             return;
-        this->unit_list_info = static_cast<List_Info *>(
-            calloc(this->unit_list_size, sizeof(List_Info)));
+        this->unit_list_info = static_cast<List_Info *>(calloc(this->unit_list_size, sizeof(List_Info)));
         if (this->unit_list_info == 0)
             return;
         this->unit_list_info[0].id = -1;
@@ -1623,8 +1598,7 @@ void TRIBE_Screen_Sed::set_unit_player(short val) {
         }
 
         qsort(this->unit_list_info, this->unit_list_size, 0x66, TRIBE_Screen_Sed_unit_list_compare);
-        char **list = static_cast<char **>(
-            calloc(this->unit_list_size, sizeof(char *)));
+        char **list = static_cast<char **>(calloc(this->unit_list_size, sizeof(char *)));
         if (list == 0)
             return;
         is_error = 0;
@@ -2012,14 +1986,12 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
             this->CurrentVictory = 0;
             this->load_victory_cond_from_scenario(0);
             this->activate_victory_panel(1);
-            this->activate_victory_proper_fields(
-                this->victory_drop_down->get_line(), 1);
+            this->activate_victory_proper_fields(this->victory_drop_down->get_line(), 1);
         }
         if (action_in == 0 && from_panel == this->victory_amount_input)
             this->bottom_panel->set_curr_child(0);
         if (action_in == 2 && from_panel == this->victory_drop_down) {
-            this->activate_victory_proper_fields(
-                this->victory_drop_down->get_line(), 1);
+            this->activate_victory_proper_fields(this->victory_drop_down->get_line(), 1);
         }
         if (action_in == 1) {
             if (from_panel != this->victory_amount_input) {
@@ -2065,8 +2037,7 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                         }
                         return 1;
                     } else if (from_panel == this->victory_button_go_to_dest && line != 1) {
-                        this->main_view->get_selection_area(y1, y2, x1,
-                                                            x2, 1);
+                        this->main_view->get_selection_area(y1, y2, x1, x2, 1);
                         cy = static_cast<float>(x1);
                         this->px1 = static_cast<float>(y1);
                         this->py1 = static_cast<float>(y2);
@@ -2084,21 +2055,18 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                         return 1;
                     } else {
                         if (from_panel == this->victory_drop_down) {
-                            this->activate_victory_proper_fields(
-                                this->victory_drop_down->get_line(), 0);
+                            this->activate_victory_proper_fields(this->victory_drop_down->get_line(), 0);
                         }
                         for (i = 0; i < 12; i++) {
                             if (from_panel == this->victory_button[i] && this->CurrentVictory != i) {
-                                this->activate_victory_proper_fields(
-                                    this->victory_drop_down->get_line(), 0);
+                                this->activate_victory_proper_fields(this->victory_drop_down->get_line(), 0);
                                 this->save_victory_cond_in_scenario(this->CurrentVictory);
                                 this->activate_victory_panel(0);
                                 rge_base_game->get_player()->unselect_object();
                                 this->CurrentVictory = i;
                                 this->load_victory_cond_from_scenario(i);
                                 this->activate_victory_panel(1);
-                                this->activate_victory_proper_fields(
-                                    this->victory_drop_down->get_line(), 1);
+                                this->activate_victory_proper_fields(this->victory_drop_down->get_line(), 1);
                                 RGE_Static_Object *selected_object = this->SelectedObject;
                                 if (selected_object != 0) {
                                     rge_base_game->get_player()->select_one_object(selected_object, 0);
@@ -2197,9 +2165,8 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                     }
                     for (i = 0; i < 9; i++)
                         this->world->players[i]->reset_selected();
-                    this->world->map->map_generate2(
-                        this->world, map_size, map_size,
-                        static_cast<unsigned char>(map_style), player_count);
+                    this->world->map->map_generate2(this->world, map_size, map_size,
+                                                    static_cast<unsigned char>(map_style), player_count);
                     rge_base_game->random_map_seed = old_seed;
                     itoa(rge_base_game->save_random_map_seed, random_val, 10);
                     this->random_seed_used_text->set_text(random_val);
@@ -2273,9 +2240,7 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                 static_cast<T_Scenario *>(this->world->scenario)->SetPlayerAge(this->player_num - 1, i);
             }
             if (from_panel == this->player_list) {
-                this->set_player(
-                    static_cast<short>(this->player_list->get_line() + 1),
-                    1, 1);
+                this->set_player(static_cast<short>(this->player_list->get_line() + 1), 1, 1);
                 line = this->player_list->get_line();
                 i = static_cast<T_Scenario *>(this->world->scenario)->GetPlayerAge(line);
                 this->player_advance_civilization_drop->setCurrentLineNumber(i);
@@ -2467,13 +2432,10 @@ void TRIBE_Screen_Sed::draw() {
                 rect = *mrect;
 
                 render_area->DrawBevel3(0, 0, pnl_wid - 1, rect.top - 1,
-                                        bevel_color1, bevel_color2, bevel_color3, bevel_color4,
-                                        bevel_color5, bevel_color6);
+                                        bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6);
 
-                render_area->DrawBevel3(0, rect.bottom + 1,
-                                        pnl_wid - 1, pnl_hgt - 1,
-                                        bevel_color1, bevel_color2, bevel_color3, bevel_color4,
-                                        bevel_color5, bevel_color6);
+                render_area->DrawBevel3(0, rect.bottom + 1, pnl_wid - 1, pnl_hgt - 1,
+                                        bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5, bevel_color6);
 
                 render_area->Unlock("scr_sed::draw");
             }
@@ -2619,8 +2581,7 @@ void TRIBE_Screen_Sed::command_player(int id) {
 
 void TRIBE_Screen_Sed::command_quit() {
     if (need_to_save()) {
-        popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_QuitSaveDialog, TEASY_POPUP_WIDTH,
-                               TEASY_POPUP_HEIGHT);
+        popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_QuitSaveDialog, TEASY_POPUP_WIDTH, TEASY_POPUP_HEIGHT);
         return;
     }
     if (!static_cast<TRIBE_Game *>(rge_base_game)->start_menu()) {
@@ -2689,8 +2650,7 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char quit_after_save) {
         this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         scenario_name[0] = 0;
-        new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenarioEdit,
-                                scenario_name, quit_after_save);
+        new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenarioEdit, scenario_name, quit_after_save);
         panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
     }
@@ -2728,16 +2688,14 @@ char *TRIBE_Screen_Sed::scenario_save_defaulted() {
     }
 
     static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
-    sprintf(scenario_default_file_name, "default%d.scx",
-            rge_base_game->registry->RegGetInt(0, "Game File Number"));
+    sprintf(scenario_default_file_name, "default%d.scx", rge_base_game->registry->RegGetInt(0, "Game File Number"));
     if (this->world->save_scenario(scenario_default_file_name) == 0) {
         static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
         this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 
-    sprintf(scenario_default_file_name, "default%d",
-            rge_base_game->registry->RegGetInt(0, "Game File Number"));
+    sprintf(scenario_default_file_name, "default%d", rge_base_game->registry->RegGetInt(0, "Game File Number"));
     return scenario_default_file_name;
 }
 

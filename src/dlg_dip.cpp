@@ -55,8 +55,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     this->goldTotal = 0.0f;
     this->tribute_flag = 0;
 
-    if (!this->setup(parentPanel->renderArea(), parentPanel, 625, 405,
-                     parentPanel->get_popup_info_file(),
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 625, 405, parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
         return;
     }
@@ -72,40 +71,33 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
 
     rge_base_game->get_font(1);
 
-    if (!this->create_text(this, &this->title[0], IDS_DIPLOMACY_TITLE, 72, 5,
-                           500, 30, 1, 1, 1, 0)) {
+    if (!this->create_text(this, &this->title[0], IDS_DIPLOMACY_TITLE, 72, 5, 500, 30, 1, 1, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->needMarket, IDS_DIPLOMACY_NEED_MARKET, 440, 110,
                            175, 60, RGE_FONT_STANDARD, 1, 1, 1)) {
         return;
     }
-    if (!this->create_text(this, &this->title[1], IDS_DIPLOMACY_NAME, 5, 50,
-                           130, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
+    if (!this->create_text(this, &this->title[1], IDS_DIPLOMACY_NAME, 5, 50, 130, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[2], IDS_DIPLOMACY_CIVILIZATION, 137, 50,
                            80, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
-    if (!this->create_text(this, &this->title[3], IDS_DIPLOMACY_ALLY, 235, 50,
-                           70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
+    if (!this->create_text(this, &this->title[3], IDS_DIPLOMACY_ALLY, 235, 50, 70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
-    if (!this->create_text(this, &this->title[4], IDS_DIPLOMACY_NEUTRAL, 290, 50,
-                           70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
+    if (!this->create_text(this, &this->title[4], IDS_DIPLOMACY_NEUTRAL, 290, 50, 70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
-    if (!this->create_text(this, &this->title[5], IDS_DIPLOMACY_ENEMY, 360, 50,
-                           70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
+    if (!this->create_text(this, &this->title[5], IDS_DIPLOMACY_ENEMY, 360, 50, 70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
 
     sprintf(temp_str, this->get_string(IDS_DIPLOMACY_PAY_TRIBUTE_FORMAT),
-            static_cast<long>(rge_base_game->get_player()->attributes[46] *
-                              DAT_0056f880));
-    if (!this->create_text(this, &this->title[6], temp_str, 440, 50,
-                           180, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
+            static_cast<long>(rge_base_game->get_player()->attributes[46] * DAT_0056f880));
+    if (!this->create_text(this, &this->title[6], temp_str, 440, 50, 180, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[7], IDS_DIPLOMACY_ALLIED_VICTORY, 318, 330,
@@ -119,9 +111,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     int row = 0;
     int a = 80;
     while (player_id < world->player_num) {
-        GetPaletteEntries(this->palette,
-                          world->players[player_id]->color_table->map_color,
-                          1, &paletteColor);
+        GetPaletteEntries(this->palette, world->players[player_id]->color_table->map_color, 1, &paletteColor);
 
         int disable_buttons;
         if (rge_base_game->prog_mode == 5 ||
@@ -157,36 +147,29 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
             }
         }
 
-        if (!this->create_text(this, &this->playerName[row],
-                               world->players[player_id]->name, 5, a, 130,
-                               30, computer_font ? RGE_FONT_STRIKEOUT : RGE_FONT_STANDARD,
-                               0, 1, 0)) {
+        if (!this->create_text(this, &this->playerName[row], world->players[player_id]->name, 5, a, 130,
+                               30, computer_font ? RGE_FONT_STRIKEOUT : RGE_FONT_STANDARD, 0, 1, 0)) {
             return;
         }
 
-        rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION,
-                                   world->players[player_id]->master_player_id,
+        rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, world->players[player_id]->master_player_id,
                                    0, temp_str, 100);
-        if (!this->create_text(this, &this->playerCivilization[row],
-                               temp_str, 137, a, 100, 30, RGE_FONT_STANDARD,
+        if (!this->create_text(this, &this->playerCivilization[row], temp_str, 137, a, 100, 30, RGE_FONT_STANDARD,
                                0, 1, 0)) {
             return;
         }
 
         if (player_id != world->curr_player) {
             TButtonPanel** buttons = &this->allyButton[row * 3];
-            if (!this->create_radio_button(this, &buttons[0], 240, a,
-                                           30, 30, 0, 0)) {
+            if (!this->create_radio_button(this, &buttons[0], 240, a, 30, 30, 0, 0)) {
                 return;
             }
             buttons[0]->set_help_info(IDS_HELP_DIPLOMACY_ALLY, -1);
-            if (!this->create_radio_button(this, &buttons[1], 310, a,
-                                           30, 30, 0, 0)) {
+            if (!this->create_radio_button(this, &buttons[1], 310, a, 30, 30, 0, 0)) {
                 return;
             }
             buttons[1]->set_help_info(IDS_HELP_DIPLOMACY_NEUTRAL, -1);
-            if (!this->create_radio_button(this, &buttons[2], 380, a,
-                                           30, 30, 0, 0)) {
+            if (!this->create_radio_button(this, &buttons[2], 380, a, 30, 30, 0, 0)) {
                 return;
             }
             buttons[2]->set_help_info(IDS_HELP_DIPLOMACY_ENEMY, -1);
@@ -210,53 +193,34 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         }
 
         if (disable_buttons == 0) {
-            if (!this->create_button(this, &this->woodTributeButton[row],
-                                     -1, 0, 440, a, 40, 30,
-                                     RGE_FONT_STANDARD, 0, 0)) {
+            if (!this->create_button(this, &this->woodTributeButton[row], -1, 0, 440, a, 40, 30, RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
-            if (!this->create_button(this, &this->foodTributeButton[row],
-                                     -1, 0, 480, a, 40, 30,
-                                     RGE_FONT_STANDARD, 0, 0)) {
+            if (!this->create_button(this, &this->foodTributeButton[row], -1, 0, 480, a, 40, 30, RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
-            if (!this->create_button(this, &this->goldTributeButton[row],
-                                     -1, 0, 520, a, 40, 30,
-                                     RGE_FONT_STANDARD, 0, 0)) {
+            if (!this->create_button(this, &this->goldTributeButton[row], -1, 0, 520, a, 40, 30, RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
-            if (!this->create_button(this, &this->stoneTributeButton[row],
-                                     -1, 0, 560, a, 40, 30,
+            if (!this->create_button(this, &this->stoneTributeButton[row], -1, 0, 560, a, 40, 30,
                                      RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
 
-            this->woodTributeButton[row]->set_picture(
-                0, this->buttonPics, 0);
-            this->foodTributeButton[row]->set_picture(
-                0, this->buttonPics, 2);
-            this->goldTributeButton[row]->set_picture(
-                0, this->buttonPics, 3);
-            this->stoneTributeButton[row]->set_picture(
-                0, this->buttonPics, 1);
+            this->woodTributeButton[row]->set_picture(0, this->buttonPics, 0);
+            this->foodTributeButton[row]->set_picture(0, this->buttonPics, 2);
+            this->goldTributeButton[row]->set_picture(0, this->buttonPics, 3);
+            this->stoneTributeButton[row]->set_picture(0, this->buttonPics, 1);
 
-            this->woodTributeButton[row]->setDrawType(
-                TButtonPanel::DrawPictureAndText);
-            this->foodTributeButton[row]->setDrawType(
-                TButtonPanel::DrawPictureAndText);
-            this->goldTributeButton[row]->setDrawType(
-                TButtonPanel::DrawPictureAndText);
-            this->stoneTributeButton[row]->setDrawType(
-                TButtonPanel::DrawPictureAndText);
+            this->woodTributeButton[row]->setDrawType(TButtonPanel::DrawPictureAndText);
+            this->foodTributeButton[row]->setDrawType(TButtonPanel::DrawPictureAndText);
+            this->goldTributeButton[row]->setDrawType(TButtonPanel::DrawPictureAndText);
+            this->stoneTributeButton[row]->setDrawType(TButtonPanel::DrawPictureAndText);
 
-            this->woodTributeButton[row]->set_help_info(
-                IDS_HELP_DIPLOMACY_TRIBUTE_WOOD, -1);
-            this->foodTributeButton[row]->set_help_info(
-                IDS_HELP_DIPLOMACY_TRIBUTE_FOOD, -1);
-            this->goldTributeButton[row]->set_help_info(
-                IDS_HELP_DIPLOMACY_TRIBUTE_GOLD, -1);
-            this->stoneTributeButton[row]->set_help_info(
-                IDS_HELP_DIPLOMACY_TRIBUTE_STONE, -1);
+            this->woodTributeButton[row]->set_help_info(IDS_HELP_DIPLOMACY_TRIBUTE_WOOD, -1);
+            this->foodTributeButton[row]->set_help_info(IDS_HELP_DIPLOMACY_TRIBUTE_FOOD, -1);
+            this->goldTributeButton[row]->set_help_info(IDS_HELP_DIPLOMACY_TRIBUTE_GOLD, -1);
+            this->stoneTributeButton[row]->set_help_info(IDS_HELP_DIPLOMACY_TRIBUTE_STONE, -1);
         }
 
         ++player_id;
@@ -264,77 +228,61 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         a += 30;
     }
 
-    if (!this->create_check_box(this, &this->allianceButton, 282, 327,
-                                30, 30, 0, 0)) {
+    if (!this->create_check_box(this, &this->allianceButton, 282, 327, 30, 30, 0, 0)) {
         return;
     }
-    this->allianceButton->set_state(
-        rge_base_game->get_player()->get_allied_victory());
+    this->allianceButton->set_state(rge_base_game->get_player()->get_allied_victory());
     this->allianceButton->set_help_info(IDS_HELP_DIPLOMACY_ALLIED_VICTORY, -1);
     if (rge_base_game->prog_mode == 5) {
         this->allianceButton->set_disabled(1);
     }
 
     if (rge_base_game->prog_mode != 5) {
-        if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 10,
-                                 367, 190, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 10, 367, 190, 30, 0, 0, 0)) {
             return;
         }
         this->okButton->set_help_info(IDS_HELP_OK, -1);
 
-        if (!this->create_button(this, &this->clearButton,
-                                 IDS_DIPLOMACY_CLEAR_TRIBUTES, 0, 215,
-                                 367, 190, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->clearButton, IDS_DIPLOMACY_CLEAR_TRIBUTES, 0, 215, 367, 190, 30, 0, 0, 0)) {
             return;
         }
         this->clearButton->set_help_info(IDS_HELP_DIPLOMACY_CLEAR_TRIBUTES, -1);
     }
 
-    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 420,
-                             367, 190, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 420, 367, 190, 30, 0, 0, 0)) {
         return;
     }
     this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
     this->cancelButton->hotkey = VK_ESCAPE;
     this->cancelButton->hotkey_shift = 0;
 
-    if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP, 0, 500,
-                             327, 30, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP, 0, 500, 327, 30, 30, 0, 0, 0)) {
         return;
     }
 
-    sprintf(temp_str, "%ld", static_cast<long>(
-        rge_base_game->get_player()->attributes[1] - this->woodTotal));
-    if (!this->create_text(this, &this->playerWood, temp_str, 440,
-                           this->cur_player_row * 30 + 80, 40, 30,
+    sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[1] - this->woodTotal));
+    if (!this->create_text(this, &this->playerWood, temp_str, 440, this->cur_player_row * 30 + 80, 40, 30,
                            RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
-    sprintf(temp_str, "%ld", static_cast<long>(
-        rge_base_game->get_player()->attributes[0] - this->foodTotal));
-    if (!this->create_text(this, &this->playerFood, temp_str, 480,
-                           this->cur_player_row * 30 + 80, 40, 30,
+    sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[0] - this->foodTotal));
+    if (!this->create_text(this, &this->playerFood, temp_str, 480, this->cur_player_row * 30 + 80, 40, 30,
                            RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
-    sprintf(temp_str, "%ld", static_cast<long>(
-        rge_base_game->get_player()->attributes[3] - this->goldTotal));
-    if (!this->create_text(this, &this->playerGold, temp_str, 520,
-                           this->cur_player_row * 30 + 80, 40, 30,
+    sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[3] - this->goldTotal));
+    if (!this->create_text(this, &this->playerGold, temp_str, 520, this->cur_player_row * 30 + 80, 40, 30,
                            RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
-    sprintf(temp_str, "%ld", static_cast<long>(
-        rge_base_game->get_player()->attributes[2] - this->stoneTotal));
-    if (!this->create_text(this, &this->playerStone, temp_str, 560,
-                           this->cur_player_row * 30 + 80, 40, 30,
+    sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[2] - this->stoneTotal));
+    if (!this->create_text(this, &this->playerStone, temp_str, 560, this->cur_player_row * 30 + 80, 40, 30,
                            RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
 
     RGE_Static_Object* market =
-        rge_base_game->get_player()->objects->find_by_master_id(
-            0x54, -1.0f, -1.0f, 1, 2, 0);
+        rge_base_game->get_player()->objects->find_by_master_id(0x54, -1.0f, -1.0f, 1, 2, 0);
     if (market != 0) {
         this->tribute_flag = 1;
         this->needMarket->set_active(0);
@@ -467,9 +415,7 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                 rge_base_game->get_player()->get_allied_victory();
             if (this->allianceButton->get_state() != allied_victory) {
                 int state = this->allianceButton->get_state();
-                tc->command_allied_victory(
-                    rge_base_game->get_player()->id,
-                    static_cast<unsigned char>(state));
+                tc->command_allied_victory(rge_base_game->get_player()->id, static_cast<unsigned char>(state));
             }
         }
 
@@ -492,39 +438,29 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                     if (allow_user_commands != 0) {
                         if (rge_base_game->get_player()->relation(player_id) !=
                             relation) {
-                            tc->command_relation(
-                                rge_base_game->get_player()->id,
-                                static_cast<short>(player_id),
-                                static_cast<short>(relation));
+                            tc->command_relation(rge_base_game->get_player()->id, static_cast<short>(player_id),
+                                                 static_cast<short>(relation));
                         }
 
                         if (this->goldTributeAmount[row] > 0.0f) {
-                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                                rge_base_game->get_player());
-                            player->command_give_attribute(
-                                player_id, 3, this->goldTributeAmount[row],
-                                rge_base_game->get_player()->attributes[46]);
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+                            player->command_give_attribute(player_id, 3, this->goldTributeAmount[row],
+                                                           rge_base_game->get_player()->attributes[46]);
                         }
                         if (this->woodTributeAmount[row] > 0.0f) {
-                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                                rge_base_game->get_player());
-                            player->command_give_attribute(
-                                player_id, 1, this->woodTributeAmount[row],
-                                rge_base_game->get_player()->attributes[46]);
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+                            player->command_give_attribute(player_id, 1, this->woodTributeAmount[row],
+                                                           rge_base_game->get_player()->attributes[46]);
                         }
                         if (this->foodTributeAmount[row] > 0.0f) {
-                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                                rge_base_game->get_player());
-                            player->command_give_attribute(
-                                player_id, 0, this->foodTributeAmount[row],
-                                rge_base_game->get_player()->attributes[46]);
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+                            player->command_give_attribute(player_id, 0, this->foodTributeAmount[row],
+                                                           rge_base_game->get_player()->attributes[46]);
                         }
                         if (this->stoneTributeAmount[row] > 0.0f) {
-                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                                rge_base_game->get_player());
-                            player->command_give_attribute(
-                                player_id, 2, this->stoneTributeAmount[row],
-                                rge_base_game->get_player()->attributes[46]);
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+                            player->command_give_attribute(player_id, 2, this->stoneTributeAmount[row],
+                                                           rge_base_game->get_player()->attributes[46]);
                         }
                     }
                 }
@@ -584,17 +520,13 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
             this->woodTributeAmount[i] = 0.0f;
         }
 
-        sprintf(temp_str, "%ld", static_cast<long>(
-            rge_base_game->get_player()->attributes[3]));
+        sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[3]));
         this->playerGold->set_text(temp_str);
-        sprintf(temp_str, "%ld", static_cast<long>(
-            rge_base_game->get_player()->attributes[0]));
+        sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[0]));
         this->playerFood->set_text(temp_str);
-        sprintf(temp_str, "%ld", static_cast<long>(
-            rge_base_game->get_player()->attributes[1]));
+        sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[1]));
         this->playerWood->set_text(temp_str);
-        sprintf(temp_str, "%ld", static_cast<long>(
-            rge_base_game->get_player()->attributes[2]));
+        sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[2]));
         this->playerStone->set_text(temp_str);
 
         this->check_gold();
@@ -628,12 +560,9 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                     this->goldTotal += amount * cost;
                 }
 
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    rge_base_game->get_player()->attributes[3] -
-                    this->goldTotal));
+                sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[3] - this->goldTotal));
                 this->playerGold->set_text(temp_str);
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    this->goldTributeAmount[row]));
+                sprintf(temp_str, "%ld", static_cast<long>(this->goldTributeAmount[row]));
                 this->goldTributeButton[row]->set_text(0, temp_str);
             } else {
                 float available =
@@ -665,12 +594,9 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                     this->woodTotal += amount * cost;
                 }
 
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    rge_base_game->get_player()->attributes[1] -
-                    this->woodTotal));
+                sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[1] - this->woodTotal));
                 this->playerWood->set_text(temp_str);
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    this->woodTributeAmount[row]));
+                sprintf(temp_str, "%ld", static_cast<long>(this->woodTributeAmount[row]));
                 this->woodTributeButton[row]->set_text(0, temp_str);
             } else {
                 float available =
@@ -702,12 +628,9 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                     this->foodTotal += amount * cost;
                 }
 
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    rge_base_game->get_player()->attributes[0] -
-                    this->foodTotal));
+                sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[0] - this->foodTotal));
                 this->playerFood->set_text(temp_str);
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    this->foodTributeAmount[row]));
+                sprintf(temp_str, "%ld", static_cast<long>(this->foodTributeAmount[row]));
                 this->foodTributeButton[row]->set_text(0, temp_str);
             } else {
                 float available =
@@ -739,12 +662,9 @@ long TribeDiplomacyDialog::action(TPanel* fromPanel, long actionIn, unsigned lon
                     this->stoneTotal += amount * cost;
                 }
 
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    rge_base_game->get_player()->attributes[2] -
-                    this->stoneTotal));
+                sprintf(temp_str, "%ld", static_cast<long>(rge_base_game->get_player()->attributes[2] - this->stoneTotal));
                 this->playerStone->set_text(temp_str);
-                sprintf(temp_str, "%ld", static_cast<long>(
-                    this->stoneTributeAmount[row]));
+                sprintf(temp_str, "%ld", static_cast<long>(this->stoneTributeAmount[row]));
                 this->stoneTributeButton[row]->set_text(0, temp_str);
             } else {
                 float available =
@@ -931,11 +851,8 @@ void TribeDiplomacyDialog::draw() {
                 RGE_Color_Table* colors = player->color_table;
                 if (colors != 0) {
                     ASMSet_Color_Xform((colors->id + 1) * 16);
-                    this->backgroundPics->shape_draw(
-                        this->render_area,
-                        this->pnl_x + 10,
-                        this->pnl_y + y + 80,
-                        0, 1, world->players[i + 1]->color_table->table);
+                    this->backgroundPics->shape_draw(this->render_area, this->pnl_x + 10, this->pnl_y + y + 80,
+                                                     0, 1, world->players[i + 1]->color_table->table);
                 }
                 y += 30;
                 ++i;

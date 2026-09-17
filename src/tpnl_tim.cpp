@@ -72,8 +72,7 @@ void TRIBE_Panel_Time::set_rect(long x_in, long y_in, long wid_in, long hgt_in) 
 
     image_buffer = new TDrawArea("time message panel", 0);
     this->ImageBuffer = image_buffer;
-    image_buffer->Init(this->render_area->DrawSystem, this->pnl_wid,
-                       this->pnl_hgt, 0, 0);
+    image_buffer->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0);
 
     this->LastIBWidth = this->pnl_wid;
     this->LastIBHeight = this->pnl_hgt;
@@ -81,8 +80,7 @@ void TRIBE_Panel_Time::set_rect(long x_in, long y_in, long wid_in, long hgt_in) 
     this->ImageRect.top = 0;
     this->ImageRect.right = this->pnl_wid - 1;
     this->ImageRect.bottom = this->pnl_hgt - 1;
-    this->image_clip_region = CreateRectRgn(
-        0, 0, this->pnl_wid - 1, this->pnl_hgt - 1);
+    this->image_clip_region = CreateRectRgn(0, 0, this->pnl_wid - 1, this->pnl_hgt - 1);
 
 skip_recreate:
     if (this->ImageBuffer != 0) {
@@ -98,8 +96,7 @@ skip_recreate:
 
 void TRIBE_Panel_Time::startup() {
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
-    this->start_real_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 146);
+    this->start_real_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 146);
 }
 
 void TRIBE_Panel_Time::set_clock_type(int clock_type_in, int player_id_in) {
@@ -115,8 +112,7 @@ void TRIBE_Panel_Time::set_clock_type(int clock_type_in, int player_id_in) {
     this->clock_type = clock_type_in;
 
     if (player_id_in > 0) {
-        this->player = static_cast<TRIBE_Player*>(
-            this->world->players[player_id_in]);
+        this->player = static_cast<TRIBE_Player*>(this->world->players[player_id_in]);
     } else {
         this->player = 0;
     }
@@ -226,10 +222,8 @@ void TRIBE_Panel_Time::draw() {
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area,
-                                 this->UsedScreenRect.left,
-                                 this->UsedScreenRect.top,
-                                 &this->UsedImageRect, 1);
+        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top,
+                                &this->UsedImageRect, 1);
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
     }
@@ -257,8 +251,7 @@ void TRIBE_Panel_Time::draw() {
         }
         {
             float game_speed = rge_base_game->world->game_speed;
-            sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds,
-                    game_speed);
+            sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds, game_speed);
         }
         text_flags = DT_SINGLELINE;
     } else {
@@ -292,14 +285,11 @@ void TRIBE_Panel_Time::draw() {
         width -= 2;
         height -= 2;
 
-        SetRect(&rect, left - 1, top - 1, width + left - 2,
-                height + top - 2);
+        SetRect(&rect, left - 1, top - 1, width + left - 2, height + top - 2);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
-        SetRect(&rect, left - 1, top + 1, width + left - 2,
-                height + top);
+        SetRect(&rect, left - 1, top + 1, width + left - 2, height + top);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
-        SetRect(&rect, left + 1, top - 1, width + left,
-                height + top - 2);
+        SetRect(&rect, left + 1, top - 1, width + left, height + top - 2);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
         SetRect(&rect, left + 1, top + 1, width + left, height + top);
         DrawTextA(this->render_area->DrawDc, str, -1, &rect, text_flags);
@@ -333,8 +323,7 @@ long TRIBE_Panel_Time::handle_idle() {
         break;
     case 1:
         this->game_time =
-            (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp",
-                               394) - this->start_real_time) / 1000;
+            (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 394) - this->start_real_time) / 1000;
         break;
     case 2:
         this->game_time = this->world->world_time / 1000;
@@ -345,8 +334,7 @@ long TRIBE_Panel_Time::handle_idle() {
     case 4:
         if (this->player != 0) {
             long countdown_timer;
-            rge_base_game->get_countdown_timer(this->player->id,
-                                               countdown_timer);
+            rge_base_game->get_countdown_timer(this->player->id, countdown_timer);
             this->game_time = countdown_timer;
             break;
         }
@@ -386,8 +374,7 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
     if (this->ImageBuffer == 0) return 0;
 
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    old_font = this->ImageBuffer->GetDc(
-        "tpnl_tim::render_to_image_buffer");
+    old_font = this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
     if (old_font == 0) return 0;
 
     this->ImageBuffer->SetClipRect(&this->ImageRect);
@@ -409,8 +396,7 @@ int TRIBE_Panel_Time::render_to_image_buffer() {
         }
         {
             float game_speed = rge_base_game->world->game_speed;
-            sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes,
-                    seconds, game_speed);
+            sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds, game_speed);
         }
         text_flags = DT_SINGLELINE;
     } else {

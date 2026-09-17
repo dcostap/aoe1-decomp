@@ -484,8 +484,7 @@ void TSpan_List_Manager::AddShape(TShape* theShape, int shape_num, int Xpos, int
         int X2;
         info = &theShape->shape_info[shape_num];
         unsigned short* outline =
-            (unsigned short*)(theShape->FShape->Version +
-                              info->Shape_Outline_Offset);
+            (unsigned short*)(theShape->FShape->Version + info->Shape_Outline_Offset);
         X2 = info->Width - 1 + Xpos;
 
         if (Mirror == 0) {
@@ -536,8 +535,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
                     end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (start & 0x8000) == 0) {
-                        AddSpan((short)start + Xpos & 0xfffffffc,
-                                X2 - (short)end | 3, line);
+                        AddSpan((short)start + Xpos & 0xfffffffc, X2 - (short)end | 3, line);
                     }
                     line++;
                 } while (line < Ypos + SI->Height);
@@ -551,8 +549,7 @@ void TSpan_List_Manager::AddShape_Align(unsigned char* Shape_Base, Shape_Info* S
                     end = *outline++;
                     if (line >= this->Min_Line && line <= this->Max_Line
                         && (end & 0x8000) == 0) {
-                        AddSpan((short)end + Xpos & 0xfffffffc,
-                                X2 - (short)start | 3, line);
+                        AddSpan((short)end + Xpos & 0xfffffffc, X2 - (short)start | 3, line);
                     }
                     line++;
                 } while (line < Ypos + SI->Height);
@@ -662,9 +659,7 @@ void TSpan_List_Manager::SubtractMiniList(VSpanMiniList* theList, int Xpos, int 
             return;
         }
 
-        this->DeleteSpan((int)theList->X_start + add_x,
-                         (int)theList->X_end + add_x,
-                         y_delta + add_y);
+        this->DeleteSpan((int)theList->X_start + add_x, (int)theList->X_end + add_x, y_delta + add_y);
 
         theList = (VSpanMiniList*)((char*)theList + 3);
     }
@@ -765,8 +760,7 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
 
         Shape_Info* info = &theShape->shape_info[shape_num];
         outline =
-            (unsigned short*)(theShape->FShape->Version +
-                               info->Shape_Outline_Offset);
+            (unsigned short*)(theShape->FShape->Version + info->Shape_Outline_Offset);
         X2 = info->Width - 1 + Xpos;
 
         if (Mirror == 0) {
@@ -776,8 +770,7 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
                     start = *outline++;
                     end = *outline++;
                     if ((start & 0x8000) == 0) {
-                        this->DeleteSpan(Xpos + (short)start,
-                                         X2 - (short)end, line);
+                        this->DeleteSpan(Xpos + (short)start, X2 - (short)end, line);
                     }
                     line++;
                 } while (line < Ypos + info->Height);
@@ -790,8 +783,7 @@ void TSpan_List_Manager::DeleteShape(TShape* theShape, int shape_num, int Xpos, 
                     start = *outline++;
                     end = *outline++;
                     if ((end & 0x8000) == 0) {
-                        this->DeleteSpan(Xpos + (short)end,
-                                         X2 - (short)start, line);
+                        this->DeleteSpan(Xpos + (short)end, X2 - (short)start, line);
                     }
                     line++;
                 } while (line < Ypos + info->Height);
@@ -967,8 +959,7 @@ void TSpan_List_Manager::ScrollSpansVertically(int YOffset, int ClipToCurrentReg
     while (y1 < this->Num_Lines) {
         if (this->Line_Head_Ptrs[y1] != 0) {
             if (y2 < ClearStart || y2 > ClipToCurrentRegion) {
-                this->VSList.FreeThread(this->Line_Head_Ptrs[y1],
-                                        this->Line_Tail_Ptrs[y1]);
+                this->VSList.FreeThread(this->Line_Head_Ptrs[y1], this->Line_Tail_Ptrs[y1]);
                 this->Line_Head_Ptrs[y1] = 0;
                 this->Line_Tail_Ptrs[y1] = 0;
                 this->Span_Count[y1] = 0;
@@ -1143,9 +1134,7 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
     }
 
     unsigned char* line = (unsigned char*)malloc(bmWide);
-    infile = open(BMPFile,
-                  _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-                  _S_IREAD | _S_IWRITE);
+    infile = open(BMPFile, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (infile != -1) {
         write(infile, &bmFH, 14);
         write(infile, &bmIH, sizeof(bmIH));

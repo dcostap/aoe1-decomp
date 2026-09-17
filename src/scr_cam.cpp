@@ -46,52 +46,32 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    this->create_text(this, &this->title, IDS_CAMPAIGN_EDITOR_TITLE,
-                      10, 10, 620, 50, 1, 3, 0, 0);
-    this->create_text(this, &this->filename_title, IDS_CAMPAIGN_FILENAME_LABEL,
-                      20, 40, 260, 20, 4, 0, 0, 0);
-    this->create_drop_down(this, &this->filename_drop,
-                           380, 200, 20, 60, 0x17C,
+    this->create_text(this, &this->title, IDS_CAMPAIGN_EDITOR_TITLE, 10, 10, 620, 50, 1, 3, 0, 0);
+    this->create_text(this, &this->filename_title, IDS_CAMPAIGN_FILENAME_LABEL, 20, 40, 260, 20, 4, 0, 0, 0);
+    this->create_drop_down(this, &this->filename_drop, 380, 200, 20, 60, 0x17C,
                            (this->ideal_height * 30) / this->pnl_hgt, 0xB);
 
-    this->create_edit(this->filename_drop, &this->filename,
-                      this->get_string(IDS_DEFAULT_CAMPAIGN_NAME),
-                      100, TEditPanel::FormatFileNoExt,
-                      0, 0, 360, 30, 0xB, 1, 1);
+    this->create_edit(this->filename_drop, &this->filename, this->get_string(IDS_DEFAULT_CAMPAIGN_NAME),
+                      100, TEditPanel::FormatFileNoExt, 0, 0, 360, 30, 0xB, 1, 1);
 
-    this->create_button(this, &this->save_button, IDS_BUTTON_SAVE,
-                        0, 420, 60, 200, 30, 0, 0, 0);
-    this->create_button(this, &this->add_button, IDS_BUTTON_ADD,
-                        0, 280, 260, 160, 30, 0, 0, 0);
-    this->create_button(this, &this->remove_button, IDS_BUTTON_REMOVE,
-                        0, 460, 260, 160, 30, 0, 0, 0);
-    this->create_text(this, &this->scenarios_title, IDS_SCENARIOS_TITLE,
-                      20, 100, 200, 20, 4, 0, 0, 0);
-    this->create_list(this, &this->scenarios,
-                      20, 120, 600, 130, 0xB);
-    this->create_auto_scrollbar(&this->scenarios_bar,
-                                this->scenarios, 20);
-    this->create_text(this, &this->campaign_scenarios_title,
-                      IDS_CAMPAIGN_SCENARIOS_TITLE,
-                      20, 280, 200, 20, 4, 0, 0, 0);
-    this->create_list(this, &this->campaign_scenarios,
-                      20, 300, 500, 130, 0xB);
-    this->create_auto_scrollbar(&this->campaign_scenarios_bar,
-                                this->campaign_scenarios, 20);
+    this->create_button(this, &this->save_button, IDS_BUTTON_SAVE, 0, 420, 60, 200, 30, 0, 0, 0);
+    this->create_button(this, &this->add_button, IDS_BUTTON_ADD, 0, 280, 260, 160, 30, 0, 0, 0);
+    this->create_button(this, &this->remove_button, IDS_BUTTON_REMOVE, 0, 460, 260, 160, 30, 0, 0, 0);
+    this->create_text(this, &this->scenarios_title, IDS_SCENARIOS_TITLE, 20, 100, 200, 20, 4, 0, 0, 0);
+    this->create_list(this, &this->scenarios, 20, 120, 600, 130, 0xB);
+    this->create_auto_scrollbar(&this->scenarios_bar, this->scenarios, 20);
+    this->create_text(this, &this->campaign_scenarios_title, IDS_CAMPAIGN_SCENARIOS_TITLE, 20, 280, 200, 20, 4, 0, 0, 0);
+    this->create_list(this, &this->campaign_scenarios, 20, 300, 500, 130, 0xB);
+    this->create_auto_scrollbar(&this->campaign_scenarios_bar, this->campaign_scenarios, 20);
 
-    this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
-                        0, 20, 445, 280, 30, 0, 0, 0);
-    this->create_button(this, &this->cancel_button, IDS_BUTTON_CANCEL,
-                        0, 340, 445, 280, 30, 0, 0, 0);
+    this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 20, 445, 280, 30, 0, 0, 0);
+    this->create_button(this, &this->cancel_button, IDS_BUTTON_CANCEL, 0, 340, 445, 280, 30, 0, 0, 0);
     TButtonPanel* cancel = this->cancel_button;
     cancel->hotkey = 0x1B;
     cancel->hotkey_shift = 0;
 
-    this->create_button(this, &this->move_scenario_up_button,
-                        IDS_BUTTON_MOVE_SCENARIO_UP,
-                        0, 530, 300, 90, 30, 0, 0, 0);
-    this->create_button(this, &this->move_scenario_down_button,
-                        IDS_BUTTON_MOVE_SCENARIO_DOWN,
+    this->create_button(this, &this->move_scenario_up_button, IDS_BUTTON_MOVE_SCENARIO_UP, 0, 530, 300, 90, 30, 0, 0, 0);
+    this->create_button(this, &this->move_scenario_down_button, IDS_BUTTON_MOVE_SCENARIO_DOWN,
                         0, 530, 340, 90, 30, 0, 0, 0);
 
     TPanel* tabList[8];
@@ -305,25 +285,17 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
                 scenarios_text = static_cast<char**>(calloc(count, 4));
                 scenarios_filenames = static_cast<char**>(calloc(count, 4));
                 for (i = 0; i < count; ++i) {
-                    getstring(&scenarios_text[i],
-                              this->campaign_scenarios->get_text(i));
-                    getstring(&scenarios_filenames[i],
-                              this->campaign_scenarios->get_text(i));
-                    sprintf(test, "%s%s.scn",
-                            rge_base_game->prog_info->scenario_dir,
-                            scenarios_filenames[i]);
+                    getstring(&scenarios_text[i], this->campaign_scenarios->get_text(i));
+                    getstring(&scenarios_filenames[i], this->campaign_scenarios->get_text(i));
+                    sprintf(test, "%s%s.scn", rge_base_game->prog_info->scenario_dir, scenarios_filenames[i]);
                     if (_findfirst(test, &file_info) == -1) {
-                        addstring(&scenarios_filenames[i], scenarios_filenames[i],
-                                  ".scx");
+                        addstring(&scenarios_filenames[i], scenarios_filenames[i], ".scx");
                     } else {
-                        addstring(&scenarios_filenames[i], scenarios_filenames[i],
-                                  ".scn");
+                        addstring(&scenarios_filenames[i], scenarios_filenames[i], ".scn");
                     }
                 }
 
-                new_campaign = new RGE_Campaign(
-                    text, campaign_filename, count, scenarios_filenames,
-                    scenarios_text);
+                new_campaign = new RGE_Campaign(text, campaign_filename, count, scenarios_filenames, scenarios_text);
                 this->campaign = new_campaign;
                 if (new_campaign != 0) {
                     delete new_campaign;
@@ -359,8 +331,7 @@ void TRIBE_Campaign_Editor_Screen::add_scenario() {
         long line2 = this->scenarios->get_line();
         this->scenarios->delete_line(line2);
 
-        this->campaign_scenarios->scroll_cur_line(
-            1, this->campaign_scenarios->get_line(), 1);
+        this->campaign_scenarios->scroll_cur_line(1, this->campaign_scenarios->get_line(), 1);
     }
 
     this->need_to_save = 1;
@@ -374,8 +345,7 @@ void TRIBE_Campaign_Editor_Screen::remove_scenario() {
         this->scenarios->set_line(line);
         line = this->campaign_scenarios->get_line();
         this->campaign_scenarios->delete_line(line);
-        this->scenarios->scroll_cur_line(
-            1, this->scenarios->get_line(), 1);
+        this->scenarios->scroll_cur_line(1, this->scenarios->get_line(), 1);
     }
     this->need_to_save = 1;
 }
@@ -387,17 +357,13 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_up() {
 
     char* text = this->campaign_scenarios->get_text();
     if (text != 0 && text[0] != 0) {
-        this->campaign_scenarios->insert_line(
-            this->campaign_scenarios->get_line() - 1, text, 0);
+        this->campaign_scenarios->insert_line(this->campaign_scenarios->get_line() - 1, text, 0);
 
-        this->campaign_scenarios->delete_line(
-            this->campaign_scenarios->get_line() + 1);
+        this->campaign_scenarios->delete_line(this->campaign_scenarios->get_line() + 1);
 
-        this->campaign_scenarios->set_line(
-            this->campaign_scenarios->get_line() - 1);
+        this->campaign_scenarios->set_line(this->campaign_scenarios->get_line() - 1);
 
-        this->campaign_scenarios->scroll_cur_line(
-            1, this->campaign_scenarios->get_line(), 1);
+        this->campaign_scenarios->scroll_cur_line(1, this->campaign_scenarios->get_line(), 1);
     }
 
     this->need_to_save = 1;
@@ -410,14 +376,10 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_down() {
     if (line < last_line) {
         char* text = this->campaign_scenarios->get_text();
         if (text != 0 && text[0] != 0) {
-            this->campaign_scenarios->insert_line(
-                this->campaign_scenarios->get_line() + 2, text, 0);
-            this->campaign_scenarios->delete_line(
-                this->campaign_scenarios->get_line());
-            this->campaign_scenarios->set_line(
-                this->campaign_scenarios->get_line() + 1);
-            this->campaign_scenarios->scroll_cur_line(
-                1, this->campaign_scenarios->get_line(), 1);
+            this->campaign_scenarios->insert_line(this->campaign_scenarios->get_line() + 2, text, 0);
+            this->campaign_scenarios->delete_line(this->campaign_scenarios->get_line());
+            this->campaign_scenarios->set_line(this->campaign_scenarios->get_line() + 1);
+            this->campaign_scenarios->scroll_cur_line(1, this->campaign_scenarios->get_line(), 1);
         }
         this->need_to_save = 1;
     }

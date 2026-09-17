@@ -67,8 +67,7 @@ need_realloc:
 
         buf = new TDrawArea("time message panel", 0);
         this->ImageBuffer = buf;
-        buf->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0,
-                  0);
+        buf->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0);
 
         this->LastIBWidth = this->pnl_wid;
         this->LastIBHeight = this->pnl_hgt;
@@ -78,8 +77,7 @@ need_realloc:
         this->ImageRect.right = this->pnl_wid - 1;
         this->ImageRect.bottom = this->pnl_hgt - 1;
 
-        this->image_clip_region = CreateRectRgn(0, 0, this->pnl_wid - 1,
-                                                this->pnl_hgt - 1);
+        this->image_clip_region = CreateRectRgn(0, 0, this->pnl_wid - 1, this->pnl_hgt - 1);
     }
 
 skip_realloc:
@@ -177,9 +175,7 @@ void TRIBE_Panel_Pop::draw() {
 
     if (this->ImageTextActive != 0 && this->ImageBuffer != 0) {
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area,
-                                this->UsedScreenRect.left,
-                                this->UsedScreenRect.top,
+        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top,
                                 &this->UsedImageRect, 1);
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
@@ -189,8 +185,7 @@ void TRIBE_Panel_Pop::draw() {
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
         old_font = SelectObject(this->render_area->DrawDc, this->font);
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
-        sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX),
-                this->pop, this->max_pop);
+        sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop, this->max_pop);
 
         SetTextColor(this->render_area->DrawDc, this->color2);
 
@@ -262,8 +257,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, TRANSPARENT);
 
-    sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop,
-            this->max_pop);
+    sprintf(str, "%s%ld/%ld", this->get_string(IDS_POPULATION_PREFIX), this->pop, this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
 
     {

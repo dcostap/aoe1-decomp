@@ -170,9 +170,7 @@ void __cdecl rge_read(int handle, void* data, int size) {
             temp_size = file_size;
             compression_point = 0;
             temp_max = 0x10000;
-            Inf32Decode(file_buffers, 0, &temp_size,
-                         buffers, 0, &temp_max, compression_buffers,
-                         1);
+            Inf32Decode(file_buffers, 0, &temp_size, buffers, 0, &temp_max, compression_buffers, 1);
             compression_point += temp_size;
             flags = 0;
         }
@@ -188,9 +186,7 @@ void __cdecl rge_read(int handle, void* data, int size) {
 
                 temp_size = file_size;
                 temp_max = 0x10000;
-                Inf32Decode(file_buffers, compression_point, &temp_size,
-                             buffers, 0, &temp_max,
-                             compression_buffers, 1);
+                Inf32Decode(file_buffers, compression_point, &temp_size, buffers, 0, &temp_max, compression_buffers, 1);
                 compression_point += temp_size;
 
                 remaining -= copy;
@@ -232,8 +228,7 @@ void __cdecl rge_write(int handle, void* data, int size) {
                 flags = 1;
                 int state_size = deflate_buf_size();
                 compression_buffers = (unsigned char*)calloc(state_size, 1);
-                deflate_init(compression_buffers, 0x4B, 2, 1,
-                             buffers, 0x10000, rge_buffer_full);
+                deflate_init(compression_buffers, 0x4B, 2, 1, buffers, 0x10000, rge_buffer_full);
             }
             int result = deflate_data(compression_buffers, data, size, 0);
             if (result == 2) {

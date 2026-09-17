@@ -115,8 +115,7 @@ long TRIBE_Panel_Inven::handle_idle() {
 
     int mode = rge_base_game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
-        unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 173);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 173);
         if (now - this->idle_time >= (unsigned long)this->idle_interval) {
             color_log(0xBA, 0xBA, 5);
 
@@ -142,8 +141,7 @@ long TRIBE_Panel_Inven::handle_idle() {
                 this->set_redraw(TPanel::RedrawNormal);
             }
 
-            this->idle_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 194);
+            this->idle_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 194);
             color_log(0xBA, 0x5F, 5);
         }
     }
@@ -179,20 +177,16 @@ unsigned char TRIBE_Panel_Inven::get_help_info(char*& string, long& page, long x
         return 0;
 
     if (x < this->pnl_x + 0x37) {
-        sprintf(string, this->get_string(IDS_HELP_INVENTORY_WOOD_FORMAT),
-                (int)this->player->attributes[1]);
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_WOOD_FORMAT), (int)this->player->attributes[1]);
         page = -1;
     } else if (x < this->pnl_x + 0x6E) {
-        sprintf(string, this->get_string(IDS_HELP_INVENTORY_FOOD_FORMAT),
-                (int)this->player->attributes[0]);
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_FOOD_FORMAT), (int)this->player->attributes[0]);
         page = -1;
     } else if (x < this->pnl_x + 0xA5) {
-        sprintf(string, this->get_string(IDS_HELP_INVENTORY_GOLD_FORMAT),
-                (int)this->player->attributes[3]);
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_GOLD_FORMAT), (int)this->player->attributes[3]);
         page = -1;
     } else {
-        sprintf(string, this->get_string(IDS_HELP_INVENTORY_STONE_FORMAT),
-                (int)this->player->attributes[2]);
+        sprintf(string, this->get_string(IDS_HELP_INVENTORY_STONE_FORMAT), (int)this->player->attributes[2]);
         page = -1;
     }
 

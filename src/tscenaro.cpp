@@ -540,29 +540,23 @@ void T_Scenario::SaveAttributesIntoPlayers() {
     int other;
     if (player < this->world->player_num) {
         do {
-            this->world->players[player]->new_attribute_num(
-                0, (float)this->Get_player_Food(player - 1));
-            this->world->players[player]->new_attribute_num(
-                2, (float)this->Get_player_Stone(player - 1));
-            this->world->players[player]->new_attribute_num(
-                3, (float)this->Get_player_Gold(player - 1));
-            this->world->players[player]->new_attribute_num(
-                1, (float)this->Get_player_Wood(player - 1));
+            this->world->players[player]->new_attribute_num(0, (float)this->Get_player_Food(player - 1));
+            this->world->players[player]->new_attribute_num(2, (float)this->Get_player_Stone(player - 1));
+            this->world->players[player]->new_attribute_num(3, (float)this->Get_player_Gold(player - 1));
+            this->world->players[player]->new_attribute_num(1, (float)this->Get_player_Wood(player - 1));
 
             other = 1;
             if (other < this->world->player_num) {
                 do {
                     if (other != player) {
-                        this->world->players[player]->set_relation(
-                            other,
-                            (unsigned char)this->Opponent[player - 1].Attitude[other - 1]);
+                        this->world->players[player]->set_relation(other,
+                                                                   (unsigned char)this->Opponent[player - 1].Attitude[other - 1]);
                     }
                     ++other;
                 } while (other < this->world->player_num);
             }
 
-            this->world->players[player]->set_allied_victory(
-                (unsigned char)this->AlliedVictory[player - 1]);
+            this->world->players[player]->set_allied_victory((unsigned char)this->AlliedVictory[player - 1]);
             ++player;
         } while (player < this->world->player_num);
     }
@@ -585,8 +579,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
             world = this->world;
             for (int player = one; player < (int)world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
-                    static_cast<TRIBE_Victory_Conditions*>(
-                        world->players[player]->victory_conditions);
+                    static_cast<TRIBE_Victory_Conditions*>(world->players[player]->victory_conditions);
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -610,8 +603,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
             world = this->world;
             for (int player = one; player < (int)world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
-                    static_cast<TRIBE_Victory_Conditions*>(
-                        world->players[player]->victory_conditions);
+                    static_cast<TRIBE_Victory_Conditions*>(world->players[player]->victory_conditions);
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -641,8 +633,7 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
     SaveAttributes = 0x72;
     do {
         TRIBE_Victory_Conditions* conditions =
-            static_cast<TRIBE_Victory_Conditions*>(
-                this->world->players[j + 1]->victory_conditions);
+            static_cast<TRIBE_Victory_Conditions*>(this->world->players[j + 1]->victory_conditions);
         int i = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[j][i];
@@ -668,53 +659,38 @@ void T_Scenario::Save_victory_conditions_into_players(int SaveAttributes) {
                         conditions->add_attributes(1, 6, attribute_field[-1], 0);
                     }
                 } else if (type == 6) {
-                    conditions->add_attributes(1, *attribute_field,
-                                               attribute_field[-1], 0);
+                    conditions->add_attributes(1, *attribute_field, attribute_field[-1], 0);
                 } else if (type == 5) {
-                    conditions->add_capture(1,
-                                            this->get_object_pointer(condition->obj_ID), 1);
+                    conditions->add_capture(1, this->get_object_pointer(condition->obj_ID), 1);
                 } else if (type == 3) {
                     if (this->get_object_pointer(condition->dest_obj_ID) != 0) {
-                        conditions->add_bring(
-                            1,
-                            this->get_object_pointer(condition->obj_ID),
-                            this->get_object_pointer(condition->dest_obj_ID));
+                        conditions->add_bring(1, this->get_object_pointer(condition->obj_ID),
+                                              this->get_object_pointer(condition->dest_obj_ID));
                     } else {
-                        conditions->add_bring(
-                            1,
-                            this->get_object_pointer(condition->obj_ID),
-                            this->sp_victory[j][i].x1,
-                            condition->y1, condition->x2, condition->y2);
+                        conditions->add_bring(1, this->get_object_pointer(condition->obj_ID), this->sp_victory[j][i].x1,
+                                              condition->y1, condition->x2, condition->y2);
                     }
                 } else if (type == 2) {
                     if (condition->x2 > DAT_00577330) {
-                        conditions->add_create(
-                            1, condition->ObjType, condition->Amount,
-                            this->sp_victory[j][i].x1,
-                            condition->y1, condition->x2, condition->y2, 0);
+                        conditions->add_create(1, condition->ObjType, condition->Amount, this->sp_victory[j][i].x1,
+                                               condition->y1, condition->x2, condition->y2, 0);
                     } else {
-                        conditions->add_create(1, condition->ObjType,
-                                                condition->Amount, 0);
+                        conditions->add_create(1, condition->ObjType, condition->Amount, 0);
                     }
                 } else if (type == 7) {
                     conditions->add_tech(1, condition->AttribType);
                 } else if (type == 1) {
                     int object_type = condition->ObjType;
                     if (object_type != 0 && condition->AllFlag != 0) {
-                        conditions->add_destroy(1, object_type,
-                                                (RGE_Player*)0);
+                        conditions->add_destroy(1, object_type, (RGE_Player*)0);
                     } else {
                         int player_id = condition->PlayerID;
                         if (player_id != 0 && object_type != 0) {
-                            conditions->add_destroy(
-                                1, object_type, condition->Amount,
-                                this->world->players[player_id]);
+                            conditions->add_destroy(1, object_type, condition->Amount, this->world->players[player_id]);
                         } else if (player_id != 0) {
-                            conditions->add_destroy(1,
-                                                    this->world->players[player_id]);
+                            conditions->add_destroy(1, this->world->players[player_id]);
                         } else if (this->get_object_pointer(condition->obj_ID) != 0) {
-                            conditions->add_destroy(
-                                1, this->get_object_pointer(condition->obj_ID));
+                            conditions->add_destroy(1, this->get_object_pointer(condition->obj_ID));
                         }
                     }
                 }

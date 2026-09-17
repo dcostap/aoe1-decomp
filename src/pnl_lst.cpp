@@ -253,8 +253,7 @@ void TListPanel::scroll_cur_line(unsigned char scroll_type, short scroll_val, in
         if (this->cur_line < this->top_line) {
             this->scroll(1, this->cur_line, update_scrollbar);
         } else if (this->cur_line > this->bot_line) {
-            this->scroll(0, this->cur_line - this->bot_line,
-                         update_scrollbar);
+            this->scroll(0, this->cur_line - this->bot_line, update_scrollbar);
         }
         break;
     }
@@ -355,12 +354,9 @@ void TListPanel::draw() {
             if (this->drawHighlightBar != 0 &&
                 (this->have_focus != 0 || this->mouse_captured != 0) &&
                 line_index + this->top_line == this->cur_line) {
-                this->draw_line(dc, line_index, line,
-                                this->highlightTextColor1,
-                                this->highlightTextColor2);
+                this->draw_line(dc, line_index, line, this->highlightTextColor1, this->highlightTextColor2);
             } else {
-                this->draw_line(dc, line_index, line,
-                                this->text_color1, this->text_color2);
+                this->draw_line(dc, line_index, line, this->text_color1, this->text_color2);
             }
         }
 
@@ -386,8 +382,7 @@ void TListPanel::draw_highlight_bar() {
     void* dc = this->render_area->GetDc(s_pnl_lst__draw_highlight_bar);
     if (dc != 0) {
         tagRECT r;
-        this->calc_line_pos(dc, this->cur_line - this->top_line, this->cur_line,
-                            &r, 0);
+        this->calc_line_pos(dc, this->cur_line - this->top_line, this->cur_line, &r, 0);
         this->render_area->ReleaseDc(s_pnl_lst__draw_highlight_bar);
 
         if (this->render_area->Lock(s_pnl_lst__draw_highlight_bar, 1) != 0) {
@@ -402,40 +397,26 @@ void TListPanel::draw_highlight_bar() {
                 this->render_area->DrawRect(left, top, right, bottom, 0xFF);
                 break;
             case 5:
-                this->render_area->DrawBevel(
-                    left, top, right, bottom,
-                    this->bevel_color6, this->bevel_color1);
+                this->render_area->DrawBevel(left, top, right, bottom, this->bevel_color6, this->bevel_color1);
                 break;
             case 6:
-                this->render_area->DrawBevel2(
-                    left, top, right, bottom,
-                    this->bevel_color6, this->bevel_color5,
-                    this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel2(left, top, right, bottom, this->bevel_color6, this->bevel_color5,
+                                              this->bevel_color2, this->bevel_color1);
                 break;
             case 7:
-                this->render_area->DrawBevel3(
-                    left, top, right, bottom,
-                    this->bevel_color6, this->bevel_color5,
-                    this->bevel_color4, this->bevel_color3,
-                    this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel3(left, top, right, bottom, this->bevel_color6, this->bevel_color5,
+                                              this->bevel_color4, this->bevel_color3, this->bevel_color2, this->bevel_color1);
                 break;
             case 2:
-                this->render_area->DrawBevel(
-                    left, top, right, bottom,
-                    this->bevel_color1, this->bevel_color6);
+                this->render_area->DrawBevel(left, top, right, bottom, this->bevel_color1, this->bevel_color6);
                 break;
             case 3:
-                this->render_area->DrawBevel2(
-                    left, top, right, bottom,
-                    this->bevel_color1, this->bevel_color2,
-                    this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel2(left, top, right, bottom, this->bevel_color1, this->bevel_color2,
+                                              this->bevel_color5, this->bevel_color6);
                 break;
             case 4:
-                this->render_area->DrawBevel3(
-                    left, top, right, bottom,
-                    this->bevel_color1, this->bevel_color2,
-                    this->bevel_color3, this->bevel_color4,
-                    this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel3(left, top, right, bottom, this->bevel_color1, this->bevel_color2,
+                                              this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
                 break;
             }
         }

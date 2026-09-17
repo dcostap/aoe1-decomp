@@ -30,10 +30,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     strcpy(info_file, static_cast<TEasy_Panel*>(from_panel)->get_popup_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
-    if (!this->setup(draw_area,
-                     info_file,
-                     static_cast<TEasy_Panel*>(from_panel)->get_popup_info_id(),
-                     1)) {
+    if (!this->setup(draw_area, info_file, static_cast<TEasy_Panel*>(from_panel)->get_popup_info_id(), 1)) {
         this->error_code = 1;
         return;
     }
@@ -42,8 +39,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     this->set_ideal_size(640, 480);
 
     TTextPanel** title_ptr = &this->title;
-    if (!this->create_text(this, title_ptr,
-                           (this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE,
+    if (!this->create_text(this, title_ptr, (this->modeValue != SaveGame) + IDS_SAVE_GAME_TITLE_BASE,
                            20, 20, 600, 30, 1, 1, 0, 0)) {
         return;
     }
@@ -55,8 +51,7 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
         width = 0x7A - strlen(rge_base_game->work_dir);
     }
 
-    if (!this->create_edit(this, &this->input, file_name, static_cast<short>(width),
-                           TEditPanel::FormatFileNoExt,
+    if (!this->create_edit(this, &this->input, file_name, static_cast<short>(width), TEditPanel::FormatFileNoExt,
                            20, 70, 600, 23, 11, 1, 1)) {
         return;
     }
@@ -70,16 +65,13 @@ TribeSaveGameScreen::TribeSaveGameScreen(Mode m, char* file_name, int quit_after
     }
     this->scrollbar->set_help_info(IDS_HELP_SELECT_SAVED_GAME, -1);
 
-    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0,
-                             30, 440, 180, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 30, 440, 180, 30, 0, 0, 0)) {
         return;
     }
-    if (!this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE, 0,
-                             230, 440, 180, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE, 0, 230, 440, 180, 30, 0, 0, 0)) {
         return;
     }
-    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                             430, 440, 180, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 180, 30, 0, 0, 0)) {
         return;
     }
 
@@ -179,13 +171,11 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 if (this->modeValue == SaveGame) {
                     directory = rge_base_game->prog_info->save_dir;
                     line = this->list->currentLine();
-                    sprintf(tempFileName, "%s%s.gam",
-                            directory, line);
+                    sprintf(tempFileName, "%s%s.gam", directory, line);
                 } else {
                     directory = rge_base_game->prog_info->scenario_dir;
                     line = this->list->currentLine();
-                    sprintf(tempFileName, "%s%s.scn",
-                            directory, line);
+                    sprintf(tempFileName, "%s%s.scn", directory, line);
                 }
                 _unlink(tempFileName);
 
@@ -193,12 +183,10 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 prog_info = rge_base_game->prog_info;
                 if (mode == SaveGame) {
                     directory = prog_info->save_dir;
-                    sprintf(tempFileName, "%s%s.gmx",
-                            directory, this->list->currentLine());
+                    sprintf(tempFileName, "%s%s.gmx", directory, this->list->currentLine());
                 } else {
                     directory = prog_info->scenario_dir;
-                    sprintf(tempFileName, "%s%s.scx",
-                            directory, this->list->currentLine());
+                    sprintf(tempFileName, "%s%s.scx", directory, this->list->currentLine());
                 }
                 _unlink(tempFileName);
 
@@ -241,14 +229,10 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             exist_flag = 0;
             if (this->modeValue == SaveGame) {
                 sprintf(this->fileName, "%s.gam", this->fileNameNoExt);
-                sprintf(tempFileName, "%s%s",
-                        rge_base_game->prog_info->save_dir,
-                        this->fileName);
+                sprintf(tempFileName, "%s%s", rge_base_game->prog_info->save_dir, this->fileName);
             } else {
                 sprintf(this->fileName, "%s.scn", this->fileNameNoExt);
-                sprintf(tempFileName, "%s%s",
-                        rge_base_game->prog_info->scenario_dir,
-                        this->fileName);
+                sprintf(tempFileName, "%s%s", rge_base_game->prog_info->scenario_dir, this->fileName);
             }
 
             FILE* file = fopen(tempFileName, "rb");
@@ -259,14 +243,10 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
 
             if (this->modeValue == SaveGame) {
                 sprintf(this->fileName, "%s.gmx", this->fileNameNoExt);
-                sprintf(tempFileName, "%s%s",
-                        rge_base_game->prog_info->save_dir,
-                        this->fileName);
+                sprintf(tempFileName, "%s%s", rge_base_game->prog_info->save_dir, this->fileName);
             } else {
                 sprintf(this->fileName, "%s.scx", this->fileNameNoExt);
-                sprintf(tempFileName, "%s%s",
-                        rge_base_game->prog_info->scenario_dir,
-                        this->fileName);
+                sprintf(tempFileName, "%s%s", rge_base_game->prog_info->scenario_dir, this->fileName);
             }
 
             if (exist_flag == 0) {
@@ -333,9 +313,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
             panel_system.destroyPanel("YesNoDialog");
             if (this->modeValue == SaveGame) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                sprintf(tempFileName, "%s%s.gam",
-                        rge_base_game->prog_info->save_dir,
-                        this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s.gam", rge_base_game->prog_info->save_dir, this->fileNameNoExt);
                 _unlink(tempFileName);
                 if (static_cast<TRIBE_Game*>(rge_base_game)->
                         save_game(this->fileName) == 0) {
@@ -343,9 +321,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 }
             } else if (this->modeValue == SaveScenario) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                sprintf(tempFileName, "%s%s.scn",
-                        rge_base_game->prog_info->scenario_dir,
-                        this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
                 _unlink(tempFileName);
                 if (static_cast<TRIBE_Game*>(rge_base_game)->
                         save_scenario(this->fileName) == 0) {
@@ -353,9 +329,7 @@ long TribeSaveGameScreen::action(TPanel* fromPanel, long actionIn, unsigned long
                 }
             } else if (this->modeValue == SaveScenarioEdit) {
                 this->input->get_trimmed_str(this->fileNameNoExt, 0x104);
-                sprintf(tempFileName, "%s%s.scn",
-                        rge_base_game->prog_info->scenario_dir,
-                        this->fileNameNoExt);
+                sprintf(tempFileName, "%s%s.scn", rge_base_game->prog_info->scenario_dir, this->fileNameNoExt);
                 _unlink(tempFileName);
                 this->save_for_scenario_editor();
             }
@@ -375,8 +349,7 @@ void TribeSaveGameScreen::save_for_scenario_editor() {
         return;
     }
 
-    TRIBE_Screen_Sed* scenario_editor = static_cast<TRIBE_Screen_Sed*>(
-        panel_system.panel("Scenario Editor Screen"));
+    TRIBE_Screen_Sed* scenario_editor = static_cast<TRIBE_Screen_Sed*>(panel_system.panel("Scenario Editor Screen"));
     if (scenario_editor != 0) {
         scenario_editor->need_to_save_flag = 0;
     }

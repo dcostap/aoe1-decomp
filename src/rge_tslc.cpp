@@ -161,8 +161,7 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int duration) {
         maximum = high;
     }
 
-    sprintf(TBuff, "Lo=%d < Avg=%d > Hi=%d of %d",
-            minimum, average, maximum, duration);
+    sprintf(TBuff, "Lo=%d < Avg=%d > Hi=%d of %d", minimum, average, maximum, duration);
     return TBuff;
 }
 

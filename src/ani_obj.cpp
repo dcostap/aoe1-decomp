@@ -72,8 +72,7 @@ unsigned char RGE_Animated_Object::update() {
     }
 
     RGE_Game_World* game_world = this->owner->world;
-    this->sprite_list->update(
-        game_world->world_time_delta_seconds, this->speed);
+    this->sprite_list->update(game_world->world_time_delta_seconds, this->speed);
 
     return result;
 }

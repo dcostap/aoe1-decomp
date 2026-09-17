@@ -153,8 +153,7 @@ void Visible_Unit_Manager::Update_Unit_Info(
                             short list_size = list->list_size;
                             VISIBLE_UNIT_REC* new_list =
                                 (VISIBLE_UNIT_REC*)calloc(list_size * 2, 8);
-                            memcpy(new_list, list->unit_list,
-                                   list_size * 8);
+                            memcpy(new_list, list->unit_list, list_size * 8);
                             free(list->unit_list);
                             list->unit_list = new_list;
                             list->list_size = list_size * 2;
@@ -165,8 +164,7 @@ void Visible_Unit_Manager::Update_Unit_Info(
                                 RGE_Static_Object* object =
                                     VIS_UNIT_objectsValue[record->object_id];
                                 if (object != 0) {
-                                    *(VISIBLE_UNIT_REC **)(
-                                        (int)object + i + (int)ObjectPtrs) =
+                                    *(VISIBLE_UNIT_REC **)((int)object + i + (int)ObjectPtrs) =
                                         record;
                                 }
                                 ++j;
@@ -195,8 +193,7 @@ void Visible_Unit_Manager::Update_Unit_Info(
                             RGE_Static_Object* object =
                                 VIS_UNIT_objectsValue[record->object_id];
                             if (object != 0) {
-                                *(VISIBLE_UNIT_REC **)(
-                                    (int)object + i + (int)ObjectPtrs) =
+                                *(VISIBLE_UNIT_REC **)((int)object + i + (int)ObjectPtrs) =
                                     record;
                             }
                         }
@@ -339,8 +336,7 @@ Visible_Resource_Manager::Visible_Resource_Manager(int infile, RGE_Player* list_
 
     if (this->num_visible_resource_lists > 0) {
         this->VR_List =
-            (VISIBLE_RESOURCE_REC**)calloc(
-                this->num_visible_resource_lists, 4);
+            (VISIBLE_RESOURCE_REC**)calloc(this->num_visible_resource_lists, 4);
         this->VR_ListSize =
             (int*)calloc(this->num_visible_resource_lists, 4);
         this->VR_ListUsed =
@@ -351,8 +347,7 @@ Visible_Resource_Manager::Visible_Resource_Manager(int infile, RGE_Player* list_
                 rge_read(infile, this->VR_ListSize + i, 4);
                 rge_read(infile, this->VR_ListUsed + i, 4);
                 this->VR_List[i] =
-                    (VISIBLE_RESOURCE_REC*)malloc(
-                        this->VR_ListSize[i] << 3);
+                    (VISIBLE_RESOURCE_REC*)malloc(this->VR_ListSize[i] << 3);
                 i++;
             } while (i < this->num_visible_resource_lists);
         }
@@ -362,8 +357,7 @@ Visible_Resource_Manager::Visible_Resource_Manager(int infile, RGE_Player* list_
         if (this->num_visible_resource_lists > 0) {
             do {
                 if (this->VR_ListUsed[i] > 0) {
-                    rge_read(saved_handle, this->VR_List[i],
-                             this->VR_ListUsed[i] * 8);
+                    rge_read(saved_handle, this->VR_List[i], this->VR_ListUsed[i] * 8);
                 }
                 i++;
             } while (i < this->num_visible_resource_lists);
@@ -411,8 +405,7 @@ void Visible_Resource_Manager::save(int outfile) {
     if (this->num_visible_resource_lists > 0) {
         do {
             if (this->VR_ListUsed[i] > 0) {
-                rge_write(outfile, this->VR_List[i],
-                          this->VR_ListUsed[i] << 3);
+                rge_write(outfile, this->VR_List[i], this->VR_ListUsed[i] << 3);
             }
             i++;
         } while (i < this->num_visible_resource_lists);
@@ -463,8 +456,7 @@ void Visible_Resource_Manager::AddResource(int Obj_Id, int ObjGroup) {
                 n = n + n;
                 VISIBLE_RESOURCE_REC* new_list =
                     (VISIBLE_RESOURCE_REC*)malloc(n * 8);
-                memcpy(new_list, this->VR_List[ObjGroup],
-                       this->VR_ListSize[ObjGroup] << 3);
+                memcpy(new_list, this->VR_List[ObjGroup], this->VR_ListSize[ObjGroup] << 3);
                 free(this->VR_List[ObjGroup]);
                 this->VR_List[ObjGroup] = new_list;
                 this->VR_ListSize[ObjGroup] = n;
@@ -538,12 +530,10 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(int Xpos, i
                 int distance;
                 if (xd > yd) {
                     distance =
-                        (xd - (int)(DAT_005776d8 -
-                                    yd * DAT_005776d0)) - yd;
+                        (xd - (int)(DAT_005776d8 - yd * DAT_005776d0)) - yd;
                 } else {
                     distance =
-                        (yd - (int)(DAT_005776d8 -
-                                    xd * DAT_005776d0)) - xd;
+                        (yd - (int)(DAT_005776d8 - xd * DAT_005776d0)) - xd;
                 }
 
                 if (distance < bestdist) {

@@ -146,8 +146,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info,
                             long delta_y = y - info.land[previous].y;
                             if (delta_y < 0)
                                 delta_y = -delta_y;
-                            if ((float)(delta_x * delta_x +
-                                delta_y * delta_y) <= bound_square) {
+                            if ((float)(delta_x * delta_x + delta_y * delta_y) <= bound_square) {
                                 if (!not_done && previous == index - 1) {
                                     info.land[previous].y = y;
                                     info.land[previous].x = x;

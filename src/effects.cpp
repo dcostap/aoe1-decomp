@@ -155,25 +155,20 @@ void RGE_Effects::do_effect(short current_effect, RGE_Player* player) {
                 case 4: {
                     short operation = command->change_num3;
                     float amount = command->change_amount;
-                    player->modify_tobj_delta(command->change_num1, command->change_num2,
-                                              amount,
-                                              (unsigned char)operation);
+                    player->modify_tobj_delta(command->change_num1, command->change_num2, amount, (unsigned char)operation);
                     break;
                 }
                 case 5: {
                     short operation = command->change_num3;
                     float amount = command->change_amount;
-                    player->modify_tobj_percent(command->change_num1, command->change_num2,
-                                                amount,
+                    player->modify_tobj_percent(command->change_num1, command->change_num2, amount,
                                                 (unsigned char)operation);
                     break;
                 }
                 case 0: {
                     short operation = command->change_num3;
                     float amount = command->change_amount;
-                    player->modify_tobj(command->change_num1, command->change_num2,
-                                        amount,
-                                        (unsigned char)operation);
+                    player->modify_tobj(command->change_num1, command->change_num2, amount, (unsigned char)operation);
                     break;
                 }
                 case 1: {

@@ -899,8 +899,7 @@ void RGE_Diamond_Map::draw_view_rect() {
     this->view_rect.top =
         (long)((float)map_y - (float)vhgt * this->map_row_ratio);
     this->view_rect.right =
-        (long)((float)map_x +
-               (float)(vwid / 2 + 2) * this->map_col_ratio);
+        (long)((float)map_x + (float)(vwid / 2 + 2) * this->map_col_ratio);
     this->view_rect.bottom =
         (long)((float)map_y + (float)(vhgt + 4) * this->map_row_ratio);
 
@@ -969,8 +968,7 @@ int RGE_Diamond_Map::pick_tile(long x, long y, short *col, short *row, RGE_Tile 
       int tile_adjusted_x = adjusted_x - line->start_x;
       RGE_Map_Tile_Row *tile_row_ptr = &this->map_tile_rows[line->tile_row];
 
-      long col_offset = (long)(tile_adjusted_x * tile_row_ptr->col_step +
-                               tile_row_ptr->col_extra);
+      long col_offset = (long)(tile_adjusted_x * tile_row_ptr->col_step + tile_row_ptr->col_extra);
 
       short result_col = tile_row_ptr->map_col + (short)col_offset;
       short result_row = tile_row_ptr->map_row + (short)col_offset;

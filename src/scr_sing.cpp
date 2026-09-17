@@ -28,20 +28,15 @@ TribeSPMenuScreen::TribeSPMenuScreen() : TScreenPanel("Single Player Menu") {
 
     set_ideal_size(640, 480);
 
-    if (create_text(this, &title, IDS_MENU_SINGLE_PLAYER_TITLE, 20, 20, 600,
-                    30, 1, 1, 0, 0)) {
+    if (create_text(this, &title, IDS_MENU_SINGLE_PLAYER_TITLE, 20, 20, 600, 30, 1, 1, 0, 0)) {
         for (int id = 0x76, i = 0; id < 0x1A2; id += 0x32, i++) {
-            if (!create_button(this, &button[i], "", 0,
-                               170, id, 300, 40, 0, 0, 0))
+            if (!create_button(this, &button[i], "", 0, 170, id, 300, 40, 0, 0, 0))
                 return;
         }
 
-        if (create_button(this, &close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0,
-                          0, -1, -1, 0)) {
+        if (create_button(this, &close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0)) {
             close_button->set_active(1);
-            close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4,
-                                          4, 17, 17, 17, 17,
-                                          0, 0, 0, 0);
+            close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
 
             button[0]->set_text(0, IDS_MENU_RANDOM_MAP);
             button[1]->set_text(0, IDS_MENU_CAMPAIGN);

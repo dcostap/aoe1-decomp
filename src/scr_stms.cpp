@@ -45,8 +45,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, char* messa
         error_code = 1;
     } else {
         set_ideal_size(640, 480);
-        create_text(this, &message, message_in,
-                    40, 40, 560, 400, 4, 1, 1, 1);
+        create_text(this, &message, message_in, 40, 40, 560, 400, 4, 1, 1, 1);
     }
 }
 
@@ -87,8 +86,7 @@ TRIBE_Screen_Status_Message::TRIBE_Screen_Status_Message(char* name, long messag
         error_code = 1;
     } else {
         set_ideal_size(640, 480);
-        create_text(this, &message, message_in,
-                    40, 40, 560, 400, 4, 1, 1, 1);
+        create_text(this, &message, message_in, 40, 40, 560, 400, 4, 1, 1, 1);
     }
 }
 

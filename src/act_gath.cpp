@@ -100,9 +100,7 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          (int)0x202, 0x261L,
-                          (long)this->targetType, 0L);
+        this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x202, 0x261L, (long)this->targetType, 0L);
         this->timer = -10.0f;
         this->obj->new_sprite(this->get_wait_sprite());
         return;
@@ -120,9 +118,8 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
     case 11:
     case 15: {
         this->timer = 0.0f;
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_x, this->target_y, this->target_z,
-            this->task->work_range, this->get_move_sprite());
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
+                                                            this->task->work_range, this->get_move_sprite());
         if (action == 0) {
             this->set_state(13);
             return;
@@ -143,9 +140,8 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
         this->target_y = this->target_obj->world_y;
         this->target_z = this->target_obj->world_z;
 
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_obj, this->task->work_range,
-            this->get_move_sprite());
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range,
+                                                            this->get_move_sprite());
         if (action == 0) {
             this->set_state(13);
             return;
@@ -176,19 +172,15 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
             if (this->target_obj2 == 0) {
                 if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site != -1) {
                     if (this->obj->useSameZoneDropsite() == 1) {
-                        this->set_target_obj2(
-                            this->obj->owner->objects->find_by_master_ids(
+                        this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                                this->obj->world_x, this->obj->world_y,
-                                1, 2, (RGE_Static_Object*)this->obj));
+                                this->obj->world_x, this->obj->world_y, 1, 2, (RGE_Static_Object*)this->obj));
                     } else {
-                        this->set_target_obj2(
-                            this->obj->owner->objects->find_by_master_ids(
+                        this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
                                 ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                                this->obj->world_x, this->obj->world_y,
-                                1, 2, (RGE_Static_Object*)0));
+                                this->obj->world_x, this->obj->world_y, 1, 2, (RGE_Static_Object*)0));
                     }
                 } else {
                     this->set_target_obj2(0);
@@ -196,9 +188,8 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
             }
 
             if (this->target_obj2 != 0) {
-                RGE_Action_Move_To* action = new RGE_Action_Move_To(
-                    this->obj, this->target_obj2, this->task->work_range,
-                    this->get_move_sprite());
+                RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj2, this->task->work_range,
+                                                                    this->get_move_sprite());
                 if (action == 0) {
                     this->set_state(13);
                     return;
@@ -208,16 +199,14 @@ void RGE_Action_Gather::set_state(unsigned char new_state) {
                 return;
             }
 
-            this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                              (int)0x203, 0x261L, 0L, 0L);
+            this->obj->notify((int)this->obj->id, (int)this->obj->id, (int)0x203, 0x261L, 0L, 0L);
             this->set_state(13);
             return;
         }
 
         if (this->target_obj != 0 &&
             this->target_obj->attribute_amount_held <= DAT_0056e278 &&
-            this->obj->keepGatheringWhenObjectIsOut(
-                (short)this->target_obj->master_obj->id) == 0) {
+            this->obj->keepGatheringWhenObjectIsOut((short)this->target_obj->master_obj->id) == 0) {
             this->set_target_obj(0);
         }
         this->set_state(3);
@@ -256,8 +245,7 @@ unsigned char RGE_Action_Gather::update() {
         this->target_obj->owner->id != 0 &&
         this->target_obj->owner->id != this->obj->owner->id) {
         this->set_state(1);
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1FB, 0x261, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x261, 0, 0);
         return 4;
     }
 
@@ -267,8 +255,7 @@ unsigned char RGE_Action_Gather::update() {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0) {
                 this->timer = -10.0f;
-                this->obj->notify(this->obj->id, this->obj->id,
-                                  0x202, 0x261, this->targetType, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x261, this->targetType, 0);
                 return 0;
             }
         }
@@ -335,8 +322,7 @@ unsigned char RGE_Action_Gather::update() {
         }
         if (this->obj->turn_towards(this->target_obj, 0, 0) != 0) {
             if (this->target_obj->attribute_amount_held > DAT_0056e278 ||
-                this->obj->keepGatheringWhenObjectIsOut(
-                    this->target_obj->master_obj->id) != 0) {
+                this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0) {
                 this->set_state(7);
                 return 0;
             }
@@ -393,8 +379,7 @@ unsigned char RGE_Action_Gather::update() {
 
         if (this->obj->attribute_amount_held < max_hold &&
             (this->target_obj->attribute_amount_held > DAT_0056e278 ||
-             this->obj->keepGatheringWhenObjectIsOut(
-                 this->target_obj->master_obj->id) != 0)) {
+             this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0)) {
             return 0;
         }
         this->set_state(8);
@@ -439,11 +424,8 @@ unsigned char RGE_Action_Gather::update() {
                 if (attribute == -1) {
                     attribute = this->obj->attribute_type_held;
                 }
-                this->obj->owner->add_attribute_num(
-                    attribute, this->obj->attribute_amount_held, 1);
-                this->obj->owner->trackUnitGather(
-                    this->obj->id, attribute,
-                    (int)this->obj->attribute_amount_held);
+                this->obj->owner->add_attribute_num(attribute, this->obj->attribute_amount_held, 1);
+                this->obj->owner->trackUnitGather(this->obj->id, attribute, (int)this->obj->attribute_amount_held);
                 this->obj->set_attribute(-1, 0.0f);
 
                 if (this->target_obj != 0) {
@@ -465,8 +447,7 @@ unsigned char RGE_Action_Gather::update() {
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1F9, 0x261, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x261, 0, 0);
         if (this->obj->owner->computerPlayer() == 1) {
             this->set_state(1);
         } else {

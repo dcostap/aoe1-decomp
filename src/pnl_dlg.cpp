@@ -25,11 +25,8 @@ int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_i
         height = render_area_in->Height;
     }
 
-    if (TEasy_Panel::setup(render_area_in, parent_in, info_file_name,
-                           resource_file_id, 0,
-                           width / 2 - wid_in / 2,
-                           height / 2 - hgt_in / 2,
-                           wid_in, hgt_in, allow_shadow_area_in) == 0) {
+    if (TEasy_Panel::setup(render_area_in, parent_in, info_file_name, resource_file_id, 0, width / 2 - wid_in / 2,
+                           height / 2 - hgt_in / 2, wid_in, hgt_in, allow_shadow_area_in) == 0) {
         this->error_code = 1;
         return 0;
     }
@@ -57,9 +54,7 @@ int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in, long wid_i
         height = render_area_in->Height;
     }
 
-    if (TEasy_Panel::setup(render_area_in, parent_in, 0, -1, 0,
-                           width / 2 - wid_in / 2,
-                           height / 2 - hgt_in / 2,
+    if (TEasy_Panel::setup(render_area_in, parent_in, 0, -1, 0, width / 2 - wid_in / 2, height / 2 - hgt_in / 2,
                            wid_in, hgt_in, allow_shadow_area_in) == 0) {
         this->error_code = 1;
         return 0;

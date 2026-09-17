@@ -90,8 +90,7 @@ void PathingSystem::printToFile(char* filename) {
         FILE* file = fopen(filename, "wa");
         if (file != 0) {
             fprintf(file, "FILENAME: %s\n", filename);
-            fprintf(file, "  Dimensions: %d X %d\n",
-                    this->xSizeValue << 2, this->ySizeValue << 2);
+            fprintf(file, "  Dimensions: %d X %d\n", this->xSizeValue << 2, this->ySizeValue << 2);
             fprintf(file, "\n");
             fprintf(file, "       ");
 
@@ -364,8 +363,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     this->currentObjectInObMap = this->currentObject->removeFromObstructionMap(this->aiPS);
 
     // VC5 evaluates the Y floor argument before X.
-    if (this->passable(this->currentObject,
-                       (float)(floor((double)this->currentObject->world_x) - DAT_00570e64),
+    if (this->passable(this->currentObject, (float)(floor((double)this->currentObject->world_x) - DAT_00570e64),
                        (float)(floor((double)this->currentObject->world_y) - DAT_00570e64), 1)) {
         // The original stores positive half-tile offsets here.
         this->currentXOffset = 0.5f;
@@ -1145,7 +1143,7 @@ long PathingSystem::checksum(void) {
 
 void PathingSystem::printState(RGE_Moving_Object* unit) {
     unit->logDebug("    There are %d open paths and %d traversed paths.",
-        this->numberOpenPathsValue, this->numberTraversedPathsValue);
+                   this->numberOpenPathsValue, this->numberTraversedPathsValue);
     unit->logDebug("    The open paths:");
 
     int i = 1;
@@ -1158,8 +1156,7 @@ void PathingSystem::printState(RGE_Moving_Object* unit) {
             } else {
                 facet = 0xff;
             }
-            unit->logDebug("      %5d: (%d, %d), total=%d, facet=%d.",
-                i, path[-1], path[0], *(int*)(path + 3), facet);
+            unit->logDebug("      %5d: (%d, %d), total=%d, facet=%d.", i, path[-1], path[0], *(int*)(path + 3), facet);
             ++i;
             path += 8;
         } while (i <= this->numberOpenPathsValue);
@@ -1251,10 +1248,8 @@ int PathingSystem::copyPath(int stepSize) {
             for (int tileX = minX; tileX <= tWX2; ++tileX) {
                 for (int tileY = tWY1; tileY <= tWY2; ++tileY) {
                     int objectCountOnTile = 0;
-                    int id = this->worldValue->objectGroupOnTile(
-                        this->currentUnobstructiblePlayerID,
-                        this->currentUnobstructibleGroupID,
-                        tileX, tileY, objectCountOnTile);
+                    int id = this->worldValue->objectGroupOnTile(this->currentUnobstructiblePlayerID,
+                                                                 this->currentUnobstructibleGroupID, tileX, tileY, objectCountOnTile);
                     if (id != -1)
                         this->currentUnobstructibles.add(id);
                 }

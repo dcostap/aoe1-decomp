@@ -101,8 +101,7 @@ void InfluenceMap::printToFile(char* filename) {
         if (f != 0) {
             fprintf(f, print_filename, filename);
             fprintf(f, print_dimensions, this->xSizeValue, this->ySizeValue);
-            fprintf(f, print_reference, this->xReferencePointValue,
-                    this->yReferencePointValue);
+            fprintf(f, print_reference, this->xReferencePointValue, this->yReferencePointValue);
             fprintf(f, print_newline);
 
             fprintf(f, print_indent);

@@ -16,8 +16,7 @@ extern RGE_Base_Game* rge_base_game;
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
     TRIBE_Master_Building_Object* other_object, int do_setup)
-    : TRIBE_Master_Combat_Object(
-          static_cast<TRIBE_Master_Combat_Object*>(other_object), 0) {
+    : TRIBE_Master_Combat_Object(static_cast<TRIBE_Master_Combat_Object*>(other_object), 0) {
     if (do_setup != 0) {
         setup(other_object);
     }
@@ -101,10 +100,8 @@ int TRIBE_Master_Building_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_
     TRIBE_Master_Combat_Object::setup(infile, sprites, sounds, in_id);
     this->master_type = 0x50;
 
-    fscanf(infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd",
-           &sprite_id, &connect_flag, &this->building_facet,
-           &build_and_go_away, &this->on_build_make_obj,
-           &this->on_build_make_tile, &this->on_build_make_overlay,
+    fscanf(infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd", &sprite_id, &connect_flag, &this->building_facet,
+           &build_and_go_away, &this->on_build_make_obj, &this->on_build_make_tile, &this->on_build_make_overlay,
            &this->on_build_make_tech, &sound_id);
 
     this->building_connect_flag = static_cast<unsigned char>(connect_flag);
@@ -224,8 +221,7 @@ void TRIBE_Master_Building_Object::draw(
             sprite->draw(facet - 1, 0, x, y, x, y, player_color, render_area, 0);
         }
     } else {
-        sprite->draw(this->building_facet, 0, x, y, x, y,
-                     player_color, render_area, 0);
+        sprite->draw(this->building_facet, 0, x, y, x, y, player_color, render_area, 0);
     }
 
     if (draw_frame != 0) {
@@ -247,8 +243,7 @@ void TRIBE_Master_Building_Object::draw(
         map->get_point(x3, y3, rx1, ry1, 0.0f, x, y);
         map->get_point(x4, y4, rx1, -ry1, 0.0f, x, y);
 
-        SDI_List->AddGDINode(1, y, x1, y1, x2, y2, x3, y3, x4, y4,
-                             10, frame_color, SDI_Object_ID);
+        SDI_List->AddGDINode(1, y, x1, y1, x2, y2, x3, y3, x4, y4, 10, frame_color, SDI_Object_ID);
     }
 }
 

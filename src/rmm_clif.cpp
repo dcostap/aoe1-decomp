@@ -87,13 +87,11 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
                             this->search_map_rows[cliff_y] + cliff_x;
                         if (*cell != 0) {
                             *cell = (unsigned char)(area + 1);
-                            this->push_stack(this->valid_cliff_sites,
-                                cliff_x, cliff_y, 0.0f, 0.0f);
+                            this->push_stack(this->valid_cliff_sites, cliff_x, cliff_y, 0.0f, 0.0f);
                         }
                     } else {
                         if (water_area != 0) {
-                            this->invalidate_cliff_area(cliff_x, cliff_y,
-                                this->info.cliff_terrain_spacing);
+                            this->invalidate_cliff_area(cliff_x, cliff_y, this->info.cliff_terrain_spacing);
                         }
                         this->search_map_rows[cliff_y][cliff_x] = 0;
                     }
@@ -111,8 +109,7 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
         // The shipped cursor starts at the first hot spot's y field.
         long* hot_spot = &this->info.hot_spots[0].y;
         do {
-            this->invalidate_cliff_area(hot_spot[-1] / 3,
-                hot_spot[0] / 3, hot_spot[1] / 3 + 2);
+            this->invalidate_cliff_area(hot_spot[-1] / 3, hot_spot[0] / 3, hot_spot[1] / 3 + 2);
             hot_spot_index++;
             hot_spot += 3;
         } while (hot_spot_index < this->info.hot_spot_num);
@@ -132,8 +129,7 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps() {
                          this->search_map_rows[y + 1][x] == 0) &&
                         (x >= cliff_width2 || cell[1] == 0)) {
                         *cell = 0;
-                        this->remove_stack_node(
-                            this->stack_offsets[y] + x);
+                        this->remove_stack_node(this->stack_offsets[y] + x);
                     }
                     x++;
                 } while (x < terrain_width);
@@ -158,8 +154,7 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
     unsigned char first_cliff;
     unsigned char cliff_end_found;
     Map_Stack cliff;
-    cost = ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp",
-                         196) * variance * 2) / 0x7fff +
+    cost = ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 196) * variance * 2) / 0x7fff +
             this->info.average_cliff_size) - variance;
     first_cliff = 1;
     if (this->valid_cliff_sites.next == 0) {
@@ -174,8 +169,7 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
     unsigned char* map_row;
     long column;
     while (1) {
-        this->pop_stack(this->valid_cliff_sites, y, valid_height,
-                        stack_cost);
+        this->pop_stack(this->valid_cliff_sites, y, valid_height, stack_cost);
         map_row = this->search_map_rows[valid_height];
         column = y;
         if (map_row[column] != 0) {
@@ -190,15 +184,13 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
     this->push_stack(cliff, y, valid_height, 0.0f, 0.0f);
     this->search_map_rows[valid_height][y] = 0;
 
-    direction = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp",
-                             221) * 4) / 0x7fff;
+    direction = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 221) * 4) / 0x7fff;
     this_cliff_size = 0;
     if (cost > 0) {
         do {
             cliff_end_found = 0;
             long turn =
-                (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp",
-                             227) * 100) / 0x7fff;
+                (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 227) * 100) / 0x7fff;
             if (turn < 0x12) {
                 if (direction <= 0) {
                     direction = 3;
@@ -213,18 +205,12 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
                 }
             }
 
-            if (this->check_for_valid_cliff_site(direction, y,
-                                                 valid_height, index) == 0) {
-                if (this->check_for_valid_cliff_site(direction + 1, y,
-                                                     valid_height, index) == 0) {
-                    if (this->check_for_valid_cliff_site(direction - 1, y,
-                                                         valid_height,
-                                                         index) == 0) {
+            if (this->check_for_valid_cliff_site(direction, y, valid_height, index) == 0) {
+                if (this->check_for_valid_cliff_site(direction + 1, y, valid_height, index) == 0) {
+                    if (this->check_for_valid_cliff_site(direction - 1, y, valid_height, index) == 0) {
                         if (first_cliff == 0) {
                             cliff_end_found = 1;
-                        } else if (this->check_for_valid_cliff_site(
-                                       direction - 2, y, valid_height,
-                                       index) == 0) {
+                        } else if (this->check_for_valid_cliff_site(direction - 2, y, valid_height, index) == 0) {
                             cliff_end_found = 1;
                         }
                     }
@@ -246,16 +232,11 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
             x = y;
             start_y = valid_height;
         }
-        this->map->do_terrain_brush_stroke(
-            x * 3 + 1, start_y * 3 + 1,
-            y * 3 + 1, valid_height * 3 + 1, 1, 0x10);
-        this->map->do_cliff_brush_stroke(
-            x * 3 + 1, start_y * 3 + 1,
-            y * 3 + 1, valid_height * 3 + 1, 0, 0);
+        this->map->do_terrain_brush_stroke(x * 3 + 1, start_y * 3 + 1, y * 3 + 1, valid_height * 3 + 1, 1, 0x10);
+        this->map->do_cliff_brush_stroke(x * 3 + 1, start_y * 3 + 1, y * 3 + 1, valid_height * 3 + 1, 0, 0);
         x = y;
         start_y = valid_height;
-        this->invalidate_cliff_area(y, valid_height,
-            this->info.cliff_to_cliff_spacing);
+        this->invalidate_cliff_area(y, valid_height, this->info.cliff_to_cliff_spacing);
     }
 }
 
@@ -338,8 +319,7 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
         for (long column = x1; column <= max_x; column++) {
             if (this->search_map_rows[row][column] != 0) {
                 this->search_map_rows[row][column] = 0;
-                this->remove_stack_node(
-                    this->stack_offsets[row] + column);
+                this->remove_stack_node(this->stack_offsets[row] + column);
             }
         }
     }

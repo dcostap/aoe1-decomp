@@ -43,8 +43,7 @@ RGE_Campaign_Info::RGE_Campaign_Info(int infile, RGE_Campaign** campaigns, long 
                         if (scenario_num < campaign->scenario_number()) {
                             memcpy(new_info, scenario_info, scenario_num);
                         } else {
-                            memcpy(new_info, scenario_info,
-                                   campaign->scenario_number());
+                            memcpy(new_info, scenario_info, campaign->scenario_number());
                         }
                         free(scenario_info);
                         scenario_info = new_info;
@@ -123,8 +122,7 @@ void RGE_Campaign_Info::rehook_campaigns(RGE_Campaign** campaigns, long campaign
                 if (scenario_num < campaign->scenario_number()) {
                     memcpy(newsi, scenario_info, scenario_num);
                 } else {
-                    memcpy(newsi, scenario_info,
-                           campaign->scenario_number());
+                    memcpy(newsi, scenario_info, campaign->scenario_number());
                 }
                 free(scenario_info);
                 scenario_info = newsi;
@@ -414,9 +412,7 @@ void RGE_Game_Info::save(char* filename) {
 
     strcpy(save_filename, filename);
 
-    int fd = rge_open(filename,
-                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC,
-                      _S_IREAD | _S_IWRITE);
+    int fd = rge_open(filename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (fd == -1) return;
 
     rge_write(fd, &version_marker, 4);

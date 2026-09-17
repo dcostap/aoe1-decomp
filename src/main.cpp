@@ -18,8 +18,7 @@ extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char*
     sprintf(info.prog_title, "%s", info.prog_name);
     strcpy(info.world_db_file, "tr_wrld.txt");
     strcpy(info.game_data_file, "data2\\empires.dat");
-    strcpy(info.registry_key,
-           "Software\\Microsoft\\Games\\Age of Empires\\1.00");
+    strcpy(info.registry_key, "Software\\Microsoft\\Games\\Age of Empires\\1.00");
     strcpy(info.cmd_line, cmd_line);
     strcpy(info.icon_name, "AppIcon");
     strcpy(info.menu_name, "");

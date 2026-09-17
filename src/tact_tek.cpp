@@ -27,24 +27,15 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* obj_in, short 
 
 TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
     if (this->state != 1) {
-        static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->cancel_research(
-            this->tech_id, 0);
+        static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->cancel_research(this->tech_id, 0);
 
         if (rge_base_game->world->game_state == 0) {
-            rge_base_game->notification(
-                0x65, static_cast<TRIBE_Player*>(this->obj->owner)->id,
-                this->tech_id, 0, 0);
+            rge_base_game->notification(0x65, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->tech_id, 0, 0);
 
             static_cast<TRIBE_Player*>(this->obj->owner)->cancelResearch(
                 (int)this->tech_id, this->obj->id, -1, this->unique_id);
 
-            this->obj->notify(
-                this->obj->id,
-                this->obj->id,
-                0x1F9,
-                0x26C,
-                0,
-                0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x26C, 0, 0);
         }
     }
 }
@@ -68,19 +59,10 @@ void TRIBE_Action_Make_Tech::first_in_stack(unsigned char first_time) {
         return;
     }
 
-    static_cast<TRIBE_Player*>(this->obj->owner)->cancelResearch(
-        (int)*(short*)&first_time,
-        (int)this->tech_id,
-        this->obj->id,
-        this->unique_id);
+    static_cast<TRIBE_Player*>(this->obj->owner)->cancelResearch((int)*(short*)&first_time, (int)this->tech_id,
+                                                                 this->obj->id, this->unique_id);
 
-    this->obj->notify(
-        this->obj->id,
-        this->obj->id,
-        0x1F9,
-        0x26C,
-        0,
-        0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x26C, 0, 0);
 
     this->set_state(1);
 }
@@ -107,31 +89,17 @@ unsigned char TRIBE_Action_Make_Tech::update() {
         work = 1000.0f;
     } else {
         work = this->obj->owner->world->world_time_delta_seconds *
-            static_cast<RGE_Master_Action_Object*>(
-                this->obj->master_obj)->work_rate;
+            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate;
     }
 
     player_tech = static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree;
     if (player_tech->research(this->tech_id, work) == 0) {
         this->set_state(1);
         action_object = this->obj;
-        rge_base_game->notification(
-            0x64,
-            static_cast<TRIBE_Player*>(action_object->owner)->id,
-            this->tech_id,
-            (int)action_object->world_x,
-            (int)action_object->world_y);
-        static_cast<TRIBE_Player*>(this->obj->owner)->registerResearch(
-            (int)this->tech_id,
-            this->obj->id,
-            this->unique_id);
-        this->obj->notify(
-            this->obj->id,
-            this->obj->id,
-            0x1FA,
-            0x26C,
-            0,
-            0);
+        rge_base_game->notification(0x64, static_cast<TRIBE_Player*>(action_object->owner)->id, this->tech_id,
+                                    (int)action_object->world_x, (int)action_object->world_y);
+        static_cast<TRIBE_Player*>(this->obj->owner)->registerResearch((int)this->tech_id, this->obj->id, this->unique_id);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x26C, 0, 0);
         return 1;
     }
 
@@ -145,23 +113,13 @@ success_initial:
 int TRIBE_Action_Make_Tech::stop() {
     this->set_state(1);
 
-    static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->cancel_research(
-        this->tech_id, 1);
+    static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree->cancel_research(this->tech_id, 1);
 
-    rge_base_game->notification(
-        0x65, static_cast<TRIBE_Player*>(this->obj->owner)->id,
-        this->tech_id, 0, 0);
+    rge_base_game->notification(0x65, static_cast<TRIBE_Player*>(this->obj->owner)->id, this->tech_id, 0, 0);
 
-    static_cast<TRIBE_Player*>(this->obj->owner)->cancelResearch(
-        (int)this->tech_id, this->obj->id, -1, this->unique_id);
+    static_cast<TRIBE_Player*>(this->obj->owner)->cancelResearch((int)this->tech_id, this->obj->id, -1, this->unique_id);
 
-    this->obj->notify(
-        this->obj->id,
-        this->obj->id,
-        0x1F9,
-        0x26C,
-        0,
-        0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x26C, 0, 0);
 
     return 1;
 }
@@ -176,10 +134,7 @@ void TRIBE_Action_Make_Tech::get_info(short& id, short& progress, char* name, sh
     }
 
     if (name != 0) {
-        strncpy(name,
-                static_cast<TRIBE_Player*>(this->obj->owner)
-                    ->tech_tree->get_name(this->tech_id),
-                name_size);
+        strncpy(name, static_cast<TRIBE_Player*>(this->obj->owner) ->tech_tree->get_name(this->tech_id), name_size);
         name[name_size - 1] = 0;
     }
 }

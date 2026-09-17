@@ -117,8 +117,7 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* other_object) {
     {
         damage_sprite_num = other_object->damage_sprite_num;
         if (damage_sprite_num > 0) {
-            damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
-                calloc(damage_sprite_num, 8));
+            damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(damage_sprite_num, 8));
             short i = 0;
             if (damage_sprite_num > 0) {
                 do {
@@ -236,8 +235,7 @@ int RGE_Master_Static_Object::setup(int infile, RGE_Sprite** sprites, RGE_Sound*
 
     rge_read(file_handle, &this->damage_sprite_num, 1);
     if (this->damage_sprite_num > 0) {
-        this->damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
-            calloc(this->damage_sprite_num, 8));
+        this->damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(this->damage_sprite_num, 8));
         short i = 0;
         if (this->damage_sprite_num > 0) {
             do {
@@ -337,40 +335,29 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     this->master_type = 10;
     this->id = in_id;
 
-    fscanf(
-        infile,
-        "%s %hd %hd %hd %hd %hd %hd %hd %hd %f "
-        "%hd %f %f %f %hd %hd %hd %hd %hd %hd "
-        "%hd %hd %hd %hd %hd %f %f %hd %hd %hd "
-        "%hd %hd %hd %f %f %hd %hd %hd %hd %hd "
-        "%hd %ld %ld %ld %hd %hd %hd %hd %hd %f %f %f",
-        temp_name + 4, &this->string_id, &this->string_id2,
-        &this->object_group, &temp_undead_sprite, &temp_obj_max,
-        &temp_fog_flag, &temp_hide_in_scenario_editor, &this->hp,
-        &this->los, &temp_movement_type, &this->radius_x, &this->radius_y,
-        &this->radius_z, &this->death_spawn_obj_id, &temp_available,
-        &temp_damage_percent, &this->button_pict, &temp_attack_reaction,
-        &this->portrait_pict, &temp_attribute_flag, &this->tile_req1,
-        &this->tile_req2, &this->center_tile_req1, &this->center_tile_req2,
-        &this->construction_radius_x, &this->construction_radius_y, local_84,
-        &temp_sort_number, &temp_undead_flag, &temp_can_be_built_on,
-        &temp_created_sound, &this->attribute_max_amount,
-        &this->multiple_attribute_mod, &this->attribute_rot,
-        &temp_damage_sprite, &temp_select_level, &temp_map_draw_level,
-        &temp_command_level, &temp_terrain, &temp_track_as_resource,
-        &this->help_string_id, &this->help_page_id, &this->hotkey_id,
-        &temp_create_doppleganger_on_death, &temp_resource_group,
-        &temp_draw_flag, &temp_draw_color, &temp_elevation_flag,
-        &this->outline_radius_x, &this->outline_radius_y,
-        &this->outline_radius_z);
+    fscanf(infile, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f " "%hd %f %f %f %hd %hd %hd %hd %hd %hd "
+           "%hd %hd %hd %hd %hd %f %f %hd %hd %hd " "%hd %hd %hd %f %f %hd %hd %hd %hd %hd "
+           "%hd %ld %ld %ld %hd %hd %hd %hd %hd %f %f %f", temp_name + 4, &this->string_id, &this->string_id2,
+           &this->object_group, &temp_undead_sprite, &temp_obj_max, &temp_fog_flag, &temp_hide_in_scenario_editor, &this->hp,
+           &this->los, &temp_movement_type, &this->radius_x, &this->radius_y,
+           &this->radius_z, &this->death_spawn_obj_id, &temp_available,
+           &temp_damage_percent, &this->button_pict, &temp_attack_reaction,
+           &this->portrait_pict, &temp_attribute_flag, &this->tile_req1,
+           &this->tile_req2, &this->center_tile_req1, &this->center_tile_req2,
+           &this->construction_radius_x, &this->construction_radius_y, local_84,
+           &temp_sort_number, &temp_undead_flag, &temp_can_be_built_on, &temp_created_sound, &this->attribute_max_amount,
+           &this->multiple_attribute_mod, &this->attribute_rot, &temp_damage_sprite, &temp_select_level, &temp_map_draw_level,
+           &temp_command_level, &temp_terrain, &temp_track_as_resource,
+           &this->help_string_id, &this->help_page_id, &this->hotkey_id,
+           &temp_create_doppleganger_on_death, &temp_resource_group, &temp_draw_flag, &temp_draw_color, &temp_elevation_flag,
+           &this->outline_radius_x, &this->outline_radius_y, &this->outline_radius_z);
 
     short* attribute_type = this->attribute_type_held;
     float* attribute_amount = this->attribute_amount_held;
     unsigned char* attribute_flag = this->attribute_flag;
     int attribute_count = 3;
     do {
-        fscanf(infile, "%hd %f %hd", attribute_type, attribute_amount,
-               &temp_selected_sound);
+        fscanf(infile, "%hd %f %hd", attribute_type, attribute_amount, &temp_selected_sound);
         *attribute_flag = static_cast<unsigned char>(temp_selected_sound);
         ++attribute_type;
         ++attribute_amount;
@@ -383,14 +370,12 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     if (this->damage_sprite_num == 0) {
         this->damage_sprites = 0;
     } else {
-        this->damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
-            calloc(this->damage_sprite_num, 8));
+        this->damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(this->damage_sprite_num, 8));
 
         short index = 0;
         if (this->damage_sprite_num != 0) {
             do {
-                fscanf(infile, "%hd %hd %hd", &temp_flag, local_82,
-                       &temp_death_sound);
+                fscanf(infile, "%hd %hd %hd", &temp_flag, local_82, &temp_death_sound);
 
                 RGE_Sprite* damage_sprite;
                 if (temp_flag < 0) {
@@ -403,14 +388,11 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
                 this->damage_sprites[index].flag =
                     static_cast<unsigned char>(temp_death_sound);
                 ++index;
-            } while (index < static_cast<short>(
-                           static_cast<unsigned short>(
-                               this->damage_sprite_num)));
+            } while (index < static_cast<short>(static_cast<unsigned short>(this->damage_sprite_num)));
         }
     }
 
-    fscanf(infile, "%hd %hd %hd %hd", &temp_death_sprite, &temp_sprite,
-           &temp_convert_terrain_flag, &temp_map_color);
+    fscanf(infile, "%hd %hd %hd %hd", &temp_death_sprite, &temp_sprite, &temp_convert_terrain_flag, &temp_map_color);
 
     if (temp_death_sprite < 0) {
         this->selected_sound = 0;
@@ -454,8 +436,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     this->available = static_cast<unsigned char>(temp_attribute_flag);
     this->area_effect_object_level =
         static_cast<unsigned char>(temp_damage_sprite);
-    this->terrain = static_cast<short>(
-        static_cast<unsigned char>(temp_undead_flag));
+    this->terrain = static_cast<short>(static_cast<unsigned char>(temp_undead_flag));
     this->combat_level = static_cast<unsigned char>(temp_select_level);
     this->map_draw_level = static_cast<unsigned char>(temp_command_level);
     this->attack_reaction =
@@ -463,8 +444,7 @@ int RGE_Master_Static_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     this->unit_level = static_cast<unsigned char>(temp_terrain);
     this->undead_flag =
         static_cast<unsigned char>(temp_hide_in_scenario_editor);
-    this->track_as_resource = static_cast<unsigned char>(
-        temp_create_doppleganger_on_death);
+    this->track_as_resource = static_cast<unsigned char>(temp_create_doppleganger_on_death);
     this->hide_in_scenario_editor =
         static_cast<unsigned char>(temp_attack_reaction);
     this->convert_terrain_flag = static_cast<unsigned char>(temp_map_color);
@@ -635,8 +615,7 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* source) {
     source->hide_in_scenario_editor = 1;
 
     if (damage_sprite_num > 0) {
-        damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
-            calloc(damage_sprite_num, 8));
+        damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(calloc(damage_sprite_num, 8));
         int i = 0;
         if (damage_sprite_num > 0) {
             do {
@@ -1173,8 +1152,7 @@ void RGE_Master_Static_Object::draw(
     TDrawArea* render_area, short x, short y, RGE_Color_Table* player_color,
     long facet, long frame, int draw_frame, unsigned char frame_color) {
     if (this->sprite != 0) {
-        this->sprite->draw(facet, frame, (int)x, (int)y, (int)x, (int)y,
-                           player_color, render_area, 10);
+        this->sprite->draw(facet, frame, (int)x, (int)y, (int)x, (int)y, player_color, render_area, 10);
 
         if (draw_frame != 0) {
             // The executable reads world before outline radii.
@@ -1196,8 +1174,7 @@ void RGE_Master_Static_Object::draw(
             map->get_point(x3, y3, rx1, ry1, 0.0f, x, y);
             map->get_point(x4, y4, rx1, -ry1, 0.0f, x, y);
 
-            SDI_List->AddGDINode(1, (int)y, x1, y1, x2, y2, x3, y3, x4, y4,
-                                 10, (int)(frame_color & 0xFF), SDI_Object_ID);
+            SDI_List->AddGDINode(1, (int)y, x1, y1, x2, y2, x3, y3, x4, y4, 10, (int)(frame_color & 0xFF), SDI_Object_ID);
         }
     }
 }

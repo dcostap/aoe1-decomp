@@ -44,8 +44,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     clear_button = this->button;
     for (; button_width < 428;
          button_width += 50, ++clear_button) {
-        if (this->create_button(this, clear_button, "", 0, 170,
-                                button_width, 300, 40, 0, 0, 0) == 0) {
+        if (this->create_button(this, clear_button, "", 0, 170, button_width, 300, 40, 0, 0, 0) == 0) {
             return;
         }
     }
@@ -59,50 +58,32 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     this->set_ideal_size(this->pnl_wid, this->pnl_hgt);
 
     long panel_height = this->pnl_hgt - 60;
-    this->create_text(this, &this->ms_title_text, IDS_PRODUCT_TITLE, 5,
-                      panel_height, this->pnl_wid - 10,
-                      18, 10, 1, 0, 0);
+    this->create_text(this, &this->ms_title_text, IDS_PRODUCT_TITLE, 5, panel_height, this->pnl_wid - 10, 18, 10, 1, 0, 0);
 
     this->get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == 0) {
         TTextPanel** copy1 = &this->ms_copy_text1;
-        this->create_text(this, copy1, IDS_COPYRIGHT_PREFIX, 5,
-                          panel_height + 18, 50, 18,
-                          10, 0, 0, 0);
+        this->create_text(this, copy1, IDS_COPYRIGHT_PREFIX, 5, panel_height + 18, 50, 18, 10, 0, 0, 0);
 
         if ((*copy1)->get_text_rect(&rect) != 0) {
             this->circle_p_pic = new TPicturePanel;
             if (this->circle_p_pic != 0) {
-                this->circle_p_pic->setup(this->render_area, this,
-                               rect.right - this->pnl_x + 3,
-                               rect.top + 1, 15, 14,
-                               "circlep2", 0xC4E6, 0, 1);
+                this->circle_p_pic->setup(this->render_area, this, rect.right - this->pnl_x + 3, rect.top + 1, 15, 14,
+                                          "circlep2", 0xC4E6, 0, 1);
 
                 TTextPanel** copy2 = &this->ms_copy_text2;
-                this->create_text(
-                    this, copy2, IDS_COPYRIGHT_SUFFIX,
-                    this->circle_p_pic->xPosition() - this->pnl_x +
-                        this->circle_p_pic->width(),
-                    rect.top, 500, 18, 10, 0, 0, 0);
+                this->create_text(this, copy2, IDS_COPYRIGHT_SUFFIX, this->circle_p_pic->xPosition() - this->pnl_x +
+                                  this->circle_p_pic->width(), rect.top, 500, 18, 10, 0, 0, 0);
 
                 if ((*copy2)->get_text_rect(&rect) != 0) {
                     diff = (this->pnl_wid - rect.right - 5) / 2;
                     if (diff > 0) {
-                        (*copy1)->set_fixed_position(
-                            (*copy1)->xPosition() + diff,
-                            (*copy1)->yPosition(),
-                            (*copy1)->width(),
-                            (*copy1)->height());
-                        this->circle_p_pic->set_fixed_position(
-                            this->circle_p_pic->xPosition() + diff,
-                            this->circle_p_pic->yPosition(),
-                            this->circle_p_pic->width(),
-                            this->circle_p_pic->height());
-                        (*copy2)->set_fixed_position(
-                            (*copy2)->xPosition() + diff,
-                            (*copy2)->yPosition(),
-                            (*copy2)->width(),
-                            (*copy2)->height());
+                        (*copy1)->set_fixed_position((*copy1)->xPosition() + diff, (*copy1)->yPosition(), (*copy1)->width(),
+                                                     (*copy1)->height());
+                        this->circle_p_pic->set_fixed_position(this->circle_p_pic->xPosition() + diff,
+                                                               this->circle_p_pic->yPosition(), this->circle_p_pic->width(), this->circle_p_pic->height());
+                        (*copy2)->set_fixed_position((*copy2)->xPosition() + diff, (*copy2)->yPosition(), (*copy2)->width(),
+                                                     (*copy2)->height());
                     }
                 }
             }
@@ -113,13 +94,10 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
         strcat(temp_str, " ");
         strcat(temp_str, this->get_string(IDS_COPYRIGHT_SUFFIX));
 
-        this->create_text(this, &this->ms_copy_text1, temp_str, 5,
-                          panel_height + 18, this->pnl_wid - 10,
-                          18, 10, 1, 0, 0);
+        this->create_text(this, &this->ms_copy_text1, temp_str, 5, panel_height + 18, this->pnl_wid - 10, 18, 10, 1, 0, 0);
     }
 
-    this->create_text(this, &this->warning_text, IDS_COPYRIGHT_WARNING, 5,
-                      panel_height + 36, this->pnl_wid - 10,
+    this->create_text(this, &this->warning_text, IDS_COPYRIGHT_WARNING, 5, panel_height + 36, this->pnl_wid - 10,
                       18, 10, 1, 0, 0);
 
     this->set_ideal_size(640, 480);
@@ -273,17 +251,12 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
 
     this->set_ideal_size(640, 480);
 
-    this->create_text(this, &this->message, "", 40, 40,
-                      560, 400, 4, 1, 1, 1);
-    this->create_button(this, &this->cancel_button, IDS_BUTTON_OK, 0,
-                        200, 440, 240, 30, 0, 0, 0);
+    this->create_text(this, &this->message, "", 40, 40, 560, 400, 4, 1, 1, 1);
+    this->create_button(this, &this->cancel_button, IDS_BUTTON_OK, 0, 200, 440, 240, 30, 0, 0, 0);
 
-    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0,
-                            0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
+    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
         this->close_button->set_active(1);
-        this->close_button->set_positioning(TPanel::PositionRightTop,
-                                            4, 4, 4, 4, 17, 17,
-                                            17, 17, 0, 0, 0, 0);
+        this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
     }
 }
 

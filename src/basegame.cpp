@@ -340,16 +340,12 @@ int RGE_Base_Game::setup() {
                                 DXVersion < RGE_REQUIRED_DIRECTX_VERSION)) {
                         this->error_code = RGE_ERROR_DIRECTX_VERSION;
                     } else {
-                        SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0,
-                                              &this->screen_saver_enabled, 0);
+                        SystemParametersInfoA(SPI_GETSCREENSAVEACTIVE, 0, &this->screen_saver_enabled, 0);
                         if (this->screen_saver_enabled != 0)
-                            SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, 0,
-                                                  SPIF_SENDCHANGE);
-                        SystemParametersInfoA(SPI_GETLOWPOWERACTIVE, 0,
-                                              &this->low_power_enabled, 0);
+                            SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 0, 0, SPIF_SENDCHANGE);
+                        SystemParametersInfoA(SPI_GETLOWPOWERACTIVE, 0, &this->low_power_enabled, 0);
                         if (this->low_power_enabled != 0)
-                            SystemParametersInfoA(SPI_SETLOWPOWERACTIVE, 0, 0,
-                                                  SPIF_SENDCHANGE);
+                            SystemParametersInfoA(SPI_SETLOWPOWERACTIVE, 0, 0, SPIF_SENDCHANGE);
 
                         this->save_check_for_cd = this->check_for_cd(0);
                         if (!this->setup_class())
@@ -391,36 +387,28 @@ int RGE_Base_Game::setup() {
                                     ShowWindow(this->prog_window, SW_SHOW);
                                     SetFocus(this->prog_window);
                                     this->mouse_on();
-                                    this->is_timer = SetTimer(this->prog_window,
-                                                              1, 50, 0);
+                                    this->is_timer = SetTimer(this->prog_window, 1, 50, 0);
 
-                                    file_number = this->registry->RegGetInt(
-                                        0, "Game File Number");
+                                    file_number = this->registry->RegGetInt(0, "Game File Number");
                                     if (file_number >= 0) {
-                                        file_number = this->registry->RegGetInt(
-                                            0, "Game File Number");
-                                        sprintf(filename, "game%d.nfo",
-                                                file_number);
+                                        file_number = this->registry->RegGetInt(0, "Game File Number");
+                                        sprintf(filename, "game%d.nfo", file_number);
                                         this->player_game_info =
                                             new RGE_Game_Info(filename);
                                     } else {
                                         int i;
                                         for (i = 0; i < 9999; ++i) {
                                             sprintf(filename, "game%d.nfo", i);
-                                            if (_findfirst(
-                                                    filename, &file_info) == -1) {
-                                                this->registry->RegSetInt(
-                                                    0, "Game File Number", i);
+                                            if (_findfirst(filename, &file_info) == -1) {
+                                                this->registry->RegSetInt(0, "Game File Number", i);
                                                 this->player_game_info =
                                                     new RGE_Game_Info(filename);
                                                 break;
                                             }
                                         }
                                     }
-                                    sprintf(filename, "%sscenario.inf",
-                                            this->prog_info->scenario_dir);
-                                    this->scenario_info = new RGE_Scenario_File_Info(
-                                        filename);
+                                    sprintf(filename, "%sscenario.inf", this->prog_info->scenario_dir);
+                                    this->scenario_info = new RGE_Scenario_File_Info(filename);
 
                                     if (do_draw_log != 0) {
                                         if (draw_log_name[0] == 0) {
@@ -479,21 +467,18 @@ RGE_Base_Game::~RGE_Base_Game() {
         this->registry->RegSetInt(1, "Screen Size", this->draw_system->ScreenWidth);
     }
 
-    this->registry->RegSetInt(1, "Rollover Text",
-                              2 + (this->rollover ? -1 : 0));
+    this->registry->RegSetInt(1, "Rollover Text", 2 + (this->rollover ? -1 : 0));
 
     if (this->prog_info->interface_style == 2)
         this->registry->RegSetInt(1, "Mouse Style", 2);
     else
         this->registry->RegSetInt(1, "Mouse Style", 1);
 
-    this->registry->RegSetInt(1, "Game Speed",
-                              (int)(this->game_speed * 10.0f));
+    this->registry->RegSetInt(1, "Game Speed", (int)(this->game_speed * 10.0f));
     this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
     this->registry->RegSetInt(1, "Path Finding", this->pathFinding() + 1);
     this->registry->RegSetInt(1, "MP Path Finding", this->mpPathFinding() + 1);
-    this->registry->RegSetInt(
-        1, "Scroll Speed", this->prog_info->mouse_scroll_interval);
+    this->registry->RegSetInt(1, "Scroll Speed", this->prog_info->mouse_scroll_interval);
 
     if (actionFile != 0) {
         fclose(actionFile);
@@ -575,11 +560,9 @@ RGE_Base_Game::~RGE_Base_Game() {
     }
 
     if (this->screen_saver_enabled != 0)
-        SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 1, 0,
-                              SPIF_SENDCHANGE);
+        SystemParametersInfoA(SPI_SETSCREENSAVEACTIVE, 1, 0, SPIF_SENDCHANGE);
     if (this->low_power_enabled != 0)
-        SystemParametersInfoA(SPI_SETLOWPOWERACTIVE, 1, 0,
-                              SPIF_SENDCHANGE);
+        SystemParametersInfoA(SPI_SETLOWPOWERACTIVE, 1, 0, SPIF_SENDCHANGE);
 
     if (this->prog_palette != 0) {
         panel_system.release_palette(this->prog_palette);
@@ -1581,17 +1564,12 @@ int RGE_Base_Game::setup_main_window() {
     if (this->prog_info->full_screen == 0 &&
         (screen_width != this->prog_info->main_wid ||
          screen_height != this->prog_info->main_hgt)) {
-        this->prog_window = CreateWindowExA(
-            0, this->prog_info->prog_name, this->prog_info->prog_title,
-            WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 0, 0,
-            this->prog_info->main_wid, this->prog_info->main_hgt,
-            0, 0, this->prog_info->instance, 0);
+        this->prog_window = CreateWindowExA(0, this->prog_info->prog_name, this->prog_info->prog_title,
+                                            WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 0, 0,
+                                            this->prog_info->main_wid, this->prog_info->main_hgt, 0, 0, this->prog_info->instance, 0);
     } else {
-        this->prog_window = CreateWindowExA(
-            0, this->prog_info->prog_name, this->prog_info->prog_title,
-            WS_POPUP | WS_CLIPCHILDREN | WS_SYSMENU, 0, 0,
-            screen_width, screen_height,
-            0, 0, this->prog_info->instance, 0);
+        this->prog_window = CreateWindowExA(0, this->prog_info->prog_name, this->prog_info->prog_title,
+                                            WS_POPUP | WS_CLIPCHILDREN | WS_SYSMENU, 0, 0, screen_width, screen_height, 0, 0, this->prog_info->instance, 0);
     }
 
     if (this->prog_window == 0)
@@ -1602,13 +1580,9 @@ int RGE_Base_Game::setup_main_window() {
 
     if (client_rect.right != this->prog_info->main_wid ||
         client_rect.bottom != this->prog_info->main_hgt) {
-        SetWindowPos(
-            this->prog_window, 0, win_rect.left, win_rect.top,
-            (win_rect.right - win_rect.left) - client_rect.right +
-                this->prog_info->main_wid,
-            (win_rect.bottom - win_rect.top) - client_rect.bottom +
-                this->prog_info->main_hgt,
-            0);
+        SetWindowPos(this->prog_window, 0, win_rect.left, win_rect.top,
+                     (win_rect.right - win_rect.left) - client_rect.right + this->prog_info->main_wid,
+                     (win_rect.bottom - win_rect.top) - client_rect.bottom + this->prog_info->main_hgt, 0);
     }
 
     if (this->prog_info->full_screen != 0) {
@@ -1686,20 +1660,12 @@ int RGE_Base_Game::setup_graphics_system() {
     }
 
 init_step:
-    if (this->draw_system->Init(
-            this->prog_info->instance,
-            this->prog_window,
-            this->prog_palette,
-            draw_type,
-            draw_mode,
-            this->prog_info->main_wid,
-            this->prog_info->main_hgt,
-            use_sys_mem) == 0)
+    if (this->draw_system->Init(this->prog_info->instance, this->prog_window, this->prog_palette, draw_type, draw_mode,
+                                this->prog_info->main_wid, this->prog_info->main_hgt, use_sys_mem) == 0)
         goto init_fail;
 
     panel_system.release_palette(this->prog_palette);
-    this->prog_palette = static_cast<HPALETTE>(panel_system.get_palette(
-        this->prog_info->pal_file, 0xC544));
+    this->prog_palette = static_cast<HPALETTE>(panel_system.get_palette(this->prog_info->pal_file, 0xC544));
 
     this->draw_area = this->draw_system->DrawArea;
     this->draw_area->Clear(0, 0);
@@ -1712,8 +1678,7 @@ init_fail:
 }
 
 int RGE_Base_Game::setup_palette() {
-    HPALETTE result = static_cast<HPALETTE>(
-        panel_system.get_palette(this->prog_info->pal_file, 0xC544));
+    HPALETTE result = static_cast<HPALETTE>(panel_system.get_palette(this->prog_info->pal_file, 0xC544));
     this->prog_palette = result;
     return result != 0;
 }
@@ -1740,9 +1705,7 @@ int RGE_Base_Game::setup_mouse() {
     if (mouse_pointer == 0)
         return 0;
 
-    if (mouse_pointer->setup(this->custom_mouse, this->draw_area,
-                             this->prog_info->cursor_file,
-                             0xC738, 10) == 0)
+    if (mouse_pointer->setup(this->custom_mouse, this->draw_area, this->prog_info->cursor_file, 0xC738, 10) == 0)
         return 0;
 
     this->mouse_off();
@@ -1783,11 +1746,8 @@ extern int speed_val2;
 int RGE_Base_Game::setup_comm() {
     TCommunications_Handler* new_comm;
 
-    new_comm = new TCommunications_Handler(
-        this->prog_window,
-        (unsigned char)this->prog_info->max_players,
-        chat,
-        this->prog_info->game_guid);
+    new_comm = new TCommunications_Handler(this->prog_window, (unsigned char)this->prog_info->max_players, chat,
+                                           this->prog_info->game_guid);
     this->comm_handler = new_comm;
 
     if (new_comm == 0)
@@ -1873,12 +1833,10 @@ int RGE_Base_Game::setup_music_system() {
                     music_type = 1;
             }
 
-            sprintf(music_path, "%s\\%s", this->work_dir,
-                    this->prog_info->sounds_dir);
+            sprintf(music_path, "%s\\%s", this->work_dir, this->prog_info->sounds_dir);
 
             TMusic_System* music_system =
-                new TMusic_System(music_type, this->prog_info->instance, this->prog_window,
-                                  this->sound_system, music_path);
+                new TMusic_System(music_type, this->prog_info->instance, this->prog_window, this->sound_system, music_path);
             this->music_system = music_system;
 
             if (music_system != 0 && music_type == 1 &&
@@ -2114,23 +2072,19 @@ int RGE_Base_Game::restart_music_system() {
     int track_from = this->save_music_track_from;
     if (track_from != 0) {
         if (track_from == this->save_music_track_to) {
-            music_system->play_track(track_from, this->save_music_loop,
-                                     this->save_music_pos);
+            music_system->play_track(track_from, this->save_music_loop, this->save_music_pos);
             return 1;
         }
 
         if (track_from != 0 && this->save_music_track_to != 0) {
-            music_system->play_tracks(track_from, this->save_music_track_to,
-                                      this->save_music_loop,
-                                      this->save_music_cur_track,
-                                      this->save_music_pos);
+            music_system->play_tracks(track_from, this->save_music_track_to, this->save_music_loop,
+                                      this->save_music_cur_track, this->save_music_pos);
             return 1;
         }
     }
 
     if (this->save_music_file[0] != 0)
-        music_system->play_file(this->save_music_file, this->save_music_loop,
-                                this->save_music_pos);
+        music_system->play_file(this->save_music_file, this->save_music_loop, this->save_music_pos);
 
     return 1;
 }
@@ -2228,9 +2182,7 @@ int RGE_Base_Game::check_for_cd(int num_players) {
     if (GetDriveTypeA(path) != 5)
         return 0;
 
-    if (GetVolumeInformationA(path, vol_name, 256, &vol_ser_num,
-                              &max_comp_len, &file_sys_flags,
-                              file_sys_name, 256) == 0)
+    if (GetVolumeInformationA(path, vol_name, 256, &vol_ser_num, &max_comp_len, &file_sys_flags, file_sys_name, 256) == 0)
         return 0;
 
     return stricmp(vol_name, this->prog_info->vol_name) == 0;
@@ -2254,8 +2206,7 @@ int RGE_Base_Game::check_expiration() {
 int RGE_Base_Game::check_multi_copies() {
     this->prog_mutex = CreateMutexA(0, 1, this->prog_info->prog_name);
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
-        HWND window = FindWindowA(this->prog_info->prog_name,
-                                  this->prog_info->prog_title);
+        HWND window = FindWindowA(this->prog_info->prog_name, this->prog_info->prog_title);
         if (window != 0) {
             if (this->check_prog_argument("LOBBY") != 0) {
                 SendMessageA(window, WM_CLOSE, 0, 0);
@@ -2475,8 +2426,7 @@ void RGE_Base_Game::mouse_on() {
             return;
         }
         SetCursor(this->mouse_cursor);
-        SetClassLongA(this->prog_window, GCL_HCURSOR,
-                      reinterpret_cast<LONG>(this->mouse_cursor));
+        SetClassLongA(this->prog_window, GCL_HCURSOR, reinterpret_cast<LONG>(this->mouse_cursor));
         this->is_mouse_on = 1;
     }
 }
@@ -2513,8 +2463,7 @@ void RGE_Base_Game::set_windows_mouse(int val) {
     this->mouse_pointer->off();
     if (this->is_mouse_on != 0) {
         SetCursor(this->mouse_cursor);
-        SetClassLongA(this->prog_window, GCL_HCURSOR,
-                      reinterpret_cast<LONG>(this->mouse_cursor));
+        SetClassLongA(this->prog_window, GCL_HCURSOR, reinterpret_cast<LONG>(this->mouse_cursor));
     } else {
         SetCursor(NULL);
         SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
@@ -2538,8 +2487,7 @@ void RGE_Base_Game::set_mouse_cursor(HCURSOR val) {
     }
 
     SetCursor(this->mouse_cursor);
-    SetClassLongA(this->prog_window, GCL_HCURSOR,
-                  reinterpret_cast<LONG>(this->mouse_cursor));
+    SetClassLongA(this->prog_window, GCL_HCURSOR, reinterpret_cast<LONG>(this->mouse_cursor));
 }
 
 void RGE_Base_Game::set_mouse_facet(long facet) {
@@ -2735,15 +2683,13 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
                     if (this->prog_mode != 1) {
                         if (this->draw_system != 0) {
                             this->draw_system->ClearPrimarySurface();
-                            this->draw_system->ModifyPalette(
-                                0, 256, this->draw_system->palette);
+                            this->draw_system->ModifyPalette(0, 256, this->draw_system->palette);
                         }
 
                         this->set_render_all();
                         InvalidateRect(this->prog_window, NULL, TRUE);
                         do_restore_palette = 10;
-                        restore_palette_timer = debug_timeGetTime(
-                            "C:\\msdev\\work\\age1_x1\\basegame.cpp", 3739);
+                        restore_palette_timer = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 3739);
                         restore_mouse_after_paint = 1;
                     }
                 }
@@ -2772,8 +2718,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
         if (this->prog_ready != 0) {
             if (LOWORD(wparam) == 0) {
                 game_thread = GetWindowThreadProcessId(this->prog_window, 0);
-                window_thread = GetWindowThreadProcessId(
-                    reinterpret_cast<HWND>(lparam), 0);
+                window_thread = GetWindowThreadProcessId(reinterpret_cast<HWND>(lparam), 0);
                 if (window_thread == game_thread) {
                     save_active_wnd = reinterpret_cast<HWND>(lparam);
                 }
@@ -2879,12 +2824,10 @@ int RGE_Base_Game::handle_idle() {
         unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 3994);
         if ((t - restore_palette_timer) >= static_cast<unsigned long>(delay)) {
             if (this->draw_system) {
-                this->draw_system->ModifyPalette(0, 256,
-                                                 this->draw_system->palette);
+                this->draw_system->ModifyPalette(0, 256, this->draw_system->palette);
             }
             do_restore_palette--;
-            restore_palette_timer = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp",
-                                                      4004);
+            restore_palette_timer = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 4004);
         }
     }
 
@@ -2974,15 +2917,12 @@ int RGE_Base_Game::handle_key_down(HWND wnd, UINT msg, WPARAM wparam, LPARAM lpa
     }
 
     if (basegame_control_key_down != 0 && basegame_key_message == VK_F12) {
-        this->draw_system->DrawArea->take_snapshot(
-            ".\\AoE%04d.bmp", snapshot_number);
+        this->draw_system->DrawArea->take_snapshot(".\\AoE%04d.bmp", snapshot_number);
         return 0;
     }
 
-    return this->action_key_down(basegame_key_message, basegame_key_parameter,
-                                 basegame_control_key_down,
-                                 basegame_alt_key_down,
-                                 basegame_shift_key_down) != 0;
+    return this->action_key_down(basegame_key_message, basegame_key_parameter, basegame_control_key_down,
+                                 basegame_alt_key_down, basegame_shift_key_down) != 0;
 }
 
 extern int out_of_sync;
@@ -3013,8 +2953,7 @@ int RGE_Base_Game::handle_user_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM
 }
 
 int RGE_Base_Game::handle_command(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-    return this->action_command(static_cast<unsigned long>(wparam),
-                                static_cast<unsigned long>(lparam)) != 0;
+    return this->action_command(static_cast<unsigned long>(wparam), static_cast<unsigned long>(lparam)) != 0;
 }
 
 int RGE_Base_Game::handle_music_done(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
@@ -3147,8 +3086,7 @@ paint_done:
             if (this->is_mouse_on != 0) {
                 if (this->custom_mouse == 0 || this->windows_mouse != 0) {
                     SetCursor(this->mouse_cursor);
-                    SetClassLongA(this->prog_window, GCL_HCURSOR,
-                                  reinterpret_cast<LONG>(this->mouse_cursor));
+                    SetClassLongA(this->prog_window, GCL_HCURSOR, reinterpret_cast<LONG>(this->mouse_cursor));
                 } else {
                     this->mouse_pointer->on();
                     this->mouse_pointer->draw(1);
@@ -3304,8 +3242,7 @@ void RGE_Base_Game::calc_timings() {
             this->timings[i].last_max_time = this->timings[i].max_time;
             this->timings[i].accum_time = 0;
             this->timings[i].max_time = 0;
-            this->timings[i].start_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\basegame.cpp", 4789);
+            this->timings[i].start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 4789);
 
             if (this->timings[i].include_in_total != 0)
                 total_time += this->timings[i].last_time;
@@ -3313,15 +3250,13 @@ void RGE_Base_Game::calc_timings() {
     }
 
     if (this->timings[0].start_time > 0) {
-        this->timings[0].last_time = debug_timeGetTime(
-                                         "C:\\msdev\\work\\age1_x1\\basegame.cpp", 4798) -
+        this->timings[0].last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 4798) -
                                      this->timings[0].start_time;
     } else {
         this->timings[0].last_time = total_time;
     }
 
-    this->timings[0].start_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\basegame.cpp", 4801);
+    this->timings[0].start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 4801);
 
     if (this->timings[0].last_time > total_time)
         this->timings[4].last_time =
@@ -3382,56 +3317,23 @@ void RGE_Base_Game::calc_timings() {
             } while (player_count != 0);
         }
 
-        fprintf(
-            fps_log,
-            "%lu, %ld, %ld, %ld, %ld, %d, %d, %d, %d, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %d, %d, %d \n",
-            this->world->world_time,
-            start_mem_total,
-            start_mem_high,
-            cur_mem_total,
-            cur_mem_high,
-            (*this->world->players)->objects->number_of_objects,
-            (*this->world->players)->sleeping_objects->number_of_objects,
-            object_count,
-            sleeping_object_count,
-            this->world_update_count,
-            this->view_update_count,
-            this->world_update_fps,
-            this->view_update_fps,
-            this->world_update_count == 0
-                ? 0
-                : this->timings[6].last_time / this->world_update_count,
-            this->timings[6].last_max_time,
-            this->world_update_count == 0
-                ? 0
-                : this->timings[7].last_time / this->world_update_count,
-            this->timings[7].last_max_time,
-            this->world_update_count == 0
-                ? 0
-                : this->timings[3].last_time / this->world_update_count,
-            this->timings[3].last_max_time,
-            this->world_update_count == 0
-                ? 0
-                : this->timings[1].last_time / this->world_update_count,
-            this->timings[1].last_max_time,
-            this->world_update_count == 0
-                ? 0
-                : (this->timings[10].last_time +
-                   this->timings[12].last_time) /
-                      this->world_update_count,
-            this->timings[10].last_max_time +
-                this->timings[12].last_max_time,
-            this->world_update_count == 0
-                ? 0
-                : this->timings[13].last_time / this->world_update_count,
-            this->timings[13].last_max_time,
-            this->world_update_count == 0
-                ? 0
-                : this->timings[4].last_time / this->world_update_count,
-            this->timings[4].last_max_time,
-            0,
-            -1,
-            -1);
+        fprintf(fps_log,
+                "%lu, %ld, %ld, %ld, %ld, %d, %d, %d, %d, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %lu, %d, %d, %d \n",
+                this->world->world_time, start_mem_total, start_mem_high, cur_mem_total, cur_mem_high,
+                (*this->world->players)->objects->number_of_objects,
+                (*this->world->players)->sleeping_objects->number_of_objects, object_count, sleeping_object_count,
+                this->world_update_count, this->view_update_count, this->world_update_fps, this->view_update_fps,
+                this->world_update_count == 0 ? 0 : this->timings[6].last_time / this->world_update_count,
+                this->timings[6].last_max_time, this->world_update_count == 0 ? 0
+                : this->timings[7].last_time / this->world_update_count, this->timings[7].last_max_time,
+                this->world_update_count == 0 ? 0 : this->timings[3].last_time / this->world_update_count,
+                this->timings[3].last_max_time, this->world_update_count == 0 ? 0
+                : this->timings[1].last_time / this->world_update_count, this->timings[1].last_max_time,
+                this->world_update_count == 0 ? 0 : (this->timings[10].last_time + this->timings[12].last_time) /
+                this->world_update_count, this->timings[10].last_max_time + this->timings[12].last_max_time,
+                this->world_update_count == 0 ? 0 : this->timings[13].last_time / this->world_update_count,
+                this->timings[13].last_max_time, this->world_update_count == 0 ? 0
+                : this->timings[4].last_time / this->world_update_count, this->timings[4].last_max_time, 0, -1, -1);
         fflush(fps_log);
     }
 
@@ -3448,16 +3350,11 @@ void RGE_Base_Game::calc_timing_text() {
         divisor = 1;
 
     sprintf(this->timing_text,
-            "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu",
-            this->fps,
-            this->timings[2].last_time / divisor,
-            this->timings[6].last_time / divisor,
-            this->timings[7].last_time / divisor,
-            this->timings[3].last_time / divisor,
-            this->timings[1].last_time / divisor,
-            this->timings[10].last_time / divisor,
-            this->timings[13].last_time / divisor,
-            this->timings[4].last_time / divisor,
+            "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu", this->fps,
+            this->timings[2].last_time / divisor, this->timings[6].last_time / divisor,
+            this->timings[7].last_time / divisor, this->timings[3].last_time / divisor,
+            this->timings[1].last_time / divisor, this->timings[10].last_time / divisor,
+            this->timings[13].last_time / divisor, this->timings[4].last_time / divisor,
             this->timings[0].last_time / divisor);
 }
 void RGE_Base_Game::show_timings() {
@@ -3470,15 +3367,13 @@ void RGE_Base_Game::show_comm(void) {
 }
 void RGE_Base_Game::show_ai(void) {
     char str[256];
-    sprintf(str, "No AI Information for Player #%d.",
-            (int)this->world->curr_player);
+    sprintf(str, "No AI Information for Player #%d.", (int)this->world->curr_player);
     SetWindowTextA(this->prog_window, str);
 }
 
 void RGE_Base_Game::send_game_options() {
     if (this->comm_handler)
-        this->comm_handler->SetMyGameOptions(
-            reinterpret_cast<char*>(&this->rge_game_options), 0xA8);
+        this->comm_handler->SetMyGameOptions(reinterpret_cast<char*>(&this->rge_game_options), 0xA8);
 }
 
 void RGE_Base_Game::receive_game_options(void) {
@@ -3498,8 +3393,7 @@ void RGE_Base_Game::set_game_options(RGE_Game_Options* options) {
     this->setScenarioName(options->scenarioNameValue);
     this->setSinglePlayerGame(options->singlePlayerGameValue);
     this->setMultiplayerGame(options->multiplayerGameValue);
-    this->setMapSize(options->mapXSizeValue, options->mapYSizeValue,
-                     options->mapZSizeValue);
+    this->setMapSize(options->mapXSizeValue, options->mapYSizeValue, options->mapZSizeValue);
     this->setAllowCheatCodes(options->allowCheatCodesValue);
     this->setCheatNotification(options->cheatNotificationValue);
     this->setFullVisibility(options->fullVisibilityValue);
@@ -3961,11 +3855,9 @@ void RGE_Base_Game::set_screen_size(long wid, long hgt) {
             GetClientRect(this->prog_window, &client_rect);
 
             if (client_rect.right != wid || client_rect.bottom != hgt) {
-                SetWindowPos(this->prog_window, 0,
-                             win_rect.left, win_rect.top,
+                SetWindowPos(this->prog_window, 0, win_rect.left, win_rect.top,
                              wid + win_rect.right - win_rect.left - client_rect.right,
-                             hgt + win_rect.bottom - win_rect.top - client_rect.bottom,
-                             0);
+                             hgt + win_rect.bottom - win_rect.top - client_rect.bottom, 0);
             }
         }
     }
@@ -4125,8 +4017,7 @@ void debug_random_write(void) {
         } else {
             marker = " ";
         }
-        fprintf(file, "%s%d - %s\n", marker, index,
-                debug_random_log[index]);
+        fprintf(file, "%s%d - %s\n", marker, index, debug_random_log[index]);
         index++;
     }
 
@@ -4160,8 +4051,7 @@ int __cdecl debug_rand(char* source_name, int source_line) {
         else
             idx = 0;
         debug_random_index = idx;
-        sprintf(debug_random_log[idx], "t%d,%s,l%d,r%d",
-                rge_base_game->world->world_time, temp_name, source_line, rv);
+        sprintf(debug_random_log[idx], "t%d,%s,l%d,r%d", rge_base_game->world->world_time, temp_name, source_line, rv);
     }
     return rv;
 }

@@ -92,8 +92,7 @@ int RGE_Communications_Synchronize::Add(
     this->Check[this->Offset].PlayerNo = player;
 
     this->NewData = 1;
-    return this->ValidateChecksums(player, worldtime, worldturn, worldrandom,
-                                   cs1, cs2, cs3, cs4, cs5);
+    return this->ValidateChecksums(player, worldtime, worldturn, worldrandom, cs1, cs2, cs3, cs4, cs5);
 }
 
 int RGE_Communications_Synchronize::ValidateChecksums(
@@ -127,16 +126,14 @@ int RGE_Communications_Synchronize::ValidateChecksums(
         }
 
         if (bad) {
-            this->LogChecksums(player, worldtime, worldturn, cs1, cs2, cs3,
-                               cs4, cs5, worldrandom);
+            this->LogChecksums(player, worldtime, worldturn, cs1, cs2, cs3, cs4, cs5, worldrandom);
             this->Comm->NotifyWindowParam(COMM_SYNC_ERROR, worldturn);
             this->LastResult = 0;
             return 0;
         }
     }
 
-    L->Log("P#%d In Sync @ Wtime=%d WTurn=%d Wrand=%d Wchksum=%d",
-           player, worldtime, worldturn, worldrandom, cs1);
+    L->Log("P#%d In Sync @ Wtime=%d WTurn=%d Wrand=%d Wchksum=%d", player, worldtime, worldturn, worldrandom, cs1);
     this->LastResult = 1;
     return 1;
 }
@@ -167,8 +164,7 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
     rge_base_game->GetWorldChecksums(cs4, cs2, cs3);
 
     if (this->SendChatMsgs) {
-        sprintf(tmp, "Worldtime=%ld Random=%d Checksum=%d",
-                worldTime, this->LastWorldRandom, this->GameWorldChecksum);
+        sprintf(tmp, "Worldtime=%ld Random=%d Checksum=%d", worldTime, this->LastWorldRandom, this->GameWorldChecksum);
         this->Comm->SendChatMsgAll(tmp);
     }
 
@@ -187,16 +183,11 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
     unsigned long unifiedChecksum = DAT_0062D230;
     long pathChecksum = pathSystem.checksum();
 
-    this->Add(this->Comm->WhoAmI(), worldTime, turn,
-              this->LastWorldRandom, unifiedChecksum,
-              cs4, cs2, cs3, pathChecksum);
+    this->Add(this->Comm->WhoAmI(), worldTime, turn, this->LastWorldRandom, unifiedChecksum, cs4, cs2, cs3, pathChecksum);
 
-    this->Comm->SendChecksumMessage(worldTime, this->LastWorldRandom,
-                                    unifiedChecksum, cs4, cs2,
-                                    cs3, pathChecksum);
+    this->Comm->SendChecksumMessage(worldTime, this->LastWorldRandom, unifiedChecksum, cs4, cs2, cs3, pathChecksum);
 
-    L->Log("Checksum: T#%d wt=%d   rand=%d  csum=%d", turn, worldTime,
-           this->LastWorldRandom, this->GameWorldChecksum);
+    L->Log("Checksum: T#%d wt=%d   rand=%d  csum=%d", turn, worldTime, this->LastWorldRandom, this->GameWorldChecksum);
     L->FlushLog();
     return 1;
 }
@@ -212,8 +203,7 @@ void RGE_Communications_Synchronize::LogChecksums(
     char TBuff[513];
     FILE* file = fopen("C:\\aoesync.txt", "wt");
 
-    sprintf(TBuff,
-            "Adding:  P#%d  WTime=%d  Turn=%d Cs1=%d  Cs2=%d  Cs3=%d  Cs4=%d  Cs5=%d  Rand=%d",
+    sprintf(TBuff, "Adding:  P#%d  WTime=%d  Turn=%d Cs1=%d  Cs2=%d  Cs3=%d  Cs4=%d  Cs5=%d  Rand=%d",
             player, worldtime, worldturn, cs1, cs2, cs3, cs4, cs5, random);
     L->Log(TBuff);
     if (file != 0) {
@@ -221,8 +211,7 @@ void RGE_Communications_Synchronize::LogChecksums(
         fputs("\n", file);
     }
 
-    sprintf(TBuff,
-            "Plr: Wrldtime CommTurn Random WChecksum CksumNew Position Actions  Unif. Visible");
+    sprintf(TBuff, "Plr: Wrldtime CommTurn Random WChecksum CksumNew Position Actions  Unif. Visible");
     L->Log(TBuff);
     if (file != 0) {
         fputs(TBuff, file);
@@ -233,11 +222,8 @@ void RGE_Communications_Synchronize::LogChecksums(
     int index = 1;
     do {
         CHECKSUMARRAY& entry = this->Check[index];
-        sprintf(TBuff,
-                " %.2d: %.8d %.8d %.6d %.8d %.8d %.8d %.8d %.8d ",
-                entry.PlayerNo, entry.WTime, entry.WTurn,
-                entry.Random, entry.cs1, entry.cs2, entry.cs3,
-                entry.cs4, entry.cs5);
+        sprintf(TBuff, " %.2d: %.8d %.8d %.6d %.8d %.8d %.8d %.8d %.8d ", entry.PlayerNo, entry.WTime, entry.WTurn,
+                entry.Random, entry.cs1, entry.cs2, entry.cs3, entry.cs4, entry.cs5);
         L->Log(TBuff);
         if (file != 0) {
             fputs(TBuff, file);
@@ -245,8 +231,7 @@ void RGE_Communications_Synchronize::LogChecksums(
         }
 
         if (entry.WTurn == worldturn && entry.WTime != worldtime) {
-            sprintf(TBuff,
-                    "=====>  WORLD TIME IS OUT OF SYNC  (%d should be %d at turn %d)",
+            sprintf(TBuff, "=====>  WORLD TIME IS OUT OF SYNC  (%d should be %d at turn %d)",
                     worldtime, entry.WTime, worldturn);
             L->Log(TBuff);
             if (file != 0) {
@@ -257,9 +242,7 @@ void RGE_Communications_Synchronize::LogChecksums(
 
         if (entry.WTime == worldtime) {
             if (entry.Random != random) {
-                sprintf(TBuff,
-                        "=====>  MISMATCHED RANDOM ( %d should be %d)",
-                        random, entry.Random);
+                sprintf(TBuff, "=====>  MISMATCHED RANDOM ( %d should be %d)", random, entry.Random);
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
@@ -267,8 +250,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                 }
             }
             if (entry.cs1 != cs1) {
-                sprintf(TBuff,
-                        "=====>  MISMATCHED Unified Visible Map");
+                sprintf(TBuff, "=====>  MISMATCHED Unified Visible Map");
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
@@ -276,8 +258,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                 }
             }
             if (entry.cs2 != cs2) {
-                sprintf(TBuff,
-                        "=====>  MISMATCHED CHECKSUM...New");
+                sprintf(TBuff, "=====>  MISMATCHED CHECKSUM...New");
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
@@ -285,8 +266,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                 }
             }
             if (entry.cs3 != cs3) {
-                sprintf(TBuff,
-                        "=====>  MISMATCHED..Position");
+                sprintf(TBuff, "=====>  MISMATCHED..Position");
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
@@ -294,8 +274,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                 }
             }
             if (entry.cs4 != cs4) {
-                sprintf(TBuff,
-                        "=====>  MISMATCHED...Action");
+                sprintf(TBuff, "=====>  MISMATCHED...Action");
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
@@ -303,8 +282,7 @@ void RGE_Communications_Synchronize::LogChecksums(
                 }
             }
             if (entry.cs5 != cs5) {
-                sprintf(TBuff,
-                        "=====>  MISMATCHED...ObstructionMap Checksums");
+                sprintf(TBuff, "=====>  MISMATCHED...ObstructionMap Checksums");
                 L->Log(TBuff);
                 if (file != 0) {
                     fputs(TBuff, file);
@@ -336,16 +314,14 @@ void RGE_Communications_Synchronize::LogChecksums(
                 fputs("\n", file);
             }
 
-            sprintf(TBuff, "PLAYER: %s",
-                    this->Comm->GetPlayerName(player_index));
+            sprintf(TBuff, "PLAYER: %s", this->Comm->GetPlayerName(player_index));
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
                 fputs("\n", file);
             }
 
-            sprintf(TBuff, "P#%d CSum=%d ", player_index,
-                    rge_base_game->GetChecksum(player_index));
+            sprintf(TBuff, "P#%d CSum=%d ", player_index, rge_base_game->GetChecksum(player_index));
             L->Log(TBuff);
             if (file != 0) {
                 fputs(TBuff, file);
@@ -426,8 +402,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
         return 0;
     }
 
-    L->Log("OUTOFSYNC: my values: %d %d %d %d %d %d",
-           myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
+    L->Log("OUTOFSYNC: my values: %d %d %d %d %d %d", myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
 
     for (i = 1; i <= 0x36; i++) {
         CHECKSUMARRAY& entry = this->Check[i];
@@ -437,15 +412,11 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
                 entry.cs4 == mycs4 && entry.cs5 == mycs5 &&
                 entry.Random == myRandom) {
                 NumSame++;
-                L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
-                       i, myWorldTime, mycs1, mycs2, mycs3, mycs4,
-                       mycs5);
+                L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d", i, myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
             }
             else {
                 NumDiff++;
-                L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d",
-                       i, myWorldTime, mycs1, mycs2, mycs3, mycs4,
-                       mycs5);
+                L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d", i, myWorldTime, mycs1, mycs2, mycs3, mycs4, mycs5);
             }
         }
     }
@@ -456,8 +427,7 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
         }
     }
 
-    L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
-           NumPlayers, NumDiff, NumSame);
+    L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d", NumPlayers, NumDiff, NumSame);
 
     if (NumDiff + NumSame < NumPlayers - 1) {
         L->Log("OUTOFSYNC: return not out");

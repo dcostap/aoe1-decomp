@@ -34,20 +34,15 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
     this->circle_p_pic = 0;
     this->background = 0;
 
-    if (!TDialogPanel::setup(parentPanel->renderArea(), parentPanel, 0x208, 0x19c,
-                             parentPanel->get_popup_info_file(),
+    if (!TDialogPanel::setup(parentPanel->renderArea(), parentPanel, 0x208, 0x19c, parentPanel->get_popup_info_file(),
                              parentPanel->get_popup_info_id(), modal))
         return;
 
     TEasy_Panel::create_text(this, &this->background, "", 10, 10, 500,
                              350, 4, 0, 0, 0);
 
-    this->background->set_bevel_info(3, this->bevel_color1,
-                                     this->bevel_color2,
-                                     this->bevel_color3,
-                                     this->bevel_color4,
-                                     this->bevel_color5,
-                                     this->bevel_color6);
+    this->background->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                                     this->bevel_color5, this->bevel_color6);
 
     TEasy_Panel::create_text(this, &this->title_text, IDS_PRODUCT_TITLE, 20, 20,
                              480, 20, 4, 0, 0, 0);
@@ -63,9 +58,8 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
             if (this->ms_copy_text1->get_text_rect(&rect)) {
                 this->circle_p_pic = new TPicturePanel();
                 if (this->circle_p_pic) {
-                    this->circle_p_pic->setup(
-                        this->render_area, this, (rect.right - this->pnl_x) + 3,
-                        0x42, 0xf, 0xe, "circlep", 0xc4e0, 0, 1);
+                    this->circle_p_pic->setup(this->render_area, this, (rect.right - this->pnl_x) + 3,
+                                              0x42, 0xf, 0xe, "circlep", 0xc4e0, 0, 1);
                     TEasy_Panel::create_text(
                         this, &this->ms_copy_text2, IDS_COPYRIGHT_SUFFIX,
                         this->circle_p_pic->xPosition() - this->pnl_x +

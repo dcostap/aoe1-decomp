@@ -106,10 +106,8 @@ int RGE_Master_Action_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     RGE_Master_Moving_Object::setup(infile, sprites, sounds, in_id);
     master_type = 0x28;
 
-    fscanf(infile, "%f %f %hd %hd %hd %hd %hd %hd",
-           &search_radius, &work_rate, &drop_site, &backup_drop_site,
-           &temp_task_by_group, &temp_command_sound, &temp_move_sound,
-           &temp_run_pattern);
+    fscanf(infile, "%f %f %hd %hd %hd %hd %hd %hd", &search_radius, &work_rate, &drop_site, &backup_drop_site,
+           &temp_task_by_group, &temp_command_sound, &temp_move_sound, &temp_run_pattern);
 
     task_by_group = (unsigned char)temp_task_by_group;
     run_pattern = (unsigned char)temp_run_pattern;

@@ -91,13 +91,10 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     }
     sprintf(str, "%02ld:%02ld:%02ld", hours, minutes, seconds);
 
-    this->create_text(this, &this->time, str, 480, 10, 110, 20,
-                      RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->time, str, 480, 10, 110, 20, RGE_FONT_STANDARD, 0, 0, 0);
     this->time->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
-    this->create_text(this, &this->title, IDS_ACHIEVEMENTS_TITLE, 0, 5, 640, 30,
-                      1, 1, 0, 0);
-    this->create_text(this, &this->summary_text, 0, 10, 35, 620, 30,
-                      1, 1, 0, 0);
+    this->create_text(this, &this->title, IDS_ACHIEVEMENTS_TITLE, 0, 5, 640, 30, 1, 1, 0, 0);
+    this->create_text(this, &this->summary_text, 0, 10, 35, 620, 30, 1, 1, 0, 0);
     this->create_text(this, &this->instruction, IDS_ACHIEVEMENTS_COLUMN_INSTRUCTION, 10, 410, 620,
                       20, RGE_FONT_STANDARD, 1, 0, 0);
 
@@ -111,63 +108,43 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
         }
         char* message = rge_base_game->world->scenario->Get_message(message_id);
         if (message != 0 && *message != '\0') {
-            this->create_text(this, &this->win_loss_text, "", 10, 85,
-                              620, 330, RGE_FONT_STANDARD, 0, 0, 1);
+            this->create_text(this, &this->win_loss_text, "", 10, 85, 620, 330, RGE_FONT_STANDARD, 0, 0, 1);
             if (this->win_loss_text != 0) {
                 this->create_auto_scrollbar(&this->win_loss_text_bar, this->win_loss_text, 20);
-                this->win_loss_text->set_bevel_info(
-                    4, this->bevel_color1, this->bevel_color2,
-                    this->bevel_color3, this->bevel_color4,
-                    this->bevel_color5, this->bevel_color6);
+                this->win_loss_text->set_bevel_info(4, this->bevel_color1, this->bevel_color2,
+                                                    this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
                 this->win_loss_text->set_text(message);
             }
         }
     }
 
-    this->time_line->create_timeline(this, &this->time_line, 10, 85,
-                                     620, 330, 11, 9, 640, 480);
-    this->time_line->set_bevel_info(
-        3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
-        this->bevel_color4, this->bevel_color5, this->bevel_color6);
+    this->time_line->create_timeline(this, &this->time_line, 10, 85, 620, 330, 11, 9, 640, 480);
+    this->time_line->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                    this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->time_line->set_special_events("timeline.slp");
 
-    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0,
-                            0, -1, -1, 0) == 0) {
+    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0) == 0) {
         return;
     }
     this->close_button->set_active(1);
-    this->close_button->set_positioning(
-        TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17,
-        0, 0, 0, 0);
+    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
 
-    this->create_text(this, &this->title_bar[0], 0, 98, 151, 200,
-                      30, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->title_bar[1], 0, 152, 131, 200,
-                      30, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->title_bar[2], 0, 212, 111, 145,
-                      30, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->title_bar[3], 0, 260, 91, 200,
-                      30, RGE_FONT_STANDARD, 1, 0, 0);
-    this->create_text(this, &this->title_bar[4], 0, 364, 111, 145,
-                      30, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->title_bar[5], 0, 370, 131, 200,
-                      30, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->title_bar[6], 0, 424, 151, 200,
-                      30, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->title_bar[0], 0, 98, 151, 200, 30, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->title_bar[1], 0, 152, 131, 200, 30, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->title_bar[2], 0, 212, 111, 145, 30, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->title_bar[3], 0, 260, 91, 200, 30, RGE_FONT_STANDARD, 1, 0, 0);
+    this->create_text(this, &this->title_bar[4], 0, 364, 111, 145, 30, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->title_bar[5], 0, 370, 131, 200, 30, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->title_bar[6], 0, 424, 151, 200, 30, RGE_FONT_STANDARD, 0, 0, 0);
     this->title_bar[4]->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
     this->title_bar[5]->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
     this->title_bar[6]->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
 
-    this->create_text(this, &this->achievement_choice[0], 0, 100, 151,
-                      130, 250, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->achievement_choice[1], 0, 154, 131,
-                      128, 274, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->achievement_choice[2], 0, 214, 111,
-                      121, 289, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->achievement_choice[3], 0, 282, 91,
-                      156, 309, RGE_FONT_STANDARD, 0, 0, 0);
-    this->create_text(this, &this->achievement_choice[4], 0, 388, 111,
-                      121, 289, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[0], 0, 100, 151, 130, 250, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[1], 0, 154, 131, 128, 274, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[2], 0, 214, 111, 121, 289, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[3], 0, 282, 91, 156, 309, RGE_FONT_STANDARD, 0, 0, 0);
+    this->create_text(this, &this->achievement_choice[4], 0, 388, 111, 121, 289, RGE_FONT_STANDARD, 0, 0, 0);
 
     int y = 171;
     for (i = 1; i < 9; ++i, y += 30) {
@@ -178,23 +155,14 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
             player_name = 0;
         }
 
-        this->create_text(this, &this->player_names[i - 1],
-                          player_name,
-                          22, y, 150, 29, RGE_FONT_STANDARD, 0, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][0], 0,
-                          178, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][1], 0,
-                          231, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][2], 0,
-                          283, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][3], 0,
-                          336, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][4], 0,
-                          389, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][5], 0,
-                          442, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
-        this->create_text(this, &this->statistics[i - 1][6], 0,
-                          494, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->player_names[i - 1], player_name, 22, y, 150, 29, RGE_FONT_STANDARD, 0, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][0], 0, 178, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][1], 0, 231, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][2], 0, 283, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][3], 0, 336, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][4], 0, 389, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][5], 0, 442, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
+        this->create_text(this, &this->statistics[i - 1][6], 0, 494, y, 51, 29, RGE_FONT_STANDARD, 1, 1, 0);
 
         if (i < rge_base_game->world->player_num) {
             RGE_Player* player = rge_base_game->world->players[i];
@@ -239,37 +207,28 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     long ok_x;
     if (this->end_game_flag != 0 && rge_base_game->singlePlayerGame() != 0) {
         if (this->win_loss_text != 0) {
-            this->create_button(this, &this->aftermathButton, IDS_ACHIEVEMENTS_AFTERMATH, 0,
-                                5, 441, 150, 30, 0, 0, 0);
-            this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0,
-                                165, 441, 150, 30, 0, 0, 0);
-            this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0,
-                                325, 441, 150, 30, 0, 0, 0);
+            this->create_button(this, &this->aftermathButton, IDS_ACHIEVEMENTS_AFTERMATH, 0, 5, 441, 150, 30, 0, 0, 0);
+            this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0, 165, 441, 150, 30, 0, 0, 0);
+            this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0, 325, 441, 150, 30, 0, 0, 0);
             button_width = 150;
             ok_x = 485;
         } else {
-            this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0,
-                                20, 441, 180, 30, 0, 0, 0);
-            this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0,
-                                230, 441, 180, 30, 0, 0, 0);
+            this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0, 20, 441, 180, 30, 0, 0, 0);
+            this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0, 230, 441, 180, 30, 0, 0, 0);
             button_width = 180;
             ok_x = 440;
         }
     } else {
-        this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0,
-                            100, 441, 200, 30, 0, 0, 0);
+        this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0, 100, 441, 200, 30, 0, 0, 0);
         button_width = 200;
         ok_x = 340;
     }
-    this->create_button(this, &this->okButton, IDS_ACHIEVEMENTS_CLOSE, 0, ok_x, 441,
-                        button_width, 30, 0, 0, 0);
-    this->create_button(this, &this->backButton, IDS_ACHIEVEMENTS_BACK, 0, 200, 441,
-                        240, 30, 0, 0, 0);
+    this->create_button(this, &this->okButton, IDS_ACHIEVEMENTS_CLOSE, 0, ok_x, 441, button_width, 30, 0, 0, 0);
+    this->create_button(this, &this->backButton, IDS_ACHIEVEMENTS_BACK, 0, 200, 441, 240, 30, 0, 0, 0);
     this->backButton->set_active(0);
     this->backButton->hotkey = VK_ESCAPE;
     this->backButton->hotkey_shift = 0;
-    this->create_button(this, &this->backButton2, IDS_ACHIEVEMENTS_CLOSE, 0, 200, 441,
-                        240, 30, 0, 0, 0);
+    this->create_button(this, &this->backButton2, IDS_ACHIEVEMENTS_CLOSE, 0, 200, 441, 240, 30, 0, 0, 0);
     this->backButton2->set_active(0);
     this->backButton2->hotkey = VK_ESCAPE;
     this->backButton2->hotkey_shift = 0;
@@ -726,11 +685,8 @@ void TribeAchievementsScreen::draw() {
                 int player_index = 0;
                 for (remaining = count; remaining != 0; --remaining) {
                     if (world->players[player_index + 1]->game_status == 1) {
-                        this->win_decal->shape_draw(
-                            this->render_area,
-                            this->player_names[player_index]->xPosition() - 20,
-                            this->player_names[player_index]->yPosition(),
-                            0, 0, 0);
+                        this->win_decal->shape_draw(this->render_area, this->player_names[player_index]->xPosition() - 20,
+                                                    this->player_names[player_index]->yPosition(), 0, 0, 0);
                     }
                     ++player_index;
                 }

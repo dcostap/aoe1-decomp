@@ -82,8 +82,7 @@ TribeInformationAIModule::TribeInformationAIModule(void* pW, int pID)
         this->closestDropsiteResourceID[i] = -1;
     }
 
-    this->importantObjectMemory = (ObjectMemory*)operator new(
-        this->maxImportantObjectMemory * sizeof(ObjectMemory));
+    this->importantObjectMemory = (ObjectMemory*)operator new(this->maxImportantObjectMemory * sizeof(ObjectMemory));
     if (this->importantObjectMemory != 0) {
         int k = 0;
         if (this->maxImportantObjectMemory > 0) {
@@ -106,8 +105,7 @@ TribeInformationAIModule::TribeInformationAIModule(void* pW, int pID)
         }
     }
 
-    this->buildingLots = (BuildingLot*)operator new(
-        this->maxBuildingLots * sizeof(BuildingLot));
+    this->buildingLots = (BuildingLot*)operator new(this->maxBuildingLots * sizeof(BuildingLot));
     if (this->buildingLots != 0) {
         int k = 0;
         if (this->maxBuildingLots > 0) {
@@ -121,8 +119,7 @@ TribeInformationAIModule::TribeInformationAIModule(void* pW, int pID)
         }
     }
 
-    this->attackMemories = (AttackMemory*)operator new(
-        this->maxAttackMemories * sizeof(AttackMemory));
+    this->attackMemories = (AttackMemory*)operator new(this->maxAttackMemories * sizeof(AttackMemory));
     if (this->attackMemories != 0) {
         int off = 0;
         int k = 0;
@@ -231,24 +228,21 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
     rge_read(infile, &this->mapYSizeValue, 4);
     rge_read(infile, &this->lastUpdateRowValue, 4);
     rge_read(infile, &this->maxImportantObjectMemory, 4);
-    this->importantObjectMemory = (ObjectMemory*)operator new(
-        this->maxImportantObjectMemory * sizeof(ObjectMemory));
+    this->importantObjectMemory = (ObjectMemory*)operator new(this->maxImportantObjectMemory * sizeof(ObjectMemory));
     if (this->importantObjectMemory != 0) {
         for (int i4 = 0; i4 < this->maxImportantObjectMemory; i4++) {
             rge_read(infile, this->importantObjectMemory + i4, sizeof(ObjectMemory));
         }
 
         rge_read(infile, &this->maxBuildingLots, 4);
-        this->buildingLots = (BuildingLot*)operator new(
-            this->maxBuildingLots * sizeof(BuildingLot));
+        this->buildingLots = (BuildingLot*)operator new(this->maxBuildingLots * sizeof(BuildingLot));
         if (this->buildingLots != 0) {
             for (int i5 = 0; i5 < this->maxBuildingLots; i5++) {
                 rge_read(infile, this->buildingLots + i5, sizeof(BuildingLot));
             }
 
             rge_read(infile, &this->maxAttackMemories, 4);
-            this->attackMemories = (AttackMemory*)operator new(
-                this->maxAttackMemories * sizeof(AttackMemory));
+            this->attackMemories = (AttackMemory*)operator new(this->maxAttackMemories * sizeof(AttackMemory));
             if (this->attackMemories != 0) {
                 for (int i6 = 0; i6 < this->maxAttackMemories; i6++) {
                     rge_read(infile, this->attackMemories + i6, sizeof(AttackMemory));
@@ -357,8 +351,7 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                     if (this->maxResources[i9] != 0) {
                         this->resources[i9] = (ResourceMemory*)operator new(
                             this->maxResources[i9] * sizeof(ResourceMemory));
-                        rge_read(infile, this->resources[i9],
-                                 this->maxResources[i9] * sizeof(ResourceMemory));
+                        rge_read(infile, this->resources[i9], this->maxResources[i9] * sizeof(ResourceMemory));
                     } else {
                         this->resources[i9] = 0;
                     }
@@ -398,9 +391,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
     operator delete(this->numberResourceTypesValue);
 
     if (this->saveLearnInformationValue == 1) {
-        int file = rge_open(this->learnFileName,
-                            _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-                            _S_IREAD | _S_IWRITE);
+        int file = rge_open(this->learnFileName, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
         local_14 = file;
         if (file != -1) {
             rge_write(file, &this->mapXSizeValue, 4);
@@ -424,9 +415,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
                 offset = 0;
                 do {
                     if (((AttackMemory*)((char*)this->attackMemories + offset))->id != -1)
-                        rge_write(file,
-                                  (AttackMemory*)((char*)this->attackMemories + offset),
-                                  24);
+                        rge_write(file, (AttackMemory*)((char*)this->attackMemories + offset), 24);
                     index++;
                     offset += sizeof(AttackMemory);
                 } while (index < this->maxAttackMemories);
@@ -451,9 +440,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
                 do {
                     if (((ObjectMemory*)(offset + (char*)this->importantObjectMemory))->id != -1 &&
                         ((ObjectMemory*)(offset + (char*)this->importantObjectMemory))->type == 0x6d)
-                        rge_write(file,
-                                  (ObjectMemory*)(offset + (char*)this->importantObjectMemory),
-                                  36);
+                        rge_write(file, (ObjectMemory*)(offset + (char*)this->importantObjectMemory), 36);
                     index++;
                     offset += sizeof(ObjectMemory);
                 } while (index < this->maxImportantObjectMemory);
@@ -463,8 +450,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
                 rge_write(file, &this->maxResources[i], 4);
                 rge_write(file, &this->numResources[i], 4);
                 if (this->maxResources[i] != 0)
-                    rge_write(file, this->resources[i],
-                              this->maxResources[i] * sizeof(ResourceMemory));
+                    rge_write(file, this->resources[i], this->maxResources[i] * sizeof(ResourceMemory));
             }
 
             outFile = this->importantMiscs.numberValue;
@@ -486,9 +472,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 
     unsigned char currentPlayer = this->md->player->world->player_turn;
     if ((currentPlayer == this->md->player->id || currentPlayer == 0xff) &&
-        (local_14 = rge_open(this->unitHistoryFilename,
-                             _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-                             _S_IREAD | _S_IWRITE),
+        (local_14 = rge_open(this->unitHistoryFilename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE),
          local_14 != -1)) {
         rge_write(local_14, this->unitHistory, 44);
         rge_close(local_14);
@@ -769,8 +753,7 @@ int TribeInformationAIModule::closestUnexploredTile(
 
     int civilianObj = obj->master_obj->object_group == 4;
     unsigned char initialZone = obj->currentZone();
-    int direction = debug_rand(
-        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 919) % 4;
+    int direction = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 919) % 4;
     int x = (int)cX;
     int y = (int)cY;
     int offLeft = 0;
@@ -826,10 +809,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                         cPoint.y = y;
                         cPoint.z = (int)obj->world_z;
 
-                        if (obj->canPath(
-                                cPoint,
-                                obj->master_obj->los - DAT_00575564,
-                                -1, &pathDistance, 1, -1, -1) == 0) {
+                        if (obj->canPath(cPoint, obj->master_obj->los - DAT_00575564, -1, &pathDistance, 1, -1, -1) == 0) {
                             this->pathMap.setValue(x, y, 1);
 
                             int bestValue = -1;
@@ -843,9 +823,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                                     int value = this->quadrantLog
                                         [quadrant_x][quadrant_y]
                                             .numberExploredTiles;
-                                    value += debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                        1056) % 100;
+                                    value += debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 1056) % 100;
                                     value += this->quadrantLog
                                         [quadrant_x][quadrant_y]
                                             .numberAttacksOnUs * 25;
@@ -861,9 +839,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                             int max_x = best_x + this->mapXSizeValue / 4 - 1;
                             int max_y = best_y + this->mapYSizeValue / 4 - 1;
 
-                            int corner = debug_rand(
-                                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                1072) % 4;
+                            int corner = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 1072) % 4;
                             if (corner == 0) {
                                 x = best_x;
                                 y = best_y;
@@ -984,12 +960,10 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                 this->md->object(resource->id);
                             if (object == 0) {
                                 resource = (ResourceMemory*)
-                                    ((char*)this->resources[rType] +
-                                     resource_offset);
+                                    ((char*)this->resources[rType] + resource_offset);
                                 resource->gone = 1;
                                 resource = (ResourceMemory*)
-                                    ((char*)this->resources[rType] +
-                                     resource_offset);
+                                    ((char*)this->resources[rType] + resource_offset);
                                 if (this->closestDropsiteResourceID[rType] ==
                                     resource->id) {
                                     update_dropsites = 1;
@@ -1011,8 +985,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                 }
 
                                 resource = (ResourceMemory*)
-                                    ((char*)this->resources[rType] +
-                                     resource_offset);
+                                    ((char*)this->resources[rType] + resource_offset);
                                 int value;
                                 int dx = gathererX - (int)resource->x;
                                 int dy = gathererY - (int)resource->y;
@@ -1041,13 +1014,11 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                     value += 0x19;
                                 }
 
-                                if (this->withinXTilesOfEnemyTowncenter(
-                                        object, 0x19) == 1) {
+                                if (this->withinXTilesOfEnemyTowncenter(object, 0x19) == 1) {
                                     goto next_resource;
                                 }
 
-                                int attacked = this->withinXTilesOfAttackOnPlayer(
-                                    object, 0x0f, this->md->player->id);
+                                int attacked = this->withinXTilesOfAttackOnPlayer(object, 0x0f, this->md->player->id);
                                 if (attacked == 1)
                                     value += 0x1f4;
 
@@ -1100,15 +1071,12 @@ int TribeInformationAIModule::gameIDOfResourceObject(
                                 }
 
                                 resource = (ResourceMemory*)
-                                    ((char*)this->resources[rType] +
-                                     resource_offset);
+                                    ((char*)this->resources[rType] + resource_offset);
                                 if (gathererZone ==
-                                        gathererObj->lookupZone(resource->x,
-                                                                 resource->y) &&
+                                        gathererObj->lookupZone(resource->x, resource->y) &&
                                     (bestObject == 0 || value < bestValue)) {
                                     resource = (ResourceMemory*)
-                                        ((char*)this->resources[rType] +
-                                         resource_offset);
+                                        ((char*)this->resources[rType] + resource_offset);
                                     bestObject = resource;
                                     roXPos = object->world_x;
                                     bestValue = value;
@@ -1147,8 +1115,7 @@ int TribeInformationAIModule::gameIDsOfObjectType(int oType, int** objects, int*
     int i = 0;
     if (this->importantObjects.numberValue > 0) {
         do {
-            RGE_Static_Object* tempObj = this->md->aiPlayer->world->object(
-                this->importantObjects[i]);
+            RGE_Static_Object* tempObj = this->md->aiPlayer->world->object(this->importantObjects[i]);
             if (tempObj != 0) {
                 if (ownerNumber == -5) {
                     if (this->md->aiPlayer->id == tempObj->owner->id) goto next;
@@ -1195,9 +1162,7 @@ int TribeInformationAIModule::gameIDsOwnedBy(int oType, int** objects, int owner
         do {
             if (this->importantObjectMemory[i].id != -1) {
                 RGE_Game_World* world = this->md->aiPlayer->world;
-                RGE_Static_Object* obj = world->object(
-                    this->importantObjectMemory[i].id
-                );
+                RGE_Static_Object* obj = world->object(this->importantObjectMemory[i].id);
                 if (obj != 0) {
                     int owner_id = obj->owner->id;
                     if (owner_id == ownerNumber) {
@@ -1277,13 +1242,10 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 
     memset(zoneCounter, -1, sizeof(zoneCounter));
 
-    zoneMap = gMap->map_zones->get_zone_map(
-        this->md->player->world->terrains[
-            this->md->player->master_objects[0x13]->terrain],
-        this->md->player->world->terrain_size, zoneMapIndex);
+    zoneMap = gMap->map_zones->get_zone_map(this->md->player->world->terrains[
+                                            this->md->player->master_objects[0x13]->terrain], this->md->player->world->terrain_size, zoneMapIndex);
 
-    randSelect = debug_rand(
-        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 1705) % 0x32;
+    randSelect = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 1705) % 0x32;
 
     {
         int x = 1;
@@ -1298,19 +1260,16 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                             y + 1 <= vMap->heightValue - 1) {
                             if (centerType == -1 ||
                                 (gMap->map_row_offset[y][x].terrain_type & 0x1F) == centerType) {
-                                unsigned char currentZone = zoneMap->get_zone_info(
-                                    x, y);
+                                unsigned char currentZone = zoneMap->get_zone_info(x, y);
                                 int numberTiles =
                                     zoneMap->numberTilesInZone(currentZone);
                                 int minimumTiles =
                                     this->md->tacticalAI.strategicNumber(0x70);
                                 if (numberTiles >= minimumTiles &&
-                                    this->hasAdjacentTileType(
-                                        x, y, edgeType)) {
+                                    this->hasAdjacentTileType(x, y, edgeType)) {
                                     ConstructionItem* lot =
-                                        this->md->constructionAI.randomLot(
-                                            (float)x - DAT_00575570,
-                                            (float)y - DAT_00575570);
+                                        this->md->constructionAI.randomLot((float)x - DAT_00575570,
+                                                                           (float)y - DAT_00575570);
                                     if (lot == 0) {
                                         float cD = ((float)x - cX) *
                                                       ((float)x - cX) +
@@ -1318,8 +1277,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                                       ((float)y - cY);
                                         if (zoneCounter[currentZone] == 0xFF) {
                                             zoneCounter[currentZone] = (unsigned char)
-                                                this->numberDocksInZone(
-                                                    (int)currentZone, zoneMap);
+                                                this->numberDocksInZone((int)currentZone, zoneMap);
                                         }
                                         // A positive count selects the
                                         // penalty block and emits TEST/JBE.
@@ -1331,8 +1289,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 
                                         {
                                             int closest =
-                                                this->closestDockDistance(
-                                                    x, y);
+                                                this->closestDockDistance(x, y);
                                             if (closest != -1) {
                                                 cD += (float)(100000 / closest);
                                             }
@@ -1360,9 +1317,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 
     if (bXTile != -1) {
         ConstructionItem* result =
-            new ConstructionItem((float)bXTile - DAT_00575570,
-                                 (float)bYTile - DAT_00575570,
-                                 0.0f, bi->xSize(), bi->ySize(),
+            new ConstructionItem((float)bXTile - DAT_00575570, (float)bYTile - DAT_00575570, 0.0f, bi->xSize(), bi->ySize(),
                                  bi->zSize(), bi->typeID(), bi->name());
         return result;
     }
@@ -1379,8 +1334,7 @@ int TribeInformationAIModule::numberDocksInZone(int zone, RGE_Zone_Map* zoneMap)
         do {
             RGE_Static_Object* obj = this->md->object(this->playerBuildings[i]);
             if (obj != 0 && obj->master_obj->id == 0x2D) {
-                unsigned char dockZone = zoneMap->get_zone_info(
-                    (int)obj->world_x, (int)obj->world_y);
+                unsigned char dockZone = zoneMap->get_zone_info((int)obj->world_x, (int)obj->world_y);
                 if (dockZone == zone) {
                     count++;
                 }
@@ -1516,16 +1470,12 @@ void TribeInformationAIModule::addEnemyInfluences(int ownerID, int targetID) {
         }
 
         if (this->importantObjectMemory[i].range > DAT_00575564) {
-            minRange.x = (int)(object->world_x -
-                               this->importantObjectMemory[i].range);
-            minRange.y = (int)(object->world_y -
-                               this->importantObjectMemory[i].range);
+            minRange.x = (int)(object->world_x - this->importantObjectMemory[i].range);
+            minRange.y = (int)(object->world_y - this->importantObjectMemory[i].range);
             this->mapBound(minRange);
 
-            maxRange.x = (int)(this->importantObjectMemory[i].range +
-                               object->world_x);
-            maxRange.y = (int)(this->importantObjectMemory[i].range +
-                               object->world_y);
+            maxRange.x = (int)(this->importantObjectMemory[i].range + object->world_x);
+            maxRange.y = (int)(this->importantObjectMemory[i].range + object->world_y);
             this->mapBound(maxRange);
 
             for (int x = minRange.x; x <= maxRange.x; ++x) {
@@ -1609,20 +1559,9 @@ ObjectMemory* TribeInformationAIModule::objectMemory(int id) {
 
 ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* obj) {
     if (obj == 0) return 0;
-    return addObjectMemory(obj->id,
-                           obj->master_obj->id,
-                           obj->master_obj->object_group,
-                           (int)obj->world_x,
-                           (int)obj->world_y,
-                           (int)obj->world_z,
-                           obj->owner->id,
-                           (int)obj->hp,
-                           0,
-                           0,
-                           obj->damageCapability(),
-                           obj->rateOfFire(),
-                           obj->weaponRange(),
-                           obj);
+    return addObjectMemory(obj->id, obj->master_obj->id, obj->master_obj->object_group, (int)obj->world_x,
+                           (int)obj->world_y, (int)obj->world_z, obj->owner->id, (int)obj->hp, 0, 0,
+                           obj->damageCapability(), obj->rateOfFire(), obj->weaponRange(), obj);
 }
 
 ObjectMemory* TribeInformationAIModule::addObjectMemory(
@@ -1676,8 +1615,7 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(
     }
 
     if (emptyIndex == -1) {
-        ObjectMemory* expanded = (ObjectMemory*)operator new(
-            this->maxImportantObjectMemory * sizeof(ObjectMemory) * 2);
+        ObjectMemory* expanded = (ObjectMemory*)operator new(this->maxImportantObjectMemory * sizeof(ObjectMemory) * 2);
         if (expanded == 0) {
             return 0;
         }
@@ -1989,8 +1927,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     char* alternateName, int alternateMinD, int alternateMaxD,
     int alternateX, int alternateY, PlacementState& placementState,
     unsigned long startTime) {
-    RGE_Static_Object* protoBuilder = this->md->object(
-        -1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
     if (protoBuilder == 0) {
         placementState.active = 0;
         return 0;
@@ -2026,8 +1963,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         return 0;
     }
 
-    RGE_Static_Object* townCenter = this->md->object(
-        -1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* townCenter = this->md->object(-1, 0x6d, -1, -1, -1, -1, -1, -1, -1, -1);
     int actual_builder_id = builderID;
     if (placementState.active == 1) {
         actual_builder_id = placementState.builderID;
@@ -2052,9 +1988,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
     int placementType = this->placementCode(buildingType);
     if (placementType == -1) {
-        this->logCommonHistory(
-            "Invalid influence placement type id (%d), bombing.",
-            buildingType);
+        this->logCommonHistory("Invalid influence placement type id (%d), bombing.", buildingType);
         placementState.active = 0;
         return 0;
     }
@@ -2133,15 +2067,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
             ConstructionItem* result;
             if (buildingSize == DAT_00575574) {
-                result = new ConstructionItem(
-                    (float)lot->x, (float)lot->y, 1.0f, buildingSize,
-                    buildingSize, 1.0f, buildingType, buildingName);
+                result = new ConstructionItem((float)lot->x, (float)lot->y, 1.0f, buildingSize,
+                                              buildingSize, 1.0f, buildingType, buildingName);
             } else {
-                result = new ConstructionItem(
-                    (float)lot->x - DAT_00575570,
-                    (float)lot->y - DAT_00575570, 1.0f,
-                    buildingSize, buildingSize, 1.0f, buildingType,
-                    buildingName);
+                result = new ConstructionItem((float)lot->x - DAT_00575570, (float)lot->y - DAT_00575570, 1.0f,
+                                              buildingSize, buildingSize, 1.0f, buildingType, buildingName);
             }
             lot->status = 1;
             placementState.active = 0;
@@ -2150,8 +2080,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     }
 
     if (placementState.active == 0) {
-        this->setupInfluenceMap(
-            placementType, buildingType, centerPoint, min, max);
+        this->setupInfluenceMap(placementType, buildingType, centerPoint, min, max);
     }
 
     int randSelect;
@@ -2161,9 +2090,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     if (placementState.active == 0) {
         int random_range = this->md->tacticalAI.strategicNumber(0xa8);
         if (random_range > 0) {
-            randSelect = debug_rand(
-                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                2760) % random_range;
+            randSelect = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 2760) % random_range;
         } else {
             randSelect = 0;
         }
@@ -2180,8 +2107,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
     unsigned long availableTime =
         this->md->player->world->availableComputerPlayerUpdateTime;
-    unsigned long now = debug_timeGetTime(
-        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 2782);
+    unsigned long now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 2782);
     if (placementState.active == 0 && availableTime <= now - startTime) {
         placementState.buildingTypeID = buildingType;
         strncpy(placementState.buildingName, buildingName, 255);
@@ -2209,9 +2135,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         if (firstTimeThrough) {
             firstTimeThrough = 0;
         } else {
-            now = debug_timeGetTime(
-                (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                2838);
+            now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 2838);
             if (availableTime <= now - startTime) {
                 placementState.buildingTypeID = buildingType;
                 strncpy(placementState.buildingName, buildingName, 255);
@@ -2285,9 +2209,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                     maxClear.y = y + 1;
                 }
             } else {
-                this->logCommonHistory(
-                    "    Unsupported building size (%d x %d), failing.",
-                    buildingSize, buildingSize);
+                this->logCommonHistory("    Unsupported building size (%d x %d), failing.", buildingSize, buildingSize);
                 placementState.active = 0;
                 return 0;
             }
@@ -2298,10 +2220,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             }
 
             int blockingObject = -1;
-            if (masterObj->check_placement(
-                    this->md->player, (float)x - DAT_00575570,
-                    (float)y - DAT_00575570, &blockingObject,
-                    1, 1, 1, 1, 1, 1) != 0) {
+            if (masterObj->check_placement(this->md->player, (float)x - DAT_00575570,
+                                           (float)y - DAT_00575570, &blockingObject, 1, 1, 1, 1, 1, 1) != 0) {
                 continue;
             }
 
@@ -2325,8 +2245,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
             if (placementType == 4 || placementType == 6) {
                 int old_connection_count = iMap.connectionCountValue;
-                int connection_count = iMap.connectionsIncluding(
-                    minClear, maxClear, 0xff, 0xff, 1, 0, 1);
+                int connection_count = iMap.connectionsIncluding(minClear, maxClear, 0xff, 0xff, 1, 0, 1);
                 int connections_added =
                     connection_count - old_connection_count;
                 if (placementType == 4 && connections_added > 6) {
@@ -2340,26 +2259,20 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                 newPosition.x = x;
                 newPosition.y = y;
                 if (this->lastWallPosition.x != -1 &&
-                    this->isNextTo(
-                        this->lastWallPosition, newPosition, 0) == 0) {
+                    this->isNextTo(this->lastWallPosition, newPosition, 0) == 0) {
                     basePlacementTotal /= 2;
                 }
 
-                int facet = this->facetTo(
-                    this->lastWallPosition, newPosition);
+                int facet = this->facetTo(this->lastWallPosition, newPosition);
                 if (facet % 2 == 1) {
                     basePlacementTotal *= 3;
                 }
-                if (this->facetTo(
-                        this->lastWallPosition2,
-                        this->lastWallPosition) == facet) {
+                if (this->facetTo(this->lastWallPosition2, this->lastWallPosition) == facet) {
                     basePlacementTotal *= 3;
                 }
 
-                int delta_x = abs(
-                    this->lastWallPosition.x - centerPoint.x);
-                int delta_y = abs(
-                    this->lastWallPosition.y - centerPoint.y);
+                int delta_x = abs(this->lastWallPosition.x - centerPoint.x);
+                int delta_y = abs(this->lastWallPosition.y - centerPoint.y);
                 if (delta_y < delta_x) {
                     if (facet == 1 || facet == 5) {
                         basePlacementTotal *= 3;
@@ -2370,15 +2283,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                     }
                 }
             } else if (placementType == 1 || placementType == 2) {
-                if (this->undesirableLot(
-                        buildingType, (unsigned char)x,
-                        (unsigned char)y, 10) == 1) {
+                if (this->undesirableLot(buildingType, (unsigned char)x, (unsigned char)y, 10) == 1) {
                     basePlacementTotal /= 10;
                 }
             } else if (placementType != 6) {
-                if (this->undesirableLot(
-                        buildingType, (unsigned char)x,
-                        (unsigned char)y, building_size_int) == 1) {
+                if (this->undesirableLot(buildingType, (unsigned char)x, (unsigned char)y, building_size_int) == 1) {
                     basePlacementTotal /= 10;
                 }
             }
@@ -2386,8 +2295,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             if (placementType == 1 || placementType == 2) {
                 int delta_x = x - centerPoint.x;
                 int delta_y = y - centerPoint.y;
-                int distance = (int)sqrt(
-                    (double)(delta_x * delta_x + delta_y * delta_y));
+                int distance = (int)sqrt((double)(delta_x * delta_x + delta_y * delta_y));
                 distance -= 10;
                 if (distance > 0) {
                     int adjusted_total = basePlacementTotal - distance / 5;
@@ -2418,29 +2326,20 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         }
 
         if (bi == 0 && placementState.active != 1) {
-            this->storeLot(
-                buildingType, (unsigned char)bestPoint.x,
-                (unsigned char)bestPoint.y, 0);
+            this->storeLot(buildingType, (unsigned char)bestPoint.x, (unsigned char)bestPoint.y, 0);
             placementState.active = 0;
             return (ConstructionItem*)1;
         }
 
         ConstructionItem* result;
         if (buildingSize == DAT_00575574) {
-            result = new ConstructionItem(
-                (float)bestPoint.x, (float)bestPoint.y, 1.0f,
-                buildingSize, buildingSize, 1.0f, buildingType,
-                buildingName);
+            result = new ConstructionItem((float)bestPoint.x, (float)bestPoint.y, 1.0f,
+                                          buildingSize, buildingSize, 1.0f, buildingType, buildingName);
         } else {
-            result = new ConstructionItem(
-                (float)bestPoint.x - DAT_00575570,
-                (float)bestPoint.y - DAT_00575570, 1.0f,
-                buildingSize, buildingSize, 1.0f, buildingType,
-                buildingName);
+            result = new ConstructionItem((float)bestPoint.x - DAT_00575570, (float)bestPoint.y - DAT_00575570, 1.0f,
+                                          buildingSize, buildingSize, 1.0f, buildingType, buildingName);
         }
-        this->storeLot(
-            buildingType, (unsigned char)bestPoint.x,
-            (unsigned char)bestPoint.y, 1);
+        this->storeLot(buildingType, (unsigned char)bestPoint.x, (unsigned char)bestPoint.y, 1);
         placementState.active = 0;
         return result;
     }
@@ -2639,8 +2538,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                 if (invalid == 0) {
                     int variation = this->calculatePlayVariation(i);
                     int randomValue =
-                        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                   3401) % 50;
+                        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 3401) % 50;
                     int rating = 0;
                     int playType = play->typeValue;
                     if (playType == 1) {
@@ -2656,9 +2554,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                     if (playToRun == -1 || rating > 0) {
                         playToRun = i;
                         playStatus.copyUnits(playUnits, numberPlayUnits);
-                        randomValue = debug_rand(
-                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                            3434);
+                        randomValue = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 3434);
                         playCommander = playUnits[randomValue % numberPlayUnits];
                     }
                 }
@@ -2704,8 +2600,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
 
     int numberNonSiegeTargets;
     int numberNonBoatTargets;
-    ObjectMemory oLimits = this->findObjectMemoryLimits(
-        ownerID, unitID, numberNonSiegeTargets, numberNonBoatTargets);
+    ObjectMemory oLimits = this->findObjectMemoryLimits(ownerID, unitID, numberNonSiegeTargets, numberNonBoatTargets);
 
     ObjectMemory* bestObject = 0;
     int bestAttackValue = -1;
@@ -2716,9 +2611,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
             if ((int)memory->owner == ownerID) {
                 RGE_Static_Object* tempObj = this->md->object(memory->id);
                 if (tempObj != 0 && tempObj->object_state <= 2) {
-                    float potentialDamageTakenPerSecond = this->damagePerSecond(
-                        unitID, (int)tempObj->world_x,
-                        (int)tempObj->world_y);
+                    float potentialDamageTakenPerSecond = this->damagePerSecond(unitID, (int)tempObj->world_x,
+                                                                                (int)tempObj->world_y);
                     float object_damage =
                         tempObj->damageCapability(unit) / unit->rateOfFire();
 
@@ -2775,8 +2669,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                         dy = -dy;
                     }
                     if ((dx > 5 || dy > 5) &&
-                        this->md->player->visible->get_visible(
-                            object_x, object_y) != 0x0F) {
+                        this->md->player->visible->get_visible(object_x, object_y) != 0x0F) {
                         goto next_object;
                     }
 
@@ -2809,9 +2702,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                     if (oLimits.damageCapability == DAT_00575580) {
                         dCRating = 100;
                     } else {
-                        dCRating = (int)(
-                            memory->damageCapability * DAT_00575584 /
-                            oLimits.damageCapability);
+                        dCRating = (int)(memory->damageCapability * DAT_00575584 / oLimits.damageCapability);
                     }
 
                     int rangeRating;
@@ -2820,32 +2711,26 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
                         if (oLimits.range == DAT_00575580) {
                             rangeRating = 100;
                         } else {
-                            rangeRating = (int)(memory->range * DAT_00575584 /
-                                                oLimits.range);
+                            rangeRating = (int)(memory->range * DAT_00575584 / oLimits.range);
                         }
                         if (oLimits.rateOfFire == DAT_00575580) {
                             rOFRating = 100;
                         } else {
-                            rOFRating = 100 - (int)(
-                                memory->rateOfFire * DAT_00575584 /
-                                oLimits.rateOfFire);
+                            rOFRating = 100 - (int)(memory->rateOfFire * DAT_00575584 / oLimits.rateOfFire);
                         }
                     } else {
                         rangeRating = 0;
                         rOFRating = 0;
                     }
 
-                    int randomRating = debug_rand(
-                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                        3638) % 100;
+                    int randomRating = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 3638) % 100;
                     int specialRating1 =
                         memory->type == this->md->tacticalAI.strategicNumber(0x6A);
                     int specialRating2 =
                         memory->type == this->md->tacticalAI.strategicNumber(0x6B);
                     int specialRating3 =
                         memory->type == this->md->tacticalAI.strategicNumber(0x6C);
-                    int zoneRating = unitZone == unit->lookupZone(
-                        (int)tempObj->world_x, (int)tempObj->world_y);
+                    int zoneRating = unitZone == unit->lookupZone((int)tempObj->world_x, (int)tempObj->world_y);
 
                     RGE_Master_Static_Object* object_master = tempObj->master_obj;
                     int rating_object_group = object_master->object_group;
@@ -2946,11 +2831,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         if (oTDObject != 0 && this->md->player->isEnemy(oTDObject->owner->id) == 1 &&
             oTDObject->object_state <= 2) {
             int pathIndex = group->numberObjectsToDestroyValue - 1;
-            if (commanderObj->canPath(
-                    group->objectToDestroy(pathIndex),
-                    commanderObj->weaponRange(), 0, 1, -1, -1) == 1) {
-                targetID = group->objectToDestroy(
-                    group->numberObjectsToDestroyValue - 1);
+            if (commanderObj->canPath(group->objectToDestroy(pathIndex), commanderObj->weaponRange(), 0, 1, -1, -1) == 1) {
+                targetID = group->objectToDestroy(group->numberObjectsToDestroyValue - 1);
                 group->numberObjectsToDestroyValue = 0;
                 group->addObjectToDestroy(targetID);
                 return this->objectMemory(targetID);
@@ -2965,9 +2847,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                 if (oTDObject != 0 &&
                     this->md->player->isEnemy(oTDObject->owner->id) == 1 &&
                     oTDObject->object_state <= 2 &&
-                    commanderObj->canPath(
-                        group->objectToDestroy(i), commanderObj->weaponRange(),
-                        0, 1, -1, -1) == 1) {
+                    commanderObj->canPath(group->objectToDestroy(i), commanderObj->weaponRange(), 0, 1, -1, -1) == 1) {
                     return this->objectMemory(group->objectToDestroy(i));
                 }
                 ++i;
@@ -2978,15 +2858,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     if (attackState.active == 0) {
         ObjectMemory* wonder = this->wonderToAttack(-1);
         if (wonder != 0) {
-            unsigned char wonderZone = commanderObj->lookupZone(
-                (int)wonder->x, (int)wonder->y);
+            unsigned char wonderZone = commanderObj->lookupZone((int)wonder->x, (int)wonder->y);
             if (wonderZone != commanderZone && commanderIsBoat == 0) {
                 return wonder;
             }
 
-            if (commanderObj->canPath(
-                    wonder->id, commanderObj->weaponRange(),
-                    0, 1, -1, -1) == 1) {
+            if (commanderObj->canPath(wonder->id, commanderObj->weaponRange(), 0, 1, -1, -1) == 1) {
                 group->numberObjectsToDestroyValue = 0;
                 group->addObjectToDestroy(wonder->id);
                 group->objectsToDestroyOwnerValue = wonder->owner;
@@ -2995,9 +2872,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             }
 
             ManagedArray<int> wallObjects;
-            if (commanderObj->canPathWithObstructions(
-                    wonder->id, commanderObj->weaponRange(), 0, 1,
-                    ownerID, 0x1b, wallObjects) == 1) {
+            if (commanderObj->canPathWithObstructions(wonder->id, commanderObj->weaponRange(), 0, 1,
+                                                      ownerID, 0x1b, wallObjects) == 1) {
                 group->numberObjectsToDestroyValue = 0;
                 int wallIndex = 0;
                 if (wallObjects.numberValue > 0) {
@@ -3036,22 +2912,18 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             if (attackState.iterationIndex < i) {
                 unsigned long availableTime =
                     this->md->player->world->availableComputerPlayerUpdateTime;
-                if (debug_timeGetTime(
-                        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                        3930) - startTime >= availableTime) {
+                if (debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 3930) - startTime >= availableTime) {
                     attackState.iterationIndex = i;
                     return 0;
                 }
             }
 
             if ((int)this->importantObjectMemory[i].owner == ownerID) {
-                RGE_Static_Object* oTDObject = this->md->object(
-                    this->importantObjectMemory[i].id);
+                RGE_Static_Object* oTDObject = this->md->object(this->importantObjectMemory[i].id);
                 if (oTDObject != 0 && oTDObject->object_state <= 2 &&
                     oTDObject->hp != DAT_00575580 &&
                     (commanderIsBoat != 0 || this->isBoat(oTDObject) != 1)) {
-                    unsigned char targetZone = commanderObj->lookupZone(
-                        (int)oTDObject->world_x, (int)oTDObject->world_y);
+                    unsigned char targetZone = commanderObj->lookupZone((int)oTDObject->world_x, (int)oTDObject->world_y);
 
                     if ((commanderIsBoat != 0 ||
                          this->importantObjectMemory[i].type != 0x2d ||
@@ -3073,17 +2945,13 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                             dy = -dy;
 
                         if ((dx <= 5 && dy <= 5) ||
-                            this->md->player->visible->get_visible(
-                                targetX, targetY) == 0x0f) {
+                            this->md->player->visible->get_visible(targetX, targetY) == 0x0f) {
                             if (commanderIsPriest == 0 ||
-                                commanderObj->unitAI()->canConvert(
-                                    this->importantObjectMemory[i].id) != 0) {
-                                float damageIPS = this->damageInflictedPerSecond(
-                                    group, oTDObject);
+                                commanderObj->unitAI()->canConvert(this->importantObjectMemory[i].id) != 0) {
+                                float damageIPS = this->damageInflictedPerSecond(group, oTDObject);
                                 float targetHitPoints = oTDObject->hp;
                                 float timeTK = targetHitPoints / damageIPS;
-                                float timeTBK = this->timeToBeKilled(
-                                    group, oTDObject);
+                                float timeTBK = this->timeToBeKilled(group, oTDObject);
 
                                 if (damageIPS != DAT_00575580 &&
                                     timeTBK != DAT_00575580) {
@@ -3096,8 +2964,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                     dy =
                                          (int)this->importantObjectMemory[i].y -
                                          (int)commanderObj->world_y;
-                                    float targetDistance = (float)sqrt(
-                                        (float)(dx * dx + dy * dy));
+                                    float targetDistance = (float)sqrt((float)(dx * dx + dy * dy));
                                     if (targetDistance < DAT_00575564)
                                         targetDistance = 1.0f;
 
@@ -3105,43 +2972,36 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                         this->importantObjectMemory[i].kills;
 
                                     float targetRandomization;
-                                    if (this->md->tacticalAI.strategicNumber(
-                                            0x53) > 0) {
+                                    if (this->md->tacticalAI.strategicNumber(0x53) > 0) {
                                         int randomLimit =
-                                            this->md->tacticalAI.strategicNumber(
-                                                0x53);
+                                            this->md->tacticalAI.strategicNumber(0x53);
                                         targetRandomization = (float)(debug_rand(
-                                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                            4053) % randomLimit);
+                                            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 4053) % randomLimit);
                                     } else {
                                         targetRandomization = 0.0f;
                                     }
 
                                     float attackAttemptFactor =
-                                        (float)this->md->tacticalAI.strategicNumber(
-                                            0x59) *
+                                        (float)this->md->tacticalAI.strategicNumber(0x59) *
                                         this->importantObjectMemory[i]
                                             .attackAttempts;
 
                                     float zoneFactor;
                                     if (commanderZone == targetZone) {
                                         zoneFactor =
-                                            (float)this->md->tacticalAI.strategicNumber(
-                                                0x7a);
+                                            (float)this->md->tacticalAI.strategicNumber(0x7a);
                                     } else {
                                         zoneFactor = 0.0f;
                                     }
 
                                     float inProgressFactor = 0.0f;
-                                    if (this->md->tacticalAI.strategicNumber(
-                                            0xb9) > 0) {
+                                    if (this->md->tacticalAI.strategicNumber(0xb9) > 0) {
                                         int inProgressCount = 0;
                                         int unit_index = 0;
                                         if (group->numberUnits() > 0) {
                                             do {
                                                 RGE_Static_Object* unit =
-                                                    this->md->object(
-                                                        group->unit(unit_index));
+                                                    this->md->object(group->unit(unit_index));
                                                 if (unit != 0 &&
                                                     unit->unitAI() != 0 &&
                                                     unit->unitAI()->currentTarget() ==
@@ -3154,8 +3014,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                                      group->numberUnits());
                                         }
                                         inProgressFactor =
-                                            (float)this->md->tacticalAI.strategicNumber(
-                                                0xb9) * inProgressCount;
+                                            (float)this->md->tacticalAI.strategicNumber(0xb9) * inProgressCount;
                                     }
 
                                     float miscFactor = 0.0f;
@@ -3168,8 +3027,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                                  i].x - (int)nonWall->x;
                                         dy = (int)this->importantObjectMemory[
                                                  i].y - (int)nonWall->y;
-                                        float distance = (float)sqrt(
-                                            (float)(dx * dx + dy * dy));
+                                        float distance = (float)sqrt((float)(dx * dx + dy * dy));
                                         if (distance < DAT_00575564)
                                             miscFactor = 1000.0f;
                                         else
@@ -3185,14 +3043,11 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                     }
 
                                     float overallRating =
-                                        (float)this->md->tacticalAI.strategicNumber(
-                                            0x50) * killsByTarget;
+                                        (float)this->md->tacticalAI.strategicNumber(0x50) * killsByTarget;
                                     overallRating =
-                                        (float)this->md->tacticalAI.strategicNumber(
-                                            0x4d) / targetDistance + overallRating;
+                                        (float)this->md->tacticalAI.strategicNumber(0x4d) / targetDistance + overallRating;
                                     overallRating =
-                                        (float)this->md->tacticalAI.strategicNumber(
-                                            0xb8) * timeKillRatio + overallRating;
+                                        (float)this->md->tacticalAI.strategicNumber(0xb8) * timeKillRatio + overallRating;
                                     overallRating += miscFactor;
                                     overallRating += inProgressFactor;
                                     overallRating += zoneFactor;
@@ -3218,18 +3073,11 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                             attackState.phase == 0 ? 0x1b : -1;
                                         int canReach = 1;
                                         if (commanderZone == targetZone) {
-                                            if (commanderObj->canPath(
-                                                    this->importantObjectMemory[
-                                                        i].id,
-                                                    commanderObj->weaponRange(),
-                                                    0, 1, -1, -1) != 1 &&
-                                                commanderObj->canPathWithObstructions(
-                                                    this->importantObjectMemory[
-                                                        i].id,
-                                                    commanderObj->weaponRange(),
-                                                    0, 1, ownerID,
-                                                    unobstructibleGroupID,
-                                                    wallObjects) != 1) {
+                                            if (commanderObj->canPath(this->importantObjectMemory[i].id,
+                                                                      commanderObj->weaponRange(), 0, 1, -1, -1) != 1 &&
+                                                commanderObj->canPathWithObstructions(this->importantObjectMemory[i].id,
+                                                                                      commanderObj->weaponRange(), 0, 1, ownerID, unobstructibleGroupID,
+                                                                                      wallObjects) != 1) {
                                                 canReach = 0;
                                             }
                                         }
@@ -3239,20 +3087,15 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                             int wallIndex = 0;
                                             if (wallObjects.numberValue > 0) {
                                                 do {
-                                                    if (this->md->object(
-                                                            wallObjects[wallIndex]) != 0) {
-                                                        this->addImportantObject(
-                                                            wallObjects[wallIndex]);
-                                                        group->addObjectToDestroy(
-                                                            wallObjects[wallIndex]);
+                                                    if (this->md->object(wallObjects[wallIndex]) != 0) {
+                                                        this->addImportantObject(wallObjects[wallIndex]);
+                                                        group->addObjectToDestroy(wallObjects[wallIndex]);
                                                     }
                                                     ++wallIndex;
                                                 } while (wallIndex <
                                                          wallObjects.numberValue);
                                             }
-                                            group->addObjectToDestroy(
-                                                this->importantObjectMemory[
-                                                    i].id);
+                                            group->addObjectToDestroy(this->importantObjectMemory[i].id);
                                             unsigned char selectedOwner =
                                                 this->importantObjectMemory[
                                                     i].owner;
@@ -3342,15 +3185,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
                     }
 
                     if ((dx <= 5 && dy <= 5) ||
-                        this->md->player->visible->get_visible(
-                            targetX, targetY) == 0x0f) {
+                        this->md->player->visible->get_visible(targetX, targetY) == 0x0f) {
                         if (!commanderIsPriest ||
                             commanderObj->unitAI()->canConvert(memory->id)) {
-                            float damageIPS = this->damageInflictedPerSecond(
-                                soldiers, numberSoldiers, target);
+                            float damageIPS = this->damageInflictedPerSecond(soldiers, numberSoldiers, target);
                             float timeKillRatio = target->hp / damageIPS;
-                            float timeToKill = this->timeToBeKilled(
-                                soldiers, numberSoldiers, target);
+                            float timeToKill = this->timeToBeKilled(soldiers, numberSoldiers, target);
 
                             if (damageIPS != DAT_00575580 &&
                                 timeToKill != DAT_00575580) {
@@ -3360,9 +3200,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
                                     (int)memory->x - (int)commanderObj->world_x;
                                 int commanderY =
                                     (int)memory->y - (int)commanderObj->world_y;
-                                float targetDistance = (float)sqrt(
-                                    (double)(commanderX * commanderX +
-                                             commanderY * commanderY));
+                                float targetDistance = (float)sqrt((double)(commanderX * commanderX +
+                                                                            commanderY * commanderY));
                                 if (targetDistance < DAT_00575564) {
                                     targetDistance = 1.0f;
                                 }
@@ -3372,9 +3211,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
                                 if (this->md->tacticalAI.strategicNumber(0x53) > 0) {
                                     int randomLimit =
                                         this->md->tacticalAI.strategicNumber(0x53);
-                                    targetRandomization = (float)(debug_rand(
-                                        "C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                        4363) % randomLimit);
+                                    targetRandomization = (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
+                                                                             4363) % randomLimit);
                                 } else {
                                     targetRandomization = 0.0f;
                                 }
@@ -3384,9 +3222,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
                                     memory->attackAttempts;
 
                                 float zoneFactor;
-                                if (commanderObj->lookupZone(
-                                        (int)target->world_x,
-                                        (int)target->world_y) == commanderZone) {
+                                if (commanderObj->lookupZone((int)target->world_x, (int)target->world_y) == commanderZone) {
                                     zoneFactor = (float)this->md->tacticalAI.strategicNumber(0x7a);
                                 } else {
                                     zoneFactor = 0.0f;
@@ -3468,15 +3304,11 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int unitID) {
                         objPoint.y = (int)this->importantObjectMemory[i].y;
 
                         TacticalAIGroup* bestG =
-                            this->md->tacticalAI.bestGroup(
-                                -1, 4,
-                                this->md->tacticalAI.strategicNumber(0x5C),
-                                objPoint, -1);
+                            this->md->tacticalAI.bestGroup(-1, 4, this->md->tacticalAI.strategicNumber(0x5C), objPoint, -1);
 
                         if (bestG == 0) {
-                            int priority = this->defendPriority(
-                                (int)this->importantObjectMemory[i].type,
-                                (int)this->importantObjectMemory[i].group);
+                            int priority = this->defendPriority((int)this->importantObjectMemory[i].type,
+                                                                (int)this->importantObjectMemory[i].group);
                             if (bestObject == 0 || bestDefendValue > priority) {
                                 bestObject = &this->importantObjectMemory[i];
                                 bestDefendValue = priority;
@@ -3523,14 +3355,11 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int unitID,
                                         XYPoint pt;
                                         pt.x = (int)target->world_x;
                                         pt.y = (int)target->world_y;
-                                        if (unit->withinRangeOfZoneAtPoint(
-                                                currentZone,
-                                                unit->weaponRange(), pt) != 1)
+                                        if (unit->withinRangeOfZoneAtPoint(currentZone, unit->weaponRange(), pt) != 1)
                                             break;
                                     }
-                                    int pri = this->defendPriority(
-                                        this->importantObjectMemory[i].type,
-                                        this->importantObjectMemory[i].group);
+                                    int pri = this->defendPriority(this->importantObjectMemory[i].type,
+                                                                   this->importantObjectMemory[i].group);
                                     if (oGroup > pri) {
                                         oGroup = pri;
                                         bestObject = &this->importantObjectMemory[i];
@@ -3683,8 +3512,7 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int unitID) {
             if (this->importantObjectMemory[i].id != -1 &&
                 this->importantObjectMemory[i].owner != this->md->player->id &&
                 this->importantObjectMemory[i].type == 0x2D) {
-                RGE_Static_Object* dock = this->md->object(
-                    this->importantObjectMemory[i].id);
+                RGE_Static_Object* dock = this->md->object(this->importantObjectMemory[i].id);
                 if (dock != 0 && dock->owner->attributes[9] > DAT_00575580) {
                     ObjectMemory* candidate = &this->importantObjectMemory[i];
                     int dx = (int)candidate->x - (int)unit->world_x;
@@ -3762,8 +3590,7 @@ int TribeInformationAIModule::findGatherPosition(
                 while (clearX < maxClear.x && blocked == 0) {
                     int clearY = minClear.y;
                     while (clearY < maxClear.y && blocked == 0) {
-                        if (testUnit->passableTile((float)clearX,
-                                                 (float)clearY, 1) == 0)
+                        if (testUnit->passableTile((float)clearX, (float)clearY, 1) == 0)
                             blocked = 1;
                         ++clearY;
                     }
@@ -3774,9 +3601,7 @@ int TribeInformationAIModule::findGatherPosition(
                     cPosition.x = x;
                     cPosition.y = y;
                     int score;
-                    if (testUnit->canLinePath(
-                            cPosition, centerPoint, (float)desiredDistance,
-                            lineCollisionPoint, 1) == 0)
+                    if (testUnit->canLinePath(cPosition, centerPoint, (float)desiredDistance, lineCollisionPoint, 1) == 0)
                         score = 0x40;
                     else
                         score = 0x80;
@@ -3785,8 +3610,7 @@ int TribeInformationAIModule::findGatherPosition(
                     while (influenceX <= maxClear.x && blocked == 0) {
                         int influenceY = minClear.y;
                         while (influenceY <= maxClear.y && blocked == 0) {
-                            int value = iMap.lookupValue(
-                                influenceX, influenceY);
+                            int value = iMap.lookupValue(influenceX, influenceY);
                             if (value == 0xff)
                                 blocked = 1;
                             else
@@ -3869,15 +3693,11 @@ void TribeInformationAIModule::setupInfluenceMap(
                 XYPoint position;
                 float resYRadius = master->radius_y;
 
-                rMin.x = (int)(object->world_x - master->radius_x -
-                                    DAT_00575564);
-                rMin.y = (int)(object->world_y - resYRadius -
-                                    DAT_00575564);
+                rMin.x = (int)(object->world_x - master->radius_x - DAT_00575564);
+                rMin.y = (int)(object->world_y - resYRadius - DAT_00575564);
                 this->mapBound(rMin);
-                rMax.x = (int)(resYRadius + object->world_x -
-                                    DAT_0057556c);
-                rMax.y = (int)(resYRadius + object->world_y -
-                                    DAT_0057556c);
+                rMax.x = (int)(resYRadius + object->world_x - DAT_0057556c);
+                rMax.y = (int)(resYRadius + object->world_y - DAT_0057556c);
                 this->mapBound(rMax);
                 position.x = (int)object->world_x;
                 position.y = (int)object->world_y;
@@ -3886,8 +3706,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                 if (placementType == 1 || placementType == 2)
                     iMap.setValue(position.x, position.y, 0xff);
                 else
-                    iMap.setValue(rMin.x, rMin.y,
-                                  rMax.x, rMax.y, 0xff);
+                    iMap.setValue(rMin.x, rMin.y, rMax.x, rMax.y, 0xff);
 
                 short group = master->object_group;
                 if (placementType == 1) {
@@ -3898,8 +3717,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                         rMax.x += 5;
                         rMax.y += 5;
                         this->mapBound(rMax);
-                        iMap.decrementValue(rMin.x, rMin.y,
-                                            rMax.x, rMax.y, 0x80);
+                        iMap.decrementValue(rMin.x, rMin.y, rMax.x, rMax.y, 0x80);
                     } else {
                         int applicable = 0;
                         if (resourceTypeToPlaceBy == -1)
@@ -3921,8 +3739,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                             rMax.x++;
                             rMax.y++;
                             this->mapBound(rMax);
-                            iMap.incrementValue(rMin.x, rMin.y,
-                                                rMax.x, rMax.y, 8);
+                            iMap.incrementValue(rMin.x, rMin.y, rMax.x, rMax.y, 8);
 
                             rMin.x -= 3;
                             rMin.y -= 3;
@@ -3930,8 +3747,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                             rMax.x += 3;
                             rMax.y += 3;
                             this->mapBound(rMax);
-                            iMap.incrementValue(rMin.x, rMin.y,
-                                                rMax.x, rMax.y, 4);
+                            iMap.incrementValue(rMin.x, rMin.y, rMax.x, rMax.y, 4);
 
                             rMin.x -= 5;
                             rMin.y -= 5;
@@ -3939,8 +3755,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                             rMax.x += 5;
                             rMax.y += 5;
                             this->mapBound(rMax);
-                            iMap.incrementValue(rMin.x, rMin.y,
-                                                rMax.x, rMax.y, 2);
+                            iMap.incrementValue(rMin.x, rMin.y, rMax.x, rMax.y, 2);
                         }
                     }
                 } else if (placementType == 2 && group == 7) {
@@ -3950,8 +3765,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                     rMax.x += 3;
                     rMax.y += 3;
                     this->mapBound(rMax);
-                    iMap.incrementValue(rMin.x, rMin.y,
-                                        rMax.x, rMax.y, 0x80);
+                    iMap.incrementValue(rMin.x, rMin.y, rMax.x, rMax.y, 0x80);
                 }
             }
         }
@@ -4023,10 +3837,8 @@ void TribeInformationAIModule::setupInfluenceMap(
                     bMax.y = (int)building->world_y + 1;
                 }
             } else {
-                this->logCommonHistory(
-                    (char*)"    Unsupported building size (%d x %d).",
-                    (double)(bXRadius + bXRadius),
-                    (double)(bYRadius + bYRadius));
+                this->logCommonHistory((char*)"    Unsupported building size (%d x %d).", (double)(bXRadius + bXRadius),
+                                       (double)(bYRadius + bYRadius));
                 continue;
             }
 
@@ -4038,8 +3850,7 @@ void TribeInformationAIModule::setupInfluenceMap(
             }
             this->mapBound(bMin);
             this->mapBound(bMax);
-            iMap.setValue(bMin.x, bMin.y,
-                          bMax.x, bMax.y, 0xff);
+            iMap.setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
 
             if (placementType == 3 || placementType == 0) {
                 float influence_radius = master->los;
@@ -4058,11 +3869,9 @@ void TribeInformationAIModule::setupInfluenceMap(
                 bMaxLOS.y = bMax.y + radius;
                 this->mapBound(bMaxLOS);
                 if (placementType == 0 && buildingCode == 3)
-                    iMap.incrementValue(bMinLOS.x, bMinLOS.y,
-                                        bMaxLOS.x, bMaxLOS.y, 10);
+                    iMap.incrementValue(bMinLOS.x, bMinLOS.y, bMaxLOS.x, bMaxLOS.y, 10);
                 else
-                    iMap.decrementValue(bMinLOS.x, bMinLOS.y,
-                                        bMaxLOS.x, bMaxLOS.y, 10);
+                    iMap.decrementValue(bMinLOS.x, bMinLOS.y, bMaxLOS.x, bMaxLOS.y, 10);
             } else if (placementType == 1 || placementType == 2) {
                 float influence_radius = master->los;
                 if (buildingCode == 0x6d)
@@ -4079,8 +3888,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                 bMaxLOS.x = bMax.x + radius;
                 bMaxLOS.y = bMax.y + radius;
                 this->mapBound(bMaxLOS);
-                iMap.decrementValue(bMinLOS.x, bMinLOS.y,
-                                    bMaxLOS.x, bMaxLOS.y, 10);
+                iMap.decrementValue(bMinLOS.x, bMinLOS.y, bMaxLOS.x, bMaxLOS.y, 10);
             } else if (placementType == 5) {
                 float influence_radius = master->los;
                 if (buildingCode == 0x6d)
@@ -4096,8 +3904,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                 bMaxLOS.x = bMax.x + radius;
                 bMaxLOS.y = bMax.y + radius;
                 this->mapBound(bMaxLOS);
-                iMap.decrementValue(bMinLOS.x, bMinLOS.y,
-                                    bMaxLOS.x, bMaxLOS.y, 20);
+                iMap.decrementValue(bMinLOS.x, bMinLOS.y, bMaxLOS.x, bMaxLOS.y, 20);
             } else if (placementType == 8) {
                 int radius = (int)master->los;
                 int layer_radius = radius;
@@ -4116,8 +3923,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                     bMaxLOS.x = bMax.x + layer_radius;
                     bMaxLOS.y = bMax.y + layer_radius;
                     this->mapBound(bMaxLOS);
-                    iMap.incrementValue(bMinLOS.x, bMinLOS.y,
-                                        bMaxLOS.x, bMaxLOS.y, 20);
+                    iMap.incrementValue(bMinLOS.x, bMinLOS.y, bMaxLOS.x, bMaxLOS.y, 20);
                 }
             }
         }
@@ -4137,12 +3943,9 @@ void TribeInformationAIModule::setupInfluenceMap(
                     this->mapBound(tMin);
                     this->mapBound(tMax);
                     iMap.setValue(x, y, 0xff);
-                    iMap.decrementValue(tMin.x, tMin.y,
-                                        tMax.x, tMax.y, 10);
+                    iMap.decrementValue(tMin.x, tMin.y, tMax.x, tMax.y, 10);
                 }
-                iMap.incrementValue(x, y,
-                                    (unsigned char)(map->map_row_offset[y][x]
-                                                        .height * 5));
+                iMap.incrementValue(x, y, (unsigned char)(map->map_row_offset[y][x].height * 5));
             }
         }
     }
@@ -4164,8 +3967,7 @@ void TribeInformationAIModule::setupInfluenceMap(
                 aMax.x = memory->maxX + 4;
                 aMax.y = memory->maxY + 4;
                 this->mapBound(aMax);
-                iMap.incrementValue(aMin.x, aMin.y,
-                                    aMax.x, aMax.y, 0x10);
+                iMap.incrementValue(aMin.x, aMin.y, aMax.x, aMax.y, 0x10);
             }
         }
     }
@@ -4248,8 +4050,7 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(
                         if (currentZone != obj->currentZone()) {
                             pt.x = (int)obj->world_x;
                             pt.y = (int)obj->world_y;
-                            if (unit->withinRangeOfZoneAtPoint(
-                                    currentZone, unit->weaponRange(), pt) != 1)
+                            if (unit->withinRangeOfZoneAtPoint(currentZone, unit->weaponRange(), pt) != 1)
                                 goto next;
                         }
                         obj = this->md->object(this->importantObjectMemory[i].id);
@@ -4259,8 +4060,7 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(
                             dy = (int)this->importantObjectMemory[i].y - (int)obj->world_y;
                             if (dy < 0) dy = -dy;
                             if ((dx > 5 || dy > 5) &&
-                                this->md->player->visible->get_visible(
-                                    (int)obj->world_x, (int)obj->world_y) != 0x0F)
+                                this->md->player->visible->get_visible((int)obj->world_x, (int)obj->world_y) != 0x0F)
                                 goto skip_visible;
                             group = this->importantObjectMemory[i].group;
                             if (group != 3 && group != 0x1B)
@@ -4272,10 +4072,8 @@ ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(
                                 group != 0x14 &&
                                 this->importantObjectMemory[i].type != 0x2D)
                                 numberNonBoatTargets++;
-                            dist = unit->distance_to_position(
-                                (float)this->importantObjectMemory[i].x,
-                                (float)this->importantObjectMemory[i].y,
-                                (float)this->importantObjectMemory[i].z);
+                            dist = unit->distance_to_position((float)this->importantObjectMemory[i].x,
+                                                              (float)this->importantObjectMemory[i].y, (float)this->importantObjectMemory[i].z);
                             if (dist > (float)rVal.id) rVal.id = (int)dist;
                             if (this->importantObjectMemory[i].hitPoints > rVal.hitPoints)
                                 rVal.hitPoints = this->importantObjectMemory[i].hitPoints;
@@ -4407,8 +4205,7 @@ void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
     }
 
     if (freeIndex == -1) {
-        BuildingLot* newLots = (BuildingLot*)::operator new(
-            this->maxBuildingLots << 4);
+        BuildingLot* newLots = (BuildingLot*)::operator new(this->maxBuildingLots << 4);
         if (newLots != 0) {
             i = 0;
             if (this->maxBuildingLots > 0) {
@@ -4564,8 +4361,7 @@ void TribeInformationAIModule::setupWalls(
     if (setupGates == 1 && numberGates > 0) {
         this->numberGatesValue = numberGates;
 
-        int gate = debug_rand(
-            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 5937) % 4;
+        int gate = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 5937) % 4;
         int halfGateSize = gateSize / 2;
 
         this->minGatePosition[gate].x = centerX - halfGateSize;
@@ -4602,8 +4398,7 @@ void TribeInformationAIModule::setupWalls(
     }
 
     if (wallShape == 0) {
-        wallShape = debug_rand(
-            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 5994) % 3;
+        wallShape = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 5994) % 3;
     }
 
     if (wallShape == 1) {
@@ -4631,26 +4426,22 @@ void TribeInformationAIModule::setupWalls(
             y = minimum.y;
             while (x < maximum.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 ++x;
             }
             while (y < maximum.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 ++y;
             }
             while (x > minimum.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 --x;
             }
             while (y > minimum.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 --y;
             }
 
@@ -4704,8 +4495,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     --y;
                     --count;
                 } while (count != 0);
@@ -4714,8 +4504,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     ++x;
                     --count;
                 } while (count != 0);
@@ -4724,8 +4513,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     ++y;
                     --count;
                 } while (count != 0);
@@ -4734,8 +4522,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     ++x;
                     --count;
                 } while (count != 0);
@@ -4744,8 +4531,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     ++y;
                     --count;
                 } while (count != 0);
@@ -4754,8 +4540,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     --x;
                     --count;
                 } while (count != 0);
@@ -4764,8 +4549,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance + 1;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     ++y;
                     --count;
                 } while (count != 0);
@@ -4774,8 +4558,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     --x;
                     --count;
                 } while (count != 0);
@@ -4784,8 +4567,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance + 1;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     --y;
                     --count;
                 } while (count != 0);
@@ -4794,8 +4576,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     --x;
                     --count;
                 } while (count != 0);
@@ -4804,8 +4585,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = sideLength;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     --y;
                     --count;
                 } while (count != 0);
@@ -4814,8 +4594,7 @@ void TribeInformationAIModule::setupWalls(
                 int count = distance;
                 do {
                     if (this->insideGate(numberGates, x, y) == 0)
-                        this->storeLot(0x48, (unsigned char)x,
-                                       (unsigned char)y, 0);
+                        this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                     ++x;
                     --count;
                 } while (count != 0);
@@ -4870,54 +4649,46 @@ void TribeInformationAIModule::setupWalls(
 
             while (x < innerMinimumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 ++x;
                 --y;
             }
             while (x < innerMaximumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 ++x;
             }
             while (y < innerMinimumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 ++x;
                 ++y;
             }
             while (y < innerMaximumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 ++y;
             }
             while (x > innerMaximumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 --x;
                 ++y;
             }
             while (x > innerMinimumPoint.x) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 --x;
             }
             while (y > innerMaximumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 --x;
                 --y;
             }
             while (y > innerMinimumPoint.y) {
                 if (this->insideGate(numberGates, x, y) == 0)
-                    this->storeLot(0x48, (unsigned char)x,
-                                   (unsigned char)y, 0);
+                    this->storeLot(0x48, (unsigned char)x, (unsigned char)y, 0);
                 --y;
             }
 
@@ -4966,9 +4737,7 @@ int TribeInformationAIModule::storeAttackMemory(
     unsigned char type, unsigned char x1, unsigned char y1,
     unsigned char attackingOwner, unsigned char targetOwner, short kills,
     unsigned char success, ulong timeStamp, int play) {
-    return this->storeAttackMemory(type, x1, y1, x1, y1, attackingOwner,
-                                   targetOwner, kills, success, timeStamp,
-                                   play);
+    return this->storeAttackMemory(type, x1, y1, x1, y1, attackingOwner, targetOwner, kills, success, timeStamp, play);
 }
 
 #include <stdlib.h>
@@ -5072,11 +4841,9 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
     char* learnFileName = this->learnFileName;
 
     if (name == 0) {
-        sprintf(learnFileName, "learn\\default.%d",
-                (int)this->md->player->id);
+        sprintf(learnFileName, "learn\\default.%d", (int)this->md->player->id);
     } else {
-        sprintf(learnFileName, "learn\\%s%s.%d", name,
-                rge_base_game->player_game_info->get_current_player_name(),
+        sprintf(learnFileName, "learn\\%s%s.%d", name, rge_base_game->player_game_info->get_current_player_name(),
                 (int)this->md->player->id);
     }
 
@@ -5091,18 +4858,8 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
             AttackMemory temp;
             do {
                 rge_read(file, &temp, 24);
-                this->storeAttackMemory(
-                    temp.type,
-                    temp.minX,
-                    temp.minY,
-                    temp.maxX,
-                    temp.maxY,
-                    temp.attackingOwner,
-                    temp.targetOwner,
-                    temp.kills,
-                    temp.success,
-                    temp.timeStamp,
-                    temp.play);
+                this->storeAttackMemory(temp.type, temp.minX, temp.minY, temp.maxX, temp.maxY, temp.attackingOwner,
+                                        temp.targetOwner, temp.kills, temp.success, temp.timeStamp, temp.play);
                 i++;
             } while (i < numToLoad);
         }
@@ -5113,21 +4870,8 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
             ObjectMemory temp;
             do {
                 rge_read(file, &temp, 36);
-                this->addObjectMemory(
-                    temp.id,
-                    temp.type,
-                    temp.group,
-                    temp.x,
-                    temp.y,
-                    temp.z,
-                    temp.owner,
-                    temp.hitPoints,
-                    temp.attackAttempts,
-                    temp.kills,
-                    temp.damageCapability,
-                    temp.rateOfFire,
-                    temp.range,
-                    0);
+                this->addObjectMemory(temp.id, temp.type, temp.group, temp.x, temp.y, temp.z, temp.owner, temp.hitPoints,
+                                      temp.attackAttempts, temp.kills, temp.damageCapability, temp.rateOfFire, temp.range, 0);
                 this->importantUnits.add(temp.id);
                 name = name + 1;
             } while ((int)name < numToLoad);
@@ -5138,8 +4882,7 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
             rge_read(file, &this->numResources[resource_index], 4);
             this->resources[resource_index] = (ResourceMemory*)operator new(
                 this->maxResources[resource_index] * sizeof(ResourceMemory));
-            rge_read(file, this->resources[resource_index],
-                     this->maxResources[resource_index] * sizeof(ResourceMemory));
+            rge_read(file, this->resources[resource_index], this->maxResources[resource_index] * sizeof(ResourceMemory));
         }
 
         rge_read(file, &tempInt, 4);
@@ -5188,17 +4931,11 @@ int TribeInformationAIModule::unexploredPlayerLocation(int uID, XYPoint& rPoint)
                         this->importantObjectMemory[i].owner;
                     if (owner != this->md->player->id &&
                         this->importantObjectMemory[i].owner != 0) {
-                        if (this->tileUncovered(
-                                this->importantObjectMemory[i].x,
-                                this->importantObjectMemory[i].y) != 1) {
-                            if (obj->lookupZone(
-                                    this->importantObjectMemory[i].x,
-                                    this->importantObjectMemory[i].y) ==
+                        if (this->tileUncovered(this->importantObjectMemory[i].x, this->importantObjectMemory[i].y) != 1) {
+                            if (obj->lookupZone(this->importantObjectMemory[i].x, this->importantObjectMemory[i].y) ==
                                 (uchar)uID) {
-                                int dist = (int)obj->distance_to_position(
-                                    (float)this->importantObjectMemory[i].x,
-                                    (float)this->importantObjectMemory[i].y,
-                                    (float)this->importantObjectMemory[i].z);
+                                int dist = (int)obj->distance_to_position((float)this->importantObjectMemory[i].x,
+                                                                          (float)this->importantObjectMemory[i].y, (float)this->importantObjectMemory[i].z);
                                 if (best == 0 || bestDistance > dist) {
                                     best = &this->importantObjectMemory[i];
                                     bestDistance = dist;
@@ -5221,8 +4958,7 @@ int TribeInformationAIModule::unexploredPlayerLocation(int uID, XYPoint& rPoint)
             pt.y = rPoint.y;
             pt.z = objZ;
             float pathResult;
-            int ok = obj->canPath(pt, obj->master_obj->los - 1.0f,
-                                  -1, &pathResult, 1, -1, -1);
+            int ok = obj->canPath(pt, obj->master_obj->los - 1.0f, -1, &pathResult, 1, -1, -1);
             if (ok == 0) {
                 this->pathMap.setValue(rPoint.x, rPoint.y, 1);
                 return 0;
@@ -5325,15 +5061,13 @@ int TribeInformationAIModule::withinXTilesOfObject(
 
     if (this->maxImportantObjectMemory > 0) {
         do {
-            RGE_Static_Object* target = this->md->object(
-                this->importantObjectMemory[i].id);
+            RGE_Static_Object* target = this->md->object(this->importantObjectMemory[i].id);
 
             if (target != 0 && target->object_state <= 2 && target->hp != 0.0f) {
                 int type = (int)this->importantObjectMemory[i].type;
                     if ((type == oT1 || type == oT2 ||
                          type == oT3 || type == oT4) &&
-                    this->md->player->isEnemy(
-                        this->importantObjectMemory[i].owner) != 0) {
+                    this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0) {
                     int dx = (unsigned char)this->importantObjectMemory[i].x - x;
                     int dy = (unsigned char)this->importantObjectMemory[i].y - y;
                     int dist = dx * dx + dy * dy;
@@ -5371,8 +5105,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
 
     XYPoint zoneRefPoint;
     zoneRefPoint.x = startPoint.x; zoneRefPoint.y = startPoint.y;
-    unit->findClosestPointInTerrainType(startPoint, zoneRefPoint, terrain_type,
-                                        terrain, 4);
+    unit->findClosestPointInTerrainType(startPoint, zoneRefPoint, terrain_type, terrain, 4);
     unsigned char targetZone = unit->lookupZone(zoneRefPoint.x, zoneRefPoint.y);
 
     int maxLOSValue = this->setupLOSMap(target->owner, target->x, target->y);
@@ -5448,8 +5181,7 @@ int TribeInformationAIModule::setupLOSMap(int ownerID, int x, int y) {
         do {
             if ((unsigned int)this->importantObjectMemory[i].owner ==
                 (unsigned int)ownerID) {
-                RGE_Static_Object* obj = this->md->object(
-                    this->importantObjectMemory[i].id);
+                RGE_Static_Object* obj = this->md->object(this->importantObjectMemory[i].id);
                 if (obj != 0) {
                     int range = (int)obj->master_obj->los;
                     int minX = (int)obj->world_x - range;
@@ -5482,12 +5214,8 @@ int TribeInformationAIModule::setupAttackMap(int ownerID, int x, int y) {
                 (unsigned int)ownerID) {
                 unsigned short owner = this->attackMemories[i].attackingOwner;
                 if (owner == (unsigned short)this->md->player->id) {
-                    attackMap.incrementValue(
-                        this->attackMemories[i].minX,
-                        this->attackMemories[i].minY,
-                        this->attackMemories[i].maxX,
-                        this->attackMemories[i].maxY,
-                        1);
+                    attackMap.incrementValue(this->attackMemories[i].minX, this->attackMemories[i].minY,
+                                             this->attackMemories[i].maxX, this->attackMemories[i].maxY, 1);
                 }
             }
             i++;
@@ -5500,8 +5228,7 @@ int TribeInformationAIModule::setupAttackMap(int ownerID, int x, int y) {
 #include <stdlib.h>
 
 void TribeInformationAIModule::addResourceType(int r, int t) {
-    int* new_types = (int*)operator new(
-        this->numberResourceTypesValue[r] * 4 + 4);
+    int* new_types = (int*)operator new(this->numberResourceTypesValue[r] * 4 + 4);
 
     int count = 0;
     if (this->numberResourceTypesValue[r] > 0) {
@@ -5731,8 +5458,7 @@ float TribeInformationAIModule::findClosestDropsite(
         do {
             dropsite = this->md->object(this->playerBuildings[i]);
             if (dropsite != 0) {
-                if (resourceObj->lookupZone((int)dropsite->world_x,
-                                            (int)dropsite->world_y) == resourceZone) {
+                if (resourceObj->lookupZone((int)dropsite->world_x, (int)dropsite->world_y) == resourceZone) {
                     int group = dropsite->master_obj->id;
                     if ((group == 0x6D && countTownCenter != 0) ||
                         (group == 0x67 && resourceObj->master_obj->id != 0x3B && resourceObj->master_obj->id != 0x32) ||
@@ -5769,8 +5495,7 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(
         do {
             RGE_Static_Object* obj = this->md->object(this->playerBuildings[i]);
             if (obj != 0) {
-                if (unitObj->lookupZone((int)obj->world_x,
-                                        (int)obj->world_y) == unitZone) {
+                if (unitObj->lookupZone((int)obj->world_x, (int)obj->world_y) == unitZone) {
                     int id = obj->master_obj->id;
                     if (id == 0x6D ||
                         (id == 0x67 && unitObj->attribute_type_held != 0x10) ||
@@ -5987,8 +5712,7 @@ int TribeInformationAIModule::amountResourceTypesInXTiles(
     if (this->numResources[type] > 0) {
         do {
             if (this->resources[type][i].gone != 1) {
-                RGE_Static_Object* obj = this->md->object(
-                    this->resources[type][i].id);
+                RGE_Static_Object* obj = this->md->object(this->resources[type][i].id);
                 if (obj != 0 && (type != 0 || obj->master_obj->id != 0x3B)) {
                     float dx = obj->world_x - (float)x;
                     float dy = obj->world_y - (float)y;
@@ -6020,8 +5744,7 @@ float TribeInformationAIModule::damagePerSecond(int id, int x, int y) {
                 int id = importantObjectMemory[i].id;
                 RGE_Static_Object* unit = (RGE_Static_Object*)md->object(id);
                 if (unit != 0 && unit->object_state <= 2) {
-                    float dist = unit->distance_to_position(
-                        (float)x, (float)y, *(float*)&unit->world_z);
+                    float dist = unit->distance_to_position((float)x, (float)y, *(float*)&unit->world_z);
                     if (dist <= unit->master_obj->los) {
                         float rVal = target->damageCapability(unit);
                         float tempDamage = unit->rateOfFire();
@@ -6062,13 +5785,10 @@ int TribeInformationAIModule::inRangeOfUnits(
             if ((playerID == -1 ||
                  (int)this->importantObjectMemory[i].owner == playerID) &&
                 (playerID != -1 ||
-                 this->md->player->isEnemy(
-                     this->importantObjectMemory[i].owner) != 0)) {
-                RGE_Static_Object* object = this->md->object(
-                    this->importantObjectMemory[i].id);
+                 this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0)) {
+                RGE_Static_Object* object = this->md->object(this->importantObjectMemory[i].id);
                 if (object != 0 && object->object_state <= 2) {
-                    float distance = object->distance_to_position(
-                        (float)x, (float)y, object->world_z);
+                    float distance = object->distance_to_position((float)x, (float)y, object->world_z);
                     float range = object->weaponRange();
                     if (useJustRange == 0 && object->master_obj->los > distance) {
                         range = object->master_obj->los;
@@ -6170,8 +5890,7 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerID) {
     int i;
     ObjectMemory* bestMem;
 
-    townCenter = this->md->object(
-        -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
     bestMem = 0;
     bestValue = -1;
     i = 0;
@@ -6184,22 +5903,16 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerID) {
                      (unsigned int)this->importantObjectMemory[i].owner ==
                          (unsigned int)playerID) &&
                     (playerID != -1 ||
-                     this->md->player->isEnemy(
-                         this->importantObjectMemory[i].owner) != 0)) {
-                    RGE_Static_Object* object = this->md->object(
-                        this->importantObjectMemory[i].id);
+                     this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0)) {
+                    RGE_Static_Object* object = this->md->object(this->importantObjectMemory[i].id);
 
                     if (object != 0 && object->object_state <= 2) {
-                        int result = this->numberUnitsWithinXTiles(
-                            playerID,
-                            this->importantObjectMemory[i].x,
-                            this->importantObjectMemory[i].y, 5);
+                        int result = this->numberUnitsWithinXTiles(playerID, this->importantObjectMemory[i].x,
+                                                                   this->importantObjectMemory[i].y, 5);
 
                         if (townCenter != 0) {
-                            int distance = (int)townCenter->distance_to_position(
-                                (float)this->importantObjectMemory[i].x,
-                                (float)this->importantObjectMemory[i].y,
-                                (float)this->importantObjectMemory[i].z);
+                            int distance = (int)townCenter->distance_to_position((float)this->importantObjectMemory[i].x,
+                                                                                 (float)this->importantObjectMemory[i].y, (float)this->importantObjectMemory[i].z);
                             result = distance * result;
                         }
 
@@ -6225,8 +5938,7 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int playerID) {
     int i;
     RGE_Visible_Map* vMap;
 
-    townCenter = this->md->object(
-        -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    townCenter = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
     bestMem = 0;
     bestValue = -1;
     i = 0;
@@ -6238,10 +5950,8 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int playerID) {
                 if (playerID == -1 ||
                     (int)this->importantObjectMemory[i].owner == playerID) {
                     if (playerID != -1 ||
-                        this->md->player->isEnemy(
-                            this->importantObjectMemory[i].owner) != 0) {
-                        RGE_Static_Object* artifact = this->md->object(
-                            this->importantObjectMemory[i].id);
+                        this->md->player->isEnemy(this->importantObjectMemory[i].owner) != 0) {
+                        RGE_Static_Object* artifact = this->md->object(this->importantObjectMemory[i].id);
                         if (artifact != 0 && artifact->object_state <= 2) {
                             int artifactX = (int)artifact->world_x;
                             int artifactY = (int)artifact->world_y;
@@ -6252,11 +5962,9 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int playerID) {
                                     (unsigned char)(int)artifact->world_y;
                                 this->importantObjectMemory[i].z =
                                     (unsigned char)(int)artifact->world_z;
-                                int result = this->numberUnitsWithinXTiles(
-                                    playerID, artifactX, artifactY, 5);
+                                int result = this->numberUnitsWithinXTiles(playerID, artifactX, artifactY, 5);
                                 if (townCenter != 0) {
-                                    int distance = (int)townCenter->distance_to_object(
-                                        artifact);
+                                    int distance = (int)townCenter->distance_to_object(artifact);
                                     result = distance * result;
                                 }
                                 if (bestMem == 0 || result < bestValue) {
@@ -6354,8 +6062,7 @@ int TribeInformationAIModule::numberAvailableStoragePits(int rType) {
         return 0;
     }
 
-    RGE_Static_Object* town_center = this->md->object(
-        -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* town_center = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
 
     if (town_center != 0) {
         RGE_Static_Object* closest_dropsite =
@@ -6382,14 +6089,10 @@ int TribeInformationAIModule::numberAvailableGranaries() {
         return 0;
     }
 
-    RGE_Static_Object* town_center = this->md->object(
-        -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1
-    );
+    RGE_Static_Object* town_center = this->md->object(-1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
 
     if (town_center != 0) {
-        RGE_Static_Object* closest_dropsite = this->md->object(
-            this->closestDropsiteResourceID[0]
-        );
+        RGE_Static_Object* closest_dropsite = this->md->object(this->closestDropsiteResourceID[0]);
 
         if (closest_dropsite != 0) {
             int zone = town_center->currentZone() & 0xff;
@@ -6505,10 +6208,7 @@ float TribeInformationAIModule::timeToBeKilled(
             RGE_Static_Object* unit = this->md->object(uid);
 
             if (unit) {
-                float dps = this->damagePerSecond(
-                    group->unit(i),
-                    (int)obj->world_x,
-                    (int)obj->world_y);
+                float dps = this->damagePerSecond(group->unit(i), (int)obj->world_x, (int)obj->world_y);
 
                 if (dps == 0.0f) {
                     dps = DAT_005755c0;

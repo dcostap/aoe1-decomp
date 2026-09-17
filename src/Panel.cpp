@@ -1271,13 +1271,11 @@ long TPanel::handle_paint() {
         for (PanelNode* node = this->first_child_node;
              node != 0;
              node = node->next_node) {
-            node->panel->set_redraw(
-                static_cast<TPanel::RedrawMode>(this->need_redraw));
+            node->panel->set_redraw(static_cast<TPanel::RedrawMode>(this->need_redraw));
         }
 
         if (this->parent_panel != 0 && this->parent_panel->overlapping_children != 0) {
-            this->parent_panel->set_overlapped_redraw(
-                this, this, static_cast<TPanel::RedrawMode>(this->need_redraw));
+            this->parent_panel->set_overlapped_redraw(this, this, static_cast<TPanel::RedrawMode>(this->need_redraw));
         }
         this->draw();
         this->need_redraw = 0;
@@ -1501,8 +1499,7 @@ long TPanel::handle_mouse_dbl_click(unsigned char mouse_button_in, long x, long 
             return 0;
 
         for (PanelNode* node = last_child_node; node; node = node->prev_node) {
-            long child_result = node->panel->handle_mouse_dbl_click(
-                mouse_button_in, x, y, ctrl_key, shift_key);
+            long child_result = node->panel->handle_mouse_dbl_click(mouse_button_in, x, y, ctrl_key, shift_key);
             if (child_result)
                 return child_result;
         }

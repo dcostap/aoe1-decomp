@@ -37,9 +37,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
 
     draw_area = rge_base_game->draw_area;
 
-    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file,
-                                  (rge_base_game->multiplayerGame() != 0) +
-                                      0xC384,
+    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file, (rge_base_game->multiplayerGame() != 0) + 0xC384,
                                   1, 0, 0, 0, 0, 1)) {
         this->error_code = 1;
         return;
@@ -48,38 +46,25 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (this->create_text(this, &this->title, IDS_SCENARIO_SELECTION_TITLE,
-                          20, 10, 600, 30, 1, 1, 0, 0)) {
+    if (this->create_text(this, &this->title, IDS_SCENARIO_SELECTION_TITLE, 20, 10, 600, 30, 1, 1, 0, 0)) {
         this->scenarioListX = 20;
         this->scenarioListY = 70;
         this->scenarioListWidth = 600;
         this->scenarioListHeight = 263;
 
-        if (this->create_list(this, &this->scenarioList,
-                              20, 70, 600, 263, RGE_FONT_STANDARD)) {
-            this->scenarioList->set_second_column_pos(
-                ((this->scenarioListWidth - 60) * this->pnl_wid) /
-                this->ideal_width);
+        if (this->create_list(this, &this->scenarioList, 20, 70, 600, 263, RGE_FONT_STANDARD)) {
+            this->scenarioList->set_second_column_pos(((this->scenarioListWidth - 60) * this->pnl_wid) / this->ideal_width);
             this->scenarioList->set_text(IDS_SCENARIO_LIST_LOADING);
 
-            if (this->create_auto_scrollbar(&this->scenarioScrollbar,
-                                            this->scenarioList, 20)) {
+            if (this->create_auto_scrollbar(&this->scenarioScrollbar, this->scenarioList, 20)) {
                 this->scenarioScrollbar->set_help_info(-1, -1);
 
-                if (this->create_text(this, &this->scenarioTitle,
-                                      IDS_SCENARIO_LIST_TITLE,
-                                      this->scenarioListX,
-                                      this->scenarioListY - 20,
-                                      300, 20, 4, 0, 0, 0)) {
-                    if (this->create_text(this, &this->scenarioPlayersTitle,
-                                          IDS_SCENARIO_PLAYERS_TITLE,
-                                          this->scenarioListWidth - 220 +
-                                              this->scenarioListX,
-                                          this->scenarioListY - 20,
+                if (this->create_text(this, &this->scenarioTitle, IDS_SCENARIO_LIST_TITLE, this->scenarioListX,
+                                      this->scenarioListY - 20, 300, 20, 4, 0, 0, 0)) {
+                    if (this->create_text(this, &this->scenarioPlayersTitle, IDS_SCENARIO_PLAYERS_TITLE,
+                                          this->scenarioListWidth - 220 + this->scenarioListX, this->scenarioListY - 20,
                                           200, 20, 4, 0, 0, 0)) {
-                        this->scenarioPlayersTitle->set_alignment(
-                            TTextPanel::AlignTop,
-                            TTextPanel::AlignRight);
+                        this->scenarioPlayersTitle->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
 
                         this->missionTextX = this->scenarioListX;
                         this->missionTextY = this->scenarioListHeight +
@@ -87,66 +72,39 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                         this->missionTextWidth = this->scenarioListWidth;
                         this->missionTextHeight = 60;
 
-                        if (this->create_text(this, &this->missionTitle,
-                                              IDS_SCENARIO_INSTRUCTIONS_TITLE,
-                                              this->missionTextX,
-                                              this->missionTextY - 20,
-                                              400, 20, 4, 0, 0, 0)) {
-                            if (this->create_text(
-                                    this, &this->missionText,
-                                    "", this->missionTextX,
-                                    this->missionTextY,
-                                    this->missionTextWidth,
-                                    this->missionTextHeight,
-                                    RGE_FONT_STANDARD, 0, 0, 1)) {
-                                this->missionText->set_bevel_info(
-                                    3, this->bevel_color1, this->bevel_color2,
-                                    this->bevel_color3, this->bevel_color4,
-                                    this->bevel_color5, this->bevel_color6);
+                        if (this->create_text(this, &this->missionTitle, IDS_SCENARIO_INSTRUCTIONS_TITLE,
+                                              this->missionTextX, this->missionTextY - 20, 400, 20, 4, 0, 0, 0)) {
+                            if (this->create_text(this, &this->missionText, "", this->missionTextX, this->missionTextY,
+                                                  this->missionTextWidth, this->missionTextHeight, RGE_FONT_STANDARD, 0, 0, 1)) {
+                                this->missionText->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
+                                                                  this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
 
-                                if (this->create_auto_scrollbar(
-                                        &this->missionScrollbar,
-                                        this->missionText, 20)) {
-                                    this->missionScrollbar->set_help_info(
-                                        IDS_HELP_CANCEL, -1);
+                                if (this->create_auto_scrollbar(&this->missionScrollbar, this->missionText, 20)) {
+                                    this->missionScrollbar->set_help_info(IDS_HELP_CANCEL, -1);
 
-                                    if (this->create_button(
-                                            this, &this->okButton, IDS_BUTTON_OK,
-                                            0, 70, 440, 240, 30,
-                                            0, 0, 0)) {
-                                        this->okButton->set_help_info(
-                                            IDS_HELP_OK, -1);
+                                    if (this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 70, 440, 240, 30,
+                                                            0, 0, 0)) {
+                                        this->okButton->set_help_info(IDS_HELP_OK, -1);
 
-                                        if (this->create_button(
-                                                this, &this->cancelButton,
-                                                IDS_BUTTON_CANCEL, 0, 330,
-                                                440,
-                                                240, 30, 0, 0, 0)) {
-                                            this->cancelButton->set_help_info(
-                                                IDS_HELP_CANCEL, -1);
+                                        if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 330, 440,
+                                                                240, 30, 0, 0, 0)) {
+                                            this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
                                             TButtonPanel* cancel =
                                                 this->cancelButton;
                                             cancel->hotkey = 0x1B;
                                             cancel->hotkey_shift = 0;
 
-                                            if (this->create_button(
-                                                    this, &this->close_button,
-                                                    IDS_BUTTON_CLOSE, 0, 0, 0,
-                                                    0, 0,
-                                                    -1, -1, 0)) {
+                                            if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0,
+                                                                    0, 0, -1, -1, 0)) {
                                                 this->close_button->set_active(1);
-                                                this->close_button->set_positioning(
-                                                    TPanel::PositionRightTop,
-                                                    4, 4, 4, 4, 17,
-                                                    17, 17, 17, 0, 0,
-                                                    0, 0);
+                                                this->close_button->set_positioning(TPanel::PositionRightTop,
+                                                                                    4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
                                                 this->fillScenarios();
                                                 this->scenariosLoaded = 1;
                                                 this->getSettings();
                                                 this->fillMissionText();
                                                 this->activatePanels();
-                                                this->set_curr_child(
-                                                    this->scenarioList);
+                                                this->set_curr_child(this->scenarioList);
                                             }
                                         }
                                     }
@@ -275,8 +233,7 @@ void TribeSelectScenarioScreen::fillScenarios() {
     if (this->scenarioCount <= 0) return;
     do {
         long id = this->scenarioList->get_id(i);
-        TRIBE_Scenario_Header* hdr = static_cast<TRIBE_Scenario_Header*>(
-            scenario_info_file->get_scenario_info(id));
+        TRIBE_Scenario_Header* hdr = static_cast<TRIBE_Scenario_Header*>(scenario_info_file->get_scenario_info(id));
         if (hdr != 0) {
             this->scenarioMission[i] = (char*)calloc(4096, sizeof(char));
             if (this->scenarioMission[i] != 0 && hdr->description != 0) {

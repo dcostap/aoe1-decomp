@@ -64,9 +64,7 @@ void GetDXVersion( unsigned long* pdwDXVersion, unsigned long* pdwDXPlatform ) {
                 IUnknown* dp3;
                 *pdwDXVersion = 0x300;
                 int coInitResult = CoInitialize( 0 );
-                hr = CoCreateInstance( CLSID_DirectPlay, 0, CLSCTX_INPROC_SERVER,
-                                       IID_IDirectPlay3,
-                                       (void**)&dp3 );
+                hr = CoCreateInstance( CLSID_DirectPlay, 0, CLSCTX_INPROC_SERVER, IID_IDirectPlay3, (void**)&dp3 );
                 if (hr < 0) {
                     if (coInitResult != 0)
                         CoUninitialize();
@@ -100,8 +98,7 @@ void GetDXVersion( unsigned long* pdwDXVersion, unsigned long* pdwDXPlatform ) {
             return;
         }
 
-        DirectDrawCreate = (DIRECTDRAWCREATE)GetProcAddress( DDHinst,
-                                                               "DirectDrawCreate" );
+        DirectDrawCreate = (DIRECTDRAWCREATE)GetProcAddress( DDHinst, "DirectDrawCreate" );
         if (DirectDrawCreate == 0) {
             *pdwDXVersion = 0;
             *pdwDXPlatform = 0;

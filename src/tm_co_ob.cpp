@@ -124,8 +124,7 @@ int TRIBE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites,
 
     // The original uses the unused sounds parameter home for the final scan
     // destination. Keep this store order and width.
-    fscanf(infile, "%hd %hd %hd", &build_pts_required, &id_of_building_obj,
-           &sounds);
+    fscanf(infile, "%hd %hd %hd", &build_pts_required, &id_of_building_obj, &sounds);
 
     armor_count = (int)armor_num;
     button_location = (unsigned char)sounds;

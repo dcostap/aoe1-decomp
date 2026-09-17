@@ -44,8 +44,7 @@ LPDIRECTSOUNDBUFFER __cdecl DSLoadSoundBuffer(LPDIRECTSOUND pDS, const char* lpN
     DSBUFFERDESC dsBD = {0};
     void* pbWaveData;
 
-    if (DSGetWaveResource(0, lpName, &dsBD.lpwfxFormat, &pbWaveData,
-                          (void*)&dsBD.dwBufferBytes) != 0) {
+    if (DSGetWaveResource(0, lpName, &dsBD.lpwfxFormat, &pbWaveData, (void*)&dsBD.dwBufferBytes) != 0) {
         dsBD.dwSize = sizeof(dsBD);
         dsBD.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLDEFAULT;
         if (IDirectSound_CreateSoundBuffer(pDS, &dsBD, &pDSB, 0) >= 0) {
@@ -66,8 +65,7 @@ int __cdecl DSReloadSoundBuffer(LPDIRECTSOUNDBUFFER pDSB, int lpName,
     int pbWaveData;
 
     (void)cbWaveSize;
-    if (DSGetWaveResource(0, (const char*)lpName, 0, (void*)&pbWaveData,
-                          (void*)&lpName) != 0) {
+    if (DSGetWaveResource(0, (const char*)lpName, 0, (void*)&pbWaveData, (void*)&lpName) != 0) {
         if (IDirectSoundBuffer_Restore(pDSB) >= 0) {
             if (DSFillSoundBuffer(pDSB, (void*)pbWaveData, lpName) != 0) {
                 result = 1;
@@ -82,15 +80,13 @@ int __cdecl DSGetWaveResource(void* hModule, const char* lpName,
                               void* pcbWaveSize) {
     void* resource;
 
-    resource = FindResourceA((HMODULE)hModule, lpName,
-                             DS_WAVE_RESOURCE_TYPE);
+    resource = FindResourceA((HMODULE)hModule, lpName, DS_WAVE_RESOURCE_TYPE);
     if (resource != 0) {
         resource = LoadResource((HMODULE)hModule, (HRSRC)resource);
         if (resource != 0) {
             resource = LockResource((HGLOBAL)resource);
             if (resource != 0) {
-                if (DSParseWaveResource(resource, ppWaveHeader, ppbWaveData,
-                                        pcbWaveSize) != 0) {
+                if (DSParseWaveResource(resource, ppWaveHeader, ppbWaveData, pcbWaveSize) != 0) {
                     return 1;
                 }
             }
@@ -115,10 +111,7 @@ SNDOBJ* __cdecl SndObjCreate(LPDIRECTSOUND pDS, const char* lpName,
         if (iConcurrent < i) {
             iConcurrent = i;
         }
-        obj = (SNDOBJ*)LocalAlloc(
-            LMEM_ZEROINIT,
-            offsetof(SNDOBJ, Buffers) +
-                iConcurrent * sizeof(LPDIRECTSOUNDBUFFER));
+        obj = (SNDOBJ*)LocalAlloc(LMEM_ZEROINIT, offsetof(SNDOBJ, Buffers) + iConcurrent * sizeof(LPDIRECTSOUNDBUFFER));
         if (obj != 0) {
             obj->iAlloc = iConcurrent;
             obj->pbWaveData = pbData;
@@ -127,8 +120,7 @@ SNDOBJ* __cdecl SndObjCreate(LPDIRECTSOUND pDS, const char* lpName,
             if (i < obj->iAlloc) {
                 buf = &obj->Buffers[1];
                 while (1) {
-                    if (pDS->lpVtbl->DuplicateSoundBuffer(
-                            pDS, obj->Buffers[0], buf) < 0) {
+                    if (pDS->lpVtbl->DuplicateSoundBuffer(pDS, obj->Buffers[0], buf) < 0) {
                         *buf = DSLoadSoundBuffer(pDS, lpName);
                         if (*buf == 0) {
                             goto destroy_obj;
@@ -158,13 +150,10 @@ void __cdecl SndObjDestroy(void* pSO) {
         if (*(int*)((char*)pSO + 8) > 0) {
             do {
                 LPDIRECTSOUNDBUFFER buffer = *(LPDIRECTSOUNDBUFFER*)
-                    ((char*)pSO + offsetof(SNDOBJ, Buffers) +
-                        i * sizeof(LPDIRECTSOUNDBUFFER));
+                    ((char*)pSO + offsetof(SNDOBJ, Buffers) + i * sizeof(LPDIRECTSOUNDBUFFER));
                 if (buffer != 0) {
                     IDirectSoundBuffer_Release(buffer);
-                    *(LPDIRECTSOUNDBUFFER*)((char*)pSO +
-                        offsetof(SNDOBJ, Buffers) +
-                        i * sizeof(LPDIRECTSOUNDBUFFER)) = 0;
+                    *(LPDIRECTSOUNDBUFFER*)((char*)pSO + offsetof(SNDOBJ, Buffers) + i * sizeof(LPDIRECTSOUNDBUFFER)) = 0;
                 }
                 ++i;
             } while (i < *(int*)((char*)pSO + 8));
@@ -205,8 +194,7 @@ LPDIRECTSOUNDBUFFER __cdecl SndObjGetFreeBuffer(SNDOBJ* pSO) {
 
         if (buf != 0 && (dwStatus & 2) != 0) {
             hr = IDirectSoundBuffer_Restore(buf);
-            if (hr < 0 || DSFillSoundBuffer(buf, pSO->pbWaveData,
-                                            pSO->cbWaveSize) == 0) {
+            if (hr < 0 || DSFillSoundBuffer(buf, pSO->pbWaveData, pSO->cbWaveSize) == 0) {
                 buf = 0;
             }
         }
@@ -263,8 +251,7 @@ int __cdecl DSFillSoundBuffer(LPDIRECTSOUNDBUFFER pDSB, void* pbWaveData,
     if (!pDSB || !pbWaveData || !cbWaveSize)
         return 0;
 
-    hr = IDirectSoundBuffer_Lock(pDSB, 0, cbWaveSize, &pMem1, (DWORD*)&dwSize1,
-                                 &pMem2, (DWORD*)&dwSize2, 0);
+    hr = IDirectSoundBuffer_Lock(pDSB, 0, cbWaveSize, &pMem1, (DWORD*)&dwSize1, &pMem2, (DWORD*)&dwSize2, 0);
     if (hr < 0)
         return 0;
 
@@ -379,8 +366,7 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn,
     }
 
     ckIn.ckid = mmioFOURCC('f', 'm', 't', ' ');
-    if ((err = mmioDescend(hmmioIn, (LPMMCKINFO)&ckIn,
-                           (LPMMCKINFO)pckInRIFF, MMIO_FINDCHUNK)) != 0) {
+    if ((err = mmioDescend(hmmioIn, (LPMMCKINFO)&ckIn, (LPMMCKINFO)pckInRIFF, MMIO_FINDCHUNK)) != 0) {
         goto error;
     }
 
@@ -414,9 +400,7 @@ int __cdecl WaveOpenFile(char* pszFileName, HMMIO* phmmioIn,
     (*ppwfxInfo)->cbSize = cbExtraAlloc;
 
     if (cbExtraAlloc != 0) {
-        if (mmioRead(hmmioIn,
-                    (char*)&(*ppwfxInfo)->cbSize + sizeof(cbExtraAlloc),
-                    cbExtraAlloc) != cbExtraAlloc) {
+        if (mmioRead(hmmioIn, (char*)&(*ppwfxInfo)->cbSize + sizeof(cbExtraAlloc), cbExtraAlloc) != cbExtraAlloc) {
             err = 0xE101;
             goto error;
         }
@@ -449,8 +433,7 @@ int __cdecl WaveStartDataRead(HMMIO* phmmioIn, MMCKINFO* pckIn,
     }
 
     pckIn->ckid = mmioFOURCC('d', 'a', 't', 'a');
-    return mmioDescend(*phmmioIn, (LPMMCKINFO)pckIn,
-                       (LPMMCKINFO)pckInRIFF, MMIO_FINDCHUNK);
+    return mmioDescend(*phmmioIn, (LPMMCKINFO)pckIn, (LPMMCKINFO)pckInRIFF, MMIO_FINDCHUNK);
 }
 
 int __cdecl WaveReadFile(HMMIO hmmioIn, UINT cbRead, BYTE* pbDest,
@@ -485,11 +468,9 @@ int __cdecl WaveReadFile(HMMIO hmmioIn, UINT cbRead, BYTE* pbDest,
 
         cbDataToCopy = mmioinfoIn.pchEndRead - mmioinfoIn.pchNext;
         if (cbDataIn - cT < cbDataToCopy) {
-            memcpy((cbDataToCopy = cbDataIn - cT, (BYTE*)pbDest + cT),
-                   (BYTE*)mmioinfoIn.pchNext, cbDataIn - cT);
+            memcpy((cbDataToCopy = cbDataIn - cT, (BYTE*)pbDest + cT), (BYTE*)mmioinfoIn.pchNext, cbDataIn - cT);
         } else {
-            memcpy((BYTE*)pbDest + cT, (BYTE*)mmioinfoIn.pchNext,
-                   cbDataToCopy);
+            memcpy((BYTE*)pbDest + cT, (BYTE*)mmioinfoIn.pchNext, cbDataToCopy);
         }
         cT += cbDataToCopy;
         mmioinfoIn.pchNext += cbDataToCopy;
@@ -531,8 +512,7 @@ int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut,
     dwFactChunk = (DWORD)-1;
     err = 0;
 
-    *phmmioOut = mmioOpenA(pszFileName, 0,
-                           MMIO_ALLOCBUF | MMIO_CREATE | MMIO_READWRITE);
+    *phmmioOut = mmioOpenA(pszFileName, 0, MMIO_ALLOCBUF | MMIO_CREATE | MMIO_READWRITE);
     if (*phmmioOut == 0) {
         err = 0xE104;
         goto done;
@@ -540,8 +520,7 @@ int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut,
 
     pckOutRIFF->fccType = mmioFOURCC('W', 'A', 'V', 'E');
     pckOutRIFF->cksize = 0;
-    if ((err = mmioCreateChunk(*phmmioOut, (LPMMCKINFO)pckOutRIFF,
-                               MMIO_CREATERIFF)) != 0) {
+    if ((err = mmioCreateChunk(*phmmioOut, (LPMMCKINFO)pckOutRIFF, MMIO_CREATERIFF)) != 0) {
         goto done;
     }
 
@@ -557,8 +536,7 @@ int __cdecl WaveCreateFile(char* pszFileName, HMMIO* phmmioOut,
             goto done;
         }
     } else {
-        if ((UINT)mmioWrite(*phmmioOut, (const char*)pwfxDest,
-                            18 + pwfxDest->cbSize) !=
+        if ((UINT)mmioWrite(*phmmioOut, (const char*)pwfxDest, 18 + pwfxDest->cbSize) !=
             (18 + pwfxDest->cbSize)) {
             goto fail;
         }
@@ -646,15 +624,11 @@ int __cdecl WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO* pckOut,
                 result = mmioDescend(*phmmioOut, (LPMMCKINFO)pckOutRIFF, 0, 0);
                 if (result == 0) {
                     pckOut->ckid = mmioFOURCC('f', 'a', 'c', 't');
-                    if ((result = mmioDescend(*phmmioOut,
-                                              (LPMMCKINFO)pckOut,
-                                              (LPMMCKINFO)pckOutRIFF,
+                    if ((result = mmioDescend(*phmmioOut, (LPMMCKINFO)pckOut, (LPMMCKINFO)pckOutRIFF,
                                               MMIO_FINDCHUNK)) == 0) {
-                        mmioWrite(*phmmioOut, (const char*)&cSamples,
-                                  sizeof(DWORD));
+                        mmioWrite(*phmmioOut, (const char*)&cSamples, sizeof(DWORD));
                         mmioAscend(*phmmioOut, (LPMMCKINFO)pckOut, result);
-                        result = mmioAscend(*phmmioOut,
-                                            (LPMMCKINFO)pckOutRIFF, 0);
+                        result = mmioAscend(*phmmioOut, (LPMMCKINFO)pckOutRIFF, 0);
                     } else {
                         return 1;
                     }
@@ -678,8 +652,7 @@ int __cdecl WaveCopyUselessChunks(HMMIO* phmmioIn, MMCKINFO* pckIn,
         result = 0xE102;
     } else {
         result = 0;
-        while (mmioDescend(*phmmioIn, (LPMMCKINFO)pckIn,
-                           (LPMMCKINFO)pckInRiff, 0) == 0) {
+        while (mmioDescend(*phmmioIn, (LPMMCKINFO)pckIn, (LPMMCKINFO)pckInRiff, 0) == 0) {
             DWORD ckEnd = pckIn->cksize;
             DWORD parentEnd = pckInRiff->cksize;
             ckEnd += pckIn->dwDataOffset;
@@ -754,8 +727,7 @@ int __cdecl WaveLoadFile(char* pszFileName, DWORD* cbSize,
     *ppwfxInfo = 0;
     *cbSize = 0;
 
-    err = WaveOpenFile(pszFileName, &hmmio, (LPWAVEFORMATEX*)ppwfxInfo,
-                       &ckInRiff);
+    err = WaveOpenFile(pszFileName, &hmmio, (LPWAVEFORMATEX*)ppwfxInfo, &ckInRiff);
     if (err != 0) {
         goto error;
     }
@@ -771,8 +743,7 @@ int __cdecl WaveLoadFile(char* pszFileName, DWORD* cbSize,
         goto error;
     }
 
-    err = WaveReadFile(hmmio, ckIn.cksize, *ppbData, &ckIn,
-                       &cbActualRead);
+    err = WaveReadFile(hmmio, ckIn.cksize, *ppbData, &ckIn, &cbActualRead);
     if (err != 0) {
         goto error;
     }
@@ -807,23 +778,13 @@ void __cdecl WaveSaveFile(void* pszFileName, void* cbSize, void* cSamples,
         char mmioinfoOut[0x48];
     } l;
 
-    if (WaveCreateFile((char*)pszFileName, (HMMIO*)&l.cbActualWrite,
-                       (WAVEFORMATEX*)pwfxDest,
-                       (MMCKINFO*)(l.ckOut + 4),
+    if (WaveCreateFile((char*)pszFileName, (HMMIO*)&l.cbActualWrite, (WAVEFORMATEX*)pwfxDest, (MMCKINFO*)(l.ckOut + 4),
                        (MMCKINFO*)(l.ckOutRIFF + 4)) == 0) {
-        if (WaveStartDataWrite(&l.cbActualWrite,
-                               (MMCKINFO*)(l.ckOut + 4),
-                               (MMIOINFO*)l.mmioinfoOut) == 0) {
-            if (WaveWriteFile((HMMIO)l.cbActualWrite, (unsigned int)cbSize,
-                              (unsigned char*)pbData,
-                              (MMCKINFO*)(l.ckOut + 4),
-                              (unsigned int*)l.ckOut,
-                              (MMIOINFO*)l.mmioinfoOut) == 0) {
-                WaveCloseWriteFile((HMMIO*)&l.cbActualWrite,
-                                   (MMCKINFO*)(l.ckOut + 4),
-                                   (MMCKINFO*)(l.ckOutRIFF + 4),
-                                   (MMIOINFO*)l.mmioinfoOut,
-                                   (DWORD)(unsigned long)cSamples);
+        if (WaveStartDataWrite(&l.cbActualWrite, (MMCKINFO*)(l.ckOut + 4), (MMIOINFO*)l.mmioinfoOut) == 0) {
+            if (WaveWriteFile((HMMIO)l.cbActualWrite, (unsigned int)cbSize, (unsigned char*)pbData,
+                              (MMCKINFO*)(l.ckOut + 4), (unsigned int*)l.ckOut, (MMIOINFO*)l.mmioinfoOut) == 0) {
+                WaveCloseWriteFile((HMMIO*)&l.cbActualWrite, (MMCKINFO*)(l.ckOut + 4), (MMCKINFO*)(l.ckOutRIFF + 4),
+                                   (MMIOINFO*)l.mmioinfoOut, (DWORD)(unsigned long)cSamples);
             }
         }
     }
@@ -871,8 +832,7 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
     }
 
     _stream_paused = 0;
-    result = WaveOpenFile(szName, &ds_wave_file,
-                          (LPWAVEFORMATEX*)&_wiWave, &ds_wave_riff_chunk);
+    result = WaveOpenFile(szName, &ds_wave_file, (LPWAVEFORMATEX*)&_wiWave, &ds_wave_riff_chunk);
     if (result != 0) {
         return 0;
     }
@@ -882,8 +842,7 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
         return 0;
     }
 
-    result = WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk,
-                               &ds_wave_riff_chunk);
+    result = WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk, &ds_wave_riff_chunk);
     if (result != 0) {
         WaveCloseReadFile(&ds_wave_file, (HGLOBAL*)&_wiWave);
         return 0;
@@ -897,8 +856,7 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
     dsbd.dwFlags = DSBCAPS_CTRLDEFAULT;
     dsbd.dwBufferBytes = ds_buffer_size;
     dsbd.lpwfxFormat = (void*)_wiWave;
-    result = IDirectSound_CreateSoundBuffer((LPDIRECTSOUND)_lpDS, &dsbd,
-        (LPLPDIRECTSOUNDBUFFER)&_lpDSBStreamBuffer, 0);
+    result = IDirectSound_CreateSoundBuffer((LPDIRECTSOUND)_lpDS, &dsbd, (LPLPDIRECTSOUNDBUFFER)&_lpDSBStreamBuffer, 0);
     if (result != 0) {
         return 0;
     }
@@ -906,39 +864,33 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
     ds_stream_buffer = _lpDSBStreamBuffer;
     ds_stream_at_end = 0;
     ds_silence_chunks = 0;
-    result = IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
-        0, ds_buffer_size, (void**)&lpWrite1, &dwLen1,
-        (void**)&lpWrite2, &dwLen2, 0);
+    result = IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, 0, ds_buffer_size, (void**)&lpWrite1, &dwLen1,
+                                     (void**)&lpWrite2, &dwLen2, 0);
     if (result != 0) {
         return 0;
     }
 
     if (dwLen1 != 0) {
-        WaveReadFile(ds_wave_file, dwLen1, lpWrite1, &ds_wave_data_chunk,
-                     &uChkErr);
+        WaveReadFile(ds_wave_file, dwLen1, lpWrite1, &ds_wave_data_chunk, &uChkErr);
         if (uChkErr < dwLen1) {
             if (ds_stream_loop != 0) {
                 unsigned char* lpWriteCursor = lpWrite1;
                 do {
                     lpWriteCursor += uChkErr;
                     dwLen1 -= uChkErr;
-                    WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk,
-                                      &ds_wave_riff_chunk);
-                    WaveReadFile(ds_wave_file, dwLen1, lpWriteCursor,
-                                 &ds_wave_data_chunk, &uChkErr);
+                    WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk, &ds_wave_riff_chunk);
+                    WaveReadFile(ds_wave_file, dwLen1, lpWriteCursor, &ds_wave_data_chunk, &uChkErr);
                 } while (uChkErr < dwLen1);
             } else {
                 ds_silence_chunks = uChkErr / ds_chunk_size;
                 ds_stream_at_end = 1;
-                memset((unsigned char*)lpWrite1 + uChkErr,
-                    ((((LPWAVEFORMATEX)_wiWave)->wBitsPerSample != 8) - 1) & 0x80,
-                    dwLen1 - uChkErr);
+                memset((unsigned char*)lpWrite1 + uChkErr, ((((LPWAVEFORMATEX)_wiWave)->wBitsPerSample != 8) - 1) & 0x80,
+                       dwLen1 - uChkErr);
             }
         }
     }
 
-    IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
-        lpWrite1, dwLen1, lpWrite2, 0);
+    IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, lpWrite1, dwLen1, lpWrite2, 0);
 
     ds_stream_position = 0;
     ds_last_play_cursor = 0;
@@ -959,9 +911,7 @@ int __cdecl ds_stream_file(char* szName, int bLoop, long Volume) {
         return 0;
     }
 
-    _uTimerID = timeSetEvent(DS_STREAM_TIMER_PERIOD,
-                             DS_STREAM_TIMER_RESOLUTION,
-                             ds_stream_time_func, 0, 1);
+    _uTimerID = timeSetEvent(DS_STREAM_TIMER_PERIOD, DS_STREAM_TIMER_RESOLUTION, ds_stream_time_func, 0, 1);
     if (_uTimerID != 0) {
         _bTimerInstalled = 1;
     }
@@ -1107,8 +1057,7 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
         }
 
         stream = ds_stream_buffer;
-        if (IDirectSoundBuffer_Lock(stream, ds_write_cursor, ds_chunk_size,
-                                    (void**)&lpWrite1, &dwLen1,
+        if (IDirectSoundBuffer_Lock(stream, ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
                                     (void**)&lpWrite2, &dwLen2, 0) != 0) {
             goto done;
         }
@@ -1121,32 +1070,27 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
             }
         }
 
-        IDirectSoundBuffer_Unlock(ds_stream_buffer, lpWrite1, dwLen1,
-                                  lpWrite2, dwLen2);
+        IDirectSoundBuffer_Unlock(ds_stream_buffer, lpWrite1, dwLen1, lpWrite2, dwLen2);
     } else {
         if (ds_stream_buffer == 0) {
             goto done;
         }
 
         stream = ds_stream_buffer;
-        if (IDirectSoundBuffer_Lock(stream, ds_write_cursor, ds_chunk_size,
-                                    (void**)&lpWrite1, &dwLen1,
+        if (IDirectSoundBuffer_Lock(stream, ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
                                     (void**)&lpWrite2, &dwLen2, 0) != 0) {
             goto done;
         }
 
         if (dwLen1 != 0 && ds_stream_stop_requested == 0) {
-            WaveReadFile(ds_wave_file, dwLen1, lpWrite1,
-                         &ds_wave_data_chunk, &uChkErr);
+            WaveReadFile(ds_wave_file, dwLen1, lpWrite1, &ds_wave_data_chunk, &uChkErr);
             if (uChkErr < dwLen1) {
                 if (ds_stream_loop == 0) {
                     if (_wiWave != 0 && lpWrite1 != 0) {
                         if (_wiWave->wBitsPerSample == 8) {
-                            memset(lpWrite1 + uChkErr, 0x80,
-                                   dwLen1 - uChkErr);
+                            memset(lpWrite1 + uChkErr, 0x80, dwLen1 - uChkErr);
                         } else if (_wiWave->wBitsPerSample == 16) {
-                            memset(lpWrite1 + uChkErr, 0,
-                                   dwLen1 - uChkErr);
+                            memset(lpWrite1 + uChkErr, 0, dwLen1 - uChkErr);
                         }
                     }
 
@@ -1164,34 +1108,26 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
                     do {
                         dwLen1 -= uChkErr;
                         lpWriteCursor += uChkErr;
-                        WaveStartDataRead(&ds_wave_file,
-                                          &ds_wave_data_chunk,
-                                          &ds_wave_riff_chunk);
-                        WaveReadFile(ds_wave_file, dwLen1, lpWriteCursor,
-                                     &ds_wave_data_chunk, &uChkErr);
+                        WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk, &ds_wave_riff_chunk);
+                        WaveReadFile(ds_wave_file, dwLen1, lpWriteCursor, &ds_wave_data_chunk, &uChkErr);
                     } while (uChkErr < dwLen1);
                 }
             }
         } else if (dwLen1 != 0 && ds_stream_stop_requested != 0 &&
                    _wiWave != 0 && lpWrite1 != 0) {
-            memset(lpWrite1,
-                   ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
-                   dwLen1);
+            memset(lpWrite1, ((_wiWave->wBitsPerSample != 8) - 1) & 0x80, dwLen1);
         }
 
         if (dwLen2 != 0) {
             if (ds_stream_stop_requested == 0) {
-                WaveReadFile(ds_wave_file, dwLen2, lpWrite2,
-                             &ds_wave_data_chunk, &uChkErr);
+                WaveReadFile(ds_wave_file, dwLen2, lpWrite2, &ds_wave_data_chunk, &uChkErr);
                 if (uChkErr < dwLen2) {
                     if (ds_stream_loop == 0) {
                         if (_wiWave != 0 && lpWrite2 != 0) {
                             if (_wiWave->wBitsPerSample == 8) {
-                                memset(lpWrite2 + uChkErr, 0x80,
-                                       dwLen2 - uChkErr);
+                                memset(lpWrite2 + uChkErr, 0x80, dwLen2 - uChkErr);
                             } else if (_wiWave->wBitsPerSample == 16) {
-                                memset(lpWrite2 + uChkErr, 0,
-                                       dwLen2 - uChkErr);
+                                memset(lpWrite2 + uChkErr, 0, dwLen2 - uChkErr);
                             }
                         }
 
@@ -1209,26 +1145,19 @@ void __stdcall ds_stream_time_func(unsigned int uTimerID,
                         do {
                             dwLen2 -= uChkErr;
                             lpWriteCursor += uChkErr;
-                            WaveStartDataRead(&ds_wave_file,
-                                              &ds_wave_data_chunk,
-                                              &ds_wave_riff_chunk);
-                            WaveReadFile(ds_wave_file, dwLen2,
-                                         lpWriteCursor,
-                                         &ds_wave_data_chunk, &uChkErr);
+                            WaveStartDataRead(&ds_wave_file, &ds_wave_data_chunk, &ds_wave_riff_chunk);
+                            WaveReadFile(ds_wave_file, dwLen2, lpWriteCursor, &ds_wave_data_chunk, &uChkErr);
                         } while (uChkErr < dwLen2);
                     }
                 }
             } else if (ds_stream_stop_requested != 0 && _wiWave != 0 &&
                        lpWrite2 != 0) {
-                memset(lpWrite2,
-                       ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
-                       dwLen2);
+                memset(lpWrite2, ((_wiWave->wBitsPerSample != 8) - 1) & 0x80, dwLen2);
             }
         }
 
         if (ds_stream_buffer != 0) {
-            IDirectSoundBuffer_Unlock(ds_stream_buffer, lpWrite1, dwLen1,
-                                      lpWrite2, dwLen2);
+            IDirectSoundBuffer_Unlock(ds_stream_buffer, lpWrite1, dwLen1, lpWrite2, dwLen2);
         }
     }
 

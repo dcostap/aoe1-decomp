@@ -58,8 +58,7 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
     if (infile != 0) {
         fscanf(infile, " %d", &this->map_info.map_num);
         if (this->map_info.map_num > 0) {
-            this->map_info.maps = (RGE_Map_Data_Entry*)calloc(
-                this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
+            this->map_info.maps = (RGE_Map_Data_Entry*)calloc(this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
             for (long index1 = 0; index1 < this->map_info.map_num; ++index1)
                 fscanf(infile, "%d", &this->map_info.maps[index1].map_id);
         } else {
@@ -84,37 +83,18 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
             fscanf(infile, "%d", &map_id);
             RGE_Land_Data* data =
                 &this->map_info.maps[map_id].land_info;
-            fscanf(infile, "%d %d %d %d %d %d %d %d %d",
-                &data->land_num,
-                &data->map_edge_buffer[0],
-                &data->map_edge_buffer[1],
-                &data->map_edge_buffer[2],
-                &data->map_edge_buffer[3],
-                &data->map_edge_fade,
-                &data->land_placement_edge,
-                &data->base_terrain,
-                &data->grown_land_percent);
+            fscanf(infile, "%d %d %d %d %d %d %d %d %d", &data->land_num, &data->map_edge_buffer[0],
+                   &data->map_edge_buffer[1], &data->map_edge_buffer[2], &data->map_edge_buffer[3], &data->map_edge_fade,
+                   &data->land_placement_edge, &data->base_terrain, &data->grown_land_percent);
 
             if (data->land_num > 0) {
-                data->land = (RGE_Land_Data_Entry*)calloc(
-                    data->land_num, sizeof(RGE_Land_Data_Entry));
+                data->land = (RGE_Land_Data_Entry*)calloc(data->land_num, sizeof(RGE_Land_Data_Entry));
                 for (long land_index = 0;
                      land_index < data->land_num; ++land_index) {
                     RGE_Land_Data_Entry* land = &data->land[land_index];
-                    fscanf(infile,
-                        "%d %d %d %d %d %d %d %d %d %d %d %d",
-                        &land->land_id,
-                        &temp_terrain_type,
-                        &land->land_avoidance_tiles,
-                        &land->base_square_radius,
-                        &temp_zone,
-                        &temp_placement_type,
-                        &land->x,
-                        &land->y,
-                        &temp_amount_of_land_used_percent,
-                        &temp_by_player_flag,
-                        &land->radius,
-                        &land->fade);
+                    fscanf(infile, "%d %d %d %d %d %d %d %d %d %d %d %d", &land->land_id, &temp_terrain_type,
+                           &land->land_avoidance_tiles, &land->base_square_radius, &temp_zone, &temp_placement_type, &land->x,
+                           &land->y, &temp_amount_of_land_used_percent, &temp_by_player_flag, &land->radius, &land->fade);
                     land->terrain_type = (uchar)temp_terrain_type;
                     land->zone = (uchar)temp_zone;
                     land->placement_type = (uchar)temp_placement_type;
@@ -139,18 +119,13 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
                 &this->map_info.maps[map_id].terrain_info;
             fscanf(infile, "%d", &data->terrain_num);
             if (data->terrain_num > 0) {
-                data->terrain = (RGE_Terrain_Data_Entry*)calloc(
-                    data->terrain_num, sizeof(RGE_Terrain_Data_Entry));
+                data->terrain = (RGE_Terrain_Data_Entry*)calloc(data->terrain_num, sizeof(RGE_Terrain_Data_Entry));
                 for (long terrain_index = 0;
                      terrain_index < data->terrain_num; ++terrain_index) {
                     RGE_Terrain_Data_Entry* terrain =
                         &data->terrain[terrain_index];
-                    fscanf(infile, "%d %d %d %d %d",
-                        &terrain->terrain_percent,
-                        &terrain->terrain_type,
-                        &terrain->clumps,
-                        &terrain->spacing,
-                        &terrain->base_terrain_type);
+                    fscanf(infile, "%d %d %d %d %d", &terrain->terrain_percent, &terrain->terrain_type, &terrain->clumps,
+                           &terrain->spacing, &terrain->base_terrain_type);
                     terrain->clumpiness_factor = 20;
                 }
             } else {
@@ -169,26 +144,15 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
                 &this->map_info.maps[map_id].object_info;
             fscanf(infile, "%d", &data->object_num);
             if (data->object_num > 0) {
-                data->objects = (RGE_Object_Data_Entry*)calloc(
-                    data->object_num, sizeof(RGE_Object_Data_Entry));
+                data->objects = (RGE_Object_Data_Entry*)calloc(data->object_num, sizeof(RGE_Object_Data_Entry));
                 for (long object_index = 0;
                      object_index < data->object_num; ++object_index) {
                     RGE_Object_Data_Entry* object =
                         &data->objects[object_index];
-                    fscanf(infile,
-                        "%d %d %d %d %d %d %d %d %d %d %d %d",
-                        &object->obj_id,
-                        &object->terrain,
-                        &temp_group_flag,
-                        &temp_scale_flag,
-                        &object->object_number_per_group,
-                        &object->object_number_varience,
-                        &object->number_of_groups,
-                        &object->group_area,
-                        &object->player_id,
-                        &object->land_id,
-                        &object->land_inner_radius,
-                        &object->land_outer_radius);
+                    fscanf(infile, "%d %d %d %d %d %d %d %d %d %d %d %d", &object->obj_id, &object->terrain,
+                           &temp_group_flag, &temp_scale_flag, &object->object_number_per_group,
+                           &object->object_number_varience, &object->number_of_groups, &object->group_area, &object->player_id,
+                           &object->land_id, &object->land_inner_radius, &object->land_outer_radius);
                     object->group_flag = (uchar)temp_group_flag;
                     object->scale_flag = (uchar)temp_scale_flag;
                 }
@@ -208,10 +172,8 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int infile)
 
     rge_read(infile, &this->map_info, sizeof(RGE_Map_Data));
     if (this->map_info.map_num > 0) {
-        this->map_info.maps = (RGE_Map_Data_Entry*)calloc(
-            this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
-        rge_read(infile, this->map_info.maps,
-                 this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
+        this->map_info.maps = (RGE_Map_Data_Entry*)calloc(this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
+        rge_read(infile, this->map_info.maps, this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
 
         for (int index = 0;
              index < this->map_info.map_num;
@@ -227,38 +189,29 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(int infile)
 
             rge_read(infile, land_data, sizeof(RGE_Land_Data));
             if (land_data->land_num > 0) {
-                land_data->land = (RGE_Land_Data_Entry*)calloc(
-                    land_data->land_num, sizeof(RGE_Land_Data_Entry));
-                rge_read(infile, land_data->land,
-                         land_data->land_num * sizeof(RGE_Land_Data_Entry));
+                land_data->land = (RGE_Land_Data_Entry*)calloc(land_data->land_num, sizeof(RGE_Land_Data_Entry));
+                rge_read(infile, land_data->land, land_data->land_num * sizeof(RGE_Land_Data_Entry));
             }
 
             rge_read(infile, terrain_data, sizeof(RGE_Terrain_Data));
             if (terrain_data->terrain_num > 0) {
-                terrain_data->terrain = (RGE_Terrain_Data_Entry*)calloc(
-                    terrain_data->terrain_num,
-                    sizeof(RGE_Terrain_Data_Entry));
-                rge_read(infile, terrain_data->terrain,
-                         terrain_data->terrain_num *
-                         sizeof(RGE_Terrain_Data_Entry));
+                terrain_data->terrain = (RGE_Terrain_Data_Entry*)calloc(terrain_data->terrain_num,
+                                                                        sizeof(RGE_Terrain_Data_Entry));
+                rge_read(infile, terrain_data->terrain, terrain_data->terrain_num * sizeof(RGE_Terrain_Data_Entry));
             }
 
             rge_read(infile, object_data, sizeof(RGE_Object_Data));
             if (object_data->object_num > 0) {
                 object_data->objects = (RGE_Object_Data_Entry*)calloc(
                     object_data->object_num, sizeof(RGE_Object_Data_Entry));
-                rge_read(infile, object_data->objects,
-                         object_data->object_num *
-                         sizeof(RGE_Object_Data_Entry));
+                rge_read(infile, object_data->objects, object_data->object_num * sizeof(RGE_Object_Data_Entry));
             }
 
             rge_read(infile, elevation_info, sizeof(RGE_Elevation_Data));
             if (elevation_info->elevation_num > 0) {
-                elevation_info->elevation = (RGE_Elevation_Data_Entry*)calloc(
-                    elevation_info->elevation_num,
-                    sizeof(RGE_Elevation_Data_Entry));
-                rge_read(infile, elevation_info->elevation,
-                         elevation_info->elevation_num *
+                elevation_info->elevation = (RGE_Elevation_Data_Entry*)calloc(elevation_info->elevation_num,
+                                                                              sizeof(RGE_Elevation_Data_Entry));
+                rge_read(infile, elevation_info->elevation, elevation_info->elevation_num *
                          sizeof(RGE_Elevation_Data_Entry));
             }
         }
@@ -288,8 +241,7 @@ uchar RGE_RMM_Database_Controller::save(int outfile) {
     rge_write(outfile, &this->map_info, sizeof(RGE_Map_Data));
 
     if (this->map_info.map_num > 0) {
-        rge_write(outfile, this->map_info.maps,
-                  this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
+        rge_write(outfile, this->map_info.maps, this->map_info.map_num * sizeof(RGE_Map_Data_Entry));
 
         int map_index = 0;
         for (int index = 0; index < this->map_info.map_num;
@@ -305,25 +257,19 @@ uchar RGE_RMM_Database_Controller::save(int outfile) {
 
             rge_write(outfile, land_data, sizeof(RGE_Land_Data));
             if (land_data->land_num > 0)
-                rge_write(outfile, land_data->land,
-                          land_data->land_num * sizeof(RGE_Land_Data_Entry));
+                rge_write(outfile, land_data->land, land_data->land_num * sizeof(RGE_Land_Data_Entry));
 
             rge_write(outfile, terrain_data, sizeof(RGE_Terrain_Data));
             if (terrain_data->terrain_num > 0)
-                rge_write(outfile, terrain_data->terrain,
-                          terrain_data->terrain_num *
-                          sizeof(RGE_Terrain_Data_Entry));
+                rge_write(outfile, terrain_data->terrain, terrain_data->terrain_num * sizeof(RGE_Terrain_Data_Entry));
 
             rge_write(outfile, object_data, sizeof(RGE_Object_Data));
             if (object_data->object_num > 0)
-                rge_write(outfile, object_data->objects,
-                          object_data->object_num *
-                          sizeof(RGE_Object_Data_Entry));
+                rge_write(outfile, object_data->objects, object_data->object_num * sizeof(RGE_Object_Data_Entry));
 
             rge_write(outfile, elevation_info, sizeof(RGE_Elevation_Data));
             if (elevation_info->elevation_num > 0)
-                rge_write(outfile, elevation_info->elevation,
-                          elevation_info->elevation_num *
+                rge_write(outfile, elevation_info->elevation, elevation_info->elevation_num *
                           sizeof(RGE_Elevation_Data_Entry));
         }
     }
@@ -333,8 +279,7 @@ uchar RGE_RMM_Database_Controller::save(int outfile) {
 uchar RGE_RMM_Database_Controller::generate() {
     new RGE_RMM_Terrain_Generator(this->map, this, &this->terrain_info);
     new RGE_RMM_Land_Generator(this->map, this, &this->land_info);
-    new RGE_RMM_Object_Generator(this->map, this, this->world,
-                                 &this->object_info, 1);
+    new RGE_RMM_Object_Generator(this->map, this, this->world, &this->object_info, 1);
     new RGE_RMM_Elevation_Generator(this->map, this, &this->elevation_info);
 
     return RGE_Random_Map_Module::generate();
@@ -486,8 +431,7 @@ void RGE_RMM_Database_Controller::calc_land_start(
                                             &this->land_info.land[index - 1].y;
                                         *fallback = y;
                                         fallback[-1] = x;
-                                        L->Log(s_calc_land_xy,
-                                               index2, x, y);
+                                        L->Log(s_calc_land_xy, index2, x, y);
                                     }
                                     not_done = 1;
                                     break;
@@ -541,9 +485,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
     for (index = 0; index < map_land->land_num; ++index) {
         RGE_Land_Data_Entry* source = &map_land->land[index];
         if (source->by_player_flag != 0) {
-            this->calc_land_start(index2,
-                                  placement_edge,
-                                  this->number_of_players, source);
+            this->calc_land_start(index2, placement_edge, this->number_of_players, source);
             for (long player = 0;
                  player < this->number_of_players; ++player) {
                 RGE_Land_Info_Line* land =
@@ -576,9 +518,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
             land->area = source->land_avoidance_tiles;
             land->base_size = source->base_square_radius;
             land->zone = source->zone;
-            this->calc_land_start(index2,
-                                  placement_edge,
-                                  1, source);
+            this->calc_land_start(index2, placement_edge, 1, source);
             land->land_size = source->amount_of_land_used_percent *
                 land_tile_num / 100;
             land->clumpiness_factor = source->clumpiness_factor;

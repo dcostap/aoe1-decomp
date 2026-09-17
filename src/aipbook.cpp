@@ -476,9 +476,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                      unit++) {
                     int& id = unitsByType[type][unit];
                     if (id != -1) {
-                        if (playStatus->addGrouping(id,
-                                                (unsigned char)groupNumber,
-                                                (unsigned char)type) == 1) {
+                        if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)type) == 1) {
                             added++;
                             maximumUnits = play->maximumNumberUnitsValue;
                             id = -1;
@@ -513,8 +511,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                      groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
                     if (group != 0 &&
-                        playStatus->numberOfTypeInGroup(groupNumber,
-                                                         overflowType) <
+                        playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
                             group->maximum(overflowType) &&
                         (smallestGroup == -1 ||
                          playStatus->numberInGroup(groupNumber) <
@@ -526,9 +523,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 }
 
                 if (smallestGroup != -1) {
-                    if (playStatus->addGrouping(id,
-                                                (unsigned char)smallestGroup,
-                                                (unsigned char)overflowType) == 1) {
+                    if (playStatus->addGrouping(id, (unsigned char)smallestGroup, (unsigned char)overflowType) == 1) {
                         maximumUnits = play->maximumNumberUnitsValue;
                         id = -1;
                         if (playStatus->numberInPlay() == maximumUnits) {
@@ -544,12 +539,9 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                      groupNumber++) {
                     AIPlayGroup* group = play->group(groupNumber);
                     if (group != 0 &&
-                        playStatus->numberOfTypeInGroup(groupNumber,
-                                                    overflowType) <
+                        playStatus->numberOfTypeInGroup(groupNumber, overflowType) <
                             group->maximum(overflowType)) {
-                        if (playStatus->addGrouping(id,
-                                                    (unsigned char)groupNumber,
-                                                    (unsigned char)overflowType) ==
+                        if (playStatus->addGrouping(id, (unsigned char)groupNumber, (unsigned char)overflowType) ==
                             1) {
                             maximumUnits = play->maximumNumberUnitsValue;
                             id = -1;
@@ -1040,8 +1032,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 this->plays[currentPlay].numberGroupsValue = temp4;
             } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
                      currentPhase == -1) {
-                sscanf(temp, s_format_group_range, &temp4, temp6, &temp3,
-                       &i);
+                sscanf(temp, s_format_group_range, &temp4, temp6, &temp3, &i);
                 if (temp4 >= 0 && temp4 < 5) {
                     int type = this->convertUnitNameToIntType(temp6);
                     if (type != -1) {
@@ -1063,8 +1054,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 currentPhase = temp4;
             } else if (strcmp(temp2, s_Group) == 0 && currentPlay != -1 &&
                      currentPhase != -1) {
-                sscanf(temp, s_format_command, &temp4, temp6, &temp3,
-                       &i, &temp5);
+                sscanf(temp, s_format_command, &temp4, temp6, &temp3, &i, &temp5);
                 if (temp4 >= 0 && temp4 < 5) {
                     AIPlayPhase* phase =
                         this->plays[currentPlay].phase(currentPhase);
@@ -1074,8 +1064,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 }
             } else if (strcmp(temp2, s_Trigger) == 0 && currentPlay != -1 &&
                      currentPhase != -1) {
-                sscanf(temp, s_format_trigger, &temp4, temp6, &temp3,
-                       &temp7);
+                sscanf(temp, s_format_trigger, &temp4, temp6, &temp3, &temp7);
                 AIPlayPhase* phase =
                     this->plays[currentPlay].phase(currentPhase);
                 AIPlayPhaseTrigger trigger(temp6, temp3, temp7,
@@ -1084,8 +1073,7 @@ int AIPlayBook::loadPlays(char* filename) {
                 phase->addTrigger(trigger);
             } else if (strcmp(temp2, s_RTrigger) == 0 && currentPlay != -1 &&
                      currentPhase != -1) {
-                sscanf(temp, s_format_command, &temp4, temp6, &temp3,
-                       &temp7, &temp5);
+                sscanf(temp, s_format_command, &temp4, temp6, &temp3, &temp7, &temp5);
                 AIPlayPhase* phase =
                     this->plays[currentPlay].phase(currentPhase);
                 AIPlayPhaseTrigger trigger(temp6, temp3, temp7,
@@ -1104,8 +1092,7 @@ int AIPlayBook::loadPlays(char* filename) {
                         AIPlay* source = &this->plays[sourcePlay];
                         AIPlay* destination = &this->plays[sourcePlay + temp8];
 
-                        sprintf(temp2, s_format_play_variant,
-                                source->nameValue, temp8);
+                        sprintf(temp2, s_format_play_variant, source->nameValue, temp8);
                         destination->setName(temp2);
                         destination->typeValue = source->typeValue;
                         destination->minimumNumberUnitsValue =
@@ -1120,10 +1107,8 @@ int AIPlayBook::loadPlays(char* filename) {
                             source->intelligenceValue;
 
                         for (i = 0; i < 5; i++) {
-                            destination->addTargetType(
-                                source->targetType(i));
-                            destination->addTargetCharacteristic(
-                                source->targetCharacteristic(i));
+                            destination->addTargetType(source->targetType(i));
+                            destination->addTargetCharacteristic(source->targetCharacteristic(i));
                         }
                         destination->numberGroupsValue =
                             source->numberGroupsValue;
@@ -1132,10 +1117,8 @@ int AIPlayBook::loadPlays(char* filename) {
                             AIPlayGroup* refGroup = source->group(iGroups);
                             AIPlayGroup* curGroup = destination->group(iGroups);
                             for (i = 0; i < AIPlayGroup::MaxUnitTypes; i++) {
-                                curGroup->setMinimum(
-                                    i, refGroup->minimum(i));
-                                curGroup->setMaximum(
-                                    i, refGroup->maximum(i));
+                                curGroup->setMinimum(i, refGroup->minimum(i));
+                                curGroup->setMaximum(i, refGroup->maximum(i));
                             }
                         }
 
@@ -1152,9 +1135,7 @@ int AIPlayBook::loadPlays(char* filename) {
                                     XYZ originalPoint(command->value1(),
                                                       command->value2(),
                                                       command->value3());
-                                    originalPoint.rotateXYByFacet(
-                                        origin, rotatedPoint,
-                                        (unsigned char)temp8);
+                                    originalPoint.rotateXYByFacet(origin, rotatedPoint, (unsigned char)temp8);
                                     AIPlayPhaseCommand newCommand(
                                         command->group(), command->type(),
                                         rotatedPoint.xValue,

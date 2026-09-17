@@ -20,9 +20,7 @@ unsigned char RGE_RMM_Land_Generator::generate() {
     clear_stack();
     long width = map_width;
     memset(search_map, info.land_num, width * map_height);
-    map->set_terrain(0, 0, 0, 0,
-                     map_width - 1, map_height - 1,
-                     info.base_terrain, 1, 0);
+    map->set_terrain(0, 0, 0, 0, map_width - 1, map_height - 1, info.base_terrain, 1, 0);
     base_land_generate();
     map->clean_terrain(0, 0, map_width, map_height, info.base_terrain);
     return 1;
@@ -182,9 +180,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                 y1 = this->map_height - 1;
             }
 
-            this->map->set_terrain(
-                0, 0, (short)x0, (short)y0, (short)x1, (short)y1,
-                (uchar)line->terrain_type, 1, 0);
+            this->map->set_terrain(0, 0, (short)x0, (short)y0, (short)x1, (short)y1, (uchar)line->terrain_type, 1, 0);
 
             uchar zone = line->zone;
             long area = (x1 - x0 + 1) * (y1 - y0 + 1);
@@ -201,26 +197,22 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
 
             if (x0 > 0 && y0 <= y1) {
                 for (long row = y0; row <= y1; ++row) {
-                    this->push_stack(*stack_ptr, x0 - 1, row,
-                        (float)index3, 0.0f);
+                    this->push_stack(*stack_ptr, x0 - 1, row, (float)index3, 0.0f);
                 }
             }
             if (y0 > 0 && x0 <= x1) {
                 for (long column = x0; column <= x1; ++column) {
-                    this->push_stack(*stack_ptr, column, y0 - 1,
-                        (float)index3, 0.0f);
+                    this->push_stack(*stack_ptr, column, y0 - 1, (float)index3, 0.0f);
                 }
             }
             if (x1 < max_x && y0 <= y1) {
                 for (long row = y0; row <= y1; ++row) {
-                    this->push_stack(*stack_ptr, x1 + 1, row,
-                        (float)index3, 0.0f);
+                    this->push_stack(*stack_ptr, x1 + 1, row, (float)index3, 0.0f);
                 }
             }
             if (y1 < max_y && x0 <= x1) {
                 for (long column = x0; column <= x1; ++column) {
-                    this->push_stack(*stack_ptr, column, y1 + 1,
-                        (float)index3, 0.0f);
+                    this->push_stack(*stack_ptr, column, y1 + 1, (float)index3, 0.0f);
                 }
             }
 
@@ -244,17 +236,14 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                         done = 0;
 
                         uchar placement_chance = this->chance(x, y, index3);
-                        long random_value = debug_rand(
-                            (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                            299);
+                        long random_value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 299);
                         if (placement_chance >
                             (random_value * 100) / 0x7FFF) {
                             this->search_map_rows[y][x] = 0xFF;
                         } else {
                             RGE_Tile* tile = &this->map_row_offset[y][x];
                             uchar terrain = (uchar)line->terrain_type;
-                            uchar count = this->check_terrain_and_zone(
-                                terrain, (uchar)index3, x, y);
+                            uchar count = this->check_terrain_and_zone(terrain, (uchar)index3, x, y);
 
                             if (this->search_map_rows[y][x] ==
                                     this->info.land_num && count > 0) {
@@ -264,54 +253,42 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                                 if (x > 0 &&
                                     this->search_map_rows[y][x - 1] ==
                                         this->info.land_num) {
-                                    long random_value = debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        312);
+                                    long random_value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 312);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
                                         0xFA;
-                                    this->push_stack(*stack_ptr, x - 1, y,
-                                        0.0f, (float)cost);
+                                    this->push_stack(*stack_ptr, x - 1, y, 0.0f, (float)cost);
                                 }
                                 if (x < max_x &&
                                     this->search_map_rows[y][x + 1] ==
                                         this->info.land_num) {
-                                    long random_value = debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        315);
+                                    long random_value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 315);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
                                         0xFA;
-                                    this->push_stack(*stack_ptr, x + 1, y,
-                                        0.0f, (float)cost);
+                                    this->push_stack(*stack_ptr, x + 1, y, 0.0f, (float)cost);
                                 }
                                 if (y > 0 &&
                                     this->search_map_rows[y - 1][x] ==
                                         this->info.land_num) {
-                                    long random_value = debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        318);
+                                    long random_value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 318);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
                                         0xFA;
-                                    this->push_stack(*stack_ptr, x, y - 1,
-                                        0.0f, (float)cost);
+                                    this->push_stack(*stack_ptr, x, y - 1, 0.0f, (float)cost);
                                 }
                                 if (y < max_y &&
                                     this->search_map_rows[y + 1][x] ==
                                         this->info.land_num) {
-                                    long random_value = debug_rand(
-                                        (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        321);
+                                    long random_value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp", 321);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
                                         0xFA;
-                                    this->push_stack(*stack_ptr, x, y + 1,
-                                        0.0f, (float)cost);
+                                    this->push_stack(*stack_ptr, x, y + 1, 0.0f, (float)cost);
                                 }
                                 *size_ptr = index2 + 1;
                             }

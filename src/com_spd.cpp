@@ -247,14 +247,8 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr() {
 
     frames = this->GetRecommendedBufferFrames();
     granularity = this->GetRecommendedBufferGranularity();
-    sprintf(
-        buf,
-        "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d",
-        frames,
-        granularity,
-        1000 / static_cast<int>(granularity),
-        granularity * frames
-    );
+    sprintf(buf, "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d", frames, granularity,
+            1000 / static_cast<int>(granularity), granularity * frames);
     return buf;
 }
 
@@ -270,15 +264,8 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int PlayerNo) {
     granularity = this->CurrentBufferGranularity;
     frames = this->CurrentBufferFrames;
     hi_lo_info = this->FrameTSLC->GetHiLoInfo(50);
-    sprintf(
-        speedstr,
-        "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s",
-        this->TotalBufferFramesRemaining,
-        frames,
-        granularity,
-        frames * granularity,
-        hi_lo_info
-    );
+    sprintf(speedstr, "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s", this->TotalBufferFramesRemaining, frames, granularity,
+            frames * granularity, hi_lo_info);
     return speedstr;
 }
 
@@ -288,8 +275,7 @@ char* RGE_Communications_Speed::GetMachineSpeedInfo() {
     strcpy(Info, "PlrSpeed> ");
     for (int i = 1; i <= 9; i++) {
         if (Comm->IsPlayerHuman(i)) {
-            sprintf(buf, "P#%1d(fr%d lat%d) ", i,
-                    PlayerAvgFramesMsec[i], PlayerHighLatencyMsec[i]);
+            sprintf(buf, "P#%1d(fr%d lat%d) ", i, PlayerAvgFramesMsec[i], PlayerHighLatencyMsec[i]);
             strcat(Info, buf);
         }
     }

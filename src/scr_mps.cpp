@@ -63,10 +63,8 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     }
     draw_area = rge_base_game->draw_area;
 
-    if (!this->TEasy_Panel::setup(
-            draw_area, 0, setup_file,
-            0xC384 + (rge_base_game->multiplayerGame() != 0),
-            1, 0, 0, 0, 0, 1)) {
+    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file, 0xC384 + (rge_base_game->multiplayerGame() != 0),
+                                  1, 0, 0, 0, 0, 1)) {
         this->error_code = 1;
         return;
     }
@@ -74,48 +72,36 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (!this->create_text(
-            this, &this->title,
-            IDS_SINGLE_PLAYER_GAME_TITLE - (rge_base_game->multiplayerGame() != 0),
-            20, 6, 600, 30, 1, 1, 0, 0)) {
+    if (!this->create_text(this, &this->title, IDS_SINGLE_PLAYER_GAME_TITLE - (rge_base_game->multiplayerGame() != 0),
+                           20, 6, 600, 30, 1, 1, 0, 0)) {
         return;
     }
-    if (!this->create_text(this, &this->playerTitle, IDS_MP_PLAYER_NAME_LABEL,
-                           26, 50, 160, 30, 0, 0, 1, 0)) {
+    if (!this->create_text(this, &this->playerTitle, IDS_MP_PLAYER_NAME_LABEL, 26, 50, 160, 30, 0, 0, 1, 0)) {
         return;
     }
-    if (!this->create_text(this, &this->civTitle, IDS_MP_CIV_LABEL,
-                           189, 50, 160, 30, 0, 0, 1, 0)) {
+    if (!this->create_text(this, &this->civTitle, IDS_MP_CIV_LABEL, 189, 50, 160, 30, 0, 0, 1, 0)) {
         return;
     }
     if (rge_base_game->singlePlayerGame() == 0 && !comm->IsHost()) {
-        if (!this->create_text(this, &this->settingsTitle, IDS_MP_SETTINGS_LABEL,
-                               420, 50, 210, 30, 0, 0, 1, 0)) {
+        if (!this->create_text(this, &this->settingsTitle, IDS_MP_SETTINGS_LABEL, 420, 50, 210, 30, 0, 0, 1, 0)) {
             return;
         }
     }
-    if (!this->create_text(this, &this->colorTitle, IDS_MP_PLAYER_COLOR_LABEL,
-                           240, 50, 100, 30, 0, 0, 1, 0)) {
+    if (!this->create_text(this, &this->colorTitle, IDS_MP_PLAYER_COLOR_LABEL, 240, 50, 100, 30, 0, 0, 1, 0)) {
         return;
     }
-    this->colorTitle->set_alignment(TTextPanel::AlignCenter,
-                                     TTextPanel::AlignRight);
-    if (!this->create_text(this, &this->teamTitle, IDS_MP_TEAM_LABEL,
-                           310, 50, 100, 30, 0, 0, 1, 0)) {
+    this->colorTitle->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignRight);
+    if (!this->create_text(this, &this->teamTitle, IDS_MP_TEAM_LABEL, 310, 50, 100, 30, 0, 0, 1, 0)) {
         return;
     }
-    this->teamTitle->set_alignment(TTextPanel::AlignCenter,
-                                    TTextPanel::AlignRight);
+    this->teamTitle->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignRight);
 
     y = 85;
     for (i = 0; y < 277; ++i, y += 24) {
-        if (!this->create_drop_down(
-                this, &this->playerNameDrop[i],
-                158, 100, 7, y - 1, 158, 24, RGE_FONT_STANDARD)) {
+        if (!this->create_drop_down(this, &this->playerNameDrop[i], 158, 100, 7, y - 1, 158, 24, RGE_FONT_STANDARD)) {
             return;
         }
-        this->playerNameDrop[i]->set_draw_style(
-            TDropDownPanel::DrawStyleLeftButton);
+        this->playerNameDrop[i]->set_draw_style(TDropDownPanel::DrawStyleLeftButton);
         this->playerNameDrop[i]->set_draw_val_rect(0);
         this->playerNameDrop[i]->set_help_info(IDS_HELP_MP_PLAYER_POSITIONS, -1);
         this->playerNameDrop[i]->empty_list();
@@ -128,16 +114,12 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             this->playerNameDrop[i]->append_line(IDS_MP_NONE_LABEL, 0);
         }
 
-        if (!this->create_drop_down(
-                this, &this->playerCivDrop[i],
-                128, 100, 170, y - 1, 128, 24, RGE_FONT_STANDARD)) {
+        if (!this->create_drop_down(this, &this->playerCivDrop[i], 128, 100, 170, y - 1, 128, 24, RGE_FONT_STANDARD)) {
             return;
         }
-        this->playerCivDrop[i]->set_draw_style(
-            TDropDownPanel::DrawStyleLeftButton);
+        this->playerCivDrop[i]->set_draw_style(TDropDownPanel::DrawStyleLeftButton);
         this->playerCivDrop[i]->set_draw_val_rect(0);
-        this->playerCivDrop[i]->set_help_info(IDS_HELP_MP_CIVILIZATION,
-                                               IDS_HELP_MP_CIVILIZATION_MORE);
+        this->playerCivDrop[i]->set_help_info(IDS_HELP_MP_CIVILIZATION, IDS_HELP_MP_CIVILIZATION_MORE);
         this->playerCivDrop[i]->empty_list();
         this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_EGYPTIAN, 1);
         this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_GREEK, 2);
@@ -158,31 +140,23 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         // This empty resource slot has no verified civilization name.
         this->playerCivDrop[i]->append_line(0x280A, 17);
 
-        if (!this->create_drop_down(
-                this, &this->scenarioPlayerDrop[i],
-                40, 100, 324, y - 1, 40, 24, RGE_FONT_STANDARD)) {
+        if (!this->create_drop_down(this, &this->scenarioPlayerDrop[i], 40, 100, 324, y - 1, 40, 24, RGE_FONT_STANDARD)) {
             return;
         }
-        this->scenarioPlayerDrop[i]->set_draw_style(
-            TDropDownPanel::DrawStyleLeftButton);
+        this->scenarioPlayerDrop[i]->set_draw_style(TDropDownPanel::DrawStyleLeftButton);
         this->scenarioPlayerDrop[i]->set_draw_val_rect(0);
         this->scenarioPlayerDrop[i]->set_help_info(IDS_HELP_MP_SCENARIO_PLAYER, -1);
 
-        if (!this->create_button(
-                this, &this->playerColor[i], "", 0,
-                310, y, 30, 20, RGE_FONT_STANDARD, 0, 1)) {
+        if (!this->create_button(this, &this->playerColor[i], "", 0, 310, y, 30, 20, RGE_FONT_STANDARD, 0, 1)) {
             return;
         }
         this->playerColor[i]->set_help_info(IDS_HELP_MP_PLAYER_COLOR, -1);
-        if (!this->create_text(
-                this, &this->playerColorText[i], "",
-                305, y, 40, 22, RGE_FONT_STANDARD, 1, 1, 0)) {
+        if (!this->create_text(this, &this->playerColorText[i], "", 305, y, 40, 22, RGE_FONT_STANDARD, 1, 1, 0)) {
             return;
         }
 
-        if (!this->create_button(
-                this, &this->playerTeam[i], IDS_MULTIPLAYER_STATUS_SEPARATOR, 0,
-                380, y, 30, 20, RGE_FONT_STANDARD, 0, 1)) {
+        if (!this->create_button(this, &this->playerTeam[i], IDS_MULTIPLAYER_STATUS_SEPARATOR, 0,
+                                 380, y, 30, 20, RGE_FONT_STANDARD, 0, 1)) {
             return;
         }
         this->playerTeam[i]->set_help_info(IDS_HELP_MP_TEAM, -1);
@@ -193,101 +167,70 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             this->playerTeam[i]->set_id((short)state, state + 1, 0);
         }
 
-        if (!this->create_text(
-                this, &this->playerTeamText[i], "",
-                375, y, 40, 22, RGE_FONT_STANDARD, 1, 1, 0)) {
+        if (!this->create_text(this, &this->playerTeamText[i], "", 375, y, 40, 22, RGE_FONT_STANDARD, 1, 1, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->playerNameText[i], "",
-                28, y + 2, 139, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
+        if (!this->create_text(this, &this->playerNameText[i], "", 28, y + 2, 139, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->playerCivText[i], "",
-                191, y + 2, 109, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
+        if (!this->create_text(this, &this->playerCivText[i], "", 191, y + 2, 109, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->scenarioPlayerText[i], "",
-                345, y + 2, 40, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
+        if (!this->create_text(this, &this->scenarioPlayerText[i], "", 345, y + 2, 40, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->playerCDText[i], IDS_CD_LABEL,
-                337, y + 3, 20, 22, 6, 0, 0, 0)) {
+        if (!this->create_text(this, &this->playerCDText[i], IDS_CD_LABEL, 337, y + 3, 20, 22, 6, 0, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->playerVersionText[i], "",
-                353, y + 3, 29, 22, 6, 0, 0, 0)) {
+        if (!this->create_text(this, &this->playerVersionText[i], "", 353, y + 3, 29, 22, 6, 0, 0, 0)) {
             return;
         }
         this->playerCDText[i]->set_active(0);
     }
 
     if (rge_base_game->singlePlayerGame() != 0 || comm->IsHost()) {
-        if (!this->create_button(
-                this, &this->gameSettingsButton, IDS_MP_SETTINGS_LABEL, 0,
-                420, 50, 210, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->gameSettingsButton, IDS_MP_SETTINGS_LABEL, 0, 420, 50, 210, 30, 0, 0, 0)) {
             return;
         }
         this->gameSettingsButton->set_help_info(IDS_HELP_MP_SETTINGS, -1);
     }
 
-    if (!this->create_text(this, &this->scenarioName, "",
-                           420, 84, 220, 68,
-                           RGE_FONT_STANDARD, 0, 0, 1)) {
+    if (!this->create_text(this, &this->scenarioName, "", 420, 84, 220, 68, RGE_FONT_STANDARD, 0, 0, 1)) {
         return;
     }
     y = 83;
     for (i = 0; y < 563; ++i, y += 24) {
-        if (!this->create_text(this, &this->settingText[i], "",
-                               420, y, 220, 20,
-                               RGE_FONT_STANDARD, 0, 0, 0)) {
+        if (!this->create_text(this, &this->settingText[i], "", 420, y, 220, 20, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
     }
 
     if (rge_base_game->multiplayerGame() != 0) {
-        if (!this->create_text(this, &this->chatTitle, IDS_MP_CHAT_LABEL,
-                               10, 280, 100, 20,
-                               4, 0, 1, 0)) {
+        if (!this->create_text(this, &this->chatTitle, IDS_MP_CHAT_LABEL, 10, 280, 100, 20, 4, 0, 1, 0)) {
             return;
         }
-        if (!this->create_text(this, &this->chatBox, "",
-                               10, 300, 400, 96,
-                               10, 0, 0, 0)) {
+        if (!this->create_text(this, &this->chatBox, "", 10, 300, 400, 96, 10, 0, 0, 0)) {
             return;
         }
-        if (!this->create_auto_scrollbar(
-                &this->chatScrollbar, this->chatBox, 20)) {
+        if (!this->create_auto_scrollbar(&this->chatScrollbar, this->chatBox, 20)) {
             return;
         }
-        if (!this->create_edit(
-                this, &this->chatInput, "", 247,
-                TEditPanel::FormatText, 10, 402, 400, 23,
-                10, 1, 0)) {
+        if (!this->create_edit(this, &this->chatInput, "", 247, TEditPanel::FormatText, 10, 402, 400, 23, 10, 1, 0)) {
             return;
         }
         this->chatInput->set_help_info(IDS_HELP_MP_CHAT_INPUT, -1);
-        this->chatBox->set_bevel_info(
-            3, this->bevel_color1, this->bevel_color2,
-            this->bevel_color3, this->bevel_color4,
-            this->bevel_color5, this->bevel_color6);
+        this->chatBox->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                                      this->bevel_color5, this->bevel_color6);
         this->chatBox->set_help_info(IDS_HELP_MP_CHAT_BOX, -1);
         this->chatBox->empty_list();
     }
 
     if (rge_base_game->singlePlayerGame() != 0) {
-        if (!this->create_text(
-                this, &this->numberPlayersTitle, IDS_MP_NUMBER_PLAYERS_LABEL,
-                26, 295, 335, 20, 0, 0, 1, 0)) {
+        if (!this->create_text(this, &this->numberPlayersTitle, IDS_MP_NUMBER_PLAYERS_LABEL,
+                               26, 295, 335, 20, 0, 0, 1, 0)) {
             return;
         }
-        if (!this->create_drop_down(
-                this, &this->numberPlayersDrop,
-                70, 100, 31, 322, 70, 24, RGE_FONT_STANDARD)) {
+        if (!this->create_drop_down(this, &this->numberPlayersDrop, 70, 100, 31, 322, 70, 24, RGE_FONT_STANDARD)) {
             return;
         }
         this->numberPlayersDrop->set_help_info(IDS_HELP_MP_PLAYER_COUNT, -1);
@@ -295,87 +238,61 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     this->i_am_ready = 0;
     if (rge_base_game->singlePlayerGame() != 0) {
-        if (!this->create_button(
-                this, &this->startButton, "", 0,
-                70, 440, 240, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->startButton, "", 0, 70, 440, 240, 30, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, IDS_START_GAME);
         this->startButton->set_help_info(IDS_HELP_MP_START, -1);
         this->set_curr_child(this->startButton);
-        if (!this->create_button(
-                this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                330, 440, 240, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 330, 440, 240, 30, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
     } else if (comm->IsHost()) {
-        if (!this->create_check_box(
-                this, &this->ready_button,
-                10, 440, 30, 30, 0, 0)) {
+        if (!this->create_check_box(this, &this->ready_button, 10, 440, 30, 30, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->ready_button_label, IDS_MP_READY_LABEL,
-                45, 440, 150, 30, 0, 0, 1, 0)) {
+        if (!this->create_text(this, &this->ready_button_label, IDS_MP_READY_LABEL, 45, 440, 150, 30, 0, 0, 1, 0)) {
             return;
         }
         this->ready_button->set_help_info(IDS_HELP_MP_READY, -1);
-        if (!this->create_button(
-                this, &this->startButton, "", 0,
-                195, 440, 200, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->startButton, "", 0, 195, 440, 200, 30, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, IDS_START_GAME);
         this->startButton->set_help_info(IDS_HELP_MP_START, -1);
         this->startButton->set_disabled(1);
-        if (!this->create_button(
-                this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                405, 440, 180, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 405, 440, 180, 30, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
-        if (!this->create_button(
-                this, &this->netInfoButton, IDS_IP_LABEL, 0,
-                600, 400, 30, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->netInfoButton, IDS_IP_LABEL, 0, 600, 400, 30, 30, 0, 0, 0)) {
             return;
         }
         this->netInfoButton->set_help_info(IDS_HELP_MP_NETWORK_INFO, -1);
         comm->SetMyReadiness(0, 0, 0, 0, 0, 0, 0, 0);
     } else {
-        if (!this->create_check_box(
-                this, &this->ready_button,
-                100, 440, 30, 30, 0, 0)) {
+        if (!this->create_check_box(this, &this->ready_button, 100, 440, 30, 30, 0, 0)) {
             return;
         }
-        if (!this->create_text(
-                this, &this->ready_button_label, IDS_MP_READY_LABEL,
-                135, 440, 150, 30, 0, 0, 1, 0)) {
+        if (!this->create_text(this, &this->ready_button_label, IDS_MP_READY_LABEL, 135, 440, 150, 30, 0, 0, 1, 0)) {
             return;
         }
         this->ready_button->set_help_info(IDS_HELP_MP_READY, -1);
-        if (!this->create_button(
-                this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
-                330, 440, 240, 30, 0, 0, 0)) {
+        if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 330, 440, 240, 30, 0, 0, 0)) {
             return;
         }
         this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
     }
 
-    if (!this->create_button(
-            this, &this->help_button, IDS_BUTTON_HELP, 0,
-            600, 440, 30, 30, 0, 0, 0)) {
+    if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP, 0, 600, 440, 30, 30, 0, 0, 0)) {
         return;
     }
-    if (!this->create_button(
-            this, &this->close_button, IDS_BUTTON_CLOSE, 0,
-            0, 0, 0, 0, -1, -1, 0)) {
+    if (!this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0)) {
         return;
     }
     this->close_button->set_active(1);
-    this->close_button->set_positioning(
-        TPanel::PositionRightTop, 4, 4, 4, 4,
-        17, 17, 17, 17, 0, 0, 0, 0);
+    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
 
     TButtonPanel* cancel = this->cancelButton;
     cancel->hotkey = 0x1B;
@@ -481,12 +398,9 @@ void TribeMPSetupScreen::init_vars() {
         rge_base_game->setSavedGame(0);
         rge_base_game->setScenarioGame(0);
         rge_base_game->setScenarioName("");
-        static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(
-            static_cast<TRIBE_Game::MapSize>(3));
-        static_cast<TRIBE_Game*>(rge_base_game)->setMapType(
-            static_cast<TRIBE_Game::MapType>(3));
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
-            static_cast<TRIBE_Game::VictoryType>(0), 0);
+        static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(3));
+        static_cast<TRIBE_Game*>(rge_base_game)->setMapType(static_cast<TRIBE_Game::MapType>(3));
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(0), 0);
         static_cast<TRIBE_Game*>(rge_base_game)->setAnimals(1);
         static_cast<TRIBE_Game*>(rge_base_game)->setPredators(1);
         rge_base_game->setNumberPlayers(8);
@@ -497,31 +411,23 @@ void TribeMPSetupScreen::init_vars() {
         static_cast<TRIBE_Game*>(rge_base_game)->setLongCombat(0);
         static_cast<TRIBE_Game*>(rge_base_game)->setAllowTrading(1);
         static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(0);
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(
-            static_cast<TRIBE_Game::ResourceLevel>(0));
-        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(
-            static_cast<TRIBE_Game::Age>(0));
+        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(0));
+        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(0));
         static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
-        rge_base_game->setDifficulty(
-            rge_base_game->get_single_player_difficulty());
+        rge_base_game->setDifficulty(rge_base_game->get_single_player_difficulty());
         static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
         static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
-        unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579);
         debug_srand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579, now);
 
         for (i = 0; i < 8; ++i) {
             this->defaultColor[i] = static_cast<unsigned char>(i + 1);
-            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                i,
-                debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) %
-                        16 +
-                    1);
+            static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i,
+                                                                     debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) % 16 + 1);
             static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, i);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerHasCD(i, 0);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerVersion(i, 0);
-            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                i, this->defaultColor[i]);
+            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerTeam(i, 1);
             static_cast<TRIBE_Game*>(rge_base_game)->setComputerName(i, 0);
         }
@@ -534,10 +440,8 @@ void TribeMPSetupScreen::init_vars() {
         }
     } else {
         if (rge_base_game->scenarioGame() == 0) {
-            static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(
-                static_cast<TRIBE_Game::MapSize>(3));
-            int random_map = debug_rand(
-                                  "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 618) %
+            static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(3));
+            int random_map = debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 618) %
                               10;
             int map_type;
             if (random_map < 2) {
@@ -557,11 +461,9 @@ void TribeMPSetupScreen::init_vars() {
             } else {
                 map_type = (random_map == 8) ? 8 : 0;
             }
-            static_cast<TRIBE_Game*>(rge_base_game)->setMapType(
-                static_cast<TRIBE_Game::MapType>(map_type));
+            static_cast<TRIBE_Game*>(rge_base_game)->setMapType(static_cast<TRIBE_Game::MapType>(map_type));
         }
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
-            static_cast<TRIBE_Game::VictoryType>(0), 0);
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(0), 0);
         rge_base_game->setNumberPlayers(4);
         rge_base_game->setCampaignGame(0);
         rge_base_game->setSavedGame(0);
@@ -574,13 +476,10 @@ void TribeMPSetupScreen::init_vars() {
         static_cast<TRIBE_Game*>(rge_base_game)->setLongCombat(0);
         static_cast<TRIBE_Game*>(rge_base_game)->setAllowTrading(1);
         static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(0);
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(
-            static_cast<TRIBE_Game::ResourceLevel>(0));
-        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(
-            static_cast<TRIBE_Game::Age>(0));
+        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(0));
+        static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(0));
         static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
-        rge_base_game->setDifficulty(
-            rge_base_game->get_single_player_difficulty());
+        rge_base_game->setDifficulty(rge_base_game->get_single_player_difficulty());
         static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
     }
 }
@@ -665,15 +564,12 @@ long TribeMPSetupScreen::handle_idle() {
     }
     if (rge_base_game->multiplayerGame()) {
         if (last_send_shared == 0) {
-            last_send_shared = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 766);
+            last_send_shared = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 766);
         } else {
-            unsigned long t = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 769);
+            unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 769);
             if (t - last_send_shared != 0) {
                 comm->SendSharedData(0);
-                last_send_shared = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 772);
+                last_send_shared = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 772);
             }
         }
     }
@@ -725,14 +621,11 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                         struct _finddata_t file_info;
                         char* scenario_dir =
                             rge_base_game->prog_info->scenario_dir;
-                        sprintf(file_name, "%s%s.scn", scenario_dir,
-                                rge_base_game->scenarioName());
+                        sprintf(file_name, "%s%s.scn", scenario_dir, rge_base_game->scenarioName());
                         if (_findfirst(file_name, &file_info) == -1) {
-                            sprintf(file_name, "%s.scx",
-                                    rge_base_game->scenarioName());
+                            sprintf(file_name, "%s.scx", rge_base_game->scenarioName());
                         } else {
-                            sprintf(file_name, "%s.scn",
-                                    rge_base_game->scenarioName());
+                            sprintf(file_name, "%s.scn", rge_base_game->scenarioName());
                         }
                         this->myScenarioChecksum =
                             rge_base_game->get_scenario_checksum(file_name);
@@ -740,12 +633,9 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                         this->myScenarioChecksum = 0;
                     }
 
-                    comm->SetMyReadiness(
-                        1, this->myCivilization,
-                        this->myScenarioPlayer + 1,
-                        rge_base_game->check_for_cd(0) + 1,
-                        this->myPlayerColor, this->myPlayerTeam,
-                        this->myScenarioChecksum, 1);
+                    comm->SetMyReadiness(1, this->myCivilization, this->myScenarioPlayer + 1,
+                                         rge_base_game->check_for_cd(0) + 1, this->myPlayerColor, this->myPlayerTeam,
+                                         this->myScenarioChecksum, 1);
                 }
 
                 if (this->chatInput != 0 && this->chatInput->active != 0) {
@@ -817,8 +707,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
             for (int i = 0; i < 8; ++i) {
                 if (fromPanel == this->playerColor[i]) {
                     int color = this->playerColor[i]->get_id();
-                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                        i, color);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, color);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
                         this->myPlayerColor =
                             this->playerColor[i]->get_id();
@@ -847,8 +736,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
         }
 
         if (fromPanel == this->numberPlayersDrop && actionIn == 0) {
-            rge_base_game->setNumberPlayers(
-                this->numberPlayersDrop->get_id());
+            rge_base_game->setNumberPlayers(this->numberPlayersDrop->get_id());
             this->updateSummary();
             return 1;
         }
@@ -870,9 +758,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
             strcmp(fromPanel->panelName(), "Kick Dialog") == 0) {
             if (actionIn == 0) {
                 PLAYERHUMANITY humanity =
-                    static_cast<PLAYERHUMANITY>(
-                        this->playerNameDrop[this->playerToKick - 1]
-                            ->get_id());
+                    static_cast<PLAYERHUMANITY>(this->playerNameDrop[this->playerToKick - 1] ->get_id());
                 comm->Kick(this->playerToKick);
                 comm->SetPlayerHumanity(this->playerToKick, humanity);
                 long line =
@@ -895,18 +781,14 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                         comm->IsPlayerHuman(i + 1)) {
                         this->kickPlayer(i + 1);
                     } else {
-                        comm->SetPlayerHumanity(
-                            i + 1,
-                            static_cast<PLAYERHUMANITY>(
-                                this->playerNameDrop[i]->get_id()));
+                        comm->SetPlayerHumanity(i + 1, static_cast<PLAYERHUMANITY>(this->playerNameDrop[i]->get_id()));
                     }
                     return 1;
                 }
 
                 if (fromPanel == this->playerCivDrop[i]) {
                     int civilization = this->playerCivDrop[i]->get_id();
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                        i, civilization);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization);
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
                         this->myCivilization =
                             this->playerCivDrop[i]->get_id();
@@ -1290,8 +1172,7 @@ void TribeMPSetupScreen::showNetInfo() {
                 }
                 strcat(message, "\n");
             }
-            this->TEasy_Panel::popupOKDialog(
-                message, "OKDialog", TEASY_POPUP_WIDTH, num_addr * 18 + 100);
+            this->TEasy_Panel::popupOKDialog(message, "OKDialog", TEASY_POPUP_WIDTH, num_addr * 18 + 100);
         } else {
             this->TEasy_Panel::popupOKDialog(IDS_NO_IP_INFO_ERROR, 0, TEASY_POPUP_WIDTH, 100);
         }
@@ -1348,8 +1229,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
 
     switch (wParam) {
     case COMM_SHARED_DATA_SENT: {
-        L->Log("$$$ USER_COMMAND: COMM_SHARED_DATA_SENT (%d,%d)", wParam,
-               lParam);
+        L->Log("$$$ USER_COMMAND: COMM_SHARED_DATA_SENT (%d,%d)", wParam, lParam);
         if (comm->IsHost()) {
             for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
                 int civilization =
@@ -1358,8 +1238,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                     L->Log("$$$ HOST RESET CIV+50");
                     civilization =
                         static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                        i, civilization - 0x32);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization - 0x32);
                     this->resend_game_options = 1;
                 }
 
@@ -1376,8 +1255,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
     }
 
     case COMM_UPDATE_PLAYERS: {
-        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PLAYERS (%d,%d)", wParam,
-               lParam);
+        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PLAYERS (%d,%d)", wParam, lParam);
         int changed = 0;
 
         if (comm->IsHost() && this->sent_cd_status == 0) {
@@ -1407,17 +1285,11 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                     unsigned long checksum;
                     unsigned long user2;
 
-                    comm->GetClientReadiness(
-                        player, &ready, &user3, &user6,
-                        &user7, &user1, &user4, &checksum, &user2);
+                    comm->GetClientReadiness(player, &ready, &user3, &user6, &user7, &user1, &user4, &checksum, &user2);
 
                     if (user3 != 0 &&
-                        user3 != static_cast<unsigned long>(
-                                            static_cast<TRIBE_Game*>(
-                                                rge_base_game)
-                                                ->civilization(i))) {
-                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                            i, user3);
+                        user3 != static_cast<unsigned long>(static_cast<TRIBE_Game*>(rge_base_game) ->civilization(i))) {
+                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, user3);
                         changed = 1;
                     }
                     if (user6 != 0) {
@@ -1442,16 +1314,12 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                         }
                     }
                     if (user1 != 0 &&
-                        user1 != static_cast<unsigned long>(
-                                    static_cast<TRIBE_Game*>(rge_base_game)
-                                        ->playerColor(i))) {
-                        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                            i, user1);
+                        user1 != static_cast<unsigned long>(static_cast<TRIBE_Game*>(rge_base_game) ->playerColor(i))) {
+                        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, user1);
                         changed = 1;
                     }
                     if (user4 != 0 &&
-                        user4 != static_cast<unsigned long>(
-                                    rge_base_game->playerTeam(i))) {
+                        user4 != static_cast<unsigned long>(rge_base_game->playerTeam(i))) {
                         rge_base_game->setPlayerTeam(i, user4);
                         changed = 1;
                     }
@@ -1459,8 +1327,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                         *scenario_checksum = checksum;
                     }
                     if (user2 != 0) {
-                        rge_base_game->setPlayerVersion(
-                            i, static_cast<unsigned char>(user2));
+                        rge_base_game->setPlayerVersion(i, static_cast<unsigned char>(user2));
                         changed = 1;
                     }
                     continue;
@@ -1471,20 +1338,17 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                 }
 
                 int civilization =
-                    debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp",
-                               1750) %
+                    debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 1750) %
                         16 +
                     1;
                 if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) !=
                     civilization) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                        i, civilization);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization);
                     changed = 1;
                 }
                 if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(i) !=
                     i) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
-                        i, i);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, i);
                     changed = 1;
                 }
                 if (rge_base_game->playerHasCD(i) != 0) {
@@ -1493,8 +1357,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                 }
                 if (static_cast<TRIBE_Game*>(rge_base_game)->playerColor(i) !=
                     this->defaultColor[i]) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                        i, this->defaultColor[i]);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(i, this->defaultColor[i]);
                     changed = 1;
                 }
                 if (rge_base_game->playerTeam(i) != 1) {
@@ -1520,8 +1383,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
     }
 
     case COMM_UPDATE_PARAMS: {
-        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PARAMS (%d,%d)", wParam,
-               lParam);
+        L->Log("$$$ USER_COMMAND: COMM_UPDATE_PARAMS (%d,%d)", wParam, lParam);
         rge_base_game->receive_game_options();
         for (int i = 0; i < rge_base_game->numberPlayers(); ++i) {
             int civilization =
@@ -1530,8 +1392,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
                 L->Log("$$$ CIV2>50");
                 civilization =
                     static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
-                static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                    i, civilization - 0x32);
+                static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, civilization - 0x32);
                 if (i + 1 == comm->WhoAmI()) {
                     this->myCivilization = 0;
                     L->Log("$$$ RESETTING MYCIV2");
@@ -1565,17 +1426,14 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
 
             this->sent_cd_status = 1;
             this->saveScenarioChecksum = this->myScenarioChecksum;
-            comm->SetMyReadiness(
-                this->i_am_ready, 0, 0,
-                rge_base_game->check_for_cd(0) + 1, 0, 0,
-                this->myScenarioChecksum, 1);
+            comm->SetMyReadiness(this->i_am_ready, 0, 0, rge_base_game->check_for_cd(0) + 1, 0, 0,
+                                 this->myScenarioChecksum, 1);
         }
         return 1;
     }
 
     case COMM_LAUNCH_GAME:
-        L->Log("$$$ USER_COMMAND: COMM_LAUNCH_GAME (%d,%d)", wParam,
-               lParam);
+        L->Log("$$$ USER_COMMAND: COMM_LAUNCH_GAME (%d,%d)", wParam, lParam);
         chat->setWindowHandle(AppWnd);
         comm->SetWindowHandle(AppWnd);
         static_cast<TRIBE_Game*>(rge_base_game)->start_game(0);
@@ -1592,8 +1450,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
         return 1;
 
     case COMM_PLAYER_KICKED:
-        L->Log("$$$ USER_COMMAND: COMM_PLAYER_KICKED (%d,%d)", wParam,
-               lParam);
+        L->Log("$$$ USER_COMMAND: COMM_PLAYER_KICKED (%d,%d)", wParam, lParam);
         this->handleKickedPlayer(1);
         return 1;
 
@@ -1603,29 +1460,24 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
         return 1;
 
     case COMM_PLAYER_DROPPED:
-        L->Log("$$$ USER_COMMAND: COMM_PLAYER_DROPPED (%d,%d)", wParam,
-               lParam);
+        L->Log("$$$ USER_COMMAND: COMM_PLAYER_DROPPED (%d,%d)", wParam, lParam);
         this->handleKickedPlayer(1);
         return 1;
 
     case COMM_OTHER_PLAYER_DROPPED:
-        L->Log("$$$ USER_COMMAND: COMM_OTHER_PLAYER_DROPPED (%d,%d)",
-               wParam, lParam);
+        L->Log("$$$ USER_COMMAND: COMM_OTHER_PLAYER_DROPPED (%d,%d)", wParam, lParam);
         this->fillPlayers();
         return 1;
 
     case COMM_PLAYER_BAD_VERSION:
         L->Log("$$$ USER_COMMAND: COMM_BAD_VERSION (%d,%d)", wParam, lParam);
-        sprintf(message, this->get_string(IDS_GAME_VERSION_MISMATCH),
-                comm->GetPlayerName(lParam));
+        sprintf(message, this->get_string(IDS_GAME_VERSION_MISMATCH), comm->GetPlayerName(lParam));
         this->popupOKDialog(message, 0, TEASY_POPUP_WIDTH, 100);
         return 1;
 
     case COMM_PLAYER_SERVICE_ERROR:
-        L->Log("$$$ USER_COMMAND: COMM_PLAYER_SERVICE_ERROR (%d,%d)", wParam,
-               lParam);
-        sprintf(message, this->get_string(IDS_CONNECTION_TYPE_MISMATCH),
-                comm->GetPlayerName(lParam));
+        L->Log("$$$ USER_COMMAND: COMM_PLAYER_SERVICE_ERROR (%d,%d)", wParam, lParam);
+        sprintf(message, this->get_string(IDS_CONNECTION_TYPE_MISMATCH), comm->GetPlayerName(lParam));
         this->popupOKDialog(message, 0, TEASY_POPUP_WIDTH, 100);
         return 1;
 
@@ -1747,10 +1599,8 @@ void TribeMPSetupScreen::fillPlayers() {
             char* text2;
             unsigned long color1;
             unsigned long color2;
-            this->playerColor[i]->get_text(static_cast<short>(state),
-                                           &text1, &text2);
-            this->playerColor[i]->get_text_color(static_cast<short>(state),
-                                                 &color1, &color2);
+            this->playerColor[i]->get_text(static_cast<short>(state), &text1, &text2);
+            this->playerColor[i]->get_text_color(static_cast<short>(state), &color1, &color2);
             this->playerColorText[i]->set_text(text1);
             this->playerColorText[i]->set_text_color(color1, color2);
             this->playerColor[i]->set_active(0);
@@ -1765,8 +1615,7 @@ void TribeMPSetupScreen::fillPlayers() {
             }
 
             if (is_me == 1 && this->myPlayerTeam != 0) {
-                this->playerTeam[i]->set_state(
-                    static_cast<short>(this->myPlayerTeam - 1));
+                this->playerTeam[i]->set_state(static_cast<short>(this->myPlayerTeam - 1));
             } else {
                 int team = rge_base_game->playerTeam(i);
                 if (team >= 0x32) {
@@ -1776,8 +1625,7 @@ void TribeMPSetupScreen::fillPlayers() {
             }
 
             state = this->playerTeam[i]->get_state();
-            this->playerTeam[i]->get_text(static_cast<short>(state),
-                                          &text1, &text2);
+            this->playerTeam[i]->get_text(static_cast<short>(state), &text1, &text2);
             this->playerTeamText[i]->set_text(text1);
             this->playerTeam[i]->set_active(0);
             this->playerTeamText[i]->set_active(0);
@@ -1822,27 +1670,23 @@ void TribeMPSetupScreen::fillPlayers() {
 
             if (this->playerCivDrop[i]->mode != 2) {
                 if (is_me == 1 && this->myCivilization != 0) {
-                    this->playerCivDrop[i]->set_line(
-                        this->playerCivDrop[i]->get_line(this->myCivilization));
+                    this->playerCivDrop[i]->set_line(this->playerCivDrop[i]->get_line(this->myCivilization));
                 } else {
                     int civ = static_cast<TRIBE_Game*>(rge_base_game)->civilization(i);
                     if (civ >= 0x32) {
                         civ -= 0x32;
                     }
-                    this->playerCivDrop[i]->set_line(
-                        this->playerCivDrop[i]->get_line(civ));
+                    this->playerCivDrop[i]->set_line(this->playerCivDrop[i]->get_line(civ));
                 }
             }
             this->playerCivText[i]->set_text(this->playerCivDrop[i]->get_text());
 
             if (this->scenarioPlayerDrop[i]->mode != 2) {
                 if (is_me == 1 && this->myScenarioPlayer != -1) {
-                    this->scenarioPlayerDrop[i]->set_line(
-                        this->scenarioPlayerDrop[i]->get_line(this->myScenarioPlayer));
+                    this->scenarioPlayerDrop[i]->set_line(this->scenarioPlayerDrop[i]->get_line(this->myScenarioPlayer));
                 } else {
                     int scenario_player = static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(i);
-                    this->scenarioPlayerDrop[i]->set_line(
-                        this->scenarioPlayerDrop[i]->get_line(scenario_player));
+                    this->scenarioPlayerDrop[i]->set_line(this->scenarioPlayerDrop[i]->get_line(scenario_player));
                 }
             }
             this->scenarioPlayerText[i]->set_text(this->scenarioPlayerDrop[i]->get_text());
@@ -1951,16 +1795,13 @@ void TribeMPSetupScreen::updateSummary() {
             sprintf(str1, "%s%s.scn", scenario_dir, scenario_name);
             long handle = _findfirst(str1, &file_scratch.file_info);
             if (handle == -1) {
-                sprintf(str1, "%s.scx",
-                        rge_base_game->scenarioName());
+                sprintf(str1, "%s.scx", rge_base_game->scenarioName());
             } else {
-                sprintf(str1, "%s.scn",
-                        rge_base_game->scenarioName());
+                sprintf(str1, "%s.scn", rge_base_game->scenarioName());
             }
 
             if (str1[0] != '.') {
-                this->scenarioInfo = static_cast<T_Scenario*>(
-                    rge_base_game->get_scenario_info(str1, 0));
+                this->scenarioInfo = static_cast<T_Scenario*>(rge_base_game->get_scenario_info(str1, 0));
             }
 
             if (this->scenarioInfo == 0) {
@@ -1984,8 +1825,7 @@ void TribeMPSetupScreen::updateSummary() {
                              this->scenarioInfo->Get_player_Type(player_index) == 1)) {
                             ++this->numberAnyPlayers;
                             for (int append_index = 0; append_index < 8; ++append_index) {
-                                this->scenarioPlayerDrop[append_index]->append_line(
-                                    str2, player_index);
+                                this->scenarioPlayerDrop[append_index]->append_line(str2, player_index);
                             }
                         }
                     }
@@ -2003,8 +1843,7 @@ void TribeMPSetupScreen::updateSummary() {
                     this->defaultColor[color_index] =
                         static_cast<unsigned char>(player + 1);
                     static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(color_index, player);
-                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                        color_index, this->defaultColor[color_index]);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(color_index, this->defaultColor[color_index]);
                     rge_base_game->setPlayerTeam(color_index, 1);
                 }
             }
@@ -2022,14 +1861,12 @@ void TribeMPSetupScreen::updateSummary() {
                 this->defaultColor[random_index] =
                     static_cast<unsigned char>(random_index + 1);
                 static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(random_index, random_index);
-                static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                    random_index, this->defaultColor[random_index]);
+                static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(random_index, this->defaultColor[random_index]);
                 rge_base_game->setPlayerTeam(random_index, 1);
                 sprintf(str2, "%d", random_index + 1);
                 for (int random_append_index = 0; random_append_index < 8;
                      ++random_append_index) {
-                    this->scenarioPlayerDrop[random_append_index]->append_line(
-                        str2, random_index);
+                    this->scenarioPlayerDrop[random_append_index]->append_line(str2, random_index);
                 }
             }
         }
@@ -2055,14 +1892,11 @@ void TribeMPSetupScreen::updateSummary() {
             sprintf(file_scratch.file_name, "%s%s.scn", scenario_dir, scenario_name);
             long handle = _findfirst(file_scratch.file_name, &file_info);
             if (handle == -1) {
-                sprintf(file_scratch.file_name, "%s.scx",
-                        rge_base_game->scenarioName());
+                sprintf(file_scratch.file_name, "%s.scx", rge_base_game->scenarioName());
             } else {
-                sprintf(file_scratch.file_name, "%s.scn",
-                        rge_base_game->scenarioName());
+                sprintf(file_scratch.file_name, "%s.scn", rge_base_game->scenarioName());
             }
-            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(
-                file_scratch.file_name);
+            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_scratch.file_name);
         } else {
             this->myScenarioChecksum = 0;
         }
@@ -2074,8 +1908,7 @@ void TribeMPSetupScreen::updateSummary() {
     }
 
     if (rge_base_game->scenarioGame()) {
-        sprintf(str2, this->get_string(IDS_SCENARIO_FORMAT),
-                rge_base_game->scenarioName());
+        sprintf(str2, this->get_string(IDS_SCENARIO_FORMAT), rge_base_game->scenarioName());
         this->scenarioName->set_text(str2);
         setting = 3;
     } else {
@@ -2122,11 +1955,9 @@ void TribeMPSetupScreen::updateSummary() {
 
     if (rge_base_game->scenarioGame()) {
         if (this->settingsFixed == 0 && this->scenarioPlayerCount != 2) {
-        sprintf(str2, "%s %d - %d", this->get_string(IDS_PLAYERS_LABEL),
-                    2, this->scenarioPlayerCount);
+        sprintf(str2, "%s %d - %d", this->get_string(IDS_PLAYERS_LABEL), 2, this->scenarioPlayerCount);
         } else {
-            sprintf(str2, "%s %d", this->get_string(IDS_PLAYERS_LABEL),
-                    this->scenarioPlayerCount);
+            sprintf(str2, "%s %d", this->get_string(IDS_PLAYERS_LABEL), this->scenarioPlayerCount);
         }
     } else {
         sprintf(str2, "%s 2 - 8", this->get_string(IDS_PLAYERS_LABEL));
@@ -2244,16 +2075,14 @@ void TribeMPSetupScreen::updateSummary() {
         this->get_string(static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() + IDS_PATH_FINDING_OPTION_BASE,
                          str1, 256);
     } else {
-        this->get_string(rge_base_game->pathFinding() + IDS_PATH_FINDING_OPTION_BASE,
-                         str1, 256);
+        this->get_string(rge_base_game->pathFinding() + IDS_PATH_FINDING_OPTION_BASE, str1, 256);
     }
     sprintf(str2, this->get_string(IDS_PATH_FINDING_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
-    sprintf(str2, this->get_string(IDS_POPULATION_LIMIT_FORMAT),
-            static_cast<TRIBE_Game*>(rge_base_game)->popLimit());
+    sprintf(str2, this->get_string(IDS_POPULATION_LIMIT_FORMAT), static_cast<TRIBE_Game*>(rge_base_game)->popLimit());
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
 
@@ -2278,8 +2107,7 @@ void TribeMPSetupScreen::kickPlayer(int p) {
 
     this->playerToKick = p;
     sprintf(text, this->get_string(IDS_KICK_PLAYER_PROMPT), comm->GetPlayerName(p));
-    this->popupYesNoDialog(text, "Kick Dialog", TEASY_POPUP_WIDTH,
-                           TEASY_POPUP_HEIGHT);
+    this->popupYesNoDialog(text, "Kick Dialog", TEASY_POPUP_WIDTH, TEASY_POPUP_HEIGHT);
 }
 
 
@@ -2287,11 +2115,9 @@ void TribeMPSetupScreen::kickPlayer(int p) {
 
 void TribeMPSetupScreen::handleKickedPlayer(int really_kicked) {
     this->cancelScreen(0);
-    TEasy_Panel* panel = static_cast<TEasy_Panel*>(
-        panel_system.currentPanel());
+    TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
     if (panel != 0) {
-        panel->popupOKDialog(IDS_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0),
-                             0, TEASY_POPUP_WIDTH, 100);
+        panel->popupOKDialog(IDS_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0), 0, TEASY_POPUP_WIDTH, 100);
     }
 }
 
@@ -2370,14 +2196,11 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
             int scenario_player = 0;
             do {
                 if (this->scenarioInfo->Get_player_Active(scenario_player) != 0) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
-                        player_count, scenario_player);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(player_count, scenario_player);
                     int civilization =
                         this->scenarioInfo->Get_player_Civ(scenario_player);
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                        player_count, civilization);
-                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                        player_count, scenario_player + 1);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(player_count, civilization);
+                    static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(player_count, scenario_player + 1);
 
                     if (this->scenarioInfo->Get_player_Type(scenario_player) == 1 &&
                         first_any_civ == -1) {
@@ -2401,16 +2224,13 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                         first_any_civ) {
                         int scenario_player =
                             static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0);
-                        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
-                            player, scenario_player);
+                        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(player, scenario_player);
                         int civilization =
                             static_cast<TRIBE_Game*>(rge_base_game)->civilization(0);
-                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
-                            player, civilization);
+                        static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(player, civilization);
                         int color =
                             static_cast<TRIBE_Game*>(rge_base_game)->playerColor(0);
-                        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                            player, color);
+                        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(player, color);
                         break;
                     }
                     ++player;
@@ -2419,8 +2239,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
 
             static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, first_any_civ);
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(0, first_any_color);
-            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                0, first_any_color_index);
+            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_any_color_index);
         }
     } else {
         int player = 0;
@@ -2429,8 +2248,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
                 debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 2865) %
                     16 + 1;
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(player, civilization);
-            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
-                player, player + 1);
+            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(player, player + 1);
             player = player + 1;
         } while (player < 8);
     }
@@ -2557,27 +2375,21 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 
     this->set_ideal_size(640, 480);
 
-    this->create_text(this, &this->message, "",
-                     20, 40, 380, 400, 4, 1, 1, 1);
-    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE,
-                            0, 0, 0, 0, 0, -1, -1, 0) == 0) {
+    this->create_text(this, &this->message, "", 20, 40, 380, 400, 4, 1, 1, 1);
+    if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0) == 0) {
         return;
     }
     this->close_button->set_active(1);
-    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4,
-                                        4, 17, 17, 17,
-                                        17, 0, 0, 0, 0);
+    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
 
-    if (this->create_text(this, &this->scenarioName, "",
-                          420, 84, 220, 68, 0xB, 0, 0, 1) == 0) {
+    if (this->create_text(this, &this->scenarioName, "", 420, 84, 220, 68, 0xB, 0, 0, 1) == 0) {
         return;
     }
 
     int y = 0x53;
     int k = 0;
     for (; y < 0x233; y += 0x18, k++) {
-        if (this->create_text(this, &this->settingText[k], "",
-                              420, y, 220, 20, 0xB, 0, 0, 0) == 0) {
+        if (this->create_text(this, &this->settingText[k], "", 420, y, 220, 20, 0xB, 0, 0, 0) == 0) {
             return;
         }
     }
@@ -2748,8 +2560,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
     i++;
 
-    sprintf(str2, get_string(IDS_POPULATION_LIMIT_FORMAT),
-            static_cast<TRIBE_Game*>(rge_base_game)->popLimit());
+    sprintf(str2, get_string(IDS_POPULATION_LIMIT_FORMAT), static_cast<TRIBE_Game*>(rge_base_game)->popLimit());
     this->settingText[i]->set_text(str2);                   // "Population Limit: %d"
     this->settingText[i]->set_active(1);
 }
@@ -2805,8 +2616,7 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode_in) : TScreenPanel("Mu
         this->error_code = 1;
     } else {
         this->set_ideal_size(640, 480);
-        this->create_text(this, &this->message, IDS_STATUS_DISCONNECTING_MULTIPLAYER,
-                          40, 40, 560, 400, 4, 1, 1, 1);
+        this->create_text(this, &this->message, IDS_STATUS_DISCONNECTING_MULTIPLAYER, 40, 40, 560, 400, 4, 1, 1, 1);
     }
 }
 

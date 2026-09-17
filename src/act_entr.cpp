@@ -72,13 +72,11 @@ line_path:
     if (obj_in->firstTileAlongLine(dest, start, rVal, 2, 2, 1) == 1) {
         this->target_x = (float)rVal.x + 0.5f;
         this->target_y = (float)rVal.y + 0.5f;
-        target_obj_in->moveTo((float)rVal.x, (float)rVal.y,
-                              target_obj_in->world_z, 0.5f, 1);
+        target_obj_in->moveTo((float)rVal.x, (float)rVal.y, target_obj_in->world_z, 0.5f, 1);
     } else {
         this->target_x = target_obj_in->world_x;
         this->target_y = target_obj_in->world_y;
-        target_obj_in->moveTo(obj_in->world_x, obj_in->world_y,
-                              target_obj_in->world_z, 0.5f, 1);
+        target_obj_in->moveTo(obj_in->world_x, obj_in->world_y, target_obj_in->world_z, 0.5f, 1);
     }
 }
 
@@ -97,14 +95,8 @@ void RGE_Action_Enter::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 4:
-        move_to = new RGE_Action_Move_To(
-            this->obj,
-            this->target_x,
-            this->target_y,
-            this->target_z,
-            this->task->work_range,
-            this->task->move_sprite
-        );
+        move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, this->task->work_range,
+                                         this->task->move_sprite);
         if (move_to == 0) {
             this->set_state(0x0D);
             return;
@@ -199,8 +191,7 @@ unsigned char RGE_Action_Enter::update() {
                 start.x = (int)this->target_obj->world_x;
                 start.y = (int)this->target_obj->world_y;
 
-                if (this->obj->firstTileAlongLine(dest, start, rVal, 2, 2,
-                                                  1) == 1) {
+                if (this->obj->firstTileAlongLine(dest, start, rVal, 2, 2, 1) == 1) {
                     float x = (float)rVal.x + 0.5f;
                     float y = (float)rVal.y + 0.5f;
 
@@ -213,15 +204,11 @@ unsigned char RGE_Action_Enter::update() {
 
                     this->target_x = x;
                     this->target_y = y;
-                    this->target_obj->moveTo(
-                        (float)rVal.x, (float)rVal.y,
-                        this->target_obj->world_z, 0.0f, 1);
+                    this->target_obj->moveTo((float)rVal.x, (float)rVal.y, this->target_obj->world_z, 0.0f, 1);
                 } else {
                     this->target_x = this->target_obj->world_x;
                     this->target_y = this->target_obj->world_y;
-                    this->target_obj->moveTo(
-                        this->obj->world_x, this->obj->world_y,
-                        this->target_obj->world_z, 0.5f, 1);
+                    this->target_obj->moveTo(this->obj->world_x, this->obj->world_y, this->target_obj->world_z, 0.5f, 1);
                 }
             } else if (this->target_obj->actionState() == 11) {
                 RGE_Action_Object* target_action =
@@ -243,8 +230,7 @@ unsigned char RGE_Action_Enter::update() {
         return 1;
 
     case 0x0D:
-        this->obj->notify(this->obj->id, this->obj->id, 0x1F9,
-                          (long)0x269, (long)0, (long)0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, (long)0x269, (long)0, (long)0);
         return 3;
 
     default:
@@ -253,8 +239,7 @@ unsigned char RGE_Action_Enter::update() {
 
 entered:
     if (this->subActionValue == 0) {
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FA,
-                          (long)0x269, (long)0, (long)0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1FA, (long)0x269, (long)0, (long)0);
     }
     this->set_state(1);
     return 2;
@@ -262,7 +247,6 @@ entered:
 target_lost:
     this->set_state(1);
     this->set_target_obj(0);
-    this->obj->notify(this->obj->id, this->obj->id, 0x1FB,
-                      (long)0x269, (long)0, (long)0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, (long)0x269, (long)0, (long)0);
     return 4;
 }

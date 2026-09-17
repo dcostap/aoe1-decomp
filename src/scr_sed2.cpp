@@ -322,8 +322,7 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
     case 15:
         static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
         static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, 5);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(
-            which, this->victory_ages_list->get_line() + 1);
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, this->victory_ages_list->get_line() + 1);
         return;
     case 16:
         static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 4);
@@ -332,14 +331,12 @@ void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int which) {
         return;
     case 17:
         static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 6);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(
-            which, this->victory_attribute_list->get_id());
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, this->victory_attribute_list->get_id());
         static_cast<T_Scenario*>(this->world->scenario)->SetSPAmount(which, amount);
         return;
     case 18:
         static_cast<T_Scenario*>(this->world->scenario)->SetSPVictoryType(which, 7);
-        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(
-            which, this->victory_tech_list->get_id());
+        static_cast<T_Scenario*>(this->world->scenario)->SetSPAttribType(which, this->victory_tech_list->get_id());
         return;
     default:
         return;
@@ -951,7 +948,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     if (!(this->create_text(this->bottom_panel, &this->default_terrain_label, IDS_EDITOR_DEFAULT_TERRAIN))) goto fail;
     if (!(this->create_drop_down(this->bottom_panel, &this->default_terrain_drop))) goto fail; (this->default_terrain_drop)->set_help_info(IDS_HELP_EDITOR_DEFAULT_TERRAIN_SELECT, -1);
     if (!(this->TEasy_Panel::create_text(this->main_view, &this->map_generating_text, IDS_EDITOR_GENERATING_MAP, 0, 0,
-                         (int)(this)->width(), (int)(this)->height() - 200, 1, 1, 1, 0))) goto fail;
+                                         (int)(this)->width(), (int)(this)->height() - 200, 1, 1, 1, 0))) goto fail;
     this->map_generating_text->set_active(0);
 
     if (!(this->create_text(this->bottom_panel, &this->map_size_label, IDS_MAP_SIZE_LABEL))) goto fail;
@@ -1288,16 +1285,13 @@ void TRIBE_Screen_Sed::position_panels() {
 
     for (int mode_row = 0; mode_row < 5; ++mode_row) {
         TButtonPanel* previous = mode_row == 0 ? 0 : this->scenario_mode_button[mode_row - 1];
-        this->scenario_mode_button[mode_row]->set_positioning(
-            static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 50, 109,
-            22, 22, previous, 0, 0, 0);
+        this->scenario_mode_button[mode_row]->set_positioning(static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 50, 109,
+                                                              22, 22, previous, 0, 0, 0);
     }
     for (int mode_col = 5; mode_col < 10; ++mode_col) {
         TButtonPanel* previous = mode_col == 5 ? 0 : this->scenario_mode_button[mode_col - 1];
-        this->scenario_mode_button[mode_col]->set_positioning(
-            static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 50, 109,
-            22, 22, previous,
-            this->scenario_mode_button[mode_col - 5], 0, 0);
+        this->scenario_mode_button[mode_col]->set_positioning(static_cast<TPanel::PositionMode>(7), 2, 2, 2, 2, 50, 109,
+                                                              22, 22, previous, this->scenario_mode_button[mode_col - 5], 0, 0);
     }
 
     this->menu_button->set_positioning(static_cast<TPanel::PositionMode>(9), 2, 5, 3, 3, 58, 58, 20, 40, 0, 0, 0, 0);
@@ -1444,9 +1438,8 @@ void TRIBE_Screen_Sed::position_panels() {
     this->victory_text_and_or[1]->set_fixed_position(404, 38, 90, 18);
 
     for (int victory_index = 0; victory_index < 12; ++victory_index) {
-        this->victory_button[victory_index]->set_fixed_position(
-            ((victory_index / 4) * 48) + 220,
-            ((victory_index % 4) * 26) + 30, 44, 22);
+        this->victory_button[victory_index]->set_fixed_position(((victory_index / 4) * 48) + 220,
+                                                                ((victory_index % 4) * 26) + 30, 44, 22);
     }
     this->victory_player_list->set_fixed_position(4, 4, 150, 22);
     this->victory_drop_down->set_fixed_position(4, 28, 180, 22);
@@ -1664,8 +1657,7 @@ int TRIBE_Screen_Sed::create_check_box(TPanel* parent, TButtonPanel** button) {
     (*button)->set_z_order(1, 0);
     (*button)->set_active(0);
     if (this->use_bevels) {
-        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                                  this->bevel_color3, this->bevel_color4,
+        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
                                   this->bevel_color5, this->bevel_color6);
     }
     return 1;
@@ -1680,8 +1672,7 @@ int TRIBE_Screen_Sed::create_radio_button(TPanel* parent, TButtonPanel** button)
     (*button)->set_active(0);
 
     if (this->use_bevels) {
-        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                                  this->bevel_color3, this->bevel_color4,
+        (*button)->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
                                   this->bevel_color5, this->bevel_color6);
     }
 

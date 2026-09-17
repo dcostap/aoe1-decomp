@@ -1463,9 +1463,7 @@ unsigned char RGE_Game_World::save_game(char *name) {
 
     save_game_version = 7.23f;
     sprintf(tempname, "%s%s", rge_base_game->prog_info->save_dir, name);
-    int fd = rge_open(tempname,
-                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC,
-                      _S_IREAD | _S_IWRITE);
+    int fd = rge_open(tempname, _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (fd != -1) {
         rge_write_error = 0;
         rge_write(fd, "VER 8.6", 8);
@@ -1528,9 +1526,7 @@ void RGE_Game_World::base_save(int outfile) {
 }
 
 void RGE_Game_World::base_save(char *name) {
-    int file_handle = rge_open(name,
-                               _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC,
-                               _S_IREAD | _S_IWRITE);
+    int file_handle = rge_open(name, _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (file_handle != -1) {
         this->base_save(file_handle);
         rge_close(file_handle);
@@ -1557,9 +1553,7 @@ byte RGE_Game_World::save_scenario(char *filename) {
     sprintf(scenario_name, "%s%s.scn", rge_base_game->prog_info->scenario_dir, kill_name);
     unlink(scenario_name);
     sprintf(scenario_name, "%s%s", rge_base_game->prog_info->scenario_dir, filename);
-    int fd = rge_open(scenario_name,
-                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-                      _S_IREAD | _S_IWRITE);
+    int fd = rge_open(scenario_name, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (fd != -1) {
         rge_write_error = 0;
         if (rge_base_game->check_prog_argument("TRIAL") == 1) {
@@ -2172,8 +2166,7 @@ void RGE_Game_World::load_scenario3(int infile, RGE_Player_Info &info) {
                     if (pid >= 0 && this->players[pid] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[pid]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state,
-                                                              obj_angle);
+                        this->players[pid]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     j++;
@@ -2781,8 +2774,7 @@ void RGE_Game_World::load_scenario8(int infile, RGE_Player_Info &info) {
                     if (*map >= 0 && this->players[*map] != 0) {
                         this->scenario_object_flag = 1;
                         this->scenario_object_id = obj_id;
-                        this->players[*map]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state,
-                                                               obj_angle);
+                        this->players[*map]->make_scenario_obj(world_z, world_y, world_x, master_id, obj_state, obj_angle);
                         this->scenario_object_flag = 0;
                     }
                     ++j;

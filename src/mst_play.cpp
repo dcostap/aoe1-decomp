@@ -75,10 +75,8 @@ void RGE_Master_Player::finish_init(int infile, RGE_Sprite** sprites,
 
     if (this->master_object_num > 0) {
         this->master_objects =
-            (RGE_Master_Static_Object**)calloc(
-                (int)this->master_object_num, 4);
-        rge_read(infile, this->master_objects,
-                 (int)this->master_object_num * 4);
+            (RGE_Master_Static_Object**)calloc((int)this->master_object_num, 4);
+        rge_read(infile, this->master_objects, (int)this->master_object_num * 4);
 
         for (int i = 0; (short)i < this->master_object_num; i++) {
             if (this->master_objects[(short)i] != 0) {
@@ -162,8 +160,7 @@ void RGE_Master_Player::load_object(
         this->master_objects[index] = obj;
         return;
     case 25:
-        obj = new RGE_Master_Doppleganger_Object(
-            infile, sprites, sounds, index, 1);
+        obj = new RGE_Master_Doppleganger_Object(infile, sprites, sounds, index, 1);
         break;
     default:
         return;

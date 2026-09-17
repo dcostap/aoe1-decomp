@@ -44,23 +44,11 @@ void RGE_Action_Transport::set_state(unsigned char new_state) {
     case 4:
     case 0x0B:
         if (this->task != 0) {
-            move_to = new RGE_Action_Move_To(
-                this->obj,
-                this->target_x,
-                this->target_y,
-                this->target_z,
-                0.3f,
-                this->task->move_sprite
-            );
+            move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.3f,
+                                             this->task->move_sprite);
         } else {
-            move_to = new RGE_Action_Move_To(
-                this->obj,
-                this->target_x,
-                this->target_y,
-                this->target_z,
-                0.3f,
-                this->obj->master_obj->sprite
-            );
+            move_to = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z, 0.3f,
+                                             this->obj->master_obj->sprite);
         }
 
         if (move_to == 0) {
@@ -116,15 +104,11 @@ unsigned char RGE_Action_Transport::update(void) {
             if (this->next_to_drop_off_terrain() != 0) {
                 zone = this->targetZone();
                 if (this->obj->drop_held_objects(zone) == 0) {
-                    this->obj->owner->notify(
-                        this->obj->id, this->obj->id, 0x207, 0x266, 0, 0
-                    );
+                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x207, 0x266, 0, 0);
                     break;
                 }
                 if (this->obj->objects->number_of_objects > 0) {
-                    this->obj->owner->notify(
-                        this->obj->id, this->obj->id, 0x206, 0x266, 0, 0
-                    );
+                    this->obj->owner->notify(this->obj->id, this->obj->id, 0x206, 0x266, 0, 0);
                 }
                 break;
             } else {
@@ -132,10 +116,8 @@ unsigned char RGE_Action_Transport::update(void) {
                 RGE_Player* owner = object->owner;
                 RGE_Map* map = owner->world->map;
                 if (this->target_x != -1.0f) {
-                    if (map->get_terrain((short)this->target_x,
-                                         (short)this->target_y) == 1 ||
-                        map->get_terrain((short)this->target_x,
-                                         (short)this->target_y) == 0x16) {
+                    if (map->get_terrain((short)this->target_x, (short)this->target_y) == 1 ||
+                        map->get_terrain((short)this->target_x, (short)this->target_y) == 0x16) {
                         break;
                     }
                 }
@@ -152,10 +134,7 @@ unsigned char RGE_Action_Transport::update(void) {
 
     case 0x0D:
         // Typed casts select the virtual notify overload here.
-        this->obj->notify(
-            (int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x266,
-            (long)0, (long)0
-        );
+        this->obj->notify((int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x266, (long)0, (long)0);
         this->set_state(2);
         return 3;
 
@@ -185,9 +164,7 @@ int RGE_Action_Transport::work(RGE_Static_Object* obj_in, float x, float y, floa
     this->target2ID = 1;
 
     int zone = (int)this->obj->lookupZone((int)x, (int)y);
-    float distance = this->obj->distance_to_position(
-        x, y, this->obj->world_z
-    );
+    float distance = this->obj->distance_to_position(x, y, this->obj->world_z);
 
     if (zone != -1) {
         if (this->obj->withinRangeOfZone((unsigned char)zone, 2.0f) == 1 &&
@@ -218,14 +195,10 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
         return 1;
     }
 
-    int x1 = (int)(this->obj->world_x -
-                   this->obj->master_obj->radius_x - DAT_0056e6c8);
-    int y1 = (int)(this->obj->world_y -
-                   this->obj->master_obj->radius_y - DAT_0056e6c8);
-    int x2 = (int)(this->obj->master_obj->radius_x +
-                   this->obj->world_x - DAT_0056e6cc);
-    int y2 = (int)(this->obj->master_obj->radius_y +
-                   this->obj->world_y - DAT_0056e6cc);
+    int x1 = (int)(this->obj->world_x - this->obj->master_obj->radius_x - DAT_0056e6c8);
+    int y1 = (int)(this->obj->world_y - this->obj->master_obj->radius_y - DAT_0056e6c8);
+    int x2 = (int)(this->obj->master_obj->radius_x + this->obj->world_x - DAT_0056e6cc);
+    int y2 = (int)(this->obj->master_obj->radius_y + this->obj->world_y - DAT_0056e6cc);
 
     RGE_Map* map = this->obj->owner->world->map;
 
@@ -244,10 +217,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
 
     int target_zone = this->targetZone();
     if (*(int*)&this->target_x != 0xBF800000) {
-        target_zone = (int)this->obj->lookupZone(
-            (int)this->target_x,
-            (int)this->target_y
-        );
+        target_zone = (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y);
     }
 
     for (int y = y1; y <= y2; ++y) {
@@ -267,10 +237,7 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void) {
 
 int RGE_Action_Transport::targetZone(void) {
     if (*(int*)&this->target_x != 0xBF800000) {
-        return (int)this->obj->lookupZone(
-                   (int)this->target_x,
-                   (int)this->target_y
-               ) & 0xFF;
+        return (int)this->obj->lookupZone((int)this->target_x, (int)this->target_y) & 0xFF;
     }
     return -1;
 }

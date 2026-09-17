@@ -43,8 +43,7 @@ void RGE_Action_List::load(int infile) {
         }
 
         action = this->create_action(infile, action_type);
-        node = static_cast<RGE_Action_Node*>(
-            calloc(1, sizeof(RGE_Action_Node)));
+        node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
         node->action = action;
         node->next = 0;
         if (tail != 0) {
@@ -126,35 +125,23 @@ RGE_Action* RGE_Action_List::create_task_action(
         if (this->obj->unitAI() != 0) {
             this->obj->unitAI()->setCurrentAction(600);
             if (target_obj != 0) {
-                this->obj->unitAI()->setCurrentTarget(
-                    target_obj->id, target_obj->world_x, target_obj->world_y,
-                    target_obj->world_z);
+                this->obj->unitAI()->setCurrentTarget(target_obj->id, target_obj->world_x, target_obj->world_y,
+                                                      target_obj->world_z);
             } else {
                 this->obj->unitAI()->setCurrentTarget(-1, target_x, target_y, target_z);
             }
         }
 
         if (target_obj != 0) {
-            attack_action = new RGE_Action_Attack(
-                this->obj, target_obj, task->move_sprite, task->work_sprite, 0,
-                task->work_range,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                    ->minimum_weapon_range,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                    ->missile_id,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                    ->fire_missile_at_frame);
+            attack_action = new RGE_Action_Attack(this->obj, target_obj, task->move_sprite, task->work_sprite, 0,
+                                                  task->work_range, static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->minimum_weapon_range,
+                                                  static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->missile_id,
+                                                  static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->fire_missile_at_frame);
         } else {
-            attack_action = new RGE_Action_Attack(
-                this->obj, target_x, target_y, target_z, task->move_sprite,
-                task->work_sprite, 0,
-                task->work_range,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                    ->minimum_weapon_range,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                    ->missile_id,
-                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
-                    ->fire_missile_at_frame);
+            attack_action = new RGE_Action_Attack(this->obj, target_x, target_y, target_z, task->move_sprite,
+                                                  task->work_sprite, 0, task->work_range, static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                                                  ->minimum_weapon_range, static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->missile_id,
+                                                  static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj) ->fire_missile_at_frame);
         }
         if (attack_action == 0) {
             return 0;

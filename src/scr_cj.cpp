@@ -36,8 +36,7 @@ TribeJoinScreen::TribeJoinScreen()
         comm->SetPlayerHumanity(player, ME_ABSENT);
     }
 
-    if (this->setup(rge_base_game->draw_area, "scr3",
-                    0xC385, 1) == 0) {
+    if (this->setup(rge_base_game->draw_area, "scr3", 0xC385, 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -45,42 +44,28 @@ TribeJoinScreen::TribeJoinScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (this->create_text(this, &this->title, IDS_MULTIPLAYER_GAMES_TITLE,
-                          20, 20, 600, 30, 1, 1, 0, 0)) {
-        this->create_text(this, &this->listTitle, IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN,
-                          20, 65, 600, 20, 4, 0, 0, 0);
-        if (this->create_list(this, &this->list,
-                              20, 90, 600, 270, RGE_FONT_STANDARD)) {
-            if (this->create_auto_scrollbar(&this->scrollbar,
-                                            this->list, 20)) {
+    if (this->create_text(this, &this->title, IDS_MULTIPLAYER_GAMES_TITLE, 20, 20, 600, 30, 1, 1, 0, 0)) {
+        this->create_text(this, &this->listTitle, IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN, 20, 65, 600, 20, 4, 0, 0, 0);
+        if (this->create_list(this, &this->list, 20, 90, 600, 270, RGE_FONT_STANDARD)) {
+            if (this->create_auto_scrollbar(&this->scrollbar, this->list, 20)) {
                 this->listFilled = 1;
                 this->list->set_text(IDS_MULTIPLAYER_NO_GAMES_INSTRUCTIONS);
-                if (this->create_button(this, &this->refreshButton,
-                                        IDS_MULTIPLAYER_SHOW_GAMES, 0, 210, 370,
+                if (this->create_button(this, &this->refreshButton, IDS_MULTIPLAYER_SHOW_GAMES, 0, 210, 370,
                                         220, 30, 0, 0, 0)) {
-                    if (this->create_button(this, &this->joinButton,
-                                            IDS_MULTIPLAYER_JOIN, 0, 10, 440,
-                                            200, 30, 0, 0, 0)) {
-                        if (this->create_button(this, &this->createButton,
-                                                IDS_MULTIPLAYER_CREATE, 0, 220, 440,
+                    if (this->create_button(this, &this->joinButton, IDS_MULTIPLAYER_JOIN, 0, 10, 440, 200, 30, 0, 0, 0)) {
+                        if (this->create_button(this, &this->createButton, IDS_MULTIPLAYER_CREATE, 0, 220, 440,
                                                 200, 30, 0, 0, 0)) {
-                            if (this->create_button(this, &this->cancelButton,
-                                                    IDS_BUTTON_CANCEL, 0, 430,
-                                                    440, 200, 30,
+                            if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 200, 30,
                                                     0, 0, 0)) {
                                 TButtonPanel* cancel = this->cancelButton;
                                 cancel->hotkey = 0x1B;
                                 cancel->hotkey_shift = 0;
 
-                                if (this->create_button(this,
-                                                        &this->close_button,
-                                                        IDS_BUTTON_CLOSE, 0, 0, 0, 0,
+                                if (this->create_button(this, &this->close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0,
                                                         0, -1, -1, 0)) {
                                     this->close_button->set_active(1);
-                                    this->close_button->set_positioning(
-                                        TPanel::PositionRightTop, 4, 4, 4, 4,
-                                        17, 17,
-                                        17, 17, 0, 0, 0, 0);
+                                    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17,
+                                                                        17, 17, 0, 0, 0, 0);
                                     this->set_curr_child(this->refreshButton);
 
                                     TPanel* tabList[5];
@@ -191,10 +176,8 @@ void TribeJoinScreen::fillList() {
         int i = 0;
         if (i < this->game_count) {
             do {
-                sprintf(szTemp, "%s ( %.1d / %.1d )",
-                    Sess->GetSessionName(i),
-                    Sess->GetSessionCurrentPlayers(i),
-                    Sess->GetSessionMaxPlayers(i));
+                sprintf(szTemp, "%s ( %.1d / %.1d )", Sess->GetSessionName(i), Sess->GetSessionCurrentPlayers(i),
+                        Sess->GetSessionMaxPlayers(i));
                 this->list->append_line(szTemp, 0);
                 i++;
             } while (i < this->game_count);
@@ -223,8 +206,7 @@ long TribeJoinScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1,
             if (actionIn == 1) {
                 if (this->game_count > 0) {
                     int line = this->list->currentLineNumber();
-                    if (comm->JoinMultiplayerGame(
-                            Sess->GetSessionGUID(line)) == 0) {
+                    if (comm->JoinMultiplayerGame(Sess->GetSessionGUID(line)) == 0) {
                         this->get_string(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, temp, sizeof(temp));
                         sprintf(string, temp, this->list->currentLine());
                         this->popupOKDialog(string, 0, TEASY_POPUP_WIDTH, 100);
@@ -233,8 +215,7 @@ long TribeJoinScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1,
 
                     rge_base_game->disable_input();
                     this->waitingToStart = 1;
-                    this->joinTime = debug_timeGetTime(
-                        "C:\\msdev\\work\\age1_x1\\scr_cj.cpp", 320);
+                    this->joinTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cj.cpp", 320);
                 } else {
                     this->popupOKDialog(IDS_MULTIPLAYER_NO_GAMES_TO_JOIN, 0, TEASY_POPUP_WIDTH, 100);
                 }
@@ -286,28 +267,18 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parentPanel)
     if (this->setup(parentPanel->renderArea(), parentPanel, 500, 230,
                     static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_file(),
                     static_cast<TEasy_Panel*>(parentPanel)->get_popup_info_id(), 1)) {
-        if (this->create_text(this, &this->title, IDS_MULTIPLAYER_CREATE_GAME_TITLE,
-                              20, 20, 460, 30, 1, 1, 1, 0)) {
-            if (this->create_text(this, &this->input_title, IDS_MULTIPLAYER_GAME_NAME,
-                                  40, 85, 420, 20, 4, 0, 1, 0)) {
+        if (this->create_text(this, &this->title, IDS_MULTIPLAYER_CREATE_GAME_TITLE, 20, 20, 460, 30, 1, 1, 1, 0)) {
+            if (this->create_text(this, &this->input_title, IDS_MULTIPLAYER_GAME_NAME, 40, 85, 420, 20, 4, 0, 1, 0)) {
                 char str[256];
-                char* s = Regs->RegGetAscii(
-                    1, "Default Age Of Empires MP Gamename");
+                char* s = Regs->RegGetAscii(1, "Default Age Of Empires MP Gamename");
                 if (s) {
-                    strcpy(str, Regs->RegGetAscii(
-                        1, "Default Age Of Empires MP Gamename"));
+                    strcpy(str, Regs->RegGetAscii(1, "Default Age Of Empires MP Gamename"));
                 } else {
                     str[0] = 0;
                 }
-                if (this->create_edit(this, inputGamename, str,
-                                      40, TEditPanel::FormatText,
-                                      40, 110, 420, 23,
-                                      0xb, 1, 0)) {
-                    if (this->create_button(this, &this->okButton,
-                                            IDS_BUTTON_OK, 0, 60, 180,
-                                            180, 30, 0, 0, 0)) {
-                        if (this->create_button(this, &this->cancelButton,
-                                                IDS_BUTTON_CANCEL, 0, 260, 180,
+                if (this->create_edit(this, inputGamename, str, 40, TEditPanel::FormatText, 40, 110, 420, 23, 0xb, 1, 0)) {
+                    if (this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 60, 180, 180, 30, 0, 0, 0)) {
+                        if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 260, 180,
                                                 180, 30, 0, 0, 0)) {
                             TButtonPanel* cancel = this->cancelButton;
                             cancel->hotkey = 0x1b;
@@ -344,10 +315,8 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
             }
 
             rge_base_game->disable_input();
-            Regs->RegSetAscii(1, "Default Age Of Empires MP Gamename",
-                              static_cast<unsigned char*>(static_cast<void*>(
-                                  this->inputGamename->currentLine())),
-                              strlen(this->inputGamename->currentLine()) + 1);
+            Regs->RegSetAscii(1, "Default Age Of Empires MP Gamename", static_cast<unsigned char*>(static_cast<void*>(
+                                  this->inputGamename->currentLine())), strlen(this->inputGamename->currentLine()) + 1);
             comm->SetGameTitle(this->inputGamename->currentLine());
 
             TDrawArea* draw_area = this->render_area;
@@ -357,11 +326,9 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
 
             _GUID service_guid = comm->ServiceGUID;
             if (memcmp(&service_guid, &DPSPGUID_TCPIP, sizeof(_GUID)) == 0)
-                static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(
-                    0x4C3, "scr3", 0xC385);
+                static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(0x4C3, "scr3", 0xC385);
             else
-                static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(
-                    0x4C2, "scr3", 0xC385);
+                static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(0x4C2, "scr3", 0xC385);
             rge_base_game->draw_window();
             WinExec("data\\closedpw.exe", 0);
 
@@ -369,8 +336,7 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
                 draw_area->DrawSystem->ScreenMode == 2)
                 draw_area->DrawSystem->DirDraw->FlipToGDISurface();
 
-            memset(&comm->PlayerStopTurn[1], 0,
-                   9 * sizeof(comm->PlayerStopTurn[0]));
+            memset(&comm->PlayerStopTurn[1], 0, 9 * sizeof(comm->PlayerStopTurn[0]));
             int create_result = comm->CreateMultiplayerGame();
             L->Log("$$$ RETURNED FROM CreateMultiplayerGame");
 
@@ -387,8 +353,7 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
                 return 1;
             }
 
-            TEasy_Panel* parent = static_cast<TEasy_Panel*>(
-                this->parent_panel);
+            TEasy_Panel* parent = static_cast<TEasy_Panel*>(this->parent_panel);
             panel_system.destroyPanel("Create Dialog");
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Status Screen");

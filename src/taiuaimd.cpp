@@ -99,9 +99,7 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int doSearch) {
     int targetID;
     RGE_Static_Object* target;
     float evasiveMoveDistance, xDiff, yDiff, distanceDiff, nx, ny;
-    targetID = closestObject(
-        0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0
-    );
+    targetID = closestObject(0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0);
 
     if (targetID != -1) {
         target = objectValue->owner->world->object(targetID);
@@ -404,12 +402,9 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
         if (targetObj) {
             float distanceDiff = targetObj->getSpeed();
             if (distanceDiff != 0.0f) {
-                this->order(
-                    this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
-                    this->currentTargetXValue, this->currentTargetYValue,
-                    this->currentTargetZValue, this->desiredTargetDistanceValue,
-                    0, 1, this->currentOrderPriorityValue
-                );
+                this->order(this->objectValue->id, 0x2BC, this->currentTargetValue, -1,
+                            this->currentTargetXValue, this->currentTargetYValue,
+                            this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
                 RGE_Static_Object* thisObj = this->objectValue;
 
@@ -460,8 +455,7 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* nEvent, unsigned long u
 
     this->order(this->objectValue->id, 0x2bc, this->currentTargetValue, -1,
                 this->currentTargetXValue, this->currentTargetYValue,
-                this->currentTargetZValue, this->desiredTargetDistanceValue,
-                0, 1, this->currentOrderPriorityValue);
+                this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
     evasiveMoveDistance = this->objectValue->maximumSpeed() *
                           this->objectValue->rateOfFire() * DAT_005758b0;
@@ -512,8 +506,7 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* nEvent, unsigned long u
                             this->attackingUnitsValue.maximumSizeValue = newCount;
                         }
                     }
-                    RGE_Static_Object* obj2 = this->objectValue->owner->world->object(
-                        this->attackingUnitsValue.value[i]);
+                    RGE_Static_Object* obj2 = this->objectValue->owner->world->object(this->attackingUnitsValue.value[i]);
                     if (obj2) {
                         xDiff += obj2->world_x - this->objectValue->world_x;
                         yDiff += obj2->world_y - this->objectValue->world_y;
@@ -525,8 +518,7 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* nEvent, unsigned long u
 
     len = (float)sqrt(xDiff*xDiff + yDiff*yDiff);
     this->evasiveMoveTo(this->objectValue->world_x + (-(xDiff / len * evasiveMoveDistance)),
-                        this->objectValue->world_y + (-(yDiff / len * evasiveMoveDistance)),
-                        this->objectValue->world_z, 1);
+                        this->objectValue->world_y + (-(yDiff / len * evasiveMoveDistance)), this->objectValue->world_z, 1);
     return 3;
 }
 
@@ -627,8 +619,7 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     case 0x1f4: {
         if (nEvent->p2 <= 0) {
             RGE_Static_Object* object = this->objectValue;
-            object->owner->notify(object->id, object->id, 0x209,
-                                  nEvent->caller, 0, 0);
+            object->owner->notify(object->id, object->id, 0x209, nEvent->caller, 0, 0);
             this->purgeNotifyQueue(uTime);
             return 4;
         }
@@ -642,13 +633,11 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             if (attacker->owner->id != 0 ||
                 attacker->id != this->currentTargetValue) {
                 RGE_Static_Object* object = this->objectValue;
-                object->owner->notify(object->id, object->id, 0x201,
-                                      nEvent->caller, 0, 0);
+                object->owner->notify(object->id, object->id, 0x201, nEvent->caller, 0, 0);
             }
         } else if (this->attackingUnitsValue.numberValue == 0) {
             RGE_Static_Object* object = this->objectValue;
-            object->owner->notify(object->id, object->id, 0x201,
-                                  nEvent->caller, 0, 0);
+            object->owner->notify(object->id, object->id, 0x201, nEvent->caller, 0, 0);
         }
 
         int count = this->attackingUnitsValue.numberValue;
@@ -713,13 +702,9 @@ caller_recorded:
 
         if (attacker->owner->id == 0) {
             if (orderValue != -1) {
-                this->order(
-                    this->objectValue->id, orderValue,
-                    this->currentTargetValue, -1,
-                    this->currentTargetXValue, this->currentTargetYValue,
-                    this->currentTargetZValue,
-                    this->desiredTargetDistanceValue, 0, 0,
-                    this->currentOrderPriorityValue);
+                this->order(this->objectValue->id, orderValue, this->currentTargetValue, -1,
+                            this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue,
+                            this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
                 this->currentOrderValue = 0x2bc;
                 this->currentOrderPriorityValue = 100;
                 this->attackObject(nEvent->caller, 1);
@@ -733,15 +718,12 @@ caller_recorded:
         if (this->currentActionValue == 0x262 && speed != 0.0f)
             return 3;
 
-        this->order(
-            this->objectValue->id, orderValue, this->currentTargetValue, -1,
-            this->currentTargetXValue, this->currentTargetYValue,
-            this->currentTargetZValue, this->desiredTargetDistanceValue,
-            0, 0, this->currentOrderPriorityValue);
+        this->order(this->objectValue->id, orderValue, this->currentTargetValue, -1,
+                    this->currentTargetXValue, this->currentTargetYValue,
+                    this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
         if (actionFile != 0) {
             int id = this->objectValue != 0 ? this->objectValue->id : -1;
-            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
-                    0x39a);
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x39a);
         }
         this->stopObject(1);
         this->runAwayFromAttackers(1);
@@ -754,8 +736,7 @@ caller_recorded:
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int id = this->objectValue != 0 ? this->objectValue->id : -1;
-            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
-                    0x3aa);
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x3aa);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -767,8 +748,7 @@ caller_recorded:
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int id = this->objectValue != 0 ? this->objectValue->id : -1;
-            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
-                    0x3b9);
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x3b9);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -785,8 +765,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x3d3);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x3d3);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -806,8 +785,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x3f6);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x3f6);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -815,8 +793,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x40f);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x40f);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -829,8 +806,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x421);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x421);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -853,8 +829,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x446);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x446);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -862,8 +837,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x453);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x453);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -882,15 +856,13 @@ caller_recorded:
                 this->evasiveMoveTo(x, y, object->world_z, 1);
             }
         } else if (action == 0x25a) {
-            int targetID = this->closestObject(
-                this->currentTargetTypeValue, 3, 0, -1, 0);
+            int targetID = this->closestObject(this->currentTargetTypeValue, 3, 0, -1, 0);
             if (targetID == -1) {
                 int type = this->currentTargetTypeValue == 0x1b ? 3 : 0x1b;
                 targetID = this->closestObject(type, 3, 0, -1, 0);
             }
             if (targetID != -1 &&
-                this->objectValue->canPath(
-                    targetID, 1.0f, 0, 0, -1, -1) == 1) {
+                this->objectValue->canPath(targetID, 1.0f, 0, 0, -1, -1) == 1) {
                 if (this->buildObject(targetID, 1) == 1)
                     return 3;
                 goto action_finished;
@@ -900,9 +872,7 @@ caller_recorded:
                 this->lookupObject(this->currentTargetValue);
             if (target == 0 ||
                 this->objectValue->distance_to_object(target) > 1.0f) {
-                this->moveTo(
-                    this->currentTargetXValue, this->currentTargetYValue,
-                    this->currentTargetZValue, 1.0f, 1);
+                this->moveTo(this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue, 1.0f, 1);
             }
         } else if (action == 0x25d) {
             int tileX;
@@ -914,8 +884,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x4b4);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x4b4);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -923,8 +892,7 @@ caller_recorded:
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int id = this->objectValue != 0 ? this->objectValue->id : -1;
-                    fprintf(actionFile, str_fmt_stopObject, id,
-                            str_taiuaimd_path, 0x4c3);
+                    fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x4c3);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -938,8 +906,7 @@ action_finished:
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int id = this->objectValue != 0 ? this->objectValue->id : -1;
-            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path,
-                    0x4cc);
+            fprintf(actionFile, str_fmt_stopObject, id, str_taiuaimd_path, 0x4cc);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -1069,9 +1036,8 @@ int TribePriestUnitAIModule::bestUnitToHeal(int idleHeal, float* allyDistance) {
                                         VisibleUnitList[a - 1][i].distance <= 4) {
                                         if (this->objectValue->owner->id != 0 ||
                                             VisibleUnitList[a - 1][i].distance <= 2) {
-                                            if (this->objectValue->canPath(
-                                                    VisibleUnitList[a - 1][i].object_id,
-                                                    1.0f, 0, 0, -1, -1)) {
+                                            if (this->objectValue->canPath(VisibleUnitList[a - 1][i].object_id,
+                                                                           1.0f, 0, 0, -1, -1)) {
                                                 float need = (float)(int)unit->master_obj->hp -
                                                     unit->hp / (float)(int)VisibleUnitList[a - 1][i].distance;
                                                 if (allyToHealID == -1 || need < allyNeed) {
@@ -1115,10 +1081,8 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* distance) {
 
     if (VisibleUnitList_Size[3] > 0) {
         do {
-            if (this->objectValue->owner->isEnemy(
-                    (int)VisibleUnitList[3][i].player) != 0) {
-                RGE_Static_Object* found = this->lookupObject(
-                    VisibleUnitList[3][i].object_id);
+            if (this->objectValue->owner->isEnemy((int)VisibleUnitList[3][i].player) != 0) {
+                RGE_Static_Object* found = this->lookupObject(VisibleUnitList[3][i].object_id);
 
                 if (found != 0 && found->object_state < 3) {
                     if (this->canConvert(found->id) != 0) {
@@ -1203,8 +1167,7 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long uT
     case 0x1fc: {
         RGE_Static_Object* obj = this->lookupObject(this->currentTargetValue);
         if (obj != 0) {
-            if (this->visibleStatus(this->objectValue->owner->visible,
-                                    (int)obj->world_x, (int)obj->world_y) == 0x0f) {
+            if (this->visibleStatus(this->objectValue->owner->visible, (int)obj->world_x, (int)obj->world_y) == 0x0f) {
                 return 2;
             }
         }
@@ -1294,18 +1257,9 @@ int TribePriestUnitAIModule::processMisc() {
 
                 if (target != -1 && this->currentTargetValue != target) {
                     if (this->currentOrderValue != -1) {
-                        this->order(
-                            this->objectValue->id,
-                            this->currentOrderValue,
-                            this->currentTargetValue,
-                            -1,
-                            this->currentTargetXValue,
-                            this->currentTargetYValue,
-                            this->currentTargetZValue,
-                            this->desiredTargetDistanceValue,
-                            0,
-                            0,
-                            this->currentOrderPriorityValue);
+                        this->order(this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1,
+                                    this->currentTargetXValue, this->currentTargetYValue, this->currentTargetZValue,
+                                    this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
 
                         if (actionFile != 0) {
                             int objectID;
@@ -1314,11 +1268,8 @@ int TribePriestUnitAIModule::processMisc() {
                             } else {
                                 objectID = -1;
                             }
-                            fprintf(actionFile,
-                                "#%d call stopObject %s %d\n",
-                                objectID,
-                                "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp",
-                                0x6F8);
+                            fprintf(actionFile, "#%d call stopObject %s %d\n", objectID,
+                                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x6F8);
                         }
 
                         this->stopObject(1);
@@ -1401,8 +1352,7 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) 
                     } else {
                         id = -1;
                     }
-                    fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                            "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x7a8);
+                    fprintf(actionFile, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x7a8);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -1417,8 +1367,7 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) 
             } else {
                 id = -1;
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x7b0);
+            fprintf(actionFile, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x7b0);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -1485,11 +1434,9 @@ after_add:
         return 2;
     }
     if (this->currentActionValue != 0x262) {
-        this->order(this->objectValue->id, this->currentOrderValue,
-                    this->currentTargetValue, -1,
+        this->order(this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1,
                     this->currentTargetXValue, this->currentTargetYValue,
-                    this->currentTargetZValue, this->desiredTargetDistanceValue,
-                    0, 0, this->currentOrderPriorityValue);
+                    this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
         if (actionFile != 0) {
             int id;
             if (this->objectValue != 0) {
@@ -1497,8 +1444,7 @@ after_add:
             } else {
                 id = -1;
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x761);
+            fprintf(actionFile, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x761);
         }
         this->stopObject(1);
     }
@@ -1520,10 +1466,9 @@ int TribeTradeShipUnitAIModule::processIdle(int doSearch) {
                 float yDiff = target->world_y - this->objectValue->world_y;
                 float distanceDiff = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
 
-                this->evasiveMoveTo(
-                    (float)(-(xDiff / distanceDiff * evasiveMoveDistance)) + this->objectValue->world_x,
-                    (float)(-(yDiff / distanceDiff * evasiveMoveDistance)) + this->objectValue->world_y,
-                    this->objectValue->world_z, 1);
+                this->evasiveMoveTo((float)(-(xDiff / distanceDiff * evasiveMoveDistance)) + this->objectValue->world_x,
+                                    (float)(-(yDiff / distanceDiff * evasiveMoveDistance)) + this->objectValue->world_y,
+                                    this->objectValue->world_z, 1);
                 return 6;
             }
         }
@@ -1748,19 +1693,16 @@ after_add:
         return 2;
     }
     if (this->currentActionValue != 0x262) {
-        this->order(this->objectValue->id, this->currentOrderValue,
-                    this->currentTargetValue, -1,
+        this->order(this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1,
                     this->currentTargetXValue, this->currentTargetYValue,
-                    this->currentTargetZValue, this->desiredTargetDistanceValue,
-                    0, 0, this->currentOrderPriorityValue);
+                    this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
         if (actionFile != 0) {
             int id;
             if (this->objectValue != 0)
                 id = this->objectValue->id;
             else
                 id = -1;
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x8d4);
+            fprintf(actionFile, "#%d call stopObject %s %d\n", id, "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x8d4);
         }
         this->stopObject(1);
     }
@@ -1882,12 +1824,9 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
             break;
 
         if (this->currentOrderValue != -1) {
-            this->order(
-                this->objectValue->id, this->currentOrderValue,
-                this->currentTargetValue, -1,
-                this->currentTargetXValue, this->currentTargetYValue,
-                this->currentTargetZValue, this->desiredTargetDistanceValue,
-                0, 0, this->currentOrderPriorityValue);
+            this->order(this->objectValue->id, this->currentOrderValue, this->currentTargetValue, -1,
+                        this->currentTargetXValue, this->currentTargetYValue,
+                        this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 0, this->currentOrderPriorityValue);
         }
 
         newX =
@@ -1910,9 +1849,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                 newY -= DAT_005758e4;
         }
 
-        if (this->intelligentEvasiveMoveTo(
-                newX, newY,
-                this->objectValue->world_z, 1, 1) != 1)
+        if (this->intelligentEvasiveMoveTo(newX, newY, this->objectValue->world_z, 1, 1) != 1)
             break;
         taskedThisUpdate = 1;
         return 3;
@@ -1935,11 +1872,9 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     xDiff = target->world_x - this->objectValue->world_x;
                     yDiff = target->world_y - this->objectValue->world_y;
 
-                    this->order(
-                        this->objectValue->id, 700, this->currentTargetValue, -1,
-                        this->currentTargetXValue, this->currentTargetYValue,
-                        this->currentTargetZValue, this->desiredTargetDistanceValue,
-                        0, 1, this->currentOrderPriorityValue);
+                    this->order(this->objectValue->id, 700, this->currentTargetValue, -1,
+                                this->currentTargetXValue, this->currentTargetYValue,
+                                this->currentTargetZValue, this->desiredTargetDistanceValue, 0, 1, this->currentOrderPriorityValue);
 
                     if (this->attackingUnitsValue.numberValue > 0) {
             i = 0;
@@ -1986,8 +1921,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                         }
                     }
                     RGE_Static_Object* object =
-                        this->objectValue->owner->world->object(
-                            this->attackingUnitsValue.value[i]);
+                        this->objectValue->owner->world->object(this->attackingUnitsValue.value[i]);
                     if (object != 0) {
                         xDiff += object->world_x - this->objectValue->world_x;
                         yDiff += object->world_y - this->objectValue->world_y;
@@ -1998,12 +1932,9 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
                     }
 
                     distance = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
-                    if (this->intelligentEvasiveMoveTo(
-                                        (float)(-((xDiff / distance) * evasiveMoveDistance)) +
-                                this->objectValue->world_x,
-                                        (float)(-((yDiff / distance) * evasiveMoveDistance)) +
-                            this->objectValue->world_y,
-                        this->objectValue->world_z, 0, 1) != 1)
+                    if (this->intelligentEvasiveMoveTo((float)(-((xDiff / distance) * evasiveMoveDistance)) +
+                                                       this->objectValue->world_x, (float)(-((yDiff / distance) * evasiveMoveDistance)) +
+                                                       this->objectValue->world_y, this->objectValue->world_z, 0, 1) != 1)
                         goto return_two;
                     return 3;
                 }
@@ -2077,8 +2008,7 @@ int TribeSoldierUnitAIModule::processIdle(int doSearch) {
                             float y =
                                 (float)(-((yDiff / distanceDiff) * evasiveMoveDistance)) +
                                 this->objectValue->world_y;
-                            this->evasiveMoveTo(
-                                x, y, this->objectValue->world_z, 1);
+                            this->evasiveMoveTo(x, y, this->objectValue->world_z, 1);
                             return 6;
                         }
                     }
@@ -2133,8 +2063,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
     case 0x1fc: {
         RGE_Static_Object* obj = this->objectValue->owner->world->object(this->currentTargetValue);
         if (obj != 0) {
-            if (this->objectValue->owner->visible->get_visible(
-                    (int)obj->world_x, (int)obj->world_y) == 0x0f)
+            if (this->objectValue->owner->visible->get_visible((int)obj->world_x, (int)obj->world_y) == 0x0f)
                 return 2;
         }
         this->removeCurrentTarget();
@@ -2144,8 +2073,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                 objId = this->objectValue->id;
             else
                 objId = -1;
-            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path,
-                    0xa9f);
+            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xa9f);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -2162,8 +2090,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                         objId = this->objectValue->id;
                     else
                         objId = -1;
-                    fprintf(actionFile, str_fmt_stopObject, objId,
-                            str_taiuaimd_path, 0xaae);
+                    fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xaae);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -2179,8 +2106,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                 objId = this->objectValue->id;
             else
                 objId = -1;
-            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path,
-                    0xab7);
+            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xab7);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -2196,8 +2122,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                         objId = this->objectValue->id;
                     else
                         objId = -1;
-                    fprintf(actionFile, str_fmt_stopObject, objId,
-                            str_taiuaimd_path, 0xac6);
+                    fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xac6);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -2213,8 +2138,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                 objId = this->objectValue->id;
             else
                 objId = -1;
-            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path,
-                    0xacf);
+            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xacf);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -2230,8 +2154,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                         objId = this->objectValue->id;
                     else
                         objId = -1;
-                    fprintf(actionFile, str_fmt_stopObject, objId,
-                            str_taiuaimd_path, 0xade);
+                    fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xade);
                 }
                 this->stopObject(1);
                 this->notifyCommander(nEvent);
@@ -2247,8 +2170,7 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* nEvent, unsigned long 
                 objId = this->objectValue->id;
             else
                 objId = -1;
-            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path,
-                    0xae7);
+            fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xae7);
         }
         this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -2320,8 +2242,7 @@ already:
             objId = this->objectValue->id;
         else
             objId = -1;
-        fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path,
-                0xb1f);
+        fprintf(actionFile, str_fmt_stopObject, objId, str_taiuaimd_path, 0xb1f);
     }
     this->stopObject(1);
         this->notifyCommander(nEvent);
@@ -2459,8 +2380,7 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
     case 0x1f4:
         if (nEvent->p2 <= 0) {
             RGE_Static_Object* object = this->objectValue;
-            object->owner->notify(object->id, object->id, 0x209,
-                                  nEvent->caller, 0, 0);
+            object->owner->notify(object->id, object->id, 0x209, nEvent->caller, 0, 0);
             this->purgeNotifyQueue(uTime);
             return 4;
         }
@@ -2468,8 +2388,7 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
         if (this->attackingUnitsValue.numberValue == 0 ||
             this->objectValue->owner->computerPlayer() == 1) {
             RGE_Static_Object* object = this->objectValue;
-            object->owner->notify(object->id, object->id, 0x201,
-                                  nEvent->caller, 0, 0);
+            object->owner->notify(object->id, object->id, 0x201, nEvent->caller, 0, 0);
         }
 
         if (!this->attackingUnitsValue.contains(nEvent->caller) &&

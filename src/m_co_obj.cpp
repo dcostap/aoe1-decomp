@@ -188,12 +188,9 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
     RGE_Master_Action_Object::setup(input, sprites, sounds, in_id);
     master_type = 0x32;
 
-    fscanf(input,
-           "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
-           &temp_fight_sprite, &temp_base_armor, &armor_num, &weapon_num,
-           &defense_terrain_bonus,
-           &weapon_range, &area_effect_range, &speed_of_attack, &missile_id,
-           &base_hit_chance, &temp_break_off_combat,
+    fscanf(input, "%hd %hd %hd %hd %hd %f %f %f %hd %hd %hd %hd %f %f %f %hd %f",
+           &temp_fight_sprite, &temp_base_armor, &armor_num, &weapon_num, &defense_terrain_bonus,
+           &weapon_range, &area_effect_range, &speed_of_attack, &missile_id, &base_hit_chance, &temp_break_off_combat,
            &temp_fire_missile_at_frame, &weapon_offset_x, &weapon_offset_y,
            &weapon_offset_z, &temp_area_effect_level, &minimum_weapon_range);
 
@@ -203,8 +200,7 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         armor = (RGE_Armor_Weapon_Info*)calloc((int)*armor_count_value, 4);
         if (0 < armor_num) {
             do {
-                fscanf(input, "%hd %hd", &armor[index].type,
-                       &armor[index].value);
+                fscanf(input, "%hd %hd", &armor[index].type, &armor[index].value);
                 ++index;
             } while (index < *armor_count_value);
         }
@@ -217,8 +213,7 @@ int RGE_Master_Combat_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Soun
         weapon = (RGE_Armor_Weapon_Info*)calloc((int)weapon_num, 4);
         if (0 < weapon_num) {
             do {
-                fscanf(input, "%hd %hd", &weapon[index].type,
-                       &weapon[index].value);
+                fscanf(input, "%hd %hd", &weapon[index].type, &weapon[index].value);
                 ++index;
             } while (index < weapon_num);
         }

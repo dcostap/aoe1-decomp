@@ -32,11 +32,9 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
     sprintf(resFile, "%s%s", path, resFileName);
 
     if (open_mode == 0) {
-        fHandle = (int)CreateFileA(resFile, GENERIC_READ, FILE_SHARE_READ, 0,
-            OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+        fHandle = (int)CreateFileA(resFile, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
         if (fHandle == -1) {
-            sprintf(error_msg,
-                "Error: Open_new_ResFile, mapped file %s not Found.", resFileName);
+            sprintf(error_msg, "Error: Open_new_ResFile, mapped file %s not Found.", resFileName);
             MessageBoxA(0, error_msg, "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
@@ -44,25 +42,20 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
         HANDLE mapping = CreateFileMappingA((HANDLE)fHandle, 0, PAGE_READONLY, 0, 0, 0);
         CloseHandle((HANDLE)fHandle);
         if (mapping == 0) {
-            MessageBoxA(0,
-                "Error: Open_Mapped_ResFile, Could not map file(1).",
-                "RESOURCE ERROR", MB_ICONEXCLAMATION);
+            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file(1).", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
 
         mapped_file_data = (unsigned char*)MapViewOfFile(mapping, FILE_MAP_READ, 0, 0, 0);
         if (mapped_file_data == 0) {
-            MessageBoxA(0,
-                "Error: Open_Mapped_ResFile, Could not map file to addr.",
-                "RESOURCE ERROR", MB_ICONEXCLAMATION);
+            MessageBoxA(0, "Error: Open_Mapped_ResFile, Could not map file to addr.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
         CloseHandle(mapping);
     } else {
         fHandle = _open(resFile, _O_BINARY);
         if (fHandle == -1) {
-            sprintf(error_msg,
-                "Error: Open_new_ResFile, file %s not Found.", resFileName);
+            sprintf(error_msg, "Error: Open_new_ResFile, file %s not Found.", resFileName);
             MessageBoxA(0, error_msg, "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
@@ -70,8 +63,7 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
 
     ResFileHdr* newFile = (ResFileHdr*)malloc(sizeof(ResFileHdr));
     if (newFile == 0) {
-        MessageBoxA(0, "Error: Out of memory in Open_resfile.",
-            "RESOURCE ERROR", MB_ICONEXCLAMATION);
+        MessageBoxA(0, "Error: Out of memory in Open_resfile.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return;
     }
 
@@ -88,16 +80,14 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
         lseek(fHandle, 0, 1);
         if (read(fHandle, &rHeader, 64) != 0x40) {
             __asm int 3
-            MessageBoxA(0, "Error: Reading resfile header.",
-                "RESOURCE ERROR", MB_ICONEXCLAMATION);
+            MessageBoxA(0, "Error: Reading resfile header.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
         newFile->header = (resfile_header*)malloc(rHeader.directory_size);
         lseek(fHandle, 0, 0);
         if (read(fHandle, newFile->header, rHeader.directory_size) !=
             rHeader.directory_size) {
-            MessageBoxA(0, "Error: Reading resfile header data.",
-                "RESOURCE ERROR", MB_ICONEXCLAMATION);
+            MessageBoxA(0, "Error: Reading resfile header data.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
             return;
         }
     }
@@ -113,15 +103,12 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
     }
 
     if (strcmp(newFile->header->password, password) != 0) {
-        MessageBoxA(0,
-            "Error: Open_ResFile, Corruption detected in resfile.",
-            "RESOURCE ERROR", MB_ICONEXCLAMATION);
+        MessageBoxA(0, "Error: Open_ResFile, Corruption detected in resfile.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return;
     }
 
     if (strncmp(newFile->header->version, "1.00", 4) != 0) {
-        MessageBoxA(0, "Error: Open_ResFile, Resfile not correct.",
-            "RESOURCE ERROR", MB_ICONEXCLAMATION);
+        MessageBoxA(0, "Error: Open_ResFile, Resfile not correct.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
     }
 }
 
@@ -214,12 +201,9 @@ unsigned char* __cdecl RESFILE_load(
     rLoadType = -1;
     rDataSize = 0;
 
-    if (RESFILE_locate_resource(rType, rId, infile, offset,
-            mapped_file, datalength) == 0) {
+    if (RESFILE_locate_resource(rType, rId, infile, offset, mapped_file, datalength) == 0) {
         if (resource_missing_flag != 0) {
-            sprintf(error_string,
-                "ERROR: res_read_bin, resource type %4.4c , id %d, not found",
-                rType, rId);
+            sprintf(error_string, "ERROR: res_read_bin, resource type %4.4c , id %d, not found", rType, rId);
             MessageBoxA(0, error_string, "RESOURCE ERROR", MB_ICONEXCLAMATION);
         }
         return 0;
@@ -235,15 +219,13 @@ unsigned char* __cdecl RESFILE_load(
     unsigned char* data = (unsigned char*)malloc(datalength);
     rDataSize = datalength;
     if (data == 0) {
-        MessageBoxA(0, "Error: Out of memory in res_read_bin.",
-            "RESOURCE ERROR", MB_ICONEXCLAMATION);
+        MessageBoxA(0, "Error: Out of memory in res_read_bin.", "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return 0;
     }
 
     lseek(infile, offset, 0);
     if (read(infile, data, datalength) != datalength) {
-        MessageBoxA(0, "Error: unable to read resource",
-            "RESOURCE ERROR", MB_ICONEXCLAMATION);
+        MessageBoxA(0, "Error: unable to read resource", "RESOURCE ERROR", MB_ICONEXCLAMATION);
         return 0;
     }
 
@@ -320,8 +302,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
     sprintf(build_filename, "%s%s", source_path, build_list_file);
     buildFile = fopen(build_filename, "r");
     if (buildFile == 0) {
-        L->Log("Error: could not find resource build file: %s",
-            build_list_file);
+        L->Log("Error: could not find resource build file: %s", build_list_file);
         return 0;
     }
 
@@ -336,8 +317,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         sprintf(data_filename, "%s%s", source_path, temp_filename);
         unsigned long type = BUILDRES_get_files_resource_type(temp_filename);
         if (type == 0) {
-            L->Log("Error: could not determine file type of: %s",
-                temp_filename);
+            L->Log("Error: could not determine file type of: %s", temp_filename);
             return 0;
         }
 
@@ -382,8 +362,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         iq = typeNode->idList;
         while (iq != 0) {
             if (iq->id == rId) {
-                L->Log("Error: duplicate resources: %s & %s",
-                    iq->fName, data_filename);
+                L->Log("Error: duplicate resources: %s & %s", iq->fName, data_filename);
                 return 0;
             }
             if (iq->id < rId) {
@@ -444,12 +423,9 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
 
     fclose(buildFile);
 
-    resHandle = _open(resource_filename,
-        _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-        _S_IREAD | _S_IWRITE);
+    resHandle = _open(resource_filename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (resHandle == -1) {
-        L->Log("Error: unable to create resource file file: %s",
-            resource_filename);
+        L->Log("Error: unable to create resource file file: %s", resource_filename);
         return 0;
     }
 
@@ -529,8 +505,7 @@ int __cdecl RESFILE_build_res_file(char* build_list_file, char* source_path, cha
         iq = typeNode->idList;
         while (iq != 0) {
             if (filePos != iq->dataOffset) {
-                L->Log(
-                    "Error writing resource file data: pos out of sync 2");
+                L->Log("Error writing resource file data: pos out of sync 2");
                 return 0;
             }
             if (write(resHandle, iq->resData, iq->resSize) !=

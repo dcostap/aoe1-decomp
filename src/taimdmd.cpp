@@ -191,12 +191,8 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
         this->firstUpdate = 0;
         this->logCommonHistory("Initial Diplomacy Settings:");
         for (int i = 1; i < this->player->world->player_num; i++) {
-            this->logCommonHistory(
-                "  Player #%d: Dislike=%d, Like=%d, Ambivalence=%d.",
-                i,
-                this->diplomacyAI.stance(i, 0),
-                this->diplomacyAI.stance(i, 2),
-                this->diplomacyAI.stance(i, 1));
+            this->logCommonHistory("  Player #%d: Dislike=%d, Like=%d, Ambivalence=%d.", i, this->diplomacyAI.stance(i, 0),
+                                   this->diplomacyAI.stance(i, 2), this->diplomacyAI.stance(i, 1));
         }
 
         this->strategyAI.update(0);
@@ -254,26 +250,22 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
             if (tactical->strategicNumber(0x82) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(IDS_AI_TRIBUTE_MORE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString,
-                        tactical->strategicNumber(0x7C) - this->tributeAmount);
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
+                                                  tactical->strategicNumber(0x7C) - this->tributeAmount);
                 } else {
                     rge_base_game->get_string(IDS_AI_TRIBUTE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString,
-                        tactical->strategicNumber(0x7C));
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
+                                                  tactical->strategicNumber(0x7C));
                 }
             } else if (tactical->strategicNumber(0x81) == 1) {
                 if (this->tributeAmount > 0) {
                     rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString,
-                        tactical->strategicNumber(0x7C));
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
+                                                  tactical->strategicNumber(0x7C));
                 } else {
                     rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_MORE_GOLD, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString,
-                        tactical->strategicNumber(0x7C) - this->tributeAmount);
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString,
+                                                  tactical->strategicNumber(0x7C) - this->tributeAmount);
                 }
             }
             this->setTributeChat();
@@ -282,23 +274,18 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 this->player->world->world_time_delta;
             if (this->tributeExpirationTimeout <= 0) {
                 if (tactical->strategicNumber(0x82) == 1) {
-                    this->diplomacyAI.setStance(
-                        tactical->strategicNumber(0x80), 0, 100);
-                    this->diplomacyAI.setStance(
-                        tactical->strategicNumber(0x80), 2, 0);
-                    this->aiPlayer->setDiplomaticStance(
-                        tactical->strategicNumber(0x80), 3);
+                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 100);
+                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 2, 0);
+                    this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(0x80), 3);
                     rge_base_game->get_string(IDS_AI_TRIBUTE_THREAT, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->tributeAddressed = 1;
                     this->lastTributeChatTime =
                         this->player->world->world_time;
                 } else if (tactical->strategicNumber(0x81) == 1) {
                     rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_MISSED, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->lastTributeChatTime =
                         this->player->world->world_time;
@@ -308,15 +295,11 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
             } else if (this->tributeAmount >=
                        tactical->strategicNumber(0x7C)) {
                 if (tactical->strategicNumber(0x81) == 1) {
-                    this->diplomacyAI.setStance(
-                        tactical->strategicNumber(0x80), 0, 0);
-                    this->diplomacyAI.setStance(
-                        tactical->strategicNumber(0x80), 2, 100);
-                    this->aiPlayer->setDiplomaticStance(
-                        tactical->strategicNumber(0x80), 0);
+                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 0);
+                    this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 2, 100);
+                    this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(0x80), 0);
                     rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->lastTributeChatTime =
                         this->player->world->world_time;
@@ -324,8 +307,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                         tactical->strategicNumber(0x84) == 0;
                 } else if (tactical->strategicNumber(0x82) == 1) {
                     rge_base_game->get_string(IDS_AI_TRIBUTE_ACCEPTED, tempString, 256);
-                    this->player->sendChatMessage(
-                        tactical->strategicNumber(0x80), 0, tempString);
+                    this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
                     this->lastTributeChatTime =
                         this->player->world->world_time;
@@ -447,8 +429,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                         continue;
 
                     if (swayableCPs.contains(neutralPlayer)) {
-                        other->sendAICommand(
-                            this->player->id, 7, resAmount, 0, 0);
+                        other->sendAICommand(this->player->id, 7, resAmount, 0, 0);
                         resAmount *= 2;
                     }
 
@@ -458,11 +439,9 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                         RGE_Player* target = world->players[j];
                         if (target->computerPlayer() == 0 &&
                             !swayableCPs.contains(neutralPlayer)) {
-                            other->sendAICommand(
-                                this->player->id, 6, j, 0, 0);
+                            other->sendAICommand(this->player->id, 6, j, 0, 0);
                         } else if (target->computerPlayer() == 1) {
-                            other->sendAICommand(
-                                this->player->id, 6, j, 2, 0);
+                            other->sendAICommand(this->player->id, 6, j, 2, 0);
                         }
                     }
                 }
@@ -488,8 +467,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
 
             if (newEnemy != -1) {
                 if (this->player->isEnemy(newEnemy) == 0) {
-                    this->player->sendAICommand(
-                        this->player->id, 6, newEnemy, 0, 0);
+                    this->player->sendAICommand(this->player->id, 6, newEnemy, 0, 0);
                 }
                 for (int i = 1; i < this->player->world->player_num; i++) {
                     if (i == this->player->id || i == newEnemy)
@@ -497,15 +475,12 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                     RGE_Player* other =
                         this->player->world->players[i];
                     if (other->isEnemy(newEnemy) == 1) {
-                        this->player->sendAICommand(
-                            this->player->id, 6, i, 2, 0);
+                        this->player->sendAICommand(this->player->id, 6, i, 2, 0);
                         if (other->computerPlayer() == 1) {
-                            other->sendAICommand(
-                                this->player->id, 6, this->player->id, 2, 0);
+                            other->sendAICommand(this->player->id, 6, this->player->id, 2, 0);
                         }
                     } else if (other->isAlly(newEnemy) == 1) {
-                        this->player->sendAICommand(
-                            this->player->id, 6, i, 0, 0);
+                        this->player->sendAICommand(this->player->id, 6, i, 0, 0);
                     }
                 }
             }
@@ -630,12 +605,8 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects() {
         if (object != 0) {
             this->buildAI.addItem(object, 0);
             if (object->master_obj->id == 0x6d) {
-                this->constructionAI.setReferencePoint(
-                    this->player->world->map->map_width,
-                    this->player->world->map->map_height,
-                    object->world_x,
-                    object->world_y,
-                    object->world_z);
+                this->constructionAI.setReferencePoint(this->player->world->map->map_width,
+                                                       this->player->world->map->map_height, object->world_x, object->world_y, object->world_z);
             }
         }
     }
@@ -670,11 +641,9 @@ void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int 
             for (int i = 1; i < this->player->world->player_num; ++i) {
                 if (i != this->player->id && i != playerID) {
                     if (newAlly->isAlly(i) == 1) {
-                        this->player->sendAICommand(
-                            this->player->id, 6, i, 2, 0);
+                        this->player->sendAICommand(this->player->id, 6, i, 2, 0);
                     } else if (newAlly->isEnemy(i) == 1) {
-                        this->player->sendAICommand(
-                            this->player->id, 6, i, 0, 0);
+                        this->player->sendAICommand(this->player->id, 6, i, 0, 0);
                     }
                 }
             }
@@ -692,15 +661,11 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
     TribeTacticalAIModule* tactical = &this->tacticalAI;
 
     if (this->player->isEnemy(tactical->strategicNumber(0x80)) == 0) {
-        this->diplomacyAI.setStance(
-            tactical->strategicNumber(0x80), 0, 0);
-        this->diplomacyAI.setStance(
-            tactical->strategicNumber(0x80), 2, 100);
-        this->aiPlayer->setDiplomaticStance(
-            tactical->strategicNumber(0x80), 3);
+        this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 0, 0);
+        this->diplomacyAI.setStance(tactical->strategicNumber(0x80), 2, 100);
+        this->aiPlayer->setDiplomaticStance(tactical->strategicNumber(0x80), 3);
         rge_base_game->get_string(IDS_AI_TRIBUTE_REFUSED, tempString, 256);
-        this->player->sendChatMessage(
-            tactical->strategicNumber(0x80), 0, tempString);
+        this->player->sendChatMessage(tactical->strategicNumber(0x80), 0, tempString);
         this->waitingOnTribute = 0;
         this->tributeAddressed = 1;
     }
@@ -728,12 +693,9 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
 
     case 1:
         if (caller != this->player->id &&
-            this->aiPlayer->objects->find_by_master_id(
-                0x54, -1.0f, -1.0f, 0, 2, 0) != 0) {
+            this->aiPlayer->objects->find_by_master_id(0x54, -1.0f, -1.0f, 0, 2, 0) != 0) {
             float current = this->aiPlayer->attributes[0x2E];
-            this->aiPlayer->command_give_attribute(
-                caller, p1, (float)p2,
-                current);
+            this->aiPlayer->command_give_attribute(caller, p1, (float)p2, current);
             return 1;
         }
         break;
@@ -771,21 +733,18 @@ int TribeMainDecisionAIModule::processAICommand(int caller, int mType, int p1, i
             if (rge_base_game->difficulty() == 4) {
                 if (this->player->world->players[p1]->computerPlayer() == 0) {
                     static_cast<TRIBE_Command*>(this->player->world->commands)
-                        ->command_allied_victory(
-                        this->player->id, 1);
+                        ->command_allied_victory(this->player->id, 1);
                     this->diplomacyAI.setChangeable(p1, 0);
                     return 1;
                 } else {
                     static_cast<TRIBE_Command*>(this->player->world->commands)
-                        ->command_allied_victory(
-                        this->player->id, 0);
+                        ->command_allied_victory(this->player->id, 0);
                     this->diplomacyAI.setChangeable(p1, 0);
                     return 1;
                 }
             } else {
                 static_cast<TRIBE_Command*>(this->player->world->commands)
-                    ->command_allied_victory(
-                    this->player->id, 1);
+                    ->command_allied_victory(this->player->id, 1);
                 this->diplomacyAI.setChangeable(p1, 0);
                 return 1;
             }

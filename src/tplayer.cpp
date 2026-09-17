@@ -262,8 +262,7 @@ void TRIBE_Player::update() {
             if (this->attributes[11] < 0.0f)
                 this->history->add_history_entry(0, 0);
             else
-                this->history->add_history_entry(
-                    0, static_cast<unsigned char>(static_cast<long>(this->attributes[11])));
+                this->history->add_history_entry(0, static_cast<unsigned char>(static_cast<long>(this->attributes[11])));
         }
         if (rge_base_game->fullVisibility()) this->attributes[22] = 100.0f;
         else this->attributes[22] = this->visible->percentExplored() * 100.0f;
@@ -380,8 +379,7 @@ void TRIBE_Player::load(int infile) {
     short count = this->master_object_num;
     if (count > 0) {
         // RGE_Player releases this shared table with free().
-        this->master_objects = static_cast<RGE_Master_Static_Object**>(
-            calloc(count, sizeof(*this->master_objects)));
+        this->master_objects = static_cast<RGE_Master_Static_Object**>(calloc(count, sizeof(*this->master_objects)));
         rge_read(infile, this->master_objects, this->master_object_num * 4);
         for (short i = 0; i < this->master_object_num; ++i) {
             if (this->master_objects[i] != 0) {
@@ -437,8 +435,7 @@ void TRIBE_Player::tech_cost(short tech_id, short& inv_1, short& inv_amt_1,
                              short& inv_amt_3) {
     TRIBE_Player_Tech* tech =
         this->tech_tree;
-    tech->tech_cost(tech_id, inv_1, inv_amt_1, inv_2, inv_amt_2,
-                    inv_3, inv_amt_3);
+    tech->tech_cost(tech_id, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3);
 }
 
 
@@ -557,8 +554,7 @@ RGE_Static_Object* TRIBE_Player::make_new_object(long obj_id, float x, float y, 
     RGE_Static_Object* object = RGE_Player::make_new_object(obj_id, x, y, z, build_all_the_way);
     if (object != 0) {
         if (build_all_the_way != 0) {
-            static_cast<TRIBE_World*>(this->world)->check_destructables(
-                this->id, static_cast<short>(obj_id), x, y, 0);
+            static_cast<TRIBE_World*>(this->world)->check_destructables(this->id, static_cast<short>(obj_id), x, y, 0);
             if (object->master_obj->master_type == 'P')
                 static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
         }
@@ -722,9 +718,8 @@ void TRIBE_Player::interface_trade_avail(Trade_Avail** list,
                     RGE_Static_Object** output = dock_list + dock_count;
                     do {
                         if (node->node->master_obj->id == 0x2D) {
-                            if (this->visible->get_visible(
-                                    static_cast<short>(node->node->world_x),
-                                    static_cast<short>(node->node->world_y))) {
+                            if (this->visible->get_visible(static_cast<short>(node->node->world_x),
+                                                           static_cast<short>(node->node->world_y))) {
                                 ++dock_count;
                                 *output = node->node;
                                 ++output;
@@ -793,11 +788,9 @@ unsigned char TRIBE_Player::command_make_wall(short obj_id, long x1, long y1,
 
     RGE_Master_Static_Object* info = this->master_objects[obj_id];
     if (info != 0 && info->available != 0) {
-        if (get_selected_objects_to_command(&list, &list_num, 4, 4,
-                                            -1, -1)) {
+        if (get_selected_objects_to_command(&list, &list_num, 4, 4, -1, -1)) {
             this->master_objects[0x76]->play_command_sound();
-            static_cast<TRIBE_Command*>(this->world->commands)->command_build_wall(list, list_num, obj_id,
-                                                       x1, y1, x2, y2);
+            static_cast<TRIBE_Command*>(this->world->commands)->command_build_wall(list, list_num, obj_id, x1, y1, x2, y2);
             free(list);
             return 1;
         }
@@ -934,8 +927,7 @@ unsigned char TRIBE_Player::command_make_repair(RGE_Static_Object* obj) {
     RGE_Master_Static_Object* repair_master =
         list[0]->get_command_master(obj, 0.0f, 0.0f, 0.0f);
     if (repair_master != 0) repair_master->play_command_sound();
-    static_cast<TRIBE_Command*>(this->world->commands)->command_repair(
-        list, list_num, obj);
+    static_cast<TRIBE_Command*>(this->world->commands)->command_repair(list, list_num, obj);
     free(list);
     return 1;
 }
@@ -1123,9 +1115,7 @@ void TRIBE_Player::random_start() {
              - -0.5f;
         int tries = 1;
         while (tries < 5000) {
-            if (this->master_objects[0x6d]->check_placement(
-                    this, h - -0.5f, w1 - -0.5f,
-                    0, 0, 1, 1, 1, 1, 1) == 0)
+            if (this->master_objects[0x6d]->check_placement(this, h - -0.5f, w1 - -0.5f, 0, 0, 1, 1, 1, 1, 1) == 0)
                 break;
             w1 = ((debug_rand(tplayerSourceName, 1585) *
                    (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
@@ -1138,8 +1128,7 @@ void TRIBE_Player::random_start() {
 
         if (tries < 5000) {
             TRIBE_Building_Object* town_center_object =
-                static_cast<TRIBE_Building_Object*>(this->master_objects[0x6d]->make_new_obj(
-                    this, h, w1, 0));
+                static_cast<TRIBE_Building_Object*>(this->master_objects[0x6d]->make_new_obj(this, h, w1, 0));
             this->set_map_loc(static_cast<short>(h), static_cast<short>(w1));
             this->set_view_loc(h, w1);
             town_center_object->build(10000.0f);
@@ -1163,8 +1152,7 @@ void TRIBE_Player::random_start() {
 
                     if (w >= 0.0f && w < static_cast<float>(this->world->map->map_height) &&
                         h1 >= 0.0f && h1 < static_cast<float>(this->world->map->map_width) &&
-                        this->master_objects[0x53]->check_placement(
-                            this, h1, w, 0, 0, 1, 1, 1, 1, 1) == 0) {
+                        this->master_objects[0x53]->check_placement(this, h1, w, 0, 0, 1, 1, 1, 1, 1) == 0) {
                         this->master_objects[0x53]->make_new_obj(this, h1, w, 0);
                         bad = 0;
                     }
@@ -1178,10 +1166,8 @@ void TRIBE_Player::random_start() {
         if (town_center_object == 0) {
             town_center_object = this->objects->list->node;
         }
-        this->set_map_loc(static_cast<short>(town_center_object->world_x),
-                          static_cast<short>(town_center_object->world_y));
-        this->set_view_loc(town_center_object->world_x,
-                           town_center_object->world_y);
+        this->set_map_loc(static_cast<short>(town_center_object->world_x), static_cast<short>(town_center_object->world_y));
+        this->set_view_loc(town_center_object->world_x, town_center_object->world_y);
     }
 
     if (rge_base_game->multiplayerGame() || rge_base_game->randomGame()) {
@@ -1196,8 +1182,7 @@ void TRIBE_Player::random_start() {
                     town_center_object->explore_terrain(this->world->players[i], 0, -1);
                     town_center_object->unexplore_terrain(this->world->players[i], 0, -1);
                 }
-                this->world->players[i]->make_new_object(
-                    0x70, this->view_x, this->view_y, 0, 0);
+                this->world->players[i]->make_new_object(0x70, this->view_x, this->view_y, 0, 0);
                 found_ally = 1;
             }
         }
@@ -1227,8 +1212,7 @@ void TRIBE_Player::objectCost(int id, int unused1, ResourceItem* ri, int unused2
     short inv_3;
     short inv_amt_2;
 
-    this->obj_cost(object, 0, inv_2, inv_amt_1, inv_3, inv_amt_2,
-                   inv_1, inv_amt_3, 1.0f);
+    this->obj_cost(object, 0, inv_2, inv_amt_1, inv_3, inv_amt_2, inv_1, inv_amt_3, 1.0f);
     ri->incrementValue(inv_2, inv_amt_1);
     ri->incrementValue(inv_3, inv_amt_2);
     ri->incrementValue(inv_1, inv_amt_3);
@@ -1243,8 +1227,7 @@ int TRIBE_Player::objectCostByType(int id) {
     short inv_amt_3;
     short inv_amt_2;
 
-    obj_cost(static_cast<short>(id), 0, inv_1, inv_amt_1, inv_2, inv_amt_2,
-             inv_3, inv_amt_3, 1.0f);
+    obj_cost(static_cast<short>(id), 0, inv_1, inv_amt_1, inv_2, inv_amt_2, inv_3, inv_amt_3, 1.0f);
     return inv_amt_1 + inv_amt_2 + inv_amt_3;
 }
 
@@ -1259,8 +1242,7 @@ void TRIBE_Player::researchCost(int id, int unused1, ResourceItem* ri, int unuse
     short inv_1;
     short inv_amt_2;
 
-    this->tech_tree->tech_cost(technology, inv_2, inv_amt_1, inv_3,
-                               inv_amt_3, inv_1, inv_amt_2);
+    this->tech_tree->tech_cost(technology, inv_2, inv_amt_1, inv_3, inv_amt_3, inv_1, inv_amt_2);
     ri->incrementValue(inv_2, inv_amt_1);
     ri->incrementValue(inv_3, inv_amt_3);
     ri->incrementValue(inv_1, inv_amt_2);
@@ -1316,96 +1298,77 @@ char* TRIBE_Player::aiStatus(int sNum) {
                 TribeMainDecisionAIModule* ai = static_cast<TRIBE_Player*>(otherPlayer)->playerAI;
                 int last = ai->tacticalAI.lastUpdateAreaTimeValue;
                 int avg = ai->tacticalAI.averageUpdateAreaTimeValue;
-                sprintf(this->aiStatusInformationValue,
-                    "ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
-                    static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer,
-                    this->world->currentUpdateComputerPlayer,
-                    avg,
-                    last,
-                    ai->tacticalAI.updateAreaName());
+                sprintf(this->aiStatusInformationValue, "ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
+                        static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer,
+                        this->world->currentUpdateComputerPlayer, avg, last, ai->tacticalAI.updateAreaName());
                 return this->aiStatusInformationValue;
             }
         }
         return "Invalid currentUpdateComputerPlayer...";
     }
     if (sNum == 1) {
-        sprintf(this->aiStatusInformationValue,
-            "Build List:%s, City Plan:%s, BuildAI(C=%s, N=%s, L=%s, %d/%d).",
-            this->playerAI->buildAI.buildListName(),
-            this->playerAI->constructionAI.constructionPlanName(),
-            this->playerAI->buildAI.currentBuildItemRequested(),
-            this->playerAI->buildAI.nextBuildItemRequested(),
-            this->playerAI->buildAI.lastBuildItemRequested(),
-            this->playerAI->buildAI.numberItemsIntoBuildList(),
-            this->playerAI->buildAI.buildListLength());
+        sprintf(this->aiStatusInformationValue, "Build List:%s, City Plan:%s, BuildAI(C=%s, N=%s, L=%s, %d/%d).",
+                this->playerAI->buildAI.buildListName(), this->playerAI->constructionAI.constructionPlanName(),
+                this->playerAI->buildAI.currentBuildItemRequested(), this->playerAI->buildAI.nextBuildItemRequested(),
+                this->playerAI->buildAI.lastBuildItemRequested(), this->playerAI->buildAI.numberItemsIntoBuildList(),
+                this->playerAI->buildAI.buildListLength());
         return this->aiStatusInformationValue;
     }
     if (sNum == 2) {
         sprintf(this->aiStatusInformationValue2,
-            "NeedRes: %s=%d, %s=%d, %s=%d, %s=%d, ResDiff: %s=%d, %s=%d, %s=%d, %s=%d.",
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.neededResourceAmount(0),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.neededResourceAmount(1),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.neededResourceAmount(2),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.neededResourceAmount(3),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.resourceDifference(0),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.resourceDifference(1),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.resourceDifference(2),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.resourceDifference(3));
+                "NeedRes: %s=%d, %s=%d, %s=%d, %s=%d, ResDiff: %s=%d, %s=%d, %s=%d, %s=%d.",
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.neededResourceAmount(0),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.neededResourceAmount(1),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.neededResourceAmount(2),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.neededResourceAmount(3),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.resourceDifference(0),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.resourceDifference(1),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.resourceDifference(2),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.resourceDifference(3));
         return this->aiStatusInformationValue2;
     }
     if (sNum == 3) {
         sprintf(this->aiStatusInformationValue3,
-            "Gat(Act/Des): %s=(%d/%d), %s=(%d/%d), %s=(%d/%d), %s=(%d/%d).  #Civs=%d, #Sol=%d, #Boats=%d.",
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.actualGathererCount(0), this->playerAI->tacticalAI.desiredGathererCount(0),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.actualGathererCount(1), this->playerAI->tacticalAI.desiredGathererCount(1),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.actualGathererCount(2), this->playerAI->tacticalAI.desiredGathererCount(2),
-            this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.actualGathererCount(3), this->playerAI->tacticalAI.desiredGathererCount(3),
-            this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberSoldiers(), this->playerAI->tacticalAI.numberBoats());
+                "Gat(Act/Des): %s=(%d/%d), %s=(%d/%d), %s=(%d/%d), %s=(%d/%d).  #Civs=%d, #Sol=%d, #Boats=%d.",
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(0)), this->playerAI->tacticalAI.actualGathererCount(0), this->playerAI->tacticalAI.desiredGathererCount(0),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(1)), this->playerAI->tacticalAI.actualGathererCount(1), this->playerAI->tacticalAI.desiredGathererCount(1),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(2)), this->playerAI->tacticalAI.actualGathererCount(2), this->playerAI->tacticalAI.desiredGathererCount(2),
+                this->playerAI->resourceAI.resourceName(this->playerAI->tacticalAI.neededResource(3)), this->playerAI->tacticalAI.actualGathererCount(3), this->playerAI->tacticalAI.desiredGathererCount(3),
+                this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberSoldiers(), this->playerAI->tacticalAI.numberBoats());
         return this->aiStatusInformationValue3;
     }
     if (sNum == 4) {
-        sprintf(this->aiStatusInformationValue4,
-            "Pers (Spec/BL): Food=(%d/%d), Wood=(%d/%d), Gold=(%d/%d), Stone=(%d/%d).",
-            this->playerAI->tacticalAI.strategicNumber(0x75),
-            this->playerAI->tacticalAI.strategicNumber(0x9C),
-            this->playerAI->tacticalAI.strategicNumber(0x78),
-            this->playerAI->tacticalAI.strategicNumber(0x9D),
-            this->playerAI->tacticalAI.strategicNumber(0x76),
-            this->playerAI->tacticalAI.strategicNumber(0x9F),
-            this->playerAI->tacticalAI.strategicNumber(0x77),
-            this->playerAI->tacticalAI.strategicNumber(0x9E));
+        sprintf(this->aiStatusInformationValue4, "Pers (Spec/BL): Food=(%d/%d), Wood=(%d/%d), Gold=(%d/%d), Stone=(%d/%d).",
+                this->playerAI->tacticalAI.strategicNumber(0x75), this->playerAI->tacticalAI.strategicNumber(0x9C),
+                this->playerAI->tacticalAI.strategicNumber(0x78), this->playerAI->tacticalAI.strategicNumber(0x9D),
+                this->playerAI->tacticalAI.strategicNumber(0x76), this->playerAI->tacticalAI.strategicNumber(0x9F),
+                this->playerAI->tacticalAI.strategicNumber(0x77), this->playerAI->tacticalAI.strategicNumber(0x9E));
         return this->aiStatusInformationValue4;
     }
     if (sNum == 5) {
         sprintf(this->aiStatusInformationValue5,
-            "Dip: P1(%d/%d/%d), P2(%d/%d/%d), P3(%d/%d/%d), P4(%d/%d/%d), P5(%d/%d/%d), P6(%d/%d/%d), P7(%d/%d/%d), P8(%d/%d/%d).",
-            this->playerAI->diplomacyAI.stance(1, 0), this->playerAI->diplomacyAI.stance(1, 1), this->playerAI->diplomacyAI.stance(1, 2),
-            this->playerAI->diplomacyAI.stance(2, 0), this->playerAI->diplomacyAI.stance(2, 1), this->playerAI->diplomacyAI.stance(2, 2),
-            this->playerAI->diplomacyAI.stance(3, 0), this->playerAI->diplomacyAI.stance(3, 1), this->playerAI->diplomacyAI.stance(3, 2),
-            this->playerAI->diplomacyAI.stance(4, 0), this->playerAI->diplomacyAI.stance(4, 1), this->playerAI->diplomacyAI.stance(4, 2),
-            this->playerAI->diplomacyAI.stance(5, 0), this->playerAI->diplomacyAI.stance(5, 1), this->playerAI->diplomacyAI.stance(5, 2),
-            this->playerAI->diplomacyAI.stance(6, 0), this->playerAI->diplomacyAI.stance(6, 1), this->playerAI->diplomacyAI.stance(6, 2),
-            this->playerAI->diplomacyAI.stance(7, 0), this->playerAI->diplomacyAI.stance(7, 1), this->playerAI->diplomacyAI.stance(7, 2),
-            this->playerAI->diplomacyAI.stance(8, 0), this->playerAI->diplomacyAI.stance(8, 1), this->playerAI->diplomacyAI.stance(8, 2));
+                "Dip: P1(%d/%d/%d), P2(%d/%d/%d), P3(%d/%d/%d), P4(%d/%d/%d), P5(%d/%d/%d), P6(%d/%d/%d), P7(%d/%d/%d), P8(%d/%d/%d).",
+                this->playerAI->diplomacyAI.stance(1, 0), this->playerAI->diplomacyAI.stance(1, 1), this->playerAI->diplomacyAI.stance(1, 2),
+                this->playerAI->diplomacyAI.stance(2, 0), this->playerAI->diplomacyAI.stance(2, 1), this->playerAI->diplomacyAI.stance(2, 2),
+                this->playerAI->diplomacyAI.stance(3, 0), this->playerAI->diplomacyAI.stance(3, 1), this->playerAI->diplomacyAI.stance(3, 2),
+                this->playerAI->diplomacyAI.stance(4, 0), this->playerAI->diplomacyAI.stance(4, 1), this->playerAI->diplomacyAI.stance(4, 2),
+                this->playerAI->diplomacyAI.stance(5, 0), this->playerAI->diplomacyAI.stance(5, 1), this->playerAI->diplomacyAI.stance(5, 2),
+                this->playerAI->diplomacyAI.stance(6, 0), this->playerAI->diplomacyAI.stance(6, 1), this->playerAI->diplomacyAI.stance(6, 2),
+                this->playerAI->diplomacyAI.stance(7, 0), this->playerAI->diplomacyAI.stance(7, 1), this->playerAI->diplomacyAI.stance(7, 2),
+                this->playerAI->diplomacyAI.stance(8, 0), this->playerAI->diplomacyAI.stance(8, 1), this->playerAI->diplomacyAI.stance(8, 2));
         return this->aiStatusInformationValue5;
     }
     if (sNum == 6) {
         TribeMainDecisionAIModule* ai =
-            static_cast<TRIBE_Player*>(this->world->players[
-                this->world->currentUpdateComputerPlayer])->playerAI;
+            static_cast<TRIBE_Player*>(this->world->players[this->world->currentUpdateComputerPlayer])->playerAI;
         int last = ai->tacticalAI.lastUpdateAreaTimeValue;
         int avg = ai->tacticalAI.averageUpdateAreaTimeValue;
         int attackEnabled = this->playerAI->tacticalAI.attackEnabledValue;
         sprintf(this->aiStatusInformationValue6,
-            "Per: %s, AttEnab=%d, AttDly=%d Min, ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
-            this->playerAI->strategyAI.ruleSetName(),
-            attackEnabled,
-            this->playerAI->tacticalAI.strategicNumber(0x68) / 60,
-            static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer,
-            this->world->currentUpdateComputerPlayer,
-            avg,
-            last,
-            ai->tacticalAI.updateAreaName());
+                "Per: %s, AttEnab=%d, AttDly=%d Min, ConCP=%d, CurCP=%d, AveUAms=%3d, LastUAms=%3d, UA=%s.",
+                this->playerAI->strategyAI.ruleSetName(), attackEnabled, this->playerAI->tacticalAI.strategicNumber(0x68) / 60,
+                static_cast<TRIBE_World*>(this->world)->controllingComputerPlayer, this->world->currentUpdateComputerPlayer,
+                avg, last, ai->tacticalAI.updateAreaName());
         return this->aiStatusInformationValue6;
     }
     return "Invalid status line number.";
@@ -1619,7 +1582,7 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
             if (strcmp(bL, randomString) == 0) {
                 do {
                     this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                        static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
+                                                                static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
                     this->playerAI->logCommonHistory(tplayerBuildMessage, buildListName);
                 } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
             } else {
@@ -1629,7 +1592,7 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         } else {
             do {
                 this->intelligentBuildListAndRulesSelection(buildListName, ruleSetName,
-                    static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
+                                                            static_cast<TRIBE_Game*>(rge_base_game)->mapType(), static_cast<TRIBE_Game*>(rge_base_game)->victoryType(), static_cast<TRIBE_Game*>(rge_base_game)->mapSize());
                 this->playerAI->logCommonHistory(tplayerBuildMessage, buildListName);
             } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
         }
@@ -1639,17 +1602,15 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
                 this->playerAI->logCommonHistory(tplayerDefaultMessage);
             } else {
                 this->playerAI->logCommonHistory(tplayerFileMessage, cP);
-                this->playerAI->constructionAI.loadConstructionPlan(
-                    cP, this->world->map->map_width,
-                    this->world->map->map_height, 0, 0, 0);
+                this->playerAI->constructionAI.loadConstructionPlan(cP, this->world->map->map_width,
+                                                                    this->world->map->map_height, 0, 0, 0);
                 goto constructionLoaded;
             }
         } else {
             this->playerAI->logCommonHistory(tplayerDefaultMessage);
         }
-        this->playerAI->constructionAI.loadConstructionPlan(
-            tplayerDefaultPlan, this->world->map->map_width,
-            this->world->map->map_height, 0, 0, 0);
+        this->playerAI->constructionAI.loadConstructionPlan(tplayerDefaultPlan, this->world->map->map_width,
+                                                            this->world->map->map_height, 0, 0, 0);
 
     constructionLoaded:
 
@@ -3161,20 +3122,14 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
     fprintf(out, "  Exploration:     %d.\n", this->victory_conditions->get_attribute_id(7));
 
     if (this->playerAI != 0) {
-        fprintf(out, "Build AI: last=%s, last2=%s, Progress=%d/%d.\n",
-                this->playerAI->buildAI.currentBuildItemRequested(),
-                this->playerAI->buildAI.lastBuildItemRequested(),
-                this->playerAI->buildAI.numberItemsIntoBuildList(),
+        fprintf(out, "Build AI: last=%s, last2=%s, Progress=%d/%d.\n", this->playerAI->buildAI.currentBuildItemRequested(),
+                this->playerAI->buildAI.lastBuildItemRequested(), this->playerAI->buildAI.numberItemsIntoBuildList(),
                 this->playerAI->buildAI.buildListLength());
         fprintf(out, "Civilians: Total=%d, Exp(%d/%d), Gat(%d/%d), Res(%d,%d,%d,%d).\n",
-                this->playerAI->tacticalAI.numberCivilians(),
-                this->playerAI->tacticalAI.numberCivilianExplorers(),
-                this->playerAI->tacticalAI.desiredNumberCivilianExplorers(),
-                this->playerAI->tacticalAI.numberGatherers(),
-                this->playerAI->tacticalAI.desiredNumberGatherers(),
-                this->playerAI->tacticalAI.neededResource(0),
-                this->playerAI->tacticalAI.neededResource(1),
-                this->playerAI->tacticalAI.neededResource(2),
+                this->playerAI->tacticalAI.numberCivilians(), this->playerAI->tacticalAI.numberCivilianExplorers(),
+                this->playerAI->tacticalAI.desiredNumberCivilianExplorers(), this->playerAI->tacticalAI.numberGatherers(),
+                this->playerAI->tacticalAI.desiredNumberGatherers(), this->playerAI->tacticalAI.neededResource(0),
+                this->playerAI->tacticalAI.neededResource(1), this->playerAI->tacticalAI.neededResource(2),
                 this->playerAI->tacticalAI.neededResource(3));
         fprintf(out, "Number Soldiers=%d.\n", this->playerAI->tacticalAI.numberSoldiers());
     }
@@ -3215,8 +3170,7 @@ void TRIBE_Player::get_achievement(unsigned char achievement, char* info) {
         sprintf(info, "%4.f", attributes[19]);
         break;
     case 7:
-        sprintf(info, "%4.f/%4.f/%4.f",
-            attributes[7], attributes[13], attributes[14]);
+        sprintf(info, "%4.f/%4.f/%4.f", attributes[7], attributes[13], attributes[14]);
         break;
     case 8:
         sprintf(info, "%4.f", attributes[21]);

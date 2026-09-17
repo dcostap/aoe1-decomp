@@ -165,16 +165,11 @@ void RGE_Task::load(FILE* infile, RGE_Sprite** sprites, RGE_Sound** sounds) {
     RGE_Sound* selected_sound;
 
     fscanf(infile, "%hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd",
-        &id, &temp_is_default, &action_type,
-        &object_group, &object_id, &terrain_id,
-        &attribute_type, &attribute_type2, &attribute_type3, &attribute_type4,
-        &work_val1, &work_val2, &work_range,
-        &temp_search_flag, &search_wait_time,
-        &temp_combat_level, &temp_combat_level_flag,
-        &work_flag, &work_flag2, &temp_owner_type,
-        &temp_holding_attr, &temp_state_building,
-        &move_sprite_id, &work_sprite_id, &work_sprite2_id, &carry_sprite_id,
-        &work_sound_id, &work_sound2_id);
+           &id, &temp_is_default, &action_type, &object_group, &object_id, &terrain_id,
+           &attribute_type, &attribute_type2, &attribute_type3, &attribute_type4, &work_val1, &work_val2, &work_range,
+           &temp_search_flag, &search_wait_time, &temp_combat_level, &temp_combat_level_flag,
+           &work_flag, &work_flag2, &temp_owner_type, &temp_holding_attr, &temp_state_building,
+           &move_sprite_id, &work_sprite_id, &work_sprite2_id, &carry_sprite_id, &work_sound_id, &work_sound2_id);
 
     is_default = (unsigned char)temp_is_default;
     combat_level = (unsigned char)temp_combat_level;

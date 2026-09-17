@@ -275,16 +275,14 @@ int VictoryConditionRuleSystem::loadRules(char* rName) {
             while (fgets(temp, 0x100, file) != 0) {
                 // The shipped parser ignores both sscanf results.
                 // Keep these outputs uninitialized for malformed input.
-                sscanf(temp, " %c%c",
-                       &commentTemp1, &commentTemp2);
+                sscanf(temp, " %c%c", &commentTemp1, &commentTemp2);
                 if ((commentTemp1 != '/' || commentTemp2 != '/') &&
                     (commentTemp1 != 'D' || commentTemp2 != 'E') &&
                     (commentTemp1 != 'V' || commentTemp2 != 'C')) {
                     if (commentTemp1 == 'E' && commentTemp2 == 'N') {
                         break;
                     }
-                    sscanf(temp, "%d %d ",
-                           &ruleIndex, &ruleValue);
+                    sscanf(temp, "%d %d ", &ruleIndex, &ruleValue);
                     if (ruleIndex >= 0 && ruleIndex < 0xE2) {
                         this->sn[ruleIndex] = ruleValue;
                     }
@@ -981,8 +979,7 @@ int TribeStrategyAIModule::update(int timeLimit) {
     bestResult = 0;
     bestRule = -1;
     for (i = 0; i < this->idleRules.numberValue; i++) {
-        result = this->vcRules.evaluateAsNonInProgress(
-            this->md->aiPlayer, this->idleRules[i]);
+        result = this->vcRules.evaluateAsNonInProgress(this->md->aiPlayer, this->idleRules[i]);
         if (result > bestResult) {
             bestRule = this->idleRules[i];
             bestResult = result;
@@ -990,9 +987,7 @@ int TribeStrategyAIModule::update(int timeLimit) {
     }
 
     if (bestRule != -1 &&
-        this->vcRules.execute(this->md->aiPlayer,
-                              this->currentVictoryConditionValue,
-                              bestRule) == 1) {
+        this->vcRules.execute(this->md->aiPlayer, this->currentVictoryConditionValue, bestRule) == 1) {
         this->executingRules.add(bestRule);
         this->idleRules.remove(bestRule);
     }
@@ -1000,8 +995,7 @@ int TribeStrategyAIModule::update(int timeLimit) {
     worstRule = -1;
     worstRuleResult = 101;
     for (i = 0; i < this->executingRules.numberValue; i++) {
-        result = this->vcRules.evaluateAsInProgress(
-            this->md->aiPlayer, this->executingRules[i]);
+        result = this->vcRules.evaluateAsInProgress(this->md->aiPlayer, this->executingRules[i]);
         if (result < worstRuleResult) {
             worstRule = this->executingRules[i];
             worstRuleResult = result;
@@ -1015,11 +1009,8 @@ int TribeStrategyAIModule::update(int timeLimit) {
     }
 
     for (i = 0; i < this->vcRuleSet.numberValue; i++) {
-        if (this->vcRules.evaluateAsNonInProgress(
-                this->md->aiPlayer, this->vcRuleSet[i]) == -1) {
-            this->vcRules.execute(this->md->aiPlayer,
-                                  this->currentVictoryConditionValue,
-                                  this->vcRuleSet[i]);
+        if (this->vcRules.evaluateAsNonInProgress(this->md->aiPlayer, this->vcRuleSet[i]) == -1) {
+            this->vcRules.execute(this->md->aiPlayer, this->currentVictoryConditionValue, this->vcRuleSet[i]);
         }
     }
 
@@ -1259,14 +1250,10 @@ void TribeStrategyAIModule::setVictoryCondition(int vcNumber) {
     if (this->vcRuleSet.numberValue > 0) {
         do {
             int rule = (*rules)[i];
-            int result = this->vcRules.evaluateAsNonInProgress(
-                this->md->aiPlayer, rule);
+            int result = this->vcRules.evaluateAsNonInProgress(this->md->aiPlayer, rule);
             if (result == -2) {
                 rule = (*rules)[i];
-                if (this->vcRules.execute(
-                        this->md->aiPlayer,
-                        this->currentVictoryConditionValue,
-                        rule) == 1) {
+                if (this->vcRules.execute(this->md->aiPlayer, this->currentVictoryConditionValue, rule) == 1) {
                     this->executingRules.add((*rules)[i]);
                 } else {
                     this->idleRules.add((*rules)[i]);

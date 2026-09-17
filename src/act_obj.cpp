@@ -127,10 +127,7 @@ void RGE_Action_Object::move_to(RGE_Static_Object* obj, float x, float y, float 
                 this->unitAIValue->setCurrentOrder(0x2C6);
                 this->unitAIValue->setCurrentAction(0x262);
                 if (obj != 0) {
-                    this->unitAIValue->setCurrentTarget(
-                        obj->id,
-                        obj->master_obj->object_group,
-                        x, y, z);
+                    this->unitAIValue->setCurrentTarget(obj->id, obj->master_obj->object_group, x, y, z);
                 } else {
                     this->unitAIValue->setCurrentTarget(-1, -1, x, y, z);
                 }
@@ -279,10 +276,7 @@ void RGE_Action_Object::work2(RGE_Static_Object* obj, float x, float y, float z,
             this->unitAIValue->setCurrentOrder(order);
             this->unitAIValue->setCurrentAction(current_action);
             if (obj != 0) {
-                this->unitAIValue->setCurrentTarget(
-                    obj->id,
-                    obj->master_obj->object_group,
-                    x, y, z);
+                this->unitAIValue->setCurrentTarget(obj->id, obj->master_obj->object_group, x, y, z);
             } else {
                 this->unitAIValue->setCurrentTarget(-1, -1, x, y, z);
             }
@@ -326,8 +320,7 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
                         master_obj->master_type == this->master_obj->master_type &&
                         static_cast<RGE_Master_Action_Object*>(master_obj)
                                 ->task_by_group ==
-                            static_cast<RGE_Master_Action_Object*>(
-                                this->master_obj)->task_by_group) {
+                            static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group) {
                         task = static_cast<RGE_Master_Action_Object*>(master_obj)
                                    ->tasks->get_target_task(this, obj, x, y, z);
                         if (task != 0) {
@@ -412,13 +405,8 @@ unsigned char RGE_Action_Object::update() {
 
         if (this->lastActionValue != action_value ||
             this->lastActionStateValue != action_state_value) {
-            fprintf(actionFile, "t%d, %d,%d,%d,%d,%d\\n",
-                    this->owner->world->world_time,
-                    this->id,
-                    this->lastActionValue,
-                    this->lastActionStateValue,
-                    action_value,
-                    action_state_value);
+            fprintf(actionFile, "t%d, %d,%d,%d,%d,%d\\n", this->owner->world->world_time, this->id, this->lastActionValue,
+                    this->lastActionStateValue, action_value, action_state_value);
             this->lastActionValue = action_value;
             this->lastActionStateValue = action_state_value;
         }
@@ -437,8 +425,7 @@ unsigned char RGE_Action_Object::update() {
             if (state == 2 &&
                 static_cast<RGE_Master_Action_Object*>(this->master_obj)
                         ->default_task != -1) {
-                this->set_task(static_cast<RGE_Master_Action_Object*>(
-                                   this->master_obj)->default_task);
+                this->set_task(static_cast<RGE_Master_Action_Object*>(this->master_obj)->default_task);
                 return result;
             }
         } else {
@@ -464,8 +451,7 @@ void RGE_Action_Object::change_ownership(RGE_Player* new_owner) {
 }
 
 void RGE_Action_Object::copy_obj(RGE_Master_Static_Object* source) {
-    this->actions->copy_obj(
-        static_cast<RGE_Master_Action_Object*>(source));
+    this->actions->copy_obj(static_cast<RGE_Master_Action_Object*>(source));
     RGE_Moving_Object::copy_obj(source);
 }
 

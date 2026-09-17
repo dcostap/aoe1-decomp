@@ -14,8 +14,7 @@ THelpDialog::THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, long h
 
 THelpDialog::THelpDialog(TEasy_Panel* parentPanel, char* in_parent_panel, char* in_help_string, long in_help_page_id, long x, long y)
     : TDialogPanel("Help Dialog") {
-    this->setup_help(parentPanel, in_parent_panel, in_help_string,
-                     in_help_page_id, x, y);
+    this->setup_help(parentPanel, in_parent_panel, in_help_string, in_help_page_id, x, y);
 }
 
 THelpDialog::~THelpDialog() {
@@ -43,14 +42,12 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     this->help_page_id = in_help_page_id;
 
     rge_text_font = rge_base_game->get_font(RGE_FONT_STANDARD);
-    if (!this->setup(parentPanel->renderArea(), parentPanel, 340, 400,
-                     parentPanel->get_popup_info_file(),
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 340, 400, parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
         return;
     }
 
-    this->create_text(this, &this->list, help_string, 10, 10, 330, 390,
-                      RGE_FONT_STANDARD, 0, 0, 1);
+    this->create_text(this, &this->list, help_string, 10, 10, 330, 390, RGE_FONT_STANDARD, 0, 0, 1);
 
     line_height = this->list->bot_line + 2;
     panel_height = line_height * rge_text_font->font_hgt + 55;
@@ -80,26 +77,21 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
 
     this->set_fixed_position(dialog_x, y, 340, panel_height);
     this->set_ideal_size(this->max_wid, this->max_hgt);
-    this->list->set_fixed_position(10, 10, 330,
-                                   line_height * rge_text_font->font_hgt);
+    this->list->set_fixed_position(10, 10, 330, line_height * rge_text_font->font_hgt);
 
     if (rge_base_game->singlePlayerGame() && in_help_page_id >= 0) {
         char* help_topic = this->get_string(in_help_page_id);
         if (help_topic != 0 && *help_topic != '\0') {
-            this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0,
-                                25,
-                                line_height * rge_text_font->font_hgt + 20,
-                                120, 25, RGE_FONT_STANDARD, 0, 0);
+            this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0, 25,
+                                line_height * rge_text_font->font_hgt + 20, 120, 25, RGE_FONT_STANDARD, 0, 0);
         }
     }
 
     if (this->encyclopedia_button == 0) {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 110,
-                            line_height * rge_text_font->font_hgt + 20,
+        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 110, line_height * rge_text_font->font_hgt + 20,
                             120, 25, RGE_FONT_STANDARD, 0, 0);
     } else {
-        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 195,
-                            line_height * rge_text_font->font_hgt + 20,
+        this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 195, line_height * rge_text_font->font_hgt + 20,
                             120, 25, RGE_FONT_STANDARD, 0, 0);
     }
     TButtonPanel* button = this->ok_button;
@@ -132,8 +124,7 @@ long THelpDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, uns
 
             HWND prog_window = rge_base_game->prog_window;
             char* help_topic = this->get_string(help_page_id);
-            WinHelpA(prog_window, "empires.hlp", HELP_KEY,
-                     (DWORD)help_topic);
+            WinHelpA(prog_window, "empires.hlp", HELP_KEY, (DWORD)help_topic);
             return 1;
         }
     }
@@ -147,6 +138,5 @@ long THelpDialog::handle_mouse_down(unsigned char mouse_button_in, long x, long 
         return 1;
     }
 
-    return ((TEasy_Panel*)this)->TEasy_Panel::handle_mouse_down(
-        mouse_button_in, x, y, ctrl_key, shift_key);
+    return ((TEasy_Panel*)this)->TEasy_Panel::handle_mouse_down(mouse_button_in, x, y, ctrl_key, shift_key);
 }

@@ -51,9 +51,8 @@ unsigned char RGE_Action_Make::update() {
         if (this->timer <= 0.0) {
             if (this->obj->owner->attributes[0x24] > 0.0) {
                 if (this->obj->attribute_amount_held <= 0.0) {
-                    rge_base_game->notification(
-                        0x7E, this->obj->owner->id, this->obj->id,
-                        (int)this->obj->world_x, (int)this->obj->world_y);
+                    rge_base_game->notification(0x7E, this->obj->owner->id, this->obj->id,
+                                                (int)this->obj->world_x, (int)this->obj->world_y);
                     this->obj->die_die_die();
                 }
                 goto failure;
@@ -66,8 +65,7 @@ unsigned char RGE_Action_Make::update() {
         pre_attribute = this->obj->attribute_amount_held;
 
         if (this->task->work_flag) {
-            this->obj->owner->add_attribute_num(
-                this->task->attribute_type, work, 0);
+            this->obj->owner->add_attribute_num(this->task->attribute_type, work, 0);
         } else {
             this->obj->set_attribute_amount(work, 1, 1);
         }

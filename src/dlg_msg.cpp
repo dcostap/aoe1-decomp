@@ -37,13 +37,11 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     button[1] = 0;
     button[2] = 0;
 
-    if (!TDialogPanel::setup(parent_panel_in->renderArea(), parent_panel_in,
-                             wid_in, hgt_in, info_file_in, info_id_in, 1))
+    if (!TDialogPanel::setup(parent_panel_in->renderArea(), parent_panel_in, wid_in, hgt_in, info_file_in, info_id_in, 1))
         return 0;
 
     dlg_type = dlg_type_in;
-    if (!create_text(this, &text, text_in, 3, 3, pnl_wid - 3,
-                     pnl_hgt - btn_hgt_in - 6, RGE_FONT_STANDARD, 1, 1, 1))
+    if (!create_text(this, &text, text_in, 3, 3, pnl_wid - 3, pnl_hgt - btn_hgt_in - 6, RGE_FONT_STANDARD, 1, 1, 1))
         return 0;
 
     switch (dlg_type) {
@@ -71,8 +69,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     long y = pnl_hgt - btn_hgt_in - 7;
     button_x = space;
     for (index = 0; index < button_num; ++index) {
-        if (!create_button(this, &button[index], s_592A40, s_592A40,
-                           button_x, y, btn_wid_in, btn_hgt_in,
+        if (!create_button(this, &button[index], s_592A40, s_592A40, button_x, y, btn_wid_in, btn_hgt_in,
                            RGE_FONT_STANDARD, 0, 0))
             return 0;
         button_x += space + btn_wid_in;
@@ -109,8 +106,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
         break;
     }
 
-    set_tab_order(reinterpret_cast<TPanel**>(button),
-                  static_cast<short>(button_num));
+    set_tab_order(reinterpret_cast<TPanel**>(button), static_cast<short>(button_num));
     set_curr_child(button[0]);
     return 1;
 }
@@ -122,8 +118,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     char str[256];
 
     get_string(text_id, str, 256);
-    return setup(parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in,
-                 dlg_type_in, str, btn_wid_in, btn_hgt_in);
+    return setup(parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in, dlg_type_in, str, btn_wid_in, btn_hgt_in);
 }
 
 long TMessageDialog::action(TPanel* from_panel, long action_in, unsigned long action_val1, unsigned long action_val2) {

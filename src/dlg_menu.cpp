@@ -33,63 +33,52 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
                      parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(), 1))
         return;
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_QUIT_GAME, 0, 20,
-                             15, 360, 30, 0, 0, 4))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_QUIT_GAME, 0, 20, 15, 360, 30, 0, 0, 4))
         return;
 
     int by = 65;
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->get_player()->game_status == 0) {
-            if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESIGN, 0,
-                                     20, by, 360, 30, 0, 0, 0x0C))
+            if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESIGN, 0, 20, by, 360, 30, 0, 0, 0x0C))
                 return;
             by = 100;
         }
     }
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_ACHIEVEMENTS, 0, 20,
-                             by, 360, 30, 0, 0, 7))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_ACHIEVEMENTS, 0, 20, by, 360, 30, 0, 0, 7))
         return;
     by += 35;
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_SCENARIO_INSTRUCTIONS, 0, 20,
-                             by, 360, 30, 0, 0, 9))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_SCENARIO_INSTRUCTIONS, 0, 20, by, 360, 30, 0, 0, 9))
         return;
     int by2 = by;
     by2 += 35;
 
     if (rge_base_game->singlePlayerGame()) {
-        if (!this->create_button(this, &this->button[bi++], IDS_MENU_SAVE, 0,
-                                 20, by2, 360, 30, 0, 0, 1))
+        if (!this->create_button(this, &this->button[bi++], IDS_MENU_SAVE, 0, 20, by2, 360, 30, 0, 0, 1))
             return;
         by2 += 35;
-        if (!this->create_button(this, &this->button[bi++], IDS_MENU_LOAD, 0,
-                                 20, by2, 360, 30, 0, 0, 3))
+        if (!this->create_button(this, &this->button[bi++], IDS_MENU_LOAD, 0, 20, by2, 360, 30, 0, 0, 3))
             return;
         by2 += 35;
-        if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESTART, 0,
-                                 20, by2, 360, 30, 0, 0, 0x0B))
+        if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESTART, 0, 20, by2, 360, 30, 0, 0, 0x0B))
             return;
         by2 += 35;
     }
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_GAME_SETTINGS, 0, 20,
-                             by2, 360, 30, 0, 0, 5))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_GAME_SETTINGS, 0, 20, by2, 360, 30, 0, 0, 5))
         return;
     by2 += 35;
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_HELP, 0, 20,
-                             by2, 360, 30, 0, 0, 8))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_HELP, 0, 20, by2, 360, 30, 0, 0, 8))
         return;
     by2 += 35;
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_ABOUT, 0, 20,
-                             by2, 360, 30, 0, 0, 10))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_ABOUT, 0, 20, by2, 360, 30, 0, 0, 10))
         return;
     by2 += 35;
 
-    if (!this->create_button(this, &this->button[bi++], IDS_MENU_CANCEL, 0, 20,
-                             by2 + 15, 360, 30, 0, 0, 6))
+    if (!this->create_button(this, &this->button[bi++], IDS_MENU_CANCEL, 0, 20, by2 + 15, 360, 30, 0, 0, 6))
         return;
 
     TButtonPanel* p = this->button[bi - 1];
@@ -123,8 +112,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
             }
 
             if (a1 == 2) {
-                TribeSaveGameScreen* obj = new TribeSaveGameScreen(
-                    TribeSaveGameScreen::SaveScenario, 0, 0);
+                TribeSaveGameScreen* obj = new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenario, 0, 0);
                 panel_system.setCurrentPanel("Save Game Screen", 0);
                 return 1;
             }
@@ -196,8 +184,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
             }
 
             if (a1 == 9) {
-                TRIBE_Mission_Screen* obj = new TRIBE_Mission_Screen(
-                    0, 1, rge_base_game->world->scenario->mission_picture);
+                TRIBE_Mission_Screen* obj = new TRIBE_Mission_Screen(0, 1, rge_base_game->world->scenario->mission_picture);
                 panel_system.setCurrentPanel("Mission Dialog", 0);
                 panel_system.destroyPanel("Menu Dialog");
                 return 1;

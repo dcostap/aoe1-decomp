@@ -67,9 +67,8 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
         this->yReferencePointValue <= 0.0 ||
         (float)this->mapXSizeValue <= this->xReferencePointValue ||
         (float)this->mapYSizeValue <= this->yReferencePointValue) {
-        return this->md->informationAI.influencePlaceStructure(
-            bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
-            startTime);
+        return this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
+                                                               startTime);
     }
 
     if (bi->typeID() == 0x2d) {
@@ -90,13 +89,11 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
         bi->typeID() == 0x9b ||
         useInfluencePlacement == 1 ||
         this->numberConstructionLotsValue == 0) {
-        return this->md->informationAI.influencePlaceStructure(
-            bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
-            startTime);
+        return this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
+                                                               startTime);
     }
 
-    RGE_Static_Object* protoBuilder = this->md->object(
-        -1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
+    RGE_Static_Object* protoBuilder = this->md->object(-1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
     if (protoBuilder == 0) {
         return 0;
     }
@@ -164,9 +161,8 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(BuildItem* bi, int b
 
     if (minBuildAttempts >= 2 || minBuildAttempts == -1) {
         ConstructionItem* result =
-            this->md->informationAI.influencePlaceStructure(
-                bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
-                startTime);
+            this->md->informationAI.influencePlaceStructure(bi, builder, -1, 0.0f, 0, -1, -1, -1, -1, placementState,
+                                                            startTime);
         if (result != 0) {
             return result;
         }

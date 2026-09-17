@@ -41,8 +41,7 @@ void RGE_Panel_Time::draw() {
             {
                 char str[100];
                 sprintf(str, "Paused");
-                TextOutA(render_area->DrawDc, render_rect.left,
-                         render_rect.top - 2, str, strlen(str));
+                TextOutA(render_area->DrawDc, render_rect.left, render_rect.top - 2, str, strlen(str));
             }
         } else {
             SetBkMode(render_area->DrawDc, TRANSPARENT);
@@ -63,10 +62,8 @@ void RGE_Panel_Time::draw() {
 
             {
                 char str[100];
-                sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", h, m, t,
-                        (double)rge_base_game->world->game_speed);
-                TextOutA(render_area->DrawDc, render_rect.left,
-                         render_rect.top - 2, str, strlen(str));
+                sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", h, m, t, (double)rge_base_game->world->game_speed);
+                TextOutA(render_area->DrawDc, render_rect.left, render_rect.top - 2, str, strlen(str));
             }
 
             int pi = 1;
@@ -97,8 +94,7 @@ void RGE_Panel_Time::draw() {
                         {
                             char str[100];
                             sprintf(str, get_string(IDS_COUNTDOWN_YEARS_FORMAT), countdown_timer);
-                            TextOutA(render_area->DrawDc, render_rect.left,
-                                     yo + render_rect.top, str, strlen(str));
+                            TextOutA(render_area->DrawDc, render_rect.left, yo + render_rect.top, str, strlen(str));
                         }
                         yo += 13;
                     }

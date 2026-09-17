@@ -186,53 +186,33 @@ void TRIBE_Panel_Object::draw() {
             TShape* picture;
             if (this->game_obj->master_obj->unit_level == 2) {
                 unsigned char culture = this->game_obj->culture;
-                shape += static_cast<TRIBE_Master_Building_Object*>(
-                    this->game_obj->master_obj)->building_facet;
+                shape += static_cast<TRIBE_Master_Building_Object*>(this->game_obj->master_obj)->building_facet;
                 picture = this->bldg_pics[culture];
             } else {
                 picture = this->unit_pics;
             }
 
             if (this->game_obj->owner->color_table != 0) {
-                ASMSet_Color_Xform(
-                    (this->game_obj->owner->color_table->id + 1) * 16);
+                ASMSet_Color_Xform((this->game_obj->owner->color_table->id + 1) * 16);
 
-                picture->shape_draw(
-                    this->render_area,
-                    this->pnl_x + 3,
-                    this->pnl_y + 30,
-                    shape,
-                    1,
-                    this->game_obj->owner->color_table->table);
+                picture->shape_draw(this->render_area, this->pnl_x + 3, this->pnl_y + 30, shape, 1,
+                                    this->game_obj->owner->color_table->table);
             } else {
-                picture->shape_draw(
-                    this->render_area,
-                    this->pnl_x + 3,
-                    this->pnl_y + 30,
-                    shape,
-                    0,
-                    0);
+                picture->shape_draw(this->render_area, this->pnl_x + 3, this->pnl_y + 30, shape, 0, 0);
             }
         }
 
         if (this->game_obj->hp > 0.0f && this->health_pic != 0) {
             float count = (float)this->health_pic->shape_count();
-            short frame = (short)(
-                count - (float)this->health_pic->shape_count() * this->game_obj->hp /
-                              (float)this->game_obj->master_obj->hp);
+            short frame = (short)(count - (float)this->health_pic->shape_count() * this->game_obj->hp /
+                                  (float)this->game_obj->master_obj->hp);
             if (frame < 0) {
                 frame = 0;
             } else if (this->health_pic->shape_count() - 1 < frame) {
                 frame = (short)this->health_pic->shape_count() - 1;
             }
 
-            this->health_pic->shape_draw(
-                this->render_area,
-                this->pnl_x + 3,
-                this->pnl_y + 84,
-                frame,
-                0,
-                0);
+            this->health_pic->shape_draw(this->render_area, this->pnl_x + 3, this->pnl_y + 84, frame, 0, 0);
         }
 
         this->render_area->Unlock("tpnl_obj::draw");
@@ -242,36 +222,27 @@ void TRIBE_Panel_Object::draw() {
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         SetTextColor(this->render_area->DrawDc, 0x00ffffff);
         SelectClipRgn(this->render_area->DrawDc, (HRGN)this->clip_rgn);
-        HGDIOBJ old_font = SelectObject(
-            this->render_area->DrawDc, (HGDIOBJ)this->font);
+        HGDIOBJ old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
 
         if (this->game_obj->owner->id != 0) {
             if (rge_base_game->campaignGame() == 0) {
                 name[0] = 0;
             } else {
-                strcpy(name, this->game_obj->owner->world->scenario->GetPlayerName(
-                    this->game_obj->owner->id - 1));
+                strcpy(name, this->game_obj->owner->world->scenario->GetPlayerName(this->game_obj->owner->id - 1));
             }
 
             if (name[0] == 0) {
-                rge_base_game->get_string2(
-                    RGE_STRING_TYPE_CIVILIZATION,
-                    this->game_obj->owner->master_player_id,
-                    0,
-                    name,
-                    100);
+                rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, this->game_obj->owner->master_player_id, 0, name,
+                                           100);
             }
 
-            TextOutA(this->render_area->DrawDc,
-                     this->pnl_x + 3, this->pnl_y - 2,
-                     name, (int)strlen(name));
+            TextOutA(this->render_area->DrawDc, this->pnl_x + 3, this->pnl_y - 2, name, (int)strlen(name));
         }
 
         if (this->game_obj->master_obj->string_id < 1) {
             str[0] = 0;
         } else {
-            rge_base_game->get_string(
-                this->game_obj->master_obj->string_id, str, 100);
+            rge_base_game->get_string(this->game_obj->master_obj->string_id, str, 100);
         }
 
         if (str[0] == 0)
@@ -282,17 +253,11 @@ void TRIBE_Panel_Object::draw() {
         else
             sprintf(name, "%s", str);
 
-        TextOutA(this->render_area->DrawDc,
-                 this->pnl_x + 3, this->pnl_y + 0x0d,
-                 name, (int)strlen(name));
+        TextOutA(this->render_area->DrawDc, this->pnl_x + 3, this->pnl_y + 0x0d, name, (int)strlen(name));
 
         if (this->game_obj->hp > 0.0f) {
-            sprintf(str, "%d/%d",
-                    (int)this->game_obj->hp,
-                    (int)this->game_obj->master_obj->hp);
-            TextOutA(this->render_area->DrawDc,
-                     this->pnl_x + 3, this->pnl_y + 0x5c,
-                     str, (int)strlen(str));
+            sprintf(str, "%d/%d", (int)this->game_obj->hp, (int)this->game_obj->master_obj->hp);
+            TextOutA(this->render_area->DrawDc, this->pnl_x + 3, this->pnl_y + 0x5c, str, (int)strlen(str));
         }
 
         SelectObject(this->render_area->DrawDc, old_font);
@@ -333,16 +298,13 @@ void TRIBE_Panel_Object::draw() {
             this->game_obj->master_obj->unit_level == 6) {
             this->game_obj->get_weapon_range(cur_fval, orig_fval);
             if (cur_fval > DAT_00576dac) {
-                this->draw_item(row, 6, ValueTypeBonus,
-                                (int)orig_fval, (int)cur_fval);
+                this->draw_item(row, 6, ValueTypeBonus, (int)orig_fval, (int)cur_fval);
                 ++row;
             }
         }
 
         if (this->game_obj->master_obj->unit_level == 6) {
-            this->draw_item(row, 9, ValueTypePercent,
-                            (int)(this->game_obj->attribute_amount_held -
-                                  DAT_00576D84), 0);
+            this->draw_item(row, 9, ValueTypePercent, (int)(this->game_obj->attribute_amount_held - DAT_00576D84), 0);
             ++row;
         }
 
@@ -352,10 +314,8 @@ void TRIBE_Panel_Object::draw() {
 
         level = this->game_obj->master_obj->unit_level;
         if (level == 7) {
-            this->draw_item(
-                row, 4, ValueTypeCompare,
-                this->game_obj->objects->number_of_objects,
-                this->game_obj->master_obj->obj_max);
+            this->draw_item(row, 4, ValueTypeCompare, this->game_obj->objects->number_of_objects,
+                            this->game_obj->master_obj->obj_max);
             this->draw_finish();
             return;
         }
@@ -363,8 +323,7 @@ void TRIBE_Panel_Object::draw() {
         if (level == 9) {
             if (this->game_obj->attribute_type_held == 0x11 ||
                 this->game_obj->attribute_type_held == 0)
-                cur_val = (short)(int)(this->game_obj->attribute_amount_held -
-                                       DAT_00576D84);
+                cur_val = (short)(int)(this->game_obj->attribute_amount_held - DAT_00576D84);
             else
                 cur_val = 0;
             this->draw_item(row, 2, ValueTypeNumber, cur_val, 0);
@@ -398,9 +357,7 @@ void TRIBE_Panel_Object::draw() {
             }
 
             if (this->game_obj->attribute_amount_held > DAT_00576db0) {
-                this->draw_item(row, 3, ValueTypeNumber,
-                                (int)(this->game_obj->attribute_amount_held -
-                                      DAT_00576D84), 0);
+                this->draw_item(row, 3, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held - DAT_00576D84), 0);
             } else {
                 this->draw_item(row, item_type, ValueTypeNone, -1, 0);
             }
@@ -437,8 +394,7 @@ void TRIBE_Panel_Object::draw() {
         }
         final_frame = item_type;
         final_type = ValueTypeNumber;
-        final_value = (int)(this->game_obj->attribute_amount_held -
-                            DAT_00576D84);
+        final_value = (int)(this->game_obj->attribute_amount_held - DAT_00576D84);
         final_value2 = 0;
         goto final_item;
     }
@@ -467,10 +423,7 @@ void TRIBE_Panel_Object::draw() {
         default:
             goto invalid_item;
         }
-        this->draw_item(
-            0, item_type, ValueTypeNumber,
-            (int)(this->game_obj->attribute_amount_held - DAT_00576D84),
-            0);
+        this->draw_item(0, item_type, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held - DAT_00576D84), 0);
         this->draw_finish();
         return;
     }
@@ -478,8 +431,7 @@ void TRIBE_Panel_Object::draw() {
     if (level == 2 || level == 8) {
         bldg_obj = this->game_obj;
         if (this->game_obj->master_obj->master_type == 'P') {
-            bldg_obj->work_status(
-                work_type, work_target, progress, work_name, 100);
+            bldg_obj->work_status(work_type, work_target, progress, work_name, 100);
 
             if (work_type != 0x67 && work_type != 0x66 &&
                 bldg_obj->production_queue_status(work_target, temp) != 0) {
@@ -497,8 +449,7 @@ void TRIBE_Panel_Object::draw() {
                 }
                 bldg_obj->get_weapon_range(cur_fval, orig_fval);
                 if ((int)cur_fval > 0) {
-                    this->draw_item(row, 6, ValueTypeBonus,
-                                    (int)orig_fval, (int)cur_fval);
+                    this->draw_item(row, 6, ValueTypeBonus, (int)orig_fval, (int)cur_fval);
                     ++row;
                 }
             }
@@ -513,8 +464,7 @@ void TRIBE_Panel_Object::draw() {
                     ++row;
                 } else {
                     if (this->game_obj->master_obj->id == 0x46) {
-                        int value = (int)(this->player->attributes[4] +
-                                          this->player->attributes[11]);
+                        int value = (int)(this->player->attributes[4] + this->player->attributes[11]);
                         int max_value = (int)this->player->attributes[32];
                         if (max_value < value)
                             value = max_value;
@@ -526,12 +476,8 @@ void TRIBE_Panel_Object::draw() {
                     if (this->game_obj->master_obj->id == 0x32) {
                         RGE_Action* action = bldg_obj->actions->get_action();
                         if (action != 0) {
-                            this->draw_item(
-                                row, 2, ValueTypeNumber,
-                                (int)(action->timer +
-                                      this->game_obj->attribute_amount_held -
-                                      DAT_00576D84),
-                                0);
+                            this->draw_item(row, 2, ValueTypeNumber, (int)(action->timer +
+                                                                           this->game_obj->attribute_amount_held - DAT_00576D84), 0);
                             ++row;
                         }
                     }
@@ -583,17 +529,11 @@ void TRIBE_Panel_Object::draw() {
                 }
 
                 if (this->game_obj->master_obj->id == 0x2d) {
-                    this->draw_item(
-                        row, item_type, ValueTypeNumber,
-                        (int)(this->game_obj->owner->attributes[9] -
-                              DAT_00576D84),
-                        0);
+                    this->draw_item(row, item_type, ValueTypeNumber, (int)(this->game_obj->owner->attributes[9] -
+                                                                           DAT_00576D84), 0);
                 } else {
-                    this->draw_item(
-                        row, item_type, ValueTypeNumber,
-                        (int)(this->game_obj->attribute_amount_held -
-                              DAT_00576D84),
-                        0);
+                    this->draw_item(row, item_type, ValueTypeNumber, (int)(this->game_obj->attribute_amount_held -
+                                                                           DAT_00576D84), 0);
                 }
                 ++row;
             }
@@ -603,13 +543,8 @@ resource_done:
         if (this->game_obj->master_obj->id == 0x2d &&
             this->game_obj->owner != this->player) {
             RGE_Static_Object* nearby =
-                rge_base_game->get_player()->objects->find_by_master_id(
-                    0x2d,
-                    this->game_obj->world_x,
-                    this->game_obj->world_y,
-                    1,
-                    2,
-                    this->game_obj);
+                rge_base_game->get_player()->objects->find_by_master_id(0x2d, this->game_obj->world_x,
+                                                                        this->game_obj->world_y, 1, 2, this->game_obj);
 
             if (nearby != 0) {
                 dx = nearby->world_x - this->game_obj->world_x;
@@ -638,8 +573,7 @@ invalid_item:
     return;
 
 final_item:
-    this->draw_item(row, final_frame, final_type,
-                    final_value, final_value2);
+    this->draw_item(row, final_frame, final_type, final_value, final_value2);
 finish:
     this->draw_finish();
 }
@@ -666,8 +600,7 @@ void TRIBE_Panel_Object::draw_score() {
     if (this->render_area->GetDc("tpnl_obj::draw_score") != 0) {
         SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
-        old_font = SelectObject(this->render_area->DrawDc,
-                                (HGDIOBJ)this->font);
+        old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
 
         x = (short)this->pnl_x + 3;
         x_val = (short)this->pnl_x + 90;
@@ -695,19 +628,11 @@ void TRIBE_Panel_Object::draw_score() {
                 SetTextColor(this->render_area->DrawDc, color);
 
                 strcpy(str, comm->GetPlayerName(i));
-                TextOutA(this->render_area->DrawDc,
-                         x, y + y_pos, str, (int)strlen(str));
+                TextOutA(this->render_area->DrawDc, x, y + y_pos, str, (int)strlen(str));
 
-                sprintf(str, "%d",
-                        temp_player->victory_conditions
-                            ->get_victory_points());
-                SetRect(&rect,
-                        x_val,
-                        y + y_pos,
-                        this->pnl_x + this->pnl_wid - 3,
-                        y + y_pos + 14);
-                DrawTextA(this->render_area->DrawDc,
-                          str, -1, &rect, DT_RIGHT | DT_SINGLELINE);
+                sprintf(str, "%d", temp_player->victory_conditions ->get_victory_points());
+                SetRect(&rect, x_val, y + y_pos, this->pnl_x + this->pnl_wid - 3, y + y_pos + 14);
+                DrawTextA(this->render_area->DrawDc, str, -1, &rect, DT_RIGHT | DT_SINGLELINE);
                 y_pos += 14;
             }
             ++i;
@@ -725,11 +650,7 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
 
     if (this->item_pic != 0 && pic_index != -1) {
         if (this->render_area->Lock("tpnl_obj.cpp", 1) != 0) {
-            this->item_pic->shape_draw(
-                this->render_area,
-                this->pnl_x + 54,
-                this->pnl_y + row * 20 + 30,
-                pic_index, 0, 0);
+            this->item_pic->shape_draw(this->render_area, this->pnl_x + 54, this->pnl_y + row * 20 + 30, pic_index, 0, 0);
             this->render_area->Unlock("tpnl_obj.cpp");
         }
     }
@@ -760,13 +681,9 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
         if (dc != 0) {
             SetBkMode(this->render_area->DrawDc, TRANSPARENT);
             SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
-            HGDIOBJ old_font = SelectObject(this->render_area->DrawDc,
-                                             (HGDIOBJ)this->font);
+            HGDIOBJ old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
 
-            TextOutA(this->render_area->DrawDc,
-                     this->pnl_x + 88,
-                     this->pnl_y + row * 20 + 33,
-                     val_str, strlen(val_str));
+            TextOutA(this->render_area->DrawDc, this->pnl_x + 88, this->pnl_y + row * 20 + 33, val_str, strlen(val_str));
 
             SelectObject(this->render_area->DrawDc, old_font);
             this->render_area->ReleaseDc("tpnl_obj.cpp");
@@ -780,13 +697,11 @@ long TRIBE_Panel_Object::handle_idle() {
     if (this->active == 0)
         return 0;
 
-    unsigned long now = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 892);
+    unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 892);
     if (now - this->idle_time < this->idle_interval)
         return 0;
 
-    this->idle_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 895);
+    this->idle_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 895);
 
     if (this->mode == 2) {
         for (int i = 1; i < 9; ++i) {
@@ -878,13 +793,11 @@ long TRIBE_Panel_Object::handle_idle() {
                         if (cur_val != this->save_weapon) {
                             changed = 1;
                         } else {
-                            this->game_obj->get_weapon_range(cur_fval,
-                                                             orig_fval);
+                            this->game_obj->get_weapon_range(cur_fval, orig_fval);
                             if (cur_fval != this->save_weapon_range) {
                                 changed = 1;
                             } else {
-                                this->game_obj->get_speed_of_attack(
-                                    cur_fval, orig_fval);
+                                this->game_obj->get_speed_of_attack(cur_fval, orig_fval);
                                 if (cur_fval !=
                                     this->save_speed_of_attack) {
                                     changed = 1;
@@ -921,11 +834,9 @@ long TRIBE_Panel_Object::handle_idle() {
                     short temp;
                     char name[100];
 
-                    bldg_obj->work_status(work_type, work_target, progress,
-                                          name, 100);
+                    bldg_obj->work_status(work_type, work_target, progress, name, 100);
                     if (work_type != 0x67 && work_type != 0x66 &&
-                        bldg_obj->production_queue_status(work_target,
-                                                          temp) != 0) {
+                        bldg_obj->production_queue_status(work_target, temp) != 0) {
                         work_type = 0x66;
                         progress = temp;
                     }
@@ -958,8 +869,7 @@ long TRIBE_Panel_Object::handle_idle() {
                     this->game_obj->master_obj->id == 0x32) {
                     RGE_Action* action = bldg_obj->actions->get_action();
                     if (action != 0 &&
-                        (int)(action->timer +
-                              this->game_obj->attribute_amount_held -
+                        (int)(action->timer + this->game_obj->attribute_amount_held -
                               DAT_00576D84) != this->save_farm_amt) {
                         changed = 1;
                     }
@@ -1021,8 +931,7 @@ void TRIBE_Panel_Object::save_object_info() {
         this->game_obj->get_armor(this->save_pierce_armor, orig_val);
         this->game_obj->get_weapon(this->save_weapon, orig_val);
         this->game_obj->get_weapon_range(this->save_weapon_range, orig_fval);
-        this->game_obj->get_speed_of_attack(this->save_speed_of_attack,
-                                            orig_fval);
+        this->game_obj->get_speed_of_attack(this->save_speed_of_attack, orig_fval);
     }
 
     TRIBE_Building_Object* building =
@@ -1031,15 +940,11 @@ void TRIBE_Panel_Object::save_object_info() {
         this->save_object_state = building->object_state;
         int construction_progress = building->get_construction_progress();
         this->save_build_pts = (float)construction_progress;
-        building->work_status(this->save_work_type,
-                              this->save_work_target,
-                              this->save_progress,
-                              this->save_name, 100);
+        building->work_status(this->save_work_type, this->save_work_target, this->save_progress, this->save_name, 100);
 
         if (this->save_work_type != 0x67 &&
             this->save_work_type != 0x66 &&
-            building->production_queue_status(this->save_work_target,
-                                               temp) != 0) {
+            building->production_queue_status(this->save_work_target, temp) != 0) {
             this->save_work_type = 0x66;
             this->save_progress = temp;
         }
@@ -1054,9 +959,7 @@ void TRIBE_Panel_Object::save_object_info() {
             if (action != 0) {
                 float action_amount = action->timer;
                 this->save_farm_amt =
-                    (int)(action_amount +
-                          this->game_obj->attribute_amount_held -
-                          DAT_00576D84);
+                    (int)(action_amount + this->game_obj->attribute_amount_held - DAT_00576D84);
             }
         }
     }

@@ -23,8 +23,7 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* in_filename) {
         i = 0;
 
         if (this->scenario_num > 0) {
-            this->scenarios = (RGE_Scenario_File_Entry*)calloc(
-                this->scenario_num, sizeof(RGE_Scenario_File_Entry));
+            this->scenarios = (RGE_Scenario_File_Entry*)calloc(this->scenario_num, sizeof(RGE_Scenario_File_Entry));
             for (i = 0; i < this->scenario_num; i++) {
                 rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
                 rge_read_uncompressed(fd, this->scenarios[i].name, 260);
@@ -63,9 +62,7 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
 }
 
 void RGE_Scenario_File_Info::save() {
-    int fd = rge_open(this->filename,
-                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
-                      _S_IREAD | _S_IWRITE);
+    int fd = rge_open(this->filename, _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC, _S_IREAD | _S_IWRITE);
     if (fd == -1)
         return;
 
@@ -128,8 +125,7 @@ void RGE_Scenario_File_Info::reload_scenarios() {
     if (count == -1)
         return;
 
-    new_scenarios = (RGE_Scenario_File_Entry*)calloc(
-        total, sizeof(RGE_Scenario_File_Entry));
+    new_scenarios = (RGE_Scenario_File_Entry*)calloc(total, sizeof(RGE_Scenario_File_Entry));
     current = new_scenarios;
 
     do {
@@ -154,9 +150,7 @@ void RGE_Scenario_File_Info::reload_scenarios() {
             strcpy(current->name, file_info.name);
             current->time = file_info.time_write;
 
-            sprintf(file_name + 4, "%s%s",
-                    rge_base_game->prog_info->scenario_dir,
-                    file_info.name);
+            sprintf(file_name + 4, "%s%s", rge_base_game->prog_info->scenario_dir, file_info.name);
             int fd = rge_open(file_name + 4, _O_BINARY);
             if (fd > -1) {
                 rge_read_uncompressed(fd, file_name, 4);

@@ -9,8 +9,7 @@
 #include <string.h>
 
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
-    void* hpal, unsigned int start, unsigned int count,
-    tagPALETTEENTRY* entries);
+    void* hpal, unsigned int start, unsigned int count, tagPALETTEENTRY* entries);
 
 extern char s_scr_cred_draw_005862e0[];
 
@@ -78,11 +77,9 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
         _close(fd);
     }
 
-    TScrollTextPanel* scroll_panel = new TScrollTextPanel(
-        this, this->render_area,
-        (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150,
-        500, 300, 30,
-        font->font, font->font_wid, font->font_hgt, file_buf);
+    TScrollTextPanel* scroll_panel = new TScrollTextPanel(this, this->render_area,
+                                                          (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150, 500, 300, 30,
+                                                          font->font, font->font_wid, font->font_hgt, file_buf);
     this->text_panel = scroll_panel;
 
     if (file_buf != 0) {
@@ -155,12 +152,10 @@ long TRIBE_Credits_Screen::handle_idle() {
             if (this->palette == 0) {
                 this->render_area->GetPalette(this->color_table);
             } else {
-                GetPaletteEntries(this->palette, 0, 256,
-                                  this->color_table);
+                GetPaletteEntries(this->palette, 0, 256, this->color_table);
             }
 
-            RGE_fade_palette_start(this->render_area, this->color, 0.5f, 1,
-                                   (tagPALETTEENTRY*)0, 0xFF, -1);
+            RGE_fade_palette_start(this->render_area, this->color, 0.5f, 1, (tagPALETTEENTRY*)0, 0xFF, -1);
         } else {
             this->mode = 4;
         }
@@ -176,8 +171,7 @@ long TRIBE_Credits_Screen::handle_idle() {
         goto tail;
     } else if (current_mode == 4) {
         if (this->last_pause_time == 0) {
-            this->last_pause_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 282);
+            this->last_pause_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 282);
             goto tail;
         }
 
@@ -194,8 +188,7 @@ long TRIBE_Credits_Screen::handle_idle() {
 
         if (this->render_area->DrawSystem->ScreenMode == 2 ||
             this->render_area->DrawSystem->DrawType == 1) {
-            RGE_fade_palette_start(this->render_area, this->color, 0.5f, 2,
-                                   this->color_table, 0xFF, -1);
+            RGE_fade_palette_start(this->render_area, this->color, 0.5f, 2, this->color_table, 0xFF, -1);
             goto tail;
         }
 
@@ -212,18 +205,15 @@ long TRIBE_Credits_Screen::handle_idle() {
     }
 
 set_time_f1:
-    this->last_picture_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 241);
+    this->last_picture_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 241);
     goto tail;
 
 set_time_138:
-    this->last_picture_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 312);
+    this->last_picture_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 312);
     goto tail;
 
 set_time_142:
-    this->last_picture_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 322);
+    this->last_picture_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 322);
 
 tail:
     if (this->text_done != 0) {
@@ -301,8 +291,7 @@ TScrollTextPanel::TScrollTextPanel(TPanel* parent_in,
     this->done = 0;
 
     char* no_text = 0;
-    if (this->setup(render_area_in, parent_in, x, y, wid, hgt, font_in,
-                    font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0,
+    if (this->setup(render_area_in, parent_in, x, y, wid, hgt, font_in, font_wid_in, font_hgt_in, 0, 0, 0, 0, 0, 0,
                     no_text) != 0) {
         this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
         this->set_word_wrap(1);
@@ -323,11 +312,9 @@ void TScrollTextPanel::set_text(char* text_in) {
 
 long TScrollTextPanel::handle_idle() {
     if (this->last_time == 0) {
-        this->last_time = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 476);
+        this->last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 476);
     } else {
-        unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 479);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 479);
         __int64 elapsed = (unsigned long)(now - this->last_time);
         int amount = (long)(((double)elapsed * DAT_00572968) * this->speed);
         if (amount > 0) {
@@ -554,8 +541,7 @@ int RGE_fade_palette_step() {
         }
     }
 
-    RGE_translate_palette(DAT_0086b2b0, DAT_0086b6b0, DAT_0086b2a8,
-                          DAT_0086b2a0, DAT_0086b298, DAT_0086b29c);
+    RGE_translate_palette(DAT_0086b2b0, DAT_0086b6b0, DAT_0086b2a8, DAT_0086b2a0, DAT_0086b298, DAT_0086b29c);
     DAT_0086bab0->SetPalette(DAT_0086b6b0);
 
     return done;

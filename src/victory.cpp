@@ -1063,43 +1063,33 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* node) {
         sprintf(temp, "Capture %s", node->this_obj->master_obj->name);
         break;
     case 1:
-        sprintf(temp, "Create %d %s", node->number,
-            node->target_player->master_objects[node->obj_type]->name);
+        sprintf(temp, "Create %d %s", node->number, node->target_player->master_objects[node->obj_type]->name);
         break;
     case 8:
-        sprintf(temp, "Create %d %s in area (%f, %f) - (%f, %f)",
-            node->number,
-            node->target_player->master_objects[node->obj_type]->name,
-            (double)node->x0, (double)node->y0,
-            (double)node->x1, (double)node->y1);
+        sprintf(temp, "Create %d %s in area (%f, %f) - (%f, %f)", node->number,
+                node->target_player->master_objects[node->obj_type]->name, (double)node->x0, (double)node->y0,
+                (double)node->x1, (double)node->y1);
         break;
     case 2:
         sprintf(temp, "Destroy %s", node->this_obj->master_obj->name);
         break;
     case 3:
-        sprintf(temp, "Destroy %d %s of player %d", node->number,
-            node->target_player->master_objects[node->obj_type]->name,
-            node->target_player->id);
+        sprintf(temp, "Destroy %d %s of player %d", node->number, node->target_player->master_objects[node->obj_type]->name,
+                node->target_player->id);
         break;
     case 9:
-        sprintf(temp, "Destroy all %s of player %d",
-            node->target_player->master_objects[node->obj_type]->name,
-            node->target_player->id);
+        sprintf(temp, "Destroy all %s of player %d", node->target_player->master_objects[node->obj_type]->name,
+                node->target_player->id);
         break;
     case 4:
-        sprintf(temp, "Bring %s to area (%f, %f) - (%f, %f)",
-            node->this_obj->master_obj->name,
-            (double)node->x0, (double)node->y0,
-            (double)node->x1, (double)node->y1);
+        sprintf(temp, "Bring %s to area (%f, %f) - (%f, %f)", node->this_obj->master_obj->name,
+                (double)node->x0, (double)node->y0, (double)node->x1, (double)node->y1);
         break;
     case 5:
-        sprintf(temp, "Bring %s to %s",
-            node->this_obj->master_obj->name,
-            node->target_obj->master_obj->name);
+        sprintf(temp, "Bring %s to %s", node->this_obj->master_obj->name, node->target_obj->master_obj->name);
         break;
     case 6:
-        sprintf(temp, "aqquire %d of attribute %d", node->count,
-            node->number);
+        sprintf(temp, "aqquire %d of attribute %d", node->count, node->number);
         break;
     case 7:
         sprintf(temp, "explore %d percent of the map", node->count);

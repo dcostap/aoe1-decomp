@@ -145,8 +145,7 @@ unsigned char RGE_Action_Move_To::update() {
             this->obj->inRange(this->target_obj, this->range) != 0) {
             this->set_state(1);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262,
-                                  0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262, 0, 0);
             }
             this->obj->setWaitingToMove(0);
             this->obj->pathingGroupMembers.zeroNumber();
@@ -172,8 +171,7 @@ unsigned char RGE_Action_Move_To::update() {
 
         if (this->target_obj != 0) {
             this->obj->setTargetID(this->target_obj->id);
-            this->obj->setTargetRadius(this->target_obj->master_obj->radius_x,
-                                       this->target_obj->master_obj->radius_y);
+            this->obj->setTargetRadius(this->target_obj->master_obj->radius_x, this->target_obj->master_obj->radius_y);
         } else {
             this->obj->setTargetID(-1);
             this->obj->setTargetRadius(0.0f, 0.0f);
@@ -211,8 +209,7 @@ unsigned char RGE_Action_Move_To::update() {
                 }
             }
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262,
-                                  0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x262, 0, 0);
             }
             this->set_state(1);
             return 2;
@@ -225,8 +222,7 @@ unsigned char RGE_Action_Move_To::update() {
     case 13:
     state_done:
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262,
-                              0, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262, 0, 0);
         }
         return 3;
 
@@ -245,8 +241,7 @@ target_lost:
     if (this->subActionValue == 1) {
         return 5;
     }
-    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x262,
-                      this->targetID, 0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x262, this->targetID, 0);
     return 4;
 }
 
@@ -257,8 +252,7 @@ unsigned char RGE_Action_Move_To::is_in_range() {
         if (this->target_obj != 0) {
             distance = this->obj->distance_to_object(this->target_obj);
         } else {
-            distance = this->obj->distance_to_position(
-                this->target_x, this->target_y, this->target_z);
+            distance = this->obj->distance_to_position(this->target_x, this->target_y, this->target_z);
         }
         if (distance <= this->range) {
             return 1;

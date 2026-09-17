@@ -67,13 +67,8 @@ int RGE_Master_Missile_Object::setup(FILE* infile, RGE_Sprite** sprites, RGE_Sou
     recyclable = 1;
     master_type = 0x3C;
 
-    fscanf(infile, "%hd %hd %hd %hd %hd %f",
-           &temp_missile_type,
-           &temp_targetting_type,
-           &temp_missile_hit_info,
-           &temp_missile_die_info,
-           &temp_area_effect_specials,
-           &ballistics_ratio);
+    fscanf(infile, "%hd %hd %hd %hd %hd %f", &temp_missile_type, &temp_targetting_type, &temp_missile_hit_info,
+           &temp_missile_die_info, &temp_area_effect_specials, &ballistics_ratio);
 
     targetting_type = (unsigned char)temp_targetting_type;
     missile_hit_info = (unsigned char)temp_missile_hit_info;

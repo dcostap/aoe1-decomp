@@ -82,8 +82,7 @@ long TEditPanel::setup(
     this->font = font_in;
     this->auto_sel = auto_sel_in;
 
-    result = TPanel::setup(render_area_in, parent_panel_in, x_in, y_in,
-                           wid_in, hgt_in, 0xFF);
+    result = TPanel::setup(render_area_in, parent_panel_in, x_in, y_in, wid_in, hgt_in, 0xFF);
     if (result == 0) {
         return 0;
     }
@@ -92,11 +91,8 @@ long TEditPanel::setup(
     if (this->format != TEditPanel::FormatMultiLine)
         style = 0x40000080;
     else style = 0x40200044;
-    this->edit_wnd = CreateWindowExA(
-        0, "edit", 0, style,
-        x_in + 1, y_in + 1, wid_in - 2, hgt_in - 2,
-        (HWND)render_area_in->Wnd, (HMENU)1,
-        ((TDrawSystem*)this->render_area->DrawSystem)->Inst, 0);
+    this->edit_wnd = CreateWindowExA(0, "edit", 0, style, x_in + 1, y_in + 1, wid_in - 2, hgt_in - 2,
+                                     (HWND)render_area_in->Wnd, (HMENU)1, ((TDrawSystem*)this->render_area->DrawSystem)->Inst, 0);
     if (this->edit_wnd == 0) {
         return 0;
     }
@@ -215,8 +211,7 @@ void TEditPanel::set_focus(int have_focus_in) {
                 if (this->enable_ime != 0) {
                     this->imc = (unsigned long)ImmGetContext(this->edit_wnd);
                 } else {
-                    this->imc = (unsigned long)ImmAssociateContext(
-                        this->edit_wnd, 0);
+                    this->imc = (unsigned long)ImmAssociateContext(this->edit_wnd, 0);
                 }
             }
             context = this->imc;
@@ -407,8 +402,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
                     int control_down = GetKeyState(VK_CONTROL) < 0;
                     int shift_down = GetKeyState(VK_SHIFT) < 0;
                     DAT_0086b240 = 1;
-                    this->handle_key_down(9, (short)lParam, alt_down,
-                                          control_down, shift_down);
+                    this->handle_key_down(9, (short)lParam, alt_down, control_down, shift_down);
                     DAT_0086b240 = 0;
                     return 0;
                 }
@@ -443,8 +437,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
         case 0x104:
             if (this->imc == 0 || this->enable_ime == 0) {
                 SetFocus((HWND)this->render_area->Wnd);
-                PostMessageA((HWND)this->render_area->Wnd, msg, wParam,
-                             lParam);
+                PostMessageA((HWND)this->render_area->Wnd, msg, wParam, lParam);
             }
             return 0;
 
@@ -468,8 +461,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
         SendMessageA(this->edit_wnd, EM_GETSEL, (unsigned int)&old_start, (long)&old_end);
     }
 
-    long result = CallWindowProcA((FARPROC)this->old_sub_wnd_proc, (HWND)hwnd,
-                                  msg, wParam, lParam);
+    long result = CallWindowProcA((FARPROC)this->old_sub_wnd_proc, (HWND)hwnd, msg, wParam, lParam);
 
     if (check_sel != 0) {
         SendMessageA(this->edit_wnd, EM_GETSEL, (unsigned int)&new_start, (long)&new_end);
@@ -488,8 +480,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
         unsigned long x = this->pnl_x + ((unsigned long)lParam & 0xffff);
         unsigned long y = this->pnl_y + ((unsigned long)lParam >> 16);
         long position = (long)(((y & 0xffff) << 16) | (x & 0xffff));
-        result = panel_system.currentPanel()->wnd_proc(this->render_area->Wnd, msg,
-                                                       wParam, position);
+        result = panel_system.currentPanel()->wnd_proc(this->render_area->Wnd, msg, wParam, position);
     }
 
     return result;
@@ -528,8 +519,7 @@ int TEditPanel::verify_char(int key) {
             if (key >= '0' && key <= '9') goto valid;
         }
         if (this->text_len != 2 || key != '0') goto invalid;
-        validation_result = _mbscmp((const unsigned char*)"10",
-                                    (const unsigned char*)this->text);
+        validation_result = _mbscmp((const unsigned char*)"10", (const unsigned char*)this->text);
         break;
     case 1:
     case 2:
@@ -584,9 +574,8 @@ void TEditPanel::draw() {
     this->draw_setup(0);
 
     if (this->brush != 0 && this->active != 0 && this->have_focus != 0) {
-        unsigned char temp_color = (unsigned char)GetNearestPaletteIndex(
-            (HPALETTE)this->render_area->DrawSystem->Pal,
-            this->back_color);
+        unsigned char temp_color = (unsigned char)GetNearestPaletteIndex((HPALETTE)this->render_area->DrawSystem->Pal,
+                                                                         this->back_color);
         this->render_area->Clear(&this->clip_rect, temp_color);
     } else if (this->parent_panel != 0) {
         if (this->bevel_type >= 2 && this->bevel_type <= 7) {
@@ -602,59 +591,36 @@ void TEditPanel::draw() {
         if (this->render_area->Lock("pnl_edit::draw", 1) != 0) {
             switch (this->bevel_type) {
             case 1:
-                this->render_area->DrawRect(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1);
+                this->render_area->DrawRect(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                            this->pnl_y + this->pnl_hgt - 1, this->bevel_color1);
                 break;
             case 2:
-                this->render_area->DrawBevel(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color6, this->bevel_color1);
+                this->render_area->DrawBevel(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                             this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color1);
                 break;
             case 3:
-                this->render_area->DrawBevel2(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color6, this->bevel_color5,
-                    this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel2(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color5,
+                                              this->bevel_color2, this->bevel_color1);
                 break;
             case 4:
-                this->render_area->DrawBevel3(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color6, this->bevel_color5,
-                    this->bevel_color4, this->bevel_color3,
-                    this->bevel_color2, this->bevel_color1);
+                this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color6, this->bevel_color5,
+                                              this->bevel_color4, this->bevel_color3, this->bevel_color2, this->bevel_color1);
                 break;
             case 5:
-                this->render_area->DrawBevel(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1, this->bevel_color6);
+                this->render_area->DrawBevel(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                             this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color6);
                 break;
             case 6:
-                this->render_area->DrawBevel2(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1, this->bevel_color2,
-                    this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel2(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color2,
+                                              this->bevel_color5, this->bevel_color6);
                 break;
             case 7:
-                this->render_area->DrawBevel3(
-                    this->pnl_x, this->pnl_y,
-                    this->pnl_x + this->pnl_wid - 1,
-                    this->pnl_y + this->pnl_hgt - 1,
-                    this->bevel_color1, this->bevel_color2,
-                    this->bevel_color3, this->bevel_color4,
-                    this->bevel_color5, this->bevel_color6);
+                this->render_area->DrawBevel3(this->pnl_x, this->pnl_y, this->pnl_x + this->pnl_wid - 1,
+                                              this->pnl_y + this->pnl_hgt - 1, this->bevel_color1, this->bevel_color2,
+                                              this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
                 break;
             }
         }
@@ -686,12 +652,10 @@ void TEditPanel::draw() {
                 r.top = this->draw_rect.top + 1;
                 r.right = this->draw_rect.right - 1;
                 r.bottom = this->draw_rect.bottom + 1;
-                DrawTextExA(dc, this->text, -1, &r,
-                            this->draw_format, 0);
+                DrawTextExA(dc, this->text, -1, &r, this->draw_format, 0);
 
                 SetTextColor(dc, this->text_color1);
-                DrawTextExA(dc, this->text, -1, &this->draw_rect,
-                            this->draw_format, 0);
+                DrawTextExA(dc, this->text, -1, &this->draw_rect, this->draw_format, 0);
                 SelectObject(dc, old_font);
                 SelectClipRgn(dc, 0);
                 this->render_area->ReleaseDc("pnl_edit::draw");

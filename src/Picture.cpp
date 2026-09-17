@@ -47,8 +47,7 @@ TPicture::TPicture(int infile, int UseTrans) {
     if (this->Width > 0 && this->Height > 0) {
         void* dib = calloc(this->AlignedWidth() * this->Height + 1064, 1);
         this->Dib = (tagBITMAPINFOHEADER*)dib;
-        rge_read(infile, this->Dib,
-            this->AlignedWidth() * this->Height + 1064);
+        rge_read(infile, this->Dib, this->AlignedWidth() * this->Height + 1064);
         this->BitmapInfo = (BITMAPINFO256*)this->Dib;
         this->Bits = (unsigned char*)this->Dib + 0x428;
     } else {
@@ -67,15 +66,13 @@ TPicture::TPicture(int infile, int UseTrans) {
                 unsigned char* transparency_bits =
                     (unsigned char*)this->Dib +
                     ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize + 12;
-                DibCheckTrans((BITMAPINFO256*)this->Dib, trans_info,
-                    transparency_bits);
+                DibCheckTrans((BITMAPINFO256*)this->Dib, trans_info, transparency_bits);
             } else {
                 unsigned char* transparency_bits =
                     (unsigned char*)this->Dib +
                     ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize +
                     ((BITMAPINFO256*)this->Dib)->bmiHeader.biClrUsed * 4;
-                DibCheckTrans((BITMAPINFO256*)this->Dib, trans_info,
-                    transparency_bits);
+                DibCheckTrans((BITMAPINFO256*)this->Dib, trans_info, transparency_bits);
             }
         } else {
             DibFree(this->Dib);
@@ -129,8 +126,7 @@ void TPicture::Save(int outfile) {
 
     if (this->Width > 0 && this->Height > 0) {
         rge_write(outfile, this->BitmapInfo, 1064);
-        rge_write(outfile, this->Bits,
-            this->AlignedWidth() * this->Height);
+        rge_write(outfile, this->Bits, this->AlignedWidth() * this->Height);
     }
 }
 
@@ -151,8 +147,7 @@ void TPicture::Load(char* FileName, long res_id, int UseTrans,
     }
 
     if (this->Dib == 0 && res_id != -1) {
-        if (RESFILE_Extract_to_File(RES_TYPE_BINARY, res_id,
-            temp_file_name, temp_file) != 0) {
+        if (RESFILE_Extract_to_File(RES_TYPE_BINARY, res_id, temp_file_name, temp_file) != 0) {
             fclose(temp_file);
             this->Dib = DibOpenFile(temp_file_name);
             _unlink(temp_file_name);
@@ -187,8 +182,7 @@ void TPicture::Load(char* FileName, long res_id, int UseTrans,
         }
 
         if (MapToPal != 0) {
-            DibMapToPalette((tagBITMAPINFOHEADER*)bitmap, MapToPal,
-                UseTrans, ZeroIsTrans);
+            DibMapToPalette((tagBITMAPINFOHEADER*)bitmap, MapToPal, UseTrans, ZeroIsTrans);
         }
         if (UseTrans == 0) {
             return;
@@ -207,8 +201,7 @@ void TPicture::Load(char* FileName, long res_id, int UseTrans,
                     ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize +
                     ((BITMAPINFO256*)this->Dib)->bmiHeader.biClrUsed * 4;
             }
-            DibCheckTrans((BITMAPINFO256*)this->Dib, info,
-                transparency_bits);
+            DibCheckTrans((BITMAPINFO256*)this->Dib, info, transparency_bits);
             return;
         }
 
@@ -255,24 +248,20 @@ long TPicture::AlignedWidth() {
 void TPicture::Draw(TDrawArea* DrawArea, long DestX, long DestY, int Mirror,
     int Flip) {
     if (this->TransInfo != 0) {
-        TransDibBlt(DrawArea->BitmapInfo, DrawArea->Bits,
-            &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height,
-            this->BitmapInfo, this->Bits, this->TransInfo, 0, 0,
-            this->Width, this->Height, 1, Mirror, Flip, 0);
+        TransDibBlt(DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, this->Width, this->Height,
+                    this->BitmapInfo, this->Bits, this->TransInfo, 0, 0, this->Width, this->Height, 1, Mirror, Flip, 0);
     } else {
         DibBlt(DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect,
-            DestX, DestY, this->Width, this->Height, this->BitmapInfo,
-            this->Bits, 0, 0, this->Width, this->Height, 1, Mirror, Flip);
+               DestX, DestY, this->Width, this->Height, this->BitmapInfo,
+               this->Bits, 0, 0, this->Width, this->Height, 1, Mirror, Flip);
     }
 }
 
 long TPicture::Tile(TDrawArea* DrawArea, long DestX, long DestY,
     long DestWid, long DestHgt, long BlockWid, long BlockHgt, long SrcX,
     long SrcY, long SrcWid, long SrcHgt) {
-    return TileDibBlt(DrawArea->BitmapInfo, DrawArea->Bits,
-        &DrawArea->ClipRect, DestX, DestY, DestWid, DestHgt, BlockWid,
-        BlockHgt, this->BitmapInfo, this->Bits, this->TransInfo, SrcX,
-        SrcY, SrcWid, SrcHgt, (this->TransInfo != 0), 0, 0);
+    return TileDibBlt(DrawArea->BitmapInfo, DrawArea->Bits, &DrawArea->ClipRect, DestX, DestY, DestWid, DestHgt, BlockWid,
+                      BlockHgt, this->BitmapInfo, this->Bits, this->TransInfo, SrcX, SrcY, SrcWid, SrcHgt, (this->TransInfo != 0), 0, 0);
 }
 
 unsigned char TPicture::GetPixel(long x, long y, int Mirror, int Flip) {

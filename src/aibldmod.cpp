@@ -221,18 +221,14 @@ void BuildAIModule::displayBuildList() {
         if (item->built() == 1) {
             this->logCommonHistory(
                 "BLT Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
-                item->typeID(), item->name(), item->gameID(),
-                item->buildCategory(), item->uniqueID(), item->inProgress(),
-                item->buildAttempts(), item->skip(), item->numberBuilds(),
-                item->buildCap(), item->buildFrom(),
+                item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(), item->inProgress(),
+                item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(), item->buildFrom(),
                 (unsigned int)item->permanentSkip(), item->skipCycles());
         } else {
             this->logCommonHistory(
                 "    Type=%-4d %-20s gID=%-4d Cat=%d uID=%d InPrg=%d BlATmpt=%d Skip=%d NumBld=%d BldCap=%d From=%d PrSkp=%d SkpCyc=%d",
-                item->typeID(), item->name(), item->gameID(),
-                item->buildCategory(), item->uniqueID(), item->inProgress(),
-                item->buildAttempts(), item->skip(), item->numberBuilds(),
-                item->buildCap(), item->buildFrom(),
+                item->typeID(), item->name(), item->gameID(), item->buildCategory(), item->uniqueID(), item->inProgress(),
+                item->buildAttempts(), item->skip(), item->numberBuilds(), item->buildCap(), item->buildFrom(),
                 (unsigned int)item->permanentSkip(), item->skipCycles());
         }
 
@@ -287,8 +283,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
             continue;
         }
 
-        sscanf(temp, " %c%d %s %d %d ", &buildCategoryAsChar,
-               &quantity, name, &buildFrom, &buildCap);
+        sscanf(temp, " %c%d %s %d %d ", &buildCategoryAsChar, &quantity, name, &buildFrom, &buildCap);
 
         int buildCategory;
         switch (buildCategoryAsChar) {
@@ -345,10 +340,8 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
 
         int i;
         for (i = 0; i < buildFrom; ++i) {
-            BuildItem* item = new BuildItem(
-                buildCategory, quantity, this->buildListLengthValue,
-                1, 0, buildCap, name, ySize, xSize, 0.0f,
-                -1, -1, -1, 0);
+            BuildItem* item = new BuildItem(buildCategory, quantity, this->buildListLengthValue,
+                                            1, 0, buildCap, name, ySize, xSize, 0.0f, -1, -1, -1, 0);
 
             ++this->buildListLengthValue;
             item->next = &this->buildList;
@@ -425,9 +418,8 @@ int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int 
 
     int uniqueID = this->buildListLengthValue;
     for (int i = 0; i < quantity; i++) {
-        BuildItem* item = new BuildItem(
-            buildCategory, typeID, uniqueID, 1, 0, buildFrom, name,
-            xSize, ySize, 1.0f, -1, -1, -1, 0);
+        BuildItem* item = new BuildItem(buildCategory, typeID, uniqueID, 1, 0, buildFrom, name,
+                                        xSize, ySize, 1.0f, -1, -1, -1, 0);
         if (item == 0) {
             return 0;
         }

@@ -60,8 +60,7 @@ void TRIBE_History_Info::load(int infile) {
     rge_read(infile, &this->number_of_events, 4);
     rge_read(infile, &this->max_number_of_entries, 4);
 
-    this->history = (TRIBE_History_Entry*)calloc(
-        this->max_number_of_entries, 1);
+    this->history = (TRIBE_History_Entry*)calloc(this->max_number_of_entries, 1);
     rge_read(infile, this->history, this->max_number_of_entries);
 
     int count;
@@ -82,8 +81,7 @@ void TRIBE_History_Info::add_history_entry(unsigned char history_type, unsigned 
     if (this->number_of_entries >= this->max_number_of_entries) {
         int old_capacity = this->max_number_of_entries;
         this->max_number_of_entries += 0x3C;
-        TRIBE_History_Entry* new_entries = (TRIBE_History_Entry*)calloc(
-            this->max_number_of_entries, 1);
+        TRIBE_History_Entry* new_entries = (TRIBE_History_Entry*)calloc(this->max_number_of_entries, 1);
         if (old_capacity > 0) {
             memcpy(new_entries, this->history, old_capacity);
             free(this->history);

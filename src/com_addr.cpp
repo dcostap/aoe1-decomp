@@ -114,8 +114,7 @@ int RGE_Communications_Addresses::SetIPAddresses(char* sz) {
 
     unsigned char* address;
     while ((address = (unsigned char*)*address_ptr) != 0) {
-        sprintf(temp, "%d.%d.%d.%d\n",
-                address[0], address[1], address[2], address[3]);
+        sprintf(temp, "%d.%d.%d.%d\n", address[0], address[1], address[2], address[3]);
         strcat(sz, temp);
         strcpy(pIPAD[AddressesAvailable].DottedIPAddress, temp);
         AddressesAvailable++;

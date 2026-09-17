@@ -120,12 +120,10 @@ int TRIBE_Combat_Object::setup(int infile, RGE_Game_World* gworld) {
         rge_read(infile, &master_type, 1);
         if (master_type == 'F') {
             this->master_obj = new TRIBE_Master_Combat_Object(
-                infile, this->owner->world->sprites, this->owner->world->sounds,
-                1);
+                infile, this->owner->world->sprites, this->owner->world->sounds, 1);
         } else if (master_type == 'P') {
             this->master_obj = new TRIBE_Master_Building_Object(
-                infile, this->owner->world->sprites, this->owner->world->sounds,
-                1);
+                infile, this->owner->world->sprites, this->owner->world->sounds, 1);
         }
     }
 
@@ -276,10 +274,8 @@ void TRIBE_Combat_Object::change_ownership(RGE_Player* new_owner) {
         }
 
         this->take_attribute_from_owner();
-        this->owner->removeObject(this, this->sleep_flag, this->dopple_flag,
-                                  this->player_object_node);
-        this->player_object_node = new_owner->addObject(
-            this, this->sleep_flag, this->dopple_flag);
+        this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
+        this->player_object_node = new_owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
         if (this->object_state == 2) {
             this->unexplore_terrain(this->owner, 0, -1);
@@ -324,8 +320,7 @@ unsigned char TRIBE_Combat_Object::attack(RGE_Static_Object* target,
     RGE_Master_Combat_Object* master =
         static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     if (master->missile_id >= 0 && target != 0 && target->owner->id > 0) {
-        target->owner->make_new_object(0x70, this->world_x, this->world_y,
-                                       this->world_z, 0);
+        target->owner->make_new_object(0x70, this->world_x, this->world_y, this->world_z, 0);
     }
     return RGE_Combat_Object::attack(target, attacker);
 }
@@ -356,12 +351,8 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
         if (chance <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)
                          ->base_hit_chance) {
             const float attack_modifier = this->calc_attack_modifier(target);
-            target->damage(
-                static_cast<RGE_Master_Combat_Object*>(this->master_obj)
-                    ->weapon_num,
-                static_cast<RGE_Master_Combat_Object*>(this->master_obj)
-                    ->weapon,
-                attack_modifier, this->owner, attacker);
+            target->damage(static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon_num,
+                           static_cast<RGE_Master_Combat_Object*>(this->master_obj) ->weapon, attack_modifier, this->owner, attacker);
         }
         return 1;
     }
@@ -439,26 +430,22 @@ void TRIBE_Combat_Object::reposition_artifact() {
     do {
         int i = y2;
         for (; i <= x1; ++i) {
-            terrain = map->get_terrain(
-                static_cast<short>(i), static_cast<short>(x2));
+            terrain = map->get_terrain(static_cast<short>(i), static_cast<short>(x2));
             if (terrain != 1 && terrain != 2) {
                 y1 = static_cast<float>(i) - DAT_00574ca0;
                 x_pos = static_cast<float>(x2) - DAT_00574ca0;
-                placement = this->master_obj->check_placement(
-                    this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
+                placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
                 if (placement == 0) {
                     x = 1;
                     break;
                 }
             }
 
-            terrain = map->get_terrain(static_cast<short>(i),
-                                       static_cast<short>(found_pos));
+            terrain = map->get_terrain(static_cast<short>(i), static_cast<short>(found_pos));
             if (terrain != 1 && terrain != 2) {
                 y1 = static_cast<float>(i) - DAT_00574ca0;
                 x_pos = static_cast<float>(found_pos) - DAT_00574ca0;
-                placement = this->master_obj->check_placement(
-                    this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
+                placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
                 if (placement == 0) {
                     x = 1;
                     break;
@@ -473,28 +460,24 @@ void TRIBE_Combat_Object::reposition_artifact() {
         int j = x2 + 1;
         for (; j <= found_pos - 1; ++j) {
 
-            terrain = map->get_terrain(
-                static_cast<short>(y2), static_cast<short>(j));
+            terrain = map->get_terrain(static_cast<short>(y2), static_cast<short>(j));
             if (terrain != 1 && terrain != 2) {
                 y1 = static_cast<float>(y2) - DAT_00574ca0;
                 x_pos = static_cast<float>(j) - DAT_00574ca0;
-                placement = this->master_obj->check_placement(
-                    this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
+                placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
                 if (placement == 0) {
                     x = 1;
                     break;
                 }
             }
 
-            terrain = map->get_terrain(static_cast<short>(x1),
-                                       static_cast<short>(j));
+            terrain = map->get_terrain(static_cast<short>(x1), static_cast<short>(j));
             if (terrain == 1 || terrain == 2) {
                 continue;
             }
             y1 = static_cast<float>(x1) - DAT_00574ca0;
             x_pos = static_cast<float>(j) - DAT_00574ca0;
-            placement = this->master_obj->check_placement(
-                this->owner, y1, x_pos, 0, 0, 1, 1, 0, 1, 1);
+            placement = this->master_obj->check_placement(this->owner, y1, x_pos, 0, 0, 1, 1, 0, 1, 1);
             if (placement == 0) {
                 x = 1;
                 break;
@@ -559,13 +542,11 @@ int TRIBE_Combat_Object::hunt(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1 &&
         this->actions->get_action()->type() == 0x6E) {
-        this->actions->get_action()->work(target, target->world_x,
-                                          target->world_y, target->world_z);
+        this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
 
-    RGE_Task* task = this->getTask(target, target->world_x,
-                                   target->world_y, target->world_z);
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) return 0;
 
     TRIBE_Action_Hunt* action = new TRIBE_Action_Hunt(this, task, target);
@@ -586,13 +567,11 @@ int TRIBE_Combat_Object::convert(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1 &&
         this->actions->get_action()->type() == 0x68) {
-        this->actions->get_action()->work(target, target->world_x,
-                                          target->world_y, target->world_z);
+        this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
 
-    RGE_Task* task = this->getTask(target, target->world_x,
-                                   target->world_y, target->world_z);
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) return 0;
 
     TRIBE_Action_Convert* action = new TRIBE_Action_Convert(this, task, target);
@@ -613,13 +592,11 @@ int TRIBE_Combat_Object::heal(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1 &&
         this->actions->get_action()->type() == 0x69) {
-        this->actions->get_action()->work(target, target->world_x,
-                                          target->world_y, target->world_z);
+        this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
 
-    RGE_Task* task = this->getTask(target, target->world_x,
-                                   target->world_y, target->world_z);
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) return 0;
 
     TRIBE_Action_Heal* action = new TRIBE_Action_Heal(this, task, target);
@@ -640,8 +617,7 @@ int TRIBE_Combat_Object::repair(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1 &&
         this->actions->get_action()->type() == 0x6A) {
-        this->actions->get_action()->work(target, target->world_x,
-                                          target->world_y, target->world_z);
+        this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
 
@@ -651,8 +627,7 @@ int TRIBE_Combat_Object::repair(int targetID, int unconditional) {
         this->transform(repair_master);
     }
 
-    RGE_Task* task = this->getTask(target, target->world_x, target->world_y,
-                                   target->world_z);
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) return 0;
 
     TRIBE_Action_Repair* action = new TRIBE_Action_Repair(this, task, target);
@@ -673,13 +648,11 @@ int TRIBE_Combat_Object::build(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1 &&
         this->actions->get_action()->type() == 0x65) {
-        this->actions->get_action()->work(target, target->world_x,
-                                          target->world_y, target->world_z);
+        this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
 
-    RGE_Task* task = this->getTask(target, target->world_x, target->world_y,
-                                   target->world_z);
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) return 0;
 
     TRIBE_Action_Build* action = new TRIBE_Action_Build(this, task, target);
@@ -700,13 +673,11 @@ int TRIBE_Combat_Object::trade(int targetID, int unconditional) {
 
     if (this->actions->have_action() == 1 &&
         this->actions->get_action()->type() == 0x6F) {
-        this->actions->get_action()->work(target, target->world_x,
-                                          target->world_y, target->world_z);
+        this->actions->get_action()->work(target, target->world_x, target->world_y, target->world_z);
         return 1;
     }
 
-    RGE_Task* task = this->getTask(target, target->world_x,
-                                   target->world_y, target->world_z);
+    RGE_Task* task = this->getTask(target, target->world_x, target->world_y, target->world_z);
     if (task == 0) return 0;
 
     TRIBE_Action_Trade* action = new TRIBE_Action_Trade(this, task, target);
@@ -824,18 +795,15 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
             cliff != LastCliffObject) {
             LastCliffObject = cliff;
             if (AngleToTarget == -1.0f) {
-                AngleToTarget = atan2(target->world_y - this->world_y,
-                                      target->world_x - this->world_x);
+                AngleToTarget = atan2(target->world_y - this->world_y, target->world_x - this->world_x);
                 if (AngleToTarget < 0.0f) AngleToTarget -= DAT_00574ca4;
             }
 
             const int facet = cliff->facet;
-            if (lines_intersect(
-                    StartX, StartY, DestX, DestY,
-                    TRIBE_Cliff_Higher_Check_Table[facet].line_x1 + StartX,
-                    TRIBE_Cliff_Higher_Check_Table[facet].line_y1 + StartY,
-                    TRIBE_Cliff_Higher_Check_Table[facet].line_x2 + DestX,
-                    TRIBE_Cliff_Higher_Check_Table[facet].line_y2 + DestY)) {
+            if (lines_intersect(StartX, StartY, DestX, DestY, TRIBE_Cliff_Higher_Check_Table[facet].line_x1 + StartX,
+                                TRIBE_Cliff_Higher_Check_Table[facet].line_y1 + StartY,
+                                TRIBE_Cliff_Higher_Check_Table[facet].line_x2 + DestX,
+                                TRIBE_Cliff_Higher_Check_Table[facet].line_y2 + DestY)) {
                 if ((facet >= 0x19 ||
                      AngleToTarget <
                          TRIBE_Cliff_Higher_Check_Table[facet].from_angle1 ||
@@ -923,17 +891,12 @@ int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target) {
         if (XTileInt != PriorX || YTileInt != PriorY) {
             PriorX = XTileInt;
             PriorY = YTileInt;
-            if (this->higher_check_for_cliff(
-                    target, XTileInt, YTileInt, StartX, StartY, DestX, DestY,
-                    Map, 0, AngleToTarget, HigherCalc) == 0 &&
-                this->higher_check_for_cliff(
-                    target, XTileInt + Tile_Dx1, YTileInt + Tile_Dy1,
-                    StartX, StartY, DestX, DestY, Map, 0, AngleToTarget,
-                    HigherCalc) == 0) {
-                this->higher_check_for_cliff(
-                    target, XTileInt + Tile_Dx2, YTileInt + Tile_Dy2,
-                    StartX, StartY, DestX, DestY, Map, 0, AngleToTarget,
-                    HigherCalc);
+            if (this->higher_check_for_cliff(target, XTileInt, YTileInt, StartX, StartY, DestX, DestY,
+                                             Map, 0, AngleToTarget, HigherCalc) == 0 &&
+                this->higher_check_for_cliff(target, XTileInt + Tile_Dx1, YTileInt + Tile_Dy1,
+                                             StartX, StartY, DestX, DestY, Map, 0, AngleToTarget, HigherCalc) == 0) {
+                this->higher_check_for_cliff(target, XTileInt + Tile_Dx2, YTileInt + Tile_Dy2,
+                                             StartX, StartY, DestX, DestY, Map, 0, AngleToTarget, HigherCalc);
             }
         }
         --NumSteps;
@@ -994,8 +957,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
                            object->owner == this->owner) ||
                           object == this) &&
                         object->master_obj->area_effect_object_level >=
-                            static_cast<RGE_Master_Combat_Object*>(
-                                this->master_obj)->area_effect_level) {
+                            static_cast<RGE_Master_Combat_Object*>(this->master_obj)->area_effect_level) {
                         float dx = object->world_x - x;
                         float dy = object->world_y - y;
                         if (dx < DAT_00574c98) dx = -dx;
@@ -1008,19 +970,14 @@ unsigned char TRIBE_Combat_Object::area_attack(
                         else dy = DAT_00574c98;
                         if (radius_squared > dx * dx + dy * dy) {
                             int chance =
-                                debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp",
-                                           1619) * 100 / 0x7fff;
+                                debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 1619) * 100 / 0x7fff;
                             if ((short)chance <=
-                                static_cast<RGE_Master_Combat_Object*>(
-                                    this->master_obj)->base_hit_chance) {
+                                static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
                                 attack_modifier =
                                     this->calc_attack_modifier(object);
-                                object->damage(
-                                    static_cast<RGE_Master_Combat_Object*>(
-                                        this->master_obj)->weapon_num,
-                                    static_cast<RGE_Master_Combat_Object*>(
-                                        this->master_obj)->weapon,
-                                    attack_modifier, this->owner, attacker);
+                                object->damage(static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_num,
+                                               static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon,
+                                               attack_modifier, this->owner, attacker);
                                 if (object->hp < DAT_00574c78) {
                                     object->set_attribute_amount(0.0f, 0, 1);
                                 }
@@ -1051,8 +1008,7 @@ unsigned char TRIBE_Combat_Object::heal(float healing) {
     }
 
     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->owner);
-    if (player->pay_obj_cost(master->id,
-                             healing / static_cast<float>(max_hp * 2), 1)) {
+    if (player->pay_obj_cost(master->id, healing / static_cast<float>(max_hp * 2), 1)) {
         return RGE_Static_Object::heal(healing);
     }
     return 2;
@@ -1115,16 +1071,14 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
         action_type = 0;
         action_worked = 0;
         if (current_task != 0 && task == current_task &&
-            this->actions->action_work(obj, obj->world_x, obj->world_y,
-                                       obj->world_z) != 0) {
+            this->actions->action_work(obj, obj->world_x, obj->world_y, obj->world_z) != 0) {
             action_type = this->actions->get_action()->type();
             action_worked = 1;
         }
 
         if (action_worked == 0) {
             if (task != 0) {
-                action = this->actions->create_task_action(
-                    task, obj, obj->world_x, obj->world_y, obj->world_z);
+                action = this->actions->create_task_action(task, obj, obj->world_x, obj->world_y, obj->world_z);
             } else {
                 action = 0;
             }
@@ -1146,9 +1100,8 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* obj) {
             }
             this->unitAIValue->setCurrentOrder(order);
             this->unitAIValue->setCurrentAction(current_action);
-            this->unitAIValue->setCurrentTarget(
-                obj->id, obj->master_obj->object_group, obj->world_x,
-                obj->world_y, obj->world_z);
+            this->unitAIValue->setCurrentTarget(obj->id, obj->master_obj->object_group, obj->world_x,
+                                                obj->world_y, obj->world_z);
             this->unitAIValue->setTaskedByPlayer();
         }
     }

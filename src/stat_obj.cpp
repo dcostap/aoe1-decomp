@@ -1462,7 +1462,6 @@ void RGE_Static_Object::save(int outfile) {
 }
 
 // teleport uses the canonical named terrain methods.
-
 float RGE_Static_Object::teleport(float x, float y, float z) {
     float rz = 0.0f;
     RGE_Map* map = this->owner->world->map;
@@ -2140,8 +2139,7 @@ void RGE_Static_Object::unexplore_terrain(RGE_Player* whos, unsigned char explor
             RGE_Visible_Map* visible = whos->visible;
             long current = (whos->id == whos->world->curr_player);
             if (explore_type == 0) {
-                visible->unexplore_terrain((long)this->world_x, (long)this->world_y, Override_LOS, 0, current,
-                                           this->id);
+                visible->unexplore_terrain((long)this->world_x, (long)this->world_y, Override_LOS, 0, current, this->id);
             } else {
                 if (this->master_obj->radius_x > 0.0 && this->master_obj->radius_y > 0.0) {
                     visible->unexplore_terrain_sq((long)(this->world_x - this->master_obj->radius_x),
@@ -2460,7 +2458,6 @@ unsigned char RGE_Static_Object::drop_held_objects(int dropZone) {
 }
 
 // the x and y outputs are float references in the shipped symbol.
-
 unsigned char RGE_Static_Object::find_drop_location(int dropZone, float& x, float& y, RGE_Master_Static_Object* m_obj,
                                                     RGE_Static_Object* obj, float drop_x, float drop_y, float radius_x,
                                                     float radius_y) {
@@ -2676,7 +2673,6 @@ int RGE_Static_Object::boundToFacet(float tX, float tY, int numberBindingFacets)
 
 // The owned body is [004C6B50, 004C6B5F); the next byte is padding.
 // Keep the narrow sprite facet-count read at sprite + 0x60.
-
 int RGE_Static_Object::numberFacets() {
     if (this->sprite)
         return (int)this->sprite->facet_num;
@@ -2685,20 +2681,17 @@ int RGE_Static_Object::numberFacets() {
 
 // The owned body is [004C6B60, 004C6B67); 004C6B67 begins padding.
 // The body is one narrow byte read at this + 0x86 followed by ret.
-
 unsigned char RGE_Static_Object::underAttack() const {
     return this->underAttackValue;
 }
 
 // The owned body is [004C6B70, 004C6B7D); 004C6B7D begins padding.
 // Keep the virtual, non-const setter ABI and the narrow +0x86 store.
-
 void RGE_Static_Object::setUnderAttack(unsigned char v) {
     this->underAttackValue = v;
 }
 
 // The body is [004C6B80, 004C6C8A); 004C6C90 starts the next symbol.
-
 int RGE_Static_Object::addToObstructionMap(int obMapCode) {
     if (this->master_obj->radius_z <= 0.0f) {
         return 0;

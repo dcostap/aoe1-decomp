@@ -66,13 +66,11 @@ void TScreenPanel::set_focus(int have_focus_in) {
     if (this->render_area && this->render_area->DrawSystem && have_focus_in && is_new) {
         TDrawSystem* system = this->render_area->DrawSystem;
         if (system->ScreenMode == 2 || system->DrawType == 1) {
-            RGE_fade_palette(this->render_area, color, 0.0f, 2,
-                             local.color_table, -1, -1);
+            RGE_fade_palette(this->render_area, color, 0.0f, 2, local.color_table, -1, -1);
             this->handle_paint();
             RGE_fade_palette(this->render_area, color, 0.0f, 1, 0, -1, -1);
             this->render_area->DrawSystem->Paint(0);
-            RGE_fade_palette(this->render_area, color, 0.13f, 2,
-                             local.color_table, -1, -1);
+            RGE_fade_palette(this->render_area, color, 0.13f, 2, local.color_table, -1, -1);
         }
     }
 

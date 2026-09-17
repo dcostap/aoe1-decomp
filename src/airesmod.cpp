@@ -240,8 +240,7 @@ int ResourceAIModule::filterOutMessage(AIModuleMessage* m) {
 }
 
 void ResourceAIModule::addResourceType(int r, int t) {
-    int* newTypes = (int*)operator new(
-        this->numberResourceTypesValue[r] * 4 + 4);
+    int* newTypes = (int*)operator new(this->numberResourceTypesValue[r] * 4 + 4);
 
     int count = 0;
     if (this->numberResourceTypesValue[r] > 0) {

@@ -161,8 +161,7 @@ RGE_Color_Table::RGE_Color_Table(FILE* infile, short id_val) {
     this->id = id_val;
     memset(this->table, 0, 256);
 
-    fscanf(infile, "%hd %s %hd %hd", &this->resource_id, this->color_table_name,
-           &id_val, &infile);
+    fscanf(infile, "%hd %s %hd %hd", &this->resource_id, this->color_table_name, &id_val, &infile);
     this->map_color = (unsigned char)id_val;
     this->type = (unsigned char)infile;
     addstring(&file_name, this->color_table_name, ".col");

@@ -69,9 +69,7 @@ int TRIBE_Dialog_List::create_train_list() {
         if (player->own_selected()) {
             item_list = 0;
             item_num = 0;
-            player->interface_item_avail(
-                &item_list, &item_num,
-                player->selected_obj->master_obj->id);
+            player->interface_item_avail(&item_list, &item_num, player->selected_obj->master_obj->id);
             if (item_num != 0) {
                 list_size = item_num;
                 list_info = (rdlg_list_info*)calloc(item_num, sizeof(rdlg_list_info));
@@ -101,9 +99,7 @@ int TRIBE_Dialog_List::create_research_list() {
         if (player->own_selected()) {
             item_list = 0;
             item_num = 0;
-            player->interface_tech_avail(
-                &item_list, &item_num,
-                player->selected_obj->master_obj->id);
+            player->interface_tech_avail(&item_list, &item_num, player->selected_obj->master_obj->id);
             if (item_num != 0) {
                 list_size = item_num;
                 list_info = (rdlg_list_info*)calloc(item_num, sizeof(rdlg_list_info));

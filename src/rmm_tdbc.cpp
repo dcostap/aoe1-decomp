@@ -16,8 +16,7 @@ static char s_object_log[] = "Random Map object initilization, rand: %d";
 static char s_shallows_log[] = "Random Map shallows initilization, rand: %d";
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(char* land_file, char* terrain_file, char* object_file, char* map_file)
-    : RGE_RMM_Database_Controller(land_file, terrain_file, object_file,
-                                  map_file) {
+    : RGE_RMM_Database_Controller(land_file, terrain_file, object_file, map_file) {
 }
 
 TRIBE_RMM_Database_Controller::TRIBE_RMM_Database_Controller(int infile)
@@ -29,8 +28,7 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_wo
 
     fixed_position =
         (uchar)(((TRIBE_Game*)rge_base_game)->randomizePositions() == 0);
-    this->RGE_RMM_Database_Controller::init(
-        in_map, in_world, type, player_num, fixed_position);
+    this->RGE_RMM_Database_Controller::init(in_map, in_world, type, player_num, fixed_position);
 
     if (debug_rand(s_rmm_tdbc_path, 64) > 0x1fff) {
         long base_cliff_size;
@@ -300,8 +298,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
         this->land_info.land[0].terrain_type = 1;
         this->land_info.land[0].area = 7;
         this->land_info.land[0].base_size = 2;
-        this->land_info.land[0].land_size = (long)((double)
-            ((height - edge * 2) * (width - edge * 2)) * DAT_00571f38);
+        this->land_info.land[0].land_size = (long)((double) ((height - edge * 2) * (width - edge * 2)) * DAT_00571f38);
         this->land_info.land[0].clumpiness_factor = 10;
         this->land_info.land[0].x = this->map->map_width / 2;
         this->land_info.land[0].y = this->map->map_height / 2;
@@ -332,8 +329,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
             this->land_info.land[index + this->land_info.land_num].zone =
                 (uchar)(index + this->land_info.land_num);
             this->land_info.land[index + this->land_info.land_num].land_size =
-                (long)((double)(this->map_width + this->map_height) *
-                    DAT_00571f40);
+                (long)((double)(this->map_width + this->map_height) * DAT_00571f40);
             this->land_info.land[index + this->land_info.land_num].
                 clumpiness_factor = 10;
             this->land_info.land[index + this->land_info.land_num].

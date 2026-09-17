@@ -49,12 +49,7 @@ unsigned char RGE_RMM_Object_Generator::generate() {
         short h = this->map_height;
         h--;
         w--;
-        this->map->set_terrain(
-            *wld->players, wld,
-            0, 0,
-            w, h,
-            1, 0, 0
-        );
+        this->map->set_terrain(*wld->players, wld, 0, 0, w, h, 1, 0, 0);
     }
 
     this->clear_stack();
@@ -90,7 +85,7 @@ void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& info_line)
             RGE_Land_Point_Info_Line& land = this->info.lands[i];
             if (land.id == info_line.land_id) {
                 this->place_land_objects(info_line, land.x, land.y,
-                    info_line.land_inner_radius, info_line.land_outer_radius, i);
+                                         info_line.land_inner_radius, info_line.land_outer_radius, i);
             }
         }
     } else if (info_line.land_id == -1) {
@@ -242,8 +237,7 @@ void RGE_RMM_Object_Generator::remove_area_from_lists(
             long offset = x_start * 24;
             long count = x_end - x_start + 1;
             do {
-                this->remove_stack_node(
-                    (Map_Stack*)((char*)this->stack_offsets[cur_y] + offset));
+                this->remove_stack_node((Map_Stack*)((char*)this->stack_offsets[cur_y] + offset));
                 offset += 24;
                 count--;
             } while (count != 0);
@@ -269,8 +263,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
     memset(this->search_map, 1, this->map_width * this->map_height);
 
     for (i = 0; i < this->info.land_num; i++) {
-        this->set_search_area(this->info.lands[i].x, this->info.lands[i].y,
-                              info_line.land_inner_radius, 0);
+        this->set_search_area(this->info.lands[i].x, this->info.lands[i].y, info_line.land_inner_radius, 0);
     }
 
     this->init_stack(obj_stack);
@@ -300,8 +293,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
             tile_y = tile_y - -0.5f;
         }
 
-        if (!master->check_placement(player, tile_x, tile_y,
-                                     0, 0, 1, 1, 1, 0, 1)) {
+        if (!master->check_placement(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
             this->remove_area_from_lists(x, y, info_line.object_exclusion_zone);
             switch (info_line.group_flag) {
             case 0:
@@ -362,8 +354,7 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info_line) {
             tile_y = tile_y - -0.5f;
         }
 
-        if (!master->check_placement(player, tile_x, tile_y,
-                                     0, 0, 1, 1, 1, 0, 1)) {
+        if (!master->check_placement(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
             this->remove_area_from_lists(x, y, info_line.object_exclusion_zone);
             switch (info_line.group_flag) {
             case 0:
@@ -461,10 +452,8 @@ void RGE_RMM_Object_Generator::place_land_objects(
                     fy -= -0.5f;
                 }
 
-                if (!placement_master->check_placement(player, fx, fy,
-                    0, 0, 1, 1, 1, 1, 1)) {
-                    this->remove_area_from_lists(y, min_x0,
-                        object->object_exclusion_zone);
+                if (!placement_master->check_placement(player, fx, fy, 0, 0, 1, 1, 1, 1, 1)) {
+                    this->remove_area_from_lists(y, min_x0, object->object_exclusion_zone);
                     switch (object->group_flag) {
                     case 0:
                         player->make_new_object(object->obj_id, fx, fy, 0, 1);
@@ -500,8 +489,7 @@ void RGE_RMM_Object_Generator::place_group(
 
     self = this;
     this->init_stack(obj_stack);
-    this->make_placement_stack(obj_stack, map_x, map_y, 0,
-                               info_line.group_area);
+    this->make_placement_stack(obj_stack, map_x, map_y, 0, info_line.group_area);
 
     int count = info_line.object_number_per_group;
     register int var = info_line.object_number_varience;
@@ -526,8 +514,7 @@ void RGE_RMM_Object_Generator::place_group(
             if (0.0f < master->radius_y - (float)zone) {
                 fy = fy - -0.5f;
             }
-            if (!master->check_placement(player, fx, fy,
-                                         0, 0, 1, 1, 1, 0, 1)) {
+            if (!master->check_placement(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
                 player->make_new_object(info_line.obj_id, fx, fy, 0, 1);
                 count--;
             }
@@ -589,27 +576,22 @@ void RGE_RMM_Object_Generator::place_cluster(
         }
 
         master->alignment(tile_x, tile_y, this->world, 1);
-        if (!master->check_placement(player, tile_x, tile_y,
-                                     0, 0, 1, 1, 1, 0, 1)) {
+        if (!master->check_placement(player, tile_x, tile_y, 0, 0, 1, 1, 1, 0, 1)) {
             player->make_new_object(info_line.obj_id, tile_x, tile_y, 0, 1);
             count--;
             this->search_map_rows[y][x] = 0;
 
             if (x > min_x && this->search_map_rows[y][x - 1] != 0) {
-                this->push_stack(obj_stack, x - 1, y, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 624));
+                this->push_stack(obj_stack, x - 1, y, 0.0f, (float)debug_rand(s_rmm_obj_cpp, 624));
             }
             if (x < x1 && this->search_map_rows[y][x + 1] != 0) {
-                this->push_stack(obj_stack, x + 1, y, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 627));
+                this->push_stack(obj_stack, x + 1, y, 0.0f, (float)debug_rand(s_rmm_obj_cpp, 627));
             }
             if (y > y0 && this->search_map_rows[y - 1][x] != 0) {
-                this->push_stack(obj_stack, x, y - 1, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 630));
+                this->push_stack(obj_stack, x, y - 1, 0.0f, (float)debug_rand(s_rmm_obj_cpp, 630));
             }
             if (y < y1 && this->search_map_rows[y + 1][x] != 0) {
-                this->push_stack(obj_stack, x, y + 1, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 633));
+                this->push_stack(obj_stack, x, y + 1, 0.0f, (float)debug_rand(s_rmm_obj_cpp, 633));
             }
         }
     }

@@ -336,8 +336,7 @@ RGE_Static_Object* RGE_Object_List::find_by_group(
                         return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_obj->lookupZone((int)object->world_x,
-                                                    (int)object->world_y) & 0xff) != zone) {
+                        if ((zone_obj->lookupZone((int)object->world_x, (int)object->world_y) & 0xff) != zone) {
                             goto next_group_node;
                         }
                     }
@@ -401,8 +400,7 @@ RGE_Static_Object* RGE_Object_List::find_by_master_id(
                         return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_obj->lookupZone((int)object->world_x,
-                                                    (int)object->world_y) & 0xff) != zone) {
+                        if ((zone_obj->lookupZone((int)object->world_x, (int)object->world_y) & 0xff) != zone) {
                             goto next_master_node;
                         }
                     }
@@ -452,8 +450,7 @@ RGE_Static_Object* RGE_Object_List::find_by_master_ids(
                         return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_obj->lookupZone((int)object->world_x,
-                                                    (int)object->world_y) & 0xff) != zone) {
+                        if ((zone_obj->lookupZone((int)object->world_x, (int)object->world_y) & 0xff) != zone) {
                             goto next_master_ids_node;
                         }
                     }

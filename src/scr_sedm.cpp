@@ -32,25 +32,19 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
 
     set_ideal_size(640, 480);
 
-    if (!create_text(this, &title, IDS_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30,
-                     1, 1, 0, 0))
+    if (!create_text(this, &title, IDS_SCENARIO_EDITOR_TITLE, 20, 20, 600, 30, 1, 1, 0, 0))
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(this, &button[i], s_592A40, 0,
-                           170, 170 + i * 50, 300, 40,
-                           0, 0, 0))
+        if (!create_button(this, &button[i], s_592A40, 0, 170, 170 + i * 50, 300, 40, 0, 0, 0))
             return;
     }
 
-    if (!create_button(this, &close_button, IDS_BUTTON_CLOSE, 0,
-                       0, 0, 0, 0, -1, -1, 0))
+    if (!create_button(this, &close_button, IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0, -1, -1, 0))
         return;
 
     close_button->set_active(1);
-    close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4,
-                                  17, 17, 17, 17,
-                                  0, 0, 0, 0);
+    close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 17, 17, 17, 17, 0, 0, 0, 0);
 
     button[0]->set_text(0, IDS_SCENARIO_MENU_CREATE_SCENARIO);
     button[1]->set_text(0, IDS_BUTTON_EDIT_SCENARIO);

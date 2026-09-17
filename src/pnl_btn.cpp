@@ -151,8 +151,7 @@ void TButtonPanel::set_radio_info(TButtonPanel** buttons_in, short button_count_
     if (button_count_in != 0) {
         int button_count = (int)(short)button_count_in;
         this->num_radio_buttons = button_count_in;
-        this->radio_buttons = (TButtonPanel**)calloc(
-            button_count, sizeof(TButtonPanel*));
+        this->radio_buttons = (TButtonPanel**)calloc(button_count, sizeof(TButtonPanel*));
         if (button_count_in > 0) {
             int index = 0;
             int remaining = button_count;
@@ -456,12 +455,9 @@ void TButtonPanel::draw() {
         if (render_area->Lock(s_pnl_btn_draw, 1) != 0) {
             if (pic[cur_state] != 0) {
                 if (auto_pic_pos != 0) {
-                    pic[cur_state]->shape_minmax(
-                        x_min, y_min, x_max, y_max, pic_index[cur_state]);
-                    pic_x = (short)(pnl_wid / 2 -
-                                    (x_max - x_min + 1) / 2 - x_min);
-                    pic_y = (short)(pnl_hgt / 2 -
-                                    (y_max - y_min + 1) / 2 - y_min);
+                    pic[cur_state]->shape_minmax(x_min, y_min, x_max, y_max, pic_index[cur_state]);
+                    pic_x = (short)(pnl_wid / 2 - (x_max - x_min + 1) / 2 - x_min);
+                    pic_y = (short)(pnl_hgt / 2 - (y_max - y_min + 1) / 2 - y_min);
                 }
 
                 x = pic_x + pnl_x;
@@ -471,8 +467,7 @@ void TButtonPanel::draw() {
                     ++x;
                     --y;
                 }
-                pic[cur_state]->shape_draw(
-                    render_area, x, y, pic_index[cur_state], 0, 0);
+                pic[cur_state]->shape_draw(render_area, x, y, pic_index[cur_state], 0, 0);
             }
             render_area->Unlock(s_pnl_btn_draw);
         }
@@ -519,14 +514,12 @@ void TButtonPanel::draw() {
 
                 if (have_focus == 0) {
                     SetTextColor(dc, text_color2[cur_state]);
-                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
-                             text_length);
+                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, text_length);
                     SetTextColor(dc, text_color1[cur_state]);
                     TextOutA(dc, text_x_pos, text_y_pos, text, text_length);
                 } else {
                     SetTextColor(dc, highlight_text_color2[cur_state]);
-                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
-                             text_length);
+                    TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, text_length);
                     SetTextColor(dc, highlight_text_color1[cur_state]);
                     TextOutA(dc, text_x_pos, text_y_pos, text, text_length);
                 }
@@ -549,18 +542,14 @@ void TButtonPanel::draw() {
 
                     if (have_focus == 0) {
                         SetTextColor(dc, text_color2[cur_state]);
-                        TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
-                                 text_length);
+                        TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, text_length);
                         SetTextColor(dc, text_color1[cur_state]);
-                        TextOutA(dc, text_x_pos, text_y_pos, text,
-                                 text_length);
+                        TextOutA(dc, text_x_pos, text_y_pos, text, text_length);
                     } else {
                         SetTextColor(dc, highlight_text_color2[cur_state]);
-                        TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text,
-                                 text_length);
+                        TextOutA(dc, text_x_pos - 1, text_y_pos + 1, text, text_length);
                         SetTextColor(dc, highlight_text_color1[cur_state]);
-                        TextOutA(dc, text_x_pos, text_y_pos, text,
-                                 text_length);
+                        TextOutA(dc, text_x_pos, text_y_pos, text, text_length);
                     }
                 }
             }
@@ -577,67 +566,47 @@ void TButtonPanel::draw() {
         drawTypeValue == DrawBevelPicture) {
         if (render_area->Lock(s_pnl_btn_draw2, 1) != 0) {
             if (disabled != 0) {
-                render_area->DrawRect(
-                    pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                    pnl_y + pnl_hgt - 1, bevel_color6);
-                render_area->DrawRect(
-                    pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2,
-                    pnl_y + pnl_hgt - 2, bevel_color1);
+                render_area->DrawRect(pnl_x, pnl_y, pnl_x + pnl_wid - 1, pnl_y + pnl_hgt - 1, bevel_color6);
+                render_area->DrawRect(pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, bevel_color1);
             } else if ((draw_reverse == 0 && is_down == 0) ||
                        (draw_reverse != 0 && is_down != 0)) {
                 switch (bevel_type) {
                 case 1:
-                    render_area->DrawVertLine(
-                        pnl_x + pnl_wid - 1, pnl_y + 1, pnl_hgt - 1, 0);
-                    render_area->DrawHorzLine(
-                        pnl_x + 1, pnl_y + pnl_hgt - 1, pnl_wid - 1, 0);
-                    render_area->DrawRect(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 2,
-                        pnl_y + pnl_hgt - 2, 0xFF);
+                    render_area->DrawVertLine(pnl_x + pnl_wid - 1, pnl_y + 1, pnl_hgt - 1, 0);
+                    render_area->DrawHorzLine(pnl_x + 1, pnl_y + pnl_hgt - 1, pnl_wid - 1, 0);
+                    render_area->DrawRect(pnl_x, pnl_y, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, 0xFF);
                     break;
                 case 2:
-                    render_area->DrawBevel(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                        pnl_y + pnl_hgt - 1, bevel_color1, bevel_color6);
+                    render_area->DrawBevel(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                                           pnl_y + pnl_hgt - 1, bevel_color1, bevel_color6);
                     break;
                 case 3:
-                    render_area->DrawBevel2(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                        pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
-                        bevel_color5, bevel_color6);
+                    render_area->DrawBevel2(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                                            pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2, bevel_color5, bevel_color6);
                     break;
                 case 4:
-                    render_area->DrawBevel3(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                        pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2,
-                        bevel_color3, bevel_color4, bevel_color5,
-                        bevel_color6);
+                    render_area->DrawBevel3(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                                            pnl_y + pnl_hgt - 1, bevel_color1, bevel_color2, bevel_color3, bevel_color4, bevel_color5,
+                                            bevel_color6);
                     break;
                 }
             } else {
                 switch (bevel_type) {
                 case 1:
-                    render_area->DrawRect(
-                        pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2,
-                        pnl_y + pnl_hgt - 2, 0xFF);
+                    render_area->DrawRect(pnl_x + 1, pnl_y + 1, pnl_x + pnl_wid - 2, pnl_y + pnl_hgt - 2, 0xFF);
                     break;
                 case 2:
-                    render_area->DrawBevel(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                        pnl_y + pnl_hgt - 1, bevel_color6, bevel_color1);
+                    render_area->DrawBevel(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                                           pnl_y + pnl_hgt - 1, bevel_color6, bevel_color1);
                     break;
                 case 3:
-                    render_area->DrawBevel21(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                        pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
-                        bevel_color2, bevel_color1);
+                    render_area->DrawBevel21(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                                             pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5, bevel_color2, bevel_color1);
                     break;
                 case 4:
-                    render_area->DrawBevel32(
-                        pnl_x, pnl_y, pnl_x + pnl_wid - 1,
-                        pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5,
-                        bevel_color4, bevel_color3, bevel_color2,
-                        bevel_color1);
+                    render_area->DrawBevel32(pnl_x, pnl_y, pnl_x + pnl_wid - 1,
+                                             pnl_y + pnl_hgt - 1, bevel_color6, bevel_color5, bevel_color4, bevel_color3, bevel_color2,
+                                             bevel_color1);
                     break;
                 }
             }
@@ -775,19 +744,16 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl_key, int shi
     if (this->is_down != new_is_down) {
         this->is_down = new_is_down;
         if (new_is_down != 0) {
-            this->button_down_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 995);
+            this->button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 995);
         }
         this->set_redraw(TPanel::RedrawNormal);
         if (this->is_down != 0) {
             if (this->parent_panel != 0) {
-                this->parent_panel->action(
-                    this, 5, this->id[this->cur_state], this->id2[this->cur_state]);
+                this->parent_panel->action(this, 5, this->id[this->cur_state], this->id2[this->cur_state]);
             }
             return 1;
         } else if (this->parent_panel != 0) {
-            this->parent_panel->action(
-                this, 6, this->id[this->cur_state], this->id2[this->cur_state]);
+            this->parent_panel->action(this, 6, this->id[this->cur_state], this->id2[this->cur_state]);
         }
     }
 
@@ -970,20 +936,17 @@ void TButtonPanel::do_action(void) {
     }
 
     if (this->parent_panel != 0) {
-        this->parent_panel->action(this, 3, this->id[this->cur_state],
-                                   this->id2[this->cur_state]);
+        this->parent_panel->action(this, 3, this->id[this->cur_state], this->id2[this->cur_state]);
     }
 
     if (this->notifyTypeValue == TButtonPanel::NotifyAction) {
         if (this->parent_panel != 0) {
-            this->parent_panel->action(this, 1, this->id[this->cur_state],
-                                       this->id2[this->cur_state]);
+            this->parent_panel->action(this, 1, this->id[this->cur_state], this->id2[this->cur_state]);
             return;
         }
     } else if (this->id[this->cur_state] != 0 ||
                this->id2[this->cur_state] != 0) {
-        SendMessageA(this->render_area->Wnd, WM_COMMAND,
-                     this->id[this->cur_state], this->id2[this->cur_state]);
+        SendMessageA(this->render_area->Wnd, WM_COMMAND, this->id[this->cur_state], this->id2[this->cur_state]);
     }
 }
 

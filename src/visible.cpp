@@ -124,8 +124,7 @@ RGE_Visible_Map::RGE_Visible_Map(int infile, RGE_Game_World* theWorld) {
                 row = row + 1;
             } while (row < this->heightValue);
         }
-        rge_read(infile, this->visible_map,
-                 this->widthValue * this->heightValue);
+        rge_read(infile, this->visible_map, this->widthValue * this->heightValue);
     }
 
     this->input_csum = 0;
@@ -169,8 +168,7 @@ unsigned char RGE_Visible_Map::get_visible(int map_col, int map_row) const {
 }
 
 void RGE_Visible_Map::set_all(unsigned char vis_flag) {
-    log_map_call(this->world->world_time, (int)this->player->id, 5, 0,
-                 (unsigned int)vis_flag, 0, 0, 0, 0);
+    log_map_call(this->world->world_time, (int)this->player->id, 5, 0, (unsigned int)vis_flag, 0, 0, 0, 0);
 
     int y = 0;
     if (0 < this->heightValue) {
@@ -304,8 +302,7 @@ LOSTBL* RGE_Visible_Map::get_los_table(int radius, int Square) {
 int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square, int UpdateMap, int id) {
     int Revealed = 0;
 
-    log_map_call(this->world->world_time, (int)this->player->id, 1, id,
-                 tx, ty, radius, Square, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int)this->player->id, 1, id, tx, ty, radius, Square, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion != 0) {
         return 0;
@@ -415,8 +412,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square, 
     unsigned char value;
 
     tile = 0;
-    log_map_call(this->world->world_time, (int)this->player->id, 3, id,
-                 tx, ty, radius, Square, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int)this->player->id, 3, id, tx, ty, radius, Square, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return;
     }
@@ -499,8 +495,7 @@ int RGE_Visible_Map::explore_terrain_sq(int tx1, int ty1, int tx2, int ty2, int 
     RGE_Tile* tile;
 
     Revealed = 0;
-    log_map_call(this->world->world_time, (int)this->player->id, 2, id,
-                 tx1, ty1, tx2, ty2, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int)this->player->id, 2, id, tx1, ty1, tx2, ty2, Map_Update_Suppresion);
     if (Map_Update_Suppresion != 0) {
         return 0;
     }
@@ -589,8 +584,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int tx1, int ty1, int tx2, int ty2, i
     int csum;
     RGE_Tile* tile = 0;
 
-    log_map_call(this->world->world_time, (int)this->player->id, 4, id,
-                 tx1, ty1, tx2, ty2, Map_Update_Suppresion);
+    log_map_call(this->world->world_time, (int)this->player->id, 4, id, tx1, ty1, tx2, ty2, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion != 0) {
         return;
@@ -869,16 +863,9 @@ void __cdecl dump_vismap_log() {
             break;
         }
 
-        fprintf(f,
-            " wt = %d, plyr = %d, id = %d, x1=%d, y1=%d, x2=%d, y2=%d, wt=%d",
-            VCALL_LOG[idx].world_time,
-            VCALL_LOG[idx].player_id,
-            VCALL_LOG[idx].object_id,
-            VCALL_LOG[idx].x1,
-            VCALL_LOG[idx].y1,
-            VCALL_LOG[idx].x2,
-            VCALL_LOG[idx].y2,
-            VCALL_LOG[idx].supress);
+        fprintf(f, " wt = %d, plyr = %d, id = %d, x1=%d, y1=%d, x2=%d, y2=%d, wt=%d", VCALL_LOG[idx].world_time,
+                VCALL_LOG[idx].player_id, VCALL_LOG[idx].object_id, VCALL_LOG[idx].x1, VCALL_LOG[idx].y1, VCALL_LOG[idx].x2,
+                VCALL_LOG[idx].y2, VCALL_LOG[idx].supress);
 
         if (idx == VCALL_LOG_HEAD) {
             done = 1;

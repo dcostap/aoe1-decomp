@@ -29,13 +29,11 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     deleteButton = 0;
 
     tabList[0] = panel_system.currentPanel();
-    strcpy(info_file,
-           static_cast<TEasy_Panel*>(tabList[0])->get_info_file());
+    strcpy(info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
 
-    if (!setup(draw_area, info_file,
-                   static_cast<TEasy_Panel*>(tabList[0])->get_info_id(), 1)) {
+    if (!setup(draw_area, info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_id(), 1)) {
         error_code = 1;
         return;
     }
@@ -143,15 +141,13 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                 char str[256];
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir = prog_info->scenario_dir;
-                sprintf(str, "%s%s.scn",
-                        scenario_dir, list->currentLine());
+                sprintf(str, "%s%s.scn", scenario_dir, list->currentLine());
                 _unlink(str);
 
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir_scx = prog_info->scenario_dir;
                 line = list->currentLine();
-                sprintf(str, "%s%s.scx",
-                        scenario_dir_scx, line);
+                sprintf(str, "%s%s.scx", scenario_dir_scx, line);
                 _unlink(str);
 
                 curr_line = list->get_line();
@@ -190,8 +186,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                     prog_info = rge_base_game->prog_info;
                     char* scenario_dir = prog_info->scenario_dir;
                     line = list->currentLine();
-                    sprintf(fileName, "%s%s.scn",
-                            scenario_dir, line);
+                    sprintf(fileName, "%s%s.scn", scenario_dir, line);
 
                     if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                         sprintf(fileName, "%s.scn", list->currentLine());
@@ -202,8 +197,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                         prog_info = rge_base_game->prog_info;
                         scenario_dir = prog_info->scenario_dir;
                         line = list->currentLine();
-                        sprintf(fileName, "%s%s.scx",
-                                scenario_dir, line);
+                        sprintf(fileName, "%s%s.scx", scenario_dir, line);
                     if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                             sprintf(fileName, "%s.scx", list->currentLine());
                             static_cast<TRIBE_Game*>(rge_base_game)->

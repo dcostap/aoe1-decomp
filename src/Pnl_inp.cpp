@@ -55,8 +55,7 @@ long TInputPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long
         this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignLeft);
         this->set_word_wrap(1);
     } else {
-        this->set_alignment(TTextPanel::AlignCenter,
-                            TTextPanel::AlignHorizontalScroll);
+        this->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignHorizontalScroll);
     }
     this->input_buffer1 = (char*)calloc((unsigned int)((int)max_len_in + (int)max_len_in + 1), 1);
     if (this->input_buffer1 == 0) return 0;
@@ -161,8 +160,7 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
         } else {
             if (this->cur_line <= 0) break;
             this->cur_line--;
-            this->cur_col = (short)_mbslen(
-                (const unsigned char*)this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
@@ -171,8 +169,7 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
     case VK_RIGHT:
         if (this->num_lines < 1) return 1;
         column = this->cur_col;
-        line_len = (short)_mbslen(
-            (const unsigned char*)this->get_text(this->cur_line));
+        line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (column < line_len) {
             this->cur_col = column + 1;
         } else {
@@ -188,11 +185,9 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
         if (this->num_lines < 1) return 1;
         if (this->cur_line <= 0) break;
         this->cur_line--;
-        line_len = (short)_mbslen(
-            (const unsigned char*)this->get_text(this->cur_line));
+        line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (this->cur_col > line_len) {
-            this->cur_col = (short)_mbslen(
-                (const unsigned char*)this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
@@ -202,11 +197,9 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
         if (this->num_lines < 1) return 1;
         if (this->cur_line >= this->num_lines - 1) break;
         this->cur_line++;
-        line_len = (short)_mbslen(
-            (const unsigned char*)this->get_text(this->cur_line));
+        line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (this->cur_col > line_len) {
-            this->cur_col = (short)_mbslen(
-                (const unsigned char*)this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
@@ -232,18 +225,15 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
         if (this->num_lines < 1) return 1;
         if (ctrl_key != 0) {
             if (this->cur_line == this->num_lines - 1) {
-                line_len = (short)_mbslen(
-                    (const unsigned char*)this->get_text(this->cur_line));
+                line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
                 if (this->cur_col == line_len) break;
             }
             this->cur_line = this->num_lines - 1;
         } else {
-            line_len = (short)_mbslen(
-                (const unsigned char*)this->get_text(this->cur_line));
+            line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
             if (this->cur_col == line_len) break;
         }
-        this->cur_col = (short)_mbslen(
-            (const unsigned char*)this->get_text(this->cur_line));
+        this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
         break;
@@ -259,11 +249,9 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
             this->scroll(5, 0, 1);
         }
         this->cur_line = this->top_line;
-        line_len = (short)_mbslen(
-            (const unsigned char*)this->get_text(this->cur_line));
+        line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (this->cur_col > line_len) {
-            this->cur_col = (short)_mbslen(
-                (const unsigned char*)this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
@@ -280,11 +268,9 @@ long TInputPanel::key_down_action(long key, short count, int alt_key, int ctrl_k
             this->scroll(4, 0, 1);
         }
         this->cur_line = this->bot_line;
-        line_len = (short)_mbslen(
-            (const unsigned char*)this->get_text(this->cur_line));
+        line_len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (this->cur_col > line_len) {
-            this->cur_col = (short)_mbslen(
-                (const unsigned char*)this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
@@ -483,8 +469,7 @@ int TInputPanel::delete_character() {
         deleted_len = 1;
     }
 do_copy:
-    _mbsncpy(cur_dest, pcVar3,
-             ((int)this->input_len - (int)this->input_pos) + 1);
+    _mbsncpy(cur_dest, pcVar3, ((int)this->input_len - (int)this->input_pos) + 1);
     if (move_back_one) --this->input_pos;
     this->input_len -= deleted_len;
     this->reformat();

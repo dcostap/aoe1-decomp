@@ -168,8 +168,6 @@ void DriveInformation::updateDirectory() {
     char fullPath[260];
 
     _getcwd(fullPath, 0x104);
-    _splitpath(fullPath, cDrive, this->currentDirectoryValue, filename,
-              extension);
-    sprintf(this->currentDirectoryValue, "%s%s%s",
-            this->currentDirectoryValue, filename, extension);
+    _splitpath(fullPath, cDrive, this->currentDirectoryValue, filename, extension);
+    sprintf(this->currentDirectoryValue, "%s%s%s", this->currentDirectoryValue, filename, extension);
 }

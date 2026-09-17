@@ -84,28 +84,22 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             TShape* shape;
             if (master_game_obj->unit_level == 2) {
                 shape = bldg_pics[master_culture_id];
-                button_pict += static_cast<TRIBE_Master_Building_Object*>(
-                    master_game_obj)->building_facet;
+                button_pict += static_cast<TRIBE_Master_Building_Object*>(master_game_obj)->building_facet;
             } else {
                 shape = unit_pics;
             }
 
             if (player != 0 && player->color_table->table != 0) {
                 ASMSet_Color_Xform((player->color_table->id + 1) * 16);
-                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 33,
-                                  button_pict, 1,
-                                  player->color_table->table);
+                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 33, button_pict, 1, player->color_table->table);
             } else {
-                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 33,
-                                  button_pict, 0, 0);
+                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 33, button_pict, 0, 0);
             }
         } else if (master_game_obj->sprite != 0) {
             text_flag = 0;
-            if (master_game_obj->sprite->get_size(min_x, min_y, max_x, max_y,
-                                                  0) != 0) {
-                master_game_obj->sprite->do_draw(
-                    0, 0, (pnl_x - min_x) + 10, (pnl_y - min_y) + 40,
-                    player->color_table, render_area, 0);
+            if (master_game_obj->sprite->get_size(min_x, min_y, max_x, max_y, 0) != 0) {
+                master_game_obj->sprite->do_draw(0, 0, (pnl_x - min_x) + 10, (pnl_y - min_y) + 40,
+                                                 player->color_table, render_area, 0);
             }
         }
 
@@ -123,8 +117,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, player->id, 0, name, 100);
             if (strcmp(name, "Unknown") == 0)
                 strcpy(name, "Gaia");
-            TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y, name,
-                     strlen(name));
+            TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y, name, strlen(name));
         }
 
         short string_id = master_game_obj->string_id;
@@ -135,14 +128,11 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         if (str[0] == 0)
             strcpy(str, master_game_obj->name);
         sprintf(name, "%s", str);
-        TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y + 15, name,
-                 strlen(name));
+        TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y + 15, name, strlen(name));
 
         if (text_flag != 0) {
-            sprintf(str, "%d/%d", (int)master_game_obj->hp,
-                    (int)master_game_obj->hp);
-            TextOutA(render_area->DrawDc, pnl_x + 5, pnl_y + 85, str,
-                     strlen(str));
+            sprintf(str, "%d/%d", (int)master_game_obj->hp, (int)master_game_obj->hp);
+            TextOutA(render_area->DrawDc, pnl_x + 5, pnl_y + 85, str, strlen(str));
             SelectObject(render_area->DrawDc, old_font);
             SelectClipRgn(render_area->DrawDc, 0);
         }
@@ -206,24 +196,18 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
                         goto draw_finish;
                     }
 
-                    draw_item(0, value_type, ValueTypeNumber,
-                              (int)master->attribute_amount_held[attr_index],
-                              0);
+                    draw_item(0, value_type, ValueTypeNumber, (int)master->attribute_amount_held[attr_index], 0);
                     draw_finish();
                     return;
                 }
 
                 if (unit_level == 2) {
-                    draw_item(0, 7, ValueTypeBonus,
-                              static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon,
+                    draw_item(0, 7, ValueTypeBonus, static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon,
                               static_cast<RGE_Master_Combat_Object*>(master)->orig_weapon);
-                    draw_item(1, 8, ValueTypeBonus,
-                              static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor,
+                    draw_item(1, 8, ValueTypeBonus, static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor,
                               static_cast<RGE_Master_Combat_Object*>(master_game_obj)->orig_armor);
-                    draw_item(2, 6, ValueTypeBonus,
-                              static_cast<int>(
-                                  static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range),
-                              static_cast<int>(
+                    draw_item(2, 6, ValueTypeBonus, static_cast<int>(
+                                  static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range), static_cast<int>(
                                   static_cast<RGE_Master_Combat_Object*>(master_game_obj)->weapon_range));
                     draw_finish();
                     return;
@@ -253,16 +237,14 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         short pierce_value = (short)pierce_armor;
         if (master_game_obj->unit_level == 4 ||
             master_game_obj->unit_level == 6) {
-            draw_item(item_index, 10, ValueTypeBonus, pierce_value,
-                      pierce_value);
+            draw_item(item_index, 10, ValueTypeBonus, pierce_value, pierce_value);
             ++item_index;
         }
 
         if (master_game_obj->unit_level == 4 ||
             master_game_obj->unit_level == 6) {
-            short speed_value = static_cast<short>(
-                static_cast<RGE_Master_Combat_Object*>(master_game_obj)
-                    ->orig_weapon_range);
+            short speed_value = static_cast<short>(static_cast<RGE_Master_Combat_Object*>(master_game_obj)
+                                                   ->orig_weapon_range);
             draw_item(item_index, 6, ValueTypeBonus, speed_value, pierce_value);
         }
     }
@@ -277,9 +259,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, Value
 
     if (item_pic != 0 && pic_index != -1) {
         if (render_area->Lock(0, 1) != 0) {
-            item_pic->shape_draw(render_area, pnl_x + 60,
-                                 pnl_y + row * 9 * 2 + 30, pic_index,
-                                 0, 0);
+            item_pic->shape_draw(render_area, pnl_x + 60, pnl_y + row * 9 * 2 + 30, pic_index, 0, 0);
             render_area->Unlock(0);
         }
     }
@@ -313,8 +293,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, Value
                 SelectObject(render_area->DrawDc, (HGDIOBJ)font);
             int length = strlen(val_str);
 
-            TextOutA(render_area->DrawDc, pnl_x + 100,
-                     pnl_y + row * 9 * 2 + 32, val_str, length);
+            TextOutA(render_area->DrawDc, pnl_x + 100, pnl_y + row * 9 * 2 + 32, val_str, length);
 
             SelectObject(render_area->DrawDc, old_font);
             SelectClipRgn(render_area->DrawDc, 0);

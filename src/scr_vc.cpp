@@ -48,27 +48,20 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
         strcpy(adjusted_name, get_string(IDS_MISSION_TITLE_INSTRUCTIONS));
     }
 
-    create_text(this, &this->title, adjusted_name, 10, 15, 620,
-                20, 4, 1, 1, 0);
-    create_text(this, &this->list, text_in, 15, 70, 300,
-                340, 11, 0, 0, 1);
+    create_text(this, &this->title, adjusted_name, 10, 15, 620, 20, 4, 1, 1, 0);
+    create_text(this, &this->list, text_in, 15, 70, 300, 340, 11, 0, 0, 1);
     create_auto_scrollbar(&this->scroll_bar, this->list, 20);
 
     if (this->use_bevels) {
-        this->list->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                                   this->bevel_color3, this->bevel_color4,
+        this->list->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
                                    this->bevel_color5, this->bevel_color6);
     }
 
-    create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 200, 440,
-                  240, 30, 0, 0, 0);
-    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 325,
-                  316, 180, 30, 0, -1, 0);
+    create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 200, 440, 240, 30, 0, 0, 0);
+    create_button(this, &this->text_buttons[0], IDS_MISSION_HISTORY, 0, 325, 316, 180, 30, 0, -1, 0);
     TButtonPanel** text_button_1 = &this->text_buttons[1];
-    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 325, 348,
-                  180, 30, 0, -1, 0);
-    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 325,
-                  380, 180, 30, 0, -1, 0);
+    create_button(this, text_button_1, IDS_MISSION_INSTRUCTIONS, 0, 325, 348, 180, 30, 0, -1, 0);
+    create_button(this, &this->text_buttons[2], IDS_MISSION_HINTS, 0, 325, 380, 180, 30, 0, -1, 0);
 
     for (int i = 0; i < 3; i++) {
         this->text_buttons[i]->set_radio_info(this->text_buttons, 3);
@@ -178,17 +171,11 @@ void TRIBE_Mission_Screen::draw() {
         unsigned char* locked = this->render_area->Lock("scr_vc::draw", 1);
         if (locked != 0) {
             if (this->pnl_wid <= 640) {
-                this->vc_back_bmp->Draw(this->render_area,
-                                        this->pnl_x + 7,
-                                        this->pnl_y + 166, 0, 0);
+                this->vc_back_bmp->Draw(this->render_area, this->pnl_x + 7, this->pnl_y + 166, 0, 0);
             } else if (this->pnl_wid <= 800) {
-                this->vc_back_bmp->Draw(this->render_area,
-                                        this->pnl_x + 83,
-                                        this->pnl_y + 280, 0, 0);
+                this->vc_back_bmp->Draw(this->render_area, this->pnl_x + 83, this->pnl_y + 280, 0, 0);
             } else {
-                this->vc_back_bmp->Draw(this->render_area,
-                                        this->pnl_x + 197,
-                                        this->pnl_y + 363, 0, 0);
+                this->vc_back_bmp->Draw(this->render_area, this->pnl_x + 197, this->pnl_y + 363, 0, 0);
             }
             this->render_area->Unlock("scr_vc::draw");
         }

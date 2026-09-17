@@ -65,8 +65,7 @@ void TMessagePanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
 
         image_buffer = new TDrawArea("message panel", 0);
         this->ImageBuffer = image_buffer;
-        image_buffer->Init(this->render_area->DrawSystem, this->pnl_wid,
-                           this->pnl_hgt, 0, 0);
+        image_buffer->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt, 0, 0);
         this->LastIBWidth = this->pnl_wid;
         this->LastIBHeight = this->pnl_hgt;
 
@@ -120,8 +119,7 @@ void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, cha
     strncpy(this->text, text_in, 511);
     this->display_changed_count++;
     this->showing_message = 1;
-    this->start_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 158);
+    this->start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 158);
     this->font_color = colorIn;
     this->index_color = 1;
     this->back_color = backColorIn;
@@ -171,8 +169,7 @@ void TMessagePanel::show_message2(
     strncpy(this->text, text_in, 511);
     this->display_changed_count++;
     this->showing_message = 1;
-    this->start_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 211);
+    this->start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 211);
     this->font_color1 = color1;
     this->index_color = 0;
     this->font_color2 = color2;
@@ -229,9 +226,7 @@ void TMessagePanel::draw(void) {
         }
 
         this->ImageBuffer->SetTrans(1, 1);
-        this->ImageBuffer->Copy(this->render_area,
-                                this->UsedScreenRect.left,
-                                this->UsedScreenRect.top,
+        this->ImageBuffer->Copy(this->render_area, this->UsedScreenRect.left, this->UsedScreenRect.top,
                                 &this->UsedImageRect, 1);
         this->ImageBuffer->SetTrans(0, 1);
         goto finish;
@@ -249,12 +244,10 @@ void TMessagePanel::draw(void) {
     old_font = SelectObject(this->render_area->DrawDc, this->font);
 
     if (this->index_color != 0) {
-        GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->font_color, 1, &paletteColor);
+        GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &paletteColor);
         font_rgb = ((unsigned long)paletteColor.peBlue << 16) |
                    ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
-        GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->back_color, 1, &paletteColor);
+        GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &paletteColor);
         back_rgb = ((unsigned long)paletteColor.peBlue << 16) |
                    ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
     } else {
@@ -274,16 +267,14 @@ void TMessagePanel::draw(void) {
     wid = this->pnl_wid - 2;
     hgt = this->pnl_hgt - 2;
 
-    GetTextExtentPoint32A(this->render_area->DrawDc, this->text,
-                          strlen(this->text), &ts);
+    GetTextExtentPoint32A(this->render_area->DrawDc, this->text, strlen(this->text), &ts);
 
     if (this->message_type == BadMessage) {
         flags = DT_SINGLELINE | DT_CENTER;
     } else if (this->message_type == RightInfoMessage) {
         flags = DT_SINGLELINE | DT_RIGHT;
     } else {
-        GetTextExtentPoint32A(this->render_area->DrawDc, this->text,
-                              strlen(this->text), &ts);
+        GetTextExtentPoint32A(this->render_area->DrawDc, this->text, strlen(this->text), &ts);
         if (this->word_wrap != 0 && ts.cx > wid) {
             flags = DT_WORDBREAK;
         } else {
@@ -337,8 +328,7 @@ long TMessagePanel::handle_idle() {
     if (active && showing_message) {
         if (message_type == BadMessage || message_type == ChatMessage ||
             message_type == ColoredChatMessage) {
-            long now = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 442);
+            long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 442);
             if (now - start_time >= show_message_interval) {
                 remove_message();
             }
@@ -375,8 +365,7 @@ int TMessagePanel::render_to_image_buffer() {
     char* text = this->text;
     if (this->text[0] == 0) {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
-        SetRect(&this->UsedScreenRect, this->render_rect.left,
-                this->render_rect.top, this->render_rect.left + 1,
+        SetRect(&this->UsedScreenRect, this->render_rect.left, this->render_rect.top, this->render_rect.left + 1,
                 this->render_rect.top + 1);
         this->ImageTextActive = 1;
         return 1;
@@ -391,12 +380,10 @@ int TMessagePanel::render_to_image_buffer() {
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
 
     if (this->index_color != 0) {
-        GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->font_color, 1, &paletteColor);
+        GetPaletteEntries(rge_base_game->draw_system->Pal, this->font_color, 1, &paletteColor);
         font_rgb = ((unsigned long)paletteColor.peBlue << 16) |
                    ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
-        GetPaletteEntries(rge_base_game->draw_system->Pal,
-                          this->back_color, 1, &paletteColor);
+        GetPaletteEntries(rge_base_game->draw_system->Pal, this->back_color, 1, &paletteColor);
         back_rgb = ((unsigned long)paletteColor.peBlue << 16) |
                    ((unsigned long)paletteColor.peGreen << 8) | paletteColor.peRed;
     } else {
@@ -416,8 +403,7 @@ int TMessagePanel::render_to_image_buffer() {
     y = this->ImageRect.top + 1;
     hgt = this->pnl_hgt - 2;
 
-    if (GetTextExtentPoint32A(this->ImageBuffer->DrawDc, this->text,
-                              strlen(this->text), &ts) == 0) {
+    if (GetTextExtentPoint32A(this->ImageBuffer->DrawDc, this->text, strlen(this->text), &ts) == 0) {
         SetRect(&rect, x - 1, y - 1, x + wid - 2, y + hgt - 2);
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         this->ImageTextActive = 0;
@@ -498,12 +484,8 @@ int TMessagePanel::render_to_image_buffer() {
             Shape_Info* info = this->Icon1->shape_info;
             long frame = this->IconFrame1;
             long width = info[frame].Width;
-            this->Icon1->shape_draw(
-                this->ImageBuffer,
-                info[frame].Hotspot_X - width - 4 +
-                    this->UsedImageRect.left,
-                info[frame].Hotspot_Y + 6 + this->UsedImageRect.top,
-                frame, 0, 0);
+            this->Icon1->shape_draw(this->ImageBuffer, info[frame].Hotspot_X - width - 4 + this->UsedImageRect.left,
+                                    info[frame].Hotspot_Y + 6 + this->UsedImageRect.top, frame, 0, 0);
             this->UsedImageRect.left += -4 - width;
         }
         if (this->Icon2 != 0) {
@@ -511,12 +493,8 @@ int TMessagePanel::render_to_image_buffer() {
             long frame = this->IconFrame2;
             Shape_Info* frame_info = info + frame;
             long width = frame_info->Width;
-            this->Icon2->shape_draw(
-                this->ImageBuffer,
-                frame_info->Hotspot_X - width - 4 +
-                    this->UsedImageRect.left,
-                frame_info->Hotspot_Y + 6 + this->UsedImageRect.top,
-                frame, 0, 0);
+            this->Icon2->shape_draw(this->ImageBuffer, frame_info->Hotspot_X - width - 4 + this->UsedImageRect.left,
+                                    frame_info->Hotspot_Y + 6 + this->UsedImageRect.top, frame, 0, 0);
             this->UsedImageRect.left += -4 - width;
         }
         this->ImageTextActive = 1;

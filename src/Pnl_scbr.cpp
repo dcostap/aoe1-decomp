@@ -325,8 +325,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
         } else if (this->item_is_down == 0) {
             this->item_is_down = 1;
             this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 410);
+            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 410);
             this->scroll(ActionUp, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -342,8 +341,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
         } else if (this->item_is_down == 0) {
             this->item_is_down = 1;
             this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 429);
+            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 429);
             this->scroll(ActionDown, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -434,8 +432,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
         } else if (this->item_is_down == 0) {
             this->item_is_down = 1;
             this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 448);
+            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 448);
             this->scroll(ActionPrior, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -451,8 +448,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
         } else if (this->item_is_down == 0) {
             this->item_is_down = 1;
             this->item_mode = 2;
-            this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 467);
+            this->item_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 467);
             this->scroll(ActionNext, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -617,11 +613,8 @@ void TScrollBarPanel::draw_back_pic() {
                 int inner = 0;
                 if (this->pnl_wid >= 0) {
                     do {
-                        this->button_pics->shape_draw(
-                            this->render_area,
-                            this->pnl_x + inner,
-                            this->pnl_y + outer,
-                            this->back_frame, 0, 0);
+                        this->button_pics->shape_draw(this->render_area, this->pnl_x + inner, this->pnl_y + outer,
+                                                      this->back_frame, 0, 0);
                         inner += row_step;
                     } while (inner <= this->pnl_wid);
                 }
@@ -644,8 +637,7 @@ void TScrollBarPanel::draw_button_pic(int frame, int down, tagRECT* rect) {
     if (this->button_pics != 0 && frame != -1) {
         this->render_area->SetClipRect(rect);
 
-        this->button_pics->shape_minmax(y_max, x_max, x_min, y_min,
-                                        frame);
+        this->button_pics->shape_minmax(y_max, x_max, x_min, y_min, frame);
 
         x = (short)((rect->right - rect->left + 1) / 2) -
             (short)((x_min + (1 - y_max)) / 2);
@@ -660,8 +652,7 @@ void TScrollBarPanel::draw_button_pic(int frame, int down, tagRECT* rect) {
             --y;
         }
 
-        this->button_pics->shape_draw(this->render_area, x, y,
-                                      frame + (down != 0), 0, 0);
+        this->button_pics->shape_draw(this->render_area, x, y, frame + (down != 0), 0, 0);
     } else {
         this->parent_panel->draw_rect2(rect);
     }

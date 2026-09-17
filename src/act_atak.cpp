@@ -223,17 +223,14 @@ void RGE_Action_Attack::set_state(unsigned char new_state) {
         }
         RGE_Action_Move_To* action;
         if (this->target_obj != 0) {
-            action = new RGE_Action_Move_To(this->obj, this->target_obj,
-                                            this->range, this->move_sprite);
+            action = new RGE_Action_Move_To(this->obj, this->target_obj, this->range, this->move_sprite);
         } else {
-            action = new RGE_Action_Move_To(
-                this->obj, this->target_x, this->target_y, this->target_z,
-                this->range, this->move_sprite);
+            action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
+                                            this->range, this->move_sprite);
         }
         if (action == 0) {
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1F9,
-                                  0x262, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262, 0, 0);
             }
             this->set_state(1);
             return;
@@ -303,8 +300,7 @@ unsigned char RGE_Action_Attack::update() {
         this->obj->owner->isAlly(this->target_obj->owner->id)) {
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258,
-                              this->targetID, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
         }
         return 4;
     }
@@ -312,8 +308,7 @@ unsigned char RGE_Action_Attack::update() {
     if (this->target_obj != 0 && this->target_obj->inside_obj != 0) {
         this->set_state(1);
         if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258,
-                              this->targetID, 0);
+            this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
         }
         return 4;
     }
@@ -326,8 +321,7 @@ unsigned char RGE_Action_Attack::update() {
         if (this->obj->sprite_list->looped(this->obj->sprite) == 1) {
             this->set_target_obj(0);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FA,
-                                  0x258, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x258, 0, 0);
             }
             this->set_state(1);
             if (this->subActionValue == 1) {
@@ -347,16 +341,14 @@ unsigned char RGE_Action_Attack::update() {
         case 3:
             this->set_state(13);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1F9,
-                                  0x258, 0, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258, 0, 0);
             }
             return 3;
 
         case 4:
             this->set_state(14);
             if (this->subActionValue == 0) {
-                this->obj->notify(this->obj->id, this->obj->id, 0x1FB,
-                                  0x258, this->targetID, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x258, this->targetID, 0);
             }
             return 4;
 
@@ -412,8 +404,7 @@ unsigned char RGE_Action_Attack::update() {
                 attack_frame =
                     static_cast<short>(this->obj->sprite->frame_num * 0.5f);
             }
-            if (this->obj->sprite_list->frame_passed(this->obj->sprite,
-                                                     attack_frame)) {
+            if (this->obj->sprite_list->frame_passed(this->obj->sprite, attack_frame)) {
                 this->do_attack();
             }
         }
@@ -461,14 +452,12 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
     float y_change;
     float z_change;
 
-    if (this->obj->turn_towards(this->target_obj, this->target_x,
-                                this->target_y) == 0) {
+    if (this->obj->turn_towards(this->target_obj, this->target_x, this->target_y) == 0) {
         return 0;
     }
 
     if (this->target_obj == 0) {
-        rangeDistance = this->obj->distance_to_position(
-            this->target_x, this->target_y, this->target_z);
+        rangeDistance = this->obj->distance_to_position(this->target_x, this->target_y, this->target_z);
         if (rangeDistance < this->min_range) {
             rangeState = 0;
             goto too_close;
@@ -491,9 +480,8 @@ int RGE_Action_Attack::ready_to_attack(int& rangeState) {
     if (this->target_obj->owner->id > 0 &&
         this->target_obj->master_obj->object_group != 3 &&
         this->target_obj->master_obj->object_group != 0x1B) {
-        unsigned char visible = this->obj->owner->visible->get_visible(
-            (int)this->target_obj->world_x,
-            (int)this->target_obj->world_y);
+        unsigned char visible = this->obj->owner->visible->get_visible((int)this->target_obj->world_x,
+                                                                       (int)this->target_obj->world_y);
         if (visible == 0) {
             this->set_state(0x0D);
             return 0;

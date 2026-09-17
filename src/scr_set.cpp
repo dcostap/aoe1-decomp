@@ -24,8 +24,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     TDrawArea* draw_area;
 
     this->init_vars();
-    this->chat_scr = static_cast<TribeMPSetupScreen*>(
-        panel_system.panel("MP Setup Screen"));
+    this->chat_scr = static_cast<TribeMPSetupScreen*>(panel_system.panel("MP Setup Screen"));
 
     multiplayer = rge_base_game->multiplayerGame();
     setup_file = "scr3";
@@ -34,10 +33,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
 
     draw_area = rge_base_game->draw_area;
 
-    if (!this->TEasy_Panel::setup(
-            draw_area, 0, setup_file,
-            (rge_base_game->multiplayerGame() != 0) + 0xC384,
-            1, 0, 0, 0, 0, 1)) {
+    if (!this->TEasy_Panel::setup(draw_area, 0, setup_file, (rge_base_game->multiplayerGame() != 0) + 0xC384,
+                                  1, 0, 0, 0, 0, 1)) {
         this->error_code = 1;
         return;
     }
@@ -45,16 +42,13 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (!this->create_text(this, &this->title, IDS_SCENARIO_SETTINGS_TITLE,
-                           20, 10, 600, 30, 1, 1, 0, 1))
+    if (!this->create_text(this, &this->title, IDS_SCENARIO_SETTINGS_TITLE, 20, 10, 600, 30, 1, 1, 0, 1))
         return;
 
-    if (!this->create_text(this, &this->mapSizeLabel, IDS_MAP_SIZE_LABEL,
-                           20, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
+    if (!this->create_text(this, &this->mapSizeLabel, IDS_MAP_SIZE_LABEL, 20, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->mapSizeDrop,
-                                180, 100, 20, 236, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->mapSizeDrop, 180, 100, 20, 236, 180, 24, RGE_FONT_STANDARD))
         return;
     this->mapSizeDrop->empty_list();
     this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE, 0);
@@ -65,12 +59,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE + 5, 5);
     this->mapSizeDrop->set_help_info(IDS_HELP_MAP_SIZE, -1);
 
-    if (!this->create_text(this, &this->mapTypeLabel, IDS_MAP_TYPE_LABEL,
-                           220, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
+    if (!this->create_text(this, &this->mapTypeLabel, IDS_MAP_TYPE_LABEL, 220, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->mapTypeDrop,
-                                180, 100, 220, 236, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->mapTypeDrop, 180, 100, 220, 236, 180, 24, RGE_FONT_STANDARD))
         return;
     this->mapTypeDrop->empty_list();
     this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE, 0);
@@ -88,8 +80,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            20, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->victoryTypeDrop,
-                                180, 100, 20, 284, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->victoryTypeDrop, 180, 100, 20, 284, 180, 24, RGE_FONT_STANDARD))
         return;
     this->victoryTypeDrop->empty_list();
     if (rge_base_game->scenarioGame() != 0) {
@@ -101,15 +92,12 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->victoryTypeDrop->append_line(IDS_VICTORY_CONQUEST, 1);
     this->victoryTypeDrop->append_line(IDS_VICTORY_TIME_LIMIT, 7);
     this->victoryTypeDrop->append_line(IDS_VICTORY_SCORE, 8);
-    this->victoryTypeDrop->set_help_info(IDS_HELP_VICTORY_CONDITION,
-                                         IDS_HELP_VICTORY_CONDITION_MORE);
+    this->victoryTypeDrop->set_help_info(IDS_HELP_VICTORY_CONDITION, IDS_HELP_VICTORY_CONDITION_MORE);
 
-    if (!this->create_text(this, &this->timeLabel, IDS_VICTORY_TIME_LIMIT,
-                           20, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
+    if (!this->create_text(this, &this->timeLabel, IDS_VICTORY_TIME_LIMIT, 20, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->timeDrop,
-                                180, 100, 20, 332, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->timeDrop, 180, 100, 20, 332, 180, 24, RGE_FONT_STANDARD))
         return;
     this->timeDrop->empty_list();
     this->timeDrop->append_line(IDS_TIME_LIMIT_BASE, 15000);
@@ -121,12 +109,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 6, 3000);
     this->timeDrop->set_help_info(IDS_HELP_TIME_LIMIT, -1);
 
-    if (!this->create_text(this, &this->scoreLabel, IDS_VICTORY_SCORE,
-                           20, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
+    if (!this->create_text(this, &this->scoreLabel, IDS_VICTORY_SCORE, 20, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->scoreDrop,
-                                180, 100, 20, 332, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->scoreDrop, 180, 100, 20, 332, 180, 24, RGE_FONT_STANDARD))
         return;
     this->scoreDrop->empty_list();
     this->scoreDrop->append_line("3000", 3000);
@@ -148,19 +134,13 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     if (!this->create_text(this, &this->victoryFixedText, IDS_FIXED_VICTORY_INSTRUCTIONS,
                            20, 264, 180, 92, RGE_FONT_STANDARD, 1, 1, 1))
         return;
-    this->victoryFixedText->set_bevel_info(3, this->bevel_color1,
-                                           this->bevel_color2,
-                                           this->bevel_color3,
-                                           this->bevel_color4,
-                                           this->bevel_color5,
-                                           this->bevel_color6);
+    this->victoryFixedText->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
+                                           this->bevel_color4, this->bevel_color5, this->bevel_color6);
 
-    if (!this->create_text(this, &this->ageLabel, IDS_STARTING_AGE_LABEL,
-                           220, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
+    if (!this->create_text(this, &this->ageLabel, IDS_STARTING_AGE_LABEL, 220, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->ageDrop,
-                                180, 100, 220, 284, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->ageDrop, 180, 100, 220, 284, 180, 24, RGE_FONT_STANDARD))
         return;
     this->ageDrop->empty_list();
         this->ageDrop->append_line(IDS_OPTION_DEFAULT, 0);
@@ -171,12 +151,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->ageDrop->append_line(IDS_HELP_AGE_IRON, 5);
     this->ageDrop->set_help_info(IDS_HELP_STARTING_AGE, -1);
 
-    if (!this->create_text(this, &this->resourcesLabel, IDS_RESOURCES_LABEL,
-                           220, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
+    if (!this->create_text(this, &this->resourcesLabel, IDS_RESOURCES_LABEL, 220, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->resourcesDrop,
-                                180, 100, 220, 332, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->resourcesDrop, 180, 100, 220, 332, 180, 24, RGE_FONT_STANDARD))
         return;
     this->resourcesDrop->empty_list();
         this->resourcesDrop->append_line(IDS_OPTION_DEFAULT, 0);
@@ -188,8 +166,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            420, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->pathingDrop,
-                                180, 100, 420, 332, 180, 24, RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->pathingDrop, 180, 100, 420, 332, 180, 24, RGE_FONT_STANDARD))
         return;
     this->pathingDrop->empty_list();
     this->pathingDrop->append_line(IDS_PATH_FINDING_OPTION_BASE, 0);
@@ -201,9 +178,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         if (!this->create_text(this, &this->limitLabel, IDS_POPULATION_LIMIT_LABEL,
                                420, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
             return;
-        if (!this->create_drop_down(this, &this->limitDrop,
-                                    180, 100, 420, 236, 180, 24,
-                                    RGE_FONT_STANDARD))
+        if (!this->create_drop_down(this, &this->limitDrop, 180, 100, 420, 236, 180, 24, RGE_FONT_STANDARD))
             return;
         this->limitDrop->empty_list();
         for (int limit = 25; limit <= 200; limit += 25) {
@@ -217,9 +192,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            420, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
-    if (!this->create_drop_down(this, &this->difficultyDrop,
-                                180, 100, 420, 284, 180, 24,
-                                RGE_FONT_STANDARD))
+    if (!this->create_drop_down(this, &this->difficultyDrop, 180, 100, 420, 284, 180, 24, RGE_FONT_STANDARD))
         return;
     this->difficultyDrop->empty_list();
     this->difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
@@ -229,33 +202,29 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->difficultyDrop->append_line(IDS_DIFFICULTY_HARDEST, 0);
     this->difficultyDrop->set_help_info(IDS_HELP_DIFFICULTY, -1);
 
-    if (!this->create_check_box(this, &this->optionButton[0],
-                                10, 360, 30, 30, 0, 0))
+    if (!this->create_check_box(this, &this->optionButton[0], 10, 360, 30, 30, 0, 0))
         return;
     if (!this->create_text(this, &this->optionText[0], IDS_FIXED_POSITIONS_LABEL,
                            40, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     this->optionButton[0]->set_help_info(IDS_HELP_FIXED_POSITIONS, -1);
 
-    if (!this->create_check_box(this, &this->optionButton[2],
-                                220, 360, 30, 30, 0, 0))
+    if (!this->create_check_box(this, &this->optionButton[2], 220, 360, 30, 30, 0, 0))
         return;
     if (!this->create_text(this, &this->optionText[2], IDS_FULL_TECH_TREE_LABEL,
                            250, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     this->optionButton[2]->set_help_info(IDS_HELP_FULL_TECH_TREE, -1);
 
-    if (!this->create_check_box(this, &this->optionButton[1],
-                                430, 360, 30, 30, 0, 0))
+    if (!this->create_check_box(this, &this->optionButton[1], 430, 360, 30, 30, 0, 0))
         return;
         if (!this->create_text(this, &this->optionText[1], IDS_REVEAL_MAP_LABEL,
-                           460, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
+                               460, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
         this->optionButton[1]->set_help_info(IDS_HELP_REVEAL_MAP, -1);
 
     if (rge_base_game->multiplayerGame() != 0) {
-        if (!this->create_check_box(this, &this->optionButton[3],
-                                    430, 395, 30, 30, 0, 0))
+        if (!this->create_check_box(this, &this->optionButton[3], 430, 395, 30, 30, 0, 0))
             return;
         if (!this->create_text(this, &this->optionText[3], IDS_CHEATING_LABEL,
                                460, 395, 165, 30, RGE_FONT_STANDARD, 0, 1, 0))
@@ -271,10 +240,8 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     else
         this->scenarioListHeight = 24;
 
-    if (!this->create_list(this, &this->scenarioList,
-                           this->scenarioListX, this->scenarioListY,
-                           this->scenarioListWidth, this->scenarioListHeight,
-                           RGE_FONT_STANDARD))
+    if (!this->create_list(this, &this->scenarioList, this->scenarioListX, this->scenarioListY,
+                           this->scenarioListWidth, this->scenarioListHeight, RGE_FONT_STANDARD))
         return;
 
     // The executable computes this position before it reloads
@@ -289,8 +256,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     if (rge_base_game->multiplayerGame() != 0) {
         this->scenarioList->set_text(IDS_SCENARIO_LIST_LOADING);
         this->scenarioList->set_help_info(IDS_HELP_SCENARIO_SELECTION, -1);
-        if (!this->create_auto_scrollbar(&this->scenarioScrollbar,
-                                         this->scenarioList, 20))
+        if (!this->create_auto_scrollbar(&this->scenarioScrollbar, this->scenarioList, 20))
             return;
     } else {
         this->scenarioList->handle_mouse_input = 0;
@@ -298,22 +264,15 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         this->scenarioList->set_spacer_size(0);
     }
 
-    if (!this->create_text(this, &this->scenarioTitle,
-                           rge_base_game->multiplayerGame()
-                               ? IDS_SCENARIO_LIST_TITLE
-                               : IDS_SCENARIO_TITLE,
-                           this->scenarioListX,
-                           this->scenarioListY - 20,
-                           300, 20, 4, 0, 0, 0))
+    if (!this->create_text(this, &this->scenarioTitle, rge_base_game->multiplayerGame() ? IDS_SCENARIO_LIST_TITLE
+                           : IDS_SCENARIO_TITLE, this->scenarioListX, this->scenarioListY - 20, 300, 20, 4, 0, 0, 0))
         return;
 
     if (!this->create_text(this, &this->scenarioPlayersTitle, IDS_SCENARIO_PLAYERS_TITLE,
-                           this->scenarioListWidth - 220 + this->scenarioListX,
-                           this->scenarioListY - 20,
+                           this->scenarioListWidth - 220 + this->scenarioListX, this->scenarioListY - 20,
                            220, 20, 4, 0, 0, 0))
         return;
-    this->scenarioPlayersTitle->set_alignment(TTextPanel::AlignTop,
-                                              TTextPanel::AlignRight);
+    this->scenarioPlayersTitle->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
 
     this->missionTextX = this->scenarioListX;
     this->missionTextY = this->scenarioListHeight + this->scenarioListY + 24;
@@ -321,42 +280,31 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->missionTextHeight = 260 - this->missionTextY;
 
     if (!this->create_text(this, &this->missionTitle, IDS_SCENARIO_INSTRUCTIONS_TITLE,
-                           this->missionTextX, this->missionTextY - 20,
-                           300, 20, 4, 0, 0, 0))
+                           this->missionTextX, this->missionTextY - 20, 300, 20, 4, 0, 0, 0))
         return;
 
-    if (!this->create_text(this, &this->missionText, s_592A40,
-                           this->missionTextX, this->missionTextY,
-                           this->missionTextWidth, this->missionTextHeight,
-                           RGE_FONT_STANDARD, 0, 0, 1))
+    if (!this->create_text(this, &this->missionText, s_592A40, this->missionTextX, this->missionTextY,
+                           this->missionTextWidth, this->missionTextHeight, RGE_FONT_STANDARD, 0, 0, 1))
         return;
-    this->missionText->set_bevel_info(3, this->bevel_color1,
-                                      this->bevel_color2,
-                                      this->bevel_color3,
-                                      this->bevel_color4,
-                                      this->bevel_color5,
-                                      this->bevel_color6);
+    this->missionText->set_bevel_info(3, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4,
+                                      this->bevel_color5, this->bevel_color6);
 
-    if (!this->create_auto_scrollbar(&this->missionScrollbar,
-                                     this->missionText, 20))
+    if (!this->create_auto_scrollbar(&this->missionScrollbar, this->missionText, 20))
         return;
     this->missionScrollbar->set_help_info(IDS_HELP_SCENARIO_INSTRUCTIONS, -1);
 
-    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK,
-                             0, 60, 440, 240, 30, 0, 0, 0))
+    if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK, 0, 60, 440, 240, 30, 0, 0, 0))
         return;
     this->okButton->set_help_info(IDS_HELP_OK, -1);
 
-    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL,
-                             0, 320, 440, 240, 30, 0, 0, 0))
+    if (!this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 320, 440, 240, 30, 0, 0, 0))
         return;
     TButtonPanel* cancel_button = this->cancelButton;
     cancel_button->hotkey = VK_ESCAPE;
     cancel_button->hotkey_shift = 0;
     this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
 
-    if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP,
-                             0, 580, 440, 30, 30, 0, 0, 0))
+    if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP, 0, 580, 440, 30, 30, 0, 0, 0))
         return;
 
     this->fillScenarios();
@@ -624,8 +572,7 @@ void TribeGameSettingsScreen::fillScenarios() {
             if (this->scenarioCount > 0) {
                 do {
                     TRIBE_Scenario_Header* entry =
-                        static_cast<TRIBE_Scenario_Header*>(
-                            scenario_info_file->get_scenario_info(
+                        static_cast<TRIBE_Scenario_Header*>(scenario_info_file->get_scenario_info(
                                 this->scenarioList->get_id(i)));
                     if (entry != 0) {
                         this->scenarioMission[i] = (char*)calloc(4096, 1);
@@ -642,10 +589,8 @@ void TribeGameSettingsScreen::fillScenarios() {
                             } else {
                                 sprintf(player_str, "%d", players);
                             }
-                            strcpy(scenario_file,
-                                   this->scenarioList->get_text(i));
-                            this->scenarioList->change_line(
-                                i, scenario_file, player_str, 0);
+                            strcpy(scenario_file, this->scenarioList->get_text(i));
+                            this->scenarioList->change_line(i, scenario_file, player_str, 0);
                         }
                     }
                     i++;
@@ -659,16 +604,14 @@ void TribeGameSettingsScreen::fillScenarios() {
     if (rge_base_game->multiplayerGame() ||
         (rge_base_game->randomGame() &&
          static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0)) {
-        this->scenarioList->insert_line(
-            0, this->get_string(IDS_RANDOM_MAP), "2 - 8", -2);
+        this->scenarioList->insert_line(0, this->get_string(IDS_RANDOM_MAP), "2 - 8", -2);
         this->scenario_line_offset--;
     }
 
     if (rge_base_game->multiplayerGame() ||
         (rge_base_game->randomGame() &&
          static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() != 0)) {
-        this->scenarioList->insert_line(
-            1, this->get_string(IDS_DEATH_MATCH), "2 - 8", -1);
+        this->scenarioList->insert_line(1, this->get_string(IDS_DEATH_MATCH), "2 - 8", -1);
         this->scenario_line_offset--;
     }
 }
@@ -727,10 +670,8 @@ void TribeGameSettingsScreen::getSettings() {
         }
     }
 
-    this->mapSizeDrop->set_line(this->mapSizeDrop->get_line(
-        static_cast<TRIBE_Game*>(rge_base_game)->mapSize()));
-    this->mapTypeDrop->set_line(this->mapTypeDrop->get_line(
-        static_cast<TRIBE_Game*>(rge_base_game)->mapType()));
+    this->mapSizeDrop->set_line(this->mapSizeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->mapSize()));
+    this->mapTypeDrop->set_line(this->mapTypeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->mapType()));
     this->victoryTypeDrop->set_line(this->victoryTypeDrop->get_line(
         static_cast<TRIBE_Game*>(rge_base_game)->victoryType()));
 
@@ -738,15 +679,11 @@ void TribeGameSettingsScreen::getSettings() {
         this->optionButton[3]->set_state(rge_base_game->allowCheatCodes());
     }
     this->optionButton[1]->set_state(rge_base_game->fullVisibility());
-    this->optionButton[0]->set_state(
-        static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0);
-    this->optionButton[2]->set_state(
-        static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree());
+    this->optionButton[0]->set_state(static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0);
+    this->optionButton[2]->set_state(static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree());
 
-    this->resourcesDrop->set_line(this->resourcesDrop->get_line(
-        static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel()));
-    this->ageDrop->set_line(this->ageDrop->get_line(
-        static_cast<TRIBE_Game*>(rge_base_game)->startingAge()));
+    this->resourcesDrop->set_line(this->resourcesDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel()));
+    this->ageDrop->set_line(this->ageDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->startingAge()));
     this->difficultyDrop->set_line(this->difficultyDrop->get_line(rge_base_game->difficulty()));
 
     if (rge_base_game->multiplayerGame() != 0) {
@@ -761,11 +698,9 @@ void TribeGameSettingsScreen::getSettings() {
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == 7) {
-        this->timeDrop->set_line(this->timeDrop->get_line(
-            static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()));
+        this->timeDrop->set_line(this->timeDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()));
     } else if (static_cast<TRIBE_Game*>(rge_base_game)->victoryType() == 8) {
-        this->scoreDrop->set_line(this->scoreDrop->get_line(
-            static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()));
+        this->scoreDrop->set_line(this->scoreDrop->get_line(static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()));
     }
 }
 
@@ -779,46 +714,36 @@ void TribeGameSettingsScreen::sendSettings() {
         rge_base_game->setScenarioName("");
     }
 
-    static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(
-        this->scenarioList->get_id() == -1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(this->scenarioList->get_id() == -1);
 
     switch (this->victoryTypeDrop->get_id()) {
     case 7:
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
-            TRIBE_Game::VictoryTime, this->timeDrop->get_id());
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(TRIBE_Game::VictoryTime, this->timeDrop->get_id());
         break;
     case 8:
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
-            TRIBE_Game::VictoryScore, this->scoreDrop->get_id());
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(TRIBE_Game::VictoryScore, this->scoreDrop->get_id());
         break;
     default:
-        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
-            static_cast<TRIBE_Game::VictoryType>(
+        static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(static_cast<TRIBE_Game::VictoryType>(
                 this->victoryTypeDrop->get_id()), 1);
         break;
     }
 
     if (rge_base_game->randomGame()) {
-        static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(
-            static_cast<TRIBE_Game::MapSize>(this->mapSizeDrop->get_id()));
-        static_cast<TRIBE_Game*>(rge_base_game)->setMapType(
-            static_cast<TRIBE_Game::MapType>(this->mapTypeDrop->get_id()));
+        static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(static_cast<TRIBE_Game::MapSize>(this->mapSizeDrop->get_id()));
+        static_cast<TRIBE_Game*>(rge_base_game)->setMapType(static_cast<TRIBE_Game::MapType>(this->mapTypeDrop->get_id()));
     }
     if (this->optionButton[3] != 0) {
         rge_base_game->setAllowCheatCodes(this->optionButton[3]->get_state());
     }
     rge_base_game->setFullVisibility(this->optionButton[1]->get_state());
-    static_cast<TRIBE_Game*>(rge_base_game)->setRandomizePositions(
-        this->optionButton[0]->get_state() == 0);
-    static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(
-        this->optionButton[2]->get_state());
+    static_cast<TRIBE_Game*>(rge_base_game)->setRandomizePositions(this->optionButton[0]->get_state() == 0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(this->optionButton[2]->get_state());
 
     if (this->scenarioList->get_id() == -1) {
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(
-            TRIBE_Game::DefaultResources);
+        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(TRIBE_Game::DefaultResources);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(
-            static_cast<TRIBE_Game::ResourceLevel>(
+        static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(static_cast<TRIBE_Game::ResourceLevel>(
                 this->resourcesDrop->get_id()));
     }
 
@@ -828,11 +753,9 @@ void TribeGameSettingsScreen::sendSettings() {
         rge_base_game->setPathFinding(this->pathingDrop->get_id());
     }
     if (rge_base_game->multiplayerGame()) {
-        static_cast<TRIBE_Game*>(rge_base_game)->setPopLimit(
-            this->limitDrop->get_id());
+        static_cast<TRIBE_Game*>(rge_base_game)->setPopLimit(this->limitDrop->get_id());
     }
-    static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(
-        static_cast<TRIBE_Game::Age>(this->ageDrop->get_id()));
+    static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(static_cast<TRIBE_Game::Age>(this->ageDrop->get_id()));
     rge_base_game->setDifficulty(this->difficultyDrop->get_id());
     if (rge_base_game->singlePlayerGame()) {
         rge_base_game->set_single_player_difficulty(this->difficultyDrop->get_id());

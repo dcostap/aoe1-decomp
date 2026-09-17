@@ -199,12 +199,9 @@ float Path::length() const {
         int remaining = currentSizeValue - 1;
         do {
             // The first z term uses the previous x value.
-            total += sqrtf((waypoint[0].x - waypoint[-1].x) *
-                               (waypoint[0].x - waypoint[-1].x) +
-                           (waypoint[0].y - waypoint[-1].y) *
-                               (waypoint[0].y - waypoint[-1].y) +
-                           (waypoint[0].z - waypoint[-1].x) *
-                               (waypoint[0].z - waypoint[-1].z));
+            total += sqrtf((waypoint[0].x - waypoint[-1].x) * (waypoint[0].x - waypoint[-1].x) +
+                           (waypoint[0].y - waypoint[-1].y) * (waypoint[0].y - waypoint[-1].y) +
+                           (waypoint[0].z - waypoint[-1].x) * (waypoint[0].z - waypoint[-1].z));
             ++waypoint;
         } while (--remaining != 0);
     }
@@ -319,12 +316,9 @@ float Path::distanceToNextWaypoint() const {
     if (path != 0) {
         int current = currentWaypointValue;
         if (current >= 0 && current < currentSizeValue - 1) {
-            result = sqrt((path[current + 1].x - path[current].x) *
-                              (path[current + 1].x - path[current].x) +
-                          (path[current + 1].y - path[current].y) *
-                              (path[current + 1].y - path[current].y) +
-                          (path[current + 1].z - path[current].z) *
-                              (path[current + 1].z - path[current].z));
+            result = sqrt((path[current + 1].x - path[current].x) * (path[current + 1].x - path[current].x) +
+                          (path[current + 1].y - path[current].y) * (path[current + 1].y - path[current].y) +
+                          (path[current + 1].z - path[current].z) * (path[current + 1].z - path[current].z));
         }
     }
     return result;

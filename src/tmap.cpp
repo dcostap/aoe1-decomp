@@ -63,8 +63,7 @@ TRIBE_Map::TRIBE_Map(int infile, RGE_Sound** sound, unsigned char setup)
 TRIBE_Map::TRIBE_Map(char* border_tbl, char* overlay_tbl, char* terrain_tbl,
                      char* map_tbl, short TileWid, short TileHgt,
                      short ElevHgt, RGE_Sound** sound)
-    : RGE_Map(border_tbl, terrain_tbl, map_tbl, TileWid, TileHgt, ElevHgt,
-              sound) {
+    : RGE_Map(border_tbl, terrain_tbl, map_tbl, TileWid, TileHgt, ElevHgt, sound) {
 }
 
 TRIBE_Map::~TRIBE_Map() {
@@ -418,23 +417,19 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
     }
 
     if (id >= 0) {
-        new_cliff = this->game_world->players[0]->make_new_object(
-            id, world_x, world_y, 0.0f, 0);
+        new_cliff = this->game_world->players[0]->make_new_object(id, world_x, world_y, 0.0f, 0);
 
         for (long tile_offset = -1; tile_offset < 2; ++tile_offset) {
             for (long j = -1; j < 2; ++j) {
                 this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node(
-                    (int)(tile_offset + (long)(world_x)),
-                    (int)(j + (long)(world_y)));
+                    ->diam_tile_list.add_node((int)(tile_offset + (long)(world_x)), (int)(j + (long)(world_y)));
             }
         }
 
         if (new_cliff != 0)
             new_cliff->facet = (unsigned char)facet;
 
-        static_cast<TRIBE_World*>(this->game_world)->check_destructables(
-            0, (short)id, world_x, world_y, 1);
+        static_cast<TRIBE_World*>(this->game_world)->check_destructables(0, (short)id, world_x, world_y, 1);
     } else {
         new_cliff = 0;
     }
@@ -477,8 +472,7 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long direction) {
             int inner = -1;
             do {
                 this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node(outer + (long)cliff->world_x,
-                                               inner + (long)cliff->world_y);
+                    ->diam_tile_list.add_node(outer + (long)cliff->world_x, inner + (long)cliff->world_y);
                 ++inner;
             } while (inner < 2);
             ++outer;
@@ -520,8 +514,7 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long direction, long facing,
         for (long i = -1; i < 2; ++i) {
             for (long j = -1; j < 2; ++j) {
                 this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node(i + (long)cliff->world_x,
-                                               j + (long)cliff->world_y);
+                    ->diam_tile_list.add_node(i + (long)cliff->world_x, j + (long)cliff->world_y);
             }
         }
         delete cliff;
@@ -681,9 +674,8 @@ void TRIBE_Map::delete_cliff(long x, long y) {
             int inner = -1;
             do {
                 RGE_Game_World* world = this->game_world;
-                world->players[world->curr_player]->diam_tile_list.add_node(
-                    y + (long)cliff->world_x,
-                    inner + (long)cliff->world_y);
+                world->players[world->curr_player]->diam_tile_list.add_node(y + (long)cliff->world_x,
+                                                                            inner + (long)cliff->world_y);
                 inner++;
             } while (inner < 2);
             y++;
@@ -751,9 +743,7 @@ unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char cliff_id, 
             direction = 3;
     }
 
-    long facing = this->add_cliff_edge(old_x, this->old_cliff_y,
-                                       direction, 0,
-                                       this->old_cliff_direction);
+    long facing = this->add_cliff_edge(old_x, this->old_cliff_y, direction, 0, this->old_cliff_direction);
     direction = this->reverse_cliff_direction(direction);
     this->old_cliff_direction = direction;
     this->old_cliff_x = cliff_x;
@@ -843,8 +833,7 @@ void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2,
                             border = 1;
                     }
                     if (border == 1)
-                        this->set_terrain(this->game_world, (short)x,
-                                          (short)y1, 2, 0, 0);
+                        this->set_terrain(this->game_world, (short)x, (short)y1, 2, 0, 0);
                 }
             }
         }

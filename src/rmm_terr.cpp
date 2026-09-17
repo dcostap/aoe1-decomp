@@ -401,7 +401,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                 if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
                         info_line.base_terrain_type &&
                     this->check_terrain((uchar)info_line.terrain_type, y, x,
-                        info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
+                                        info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
                     (info_line.avoid_hot_spots == 0 ||
                      this->search_map_rows[x][y] == 0)) {
                     this->remove_area_from_lists(y, x, base_area);
@@ -455,7 +455,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                 if ((this->map_row_offset[x][y].terrain_type & 0x1f) ==
                         info_line.base_terrain_type &&
                     this->check_terrain((uchar)info_line.terrain_type, y, x,
-                        info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
+                                        info_line.spacing, (uchar)info_line.base_terrain_type) > 0 &&
                     this->search_map_rows[x][y] < 0x1e) {
                     uchar zone = this->map_zone->get_zone_info(y, x);
                     fair_i = 0;
@@ -516,13 +516,11 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                             (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 454) * 100) /
                                 0x7fff) {
                         RGE_Tile* tile = &this->map_row_offset[x][y];
-                        long ok = this->check_terrain((uchar)info_line.terrain_type,
-                            y, x, info_line.spacing,
-                            (uchar)info_line.base_terrain_type);
+                        long ok = this->check_terrain((uchar)info_line.terrain_type, y, x, info_line.spacing,
+                                                      (uchar)info_line.base_terrain_type);
                         if ((tile->terrain_type & 0x1f) ==
                                 info_line.base_terrain_type && ok > 0) {
-                            score = this->fig_chance(ok, y, x,
-                                info_line.clumpiness_factor);
+                            score = this->fig_chance(ok, y, x, info_line.clumpiness_factor);
                             if (info_line.avoid_hot_spots != 0) {
                                 index1 = this->search_map_rows[x][y];
                                 score += (float)index1;
@@ -533,38 +531,30 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                             if (y > 0 &&
                                 (tile[-1].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
-                                index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 469) * 100) /
+                                index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 469) * 100) /
                                     0x7fff;
-                                this->push_stack(*stack_ptr, y - 1, x,
-                                    0.0f, (float)index1 + score);
+                                this->push_stack(*stack_ptr, y - 1, x, 0.0f, (float)index1 + score);
                             }
                             if (y < max_y &&
                                 (tile[1].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
-                                index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 471) * 100) /
+                                index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 471) * 100) /
                                     0x7fff;
-                                this->push_stack(*stack_ptr, y + 1, x,
-                                    0.0f, (float)index1 + score);
+                                this->push_stack(*stack_ptr, y + 1, x, 0.0f, (float)index1 + score);
                             }
                             if (x > 0 &&
                                 (tile[-this->map_width].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
-                                index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 473) * 100) /
+                                index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 473) * 100) /
                                     0x7fff;
-                                this->push_stack(*stack_ptr, y, x - 1,
-                                    0.0f, (float)index1 + score);
+                                this->push_stack(*stack_ptr, y, x - 1, 0.0f, (float)index1 + score);
                             }
                             if (x < max_x &&
                                 (tile[this->map_width].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
-                                index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 475) * 100) /
+                                index1 = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 475) * 100) /
                                     0x7fff;
-                                this->push_stack(*stack_ptr, y, x + 1,
-                                    0.0f, (float)index1 + score);
+                                this->push_stack(*stack_ptr, y, x + 1, 0.0f, (float)index1 + score);
                             }
                             ++in_zone;
                         }

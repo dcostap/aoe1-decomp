@@ -157,8 +157,7 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* obj, RGE_Static_Ob
         return 0;
     }
 
-    return RGE_Task_List::get_target_task(obj, target_obj, target_x,
-                                          target_y, target_z);
+    return RGE_Task_List::get_target_task(obj, target_obj, target_x, target_y, target_z);
 }
 
 int TRIBE_Task_List::is_attack_task(RGE_Task* task) {

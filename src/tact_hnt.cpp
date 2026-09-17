@@ -104,8 +104,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
 
     switch (new_state) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265,
-                          this->targetType, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265, this->targetType, 0);
         this->obj->new_sprite(this->get_wait_sprite());
         this->timer = -10.0f;
         return;
@@ -123,9 +122,8 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
     case 11:
     case 15: {
         this->timer = 0.0f;
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_x, this->target_y, this->target_z,
-            this->task->work_range, this->get_move_sprite());
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_x, this->target_y, this->target_z,
+                                                            this->task->work_range, this->get_move_sprite());
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -148,9 +146,8 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
             this->set_state(0x0C);
             return;
         }
-        RGE_Action_Move_To* action = new RGE_Action_Move_To(
-            this->obj, this->target_obj, this->task->work_range,
-            this->get_move_sprite());
+        RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj, this->task->work_range,
+                                                            this->get_move_sprite());
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -165,12 +162,11 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
         // The action master is stored as a static-master pointer.
         // These three reads prove the combat-master fields at +0x124, +0x12A,
         // and +0x138.
-        RGE_Action_Attack* action = new RGE_Action_Attack(
-            this->obj, this->target_obj, this->get_move_sprite(),
-            this->task->work_sprite, 0, this->task->work_range,
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
-            static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame);
+        RGE_Action_Attack* action = new RGE_Action_Attack(this->obj, this->target_obj, this->get_move_sprite(),
+                                                          this->task->work_sprite, 0, this->task->work_range,
+                                                          static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->minimum_weapon_range,
+                                                          static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->missile_id,
+                                                          static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)->fire_missile_at_frame);
         if (action == 0) {
             this->set_state(0x0D);
             return;
@@ -205,16 +201,14 @@ void TRIBE_Action_Hunt::set_state(unsigned char new_state) {
                     this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                         static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->drop_site,
                         static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->backup_drop_site,
-                        this->obj->world_x, this->obj->world_y, 1, 2,
-                        (RGE_Static_Object*)this->obj));
+                        this->obj->world_x, this->obj->world_y, 1, 2, (RGE_Static_Object*)this->obj));
                 } else {
                     this->set_target_obj2(0);
                 }
             }
             if (this->target_obj2 != 0) {
-                RGE_Action_Move_To* action = new RGE_Action_Move_To(
-                    this->obj, this->target_obj2, this->task->work_range,
-                    this->get_move_sprite());
+                RGE_Action_Move_To* action = new RGE_Action_Move_To(this->obj, this->target_obj2, this->task->work_range,
+                                                                    this->get_move_sprite());
                 if (action == 0) {
                     this->set_state(0x0D);
                     return;
@@ -276,8 +270,7 @@ unsigned char TRIBE_Action_Hunt::update() {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
             if (this->timer > 0.0) {
                 this->timer = -10.0f;
-                this->obj->notify(this->obj->id, this->obj->id,
-                                  0x202, 0x265, this->targetType, 0);
+                this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x265, this->targetType, 0);
                 return 0;
             }
         }
@@ -468,11 +461,8 @@ unsigned char TRIBE_Action_Hunt::update() {
                 if (attribute == -1) {
                     attribute = this->obj->attribute_type_held;
                 }
-                this->obj->owner->add_attribute_num(
-                    attribute, this->obj->attribute_amount_held, 0);
-                this->obj->owner->trackUnitGather(
-                    this->obj->id, attribute,
-                    (int)this->obj->attribute_amount_held);
+                this->obj->owner->add_attribute_num(attribute, this->obj->attribute_amount_held, 0);
+                this->obj->owner->trackUnitGather(this->obj->id, attribute, (int)this->obj->attribute_amount_held);
                 this->obj->set_attribute(-1, 0.0f);
 
                 if (this->target_obj != 0) {
@@ -497,8 +487,7 @@ unsigned char TRIBE_Action_Hunt::update() {
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1F9, 0x265, 0, 0);
+        this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x265, 0, 0);
         return 3;
     }
 

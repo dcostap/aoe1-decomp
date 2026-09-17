@@ -89,19 +89,16 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
         }
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + IDS_MAP_SIZE_BASE,
-            tempString, 256);
+            static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + IDS_MAP_SIZE_BASE, tempString, 256);
         fprintf(out, "Map Size:                %s\n", tempString);
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->mapType() + IDS_MAP_TYPE_BASE,
-            tempString, 256);
+            static_cast<TRIBE_Game*>(rge_base_game)->mapType() + IDS_MAP_TYPE_BASE, tempString, 256);
         fprintf(out, "Map Type:                %s\n", tempString);
 
         // This victory-description resource range is not verified.
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + 0x28A6,
-            tempString, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + 0x28A6,
+                                                            tempString, 256);
         fprintf(out, "Victory Condition:       %s\n", tempString);
     }
 }
@@ -120,8 +117,7 @@ void TRIBE_World::data_load_map(char* border_file, char* overlay_file,
                                 short tile_width, short tile_height,
                                 short elev_height, RGE_Sound** sounds,
                                 char* terr_obj_file) {
-    TRIBE_Map* m = new TRIBE_Map(border_file, overlay_file, terrain_file,
-                                 map_file, tile_width, tile_height,
+    TRIBE_Map* m = new TRIBE_Map(border_file, overlay_file, terrain_file, map_file, tile_width, tile_height,
                                  elev_height, sounds);
     this->map = m;
     m->load_terrain_obj_types(terr_obj_file);
@@ -147,8 +143,7 @@ unsigned char TRIBE_World::init_player_type(int infile, short index, unsigned ch
     case 1: {
         TRIBE_Master_Player* p = new TRIBE_Master_Player(infile);
         this->master_players[index] = p;
-        this->master_players[index]->finish_init(infile, this->sprites,
-                                                 this->sounds);
+        this->master_players[index]->finish_init(infile, this->sprites, this->sounds);
         break;
     }
     default:
@@ -222,13 +217,11 @@ void TRIBE_World::load_player(int infile, unsigned char type, short index) {
     case 1:
     case 3:
         this->players[index] =
-            static_cast<RGE_Player*>(new TRIBE_Player(
-                infile, this, static_cast<unsigned char>(index)));
+            static_cast<RGE_Player*>(new TRIBE_Player(infile, this, static_cast<unsigned char>(index)));
         break;
     case 2:
         this->players[index] =
-            static_cast<RGE_Player*>(new TRIBE_Gaia(
-                infile, this, static_cast<unsigned char>(index)));
+            static_cast<RGE_Player*>(new TRIBE_Gaia(infile, this, static_cast<unsigned char>(index)));
         break;
     default:
         RGE_Game_World::load_player(infile, type, index);
@@ -240,9 +233,7 @@ void TRIBE_World::load_player(int infile, unsigned char type, short index) {
 
 void TRIBE_World::setup_gaia() {
     TRIBE_Gaia* g;
-    g = new TRIBE_Gaia(this,
-        static_cast<RGE_Master_Player*>(this->master_players[0]),
-        0, "GAIA", 0);
+    g = new TRIBE_Gaia(this, static_cast<RGE_Master_Player*>(this->master_players[0]), 0, "GAIA", 0);
     if (g == 0) {
         g = 0;
     }
@@ -259,22 +250,16 @@ void TRIBE_World::setup_players(RGE_Player_Info& info) {
             char type = info.type[index - 1];
             switch (type) {
             case 0:
-                player = new TRIBE_Player(this,
-                    this->master_players[info.tribe[index - 1]],
-                    static_cast<unsigned char>(index), info.name[index - 1],
-                    info.tribe[index - 1], 0, 1, 0, 0, 0);
+                player = new TRIBE_Player(this, this->master_players[info.tribe[index - 1]],
+                                          static_cast<unsigned char>(index), info.name[index - 1], info.tribe[index - 1], 0, 1, 0, 0, 0);
                 break;
             case 4:
                 if (useComputerPlayers == 0) {
-                    player = new TRIBE_Player(this,
-                        this->master_players[info.tribe[index - 1]],
-                        static_cast<unsigned char>(index), info.name[index - 1],
-                        info.tribe[index - 1], 0, 1, 0, 0, 0);
+                    player = new TRIBE_Player(this, this->master_players[info.tribe[index - 1]],
+                                              static_cast<unsigned char>(index), info.name[index - 1], info.tribe[index - 1], 0, 1, 0, 0, 0);
                 } else {
-                    player = new TRIBE_Player(this,
-                        this->master_players[info.tribe[index - 1]],
-                        static_cast<unsigned char>(index), info.name[index - 1],
-                        info.tribe[index - 1], 1, 1, 0, 0, 0);
+                    player = new TRIBE_Player(this, this->master_players[info.tribe[index - 1]],
+                                              static_cast<unsigned char>(index), info.name[index - 1], info.tribe[index - 1], 1, 1, 0, 0, 0);
                 }
                 break;
             default:
@@ -360,21 +345,15 @@ void TRIBE_World::scenario_make_player(short index,
     unsigned char player_type, unsigned char info_type,
     unsigned char master_player_id, char* name) {
     if (info_type == 0) {
-        this->players[index] = new TRIBE_Player(this,
-            this->master_players[player_type],
-            static_cast<unsigned char>(index), name, player_type,
-            0, 1, 0, 0, 0);
+        this->players[index] = new TRIBE_Player(this, this->master_players[player_type],
+                                                static_cast<unsigned char>(index), name, player_type, 0, 1, 0, 0, 0);
     } else {
         if (info_type == 4) {
-            this->players[index] = new TRIBE_Player(this,
-                this->master_players[player_type],
-                static_cast<unsigned char>(index), name, player_type,
-                1, 1, 0, 0, 0);
+            this->players[index] = new TRIBE_Player(this, this->master_players[player_type],
+                                                    static_cast<unsigned char>(index), name, player_type, 1, 1, 0, 0, 0);
         } else {
-            this->players[index] = new TRIBE_Player(this,
-                this->master_players[player_type],
-                static_cast<unsigned char>(index), name, player_type,
-                0, 1, 0, 0, 0);
+            this->players[index] = new TRIBE_Player(this, this->master_players[player_type],
+                                                    static_cast<unsigned char>(index), name, player_type, 0, 1, 0, 0, 0);
         }
     }
 }
@@ -450,20 +429,16 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
     case TRIBE_Game::VictoryDefault:
     case TRIBE_Game::VictoryStandard:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_STANDARD, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_STANDARD, description, 4096);
         break;
     case TRIBE_Game::VictoryConquest:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
         break;
     case TRIBE_Game::VictoryTime:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
         break;
     case TRIBE_Game::VictoryScore:
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_SCORE, description, 4096);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_VICTORY_DESCRIPTION_SCORE, description, 4096);
         break;
     default:
         break;
@@ -498,11 +473,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
 
     age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
     if (age == TRIBE_Game::DefaultAge) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_OPTION_DEFAULT, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_OPTION_DEFAULT, str1, 256);
     } else if (age == TRIBE_Game::NomadAge) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_AGE_NOMAD, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_AGE_NOMAD, str1, 256);
     } else {
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + IDS_AGE_NAME_BASE, str1, 256);
     }
@@ -511,8 +484,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
 
     res = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
     if (res == TRIBE_Game::DefaultResources) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_OPTION_DEFAULT, str1, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_OPTION_DEFAULT, str1, 256);
     } else {
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + IDS_RESOURCE_LEVEL_BASE, str1, 256);
     }
@@ -521,10 +493,8 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
 
     static_cast<TRIBE_Game*>(rge_base_game)->difficulty();
     static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-        static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + IDS_DIFFICULTY_BASE,
-        str1, 256);
-    static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-        IDS_DIFFICULTY_FORMAT, str2, 256);
+        static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + IDS_DIFFICULTY_BASE, str1, 256);
+    static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_DIFFICULTY_FORMAT, str2, 256);
     sprintf(str3, str2, str1);
     sprintf(description, newline_join_format, description, str3);
 
@@ -565,7 +535,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     sprintf(description, newline_join_format, description, str2);
 
     sprintf(str2, rge_base_game->get_string(IDS_POPULATION_LIMIT_FORMAT),
-        static_cast<int>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
+            static_cast<int>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
     sprintf(description, newline_join_format, description, str2);
         static_cast<T_Scenario*>(this->scenario)->add_description(description);
     }
@@ -642,8 +612,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
                 case 3:
                     this->victory_type = 2;
                     this->countdown_victory = 1;
-                    this->countdown_clock = static_cast<float>(
-                        static_cast<T_Scenario*>(this->scenario)->GetVictoryTime());
+                    this->countdown_clock = static_cast<float>(static_cast<T_Scenario*>(this->scenario)->GetVictoryTime());
                     break;
                 case 2: {
                     this->victory_type = 3;
@@ -779,26 +748,23 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->allowTrading()) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(0x69,
-                static_cast<TRIBE_Player*>(this->players[i]));
+            this->effects->do_effect(0x69, static_cast<TRIBE_Player*>(this->players[i]));
         }
     }
     if (static_cast<TRIBE_Game*>(rge_base_game)->longCombat() == 1) {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(0x64,
-                static_cast<TRIBE_Player*>(this->players[i]));
+            this->effects->do_effect(0x64, static_cast<TRIBE_Player*>(this->players[i]));
         }
     }
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(this->scenario)->GetScenarioOption(2)) {
         for (i = 1; i < this->player_num; ++i) {
             this->effects->do_effect(static_cast<short>(this->players[i]->tribe_effect),
-                static_cast<TRIBE_Player*>(this->players[i]));
+                                     static_cast<TRIBE_Player*>(this->players[i]));
         }
     } else {
         for (i = 1; i < this->player_num; ++i) {
-            this->effects->do_effect(0xd2,
-                static_cast<TRIBE_Player*>(this->players[i]));
+            this->effects->do_effect(0xd2, static_cast<TRIBE_Player*>(this->players[i]));
         }
     }
 
@@ -1005,8 +971,7 @@ unsigned char TRIBE_World::check_game_state() {
                     int total = 0;
                     int j;
                     for (j = 0; j < team_size[i]; ++j)
-                        total += static_cast<int>(
-                            team_player[i][j]->attributes[7]);
+                        total += static_cast<int>(team_player[i][j]->attributes[7]);
 
                     TRIBE_Player* first_player = team_player[i][0];
                     if (total == this->artifact_count) {
@@ -1018,8 +983,7 @@ unsigned char TRIBE_World::check_game_state() {
                             if (this->victory_type == 0) {
                                 for (j = 0; j < team_size[i]; ++j)
                                     team_player[i][j]->artifact_held_time = 2000.0f;
-                                rge_base_game->notification(
-                                    0x72, first_player->id, 0, 0, 0);
+                                rge_base_game->notification(0x72, first_player->id, 0, 0, 0);
                             }
                         } else if (held_time >= 1.0f && this->victory_type == 0) {
                             held_time -= this->world_time_delta_seconds * 2.0f;
@@ -1037,8 +1001,7 @@ unsigned char TRIBE_World::check_game_state() {
                         if (this->victory_type == 0) {
                             for (j = 0; j < team_size[i]; ++j)
                                 team_player[i][j]->artifact_held_time = -1.0f;
-                            rge_base_game->notification(
-                                0x73, first_player->id, 0, 0, 0);
+                            rge_base_game->notification(0x73, first_player->id, 0, 0, 0);
                         }
                     }
                 }
@@ -1049,8 +1012,7 @@ unsigned char TRIBE_World::check_game_state() {
                     int total = 0;
                     int j;
                     for (j = 0; j < team_size[i]; ++j)
-                        total += static_cast<int>(
-                            team_player[i][j]->attributes[14]);
+                        total += static_cast<int>(team_player[i][j]->attributes[14]);
 
                     TRIBE_Player* first_player = team_player[i][0];
                     if (total == this->ruin_count) {
@@ -1062,8 +1024,7 @@ unsigned char TRIBE_World::check_game_state() {
                             if (this->victory_type == 0) {
                                 for (j = 0; j < team_size[i]; ++j)
                                     team_player[i][j]->ruin_held_time = 2000.0f;
-                                rge_base_game->notification(
-                                    0x74, first_player->id, 0, 0, 0);
+                                rge_base_game->notification(0x74, first_player->id, 0, 0, 0);
                             }
                         } else if (held_time >= 1.0f && this->victory_type == 0) {
                             held_time -= this->world_time_delta_seconds * 2.0f;
@@ -1081,8 +1042,7 @@ unsigned char TRIBE_World::check_game_state() {
                         if (this->victory_type == 0) {
                             for (j = 0; j < team_size[i]; ++j)
                                 team_player[i][j]->ruin_held_time = -1.0f;
-                            rge_base_game->notification(
-                                0x75, first_player->id, 0, 0, 0);
+                            rge_base_game->notification(0x75, first_player->id, 0, 0, 0);
                         }
                     }
                 }
@@ -1110,8 +1070,7 @@ long TRIBE_World::get_achievement(unsigned char achievement, char** info) {
 }
 
 void TRIBE_World::send_cheat(short cheat_code) {
-    static_cast<TRIBE_Command*>(this->commands)->command_cheat(
-        this->curr_player, cheat_code);
+    static_cast<TRIBE_Command*>(this->commands)->command_cheat(this->curr_player, cheat_code);
 }
 
 void TRIBE_World::cheat(short player, short cheat_code) {
@@ -1119,16 +1078,14 @@ void TRIBE_World::cheat(short player, short cheat_code) {
         switch (cheat_code) {
         case 0:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
-                    0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x112);
             }
             break;
         case 1:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
-                    0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0xf8);
             }
@@ -1182,8 +1139,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             break;
         case 14:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
-                    0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x182);
             }
@@ -1194,16 +1150,14 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             break;
         case 16:
             if (player > 0) {
-                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
-                    0x6d, -1.0f, -1.0f, 1, 2, 0);
+                RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
                 if (object != 0)
                     static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x18d);
             }
             break;
         case 17:
             if (player > 0)
-                this->players[player]->objects->find_by_master_id(
-                    0x6d, -1.0f, -1.0f, 1, 2, 0);
+                this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
             break;
         case 18:
             this->effects->do_effect(0xd8, this->players[0]);
@@ -1277,8 +1231,7 @@ void TRIBE_World::cheat(short player, short cheat_code) {
             break;
         }
         case 220: {
-            RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(
-                0x6d, -1.0f, -1.0f, 1, 2, 0);
+            RGE_Static_Object* object = this->players[player]->objects->find_by_master_id(0x6d, -1.0f, -1.0f, 1, 2, 0);
             if (object != 0)
                 static_cast<TRIBE_Command*>(this->commands)->command_make(object, 0x174);
             break;
@@ -1368,24 +1321,19 @@ void TRIBE_World::send_zone_score_info() {
         index = 1;
         if (index < this->player_num) {
             do {
-                strcpy(info.player_info[index - 1].name,
-                    this->players[index]->name);
+                strcpy(info.player_info[index - 1].name, this->players[index]->name);
                 info.player_info[index - 1].score =
                     this->players[index]->victory_conditions->get_victory_points();
                 info.player_info[index - 1].winner =
                     (this->players[index]->game_status == 1);
                 info.player_info[index - 1].civ_played =
-                    static_cast<unsigned char>(
-                        static_cast<TRIBE_Game*>(rge_base_game)->civilization(index - 1));
+                    static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->civilization(index - 1));
                 info.player_info[index - 1].civ_random =
-                    static_cast<unsigned char>(
-                        static_cast<TRIBE_Game*>(rge_base_game)->random_civ[index - 1]);
+                    static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->random_civ[index - 1]);
                 info.player_info[index - 1].player_no =
-                    static_cast<unsigned char>(
-                        static_cast<TRIBE_Game*>(rge_base_game)->playerColor(index - 1));
+                    static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->playerColor(index - 1));
                 info.player_info[index - 1].team_no =
-                    static_cast<unsigned char>(
-                        static_cast<TRIBE_Game*>(rge_base_game)->playerTeam(index - 1));
+                    static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->playerTeam(index - 1));
                 int game_outcome = comm->WasKicked[index - 1];
                 info.player_info[index - 1].game_outcome =
                     static_cast<unsigned char>(game_outcome);
@@ -1413,8 +1361,7 @@ void TRIBE_World::send_zone_score_info() {
             } while (index < this->player_num);
         }
 
-        info.cheats_enabled = static_cast<unsigned char>(
-            static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes());
+        info.cheats_enabled = static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes());
         switch (this->game_end_condition) {
         case 0:
             info.game_end_condition_code = 0;
@@ -1453,8 +1400,7 @@ void TRIBE_World::send_zone_score_info() {
         info.map_info.Resources = static_cast<unsigned char>(options.resourceLevelValue);
         info.map_info.Full_Tech = options.fullTechTreeValue;
         info.map_info.Fixed_Pos = options.randomizePositionsValue;
-        info.map_info.Reveal_Map = static_cast<unsigned char>(
-            static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility());
+        info.map_info.Reveal_Map = static_cast<unsigned char>(static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility());
         info.map_info.Death_Match = options.deathMatchValue;
         info.map_info.Pop_Limit = static_cast<short>(options.popLimitValue);
 
@@ -1462,7 +1408,6 @@ void TRIBE_World::send_zone_score_info() {
         info.code_checksum = 0;
         info.program_version = 0;
 
-        this->commands->com_hand->SendZoneMessage(
-            static_cast<char*>(static_cast<void*>(&info)), 0x1fc);
+        this->commands->com_hand->SendZoneMessage(static_cast<char*>(static_cast<void*>(&info)), 0x1fc);
     }
 }

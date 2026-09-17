@@ -30,9 +30,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     strcpy(info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
-    if (this->setup(draw_area, info_file,
-                    static_cast<TEasy_Panel*>(tabList[0])->get_info_id(),
-                    1) == 0) {
+    if (this->setup(draw_area, info_file, static_cast<TEasy_Panel*>(tabList[0])->get_info_id(), 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -40,16 +38,13 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     this->setup_shadow_area(0);
     this->set_ideal_size(640, 480);
 
-    if (this->create_text(this, &this->screenTitle, IDS_SAVED_GAMES_TITLE,
-                          20, 10, 600, 30, 1, 1, 0, 0) == 0) {
+    if (this->create_text(this, &this->screenTitle, IDS_SAVED_GAMES_TITLE, 20, 10, 600, 30, 1, 1, 0, 0) == 0) {
         return;
     }
-    if (this->create_text(this, &this->listTitle, IDS_SELECT_SAVED_GAME_TITLE,
-                          20, 45, 600, 20, 4, 0, 0, 0) == 0) {
+    if (this->create_text(this, &this->listTitle, IDS_SELECT_SAVED_GAME_TITLE, 20, 45, 600, 20, 4, 0, 0, 0) == 0) {
         return;
     }
-    if (this->create_list(this, &this->list,
-                          20, 65, 600, 352, RGE_FONT_STANDARD) == 0) {
+    if (this->create_list(this, &this->list, 20, 65, 600, 352, RGE_FONT_STANDARD) == 0) {
         return;
     }
     if (this->create_auto_scrollbar(&this->scrollbar, this->list, 20) == 0) {
@@ -59,16 +54,13 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
     this->scrollbar->set_help_info(IDS_HELP_SAVED_GAME_NAME, -1);
 
     TButtonPanel** ok_button = &this->okButton;
-    if (this->create_button(this, ok_button, IDS_BUTTON_OK,
-                            0, 30, 440, 180, 30, 0, 0, 0) == 0) {
+    if (this->create_button(this, ok_button, IDS_BUTTON_OK, 0, 30, 440, 180, 30, 0, 0, 0) == 0) {
         return;
     }
-    if (this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE,
-                            0, 230, 440, 180, 30, 0, 0, 0) == 0) {
+    if (this->create_button(this, &this->deleteButton, IDS_BUTTON_DELETE, 0, 230, 440, 180, 30, 0, 0, 0) == 0) {
         return;
     }
-    if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL,
-                            0, 430, 440, 180, 30, 0, 0, 0) == 0) {
+    if (this->create_button(this, &this->cancelButton, IDS_BUTTON_CANCEL, 0, 430, 440, 180, 30, 0, 0, 0) == 0) {
         return;
     }
 
@@ -87,8 +79,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
         this->deleteButton->set_disabled(1);
     }
 
-    long line = this->list->get_line(
-        static_cast<TRIBE_Game*>(rge_base_game)->get_save_game_name());
+    long line = this->list->get_line(static_cast<TRIBE_Game*>(rge_base_game)->get_save_game_name());
     if (line != -1) {
         this->list->scroll_cur_line(1, (short)line, 1);
     }
@@ -210,9 +201,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
                 int loaded;
 
                 strcpy(fileNameNoExt, this->list->currentLine());
-                sprintf(fileName, "%s%s.gmx",
-                        rge_base_game->prog_info->save_dir,
-                        fileNameNoExt);
+                sprintf(fileName, "%s%s.gmx", rge_base_game->prog_info->save_dir, fileNameNoExt);
                 find_handle = _findfirst(fileName, &fileInfo);
                 if (find_handle == -1) {
                     sprintf(fileName, "%s.gam", fileNameNoExt);

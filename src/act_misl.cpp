@@ -102,9 +102,7 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
                 (float)sin(this->target_obj->getAngle()) * target_speed;
             target_speed =
                 d -
-                (float)sqrt((dx + target_vx) * (dx + target_vx) +
-                            (dy + target_vy) * (dy + target_vy) +
-                            dz * dz) +
+                (float)sqrt((dx + target_vx) * (dx + target_vx) + (dy + target_vy) * (dy + target_vy) + dz * dz) +
                 ((RGE_Master_Animated_Object*)this->obj->master_obj)->speed;
 
             if (target_speed >
@@ -123,8 +121,7 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
             this->velocity_x = dx / d;
             this->velocity_y = dy / d;
             this->velocity_z = dz / d;
-            this->obj->new_angle(
-                (float)atan2(this->velocity_y, this->velocity_x));
+            this->obj->new_angle((float)atan2(this->velocity_y, this->velocity_x));
             this->timer = 0.0f;
             break;
 
@@ -140,8 +137,7 @@ void RGE_Action_Missile::set_state(unsigned char new_state) {
             this->velocity_x = dx;
             this->velocity_y = dy;
             this->velocity_z = dz;
-            this->obj->new_angle(
-                (float)atan2(this->velocity_y, this->velocity_x));
+            this->obj->new_angle((float)atan2(this->velocity_y, this->velocity_x));
             break;
         }
 
@@ -261,9 +257,7 @@ unsigned char RGE_Action_Missile::update() {
                         } else {
                             source = (RGE_Combat_Object*)this->obj;
                         }
-                        source->do_attack(
-                            node->node, source, this->obj->world_x,
-                            this->obj->world_y, this->obj->world_z);
+                        source->do_attack(node->node, source, this->obj->world_x, this->obj->world_y, this->obj->world_z);
                         this->set_state(1);
                         break;
 
@@ -277,9 +271,7 @@ unsigned char RGE_Action_Missile::update() {
                         } else {
                             source = (RGE_Combat_Object*)this->obj;
                         }
-                        source->do_attack(
-                            node->node, source, this->obj->world_x,
-                            this->obj->world_y, this->obj->world_z);
+                        source->do_attack(node->node, source, this->obj->world_x, this->obj->world_y, this->obj->world_z);
                         this->set_state(1);
                         break;
 
@@ -295,13 +287,10 @@ unsigned char RGE_Action_Missile::update() {
 
                         if (node->node->owner != this->obj->owner &&
                             node->node->owner->id != 0) {
-                            source->do_attack(
-                                node->node, source, this->obj->world_x,
-                                this->obj->world_y, this->obj->world_z);
+                            source->do_attack(node->node, source, this->obj->world_x,
+                                              this->obj->world_y, this->obj->world_z);
                         } else {
-                            source->area_attack(this->obj->world_x,
-                                                this->obj->world_y,
-                                                this->obj->world_z, source, 0);
+                            source->area_attack(this->obj->world_x, this->obj->world_y, this->obj->world_z, source, 0);
                         }
                         this->set_state(1);
                         break;
@@ -320,8 +309,7 @@ unsigned char RGE_Action_Missile::update() {
             } else {
                 source = (RGE_Combat_Object*)this->obj;
             }
-            source->do_attack(this->target_obj, source, this->obj->world_x,
-                              this->obj->world_y, this->obj->world_z);
+            source->do_attack(this->target_obj, source, this->obj->world_x, this->obj->world_y, this->obj->world_z);
             this->set_state(1);
             break;
         }
@@ -334,8 +322,7 @@ unsigned char RGE_Action_Missile::update() {
             } else {
                 source = (RGE_Combat_Object*)this->obj;
             }
-            source->area_attack(this->obj->world_x, this->obj->world_y,
-                                this->obj->world_z, source, 0);
+            source->area_attack(this->obj->world_x, this->obj->world_y, this->obj->world_z, source, 0);
             this->set_state(1);
         }
     }

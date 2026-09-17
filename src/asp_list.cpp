@@ -113,8 +113,7 @@ RGE_Active_Sprite_Node* RGE_Active_Sprite_List::copy_sprite_list() {
     this->list = 0;
 
     while (node) {
-        this->add_sprite(node->node->sprite, node->order, node->node->offset_x,
-                         node->node->offset_y);
+        this->add_sprite(node->node->sprite, node->order, node->node->offset_x, node->node->offset_y);
         node = node->next;
     }
 

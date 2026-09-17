@@ -10,8 +10,7 @@
 #include "../include/rge_base_game_global.h"
 
 extern "C" __declspec(dllimport) int __stdcall CompareStringA(
-    unsigned long locale, unsigned long flags, const char* string1,
-    int length1, const char* string2, int length2);
+    unsigned long locale, unsigned long flags, const char* string1, int length1, const char* string2, int length2);
 
 RGE_Dialog_List::RGE_Dialog_List(char* name) : TListDialog(name) {
 }
@@ -47,12 +46,8 @@ int RGE_Dialog_List::setup(TScreenPanel* parent_screen, char* info_file_in, long
         }
     }
 
-    return this->TListDialog::setup(
-        parent_screen, info_file_in, info_id_in,
-        310, 400, 10, 10, 290,
-        25, title_in, 10, 45, 290,
-        305, this->list_text, this->list_size, this->list_line,
-        10, 160, 360, 140, 30) != 0;
+    return this->TListDialog::setup(parent_screen, info_file_in, info_id_in, 310, 400, 10, 10, 290,
+                                    25, title_in, 10, 45, 290, 305, this->list_text, this->list_size, this->list_line, 10, 160, 360, 140, 30) != 0;
 }
 
 RGE_Dialog_List::~RGE_Dialog_List() {
@@ -127,12 +122,10 @@ int RGE_Dialog_List::create_object_list() {
                 player->master_objects[object_index]->hide_in_scenario_editor == 0) {
                 this->list_info[i].id = j;
                 if (player->master_objects[object_index]->string_id > 0) {
-                    rge_base_game->get_string(2,
-                                              player->master_objects[object_index]->string_id,
+                    rge_base_game->get_string(2, player->master_objects[object_index]->string_id,
                                               this->list_info[i].text, 100);
                 } else {
-                    strcpy(this->list_info[i].text,
-                           player->master_objects[object_index]->name);
+                    strcpy(this->list_info[i].text, player->master_objects[object_index]->name);
                 }
                 i++;
             }
@@ -145,17 +138,14 @@ int RGE_Dialog_List::create_object_list() {
 }
 
 int __cdecl rdlg_list_compare(const void* arg1, const void* arg2) {
-    int result = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-                                (const char*)arg1, -1,
-                                (const char*)arg2, -1);
+    int result = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE, (const char*)arg1, -1, (const char*)arg2, -1);
     if (result == 1)
         return -1;
     return result == 3;
 }
 
 void RGE_Dialog_List::sort_list() {
-    qsort(this->list_info, (int)this->list_size,
-          sizeof(rdlg_list_info), rdlg_list_compare);
+    qsort(this->list_info, (int)this->list_size, sizeof(rdlg_list_info), rdlg_list_compare);
 }
 
 void RGE_Dialog_List::calc_list_line() {

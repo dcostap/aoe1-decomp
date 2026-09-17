@@ -228,11 +228,9 @@ void TribeBuildAIModule::initialize() {
                 ++itemCount;
             } else {
                 if (item->buildCategory() == 1 || item->buildCategory() == 4) {
-                    this->md->aiPlayer->researchCost(
-                        item->typeID(), -1, &resourceCount, 1);
+                    this->md->aiPlayer->researchCost(item->typeID(), -1, &resourceCount, 1);
                 } else {
-                    this->md->aiPlayer->objectCost(
-                        item->typeID(), -1, &resourceCount, 1);
+                    this->md->aiPlayer->objectCost(item->typeID(), -1, &resourceCount, 1);
                 }
 
                 ++itemCount;
@@ -245,10 +243,8 @@ void TribeBuildAIModule::initialize() {
 
                     if (totalCost > 0) {
                         for (resource = 0; resource < 4; ++resource) {
-                            this->insertGathererPercentage(
-                                resource,
-                                resourceCount.value(resource) * totalPercentage / totalCost,
-                                divisionSize);
+                            this->insertGathererPercentage(resource,
+                                                           resourceCount.value(resource) * totalPercentage / totalCost, divisionSize);
                         }
                         resourceCount.setAllValues(0);
                         divisionSize += requiredPop;
@@ -371,8 +367,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
 
             if (item->buildCategory() == 6) {
                 if (realCount < 1) {
-                    this->md->tacticalAI.setStrategicNumber(
-                        item->typeID() + 0x9C, item->buildFrom());
+                    this->md->tacticalAI.setStrategicNumber(item->typeID() + 0x9C, item->buildFrom());
                     item->setInProgress(0);
                     item->setBuilt(1);
                 }
@@ -404,8 +399,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
 
             if (item->buildCategory() == 4) {
                 ResourceItem itemCost(4);
-                this->md->aiPlayer->researchCost(
-                    item->typeID(), -1, &itemCost, 1);
+                this->md->aiPlayer->researchCost(item->typeID(), -1, &itemCost, 1);
                 if (!this->md->aiPlayer->researchAvailable(item->typeID()) ||
                     !this->md->resourceAI.resourcesAvailable(&itemCost) ||
                     category != 1) {
@@ -424,8 +418,7 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
                 item->setSkip(0);
                 if (item->buildCategory() == 0 &&
                     (item->typeID() == 0x67 || item->typeID() == 0x44)) {
-                    item->setBuildAttempts(
-                        this->md->tacticalAI.strategicNumber(0x72) - 1);
+                    item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72) - 1);
                 }
             }
 
@@ -468,11 +461,9 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
                     if (item->buildCategory() == 0 &&
                         (item->typeID() == 0x67 ||
                          item->typeID() == 0x44)) {
-                        item->setBuildAttempts(
-                            this->md->tacticalAI.strategicNumber(0x72) * 6);
+                        item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72) * 6);
                     } else {
-                        item->setBuildAttempts(
-                            this->md->tacticalAI.strategicNumber(0x72));
+                        item->setBuildAttempts(this->md->tacticalAI.strategicNumber(0x72));
                     }
                     item = item->next;
                     continue;
@@ -480,11 +471,9 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
             }
 
             if (category == 3 && item->buildCategory() == 3) {
-                strncpy(this->currentBuildItemRequestedValue,
-                        item->name(), 63);
+                strncpy(this->currentBuildItemRequestedValue, item->name(), 63);
                 this->numberItemsIntoBuildListValue = item->uniqueID();
-                strncpy(this->nextBuildItemRequestedValue,
-                        item->next->name(), 63);
+                strncpy(this->nextBuildItemRequestedValue, item->next->name(), 63);
                 this->numberItemsIntoBuildListValue = item->uniqueID();
                 return item;
             }
@@ -500,30 +489,24 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
             if (available) {
                 ResourceItem itemCost(4);
                 if (category == 1) {
-                    this->md->aiPlayer->researchCost(
-                        item->typeID(), -1, &itemCost, 1);
+                    this->md->aiPlayer->researchCost(item->typeID(), -1, &itemCost, 1);
                 } else {
-                    this->md->aiPlayer->objectCost(
-                        item->typeID(), -1, &itemCost, 1);
+                    this->md->aiPlayer->objectCost(item->typeID(), -1, &itemCost, 1);
                 }
 
                 if (this->md->resourceAI.resourcesAvailable(&itemCost)) {
                     int canBuildItem;
                     if (category == 2 || category == 1) {
-                        canBuildItem = this->md->object(
-                            -1, item->buildFrom(), -1, -1, -1,
-                            -1, -1, -1, 2, -1) != 0;
+                        canBuildItem = this->md->object(-1, item->buildFrom(), -1, -1, -1, -1, -1, -1, 2, -1) != 0;
                     } else {
                         canBuildItem =
                             this->md->constructionAI.canPlace(item);
                     }
 
                     if (canBuildItem) {
-                        strncpy(this->currentBuildItemRequestedValue,
-                                item->name(), 63);
+                        strncpy(this->currentBuildItemRequestedValue, item->name(), 63);
                         this->numberItemsIntoBuildListValue = item->uniqueID();
-                        strncpy(this->nextBuildItemRequestedValue,
-                                item->next->name(), 63);
+                        strncpy(this->nextBuildItemRequestedValue, item->next->name(), 63);
                         this->numberItemsIntoBuildListValue = item->uniqueID();
                         return item;
                     }
@@ -600,11 +583,9 @@ int TribeBuildAIModule::mostNeededResource(ResourceItem& itemCost, int countNum)
                     buildItem->numberBuilds() <= buildItem->buildCap()) {
                     if (buildItem->buildCategory() == 1 ||
                         buildItem->buildCategory() == 4) {
-                        this->md->aiPlayer->researchCost(
-                            buildItem->typeID(), -1, &itemCost, 1);
+                        this->md->aiPlayer->researchCost(buildItem->typeID(), -1, &itemCost, 1);
                     } else {
-                        this->md->aiPlayer->objectCost(
-                            buildItem->typeID(), -1, &itemCost, 1);
+                        this->md->aiPlayer->objectCost(buildItem->typeID(), -1, &itemCost, 1);
                     }
 
                     if (++count == countNum) {
@@ -751,14 +732,10 @@ int TribeBuildAIModule::cancelBuildItem(int reason, int blockerID, int blockerTy
         if (this->md->isMoveable(blockerID) == 1) {
             ConstructionItem* lot = this->md->constructionAI.lot(x, y);
             if (lot) {
-                this->md->tacticalAI.clearArea(blockerID,
-                    lot->x() - lot->xSize() * 0.5f,
-                    lot->y() - lot->ySize() * 0.5f,
-                    lot->x() - lot->xSize() * -0.5f,
-                    lot->y() - lot->ySize() * -0.5f);
+                this->md->tacticalAI.clearArea(blockerID, lot->x() - lot->xSize() * 0.5f, lot->y() - lot->ySize() * 0.5f,
+                                               lot->x() - lot->xSize() * -0.5f, lot->y() - lot->ySize() * -0.5f);
             } else {
-                this->md->tacticalAI.clearArea(blockerID, x - 2.0f, y - 2.0f,
-                                                x - -2.0f, y - -2.0f);
+                this->md->tacticalAI.clearArea(blockerID, x - 2.0f, y - 2.0f, x - -2.0f, y - -2.0f);
             }
         } else {
             this->md->constructionAI.incrementBuildAttempts(x, y, 10);
@@ -924,12 +901,10 @@ int TribeBuildAIModule::insert(int typeID, int buildCap, int insertionPoint) {
             count++;
         }
 
-        return this->insertItem(this->md->player, typeID, 1, flags, buildCategory,
-                                buildCap, count);
+        return this->insertItem(this->md->player, typeID, 1, flags, buildCategory, buildCap, count);
     }
 
-    return this->insertItem(this->md->player, typeID, 1, flags, buildCategory,
-                            buildCap, insertionPoint);
+    return this->insertItem(this->md->player, typeID, 1, flags, buildCategory, buildCap, insertionPoint);
 }
 
 int TribeBuildAIModule::insertResearch(int typeID, int insertionPoint) {
@@ -947,14 +922,12 @@ int TribeBuildAIModule::insertResearch(int typeID, int insertionPoint) {
         }
         return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1, count);
     }
-    return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1,
-                            insertionPoint);
+    return this->insertItem(this->md->player, typeID, 1, 1, 0x2d, 1, insertionPoint);
 }
 
 int TribeBuildAIModule::insertGathererPercentage(int rType, int percentage,
                                                  int insertionPoint) {
-    return this->insertItem(this->md->player, rType, 1, 6, percentage, 1,
-                            insertionPoint);
+    return this->insertItem(this->md->player, rType, 1, 6, percentage, 1, insertionPoint);
 }
 
 int TribeBuildAIModule::numberBuiltOrInProgressItemsOfType(int type, int category) {
