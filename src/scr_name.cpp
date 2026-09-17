@@ -38,7 +38,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name() : TScreenPanel(name_selection_screen) {
         return;
     }
     if (!this->create_list(this, &this->name_list,
-                           60, 100, 330, 300, 0x0B)) {
+                           60, 100, 330, 300, RGE_FONT_STANDARD)) {
         return;
     }
     if (!this->create_auto_scrollbar(&this->name_scrollbar, this->name_list, 20)) {
@@ -282,7 +282,7 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* parent_panel_in) : TDialogPan
         return;
     if (!this->create_edit(this, &this->name_input, "", 0x0f,
                            TEditPanel::FormatText, 40, 110, 420,
-                           23, 0x0b, 1, 1))
+                           23, RGE_FONT_STANDARD, 1, 1))
         return;
     if (!this->create_button(this, &this->ok_button, IDS_BUTTON_OK,
                              0, 60, 180, 180, 30, 0, 0, 0))

@@ -100,14 +100,14 @@ long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** time_lin
     if (axis_font_num >= 0) {
         axis_font = rge_base_game->get_font(axis_font_num);
     } else {
-        axis_font = rge_base_game->get_font(0x0B);
+        axis_font = rge_base_game->get_font(RGE_FONT_STANDARD);
     }
 
     RGE_Font* body_font;
     if (body_font_num >= 0) {
         body_font = rge_base_game->get_font(body_font_num);
     } else {
-        body_font = rge_base_game->get_font(0x0B);
+        body_font = rge_base_game->get_font(RGE_FONT_STANDARD);
     }
 
     if ((*time_line)->setup(parent->renderArea(), parent, left, top, right, bottom,

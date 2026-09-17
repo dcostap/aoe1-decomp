@@ -46,7 +46,7 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     if (!create_text(this, &title, IDS_SCENARIO_OPEN_TITLE, 20, 20, 600, 30, 1, 1, 0, 0))
         return;
 
-    if (!create_list(this, &list, 20, 70, 600, 340, 0x0B))
+    if (!create_list(this, &list, 20, 70, 600, 340, RGE_FONT_STANDARD))
         return;
 
     if (!create_auto_scrollbar(&scrollbar, list, 20))

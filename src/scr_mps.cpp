@@ -111,7 +111,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     for (i = 0; y < 0x115; ++i, y += 0x18) {
         if (!this->create_drop_down(
                 this, &this->playerNameDrop[i],
-                158, 100, 7, y - 1, 0x9E, 0x18, 0x0B)) {
+                158, 100, 7, y - 1, 0x9E, 0x18, RGE_FONT_STANDARD)) {
             return;
         }
         this->playerNameDrop[i]->set_draw_style(
@@ -130,7 +130,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_drop_down(
                 this, &this->playerCivDrop[i],
-                128, 100, 170, y - 1, 0x80, 0x18, 0x0B)) {
+                128, 100, 170, y - 1, 0x80, 0x18, RGE_FONT_STANDARD)) {
             return;
         }
         this->playerCivDrop[i]->set_draw_style(
@@ -160,7 +160,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_drop_down(
                 this, &this->scenarioPlayerDrop[i],
-                40, 100, 324, y - 1, 0x28, 0x18, 0x0B)) {
+                40, 100, 324, y - 1, 0x28, 0x18, RGE_FONT_STANDARD)) {
             return;
         }
         this->scenarioPlayerDrop[i]->set_draw_style(
@@ -170,19 +170,19 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_button(
                 this, &this->playerColor[i], "", 0,
-                310, y, 30, 20, 0x0B, 0, 1)) {
+                310, y, 30, 20, RGE_FONT_STANDARD, 0, 1)) {
             return;
         }
         this->playerColor[i]->set_help_info(IDS_HELP_MP_PLAYER_COLOR, -1);
         if (!this->create_text(
                 this, &this->playerColorText[i], "",
-                305, y, 40, 22, 0x0B, 1, 1, 0)) {
+                305, y, 40, 22, RGE_FONT_STANDARD, 1, 1, 0)) {
             return;
         }
 
         if (!this->create_button(
                 this, &this->playerTeam[i], IDS_MULTIPLAYER_STATUS_SEPARATOR, 0,
-                380, y, 30, 20, 0x0B, 0, 1)) {
+                380, y, 30, 20, RGE_FONT_STANDARD, 0, 1)) {
             return;
         }
         this->playerTeam[i]->set_help_info(IDS_HELP_MP_TEAM, -1);
@@ -195,22 +195,22 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_text(
                 this, &this->playerTeamText[i], "",
-                375, y, 40, 22, 0x0B, 1, 1, 0)) {
+                375, y, 40, 22, RGE_FONT_STANDARD, 1, 1, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->playerNameText[i], "",
-                28, y + 2, 139, 22, 0x0B, 0, 0, 0)) {
+                28, y + 2, 139, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->playerCivText[i], "",
-                191, y + 2, 109, 22, 0x0B, 0, 0, 0)) {
+                191, y + 2, 109, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
                 this, &this->scenarioPlayerText[i], "",
-                345, y + 2, 40, 22, 0x0B, 0, 0, 0)) {
+                345, y + 2, 40, 22, RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
         if (!this->create_text(
@@ -237,14 +237,14 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
     if (!this->create_text(this, &this->scenarioName, "",
                            420, 84, 220, 68,
-                           0x0B, 0, 0, 1)) {
+                           RGE_FONT_STANDARD, 0, 0, 1)) {
         return;
     }
     y = 0x53;
     for (i = 0; y < 0x233; ++i, y += 0x18) {
         if (!this->create_text(this, &this->settingText[i], "",
                                420, y, 220, 20,
-                               0x0B, 0, 0, 0)) {
+                               RGE_FONT_STANDARD, 0, 0, 0)) {
             return;
         }
     }
@@ -287,7 +287,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         }
         if (!this->create_drop_down(
                 this, &this->numberPlayersDrop,
-                70, 100, 31, 322, 0x46, 0x18, 0x0B)) {
+                70, 100, 31, 322, 0x46, 0x18, RGE_FONT_STANDARD)) {
             return;
         }
         this->numberPlayersDrop->set_help_info(IDS_HELP_MP_PLAYER_COUNT, -1);

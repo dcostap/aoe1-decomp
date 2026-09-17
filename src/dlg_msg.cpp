@@ -43,7 +43,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
 
     dlg_type = dlg_type_in;
     if (!create_text(this, &text, text_in, 3, 3, pnl_wid - 3,
-                     pnl_hgt - btn_hgt_in - 6, 0x0B, 1, 1, 1))
+                     pnl_hgt - btn_hgt_in - 6, RGE_FONT_STANDARD, 1, 1, 1))
         return 0;
 
     switch (dlg_type) {
@@ -73,7 +73,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
     for (index = 0; index < button_num; ++index) {
         if (!create_button(this, &button[index], s_592A40, s_592A40,
                            button_x, y, btn_wid_in, btn_hgt_in,
-                           0x0B, 0, 0))
+                           RGE_FONT_STANDARD, 0, 0))
             return 0;
         button_x += space + btn_wid_in;
     }

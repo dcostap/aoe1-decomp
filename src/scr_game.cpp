@@ -282,7 +282,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->main_view->message_panel = this->text_line_panel;
 
     this->create_text(this->main_view, &this->quit_message_panel, IDS_GAME_OVER_MESSAGE, 0, 0,
-                      600, 60, 0x0b, 1, 1, 0);
+                      600, 60, RGE_FONT_STANDARD, 1, 1, 0);
     if (this->quit_message_panel != 0) {
         this->quit_message_panel->set_text_color(0xffffff, 0);
         this->quit_message_panel->set_active(0);
@@ -3526,7 +3526,8 @@ void TRIBE_Screen_Game::reset_score_display() {
                 special_font = 1;
             }
         }
-        RGE_Font* font = rge_base_game->get_font(special_font != 0 ? 8 : 0x0B);
+        RGE_Font* font = rge_base_game->get_font(
+            special_font != 0 ? RGE_FONT_STRIKEOUT : RGE_FONT_STANDARD);
 
         icon1 = 0;
         int icon_frame1 = 0;

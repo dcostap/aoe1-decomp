@@ -49,7 +49,7 @@ TribeLoadSavedGameScreen::TribeLoadSavedGameScreen() : TScreenPanel("Load Saved 
         return;
     }
     if (this->create_list(this, &this->list,
-                          20, 65, 600, 352, 0x0B) == 0) {
+                          20, 65, 600, 352, RGE_FONT_STANDARD) == 0) {
         return;
     }
     if (this->create_auto_scrollbar(&this->scrollbar, this->list, 20) == 0) {

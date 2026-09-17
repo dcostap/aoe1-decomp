@@ -64,7 +64,7 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         error_code = 1;
         return;
     }
-    font = rge_base_game->get_font(0x0B);
+    font = rge_base_game->get_font(RGE_FONT_STANDARD);
     text->setup(
         render_area, background,
         pnl_wid * 0x14 / 0x280,

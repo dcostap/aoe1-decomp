@@ -50,7 +50,7 @@ TribeJoinScreen::TribeJoinScreen()
         this->create_text(this, &this->listTitle, IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN,
                           20, 65, 600, 20, 4, 0, 0, 0);
         if (this->create_list(this, &this->list,
-                              20, 90, 600, 270, 0x0B)) {
+                              20, 90, 600, 270, RGE_FONT_STANDARD)) {
             if (this->create_auto_scrollbar(&this->scrollbar,
                                             this->list, 20)) {
                 this->listFilled = 1;

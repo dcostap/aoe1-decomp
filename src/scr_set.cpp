@@ -50,11 +50,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         return;
 
     if (!this->create_text(this, &this->mapSizeLabel, IDS_MAP_SIZE_LABEL,
-                           20, 216, 180, 20, 0x0B, 0, 0, 0))
+                           20, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->mapSizeDrop,
-                                180, 100, 20, 236, 0xB4, 0x18, 0x0B))
+                                180, 100, 20, 236, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->mapSizeDrop->empty_list();
     this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE, 0);
@@ -66,11 +66,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->mapSizeDrop->set_help_info(IDS_HELP_MAP_SIZE, -1);
 
     if (!this->create_text(this, &this->mapTypeLabel, IDS_MAP_TYPE_LABEL,
-                           220, 216, 180, 20, 0x0B, 0, 0, 0))
+                           220, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->mapTypeDrop,
-                                180, 100, 220, 236, 0xB4, 0x18, 0x0B))
+                                180, 100, 220, 236, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->mapTypeDrop->empty_list();
     this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE, 0);
@@ -85,11 +85,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->mapTypeDrop->set_help_info(IDS_HELP_MAP_TYPE, -1);
 
     if (!this->create_text(this, &this->victoryTypeLabel, IDS_VICTORY_CONDITION_LABEL,
-                           20, 264, 180, 20, 0x0B, 0, 0, 0))
+                           20, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->victoryTypeDrop,
-                                180, 100, 20, 284, 0xB4, 0x18, 0x0B))
+                                180, 100, 20, 284, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->victoryTypeDrop->empty_list();
     if (rge_base_game->scenarioGame() != 0) {
@@ -105,11 +105,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                          IDS_HELP_VICTORY_CONDITION_MORE);
 
     if (!this->create_text(this, &this->timeLabel, IDS_VICTORY_TIME_LIMIT,
-                           20, 312, 180, 20, 0x0B, 0, 0, 0))
+                           20, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->timeDrop,
-                                180, 100, 20, 332, 0xB4, 0x18, 0x0B))
+                                180, 100, 20, 332, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->timeDrop->empty_list();
     this->timeDrop->append_line(IDS_TIME_LIMIT_BASE, 15000);
@@ -122,11 +122,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->timeDrop->set_help_info(IDS_HELP_TIME_LIMIT, -1);
 
     if (!this->create_text(this, &this->scoreLabel, IDS_VICTORY_SCORE,
-                           20, 312, 180, 20, 0x0B, 0, 0, 0))
+                           20, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->scoreDrop,
-                                180, 100, 20, 332, 0xB4, 0x18, 0x0B))
+                                180, 100, 20, 332, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->scoreDrop->empty_list();
     this->scoreDrop->append_line("3000", 3000);
@@ -146,7 +146,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->scoreDrop->set_help_info(IDS_HELP_SCORE, -1);
 
     if (!this->create_text(this, &this->victoryFixedText, IDS_FIXED_VICTORY_INSTRUCTIONS,
-                           20, 264, 180, 92, 0x0B, 1, 1, 1))
+                           20, 264, 180, 92, RGE_FONT_STANDARD, 1, 1, 1))
         return;
     this->victoryFixedText->set_bevel_info(3, this->bevel_color1,
                                            this->bevel_color2,
@@ -156,11 +156,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                            this->bevel_color6);
 
     if (!this->create_text(this, &this->ageLabel, IDS_STARTING_AGE_LABEL,
-                           220, 264, 180, 20, 0x0B, 0, 0, 0))
+                           220, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->ageDrop,
-                                180, 100, 220, 284, 0xB4, 0x18, 0x0B))
+                                180, 100, 220, 284, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->ageDrop->empty_list();
         this->ageDrop->append_line(IDS_OPTION_DEFAULT, 0);
@@ -172,11 +172,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->ageDrop->set_help_info(IDS_HELP_STARTING_AGE, -1);
 
     if (!this->create_text(this, &this->resourcesLabel, IDS_RESOURCES_LABEL,
-                           220, 312, 180, 20, 0x0B, 0, 0, 0))
+                           220, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->resourcesDrop,
-                                180, 100, 220, 332, 0xB4, 0x18, 0x0B))
+                                180, 100, 220, 332, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->resourcesDrop->empty_list();
         this->resourcesDrop->append_line(IDS_OPTION_DEFAULT, 0);
@@ -185,11 +185,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->resourcesDrop->set_help_info(IDS_HELP_RESOURCES, -1);
 
     if (!this->create_text(this, &this->pathingLabel, IDS_PATH_FINDING_LABEL,
-                           420, 312, 180, 20, 0x0B, 0, 0, 0))
+                           420, 312, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->pathingDrop,
-                                180, 100, 420, 332, 0xB4, 0x18, 0x0B))
+                                180, 100, 420, 332, 0xB4, 0x18, RGE_FONT_STANDARD))
         return;
     this->pathingDrop->empty_list();
     this->pathingDrop->append_line(IDS_PATH_FINDING_OPTION_BASE, 0);
@@ -199,11 +199,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
 
     if (rge_base_game->multiplayerGame() != 0) {
         if (!this->create_text(this, &this->limitLabel, IDS_POPULATION_LIMIT_LABEL,
-                               420, 216, 180, 20, 0x0B, 0, 0, 0))
+                               420, 216, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
             return;
         if (!this->create_drop_down(this, &this->limitDrop,
                                     180, 100, 420, 236, 0xB4, 0x18,
-                                    0x0B))
+                                    RGE_FONT_STANDARD))
             return;
         this->limitDrop->empty_list();
         for (int limit = 25; limit <= 0xC8; limit += 25) {
@@ -214,12 +214,12 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     }
 
     if (!this->create_text(this, &this->difficultyLabel, IDS_DIFFICULTY_LABEL,
-                           420, 264, 180, 20, 0x0B, 0, 0, 0))
+                           420, 264, 180, 20, RGE_FONT_STANDARD, 0, 0, 0))
         return;
 
     if (!this->create_drop_down(this, &this->difficultyDrop,
                                 180, 100, 420, 284, 0xB4, 0x18,
-                                0x0B))
+                                RGE_FONT_STANDARD))
         return;
     this->difficultyDrop->empty_list();
     this->difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
@@ -233,7 +233,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 10, 360, 30, 30, 0, 0))
         return;
     if (!this->create_text(this, &this->optionText[0], IDS_FIXED_POSITIONS_LABEL,
-                           40, 360, 170, 30, 0x0B, 0, 1, 0))
+                           40, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     this->optionButton[0]->set_help_info(IDS_HELP_FIXED_POSITIONS, -1);
 
@@ -241,7 +241,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 220, 360, 30, 30, 0, 0))
         return;
     if (!this->create_text(this, &this->optionText[2], IDS_FULL_TECH_TREE_LABEL,
-                           250, 360, 170, 30, 0x0B, 0, 1, 0))
+                           250, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     this->optionButton[2]->set_help_info(IDS_HELP_FULL_TECH_TREE, -1);
 
@@ -249,7 +249,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 430, 360, 30, 30, 0, 0))
         return;
         if (!this->create_text(this, &this->optionText[1], IDS_REVEAL_MAP_LABEL,
-                           460, 360, 170, 30, 0x0B, 0, 1, 0))
+                           460, 360, 170, 30, RGE_FONT_STANDARD, 0, 1, 0))
         return;
         this->optionButton[1]->set_help_info(IDS_HELP_REVEAL_MAP, -1);
 
@@ -258,7 +258,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                     430, 395, 30, 30, 0, 0))
             return;
         if (!this->create_text(this, &this->optionText[3], IDS_CHEATING_LABEL,
-                               460, 395, 165, 30, 0x0B, 0, 1, 0))
+                               460, 395, 165, 30, RGE_FONT_STANDARD, 0, 1, 0))
             return;
         this->optionButton[3]->set_help_info(IDS_HELP_CHEATING, -1);
     }
@@ -274,7 +274,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     if (!this->create_list(this, &this->scenarioList,
                            this->scenarioListX, this->scenarioListY,
                            this->scenarioListWidth, this->scenarioListHeight,
-                           0x0B))
+                           RGE_FONT_STANDARD))
         return;
 
     // The executable computes this position before it reloads
@@ -328,7 +328,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     if (!this->create_text(this, &this->missionText, s_592A40,
                            this->missionTextX, this->missionTextY,
                            this->missionTextWidth, this->missionTextHeight,
-                           0x0B, 0, 0, 1))
+                           RGE_FONT_STANDARD, 0, 0, 1))
         return;
     this->missionText->set_bevel_info(3, this->bevel_color1,
                                       this->bevel_color2,

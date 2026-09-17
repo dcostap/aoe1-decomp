@@ -77,27 +77,27 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         return;
     }
     if (!this->create_text(this, &this->needMarket, IDS_DIPLOMACY_NEED_MARKET, 440, 110,
-                           175, 60, 0x0B, 1, 1, 1)) {
+                           175, 60, RGE_FONT_STANDARD, 1, 1, 1)) {
         return;
     }
     if (!this->create_text(this, &this->title[1], IDS_DIPLOMACY_NAME, 5, 50,
-                           130, 30, 0x0B, 0, 1, 0)) {
+                           130, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[2], IDS_DIPLOMACY_CIVILIZATION, 137, 50,
-                           80, 30, 0x0B, 0, 1, 0)) {
+                           80, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[3], IDS_DIPLOMACY_ALLY, 235, 50,
-                           70, 30, 0x0B, 0, 1, 0)) {
+                           70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[4], IDS_DIPLOMACY_NEUTRAL, 290, 50,
-                           70, 30, 0x0B, 0, 1, 0)) {
+                           70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[5], IDS_DIPLOMACY_ENEMY, 360, 50,
-                           70, 30, 0x0B, 0, 1, 0)) {
+                           70, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
 
@@ -105,11 +105,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
             static_cast<long>(rge_base_game->get_player()->attributes[46] *
                               DAT_0056f880));
     if (!this->create_text(this, &this->title[6], temp_str, 440, 50,
-                           180, 30, 0x0B, 0, 1, 0)) {
+                           180, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     if (!this->create_text(this, &this->title[7], IDS_DIPLOMACY_ALLIED_VICTORY, 318, 330,
-                           300, 30, 0x0B, 0, 1, 0)) {
+                           300, 30, RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
 
@@ -159,7 +159,8 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
 
         if (!this->create_text(this, &this->playerName[row],
                                world->players[player_id]->name, 5, a, 130,
-                               30, computer_font ? 8 : 0x0B, 0, 1, 0)) {
+                               30, computer_font ? RGE_FONT_STRIKEOUT : RGE_FONT_STANDARD,
+                               0, 1, 0)) {
             return;
         }
 
@@ -167,7 +168,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
                                    world->players[player_id]->master_player_id,
                                    0, temp_str, 100);
         if (!this->create_text(this, &this->playerCivilization[row],
-                               temp_str, 137, a, 100, 30, 0x0B,
+                               temp_str, 137, a, 100, 30, RGE_FONT_STANDARD,
                                0, 1, 0)) {
             return;
         }
@@ -211,22 +212,22 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         if (disable_buttons == 0) {
             if (!this->create_button(this, &this->woodTributeButton[row],
                                      -1, 0, 440, a, 40, 30,
-                                     0x0B, 0, 0)) {
+                                     RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
             if (!this->create_button(this, &this->foodTributeButton[row],
                                      -1, 0, 480, a, 40, 30,
-                                     0x0B, 0, 0)) {
+                                     RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
             if (!this->create_button(this, &this->goldTributeButton[row],
                                      -1, 0, 520, a, 40, 30,
-                                     0x0B, 0, 0)) {
+                                     RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
             if (!this->create_button(this, &this->stoneTributeButton[row],
                                      -1, 0, 560, a, 40, 30,
-                                     0x0B, 0, 0)) {
+                                     RGE_FONT_STANDARD, 0, 0)) {
                 return;
             }
 
@@ -306,28 +307,28 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         rge_base_game->get_player()->attributes[1] - this->woodTotal));
     if (!this->create_text(this, &this->playerWood, temp_str, 440,
                            this->cur_player_row * 30 + 80, 40, 30,
-                           0x0B, 0, 1, 0)) {
+                           RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     sprintf(temp_str, "%ld", static_cast<long>(
         rge_base_game->get_player()->attributes[0] - this->foodTotal));
     if (!this->create_text(this, &this->playerFood, temp_str, 480,
                            this->cur_player_row * 30 + 80, 40, 30,
-                           0x0B, 0, 1, 0)) {
+                           RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     sprintf(temp_str, "%ld", static_cast<long>(
         rge_base_game->get_player()->attributes[3] - this->goldTotal));
     if (!this->create_text(this, &this->playerGold, temp_str, 520,
                            this->cur_player_row * 30 + 80, 40, 30,
-                           0x0B, 0, 1, 0)) {
+                           RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
     sprintf(temp_str, "%ld", static_cast<long>(
         rge_base_game->get_player()->attributes[2] - this->stoneTotal));
     if (!this->create_text(this, &this->playerStone, temp_str, 560,
                            this->cur_player_row * 30 + 80, 40, 30,
-                           0x0B, 0, 1, 0)) {
+                           RGE_FONT_STANDARD, 0, 1, 0)) {
         return;
     }
 

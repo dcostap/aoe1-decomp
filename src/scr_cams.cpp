@@ -28,7 +28,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
         campaignListY = 0x46;
         campaignListWidth = 600;
         campaignListHeight = 0x82;
-        if (create_list(this, &campaignList, 20, 70, 600, 130, 0x0B)) {
+        if (create_list(this, &campaignList, 20, 70, 600, 130, RGE_FONT_STANDARD)) {
             if (create_auto_scrollbar(&campaignScrollbar, campaignList, 20)) {
                 if (create_text(this, &campaignTitle, IDS_SELECT_CAMPAIGN,
                                 campaignListX - 5, campaignListY - 20,
@@ -40,7 +40,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                     scenarioListHeight = 0x82;
                     if (create_list(this, &scenarioList, scenarioListX,
                                     scenarioListY, scenarioListWidth,
-                                    scenarioListHeight, 0x0B)) {
+                                    scenarioListHeight, RGE_FONT_STANDARD)) {
                         if (create_auto_scrollbar(&scenarioScrollbar,
                                                   scenarioList, 20)) {
                             if (create_text(this, &scenarioTitle, IDS_SCENARIO_LIST_TITLE,
@@ -54,7 +54,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                     if (create_drop_down(this, &difficultyDrop,
                                                          130, 100, 20,
                                                          390, 0x82, 0x18,
-                                                         0x0B)) {
+                                                         RGE_FONT_STANDARD)) {
                                         difficultyDrop->empty_list();
                                         difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
                                         difficultyDrop->append_line(IDS_DIFFICULTY_EASY, 3);

@@ -86,7 +86,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                         special = 1;
                 }
 
-                int font = special ? 8 : 11;
+                int font = special ? RGE_FONT_STRIKEOUT : RGE_FONT_STANDARD;
                 if (!create_text(this, &playerName[row],
                                  comm->GetPlayerName(humanity), 50, y, 190, 30,
                                  font, 0, 1, 0))
@@ -95,7 +95,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                 rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, world->players[id]->master_player_id,
                                            0, temp_str, 100);
                 if (!create_text(this, &playerCivilization[row],
-                                 temp_str, 260, y, 120, 30, 0x0B, 0, 1, 0))
+                                 temp_str, 260, y, 120, 30, RGE_FONT_STANDARD, 0, 1, 0))
                     return;
 
                 if (humanity != comm->WhoAmI()) {
@@ -120,7 +120,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
         if (!create_text(this, &chatTitle, IDS_SEND_MESSAGE_CHAT, 10, 315, 120, 30, 4, 1, 1, 0))
             return;
         if (!create_edit(this, &chatInput, "", 0x41, TEditPanel::FormatText, 130,
-                         315, 380, 23, 0x0B, 1, 0))
+                         315, 380, 23, RGE_FONT_STANDARD, 1, 0))
             return;
         chatInput->set_help_info(IDS_HELP_CHAT_INPUT, -1);
 
@@ -129,13 +129,13 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
         if (!create_radio_button(this, &radioButton[2], 45, 385, 30, 30, 0, 0)) return;
         if (!create_radio_button(this, &radioButton[3], 275, 385, 30, 30, 0, 0)) return;
 
-        if (!create_text(this, &radioTitle[0], IDS_SEND_MESSAGE_ALLIES, 75, 350, 200, 30, 0x0B, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[0], IDS_SEND_MESSAGE_ALLIES, 75, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[0]->set_help_info(-1, -1);
-        if (!create_text(this, &radioTitle[1], IDS_SEND_MESSAGE_ENEMIES, 305, 350, 200, 30, 0x0B, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[1], IDS_SEND_MESSAGE_ENEMIES, 305, 350, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[1]->set_help_info(-1, -1);
-        if (!create_text(this, &radioTitle[2], IDS_SEND_MESSAGE_EVERYONE, 75, 385, 200, 30, 0x0B, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[2], IDS_SEND_MESSAGE_EVERYONE, 75, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[2]->set_help_info(-1, -1);
-        if (!create_text(this, &radioTitle[3], IDS_SEND_MESSAGE_SELECT_PLAYER, 305, 385, 200, 30, 0x0B, 0, 1, 0)) return;
+        if (!create_text(this, &radioTitle[3], IDS_SEND_MESSAGE_SELECT_PLAYER, 305, 385, 200, 30, RGE_FONT_STANDARD, 0, 1, 0)) return;
         radioTitle[3]->set_help_info(-1, -1);
 
         for (i = 0; i < 4; ++i)
@@ -371,7 +371,7 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPan
 
     if (!this->create_edit(this, &this->chatInput, "", 0x41,
                            TEditPanel::FormatText,
-                           130, 5, 405, 25, 0x0B, 1, 0)) {
+                           130, 5, 405, 25, RGE_FONT_STANDARD, 1, 0)) {
         return;
     }
 

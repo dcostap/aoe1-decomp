@@ -151,6 +151,12 @@ enum RGE_Attribute_String_Id {
     RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR = 0x6A
 };
 
+// Font index 11 is the normal Arial font loaded by setup_fonts().
+enum RGE_Font_Index {
+    RGE_FONT_STRIKEOUT = 8,
+    RGE_FONT_STANDARD = 11
+};
+
 struct RGE_Font {
     void* font;
     long font_wid;

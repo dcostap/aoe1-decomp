@@ -60,13 +60,13 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 
         if (this->create_edit(this, &this->input, str, 0x0F,
                               TEditPanel::FormatText,
-                              20, 100, 600, 23, 0x0B, 1, 0)) {
+                              20, 100, 600, 23, RGE_FONT_STANDARD, 1, 0)) {
             this->input->set_help_info(IDS_HELP_MULTIPLAYER_PLAYER_NAME, -1);
             if (this->create_text(this, &this->connectionTitle,
                                   IDS_MULTIPLAYER_CONNECTION_TYPE_LABEL,
                                   20, 165, 600, 20, 4, 0, 0, 0) &&
                 this->create_list(this, &this->list,
-                                  20, 190, 600, 210, 0x0B) &&
+                                  20, 190, 600, 210, RGE_FONT_STANDARD) &&
                 this->create_auto_scrollbar(&this->scrollbar, this->list,
                                             20)) {
                 this->list->set_help_info(

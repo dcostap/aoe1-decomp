@@ -1971,31 +1971,31 @@ int RGE_Base_Game::setup_fonts() {
         HFONT font;
         switch (i) {
         case 0:
-            font = this->make_font(dc, 0x6E, 0);
+            font = this->make_font(dc, IDS_FONT_COPPERPLATE_12_BOLD, 0);
             break;
         case 1:
-            font = this->make_font(dc, 0x71, 0);
+            font = this->make_font(dc, IDS_FONT_COPPERPLATE_21_BOLD, 0);
             break;
         case 4:
-            font = this->make_font(dc, 0x74, 0);
+            font = this->make_font(dc, IDS_FONT_COPPERPLATE_12_BOLD_ALT, 0);
             break;
         case 6:
-            font = this->make_font(dc, 0x83, 0);
+            font = this->make_font(dc, IDS_FONT_ARIAL_8_NORMAL, 0);
             break;
         case 7:
-            font = this->make_font(dc, 0x77, 0);
+            font = this->make_font(dc, IDS_FONT_ARIAL_10_NORMAL, 0);
             break;
         case 8:
-            font = this->make_font(dc, 0x80, 1);
+            font = this->make_font(dc, IDS_FONT_ARIAL_10_BOLD, 1);
             break;
         case 9:
-            font = this->make_font(dc, 0x7A, 0);
+            font = this->make_font(dc, IDS_FONT_ARIAL_9_BOLD, 0);
             break;
         case 10:
-            font = this->make_font(dc, 0x7D, 0);
+            font = this->make_font(dc, IDS_FONT_ARIAL_10_NORMAL_ALT, 0);
             break;
         case 11:
-            font = this->make_font(dc, 0x80, 0);
+            font = this->make_font(dc, IDS_FONT_ARIAL_10_BOLD, 0);
             break;
         default:
             font = 0;

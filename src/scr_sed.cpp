@@ -160,7 +160,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
         main_view->map_view = map_view;
     }
     this->main_view->set_help_info(-1, -1);
-    RGE_Font *font = rge_base_game->get_font(0x0B);
+    RGE_Font *font = rge_base_game->get_font(RGE_FONT_STANDARD);
     this->message_panel = new TMessagePanel(font->font, font->font_wid,
                                             font->font_hgt);
     if (this->message_panel == 0 || this->message_panel->error_code != 0) {

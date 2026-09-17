@@ -42,7 +42,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     strcpy(this->parent_panel, in_parent_panel);
     this->help_page_id = in_help_page_id;
 
-    rge_text_font = rge_base_game->get_font(0x0B);
+    rge_text_font = rge_base_game->get_font(RGE_FONT_STANDARD);
     if (!this->setup(parentPanel->renderArea(), parentPanel, 0x154, 0x190,
                      parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
@@ -50,7 +50,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     }
 
     this->create_text(this, &this->list, help_string, 10, 10, 330, 390,
-                      0x0B, 0, 0, 1);
+                      RGE_FONT_STANDARD, 0, 0, 1);
 
     line_height = this->list->bot_line + 2;
     panel_height = line_height * rge_text_font->font_hgt + 0x37;
@@ -89,18 +89,18 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
             this->create_button(this, &this->encyclopedia_button, IDS_BUTTON_MORE_HELP, 0,
                                 25,
                                 line_height * rge_text_font->font_hgt + 20,
-                                120, 25, 0x0B, 0, 0);
+                                120, 25, RGE_FONT_STANDARD, 0, 0);
         }
     }
 
     if (this->encyclopedia_button == 0) {
         this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 110,
                             line_height * rge_text_font->font_hgt + 20,
-                            120, 25, 0x0B, 0, 0);
+                            120, 25, RGE_FONT_STANDARD, 0, 0);
     } else {
         this->create_button(this, &this->ok_button, IDS_BUTTON_OK, 0, 195,
                             line_height * rge_text_font->font_hgt + 20,
-                            120, 25, 0x0B, 0, 0);
+                            120, 25, RGE_FONT_STANDARD, 0, 0);
     }
     TButtonPanel* button = this->ok_button;
     button->hotkey = 0x1B;

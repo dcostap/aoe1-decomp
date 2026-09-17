@@ -56,7 +56,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
         this->scenarioListHeight = 0x107;
 
         if (this->create_list(this, &this->scenarioList,
-                              20, 70, 600, 263, 0x0B)) {
+                              20, 70, 600, 263, RGE_FONT_STANDARD)) {
             this->scenarioList->set_second_column_pos(
                 ((this->scenarioListWidth - 60) * this->pnl_wid) /
                 this->ideal_width);
@@ -98,7 +98,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                     this->missionTextY,
                                     this->missionTextWidth,
                                     this->missionTextHeight,
-                                    0x0B, 0, 0, 1)) {
+                                    RGE_FONT_STANDARD, 0, 0, 1)) {
                                 this->missionText->set_bevel_info(
                                     3, this->bevel_color1, this->bevel_color2,
                                     this->bevel_color3, this->bevel_color4,
