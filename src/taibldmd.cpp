@@ -481,10 +481,10 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
 
             if (category == 3 && item->buildCategory() == 3) {
                 strncpy(this->currentBuildItemRequestedValue,
-                        item->name(), 0x3F);
+                        item->name(), 63);
                 this->numberItemsIntoBuildListValue = item->uniqueID();
                 strncpy(this->nextBuildItemRequestedValue,
-                        item->next->name(), 0x3F);
+                        item->next->name(), 63);
                 this->numberItemsIntoBuildListValue = item->uniqueID();
                 return item;
             }
@@ -520,10 +520,10 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category) {
 
                     if (canBuildItem) {
                         strncpy(this->currentBuildItemRequestedValue,
-                                item->name(), 0x3F);
+                                item->name(), 63);
                         this->numberItemsIntoBuildListValue = item->uniqueID();
                         strncpy(this->nextBuildItemRequestedValue,
-                                item->next->name(), 0x3F);
+                                item->next->name(), 63);
                         this->numberItemsIntoBuildListValue = item->uniqueID();
                         return item;
                     }
@@ -674,7 +674,7 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* newItem, int buildID) {
             if (item->typeID() == 0x114) {
                 this->md->tacticalAI.wonderBuiltValue = found;
             }
-            strncpy(this->lastBuildItemRequestedValue, item->name(), 0x3F);
+            strncpy(this->lastBuildItemRequestedValue, item->name(), 63);
             this->numberItemsIntoBuildListValue = item->uniqueID();
         } else {
             item = (BuildItem*)item->next;

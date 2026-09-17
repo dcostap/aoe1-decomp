@@ -262,7 +262,7 @@ void TButtonPanel::set_text(short state_in, char* text1_in, char* text2_in) {
 void TButtonPanel::set_text(short state_in, long string_id_in) {
     char str[256];
 
-    get_string(string_id_in, str, 0x100);
+    get_string(string_id_in, str, 256);
     set_text(state_in, str);
 }
 
@@ -271,8 +271,8 @@ void TButtonPanel::set_text(short state_in, long string_id1_in, long string_id2_
     char str2[256];
     char str1[256];
 
-    get_string(string_id1_in, str1, 0x100);
-    get_string(string_id2_in, str2, 0x100);
+    get_string(string_id1_in, str1, 256);
+    get_string(string_id2_in, str2, 256);
     set_text(state_in, str1, str2);
 }
 
@@ -684,7 +684,7 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl_key, int shif
     }
     capture_mouse();
     is_down = 1;
-    button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x372);
+    button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 882);
     set_redraw(TPanel::RedrawNormal);
     if (parent_panel != 0) {
         parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
@@ -700,7 +700,7 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shif
     if (this->is_down != new_state) {
         this->is_down = new_state;
         if (new_state != 0) {
-            this->button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x389);
+            this->button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 905);
         }
         this->set_redraw(TPanel::RedrawNormal);
         TPanel* target = this->parent_panel;
@@ -758,7 +758,7 @@ long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl_key, int shi
     }
     capture_mouse();
     is_down = 1;
-    button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x3CC);
+    button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 972);
     set_redraw(TPanel::RedrawNormal);
     if (parent_panel != 0) {
         parent_panel->action(this, 5, id[cur_state], id2[cur_state]);
@@ -776,7 +776,7 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl_key, int shi
         this->is_down = new_is_down;
         if (new_is_down != 0) {
             this->button_down_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x3E3);
+                "C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 995);
         }
         this->set_redraw(TPanel::RedrawNormal);
         if (this->is_down != 0) {
@@ -835,7 +835,7 @@ long TButtonPanel::handle_key_down(long key, short count, int alt_key, int ctrl_
         }
         key_down = key;
         is_down = 1;
-        button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x421);
+        button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 1057);
         set_redraw(TPanel::RedrawNormal);
         if (parent_panel != 0) {
             parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
@@ -890,7 +890,7 @@ long TButtonPanel::key_down_action(long key, short count, int alt_key, int ctrl_
         }
         key_down = key;
         is_down = 1;
-        button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x44B);
+        button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 1099);
         set_redraw(TPanel::RedrawNormal);
         if (parent_panel != 0) {
             parent_panel->action(this, 2, id[cur_state], id2[cur_state]);

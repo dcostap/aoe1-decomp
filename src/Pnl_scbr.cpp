@@ -303,7 +303,7 @@ long TScrollBarPanel::mouse_left_down_action(long x, long y, int ctrl_key, int s
         this->item_x = x;
         this->item_y = y;
         this->item_mode = 1;
-        this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 0x185);
+        this->item_last_time = debug_timeGetTime("Pnl_scbr.cpp", 389);
         this->set_redraw(TPanel::RedrawNormal);
     }
 
@@ -326,7 +326,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
             this->item_is_down = 1;
             this->item_mode = 2;
             this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x19a);
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 410);
             this->scroll(ActionUp, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -343,7 +343,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
             this->item_is_down = 1;
             this->item_mode = 2;
             this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1ad);
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 429);
             this->scroll(ActionDown, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -435,7 +435,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
             this->item_is_down = 1;
             this->item_mode = 2;
             this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1c0);
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 448);
             this->scroll(ActionPrior, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }
@@ -452,7 +452,7 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int ctrl_key, int s
             this->item_is_down = 1;
             this->item_mode = 2;
             this->item_last_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 0x1d3);
+                "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp", 467);
             this->scroll(ActionNext, 0);
             this->set_redraw(TPanel::RedrawNormal);
         }

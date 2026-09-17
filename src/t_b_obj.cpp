@@ -263,7 +263,7 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
         build_pts = (float)(int)static_cast<TRIBE_Master_Building_Object*>(master_obj)->build_pts_required;
 
         int random_value = debug_rand(
-            "C:\\msdev\\work\\age1_x1\\t_b_obj.cpp", 0x12B);
+            "C:\\msdev\\work\\age1_x1\\t_b_obj.cpp", 299);
         int old_random = debug_random_on;
         debug_random_on = 0;
 
@@ -273,7 +273,7 @@ void TRIBE_Building_Object::set_object_state(unsigned char new_object_state) {
         }
 
         debug_random_on = old_random;
-        debug_srand("C:\\msdev\\work\\age1_x1\\t_b_obj.cpp", 0x135,
+        debug_srand("C:\\msdev\\work\\age1_x1\\t_b_obj.cpp", 309,
                     random_value);
 
         built = 1;

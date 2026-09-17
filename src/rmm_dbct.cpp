@@ -425,9 +425,9 @@ void RGE_RMM_Database_Controller::calc_land_start(
         if (land_index < end) {
             land_ptr = &this->land_info.land[land_index].y;
             do {
-                land_ptr[-1] = debug_rand(s_rmm_dbct_path, 0x1e5) *
+                land_ptr[-1] = debug_rand(s_rmm_dbct_path, 485) *
                     (this->map_width - edge * 2) / 0x7fff + edge;
-                *land_ptr = debug_rand(s_rmm_dbct_path, 0x1e6) *
+                *land_ptr = debug_rand(s_rmm_dbct_path, 486) *
                     (this->map_height - edge * 2) / 0x7fff + edge;
                 land_ptr += 13;
                 --land_num;
@@ -458,9 +458,9 @@ void RGE_RMM_Database_Controller::calc_land_start(
             do {
                 do {
                     not_done = 0;
-                    x = debug_rand(s_rmm_dbct_path, 0x1fc) *
+                    x = debug_rand(s_rmm_dbct_path, 508) *
                         (this->map_width - edge * 2) / 0x7fff + edge;
-                    y = debug_rand(s_rmm_dbct_path, 0x1fd) *
+                    y = debug_rand(s_rmm_dbct_path, 509) *
                         (this->map_height - edge * 2) / 0x7fff + edge;
 
                     if (x > min_x && x < max_x &&

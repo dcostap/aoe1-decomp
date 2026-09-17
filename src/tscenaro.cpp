@@ -82,17 +82,17 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
 
     if (old_version) {
         int i;
-        for (i = 0; i < 16; ++i) rge_read(infile, player_name[i], 0x100);
+        for (i = 0; i < 16; ++i) rge_read(infile, player_name[i], 256);
     }
 
     if (Version > DAT_00577318) {
         int i;
-        for (i = 0; i < 16; ++i) rge_read(infile, &player_info[i], 0x10);
+        for (i = 0; i < 16; ++i) rge_read(infile, &player_info[i], 16);
     } else {
         int i;
         for (i = 0; i < 16; ++i) {
             rge_read(infile, &PlActive[i], 4);
-            rge_read(infile, &player_info[i], 0x10);
+            rge_read(infile, &player_info[i], 16);
             rge_read(infile, &PlType[i], 4);
             rge_read(infile, &PlCivilization[i], 4);
             rge_read(infile, &PlayerPosture[i], 4);
@@ -103,7 +103,7 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
         rge_read(infile, &checksum, 4);
     }
 
-    rge_read(infile, &victory, 0x18);
+    rge_read(infile, &victory, 24);
     rge_read(infile, &victory_all_flag, 4);
 
     if (Version >= DAT_00577318) {
@@ -116,16 +116,16 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
         victory_time = 9000;
     }
 
-    rge_read(infile, Opponent, 0x400);
+    rge_read(infile, Opponent, 1024);
     for (int p = 0; p < 16; ++p) rge_read(infile, sp_victory[p], sizeof(sp_victory[p]));
 
     if (Version > DAT_0057731c) rge_read(infile, &checksum, 4);
 
     if (*(int*)&Version == 0x3f8147ae) {
-        for (int j = 0; j < 16; ++j) rge_read(infile, AlliedVictory, 0x40);
+        for (int j = 0; j < 16; ++j) rge_read(infile, AlliedVictory, 64);
     }
-    if (Version >= DAT_0057731c) rge_read(infile, AlliedVictory, 0x40);
-    if (Version > DAT_00577320) rge_read(infile, DisabledTechnology, 0x500);
+    if (Version >= DAT_0057731c) rge_read(infile, AlliedVictory, 64);
+    if (Version > DAT_00577320) rge_read(infile, DisabledTechnology, 1280);
 
     if (Version > DAT_00577324) {
         if (Version < DAT_00577328) {
@@ -133,10 +133,10 @@ T_Scenario::T_Scenario(int infile, RGE_Game_World* w) : RGE_Scenario(infile, w) 
             ScenarioOptions[1] = 0;
             ScenarioOptions[2] = 0;
         } else {
-            rge_read(infile, ScenarioOptions, 0x0c);
+            rge_read(infile, ScenarioOptions, 12);
         }
     }
-    if (Version > DAT_0057732c) rge_read(infile, PlayerAge, 0x40);
+    if (Version > DAT_0057732c) rge_read(infile, PlayerAge, 64);
     if (Version > DAT_0057731c) rge_read(infile, &checksum, 4);
 
     victory.MP_Conquest = victory_conquest;
@@ -154,29 +154,29 @@ void T_Scenario::save(int outfile) {
 
     player = player_info;
     for (i = 0x10; i != 0; --i) {
-        rge_write(outfile, player, 0x10);
+        rge_write(outfile, player, 16);
         ++player;
     }
 
     rge_write(outfile, &checksum, 4);
-    rge_write(outfile, &victory, 0x18);
+    rge_write(outfile, &victory, 24);
     rge_write(outfile, &victory_all_flag, 4);
     rge_write(outfile, &mp_victory_type, 4);
     rge_write(outfile, &victory_score, 4);
     rge_write(outfile, &victory_time, 4);
-    rge_write(outfile, Opponent, 0x400);
+    rge_write(outfile, Opponent, 1024);
 
     sp_player = sp_victory;
     for (i = 0x10; i != 0; --i) {
-        rge_write(outfile, sp_player, 0x2D0);
+        rge_write(outfile, sp_player, 720);
         ++sp_player;
     }
 
     rge_write(outfile, &checksum, 4);
-    rge_write(outfile, AlliedVictory, 0x40);
-    rge_write(outfile, DisabledTechnology, 0x500);
-    rge_write(outfile, ScenarioOptions, 0x0C);
-    rge_write(outfile, PlayerAge, 0x40);
+    rge_write(outfile, AlliedVictory, 64);
+    rge_write(outfile, DisabledTechnology, 1280);
+    rge_write(outfile, ScenarioOptions, 12);
+    rge_write(outfile, PlayerAge, 64);
     rge_write(outfile, &checksum, 4);
 }
 

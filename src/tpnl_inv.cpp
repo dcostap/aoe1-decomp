@@ -116,7 +116,7 @@ long TRIBE_Panel_Inven::handle_idle() {
     int mode = rge_base_game->prog_mode;
     if (mode == 4 || mode == 6 || mode == 7 || mode == 5) {
         unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 0xAD);
+            "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 173);
         if (now - this->idle_time >= (unsigned long)this->idle_interval) {
             color_log(0xBA, 0xBA, 5);
 
@@ -143,7 +143,7 @@ long TRIBE_Panel_Inven::handle_idle() {
             }
 
             this->idle_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 0xC2);
+                "C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp", 194);
             color_log(0xBA, 0x5F, 5);
         }
     }

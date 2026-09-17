@@ -109,7 +109,7 @@ void __cdecl run_log(char* str, int show_time) {
     if (show_time) {
         time(reinterpret_cast<long*>(&show_time));
         memset(stime, 0, sizeof(stime));
-        strncpy(stime, ctime(reinterpret_cast<const long*>(&show_time)), 0x18);
+        strncpy(stime, ctime(reinterpret_cast<const long*>(&show_time)), 24);
         fprintf(run_log_file, "%s - %s\n", stime, str);
     } else {
         fprintf(run_log_file, "%s\n", str);
@@ -341,7 +341,7 @@ int TRIBE_Game::setup() {
         return 0;
     }
 
-    strncpy(cmd_line, this->prog_info->cmd_line, 0xFF);
+    strncpy(cmd_line, this->prog_info->cmd_line, 255);
     cmd_line[0xFF] = 0;
     CharUpperA(cmd_line);
 
@@ -421,7 +421,7 @@ int TRIBE_Game::setup() {
                     }
                     TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.panel("Main Menu"));
                     if (panel != 0) {
-                        panel->popupOKDialog(0x961, 0, 0x1C2, 100);
+                        panel->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
             } else if (this->startup_game[0] != 0) {
@@ -431,7 +431,7 @@ int TRIBE_Game::setup() {
                     }
                     TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.panel("Main Menu"));
                     if (panel != 0) {
-                        panel->popupOKDialog(0x961, 0, 0x1C2, 100);
+                        panel->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
             } else if (this->prog_info->skip_startup == 0) {
@@ -503,7 +503,7 @@ int TRIBE_Game::setup_cmd_options() {
     char temp_str[256];
     char encstr[512];
 
-    strncpy(cmd_line, this->prog_info->cmd_line, 0xFF);
+    strncpy(cmd_line, this->prog_info->cmd_line, 255);
     cmd_line[255] = 0;
     CharUpperA(cmd_line);
     encrypt_codes(cmd_line, encstr, 0x200);
@@ -750,24 +750,24 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
     *str = 0;
 
     switch (string_type) {
-    case 100:
+    case RGE_STRING_TYPE_INVENTORY:
         switch (id) {
         case 0:
         case 0x0F:
         case 0x10:
         case 0x11:
-            return this->get_string(0x10CD, str, max_len);
+            return this->get_string(IDS_RESOURCE_FOOD, str, max_len);
         case 1:
-            return this->get_string(0x10CE, str, max_len);
+            return this->get_string(IDS_RESOURCE_WOOD, str, max_len);
         case 2:
-            return this->get_string(0x10CF, str, max_len);
+            return this->get_string(IDS_RESOURCE_STONE, str, max_len);
         case 3:
-            return this->get_string(0x10D0, str, max_len);
+            return this->get_string(IDS_RESOURCE_GOLD, str, max_len);
         case 9:
-            return this->get_string(0x10DB, str, max_len);
+            return this->get_string(IDS_RESOURCE_GOODS, str, max_len);
         }
         break;
-    case 101:
+    case RGE_STRING_TYPE_AGE:
         switch (id) {
         case 1:
             return this->get_string(IDS_HELP_AGE_STONE, str, max_len);
@@ -779,7 +779,7 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
             return this->get_string(IDS_HELP_AGE_IRON, str, max_len);
         }
         break;
-    case 105:
+    case RGE_STRING_TYPE_CIVILIZATION:
         switch (id) {
         case 1:
             this->get_string(IDS_CIVILIZATION_EGYPTIAN, str, max_len);
@@ -834,149 +834,149 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
             break;
         }
         break;
-    case 102:
+    case RGE_STRING_TYPE_COMMAND:
         switch (id) {
         case 1:
-            return this->get_string(0x1005, str, max_len);
+            return this->get_string(IDS_COMMAND_WORK, str, max_len);
         case 2:
-            return this->get_string(0x1006, str, max_len);
+            return this->get_string(IDS_COMMAND_MOVE, str, max_len);
         case 3:
-            return this->get_string(0x1007, str, max_len);
+            return this->get_string(IDS_COMMAND_BUILD, str, max_len);
         case 4:
-            return this->get_string(0x1008, str, max_len);
+            return this->get_string(IDS_COMMAND_TRADE, str, max_len);
         case 5:
-            return this->get_string(0x1009, str, max_len);
+            return this->get_string(IDS_COMMAND_STOP, str, max_len);
         case 6:
-            return this->get_string(0x100A, str, max_len);
+            return this->get_string(IDS_COMMAND_UNSELECT, str, max_len);
         case 7:
-            return this->get_string(0x100B, str, max_len);
+            return this->get_string(IDS_COMMAND_UNLOAD, str, max_len);
         case 8:
-            return this->get_string(0x100C, str, max_len);
+            return this->get_string(IDS_COMMAND_GROUP, str, max_len);
         case 9:
-            return this->get_string(0x100D, str, max_len);
+            return this->get_string(IDS_COMMAND_UNGROUP, str, max_len);
         case 10:
-            return this->get_string(0x100E, str, max_len);
+            return this->get_string(IDS_COMMAND_FORMATION, str, max_len);
         case 11:
-            return this->get_string(0x100F, str, max_len);
+            return this->get_string(IDS_COMMAND_CANCEL, str, max_len);
         case 12:
-            return this->get_string(0x1010, str, max_len);
+            return this->get_string(IDS_COMMAND_NEXT, str, max_len);
         case 13:
-            return this->get_string(0x1011, str, max_len);
+            return this->get_string(IDS_COMMAND_CHAT, str, max_len);
         case 14:
-            return this->get_string(0x1012, str, max_len);
+            return this->get_string(IDS_COMMAND_DIPLOMACY, str, max_len);
         case 15:
-            return this->get_string(0x1013, str, max_len);
+            return this->get_string(IDS_COMMAND_MENU, str, max_len);
         case 16:
-            return this->get_string(0x1014, str, max_len);
+            return this->get_string(IDS_COMMAND_TRADE_WITH, str, max_len);
         case 17:
-            return this->get_string(0x1015, str, max_len);
+            return this->get_string(IDS_COMMAND_RESEARCH, str, max_len);
         case 18:
-            return this->get_string(0x1016, str, max_len);
+            return this->get_string(IDS_COMMAND_CREATE, str, max_len);
         case 19:
-            return this->get_string(0x1017, str, max_len);
+            return this->get_string(IDS_COMMAND_BUILD_ALT, str, max_len);
         case 20:
-            return this->get_string(0x1018, str, max_len);
+            return this->get_string(IDS_COMMAND_CANCEL_CONSTRUCTION, str, max_len);
         case 21:
-            return this->get_string(0x1019, str, max_len);
+            return this->get_string(IDS_COMMAND_HELP, str, max_len);
         case 22:
-            return this->get_string(0x101A, str, max_len);
+            return this->get_string(IDS_COMMAND_STAND_GROUND, str, max_len);
         case 23:
-            return this->get_string(0x101B, str, max_len);
+            return this->get_string(IDS_COMMAND_ATTACK_GROUND, str, max_len);
         case 0x1C:
-            return this->get_string(0x101C, str, max_len);
+            return this->get_string(IDS_COMMAND_HEAL, str, max_len);
         case 0x1D:
-            return this->get_string(0x101D, str, max_len);
+            return this->get_string(IDS_COMMAND_CONVERT, str, max_len);
         case 0x1E:
-            return this->get_string(0x101E, str, max_len);
+            return this->get_string(IDS_COMMAND_ATTACK, str, max_len);
         case 0x1F:
-            return this->get_string(0x101F, str, max_len);
+            return this->get_string(IDS_COMMAND_REPAIR, str, max_len);
         case 0x19:
-            return this->get_string(0x1020, str, max_len);
+            return this->get_string(IDS_COMMAND_TRADE_FOOD_FOR_GOLD, str, max_len);
         case 0x1A:
-            return this->get_string(0x1021, str, max_len);
+            return this->get_string(IDS_COMMAND_TRADE_WOOD_FOR_GOLD, str, max_len);
         case 0x1B:
-            return this->get_string(0x1022, str, max_len);
+            return this->get_string(IDS_COMMAND_TRADE_STONE_FOR_GOLD, str, max_len);
         case 0x20:
             return this->get_string(0x1025, str, max_len);
         case 0x21:
             return this->get_string(0x1026, str, max_len);
         }
         break;
-    case 1:
+    case RGE_STRING_TYPE_ERROR:
         switch (id) {
         case 0x64:
         case 0x65:
         case 0x66:
-            return this->get_string(0x961, str, max_len);
+            return this->get_string(IDS_ERROR_START_GAME, str, max_len);
         case 0x67:
             return this->get_string(IDS_ERROR_CANNOT_SAVE_GAME, str, max_len);
         case 0x68:
             return this->get_string(IDS_ERROR_CANNOT_SAVE_SCENARIO, str, max_len);
         case 0x69:
-            return this->get_string(0x964, str, max_len);
+            return this->get_string(IDS_ERROR_LOAD_GAME, str, max_len);
         case 0x6A:
-            return this->get_string(0x965, str, max_len);
+            return this->get_string(IDS_ERROR_LOAD_SCENARIO, str, max_len);
         default:
             return RGE_Base_Game::get_string2(string_type, id, id2, str, max_len);
         }
-    case 103:
+    case RGE_STRING_TYPE_ATTRIBUTE:
         switch (id) {
         case 1:
             switch (id2) {
             case 4:
-                return this->get_string(0xBBD, str, max_len);
+                return this->get_string(IDS_ERROR_NEED_MORE_HOUSES, str, max_len);
             case 0:
-                return this->get_string(0xBB9, str, max_len);
+                return this->get_string(IDS_ERROR_NOT_ENOUGH_FOOD, str, max_len);
             case 1:
-                return this->get_string(0xBBA, str, max_len);
+                return this->get_string(IDS_ERROR_NOT_ENOUGH_WOOD, str, max_len);
             case 2:
-                return this->get_string(0xBBB, str, max_len);
+                return this->get_string(IDS_ERROR_NOT_ENOUGH_STONE, str, max_len);
             case 3:
-                return this->get_string(0xBBC, str, max_len);
+                return this->get_string(IDS_ERROR_NOT_ENOUGH_GOLD, str, max_len);
             case 0x20:
-                return this->get_string(0xBE6, str, max_len);
+                return this->get_string(IDS_ERROR_POPULATION_LIMIT, str, max_len);
             }
             break;
         case 0x68:
-            return this->get_string(0xBC1, str, max_len);
+            return this->get_string(IDS_MESSAGE_TRIBUTE_RECEIVED, str, max_len);
         case 1000:
-            return this->get_string(0xBC2, str, max_len);
+            return this->get_string(IDS_ERROR_NOT_ENOUGH_ROOM_FOR_UNIT, str, max_len);
         case 0x65:
-            return this->get_string(0xBBE, str, max_len);
+            return this->get_string(IDS_ERROR_NO_DOCKS, str, max_len);
         case 0x66:
-            return this->get_string(0xBBF, str, max_len);
+            return this->get_string(IDS_ERROR_NOT_CLOSE_ENOUGH_TO_LAND, str, max_len);
         case 0x67:
-            return this->get_string(0xBC0, str, max_len);
+            return this->get_string(IDS_ERROR_NOT_ENOUGH_UNLOAD_SPACE, str, max_len);
         case 0x69:
-            return this->get_string(0xBC3, str, max_len);
+            return this->get_string(IDS_ERROR_CANNOT_TRADE_WITH_ENEMY, str, max_len);
         case 0x6A:
-            return this->get_string(0xBCA, str, max_len);
+            return this->get_string(IDS_ERROR_CANNOT_REPAIR, str, max_len);
         }
         break;
-    case 104:
+    case RGE_STRING_TYPE_ATTRIBUTE:
         switch (id) {
         case 2:
-            return this->get_string(0x10D1, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_HEALTH, str, max_len);
         case 3:
-            return this->get_string(0x10D2, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_ARMOR, str, max_len);
         case 4:
-            return this->get_string(0x10D3, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_ATTACK, str, max_len);
         case 1:
-            return this->get_string(0x10D4, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_PASSENGERS, str, max_len);
         case 5:
-            return this->get_string(0x10D5, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_RESEARCHING, str, max_len);
         case 6:
-            return this->get_string(0x10D6, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_TRAINING, str, max_len);
         case 7:
-            return this->get_string(0x10D7, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_BUILDING, str, max_len);
         case 8:
-            return this->get_string(0x10D8, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_SIGHT, str, max_len);
         case 9:
-            return this->get_string(0x10D9, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_POPULATION, str, max_len);
         case 10:
-            return this->get_string(0x10DA, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_RANGE, str, max_len);
         case 11:
-            return this->get_string(0x10DC, str, max_len);
+            return this->get_string(IDS_ATTRIBUTE_SPEED, str, max_len);
         }
         break;
     default:
@@ -1047,9 +1047,9 @@ extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd, const cha
 void TRIBE_Game::show_error_message(int error_code_in) {
     char title[256];
     char msg[256];
-    this->get_string(0xFA8, title, 256);
-    this->get_string2(1, error_code_in, 0, msg, 256);
-    MessageBoxA(this->prog_window, msg, title, 0x10);
+    this->get_string(IDS_ERROR_DIALOG_TITLE, title, 256);
+    this->get_string2(RGE_STRING_TYPE_ERROR, error_code_in, 0, msg, 256);
+    MessageBoxA(this->prog_window, msg, title, MB_ICONHAND);
 }
 
 static char status_screen[] = "Status Screen";
@@ -1067,8 +1067,8 @@ void TRIBE_Game::show_status_message(char* messageIn, char* info_file, long info
 }
 
 void TRIBE_Game::show_status_message(int string_id, char* info_file, long info_id) {
-    char str[0x100];
-    this->get_string(string_id, str, 0x100);
+    char str[256];
+    this->get_string(string_id, str, 256);
     this->show_status_message(str, info_file, info_id);
 }
 
@@ -1091,7 +1091,7 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
         if (str[0] != 0 && strcmp(str, "stopped") != 0) {
             SendMessageA(this->video_window, 0x808, 0, 0);
         }
-        SendMessageA(this->video_window, 0x10, 0, 0);
+            SendMessageA(this->video_window, WM_CLOSE, 0, 0);
         this->video_window = 0;
     }
 
@@ -1099,12 +1099,12 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
     if (this->rge_game_options.multiplayerGameValue != 1 && video_file != 0 && *video_file != 0) {
         char temp_name[260];
         sprintf(temp_name, "%s%s.avi", this->prog_info->avi_dir, video_file);
-        int file_handle = _open(temp_name, 0, 0x100);
+        int file_handle = _open(temp_name, _O_RDONLY, _S_IREAD);
         if (file_handle == -1) {
             char* cd_path = this->registry->RegGetAscii(0, "CDPath");
             if (cd_path != 0) {
                 sprintf(temp_name, "%sgame\\avi\\%s.avi", cd_path, video_file);
-                file_handle = _open(temp_name, 0, 0x100);
+                file_handle = _open(temp_name, _O_RDONLY, _S_IREAD);
             }
             if (file_handle == -1) {
                 this->stop_video(1);
@@ -1116,8 +1116,8 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
             this->video_window = MCIWndCreateA(this->prog_window, this->prog_info->instance, 0x50001F0A, temp_name);
             if (this->video_window != 0) {
                 RECT video_rect;
-                this->old_video_wnd_proc = reinterpret_cast<int(__stdcall*)()>(GetWindowLongA(this->video_window, -4));
-                SetWindowLongA(this->video_window, -4, reinterpret_cast<long>(::video_sub_wnd_proc));
+                this->old_video_wnd_proc = reinterpret_cast<int(__stdcall*)()>(GetWindowLongA(this->video_window, GWL_WNDPROC));
+                SetWindowLongA(this->video_window, GWL_WNDPROC, reinterpret_cast<long>(::video_sub_wnd_proc));
 
                 if (this->video_hi_color == 0) {
                     void* palette = reinterpret_cast<void*>(SendMessageA(this->video_window, 0x47E, 0, 0));
@@ -1135,14 +1135,14 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
                            0);
                 this->set_render_all();
                 InvalidateRect(this->prog_window, 0, 1);
-                SendMessageA(this->prog_window, 0x0F, 0, 0);
+                SendMessageA(this->prog_window, WM_PAINT, 0, 0);
                 this->draw_system->ClearPrimarySurface();
                 this->video_paused = 0;
-                this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x598);
+                this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 1432);
                 SendMessageA(this->video_window, 0x806, 0, 0);
                 this->enable_input();
                 SetCursor(0);
-                SetClassLongA(this->prog_window, -12, 0);
+                SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
                 return 1;
             }
         }
@@ -1173,13 +1173,13 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
             send_message(this->video_window, 0x808, 0, 0);
         }
 
-        send_message(this->video_window, 0x10, 0, 0);
+        send_message(this->video_window, WM_CLOSE, 0, 0);
         this->video_window = 0;
         this->draw_system->ClearPrimarySurface();
         this->draw_system->SetPalette(this->prog_palette);
         this->set_render_all();
         InvalidateRect(this->prog_window, 0, 1);
-        send_message(this->prog_window, 0x0F, 0, 0);
+        send_message(this->prog_window, WM_PAINT, 0, 0);
         this->draw_system->ClearPrimarySurface();
     }
 
@@ -1477,7 +1477,7 @@ void TRIBE_Game::restart_game() {
 
         TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.panel("Main Menu"));
         if (panel != 0) {
-            static_cast<TEasy_Panel*>(panel)->popupOKDialog(0x961, 0, 0x1C2, 100);
+            static_cast<TEasy_Panel*>(panel)->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
         }
     }
 }
@@ -1603,9 +1603,9 @@ extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern int show_timing_max;
 
 void TRIBE_Game::calc_timing_text() {
-    static unsigned long last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7D4);
+    static unsigned long last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 2004);
 
-    last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7D6);
+    last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 2006);
 
     if (this->world_update_count == 0) {
         strcpy(this->timing_text2, "f?");
@@ -1724,7 +1724,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
 
     case 0x7D:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
-            this->get_string2(0x67, 1, val2, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, val2, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1755,7 +1755,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x68:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(0x67, 1000, val2, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1000, val2, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1764,7 +1764,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x6B:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(0x67, 0x6A, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x6A, 0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1773,7 +1773,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 1:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(0x67, 0x66, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x66, 0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1782,7 +1782,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 2:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(0x67, 0x69, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x69, 0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1791,7 +1791,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 3:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(0x67, 0x67, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x67, 0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1802,7 +1802,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             player_dropped[val1] = 1;
             this->play_sound(7);
             if (this->playerID(val1) > 0) {
-                this->get_string(0xBC4, temp_str, 256);
+                this->get_string(IDS_MESSAGE_PLAYER_DISCONNECTED, temp_str, 256);
                 sprintf(msg, temp_str, this->world->players[this->playerID(val1)]->name);
                 this->game_screen->display_system_message(msg);
                 return;
@@ -1814,9 +1814,9 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 != this->world->curr_player && this->game_screen != 0 && val1 > 0) {
             this->play_sound(6);
             if (val2 != 0) {
-                this->get_string(0xBC4, temp_str, 256);
+                this->get_string(IDS_MESSAGE_PLAYER_DISCONNECTED, temp_str, 256);
             } else {
-                this->get_string(0xBC5, temp_str, 256);
+                this->get_string(IDS_MESSAGE_PLAYER_RESIGNED, temp_str, 256);
             }
             sprintf(msg, temp_str, this->world->players[val1]->name);
             this->game_screen->display_system_message(msg);
@@ -1828,7 +1828,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 != this->world->curr_player && this->game_screen != 0) {
             this->play_sound(6);
             if (val1 > 0) {
-                this->get_string(0xBC6, temp_str, 256);
+                this->get_string(IDS_MESSAGE_PLAYER_DEFEATED, temp_str, 256);
                 sprintf(msg, temp_str, this->world->players[val1]->name);
                 this->game_screen->display_system_message(msg);
                 return;
@@ -1841,16 +1841,16 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->play_sound(4);
             switch (val3) {
             case 0:
-                this->get_string(0xBC8, temp_str, 256);
+                this->get_string(IDS_MESSAGE_TRIBUTE_FOOD, temp_str, 256);
                 break;
             case 1:
-                this->get_string(0xBC7, temp_str, 256);
+                this->get_string(IDS_MESSAGE_TRIBUTE_WOOD, temp_str, 256);
                 break;
             case 3:
-                this->get_string(0xBC1, temp_str, 256);
+                this->get_string(IDS_MESSAGE_TRIBUTE_RECEIVED, temp_str, 256);
                 break;
             default:
-                this->get_string(0xBC9, temp_str, 256);
+                this->get_string(IDS_MESSAGE_TRIBUTE_STONE, temp_str, 256);
                 break;
             }
             sprintf(msg, temp_str, this->world->players[val1]->name, val4);
@@ -1871,13 +1871,13 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         }
         switch (val3) {
         case 0:
-            this->get_string(0xBD2, temp_str, 256);
+            this->get_string(IDS_MESSAGE_DIPLOMACY_ALLY, temp_str, 256);
             break;
         case 1:
-            this->get_string(0xBD1, temp_str, 256);
+            this->get_string(IDS_MESSAGE_DIPLOMACY_NEUTRAL, temp_str, 256);
             break;
         case 3:
-            this->get_string(0xBD3, temp_str, 256);
+            this->get_string(IDS_MESSAGE_DIPLOMACY_ENEMY, temp_str, 256);
             break;
         }
         sprintf(msg, temp_str, this->world->players[val1]->name);
@@ -1888,11 +1888,11 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (this->game_screen != 0) {
             this->play_sound(8);
             if (val1 == this->world->curr_player) {
-                this->get_string(0xBF2, msg, 256);
+                this->get_string(IDS_MESSAGE_WONDER_BUILDING_STARTED, msg, 256);
                 this->game_screen->display_system_message(msg);
             } else {
                 RGE_Player* p = this->world->players[val1];
-                this->get_string(0xBCB, temp_str, 256);
+                this->get_string(IDS_MESSAGE_WONDER_STARTED, temp_str, 256);
                 sprintf(msg, temp_str, p->name);
                 this->game_screen->display_system_message(msg);
             }
@@ -1913,22 +1913,22 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         p2 = this->world->players[this->world->curr_player];
         if (p1 == p2) {
             if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
-                this->get_string(0xBCC, msg, 256);
+                this->get_string(IDS_MESSAGE_WONDER_COMPLETED_SELF, msg, 256);
             } else {
-                this->get_string(0xBEE, msg, 256);
+                this->get_string(IDS_MESSAGE_WONDER_COMPLETED, msg, 256);
             }
         } else {
             if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0) ||
                 (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
                 if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
-                    this->get_string(0xBCE, temp_str, 256);
+                    this->get_string(IDS_MESSAGE_WONDER_COMPLETED_OTHER_LOSS, temp_str, 256);
                 } else {
-                    this->get_string(0xBEF, temp_str, 256);
+                    this->get_string(IDS_MESSAGE_WONDER_COMPLETED_OTHER, temp_str, 256);
                 }
             } else if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
-                this->get_string(0xBCD, temp_str, 256);
+                this->get_string(IDS_MESSAGE_WONDER_COMPLETED_OTHER_WIN, temp_str, 256);
             } else {
-                this->get_string(0xBEF, temp_str, 256);
+                this->get_string(IDS_MESSAGE_WONDER_COMPLETED_OTHER, temp_str, 256);
             }
             sprintf(msg, temp_str, p1->name);
         }
@@ -1952,14 +1952,14 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         p1 = this->world->players[val1];
         p2 = this->world->players[this->world->curr_player];
         if (p1 == p2) {
-            this->get_string(0xBCF, msg, 256);
+            this->get_string(IDS_MESSAGE_WONDER_DESTROYED_SELF, msg, 256);
         } else {
             if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0) ||
                 (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
-                this->get_string(0xBD0, temp_str, 256);
+                this->get_string(IDS_MESSAGE_WONDER_DESTROYED_OTHER, temp_str, 256);
                 sprintf(msg, temp_str, p1->name);
             } else {
-                this->get_string(0xBD0, temp_str, 256);
+                this->get_string(IDS_MESSAGE_WONDER_DESTROYED_OTHER, temp_str, 256);
                 sprintf(msg, temp_str, p1->name);
             }
         }
@@ -1982,17 +1982,17 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         p2 = this->world->players[this->world->curr_player];
         if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
             if (p1 == p2) {
-                this->get_string(0xBD4, msg, 256);
+            this->get_string(IDS_MESSAGE_ARTIFACTS_CAPTURED_SELF, msg, 256);
             } else {
                 if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0) ||
                     (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
-                    this->get_string(0xBD5, msg, 256);
+                this->get_string(IDS_MESSAGE_ARTIFACTS_CAPTURED_OTHER, msg, 256);
                 } else {
-                    this->get_string(0xBD4, msg, 256);
+                this->get_string(IDS_MESSAGE_ARTIFACTS_CAPTURED_SELF, msg, 256);
                 }
             }
         } else {
-            this->get_string(0xBF0, msg, 256);
+            this->get_string(IDS_MESSAGE_ARTIFACTS_CAPTURED, msg, 256);
         }
         this->game_screen->display_system_message(msg);
         this->game_screen->reset_clocks();
@@ -2014,7 +2014,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             return;
         }
         this->play_sound(0x0C);
-        this->get_string(0xBD6, msg, 256);
+        this->get_string(IDS_MESSAGE_ARTIFACTS_LOST, msg, 256);
         this->game_screen->display_system_message(msg);
         this->game_screen->reset_clocks();
         return;
@@ -2032,17 +2032,17 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         p2 = this->world->players[this->world->curr_player];
         if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
             if (p1 == p2) {
-                this->get_string(0xBD9, msg, 256);
+                this->get_string(IDS_MESSAGE_RUINS_CAPTURED_SELF, msg, 256);
             } else {
                 if ((p1->allied_victory == 0 || p1->relation(p2->id) != 0) ||
                     (p2->allied_victory == 0 || p2->relation(p1->id) != 0)) {
-                    this->get_string(0xBDA, msg, 256);
+                    this->get_string(IDS_MESSAGE_RUINS_CAPTURED_OTHER, msg, 256);
                 } else {
-                    this->get_string(0xBD9, msg, 256);
+                    this->get_string(IDS_MESSAGE_RUINS_CAPTURED_SELF, msg, 256);
                 }
             }
         } else {
-            this->get_string(0xBF1, msg, 256);
+            this->get_string(IDS_MESSAGE_RUINS_CAPTURED, msg, 256);
         }
         this->game_screen->display_system_message(msg);
         this->game_screen->reset_clocks();
@@ -2064,7 +2064,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             return;
         }
         this->play_sound(0x0C);
-        this->get_string(0xBDB, msg, 256);
+        this->get_string(IDS_MESSAGE_RUINS_LOST, msg, 256);
         this->game_screen->display_system_message(msg);
         this->game_screen->reset_clocks();
         return;
@@ -2072,7 +2072,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x76:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string(0xBE7, msg, 256);
+            this->get_string(IDS_ERROR_CONVERSION_NO_FAITH, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -2081,7 +2081,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x77:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string(0xBE8, msg, 256);
+            this->get_string(IDS_ERROR_CONVERSION_NO_MONOTHEISM_PRIESTS, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -2090,7 +2090,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x78:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string(0xBE9, msg, 256);
+            this->get_string(IDS_ERROR_CONVERSION_NO_MONOTHEISM_BUILDINGS, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -2099,7 +2099,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x79:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string(0xBEA, msg, 256);
+            this->get_string(IDS_ERROR_CONVERSION_TOWN_CENTER, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -2108,7 +2108,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x7A:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string(0xBEB, msg, 256);
+            this->get_string(IDS_ERROR_CONVERSION_WONDER, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -2767,7 +2767,7 @@ int TRIBE_Game::create_game(int not_used) {
             int value;
 
             this->setMapSize(Large);
-            value = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xCDD) % 10;
+            value = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3293) % 10;
             if (value < 2) {
                 map_type = AllLand;
             } else if (value == 2) {
@@ -2792,7 +2792,7 @@ int TRIBE_Game::create_game(int not_used) {
 
         this->resetRandomComputerName();
         for (i = 0; i < this->numberPlayers(); ++i) {
-            int civilization = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xCF8) % 16 + 1;
+            int civilization = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3320) % 16 + 1;
             this->setCivilization(i, civilization);
             this->setComputerName(i, this->randomComputerName(civilization));
         }
@@ -2824,12 +2824,12 @@ int TRIBE_Game::create_game(int not_used) {
     }
 
     if (this->multiplayerGame()) {
-        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD24, comm->GetRandomSeed());
+        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3364, comm->GetRandomSeed());
     } else if (this->random_game_seed != -1) {
-        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD28, this->random_game_seed);
+        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3368, this->random_game_seed);
     } else {
-        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD2A,
-                    debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD2A));
+        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3370,
+                    debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD2A))"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3370));
     }
 
     player_info.player_num = 0;
@@ -2842,7 +2842,7 @@ int TRIBE_Game::create_game(int not_used) {
         this->random_civ[i] = 0;
 
         if (this->civilization(i) > 16 || this->civilization(i) < 0) {
-            this->setCivilization(i, debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD3B) * 16 / 0x7FFF + 1);
+            this->setCivilization(i, debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3387) * 16 / 0x7FFF + 1);
             this->random_civ[i] = 1;
         }
     }
@@ -2940,24 +2940,24 @@ int TRIBE_Game::create_game(int not_used) {
         }
 
         if (this->multiplayerGame() && humanity == ME_HUMAN) {
-            strncpy(player_info.name[i], this->comm_handler->GetPlayerName(scenario_player), 0x40);
+            strncpy(player_info.name[i], this->comm_handler->GetPlayerName(scenario_player), 64);
         } else {
             if (this->campaignGame() && player_info.type[i] == 0) {
                 strcpy(player_info.name[i], this->player_game_info->get_current_player_name());
             } else if (!this->campaignGame() && this->randomGame() && player_info.type[i] == 0) {
-                this->get_string(0x286D, player_info.name[i], 0x41);
+                this->get_string(IDS_PLAYER_NAME_YOU, player_info.name[i], 65);
             } else if (this->campaignGame() || this->scenarioGame()) {
                 strcpy(player_info.name[i], scenario_info->GetPlayerName(color));
             }
 
             if (player_info.name[i][0] == 0) {
                 if (player_info.type[i] == 0) {
-                    this->get_string(0x286D, player_info.name[i], 0x41);
+                    this->get_string(IDS_PLAYER_NAME_YOU, player_info.name[i], 65);
                 } else if (!this->campaignGame() && this->computerName(player_index) != 0) {
-                    this->get_string(this->computerName(player_index) + 0x1130, player_info.name[i], 0x41);
+                    this->get_string(this->computerName(player_index) + IDS_COMPUTER_NAME_BASE, player_info.name[i], 65);
                 } else {
-                    this->get_string(this->randomComputerName(player_info.tribe[i]) + 0x1130, player_info.name[i],
-                                     0x41);
+                    this->get_string(this->randomComputerName(player_info.tribe[i]) + IDS_COMPUTER_NAME_BASE, player_info.name[i],
+                                     65);
                 }
             }
             this->comm_handler->SetPlayerName(scenario_player, player_info.name[i]);
@@ -3039,7 +3039,7 @@ int TRIBE_Game::create_game_screen() {
         if (this->comm_handler->MultiplayerGameStart() == 0) {
             TRIBE_Screen_Wait* wait = new TRIBE_Screen_Wait;
             if (wait != 0) {
-                wait->set_text(0x454);
+                wait->set_text(IDS_STATUS_WAITING_FOR_PLAYERS);
                 panel_system.setCurrentPanel("Multiplayer Wait Screen", 0);
                 panel_system.destroyPanel("Status Screen");
                 this->set_prog_mode(3);
@@ -3294,52 +3294,52 @@ void TRIBE_Game::let_game_begin() {
 
     switch (this->mapType()) {
     case TRIBE_Game::AllWater:
-        this->get_string(0x296A, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE, map_type_str, 20);
         break;
     case TRIBE_Game::MostlyWater:
-        this->get_string(0x296B, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE + 1, map_type_str, 20);
         break;
     case TRIBE_Game::WaterAndLand:
-        this->get_string(0x296C, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE + 2, map_type_str, 20);
         break;
     case TRIBE_Game::MostlyLand:
-        this->get_string(0x296D, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE + 3, map_type_str, 20);
         break;
     case TRIBE_Game::AllLand:
-        this->get_string(0x296E, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE + 4, map_type_str, 20);
         break;
     case TRIBE_Game::Continental:
-        this->get_string(0x296F, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE + 5, map_type_str, 20);
         break;
     case TRIBE_Game::Lake:
-        this->get_string(0x2970, map_type_str, 0x14);
+        this->get_string(IDS_MAP_TYPE_BASE + 6, map_type_str, 20);
         break;
     default:
-        this->get_string(0x2804, map_type_str, 0x14);
+        this->get_string(IDS_MAP_UNKNOWN, map_type_str, 20);
         break;
     }
 
     switch (this->mapSize()) {
     case 0:
-        this->get_string(0x2973, map_size_str, 0x14);
+        this->get_string(IDS_MAP_SIZE_BASE, map_size_str, 20);
         break;
     case 1:
-        this->get_string(0x2974, map_size_str, 0x14);
+        this->get_string(IDS_MAP_SIZE_BASE + 1, map_size_str, 20);
         break;
     case 2:
-        this->get_string(0x2975, map_size_str, 0x14);
+        this->get_string(IDS_MAP_SIZE_BASE + 2, map_size_str, 20);
         break;
     case 3:
-        this->get_string(0x2976, map_size_str, 0x14);
+        this->get_string(IDS_MAP_SIZE_BASE + 3, map_size_str, 20);
         break;
     case 4:
-        this->get_string(0x2977, map_size_str, 0x14);
+        this->get_string(IDS_MAP_SIZE_BASE + 4, map_size_str, 20);
         break;
     case 5:
-        this->get_string(0x2978, map_size_str, 0x14);
+        this->get_string(IDS_MAP_SIZE_BASE + 5, map_size_str, 20);
         break;
     default:
-        this->get_string(0x2804, map_size_str, 0x14);
+        this->get_string(IDS_MAP_UNKNOWN, map_size_str, 20);
         break;
     }
 
@@ -3409,7 +3409,7 @@ void TRIBE_Game::let_game_begin() {
     }
 
     strcpy(diff_str, "Unknown");
-    this->get_string(0x2BD0 + this->difficulty(), &diff_str[0], 0x100);
+    this->get_string(IDS_DIFFICULTY_BASE + this->difficulty(), &diff_str[0], 256);
     sprintf(str, "    resources=%s, age=%s, victory=%s, difficulty=%s", res_str, age_str, vic_str, diff_str);
     run_log(str, 0);
 
@@ -3824,7 +3824,7 @@ int TRIBE_Game::handle_idle() {
     color_log(0x4C, 0x16, 5);
 
     if (this->prog_mode == 1 && this->video_window != 0) {
-        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1381);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 4993);
         if (now - this->last_video_time >= 1000) {
             SendMessageA(this->video_window, 0x46A, 100, reinterpret_cast<long>(str));
             if (str[0] == 0 || strcmp(str, "stopped") == 0) {
@@ -3832,7 +3832,7 @@ int TRIBE_Game::handle_idle() {
             } else if (this->video_paused == 0 && strcmp(str, "paused") == 0) {
                 SendMessageA(this->video_window, 0x855, 0, 0);
             }
-            this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x138D);
+            this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5005);
         }
     } else if (this->prog_mode == 3) {
         if (this->comm_handler->MultiplayerGameStart() != 0) {
@@ -3840,9 +3840,9 @@ int TRIBE_Game::handle_idle() {
             this->let_game_begin();
         } else {
             color_log(0x4C, 0x54, 5);
-            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x139C);
+            unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5020);
             if (now - last_wait_time >= 500) {
-                this->get_string(0x454, msg, 0x900);
+                this->get_string(IDS_STATUS_WAITING_FOR_PLAYERS, msg, 2304);
                 strcat(msg, "\n");
 
                 int player;
@@ -3858,7 +3858,7 @@ int TRIBE_Game::handle_idle() {
                 if (wait != 0) {
                     wait->set_text(msg);
                 }
-                last_wait_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x13AC);
+                last_wait_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5036);
             }
         }
     } else if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
@@ -3955,7 +3955,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
                 break;
             }
         dropped_from_game:
-            panel->popupOKDialog(IDS_PLAYER_DROPPED_NOTICE, 0, 0x1c2, 100);
+            panel->popupOKDialog(IDS_PLAYER_DROPPED_NOTICE, 0, TEASY_POPUP_WIDTH, 100);
             break;
         }
     } else if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
@@ -3968,7 +3968,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
             this->do_game_over();
             panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
             if (panel != 0) {
-                panel->popupOKDialog(IDS_PLAYER_DROPPED_NOTICE, 0, 0x1c2, 100);
+                panel->popupOKDialog(IDS_PLAYER_DROPPED_NOTICE, 0, TEASY_POPUP_WIDTH, 100);
             }
             break;
 
@@ -4002,7 +4002,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
                     this->do_game_over();
                     panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
                     if (panel != 0) {
-                        panel->popupOKDialog(0x966, 0, 0x1c2, 100);
+                        panel->popupOKDialog(IDS_ERROR_SYNC, 0, TEASY_POPUP_WIDTH, 100);
                     }
                     panel_system.destroyPanel("Temp Screen");
                 }
@@ -4033,7 +4033,7 @@ int TRIBE_Game::action_user_command(unsigned long val1, unsigned long val2) {
             if (player != this->world->curr_player && this->game_screen != 0 && this->playerID(val2) > 0 &&
                 player_dropped[val2] == 0) {
                 this->play_sound(2);
-                this->get_string(0x4c1, temp_str + 4, 0x100);
+                this->get_string(IDS_ERROR_COMMUNICATION, temp_str + 4, 256);
                 player = this->playerID(val2);
                 sprintf(msg, temp_str + 4, this->world->players[player]->name);
                 this->game_screen->display_system_message(msg);
@@ -4087,10 +4087,10 @@ char* TRIBE_Game::game_over_msg() {
     RGE_Game_World* world = this->world;
     RGE_Player* player = world->players[world->curr_player];
     if (player->game_status == 1) {
-        this->get_string(0x47E, msg, 0x100);
+        this->get_string(IDS_MESSAGE_VICTORY, msg, 256);
         return msg;
     }
-    this->get_string(0x47F, msg, 0x100);
+    this->get_string(IDS_MESSAGE_DEFEAT, msg, 256);
     return msg;
 }
 
@@ -4110,13 +4110,13 @@ int TRIBE_Game::randomComputerName(int civ) {
     int i;
     int tries;
 
-    this->get_string((civ + 0x1B7) * 10, scount, 10);
+    this->get_string((civ + IDS_COMPUTER_NAME_COUNT_BASE) * 10, scount, 10);
     max = atoi(scount);
 
     tries = 0;
 
     do {
-        int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1521);
+        int r = debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5409);
         slot = r % max;
         if (slot > max - 1)
             slot = max - 1;
@@ -4195,7 +4195,7 @@ int TRIBE_Game::setup_video_system() {
 
     if (this->draw_system->ScreenMode == 2) {
         SetCursor(0);
-        SetClassLongA(this->prog_window, -12, 0);
+        SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
         this->mouse_pointer->Shutdown_Mouse();
 
         this->video_save_res_wid = this->draw_system->ScreenWidth;
@@ -4257,7 +4257,7 @@ void TRIBE_Game::shutdown_video_system() {
     set_prog_mode(2);
     restart_sound_system();
 
-    void* cursor = LoadCursorA(0, MAKEINTRESOURCEA(0x7F00));
+    void* cursor = LoadCursorA(0, IDC_ARROW);
     set_mouse_cursor(cursor);
     mouse_on();
 
@@ -4281,12 +4281,12 @@ void TRIBE_Game::disconnect_multiplayer_game() {
         this->disable_input();
         this->show_status_message(0x4C0, 0, -1);
 
-        unsigned long start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x15F8);
+        unsigned long start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5624);
         unsigned long last_time = start_time;
 
         while (this->world != 0 && this->world->game_state != 1) {
             this->comm_handler->ShutdownGameMessages();
-            if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1601) - last_time < 500) {
+            if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5633) - last_time < 500) {
                 continue;
             }
 
@@ -4294,7 +4294,7 @@ void TRIBE_Game::disconnect_multiplayer_game() {
                 break;
             }
 
-            last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x1605);
+            last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5637);
             if (last_time - start_time >= 15000) {
                 break;
             }

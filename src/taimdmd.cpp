@@ -13,6 +13,7 @@
 #include "../include/tworld.h"
 #include "../include/victory.h"
 #include "../include/world.h"
+#include "../include/resource_ids.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -160,9 +161,9 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     if (g_time >= DAT_0057561c) {
         rge_read(infile, &this->decidedInitialDiplomacy, 4);
         rge_read(infile, &this->requiredDiplomacyTributeAmount, 4);
-        rge_read(infile, this->tributeGiven, 0x24);
+        rge_read(infile, this->tributeGiven, 36);
     } else {
-        memset(this->tributeGiven, 0, 0x24);
+        memset(this->tributeGiven, 0, 36);
     }
 }
 
@@ -252,24 +253,24 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
             this->lastTributeChatTime = this->player->world->world_time;
             if (tactical->strategicNumber(0x82) == 1) {
                 if (this->tributeAmount > 0) {
-                    rge_base_game->get_string(0x902, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_MORE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString,
                         tactical->strategicNumber(0x7C) - this->tributeAmount);
                 } else {
-                    rge_base_game->get_string(0x903, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString,
                         tactical->strategicNumber(0x7C));
                 }
             } else if (tactical->strategicNumber(0x81) == 1) {
                 if (this->tributeAmount > 0) {
-                    rge_base_game->get_string(0x904, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString,
                         tactical->strategicNumber(0x7C));
                 } else {
-                    rge_base_game->get_string(0x905, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_MORE_GOLD, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString,
                         tactical->strategicNumber(0x7C) - this->tributeAmount);
@@ -287,7 +288,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                         tactical->strategicNumber(0x80), 2, 0);
                     this->aiPlayer->setDiplomaticStance(
                         tactical->strategicNumber(0x80), 3);
-                    rge_base_game->get_string(0x901, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_THREAT, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
@@ -295,7 +296,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                     this->lastTributeChatTime =
                         this->player->world->world_time;
                 } else if (tactical->strategicNumber(0x81) == 1) {
-                    rge_base_game->get_string(0x900, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_MISSED, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
@@ -313,7 +314,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                         tactical->strategicNumber(0x80), 2, 100);
                     this->aiPlayer->setDiplomaticStance(
                         tactical->strategicNumber(0x80), 0);
-                    rge_base_game->get_string(0x8FF, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
@@ -322,7 +323,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                     this->tributeAddressed =
                         tactical->strategicNumber(0x84) == 0;
                 } else if (tactical->strategicNumber(0x82) == 1) {
-                    rge_base_game->get_string(0x8FE, tempString, 0x100);
+                    rge_base_game->get_string(IDS_AI_TRIBUTE_ACCEPTED, tempString, 256);
                     this->player->sendChatMessage(
                         tactical->strategicNumber(0x80), 0, tempString);
                     this->waitingOnTribute = 0;
@@ -365,7 +366,7 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 world->controllingComputerPlayer = (unsigned char)this->player->id;
             } else {
                 int selection =
-                    debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x236) %
+                    debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 566) %
                         numberComputerPlayers +
                     1;
                 for (int i = 1; i < world->player_num; i++) {
@@ -407,31 +408,31 @@ int TribeMainDecisionAIModule::update(int timeLimit) {
                 switch (rge_base_game->difficulty()) {
                 case 0:
                     resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x26E) %
+                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 622) %
                             500 +
                         1400;
                     break;
                 case 1:
                     resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x26F) %
+                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 623) %
                             400 +
                         1000;
                     break;
                 case 2:
                     resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x270) %
+                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 624) %
                             300 +
                         700;
                     break;
                 case 3:
                     resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x271) %
+                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 625) %
                             200 +
                         450;
                     break;
                 case 4:
                     resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x272) %
+                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 626) %
                             100 +
                         300;
                     break;
@@ -544,7 +545,7 @@ int TribeMainDecisionAIModule::save(int outfile) {
     rge_write(outfile, &this->tributeAmount, 4);
     rge_write(outfile, &this->decidedInitialDiplomacy, 4);
     rge_write(outfile, &this->requiredDiplomacyTributeAmount, 4);
-    rge_write(outfile, this->tributeGiven, 0x24);
+    rge_write(outfile, this->tributeGiven, 36);
 
     return 1;
 }
@@ -662,7 +663,7 @@ void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int 
             this->tributeGiven[playerID] >=
                 this->requiredDiplomacyTributeAmount) {
             this->player->sendAICommand(this->player->id, 6, playerID, 2, 0);
-            rge_base_game->get_string(0x907, tempString, 0x100);
+            rge_base_game->get_string(IDS_AI_TRIBUTE_ALLIANCE_ACCEPTED, tempString, 256);
             this->player->sendChatMessage(playerID, 0, tempString);
 
             RGE_Player* newAlly = this->player->world->players[playerID];
@@ -680,7 +681,7 @@ void TribeMainDecisionAIModule::tributeNotify(int playerID, int resourceID, int 
 
             tactical->setStrategicNumber(0xD9, 0);
         } else if (this->player->isEnemy(playerID) == 1) {
-            rge_base_game->get_string(0x906, tempString, 0x100);
+            rge_base_game->get_string(IDS_AI_TRIBUTE_REJECTED, tempString, 256);
             this->player->sendChatMessage(playerID, 0, tempString);
         }
     }
@@ -697,7 +698,7 @@ void TribeMainDecisionAIModule::revokeTributeAlliance() {
             tactical->strategicNumber(0x80), 2, 100);
         this->aiPlayer->setDiplomaticStance(
             tactical->strategicNumber(0x80), 3);
-        rge_base_game->get_string(0x8FD, tempString, 0x100);
+        rge_base_game->get_string(IDS_AI_TRIBUTE_REFUSED, tempString, 256);
         this->player->sendChatMessage(
             tactical->strategicNumber(0x80), 0, tempString);
         this->waitingOnTribute = 0;
@@ -709,7 +710,7 @@ void TribeMainDecisionAIModule::setTributeChat() {
     TribeTacticalAIModule* tactical = &this->tacticalAI;
     if (tactical->strategicNumber(0x7E) > 0) {
         int random_value =
-            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 0x41D);
+            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp", 1053);
         this->tributeChatTimeout =
             random_value % tactical->strategicNumber(0x7E) -
             tactical->strategicNumber(0x7E) / 2 +

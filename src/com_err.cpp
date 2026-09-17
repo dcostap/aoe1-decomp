@@ -13,7 +13,7 @@ RGE_Comm_Error::RGE_Comm_Error(void* Host) {
 }
 
 void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long lparam) {
-    PostMessageA(HostHWND, 0x400, msg, lparam);
+    PostMessageA(HostHWND, WM_USER, msg, lparam);
     L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d\n", msg, lparam);
 }
 

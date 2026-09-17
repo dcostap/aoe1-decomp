@@ -850,7 +850,7 @@ unsigned char RGE_Command::check_for_duplicate_orders(unsigned char* order,
     if (last_order != 0) {
         if (last_order_size == order_size) {
             if (*last_order == *order) {
-                unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Command.cpp", 0x497);
+                unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Command.cpp", 1175);
                 if ((int)(now - last_order_time) < 0x1F4) {
                     return close_check_for_duplicate_orders(order);
                 }
@@ -871,7 +871,7 @@ void RGE_Command::submit(void* order, long order_size) {
     }
     last_order = static_cast<unsigned char*>(order);
     last_order_size = order_size;
-    unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Command.cpp", 0x4AC);
+    unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Command.cpp", 1196);
     last_order_time = t;
 }
 

@@ -278,7 +278,7 @@ void TribeSelectScenarioScreen::fillScenarios() {
         TRIBE_Scenario_Header* hdr = static_cast<TRIBE_Scenario_Header*>(
             scenario_info_file->get_scenario_info(id));
         if (hdr != 0) {
-            this->scenarioMission[i] = (char*)calloc(0x1000, sizeof(char));
+            this->scenarioMission[i] = (char*)calloc(4096, sizeof(char));
             if (this->scenarioMission[i] != 0 && hdr->description != 0) {
                 strcpy(this->scenarioMission[i], hdr->description);
             }

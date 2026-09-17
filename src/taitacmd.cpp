@@ -103,13 +103,13 @@ int TacticalAIGroup::load(int infile) {
     rge_read(infile, &this->commanderValue, 4);
     rge_read(infile, &this->originalHitPointsValue, 4);
     rge_read(infile, &this->originalUnitNumberValue, 4);
-    rge_read(infile, &this->locationValue, 0x10);
+    rge_read(infile, &this->locationValue, 16);
     rge_read(infile, &this->actionValue, 4);
     rge_read(infile, &this->targetValue, 4);
     rge_read(infile, &this->targetTypeValue, 4);
-    rge_read(infile, &this->targetLocationValue, 0x10);
-    rge_read(infile, &this->gatherLocationValue, 0x10);
-    rge_read(infile, &this->retreatLocationValue, 0x10);
+    rge_read(infile, &this->targetLocationValue, 16);
+    rge_read(infile, &this->gatherLocationValue, 16);
+    rge_read(infile, &this->retreatLocationValue, 16);
     rge_read(infile, &this->priorityValue, 4);
     rge_read(infile, &this->waitCodeValue, 4);
     rge_read(infile, &this->assistGroupIDValue, 4);
@@ -119,7 +119,7 @@ int TacticalAIGroup::load(int infile) {
     rge_read(infile, &this->consecutiveIdleUnitCountValue, 4);
     rge_read(infile, &this->numberAttackWaypointsValue, 1);
     rge_read(infile, &this->currentAttackWaypointValue, 1);
-    rge_read(infile, &this->attackWaypoints, 0xF0);
+    rge_read(infile, &this->attackWaypoints, 240);
     rge_read(infile, &this->playNumberValue, 4);
 
     // Version detection: conditional field reads based on float version comparison
@@ -132,7 +132,7 @@ int TacticalAIGroup::load(int infile) {
 
     if (save_game_version >= DAT_005756e4) {
         rge_read(infile, &this->numberObjectsToDestroyValue, 4);
-        rge_read(infile, &this->objectsToDestroyValue, 0x50);
+        rge_read(infile, &this->objectsToDestroyValue, 80);
         rge_read(infile, &this->objectsToDestroyOwnerValue, 4);
         rge_read(infile, &this->objectsToDestroyCommanderZoneValue, 4);
     }
@@ -168,13 +168,13 @@ int TacticalAIGroup::save(int outfile) {
     rge_write(outfile, &this->commanderValue, 4);
     rge_write(outfile, &this->originalHitPointsValue, 4);
     rge_write(outfile, &this->originalUnitNumberValue, 4);
-    rge_write(outfile, &this->locationValue, 0x10);
+    rge_write(outfile, &this->locationValue, 16);
     rge_write(outfile, &this->actionValue, 4);
     rge_write(outfile, &this->targetValue, 4);
     rge_write(outfile, &this->targetTypeValue, 4);
-    rge_write(outfile, &this->targetLocationValue, 0x10);
-    rge_write(outfile, &this->gatherLocationValue, 0x10);
-    rge_write(outfile, &this->retreatLocationValue, 0x10);
+    rge_write(outfile, &this->targetLocationValue, 16);
+    rge_write(outfile, &this->gatherLocationValue, 16);
+    rge_write(outfile, &this->retreatLocationValue, 16);
     rge_write(outfile, &this->priorityValue, 4);
     rge_write(outfile, &this->waitCodeValue, 4);
     rge_write(outfile, &this->assistGroupIDValue, 4);
@@ -184,11 +184,11 @@ int TacticalAIGroup::save(int outfile) {
     rge_write(outfile, &this->consecutiveIdleUnitCountValue, 4);
     rge_write(outfile, &this->numberAttackWaypointsValue, 1);
     rge_write(outfile, &this->currentAttackWaypointValue, 1);
-    rge_write(outfile, &this->attackWaypoints, 0xF0);
+    rge_write(outfile, &this->attackWaypoints, 240);
     rge_write(outfile, &this->playNumberValue, 4);
     rge_write(outfile, &this->consecutiveGatherAttemptsValue, 1);
     rge_write(outfile, &this->numberObjectsToDestroyValue, 4);
-    rge_write(outfile, &this->objectsToDestroyValue, 0x50);
+    rge_write(outfile, &this->objectsToDestroyValue, 80);
     rge_write(outfile, &this->objectsToDestroyOwnerValue, 4);
     rge_write(outfile, &this->objectsToDestroyCommanderZoneValue, 4);
     rge_write(outfile, &this->lastAttackRoundupTime, 4);
@@ -1620,7 +1620,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
     rge_read(infile, &this->numberGatherersValue, 4);
     rge_read(infile, &this->desiredNumberGatherersValue, 4);
     if (!(save_game_version < 7.19f)) {
-        rge_read(infile, this->gatherers, 0x4b0);
+        rge_read(infile, this->gatherers, 1200);
     } else {
         piVar2 = &this->gatherers[0].data1;
         iVar6 = 0x32;
@@ -1628,7 +1628,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
             OldUnitData2 tempUD;
 
             do {
-                rge_read(infile, &tempUD, 0x14);
+                rge_read(infile, &tempUD, 20);
                 ((UnitData*)(piVar2 + -1))->id = tempUD.id;
                 *piVar2 = tempUD.data1;
                 piVar2[1] = tempUD.data2;
@@ -1642,7 +1642,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
             OldUnitData tempUD;
 
             do {
-                rge_read(infile, &tempUD, 0x10);
+                rge_read(infile, &tempUD, 16);
                 ((UnitData*)(piVar2 + -1))->id = tempUD.id;
                 *piVar2 = tempUD.data1;
                 piVar2[1] = tempUD.data2;
@@ -1855,7 +1855,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         rge_read(infile, &this->wonderBuiltValue, 4);
     }
     if (!(save_game_version < 6.2f)) {
-        rge_read(infile, &this->placementStateValue, 0x130);
+        rge_read(infile, &this->placementStateValue, 304);
     } else {
         memset(&this->placementStateValue, 0, sizeof(this->placementStateValue));
     }
@@ -1889,13 +1889,13 @@ TribeTacticalAIModule::TribeTacticalAIModule(int pID, int infile)
         rge_read(infile, &this->lastUngroupedSoldierTaskTime, 4);
     }
     if (!(save_game_version < 7.04f)) {
-        rge_read(infile, &this->attackStateValue, 0x2c);
+        rge_read(infile, &this->attackStateValue, 44);
     } else {
         memset(&this->attackStateValue, 0, sizeof(this->attackStateValue));
     }
     (this->attackStateValue).active = 0;
     if (!(save_game_version < 7.15f)) {
-        rge_read(infile, this->hitsByPlayer, 0x24);
+        rge_read(infile, this->hitsByPlayer, 36);
     } else {
         piVar2 = this->hitsByPlayer;
         for (iVar6 = 9; iVar6 != 0; iVar6 = iVar6 + -1) {
@@ -2135,7 +2135,7 @@ int TribeTacticalAIModule::save(int outfile) {
 
     rge_write(outfile, &this->numberGatherersValue, 4);
     rge_write(outfile, &this->desiredNumberGatherersValue, 4);
-    rge_write(outfile, this->gatherers, 0x4b0);
+    rge_write(outfile, this->gatherers, 1200);
 
     tempInt = this->soldiers.numberValue;
     rge_write(outfile, &tempInt, 4);
@@ -2269,7 +2269,7 @@ int TribeTacticalAIModule::save(int outfile) {
     rge_write(outfile, &this->updateArea, 4);
     rge_write(outfile, &this->wonderInProgressValue, 4);
     rge_write(outfile, &this->wonderBuiltValue, 4);
-    rge_write(outfile, &this->placementStateValue, 0x130);
+    rge_write(outfile, &this->placementStateValue, 304);
     rge_write(outfile, &this->nextCivilianToTaskValue, 4);
     rge_write(outfile, &this->nextIdleSoldierGroupToTaskValue, 4);
     rge_write(outfile, &this->nextActiveSoldierGroupToTaskValue, 4);
@@ -2282,8 +2282,8 @@ int TribeTacticalAIModule::save(int outfile) {
     rge_write(outfile, &this->zoomingToNextAge, 4);
     rge_write(outfile, &this->lastCoopAttackDemandTime, 4);
     rge_write(outfile, &this->lastUngroupedSoldierTaskTime, 4);
-    rge_write(outfile, &this->attackStateValue, 0x2c);
-    rge_write(outfile, this->hitsByPlayer, 0x24);
+    rge_write(outfile, &this->attackStateValue, 44);
+    rge_write(outfile, this->hitsByPlayer, 36);
     return 1;
 }
 
@@ -2294,13 +2294,13 @@ static const char s_build_file_format[] = "%s.bld";
 int TribeTacticalAIModule::doSomething() {
     unsigned long availableTime =
         this->md->player->world->availableComputerPlayerUpdateTime;
-    unsigned long startTime = debug_timeGetTime(s_file, 0x99c);
+    unsigned long startTime = debug_timeGetTime(s_file, 2460);
 
     if (availableTime != 0) {
         unsigned long currentTime;
         do {
             unsigned long updateAreaStartTime =
-                debug_timeGetTime(s_file, 0x99f);
+                debug_timeGetTime(s_file, 2463);
             int incUpdateArea = 1;
 
             switch (this->updateArea) {
@@ -2566,7 +2566,7 @@ int TribeTacticalAIModule::doSomething() {
                         this->md->player->world->world_time;
                 }
 
-                currentTime = debug_timeGetTime(s_file, 0xb92);
+                currentTime = debug_timeGetTime(s_file, 2962);
                 this->md->player->world->useComputerPlayerUpdateTime(
                     currentTime - startTime);
 
@@ -2588,7 +2588,7 @@ int TribeTacticalAIModule::doSomething() {
             }
             }
 
-            currentTime = debug_timeGetTime(s_file, 0xbaa);
+            currentTime = debug_timeGetTime(s_file, 2986);
             this->lastUpdateAreaTimeValue =
                 currentTime - updateAreaStartTime;
             this->updateAreaAverageTotal +=
@@ -2605,7 +2605,7 @@ int TribeTacticalAIModule::doSomething() {
         } while (currentTime - startTime < availableTime);
     }
 
-    unsigned long endTime = debug_timeGetTime(s_file, 0xbc9);
+    unsigned long endTime = debug_timeGetTime(s_file, 3017);
     this->md->player->world->useComputerPlayerUpdateTime(endTime - startTime);
     return 1;
 }
@@ -3014,7 +3014,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
         }
 
         this->nextCivilianToTaskValue = this->civilians[0];
-        if (debug_timeGetTime(s_file, 0xd8a) - startTime >= availableTime) {
+        if (debug_timeGetTime(s_file, 3466) - startTime >= availableTime) {
             return taskedCount;
         }
     }
@@ -3049,7 +3049,7 @@ int TribeTacticalAIModule::taskCivilians(unsigned long startTime,
         }
 
         this->nextCivilianToTaskValue = this->civilians[j];
-        if (debug_timeGetTime(s_file, 0xdc6) - startTime >= availableTime) {
+        if (debug_timeGetTime(s_file, 3526) - startTime >= availableTime) {
             if (j > 0) {
                 this->civilians[j - 1];
             }
@@ -3184,7 +3184,7 @@ void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
     next_group:
         group = group->next;
         this->nextIdleSoldierGroupToTaskValue = group->id();
-        if (debug_timeGetTime(s_file, 0xEA9) - startTime >=
+        if (debug_timeGetTime(s_file, 3753) - startTime >=
             availableTime) {
             return;
         }
@@ -4273,7 +4273,7 @@ void TribeTacticalAIModule::taskActiveSoldiers(ulong startTime, ulong availableT
             } else {
                 this->nextActiveSoldierGroupToTaskValue = cur->id();
             }
-            if (debug_timeGetTime(s_file, 0x14fe) - startTime >= availableTime) {
+            if (debug_timeGetTime(s_file, 5374) - startTime >= availableTime) {
                 return;
             }
         } while (cur != &this->groups);
@@ -5002,7 +5002,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
         callerObject == 0)
         return;
 
-    ulong entryTime = debug_timeGetTime(s_file, 0x1904);
+    ulong entryTime = debug_timeGetTime(s_file, 6404);
 
     if (mType == 0x72 || mType == 0x74) {
         ObjectMemory* memory;
@@ -5232,7 +5232,7 @@ void TribeTacticalAIModule::notify(int callerID, int recipientID, int mType,
     while (index < this->workingArea.numberValue &&
            responded < numberToRespond) {
         if (index > 1 &&
-            debug_timeGetTime(s_file, 0x1a54) - entryTime > 10)
+            debug_timeGetTime(s_file, 6740) - entryTime > 10)
             return;
 
         RGE_Static_Object* object = this->md->aiPlayer->world->object(
@@ -6080,7 +6080,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, unsigned long start
 
     UnitData* gatherer = &this->gatherers[gathererIndex];
     unsigned long currentTime = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1F5C);
+        "C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 8028);
     if (currentTime - gatherer->lastTaskTime < 5000) {
         return 1;
     }
@@ -9066,7 +9066,7 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int snType) {
 void TribeTacticalAIModule::resetAttackSeparationTime() {
     if (this->sn[0x66] > 0) {
         this->randomizedAttackSeparationTime =
-            debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x2D35) % this->sn[0x66] +
+            debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 11573) % this->sn[0x66] +
             (this->sn[0x2E] - this->sn[0x66] / 2);
     } else {
         this->randomizedAttackSeparationTime = this->sn[0x2E];
@@ -9980,7 +9980,7 @@ void TribeTacticalAIModule::checkForCoopTributeDemand() {
         if (count == 1) {
             world->controllingComputerPlayer = (uchar)this->md->player->id;
         } else {
-            pick = debug_rand("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x31f0) % count + 1;
+            pick = debug_rand("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 12784) % count + 1;
             j = 1;
             if (world->player_num > 1) {
                 do {
@@ -10064,7 +10064,7 @@ void TribeTacticalAIModule::checkForCoopTributeGift() {
         if (num_computer == 1) {
             world->controllingComputerPlayer = this->md->player->id;
         } else {
-            int pick = debug_rand(s_file, 0x3275) %
+            int pick = debug_rand(s_file, 12917) %
                            num_computer +
                        1;
             i = 1;
@@ -10178,7 +10178,7 @@ void TribeTacticalAIModule::checkForCoopAttack(int playerToAttack, int x, int y)
         if (num_computer == 1) {
             world->controllingComputerPlayer = this->md->player->id;
         } else {
-            int pick = debug_rand(s_file, 0x32f1) % num_computer + 1;
+            int pick = debug_rand(s_file, 13041) % num_computer + 1;
             i = 1;
             if (world->player_num > 1) {
                 do {
@@ -10458,7 +10458,7 @@ int TribeTacticalAIModule::numberWaterExplorers() {
 }
 
 void TribeTacticalAIModule::saveTheTown(int idToKill) {
-    ulong entryTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3420);
+    ulong entryTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 13344);
     RGE_Static_Object* targetObject;
     XYPoint objectPosition;
     int entryCount;
@@ -10505,7 +10505,7 @@ void TribeTacticalAIModule::saveTheTown(int idToKill) {
         if (this->soldiers.numberValue > 0) {
             while (count < this->soldiers.numberValue && entryCount < 6) {
                 if (count > 1 &&
-                    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3447) -
+                    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 13383) -
                             entryTime >
                         10)
                     return;

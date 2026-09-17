@@ -54,7 +54,7 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
     TEasy_Panel::create_text(this, &this->version_text, IDS_PRODUCT_VERSION, 0x14, 0x28,
                              0x1e0, 0x14, 0xb, 0, 0, 0);
 
-    TPanel::get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 0x200);
+    TPanel::get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == '\0') {
         TEasy_Panel::create_text(this, &this->ms_copy_text1, IDS_COPYRIGHT_PREFIX, 0x14,
                                  0x41, 0x1e0, 0x14, 10, 0, 0, 0);
@@ -103,7 +103,7 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parentPanel)
         }
     }
 
-    TPanel::get_string(IDS_ABOUT_COPYRIGHT_WARNING, str, 0x1000);
+    TPanel::get_string(IDS_ABOUT_COPYRIGHT_WARNING, str, 4096);
     TEasy_Panel::create_text(this, &this->warning_text, str, 0x14, 0xaf,
                              0x1e0, 0xdc, 10, 0, 0, 1);
 

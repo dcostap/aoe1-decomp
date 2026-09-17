@@ -67,7 +67,7 @@ void TDebuggingLog::LogDateTimestamp(int DoTimestamp) {
 
 void TDebuggingLog::Time() {
     unsigned long ticks = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Debuglog.cpp", 0x78);
+        "C:\\msdev\\work\\age1_x1\\Debuglog.cpp", 120);
     time_t ltime;
     time(&ltime);
     struct tm* timeinfo = localtime(&ltime);
@@ -110,7 +110,7 @@ void TDebuggingLog::OpenLog() {
     }
 
     LogStartTickCount = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Debuglog.cpp", 0xA3);
+        "C:\\msdev\\work\\age1_x1\\Debuglog.cpp", 163);
 
     for (int nLoop = 1; nLoop <= 25; nLoop++) {
         if (nLoop == 1) {

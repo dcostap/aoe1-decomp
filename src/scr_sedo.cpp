@@ -172,9 +172,9 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
             if (line[0] != 0) {
                 char str[256];
                 char text[556];
-                get_string(IDS_CONFIRM_DELETE_FILE, str, 0x100);
+                get_string(IDS_CONFIRM_DELETE_FILE, str, 256);
                 sprintf(text, str, list->currentLine());
-                popupYesNoDialog(text, "Cancel Dialog", 0x1C2, 100);
+                popupYesNoDialog(text, "Cancel Dialog", TEASY_POPUP_WIDTH, 100);
             }
         }
 
@@ -193,7 +193,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                     sprintf(fileName, "%s%s.scn",
                             scenario_dir, line);
 
-                    if (OpenFile(fileName, &of, 0x4000) != -1) {
+                    if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                         sprintf(fileName, "%s.scn", list->currentLine());
                         static_cast<TRIBE_Game*>(rge_base_game)->
                             start_scenario_editor(fileName, 0);
@@ -204,13 +204,13 @@ long TRIBE_Screen_Sed_Open::action(TPanel* fromPanel, long actionIn, unsigned lo
                         line = list->currentLine();
                         sprintf(fileName, "%s%s.scx",
                                 scenario_dir, line);
-                        if (OpenFile(fileName, &of, 0x4000) != -1) {
+                    if (OpenFile(fileName, &of, OF_EXIST) != -1) {
                             sprintf(fileName, "%s.scx", list->currentLine());
                             static_cast<TRIBE_Game*>(rge_base_game)->
                                 start_scenario_editor(fileName, 0);
                             return 1;
                         } else {
-                            popupOKDialog(IDS_ERROR_CANNOT_LOAD_SCENARIO, 0, 0x1C2, 100);
+                            popupOKDialog(IDS_ERROR_CANNOT_LOAD_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
                             return 1;
                         }
                     }

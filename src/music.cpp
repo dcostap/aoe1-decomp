@@ -671,14 +671,14 @@ int TMusic_System::fade_track(void) {
 void TMusic_System::start_fade(void) {
     if (this->fading_track == 0) {
         this->fade_volume = this->volume;
-        this->last_fade_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 0x38C);
+        this->last_fade_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 908);
         this->fading_track = 1;
     }
 }
 
 void TMusic_System::do_fade() {
     if (this->paused == 0) {
-        float time = (float)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 0x39E) - this->last_fade_time);
+        float time = (float)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 926) - this->last_fade_time);
 
         if (this->fade_volume <= -10000 && this->playing_track != 0) {
             this->stop_playing();
@@ -695,7 +695,7 @@ void TMusic_System::do_fade() {
             }
         } else {
             this->set_volume(this->fade_volume, 0);
-            this->last_fade_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 0x3B8);
+            this->last_fade_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\music.cpp", 952);
         }
     }
 }

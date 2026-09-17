@@ -295,7 +295,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
     campaign_filename = this->filename->get_text();
     if (campaign_filename != 0) {
         if (*campaign_filename == 0 || *campaign_filename == ' ') {
-            this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED, 0, 0x1C2, 100);
+            this->popupOKDialog(IDS_ERROR_CAMPAIGN_NAME_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
             // An invalid name returns without clearing need_to_save.
             return;
         } else {
@@ -337,7 +337,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign() {
                 free(scenarios_text);
                 free(scenarios_filenames);
             } else {
-                this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO, 0, 0x1C2, 100);
+                this->popupOKDialog(IDS_ERROR_CAMPAIGN_REQUIRES_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
             }
             free(text);
             this->fill_campaign_drop();
@@ -445,9 +445,9 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* fromPanel, long actionIn, unsi
 
     if (fromPanel == this->filename_drop && actionIn == 0) {
         if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
-            this->get_string(IDS_CONFIRM_SAVE_CAMPAIGN, str, 0x100);
+            this->get_string(IDS_CONFIRM_SAVE_CAMPAIGN, str, 256);
             sprintf(text, str, this->filename->get_text());
-            this->popupYesNoCancelDialog(text, "Load Dialog", 0x1c2, 100);
+            this->popupYesNoCancelDialog(text, "Load Dialog", TEASY_POPUP_WIDTH, 100);
         } else {
             this->filename->set_text(this->filename_drop->get_text());
             this->load_campaign();
@@ -457,9 +457,9 @@ long TRIBE_Campaign_Editor_Screen::action(TPanel* fromPanel, long actionIn, unsi
     if (actionIn == 1) {
         if (fromPanel == this->ok_button) {
             if (this->need_to_save > 0 && this->campaign_scenarios->numberLines() > 0) {
-                this->get_string(IDS_CONFIRM_SAVE_CAMPAIGN, str, 0x100);
+                this->get_string(IDS_CONFIRM_SAVE_CAMPAIGN, str, 256);
                 sprintf(text, str, this->filename->get_text());
-                this->popupYesNoCancelDialog(text, "Cancel Dialog", 0x1c2, 100);
+                this->popupYesNoCancelDialog(text, "Cancel Dialog", TEASY_POPUP_WIDTH, 100);
             } else {
                 new TRIBE_Screen_Sed_Menu;
                 panel_system.setCurrentPanel("Scenario Editor Menu", 0);

@@ -112,7 +112,7 @@ int TPanelSystem::addPanel(TPanel* p, int makeCurrent, int makeModal) {
 
     node = findPanelNode(p->panelName());
     if (node == 0) {
-        node = (PanelNode*)calloc(1, 0x0C);
+        node = (PanelNode*)calloc(1, 12);
         if (node == 0) {
             return 0;
         }
@@ -299,7 +299,7 @@ int TPanelSystem::inSystem(TPanel* p) {
 }
 
 int TPanelSystem::setup(void) {
-    panel_list = (PanelNode*)calloc(1, 0x0C);
+    panel_list = (PanelNode*)calloc(1, 12);
     if (panel_list == 0) {
         return 0;
     }
@@ -608,7 +608,7 @@ long TPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_in
     set_color((unsigned char)color_in);
     mouse_captured = 0;
     if (node == 0) {
-        node = (PanelNode*)calloc(1, 0xC);
+        node = (PanelNode*)calloc(1, 12);
         if (node == 0) {
             return 0;
         }
@@ -1104,7 +1104,7 @@ long TPanel::handle_idle(void) {
     long result;
 
     if (active != 0 && mouse_action == 1) {
-        if ((int)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x5FD) - mouse_down_time) >= mouse_hold_interval) {
+        if ((int)(debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 1533) - mouse_down_time) >= mouse_hold_interval) {
             mouse_action = 2;
             if (mouse_down_button == 1) {
                 mouse_left_hold_action(mouse_down_x, mouse_down_y, mouse_down_ctrl, mouse_down_shift);
@@ -1388,7 +1388,7 @@ long TPanel::handle_mouse_down(unsigned char mouse_button_in, long x, long y, in
         this->mouse_down_y = y;
         this->mouse_down_ctrl = ctrl_key;
         this->mouse_down_shift = shift_key;
-        this->mouse_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 0x72C);
+        this->mouse_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Panel.cpp", 1836);
         this->mouse_action = 1;
 
         if (this->tab_stop != 0 && this->parent_panel != 0 && this->mouse_down_button == 1) {
@@ -1904,7 +1904,7 @@ int TPanel::get_string(int text_id, char* str, int size) {
 }
 
 char* TPanel::get_string(int text_id) {
-    get_string(text_id, DAT_0062E670, 0x200);
+    get_string(text_id, DAT_0062E670, 512);
     return DAT_0062E670;
 }
 

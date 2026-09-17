@@ -28,11 +28,11 @@ long TRIBE_Screen_Info::handle_idle() {
 
     if (auto_close != 0) {
         if (last_time == 0) {
-            last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_info.cpp", 0x48);
+            last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_info.cpp", 72);
             return TPanel::handle_idle();
         }
 
-        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_info.cpp", 0x4B);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_info.cpp", 75);
         if (now - last_time > timer) {
             close_screen();
             return 0;

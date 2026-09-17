@@ -134,7 +134,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(IDS_CONFIRM_QUIT_AND_LOAD, "QuitAndLoadDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_QUIT_AND_LOAD, "QuitAndLoadDialog", TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
 
@@ -155,7 +155,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(IDS_CONFIRM_QUIT_GAME, "QuitGameDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_QUIT_GAME, "QuitGameDialog", TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
 
@@ -191,7 +191,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(IDS_CONFIRM_RESTART_GAME, "RestartDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_RESTART_GAME, "RestartDialog", TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
 
@@ -218,7 +218,7 @@ long TribeMenuDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                     static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
-                ep->popupYesNoDialog(IDS_CONFIRM_RESIGN, "ResignDialog", 0x1C2, 100);
+                ep->popupYesNoDialog(IDS_CONFIRM_RESIGN, "ResignDialog", TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
 

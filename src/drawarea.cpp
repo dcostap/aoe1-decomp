@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <sys/stat.h>
 
 extern int DDSys_CanColorFill;
 extern int PalSetRes;
@@ -102,8 +104,8 @@ void TDrawSystem::CheckAvailModes(int full_screen) {
         this->ModeAvail640 = 1;
         void* dc = CreateICA("DISPLAY", 0, 0, 0);
         if (dc != 0) {
-            int width = GetDeviceCaps(dc, 8);
-            GetDeviceCaps(dc, 10);
+            int width = GetDeviceCaps(dc, HORZRES);
+            GetDeviceCaps(dc, VERTRES);
             DeleteDC(dc);
             if (width >= 800)
                 this->ModeAvail800 = 1;
@@ -216,7 +218,7 @@ int TDrawSystem::IsModeAvail(long wid_in, long hgt_in, int color_bits) {
                 return this->ModeAvail800;
             }
         }
-    } else if (color_bits == 0x10) {
+    } else if (color_bits == 16) {
         if (wid_in <= 0x280) {
             if (wid_in != 0x280) {
                 if (wid_in == 0x140) {
@@ -398,7 +400,7 @@ int TDrawSystem::SetDisplaySize(long wid_in, long hgt_in, int color_bits) {
     if (this->DrawArea != 0)
         this->DrawArea->SetSize(this->ScreenWidth, this->ScreenHeight, 0);
 
-    SendMessageA(this->Wnd, 5, 0, MAKELONG(wid_in, hgt_in));
+    SendMessageA(this->Wnd, WM_SIZE, 0, MAKELONG(wid_in, hgt_in));
     return 1;
 }
 
@@ -498,7 +500,7 @@ int TDrawSystem::CreateSurfaces() {
 
     if (this->DrawType == 2) {
         if (this->PrimarySurface == 0) {
-            memset(&ddsd, 0, 0x6c);
+            memset(&ddsd, 0, 108);
             ddsd.dwSize = 0x6c;
             ddsd.dwFlags = 1;
             ddsd.ddsCaps.dwCaps = 0x200;
@@ -942,8 +944,8 @@ TDrawArea::TDrawArea(char* SurfaceName, int ForceSystemMem) {
     this->Float_Y_Delta = 0;
     this->FloatOffsetsSz = 0;
 
-    memset(&this->SurfaceDesc, 0, 0x6C);
-    this->BitmapInfo = (BITMAPINFO256*)calloc(1, 0x428);
+    memset(&this->SurfaceDesc, 0, 108);
+    this->BitmapInfo = (BITMAPINFO256*)calloc(1, 1064);
     this->Orien = 1;
     this->SpanList = 0;
     this->CurSpanList = 0;
@@ -1026,7 +1028,7 @@ int TDrawArea::Init(TDrawSystem* draw_system_in, long wid_in, long hgt_in,
     if (draw_system_in != 0) {
         this->Wnd = draw_system_in->Wnd;
         if (this->Node == 0) {
-            node = (DrawAreaNode*)calloc(1, 0x0C);
+            node = (DrawAreaNode*)calloc(1, 12);
             this->Node = node;
             if (node == 0) {
                 return 0;
@@ -1219,12 +1221,12 @@ void TDrawArea::SetSize(long wid_in, long hgt_in, int ExtendSurface) {
                 if (this->DrawSurface != 0) {
                     this->DrawSurface->Release();
                     this->DrawSurface = 0;
-                    memset(&this->SurfaceDesc, 0, 0x6C);
+                    memset(&this->SurfaceDesc, 0, 108);
                     this->Pitch = 0;
                     this->UsingVidMem = 0;
                 }
 
-                memset(&ddsd, 0, 0x6C);
+                memset(&ddsd, 0, 108);
                 ddsd.dwSize = 0x6C;
                 ddsd.dwFlags = 7;
                 if ((this->DrawSystem->Flags & 1) != 0 ||
@@ -2274,7 +2276,9 @@ void TDrawArea::take_snapshot(char* filespec, int& index_no) {
     }
 
     unsigned char* row = (unsigned char*)malloc(row_width);
-    int output_file = _open(BMPFile, 0x8301, 0x180);
+    int output_file = _open(BMPFile,
+                            _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                            _S_IREAD | _S_IWRITE);
     if (output_file != -1) {
         write(output_file, &bmFH, sizeof(bmFH));
         write(output_file, &bmIH, sizeof(bmIH));

@@ -93,7 +93,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         return;
     this->victoryTypeDrop->empty_list();
     if (rge_base_game->scenarioGame() != 0) {
-        this->victoryTypeDrop->append_line(0x10E7, 0);
+        this->victoryTypeDrop->append_line(IDS_OPTION_DEFAULT, 0);
         this->victoryTypeDrop->append_line(0x10EC, 9);
     } else {
         this->victoryTypeDrop->append_line(0x10EC, 0);
@@ -162,7 +162,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0xB4, 100, 0xDC, 0x11C, 0xB4, 0x18, 0x0B))
         return;
     this->ageDrop->empty_list();
-    this->ageDrop->append_line(0x10E7, 0);
+        this->ageDrop->append_line(IDS_OPTION_DEFAULT, 0);
     this->ageDrop->append_line(0x106E, 1);
     this->ageDrop->append_line(0x1069, 2);
     this->ageDrop->append_line(0x106A, 3);
@@ -178,7 +178,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0xB4, 100, 0xDC, 0x14C, 0xB4, 0x18, 0x0B))
         return;
     this->resourcesDrop->empty_list();
-    this->resourcesDrop->append_line(0x10E7, 0);
+        this->resourcesDrop->append_line(IDS_OPTION_DEFAULT, 0);
     this->resourcesDrop->append_line(0x2609, 2);
     this->resourcesDrop->append_line(0x260A, 3);
     this->resourcesDrop->set_help_info(0x7632, -1);
@@ -492,12 +492,12 @@ long TribeGameSettingsScreen::handle_idle() {
 
     if (rge_base_game->multiplayerGame() != 0) {
         if (last_send_shared == 0) {
-            last_send_shared = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_set.cpp", 0x23A);
+            last_send_shared = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_set.cpp", 570);
         } else {
-            unsigned long cur_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_set.cpp", 0x23D);
+            unsigned long cur_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_set.cpp", 573);
             if ((cur_time - last_send_shared) != 0) {
                 comm->SendSharedData(0);
-                last_send_shared = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_set.cpp", 0x240);
+                last_send_shared = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_set.cpp", 576);
             }
         }
     }
@@ -625,7 +625,7 @@ void TribeGameSettingsScreen::fillScenarios() {
                             scenario_info_file->get_scenario_info(
                                 this->scenarioList->get_id(i)));
                     if (entry != 0) {
-                        this->scenarioMission[i] = (char*)calloc(0x1000, 1);
+                        this->scenarioMission[i] = (char*)calloc(4096, 1);
                         if (this->scenarioMission[i] != 0 &&
                             entry->description != 0) {
                             strcpy(this->scenarioMission[i], entry->description);
@@ -657,7 +657,7 @@ void TribeGameSettingsScreen::fillScenarios() {
         (rge_base_game->randomGame() &&
          static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0)) {
         this->scenarioList->insert_line(
-            0, this->get_string(0x25B5), "2 - 8", -2);
+            0, this->get_string(IDS_RANDOM_MAP), "2 - 8", -2);
         this->scenario_line_offset--;
     }
 
@@ -665,7 +665,7 @@ void TribeGameSettingsScreen::fillScenarios() {
         (rge_base_game->randomGame() &&
          static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() != 0)) {
         this->scenarioList->insert_line(
-            1, this->get_string(0x2617), "2 - 8", -1);
+            1, this->get_string(IDS_DEATH_MATCH), "2 - 8", -1);
         this->scenario_line_offset--;
     }
 }

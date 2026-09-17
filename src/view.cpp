@@ -233,9 +233,9 @@ long RGE_View::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_
     this->last_view_y = -9999.0f;
     this->function_mode = 0;
 
-    this->white_pen = GetStockObject(6);
-    this->red_pen = CreatePen(0, 1, 0xff);
-    this->hollow_brush = GetStockObject(5);
+    this->white_pen = GetStockObject(WHITE_PEN);
+    this->red_pen = CreatePen(PS_SOLID, 1, RGB(255, 0, 0));
+    this->hollow_brush = GetStockObject(HOLLOW_BRUSH);
 
     sprintf(str, "%s.shp", border_line_file);
     this->border_line_shape = new TShape(str, -1);
@@ -246,7 +246,7 @@ long RGE_View::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long x_
     do {
         int index = 5 - i;
         this->pick_lists[index] =
-            (RGE_SPick_Info*)calloc(0x40, sizeof(RGE_SPick_Info));
+            (RGE_SPick_Info*)calloc(64, sizeof(RGE_SPick_Info));
         this->pick_list_size[index] = 0;
         i--;
     } while (i != 0);
@@ -348,7 +348,7 @@ extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 
 void RGE_View::update_display_selected_objects(void) {
-    unsigned long curTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 0x2CB);
+    unsigned long curTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 715);
     int i = 0;
 
     if (this->DispSel_List_Max <= 0)
@@ -410,7 +410,7 @@ void RGE_View::display_object_selection(int id, int duration, int select_type, i
     if (found && slot != 0) {
         slot->active = 1;
         slot->id = id;
-        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 0x31d);
+        unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\view.cpp", 797);
         slot->start_time = now;
         slot->duration = duration;
         slot->select_type = select_type;
@@ -677,7 +677,7 @@ void RGE_View::CreateBlitQueue(tagRECT& src_rect, tagRECT& dest_rect, int xDelta
 
     if (this->Blit_Queue == 0) {
         this->Blit_Queue =
-            (Blit_Queue_Entry*)calloc(nBlits, 0x20);
+            (Blit_Queue_Entry*)calloc(nBlits, 32);
         this->Blt_Queue_Allocated = nBlits;
     }
 
@@ -2405,7 +2405,7 @@ tile_off_screen:
         Ov_Sprite_Draw_Rec* sprite = this->extra_sprites;
         if (sprite != 0) {
             unsigned long current_time = debug_timeGetTime(
-                (char*)s_C__msdev_work_age1_x1_view_cpp, 0xe3e);
+                (char*)s_C__msdev_work_age1_x1_view_cpp, 3646);
             while (sprite != 0) {
                 int remove_sprite = 0;
 
@@ -2563,7 +2563,7 @@ tile_off_screen:
     if (rge_base_game->prog_mode == 4 && this->have_focus != 0 &&
         MouseSystem->get_game_enable() != 0) {
         unsigned long current_time = debug_timeGetTime(
-            (char*)s_C__msdev_work_age1_x1_view_cpp, 0xf11);
+            (char*)s_C__msdev_work_age1_x1_view_cpp, 3857);
         tagPOINT CPoint;
 
         if (this->Get_Cursor_Position(
@@ -2595,7 +2595,7 @@ tile_off_screen:
                         if (this->message_panel != 0 &&
                             rge_base_game->rollover != 0) {
                             char pText[128];
-                            this->get_string(text_id, pText, 0x7f);
+                            this->get_string(text_id, pText, 127);
                             this->message_panel->show_message(
                                 TMessagePanel::InfoMessage, pText, 0x70, 0,
                                 0, 0, 0);

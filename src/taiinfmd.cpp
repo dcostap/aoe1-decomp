@@ -22,6 +22,9 @@
 #include "../include/victory.h"
 #include "../include/world.h"
 #include "../include/zone_map.h"
+#include "../include/rge_fio.h"
+#include <fcntl.h>
+#include <sys/stat.h>
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -335,9 +338,9 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                     strcpy(this->learnFileName, "");
                 }
 
-                rge_read(infile, this->fullyExploredZoneValue, 0xff);
+                rge_read(infile, this->fullyExploredZoneValue, 255);
                 if (!(save_game_version < DAT_00575554)) {
-                    rge_read(infile, this->quadrantLog, 0xc0);
+                    rge_read(infile, this->quadrantLog, 192);
                 } else {
                     for (int i8 = 0; i8 < 4; i8++) {
                         for (int j8 = 0; j8 < 4; j8++) {
@@ -348,8 +351,8 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                     }
                 }
 
-                rge_read(infile, this->maxResources, 0x10);
-                rge_read(infile, this->numResources, 0x10);
+                rge_read(infile, this->maxResources, 16);
+                rge_read(infile, this->numResources, 16);
                 for (int i9 = 0; i9 < 4; i9++) {
                     if (this->maxResources[i9] != 0) {
                         this->resources[i9] = (ResourceMemory*)operator new(
@@ -362,11 +365,11 @@ TribeInformationAIModule::TribeInformationAIModule(int pID, int infile)
                 }
 
                 if (!(save_game_version < DAT_00575558)) {
-                    rge_read(infile, this->dropsitesByAge, 0x40);
+                    rge_read(infile, this->dropsitesByAge, 64);
                 }
                 if (!(save_game_version < DAT_00575558)) {
-                    rge_read(infile, this->closestDropsiteValue, 0x10);
-                    rge_read(infile, this->closestDropsiteResourceID, 0x10);
+                    rge_read(infile, this->closestDropsiteValue, 16);
+                    rge_read(infile, this->closestDropsiteResourceID, 16);
                 }
                 if (!(save_game_version < DAT_0057555c)) {
                     rge_read(infile, &this->numberFoundForestTilesValue, 4);
@@ -395,7 +398,9 @@ TribeInformationAIModule::~TribeInformationAIModule() {
     operator delete(this->numberResourceTypesValue);
 
     if (this->saveLearnInformationValue == 1) {
-        int file = rge_open(this->learnFileName, 0x8301, 0x180);
+        int file = rge_open(this->learnFileName,
+                            _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                            _S_IREAD | _S_IWRITE);
         local_14 = file;
         if (file != -1) {
             rge_write(file, &this->mapXSizeValue, 4);
@@ -421,7 +426,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
                     if (((AttackMemory*)((char*)this->attackMemories + offset))->id != -1)
                         rge_write(file,
                                   (AttackMemory*)((char*)this->attackMemories + offset),
-                                  0x18);
+                                  24);
                     index++;
                     offset += sizeof(AttackMemory);
                 } while (index < this->maxAttackMemories);
@@ -448,7 +453,7 @@ TribeInformationAIModule::~TribeInformationAIModule() {
                         ((ObjectMemory*)(offset + (char*)this->importantObjectMemory))->type == 0x6d)
                         rge_write(file,
                                   (ObjectMemory*)(offset + (char*)this->importantObjectMemory),
-                                  0x24);
+                                  36);
                     index++;
                     offset += sizeof(ObjectMemory);
                 } while (index < this->maxImportantObjectMemory);
@@ -481,9 +486,11 @@ TribeInformationAIModule::~TribeInformationAIModule() {
 
     unsigned char currentPlayer = this->md->player->world->player_turn;
     if ((currentPlayer == this->md->player->id || currentPlayer == 0xff) &&
-        (local_14 = rge_open(this->unitHistoryFilename, 0x8301, 0x180),
+        (local_14 = rge_open(this->unitHistoryFilename,
+                             _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                             _S_IREAD | _S_IWRITE),
          local_14 != -1)) {
-        rge_write(local_14, this->unitHistory, 0x2c);
+        rge_write(local_14, this->unitHistory, 44);
         rge_close(local_14);
     }
 
@@ -647,7 +654,7 @@ int TribeInformationAIModule::save(int outfile) {
     rge_write(saved_handle, &this->lastUpdateRowValue, 4);
     rge_write(saved_handle, &this->maxImportantObjectMemory, 4);
     for (int a = 0; a < this->maxImportantObjectMemory; a++)
-        rge_write(saved_handle, (char*)this->importantObjectMemory + a * 0x24, 0x24);
+        rge_write(saved_handle, (char*)this->importantObjectMemory + a * 0x24, 36);
 
     rge_write(saved_handle, &this->maxBuildingLots, 4);
     for (int b = 0; b < this->maxBuildingLots; b++)
@@ -655,7 +662,7 @@ int TribeInformationAIModule::save(int outfile) {
 
     rge_write(saved_handle, &this->maxAttackMemories, 4);
     for (int c = 0; c < this->maxAttackMemories; c++)
-        rge_write(saved_handle, (char*)this->attackMemories + c * 0x18, 0x18);
+        rge_write(saved_handle, (char*)this->attackMemories + c * 0x18, 24);
 
     outfile = this->importantObjects.numberValue;
     rge_write(saved_handle, &outfile, 4);
@@ -709,25 +716,25 @@ int TribeInformationAIModule::save(int outfile) {
     rge_write(saved_handle, &outfile, 4);
     rge_write(saved_handle, this->learnFileName, strlen(this->learnFileName));
 
-    rge_write(saved_handle, this->fullyExploredZoneValue, 0xFF);
-    rge_write(saved_handle, this->quadrantLog, 0xC0);
+    rge_write(saved_handle, this->fullyExploredZoneValue, 255);
+    rge_write(saved_handle, this->quadrantLog, 192);
 
     for (int y = 0; y < 4; y++) {
         if (this->maxResources[y] != 0 && this->resources[y] == 0)
             this->maxResources[y] = 0;
     }
-    rge_write(saved_handle, &this->maxResources, 0x10);
-    rge_write(saved_handle, &this->numResources, 0x10);
+    rge_write(saved_handle, &this->maxResources, 16);
+    rge_write(saved_handle, &this->numResources, 16);
     for (int z = 0; z < 4; z++) {
         if (this->maxResources[z] != 0)
             rge_write(saved_handle, this->resources[z], this->maxResources[z] * 20);
     }
 
-    rge_write(saved_handle, this->dropsitesByAge, 0x40);
-    rge_write(saved_handle, this->closestDropsiteValue, 0x10);
-    rge_write(saved_handle, this->closestDropsiteResourceID, 0x10);
+    rge_write(saved_handle, this->dropsitesByAge, 64);
+    rge_write(saved_handle, this->closestDropsiteValue, 16);
+    rge_write(saved_handle, this->closestDropsiteResourceID, 16);
     rge_write(saved_handle, &this->numberFoundForestTilesValue, 4);
-    rge_write(saved_handle, this->playHistory, 0xFA00);
+    rge_write(saved_handle, this->playHistory, 64000);
 
     return 1;
 }
@@ -763,7 +770,7 @@ int TribeInformationAIModule::closestUnexploredTile(
     int civilianObj = obj->master_obj->object_group == 4;
     unsigned char initialZone = obj->currentZone();
     int direction = debug_rand(
-        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x397) % 4;
+        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 919) % 4;
     int x = (int)cX;
     int y = (int)cY;
     int offLeft = 0;
@@ -838,7 +845,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                                             .numberExploredTiles;
                                     value += debug_rand(
                                         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                        0x420) % 100;
+                                        1056) % 100;
                                     value += this->quadrantLog
                                         [quadrant_x][quadrant_y]
                                             .numberAttacksOnUs * 25;
@@ -856,7 +863,7 @@ int TribeInformationAIModule::closestUnexploredTile(
 
                             int corner = debug_rand(
                                 (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                0x430) % 4;
+                                1072) % 4;
                             if (corner == 0) {
                                 x = best_x;
                                 y = best_y;
@@ -1276,7 +1283,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
         this->md->player->world->terrain_size, zoneMapIndex);
 
     randSelect = debug_rand(
-        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x6A9) % 0x32;
+        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 1705) % 0x32;
 
     {
         int x = 1;
@@ -2007,7 +2014,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     }
 
     char buildingName[256];
-    strncpy(buildingName, source_name, 0xff);
+    strncpy(buildingName, source_name, 255);
 
     int building_size_int = (int)buildingSize;
     int minimum_placement_value =
@@ -2156,7 +2163,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         if (random_range > 0) {
             randSelect = debug_rand(
                 (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                0xac8) % random_range;
+                2760) % random_range;
         } else {
             randSelect = 0;
         }
@@ -2174,10 +2181,10 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     unsigned long availableTime =
         this->md->player->world->availableComputerPlayerUpdateTime;
     unsigned long now = debug_timeGetTime(
-        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xade);
+        (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 2782);
     if (placementState.active == 0 && availableTime <= now - startTime) {
         placementState.buildingTypeID = buildingType;
-        strncpy(placementState.buildingName, buildingName, 0xff);
+        strncpy(placementState.buildingName, buildingName, 255);
         placementState.buildingSize = buildingSize;
         placementState.builderID = builderID;
         placementState.minimumDistance = minimumDistance;
@@ -2204,10 +2211,10 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         } else {
             now = debug_timeGetTime(
                 (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                0xb16);
+                2838);
             if (availableTime <= now - startTime) {
                 placementState.buildingTypeID = buildingType;
-                strncpy(placementState.buildingName, buildingName, 0xff);
+                strncpy(placementState.buildingName, buildingName, 255);
                 placementState.buildingSize = buildingSize;
                 placementState.builderID = builderID;
                 placementState.minimumDistance = minimumDistance;
@@ -2633,7 +2640,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                     int variation = this->calculatePlayVariation(i);
                     int randomValue =
                         debug_rand((char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                   0xD49) % 50;
+                                   3401) % 50;
                     int rating = 0;
                     int playType = play->typeValue;
                     if (playType == 1) {
@@ -2651,7 +2658,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                         playStatus.copyUnits(playUnits, numberPlayUnits);
                         randomValue = debug_rand(
                             (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                            0xD6A);
+                            3434);
                         playCommander = playUnits[randomValue % numberPlayUnits];
                     }
                 }
@@ -2830,7 +2837,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(
 
                     int randomRating = debug_rand(
                         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                        0xE36) % 100;
+                        3638) % 100;
                     int specialRating1 =
                         memory->type == this->md->tacticalAI.strategicNumber(0x6A);
                     int specialRating2 =
@@ -3031,7 +3038,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                     this->md->player->world->availableComputerPlayerUpdateTime;
                 if (debug_timeGetTime(
                         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                        0xf5a) - startTime >= availableTime) {
+                        3930) - startTime >= availableTime) {
                     attackState.iterationIndex = i;
                     return 0;
                 }
@@ -3105,7 +3112,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                                                 0x53);
                                         targetRandomization = (float)(debug_rand(
                                             (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                            0xfd5) % randomLimit);
+                                            4053) % randomLimit);
                                     } else {
                                         targetRandomization = 0.0f;
                                     }
@@ -3367,7 +3374,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(
                                         this->md->tacticalAI.strategicNumber(0x53);
                                     targetRandomization = (float)(debug_rand(
                                         "C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
-                                        0x110b) % randomLimit);
+                                        4363) % randomLimit);
                                 } else {
                                     targetRandomization = 0.0f;
                                 }
@@ -4558,7 +4565,7 @@ void TribeInformationAIModule::setupWalls(
         this->numberGatesValue = numberGates;
 
         int gate = debug_rand(
-            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1731) % 4;
+            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 5937) % 4;
         int halfGateSize = gateSize / 2;
 
         this->minGatePosition[gate].x = centerX - halfGateSize;
@@ -4596,7 +4603,7 @@ void TribeInformationAIModule::setupWalls(
 
     if (wallShape == 0) {
         wallShape = debug_rand(
-            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x176a) % 3;
+            (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 5994) % 3;
     }
 
     if (wallShape == 1) {
@@ -5073,7 +5080,7 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
                 (int)this->md->player->id);
     }
 
-    int file = rge_open(learnFileName, 0x8000);
+    int file = rge_open(learnFileName, _O_BINARY);
     if (file != -1) {
         rge_read(file, &this->mapXSizeValue, 4);
         rge_read(file, &this->mapYSizeValue, 4);
@@ -5083,7 +5090,7 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
         if (numToLoad > 0) {
             AttackMemory temp;
             do {
-                rge_read(file, &temp, 0x18);
+                rge_read(file, &temp, 24);
                 this->storeAttackMemory(
                     temp.type,
                     temp.minX,
@@ -5105,7 +5112,7 @@ void TribeInformationAIModule::loadLearnInfo(char* name) {
         if (numToLoad > 0) {
             ObjectMemory temp;
             do {
-                rge_read(file, &temp, 0x24);
+                rge_read(file, &temp, 36);
                 this->addObjectMemory(
                     temp.id,
                     temp.type,
@@ -5409,7 +5416,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             int dy = target->y - y;
             int d2 = dx * dx + dy * dy;
             int dist = (int)sqrt((double)d2);
-            int randomization = debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x1b3f) % (stageDistance * 3);
+            int randomization = debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 6975) % (stageDistance * 3);
             XYPoint temp;
             XYPoint temp2;
             temp.x = x; temp.y = y;
@@ -6607,9 +6614,9 @@ void TribeInformationAIModule::loadUnitHistory() {
         strcpy(historyFileName, "learn\\Default.uh");
     }
 
-    int fd = rge_open(historyFileName, 0x8000);
+    int fd = rge_open(historyFileName, _O_BINARY);
     if (fd != -1) {
-        rge_read(fd, (char*)this + 0xFF64, 0x2C);
+        rge_read(fd, (char*)this + 0xFF64, 44);
         rge_close(fd);
     }
 }

@@ -29,12 +29,12 @@ RGE_Campaign::RGE_Campaign(char* in_filename) {
 
     int handle = open(this->filename, _O_BINARY);
     if (handle >= 0) {
-        read(handle, this, 0x108);
+        read(handle, this, 264);
         if (this->campaign_header.scenario_num > 0) {
             this->scenario_offsets = (RGE_Scenario_Offset*)calloc(
-                this->campaign_header.scenario_num, 0x208);
+                this->campaign_header.scenario_num, 520);
             read(handle, this->scenario_offsets,
-                this->campaign_header.scenario_num * 0x208);
+                this->campaign_header.scenario_num * 520);
         } else {
             this->scenario_offsets = 0;
         }
@@ -56,7 +56,7 @@ RGE_Campaign::RGE_Campaign(char* campaign_filename, char* campaign_name, long sc
     this->campaign_header.scenario_num = scenario_num;
 
     if (scenario_num > 0) {
-        this->scenario_offsets = (RGE_Scenario_Offset*)calloc(scenario_num, 0x208);
+        this->scenario_offsets = (RGE_Scenario_Offset*)calloc(scenario_num, 520);
         for (long i = 0; i < scenario_num; ++i) {
             strcpy(this->scenario_offsets[i].name, scenarios_name[i]);
             strcpy(this->scenario_offsets[i].file_name, scenarios[i]);
@@ -83,10 +83,10 @@ void RGE_Campaign::create_file() {
 
     handle = _open(this->filename, _O_WRONLY | _O_CREAT | _O_TRUNC | _O_BINARY, _S_IREAD | _S_IWRITE);
     if (handle >= 0) {
-        write(handle, this, 0x108);
+        write(handle, this, 264);
         if (this->campaign_header.scenario_num > 0) {
             write(handle, this->scenario_offsets,
-                this->campaign_header.scenario_num * 0x208);
+                this->campaign_header.scenario_num * 520);
             current_offset = 0;
             index = this->campaign_header.scenario_num * 0x208 + 0x108;
             if (this->campaign_header.scenario_num > 0) {
@@ -113,7 +113,7 @@ void RGE_Campaign::create_file() {
             }
             lseek(handle, 0x108, SEEK_SET);
             write(handle, this->scenario_offsets,
-                this->campaign_header.scenario_num * 0x208);
+                this->campaign_header.scenario_num * 520);
         }
         close(handle);
     }

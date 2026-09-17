@@ -81,15 +81,15 @@ extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char*
     game = new TRIBE_Game(&info, 1);
     if (game != 0) {
         int error_code = game->get_error_code();
-        if (error_code == 0) {
+        if (error_code == RGE_ERROR_NONE) {
             retval = game->run();
             // The original code discards this second status query.
             game->get_error_code();
             delete game;
         }
-        else if (error_code != 4) {
-            game->get_string(IDS_ERROR_TITLE, title, 0x100);
-            game->get_string2(1, error_code, 0, msg, 0x100);
+        else if (error_code != RGE_ERROR_CHECK_MULTI_COPIES) {
+            game->get_string(IDS_ERROR_TITLE, title, 256);
+            game->get_string2(RGE_STRING_TYPE_ERROR, error_code, 0, msg, 256);
             delete game;
             MessageBoxA(0, msg, title, MB_ICONHAND);
         }

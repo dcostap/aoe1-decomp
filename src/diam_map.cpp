@@ -168,7 +168,7 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world_in) {
       free(this->map_tile_rows);
     }
     this->map_tile_rows =
-        (RGE_Map_Tile_Row *)calloc(this->map_tile_row_cnt, 0x24);
+        (RGE_Map_Tile_Row *)calloc(this->map_tile_row_cnt, 36);
 
     tile_row = 0;
     this->map_row_step =

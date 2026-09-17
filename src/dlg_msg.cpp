@@ -121,7 +121,7 @@ long TMessageDialog::setup(TPanel* parent_panel_in, char* info_file_in,
                            long btn_wid_in, long btn_hgt_in) {
     char str[256];
 
-    get_string(text_id, str, 0x100);
+    get_string(text_id, str, 256);
     return setup(parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in,
                  dlg_type_in, str, btn_wid_in, btn_hgt_in);
 }

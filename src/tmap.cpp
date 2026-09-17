@@ -409,7 +409,7 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
     long id;
 
     if (this->cliff_master_table[cliff_index].id2 > -1 &&
-        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tmap.cpp", 0x221) * 2 > 0x7fff) {
+        debug_rand((char*)"C:\\msdev\\work\\age1_x1\\tmap.cpp", 545) * 2 > 0x7fff) {
         id = this->cliff_master_table[cliff_index].id2;
         facet = this->cliff_master_table[cliff_index].facet2;
     } else {

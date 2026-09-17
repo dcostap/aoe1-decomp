@@ -63,8 +63,8 @@ RGE_Sprite::RGE_Sprite(int infile, RGE_Sound** sounds, RGE_Color_Table** c_table
     this->last_time = 0;
     this->delta_time = 0;
 
-    rge_read(infile, this->name, 0x15);
-    rge_read(infile, this, 0x0D);
+    rge_read(infile, this->name, 21);
+    rge_read(infile, this, 13);
     rge_read(infile, &this->resource_id, 4);
     rge_read(infile, &this->loaded, 1);
     rge_read(infile, &this->color_flag, 1);
@@ -99,7 +99,7 @@ RGE_Sprite::RGE_Sprite(int infile, RGE_Sound** sounds, RGE_Color_Table** c_table
 
     if (this->draw_list_num > 0) {
         this->draw_list = (RGE_Picture_List*)calloc(
-            (unsigned int)this->draw_list_num, 0x10);
+            (unsigned int)this->draw_list_num, 16);
         rge_read(infile, this->draw_list,
                  ((int)this->draw_list_num) << 4);
     } else {
@@ -108,7 +108,7 @@ RGE_Sprite::RGE_Sprite(int infile, RGE_Sound** sounds, RGE_Color_Table** c_table
 
     if (this->micro_man_sound != 0) {
         this->sound_list = (RGE_Sound_List*)calloc(
-            (unsigned int)this->facet_num, 0x14);
+            (unsigned int)this->facet_num, 20);
 
         int i = 0;
         if (this->facet_num > 0) {
@@ -223,7 +223,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short in_id, RGE_Sound** sounds) {
 
     if (*draw_count > 0) {
         RGE_Picture_List* allocated_draw_list = (RGE_Picture_List*)calloc(
-            (unsigned int)*draw_count, 0x10);
+            (unsigned int)*draw_count, 16);
         short i = 0;
         if (i < *draw_count) {
             this->draw_list = allocated_draw_list;
@@ -245,7 +245,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short in_id, RGE_Sound** sounds) {
 
     if (this->micro_man_sound != 0) {
         RGE_Sound_List* allocated_sound_list = (RGE_Sound_List*)calloc(
-            (unsigned int)this->facet_num, 0x14);
+            (unsigned int)this->facet_num, 20);
 
         short i = 0;
         if (i < *facet_count) {
@@ -347,8 +347,8 @@ void RGE_Sprite::save(int outfile) {
         info = this->main_sound->id;
     }
 
-    rge_write(outfile, this->name, 0x15);
-    rge_write(outfile, this, 0x0D);
+    rge_write(outfile, this->name, 21);
+    rge_write(outfile, this, 13);
     rge_write(outfile, &this->resource_id, 4);
     rge_write(outfile, &this->loaded, 1);
     rge_write(outfile, &this->color_flag, 1);
@@ -494,10 +494,10 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
         }
         addstring(&fname, this->pict_name, ".shp");
         unsigned long start =
-            debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x1E8);
+            debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 488);
         this->shape = new TShape(fname, this->resource_id);
         unsigned long end =
-            debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x1EA);
+            debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 490);
         rge_base_game->add_to_timing(0x0B, end - start);
         free(fname);
     }
@@ -740,11 +740,11 @@ int RGE_Sprite::get_size(long& xmin, long& ymin, long& xmax, long& ymax, long fa
             fname = 0;
             addstring(&fname, this->pict_name, ".shp");
             unsigned long start =
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x2b9);
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 697);
             TShape* shape = new TShape(fname, this->resource_id);
             this->shape = shape;
             unsigned long stop =
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x2bb);
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 699);
             rge_base_game->add_to_timing(0x0b, stop - start);
             free(fname);
         } else {
@@ -763,11 +763,11 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x, short& max_y
             fname = 0;
             addstring(&fname, this->pict_name, ".shp");
             unsigned long start =
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x2d2);
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 722);
             TShape* shape = new TShape(fname, this->resource_id);
             this->shape = shape;
             unsigned long stop =
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x2d4);
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 724);
             rge_base_game->add_to_timing(0x0b, stop - start);
             free(fname);
         } else {
@@ -920,11 +920,11 @@ unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet, long fram
             fname = 0;
             addstring(&fname, this->pict_name, ".shp");
             unsigned long start =
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x366);
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 870);
             TShape* shape = new TShape(fname, this->resource_id);
             this->shape = shape;
             unsigned long stop =
-                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 0x368);
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\sprite.cpp", 872);
             rge_base_game->add_to_timing(0x0b, stop - start);
             free(fname);
         } else {

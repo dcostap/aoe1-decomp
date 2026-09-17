@@ -104,9 +104,9 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     this->valid_save_spot_flag = 0;
     this->init_module_variables();
     this->update_interval = 200;
-    this->last_update_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_sed.cpp", 0x117);
+    this->last_update_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_sed.cpp", 279);
     this->map_redraw_interval = 1000;
-    this->last_map_redraw_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_sed.cpp", 0x11A);
+    this->last_map_redraw_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_sed.cpp", 282);
     this->save_text_color = 0;
     this->save_window_color = 0;
     this->changed_system_colors = 0;
@@ -238,7 +238,7 @@ void TRIBE_Screen_Sed::set_string(char *text, long text_id, int max_size) {
 
 int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button, long text_id, int ButtonSelectFlag) {
     char str1[0x78];
-    this->get_string(text_id, str1, 0x78);
+    this->get_string(text_id, str1, 120);
     return this->create_button(parent, button, str1, 0, 0, 0);
 }
 
@@ -580,7 +580,7 @@ create:
                                                                             RGE_Master_Static_Object *object = player->master_objects[i];
                                                                             if (object != 0 && object->hide_in_scenario_editor == 0) {
                                                                                 if (object->string_id > 0) {
-                                                                                    rge_base_game->get_string(object->string_id, str, 0x100);
+                                                                                    rge_base_game->get_string(object->string_id, str, 256);
                                                                                 } else {
                                                                                     strcpy(str, object->name);
                                                                                 }
@@ -1673,7 +1673,7 @@ long TRIBE_Screen_Sed::handle_size(long win_wid, long win_hgt) {
 
 long TRIBE_Screen_Sed::handle_idle() {
     if (rge_base_game->prog_mode == 7) {
-        unsigned long now = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_sed_cp, 0x8B1);
+        unsigned long now = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_sed_cp, 2225);
         if (last_update_time - now >= update_interval) {
             if (panel_system.modalPanel() == 0) {
                 main_view->set_redraw(TPanel::RedrawNormal);
@@ -2200,7 +2200,7 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                     rge_base_game->random_map_seed = old_seed;
                     itoa(rge_base_game->save_random_map_seed, random_val, 10);
                     this->random_seed_used_text->set_text(random_val);
-                    debug_rand(s_C__msdev_work_age1_x1_scr_sed_cp, 0xB58);
+                    debug_rand(s_C__msdev_work_age1_x1_scr_sed_cp, 2904);
                 }
                 center = map_size / 2;
                 for (i = 0; i < 8; i++) {
@@ -2496,7 +2496,7 @@ int TRIBE_Screen_Sed::command_menu() {
 
 void TRIBE_Screen_Sed::command_new(void) {
     if (this->need_to_save()) {
-        this->popupYesNoCancelDialog(0x2447, s_NewSaveDialog, 0x1C2, 100);
+        this->popupYesNoCancelDialog(0x2447, s_NewSaveDialog, TEASY_POPUP_WIDTH, 100);
         return;
     }
     static_cast<TRIBE_Game *>(rge_base_game)->start_scenario_editor(0, 0);
@@ -2585,7 +2585,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
 
 void TRIBE_Screen_Sed::command_open(void) {
     if (this->need_to_save()) {
-        this->popupYesNoCancelDialog(0x2447, s_OpenSaveDialog, 0x1C2, 100);
+        this->popupYesNoCancelDialog(0x2447, s_OpenSaveDialog, TEASY_POPUP_WIDTH, 100);
         return;
     }
 
@@ -2616,7 +2616,8 @@ void TRIBE_Screen_Sed::command_player(int id) {
 
 void TRIBE_Screen_Sed::command_quit() {
     if (need_to_save()) {
-        popupYesNoCancelDialog(0x2447, s_QuitSaveDialog, 0x1C2, 0x64);
+        popupYesNoCancelDialog(0x2447, s_QuitSaveDialog, TEASY_POPUP_WIDTH,
+                               TEASY_POPUP_HEIGHT);
         return;
     }
     if (!static_cast<TRIBE_Game *>(rge_base_game)->start_menu()) {
@@ -2633,10 +2634,10 @@ void TRIBE_Screen_Sed::command_save(unsigned char kill_menu, unsigned char quit_
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
-        this->popupOKDialog(0x2742, 0, 0x1c2, 100);
+        this->popupOKDialog(0x2742, 0, TEASY_POPUP_WIDTH, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
-        this->popupOKDialog(0x2743, 0, 0x1c2, 100);
+        this->popupOKDialog(0x2743, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         char *name = this->world->scenario->Get_scenario_name();
         if (*name == 0) {
@@ -2648,7 +2649,7 @@ void TRIBE_Screen_Sed::command_save(unsigned char kill_menu, unsigned char quit_
             }
             if (this->world->save_scenario(name) == 0) {
                 static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
-                this->popupOKDialog(0x963, 0, 0x1c2, 100);
+                this->popupOKDialog(0x963, 0, TEASY_POPUP_WIDTH, 100);
             } else {
                 static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
                 sprintf(temp_name, "default%d", rge_base_game->registry->RegGetInt(0, "Game File Number"));
@@ -2680,9 +2681,9 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char quit_after_save) {
     this->set_scenario_mode(ScenarioModeSave);
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(0x2742, 0, 0x1C2, 100);
+        this->popupOKDialog(0x2742, 0, TEASY_POPUP_WIDTH, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(0x2743, 0, 0x1C2, 100);
+        this->popupOKDialog(0x2743, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         scenario_name[0] = 0;
         new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenarioEdit,
@@ -2715,11 +2716,11 @@ char *TRIBE_Screen_Sed::scenario_save_defaulted() {
     this->set_scenario_mode(ScenarioModeSave);
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(0x2742, 0, 0x1c2, 100);
+        this->popupOKDialog(0x2742, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
     if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(0x2743, 0, 0x1c2, 100);
+        this->popupOKDialog(0x2743, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 
@@ -2728,7 +2729,7 @@ char *TRIBE_Screen_Sed::scenario_save_defaulted() {
             rge_base_game->registry->RegGetInt(0, "Game File Number"));
     if (this->world->save_scenario(scenario_default_file_name) == 0) {
         static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
-        this->popupOKDialog(0x963, 0, 0x1c2, 100);
+        this->popupOKDialog(0x963, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 

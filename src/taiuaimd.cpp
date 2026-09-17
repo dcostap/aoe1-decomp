@@ -1241,7 +1241,7 @@ int TribePriestUnitAIModule::processIdle(int doSearch) {
         }
 
         int range = VisibleUnitList_Size[3];
-        int r = debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x6AC) % (range + 2);
+        int r = debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 1708) % (range + 2);
         if (range > 0 && r > range) {
             float allyDistance;
             int action = this->bestUnitToHeal(1, &allyDistance);
@@ -1891,7 +1891,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
         }
 
         newX =
-            (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x97c) % 8) +
+            (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 2428) % 8) +
             (this->objectValue->world_x - DAT_005758dc);
         if (newX == this->objectValue->world_x) {
             if (newX > DAT_005758e0)
@@ -1901,7 +1901,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* nEvent, ulong uTime) {
         }
 
         newY =
-            (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x983) % 8) +
+            (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 2435) % 8) +
             (this->objectValue->world_y - DAT_005758dc);
         if (newY == this->objectValue->world_y) {
             if (newY > DAT_005758e0)

@@ -17,7 +17,7 @@ uchar RGE_RMM_Cliffs_Generator::generate() {
     int i;
 
     this->setup_cliff_maps();
-    debug_rand("C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 0x32);
+    debug_rand("C:\\msdev\\work\\age1_x1\\rmm_clif.cpp", 50);
     i = 0;
     if (this->info.number_of_cliffs > 0) {
         do {
@@ -159,7 +159,7 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
     unsigned char cliff_end_found;
     Map_Stack cliff;
     cost = ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp",
-                         0xc4) * variance * 2) / 0x7fff +
+                         196) * variance * 2) / 0x7fff +
             this->info.average_cliff_size) - variance;
     first_cliff = 1;
     if (this->valid_cliff_sites.next == 0) {
@@ -191,14 +191,14 @@ void RGE_RMM_Cliffs_Generator::generate_cliff() {
     this->search_map_rows[valid_height][y] = 0;
 
     direction = (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp",
-                             0xdd) * 4) / 0x7fff;
+                             221) * 4) / 0x7fff;
     this_cliff_size = 0;
     if (cost > 0) {
         do {
             cliff_end_found = 0;
             long turn =
                 (debug_rand((char*)"C:\\msdev\\work\\age1_x1\\rmm_clif.cpp",
-                             0xe3) * 100) / 0x7fff;
+                             227) * 100) / 0x7fff;
             if (turn < 0x12) {
                 if (direction <= 0) {
                     direction = 3;

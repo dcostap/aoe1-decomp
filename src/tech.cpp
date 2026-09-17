@@ -24,7 +24,7 @@ TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg) {
     this->world = world_arg;
     rge_read(file, &this->tech_tree_num, 2);
     if (this->tech_tree_num > 0) {
-        this->tech_tree = (Tech_Tree*)calloc(0x3c, this->tech_tree_num);
+        this->tech_tree = (Tech_Tree*)calloc(60, this->tech_tree_num);
         for (i = 0; i < this->tech_tree_num; i++) {
             short j;
             for (j = 0; j < 4; j++) {
@@ -77,7 +77,7 @@ TRIBE_Tech::TRIBE_Tech(char* filename) {
             if (this->tech_tree_num > 0) {
                 char name_buf[0x64];
                 short i;
-                this->tech_tree = (Tech_Tree*)calloc(0x3c, this->tech_tree_num);
+                this->tech_tree = (Tech_Tree*)calloc(60, this->tech_tree_num);
                 for (i = 0; i < file_count; i++) {
                     short j;
                     short tech_id;

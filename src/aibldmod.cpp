@@ -258,7 +258,7 @@ int BuildAIModule::loadBuildList(char* lName, RGE_Player* player) {
     char buildCategoryAsChar;
     char commentTemp2;
 
-    strncpy(this->buildListNameValue, lName, 0x3F);
+    strncpy(this->buildListNameValue, lName, 63);
     if (strcmp(this->buildListNameValue, "NONE") == 0 ||
         this->buildListNameValue == 0 ||
         strlen(this->buildListNameValue) == 0) {
@@ -409,16 +409,16 @@ int BuildAIModule::insertItem(RGE_Player* player, int typeID, int quantity, int 
     if (buildCategory != 6) {
         RGE_Master_Static_Object* master = player->master_objects[typeID];
         if (master != 0) {
-            strncpy(name, master->name, 0x3f);
+            strncpy(name, master->name, 63);
             xSize = master->radius_x + master->radius_x;
             ySize = master->radius_y + master->radius_y;
         } else {
-            strncpy(name, s_AddedBuildListItem, 0x3f);
+            strncpy(name, s_AddedBuildListItem, 63);
             xSize = 3.0f;
             ySize = 3.0f;
         }
     } else {
-        strncpy(name, s_SetGatherPercentage, 0x3f);
+        strncpy(name, s_SetGatherPercentage, 63);
         xSize = 3.0f;
         ySize = 3.0f;
     }

@@ -223,7 +223,7 @@ void UnitAIModule::load(int infile) {
     queue_index = 0;
     if (numberOrders > 0) {
         do {
-            rge_read(infile, &tempEvent, 0x24);
+            rge_read(infile, &tempEvent, 36);
             addToOrderQueue((OrderEvent*)&tempEvent, 0);
             ++queue_index;
         } while (queue_index < numberOrders);
@@ -1836,7 +1836,7 @@ int UnitAIModule::closestUndiscoveredTile(int* tX, int* tY,
     }
 
     // Original 0041601F points to the .cpp path at 0057F980.
-    const int randSelect = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xB2E) % 3;
+    const int randSelect = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 2862) % 3;
     currentZone = this->objectValue->currentZone();
 
     for (y = lowY; y <= highY; ++y) {
@@ -2300,16 +2300,16 @@ int UnitAIModule::evasiveMoveTo(float targetX, float targetY, float targetZ,
                 break;
             }
 
-            if (debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xD9F) % 2) {
-                targetX += (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xDA0) % 4);
+            if (debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3487) % 2) {
+                targetX += (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3488) % 4);
             } else {
-                targetX -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xDA2) % 4);
+                targetX -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3490) % 4);
             }
 
-            if (debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xDA3) % 2) {
-                targetY += (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xDA4) % 4);
+            if (debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3491) % 2) {
+                targetY += (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3492) % 4);
             } else {
-                targetY -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xDA6) % 4);
+                targetY -= (float)(debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3494) % 4);
             }
 
             if (targetX < DAT_0056ebc8) {
@@ -2671,7 +2671,7 @@ int debug_rand(char* file, int line);
 
 void UnitAIModule::setAdjustedIdleTimeout(void) {
     unsigned int idleTimeout = this->idleTimeoutValue;
-    unsigned int value = debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xF4C);
+    unsigned int value = debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3916);
 
     this->adjustedIdleTimeoutValue = value % (idleTimeout >> 1) + ((idleTimeout * 3) >> 2);
 }
@@ -2727,7 +2727,7 @@ void UnitAIModule::lookAround() {
 
     this->lookAroundTimerValue = 0;
     this->lookAroundTimeoutValue =
-        debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0xF92) % 1000 + 4000;
+        debug_rand("C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 3986) % 1000 + 4000;
 }
 
 // Searches an array of OrderEvent structs (stride 0x24) for a matching order type.

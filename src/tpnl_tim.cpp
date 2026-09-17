@@ -99,7 +99,7 @@ skip_recreate:
 void TRIBE_Panel_Time::startup() {
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
     this->start_real_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 0x92);
+        "C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp", 146);
 }
 
 void TRIBE_Panel_Time::set_clock_type(int clock_type_in, int player_id_in) {
@@ -334,7 +334,7 @@ long TRIBE_Panel_Time::handle_idle() {
     case 1:
         this->game_time =
             (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp",
-                               0x18A) - this->start_real_time) / 1000;
+                               394) - this->start_real_time) / 1000;
         break;
     case 2:
         this->game_time = this->world->world_time / 1000;

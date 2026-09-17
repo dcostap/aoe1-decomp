@@ -125,12 +125,12 @@ long TribeJoinScreen::handle_idle() {
             return TPanel::handle_idle();
         }
     }
-    unsigned long now = debug_timeGetTime("scr_cj.cpp", 0xAA);
+    unsigned long now = debug_timeGetTime("scr_cj.cpp", 170);
     if (10000 < now - this->joinTime) {
         comm->UnlinkToLevel(SERVICE_AVAILABLE);
         this->waitingToStart = 0;
         rge_base_game->enable_input();
-        TEasy_Panel::popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, 0, 0x1C2, 100);
+        TEasy_Panel::popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, 0, TEASY_POPUP_WIDTH, 100);
         return 1;
     }
     return TPanel::handle_idle();
@@ -156,7 +156,7 @@ long TribeJoinScreen::handle_user_command(unsigned int wParam, long lParam) {
                 comm->UnlinkToLevel(SERVICE_AVAILABLE);
                 this->waitingToStart = 0;
                 rge_base_game->enable_input();
-                TEasy_Panel::popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, 0, 0x1C2, 100);
+                TEasy_Panel::popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, 0, TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
             break;
@@ -227,16 +227,16 @@ long TribeJoinScreen::action(TPanel* fromPanel, long actionIn, unsigned long a1,
                             Sess->GetSessionGUID(line)) == 0) {
                         this->get_string(IDS_MULTIPLAYER_UNABLE_TO_JOIN_GAME, temp, sizeof(temp));
                         sprintf(string, temp, this->list->currentLine());
-                        this->popupOKDialog(string, 0, 0x1C2, 100);
+                        this->popupOKDialog(string, 0, TEASY_POPUP_WIDTH, 100);
                         return 1;
                     }
 
                     rge_base_game->disable_input();
                     this->waitingToStart = 1;
                     this->joinTime = debug_timeGetTime(
-                        "C:\\msdev\\work\\age1_x1\\scr_cj.cpp", 0x140);
+                        "C:\\msdev\\work\\age1_x1\\scr_cj.cpp", 320);
                 } else {
-                    this->popupOKDialog(IDS_MULTIPLAYER_NO_GAMES_TO_JOIN, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_MULTIPLAYER_NO_GAMES_TO_JOIN, 0, TEASY_POPUP_WIDTH, 100);
                 }
             }
             return 1;
@@ -376,7 +376,7 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
 
             void* window = FindWindowA("closedpw", "closedpw");
             if (window != 0)
-                SendMessageA(window, 0x10, 0, 0);
+                SendMessageA(window, WM_CLOSE, 0, 0);
 
             if (create_result != 0) {
                 new TribeMPSetupScreen;
@@ -392,7 +392,7 @@ long TribeMPCreateDialog::action(TPanel* fromPanel, long actionIn, unsigned long
             panel_system.destroyPanel("Create Dialog");
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Status Screen");
-            parent->popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_CREATE_GAME, 0, 0x1C2, 100);
+            parent->popupOKDialog(IDS_MULTIPLAYER_UNABLE_TO_CREATE_GAME, 0, TEASY_POPUP_WIDTH, 100);
             return 1;
         }
 

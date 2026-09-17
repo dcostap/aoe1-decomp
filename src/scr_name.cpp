@@ -227,7 +227,7 @@ long TRIBE_Screen_Name::action(TPanel* from_panel, long action_in, unsigned long
             if (this->name_list->get_line() != -1) {
                 sprintf(str, this->get_string(IDS_CONFIRM_REMOVE_PLAYER),
                         this->name_list->get_text());
-                this->popupYesNoDialog(str, 0, 0x1C2, 100);
+                this->popupYesNoDialog(str, 0, TEASY_POPUP_WIDTH, 100);
                 return action_in;
             }
             return 1;

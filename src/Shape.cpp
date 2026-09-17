@@ -1,5 +1,6 @@
 
 #include "../include/Shape.h"
+#include <fcntl.h>
 #include "../include/asm_draw.h"
 #include "../include/view.h"
 #include "../include/colorlog.h"
@@ -48,7 +49,7 @@ TShape::TShape(char* filename, long resource_file_id) {
         strcpy(NextFile, filename);
         strcpy(NextFile + strlen(NextFile) - 3, "SLP");
         ++Shape_Loads;
-        file_handle = open(NextFile, 0x8000);
+        file_handle = open(NextFile, _O_BINARY);
         if (file_handle != -1) {
             lseek(file_handle, 0, 2);
             file_size = tell(file_handle);
@@ -63,7 +64,7 @@ TShape::TShape(char* filename, long resource_file_id) {
 
         if (FShape == 0) {
             strcpy(NextFile + strlen(NextFile) - 3, "SHP");
-            file_handle = open(NextFile, 0x8000);
+            file_handle = open(NextFile, _O_BINARY);
             if (file_handle != -1) {
                 lseek(file_handle, 0, 2);
                 file_size = tell(file_handle);

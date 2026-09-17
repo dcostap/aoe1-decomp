@@ -134,7 +134,7 @@ RGE_Active_Animated_Sprite::RGE_Active_Animated_Sprite(RGE_Sprite* new_sprite)
     if (sprite->flags & 4) {
         count = (int)sprite->frame_num;
         tot_time = (float)count * sprite->duration + sprite->pause_between_loops;
-        rnd = debug_rand("C:\\msdev\\work\\age1_x1\\asprite.cpp", 0xB7);
+        rnd = debug_rand("C:\\msdev\\work\\age1_x1\\asprite.cpp", 183);
         frame_time = (float)rnd * tot_time * DAT_0056ee80;
         frame = (short)(frame_time / sprite->duration);
 

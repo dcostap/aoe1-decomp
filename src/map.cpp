@@ -37,7 +37,7 @@ extern TDebuggingLog* L;
 
 RGE_Map::RGE_Map(int infile, RGE_Sound** sounds, unsigned char setup) {
     this->map_zones = 0;
-    rge_read(infile, this, 0x8DD0);
+    rge_read(infile, this, 36304);
     RGE_Game_World* world = rge_base_game->world;
     this->game_world = world;
     this->map = 0;
@@ -1195,22 +1195,22 @@ void RGE_Map::map_generate2(RGE_Game_World* gworld, long new_width, long new_hei
 
     int seed = rge_base_game->random_map_seed;
     if (seed == -1)
-        seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x5CE);
+        seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 1486);
 
     rge_base_game->save_random_map_seed = seed;
     L->Log("Random Map Seed = %d", seed);
 
-    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x5DA, seed);
+    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 1498, seed);
     this->clear_map(0, gworld, 0, new_width, new_height);
 
-    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x5DD, seed);
+    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 1501, seed);
     this->random_map->init(this, gworld, type, player_num, 1);
 
-    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x5E0, seed);
+    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 1504, seed);
     this->random_map->generate();
     this->random_map->de_init();
 
-    int after_seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x5E5);
+    int after_seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 1509);
     L->Log("After Random Map Generation random number is %d", after_seed);
 
     this->game_world->game_state = old_state;
@@ -1272,7 +1272,7 @@ void RGE_Map::load_map(int infile) {
             } while (h < this->map_height);
         }
     } else {
-        rge_read(infile, this->map, this->map_width * this->map_height * 0x18);
+        rge_read(infile, this->map, this->map_width * this->map_height * 24);
         long h = 0;
         if (this->map_height > 0) {
             do {
@@ -1334,7 +1334,7 @@ void RGE_Map::save_map(int outfile) {
     } else {
         int tile_count = *height;
         tile_count *= this->map_width;
-        rge_write(handle, this->map, tile_count * 0x18);
+        rge_write(handle, this->map, tile_count * 24);
     }
 
     map->unified_vis_map->save(handle);
@@ -1363,7 +1363,7 @@ void RGE_Map::save(int outfile) {
         }
     }
 
-    rge_write(outfile, copy, 0x8dd0);
+    rge_write(outfile, copy, 36304);
     this->random_map->save(outfile);
     free(copy);
 }
@@ -1731,11 +1731,11 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworl
                         if (obj_flag == 0) {
                             x = (float)(int)col -
                                 (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                                  0x813) *
+                                                  2067) *
                                     -3.051851e-05f;
                             y = (float)(int)row -
                                 (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                                  0x814) *
+                                                  2068) *
                                     -3.051851e-05f;
                         } else if (obj_flag == 1) {
                             x = (float)(int)col - -0.5f;
@@ -1747,7 +1747,7 @@ void RGE_Map::create_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworl
                             place_it = 1;
                         } else {
                             int random_value =
-                                debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x820);
+                                debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2080);
                             place_it = ((random_value * 1000) / 0x7fff) < density_left;
                         }
 
@@ -1848,11 +1848,11 @@ void RGE_Map::place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld
                             } else {
                                 x = (float)(int)col -
                                     (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                                      0x894) *
+                                                      2196) *
                                         -3.051851e-05f;
                                 y = (float)(int)row -
                                     (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
-                                                      0x895) *
+                                                      2197) *
                                         -3.051851e-05f;
                             }
 
@@ -1861,7 +1861,7 @@ void RGE_Map::place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld
                                 place_it = 1;
                             } else {
                                 int random_value =
-                                    debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x8A2);
+                                    debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2210);
                                 place_it = ((random_value * 1000) / 0x7fff) < density_left;
                             }
 
@@ -1879,10 +1879,10 @@ void RGE_Map::place_terrain_object(RGE_Player* obj_owner, RGE_Game_World* gworld
                         y = (float)(int)row - -0.5f;
                     } else {
                         x = (float)(int)col -
-                            (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x8AF) *
+                            (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2223) *
                                 -3.051851e-05f;
                         y = (float)(int)row -
-                            (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 0x8B0) *
+                            (float)debug_rand((char*)"C:\\msdev\\work\\age1_x1\\map.cpp", 2224) *
                                 -3.051851e-05f;
                     }
 

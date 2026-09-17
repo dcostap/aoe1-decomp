@@ -16,7 +16,7 @@ RGE_Effects::RGE_Effects(int infile) {
     int index;
     rge_read(input_file, effect_num_ptr, 4);
     if (*effect_num_ptr > 0) {
-        this->effects = (RGE_Effect*)calloc(*effect_num_ptr, 0x2C);
+        this->effects = (RGE_Effect*)calloc(*effect_num_ptr, 44);
         index = 0;
         if (index < *effect_num_ptr) {
             do {
@@ -24,13 +24,13 @@ RGE_Effects::RGE_Effects(int infile) {
                 RGE_Effect* effect_record;
                 base_effect = this->effects;
                 effect_record = &this->effects[index];
-                rge_read(input_file, base_effect->name, 0x1F);
+                rge_read(input_file, base_effect->name, 31);
                 rge_read(input_file, &effect_record->effect_list_num, 2);
                 if (effect_record->effect_list_num > 0) {
                     int command_index;
                     RGE_Effect_Command*& effect_list = effect_record->effect_list;
                     RGE_Effect_Command* allocated =
-                        (RGE_Effect_Command*)calloc(effect_record->effect_list_num, 0x0C);
+                        (RGE_Effect_Command*)calloc(effect_record->effect_list_num, 12);
                     command_index = 0;
                     if (command_index < effect_record->effect_list_num) {
                         effect_list = allocated;
@@ -67,14 +67,14 @@ RGE_Effects::RGE_Effects(char* effect_file) {
     fp = fopen(effect_file, "r");
     if (fp != 0) {
         if (fscanf(fp, "%d %d", &effect_num, &count) != -1) {
-            effects = (RGE_Effect*)calloc(effect_num, 0x2C);
+            effects = (RGE_Effect*)calloc(effect_num, 44);
             for (index = 0; index < count; index++) {
                 short command_index = 0;
                 fscanf(fp, "%d", &this_effect_num);
                 if (fscanf(fp, "%s %hd", effects[this_effect_num].name, &effects[this_effect_num].effect_list_num) == -1) break;
                 effects[this_effect_num].id = (short)this_effect_num;
                 if (effects[this_effect_num].effect_list_num > 0) {
-                    effects[this_effect_num].effect_list = (RGE_Effect_Command*)calloc(effects[this_effect_num].effect_list_num, 0x0C);
+                    effects[this_effect_num].effect_list = (RGE_Effect_Command*)calloc(effects[this_effect_num].effect_list_num, 12);
                     if (effects[this_effect_num].effect_list_num > 0) {
                         while (effects[this_effect_num].effect_list_num > command_index) {
                             RGE_Effect_Command* command = &effects[this_effect_num].effect_list[command_index];
@@ -125,7 +125,7 @@ void RGE_Effects::save(int outfile) {
         outfile = 0;
         do {
             record = this->effects + index;
-            rge_write(output_file, this->effects->name, 0x1F);
+            rge_write(output_file, this->effects->name, 31);
             rge_write(output_file, &record->effect_list_num, 2);
             int command_index = 0;
             if (record->effect_list_num > 0) {

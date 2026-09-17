@@ -37,7 +37,7 @@ TRIBE_Command::TRIBE_Command(
 extern int __cdecl debug_rand(char* file, int line);
 
 void TRIBE_Command::do_command(void* order) {
-    debug_rand("C:\\msdev\\work\\age1_x1\\tcommand.cpp", 0x3F);
+    debug_rand("C:\\msdev\\work\\age1_x1\\tcommand.cpp", 63);
     switch (static_cast<TRIBE_Command_Header*>(order)->command) {
     case 0x64:
         do_command_make(static_cast<TRIBE_Command_Make*>(order));
@@ -440,7 +440,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* order) {
             draw_system->SetPalette(panel->get_palette());
             rge_base_game->set_render_all();
             rge_base_game->draw_window();
-            panel->popupOKDialog(IDS_ERROR_SYNC, 0, 0x1C2, 100);
+            panel->popupOKDialog(IDS_ERROR_SYNC, 0, TEASY_POPUP_WIDTH, 100);
         }
         panel_system.destroyPanel("Temp Screen");
         break;

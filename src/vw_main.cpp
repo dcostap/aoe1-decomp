@@ -84,7 +84,7 @@ int RGE_Main_View::do_auto_scroll() {
 
             if (vert_scroll != 0 || horz_scroll != 0) {
                 now = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0xAA);
+                    "C:\\msdev\\work\\age1_x1\\vw_main.cpp", 170);
                 elapsed = now - this->last_mouse_scroll_time;
                 if (this->mouse_scrolling == 0) {
                     scroll_dist2 = DAT_00577900;
@@ -200,7 +200,7 @@ int RGE_Main_View::handle_keys() {
 
             if (horz_scroll != 0 || vert_scroll != 0) {
                 now = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x153);
+                    "C:\\msdev\\work\\age1_x1\\vw_main.cpp", 339);
                 elapsed = now - this->last_key_scroll_time;
                 if (this->key_scrolling == 0) {
                     scroll_dist2 = DAT_00577900;
@@ -263,9 +263,9 @@ long RGE_Main_View::handle_mouse_up(unsigned char mouse_button_in, long x, long 
     long result;
     unsigned long stop;
 
-    start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x1AE);
+    start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 430);
     result = RGE_View::handle_mouse_up(mouse_button_in, x, y, ctrl_key, shift_key);
-    stop = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x1B0);
+    stop = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 432);
     rge_base_game->add_to_timing(0x0D, stop - start);
     return result;
 }
@@ -876,7 +876,7 @@ void RGE_Main_View::draw() {
     unsigned long et;
     unsigned long ac2;
 
-    start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x522);
+    start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 1314);
     at = rge_base_game->get_accum_time(0xB);
 
     if (world != 0 && player != 0) {
@@ -896,7 +896,7 @@ void RGE_Main_View::draw() {
 
     ac2 = rge_base_game->get_accum_time(0xB);
     ac2 -= at;
-    et = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x542);
+    et = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_main.cpp", 1346);
     rge_base_game->add_to_timing(6, (et - start) - ac2);
     rge_base_game->increment_view_update_count();
     rge_base_game->add_to_timing(0xC, ac2);

@@ -9,7 +9,7 @@ AIModuleID::AIModuleID(char* n, int i) {
     this->id = i;
 
     if (n != NULL) {
-        strncpy(this->name, n, 0x3F);
+        strncpy(this->name, n, 63);
     } else {
         strcpy(this->name, "");
     }
@@ -20,7 +20,7 @@ AIModuleID::~AIModuleID() {}
 void AIModuleID::setID(int i, char* n) {
     this->id = i;
     if (n != 0) {
-        strncpy(this->name, n, 0x3F);
+        strncpy(this->name, n, 63);
         return;
     }
     strcpy(this->name, "");
@@ -76,7 +76,7 @@ AIModuleMessage::~AIModuleMessage() {
 
 void AIModuleMessage::setText(char* t) {
     if (t != 0) {
-        strncpy(this->text, t, 0x7F);
+        strncpy(this->text, t, 127);
         return;
     }
 
@@ -142,7 +142,7 @@ char* AIModule::playerName() const { return (char*)this->playerNameValue; }
 void AIModule::setPlayer(int i, char* n) {
     this->playerNumberValue = i;
     if (n != 0) {
-        strncpy(this->playerNameValue, n, 0x3F);
+        strncpy(this->playerNameValue, n, 63);
         return;
     }
     strcpy(this->playerNameValue, "Unknown");

@@ -246,7 +246,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                         uchar placement_chance = this->chance(x, y, index3);
                         long random_value = debug_rand(
                             (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                            0x12B);
+                            299);
                         if (placement_chance >
                             (random_value * 100) / 0x7FFF) {
                             this->search_map_rows[y][x] = 0xFF;
@@ -266,7 +266,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                                         this->info.land_num) {
                                     long random_value = debug_rand(
                                         (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        0x138);
+                                        312);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
@@ -279,7 +279,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                                         this->info.land_num) {
                                     long random_value = debug_rand(
                                         (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        0x13B);
+                                        315);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
@@ -292,7 +292,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                                         this->info.land_num) {
                                     long random_value = debug_rand(
                                         (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        0x13E);
+                                        318);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +
@@ -305,7 +305,7 @@ uchar RGE_RMM_Land_Generator::base_land_generate() {
                                         this->info.land_num) {
                                     long random_value = debug_rand(
                                         (char*)"C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
-                                        0x141);
+                                        321);
                                     long cost =
                                         (random_value * 100) / 0x7FFF -
                                         (long)count * line->clumpiness_factor +

@@ -91,13 +91,13 @@ void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float f
         }
     }
 
-    old_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 0x69);
+    old_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 105);
     fade_time2 = fade_time * fade_time;
 
     if (direction == 1) {
         do {
             long pct;
-            long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 0x70);
+            long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 112);
             delta_time = (float)(cur_time - old_time) * 0.001f;
             if (fade_time <= 0.0 || delta_time > fade_time || delta_time < 0.0f) {
                 pct = 100;
@@ -114,7 +114,7 @@ void __cdecl RGE_fade_palette(TDrawArea* surface, tagPALETTEENTRY color, float f
     } else {
         do {
             long pct;
-            long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 0x88);
+            long cur_time = debug_timeGetTime(s_C__msdev_work_age1_x1_color_cpp, 136);
             delta_time = fade_time - ((float)(cur_time - old_time) * 0.001f);
             if (fade_time <= 0.0 || delta_time > fade_time || delta_time < 0.0f) {
                 pct = 0;
@@ -138,7 +138,7 @@ RGE_Color_Table::RGE_Color_Table(int infile) {
         char tempname[300];
     } scratch;
 
-    rge_read(infile, this->color_table_name, 0x1E);
+    rge_read(infile, this->color_table_name, 30);
     rge_read(infile, &this->id, 2);
     rge_read(infile, &this->resource_id, 2);
     rge_read(infile, &this->map_color, 1);
@@ -262,7 +262,7 @@ RGE_Color_Table::~RGE_Color_Table() {
 }
 
 void RGE_Color_Table::save(int outfile) {
-    rge_write(outfile, this->color_table_name, 0x1E);
+    rge_write(outfile, this->color_table_name, 30);
     rge_write(outfile, &this->id, 2);
     rge_write(outfile, &this->resource_id, 2);
     rge_write(outfile, &this->map_color, 1);

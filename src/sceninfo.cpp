@@ -17,7 +17,7 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* in_filename) {
 
     strcpy(filename, in_filename);
 
-    int fd = rge_open(this->filename, 0x8000);
+    int fd = rge_open(this->filename, _O_BINARY);
     if (fd != -1) {
         rge_read_uncompressed(fd, &this->scenario_num, 4);
         i = 0;
@@ -27,7 +27,7 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* in_filename) {
                 this->scenario_num, sizeof(RGE_Scenario_File_Entry));
             for (i = 0; i < this->scenario_num; i++) {
                 rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
-                rge_read_uncompressed(fd, this->scenarios[i].name, 0x104);
+                rge_read_uncompressed(fd, this->scenarios[i].name, 260);
                 this->scenarios[i].scenario_header = rge_base_game->new_scenario_header(fd);
             }
 
@@ -63,7 +63,9 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
 }
 
 void RGE_Scenario_File_Info::save() {
-    int fd = rge_open(this->filename, 0x8301, 0x180);
+    int fd = rge_open(this->filename,
+                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                      _S_IREAD | _S_IWRITE);
     if (fd == -1)
         return;
 
@@ -74,7 +76,7 @@ void RGE_Scenario_File_Info::save() {
     if (this->scenario_num > 0) {
         do {
             rge_write_uncompressed(fd, &this->scenarios[cnt].time, 4);
-            rge_write_uncompressed(fd, this->scenarios[cnt].name, 0x104);
+            rge_write_uncompressed(fd, this->scenarios[cnt].name, 260);
             this->scenarios[cnt].scenario_header->save(fd);
 
             cnt++;
@@ -155,7 +157,7 @@ void RGE_Scenario_File_Info::reload_scenarios() {
             sprintf(file_name + 4, "%s%s",
                     rge_base_game->prog_info->scenario_dir,
                     file_info.name);
-            int fd = rge_open(file_name + 4, 0x8000);
+            int fd = rge_open(file_name + 4, _O_BINARY);
             if (fd > -1) {
                 rge_read_uncompressed(fd, file_name, 4);
                 current->scenario_header = rge_base_game->new_scenario_header(fd);

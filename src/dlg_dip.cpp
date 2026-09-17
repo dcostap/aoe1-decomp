@@ -163,7 +163,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
             return;
         }
 
-        rge_base_game->get_string2(0x69,
+        rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION,
                                    world->players[player_id]->master_player_id,
                                    0, temp_str, 100);
         if (!this->create_text(this, &this->playerCivilization[row],

@@ -100,6 +100,45 @@ unsigned long __cdecl debug_timeGetTime(char* source_name, int source_line);
 int __cdecl debug_rand(char* source_name, int source_line);
 void __cdecl debug_srand(char* source_name, int source_line, unsigned int seed);
 
+// Error values returned by RGE_Base_Game::get_error_code().
+enum RGE_Base_Game_Error_Code {
+    RGE_ERROR_NONE = 0,
+    RGE_ERROR_SETUP = 1,
+    RGE_ERROR_SETUP_COMMAND_OPTIONS = 2,
+    RGE_ERROR_CHECK_EXPIRATION = 3,
+    RGE_ERROR_CHECK_MULTI_COPIES = 4,
+    RGE_ERROR_SETUP_CLASS = 5,
+    RGE_ERROR_SETUP_MAIN_WINDOW = 6,
+    RGE_ERROR_SETUP_GRAPHICS = 7,
+    RGE_ERROR_SETUP_MOUSE = 8,
+    RGE_ERROR_SETUP_COMM = 9,
+    RGE_ERROR_SETUP_SOUND = 10,
+    RGE_ERROR_SETUP_FONTS = 11,
+    RGE_ERROR_SETUP_SOUNDS = 12,
+    RGE_ERROR_SETUP_BLANK_SCREEN = 13,
+    RGE_ERROR_SETUP_REGISTRY = 14,
+    RGE_ERROR_SETUP_DEBUG_LOG = 15,
+    RGE_ERROR_SETUP_CHAT = 16,
+    RGE_ERROR_SETUP_PALETTE = 17,
+    RGE_ERROR_OUT_OF_SYNC = 18,
+    RGE_ERROR_SETUP_COLOR_DEPTH = 19,
+    RGE_ERROR_DIRECTX_VERSION = 20,
+    RGE_ERROR_WINDOWS_VERSION = 21,
+    RGE_ERROR_MEMORY = 22,
+    RGE_ERROR_GAME_EXECUTABLE = 23
+};
+
+// Domains accepted by RGE_Base_Game::get_string2().
+enum RGE_String_Type {
+    RGE_STRING_TYPE_ERROR = 1,
+    RGE_STRING_TYPE_RESOURCE = 2,
+    RGE_STRING_TYPE_INVENTORY = 100,
+    RGE_STRING_TYPE_AGE = 101,
+    RGE_STRING_TYPE_COMMAND = 102,
+    RGE_STRING_TYPE_ATTRIBUTE = 103,
+    RGE_STRING_TYPE_CIVILIZATION = 105
+};
+
 struct RGE_Font {
     void* font;
     long font_wid;

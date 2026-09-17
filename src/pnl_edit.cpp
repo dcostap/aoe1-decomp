@@ -9,7 +9,7 @@ extern int imc_retval;
 
 static long __stdcall pnl_sub_wnd_proc(HWND wnd, unsigned int msg,
                                        unsigned int wparam, long lparam) {
-    TEditPanel* panel = (TEditPanel*)GetWindowLongA(wnd, -21);
+    TEditPanel* panel = (TEditPanel*)GetWindowLongA(wnd, GWL_USERDATA);
     if (panel != 0) {
         return panel->sub_wnd_proc(wnd, msg, wparam, lparam);
     }
@@ -47,7 +47,7 @@ TEditPanel::TEditPanel() : TPanel() {
 // pnl_edit.cpp lines 83-112.
 TEditPanel::~TEditPanel() {
     if (this->edit_wnd != 0 && this->hidden == 0) {
-        ShowWindow(this->edit_wnd, 0);
+        ShowWindow(this->edit_wnd, SW_HIDE);
         this->hidden = 1;
     }
     if (this->text != 0) {
@@ -101,9 +101,9 @@ long TEditPanel::setup(
         return 0;
     }
 
-    SetWindowLongA(this->edit_wnd, -0x15, (long)(void*)this);
-    this->old_sub_wnd_proc = (WNDPROC)GetWindowLongA(this->edit_wnd, -4);
-    SetWindowLongA(this->edit_wnd, -4, (long)(void*)pnl_sub_wnd_proc);
+    SetWindowLongA(this->edit_wnd, GWL_USERDATA, (long)(void*)this);
+    this->old_sub_wnd_proc = (WNDPROC)GetWindowLongA(this->edit_wnd, GWL_WNDPROC);
+    SetWindowLongA(this->edit_wnd, GWL_WNDPROC, (long)(void*)pnl_sub_wnd_proc);
 
     {
         char* text_buffer = (char*)calloc(this->fixed_len + 2, 1);
@@ -117,14 +117,14 @@ long TEditPanel::setup(
     if (text_in != 0 && *text_in != 0) {
         this->set_text(text_in);
     }
-    this->brush = GetStockObject(4);
+    this->brush = GetStockObject(BLACK_BRUSH);
     this->text_color1 = 0xFFFFFF;
     this->highlight_text_color1 = 0xFFFFFF;
     this->back_color = 0;
     this->text_color2 = 0;
     this->highlight_text_color2 = 0;
     if (this->font != 0) {
-        SendMessageA(this->edit_wnd, 0x30, (unsigned int)this->font, 0);
+        SendMessageA(this->edit_wnd, WM_SETFONT, (unsigned int)this->font, 0);
     }
     this->draw_format = 0x2000;
     if (this->format != TEditPanel::FormatMultiLine)
@@ -165,7 +165,7 @@ void TEditPanel::update_text() {
         int start;
         start = 0;
         end = 0;
-        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&start, (long)&end);
+        SendMessageA(this->edit_wnd, EM_GETSEL, (unsigned int)&start, (long)&end);
         this->sel_len = end - start;
     }
 }
@@ -192,7 +192,7 @@ char* TEditPanel::currentLine() {
 void TEditPanel::set_active(int activ_in) {
     TPanel::set_active(activ_in);
     if (this->edit_wnd != 0 && this->active == 0) {
-        ShowWindow(this->edit_wnd, 0);
+        ShowWindow(this->edit_wnd, SW_HIDE);
         this->hidden = 1;
     }
 }
@@ -240,11 +240,11 @@ void TEditPanel::set_focus(int have_focus_in) {
     }
     if (this->edit_wnd != 0 && this->have_focus != 0 && old_focus == 0 &&
         this->auto_sel != 0) {
-        SendMessageA(this->edit_wnd, 0xb1, 0, -1);
+        SendMessageA(this->edit_wnd, EM_SETSEL, 0, -1);
     }
     if (DAT_0086b240 == 0 && this->edit_wnd != 0 &&
         this->have_focus == 0 && this->hidden == 0) {
-        ShowWindow(this->edit_wnd, 0);
+        ShowWindow(this->edit_wnd, SW_HIDE);
         this->hidden = 1;
     }
     if (this->have_focus != 0) {
@@ -274,7 +274,7 @@ void TEditPanel::set_rect(long x_in, long y_in, long wid_in, long hgt_in) {
         this->draw_rect.left = this->render_rect.left + 1 + this->bevel_size;
         this->draw_rect.top = this->render_rect.top + this->bevel_size;
         this->draw_rect.right = this->render_rect.right - this->bevel_size -
-                                GetSystemMetrics(0x15) - 1;
+                                GetSystemMetrics(SM_CXHSCROLL) - 1;
         this->draw_rect.bottom = this->render_rect.bottom - this->bevel_size;
     } else {
         this->draw_rect.left = this->render_rect.left + this->bevel_size + 8;
@@ -403,9 +403,9 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
                 }
 
                 if (wParam == 9) {
-                    int alt_down = GetKeyState(0x12) < 0;
-                    int control_down = GetKeyState(0x11) < 0;
-                    int shift_down = GetKeyState(0x10) < 0;
+                    int alt_down = GetKeyState(VK_MENU) < 0;
+                    int control_down = GetKeyState(VK_CONTROL) < 0;
+                    int shift_down = GetKeyState(VK_SHIFT) < 0;
                     DAT_0086b240 = 1;
                     this->handle_key_down(9, (short)lParam, alt_down,
                                           control_down, shift_down);
@@ -418,12 +418,12 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
                 }
                 if (wParam == 0x1b) {
                     if (this->parent_panel->action(this, 1, 0, 0) == 0) {
-                        SendMessageA(this->edit_wnd, 0xc7, 0, 0);
+                        SendMessageA(this->edit_wnd, EM_UNDO, 0, 0);
                     }
                     return 0;
                 }
             } else if (wParam == 0x1b) {
-                SendMessageA(this->edit_wnd, 0xc7, 0, 0);
+                SendMessageA(this->edit_wnd, EM_UNDO, 0, 0);
                 return 0;
             }
             break;
@@ -465,14 +465,14 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
 
     if (this->edit_wnd != 0 && msg != 0xb0) {
         check_sel = 1;
-        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&old_start, (long)&old_end);
+        SendMessageA(this->edit_wnd, EM_GETSEL, (unsigned int)&old_start, (long)&old_end);
     }
 
     long result = CallWindowProcA((FARPROC)this->old_sub_wnd_proc, (HWND)hwnd,
                                   msg, wParam, lParam);
 
     if (check_sel != 0) {
-        SendMessageA(this->edit_wnd, 0xb0, (unsigned int)&new_start, (long)&new_end);
+        SendMessageA(this->edit_wnd, EM_GETSEL, (unsigned int)&new_start, (long)&new_end);
         if (new_start != old_start || new_end != old_end) {
             InvalidateRect(this->edit_wnd, 0, 1);
             UpdateWindow(this->edit_wnd);
@@ -483,7 +483,8 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam,
         this->update_text();
     }
 
-    if (msg == 0x201 || msg == 0x202 || msg == 0x204 || msg == 0x205) {
+    if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONUP ||
+        msg == WM_RBUTTONDOWN || msg == WM_RBUTTONUP) {
         unsigned long x = this->pnl_x + ((unsigned long)lParam & 0xffff);
         unsigned long y = this->pnl_y + ((unsigned long)lParam >> 16);
         long position = (long)(((y & 0xffff) << 16) | (x & 0xffff));
@@ -663,13 +664,13 @@ void TEditPanel::draw() {
     if (this->edit_wnd != 0 && this->active != 0) {
         if (this->have_focus != 0) {
             if (this->hidden != 0) {
-                ShowWindow(this->edit_wnd, 5);
+                ShowWindow(this->edit_wnd, SW_SHOW);
                 InvalidateRect(this->edit_wnd, 0, 1);
                 this->hidden = 0;
             }
         } else {
             if (this->hidden == 0) {
-                ShowWindow(this->edit_wnd, 0);
+                ShowWindow(this->edit_wnd, SW_HIDE);
                 this->hidden = 1;
             }
 

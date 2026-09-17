@@ -860,12 +860,12 @@ long TribeAchievementsScreen::handle_idle() {
 }
 
 long TribeAchievementsScreen::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
-    if (msg == 0x10 && confirmed_close == 0) {
+    if (msg == WM_CLOSE && confirmed_close == 0) {
         confirmed_close = 1;
         int mode = rge_base_game->prog_mode;
         if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
             if (IsIconic(render_area->Wnd) == 0) {
-                popupYesNoDialog(get_string(IDS_CONFIRM_QUIT_GAME), 0, 0x1C2, 100);
+                popupYesNoDialog(get_string(IDS_CONFIRM_QUIT_GAME), 0, TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
         }

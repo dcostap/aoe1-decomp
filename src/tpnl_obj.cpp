@@ -781,12 +781,12 @@ long TRIBE_Panel_Object::handle_idle() {
         return 0;
 
     unsigned long now = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 0x37C);
+        "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 892);
     if (now - this->idle_time < this->idle_interval)
         return 0;
 
     this->idle_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 0x37F);
+        "C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp", 895);
 
     if (this->mode == 2) {
         for (int i = 1; i < 9; ++i) {

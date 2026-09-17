@@ -283,9 +283,9 @@ void RGE_RMM_Terrain_Generator::link_stack_randomly(
     if (count > 0) {
         long loop_count = count;
         do {
-            long x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x10F)
+            long x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 271)
                       * max_x) / 0x7FFF;
-            long y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x110)
+            long y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 272)
                       * max_y) / 0x7FFF;
             this->add_stack_node(list, this->stack_offsets[y] + x);
             --loop_count;
@@ -513,7 +513,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
 
                     if (info_line.avoid_hot_spots == 0 ||
                         this->search_map_rows[x][y] <=
-                            (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1c6) * 100) /
+                            (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 454) * 100) /
                                 0x7fff) {
                         RGE_Tile* tile = &this->map_row_offset[x][y];
                         long ok = this->check_terrain((uchar)info_line.terrain_type,
@@ -534,7 +534,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                                 (tile[-1].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
                                 index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1d5) * 100) /
+                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 469) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y - 1, x,
                                     0.0f, (float)index1 + score);
@@ -543,7 +543,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                                 (tile[1].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
                                 index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1d7) * 100) /
+                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 471) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y + 1, x,
                                     0.0f, (float)index1 + score);
@@ -552,7 +552,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                                 (tile[-this->map_width].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
                                 index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1d9) * 100) /
+                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 473) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y, x - 1,
                                     0.0f, (float)index1 + score);
@@ -561,7 +561,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
                                 (tile[this->map_width].terrain_type & 0x1f) ==
                                     info_line.base_terrain_type) {
                                 index1 = (debug_rand(
-                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 0x1db) * 100) /
+                                    "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp", 475) * 100) /
                                     0x7fff;
                                 this->push_stack(*stack_ptr, y, x + 1,
                                     0.0f, (float)index1 + score);

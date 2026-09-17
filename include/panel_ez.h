@@ -8,6 +8,11 @@
 
 typedef unsigned char uchar;
 
+enum {
+    TEASY_POPUP_WIDTH = 450,
+    TEASY_POPUP_HEIGHT = 100
+};
+
 class TDrawArea;
 class RGE_Color_Table;
 class TShape;

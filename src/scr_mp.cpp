@@ -193,11 +193,11 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
             rge_base_game->setMultiplayerGame(1);
             if (*this->input->get_text() == 0) {
                 this->popupOKDialog(IDS_ERROR_PLAYER_NAME_REQUIRED,
-                                    "Name Error", 0x1C2, 100);
+                                    "Name Error", TEASY_POPUP_WIDTH, 100);
                 return actionIn;
             } else if (this->list->numberLines() == 0) {
                 this->popupOKDialog(IDS_ERROR_NO_MULTIPLAYER_CONNECTIONS,
-                                    "List Error", 0x1C2, 100);
+                                    "List Error", TEASY_POPUP_WIDTH, 100);
                 return 1;
             } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
                 rge_base_game->disable_input();
@@ -224,7 +224,7 @@ long TribeMPStartupScreen::action(TPanel* fromPanel, long actionIn, unsigned lon
                 return 1;
             } else {
                 this->popupYesNoDialog(IDS_CONFIRM_START_GAMING_ZONE,
-                                       "Start Zone", 0x1C2, 100);
+                                       "Start Zone", TEASY_POPUP_WIDTH, 100);
                 return 1;
             }
         }

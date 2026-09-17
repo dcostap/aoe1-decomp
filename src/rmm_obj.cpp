@@ -159,8 +159,8 @@ void RGE_RMM_Object_Generator::make_placement_stack(
         int count = (h * w) / 4;
         if (count > 0) {
             do {
-                int rx = (debug_rand(s_rmm_obj_cpp, 0xaf) * w) / 0x7fff + x0;
-                int ry = (debug_rand(s_rmm_obj_cpp, 0xb0) * h) / 0x7fff + y0;
+                int rx = (debug_rand(s_rmm_obj_cpp, 175) * w) / 0x7fff + x0;
+                int ry = (debug_rand(s_rmm_obj_cpp, 176) * h) / 0x7fff + y0;
                 if (this->search_map_rows[ry][rx] != 0) {
                     this->add_stack_node(&stack, &this->stack_offsets[ry][rx]);
                 }
@@ -505,7 +505,7 @@ void RGE_RMM_Object_Generator::place_group(
 
     int count = info_line.object_number_per_group;
     register int var = info_line.object_number_varience;
-    int delta = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 0x212) *
+    int delta = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_obj.cpp", 530) *
                  (var << 1)) / 0x7fff - var;
     count += delta;
     if (count < 1) count = 1;
@@ -568,7 +568,7 @@ void RGE_RMM_Object_Generator::place_cluster(
 
     int count = info_line.object_number_per_group;
     register int var = info_line.object_number_varience;
-    int delta = (debug_rand(s_rmm_obj_cpp, 0x256) * (var << 1)) /
+    int delta = (debug_rand(s_rmm_obj_cpp, 598) * (var << 1)) /
                 0x7fff - var;
     count += delta;
     if (count < 1) count = 1;
@@ -597,19 +597,19 @@ void RGE_RMM_Object_Generator::place_cluster(
 
             if (x > min_x && this->search_map_rows[y][x - 1] != 0) {
                 this->push_stack(obj_stack, x - 1, y, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 0x270));
+                    (float)debug_rand(s_rmm_obj_cpp, 624));
             }
             if (x < x1 && this->search_map_rows[y][x + 1] != 0) {
                 this->push_stack(obj_stack, x + 1, y, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 0x273));
+                    (float)debug_rand(s_rmm_obj_cpp, 627));
             }
             if (y > y0 && this->search_map_rows[y - 1][x] != 0) {
                 this->push_stack(obj_stack, x, y - 1, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 0x276));
+                    (float)debug_rand(s_rmm_obj_cpp, 630));
             }
             if (y < y1 && this->search_map_rows[y + 1][x] != 0) {
                 this->push_stack(obj_stack, x, y + 1, 0.0f,
-                    (float)debug_rand(s_rmm_obj_cpp, 0x279));
+                    (float)debug_rand(s_rmm_obj_cpp, 633));
             }
         }
     }

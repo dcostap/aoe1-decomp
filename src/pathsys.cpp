@@ -152,7 +152,7 @@ void PathingSystem::setMisc(int x, int y, unsigned char v) {
 }
 
 void PathingSystem::initMisc(unsigned char v) {
-    memset(this->miscValue, v, 0xFE01);
+    memset(this->miscValue, v, 65025);
 }
 
 void PathingSystem::zeroObstructionMap(void) {

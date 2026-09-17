@@ -363,7 +363,7 @@ TDigital::TDigital(TSound_Driver* in_sound_system, char* file_name, long res_id)
     this->sound_system = in_sound_system;
     this->resource_id = res_id;
     if (file_name != 0) {
-        strncpy(this->sound_file, file_name, 0x0C);
+        strncpy(this->sound_file, file_name, 12);
         this->sound_file[0x0C] = 0;
     }
 }
@@ -461,7 +461,7 @@ int TDigital::load(char* file_name, long res_id) {
                 this->sound_file);
         fd = _open(file_with_path, 0, 0);
         if (fd != -1) {
-            result = read(fd, &wave_hdr.szRIFF, 0x2C);
+            result = read(fd, &wave_hdr.szRIFF, 44);
             if (result <= 0) {
                 this->failed = 1;
                 close(fd);
@@ -493,7 +493,7 @@ int TDigital::load(char* file_name, long res_id) {
             }
 
             close(fd);
-            this->wave_info = (WAVEFORMATEX*)malloc(0x12);
+            this->wave_info = (WAVEFORMATEX*)malloc(18);
             if (this->wave_info == 0) {
                 this->failed = 1;
                 free(this->wave_data);
@@ -554,7 +554,7 @@ int TDigital::load(char* file_name, long res_id) {
                             0x77617620, res_id, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
-        memcpy(&wave_hdr.szRIFF, resource_data, 0x2C);
+        memcpy(&wave_hdr.szRIFF, resource_data, 44);
         this->data_size = wave_hdr.dwDataLength;
         this->wave_data = (uchar*)malloc(this->data_size);
         if (this->wave_data == 0) {
@@ -567,7 +567,7 @@ int TDigital::load(char* file_name, long res_id) {
             if (load_type == 1) {
                 free(resource_data);
             }
-            this->wave_info = (WAVEFORMATEX*)malloc(0x12);
+            this->wave_info = (WAVEFORMATEX*)malloc(18);
             if (this->wave_info == 0) {
                 this->failed = 1;
                 if (load_type != 1) {

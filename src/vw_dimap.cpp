@@ -188,9 +188,9 @@ fail:
 void RGE_Diamond_Map_View::draw() {
     unsigned long start;
 
-    start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 0x10E);
+    start = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 270);
     RGE_Diamond_Map::draw();
-    rge_base_game->add_to_timing(7, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 0x112) - start);
+    rge_base_game->add_to_timing(7, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 274) - start);
 }
 
 // The binary calls the player command slot at +0xA8.

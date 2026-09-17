@@ -57,7 +57,7 @@ void RGE_Object_List::removeAllObjects() {
 RGE_Object_Node* RGE_Object_List::add_node(RGE_Static_Object* obj) {
     RGE_Object_Node* node;
 
-    node = (RGE_Object_Node*)calloc(1, 0x10);
+    node = (RGE_Object_Node*)calloc(1, 16);
     node->next = this->list;
     node->prev = 0;
     if (this->list != 0) {
@@ -277,7 +277,7 @@ RGE_Object_Node* RGE_Object_List::sort() {
                 insertion = &scan->next;
             }
 
-            scan = (RGE_Object_Node*)calloc(1, 0x10);
+            scan = (RGE_Object_Node*)calloc(1, 16);
             scan->next = *insertion;
             if (*insertion != 0) {
                 scan->prev = (*insertion)->prev;

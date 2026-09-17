@@ -325,7 +325,7 @@ uchar TRIBE_Action_Convert::update() {
                     this->obj->world_z, 0);
             }
             int r = debug_rand("C:\\msdev\\work\\age1_x1\\tact_cnv.cpp",
-                               0x1d7);
+                               471);
             float chance = (float)r * DAT_00574ffc;
             RGE_Player* tplayer = this->target_obj->owner;
             if (tplayer->master_player_id == 0x10) {

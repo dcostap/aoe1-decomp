@@ -5,6 +5,7 @@
 #include "../include/Shape.h"
 #include "../include/Res_file.h"
 #include <windowsx.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -54,7 +55,7 @@ void __cdecl DibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRect,
         dy = DestTotHgt - DestY - 1;
     uchar* dstLine = DestBits + dy * DestTotWid + DestX;
 
-    if (xStep == 0x100 && yStep == 0x100 && Mirror == 0) {
+    if (xStep == 256 && yStep == 256 && Mirror == 0) {
         long srcRow;
         if (SrcOrien == 1)
             srcRow = SrcY;
@@ -222,7 +223,7 @@ void __cdecl TransDibBlt(BITMAPINFO256* DestInfo, uchar* DestBits, RECT* ClipRec
                         last = DestWid;
 
                     if (dxSkip < last) {
-                        if (dstPerSrc == 0x100 && line->MidSolid != 0) {
+                        if (dstPerSrc == 256 && line->MidSolid != 0) {
                             memcpy(dstLine + dxSkip, srcLine + dxSkip,
                                    last - dxSkip);
                         } else {
@@ -616,7 +617,7 @@ void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity) {
     int i = 0;
     unsigned char* out = 0;
     if (FileName && *FileName && shape_file_first) {
-        int fd = _open(FileName, 0x8000);
+        int fd = _open(FileName, _O_BINARY);
         if (fd != -1) {
             _lseek(fd, 0, 2);
             int size = _tell(fd);
@@ -669,7 +670,7 @@ void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity) {
         }
 palette_entries_done:
         ;
-        if (ResourceId && n == 0x100 && System_color_Table[0].index >= 0) {
+        if (ResourceId && n == 256 && System_color_Table[0].index >= 0) {
             int idx = System_color_Table[0].index;
             PAL_TABLE* g = System_color_Table;
             while (idx >= 0) {

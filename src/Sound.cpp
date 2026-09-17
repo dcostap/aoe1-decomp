@@ -23,7 +23,7 @@ RGE_Sound::RGE_Sound(_iobuf* infile, short in_id) {
     this->play_at_update_count = 0;
     fscanf(infile, "%hd", &this->sound_num);
     if (this->sound_num > 0) {
-        this->sounds = (RGE_Sound_Info*)calloc(this->sound_num, 0x24);
+        this->sounds = (RGE_Sound_Info*)calloc(this->sound_num, 36);
         for (int index = 0; index < this->sound_num; index++) {
             fscanf(infile, "%d %s %hd",
                    &this->sounds[index].resource_id,
@@ -45,9 +45,9 @@ RGE_Sound::RGE_Sound(int infile, TSound_Driver* sound) {
     rge_read(infile, &this->cache_time, 4);
 
     if (this->sound_num > 0) {
-        this->sounds = (RGE_Sound_Info*)calloc(this->sound_num, 0x24);
+        this->sounds = (RGE_Sound_Info*)calloc(this->sound_num, 36);
         for (int i = 0; i < this->sound_num; i++) {
-            rge_read(infile, this->sounds[i].name, 0x0D);
+            rge_read(infile, this->sounds[i].name, 13);
             rge_read(infile, &this->sounds[i].resource_id, 4);
             rge_read(infile, &this->sounds[i].percent, 2);
             this->sounds[i].digital_sound =
@@ -97,7 +97,7 @@ void RGE_Sound::save(int outfile) {
     short count = this->sound_num;
     if (count > 0) {
         for (int i = 0; i < this->sound_num; i++) {
-            rge_write(outfile, this->sounds[i].name, 0x0D);
+            rge_write(outfile, this->sounds[i].name, 13);
             rge_write(outfile, &this->sounds[i].resource_id, 4);
             rge_write(outfile, &this->sounds[i].percent, 2);
         }
@@ -163,7 +163,7 @@ void RGE_Sound::play(int add_to_play_list) {
 
     if (this->sound_num > 0) {
         int rand_val = debug_rand(
-            "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0xDD);
+            "C:\\msdev\\work\\age1_x1\\Sound.cpp", 221);
         rand_val = (rand_val * 100) / 0x7FFF;
 
         for (int i = 0; i < this->sound_num; i++) {
@@ -197,7 +197,7 @@ void RGE_Sound::play(int add_to_play_list) {
                     int saved_time_get = debug_timeGetTime_on;
                     debug_timeGetTime_on = 0;
                     this->sounds[i].time = debug_timeGetTime(
-                        "C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x108);
+                        "C:\\msdev\\work\\age1_x1\\Sound.cpp", 264);
                     debug_timeGetTime_on = saved_time_get;
                 }
                 break;
@@ -208,7 +208,7 @@ void RGE_Sound::play(int add_to_play_list) {
 
 char* RGE_Sound::get_file_name() {
     if (this->sound_num > 0) {
-        int rand_val = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 0x11C);
+        int rand_val = debug_rand("C:\\msdev\\work\\age1_x1\\Sound.cpp", 284);
         rand_val = (rand_val * 100) / 0x7FFF;
         for (int i = 0; i < this->sound_num; i++) {
             rand_val -= this->sounds[i].percent;

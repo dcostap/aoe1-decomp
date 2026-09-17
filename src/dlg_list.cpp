@@ -95,7 +95,7 @@ long TListDialog::setup(TPanel* parent_panel_in, char* info_file_in,
                         long ok_btn_x_in, long cancel_btn_x_in, long btn_y_in,
                         long btn_wid_in, long btn_hgt_in) {
     char str[256];
-    get_string(title_string_id, str, 0x100);
+    get_string(title_string_id, str, 256);
     return setup(parent_panel_in, info_file_in, info_id_in, wid_in, hgt_in,
                  title_x_in, title_y_in, title_wid_in, title_hgt_in, str,
                  list_x_in, list_y_in, list_wid_in, list_hgt_in, list_in,

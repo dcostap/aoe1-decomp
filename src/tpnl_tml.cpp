@@ -413,7 +413,7 @@ void Time_Line_Panel::init_timeline() {
 }
 
 void Time_Line_Panel::add_pop_total_special_event(long sample_time_slice, long sample_pop_total, long sample_x_line_pos, int time_flag) {
-    Special_Events* se = static_cast<Special_Events*>(calloc(1, 0xB0));
+    Special_Events* se = static_cast<Special_Events*>(calloc(1, 176));
 
     se->time_slice = sample_time_slice;
     se->X_line_pos = sample_x_line_pos;
@@ -449,7 +449,7 @@ void Time_Line_Panel::record_special_event(
         return;
     }
 
-    Special_Events* special_event = static_cast<Special_Events*>(calloc(1, 0xB0));
+    Special_Events* special_event = static_cast<Special_Events*>(calloc(1, 176));
     special_event->X_line_pos = x_line_pos;
     special_event->Y_line_pos = y_line_pos;
     special_event->intermediate_y_line_segment = intermediate_y_line_segment;
@@ -723,7 +723,7 @@ void Time_Line_Panel::draw_axis() {
         SetBkMode(this->render_area->DrawDc, 1);
         old_font = SelectObject(this->render_area->DrawDc, this->axis_font);
 
-        if (this->get_string(0x2C57, temp_str, 100) != 0) {
+        if (this->get_string(IDS_WORLD_POPULATION, temp_str, 100) != 0) {
             int x = this->xPosition() + 8;
             int y = this->yPosition() + 5;
             SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
@@ -731,7 +731,7 @@ void Time_Line_Panel::draw_axis() {
                      strlen(temp_str));
         }
 
-        if (this->get_string(0x2C56, temp_str, 100) != 0) {
+        if (this->get_string(IDS_TIME_HOUR_MINUTE, temp_str, 100) != 0) {
             int x = this->X_start_line_pos;
             x -= (strlen(temp_str) * this->axis_font_wid) / 2;
             x += this->X_axis_length / 2;
@@ -1308,13 +1308,13 @@ void Time_Line_Panel::draw_icon(Special_Events* event_ptr, short icon_number, uc
 
     switch (event_ptr->event) {
     case 0:
-        if (this->get_string(IDS_HELP_AGE_TOOL, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_TOOL, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 1:
-        if (this->get_string(IDS_HELP_AGE_BRONZE, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_BRONZE, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 2:
-        if (this->get_string(IDS_HELP_AGE_IRON, temp_str + 4, 0x32)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
+        if (this->get_string(IDS_HELP_AGE_IRON, temp_str + 4, 50)) sprintf(event_ptr->text1, "%s", temp_str + 4); else event_ptr->text1[0] = 0;
         break;
     case 8:
         sprintf(temp_str + 4, "%ld/%1d", event_ptr->integer_value_1, event_ptr->integer_value_2);

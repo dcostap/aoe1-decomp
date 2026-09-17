@@ -1,6 +1,9 @@
 #ifndef AOE1_RGE_FIO_H
 #define AOE1_RGE_FIO_H
 
+#include <fcntl.h>
+#include <sys/stat.h>
+
 int __cdecl rge_fake_open(int file_handle, int fake_size);
 int __cdecl rge_open(char* filename, int flag);
 int __cdecl rge_open(char* filename, int flag, int pmode);

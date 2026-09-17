@@ -177,30 +177,30 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** rObj) {
         do {
             short dir;
             if (tries < 40) {
-                dir = (short)((debug_rand(s_tact_mob_cpp, 0xc0) * 2) / 0x7fff);
+                dir = (short)((debug_rand(s_tact_mob_cpp, 192) * 2) / 0x7fff);
             } else {
-                dir = (short)(((debug_rand(s_tact_mob_cpp, 0xc2) * 2) / 0x7fff) + 2);
+                dir = (short)(((debug_rand(s_tact_mob_cpp, 194) * 2) / 0x7fff) + 2);
             }
             switch (dir) {
             case 0:
                 this->target_y = this->obj->world_y + radius_y;
                 this->target_x = this->obj->world_x +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xc7) * radius_2x * DAT_00575198 - radius_x);
+                    ((float)debug_rand(s_tact_mob_cpp, 199) * radius_2x * DAT_00575198 - radius_x);
                 break;
             case 1:
                 this->target_x = this->obj->world_x - radius_x;
                 this->target_y = this->obj->world_y +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xcb) * radius_2y * DAT_00575198 - radius_y);
+                    ((float)debug_rand(s_tact_mob_cpp, 203) * radius_2y * DAT_00575198 - radius_y);
                 break;
             case 2:
                 this->target_x = this->obj->world_x + radius_x;
                 this->target_y = this->obj->world_y +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xcf) * radius_2y * DAT_00575198 - radius_y);
+                    ((float)debug_rand(s_tact_mob_cpp, 207) * radius_2y * DAT_00575198 - radius_y);
                 break;
             case 3:
                 this->target_y = this->obj->world_y - radius_y;
                 this->target_x = this->obj->world_x +
-                    ((float)debug_rand(s_tact_mob_cpp, 0xd3) * radius_2x * DAT_00575198 - radius_x);
+                    ((float)debug_rand(s_tact_mob_cpp, 211) * radius_2x * DAT_00575198 - radius_x);
                 break;
             }
             if (proto->check_placement(

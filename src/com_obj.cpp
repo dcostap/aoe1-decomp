@@ -161,7 +161,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
                     if (dy > radius_y) dy -= radius_y;
                     else dy = DAT_0056f4a8;
                     if (r2 > dx * dx + dy * dy) {
-                        int rnd = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 0xFA) * 100;
+                        int rnd = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 250) * 100;
                         int chance = rnd / 0x7fff;
                         if ((short)chance <=
                             static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {
@@ -278,7 +278,7 @@ unsigned char RGE_Combat_Object::do_attack(RGE_Static_Object* target, RGE_Combat
     }
 
     this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
-    int r = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 0x17b);
+    int r = debug_rand("C:\\msdev\\work\\age1_x1\\com_obj.cpp", 379);
     int chance = (r * 100) / 0x7fff;
     if (chance <=
         (int)static_cast<RGE_Master_Combat_Object*>(this->master_obj)->base_hit_chance) {

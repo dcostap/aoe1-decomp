@@ -111,7 +111,7 @@ int RGE_Dialog_List::create_object_list() {
     if (this->list_size == 0)
         return 0;
 
-    this->list_info = (rdlg_list_info*)calloc(this->list_size, 0x66);
+    this->list_info = (rdlg_list_info*)calloc(this->list_size, 102);
     if (!this->list_info)
         return 0;
 

@@ -92,7 +92,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                                  font, 0, 1, 0))
                     return;
 
-                rge_base_game->get_string2(0x69, world->players[id]->master_player_id,
+                rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, world->players[id]->master_player_id,
                                            0, temp_str, 100);
                 if (!create_text(this, &playerCivilization[row],
                                  temp_str, 0x104, y, 0x78, 0x1E, 0x0B, 0, 1, 0))

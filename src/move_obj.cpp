@@ -144,7 +144,7 @@ void RGE_Moving_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj,
                 this->angle =
                     (DAT_00570b40 / (float)this->sprite->facet_num) *
                     (float)((debug_rand(
-                            (char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xC5) *
+                            (char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 197) *
                              this->sprite->facet_num) / 0x7FFF);
 
                 if (this->angle < DAT_00570b48) {
@@ -177,7 +177,7 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* tobj,
             if (1 < this->sprite->facet_num) {
                 float random_angle =
                     DAT_00570b40 / (float)(int)this->sprite->facet_num *
-                    (float)((debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0xDE) *
+                    (float)((debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 222) *
                              (int)this->sprite->facet_num) / 0x7FFF);
                 this->angle = random_angle;
 
@@ -214,7 +214,7 @@ int RGE_Moving_Object::setup(int infile, RGE_Game_World* gworld) {
     rge_read(infile, &numberOfWaypoints, 4);
     for (int i = 0; i < numberOfWaypoints; ++i) {
         Waypoint temp;
-        rge_read(infile, &temp, 0x10);
+        rge_read(infile, &temp, 16);
         this->pathValue.insertAtEnd(temp);
     }
 
@@ -226,8 +226,8 @@ int RGE_Moving_Object::setup(int infile, RGE_Game_World* gworld) {
         this->pathValue.moveToNextWaypoint();
     }
 
-    rge_read(infile, &this->startValue, 0x10);
-    rge_read(infile, &this->goalValue, 0x10);
+    rge_read(infile, &this->startValue, 16);
+    rge_read(infile, &this->goalValue, 16);
     rge_read(infile, &this->turnTimer, 4);
     rge_read(infile, &this->collisionAvoidanceDistance, 4);
     rge_read(infile, &this->actionRange, 4);
@@ -289,14 +289,14 @@ void RGE_Moving_Object::save(int outfile) {
     rge_write(outfile, &numberOfWaypoints, 4);
 
     for (int iWaypoint = 0; iWaypoint < numberOfWaypoints; ++iWaypoint) {
-        rge_write(outfile, (void*)path->waypoint(iWaypoint), 0x10);
+        rge_write(outfile, (void*)path->waypoint(iWaypoint), 16);
     }
 
     int currentWaypoint = path->currentWaypointNumber();
     rge_write(outfile, &currentWaypoint, 4);
 
-    rge_write(outfile, &this->startValue, 0x10);
-    rge_write(outfile, &this->goalValue, 0x10);
+    rge_write(outfile, &this->startValue, 16);
+    rge_write(outfile, &this->goalValue, 16);
     rge_write(outfile, &this->turnTimer, 4);
     rge_write(outfile, &this->collisionAvoidanceDistance, 4);
     rge_write(outfile, &this->actionRange, 4);
@@ -1215,12 +1215,12 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
             if (this->speed > DAT_00570b48) {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x6cf) % 6) *
+                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 1743) % 6) *
                         DAT_00570bc0 - DAT_00570b80 / this->speed;
             } else {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x6d1) % 6) *
+                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 1745) % 6) *
                         DAT_00570bc0 - DAT_00570b80;
             }
             this->speed = 0.0f;
@@ -1410,12 +1410,12 @@ int RGE_Moving_Object::doTrivialMove(float x, float y) {
             if (this->speed > DAT_00570b48) {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7d3) % 6) *
+                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 2003) % 6) *
                         DAT_00570bc0 - DAT_00570b80 / this->speed;
             } else {
                 this->collisionAvoidanceDistance =
                     (float)(debug_rand(
-                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7d5) % 6) *
+                        "C:\\msdev\\work\\age1_x1\\move_obj.cpp", 2005) % 6) *
                         DAT_00570bc0 - DAT_00570b80;
             }
             this->speed = 0.0f;

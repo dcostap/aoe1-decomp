@@ -34,9 +34,9 @@ uchar RGE_RMM_Shallows_Generator::generate() {
     do {
         int found = 0;
         do {
-            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x45) *
+            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 69) *
                  (this->map_width - 1)) / 0x7FFF;
-            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x46) *
+            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 70) *
                  (this->map_height - 1)) / 0x7FFF;
             uchar terrain = this->map_row_offset[y][x].terrain_type & 0x1f;
             if (terrain != 1 && terrain != 0x16 && terrain != 4) {
@@ -48,9 +48,9 @@ uchar RGE_RMM_Shallows_Generator::generate() {
 
         found = 0;
         do {
-            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x54) *
+            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 84) *
                  (this->map_width - 1)) / 0x7FFF;
-            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x55) *
+            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 85) *
                  (this->map_height - 1)) / 0x7FFF;
             uchar terrain = this->map_row_offset[y][x].terrain_type & 0x1f;
             if (terrain != 1 && terrain != 0x16 && terrain != 4) {
@@ -155,7 +155,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             this->map_row_offset[y][x].terrain_type & 0x1f;
         if (terrain_type == 1 || terrain_type == 0x16) {
             long min_x =
-                x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xc6) * 2) /
+                x - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 198) * 2) /
                         0x7fff -
                 1;
             if (min_x < 0) {
@@ -163,7 +163,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             }
 
             long min_y =
-                y - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xca) * 2) /
+                y - (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 202) * 2) /
                         0x7fff -
                 1;
             if (min_y < 0) {
@@ -171,7 +171,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             }
 
             long max_x =
-                x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xce) * 2) /
+                x + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 206) * 2) /
                         0x7fff +
                 1;
             if (max_x >= this->map_width) {
@@ -179,7 +179,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(
             }
 
             long max_y =
-                y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xd2) * 3) /
+                y + (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 210) * 3) /
                         0x7fff +
                 1;
             if (max_y >= this->map_height) {

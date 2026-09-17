@@ -185,9 +185,9 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
             if (*this->list->currentLine() != 0) {
                 char text[556];
 
-                this->get_string(IDS_CONFIRM_DELETE_FILE, fileName, 0x100);
+                this->get_string(IDS_CONFIRM_DELETE_FILE, fileName, 256);
                 sprintf(text, fileName, this->list->currentLine());
-                this->popupYesNoDialog(text, "Cancel Dialog", 0x1C2, 100);
+                this->popupYesNoDialog(text, "Cancel Dialog", TEASY_POPUP_WIDTH, 100);
             }
         }
 
@@ -221,7 +221,7 @@ long TribeLoadSavedGameScreen::action(TPanel* fromPanel, long actionIn, unsigned
                 }
                 loaded = static_cast<TRIBE_Game*>(rge_base_game)->load_game(fileName);
                 if (loaded == 0) {
-                    this->popupOKDialog(IDS_ERROR_CANNOT_LOAD_SAVED_GAME, 0, 0x1C2, 100);
+                    this->popupOKDialog(IDS_ERROR_CANNOT_LOAD_SAVED_GAME, 0, TEASY_POPUP_WIDTH, 100);
                     return 1;
                 }
             }

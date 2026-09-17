@@ -164,7 +164,7 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_P
 
     this->player_object_node = this->owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
-    int seed = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x183);
+    int seed = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 387);
     int old_debug = debug_random_on;
     debug_random_on = 0;
 
@@ -174,7 +174,7 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* tobj, RGE_P
     }
 
     debug_random_on = old_debug;
-    debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x18D, seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 397, seed);
 }
 
 void RGE_Static_Object::recycle_out_of_game() {
@@ -274,14 +274,14 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* tobj, RGE_Player* obj_own
 
     this->player_object_node = this->owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
-    seed = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x22A);
+    seed = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 554);
     old_debug = debug_random_on;
     debug_random_on = 0;
     if (this->master_obj->created_sound != 0 && this->owner->id == this->owner->world->curr_player) {
         this->master_obj->created_sound->play(1);
     }
     debug_random_on = old_debug;
-    debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x235, seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 565, seed);
     return 1;
 }
 
@@ -828,9 +828,9 @@ void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* render_area, short 
         if (render_area->GetDc(stat_obj_square_back_tag) != 0) {
             SelectClipRgn(render_area->DrawDc, view->clip_rgn);
             if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
-                SelectObject(render_area->DrawDc, GetStockObject(7));
+                SelectObject(render_area->DrawDc, GetStockObject(BLACK_PEN));
             } else {
-                SelectObject(render_area->DrawDc, GetStockObject(6));
+                SelectObject(render_area->DrawDc, GetStockObject(WHITE_PEN));
             }
 
             x += this->screen_x_offset;
@@ -876,9 +876,9 @@ void RGE_Static_Object::draw_frame_3d_square_front(TDrawArea* render_area, short
         if (render_area->GetDc(tag) != 0) {
             SelectClipRgn(render_area->DrawDc, view_panel->clip_rgn);
             if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
-                SelectObject(render_area->DrawDc, GetStockObject(7));
+                SelectObject(render_area->DrawDc, GetStockObject(BLACK_PEN));
             } else {
-                SelectObject(render_area->DrawDc, GetStockObject(6));
+                SelectObject(render_area->DrawDc, GetStockObject(WHITE_PEN));
             }
 
             map->get_point(x1, y1, -ry1, -rz2, 0.0f, x, y);
@@ -937,9 +937,9 @@ void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* render_area, short x,
         if (dc != 0) {
             SelectClipRgn(render_area->DrawDc, view->clip_rgn);
             if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0)
-                SelectObject(render_area->DrawDc, GetStockObject(7));
+                SelectObject(render_area->DrawDc, GetStockObject(BLACK_PEN));
             else
-                SelectObject(render_area->DrawDc, GetStockObject(6));
+                SelectObject(render_area->DrawDc, GetStockObject(WHITE_PEN));
 
             x += this->screen_x_offset;
             y += this->screen_y_offset;
@@ -1000,9 +1000,9 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* render_area, short x
     if (render_area->GetDc(0) != 0) {
         SelectClipRgn(render_area->DrawDc, view->clip_rgn);
         if (startLoggingAI == 1 && this->groupCommanderValue == this->id && this->id >= 0) {
-            SelectObject(render_area->DrawDc, GetStockObject(7));
+            SelectObject(render_area->DrawDc, GetStockObject(BLACK_PEN));
         } else {
-            SelectObject(render_area->DrawDc, GetStockObject(6));
+            SelectObject(render_area->DrawDc, GetStockObject(WHITE_PEN));
         }
 
         // Update x before y and keep both incoming short homes.
@@ -1182,13 +1182,13 @@ uchar RGE_Static_Object::update() {
             if (this->hp < 1.0f) {
                 this->set_object_state(3);
                 this->new_sprite(this->master_obj->death_sprite);
-                int r = debug_rand(STR_STAT_OBJ, 0x704);
+                int r = debug_rand(STR_STAT_OBJ, 1796);
                 int old = debug_random_on;
                 debug_random_on = 0;
                 if (this->master_obj->death_sound != 0 && this->owner->id == this->owner->world->curr_player)
                     this->master_obj->death_sound->play(1);
                 debug_random_on = old;
-                debug_srand(STR_STAT_OBJ, 0x70e, r);
+                debug_srand(STR_STAT_OBJ, 1806, r);
             }
             break;
         case 3:
@@ -1275,14 +1275,14 @@ void RGE_Static_Object::check_damage_sprites() {
             break;
         case 1: {
             RGE_Master_Static_Object* random_master = this->master_obj;
-            int random_value = debug_rand(s_stat_obj_cpp, 0x774);
+            int random_value = debug_rand(s_stat_obj_cpp, 1908);
             float rand_x = (float)random_value * random_master->radius_x;
             rand_x = rand_x * DAT_00574740 - random_master->radius_x;
             short x_part = (short)this->world_x;
             rand_x += this->world_x - (float)x_part;
 
             random_master = this->master_obj;
-            random_value = debug_rand(s_stat_obj_cpp, 0x775);
+            random_value = debug_rand(s_stat_obj_cpp, 1909);
             float rand_y = (float)random_value * random_master->radius_y;
             rand_y = rand_y * DAT_00574740 - random_master->radius_y;
             short y_part = (short)this->world_y;
@@ -2473,28 +2473,28 @@ unsigned char RGE_Static_Object::find_drop_location(int dropZone, float& x, floa
     while (index < 2) {
         short count = 0;
         do {
-            switch ((debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3a) * 4) / 0x7fff) {
+            switch ((debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 3898) * 4) / 0x7fff) {
             case 0: {
                 x = radius_x + drop_x;
-                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 3902);
                 y = drop_y + ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
                 break;
             }
             case 1: {
                 x = drop_x - radius_x;
-                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 3906);
                 y = drop_y + ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
                 break;
             }
             case 2: {
                 y = radius_y + drop_y;
-                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 3910);
                 x = drop_x + ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
                 break;
             }
             case 3: {
                 y = drop_y - radius_y;
-                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 3914);
                 x = drop_x + ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
                 break;
             }

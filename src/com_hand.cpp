@@ -21,6 +21,7 @@
 #include "../include/taunt.h"
 #include "../include/world.h"
 #include "../include/tworld.h"
+#include "../include/resource_ids.h"
 
 
 
@@ -50,7 +51,7 @@ char* TCommunications_Handler::WaitingOnNamedInfo(unsigned int PlayerNo) {
         this->GetPlayerName(PlayerNo),
         this->WaitingOnInfo(PlayerNo));
 
-    int timeSince = debug_timeGetTime(com_hand_source_path, 0x8E)
+    int timeSince = debug_timeGetTime(com_hand_source_path, 142)
         - this->LastPlayerCommunication[PlayerNo];
 
     sprintf(this->TBuff, "[%d] %s - %s (QUIET=%d msec  T#=%d )",
@@ -72,23 +73,23 @@ char* TCommunications_Handler::WaitingOnInfo(unsigned int PlayerNo) {
     unsigned int player = PlayerNo;
 
     if (IsPlayerComputer(player)) {
-        rge_base_game->get_string(0x4B1, g_status_buffer, 0x20);
+        rge_base_game->get_string(IDS_STATUS_COMPUTER, g_status_buffer, 32);
         return g_status_buffer;
     }
     if (!IsPlayerHuman(player)) {
-        rge_base_game->get_string(0x4B2, g_status_buffer, 0x20);
+        rge_base_game->get_string(IDS_STATUS_EMPTY, g_status_buffer, 32);
         return g_status_buffer;
     }
     if (LastTurnAck[player] < 4) {
-        rge_base_game->get_string(0x4B3, g_status_buffer, 0x20);
+        rge_base_game->get_string(IDS_STATUS_LOADING, g_status_buffer, 32);
         return g_status_buffer;
     }
     if (LastTurnAck[player] < current_turn) {
-        rge_base_game->get_string(0x4B4, g_status_buffer, 0x20);
+        rge_base_game->get_string(IDS_STATUS_WAITING, g_status_buffer, 32);
         return g_status_buffer;
     }
 
-    rge_base_game->get_string(0x4B0, g_status_buffer, 0x20);
+    rge_base_game->get_string(IDS_STATUS_READY, g_status_buffer, 32);
     return g_status_buffer;
 }
 
@@ -322,7 +323,7 @@ TCommunications_Handler::TCommunications_Handler(void* WinHandle, unsigned char 
     this->Speed = new RGE_Communications_Speed(this);
     this->Sync = new RGE_Communications_Synchronize(this);
 
-    unsigned long startTime = debug_timeGetTime(com_hand_header_path, 0x267);
+    unsigned long startTime = debug_timeGetTime(com_hand_header_path, 615);
 
     this->RXPacketLength = 0;
     this->RXPacketLengthHigh = 0;
@@ -711,7 +712,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
         return 0;
     }
 
-    ulong Now = debug_timeGetTime(com_hand_source_path, 0x20D);
+    ulong Now = debug_timeGetTime(com_hand_source_path, 525);
     if (Now - comm_last_dump_time >= 5000) {
         L->Log(GetCommInfo(6));
         L->Log(GetCommInfo(5));
@@ -738,7 +739,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
             this->Speed->SetPlayerTurnSpeed(this->Me, doneMsg.FrameRateMsec,
                                             doneMsg.HighLatencyCenti);
         }
-    comm_last_sent_time = debug_timeGetTime(com_hand_source_path, 0xBF9);
+    comm_last_sent_time = debug_timeGetTime(com_hand_source_path, 3065);
         doneMsg.Command = 'D';
         doneMsg.ExecuteOnTurn = doneTurn;
         L->Log("  >TX DONE (%d)", 0x0C);
@@ -774,7 +775,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
         }
 
         this->Speed->WaitingOnAcknowledgement();
-        Now = debug_timeGetTime(com_hand_source_path, 0x259);
+        Now = debug_timeGetTime(com_hand_source_path, 601);
 
         char msg_str[100];
         uint i = 1;
@@ -818,7 +819,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
                         if (this->MeHost != 0) {
                             L->Log("Player %d Turn#%d  timeout = %d ", i, this->current_turn, elapsed);
                             RGE_Base_Game* base_game = rge_base_game;
-                            base_game->get_string(0x4BA, msg_str, 0x64);
+                            base_game->get_string(IDS_STATUS_PLAYER_NOT_RESPONDING, msg_str, 100);
                             sprintf(this->TBuff, msg_str, this->GetPlayerName(i), i);
                             if (this->current_turn > 6) {
                                 this->SendChatMsgAll(this->TBuff);
@@ -874,7 +875,7 @@ int TCommunications_Handler::DoCycle(ulong WorldTime) {
             }
             if (Now - lastTimeout > 25000) {
                 this->CheckPingTime(1);
-                this->LastTimeoutMessageTime = debug_timeGetTime(com_hand_source_path, 0x2DF);
+                this->LastTimeoutMessageTime = debug_timeGetTime(com_hand_source_path, 735);
             }
             this->Speed->Skip();
             return 0;
@@ -988,10 +989,10 @@ void TCommunications_Handler::ReceiveGameMessages() {
 
     if ((comm_rate_initialized & 1) == 0) {
         comm_rate_initialized = static_cast<unsigned char>(comm_rate_initialized | 1);
-        comm_last_rate_update = debug_timeGetTime(com_hand_source_path, 0x396);
+        comm_last_rate_update = debug_timeGetTime(com_hand_source_path, 918);
     }
 
-    ulong now = debug_timeGetTime(com_hand_source_path, 0x397);
+    ulong now = debug_timeGetTime(com_hand_source_path, 919);
     unsigned int elapsed = now - comm_last_rate_update;
     if (elapsed > 1000) {
         L->Log("TX: %ld  RX: %ld  elapsed: %ld  totTX: %ld  totRX: %ld",
@@ -1095,26 +1096,26 @@ void TCommunications_Handler::GetDPLAYMessages() {
     dwCount = 4000;
     dwSize = 4000;
     char* buf = this->InCommBuff;
-    loopStartTime = debug_timeGetTime(com_hand_source_path, 0x3d4);
+    loopStartTime = debug_timeGetTime(com_hand_source_path, 980);
     dwPreSize = 0;
     hr = direct_play_interface->GetMessageCount(local_player_dpid, &dwPreSize);
     if (hr == 0 && dwPreSize > 10) L->Log("!!! DPMsgCount = %u", dwPreSize);
     while (1) {
-        ulong t = debug_timeGetTime(com_hand_source_path, 0x3e1);
+        ulong t = debug_timeGetTime(com_hand_source_path, 993);
         hr = direct_play_interface->Receive(&dcoFromID, &dcoReceiveID, 8, 0, &dwCount);
-        ulong elapsed = debug_timeGetTime(com_hand_source_path, 0x3ec) - t;
+        ulong elapsed = debug_timeGetTime(com_hand_source_path, 1004) - t;
         if (elapsed > 50) L->Log("!!! Receive Peek slow - %u msec", elapsed);
 
         if (hr == 0 && dwCount >= 4000) { L->Log("True overflow %d requested.  Max = %d", dwSize, 4000); return; }
         dwSize = dwCount;
         if (hr != 0) dwSize = 4000;
-        t = debug_timeGetTime(com_hand_source_path, 0x403);
+        t = debug_timeGetTime(com_hand_source_path, 1027);
         hr = direct_play_interface->Receive(&dcoFromID, &dcoReceiveID, 1, buf, &dwSize);
-        elapsed = debug_timeGetTime(com_hand_source_path, 0x40c) - t;
+        elapsed = debug_timeGetTime(com_hand_source_path, 1036) - t;
         if (elapsed > 50) L->Log("!!! Receive slow - %u msec", elapsed);
-        elapsed = debug_timeGetTime(com_hand_source_path, 0x417) - loopStartTime;
+        elapsed = debug_timeGetTime(com_hand_source_path, 1047) - loopStartTime;
         if (elapsed > 500) {
-            ulong now = debug_timeGetTime(com_hand_source_path, 0x419);
+            ulong now = debug_timeGetTime(com_hand_source_path, 1049);
             L->Log("!!! In Receive Loop for %u ms", now - loopStartTime);
         }
         if (hr == static_cast<long>(0x887700BE)) return;
@@ -1153,7 +1154,7 @@ found_first_player:
         }
         pno2 = 0;
 found_second_player:
-        L->Log("COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno2, dcoFromID, dwSize, static_cast<int>(*buf), static_cast<int>(*buf), debug_timeGetTime(com_hand_source_path, 0x435));
+        L->Log("COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno2, dcoFromID, dwSize, static_cast<int>(*buf), static_cast<int>(*buf), debug_timeGetTime(com_hand_source_path, 1077));
         this->RXPacketLength += dwSize;
         this->RXPackets++;
 
@@ -1175,7 +1176,7 @@ void TCommunications_Handler::CheckPingTime(int Forced) {
     if (!this->Multiplayer)
         return;
 
-    unsigned long currentTime = debug_timeGetTime(com_hand_source_path, 0x460);
+    unsigned long currentTime = debug_timeGetTime(com_hand_source_path, 1120);
 
     unsigned int i = 1;
     if (static_cast<unsigned int>(this->MaxGamePlayers) < i)
@@ -1193,7 +1194,7 @@ void TCommunications_Handler::CheckPingTime(int Forced) {
 }
 
 int TCommunications_Handler::TXPing(unsigned int ToPlayer) {
-    unsigned long t = debug_timeGetTime(com_hand_source_path, 0x470);
+    unsigned long t = debug_timeGetTime(com_hand_source_path, 1136);
     unsigned int id = ToPlayer;
     unsigned long dco;
 
@@ -1228,7 +1229,7 @@ int TCommunications_Handler::TXPing(unsigned int ToPlayer) {
 int TCommunications_Handler::TXDebugPing(void) {
     comm_debug_ping.Command = 0x33;
 
-    unsigned long t = debug_timeGetTime(com_hand_source_path, 0x496);
+    unsigned long t = debug_timeGetTime(com_hand_source_path, 1174);
     comm_debug_ping.Timestamp = t;
     comm_debug_ping.Turn = this->current_turn;
 
@@ -1260,9 +1261,9 @@ long TCommunications_Handler::FastSend(unsigned long ToDPID, void* Buffer, unsig
         return E_FAIL;
     }
 
-    start = debug_timeGetTime(com_hand_source_path, 0x4CA);
+    start = debug_timeGetTime(com_hand_source_path, 1226);
     hr = direct_play_interface->Send(local_player_dpid, ToDPID, 0, Buffer, BuffLen);
-    elapsed = debug_timeGetTime(com_hand_source_path, 0x4D3) - start;
+    elapsed = debug_timeGetTime(com_hand_source_path, 1235) - start;
     if (elapsed > 0x32) {
         L->Log("!!!FastSend slow - %ld msec", elapsed);
     }
@@ -1406,7 +1407,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
     }
 
     this->LastPlayerCommunication[player] =
-        debug_timeGetTime(com_hand_source_path, 0x543);
+        debug_timeGetTime(com_hand_source_path, 1347);
 
     unsigned int log_player = 0;
     if (dcoFromID != 0) {
@@ -1426,7 +1427,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
     unsigned int* serial = reinterpret_cast<unsigned int*>(CommBuff + 8);
     L->Log("PREPRO-Byte0='%c' from=%d(%d)  ser#%d  timeGetTime=%d",
            static_cast<int>(*CommBuff), log_player, dcoFromID, *serial,
-           debug_timeGetTime(com_hand_source_path, 0x54D));
+           debug_timeGetTime(com_hand_source_path, 1357));
 
     if (*CommBuff == 'K' &&
         this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
@@ -1552,7 +1553,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
                                                 done.HighLatencyCenti);
             }
             comm_last_sent_time =
-                debug_timeGetTime(com_hand_source_path, 0xBF9);
+                debug_timeGetTime(com_hand_source_path, 3065);
             done.Command = 'D';
             done.ExecuteOnTurn = done_turn;
             L->Log("  >TX DONE (%d)", 0x0C);
@@ -1629,7 +1630,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
     }
 
     if (command == '2') {
-        unsigned long now = debug_timeGetTime(com_hand_source_path, 0x672);
+        unsigned long now = debug_timeGetTime(com_hand_source_path, 1650);
         unsigned long initiated =
             *reinterpret_cast<unsigned long*>(CommBuff + 4);
         unsigned char turn_increment =
@@ -1650,7 +1651,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
                                                 done.HighLatencyCenti);
             }
             comm_last_sent_time =
-                debug_timeGetTime(com_hand_source_path, 0xBF9);
+                debug_timeGetTime(com_hand_source_path, 3065);
             done.Command = 'D';
             done.ExecuteOnTurn = done_turn;
             L->Log("  >TX DONE (%d)", 0x0C);
@@ -1662,7 +1663,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
     }
 
     if (command == '4') {
-        unsigned long now = debug_timeGetTime(com_hand_source_path, 0x68B);
+        unsigned long now = debug_timeGetTime(com_hand_source_path, 1675);
         unsigned long elapsed =
             now - *reinterpret_cast<unsigned long*>(CommBuff + 4);
         char msg[256];
@@ -1695,7 +1696,7 @@ int TCommunications_Handler::PreprocessMessages(unsigned long dwSize, char* Comm
         if (this->IntentionallyDropPackets != 0 && this->current_turn > 6 &&
             ++comm_drop_count > 8) {
             char msg_str[100];
-            rge_base_game->get_string(0x4BC, msg_str, 100);
+            rge_base_game->get_string(IDS_STATUS_INTENTIONAL_DROP, msg_str, 100);
             sprintf(this->TBuff, msg_str, *serial,
                     static_cast<int>(*CommBuff), static_cast<int>(*CommBuff));
             L->Log(this->TBuff);
@@ -1770,7 +1771,7 @@ void TCommunications_Handler::NotifyWindow(COMMMESSAGES msg) {
 }
 
 void TCommunications_Handler::NotifyWindowParam(COMMMESSAGES msg, long lparam) {
-    PostMessageA(this->HostHWND, 0x400, msg, lparam);
+    PostMessageA(this->HostHWND, WM_USER, msg, lparam);
     L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d\n", msg, lparam);
 }
 
@@ -2030,7 +2031,7 @@ long TCommunications_Handler::SendSharedData(int SendImmediately) {
         return 0;
     }
 
-    unsigned long now = debug_timeGetTime(com_hand_source_path, 0x895);
+    unsigned long now = debug_timeGetTime(com_hand_source_path, 2197);
 
     if (SendImmediately != 0) {
         this->PlayerOptions.NeedsToBeSent = 1;
@@ -2087,7 +2088,7 @@ int TCommunications_Handler::TEST() {
     taunt = new TTaunt(sound_driver);
 
     {
-        int rand_val = debug_rand(com_hand_source_path, 0x8F2);
+        int rand_val = debug_rand(com_hand_source_path, 2290);
         int log_val = (rand_val * 15) / 0x7FFF;
         L->Log("Playing Taunt #%d", log_val);
     }
@@ -2177,7 +2178,7 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int PlayerNo, unsigned lon
     }
     if (static_cast<int>(this->PlayerOptions.ProgramState) >= 5 && this->current_turn >= 6) {
         L->Log("Player quit the game.");
-        rge_base_game->get_string(0x4BD, msg_str, 0x32);
+        rge_base_game->get_string(IDS_STATUS_PLAYER_DROPPED, msg_str, 50);
         sprintf(this->TBuff, msg_str, PlayerNo, this->FriendlyName[PlayerNo].Text);
         L->Log(this->TBuff);
         this->InitPlayerInformation(PlayerNo, 0, "Dropped", " ");
@@ -2718,7 +2719,7 @@ long TCommunications_Handler::SendChecksumMessage(
     cs.cs5 = csum5;
     cs.Random = random;
 
-    cs.PingInitiated = debug_timeGetTime(com_hand_source_path, 0xBC0);
+    cs.PingInitiated = debug_timeGetTime(com_hand_source_path, 3008);
 
     L->Log("  >TX CKSUM (%d)", 0x24);
 
@@ -3145,7 +3146,7 @@ int TCommunications_Handler::StoreForResend(unsigned int SerialNumber,
             }
         }
 
-        resend->TimeSent = debug_timeGetTime(com_hand_source_path, 0xD12);
+        resend->TimeSent = debug_timeGetTime(com_hand_source_path, 3346);
         return 1;
     }
 
@@ -3176,13 +3177,13 @@ int TCommunications_Handler::TXAcknowledgeMessage(uint serialno, uint fromPlayer
         return 0;
     }
 
-    unsigned long start = debug_timeGetTime(com_hand_source_path, 0xD53);
+    unsigned long start = debug_timeGetTime(com_hand_source_path, 3411);
 
     unsigned int dco = this->PlayerOptions.dcoID[fromPlayer];
     long result = direct_play_interface->Send(local_player_dpid, dco, 0,
                                               ack, sizeof(*ack));
 
-    unsigned long elapsed = debug_timeGetTime(com_hand_source_path, 0xD5E) - start;
+    unsigned long elapsed = debug_timeGetTime(com_hand_source_path, 3422) - start;
     if (elapsed > 0x32) {
         L->Log("!!!TXAcknowledgeMessage slow - %ld msec", elapsed);
     }
@@ -3366,9 +3367,9 @@ int TCommunications_Handler::SendStoredMessages() {
 
     static unsigned long lastResendBytes = 0;
     static unsigned long lastResendTime =
-        debug_timeGetTime(com_hand_source_path, 0xE00);
+        debug_timeGetTime(com_hand_source_path, 3584);
 
-    unsigned long Now = debug_timeGetTime(com_hand_source_path, 0xE02);
+    unsigned long Now = debug_timeGetTime(com_hand_source_path, 3586);
     if (static_cast<float>(lastResendBytes) /
             static_cast<float>(static_cast<long>(Now - lastResendTime)) >
         2.0f) {
@@ -3432,7 +3433,7 @@ int TCommunications_Handler::SendStoredMessages() {
     }
 
     this->Resend[OldestMessageSlot].TimeSent =
-        debug_timeGetTime(com_hand_source_path, 0xE55);
+        debug_timeGetTime(com_hand_source_path, 3669);
 
     for (unsigned int player = 1;
          player <= static_cast<unsigned int>(this->MaxGamePlayers);
@@ -3452,7 +3453,7 @@ int TCommunications_Handler::SendStoredMessages() {
                 this->PlayerOptions.dcoID[player],
                 this->Resend[OldestMessageSlot].Length,
                 OldestMessageElapsed,
-                debug_timeGetTime(com_hand_source_path, 0xE69),
+                debug_timeGetTime(com_hand_source_path, 3689),
                 this->Resend[OldestMessageSlot].DestMap[player]);
 
             if (local_player_dpid == 0) {
@@ -3461,7 +3462,7 @@ int TCommunications_Handler::SendStoredMessages() {
             }
 
             unsigned long sendStart =
-                debug_timeGetTime(com_hand_source_path, 0xE76);
+                debug_timeGetTime(com_hand_source_path, 3702);
             L->Log("  >TX STOR #%d %d (%d)", player,
                    OldestMessageSlot,
                    this->Resend[OldestMessageSlot].Length);
@@ -3474,7 +3475,7 @@ int TCommunications_Handler::SendStoredMessages() {
                 this->Resend[OldestMessageSlot].Length);
 
             unsigned long sendElapsed =
-                debug_timeGetTime(com_hand_source_path, 0xE86) - sendStart;
+                debug_timeGetTime(com_hand_source_path, 3718) - sendStart;
             if (sendElapsed > 50) {
                 L->Log("!!!SendStoredMessages slow - %ld msec",
                        sendElapsed);
@@ -3600,7 +3601,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint toPlayer) {
         return 0;
     }
 
-    now = debug_timeGetTime(com_hand_source_path, 0xEE7);
+    now = debug_timeGetTime(com_hand_source_path, 3815);
     if (serial == this->LastSerialRepliedTX[toPlayer]) {
         unsigned long elapsed = now - this->LastRequestRepliedTX[toPlayer];
         if (elapsed < 500) {
@@ -3630,7 +3631,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint toPlayer) {
             }
 
             unsigned long send_start =
-                debug_timeGetTime(com_hand_source_path, 0xF19);
+                debug_timeGetTime(com_hand_source_path, 3865);
             L->Log("  >TX RES REP #%d %d (%d)", toPlayer, serial,
                    this->Resend[i].Length);
 
@@ -3642,7 +3643,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint toPlayer) {
                 this->Resend[i].Length);
 
             unsigned long send_elapsed =
-                debug_timeGetTime(com_hand_source_path, 0xF28) - send_start;
+                debug_timeGetTime(com_hand_source_path, 3880) - send_start;
             if (send_elapsed > 0x32) {
                 L->Log("!!!TXResendReply slow - %ld msec", send_elapsed);
             }
@@ -3666,7 +3667,7 @@ int TCommunications_Handler::TXResendReply(uint serial, uint toPlayer) {
                     this->Resend[i].ResendMsg[0])),
                 this->Resend[i].Length,
                 this->Resend->DestMap[toPlayer],
-                debug_timeGetTime(com_hand_source_path, 0xF42));
+                debug_timeGetTime(com_hand_source_path, 3906));
 
             delete[] OutCommBuff;
         }
@@ -3951,10 +3952,10 @@ long TCommunications_Handler::CommOut(ulong To, uchar MsgType, void* Msg,
                 return static_cast<long>(0x80004005);
             }
 
-            send_start = debug_timeGetTime(com_hand_source_path, 0x10AA);
+            send_start = debug_timeGetTime(com_hand_source_path, 4266);
             play = direct_play_interface;
             hr = play->Send(local_player_dpid, To, 0, OutCommBuff, FullLength);
-            send_elapsed = debug_timeGetTime(com_hand_source_path, 0x10B5) -
+            send_elapsed = debug_timeGetTime(com_hand_source_path, 4277) -
                            send_start;
             if (send_elapsed > 0x32) {
                 L->Log("!!!CommOut slow - %ld msec", send_elapsed);
@@ -3998,10 +3999,10 @@ long TCommunications_Handler::CommOut(ulong To, uchar MsgType, void* Msg,
             return static_cast<long>(0x80004005);
         }
 
-        send_start = debug_timeGetTime(com_hand_source_path, 0x10EE);
+        send_start = debug_timeGetTime(com_hand_source_path, 4334);
         play = direct_play_interface;
         hr = play->Send(local_player_dpid, To, 0, OutCommBuff, FullLength);
-        send_elapsed = debug_timeGetTime(com_hand_source_path, 0x10F9) -
+        send_elapsed = debug_timeGetTime(com_hand_source_path, 4345) -
                        send_start;
         if (send_elapsed > 0x32) {
             L->Log("!!!CommOut2 slow - %ld msec", send_elapsed);
@@ -4045,7 +4046,7 @@ sent:
                txMsg->Command,
                static_cast<int>(static_cast<char>(OutCommBuff[HeaderLength])),
                static_cast<int>(static_cast<char>(OutCommBuff[HeaderLength])), OutgoingCount, hr,
-               debug_timeGetTime(com_hand_source_path, 0x112B));
+               debug_timeGetTime(com_hand_source_path, 4395));
     }
 
     if (hr != 0) {
@@ -4071,7 +4072,7 @@ sent:
 
 void TCommunications_Handler::DestroyMultiplayerGame() {
     this->DestroyMyPlayer();
-    long t = debug_timeGetTime(com_hand_header_path, 0x267);
+    long t = debug_timeGetTime(com_hand_header_path, 615);
     int zero = 0;
     this->RXPacketLength = zero;
     this->RXPacketLengthHigh = zero;
@@ -4185,7 +4186,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 
     case SINGLE_PLAYER: {
         this->Multiplayer = 0;
-        unsigned long t = debug_timeGetTime(com_hand_header_path, 0x267);
+        unsigned long t = debug_timeGetTime(com_hand_header_path, 615);
         this->RXPacketLength = 0;
         this->RXPacketLengthHigh = 0;
         this->TXPacketLength = 0;
@@ -4265,7 +4266,7 @@ COMMSTATUS TCommunications_Handler::UnlinkCurrentLevel() {
 
     case MULTIPLAYER_RESET: {
         this->Multiplayer = 0;
-        unsigned long t = debug_timeGetTime(com_hand_header_path, 0x267);
+        unsigned long t = debug_timeGetTime(com_hand_header_path, 615);
         this->RXPacketLength = 0;
         this->RXPacketLengthHigh = 0;
         this->TXPacketLength = 0;
@@ -4721,7 +4722,7 @@ COMMSTATUS TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
 
 
 void TCommunications_Handler::ResetLastCommunicationTimes(void) {
-    unsigned long now = debug_timeGetTime(com_hand_source_path, 0x1282);
+    unsigned long now = debug_timeGetTime(com_hand_source_path, 4738);
     for (int i = 1; i <= this->MaxGamePlayers; ++i) {
         this->LastPlayerCommunication[i] = now;
         this->LastTXPing[i] = now;
@@ -4844,9 +4845,9 @@ void TCommunications_Handler::SetRandomSeed(int val) {
     }
 
     if (val == -1) {
-        unsigned long time = debug_timeGetTime(com_hand_source_path, 0x1320);
-        debug_srand(com_hand_source_path, 0x1320, time);
-        val = debug_rand(com_hand_source_path, 0x1321);
+        unsigned long time = debug_timeGetTime(com_hand_source_path, 4896);
+        debug_srand(com_hand_source_path, 4896, time);
+        val = debug_rand(com_hand_source_path, 4897);
     }
 
     this->PlayerOptions.RandomSeed = static_cast<unsigned long>(val);
@@ -4856,9 +4857,9 @@ void TCommunications_Handler::SetRandomSeed(int val) {
 
 unsigned int TCommunications_Handler::GetRandomSeed() {
     if (this->Multiplayer == 0) {
-        unsigned long t = debug_timeGetTime(com_hand_source_path, 0x1336);
-        debug_srand(com_hand_source_path, 0x1336, t);
-        unsigned long r = debug_rand(com_hand_source_path, 0x1337);
+        unsigned long t = debug_timeGetTime(com_hand_source_path, 4918);
+        debug_srand(com_hand_source_path, 4918, t);
+        unsigned long r = debug_rand(com_hand_source_path, 4919);
         this->PlayerOptions.RandomSeed = r;
     }
     return this->PlayerOptions.RandomSeed;
@@ -5023,7 +5024,7 @@ char* TCommunications_Handler::GetCommInfo(unsigned char LineNum) {
     sprintf(comm_info_buffers + 0x300, "%s  DPMsgs%d ", this->Speed->GetSelfPlayerOptimalSpeedStr(), dwCount);
     sprintf(comm_info_buffers + 0x400, "%s ", this->Speed->GetPlayerSpeedStatusStr(0));
 
-    unsigned long now = debug_timeGetTime(com_hand_source_path, 0x1468);
+    unsigned long now = debug_timeGetTime(com_hand_source_path, 5224);
     unsigned long t8, t7, t6, t5, t4, t3, t2, t1;
     if (this->IsPlayerHuman(8) && this->Me != 8) t8 = now - this->LastPlayerCommunication[8]; else t8 = 0;
     if (this->IsPlayerHuman(7) && this->Me != 7) t7 = now - this->LastPlayerCommunication[7]; else t7 = 0;

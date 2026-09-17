@@ -1,4 +1,6 @@
 #include "../include/spanlist.h"
+#include <fcntl.h>
+#include <sys/stat.h>
 
 #include <memory.h>
 #include <stdio.h>
@@ -1141,11 +1143,13 @@ void TSpan_List_Manager::take_snapshot(char* filespec, int& index_no,
     }
 
     unsigned char* line = (unsigned char*)malloc(bmWide);
-    infile = open(BMPFile, 0x8301, 0x180);
+    infile = open(BMPFile,
+                  _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                  _S_IREAD | _S_IWRITE);
     if (infile != -1) {
-        write(infile, &bmFH, 0x0e);
+        write(infile, &bmFH, 14);
         write(infile, &bmIH, sizeof(bmIH));
-        write(infile, bmPAL, 0x400);
+        write(infile, bmPAL, 1024);
         int y = Width - 1;
         if (y >= 0) {
             do {

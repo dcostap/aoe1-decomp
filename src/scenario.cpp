@@ -144,7 +144,7 @@ RGE_Scenario::RGE_Scenario(int infile, RGE_Game_World* w) {
 
     if (this->Version > 1.13f) {
         for (int player_index = 0; player_index < 16; player_index++)
-            rge_read(infile, this->player_name[player_index], 0x100);
+            rge_read(infile, this->player_name[player_index], 256);
     }
     if (this->Version > 1.13) {
         for (int player_index = 0; player_index < 16; player_index++) {
@@ -344,7 +344,7 @@ void RGE_Scenario::InitializeTextValues() {
     this->historicle_notes = 0;
 
     this->scenario_name = (char*)operator new(0xE0);
-    memset(this->scenario_name, 0, 0xE0);
+    memset(this->scenario_name, 0, 224);
 
     strcpy(this->Cine_PreGame, none_string);
     strcpy(this->Cine_Victory, none_string);
@@ -360,15 +360,15 @@ void RGE_Scenario::InitializeTextValues() {
         this->player_name[player_index][0] = 0;
 
         this->BuildList[player_index] = (char*)operator new(0xE0);
-        memset(this->BuildList[player_index], 0, 0xE0);
+        memset(this->BuildList[player_index], 0, 224);
         strcpy(this->BuildList[player_index], default_string);
 
         this->CityPlan[player_index] = (char*)operator new(0xE0);
-        memset(this->CityPlan[player_index], 0, 0xE0);
+        memset(this->CityPlan[player_index], 0, 224);
         strcpy(this->CityPlan[player_index], none_string);
 
         this->AiRules[player_index] = (char*)operator new(0xE0);
-        memset(this->AiRules[player_index], 0, 0xE0);
+        memset(this->AiRules[player_index], 0, 224);
         strcpy(this->AiRules[player_index], default_string);
 
         this->BuildListFile[player_index] = 0;
@@ -590,8 +590,8 @@ char* RGE_Scenario::Get_player_AI(int which_player, int WithExtension) {
     int fd;
 
     fd = -1;
-    rge_base_game->get_string(IDS_AI_FILE_RANDOM, random_str, 0x32);
-    rge_base_game->get_string(IDS_FILE_NONE, none_str, 0x32);
+    rge_base_game->get_string(IDS_AI_FILE_RANDOM, random_str, 50);
+    rge_base_game->get_string(IDS_FILE_NONE, none_str, 50);
 
     if (GetTempPathA(MAX_PATH, temp_path) == 0) {
         strcpy(temp_path, ".");
@@ -686,7 +686,7 @@ void RGE_Scenario::save(int outfile) {
     rge_write(outfile, version, 4);
 
     for (int a = 0; a < 16; a++)
-        rge_write(outfile, this->player_name[a], 0x100);
+        rge_write(outfile, this->player_name[a], 256);
 
     for (int b = 0; b < 16; b++) {
         rge_write(outfile, &this->PlActive[b], 4);

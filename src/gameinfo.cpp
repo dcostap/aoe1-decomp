@@ -17,7 +17,7 @@ extern void __cdecl getstring(char** destination, char* source);
 extern int version_marker;
 
 RGE_Campaign_Info::RGE_Campaign_Info(int infile, RGE_Campaign** campaigns, long campaign_num) {
-    rge_read(infile, this, 0xFF);
+    rge_read(infile, this, 255);
     rge_read(infile, &current_scenario, 4);
     rge_read(infile, &scenario_num, 4);
     rge_read(infile, &last_scenario, 4);
@@ -100,7 +100,7 @@ RGE_Campaign_Info::~RGE_Campaign_Info() {
 
 void RGE_Campaign_Info::save(int outfile) {
     L->Log("  (PIF)Saving campaign - (%d) %s", last_scenario, this);
-    rge_write(outfile, this, 0xFF);
+    rge_write(outfile, this, 255);
     rge_write(outfile, &current_scenario, 4);
     rge_write(outfile, &scenario_num, 4);
     rge_write(outfile, &last_scenario, 4);
@@ -203,7 +203,7 @@ int RGE_Campaign_Info::open_scenario() {
 RGE_Person_Info::RGE_Person_Info(int infile, RGE_Campaign** in_campaigns, long in_campaign_num) {
     campaign_num = in_campaign_num;
     campaigns = in_campaigns;
-    rge_read(infile, this, 0xFF);
+    rge_read(infile, this, 255);
     rge_read(infile, &current_campaign, 4);
     rge_read(infile, &campaign_info_num, 4);
 
@@ -242,7 +242,7 @@ RGE_Person_Info::~RGE_Person_Info() {
 
 void RGE_Person_Info::save(int outfile) {
     L->Log("(PIF)Saving player - %s", this);
-    rge_write(outfile, this, 0xFF);
+    rge_write(outfile, this, 255);
     rge_write(outfile, &current_campaign, 4);
     rge_write(outfile, &campaign_info_num, 4);
     for (int i = 0; i < campaign_info_num; i++) {
@@ -356,7 +356,7 @@ RGE_Game_Info::RGE_Game_Info(char* filename) {
     campaigns = 0;
     find_campaigns();
     strcpy(save_filename, filename);
-    int fd = rge_open(filename, 0x8000);
+    int fd = rge_open(filename, _O_BINARY);
     if (fd > -1) {
         rge_read(fd, &version, 4);
         if (version == version_marker) {
@@ -414,7 +414,9 @@ void RGE_Game_Info::save(char* filename) {
 
     strcpy(save_filename, filename);
 
-    int fd = rge_open(filename, 0x8309, 0x180);
+    int fd = rge_open(filename,
+                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC,
+                      _S_IREAD | _S_IWRITE);
     if (fd == -1) return;
 
     rge_write(fd, &version_marker, 4);

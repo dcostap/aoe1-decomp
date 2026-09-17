@@ -86,7 +86,7 @@ void __cdecl RESFILE_open_new_resource_file(char* resFileName, char* password, c
         newFile->handle = fHandle;
         newFile->mapped_file = 0;
         lseek(fHandle, 0, 1);
-        if (read(fHandle, &rHeader, 0x40) != 0x40) {
+        if (read(fHandle, &rHeader, 64) != 0x40) {
             __asm int 3
             MessageBoxA(0, "Error: Reading resfile header.",
                 "RESOURCE ERROR", MB_ICONEXCLAMATION);

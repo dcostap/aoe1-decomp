@@ -45,10 +45,10 @@ TPicture::TPicture(int infile, int UseTrans) {
     }
 
     if (this->Width > 0 && this->Height > 0) {
-        void* dib = calloc(this->AlignedWidth() * this->Height + 0x428, 1);
+        void* dib = calloc(this->AlignedWidth() * this->Height + 1064, 1);
         this->Dib = (tagBITMAPINFOHEADER*)dib;
         rge_read(infile, this->Dib,
-            this->AlignedWidth() * this->Height + 0x428);
+            this->AlignedWidth() * this->Height + 1064);
         this->BitmapInfo = (BITMAPINFO256*)this->Dib;
         this->Bits = (unsigned char*)this->Dib + 0x428;
     } else {
@@ -60,7 +60,7 @@ TPicture::TPicture(int infile, int UseTrans) {
     this->TransInfo = 0;
 
     if (UseTrans != 0 && this->Dib != 0) {
-        TRANSINFO* trans_info = (TRANSINFO*)malloc(0x18);
+        TRANSINFO* trans_info = (TRANSINFO*)malloc(24);
         this->TransInfo = trans_info;
         if (trans_info != 0) {
             if (((BITMAPINFO256*)this->Dib)->bmiHeader.biCompression == 3) {
@@ -128,7 +128,7 @@ void TPicture::Save(int outfile) {
     rge_write(outfile, &this->Orien, 2);
 
     if (this->Width > 0 && this->Height > 0) {
-        rge_write(outfile, this->BitmapInfo, 0x428);
+        rge_write(outfile, this->BitmapInfo, 1064);
         rge_write(outfile, this->Bits,
             this->AlignedWidth() * this->Height);
     }
@@ -142,7 +142,7 @@ void TPicture::Load(char* FileName, long res_id, int UseTrans,
     FILE* temp_file;
     int height;
 
-    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Picture.cpp", 0x7f);
+    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Picture.cpp", 127);
     this->TransInfo = 0;
     this->OwnMemory = 1;
 
@@ -194,7 +194,7 @@ void TPicture::Load(char* FileName, long res_id, int UseTrans,
             return;
         }
 
-        info = (TRANSINFO*)malloc(0x18);
+        info = (TRANSINFO*)malloc(24);
         this->TransInfo = info;
         if (info != 0) {
             bitmap = (BITMAPINFO256*)this->Dib;

@@ -265,7 +265,7 @@ int ConstructionAIModule::loadConstructionPlan(char* pName, int mXSize, int mYSi
 
     plan = this->constructionPlanNameValue;
     saved_plan = plan;
-    strncpy(plan, pName, 0x3f);
+    strncpy(plan, pName, 63);
 
     if (strcmp(plan, "NONE") == 0 || plan == 0) {
         if (plan == 0) {

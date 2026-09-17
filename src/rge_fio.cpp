@@ -42,7 +42,7 @@ int __cdecl rge_fake_open(int file_handle, int fake_size) {
     if (file_handle >= 0) {
         flags = 2;
         point = 0;
-        buffers = (unsigned char*)calloc(0x10000, 1);
+        buffers = (unsigned char*)calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
@@ -57,7 +57,7 @@ int __cdecl rge_open(char* filename, int flag) {
     if (iVar1 >= 0) {
         flags = 2;
         point = 0;
-        buffers = (unsigned char*)calloc(0x10000, 1);
+        buffers = (unsigned char*)calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;
@@ -75,7 +75,7 @@ int __cdecl rge_open(char* filename, int flag, int pmode) {
     if (iVar1 >= 0) {
         flags = 2;
         point = 0;
-        buffers = (unsigned char*)calloc(0x10000, 1);
+        buffers = (unsigned char*)calloc(65536, 1);
         current = buffers;
         file_buffers = 0;
         compression_buffers = 0;

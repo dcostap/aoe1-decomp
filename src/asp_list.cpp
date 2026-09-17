@@ -48,7 +48,7 @@ unsigned char RGE_Active_Sprite_List::load_node(int infile, unsigned char type, 
 
     switch (type_value) {
     case 1:
-        node = (RGE_Active_Sprite_Node*)calloc(0xc, 1);
+        node = (RGE_Active_Sprite_Node*)calloc(12, 1);
         sprite = new RGE_Active_Sprite(infile, sprites);
         node->node = sprite;
         node->next = this->list;
@@ -56,7 +56,7 @@ unsigned char RGE_Active_Sprite_List::load_node(int infile, unsigned char type, 
         break;
 
     case 2:
-        node = (RGE_Active_Sprite_Node*)calloc(0xc, 1);
+        node = (RGE_Active_Sprite_Node*)calloc(12, 1);
         sprite = new RGE_Active_Animated_Sprite(infile, sprites);
         node->node = sprite;
         node->next = this->list;
@@ -158,7 +158,7 @@ void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* sprite, unsigned char order,
         node = node->next;
     }
 
-    node = (RGE_Active_Sprite_Node*)calloc(0xc, 1);
+    node = (RGE_Active_Sprite_Node*)calloc(12, 1);
     active_sprite = sprite->make_active_sprite();
     node->node = active_sprite;
     active_sprite->set_offset(x, y);

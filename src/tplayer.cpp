@@ -158,7 +158,7 @@ TRIBE_Player::TRIBE_Player(TRIBE_World* gworld, RGE_Master_Player* prototype,
     this->update_count = 0;
     this->update_history_count = 0;
     this->updateCountNeedHelp = 0;
-    this->fog_update = (debug_rand(tplayerSourceName, 0x140) * 3) / 0x7fff + 3;
+    this->fog_update = (debug_rand(tplayerSourceName, 320) * 3) / 0x7fff + 3;
     this->update_time = 0.0f;
     this->history = new TRIBE_History_Info(-1);
     this->tech_tree = new TRIBE_Player_Tech(gworld->tech, this, 1);
@@ -295,7 +295,7 @@ void TRIBE_Player::update() {
     this->attributes[0] -= this->world->world_time_delta_seconds *
         this->attributes[33] * this->attributes[11] * 0.0166666675f;
     if (this->attributes[0] < 0.0) this->attributes[0] = 0.0f;
-    int seed = debug_rand(tplayerSourceName, 0x25f);
+    int seed = debug_rand(tplayerSourceName, 607);
     int old = debug_random_on;
     global_save_debug_random_on1 = old;
     debug_random_on = 0;
@@ -304,7 +304,7 @@ void TRIBE_Player::update() {
         this->playerAI->update(0);
     }
     debug_random_on = old;
-    debug_srand(tplayerSourceName, 0x277, seed);
+    debug_srand(tplayerSourceName, 631, seed);
     if (MouseSystem != 0) MouseSystem->Poll();
 }
 
@@ -1115,10 +1115,10 @@ void TRIBE_Player::random_start() {
     if (this->objects->list == 0) {
         float w1;
         float h;
-        w1 = ((debug_rand(tplayerSourceName, 0x631) *
+        w1 = ((debug_rand(tplayerSourceName, 1585) *
                (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
               - -0.5f;
-        h = ((debug_rand(tplayerSourceName, 0x632) *
+        h = ((debug_rand(tplayerSourceName, 1586) *
               (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
              - -0.5f;
         int tries = 1;
@@ -1127,10 +1127,10 @@ void TRIBE_Player::random_start() {
                     this, h - -0.5f, w1 - -0.5f,
                     0, 0, 1, 1, 1, 1, 1) == 0)
                 break;
-            w1 = ((debug_rand(tplayerSourceName, 0x631) *
+            w1 = ((debug_rand(tplayerSourceName, 1585) *
                    (this->world->map->map_height - 0x1e)) / 0x7fff + 0xf)
                          - -0.5f;
-            h = ((debug_rand(tplayerSourceName, 0x632) *
+            h = ((debug_rand(tplayerSourceName, 1586) *
                   (this->world->map->map_width - 0x1e)) / 0x7fff + 0xf)
                 - -0.5f;
             ++tries;
@@ -1152,14 +1152,14 @@ void TRIBE_Player::random_start() {
             do {
                 uchar bad = 1;
                 do {
-                    w2 = (debug_rand(tplayerSourceName, 0x646) * 6) /
+                    w2 = (debug_rand(tplayerSourceName, 1606) * 6) /
                               0x7fff - 3;
-                    h2 = (debug_rand(tplayerSourceName, 0x647) * 6) /
+                    h2 = (debug_rand(tplayerSourceName, 1607) * 6) /
                               0x7fff - 3;
                     w = w2 -
-                        debug_rand(tplayerSourceName, 0x648) * -3.05185094e-05f + w1;
+                        debug_rand(tplayerSourceName, 1608) * -3.05185094e-05f + w1;
                     h1 = h2 -
-                        debug_rand(tplayerSourceName, 0x649) * -3.05185094e-05f + h;
+                        debug_rand(tplayerSourceName, 1609) * -3.05185094e-05f + h;
 
                     if (w >= 0.0f && w < static_cast<float>(this->world->map->map_height) &&
                         h1 >= 0.0f && h1 < static_cast<float>(this->world->map->map_width) &&
@@ -1595,7 +1595,7 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
 
     int saveRand;
     int save_debug_random_on;
-    saveRand = debug_rand(tplayerSourceName, 0x863);
+    saveRand = debug_rand(tplayerSourceName, 2147);
     save_debug_random_on = debug_random_on;
     global_save_debug_random_on2 = save_debug_random_on;
     debug_random_on = 0;
@@ -1609,8 +1609,8 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
         case 4: this->playerAI->logCommonHistory(tplayerMapMessages[4]); break;
         default: this->playerAI->logCommonHistory(tplayerMapMessages[5]); break;
         }
-        rge_base_game->get_string(IDS_FILE_NONE, noneString, 0x100);
-        rge_base_game->get_string(IDS_AI_FILE_RANDOM, randomString, 0x100);
+        rge_base_game->get_string(IDS_FILE_NONE, noneString, 256);
+        rge_base_game->get_string(IDS_AI_FILE_RANDOM, randomString, 256);
 
         strcpy(buildListName, s_592A40);
         strcpy(ruleSetName, s_592A40);
@@ -1694,7 +1694,7 @@ void TRIBE_Player::loadAIInformation(char* bL, char* cP, char* rS, int mood, int
     }
 
     debug_random_on = save_debug_random_on;
-    debug_srand(tplayerSourceName, 0x8FD, saveRand);
+    debug_srand(tplayerSourceName, 2301, saveRand);
 }
 
 
@@ -1711,7 +1711,7 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
             this->update_count = 20;
             attackingObject = this->world->object(p1);
             if (attackingObject != 0) {
-                int seed = debug_rand(tplayerSourceName, 0x920);
+                int seed = debug_rand(tplayerSourceName, 2336);
                 int saved = debug_random_on;
                 debug_random_on = 0;
                 global_save_debug_random_on3 = saved;
@@ -1722,7 +1722,7 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
                         static_cast<long>(attackingObject->world_x), static_cast<long>(attackingObject->world_y));
                 }
                 debug_random_on = saved;
-                debug_srand(tplayerSourceName, 0x931, seed);
+                debug_srand(tplayerSourceName, 2353, seed);
             }
         }
         break;
@@ -1737,14 +1737,14 @@ void TRIBE_Player::notify(int caller, int recipient, int mType,
         static_cast<TRIBE_Game*>(rge_base_game)->notification(2, this->id, 0, 0, 0);
         break;
     }
-    int seed = debug_rand(tplayerSourceName, 0x949);
+    int seed = debug_rand(tplayerSourceName, 2377);
     int saved = debug_random_on;
     global_save_debug_random_on4 = saved;
     debug_random_on = 0;
     if (this->playerAI != 0)
         this->notifyAI(caller, recipient, mType, p1, p2, p3);
     debug_random_on = saved;
-    debug_srand(tplayerSourceName, 0x956, seed);
+    debug_srand(tplayerSourceName, 2390, seed);
 }
 
 
@@ -2060,7 +2060,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
         --count;
     } while (count != 0);
 
-    int randomValue = debug_rand(tplayerSourceName, 0xC41);
+    int randomValue = debug_rand(tplayerSourceName, 3137);
     int remainder = randomValue % total;
     int selectedBuildList = 0;
     int cumulative = 0;
@@ -2073,7 +2073,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
         }
     }
 
-    rge_base_game->get_string(selectedBuildList + 0x26930, b, 0x100);
+    rge_base_game->get_string(selectedBuildList + 0x26930, b, 256);
 
     switch (selectedBuildList) {
     case 0x0D: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
@@ -2208,7 +2208,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
     ++tplayer_globals::selectedBuildListCount;
 
 selectedCountersDone:
-    rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27F6, tempString, 0x100);
+    rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27F6, tempString, 256);
     this->playerAI->logCommonHistory(tplayerEmptyName, tempString, static_cast<int>(this->master_player_id) - 1);
     this->playerAI->logCommonHistory(tplayerBuildMessage, b);
     strcpy(r, tplayerRandomName);
@@ -2261,7 +2261,7 @@ selectedCountersDone:
         this->playerAI->strategyAI.setRule(4, 10);
     }
 
-    int attackTime = (debug_rand(tplayerSourceName, 0xE3A) % 12 + 0x1C) * 60;
+    int attackTime = (debug_rand(tplayerSourceName, 3642) % 12 + 0x1C) * 60;
     switch (selectedBuildList) {
     case 0:
     case 3:
@@ -2289,7 +2289,7 @@ selectedCountersDone:
     case 0x6E:
     case 0x73:
         ++tplayer_globals::fastAttackListCount;
-        attackTime = (debug_rand(tplayerSourceName, 0xE58) % 6 + 0x14) * 60;
+        attackTime = (debug_rand(tplayerSourceName, 3672) % 6 + 0x14) * 60;
         break;
     case 10:
     case 0x29:
@@ -2300,11 +2300,11 @@ selectedCountersDone:
     case 0x3A:
     case 0x71:
         ++tplayer_globals::attackTimingCategoryCount;
-        attackTime = (debug_rand(tplayerSourceName, 0xE64) % 4 + 0x0B) * 60;
+        attackTime = (debug_rand(tplayerSourceName, 3684) % 4 + 0x0B) * 60;
         break;
     case 9:
     case 0x38:
-        attackTime = (debug_rand(tplayerSourceName, 0xE69) % 2 + 5) * 60;
+        attackTime = (debug_rand(tplayerSourceName, 3689) % 2 + 5) * 60;
         ++tplayer_globals::attackTimingCategoryCount;
         break;
     default:
@@ -2313,7 +2313,7 @@ selectedCountersDone:
     }
 
     int difficultyCopy = gameDifficulty;
-    if (gameDifficulty == 0 && debug_rand(tplayerSourceName, 0xE73) % 3 == 0) {
+    if (gameDifficulty == 0 && debug_rand(tplayerSourceName, 3699) % 3 == 0) {
         attackTime -= 300;
     }
     this->playerAI->strategyAI.setRule(0x68, attackTime);
@@ -2322,15 +2322,15 @@ selectedCountersDone:
     this->playerAI->strategyAI.setRule(0x5D, 1);
     this->playerAI->strategyAI.setRule(99, 4);
 
-    if (debug_rand(tplayerSourceName, 0xE80) % 3 == 0) {
+    if (debug_rand(tplayerSourceName, 3712) % 3 == 0) {
         this->playerAI->strategyAI.setRule(0xBC, 0);
     } else {
         this->playerAI->strategyAI.setRule(0xBC, 1);
     }
-    this->playerAI->strategyAI.setRule(0xC3, debug_rand(tplayerSourceName, 0xE86) % 0x28 + 10);
-    this->playerAI->strategyAI.setRule(0xBD, debug_rand(tplayerSourceName, 0xE8A) % 0x46 + 0x1E);
-    this->playerAI->strategyAI.setRule(0xC6, (debug_rand(tplayerSourceName, 0xE8E) % 5 + 5) * gameDifficulty);
-    this->playerAI->strategyAI.setRule(0xC7, (debug_rand(tplayerSourceName, 0xE92) % 10 + 10) * gameDifficulty);
+    this->playerAI->strategyAI.setRule(0xC3, debug_rand(tplayerSourceName, 3718) % 0x28 + 10);
+    this->playerAI->strategyAI.setRule(0xBD, debug_rand(tplayerSourceName, 3722) % 0x46 + 0x1E);
+    this->playerAI->strategyAI.setRule(0xC6, (debug_rand(tplayerSourceName, 3726) % 5 + 5) * gameDifficulty);
+    this->playerAI->strategyAI.setRule(0xC7, (debug_rand(tplayerSourceName, 3730) % 10 + 10) * gameDifficulty);
     this->playerAI->strategyAI.setRule(0xA1, 4);
 
     randomValue = mapSize;
@@ -2343,32 +2343,32 @@ selectedCountersDone:
     switch (randomValue) {
     case -2:
     case -1:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEA2) % 2 + 0x0E);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEA4) % 4 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3746) % 2 + 0x0E);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3748) % 4 + 1);
         break;
     case 0:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEA7) % 2 + 0x0F);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEA9) % 4 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3751) % 2 + 0x0F);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3753) % 4 + 1);
         break;
     case 1:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEAC) % 3 + 0x10);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEAE) % 5 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3756) % 3 + 0x10);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3758) % 5 + 1);
         break;
     case 2:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEB1) % 2 + 0x11);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEB3) % 6 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3761) % 2 + 0x11);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3763) % 6 + 1);
         break;
     case 3:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEB6) % 2 + 0x12);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEB8) % 7 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3766) % 2 + 0x12);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3768) % 7 + 1);
         break;
     case 4:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEBB) % 4 + 0x12);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEBD) % 8 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3771) % 4 + 0x12);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3773) % 8 + 1);
         break;
     default:
-        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 0xEC1) % 2 + 0x12);
-        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 0xEC3) % 9 + 1);
+        this->playerAI->strategyAI.setRule(0x49, debug_rand(tplayerSourceName, 3777) % 2 + 0x12);
+        this->playerAI->strategyAI.setRule(0x4A, this->playerAI->strategyAI.rule(0x49) + debug_rand(tplayerSourceName, 3779) % 9 + 1);
         break;
     }
     this->playerAI->strategyAI.setRule(0xD0, 1);
@@ -2440,12 +2440,12 @@ selectedCountersDone:
         this->playerAI->strategyAI.setRule(0xBA, 0x32);
     }
 
-    if (debug_rand(tplayerSourceName, 0xF50) % 6 < 5) {
+    if (debug_rand(tplayerSourceName, 3920) % 6 < 5) {
         this->playerAI->strategyAI.setRule(0xB5, 1);
     } else {
         this->playerAI->strategyAI.setRule(0xB5, 0);
     }
-    if (debug_rand(tplayerSourceName, 0xF56) % 3 < 1) {
+    if (debug_rand(tplayerSourceName, 3926) % 3 < 1) {
         this->playerAI->strategyAI.setRule(0xB6, 1);
     } else {
         this->playerAI->strategyAI.setRule(0xB6, 0);
@@ -3127,7 +3127,7 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
 
     fprintf(out, "Player %d:\n", static_cast<int>(this->id));
     if (firstTime == 1) {
-        rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27f6, tempString, 0x100);
+        rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27f6, tempString, 256);
         if (this->playerAI == 0) {
             fprintf(out, "  Human Player, %s.\n", tempString);
         } else {

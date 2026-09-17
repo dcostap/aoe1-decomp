@@ -634,7 +634,7 @@ unsigned char RGE_Game_World::init(char *base_name, TSound_Driver *sound_dvr, TC
     this->sound_driver = sound_dvr;
     this->next_object_id = 0;
 
-    int fd = rge_open(base_name, 0x8000);
+    int fd = rge_open(base_name, _O_BINARY);
     if (fd != -1) {
         rge_read(fd, version, 8);
 
@@ -850,7 +850,7 @@ unsigned char RGE_Game_World::load_game(char *name) {
 
     sprintf(buf + 8, "%s%s", rge_base_game->prog_info->save_dir, name);
 
-    int fh = rge_open(buf + 8, 0x8000);
+    int fh = rge_open(buf + 8, _O_BINARY);
     if (fh != -1) {
         rge_read(fh, buf, 8);
         rge_read(fh, &save_game_version, 4);
@@ -978,27 +978,27 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info &info, int myPlayerNum) {
     } else {
         initial_seed = rge_base_game->random_game_seed;
         if (initial_seed == -1) {
-            initial_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x509);
+            initial_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1289);
         }
     }
     this->random_seed = initial_seed;
-    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50c, this->random_seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 1292, this->random_seed);
     rge_base_game->save_random_game_seed = this->random_seed;
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50f);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1295);
     L->Log("World: new_game (rand=%d)", this->random_seed);
 
     this->player_num = info.player_num + 1;
     this->map->new_map(info.map_width, info.map_height);
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x516);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1302);
     L->Log("  World: after_new_map (rand=%d)", this->random_seed);
 
     this->player_num = info.player_num + 1;
     this->players = (RGE_Player **)calloc(4, (int)this->player_num);
     this->setup_gaia();
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x520);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1312);
     L->Log("  World: after_gaia (rand=%d)", this->random_seed);
     this->setup_players(info);
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x526);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1318);
     L->Log("  World: after_players (rand=%d)", this->random_seed);
 
     for (i = 1; i < 9; i++) {
@@ -1072,10 +1072,10 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info &info, int myPlayerNum) {
     if (retval)
         this->game_state = 0;
 
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5b2);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1458);
     L->Log("  World: end_of_new_game (rand=%d)", this->random_seed);
     RGE_Base_Game *base_game = rge_base_game;
-    base_game->get_string(IDS_AI_FILE_RANDOM, randomString, 0x100);
+    base_game->get_string(IDS_AI_FILE_RANDOM, randomString, 256);
     if (team == 1) {
         for (i = 1; i < this->player_num; i++) {
             if (this->players[i]) {
@@ -1098,7 +1098,7 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info &info, int random_see
         random_seed_in = this->commands->com_hand->GetRandomSeed();
     }
     this->random_seed = random_seed_in;
-    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5d5, this->random_seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 1493, this->random_seed);
 
     this->map->new_map((long)info.map_width, (long)info.map_height);
     this->map->clear_map((unsigned char)info.map_info->base_terrain, 1);
@@ -1143,17 +1143,17 @@ unsigned char RGE_Game_World::new_random_game(RGE_Player_Info &info) {
     this->setup_player_colors(info);
     this->scenario_init(this);
 
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x612);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1554);
     L->Log("  World: before_map_gen (rand=%d)", this->random_seed);
 
     this->map->map_generate2(this, -1, -1, (unsigned char)info.map_type, this->player_num - 1);
 
     this->initializePathingSystem();
 
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x61A);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1562);
     L->Log("  World: after_map_gen (rand=%d)", this->random_seed);
 
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x622);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1570);
     L->Log("  World: after_player_random_start (rand=%d)", this->random_seed);
 
     saved_curr_player = this->curr_player;
@@ -1172,7 +1172,7 @@ unsigned char RGE_Game_World::new_random_game(RGE_Player_Info &info) {
     } while (loop_count != 0);
 
     this->curr_player = saved_curr_player;
-    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x631);
+    this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1585);
     L->Log("  World: after_player_update (rand=%d)", this->random_seed);
 
     return 1;
@@ -1211,9 +1211,9 @@ unsigned char RGE_Game_World::update() {
     unsigned char first_update = 0;
 
     this->availableComputerPlayerUpdateTime = this->maximumComputerPlayerUpdateTime;
-    start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x68e);
+    start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 1678);
     cycle = this->commands->com_hand->DoCycle(this->world_time);
-    end_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x690);
+    end_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 1680);
     rge_base_game->add_to_timing(0xe, (int)(end_time - start_time));
     if (cycle == 0) {
         this->world_time_delta = 0;
@@ -1226,8 +1226,8 @@ unsigned char RGE_Game_World::update() {
     if (do_fixed_update != 0)
         cycle = fixed_update_time;
 
-    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6a2, this->random_seed);
-    now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6a4);
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 1698, this->random_seed);
+    now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\World.cpp", 1700);
     this->update_sounds(now);
     this->update_sprites(now);
 
@@ -1270,7 +1270,7 @@ unsigned char RGE_Game_World::update() {
         }
         if (MouseSystem != 0)
             MouseSystem->Poll();
-        now = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6e2);
+        now = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1762);
         for (i = 0; i < this->player_num; ++i) {
             if (this->players[i] != 0) {
                 this->players[i]->doppleganger_objects->update();
@@ -1281,7 +1281,7 @@ unsigned char RGE_Game_World::update() {
                 this->players[i]->doppleganger_creator->perform_doppleganger_checks();
             }
         }
-        debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x6f6, now);
+        debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 1782, now);
         this->player_time_delta[this->player_turn] = 0;
         this->player_turn = this->player_turn + 1;
         if (this->player_turn >= this->player_num)
@@ -1289,7 +1289,7 @@ unsigned char RGE_Game_World::update() {
         this->check_game_state();
     }
 
-    now = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x71a);
+    now = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 1818);
     this->random_seed = now;
     debug_random_on = 0;
     debug_timeGetTime_on = 0;
@@ -1463,7 +1463,9 @@ unsigned char RGE_Game_World::save_game(char *name) {
 
     save_game_version = 7.23f;
     sprintf(tempname, "%s%s", rge_base_game->prog_info->save_dir, name);
-    int fd = rge_open(tempname, 0x8309, 0x180);
+    int fd = rge_open(tempname,
+                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC,
+                      _S_IREAD | _S_IWRITE);
     if (fd != -1) {
         rge_write_error = 0;
         rge_write(fd, "VER 8.6", 8);
@@ -1526,7 +1528,9 @@ void RGE_Game_World::base_save(int outfile) {
 }
 
 void RGE_Game_World::base_save(char *name) {
-    int file_handle = rge_open(name, 0x8309, 0x180);
+    int file_handle = rge_open(name,
+                               _O_BINARY | _O_WRONLY | _O_CREAT | _O_APPEND | _O_TRUNC,
+                               _S_IREAD | _S_IWRITE);
     if (file_handle != -1) {
         this->base_save(file_handle);
         rge_close(file_handle);
@@ -1553,7 +1557,9 @@ byte RGE_Game_World::save_scenario(char *filename) {
     sprintf(scenario_name, "%s%s.scn", rge_base_game->prog_info->scenario_dir, kill_name);
     unlink(scenario_name);
     sprintf(scenario_name, "%s%s", rge_base_game->prog_info->scenario_dir, filename);
-    int fd = rge_open(scenario_name, 0x8301, 0x180);
+    int fd = rge_open(scenario_name,
+                      _O_BINARY | _O_WRONLY | _O_CREAT | _O_TRUNC,
+                      _S_IREAD | _S_IWRITE);
     if (fd != -1) {
         rge_write_error = 0;
         if (rge_base_game->check_prog_argument("TRIAL") == 1) {
@@ -1663,7 +1669,7 @@ unsigned char RGE_Game_World::load_scenario(char *scenario, RGE_Player_Info &inf
     world_update_counter = 0;
     sprintf(scenario_name, "%s%s", rge_base_game->prog_info->scenario_dir, scenario);
     if (scenario != 0) {
-        file = rge_open(scenario_name, 0x8000);
+        file = rge_open(scenario_name, _O_BINARY);
         if (file != -1) {
             rge_read_uncompressed(file, &header_size, 4);
             if (header_size == version_word_101.word) {

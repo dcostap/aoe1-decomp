@@ -31,7 +31,7 @@ RGE_Flic_Player::RGE_Flic_Player(char* filename) {
 }
 RGE_Flic_Player::RGE_Flic_Player(int handle) {
     if (handle > -1) {
-        read(handle, &this->flichead, 0x84);
+        read(handle, &this->flichead, 132);
         this->flic_width = (int)(short)this->flichead.width;
         this->flic_handle = handle;
         this->flic_buffer = 0;
@@ -56,9 +56,9 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette) {
     int color_index;
 
     if (this->flic_handle > -1) {
-        framehead = (FrameHead*)calloc(1, 0x10);
+        framehead = (FrameHead*)calloc(1, 16);
         lseek(this->flic_handle, (int)this->flichead.oframe2, SEEK_SET);
-        read(this->flic_handle, framehead, 0x10);
+        read(this->flic_handle, framehead, 16);
         chunk = (int*)calloc(framehead->size, 1);
         temp_buffer = chunk;
         read(this->flic_handle, chunk, framehead->size);

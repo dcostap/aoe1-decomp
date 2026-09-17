@@ -103,7 +103,7 @@ uchar RGE_Random_Map_Module::generate() {
 
     this->list = sorted;
     L->Log("RGE_RANDOM_MAP_MODULE::map start",
-           debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8A));
+           debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 138));
 
     current = this->list;
     if (current == 0)
@@ -114,7 +114,7 @@ uchar RGE_Random_Map_Module::generate() {
             return 0;
 
         L->Log("RGE_RANDOM_MAP_MODULE::module completed with ret:",
-               debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x8F));
+               debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 143));
         current = current->next;
     }
 
@@ -188,7 +188,7 @@ void RGE_Random_Map_Module::create_shared_resources() {
 
     count = map_height;
     count *= map_width;
-    stack_array = (Map_Stack*)calloc(count, 0x18);
+    stack_array = (Map_Stack*)calloc(count, 24);
     stack_offsets = (Map_Stack**)calloc(map_height, 4);
 
     for (i = 0; i < map_height; i++) {
@@ -388,7 +388,7 @@ void RGE_Random_Map_Module::randomize_stack(Map_Stack* stack) {
 
     for (i = 0; i < 2; ++i) {
         while (stack->next != 0) {
-            j = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 0x1e8) * 100) / 0x7fff;
+            j = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_base.cpp", 488) * 100) / 0x7fff;
             this->add_stack_node(&sub_stacks[j], stack->next);
         }
 

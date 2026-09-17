@@ -13,7 +13,7 @@ BaseItem::BaseItem(int tid, int gid, int uid, char* n, float x, float y, float z
     : typeIDValue(tid), gameIDValue(gid), uniqueIDValue(uid),
       xValue(x), yValue(y), zValue(z),
       xSizeValue(xs), ySizeValue(ys), zSizeValue(zs), skipValue(0) {
-    strncpy(this->nameValue, n, 0x3F);
+    strncpy(this->nameValue, n, 63);
 }
 
 BaseItem::BaseItem(BaseItem* bi)

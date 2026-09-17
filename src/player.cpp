@@ -57,7 +57,7 @@ RGE_Player::RGE_Player(int infile, RGE_Game_World* gworld,
     this->relations = (unsigned char*)calloc(
         1, (int)this->world->player_num);
     rge_read(infile, this->relations, (int)this->world->player_num);
-    rge_read(infile, this->unitDiplomacy, 0x24);
+    rge_read(infile, this->unitDiplomacy, 36);
 
     if (save_game_version >= DAT_00570e90) {
         rge_read(infile, &this->allied_LOS_Enable, 4);
@@ -583,7 +583,7 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         short i = 0;
         this->allied_LOS_Enable = 0;
         if (this->attribute_num > 0) {
-            rge_read(infile, this->attributes, 0x74);
+            rge_read(infile, this->attributes, 116);
         }
 
         rge_read(file_handle, &count, 2);
@@ -614,7 +614,7 @@ void RGE_Player::scenario_load(int infile, long* player_id_hash, float version) 
         }
 
         if (version > 1.08) {
-            rge_read(file_handle, this->unitDiplomacy, 0x24);
+            rge_read(file_handle, this->unitDiplomacy, 36);
         }
 
         if (this->victory_conditions != 0) {
@@ -637,7 +637,7 @@ void RGE_Player::scenario_postsave(int outfile) {
     rge_write(outfile, &this->allied_victory, 1);
     rge_write(outfile, &this->world->player_num, 2);
     rge_write(outfile, this->relations, this->world->player_num);
-    rge_write(outfile, this->unitDiplomacy, 0x24);
+    rge_write(outfile, this->unitDiplomacy, 36);
     this->victory_conditions->save(outfile);
 }
 
@@ -689,7 +689,7 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
 
     this->allied_LOS_Enable = 0;
     if (version <= 1.06 && this->attribute_num > 0) {
-        rge_read(file_handle, this->attributes, 0x74);
+        rge_read(file_handle, this->attributes, 116);
     }
 
     rge_read(file_handle, &count, 2);
@@ -724,7 +724,7 @@ void RGE_Player::scenario_postload(int infile, long* player_id_hash,
     }
 
     if (version >= 1.08) {
-        rge_read(file_handle, this->unitDiplomacy, 0x24);
+        rge_read(file_handle, this->unitDiplomacy, 36);
     }
 
     RGE_Victory_Conditions* victory = this->victory_conditions;
@@ -934,7 +934,7 @@ void RGE_Player::save(int outfile) {
     color_log(0x32, 0x32, 3);
     rge_write(outfile, &this->type, 1);
     rge_write(outfile, this->relations, (int)this->world->player_num);
-    rge_write(outfile, this->unitDiplomacy, 0x24);
+    rge_write(outfile, this->unitDiplomacy, 36);
     rge_write(outfile, &this->allied_LOS_Enable, 4);
     rge_write(outfile, &this->allied_victory, 1);
 
@@ -1341,8 +1341,8 @@ void RGE_Player::reset_selected() {
     this->replacement_overlay_shape = -1;
     this->sel_count = 0;
     this->selected_obj = 0;
-    memset(this->sel_list, 0, 0x64);
-    memset(this->groups_used, 0, 0x7F);
+    memset(this->sel_list, 0, 100);
+    memset(this->groups_used, 0, 127);
 }
 
 int RGE_Player::select_object(RGE_Static_Object* obj) {

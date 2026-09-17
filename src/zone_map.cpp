@@ -27,7 +27,7 @@ unsigned char __cdecl zone_pop(Zone_Queue** zone_queue, Zone_Queue** zone_end, l
 }
 
 void __cdecl zone_push(Zone_Queue** zone_queue, Zone_Queue** zone_end, long x, long y) {
-    Zone_Queue* node = (Zone_Queue*)calloc(1, 0xC);
+    Zone_Queue* node = (Zone_Queue*)calloc(1, 12);
 
     if (*zone_end != 0) {
         (*zone_end)->next = node;
@@ -52,8 +52,8 @@ RGE_Zone_Map::RGE_Zone_Map(int infile, RGE_Map* new_map) {
         this->zone_map_rows[i] = this->zone_map + this->map->map_width * i;
     }
 
-    rge_read(infile, this->zone_info, 0xFF);
-    rge_read(infile, this, 0x3FC);
+    rge_read(infile, this->zone_info, 255);
+    rge_read(infile, this, 1020);
 
     rge_read(infile, this->zone_map, this->map->map_height * this->map->map_width);
 
@@ -97,8 +97,8 @@ RGE_Zone_Map::~RGE_Zone_Map() {
 }
 
 void RGE_Zone_Map::save(int outfile) {
-    rge_write(outfile, this->zone_info, 0xFF);
-    rge_write(outfile, this, 0x3FC);
+    rge_write(outfile, this->zone_info, 255);
+    rge_write(outfile, this, 1020);
     rge_write(outfile, this->zone_map, this->map->map_height * this->map->map_width);
     rge_write(outfile, &this->terrain_passability_rules_num, 4);
     if (this->terrain_passability_rules_num > 0) {

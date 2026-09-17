@@ -33,13 +33,13 @@ Visible_Unit_Manager::Visible_Unit_Manager(int Num_Players, int Num_Categories) 
             row[j].list_size = 0x20;
             row[j].used = 0;
             row[j].unit_list =
-                (VISIBLE_UNIT_REC*)calloc(0x20, 8);
+                (VISIBLE_UNIT_REC*)calloc(32, 8);
         }
     }
 
     for (i = 0; i < 5; i++) {
         this->Return_Buffer[i] =
-            (VISIBLE_UNIT_REC*)malloc(0x800);
+            (VISIBLE_UNIT_REC*)malloc(2048);
         VisibleUnitList[i] = this->Return_Buffer[i];
         VisibleUnitList_Size[i] = 0;
     }
@@ -85,7 +85,7 @@ void Visible_Unit_Manager::Build_Distance_Table() {
         free(this->distanceTable);
     }
 
-    unsigned char* table = (unsigned char*)malloc(0x100);
+    unsigned char* table = (unsigned char*)malloc(256);
     this->distanceTable = table;
     for (int i = 0; i < 0x100; i++) {
         table[i] = 0xff;
@@ -316,7 +316,7 @@ Visible_Resource_Manager::Visible_Resource_Manager(RGE_Player* list_owner, int n
         if (this->num_visible_resource_lists > 0) {
             do {
                 this->VR_List[i] =
-                    (VISIBLE_RESOURCE_REC*)malloc(0x100);
+                    (VISIBLE_RESOURCE_REC*)malloc(256);
                 this->VR_ListSize[i] = 0x20;
                 this->VR_ListUsed[i] = 0;
                 i++;

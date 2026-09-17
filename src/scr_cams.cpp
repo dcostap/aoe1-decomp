@@ -285,7 +285,7 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     int first_color = 0;
     RGE_Scenario* scen = rge_base_game->get_scenario_info(0, 1);
     if (scen == 0) {
-        this->popupOKDialog(0x9ca, 0, 0x1c2, 100);
+        this->popupOKDialog(0x9ca, 0, TEASY_POPUP_WIDTH, 100);
         return;
     }
 
@@ -338,6 +338,6 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     }
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
-        this->popupOKDialog(0x961, 0, 0x1c2, 100);
+        this->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
     }
 }

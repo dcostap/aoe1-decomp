@@ -426,7 +426,7 @@ void TMousePointer::draw(int dMode) {
     lplpDDClipper = 0;
     if (this->active != 0 && this->custom_draw != 0) {
         ulong t = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 0x2e3);
+            "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 739);
         if (this->GameMode != 0 && this->GameEnabled != 0 && dMode == 0) {
             if (t - this->LastDrawTime < 0x22)
                 return;
@@ -592,7 +592,7 @@ void TMousePointer::off() {
 void TMousePointer::on(void) {
     if (this->Shutdown == 0) {
         if (this->custom_draw == 0) {
-            SetCursor(LoadCursorA(0, (const char*)0x7F00));
+            SetCursor(LoadCursorA(0, IDC_ARROW));
         }
         this->active = 1;
     }
@@ -626,7 +626,7 @@ void TMousePointer::Poll() {
     if (this->active != 0 && this->custom_draw != 0 &&
         this->GameMode != 0 && this->GameEnabled != 0) {
         ulong t = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 0x42e);
+            "C:\\msdev\\work\\age1_x1\\Mouseptr.cpp", 1070);
         if (t - this->LastDrawTime >= 0x22) {
             if (this->update_mouse_position() != 0) {
                 this->LastDrawTime = t;

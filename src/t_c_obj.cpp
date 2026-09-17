@@ -351,7 +351,7 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
         this->area_attack(x, y, z, attacker, target);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
         const int chance =
-            debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 0x211) *
+            debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 529) *
             100 / 0x7FFF;
         if (chance <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)
                          ->base_hit_chance) {
@@ -1009,7 +1009,7 @@ unsigned char TRIBE_Combat_Object::area_attack(
                         if (radius_squared > dx * dx + dy * dy) {
                             int chance =
                                 debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp",
-                                           0x653) * 100 / 0x7fff;
+                                           1619) * 100 / 0x7fff;
                             if ((short)chance <=
                                 static_cast<RGE_Master_Combat_Object*>(
                                     this->master_obj)->base_hit_chance) {

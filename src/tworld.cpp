@@ -90,17 +90,17 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
             static_cast<TRIBE_Game*>(rge_base_game)->mapSize() + IDS_MAP_SIZE_BASE,
-            tempString, 0x100);
+            tempString, 256);
         fprintf(out, "Map Size:                %s\n", tempString);
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
             static_cast<TRIBE_Game*>(rge_base_game)->mapType() + IDS_MAP_TYPE_BASE,
-            tempString, 0x100);
+            tempString, 256);
         fprintf(out, "Map Type:                %s\n", tempString);
 
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
             static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + 0x28A6,
-            tempString, 0x100);
+            tempString, 256);
         fprintf(out, "Victory Condition:       %s\n", tempString);
     }
 }
@@ -450,46 +450,46 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     case TRIBE_Game::VictoryDefault:
     case TRIBE_Game::VictoryStandard:
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_STANDARD, description, 0x1000);
+            IDS_VICTORY_DESCRIPTION_STANDARD, description, 4096);
         break;
     case TRIBE_Game::VictoryConquest:
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_CONQUEST, description, 0x1000);
+            IDS_VICTORY_DESCRIPTION_CONQUEST, description, 4096);
         break;
     case TRIBE_Game::VictoryTime:
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_TIME_LIMIT, description, 0x1000);
+            IDS_VICTORY_DESCRIPTION_TIME_LIMIT, description, 4096);
         break;
     case TRIBE_Game::VictoryScore:
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_VICTORY_DESCRIPTION_SCORE, description, 0x1000);
+            IDS_VICTORY_DESCRIPTION_SCORE, description, 4096);
         break;
     default:
         break;
     }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(0x2973)); break;
-    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(0x2974)); break;
-    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(0x2975)); break;
-    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(0x2976)); break;
-    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(0x2977)); break;
-    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(0x2978)); break;
+    case TRIBE_Game::Tiny: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE)); break;
+    case TRIBE_Game::Small: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 1)); break;
+    case TRIBE_Game::Medium: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 2)); break;
+    case TRIBE_Game::Large: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 3)); break;
+    case TRIBE_Game::Huge: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 4)); break;
+    case TRIBE_Game::Humongous: strcpy(str1, rge_base_game->get_string(IDS_MAP_SIZE_BASE + 5)); break;
     }
     sprintf(str2, rge_base_game->get_string(IDS_MAP_SIZE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(0x296a)); break;
-        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(0x296b)); break;
-        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(0x296c)); break;
-        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(0x296d)); break;
-        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(0x296e)); break;
-        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(0x296f)); break;
-        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(0x2970)); break;
-        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(0x2971)); break;
-        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(0x2972)); break;
+        case TRIBE_Game::AllWater: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE)); break;
+        case TRIBE_Game::MostlyWater: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 1)); break;
+        case TRIBE_Game::WaterAndLand: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 2)); break;
+        case TRIBE_Game::MostlyLand: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 3)); break;
+        case TRIBE_Game::AllLand: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 4)); break;
+        case TRIBE_Game::Continental: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 5)); break;
+        case TRIBE_Game::Lake: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 6)); break;
+        case TRIBE_Game::Hilly: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 7)); break;
+        case TRIBE_Game::Isthmas: strcpy(str1, rge_base_game->get_string(IDS_MAP_TYPE_BASE + 8)); break;
         }
         sprintf(str2, rge_base_game->get_string(IDS_MAP_TYPE_FORMAT), str1);
         sprintf(description, newline_join_format, description, str2);
@@ -498,12 +498,12 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
     if (age == TRIBE_Game::DefaultAge) {
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_OPTION_DEFAULT, str1, 0x100);
+            IDS_OPTION_DEFAULT, str1, 256);
     } else if (age == TRIBE_Game::NomadAge) {
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_AGE_NOMAD, str1, 0x100);
+            IDS_AGE_NOMAD, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + 0x1067, str1, 0x100);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(age + IDS_AGE_NAME_BASE, str1, 256);
     }
     sprintf(str2, rge_base_game->get_string(IDS_STARTING_AGE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
@@ -511,9 +511,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     res = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
     if (res == TRIBE_Game::DefaultResources) {
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-            IDS_OPTION_DEFAULT, str1, 0x100);
+            IDS_OPTION_DEFAULT, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + 0x25e5, str1, 0x100);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(res + IDS_RESOURCE_LEVEL_BASE, str1, 256);
     }
     sprintf(str2, rge_base_game->get_string(IDS_RESOURCE_LEVEL_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
@@ -521,16 +521,16 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     static_cast<TRIBE_Game*>(rge_base_game)->difficulty();
     static_cast<TRIBE_Game*>(rge_base_game)->get_string(
         static_cast<TRIBE_Game*>(rge_base_game)->difficulty() + IDS_DIFFICULTY_BASE,
-        str1, 0x100);
+        str1, 256);
     static_cast<TRIBE_Game*>(rge_base_game)->get_string(
-        IDS_DIFFICULTY_FORMAT, str2, 0x100);
+        IDS_DIFFICULTY_FORMAT, str2, 256);
     sprintf(str3, str2, str1);
     sprintf(description, newline_join_format, description, str3);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions() == 0) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_YES, str1, 0x100);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_YES, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_NO, str1, 0x100);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_NO, str1, 256);
     }
     sprintf(str2, rge_base_game->get_string(IDS_FIXED_POSITIONS_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
@@ -542,9 +542,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     sprintf(str2, rge_base_game->get_string(IDS_REVEAL_MAP_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() == 0) {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_NO, str1, 0x100);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_NO, str1, 256);
     } else {
-        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_YES, str1, 0x100);
+        static_cast<TRIBE_Game*>(rge_base_game)->get_string(IDS_BUTTON_YES, str1, 256);
     }
     sprintf(str2, rge_base_game->get_string(IDS_FULL_TECH_TREE_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
@@ -559,7 +559,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
         sprintf(description, newline_join_format, description, str2);
     }
 
-    rge_base_game->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + IDS_PATH_FINDING_OPTION_BASE, str1, 0x100);
+    rge_base_game->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + IDS_PATH_FINDING_OPTION_BASE, str1, 256);
     sprintf(str2, rge_base_game->get_string(IDS_PATH_FINDING_FORMAT), str1);
     sprintf(description, newline_join_format, description, str2);
 
@@ -724,11 +724,11 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
         }
 
         if (!static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() && static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
-            if (this->victory_type == 3 || debug_rand(world_source_file, 0x38d) % 100 < 50) {
+            if (this->victory_type == 3 || debug_rand(world_source_file, 909) % 100 < 50) {
                 generator->add_quick_obj(0x9f, 5, this->map->map_width / 5);
                 this->artifact_count = 5;
             }
-            if (debug_rand(world_source_file, 0x394) % 100 < 50) {
+            if (debug_rand(world_source_file, 916) % 100 < 50) {
                 generator->add_quick_obj(0x9e, 5, this->map->map_width / 5);
                 this->ruin_count = 5;
             }

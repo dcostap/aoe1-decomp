@@ -112,7 +112,7 @@ long TTextPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, long 
     set_font(font_in, font_wid_in, font_hgt_in);
     set_alignment(AlignCenter, AlignCenter);
     set_back_pic(back_pic_in);
-    TPanel::get_string(string_id_in, str, 0x1000);
+    TPanel::get_string(string_id_in, str, 4096);
     set_text(str);
     return 1;
 }
@@ -392,7 +392,7 @@ int TTextPanel::word_wrap_append(char* text_in) {
             break;
         }
 
-        memset(temp_text, 0, 0x100);
+        memset(temp_text, 0, 256);
         _mbsncpy(temp_text,
                   (const unsigned char*)text, chars);
         if (found_linefeed) {
@@ -429,7 +429,7 @@ int TTextPanel::word_wrap_append(char* text_in) {
 
 void TTextPanel::set_text(long string_id_in) {
     char buffer[0x1000];
-    this->get_string(string_id_in, buffer, 0x1000);
+    this->get_string(string_id_in, buffer, 4096);
     this->set_text(buffer);
 }
 
@@ -1313,7 +1313,7 @@ int TTextPanel::insert_line(long line_in, char* text_in, char* text2_in, long id
 int TTextPanel::insert_line(long line_in, long string_id_in, long id_in) {
     char str[256];
 
-    get_string((int)string_id_in, str, 0x100);
+    get_string((int)string_id_in, str, 256);
     return insert_line(line_in, str, id_in);
 }
 
@@ -1321,8 +1321,8 @@ int TTextPanel::insert_line(long line_in, long string_id_in, long string_id2_in,
     char str1[256];
     char str2[256];
 
-    this->get_string(string_id_in, str1, 0x100);
-    this->get_string(string_id2_in, str2, 0x100);
+    this->get_string(string_id_in, str1, 256);
+    this->get_string(string_id2_in, str2, 256);
     return this->insert_line(line_in, str1, str2, id_in);
 }
 

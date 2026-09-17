@@ -217,9 +217,9 @@ int PointMaker::CreateShape() {
     ClearArrays();
     PrepareLimits();
 
-    x = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0xD7) %
+    x = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 215) %
         ((Width * (50 - LeftLimit) * 2) / 100) + LeftLimit;
-    y = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0xD8) %
+    y = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 216) %
         ((Height * (50 - TopLimit) * 2) / 100) + TopLimit;
     ProbabilityTiles = 0;
     NumNodes = 0;
@@ -282,7 +282,7 @@ int PointMaker::CreateShape(int xt, int yt) {
 
 void PointMaker::Branch(int which) {
     if (CurrentNumberOfBranchLevels > 1 &&
-        debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x116) % 100 <
+        debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 278) % 100 <
             ChanceOfNextNode * 10 &&
         ProbabilityTiles < MinimumNumTiles * 2) {
         CurrentNumberOfBranchLevels--;
@@ -301,14 +301,14 @@ void PointMaker::Branch(int which) {
 }
 
 int PointMaker::MakeFirstLink() {
-    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
+    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 308);
     dx = dx % BranchDistance + 2;
-    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134) % 2)
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 308) % 2)
         dx = -dx;
 
-    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135);
+    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 309);
     dy = dy % BranchDistance + 2;
-    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x135) % 2)
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 309) % 2)
         dy = -dy;
 
     DirX = dx;
@@ -345,14 +345,14 @@ int PointMaker::MakeFirstLink() {
 int PointMaker::MakeNewLink() {
     int max_x;
     int r;
-    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14A);
+    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 330);
     dx = dx % BranchDistance + 1;
-    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14A) % 2)
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 330) % 2)
         dx = -dx;
 
-    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14B);
+    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 331);
     dy = dy % BranchDistance + 1;
-    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x14B) % 2)
+    if (debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 331) % 2)
         dy = -dy;
 
     int old_x = x;
@@ -390,14 +390,14 @@ int PointMaker::MakeNewLink() {
     if (dy < 5) dy = 5;
     if (dy >= Height - 5) dy = Height - 5;
 
-    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15A);
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 346);
     if (r % 2) {
-        r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15A);
+        r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 346);
         DirX = DirX + r % 3 - 1;
     }
-    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15B);
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 347);
     if (r % 2) {
-        r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x15B);
+        r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 347);
         DirY = DirY + r % 3 - 1;
     }
 
@@ -411,14 +411,14 @@ int PointMaker::MakeNewLink() {
 }
 
 int PointMaker::MakeSatelliteLink() {
-    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
+    int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 357);
     dx = dx % SatelliteDistance + 1;
-    int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
+    int r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 357);
     if (r % 2) dx = -dx;
 
-    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
+    int dy = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 358);
     dy = dy % SatelliteDistance + 1;
-    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
+    r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 358);
     if (r % 2) dy = -dy;
 
     dx += DirX;
@@ -701,7 +701,7 @@ void PointMaker::AddingCircle(int x1, int y1, int radius) {
             lasty = lastx;
             W = curx;
             int random = debug_rand(
-                (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x1F1);
+                (char*)"C:\\msdev\\work\\age1_x1\\fractal.cpp", 497);
             if (random % 2) {
                 x = trig.sin360(angle) * (float)radius;
                 offset = debug_rand(

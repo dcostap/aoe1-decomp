@@ -57,7 +57,7 @@ long TListPanel::handle_idle() {
     if (this->mouse_scroll_up == 0 && this->mouse_scroll_down == 0)
         return 0;
 
-    unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 0x6C);
+    unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 108);
     if (now - this->mouse_scroll_last_time < (unsigned long)this->mouse_scroll_interval)
         return 0;
 
@@ -118,7 +118,7 @@ long TListPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shift_
         if (this->mouse_scroll_up != 0)
             return 1;
         this->mouse_scroll_up = 1;
-        this->mouse_scroll_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 0xB1) - this->mouse_scroll_interval;
+        this->mouse_scroll_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 177) - this->mouse_scroll_interval;
         return 1;
     } else {
         if (y > this->pnl_y + this->pnl_hgt - 1) {
@@ -126,7 +126,7 @@ long TListPanel::mouse_left_move_action(long x, long y, int ctrl_key, int shift_
             if (this->mouse_scroll_down != 0)
                 return 1;
             this->mouse_scroll_down = 1;
-            this->mouse_scroll_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 0xBA) - this->mouse_scroll_interval;
+            this->mouse_scroll_last_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp", 186) - this->mouse_scroll_interval;
             return 1;
         } else {
             this->mouse_scroll_up = 0;

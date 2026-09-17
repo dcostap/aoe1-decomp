@@ -12,7 +12,7 @@ RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
     RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
     RGE_Elevation_Info* in_info)
     : RGE_Random_Map_Module(in_map, parent_module, 1) {
-    memcpy(&this->info, in_info, 0x3E0 * sizeof(long));
+    memcpy(&this->info, in_info, 992 * sizeof(long));
     this->schedule = 1.5f;
 }
 
@@ -289,9 +289,9 @@ void RGE_RMM_Elevation_Generator::link_stack_randomly(Map_Stack* loc_stack) {
 
     for (long count = this->map_height * this->map_width / 16;
          count > 0; --count) {
-        long x = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFA)
+        long x = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 250)
             * max_x / 0x7FFF;
-        long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 0xFB)
+        long y = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_elev.cpp", 251)
             * max_y / 0x7FFF;
         this->add_stack_node(loc_stack, &this->stack_offsets[y][x]);
     }
@@ -418,7 +418,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                     long random_value =
                         (debug_rand(
                              "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                             0x171) * 100) /
+                             369) * 100) /
                         0x7fff;
                     if (*modifier <= random_value) {
                         RGE_Tile* tile = &this->map_row_offset[y][x];
@@ -440,7 +440,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                         0x17d) * 100) /
+                                         381) * 100) /
                                     0x7fff;
                                 this->push_stack(
                                     *stack_ptr, x - 1, y, 0.0f,
@@ -452,7 +452,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                         0x17f) * 100) /
+                                         383) * 100) /
                                     0x7fff;
                                 this->push_stack(
                                     *stack_ptr, x + 1, y, 0.0f,
@@ -464,7 +464,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                         0x181) * 100) /
+                                         385) * 100) /
                                     0x7fff;
                                 this->push_stack(
                                     *stack_ptr, x, y - 1, 0.0f,
@@ -476,7 +476,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 long clump_size =
                                     (debug_rand(
                                          "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
-                                         0x183) * 100) /
+                                         387) * 100) /
                                     0x7fff;
                                 this->push_stack(
                                     *stack_ptr, x, y + 1, 0.0f,

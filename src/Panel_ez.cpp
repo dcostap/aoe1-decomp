@@ -597,7 +597,7 @@ void TEasy_Panel::set_background_colors(unsigned char color1, unsigned char colo
     this->set_color(color1);
     background_color1 = color1;
     background_color2 = color2;
-    this->brush = GetStockObject(4);
+    this->brush = GetStockObject(BLACK_BRUSH);
     this->stock_brush = 1;
     brush_color = 0;
 }
@@ -808,8 +808,8 @@ int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** button,
     char text2[120];
     char text1[120];
 
-    this->get_string(text_id1, text1, 0x78);
-    this->get_string(text_id2, text2, 0x78);
+    this->get_string(text_id1, text1, 120);
+    this->get_string(text_id2, text2, 120);
     return this->create_button(parent, button, text1, text2, x, y, width,
                                height, font_num, sound_num, action_id);
 }
@@ -983,7 +983,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** text_panel,
                              int vert_center, int word_wrap) {
     char text[256];
 
-    this->get_string(text_id, text, 0x100);
+    this->get_string(text_id, text, 256);
     return this->create_text(parent, text_panel, text, x, y, width, height,
                              font_num, horz_center, vert_center, word_wrap);
 }
@@ -1168,7 +1168,7 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
         rge_base_game->get_font(10);
     char** list = (char**)calloc(1,4);
     if (list == 0) { this->error_code = 1; return 0; }
-    list[0] = (char*)calloc(0x14,1);
+    list[0] = (char*)calloc(20,1);
     if (list[0] == 0) return 0;
     strcpy(list[0], " ");
     if (this->error_code == 0) {
@@ -1228,7 +1228,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** list_panel,
         this->error_code = 1;
         return 0;
     }
-    list_items[0] = (char*)calloc(0x14, 1);
+    list_items[0] = (char*)calloc(20, 1);
     if (list_items[0] == 0) {
         goto cleanup_fail;
     }
@@ -1411,7 +1411,7 @@ void TEasy_Panel::set_focus(int have_focus_in) {
 void TEasy_Panel::popupOKDialog(long text_id, char* panel_title, int wid, int hgt) {
     char text[256];
 
-    get_string(text_id, text, 0x100);
+    get_string(text_id, text, 256);
     popupOKDialog(text, panel_title, wid, hgt);
 }
 
@@ -1435,7 +1435,7 @@ void TEasy_Panel::popupOKDialog(char* text, char* panel_title, int wid, int hgt)
 void TEasy_Panel::popupYesNoDialog(long text_id, char* panel_title, int wid, int hgt) {
     char text[256];
 
-    this->get_string(text_id, text, 0x100);
+    this->get_string(text_id, text, 256);
     this->popupYesNoDialog(text, panel_title, wid, hgt);
 }
 
@@ -1453,7 +1453,7 @@ void TEasy_Panel::popupYesNoDialog(char* text, char* panel_title, int wid, int h
 
 void TEasy_Panel::popupYesNoCancelDialog(long text_id, char* panel_title, int wid, int hgt) {
     char text[256];
-    this->get_string(text_id, text, 0x100);
+    this->get_string(text_id, text, 256);
     this->popupYesNoCancelDialog(text, panel_title, wid, hgt);
 }
 
@@ -1496,7 +1496,7 @@ void TEasy_Panel::setup_popup_help(void) {
 
 void TEasy_Panel::clear_popup_help(void) {
     this->help_mode = 0;
-    rge_base_game->set_mouse_cursor(LoadCursorA(0, MAKEINTRESOURCEA(0x7F00)));
+    rge_base_game->set_mouse_cursor(LoadCursorA(0, IDC_ARROW));
     rge_base_game->set_mouse_facet(0);
     rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
 }
@@ -1510,7 +1510,7 @@ long TEasy_Panel::command_do_popup_help(unsigned char mouse_button_in,
     temp = help_string2;
     if (this->help_mode == 1) {
         this->help_mode = 0;
-        rge_base_game->set_mouse_cursor(LoadCursorA(0, MAKEINTRESOURCEA(0x7F00)));
+        rge_base_game->set_mouse_cursor(LoadCursorA(0, IDC_ARROW));
         rge_base_game->set_mouse_facet(0);
         rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
         if (mouse_button_in == 1) {

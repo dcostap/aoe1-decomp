@@ -26,7 +26,7 @@ RGE_Timeline::RGE_Timeline(int infile, RGE_Game_World* gworld) {
     index = 0;
     if (this->list_num > 0) {
         do {
-            RGE_Time_Entry* entry = (RGE_Time_Entry*)calloc(1, 0x30);
+            RGE_Time_Entry* entry = (RGE_Time_Entry*)calloc(1, 48);
             rge_read(infile, &entry->time, 4);
             rge_read(infile, &entry->command, 1);
             rge_read(infile, &entry->obj_type, 2);
@@ -301,7 +301,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
     node = this->time_list;
     prev = &this->time_list;
     if (node == 0) {
-        node = (RGE_Time_Entry*)calloc(1, 0x30);
+        node = (RGE_Time_Entry*)calloc(1, 48);
         *prev = node;
         node->time = time;
         this->list_num++;
@@ -310,7 +310,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
 
     while (node != 0) {
         if (node->time > time) {
-            RGE_Time_Entry* new_node = (RGE_Time_Entry*)calloc(1, 0x30);
+            RGE_Time_Entry* new_node = (RGE_Time_Entry*)calloc(1, 48);
             new_node->time = time;
             new_node->next = node;
             *prev = new_node;
@@ -322,7 +322,7 @@ RGE_Time_Entry* RGE_Timeline::add(float time) {
     }
 
     {
-        node = (RGE_Time_Entry*)calloc(1, 0x30);
+        node = (RGE_Time_Entry*)calloc(1, 48);
         RGE_Time_Entry** node_next = &node->next;
         node->time = time;
         *node_next = 0;

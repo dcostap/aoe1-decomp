@@ -891,8 +891,8 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
     rge_read(infile, &this->targetIDValue, 4);
     rge_read(infile, &this->secondTargetIDValue, 4);
     rge_read(infile, &this->secondTargetTypeValue, 4);
-    rge_read(infile, &this->targetPoint1Value, 0x10);
-    rge_read(infile, &this->targetPoint2Value, 0x10);
+    rge_read(infile, &this->targetPoint1Value, 16);
+    rge_read(infile, &this->targetPoint2Value, 16);
     rge_read(infile, &this->targetAttributeValue, 4);
     rge_read(infile, &this->targetNumberValue, 4);
     rge_read(infile, &this->victoryConditionChangeTimeout, 4);
@@ -1137,7 +1137,7 @@ int TribeStrategyAIModule::loadRules(char* rName) {
     if (rName == 0) {
         return (int)rName;
     }
-    strncpy(this->ruleSetNameValue, rName, 0xFF);
+    strncpy(this->ruleSetNameValue, rName, 255);
     return ((VictoryConditionRuleSystem*)((char*)this + 0x268))->loadRules(this->ruleSetNameValue);
 }
 

@@ -63,7 +63,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
                       panel_height, this->pnl_wid - 0x0A,
                       0x12, 10, 1, 0, 0);
 
-    this->get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 0x200);
+    this->get_string(IDS_COPYRIGHT_SEPARATOR, temp_str, 512);
     if (temp_str[0] == 0) {
         TTextPanel** copy1 = &this->ms_copy_text1;
         this->create_text(this, copy1, IDS_COPYRIGHT_PREFIX, 5,
@@ -166,7 +166,7 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short count, int alt_key,
                 if (rge_base_game->gameDeveloperMode() != 0) {
                     if (static_cast<TRIBE_Game*>(rge_base_game)->load_db_files()
                         == 0) {
-                        TEasy_Panel::popupOKDialog(IDS_ERROR_LOAD_GAME_DATA, 0, 0x1C2, 100);
+                        TEasy_Panel::popupOKDialog(IDS_ERROR_LOAD_GAME_DATA, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
                 return 1;
@@ -199,7 +199,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
             if (fromPanel == this->button[0]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
-                        this->popupOKDialog(IDS_ERROR_INSERT_CD_SINGLE_PLAYER, 0, 0x1C2, 100);
+                        this->popupOKDialog(IDS_ERROR_INSERT_CD_SINGLE_PLAYER, 0, TEASY_POPUP_WIDTH, 100);
                         result = 1;
                         goto done;
                     }
@@ -224,7 +224,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
             }
 
             if (fromPanel == this->button[2]) {
-                this->popupOKDialog(IDS_HELP_NOTICE, "Confirm Dialog", 0x1C2, 100);
+                this->popupOKDialog(IDS_HELP_NOTICE, "Confirm Dialog", TEASY_POPUP_WIDTH, 100);
                 result = 1;
                 goto done;
             }
@@ -232,7 +232,7 @@ long TRIBE_Screen_Main_Menu::action(TPanel* fromPanel, long actionIn, unsigned l
             if (fromPanel == this->button[3]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
-                        this->popupOKDialog(IDS_ERROR_INSERT_CD_SCENARIO_BUILDER, 0, 0x1C2, 100);
+                        this->popupOKDialog(IDS_ERROR_INSERT_CD_SCENARIO_BUILDER, 0, TEASY_POPUP_WIDTH, 100);
                         result = 1;
                         goto done;
                     }

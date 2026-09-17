@@ -120,7 +120,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             SelectObject(render_area->DrawDc, (HGDIOBJ)font);
 
         if (player != 0) {
-            rge_base_game->get_string2(0x69, player->id, 0, name, 100);
+            rge_base_game->get_string2(RGE_STRING_TYPE_CIVILIZATION, player->id, 0, name, 100);
             if (strcmp(name, "Unknown") == 0)
                 strcpy(name, "Gaia");
             TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y, name,

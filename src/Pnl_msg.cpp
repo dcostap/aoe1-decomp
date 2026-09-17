@@ -117,11 +117,11 @@ void TMessagePanel::show_message(TMessagePanel::MessageType message_type_in, cha
     for (int i = 0; i < 0x200; ++i) {
         this->text[i] = 0;
     }
-    strncpy(this->text, text_in, 0x1ff);
+    strncpy(this->text, text_in, 511);
     this->display_changed_count++;
     this->showing_message = 1;
     this->start_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0x9e);
+        "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 158);
     this->font_color = colorIn;
     this->index_color = 1;
     this->back_color = backColorIn;
@@ -168,11 +168,11 @@ void TMessagePanel::show_message2(
     for (int i = 0; i < 0x200; ++i) {
         this->text[i] = 0;
     }
-    strncpy(this->text, text_in, 0x1ff);
+    strncpy(this->text, text_in, 511);
     this->display_changed_count++;
     this->showing_message = 1;
     this->start_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0xd3);
+        "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 211);
     this->font_color1 = color1;
     this->index_color = 0;
     this->font_color2 = color2;
@@ -338,7 +338,7 @@ long TMessagePanel::handle_idle() {
         if (message_type == BadMessage || message_type == ChatMessage ||
             message_type == ColoredChatMessage) {
             long now = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 0x1BA);
+                "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp", 442);
             if (now - start_time >= show_message_interval) {
                 remove_message();
             }

@@ -32,7 +32,7 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_wo
     this->RGE_RMM_Database_Controller::init(
         in_map, in_world, type, player_num, fixed_position);
 
-    if (debug_rand(s_rmm_tdbc_path, 0x40) > 0x1fff) {
+    if (debug_rand(s_rmm_tdbc_path, 64) > 0x1fff) {
         long base_cliff_size;
         long base_cliff_length;
         long width = this->map_width;
@@ -121,22 +121,22 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
 
     int minus_one = -1;
     if (this->map_type < 5) {
-        if (debug_rand(s_rmm_tdbc_path, 0xb9) < 0x3fff) {
+        if (debug_rand(s_rmm_tdbc_path, 185) < 0x3fff) {
             this->land_info.wall_1_avoidance_line = minus_one;
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].wall_1_avoidance_line = minus_one;
         }
-        if (debug_rand(s_rmm_tdbc_path, 0xc0) < 0x3fff) {
+        if (debug_rand(s_rmm_tdbc_path, 192) < 0x3fff) {
             this->land_info.wall_2_avoidance_line = minus_one;
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].wall_2_avoidance_line = minus_one;
         }
-        if (debug_rand(s_rmm_tdbc_path, 0xc7) < 0x3fff) {
+        if (debug_rand(s_rmm_tdbc_path, 199) < 0x3fff) {
             this->land_info.wall_3_avoidance_line = this->map_width;
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].wall_3_avoidance_line = this->map_width;
         }
-        if (debug_rand(s_rmm_tdbc_path, 0xce) < 0x3fff) {
+        if (debug_rand(s_rmm_tdbc_path, 206) < 0x3fff) {
             this->land_info.wall_4_avoidance_line = this->map_height;
             for (int i = 0; i < this->land_info.land_num; ++i)
                 this->land_info.land[i].wall_4_avoidance_line = this->map_height;
@@ -144,7 +144,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
     }
 
     if (this->map_type == 8) {
-        if (debug_rand(s_rmm_tdbc_path, 0xd8) < 0x3fff) {
+        if (debug_rand(s_rmm_tdbc_path, 216) < 0x3fff) {
             this->land_info.wall_1_avoidance_line = minus_one;
             this->land_info.wall_3_avoidance_line = this->map_width;
             for (int i = 0; i < this->land_info.land_num; ++i) {
@@ -162,15 +162,15 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
     }
 
     if ((this->map_type >= 2 && this->map_type <= 6) || this->map_type == 8) {
-        if (debug_rand(s_rmm_tdbc_path, 0xf1) < 0x3fff) {
-            if (debug_rand(s_rmm_tdbc_path, 0xf7) < 0x3fff) {
+        if (debug_rand(s_rmm_tdbc_path, 241) < 0x3fff) {
+            if (debug_rand(s_rmm_tdbc_path, 247) < 0x3fff) {
                 for (int i = 0; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = 0;
             } else {
                 for (int i = 0; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = (uchar)i;
             }
-            if (debug_rand(s_rmm_tdbc_path, 0xff) < 0x3fff) {
+            if (debug_rand(s_rmm_tdbc_path, 255) < 0x3fff) {
                 for (int i = 1; i < this->land_info.land_num; i += 2)
                     this->land_info.land[i].zone = 1;
             } else {
@@ -216,7 +216,7 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar fixed_positions) {
             this->land_info.land[i].land_size = each / this->land_info.land_num;
     }
 
-    L->Log(s_land_log, debug_rand(s_rmm_tdbc_path, 0x137));
+    L->Log(s_land_log, debug_rand(s_rmm_tdbc_path, 311));
 }
 
 void TRIBE_RMM_Database_Controller::add_terrain_module() {
@@ -235,7 +235,7 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
         }
     }
 
-    if (debug_rand(s_rmm_tdbc_path, 0x154) < 0x1fff) {
+    if (debug_rand(s_rmm_tdbc_path, 340) < 0x1fff) {
         for (int i = 0; i < this->terrain_info.terrain_num; ++i) {
             if (this->terrain_info.terrain[i].terrain_type == 13) {
                 this->terrain_info.terrain[i].terrain_size *= 3;
@@ -268,14 +268,14 @@ void TRIBE_RMM_Database_Controller::add_terrain_module() {
         }
     }
 
-    L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 0x180));
+    L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 384));
 }
 
 void TRIBE_RMM_Database_Controller::add_object_module() {
     int index;
 
     this->RGE_RMM_Database_Controller::add_object_module();
-    debug_rand(s_rmm_tdbc_path, 0x198);
+    debug_rand(s_rmm_tdbc_path, 408);
 
     if (((TRIBE_Game*)rge_base_game)->startingAge() ==
         TRIBE_Game::NomadAge) {
@@ -314,7 +314,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
     }
 
     if (this->map_type < 2) {
-        long count = debug_rand(s_rmm_tdbc_path, 0x1c3) * 4 / 0x7fff + 1;
+        long count = debug_rand(s_rmm_tdbc_path, 451) * 4 / 0x7fff + 1;
         if (count + this->number_of_players > 10)
             count = 10 - this->number_of_players;
 
@@ -358,9 +358,9 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
             do {
                 ++index1;
                 done = 1;
-                x = debug_rand(s_rmm_tdbc_path, 0x1de) *
+                x = debug_rand(s_rmm_tdbc_path, 478) *
                     (this->map_width - 16) / 0x7fff + 8;
-                y = debug_rand(s_rmm_tdbc_path, 0x1df) *
+                y = debug_rand(s_rmm_tdbc_path, 479) *
                     (this->map_height - 16) / 0x7fff + 8;
 
                 for (int prior = 0;
@@ -398,7 +398,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
                 land_outer_radius = 0x1a;
             this->object_info.objects[this->object_info.object_num].
                 object_exclusion_zone = 0;
-            if (debug_rand(s_rmm_tdbc_path, 0x1fd) < 0x3fff)
+            if (debug_rand(s_rmm_tdbc_path, 509) < 0x3fff)
                 this->object_info.objects[this->object_info.object_num].obj_id =
                     0x66;
             else
@@ -443,18 +443,18 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
         }
     }
 
-    L->Log(s_object_log, debug_rand(s_rmm_tdbc_path, 0x236));
+    L->Log(s_object_log, debug_rand(s_rmm_tdbc_path, 566));
 }
 
 void TRIBE_RMM_Database_Controller::add_elevation_module() {
     this->RGE_RMM_Database_Controller::add_elevation_module();
-    int random = debug_rand(s_rmm_tdbc_path, 0x243);
+    int random = debug_rand(s_rmm_tdbc_path, 579);
     float scale = (DAT_00571f4c - (float)random * DAT_00571f48) * DAT_00571f50;
     if (this->map_type == 7) scale *= DAT_00571f54;
     for (int i = 0; i < this->elevation_info.elevation_num; ++i)
         this->elevation_info.elevation[i].elevation_size =
             (long)((float)this->elevation_info.elevation[i].elevation_size * scale);
-    L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 0x24b));
+    L->Log(s_terrain_log, debug_rand(s_rmm_tdbc_path, 587));
 }
 
 void TRIBE_RMM_Database_Controller::add_shallows_module() {
@@ -465,7 +465,7 @@ void TRIBE_RMM_Database_Controller::add_shallows_module() {
         shallows_info.shallows[i].y = this->land_info.land[i].y;
     }
     new RGE_RMM_Shallows_Generator(this->map, this, &shallows_info);
-    L->Log(s_shallows_log, debug_rand(s_rmm_tdbc_path, 0x25f));
+    L->Log(s_shallows_log, debug_rand(s_rmm_tdbc_path, 607));
 }
 
 uchar TRIBE_RMM_Database_Controller::generate() {

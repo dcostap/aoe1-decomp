@@ -505,14 +505,14 @@ void TribeMPSetupScreen::init_vars() {
         static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
         static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
         unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x243);
-        debug_srand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x243, now);
+            "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579);
+        debug_srand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 579, now);
 
         for (i = 0; i < 8; ++i) {
             this->defaultColor[i] = static_cast<unsigned char>(i + 1);
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(
                 i,
-                debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x248) %
+                debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 584) %
                         16 +
                     1);
             static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, i);
@@ -535,7 +535,7 @@ void TribeMPSetupScreen::init_vars() {
             static_cast<TRIBE_Game*>(rge_base_game)->setMapSize(
                 static_cast<TRIBE_Game::MapSize>(3));
             int random_map = debug_rand(
-                                  "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x26A) %
+                                  "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 618) %
                               10;
             int map_type;
             if (random_map < 2) {
@@ -664,14 +664,14 @@ long TribeMPSetupScreen::handle_idle() {
     if (rge_base_game->multiplayerGame()) {
         if (last_send_shared == 0) {
             last_send_shared = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x2FE);
+                "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 766);
         } else {
             unsigned long t = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x301);
+                "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 769);
             if (t - last_send_shared != 0) {
                 comm->SendSharedData(0);
                 last_send_shared = debug_timeGetTime(
-                    "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x304);
+                    "C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 772);
             }
         }
     }
@@ -703,7 +703,7 @@ long TribeMPSetupScreen::action(TPanel* fromPanel, long actionIn, unsigned long 
                 } else {
                     if (rge_base_game->playerVersion(0) != 1) {
                         this->ready_button->set_state(0);
-                        this->popupOKDialog(IDS_HOST_VERSION_ERROR, 0, 0x1C2, 100);
+                        this->popupOKDialog(IDS_HOST_VERSION_ERROR, 0, TEASY_POPUP_WIDTH, 100);
                         return 1;
                     }
 
@@ -969,7 +969,7 @@ int TribeMPSetupScreen::startGame() {
             return 0;
         }
         if (!comm->AllPlayersReady()) {
-            this->popupOKDialog(0x25c1, 0, 0x1c2, 100);
+            this->popupOKDialog(IDS_ERROR_PLAYERS_NOT_READY, 0, TEASY_POPUP_WIDTH, 100);
             return 0;
         }
         int u12;
@@ -981,7 +981,7 @@ int TribeMPSetupScreen::startGame() {
                     comm->GetPlayerHumanity(u12) == 2) {
                     if (*pl != this->myScenarioChecksum) {
                         sprintf(msg, this->get_string(IDS_SCENARIO_VERSION_ERROR), comm->GetPlayerName(i3 + 1));
-                        this->popupOKDialog(msg, 0, 0x1c2, 100);
+                        this->popupOKDialog(msg, 0, TEASY_POPUP_WIDTH, 100);
                         return 0;
                     }
                 }
@@ -994,7 +994,7 @@ int TribeMPSetupScreen::startGame() {
                 comm->GetPlayerHumanity(u4) == 2) {
                 if (rge_base_game->playerVersion(u12) != 1) {
                     sprintf(msg, this->get_string(IDS_PLAYER_VERSION_ERROR), comm->GetPlayerName(u12 + 1));
-                    this->popupOKDialog(msg, 0, 0x1c2, 100);
+                    this->popupOKDialog(msg, 0, TEASY_POPUP_WIDTH, 100);
                     return 0;
                 }
             }
@@ -1002,7 +1002,7 @@ int TribeMPSetupScreen::startGame() {
     }
 
     if (rge_base_game->scenarioGame() && this->scenarioInfo == 0) {
-        this->popupOKDialog(0x25c2, 0, 0x1c2, 100);
+        this->popupOKDialog(IDS_ERROR_INVALID_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 
@@ -1053,18 +1053,18 @@ int TribeMPSetupScreen::startGame() {
             } while (u4c < rge_base_game->numberPlayers());
         }
         if (i5 < 2) {
-            this->popupOKDialog(0x25c6, 0, 0x1c2, 100);
+            this->popupOKDialog(IDS_ERROR_ONE_PLAYER, 0, TEASY_POPUP_WIDTH, 100);
             return 0;
         }
         if (rge_base_game->scenarioGame() && i5 > this->scenarioPlayerCount) {
-            sprintf(msg, this->get_string(0x25c3), this->scenarioPlayerCount);
-            this->popupOKDialog(msg, 0, 0x1c2, 100);
+            sprintf(msg, this->get_string(IDS_SCENARIO_MAX_PLAYERS), this->scenarioPlayerCount);
+            this->popupOKDialog(msg, 0, TEASY_POPUP_WIDTH, 100);
             return 0;
         }
         if (rge_base_game->scenarioGame() && this->settingsFixed != 0 &&
             i5 != this->scenarioPlayerCount) {
-            sprintf(msg, this->get_string(0x25c5), this->scenarioPlayerCount);
-            this->popupOKDialog(msg, 0, 0x1c2, 100);
+            sprintf(msg, this->get_string(IDS_SCENARIO_EXACT_PLAYERS), this->scenarioPlayerCount);
+            this->popupOKDialog(msg, 0, TEASY_POPUP_WIDTH, 100);
             return 0;
         }
 
@@ -1083,7 +1083,7 @@ int TribeMPSetupScreen::startGame() {
         rge_base_game->setPlayerHasCD(comm->WhoAmI() - 1, cd);
         int cd2 = rge_base_game->check_for_cd(i5h);
         if (cd2 == 0) {
-            this->popupOKDialog(0x7d9, 0, 0x1c2, 100);
+            this->popupOKDialog(0x7d9, 0, TEASY_POPUP_WIDTH, 100);
             return 0;
         }
     }
@@ -1176,7 +1176,7 @@ int TribeMPSetupScreen::startGame() {
     }
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
-        this->popupOKDialog(0x961, 0, 0x1c2, 100);
+        this->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
     return 1;
@@ -1242,7 +1242,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
                     for (; tries < 1000; ++tries) {
                         int count = this->scenarioPlayerCount;
                         new_position =
-                            (debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0x5E4) * count) /
+                            (debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 1508) * count) /
                             0x7FFF;
                         if (new_position >= count) {
                             new_position = count - 1;
@@ -1289,9 +1289,9 @@ void TribeMPSetupScreen::showNetInfo() {
                 strcat(message, "\n");
             }
             this->TEasy_Panel::popupOKDialog(
-                message, "OKDialog", 0x1c2, num_addr * 18 + 100);
+                message, "OKDialog", TEASY_POPUP_WIDTH, num_addr * 18 + 100);
         } else {
-            this->TEasy_Panel::popupOKDialog(IDS_NO_IP_INFO_ERROR, 0, 0x1c2, 100);
+            this->TEasy_Panel::popupOKDialog(IDS_NO_IP_INFO_ERROR, 0, TEASY_POPUP_WIDTH, 100);
         }
         delete addresses;
     }
@@ -1470,7 +1470,7 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
 
                 int civilization =
                     debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp",
-                               0x6D6) %
+                               1750) %
                         16 +
                     1;
                 if (static_cast<TRIBE_Game*>(rge_base_game)->civilization(i) !=
@@ -1614,16 +1614,17 @@ long TribeMPSetupScreen::handle_user_command(unsigned int wParam, long lParam) {
 
     case COMM_PLAYER_BAD_VERSION:
         L->Log("$$$ USER_COMMAND: COMM_BAD_VERSION (%d,%d)", wParam, lParam);
-        sprintf(message, this->get_string(0x25DD), comm->GetPlayerName(lParam));
-        this->popupOKDialog(message, 0, 0x1C2, 100);
+        sprintf(message, this->get_string(IDS_GAME_VERSION_MISMATCH),
+                comm->GetPlayerName(lParam));
+        this->popupOKDialog(message, 0, TEASY_POPUP_WIDTH, 100);
         return 1;
 
     case COMM_PLAYER_SERVICE_ERROR:
         L->Log("$$$ USER_COMMAND: COMM_PLAYER_SERVICE_ERROR (%d,%d)", wParam,
                lParam);
-        sprintf(message, this->get_string(0x25DE),
+        sprintf(message, this->get_string(IDS_CONNECTION_TYPE_MISMATCH),
                 comm->GetPlayerName(lParam));
-        this->popupOKDialog(message, 0, 0x1C2, 100);
+        this->popupOKDialog(message, 0, TEASY_POPUP_WIDTH, 100);
         return 1;
 
     case COMM_HOST_BUSY:
@@ -2077,9 +2078,9 @@ void TribeMPSetupScreen::updateSummary() {
         setting = 3;
     } else {
         if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch()) {
-            this->get_string(0x2617, str1, 0x100);
+            this->get_string(IDS_DEATH_MATCH, str1, 256);
         } else {
-            this->get_string(IDS_RANDOM_MAP, str1, 0x100);
+            this->get_string(IDS_RANDOM_MAP, str1, 256);
         }
         sprintf(str2, this->get_string(IDS_SCENARIO_FORMAT), str1);
         this->scenarioName->set_text(str2);
@@ -2088,30 +2089,30 @@ void TribeMPSetupScreen::updateSummary() {
 
     if (rge_base_game->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-        case 0: strcpy(str1, this->get_string(0x2973)); break;
-        case 1: strcpy(str1, this->get_string(0x2974)); break;
-        case 2: strcpy(str1, this->get_string(0x2975)); break;
-        case 3: strcpy(str1, this->get_string(0x2976)); break;
-        case 4: strcpy(str1, this->get_string(0x2977)); break;
-        case 5: strcpy(str1, this->get_string(0x2978)); break;
+        case 0: strcpy(str1, this->get_string(IDS_MAP_SIZE_BASE)); break;
+        case 1: strcpy(str1, this->get_string(IDS_MAP_SIZE_BASE + 1)); break;
+        case 2: strcpy(str1, this->get_string(IDS_MAP_SIZE_BASE + 2)); break;
+        case 3: strcpy(str1, this->get_string(IDS_MAP_SIZE_BASE + 3)); break;
+        case 4: strcpy(str1, this->get_string(IDS_MAP_SIZE_BASE + 4)); break;
+        case 5: strcpy(str1, this->get_string(IDS_MAP_SIZE_BASE + 5)); break;
         }
-        sprintf(str2, this->get_string(0x25DA), str1);
+        sprintf(str2, this->get_string(IDS_MAP_SIZE_FORMAT), str1);
         this->settingText[setting]->set_text(str2);
         this->settingText[setting]->set_active(1);
         ++setting;
 
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: strcpy(str1, this->get_string(0x296A)); break;
-        case 1: strcpy(str1, this->get_string(0x296B)); break;
-        case 2: strcpy(str1, this->get_string(0x296C)); break;
-        case 3: strcpy(str1, this->get_string(0x296D)); break;
-        case 4: strcpy(str1, this->get_string(0x296E)); break;
-        case 5: strcpy(str1, this->get_string(0x296F)); break;
-        case 6: strcpy(str1, this->get_string(0x2970)); break;
-        case 7: strcpy(str1, this->get_string(0x2971)); break;
-        case 8: strcpy(str1, this->get_string(0x2972)); break;
+        case 0: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE)); break;
+        case 1: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 1)); break;
+        case 2: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 2)); break;
+        case 3: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 3)); break;
+        case 4: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 4)); break;
+        case 5: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 5)); break;
+        case 6: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 6)); break;
+        case 7: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 7)); break;
+        case 8: strcpy(str1, this->get_string(IDS_MAP_TYPE_BASE + 8)); break;
         }
-        sprintf(str2, this->get_string(0x25B6), str1);
+        sprintf(str2, this->get_string(IDS_MAP_TYPE_FORMAT), str1);
         this->settingText[setting]->set_text(str2);
         this->settingText[setting]->set_active(1);
         ++setting;
@@ -2119,14 +2120,14 @@ void TribeMPSetupScreen::updateSummary() {
 
     if (rge_base_game->scenarioGame()) {
         if (this->settingsFixed == 0 && this->scenarioPlayerCount != 2) {
-            sprintf(str2, "%s %d - %d", this->get_string(0x25B7),
+        sprintf(str2, "%s %d - %d", this->get_string(IDS_PLAYERS_LABEL),
                     2, this->scenarioPlayerCount);
         } else {
-            sprintf(str2, "%s %d", this->get_string(0x25B7),
+            sprintf(str2, "%s %d", this->get_string(IDS_PLAYERS_LABEL),
                     this->scenarioPlayerCount);
         }
     } else {
-        sprintf(str2, "%s 2 - 8", this->get_string(0x25B7));
+        sprintf(str2, "%s 2 - 8", this->get_string(IDS_PLAYERS_LABEL));
     }
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
@@ -2134,28 +2135,28 @@ void TribeMPSetupScreen::updateSummary() {
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
     case 1:
-        strcpy(str1, this->get_string(0x10E1));
+        strcpy(str1, this->get_string(IDS_VICTORY_CONQUEST));
         goto victory_plain;
     case 7:
-        strcpy(str1, this->get_string(0x10E9));
+        strcpy(str1, this->get_string(IDS_VICTORY_TIME_LIMIT));
         goto victory_amount;
     case 8:
-        strcpy(str1, this->get_string(0x10EA));
+        strcpy(str1, this->get_string(IDS_VICTORY_SCORE));
     victory_amount:
-        sprintf(str2, this->get_string(0x25BE), str1,
+        sprintf(str2, this->get_string(IDS_VICTORY_AMOUNT_FORMAT), str1,
                 static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount());
         goto victory_done;
     default:
         if (rge_base_game->randomGame()) {
-            strcpy(str1, this->get_string(0x10EC));
+            strcpy(str1, this->get_string(IDS_VICTORY_STANDARD));
         } else {
-            strcpy(str1, this->get_string(0x10E7));
+            strcpy(str1, this->get_string(IDS_OPTION_DEFAULT));
         }
         goto victory_plain;
     case 9:
-        strcpy(str1, this->get_string(0x10EC));
+        strcpy(str1, this->get_string(IDS_VICTORY_STANDARD));
     victory_plain:
-        sprintf(str2, this->get_string(0x25BC), str1);
+        sprintf(str2, this->get_string(IDS_VICTORY_FORMAT), str1);
     victory_done:
         break;
     }
@@ -2165,84 +2166,84 @@ void TribeMPSetupScreen::updateSummary() {
 
     int age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
     if (age == 0) {
-        this->get_string(0x10E7, str1, 0x100);
+        this->get_string(IDS_OPTION_DEFAULT, str1, 256);
     } else if (age == 1) {
-        this->get_string(0x106E, str1, 0x100);
+        this->get_string(IDS_AGE_NOMAD, str1, 256);
     } else {
-        this->get_string(age + 0x1067, str1, 0x100);
+        this->get_string(age + IDS_AGE_NAME_BASE, str1, 256);
     }
-    sprintf(str2, this->get_string(0x25E4), str1);
+    sprintf(str2, this->get_string(IDS_STARTING_AGE_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     int resources = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
     if (resources == 0) {
-        this->get_string(0x10E7, str1, 0x100);
+        this->get_string(IDS_OPTION_DEFAULT, str1, 256);
     } else {
-        this->get_string(resources + 0x25E5, str1, 0x100);
+        this->get_string(resources + IDS_RESOURCE_LEVEL_BASE, str1, 256);
     }
-    sprintf(str2, this->get_string(0x25E5), str1);
+    sprintf(str2, this->get_string(IDS_RESOURCE_LEVEL_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     rge_base_game->difficulty();
-    this->get_string(rge_base_game->difficulty() + 0x2BD0, str1, 0x100);
-    this->get_string(0x25E0, str2, 0x100);
+    this->get_string(rge_base_game->difficulty() + IDS_DIFFICULTY_BASE, str1, 256);
+    this->get_string(IDS_DIFFICULTY_FORMAT, str2, 256);
     sprintf(str3, str2, str1);
     this->settingText[setting]->set_text(str3);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions()) {
-        this->get_string(0xFA4, str1, 0x100);
+        this->get_string(IDS_BUTTON_NO, str1, 256);
     } else {
-        this->get_string(0xFA3, str1, 0x100);
+        this->get_string(IDS_BUTTON_YES, str1, 256);
     }
-    sprintf(str2, this->get_string(0x25E9), str1);
+    sprintf(str2, this->get_string(IDS_FIXED_POSITIONS_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (rge_base_game->fullVisibility()) {
-        strcpy(str1, this->get_string(0xFA3));
+        strcpy(str1, this->get_string(IDS_BUTTON_YES));
     } else {
-        strcpy(str1, this->get_string(0xFA4));
+        strcpy(str1, this->get_string(IDS_BUTTON_NO));
     }
-    sprintf(str2, this->get_string(0x25B8), str1);
+        sprintf(str2, this->get_string(IDS_REVEAL_MAP_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree()) {
-        this->get_string(0xFA3, str1, 0x100);
+        this->get_string(IDS_BUTTON_YES, str1, 256);
     } else {
-        this->get_string(0xFA4, str1, 0x100);
+        this->get_string(IDS_BUTTON_NO, str1, 256);
     }
-    sprintf(str2, this->get_string(0x25EC), str1);
+    sprintf(str2, this->get_string(IDS_FULL_TECH_TREE_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
     this->settingText[setting]->set_active(1);
     ++setting;
 
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->allowCheatCodes()) {
-            strcpy(str1, this->get_string(0xFA3));
+            strcpy(str1, this->get_string(IDS_BUTTON_YES));
         } else {
-            strcpy(str1, this->get_string(0xFA4));
+            strcpy(str1, this->get_string(IDS_BUTTON_NO));
         }
-        sprintf(str2, this->get_string(0x25BB), str1);
+        sprintf(str2, this->get_string(IDS_CHEATING_ENABLED_FORMAT), str1);
         this->settingText[setting]->set_text(str2);
         this->settingText[setting]->set_active(1);
         ++setting;
     }
 
     if (rge_base_game->multiplayerGame()) {
-        this->get_string(static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() + 0x260E,
-                         str1, 0x100);
+        this->get_string(static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() + IDS_PATH_FINDING_OPTION_BASE,
+                         str1, 256);
     } else {
-        this->get_string(rge_base_game->pathFinding() + 0x260E,
-                         str1, 0x100);
+        this->get_string(rge_base_game->pathFinding() + IDS_PATH_FINDING_OPTION_BASE,
+                         str1, 256);
     }
     sprintf(str2, this->get_string(IDS_PATH_FINDING_FORMAT), str1);
     this->settingText[setting]->set_text(str2);
@@ -2275,7 +2276,8 @@ void TribeMPSetupScreen::kickPlayer(int p) {
 
     this->playerToKick = p;
     sprintf(text, this->get_string(IDS_KICK_PLAYER_PROMPT), comm->GetPlayerName(p));
-    this->popupYesNoDialog(text, "Kick Dialog", 0x1C2, 0x64);
+    this->popupYesNoDialog(text, "Kick Dialog", TEASY_POPUP_WIDTH,
+                           TEASY_POPUP_HEIGHT);
 }
 
 
@@ -2287,7 +2289,7 @@ void TribeMPSetupScreen::handleKickedPlayer(int really_kicked) {
         panel_system.currentPanel());
     if (panel != 0) {
         panel->popupOKDialog(IDS_GAME_CANCELED_NOTICE + (really_kicked != 0 ? -1 : 0),
-                             0, 0x1C2, 100);
+                             0, TEASY_POPUP_WIDTH, 100);
     }
 }
 
@@ -2422,7 +2424,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
         int player = 0;
         do {
             int civilization =
-                debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 0xB31) %
+                debug_rand("C:\\msdev\\work\\age1_x1\\scr_mps.cpp", 2865) %
                     16 + 1;
             static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(player, civilization);
             static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
@@ -2588,9 +2590,9 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         i = 3;
     } else {
         if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch()) {
-            get_string(0x2617, str1, 0x100);
+            get_string(IDS_DEATH_MATCH, str1, 256);
         } else {
-            get_string(IDS_RANDOM_MAP, str1, 0x100);
+            get_string(IDS_RANDOM_MAP, str1, 256);
         }
         sprintf(str2, get_string(IDS_SCENARIO_FORMAT), str1);
         this->scenarioName->set_text(str2);
@@ -2599,30 +2601,30 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 
     if (rge_base_game->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-        case 0: strcpy(str1, get_string(0x2973)); break;   // Tiny
-        case 1: strcpy(str1, get_string(0x2974)); break;   // Small
-        case 2: strcpy(str1, get_string(0x2975)); break;   // Medium
-        case 3: strcpy(str1, get_string(0x2976)); break;   // Large
-        case 4: strcpy(str1, get_string(0x2977)); break;   // Huge
-        case 5: strcpy(str1, get_string(0x2978)); break;   // Gigantic
+        case 0: strcpy(str1, get_string(IDS_MAP_SIZE_BASE)); break;       // Tiny
+        case 1: strcpy(str1, get_string(IDS_MAP_SIZE_BASE + 1)); break;   // Small
+        case 2: strcpy(str1, get_string(IDS_MAP_SIZE_BASE + 2)); break;   // Medium
+        case 3: strcpy(str1, get_string(IDS_MAP_SIZE_BASE + 3)); break;   // Large
+        case 4: strcpy(str1, get_string(IDS_MAP_SIZE_BASE + 4)); break;   // Huge
+        case 5: strcpy(str1, get_string(IDS_MAP_SIZE_BASE + 5)); break;   // Gigantic
         }
-        sprintf(str2, get_string(0x25DA), str1);           // "Map Size: %s"
+        sprintf(str2, get_string(IDS_MAP_SIZE_FORMAT), str1);              // "Map Size: %s"
         this->settingText[i]->set_text(str2);
         this->settingText[i]->set_active(1);
         i++;
 
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: strcpy(str1, get_string(0x296A)); break;   // All Water
-        case 1: strcpy(str1, get_string(0x296B)); break;   // Mostly Water
-        case 2: strcpy(str1, get_string(0x296C)); break;   // Water & Land
-        case 3: strcpy(str1, get_string(0x296D)); break;   // Mostly Land
-        case 4: strcpy(str1, get_string(0x296E)); break;   // All Land
-        case 5: strcpy(str1, get_string(0x296F)); break;   // Continental
-        case 6: strcpy(str1, get_string(0x2970)); break;   // Lake
-        case 7: strcpy(str1, get_string(0x2971)); break;   // Hilly
-        case 8: strcpy(str1, get_string(0x2972)); break;   // Narrows
+        case 0: strcpy(str1, get_string(IDS_MAP_TYPE_BASE)); break;       // All Water
+        case 1: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 1)); break;   // Mostly Water
+        case 2: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 2)); break;   // Water & Land
+        case 3: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 3)); break;   // Mostly Land
+        case 4: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 4)); break;   // All Land
+        case 5: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 5)); break;   // Continental
+        case 6: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 6)); break;   // Lake
+        case 7: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 7)); break;   // Hilly
+        case 8: strcpy(str1, get_string(IDS_MAP_TYPE_BASE + 8)); break;   // Narrows
         }
-        sprintf(str2, get_string(0x25B6), str1);           // "Map Type: %s"
+        sprintf(str2, get_string(IDS_MAP_TYPE_FORMAT), str1);              // "Map Type: %s"
         this->settingText[i]->set_text(str2);
         this->settingText[i]->set_active(1);
         i++;
@@ -2631,28 +2633,28 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
     case 1:                            // Conquest
-        strcpy(str1, get_string(0x10E1));
+        strcpy(str1, get_string(IDS_VICTORY_CONQUEST));
         goto victory_plain_wait;
     case 7:                            // Time
-        strcpy(str1, get_string(0x10E9));
+        strcpy(str1, get_string(IDS_VICTORY_TIME_LIMIT));
         goto victory_amount_wait;
     case 8:                            // Score
-        strcpy(str1, get_string(0x10EA));
+        strcpy(str1, get_string(IDS_VICTORY_SCORE));
     victory_amount_wait:
-        sprintf(str2, get_string(0x25BE), str1,
+        sprintf(str2, get_string(IDS_VICTORY_AMOUNT_FORMAT), str1,
                 static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()); // "Victory: %s (%d)"
         goto victory_done_wait;
     default:
         if (rge_base_game->randomGame()) {
-            strcpy(str1, get_string(0x10EC));
+            strcpy(str1, get_string(IDS_VICTORY_STANDARD));
         } else {
-            strcpy(str1, get_string(0x10E7));
+            strcpy(str1, get_string(IDS_OPTION_DEFAULT));
         }
         goto victory_plain_wait;
     case 9:                            // Standard
-        strcpy(str1, get_string(0x10EC));
+        strcpy(str1, get_string(IDS_VICTORY_STANDARD));
     victory_plain_wait:
-        sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
+        sprintf(str2, get_string(IDS_VICTORY_FORMAT), str1); // "Victory: %s"
     victory_done_wait:
         break;
     }
@@ -2662,82 +2664,82 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 
     int age = static_cast<TRIBE_Game*>(rge_base_game)->startingAge();
     if (age == 0) {
-        get_string(0x10E7, str1, 0x100);                    // Default
+        get_string(IDS_OPTION_DEFAULT, str1, 256);        // Default
     } else if (age == 1) {
-        get_string(0x106E, str1, 0x100);                    // Nomad
+        get_string(IDS_AGE_NOMAD, str1, 256);              // Nomad
     } else {
-        get_string(age + 0x1067, str1, 0x100);
+        get_string(age + IDS_AGE_NAME_BASE, str1, 256);
     }
-    sprintf(str2, get_string(0x25E4), str1);                // "Age: %s"
+    sprintf(str2, get_string(IDS_STARTING_AGE_FORMAT), str1); // "Age: %s"
     this->settingText[i]->set_text(str2);
     this->settingText[i]->set_active(1);
     i++;
 
     int level = static_cast<TRIBE_Game*>(rge_base_game)->resourceLevel();
     if (level == 0) {
-        get_string(0x10E7, str1, 0x100);                    // Default
+        get_string(IDS_OPTION_DEFAULT, str1, 256);        // Default
     } else {
-        get_string(level + 0x25E5, str1, 0x100);
+        get_string(level + IDS_RESOURCE_LEVEL_BASE, str1, 256);
     }
-    sprintf(str2, get_string(0x25E5), str1);                // "Resources: %s"
+    sprintf(str2, get_string(IDS_RESOURCE_LEVEL_FORMAT), str1); // "Resources: %s"
     this->settingText[i]->set_text(str2);
     this->settingText[i]->set_active(1);
     i++;
 
     rge_base_game->difficulty();
-    get_string(rge_base_game->difficulty() + 0x2BD0, str1, 0x100);
-    get_string(0x25E0, str2, 0x100);                        // "Difficulty Level: %s"
+    get_string(rge_base_game->difficulty() + IDS_DIFFICULTY_BASE, str1, 256);
+    get_string(IDS_DIFFICULTY_FORMAT, str2, 256);          // "Difficulty Level: %s"
     sprintf(str3, str2, str1);
     this->settingText[i]->set_text(str3);
     this->settingText[i]->set_active(1);
     i++;
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomizePositions()) {
-        get_string(0xFA4, str1, 0x100);
+        get_string(IDS_BUTTON_NO, str1, 256);
     } else {
-        get_string(0xFA3, str1, 0x100);
+        get_string(IDS_BUTTON_YES, str1, 256);
     }
-    sprintf(str2, get_string(0x25E9), str1);                // "Fixed Positions: %s"
+    sprintf(str2, get_string(IDS_FIXED_POSITIONS_FORMAT), str1); // "Fixed Positions: %s"
     this->settingText[i]->set_text(str2);
     this->settingText[i]->set_active(1);
     i++;
 
     if (rge_base_game->fullVisibility()) {
-        strcpy(str1, get_string(0xFA3));
+        strcpy(str1, get_string(IDS_BUTTON_YES));
     } else {
-        strcpy(str1, get_string(0xFA4));
+        strcpy(str1, get_string(IDS_BUTTON_NO));
     }
-    sprintf(str2, get_string(0x25B8), str1);                // "Reveal Map: %s"
+    sprintf(str2, get_string(IDS_REVEAL_MAP_FORMAT), str1); // "Reveal Map: %s"
     this->settingText[i]->set_text(str2);
     this->settingText[i]->set_active(1);
     i++;
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree()) {
-        get_string(0xFA3, str1, 0x100);
+        get_string(IDS_BUTTON_YES, str1, 256);
     } else {
-        get_string(0xFA4, str1, 0x100);
+        get_string(IDS_BUTTON_NO, str1, 256);
     }
-    sprintf(str2, get_string(0x25EC), str1);                // "Full Tech Tree: %s"
+    sprintf(str2, get_string(IDS_FULL_TECH_TREE_FORMAT), str1); // "Full Tech Tree: %s"
     this->settingText[i]->set_text(str2);
     this->settingText[i]->set_active(1);
     i++;
 
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->allowCheatCodes()) {
-            strcpy(str1, get_string(0xFA3));
+            strcpy(str1, get_string(IDS_BUTTON_YES));
         } else {
-            strcpy(str1, get_string(0xFA4));
+            strcpy(str1, get_string(IDS_BUTTON_NO));
         }
-        sprintf(str2, get_string(0x25BB), str1);            // "Enable Cheating: %s"
+        sprintf(str2, get_string(IDS_CHEATING_ENABLED_FORMAT), str1); // "Enable Cheating: %s"
         this->settingText[i]->set_text(str2);
         this->settingText[i]->set_active(1);
         i++;
     }
 
     if (rge_base_game->multiplayerGame()) {
-        get_string(rge_base_game->mpPathFinding() + 0x260E, str1, 0x100);
+        get_string(rge_base_game->mpPathFinding() + IDS_PATH_FINDING_OPTION_BASE, str1, 256);
     } else {
-        get_string(rge_base_game->pathFinding() + 0x260E, str1, 0x100);
+        get_string(rge_base_game->pathFinding() + IDS_PATH_FINDING_OPTION_BASE, str1, 256);
     }
     sprintf(str2, get_string(IDS_PATH_FINDING_FORMAT), str1);                // "Path Finding: %s"
     this->settingText[i]->set_text(str2);

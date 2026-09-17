@@ -70,7 +70,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     if (fd != -1) {
         _lseek(fd, 0, SEEK_END);
         size = _tell(fd);
-        file_buf = (char*)calloc(size + 1, 0x400);
+        file_buf = (char*)calloc(size + 1, 1024);
         if (file_buf != 0) {
             _lseek(fd, 0, SEEK_SET);
             _read(fd, file_buf, size);
@@ -140,7 +140,7 @@ long TRIBE_Credits_Screen::handle_idle() {
             goto set_time_f1;
         }
 
-        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0xF5)
+        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 245)
                 - this->last_picture_time < 10000) {
             goto tail;
         }
@@ -177,11 +177,11 @@ long TRIBE_Credits_Screen::handle_idle() {
     } else if (current_mode == 4) {
         if (this->last_pause_time == 0) {
             this->last_pause_time = debug_timeGetTime(
-                "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x11A);
+                "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 282);
             goto tail;
         }
 
-        debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x11E);
+        debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 286);
         this->mode = 5;
         ++this->picture_set;
         if (this->picture_set > 7) {
@@ -213,17 +213,17 @@ long TRIBE_Credits_Screen::handle_idle() {
 
 set_time_f1:
     this->last_picture_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0xF1);
+        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 241);
     goto tail;
 
 set_time_138:
     this->last_picture_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x138);
+        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 312);
     goto tail;
 
 set_time_142:
     this->last_picture_time = debug_timeGetTime(
-        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x142);
+        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 322);
 
 tail:
     if (this->text_done != 0) {
@@ -256,7 +256,7 @@ void TRIBE_Credits_Screen::draw() {
 
 long TRIBE_Credits_Screen::key_down_action(long key, short count, int alt_key,
                                            int ctrl_key, int shift_key) {
-    if (key == 0xD || key == 0x1B) {
+    if (key == VK_RETURN || key == VK_ESCAPE) {
         this->close_screen();
         return 1;
     }
@@ -324,10 +324,10 @@ void TScrollTextPanel::set_text(char* text_in) {
 long TScrollTextPanel::handle_idle() {
     if (this->last_time == 0) {
         this->last_time = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x1DC);
+            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 476);
     } else {
         unsigned long now = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x1DF);
+            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 479);
         __int64 elapsed = (unsigned long)(now - this->last_time);
         int amount = (long)(((double)elapsed * DAT_00572968) * this->speed);
         if (amount > 0) {
@@ -503,7 +503,7 @@ void RGE_fade_palette_start(TDrawArea* surface_in, tagPALETTEENTRY color_in,
         } while ((int)target < (int)DAT_0086b6b0);
     }
 
-    DAT_0086b294 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x2B5);
+    DAT_0086b294 = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 693);
     DAT_0086b2ac = DAT_0086b290 * DAT_0086b290;
 
     if (DAT_0086b2a4 == 1) {
@@ -519,7 +519,7 @@ int RGE_fade_palette_step() {
     unsigned char done = 0;
 
     if (DAT_0086b2a4 == 1) {
-        unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x2C8);
+        unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 712);
         int ticks = cur - DAT_0086b294;
         delta_time = (float)ticks * 0.001f;
 
@@ -536,7 +536,7 @@ int RGE_fade_palette_step() {
             done = 1;
         }
     } else {
-        unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x2DC);
+        unsigned int cur = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 732);
         int ticks = cur - DAT_0086b294;
         delta_time = DAT_0086b290 - (float)ticks * 0.001f;
 
