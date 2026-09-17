@@ -255,7 +255,7 @@ void TRIBE_Panel_Object::draw() {
 
             if (name[0] == 0) {
                 rge_base_game->get_string2(
-                    0x69,
+                    RGE_STRING_TYPE_CIVILIZATION,
                     this->game_obj->owner->master_player_id,
                     0,
                     name,

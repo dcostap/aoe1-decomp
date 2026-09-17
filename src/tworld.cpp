@@ -98,6 +98,7 @@ void TRIBE_World::logStatus(FILE* out, int firstTime) {
             tempString, 256);
         fprintf(out, "Map Type:                %s\n", tempString);
 
+        // This victory-description resource range is not verified.
         static_cast<TRIBE_Game*>(rge_base_game)->get_string(
             static_cast<TRIBE_Game*>(rge_base_game)->victoryType() + 0x28A6,
             tempString, 256);

@@ -79,7 +79,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                 cancel->hotkey_shift = 0;
                                                 if (create_button(
                                                         this, &close_button,
-                                                        0x03EA, 0, 0, 0, 0, 0,
+                                                        IDS_BUTTON_CLOSE, 0, 0, 0, 0, 0,
                                                         -1, -1, 0)) {
                                                     close_button->set_active(1);
                                                     close_button->set_positioning(

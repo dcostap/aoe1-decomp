@@ -981,7 +981,7 @@ void Time_Line_Panel::draw_civilization_names() {
                         player = static_cast<TRIBE_Player*>(
                             rge_base_game->world->players[y_line_segment_length + 1]);
                         rge_base_game->get_string2(
-                            0x69,
+                            RGE_STRING_TYPE_CIVILIZATION,
                             player->master_player_id,
                             0, civ_str, 100);
                         player = static_cast<TRIBE_Player*>(

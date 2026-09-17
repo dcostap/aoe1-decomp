@@ -934,27 +934,27 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
                 return this->get_string(IDS_ERROR_NOT_ENOUGH_STONE, str, max_len);
             case 3:
                 return this->get_string(IDS_ERROR_NOT_ENOUGH_GOLD, str, max_len);
-            case 0x20:
+            case RGE_ATTRIBUTE_ERROR_POPULATION_LIMIT:
                 return this->get_string(IDS_ERROR_POPULATION_LIMIT, str, max_len);
             }
             break;
-        case 0x68:
+        case RGE_ATTRIBUTE_MESSAGE_TRIBUTE_RECEIVED:
             return this->get_string(IDS_MESSAGE_TRIBUTE_RECEIVED, str, max_len);
-        case 1000:
+        case RGE_ATTRIBUTE_ERROR_NO_ROOM_FOR_UNIT:
             return this->get_string(IDS_ERROR_NOT_ENOUGH_ROOM_FOR_UNIT, str, max_len);
-        case 0x65:
+        case RGE_ATTRIBUTE_ERROR_NO_DOCKS:
             return this->get_string(IDS_ERROR_NO_DOCKS, str, max_len);
-        case 0x66:
+        case RGE_ATTRIBUTE_ERROR_NOT_CLOSE_ENOUGH_TO_LAND:
             return this->get_string(IDS_ERROR_NOT_CLOSE_ENOUGH_TO_LAND, str, max_len);
-        case 0x67:
+        case RGE_ATTRIBUTE_ERROR_NOT_ENOUGH_UNLOAD_SPACE:
             return this->get_string(IDS_ERROR_NOT_ENOUGH_UNLOAD_SPACE, str, max_len);
-        case 0x69:
+        case RGE_ATTRIBUTE_ERROR_CANNOT_TRADE_WITH_ENEMY:
             return this->get_string(IDS_ERROR_CANNOT_TRADE_WITH_ENEMY, str, max_len);
-        case 0x6A:
+        case RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR:
             return this->get_string(IDS_ERROR_CANNOT_REPAIR, str, max_len);
         }
         break;
-    case RGE_STRING_TYPE_ATTRIBUTE:
+    case RGE_STRING_TYPE_ATTRIBUTE_NAME:
         switch (id) {
         case 2:
             return this->get_string(IDS_ATTRIBUTE_HEALTH, str, max_len);
@@ -1757,7 +1757,9 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x68:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1000, val2, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
+                              RGE_ATTRIBUTE_ERROR_NO_ROOM_FOR_UNIT,
+                              val2, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1766,7 +1768,8 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x6B:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x6A, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
+                              RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR, 0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1775,7 +1778,9 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 1:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x66, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
+                              RGE_ATTRIBUTE_ERROR_NOT_CLOSE_ENOUGH_TO_LAND,
+                              0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1784,7 +1789,9 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 2:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x69, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
+                              RGE_ATTRIBUTE_ERROR_CANNOT_TRADE_WITH_ENEMY,
+                              0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }
@@ -1793,7 +1800,9 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 3:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
-            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 0x67, 0, msg, 256);
+            this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
+                              RGE_ATTRIBUTE_ERROR_NOT_ENOUGH_UNLOAD_SPACE,
+                              0, msg, 256);
             this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
             return;
         }

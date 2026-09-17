@@ -299,7 +299,9 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     }
 
     if (!this->create_text(this, &this->scenarioTitle,
-                           rge_base_game->multiplayerGame() ? 0x25FE : 0x2620,
+                           rge_base_game->multiplayerGame()
+                               ? IDS_SCENARIO_LIST_TITLE
+                               : IDS_SCENARIO_TITLE,
                            this->scenarioListX,
                            this->scenarioListY - 20,
                            300, 20, 4, 0, 0, 0))
@@ -353,7 +355,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     cancel_button->hotkey_shift = 0;
     this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
 
-    if (!this->create_button(this, &this->help_button, 0xFA9,
+    if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP,
                              0, 580, 440, 30, 30, 0, 0, 0))
         return;
 

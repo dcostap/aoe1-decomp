@@ -74,7 +74,7 @@ TribeJoinScreen::TribeJoinScreen()
 
                                 if (this->create_button(this,
                                                         &this->close_button,
-                                                        0x03EA, 0, 0, 0, 0,
+                                                        IDS_BUTTON_CLOSE, 0, 0, 0, 0,
                                                         0, -1, -1, 0)) {
                                     this->close_button->set_active(1);
                                     this->close_button->set_positioning(
