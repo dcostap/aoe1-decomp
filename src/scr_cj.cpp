@@ -45,7 +45,7 @@ TribeJoinScreen::TribeJoinScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (this->create_text(this, &this->title, 0x259F,
+    if (this->create_text(this, &this->title, IDS_MULTIPLAYER_GAMES_TITLE,
                           0x14, 0x14, 0x258, 0x1E, 1, 1, 0, 0)) {
         this->create_text(this, &this->listTitle, IDS_MULTIPLAYER_SELECT_GAME_TO_JOIN,
                           0x14, 0x41, 0x258, 0x14, 4, 0, 0, 0);

@@ -45,11 +45,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->setup_shadow_area(0);
     this->set_ideal_size(0x280, 0x1E0);
 
-    if (!this->create_text(this, &this->title, 0x2616,
+    if (!this->create_text(this, &this->title, IDS_SCENARIO_SETTINGS_TITLE,
                            0x14, 0x0A, 0x258, 0x1E, 1, 1, 0, 1))
         return;
 
-    if (!this->create_text(this, &this->mapSizeLabel, 0x29A0,
+    if (!this->create_text(this, &this->mapSizeLabel, IDS_MAP_SIZE_LABEL,
                            0x14, 0xD8, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -57,15 +57,15 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0xB4, 100, 0x14, 0xEC, 0xB4, 0x18, 0x0B))
         return;
     this->mapSizeDrop->empty_list();
-    this->mapSizeDrop->append_line(0x2973, 0);
-    this->mapSizeDrop->append_line(0x2974, 1);
-    this->mapSizeDrop->append_line(0x2975, 2);
-    this->mapSizeDrop->append_line(0x2976, 3);
-    this->mapSizeDrop->append_line(0x2977, 4);
-    this->mapSizeDrop->append_line(0x2978, 5);
-    this->mapSizeDrop->set_help_info(0x762A, -1);
+    this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE, 0);
+    this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE + 1, 1);
+    this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE + 2, 2);
+    this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE + 3, 3);
+    this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE + 4, 4);
+    this->mapSizeDrop->append_line(IDS_MAP_SIZE_BASE + 5, 5);
+    this->mapSizeDrop->set_help_info(IDS_HELP_MAP_SIZE, -1);
 
-    if (!this->create_text(this, &this->mapTypeLabel, 0x25DB,
+    if (!this->create_text(this, &this->mapTypeLabel, IDS_MAP_TYPE_LABEL,
                            0xDC, 0xD8, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -73,18 +73,18 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0xB4, 100, 0xDC, 0xEC, 0xB4, 0x18, 0x0B))
         return;
     this->mapTypeDrop->empty_list();
-    this->mapTypeDrop->append_line(0x296A, 0);
-    this->mapTypeDrop->append_line(0x296B, 1);
-    this->mapTypeDrop->append_line(0x296C, 2);
-    this->mapTypeDrop->append_line(0x296D, 3);
-    this->mapTypeDrop->append_line(0x296E, 4);
-    this->mapTypeDrop->append_line(0x296F, 5);
-    this->mapTypeDrop->append_line(0x2970, 6);
-    this->mapTypeDrop->append_line(0x2971, 7);
-    this->mapTypeDrop->append_line(0x2972, 8);
-    this->mapTypeDrop->set_help_info(0x762B, -1);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE, 0);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 1, 1);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 2, 2);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 3, 3);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 4, 4);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 5, 5);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 6, 6);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 7, 7);
+    this->mapTypeDrop->append_line(IDS_MAP_TYPE_BASE + 8, 8);
+    this->mapTypeDrop->set_help_info(IDS_HELP_MAP_TYPE, -1);
 
-    if (!this->create_text(this, &this->victoryTypeLabel, 0x2A34,
+    if (!this->create_text(this, &this->victoryTypeLabel, IDS_VICTORY_CONDITION_LABEL,
                            0x14, 0x108, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -94,16 +94,17 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->victoryTypeDrop->empty_list();
     if (rge_base_game->scenarioGame() != 0) {
         this->victoryTypeDrop->append_line(IDS_OPTION_DEFAULT, 0);
-        this->victoryTypeDrop->append_line(0x10EC, 9);
+        this->victoryTypeDrop->append_line(IDS_VICTORY_STANDARD, 9);
     } else {
-        this->victoryTypeDrop->append_line(0x10EC, 0);
+        this->victoryTypeDrop->append_line(IDS_VICTORY_STANDARD, 0);
     }
-    this->victoryTypeDrop->append_line(0x10E1, 1);
-    this->victoryTypeDrop->append_line(0x10E9, 7);
-    this->victoryTypeDrop->append_line(0x10EA, 8);
-    this->victoryTypeDrop->set_help_info(0x762C, 0x25F0A);
+    this->victoryTypeDrop->append_line(IDS_VICTORY_CONQUEST, 1);
+    this->victoryTypeDrop->append_line(IDS_VICTORY_TIME_LIMIT, 7);
+    this->victoryTypeDrop->append_line(IDS_VICTORY_SCORE, 8);
+    this->victoryTypeDrop->set_help_info(IDS_HELP_VICTORY_CONDITION,
+                                         IDS_HELP_VICTORY_CONDITION_MORE);
 
-    if (!this->create_text(this, &this->timeLabel, 0x10E9,
+    if (!this->create_text(this, &this->timeLabel, IDS_VICTORY_TIME_LIMIT,
                            0x14, 0x138, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -111,16 +112,16 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0xB4, 100, 0x14, 0x14C, 0xB4, 0x18, 0x0B))
         return;
     this->timeDrop->empty_list();
-    this->timeDrop->append_line(0x2634, 15000);
-    this->timeDrop->append_line(0x2635, 13000);
-    this->timeDrop->append_line(0x2636, 11000);
-    this->timeDrop->append_line(0x2637, 9000);
-    this->timeDrop->append_line(0x2638, 7000);
-    this->timeDrop->append_line(0x2639, 5000);
-    this->timeDrop->append_line(0x263A, 3000);
-    this->timeDrop->set_help_info(0x763B, -1);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE, 15000);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 1, 13000);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 2, 11000);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 3, 9000);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 4, 7000);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 5, 5000);
+    this->timeDrop->append_line(IDS_TIME_LIMIT_BASE + 6, 3000);
+    this->timeDrop->set_help_info(IDS_HELP_TIME_LIMIT, -1);
 
-    if (!this->create_text(this, &this->scoreLabel, 0x10EA,
+    if (!this->create_text(this, &this->scoreLabel, IDS_VICTORY_SCORE,
                            0x14, 0x138, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -130,11 +131,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->scoreDrop->empty_list();
     this->scoreDrop->append_line("3000", 3000);
     this->scoreDrop->append_line("2700", 2700);
-    this->scoreDrop->append_line("2400", 0x960);
-    this->scoreDrop->append_line("2100", 0x834);
-    this->scoreDrop->append_line("1800", 0x708);
-    this->scoreDrop->append_line("1500", 0x5DC);
-    this->scoreDrop->append_line("1200", 0x4B0);
+    this->scoreDrop->append_line("2400", 2400);
+    this->scoreDrop->append_line("2100", 2100);
+    this->scoreDrop->append_line("1800", 1800);
+    this->scoreDrop->append_line("1500", 1500);
+    this->scoreDrop->append_line("1200", 1200);
     this->scoreDrop->append_line("900", 900);
     this->scoreDrop->append_line("800", 800);
     this->scoreDrop->append_line("700", 700);
@@ -142,9 +143,9 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->scoreDrop->append_line("500", 500);
     this->scoreDrop->append_line("400", 400);
     this->scoreDrop->append_line("300", 300);
-    this->scoreDrop->set_help_info(0x763C, -1);
+    this->scoreDrop->set_help_info(IDS_HELP_SCORE, -1);
 
-    if (!this->create_text(this, &this->victoryFixedText, 0x25D9,
+    if (!this->create_text(this, &this->victoryFixedText, IDS_FIXED_VICTORY_INSTRUCTIONS,
                            0x14, 0x108, 0xB4, 0x5C, 0x0B, 1, 1, 1))
         return;
     this->victoryFixedText->set_bevel_info(3, this->bevel_color1,
@@ -154,7 +155,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                            this->bevel_color5,
                                            this->bevel_color6);
 
-    if (!this->create_text(this, &this->ageLabel, 0x2606,
+    if (!this->create_text(this, &this->ageLabel, IDS_STARTING_AGE_LABEL,
                            0xDC, 0x108, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -163,14 +164,14 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         return;
     this->ageDrop->empty_list();
         this->ageDrop->append_line(IDS_OPTION_DEFAULT, 0);
-    this->ageDrop->append_line(0x106E, 1);
-    this->ageDrop->append_line(0x1069, 2);
-    this->ageDrop->append_line(0x106A, 3);
-    this->ageDrop->append_line(0x106B, 4);
-    this->ageDrop->append_line(0x106C, 5);
-    this->ageDrop->set_help_info(0x7631, -1);
+    this->ageDrop->append_line(IDS_AGE_NOMAD, 1);
+    this->ageDrop->append_line(IDS_HELP_AGE_STONE, 2);
+    this->ageDrop->append_line(IDS_HELP_AGE_TOOL, 3);
+    this->ageDrop->append_line(IDS_HELP_AGE_BRONZE, 4);
+    this->ageDrop->append_line(IDS_HELP_AGE_IRON, 5);
+    this->ageDrop->set_help_info(IDS_HELP_STARTING_AGE, -1);
 
-    if (!this->create_text(this, &this->resourcesLabel, 0x2607,
+    if (!this->create_text(this, &this->resourcesLabel, IDS_RESOURCES_LABEL,
                            0xDC, 0x138, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -179,11 +180,11 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
         return;
     this->resourcesDrop->empty_list();
         this->resourcesDrop->append_line(IDS_OPTION_DEFAULT, 0);
-    this->resourcesDrop->append_line(0x2609, 2);
-    this->resourcesDrop->append_line(0x260A, 3);
-    this->resourcesDrop->set_help_info(0x7632, -1);
+    this->resourcesDrop->append_line(IDS_RESOURCES_MEDIUM, 2);
+    this->resourcesDrop->append_line(IDS_RESOURCES_HIGH, 3);
+    this->resourcesDrop->set_help_info(IDS_HELP_RESOURCES, -1);
 
-    if (!this->create_text(this, &this->pathingLabel, 0x260D,
+    if (!this->create_text(this, &this->pathingLabel, IDS_PATH_FINDING_LABEL,
                            0x1A4, 0x138, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -191,13 +192,13 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0xB4, 100, 0x1A4, 0x14C, 0xB4, 0x18, 0x0B))
         return;
     this->pathingDrop->empty_list();
-    this->pathingDrop->append_line(0x260E, 0);
-    this->pathingDrop->append_line(0x260F, 1);
-    this->pathingDrop->append_line(0x2610, 2);
-    this->pathingDrop->set_help_info(0x763E, -1);
+    this->pathingDrop->append_line(IDS_PATH_FINDING_OPTION_BASE, 0);
+    this->pathingDrop->append_line(IDS_PATH_FINDING_MEDIUM, 1);
+    this->pathingDrop->append_line(IDS_PATH_FINDING_HIGH, 2);
+    this->pathingDrop->set_help_info(IDS_HELP_PATH_FINDING, -1);
 
     if (rge_base_game->multiplayerGame() != 0) {
-        if (!this->create_text(this, &this->limitLabel, 0x2613,
+        if (!this->create_text(this, &this->limitLabel, IDS_POPULATION_LIMIT_LABEL,
                                0x1A4, 0xD8, 0xB4, 0x14, 0x0B, 0, 0, 0))
             return;
         if (!this->create_drop_down(this, &this->limitDrop,
@@ -209,10 +210,10 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
             sprintf(num_str, "%d", limit);
             this->limitDrop->append_line(num_str, limit);
         }
-        this->limitDrop->set_help_info(0x763F, -1);
+        this->limitDrop->set_help_info(IDS_HELP_POPULATION_LIMIT, -1);
     }
 
-    if (!this->create_text(this, &this->difficultyLabel, 0x2BCF,
+    if (!this->create_text(this, &this->difficultyLabel, IDS_DIFFICULTY_LABEL,
                            0x1A4, 0x108, 0xB4, 0x14, 0x0B, 0, 0, 0))
         return;
 
@@ -221,45 +222,45 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                                 0x0B))
         return;
     this->difficultyDrop->empty_list();
-    this->difficultyDrop->append_line(0x2BD4, 4);
-    this->difficultyDrop->append_line(0x2BD3, 3);
-    this->difficultyDrop->append_line(0x2BD2, 2);
-    this->difficultyDrop->append_line(0x2BD1, 1);
-    this->difficultyDrop->append_line(0x2BD0, 0);
-    this->difficultyDrop->set_help_info(0x763D, -1);
+    this->difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
+    this->difficultyDrop->append_line(IDS_DIFFICULTY_EASY, 3);
+    this->difficultyDrop->append_line(IDS_DIFFICULTY_MODERATE, 2);
+    this->difficultyDrop->append_line(IDS_DIFFICULTY_HARD, 1);
+    this->difficultyDrop->append_line(IDS_DIFFICULTY_HARDEST, 0);
+    this->difficultyDrop->set_help_info(IDS_HELP_DIFFICULTY, -1);
 
     if (!this->create_check_box(this, &this->optionButton[0],
                                 10, 0x168, 0x1E, 0x1E, 0, 0))
         return;
-    if (!this->create_text(this, &this->optionText[0], 0x2601,
+    if (!this->create_text(this, &this->optionText[0], IDS_FIXED_POSITIONS_LABEL,
                            0x28, 0x168, 0xAA, 0x1E, 0x0B, 0, 1, 0))
         return;
-    this->optionButton[0]->set_help_info(0x7633, -1);
+    this->optionButton[0]->set_help_info(IDS_HELP_FIXED_POSITIONS, -1);
 
     if (!this->create_check_box(this, &this->optionButton[2],
                                 0xDC, 0x168, 0x1E, 0x1E, 0, 0))
         return;
-    if (!this->create_text(this, &this->optionText[2], 0x2604,
+    if (!this->create_text(this, &this->optionText[2], IDS_FULL_TECH_TREE_LABEL,
                            0xFA, 0x168, 0xAA, 0x1E, 0x0B, 0, 1, 0))
         return;
-    this->optionButton[2]->set_help_info(0x7637, -1);
+    this->optionButton[2]->set_help_info(IDS_HELP_FULL_TECH_TREE, -1);
 
     if (!this->create_check_box(this, &this->optionButton[1],
                                 0x1AE, 0x168, 0x1E, 0x1E, 0, 0))
         return;
-    if (!this->create_text(this, &this->optionText[1], 0x25FC,
+        if (!this->create_text(this, &this->optionText[1], IDS_REVEAL_MAP_LABEL,
                            0x1CC, 0x168, 0xAA, 0x1E, 0x0B, 0, 1, 0))
         return;
-    this->optionButton[1]->set_help_info(0x7634, -1);
+        this->optionButton[1]->set_help_info(IDS_HELP_REVEAL_MAP, -1);
 
     if (rge_base_game->multiplayerGame() != 0) {
         if (!this->create_check_box(this, &this->optionButton[3],
                                     0x1AE, 0x18B, 0x1E, 0x1E, 0, 0))
             return;
-        if (!this->create_text(this, &this->optionText[3], 0x25FB,
+        if (!this->create_text(this, &this->optionText[3], IDS_CHEATING_LABEL,
                                0x1CC, 0x18B, 0xA5, 0x1E, 0x0B, 0, 1, 0))
             return;
-        this->optionButton[3]->set_help_info(0x7638, -1);
+        this->optionButton[3]->set_help_info(IDS_HELP_CHEATING, -1);
     }
 
     this->scenarioListX = 0x14;
@@ -287,7 +288,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
 
     if (rge_base_game->multiplayerGame() != 0) {
         this->scenarioList->set_text(IDS_SCENARIO_LIST_LOADING);
-        this->scenarioList->set_help_info(0x7639, -1);
+        this->scenarioList->set_help_info(IDS_HELP_SCENARIO_SELECTION, -1);
         if (!this->create_auto_scrollbar(&this->scenarioScrollbar,
                                          this->scenarioList, 0x14))
             return;
@@ -304,7 +305,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            300, 0x14, 4, 0, 0, 0))
         return;
 
-    if (!this->create_text(this, &this->scenarioPlayersTitle, 0x25FF,
+    if (!this->create_text(this, &this->scenarioPlayersTitle, IDS_SCENARIO_PLAYERS_TITLE,
                            this->scenarioListWidth - 0xDC + this->scenarioListX,
                            this->scenarioListY - 0x14,
                            0xDC, 0x14, 4, 0, 0, 0))
@@ -317,7 +318,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->missionTextWidth = this->scenarioListWidth;
     this->missionTextHeight = 0x104 - this->missionTextY;
 
-    if (!this->create_text(this, &this->missionTitle, 0x2600,
+    if (!this->create_text(this, &this->missionTitle, IDS_SCENARIO_INSTRUCTIONS_TITLE,
                            this->missionTextX, this->missionTextY - 0x14,
                            300, 0x14, 4, 0, 0, 0))
         return;
@@ -337,7 +338,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     if (!this->create_auto_scrollbar(&this->missionScrollbar,
                                      this->missionText, 0x14))
         return;
-    this->missionScrollbar->set_help_info(0x763A, -1);
+    this->missionScrollbar->set_help_info(IDS_HELP_SCENARIO_INSTRUCTIONS, -1);
 
     if (!this->create_button(this, &this->okButton, IDS_BUTTON_OK,
                              0, 0x3C, 0x1B8, 0xF0, 0x1E, 0, 0, 0))

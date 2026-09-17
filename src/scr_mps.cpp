@@ -117,7 +117,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         this->playerNameDrop[i]->set_draw_style(
             TDropDownPanel::DrawStyleLeftButton);
         this->playerNameDrop[i]->set_draw_val_rect(0);
-        this->playerNameDrop[i]->set_help_info(0x75F9, -1);
+        this->playerNameDrop[i]->set_help_info(IDS_HELP_MP_PLAYER_POSITIONS, -1);
         this->playerNameDrop[i]->empty_list();
         if (rge_base_game->multiplayerGame() != 0) {
             this->playerNameDrop[i]->append_line(IDS_MP_COMPUTER_LABEL, 4);
@@ -136,24 +136,26 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         this->playerCivDrop[i]->set_draw_style(
             TDropDownPanel::DrawStyleLeftButton);
         this->playerCivDrop[i]->set_draw_val_rect(0);
-        this->playerCivDrop[i]->set_help_info(0x75FA, 0x25F09);
+        this->playerCivDrop[i]->set_help_info(IDS_HELP_MP_CIVILIZATION,
+                                               IDS_HELP_MP_CIVILIZATION_MORE);
         this->playerCivDrop[i]->empty_list();
-        this->playerCivDrop[i]->append_line(0x27F7, 1);
-        this->playerCivDrop[i]->append_line(0x27F8, 2);
-        this->playerCivDrop[i]->append_line(0x27F9, 3);
-        this->playerCivDrop[i]->append_line(0x27FA, 4);
-        this->playerCivDrop[i]->append_line(0x27FB, 5);
-        this->playerCivDrop[i]->append_line(0x27FC, 6);
-        this->playerCivDrop[i]->append_line(0x27FD, 7);
-        this->playerCivDrop[i]->append_line(0x27FE, 8);
-        this->playerCivDrop[i]->append_line(0x27FF, 9);
-        this->playerCivDrop[i]->append_line(0x2800, 10);
-        this->playerCivDrop[i]->append_line(0x2801, 11);
-        this->playerCivDrop[i]->append_line(0x2802, 12);
-        this->playerCivDrop[i]->append_line(0x2806, 13);
-        this->playerCivDrop[i]->append_line(0x2807, 14);
-        this->playerCivDrop[i]->append_line(0x2809, 15);
-        this->playerCivDrop[i]->append_line(0x2808, 16);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_EGYPTIAN, 1);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_GREEK, 2);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_BABYLONIAN, 3);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_ASSYRIAN, 4);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_MINOAN, 5);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_HITTITE, 6);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_PHOENICIAN, 7);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_SUMERIAN, 8);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_PERSIAN, 9);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_SHANG, 10);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_YAMATO, 11);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_CHOSON, 12);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_ROMAN, 13);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_CARTHAGINIAN, 14);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_PALMYRAN, 15);
+        this->playerCivDrop[i]->append_line(IDS_CIVILIZATION_MACEDONIAN, 16);
+        // This empty resource slot has no verified civilization name.
         this->playerCivDrop[i]->append_line(0x280A, 17);
 
         if (!this->create_drop_down(
@@ -164,14 +166,14 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         this->scenarioPlayerDrop[i]->set_draw_style(
             TDropDownPanel::DrawStyleLeftButton);
         this->scenarioPlayerDrop[i]->set_draw_val_rect(0);
-        this->scenarioPlayerDrop[i]->set_help_info(0x75FB, -1);
+        this->scenarioPlayerDrop[i]->set_help_info(IDS_HELP_MP_SCENARIO_PLAYER, -1);
 
         if (!this->create_button(
                 this, &this->playerColor[i], "", 0,
                 0x136, y, 0x1E, 0x14, 0x0B, 0, 1)) {
             return;
         }
-        this->playerColor[i]->set_help_info(0x7604, -1);
+        this->playerColor[i]->set_help_info(IDS_HELP_MP_PLAYER_COLOR, -1);
         if (!this->create_text(
                 this, &this->playerColorText[i], "",
                 0x131, y, 0x28, 0x16, 0x0B, 1, 1, 0)) {
@@ -183,7 +185,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 0x17C, y, 0x1E, 0x14, 0x0B, 0, 1)) {
             return;
         }
-        this->playerTeam[i]->set_help_info(0x7603, -1);
+        this->playerTeam[i]->set_help_info(IDS_HELP_MP_TEAM, -1);
         this->playerTeam[i]->set_state_info(5);
         for (int state = 1; state < 5; ++state) {
             sprintf(str, "%d", state);
@@ -230,7 +232,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 0x1A4, 0x32, 0xD2, 0x1E, 0, 0, 0)) {
             return;
         }
-        this->gameSettingsButton->set_help_info(0x75FC, -1);
+        this->gameSettingsButton->set_help_info(IDS_HELP_MP_SETTINGS, -1);
     }
 
     if (!this->create_text(this, &this->scenarioName, "",
@@ -268,12 +270,12 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 10, 1, 0)) {
             return;
         }
-        this->chatInput->set_help_info(0x75FE, -1);
+        this->chatInput->set_help_info(IDS_HELP_MP_CHAT_INPUT, -1);
         this->chatBox->set_bevel_info(
             3, this->bevel_color1, this->bevel_color2,
             this->bevel_color3, this->bevel_color4,
             this->bevel_color5, this->bevel_color6);
-        this->chatBox->set_help_info(0x75FD, -1);
+        this->chatBox->set_help_info(IDS_HELP_MP_CHAT_BOX, -1);
         this->chatBox->empty_list();
     }
 
@@ -288,7 +290,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 0x46, 0x64, 0x1F, 0x142, 0x46, 0x18, 0x0B)) {
             return;
         }
-        this->numberPlayersDrop->set_help_info(0x7600, -1);
+        this->numberPlayersDrop->set_help_info(IDS_HELP_MP_PLAYER_COUNT, -1);
     }
 
     this->i_am_ready = 0;
@@ -299,7 +301,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             return;
         }
         this->startButton->set_text(0, IDS_START_GAME);
-        this->startButton->set_help_info(0x75FF, -1);
+        this->startButton->set_help_info(IDS_HELP_MP_START, -1);
         this->set_curr_child(this->startButton);
         if (!this->create_button(
                 this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
@@ -318,14 +320,14 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 0x2D, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0)) {
             return;
         }
-        this->ready_button->set_help_info(0x7602, -1);
+        this->ready_button->set_help_info(IDS_HELP_MP_READY, -1);
         if (!this->create_button(
                 this, &this->startButton, "", 0,
                 0xC3, 0x1B8, 0xC8, 0x1E, 0, 0, 0)) {
             return;
         }
         this->startButton->set_text(0, IDS_START_GAME);
-        this->startButton->set_help_info(0x75FF, -1);
+        this->startButton->set_help_info(IDS_HELP_MP_START, -1);
         this->startButton->set_disabled(1);
         if (!this->create_button(
                 this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
@@ -338,7 +340,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 0x258, 0x190, 0x1E, 0x1E, 0, 0, 0)) {
             return;
         }
-        this->netInfoButton->set_help_info(0x7601, -1);
+        this->netInfoButton->set_help_info(IDS_HELP_MP_NETWORK_INFO, -1);
         comm->SetMyReadiness(0, 0, 0, 0, 0, 0, 0, 0);
     } else {
         if (!this->create_check_box(
@@ -351,7 +353,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                 0x87, 0x1B8, 0x96, 0x1E, 0, 0, 1, 0)) {
             return;
         }
-        this->ready_button->set_help_info(0x7602, -1);
+        this->ready_button->set_help_info(IDS_HELP_MP_READY, -1);
         if (!this->create_button(
                 this, &this->cancelButton, IDS_BUTTON_CANCEL, 0,
                 0x14A, 0x1B8, 0xF0, 0x1E, 0, 0, 0)) {
@@ -2803,7 +2805,7 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode_in) : TScreenPanel("Mu
         this->error_code = 1;
     } else {
         this->set_ideal_size(0x280, 0x1E0);
-        this->create_text(this, &this->message, 0x4C0,
+        this->create_text(this, &this->message, IDS_STATUS_DISCONNECTING_MULTIPLAYER,
                           0x28, 0x28, 0x230, 0x190, 4, 1, 1, 1);
     }
 }

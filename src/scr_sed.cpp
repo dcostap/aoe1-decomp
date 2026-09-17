@@ -373,26 +373,26 @@ create:
 
     list = &this->map_size_drop;
     if (drop_panel == list) {
-        (*list)->append_line(0x2973, 0);
-        (*list)->append_line(0x2974, 0);
-        (*list)->append_line(0x2975, 0);
-        (*list)->append_line(0x2976, 0);
-        (*list)->append_line(0x2977, 0);
-        (*list)->append_line(0x2978, 0);
+        (*list)->append_line(IDS_MAP_SIZE_BASE, 0);
+        (*list)->append_line(IDS_MAP_SIZE_BASE + 1, 0);
+        (*list)->append_line(IDS_MAP_SIZE_BASE + 2, 0);
+        (*list)->append_line(IDS_MAP_SIZE_BASE + 3, 0);
+        (*list)->append_line(IDS_MAP_SIZE_BASE + 4, 0);
+        (*list)->append_line(IDS_MAP_SIZE_BASE + 5, 0);
         (*list)->set_line(3);
         goto done;
     } else {
         list = &this->map_style_drop;
         if (drop_panel == list) {
-            (*list)->append_line(0x296A, 0);
-            (*list)->append_line(0x296B, 0);
-            (*list)->append_line(0x296C, 0);
-            (*list)->append_line(0x296D, 0);
-            (*list)->append_line(0x296E, 0);
-            (*list)->append_line(0x296F, 0);
-            (*list)->append_line(0x2970, 0);
-            (*list)->append_line(0x2971, 0);
-            (*list)->append_line(0x2972, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 1, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 2, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 3, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 4, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 5, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 6, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 7, 0);
+            (*list)->append_line(IDS_MAP_TYPE_BASE + 8, 0);
             (*list)->set_line(3);
             goto done;
         } else {
@@ -400,7 +400,7 @@ create:
             if (drop_panel == list) {
                 int i = 0;
                 do {
-                    (*list)->append_line(i + 0x2877, 0);
+                    (*list)->append_line(i + IDS_PLAYER_COUNT_BASE, 0);
                     i++;
                 } while (i < 8);
                 (*list)->set_line(0);
@@ -410,7 +410,7 @@ create:
                 if (drop_panel == list) {
                     int i = 0;
                     do {
-                        (*list)->append_line(i + 0x2877, 0);
+                        (*list)->append_line(i + IDS_PLAYER_COUNT_BASE, 0);
                         i++;
                     } while (i < 8);
                     (*list)->set_line(0);
@@ -418,88 +418,89 @@ create:
                 } else {
                     list = &this->victory_attribute_list;
                     if (drop_panel == list) {
-                        (*list)->append_line(0x2882, 0x2B);
-                        (*list)->append_line(0x2883, 0x29);
-                        (*list)->append_line(0x2884, 0x2C);
-                        (*list)->append_line(0x2886, 0x28);
-                        (*list)->append_line(0x2887, 0x15);
-                        (*list)->append_line(0x2888, 0x14);
-                        (*list)->append_line(0x2889, 0x25);
+                        // These attribute codes have no reviewed symbolic names.
+                        (*list)->append_line(IDS_VICTORY_RAZINGS, 0x2B);
+                        (*list)->append_line(IDS_VICTORY_CONVERSIONS, 0x29);
+                        (*list)->append_line(IDS_VICTORY_KILL_RATIO, 0x2C);
+                        (*list)->append_line(IDS_VICTORY_MILITARY_POPULATION, 0x28);
+                        (*list)->append_line(IDS_VICTORY_TECHNOLOGIES, 0x15);
+                        (*list)->append_line(IDS_VICTORY_KILLS, 0x14);
+                        (*list)->append_line(IDS_VICTORY_VILLAGER_POPULATION, 0x25);
                         (*list)->set_line(0);
                         goto done;
                     } else {
                         list = &this->default_terrain_drop;
                         if (drop_panel == list) {
-                            (*list)->append_line(0x297D, 0);
-                            (*list)->append_line(0x297E, 0);
-                            (*list)->append_line(0x297F, 0);
-                            (*list)->append_line(0x2980, 0);
-                            (*list)->append_line(0x2981, 0);
-                            (*list)->append_line(0x2982, 0);
-                            (*list)->append_line(0x2983, 0);
-                            (*list)->append_line(0x2984, 0);
-                            (*list)->append_line(0x2985, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 1, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 2, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 3, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 4, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 5, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 6, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 7, 0);
+                            (*list)->append_line(IDS_DEFAULT_TERRAIN_BASE + 8, 0);
                             (*list)->set_line(0);
                             goto done;
                         } else {
                             list = this->player_setting_drop;
                             if (drop_panel == list) {
-                                (*list)->append_line(0x27E3, 0);
-                                (*list)->append_line(0x27E4, 0);
+                                (*list)->append_line(IDS_PLAYER_SETTING_COMPUTER, 0);
+                                (*list)->append_line(IDS_PLAYER_SETTING_EITHER, 0);
                                 (*list)->set_line(0);
                                 goto done;
                             } else {
                                 list = &this->victory_drop_down;
                                 if (drop_panel == list) {
-                                    (*list)->append_line(0x2851, 0);
-                                    (*list)->append_line(0x2852, 0);
-                                    (*list)->append_line(0x2853, 0);
-                                    (*list)->append_line(0x2854, 0);
-                                    (*list)->append_line(0x2855, 0);
-                                    (*list)->append_line(0x2856, 0);
-                                    (*list)->append_line(0x2857, 0);
-                                    (*list)->append_line(0x2858, 0);
-                                    (*list)->append_line(0x2859, 0);
-                                    (*list)->append_line(0x285A, 0);
-                                    (*list)->append_line(0x285B, 0);
-                                    (*list)->append_line(0x285C, 0);
-                                    (*list)->append_line(0x285D, 0);
-                                    (*list)->append_line(0x285E, 0);
-                                    (*list)->append_line(0x285F, 0);
-                                    (*list)->append_line(0x2860, 0);
-                                    (*list)->append_line(0x2861, 0);
-                                    (*list)->append_line(0x2862, 0);
-                                    (*list)->append_line(0x284F, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 1, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 2, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 3, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 4, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 5, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 6, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 7, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 8, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 9, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 10, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 11, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 12, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 13, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 14, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 15, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 16, 0);
+                                    (*list)->append_line(IDS_VICTORY_CONDITION_OPTION_BASE + 17, 0);
+                                    (*list)->append_line(IDS_TECHNOLOGIES_LABEL, 0);
                                     (*list)->set_line(0);
                                     goto done;
                                 } else {
                                     list = this->player_setting_drop + 1;
                                     if (drop_panel == list) {
-                                        (*list)->append_line(0x27F7, 0);
-                                        (*list)->append_line(0x27F8, 0);
-                                        (*list)->append_line(0x27F9, 0);
-                                        (*list)->append_line(0x27FA, 0);
-                                        (*list)->append_line(0x27FB, 0);
-                                        (*list)->append_line(0x27FC, 0);
-                                        (*list)->append_line(0x27FD, 0);
-                                        (*list)->append_line(0x27FE, 0);
-                                        (*list)->append_line(0x27FF, 0);
-                                        (*list)->append_line(0x2800, 0);
-                                        (*list)->append_line(0x2801, 0);
-                                        (*list)->append_line(0x2802, 0);
-                                        (*list)->append_line(0x2806, 0);
-                                        (*list)->append_line(0x2807, 0);
-                                        (*list)->append_line(0x2809, 0);
-                                        (*list)->append_line(0x2808, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_EGYPTIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_GREEK, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_BABYLONIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_ASSYRIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_MINOAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_HITTITE, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_PHOENICIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_SUMERIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_PERSIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_SHANG, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_YAMATO, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_CHOSON, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_ROMAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_CARTHAGINIAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_PALMYRAN, 0);
+                                        (*list)->append_line(IDS_CIVILIZATION_MACEDONIAN, 0);
                                         (*list)->set_line(0);
                                         goto done;
                                     } else {
                                         list = &this->victory_ages_list;
                                         if (drop_panel == list) {
-                                            (*list)->append_line(0x1069, 0);
-                                            (*list)->append_line(0x106A, 0);
-                                            (*list)->append_line(0x106B, 0);
-                                            (*list)->append_line(0x106C, 0);
+                                            (*list)->append_line(IDS_HELP_AGE_STONE, 0);
+                                            (*list)->append_line(IDS_HELP_AGE_TOOL, 0);
+                                            (*list)->append_line(IDS_HELP_AGE_BRONZE, 0);
+                                            (*list)->append_line(IDS_HELP_AGE_IRON, 0);
                                             (*list)->set_line(0);
                                             goto done;
                                         } else {
@@ -614,15 +615,15 @@ done:
 
 int TRIBE_Screen_Sed::SetupListOfTerrain(TListPanel *list) {
     list->empty_list();
-    list->append_line(0x297D, 0);
-    list->append_line(0x297E, 0);
-    list->append_line(0x297F, 0);
-    list->append_line(0x2980, 0);
-    list->append_line(0x2981, 0);
-    list->append_line(0x2982, 0);
-    list->append_line(0x2983, 0);
-    list->append_line(0x2984, 0);
-    list->append_line(0x2985, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 1, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 2, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 3, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 4, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 5, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 6, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 7, 0);
+    list->append_line(IDS_DEFAULT_TERRAIN_BASE + 8, 0);
     return 8;
 }
 
@@ -641,7 +642,7 @@ int TRIBE_Screen_Sed::create_list(TPanel *parent, TListPanel **list_panel, TScro
         return 0;
 
     if (list_panel == &this->paint_elevation_list) {
-        this->set_string(str1, 0x2987, 0x32);
+        this->set_string(str1, IDS_TERRAIN_ELEVATION_LABEL, 50);
         for (i = 0; i < 7; i++) {
             sprintf(str2, "%s %d", str1, i + 1);
             this->paint_elevation_list->append_line(str2, 0);
@@ -1015,19 +1016,19 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode new_mode
                 this->message_input->set_text(text);
                 switch (this->current_message) {
                 case 0:
-                    this->message_input->set_help_info(0x7770, -1);
+                        this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_INSTRUCTIONS, -1);
                     break;
                 case 1:
-                    this->message_input->set_help_info(0x7771, -1);
+                        this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_HINTS, -1);
                     break;
                 case 2:
-                    this->message_input->set_help_info(0x7772, -1);
+                        this->message_input->set_help_info(IDS_HELP_EDIT_VICTORY_MESSAGE, -1);
                     break;
                 case 3:
-                    this->message_input->set_help_info(0x7773, -1);
+                        this->message_input->set_help_info(IDS_HELP_EDIT_LOSS_MESSAGE, -1);
                     break;
                 case 4:
-                    this->message_input->set_help_info(0x7774, -1);
+                        this->message_input->set_help_info(IDS_HELP_EDIT_HISTORY, -1);
                     break;
                 default:
                     break;
@@ -1595,7 +1596,7 @@ void TRIBE_Screen_Sed::set_unit_player(short val) {
         if (this->unit_list_info == 0)
             return;
         this->unit_list_info[0].id = -1;
-        this->set_string(this->unit_list_info[0].text, 0x2775, 0x14);
+        this->set_string(this->unit_list_info[0].text, IDS_FILE_NONE, 20);
 
         short out = 1; // The original loads this index as a word.
         short i = 0;
@@ -1978,19 +1979,19 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
             this->message_input->set_text(this->world->scenario->Get_message(this->current_message));
             switch (this->current_message) {
             case 0:
-                this->message_input->set_help_info(0x7770, -1);
+                this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_INSTRUCTIONS, -1);
                 break;
             case 1:
-                this->message_input->set_help_info(0x7771, -1);
+                this->message_input->set_help_info(IDS_HELP_EDIT_SCENARIO_HINTS, -1);
                 break;
             case 2:
-                this->message_input->set_help_info(0x7772, -1);
+                this->message_input->set_help_info(IDS_HELP_EDIT_VICTORY_MESSAGE, -1);
                 break;
             case 3:
-                this->message_input->set_help_info(0x7773, -1);
+                this->message_input->set_help_info(IDS_HELP_EDIT_LOSS_MESSAGE, -1);
                 break;
             case 4:
-                this->message_input->set_help_info(0x7774, -1);
+                this->message_input->set_help_info(IDS_HELP_EDIT_HISTORY, -1);
                 break;
             }
         }
@@ -2546,7 +2547,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
         if (tribe >= this->world->master_player_num) {
             tribe = 1;
         }
-        this->set_string(player_info.name[i], 0x2865 + i, 0x41);
+        this->set_string(player_info.name[i], IDS_PLAYER_NAME_BASE + i, 65);
         player_info.type[i] = 0;
         player_info.tribe[i] = static_cast<char>(tribe);
         player_info.color[i] = -1;

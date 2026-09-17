@@ -897,6 +897,7 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
         case 0x1B:
             return this->get_string(IDS_COMMAND_TRADE_STONE_FOR_GOLD, str, max_len);
         case 0x20:
+            // These command slots are empty in the checked language DLL.
             return this->get_string(0x1025, str, max_len);
         case 0x21:
             return this->get_string(0x1026, str, max_len);
@@ -1087,6 +1088,7 @@ static long __stdcall video_sub_wnd_proc(void* wnd, unsigned int msg, unsigned i
 int TRIBE_Game::start_video(int video_num, char* video_file) {
     if (this->video_window != 0) {
         char str[100];
+        // These video-window messages are application-defined.
         SendMessageA(this->video_window, 0x46A, 100, reinterpret_cast<long>(str));
         if (str[0] != 0 && strcmp(str, "stopped") != 0) {
             SendMessageA(this->video_window, 0x808, 0, 0);

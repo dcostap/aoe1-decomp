@@ -216,7 +216,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
         this->error_code = 1;
         return;
     }
-    this->object_panel->set_help_info(0x19bb8, 0x265ac);
+    this->object_panel->set_help_info(IDS_HELP_OBJECT_PANEL, IDS_HELP_OBJECT_PANEL_MORE);
 
     font = rge_base_game->get_font(0xb);
     TDigital* sound = rge_base_game->get_sound(1);
@@ -231,15 +231,15 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
 
     this->button_panel[12]->set_id(0, 0x0d, 0);
-    this->button_panel[12]->set_help_info(0x1d4cf, -1);
+    this->button_panel[12]->set_help_info(IDS_HELP_GAME_CHAT, -1);
     this->button_panel[13]->set_id(0, 0x0e, 0);
-    this->button_panel[13]->set_help_info(0x1d4d1, -1);
+    this->button_panel[13]->set_help_info(IDS_HELP_GAME_DIPLOMACY, -1);
     this->button_panel[14]->set_id(0, 0x0f, 0);
-    this->button_panel[14]->set_help_info(0x1d4cd, -1);
+    this->button_panel[14]->set_help_info(IDS_HELP_GAME_MENU, -1);
     this->button_panel[15]->set_id(0, 0x15, 0);
-    this->button_panel[15]->set_help_info(0x1d4db, -1);
+    this->button_panel[15]->set_help_info(IDS_HELP_GAME_HELP, -1);
     this->button_panel[16]->set_id(0, 0x18, 0);
-    this->button_panel[16]->set_help_info(0x1d4dc, -1);
+    this->button_panel[16]->set_help_info(IDS_HELP_GAME_SCORE, -1);
 
     for (i = 12; i < 15; ++i) {
         this->button_panel[i]->setDrawType(TButtonPanel::DrawText);

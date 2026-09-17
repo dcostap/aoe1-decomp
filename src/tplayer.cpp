@@ -2073,6 +2073,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
         }
     }
 
+    // This AI build-list resource range is absent from the checked DLL.
     rge_base_game->get_string(selectedBuildList + 0x26930, b, 256);
 
     switch (selectedBuildList) {
@@ -2208,6 +2209,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* b, char* r,
     ++tplayer_globals::selectedBuildListCount;
 
 selectedCountersDone:
+    // This player-name resource range is absent from the checked DLL.
     rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27F6, tempString, 256);
     this->playerAI->logCommonHistory(tplayerEmptyName, tempString, static_cast<int>(this->master_player_id) - 1);
     this->playerAI->logCommonHistory(tplayerBuildMessage, b);
@@ -3127,6 +3129,7 @@ void TRIBE_Player::logStatus(FILE* out, int firstTime) {
 
     fprintf(out, "Player %d:\n", static_cast<int>(this->id));
     if (firstTime == 1) {
+        // This player-name resource range is absent from the checked DLL.
         rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27f6, tempString, 256);
         if (this->playerAI == 0) {
             fprintf(out, "  Human Player, %s.\n", tempString);

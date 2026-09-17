@@ -23,14 +23,14 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     }
     setup_shadow_area(0);
     set_ideal_size(0x280, 0x1E0);
-    if (create_text(this, &title, 0x2BCD, 0x14, 10, 600, 0x1E, 1, 1, 0, 0)) {
+    if (create_text(this, &title, IDS_CAMPAIGN_LABEL, 0x14, 10, 600, 0x1E, 1, 1, 0, 0)) {
         campaignListX = 0x14;
         campaignListY = 0x46;
         campaignListWidth = 600;
         campaignListHeight = 0x82;
         if (create_list(this, &campaignList, 0x14, 0x46, 600, 0x82, 0x0B)) {
             if (create_auto_scrollbar(&campaignScrollbar, campaignList, 0x14)) {
-                if (create_text(this, &campaignTitle, 0x2BCE,
+                if (create_text(this, &campaignTitle, IDS_SELECT_CAMPAIGN,
                                 campaignListX - 5, campaignListY - 0x14,
                                 200, 0x14, 4, 0, 0, 0)) {
                     campaignList->set_text(IDS_CAMPAIGN_LIST_LOADING);
@@ -43,12 +43,12 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                     scenarioListHeight, 0x0B)) {
                         if (create_auto_scrollbar(&scenarioScrollbar,
                                                   scenarioList, 0x14)) {
-                            if (create_text(this, &scenarioTitle, 0x25FE,
+                            if (create_text(this, &scenarioTitle, IDS_SCENARIO_LIST_TITLE,
                                             scenarioListX - 5,
                                             scenarioListY - 0x14, 200, 0x14,
                                             4, 0, 0, 0)) {
                                 scenarioList->sorted = 0;
-                                if (create_text(this, &difficultyTitle, 0x2BCF,
+                                if (create_text(this, &difficultyTitle, IDS_DIFFICULTY_LABEL,
                                                 0x0F, 0x172, 200, 0x14, 4,
                                                 0, 0, 0)) {
                                     if (create_drop_down(this, &difficultyDrop,
@@ -56,11 +56,11 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                          0x186, 0x82, 0x18,
                                                          0x0B)) {
                                         difficultyDrop->empty_list();
-                                        difficultyDrop->append_line(0x2BD4, 4);
-                                        difficultyDrop->append_line(0x2BD3, 3);
-                                        difficultyDrop->append_line(0x2BD2, 2);
-                                        difficultyDrop->append_line(0x2BD1, 1);
-                                        difficultyDrop->append_line(0x2BD0, 0);
+                                        difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
+                                        difficultyDrop->append_line(IDS_DIFFICULTY_EASY, 3);
+                                        difficultyDrop->append_line(IDS_DIFFICULTY_MODERATE, 2);
+                                        difficultyDrop->append_line(IDS_DIFFICULTY_HARD, 1);
+                                        difficultyDrop->append_line(IDS_DIFFICULTY_HARDEST, 0);
                                         difficultyDrop->set_line(
                                             difficultyDrop->get_line(
                                                 rge_base_game->difficulty()));
