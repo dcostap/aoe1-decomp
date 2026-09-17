@@ -1,0 +1,82 @@
+{
+  "schema": 1,
+  "user": [
+    {
+      "name": "Default Age Of Empires MP Gamename",
+      "type": 1,
+      "value": "test"
+    },
+    {
+      "name": "Default Age Of Empires Multiplayer Service",
+      "type": 1,
+      "value": "Internet TCP/IP Connection For DirectPlay"
+    },
+    {
+      "name": "Default Age Of Empires Player Name",
+      "type": 1,
+      "value": "test"
+    },
+    {
+      "name": "Difficulty",
+      "type": 4,
+      "value": 2
+    },
+    {
+      "name": "Game Speed",
+      "type": 4,
+      "value": 10
+    },
+    {
+      "name": "MP Path Finding",
+      "type": 4,
+      "value": 1
+    },
+    {
+      "name": "Mouse Style",
+      "type": 4,
+      "value": 2
+    },
+    {
+      "name": "Music Volume",
+      "type": 4,
+      "value": 9900
+    },
+    {
+      "name": "Path Finding",
+      "type": 4,
+      "value": 3
+    },
+    {
+      "name": "Rollover Text",
+      "type": 4,
+      "value": 1
+    },
+    {
+      "name": "Screen Size",
+      "type": 4,
+      "value": 640
+    },
+    {
+      "name": "Scroll Speed",
+      "type": 4,
+      "value": 84
+    },
+    {
+      "name": "Sound Volume",
+      "type": 4,
+      "value": 0
+    }
+  ],
+  "machine": [
+    {
+      "name": "Custom Mouse",
+      "type": 4,
+      "value": 0
+    },
+    {
+      "name": "Game File Number",
+      "type": 4,
+      "value": 2
+    }
+  ]
+}

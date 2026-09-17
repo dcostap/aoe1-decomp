@@ -10,12 +10,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from game import ROOT, run_worker, stage
 from behavior import validate_replay
 from replay import compare_pair, input_receipts, recording_contract
+from ui_fixture import normalize_resolution
 
 
-def run(fixture, output, runs, jobs, seconds, target='original'):
+def run(fixture, output, runs, jobs, seconds, target='original', resolution=None):
     document = json.loads(fixture.read_text())
     recording = document if isinstance(document, dict) and 'scenario' in document else None
     scenario = recording['scenario'] if recording else document
+    if resolution is not None:
+        scenario['resolution'] = normalize_resolution(resolution)
     validate_replay(scenario)
     output.mkdir(parents=True, exist_ok=False)
     frozen = output / 'scenario.json'
@@ -61,7 +64,8 @@ def run(fixture, output, runs, jobs, seconds, target='original'):
                           recording.get('delivery') != input_receipts(current)):
             comparison = {'passed':False, 'classification':'recording-contract-or-input-differs'}
         row['comparison'] = comparison
-    result = {'schema':1, 'target':target, 'runs':runs, 'jobs':jobs, 'captures':rows,
+    result = {'schema':1, 'target':target, 'resolution':scenario.get('resolution'),
+              'runs':runs, 'jobs':jobs, 'captures':rows,
               'passed':all(row['comparison']['passed'] for row in rows),
               'scope':'Repeatability of configured state, input delivery, full RNG sequence, and requested game-client captures'}
     (output/'report.json').write_text(json.dumps(result, indent=2) + '\n')
@@ -77,10 +81,11 @@ def main():
     parser.add_argument('--jobs', type=int, default=10)
     parser.add_argument('--seconds', type=float, default=120)
     parser.add_argument('--target', choices=('original', 'rebuilt'), default='original')
+    parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     args = parser.parse_args()
     if not 2 <= args.runs <= 30 or not 1 <= args.jobs <= min(10, args.runs) or not 1 <= args.seconds <= 300:
         parser.error('Use 2..30 runs, 1..10 jobs no greater than runs, and 1..300 seconds.')
-    return run(args.fixture, args.output, args.runs, args.jobs, args.seconds, args.target)
+    return run(args.fixture, args.output, args.runs, args.jobs, args.seconds, args.target, args.resolution)
 
 
 if __name__ == '__main__':

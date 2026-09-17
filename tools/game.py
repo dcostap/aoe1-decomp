@@ -211,16 +211,19 @@ def main():
     p.add_argument('--seconds', type=float, default=90, help='Per-run wall-clock deadline, not simulated duration')
     p.add_argument('--runs', type=int, default=3, help='Runs per executable; at least three')
     p.add_argument('--jobs', type=int, help='Maximum replay captures to start at once; default is all captures')
+    p.add_argument('--resolution', help='Game resolution, for example 800x600')
     p = subs.add_parser('replay-repeat', help='Check one executable in parallel private processes')
     p.add_argument('--target', choices=('original', 'rebuilt'), default='original')
     p.add_argument('--fixture', type=Path, default=ROOT/'config/harness/replay-random-smoke.json')
     p.add_argument('--runs', type=int, default=10)
     p.add_argument('--jobs', type=int, default=10)
     p.add_argument('--seconds', type=float, default=120)
+    p.add_argument('--resolution', help='Game resolution, for example 800x600')
     p = subs.add_parser('test-captures', help='Run the game UI main menu tests on private desktops')
     p.add_argument('--list', action='store_true')
     p.add_argument('--case', action='append', default=[], help='Test ID or wildcard; may be repeated')
     p.add_argument('--original-runs', type=int, choices=(1, 2, 3), default=2)
+    p.add_argument('--resolution', help='Game resolution, for example 800x600')
     p.add_argument('--jobs', type=int, help='Maximum UI cases to run at once; default is all cases')
     p = subs.add_parser('override', help='Replace an asset without writing through its shared hard link')
     p.add_argument('runtime', type=Path)
@@ -236,6 +239,7 @@ def main():
     p.add_argument('--seconds', type=float, default=4)
     p.add_argument('--fixture', type=Path)
     p.add_argument('--clock', choices=('real', 'calls'), default='calls')
+    p.add_argument('--resolution', help='Game resolution, for example 800x600')
     p.add_argument('--visible', action='store_true', help='Show game windows on the interactive desktop')
     for name in ("build", "original", "rebuilt", "capture"):
         p = subs.add_parser(name)
@@ -244,6 +248,7 @@ def main():
             p.add_argument("--seconds", type=float, default=8)
             p.add_argument("--fixture", type=Path)
             p.add_argument("--clock", choices=("real", "calls"), default="real")
+            p.add_argument('--resolution', help='Game resolution, for example 800x600')
             p.add_argument('--visible', action='store_true', help='Show the game on the interactive desktop')
         if name in ("rebuilt", "capture"):
             p.add_argument("--exe", type=Path)
@@ -285,6 +290,8 @@ def main():
             command = [str(ROOT/'build/harness-env/Scripts/python.exe'), str(ROOT/'tools/harness/replay_repeat.py'),
                        '--fixture', str(args.fixture.resolve()), '--output', str(output),
                        '--runs', str(args.runs), '--jobs', str(args.jobs), '--seconds', str(args.seconds), '--target', args.target]
+            if args.resolution is not None:
+                command += ['--resolution', args.resolution]
             return subprocess.run(command, cwd=ROOT).returncode
         if args.command == 'replay':
             if not 1 <= args.seconds <= 300 or not 3 <= args.runs <= 30:
@@ -295,6 +302,8 @@ def main():
                        '--seconds', str(args.seconds), '--runs', str(args.runs), '--output', str(output)]
             if args.jobs is not None:
                 command += ['--jobs', str(args.jobs)]
+            if args.resolution is not None:
+                command += ['--resolution', args.resolution]
             code = run_worker(command, output.with_suffix('.log'), 2 * args.runs * (args.seconds + 30) + 60, False)
             report_path = output / 'report.json'
             if report_path.exists():
@@ -332,6 +341,8 @@ def main():
                        '--original-runs', str(args.original_runs)]
             if args.jobs is not None:
                 command += ['--jobs', str(args.jobs)]
+            if args.resolution is not None:
+                command += ['--resolution', args.resolution]
             for pattern in args.case:
                 command += ['--case', pattern]
             code = run_worker(command, output.with_suffix('.log'),
@@ -359,6 +370,8 @@ def main():
                        '--count', str(args.count), '--seconds', str(args.seconds), '--clock', args.clock]
             if args.fixture:
                 command += ['--fixture', str(args.fixture.resolve())]
+            if args.resolution is not None:
+                command += ['--resolution', args.resolution]
             log = ROOT / 'build/runtime' / ('hidden-repeat-' + stamp() + '.log')
             return run_worker(command, log, (args.seconds + 15) * args.count + 30, args.visible)
         target = args.target if args.command == "capture" else ("original" if args.command == "original" else "rebuilt")
@@ -373,6 +386,8 @@ def main():
                        "--runtime", str(output), "--seconds", str(args.seconds), "--clock", args.clock]
             if args.fixture:
                 command += ["--fixture", str(args.fixture.resolve())]
+            if args.resolution is not None:
+                command += ["--resolution", args.resolution]
             return run_worker(command, output / 'hidden-worker.log', args.seconds + 30, args.visible)
         if args.command != "build" and not args.prepare_only:
             env = dict(os.environ, __COMPAT_LAYER="" if args.graphics == "cnc-ddraw" else "DWM8And16BitMitigation")

@@ -14,7 +14,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import game
 from capture import capture
 from compare import compare
-from ui_fixture import validate_steps
+from ui_fixture import normalize_resolution, validate_steps
 
 SUITE = game.ROOT / 'config/harness/game-ui-main-menu.json'
 
@@ -75,10 +75,11 @@ def compare_checkpoints(left, right, output):
     return result
 
 
-def run_case(case, definition, folder, original_runs=2, visible=False):
+def run_case(case, definition, folder, original_runs=2, visible=False, resolution=None):
     """Run one UI case in one worker-owned desktop."""
     fixture = folder / 'fixture.json'
     fixture.write_text(json.dumps({'name': case['id'], 'ui': True,
+        'resolution': normalize_resolution(resolution),
         'steps': definition['routes'][case['route']] + case['steps']}, indent=2) + '\n')
     row = {'id': case['id'], 'captures': [], 'comparisons': [], 'passed': False}
     print(f"UI test: {case['id']}", flush=True)
@@ -113,18 +114,22 @@ def run_case(case, definition, folder, original_runs=2, visible=False):
 def run_case_file(case_file, output, original_runs=2, visible=False):
     """Internal entry point for one nested UI worker."""
     payload = json.loads(case_file.read_text())
-    row = run_case(payload['case'], payload['definition'], output, original_runs, visible)
+    row = run_case(payload['case'], payload['definition'], output, original_runs, visible,
+                   payload.get('resolution'))
     (output / 'case-report.json').write_text(json.dumps(row, indent=2) + '\n')
     return 0 if row['passed'] else 1
 
 
-def run(output, patterns=(), original_runs=2, visible=False, jobs=None):
+def run(output, patterns=(), original_runs=2, visible=False, jobs=None, resolution=None):
     definition, cases = load_suite(patterns=patterns)
+    selected_resolution = normalize_resolution(
+        resolution if resolution is not None else definition.get('resolution'))
     output.mkdir(parents=True, exist_ok=False)
     (output / 'suite.json').write_text(json.dumps(definition, indent=2) + '\n')
     if jobs is not None and jobs < 1:
         raise ValueError('The UI worker count must be positive.')
-    result = {'group': definition['name'], 'scope': 'Named menu checkpoints: pixels, palette, RNG, and selected control state',
+    result = {'group': definition['name'], 'resolution': selected_resolution,
+              'scope': 'Named menu checkpoints: pixels, palette, RNG, and selected control state',
               'original_runs': original_runs, 'jobs': 1 if visible else (jobs or len(cases)),
               'cases': [None] * len(cases), 'passed': False}
     report = output / 'report.json'
@@ -135,9 +140,11 @@ def run(output, patterns=(), original_runs=2, visible=False, jobs=None):
         folder = output / case['id']
         folder.mkdir()
         case_file = folder / 'case.json'
-        case_file.write_text(json.dumps({'case': case, 'definition': definition}, indent=2) + '\n')
+        case_file.write_text(json.dumps({'case': case, 'definition': definition,
+                                         'resolution': selected_resolution}, indent=2) + '\n')
         if visible:
-            return index, run_case(case, definition, folder, original_runs, True)
+            return index, run_case(case, definition, folder, original_runs, True,
+                                  selected_resolution)
         python = str(game.ROOT / 'build/harness-env/Scripts/python.exe')
         command = [python, str(Path(__file__).resolve()),
                    '--case-file', str(case_file), '--output', str(folder),
@@ -188,13 +195,14 @@ def main():
     parser.add_argument('--output', required=True, type=Path)
     parser.add_argument('--case', action='append', default=[])
     parser.add_argument('--original-runs', type=int, choices=(1, 2, 3), default=2)
+    parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     parser.add_argument('--visible', action='store_true')
     args = parser.parse_args()
     if args.jobs is not None and args.jobs < 1:
         parser.error('--jobs must be positive.')
     if args.case_file:
         return run_case_file(args.case_file, args.output, args.original_runs, args.visible)
-    return run(args.output, args.case, args.original_runs, args.visible, args.jobs)
+    return run(args.output, args.case, args.original_runs, args.visible, args.jobs, args.resolution)
 
 
 if __name__ == '__main__':

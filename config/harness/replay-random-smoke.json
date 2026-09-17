@@ -1,6 +1,7 @@
 {
   "name": "random-game-smoke",
   "ui": true,
+  "resolution": {"width": 640, "height": 480},
   "steps": [
     {"name":"single", "type":"click", "before":"Main Menu", "x":320, "y":198},
     {"name":"random", "type":"click", "before":"Single Player Menu", "x":320, "y":138},

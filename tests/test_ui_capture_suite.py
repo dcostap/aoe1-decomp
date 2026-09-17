@@ -9,7 +9,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools/harness'))
 from capture import save_frame
 from suite import compare_checkpoints, load_suite
-from ui_fixture import validate_steps
+from ui_fixture import normalize_resolution, validate_steps
 
 
 def test_group_has_unique_cases_and_mouse_coverage():
@@ -51,6 +51,21 @@ def test_suite_filter():
     assert cases and all(case['id'].startswith('settings-') for case in cases)
 
 
+@pytest.mark.parametrize('value, expected', [
+    ('640x480', {'width': 640, 'height': 480}),
+    ('800X600', {'width': 800, 'height': 600}),
+    (1024, {'width': 1024, 'height': 768}),
+])
+def test_supported_resolution_is_normalized(value, expected):
+    assert normalize_resolution(value) == expected
+
+
+@pytest.mark.parametrize('value', ['640x600', '1280x768', '640', '800x600x32'])
+def test_unsupported_resolution_is_rejected(value):
+    with pytest.raises(ValueError):
+        normalize_resolution(value)
+
+
 def test_independent_ui_cases_run_in_parallel(tmp_path, monkeypatch):
     import suite
     definition = {'name': 'test', 'routes': {'main': [{'name': 'main'}]}}
@@ -76,10 +91,13 @@ def test_independent_ui_cases_run_in_parallel(tmp_path, monkeypatch):
         return 0
 
     monkeypatch.setattr(suite.game, 'run_worker', worker)
-    assert suite.run(tmp_path / 'suite', original_runs=1, jobs=3) == 0
+    assert suite.run(tmp_path / 'suite', original_runs=1, jobs=3, resolution='800x600') == 0
     assert peak == 3
     report = json.loads((tmp_path / 'suite' / 'report.json').read_text())
     assert [row['id'] for row in report['cases']] == ['case-0', 'case-1', 'case-2']
+    for case in cases:
+        assert json.loads((tmp_path / 'suite' / case['id'] / 'case.json').read_text())['resolution'] == {
+            'width': 800, 'height': 600}
 
 
 def test_unknown_case_rejected():

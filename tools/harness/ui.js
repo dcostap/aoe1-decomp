@@ -12,6 +12,8 @@ for (const name of ['forbidStart', 'forbidLoad', 'forbidScenario', 'forbidEditor
     }});
 }
 let mx = 0, my = 0, leftDown = false;
+const coordinateWidth = 640, coordinateHeight = 480;
+const uiResolution = cfg.uiResolution || {width: coordinateWidth, height: coordinateHeight};
 const keys = new Set();
 const keyboardState = Memory.alloc(256);
 const setKeyboardState = new NativeFunction(user.getExportByName('SetKeyboardState'), 'int', ['pointer'], 'stdcall');
@@ -158,7 +160,8 @@ function applyInput(step) {
         for (const c of step.text) queue(hwnd.isNull() ? gameWindow : hwnd, 0x102, c.charCodeAt(0), 1);
         return;
     }
-    mx = step.x; my = step.y;
+    mx = Math.round(step.x * uiResolution.width / coordinateWidth);
+    my = Math.round(step.y * uiResolution.height / coordinateHeight);
     let hwnd = getCapture();
     if (hwnd.isNull()) hwnd = childAt(gameWindow, [mx,my], 3);
     if (hwnd.isNull()) hwnd = gameWindow;

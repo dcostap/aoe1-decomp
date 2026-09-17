@@ -1,5 +1,6 @@
 {
   "name": "game UI main menu tests",
+  "resolution": {"width": 640, "height": 480},
   "routes": {
     "main": [{"name":"main-menu","panel":"Main Menu"}],
     "single": [{"name":"open-single","type":"click","x":320,"y":198,"panel":"Single Player Menu"}],

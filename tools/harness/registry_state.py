@@ -2,12 +2,41 @@
 from __future__ import annotations
 
 import base64
+import json
 import os
 import re
 import uuid
+from pathlib import Path
 
 GAME_KEY = r'Software\Microsoft\Games\Age of Empires\1.00'
 HIVES = (('user', 'HKEY_CURRENT_USER'), ('machine', 'HKEY_LOCAL_MACHINE'))
+AUTOMATED_PROFILE = Path(__file__).resolve().parents[2] / 'config/harness/automated-registry.json'
+
+
+def automated_values(screen_size=None):
+    """Return the stable registry profile used by automated game runs."""
+    profile = json.loads(AUTOMATED_PROFILE.read_text())
+    if profile.get('schema') != 1 or any(name not in profile for name, _ in HIVES):
+        raise ValueError('Automated registry profile is invalid.')
+    values = {name: [dict(row) for row in profile[name]] for name, _ in HIVES}
+    if screen_size is not None:
+        values = with_screen_size(values, screen_size)
+    return values
+
+
+def with_screen_size(values, screen_size):
+    """Return registry values with a selected game screen width."""
+    if type(screen_size) is not int:
+        raise ValueError('Screen size must be an integer.')
+    result = {name: [dict(row) for row in values.get(name, [])] for name, _ in HIVES}
+    for row in result['user']:
+        if row.get('name') == 'Screen Size':
+            row['type'] = 4
+            row['value'] = screen_size
+            break
+    else:
+        result['user'].append({'name': 'Screen Size', 'type': 4, 'value': screen_size})
+    return result
 
 
 def _hives():

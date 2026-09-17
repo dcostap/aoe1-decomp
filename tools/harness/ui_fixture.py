@@ -1,5 +1,49 @@
 """Validate bounded input scripts before starting a game process."""
 
+import re
+
+
+BASE_RESOLUTION = {'width': 640, 'height': 480}
+SUPPORTED_RESOLUTIONS = {
+    640: (640, 480),
+    800: (800, 600),
+    1024: (1024, 768),
+    1280: (1280, 1024),
+}
+
+
+def normalize_resolution(value=None):
+    """Return one of the game resolutions in a stable JSON shape."""
+    if value is None:
+        width, height = BASE_RESOLUTION['width'], BASE_RESOLUTION['height']
+    elif type(value) is int:
+        width = value
+        height = SUPPORTED_RESOLUTIONS.get(width, (None, None))[1]
+    elif isinstance(value, str):
+        match = re.fullmatch(r'([0-9]+)[xX]([0-9]+)', value.strip())
+        if not match:
+            raise ValueError('Resolution must use WIDTHxHEIGHT form.')
+        width, height = (int(part) for part in match.groups())
+    elif isinstance(value, dict):
+        width, height = value.get('width'), value.get('height')
+    elif isinstance(value, (list, tuple)) and len(value) == 2:
+        width, height = value
+    else:
+        raise ValueError('Resolution must be WIDTHxHEIGHT or an object.')
+    if type(width) is not int or type(height) is not int or \
+            SUPPORTED_RESOLUTIONS.get(width) != (width, height):
+        supported = ', '.join(f'{w}x{h}' for w, h in SUPPORTED_RESOLUTIONS.values())
+        raise ValueError(f'Unsupported game resolution; use one of {supported}.')
+    return {'width': width, 'height': height}
+
+
+def resolution_from_registry(values):
+    """Read the game width from normalized registry values when present."""
+    for row in values.get('user', []):
+        if row.get('name') == 'Screen Size':
+            return normalize_resolution(row.get('value'))
+    return None
+
 
 def validate_steps(steps):
     if not isinstance(steps, list) or not 1 <= len(steps) <= 200:

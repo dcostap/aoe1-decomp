@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--seconds', type=float, default=4)
     parser.add_argument('--fixture', type=Path)
     parser.add_argument('--clock', choices=('real', 'calls'), default='calls')
+    parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     parser.add_argument('--visible', action='store_true')
     args = parser.parse_args()
     if not 1 <= args.count <= 100 or not 0 < args.seconds <= 300:
@@ -32,7 +33,7 @@ def main():
         baseline = None
         for index in range(args.count):
             runtime = game.stage(args.target)
-            code = capture(runtime, args.seconds, args.fixture, args.clock, args.visible)
+            code = capture(runtime, args.seconds, args.fixture, args.clock, args.visible, args.resolution)
             path = runtime / 'capture/report.json'
             comparison = None
             if code == 0 and baseline is not None:

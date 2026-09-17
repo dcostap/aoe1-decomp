@@ -115,6 +115,8 @@ The independent workers in both suites run in parallel by default. Use
 Each hidden worker owns its private desktop and output folder.
 
 `test-captures` runs the menu/UI suite. `--list` only lists cases; `--case` selects a subset.
+Automated runs use a fixed registry profile and default to 640x480.
+Use `--resolution WIDTHxHEIGHT` to run the same fixture at another supported resolution.
 See [the runtime harness](runtime_harness.md) for its setup, reports, and coverage.
 
 `test-parity` runs the short new-game script and three permanent human-input cases.

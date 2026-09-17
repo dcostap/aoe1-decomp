@@ -16,7 +16,7 @@ sys.path.insert(0, str(TOOLS))
 from linker_map import parse_symbols, unique_addresses
 from prepare_runtime import ORIGINAL_SHA256, digest
 import registry_state
-from ui_fixture import validate_steps
+from ui_fixture import normalize_resolution, resolution_from_registry, validate_steps
 
 
 def hook_config(exe: Path, manifest: dict, ui=False, probes=()):
@@ -143,7 +143,8 @@ def save_frame(output: Path, meta: dict, data: bytes):
                 rgb_sha256=hashlib.sha256(image.convert('RGB').tobytes()).hexdigest(), file=name+'.png')
 
 
-def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='real', visible=False):
+def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='real', visible=False,
+            resolution=None):
     runtime = runtime.resolve()
     if not visible and not os.environ.get('AOE1_HARNESS_DESKTOP'):
         raise ValueError('Use game.cmd capture for a private desktop, or explicitly supply --visible.')
@@ -159,6 +160,8 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     ui = scenario.get('ui', False)
     if ui:
         validate_steps(scenario.get('steps'))
+    requested_resolution = resolution if resolution is not None else scenario.get('resolution')
+    selected_resolution = normalize_resolution(requested_resolution) if requested_resolution is not None else None
     replay = scenario.get('replay')
     human = scenario.get('human')
     human_control = None
@@ -172,6 +175,10 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         original_target = human.get('target','original') == 'original'
         if replay or ui or (manifest['selected_exe_sha256'] == ORIGINAL_SHA256) != original_target or clock != 'calls':
             raise ValueError('Human recording requires the selected executable and controlled-clock profile.')
+        if selected_resolution is not None:
+            contract_resolution = resolution_from_registry(human['contract']['registry_inputs'])
+            if contract_resolution != selected_resolution:
+                raise ValueError('Pinned human recordings do not support a resolution override.')
     if 'replay' in scenario:
         from behavior import validate_replay
         validate_replay(scenario)
@@ -195,6 +202,21 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
         # The current core installs only the blocks its profile refuses.
         config['blockedStartups'] = startup_blocks(human_control['executed_policy'])
     config['humanControl'] = human_control
+    supplied = ((human or {}).get('contract') or {}).get('registry_inputs')
+    if human:
+        if selected_resolution is None:
+            selected_resolution = resolution_from_registry(supplied)
+    else:
+        if supplied is None:
+            supplied = scenario.get('registry_inputs')
+        if supplied is None:
+            supplied = registry_state.automated_values()
+        if selected_resolution is None:
+            selected_resolution = resolution_from_registry(supplied) or normalize_resolution()
+        supplied = registry_state.with_screen_size(supplied, selected_resolution['width'])
+        scenario['resolution'] = selected_resolution
+    if ui and selected_resolution is not None:
+        config['uiResolution'] = selected_resolution
     config['actions'] = scenario.get('actions', [])
     config['uiSteps'] = scenario.get('steps', [])
     config['maxFrames'] = 40 if replay else (480 if ui else 120)
@@ -249,8 +271,7 @@ def capture(runtime: Path, seconds: float, fixture: Path | None = None, clock='r
     process_desktop = None
     game_job = None
     try:
-        # A pinned recording supplies the settings, so the run does not depend on the machine.
-        supplied = ((human or {}).get('contract') or {}).get('registry_inputs')
+        # Automated runs use a fixed profile. Pinned recordings supply their own contract.
         registry_base, registry_snapshot, registry_machine = registry_state.create(supplied)
         if human and human.get('contract'):
             from human_session import verify_starting_contract
@@ -503,11 +524,12 @@ def main():
     parser.add_argument('--fixture', type=Path, help='Menu key events scheduled after Paint calls')
     parser.add_argument('--clock', choices=('real', 'calls'), default='real',
                         help='calls: experimental debug-clock replacement; one millisecond per call')
+    parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     parser.add_argument('--visible', action='store_true', help='Explicitly permit the normal interactive desktop')
     args = parser.parse_args()
     if not 0 < args.seconds <= 300:
         parser.error('Seconds must be greater than zero and at most 300.')
-    return capture(args.runtime, args.seconds, args.fixture, args.clock, args.visible)
+    return capture(args.runtime, args.seconds, args.fixture, args.clock, args.visible, args.resolution)
 
 
 if __name__ == '__main__':

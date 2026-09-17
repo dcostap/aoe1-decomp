@@ -11,6 +11,7 @@ sys.path.insert(0, str(TOOLS / "harness"))
 import game
 from capture import save_frame, hook_config
 from compare import compare
+import registry_state
 
 
 def test_build_requires_matching_report_hash(tmp_path):
@@ -35,6 +36,15 @@ def test_failed_build_rejected_even_with_correct_hash(tmp_path):
 
 def test_parallel_runtime_names_are_unique():
     assert len({game.stamp() for _ in range(128)}) == 128
+
+
+def test_automated_registry_profile_is_independent_of_live_settings():
+    values = registry_state.automated_values()
+    screen_size = next(row['value'] for row in values['user'] if row['name'] == 'Screen Size')
+    assert screen_size == 640
+    changed = registry_state.with_screen_size(values, 800)
+    assert next(row['value'] for row in changed['user'] if row['name'] == 'Screen Size') == 800
+    assert next(row['value'] for row in values['user'] if row['name'] == 'Screen Size') == 640
 
 
 def test_capture_excludes_pitch_padding_but_keeps_raw_data(tmp_path):

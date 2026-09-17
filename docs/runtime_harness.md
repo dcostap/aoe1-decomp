@@ -91,6 +91,7 @@ game.cmd capture original
 game.cmd capture rebuilt
 game.cmd capture original --fixture config/harness/menu-random-map.json --clock calls
 game.cmd capture rebuilt --fixture config/harness/menu-random-map.json --clock calls
+game.cmd capture original --fixture config/harness/menu-random-map.json --clock calls --resolution 800x600
 ```
 
 Capture starts a fresh process, collects evidence, and stops only that process.
@@ -117,8 +118,10 @@ The calls profile controls one timer boundary. It does not control every Windows
 Do not describe it as full-process determinism or use it as proof of gameplay equivalence.
 
 Captured runs redirect the game's registry-key creation to private, per-run copies under HKCU.
-The copies start with the current 32-bit game registry values.
+Automated runs use `config/harness/automated-registry.json` instead of the current 32-bit game registry values.
+The selected resolution replaces its `Screen Size` value in the private copy.
 The harness records those input values and deletes its private keys after stopping the game.
+Fixtures can provide a complete `registry_inputs` object to select another private profile.
 Interactive launch commands retain normal registry behavior; they do not load the instrumentation component.
 
 The hidden worker uses a Windows job object. Closing that job stops its worker and game descendants.
@@ -180,6 +183,7 @@ game.cmd test-captures --list
 game.cmd test-captures
 game.cmd test-captures --case "settings-*"
 game.cmd test-captures --case campaign-name-mouse --original-runs 2
+game.cmd test-captures --case main-buttons --resolution 800x600
 ```
 
 Independent cases run in parallel by default. Each hidden UI case uses its own
@@ -207,7 +211,11 @@ It does not call control action methods directly.
 It controls key-down state and game cursor queries through the process's input API imports.
 It also sets the private thread's keyboard state for native edit controls.
 The fixture does not model key-toggle bits or the asynchronous key API's recent-press bit.
-Mouse coordinates use the fixed 640 by 480 game client.
+Mouse coordinates use a canonical 640 by 480 game client.
+The harness scales those coordinates to the selected game resolution.
+Supported resolutions are 640x480, 800x600, 1024x768, and 1280x1024.
+Set a resolution with `--resolution WIDTHxHEIGHT` or the fixture's `resolution` field.
+The command-line value overrides the fixture value for that run.
 Mouse messages target captured windows or the child control under that position.
 An unhandled native modal window blocks scripted input rather than allowing clicks through it.
 
@@ -229,6 +237,15 @@ Each comparison has numbered checkpoint folders with these files:
 - `composite-difference.png`: RGB differences, including native controls.
 - `controls.json`: both control snapshots and checkpoint metadata.
 - `report.json`: raw surface comparison results.
+
+Scripted replay also accepts a per-run resolution:
+
+```bat
+game.cmd replay --fixture config/harness/replay-random-smoke.json --resolution 800x600
+```
+
+The replay stores the selected resolution in its frozen scenario.
+Runs with different resolutions are not comparable.
 
 With two original runs, `comparison-00` checks original repeatability.
 `comparison-01` compares the first original with the rebuilt game.

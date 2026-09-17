@@ -14,6 +14,7 @@ from game import ROOT, run_worker, stage
 from behavior import first_difference, observations, validate_replay
 from linker_map import parse_symbols
 from replay_capture import compare_captures
+from ui_fixture import normalize_resolution
 
 
 def gameplay_assets(assets):
@@ -174,13 +175,15 @@ def batch_classification(original, rebuilt, cross):
     return cross['classification']
 
 
-def run(fixture, output, seconds, runs=3, jobs=None):
+def run(fixture, output, seconds, runs=3, jobs=None, resolution=None):
     scenario = json.loads(fixture.read_text())
     recording = scenario if 'scenario' in scenario else None
     if recording:
         if recording.get('schema') != 1 or not isinstance(recording.get('delivery'), list):
             raise ValueError('Invalid input recording.')
         scenario = recording['scenario']
+    if resolution is not None:
+        scenario['resolution'] = normalize_resolution(resolution)
     validate_replay(scenario)
     output.mkdir(parents=True, exist_ok=False)
     frozen = output / 'scenario.json'
@@ -215,7 +218,8 @@ def run(fixture, output, seconds, runs=3, jobs=None):
     paths = [row[0] for row in completed]
     codes = [row[1] for row in completed]
     reports = [json.loads(path.read_text()) if path.exists() else None for path in paths]
-    result = {'schema':2, 'runs_per_executable':runs, 'jobs':worker_count, 'targets':targets, 'capture_exit_codes':codes,
+    result = {'schema':2, 'resolution':scenario.get('resolution'), 'runs_per_executable':runs,
+              'jobs':worker_count, 'targets':targets, 'capture_exit_codes':codes,
               'captures':[str(path) for path in paths], 'passed':False,
               'scope':'Configured fields, full debug RNG sequence, and requested game-client captures; not all game state'}
     result['original_repeat'] = repeat_group(paths[:runs], reports[:runs])
@@ -250,12 +254,13 @@ def main():
     parser.add_argument('--seconds', type=float, default=90)
     parser.add_argument('--runs', type=int, default=3, help='Runs per executable')
     parser.add_argument('--jobs', type=int, help='Maximum replay captures to start at once; default is all captures')
+    parser.add_argument('--resolution', help='Game resolution, for example 800x600')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 300 or (args.jobs is not None and args.jobs < 1):
         parser.error('Use a 1..300 second deadline and a positive worker count.')
     if not 3 <= args.runs <= 30:
         parser.error('Use 3..30 runs per executable.')
-    return run(args.fixture, args.output, args.seconds, args.runs, args.jobs)
+    return run(args.fixture, args.output, args.seconds, args.runs, args.jobs, args.resolution)
 
 
 if __name__ == '__main__':
