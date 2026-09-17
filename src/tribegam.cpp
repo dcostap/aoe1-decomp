@@ -2829,7 +2829,7 @@ int TRIBE_Game::create_game(int not_used) {
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3368, this->random_game_seed);
     } else {
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3370,
-                    debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD2A))"C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3370));
+                    debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 3370));
     }
 
     player_info.player_num = 0;
