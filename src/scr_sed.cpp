@@ -1541,7 +1541,8 @@ void TRIBE_Screen_Sed::set_player_active(short player_num_in, int active_in) {
 }
 
 int __cdecl TRIBE_Screen_Sed_unit_list_compare(const void *arg1, const void *arg2) {
-    int result = CompareStringA(0x400, 1, static_cast<const char *>(arg1), -1,
+    int result = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+                                static_cast<const char *>(arg1), -1,
                                 static_cast<const char *>(arg2), -1);
     if (result == 1) {
         return -1;
