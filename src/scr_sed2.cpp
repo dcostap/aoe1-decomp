@@ -1064,7 +1064,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[4]))) goto fail; (this->victory_cond_on[4])->set_help_info(IDS_HELP_EDITOR_VICTORY_DISCOVERIES, -1);
     if (!(this->create_check_box(this->bottom_panel, &this->victory_cond_on[5]))) goto fail;
     // This editor help slot is empty in the checked DLL.
-    (this->victory_cond_on[5])->set_help_info(0x770A, -1);
+    (this->victory_cond_on[5])->set_help_info(IDS_HELP_EDITOR_VICTORY_GOLD, -1);
 
     if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[0]))) goto fail; (this->victory_and_or[0])->set_help_info(IDS_HELP_EDITOR_VICTORY_ANY, -1);
     if (!(this->create_radio_button(this->bottom_panel, &this->victory_and_or[1]))) goto fail; (this->victory_and_or[1])->set_help_info(IDS_HELP_EDITOR_VICTORY_ALL, -1);
@@ -1088,7 +1088,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc() {
     if (!(this->create_edit(this->bottom_panel, &this->victory_condition_discoveries, s_space, 2, FormatUnsignedInt, 0, 0))) goto fail; (this->victory_condition_discoveries)->set_help_info(IDS_HELP_EDITOR_DISCOVERIES_AMOUNT, -1);
     if (!(this->create_edit(this->bottom_panel, &this->victory_condition_gold, s_space, 5, FormatUnsignedInt, 0, 0))) goto fail;
     // This editor help slot is empty in the checked DLL.
-    (this->victory_condition_gold)->set_help_info(0x770F, -1);
+    (this->victory_condition_gold)->set_help_info(IDS_HELP_EDITOR_VICTORY_GOLD_AMOUNT, -1);
     ptr[0] = this->victory_condition_explore;
     ptr[1] = this->victory_condition_ruins;
     ptr[2] = this->victory_condition_artifacts;

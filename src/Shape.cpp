@@ -83,7 +83,7 @@ TShape::TShape(char* filename, long resource_file_id) {
 
     if (FShape == 0 && shape == 0 && resource_file_id >= 0) {
         ++Shape_Loads;
-        shape = RESFILE_load(0x73687020, resource_file_id,
+        shape = RESFILE_load(RES_TYPE_SHAPE, resource_file_id,
             load_type, load_size);
         if (shape != 0) {
             if (((Shape_File_Header*)shape)->version == shape_version_110) {
@@ -91,7 +91,7 @@ TShape::TShape(char* filename, long resource_file_id) {
                 offsets = (Shape_Offsets*)(head + 1);
             }
         } else {
-            shape = RESFILE_load(0x736c7020, resource_file_id,
+            shape = RESFILE_load(RES_TYPE_SLP, resource_file_id,
                 load_type, load_size);
             if (shape != 0) {
                 FShape = (SLhape_File_Header*)shape;

@@ -91,7 +91,7 @@ extern "C" int __stdcall WinMain(HINSTANCE prog_inst, HINSTANCE prev_inst, char*
             game->get_string(IDS_ERROR_TITLE, title, 256);
             game->get_string2(RGE_STRING_TYPE_ERROR, error_code, 0, msg, 256);
             delete game;
-            MessageBoxA(0, msg, title, MB_ICONHAND);
+            MessageBoxA(NULL, msg, title, MB_ICONHAND);
         }
     }
     return retval;

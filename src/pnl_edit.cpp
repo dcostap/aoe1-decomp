@@ -159,7 +159,7 @@ void TEditPanel::update_text() {
         this->text[this->fixed_len - 1] = 0;
         if (this->text_len > this->fixed_len - 1) {
             SetWindowTextA(this->edit_wnd, this->text);
-            MessageBeep(0xffffffff);
+            MessageBeep((UINT)-1);
         }
         int end;
         int start;
@@ -359,7 +359,7 @@ long TEditPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, lon
         case 0x133:
             if (brush != 0 && (void*)(lParam & 0xFFFF) == edit_window) {
                 SetBkColor((HDC)wParam, back_color);
-                SetBkMode((HDC)wParam, 2);
+                SetBkMode((HDC)wParam, OPAQUE);
                 SetTextColor((HDC)wParam, highlight_text_color1);
                 return (long)brush;
             }
@@ -507,7 +507,7 @@ int TEditPanel::verify_char(int key) {
     this->update_text();
     if (this->sel_len == 0) {
         if (this->text_len >= this->fixed_len - 1) {
-            MessageBeep(0xffffffff);
+            MessageBeep((UINT)-1);
             return 0;
         }
     }
@@ -515,7 +515,7 @@ int TEditPanel::verify_char(int key) {
         if (this->text_len >= this->fixed_len - 2 &&
             IsDBCSLeadByte(key) != 0) {
             DAT_0086b244 = 1;
-            MessageBeep(0xffffffff);
+            MessageBeep((UINT)-1);
             return 0;
         }
     }
@@ -540,7 +540,7 @@ int TEditPanel::verify_char(int key) {
         if (key != '.' || _mbschr((const unsigned char*)this->text, '.') == 0)
             goto invalid;
         if (this->format == 1) goto valid;
-        MessageBeep(0xffffffff);
+        MessageBeep((UINT)-1);
         return 0;
     case 4:
     case 5:
@@ -561,14 +561,14 @@ int TEditPanel::verify_char(int key) {
         goto valid;
     }
     if (validation_result == 0) goto valid;
-    MessageBeep(0xffffffff);
+    MessageBeep((UINT)-1);
     return 0;
 valid_chars:
     if (key != '/' && key != '"' && key != '*' && key != '?' &&
         key != '>' && key != '<' && key != '|') goto valid;
     goto invalid;
 invalid:
-    MessageBeep(0xffffffff);
+    MessageBeep((UINT)-1);
     return 0;
 valid:
     return 1;
@@ -678,7 +678,7 @@ void TEditPanel::draw() {
             if (dc != 0) {
                 SelectClipRgn(dc, (HRGN)this->clip_rgn);
                 HGDIOBJ old_font = SelectObject(dc, this->font);
-                SetBkMode(dc, 1);
+                SetBkMode(dc, TRANSPARENT);
                 SetTextColor(dc, this->text_color2);
 
                 tagRECT r;

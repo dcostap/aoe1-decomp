@@ -139,13 +139,13 @@ int Tribe2btnMouseLeftClickTableSize = 40;
 
 res_file_type_info res_extension_table[] = {
     {"voc", 0x766F6320},
-    {"wav", 0x77617620},
+    {"wav", RES_TYPE_WAVE},
     {"xmi", 0x6D696469},
     {"lbm", 0x696C626D},
     {"pcx", 0x70637820},
     {"gif", 0x67696620},
-    {"shp", 0x73687020},
-    {"slp", 0x736C7020},
+    {"shp", RES_TYPE_SHAPE},
+    {"slp", RES_TYPE_SLP},
     {"cel", 0x63656C6C},
     {"flc", 0x63656C6C},
     {"fli", 0x63656C6C},

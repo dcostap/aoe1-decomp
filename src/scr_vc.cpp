@@ -51,7 +51,7 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
     create_text(this, &this->title, adjusted_name, 10, 15, 620,
                 20, 4, 1, 1, 0);
     create_text(this, &this->list, text_in, 15, 70, 300,
-                340, 0xB, 0, 0, 1);
+                340, 11, 0, 0, 1);
     create_auto_scrollbar(&this->scroll_bar, this->list, 20);
 
     if (this->use_bevels) {
@@ -74,14 +74,14 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* text_in, unsigned char from_gam
         this->text_buttons[i]->set_radio_info(this->text_buttons, 3);
     }
 
-    if (this->pnl_wid <= 0x280) {
+    if (this->pnl_wid <= 640) {
         this->title->set_fixed_position(3, 15, 634, 20);
         this->list->set_fixed_position(20, 50, 600, 115);
         this->text_buttons[0]->set_fixed_position(5, 445, 150, 30);
         (*text_button_1)->set_fixed_position(165, 445, 150, 30);
         this->text_buttons[2]->set_fixed_position(325, 445, 150, 30);
         this->ok_button->set_fixed_position(485, 445, 150, 30);
-    } else if (this->pnl_wid <= 0x320) {
+    } else if (this->pnl_wid <= 800) {
         set_ideal_size(800, 640);
         this->title->set_fixed_position(3, 15, 794, 20);
         this->list->set_fixed_position(30, 45, 740, 230);
@@ -177,18 +177,18 @@ void TRIBE_Mission_Screen::draw() {
 
         unsigned char* locked = this->render_area->Lock("scr_vc::draw", 1);
         if (locked != 0) {
-            if (this->pnl_wid <= 0x280) {
+            if (this->pnl_wid <= 640) {
                 this->vc_back_bmp->Draw(this->render_area,
                                         this->pnl_x + 7,
-                                        this->pnl_y + 0xA6, 0, 0);
-            } else if (this->pnl_wid <= 0x320) {
+                                        this->pnl_y + 166, 0, 0);
+            } else if (this->pnl_wid <= 800) {
                 this->vc_back_bmp->Draw(this->render_area,
-                                        this->pnl_x + 0x53,
-                                        this->pnl_y + 0x118, 0, 0);
+                                        this->pnl_x + 83,
+                                        this->pnl_y + 280, 0, 0);
             } else {
                 this->vc_back_bmp->Draw(this->render_area,
-                                        this->pnl_x + 0xC5,
-                                        this->pnl_y + 0x16B, 0, 0);
+                                        this->pnl_x + 197,
+                                        this->pnl_y + 363, 0, 0);
             }
             this->render_area->Unlock("scr_vc::draw");
         }
@@ -231,7 +231,7 @@ long TRIBE_Mission_Screen::action(TPanel* fromPanel, long actionIn, unsigned lon
 }
 
 long TRIBE_Mission_Screen::key_down_action(long key, short count, int alt_key, int ctrl_key, int shift_key) {
-    if (ctrl_key == 0 || key != 0x56) {
+    if (ctrl_key == 0 || key != 'V') {
         return 0;
     }
 

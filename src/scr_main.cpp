@@ -17,7 +17,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     : TScreenPanel("Main Menu") {
     RECT rect;
     TPanel* tabList[5];
-    char temp_str[0x200];
+    char temp_str[512];
     int diff;
     int i;
     this->title1 = 0;
@@ -40,10 +40,10 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     this->set_ideal_size(640, 480);
 
-    long button_width = 0xB2;
+    long button_width = 178;
     clear_button = this->button;
-    for (; button_width < 0x1AC;
-         button_width += 0x32, ++clear_button) {
+    for (; button_width < 428;
+         button_width += 50, ++clear_button) {
         if (this->create_button(this, clear_button, "", 0, 170,
                                 button_width, 300, 40, 0, 0, 0) == 0) {
             return;
@@ -58,7 +58,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     this->set_ideal_size(this->pnl_wid, this->pnl_hgt);
 
-    long panel_height = this->pnl_hgt - 0x3C;
+    long panel_height = this->pnl_hgt - 60;
     this->create_text(this, &this->ms_title_text, IDS_PRODUCT_TITLE, 5,
                       panel_height, this->pnl_wid - 10,
                       18, 10, 1, 0, 0);
@@ -75,7 +75,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
             if (this->circle_p_pic != 0) {
                 this->circle_p_pic->setup(this->render_area, this,
                                rect.right - this->pnl_x + 3,
-                               rect.top + 1, 0x0F, 0x0E,
+                               rect.top + 1, 15, 14,
                                "circlep2", 0xC4E6, 0, 1);
 
                 TTextPanel** copy2 = &this->ms_copy_text2;

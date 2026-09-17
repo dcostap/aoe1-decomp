@@ -80,8 +80,8 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
 
     TScrollTextPanel* scroll_panel = new TScrollTextPanel(
         this, this->render_area,
-        (this->pnl_wid / 2) - 0xFA, (this->pnl_hgt / 2) - 0x96,
-        0x1F4, 0x12C, 0x1E,
+        (this->pnl_wid / 2) - 250, (this->pnl_hgt / 2) - 150,
+        500, 300, 30,
         font->font, font->font_wid, font->font_hgt, file_buf);
     this->text_panel = scroll_panel;
 
@@ -100,8 +100,8 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     }
 
     TMusic_System* music = rge_base_game->music_system;
-    if (music != 0 && music->music_type == 1 && music->track_count == 0x0F) {
-        music->play_tracks(0x0F, 0x0F, 1, 0, 0);
+    if (music != 0 && music->music_type == 1 && music->track_count == 15) {
+        music->play_tracks(15, 15, 1, 0, 0);
     }
 }
 
@@ -121,8 +121,8 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen() {
     }
 
     TMusic_System* music = rge_base_game->music_system;
-    if (music != 0 && music->music_type == 1 && music->track_count == 0xF) {
-        music->play_tracks(5, 0xE, 1, 0, 0);
+    if (music != 0 && music->music_type == 1 && music->track_count == 15) {
+        music->play_tracks(5, 14, 1, 0, 0);
     }
 }
 
@@ -155,7 +155,7 @@ long TRIBE_Credits_Screen::handle_idle() {
             if (this->palette == 0) {
                 this->render_area->GetPalette(this->color_table);
             } else {
-                GetPaletteEntries(this->palette, 0, 0x100,
+                GetPaletteEntries(this->palette, 0, 256,
                                   this->color_table);
             }
 
@@ -353,7 +353,7 @@ void TScrollTextPanel::draw() {
         if (dc != 0) {
             SelectClipRgn(dc, this->clip_rgn);
             void* old_font = SelectObject(dc, this->font);
-            SetBkMode(dc, 1);
+            SetBkMode(dc, TRANSPARENT);
             for (short i = 0; i < this->num_lines; i++) {
                 this->draw_scrolled_line(dc, i, i, this->text_color1, this->text_color2);
             }

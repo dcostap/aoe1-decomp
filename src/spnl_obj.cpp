@@ -91,12 +91,12 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             }
 
             if (player != 0 && player->color_table->table != 0) {
-                ASMSet_Color_Xform((player->color_table->id + 1) * 0x10);
-                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 0x21,
+                ASMSet_Color_Xform((player->color_table->id + 1) * 16);
+                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 33,
                                   button_pict, 1,
                                   player->color_table->table);
             } else {
-                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 0x21,
+                shape->shape_draw(render_area, pnl_x + 2, pnl_y + 33,
                                   button_pict, 0, 0);
             }
         } else if (master_game_obj->sprite != 0) {
@@ -104,7 +104,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
             if (master_game_obj->sprite->get_size(min_x, min_y, max_x, max_y,
                                                   0) != 0) {
                 master_game_obj->sprite->do_draw(
-                    0, 0, (pnl_x - min_x) + 10, (pnl_y - min_y) + 0x28,
+                    0, 0, (pnl_x - min_x) + 10, (pnl_y - min_y) + 40,
                     player->color_table, render_area, 0);
             }
         }
@@ -113,7 +113,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
     }
 
     if (render_area->GetDc(0)) {
-        SetBkMode(render_area->DrawDc, 1);
+        SetBkMode(render_area->DrawDc, TRANSPARENT);
         SetTextColor(render_area->DrawDc, 0xFFFFFF);
         SelectClipRgn(render_area->DrawDc, (HRGN)clip_rgn);
         HGDIOBJ old_font =
@@ -135,13 +135,13 @@ void TRIBE_Scenario_Editor_Panel_Object::draw() {
         if (str[0] == 0)
             strcpy(str, master_game_obj->name);
         sprintf(name, "%s", str);
-        TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y + 0x0F, name,
+        TextOutA(render_area->DrawDc, pnl_x + 2, pnl_y + 15, name,
                  strlen(name));
 
         if (text_flag != 0) {
             sprintf(str, "%d/%d", (int)master_game_obj->hp,
                     (int)master_game_obj->hp);
-            TextOutA(render_area->DrawDc, pnl_x + 5, pnl_y + 0x55, str,
+            TextOutA(render_area->DrawDc, pnl_x + 5, pnl_y + 85, str,
                      strlen(str));
             SelectObject(render_area->DrawDc, old_font);
             SelectClipRgn(render_area->DrawDc, 0);
@@ -277,8 +277,8 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, Value
 
     if (item_pic != 0 && pic_index != -1) {
         if (render_area->Lock(0, 1) != 0) {
-            item_pic->shape_draw(render_area, pnl_x + 0x3C,
-                                 pnl_y + row * 9 * 2 + 0x1E, pic_index,
+            item_pic->shape_draw(render_area, pnl_x + 60,
+                                 pnl_y + row * 9 * 2 + 30, pic_index,
                                  0, 0);
             render_area->Unlock(0);
         }
@@ -306,15 +306,15 @@ void TRIBE_Scenario_Editor_Panel_Object::draw_item(int row, int pic_index, Value
 
     if (val_str[0] != 0) {
         if (render_area->GetDc(0) != 0) {
-            SetBkMode(render_area->DrawDc, 1);
+            SetBkMode(render_area->DrawDc, TRANSPARENT);
             SetTextColor(render_area->DrawDc, 0xFFFFFF);
             SelectClipRgn(render_area->DrawDc, (HRGN)clip_rgn);
             HGDIOBJ old_font =
                 SelectObject(render_area->DrawDc, (HGDIOBJ)font);
             int length = strlen(val_str);
 
-            TextOutA(render_area->DrawDc, pnl_x + 0x64,
-                     pnl_y + row * 9 * 2 + 0x20, val_str, length);
+            TextOutA(render_area->DrawDc, pnl_x + 100,
+                     pnl_y + row * 9 * 2 + 32, val_str, length);
 
             SelectObject(render_area->DrawDc, old_font);
             SelectClipRgn(render_area->DrawDc, 0);

@@ -43,7 +43,7 @@ void TRIBE_Panel_Text_Line::draw() {
 
     if (this->render_area->GetDc(s_tpnl_txl_draw)) {
         HGDIOBJ old_font = SelectObject(this->render_area->DrawDc, (HGDIOBJ)this->font);
-        SetBkMode(this->render_area->DrawDc, 1);
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         SetTextColor(this->render_area->DrawDc, 0);
 
         if (this->text[0] != 0) {

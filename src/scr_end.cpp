@@ -17,9 +17,9 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
         return;
     }
 
-    if (render_area->Width < 0x320) {
+    if (render_area->Width < 800) {
         strcpy(backgroundName, "bgA640");
-    } else if (render_area->Width < 0x400) {
+    } else if (render_area->Width < 1024) {
         strcpy(backgroundName, "bgA800");
     } else {
         strcpy(backgroundName, "bgA1024");
@@ -52,10 +52,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     }
     title->setup(
         render_area, background,
-        pnl_wid * 0x14 / 0x280,
-        pnl_hgt * 0x14 / 0x1E0,
-        pnl_wid * 600 / 0x280,
-        pnl_hgt * 0x1E / 0x1E0,
+        pnl_wid * 20 / 640,
+        pnl_hgt * 20 / 480,
+        pnl_wid * 600 / 640,
+        pnl_hgt * 30 / 480,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, titleText);
 
@@ -67,10 +67,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     font = rge_base_game->get_font(RGE_FONT_STANDARD);
     text->setup(
         render_area, background,
-        pnl_wid * 0x14 / 0x280,
-        pnl_hgt * 0x46 / 0x1E0,
-        pnl_wid * 600 / 0x280,
-        pnl_hgt * 0x154 / 0x1E0,
+        pnl_wid * 20 / 640,
+        pnl_hgt * 70 / 480,
+        pnl_wid * 600 / 640,
+        pnl_hgt * 340 / 480,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, static_cast<char*>(0));
     text->set_text(textText, static_cast<short>(textLineCount));
@@ -86,10 +86,10 @@ TribeEndScreen::TribeEndScreen(char* titleText, char** textText, int textLineCou
     }
     okButton->setup(
         render_area, background,
-        pnl_wid * 0xAA / 0x280,
-        pnl_hgt * 0x1AE / 0x1E0,
-        pnl_wid * 300 / 0x280,
-        pnl_hgt * 0x28 / 0x1E0,
+        pnl_wid * 170 / 640,
+        pnl_hgt * 430 / 480,
+        pnl_wid * 300 / 640,
+        pnl_hgt * 40 / 480,
         TButtonPanel::DrawText, sound, TButtonPanel::NotifyAction, 0);
     okButton->set_text_info("OK", font->font, font->font_wid, font->font_hgt,
                             -1, -1);

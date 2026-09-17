@@ -631,7 +631,7 @@ void* __cdecl ReadPalette(char* FileName, long ResourceId, int MakeIdentity) {
         }
     }
     if (!own_mem && ResourceId != -1) {
-        data = RESFILE_load(0x62696e61, (unsigned long)ResourceId,
+        data = RESFILE_load(RES_TYPE_BINARY, (unsigned long)ResourceId,
             owns_memory, resDataSize);
         if (owns_memory == 0) {
             own_mem = malloc(resDataSize);
@@ -1526,9 +1526,9 @@ void __cdecl CreateIdentityPalette(void* hpal) {
     else
         hdc = GetDC(0);
 
-    if (GetSystemPaletteEntries(hdc, 0, 0x100, palette_locals.new_pal + 1) == 0)
+    if (GetSystemPaletteEntries(hdc, 0, 256, palette_locals.new_pal + 1) == 0)
         system_palette_failed = 1;
-    if (GetPaletteEntries((HPALETTE)hpal, 0, 0x100, from_locals.entries + 1) == 0)
+    if (GetPaletteEntries((HPALETTE)hpal, 0, 256, from_locals.entries + 1) == 0)
         source_palette_failed = 1;
 
     for (int i = 11; i < 247; ++i) {
@@ -1553,8 +1553,8 @@ void __cdecl CreateIdentityPalette(void* hpal) {
     }
 
     ReleaseDC(palette_locals.hwnd, hdc);
-    ResizePalette((HPALETTE)hpal, 0x100);
-    SetPaletteEntries((HPALETTE)hpal, 0, 0x100, palette_locals.new_pal + 1);
+    ResizePalette((HPALETTE)hpal, 256);
+    SetPaletteEntries((HPALETTE)hpal, 0, 256, palette_locals.new_pal + 1);
 }
 
 void* __cdecl CopyPalette(void* hpal) {

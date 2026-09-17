@@ -14,6 +14,7 @@
 #include "../include/basegame.h"
 #include "../include/main.h"
 #include "../include/tribegam.h"
+#include "../include/resource_ids.h"
 #include "../include/world.h"
 #include "../include/world_info.h"
 #include "../include/tworld.h"
@@ -112,7 +113,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char *scenario_name_in, int is_multi_player_i
     this->changed_system_colors = 0;
     this->CurrentVictory = 0;
     rge_base_game->set_prog_mode(7);
-    if (!this->command_new_map(scenario_name_in, is_multi_player_in, 0, 0x90, 0x90, 1)) {
+    if (!this->command_new_map(scenario_name_in, is_multi_player_in, 0, 144, 144, 1)) {
         this->error_code = 1;
         return;
     }
@@ -237,7 +238,7 @@ void TRIBE_Screen_Sed::set_string(char *text, long text_id, int max_size) {
 }
 
 int TRIBE_Screen_Sed::create_button(TPanel *parent, TButtonPanel **button, long text_id, int ButtonSelectFlag) {
-    char str1[0x78];
+    char str1[120];
     this->get_string(text_id, str1, 120);
     return this->create_button(parent, button, str1, 0, 0, 0);
 }
@@ -328,7 +329,7 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel *parent, TDropDownPanel **drop_pan
         drop_panel == &this->CityLayout ||
         drop_panel == &this->AiRules ||
         drop_panel == &this->victory_time) {
-        height = 0xDC;
+        height = 220;
         goto create;
     }
     if (drop_panel != &this->victory_drop_down) {
@@ -339,7 +340,7 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel *parent, TDropDownPanel **drop_pan
             drop_panel == &this->default_terrain_drop ||
             drop_panel == &this->map_size_drop ||
             drop_panel == &this->map_style_drop) {
-            height = 0xAA;
+            height = 170;
             goto create;
         }
         if (drop_panel == &this->player_advance_civilization_drop ||
@@ -350,18 +351,18 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel *parent, TDropDownPanel **drop_pan
             drop_panel == &this->options_player_list ||
             drop_panel == &this->Diplomacy_player_list ||
             drop_panel == &this->victory_enemy_player_list) {
-            height = 0x96;
+            height = 150;
             goto create;
         }
-        height = 0x82;
+        height = 130;
     } else {
-        height = 0xB4;
+        height = 180;
     }
 
 create:
 
     if (this->TEasy_Panel::create_drop_down(parent, drop_panel, height, 100, 0, 0,
-                                            height, 0x16, 10) == 0) {
+                                            height, 22, 10) == 0) {
         return 0;
     }
 
@@ -519,7 +520,7 @@ create:
                                                             (*list)->append_line(text, i);
                                                         }
                                                         i++;
-                                                        offset += 0x3C;
+                                                        offset += sizeof(Tech_Tree);
                                                     } while (i < static_cast<TRIBE_World *>(rge_base_game->world)->tech->tech_tree_num);
                                                 }
                                                 (*list)->set_line(0);
@@ -2135,22 +2136,22 @@ long TRIBE_Screen_Sed::action(TPanel *from_panel, long action_in,
                 int map_style = this->map_style_drop->currentLineNumber();
                 switch (i) {
                 case 0:
-                    map_size = 0x48;
+                    map_size = 72;
                     break;
                 case 1:
-                    map_size = 0x60;
+                    map_size = 96;
                     break;
                 case 2:
-                    map_size = 0x78;
+                    map_size = 120;
                     break;
                 case 3:
-                    map_size = 0x90;
+                    map_size = 144;
                     break;
                 case 4:
-                    map_size = 0xC8;
+                    map_size = 200;
                     break;
                 case 5:
-                    map_size = 0xFA;
+                    map_size = 250;
                     break;
                 default:
                     map_size = map_style;

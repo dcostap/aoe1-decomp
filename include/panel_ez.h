@@ -10,7 +10,8 @@ typedef unsigned char uchar;
 
 enum {
     TEASY_POPUP_WIDTH = 450,
-    TEASY_POPUP_HEIGHT = 100
+    TEASY_POPUP_HEIGHT = 100,
+    TEASY_SCENARIO_EDITOR_CURSOR = 0x7F8B
 };
 
 class TDrawArea;

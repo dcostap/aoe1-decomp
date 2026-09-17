@@ -24,20 +24,20 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     setup_shadow_area(0);
     set_ideal_size(640, 480);
     if (create_text(this, &title, IDS_CAMPAIGN_LABEL, 20, 10, 600, 30, 1, 1, 0, 0)) {
-        campaignListX = 0x14;
-        campaignListY = 0x46;
+        campaignListX = 20;
+        campaignListY = 70;
         campaignListWidth = 600;
-        campaignListHeight = 0x82;
+        campaignListHeight = 130;
         if (create_list(this, &campaignList, 20, 70, 600, 130, RGE_FONT_STANDARD)) {
             if (create_auto_scrollbar(&campaignScrollbar, campaignList, 20)) {
                 if (create_text(this, &campaignTitle, IDS_SELECT_CAMPAIGN,
                                 campaignListX - 5, campaignListY - 20,
                                 200, 20, 4, 0, 0, 0)) {
                     campaignList->set_text(IDS_CAMPAIGN_LIST_LOADING);
-                    scenarioListX = 0x14;
-                    scenarioListY = campaignListY + campaignListHeight + 0x1E;
+                    scenarioListX = 20;
+                    scenarioListY = campaignListY + campaignListHeight + 30;
                     scenarioListWidth = 600;
-                    scenarioListHeight = 0x82;
+                    scenarioListHeight = 130;
                     if (create_list(this, &scenarioList, scenarioListX,
                                     scenarioListY, scenarioListWidth,
                                     scenarioListHeight, RGE_FONT_STANDARD)) {
@@ -53,7 +53,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                 0, 0, 0)) {
                                     if (create_drop_down(this, &difficultyDrop,
                                                          130, 100, 20,
-                                                         390, 0x82, 0x18,
+                                                         390, 130, 24,
                                                          RGE_FONT_STANDARD)) {
                                         difficultyDrop->empty_list();
                                         difficultyDrop->append_line(IDS_DIFFICULTY_EASIEST, 4);
@@ -75,7 +75,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                                                               0)) {
                                                 TButtonPanel* cancel =
                                                     cancelButton;
-                                                cancel->hotkey = 0x1B;
+                                                cancel->hotkey = VK_ESCAPE;
                                                 cancel->hotkey_shift = 0;
                                                 if (create_button(
                                                         this, &close_button,

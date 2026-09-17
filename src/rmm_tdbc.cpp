@@ -36,22 +36,22 @@ uchar TRIBE_RMM_Database_Controller::init(RGE_Map* in_map, RGE_Game_World* in_wo
         long base_cliff_size;
         long base_cliff_length;
         long width = this->map_width;
-        if (width <= 0x48) {
+        if (width <= 72) {
             base_cliff_size = 3;
             base_cliff_length = 10;
-        } else if (width <= 0x60) {
+        } else if (width <= 96) {
             base_cliff_size = 4;
             base_cliff_length = 12;
-        } else if (width <= 0x78) {
+        } else if (width <= 120) {
             base_cliff_size = 6;
             base_cliff_length = 14;
-        } else if (width <= 0x90) {
+        } else if (width <= 144) {
             base_cliff_size = 8;
             base_cliff_length = 16;
-        } else if (width <= 0xc8) {
+        } else if (width <= 200) {
             base_cliff_size = 18;
             base_cliff_length = 20;
-        } else if (width <= 0xfa) {
+        } else if (width <= 250) {
             base_cliff_size = 28;
             base_cliff_length = 20;
         }
@@ -395,7 +395,7 @@ void TRIBE_RMM_Database_Controller::add_object_module() {
             this->object_info.objects[this->object_info.object_num].
                 land_inner_radius = 0;
             this->object_info.objects[this->object_info.object_num].
-                land_outer_radius = 0x1a;
+                land_outer_radius = 26;
             this->object_info.objects[this->object_info.object_num].
                 object_exclusion_zone = 0;
             if (debug_rand(s_rmm_tdbc_path, 509) < 0x3fff)

@@ -1993,7 +1993,7 @@ void TCommunications_Handler::CheckPlayerStopTurn(unsigned long Turn) {
                 L->Log("CheckPlayerStopTurn: Drop player %d on turn %d", i, Turn);
                 this->InitPlayerInformation(i, 0, "Resigned", " ");
                 this->SetPlayerHumanity(i, static_cast<PLAYERHUMANITY>(3));
-                this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B4), i);
+                this->NotifyWindowParam(COMM_PLAYER_RESIGNED, i);
                 this->PlayerStopTurn[i] = 0;
             }
             ++i;
@@ -2120,7 +2120,7 @@ void TCommunications_Handler::SetSelfPlayer() {
             if (*dco == local_player_dpid) {
                 L->Log("Match! - ID set.");
                 this->Me = i;
-                this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B8), i);
+                this->NotifyWindowParam(COMM_PLAYER_ID_SET, i);
                 return;
             }
         }
@@ -2146,7 +2146,7 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int PlayerNo, unsigned lon
     }
     if (PlayerNo == this->Me) {
         L->Log("I Dropped.");
-        this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B2), this->Me);
+        this->NotifyWindowParam(COMM_PLAYER_DROPPED, this->Me);
         unsigned int i = 1;
         if (this->MaxGamePlayers >= 1) {
             do {
@@ -2169,7 +2169,7 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int PlayerNo, unsigned lon
         return;
     }
     if (!this->IsPlayerHuman(PlayerNo)) {
-        this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B5), PlayerNo);
+        this->NotifyWindowParam(COMM_PLAYER_DEFEATED, PlayerNo);
         L->Log("Player was defeated, was computer, or is invalid.");
         this->InitPlayerInformation(PlayerNo, 0, "Defeated", "No Other Information");
         this->UpdatePlayers();
@@ -2193,7 +2193,7 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int PlayerNo, unsigned lon
         this->UpdatePlayers();
         this->CalculatePlayerRange();
     }
-    this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B3), PlayerNo);
+    this->NotifyWindowParam(COMM_OTHER_PLAYER_DROPPED, PlayerNo);
 }
 
 
@@ -2248,7 +2248,7 @@ found_destroy_player:
             if (i == this->Me)
                 this->NotifyWindow(COMM_PLAYER_DROPPED);
             else
-                this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B3), i);
+                this->NotifyWindowParam(COMM_OTHER_PLAYER_DROPPED, i);
         }
         if (this->MeHost == 0)
             return;
@@ -2343,7 +2343,7 @@ found_create_player:
             this->UpdatePlayers();
             this->EnableNewPlayers(direct_play_interface, 0);
             this->CalculatePlayerRange();
-            this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B1), this->Me);
+            this->NotifyWindowParam(COMM_HOST_CHANGED, this->Me);
             this->KillAnyMissingPlayers();
             return;
         }
@@ -4750,12 +4750,12 @@ void TCommunications_Handler::DropAllHostedPlayers(void) {
 
 void TCommunications_Handler::LocalResumeGame(unsigned int p) {
     this->PlayerOptions.ProgramState = COMM_STATE_RUNNING;
-    this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17A3), p);
+    this->NotifyWindowParam(COMM_RESUME, p);
 }
 
 void TCommunications_Handler::LocalPauseGame(unsigned int p) {
     this->PlayerOptions.ProgramState = COMM_STATE_PAUSE;
-    this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17A2), p);
+    this->NotifyWindowParam(COMM_PAUSE, p);
 }
 
 

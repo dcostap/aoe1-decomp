@@ -129,7 +129,7 @@ int RGE_Communications_Synchronize::ValidateChecksums(
         if (bad) {
             this->LogChecksums(player, worldtime, worldturn, cs1, cs2, cs3,
                                cs4, cs5, worldrandom);
-            this->Comm->NotifyWindowParam((COMMMESSAGES)0x17B0, worldturn);
+            this->Comm->NotifyWindowParam(COMM_SYNC_ERROR, worldturn);
             this->LastResult = 0;
             return 0;
         }

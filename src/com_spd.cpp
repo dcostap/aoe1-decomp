@@ -269,7 +269,7 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int PlayerNo) {
 
     granularity = this->CurrentBufferGranularity;
     frames = this->CurrentBufferFrames;
-    hi_lo_info = this->FrameTSLC->GetHiLoInfo(0x32);
+    hi_lo_info = this->FrameTSLC->GetHiLoInfo(50);
     sprintf(
         speedstr,
         "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s",
@@ -312,8 +312,8 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames() {
 
     high_latency = high_latency / this->CurrentBufferGranularity;
     this->OptimalBufferFrames = high_latency;
-    if (high_latency >= 0x14) {
-        high_latency = 0x14;
+    if (high_latency >= 20) {
+        high_latency = 20;
     }
     this->OptimalBufferFrames = high_latency;
     if (high_latency <= 4) {
@@ -324,16 +324,16 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames() {
 }
 
 unsigned int RGE_Communications_Speed::GetAvgFrameRate() {
-    return this->FrameTSLC->GetAvg(0x32);
+    return this->FrameTSLC->GetAvg(50);
 }
 
 unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity() {
     unsigned int granularity;
 
-    granularity = this->FrameTSLC->GetAvg(0x32);
+    granularity = this->FrameTSLC->GetAvg(50);
     this->OptimalBufferGranularity = granularity;
-    if (granularity > 0x96) {
-        granularity = 0x96;
+    if (granularity > 150) {
+        granularity = 150;
     }
     this->OptimalBufferGranularity = granularity;
     if (granularity < 10) {

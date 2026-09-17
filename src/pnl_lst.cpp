@@ -348,7 +348,7 @@ void TListPanel::draw() {
     if (dc != 0) {
         SelectClipRgn(dc, this->clip_rgn);
         void* old_font = SelectObject(dc, this->font);
-        SetBkMode(dc, 1);
+        SetBkMode(dc, TRANSPARENT);
 
         for (short line = this->top_line, line_index = 0;
              line <= this->bot_line; ++line, ++line_index) {

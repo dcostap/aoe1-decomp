@@ -14,7 +14,7 @@ TChat::TChat(void* HostWndIn) {
     taunt = new TTaunt(rge_base_game->sound_system);
     HostWnd = HostWndIn;
 
-    for (i = 0; i < 0x33; ++i) {
+    for (i = 0; i < 51; ++i) {
         Chat[i] = 0;
     }
 
@@ -41,7 +41,7 @@ int TChat::AddChatMsg(char* PlayerName, char* Text, unsigned char Local) {
     }
 
     ++CurrentMsgNo;
-    if (CurrentMsgNo > 0x32) {
+    if (CurrentMsgNo > 50) {
         CurrentMsgNo = 0;
     }
 
@@ -64,14 +64,14 @@ int TChat::AddChatMsg(char* PlayerName, char* Text, unsigned char Local) {
 }
 
 char* TChat::GetChatMsg(int lineno) {
-    if (lineno >= 0 && lineno <= 0x32) {
+    if (lineno >= 0 && lineno <= 50) {
         return Chat[lineno];
     }
     return 0;
 }
 
 void TChat::ClearChat() {
-    for (int i = 0; i < 0x33; ++i) {
+    for (int i = 0; i < 51; ++i) {
         if (Chat[i] != 0) {
             free(Chat[i]);
         }

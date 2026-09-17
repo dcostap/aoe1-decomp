@@ -2487,7 +2487,7 @@ void RGE_Base_Game::mouse_off() {
             is_mouse_on = 0;
             return;
         }
-        SetCursor(0);
+        SetCursor(NULL);
         SetClassLongA(prog_window, GCL_HCURSOR, 0);
         is_mouse_on = 0;
     }
@@ -2500,7 +2500,7 @@ void RGE_Base_Game::set_windows_mouse(int val) {
     }
 
     if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
-        SetCursor(0);
+        SetCursor(NULL);
         SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
         if (this->is_mouse_on != 0) {
             this->mouse_pointer->on();
@@ -2516,7 +2516,7 @@ void RGE_Base_Game::set_windows_mouse(int val) {
         SetClassLongA(this->prog_window, GCL_HCURSOR,
                       reinterpret_cast<LONG>(this->mouse_cursor));
     } else {
-        SetCursor(0);
+        SetCursor(NULL);
         SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
     }
 }
@@ -2641,7 +2641,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
 
         if (MouseCursorInChildContol != 0) {
             if (this->windows_mouse == 0) {
-                SetCursor(0);
+                SetCursor(NULL);
                 SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
                 this->mouse_on();
             } else {
@@ -2717,7 +2717,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
         if (this->prog_ready != 0) {
             if (wparam == 1) {
                 if (basegame_is_active != 0) {
-                    SetCursor(0);
+                    SetCursor(NULL);
                     SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
 
                     if (this->prog_mode != 1) {
@@ -2740,7 +2740,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND wnd, UINT msg,
                         }
 
                         this->set_render_all();
-                        InvalidateRect(this->prog_window, 0, 1);
+                        InvalidateRect(this->prog_window, NULL, TRUE);
                         do_restore_palette = 10;
                         restore_palette_timer = debug_timeGetTime(
                             "C:\\msdev\\work\\age1_x1\\basegame.cpp", 3739);
@@ -3154,7 +3154,7 @@ paint_done:
                     this->mouse_pointer->draw(1);
                 }
             }
-            InvalidateRect(wnd, 0, 0);
+            InvalidateRect(wnd, NULL, FALSE);
         }
         restore_mouse_after_paint = 0;
     }
@@ -3236,7 +3236,7 @@ int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPA
         if (ds->DrawType == 1 || ds->ScreenMode == 1 || ds == 0) {
             this->handle_query_new_palette(wnd, msg, wparam, lparam);
         } else if (this->prog_mode != 1) {
-            ds->ModifyPalette(0, 0x100, ds->palette);
+            ds->ModifyPalette(0, 256, ds->palette);
             return 1;
         }
     }
@@ -3247,7 +3247,7 @@ int RGE_Base_Game::handle_palette_changed(HWND wnd, UINT msg, WPARAM wparam, LPA
 int RGE_Base_Game::handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam) {
     TDrawSystem* ds = this->draw_system;
     if (ds != 0 && ds->DrawType != 1 && ds->ScreenMode != 1) {
-        InvalidateRect(wnd, 0, 0);
+        InvalidateRect(wnd, NULL, FALSE);
         return this->draw_system->HandleQueryNewPalette(wnd, msg, wparam, lparam);
     }
 
@@ -3263,7 +3263,7 @@ int RGE_Base_Game::handle_query_new_palette(HWND wnd, UINT msg, WPARAM wparam, L
     int result = RealizePalette(dc);
     ReleaseDC(wnd, dc);
     if (result != 0)
-        InvalidateRect(wnd, 0, 0);
+        InvalidateRect(wnd, NULL, FALSE);
     if (this->draw_system != 0)
         return this->draw_system->HandleQueryNewPalette(wnd, msg, wparam, lparam);
     return 1;
@@ -3924,7 +3924,7 @@ void RGE_Base_Game::set_screen_size(long wid, long hgt) {
     if (this->draw_area->Width != wid || this->draw_area->Height != hgt) {
         if (this->draw_system->DrawType == 2 &&
             this->draw_system->ScreenMode == 2) {
-            SetCursor(0);
+            SetCursor(NULL);
             SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
             this->mouse_pointer->Shutdown_Mouse();
             this->draw_system->SetDisplaySize(wid, hgt, 8);

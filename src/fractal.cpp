@@ -11,19 +11,19 @@ extern TRIGONOMETRY trig;
 void PointMaker::SetDefaultValues() {
     NumberOfSatellites = 2;
     NumSplitsPerBranch = 3;
-    Height = 0x118;
-    Width = 0x118;
+    Height = 280;
+    Width = 280;
     SatelliteRadius = 2;
     BranchRadius = 3;
     BranchDistance = 3;
-    ChanceOfNextNode = 0x32;
+    ChanceOfNextNode = 50;
     MaxNumberOfBranches = 6;
     PrimaryRadius = 4;
-    BorderDepthPercentage = 0x0F;
+    BorderDepthPercentage = 15;
     MaxBranchFlag = 0;
     SatelliteDistance = 1;
-    MaxNumberOfBranchLevels = 0x10;
-    MinimumNumTiles = 0x7D0;
+    MaxNumberOfBranchLevels = 16;
+    MinimumNumTiles = 2000;
     memset(Point, 0, sizeof(Point));
     DoNotDrawOnFlag = 0;
     DrawOnOnlyFlag = 0;
@@ -805,8 +805,8 @@ void PointMaker::SetDrawToOneArray() {
 
 void PointMaker::SetBorderDepthPercentage(int num) {
     BorderDepthPercentage = num;
-    if (num > 0x1E) {
-        BorderDepthPercentage = 0x1E;
+    if (num > 30) {
+        BorderDepthPercentage = 30;
     }
     if (BorderDepthPercentage < 5) {
         BorderDepthPercentage = 5;
@@ -837,13 +837,13 @@ void PointMaker::ErrorCheckingAndCorrection() {
     DrawToOneArrayFlag = 0;
     int chance = (10 - size) * 10;
     ChanceOfNextNode = chance;
-    if (chance < 0x23) ChanceOfNextNode = 0x23;
-    if (ChanceOfNextNode > 0x50) ChanceOfNextNode = 0x50;
+    if (chance < 35) ChanceOfNextNode = 35;
+    if (ChanceOfNextNode > 80) ChanceOfNextNode = 80;
     if (MaxBranchFlag == 0) {
         MaxNumberOfBranchLevels = size - ChanceOfNextNode / 5;
     }
     if (MaxNumberOfBranchLevels < 10) MaxNumberOfBranchLevels = 10;
-    if (MaxNumberOfBranchLevels > 0x1E) MaxNumberOfBranchLevels = 0x1E;
+    if (MaxNumberOfBranchLevels > 30) MaxNumberOfBranchLevels = 30;
     MaxBranchFlag = 0;
 }
 

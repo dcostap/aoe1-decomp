@@ -50,10 +50,10 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
 
     if (this->create_text(this, &this->title, IDS_SCENARIO_SELECTION_TITLE,
                           20, 10, 600, 30, 1, 1, 0, 0)) {
-        this->scenarioListX = 0x14;
-        this->scenarioListY = 0x46;
-        this->scenarioListWidth = 0x258;
-        this->scenarioListHeight = 0x107;
+        this->scenarioListX = 20;
+        this->scenarioListY = 70;
+        this->scenarioListWidth = 600;
+        this->scenarioListHeight = 263;
 
         if (this->create_list(this, &this->scenarioList,
                               20, 70, 600, 263, RGE_FONT_STANDARD)) {
@@ -83,9 +83,9 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
 
                         this->missionTextX = this->scenarioListX;
                         this->missionTextY = this->scenarioListHeight +
-                                             this->scenarioListY + 0x19;
+                                             this->scenarioListY + 25;
                         this->missionTextWidth = this->scenarioListWidth;
-                        this->missionTextHeight = 0x3C;
+                        this->missionTextHeight = 60;
 
                         if (this->create_text(this, &this->missionTitle,
                                               IDS_SCENARIO_INSTRUCTIONS_TITLE,

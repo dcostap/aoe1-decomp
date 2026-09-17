@@ -762,7 +762,7 @@ void TRIBE_Screen_Game::set_overlapped_redraw(TPanel* redraw_panel, TPanel* call
 }
 
 void TRIBE_Screen_Game::set_map_buttons_redraw(TPanel::RedrawMode redraw_mode) {
-    if (this->pnl_wid < 0x320) {
+    if (this->pnl_wid < 800) {
         this->button_panel[5]->set_redraw(redraw_mode);
         this->button_panel[11]->set_redraw(redraw_mode);
     }
@@ -802,7 +802,7 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
 
     short final_frame;
 
-    if (this->pnl_wid >= 0x400 && this->pnl_hgt >= 0x300) {
+    if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
         this->pop_panel->set_positioning(TPanel::PositionLeftTop, 432, 4, 4, 4,
                                          160, 160, 20, 20,
                                          0, 0, 0, 0);
@@ -820,17 +820,17 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
         this->inven_panel->set_fixed_position(0, 0, 270, 20);
         this->object_panel->set_fixed_position(5, 649, 127, 114);
 
-        panel_y = 0x28A;
+        panel_y = 650;
         for (int panel_row = 0; panel_row < 2; ++panel_row) {
-            panel_x = 0x88;
+            panel_x = 136;
             int button_index = panel_row * 6;
             for (int panel_column = 0; panel_column < 6; ++panel_column) {
                 this->button_panel[button_index]->set_fixed_position(panel_x, panel_y, 54, 54);
                 this->button_panel[button_index]->tribe_button_type = 0;
                 ++button_index;
-                panel_x += 0x36;
+                panel_x += 54;
             }
-            panel_y += 0x3A;
+            panel_y += 58;
         }
 
         this->button_panel[12]->set_fixed_position(772, 0, 72, 19);
@@ -845,7 +845,7 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
         this->more_frame = 0xB;
         final_frame = 0xA;
     } else {
-        if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
+        if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
         this->pop_panel->set_positioning(TPanel::PositionLeftTop, 320, 4, 4, 4,
                                          160, 160, 20, 20,
                                          0, 0, 0, 0);
@@ -863,17 +863,17 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
         this->inven_panel->set_fixed_position(0, 0, 270, 20);
         this->object_panel->set_fixed_position(5, 481, 127, 114);
 
-        panel_y = 0x1E2;
+        panel_y = 482;
         for (int panel_row = 0; panel_row < 2; ++panel_row) {
-            panel_x = 0x88;
+            panel_x = 136;
             int button_index = panel_row * 6;
             for (int panel_column = 0; panel_column < 6; ++panel_column) {
                 this->button_panel[button_index]->set_fixed_position(panel_x, panel_y, 54, 54);
                 this->button_panel[button_index]->tribe_button_type = 0;
                 ++button_index;
-                panel_x += 0x36;
+                panel_x += 54;
             }
-            panel_y += 0x3A;
+            panel_y += 58;
         }
 
         this->button_panel[12]->set_fixed_position(548, 0, 72, 19);
@@ -905,17 +905,17 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
         this->inven_panel->set_fixed_position(0, 0, 270, 20);
         this->object_panel->set_fixed_position(5, 361, 127, 114);
 
-        panel_y = 0x16A;
+        panel_y = 362;
         for (int panel_row = 0; panel_row < 2; ++panel_row) {
-            panel_x = 0x88;
+            panel_x = 136;
             int button_index = panel_row * 6;
             for (int panel_column = 0; panel_column < 6; ++panel_column) {
                 this->button_panel[button_index]->set_fixed_position(panel_x, panel_y, 54, 54);
                 this->button_panel[button_index]->tribe_button_type = 0;
                 ++button_index;
-                panel_x += 0x36;
+                panel_x += 54;
             }
-            panel_y += 0x3A;
+            panel_y += 58;
         }
 
         this->button_panel[5]->set_fixed_position(406, 362, 102, 53);
@@ -953,7 +953,7 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
             TPanel::PositionRightTop, 4, clock_y, 4, 4, 170, 170, 20, 20,
             0, 0, 0, 0);
         ++clock_panel;
-        clock_y += 0x14;
+        clock_y += 20;
     }
 
     if (this->world->score_displayed != 0) {
@@ -991,12 +991,12 @@ long TRIBE_Screen_Game::handle_size(long win_wid, long win_hgt) {
                                             0, 0, 20, 20,
                                             0, 0, 0, this->message_panel5);
 
-    int chat_y = 0x22;
+    int chat_y = 34;
     TMessagePanel** chat_panel = this->chat_panel;
     for (int chat_index = 0; chat_index < 8; ++chat_index) {
         (*chat_panel)->set_fixed_position(4, chat_y, 620, 20);
         ++chat_panel;
-        chat_y += 0x14;
+        chat_y += 20;
     }
 
     short score_index = 7;
@@ -2356,14 +2356,14 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
             }
 
             int game_pic_id;
-            if (this->pnl_wid >= 0x400 && this->pnl_hgt >= 0x300) {
+            if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
                 sprintf(str, s_game_c_format, culture);
                 if (culture == 4) {
                     game_pic_id = 0xCF14;
                 } else {
                     game_pic_id = culture + 0xC635;
                 }
-            } else if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
+            } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
                 sprintf(str, s_game_b_format, culture);
                 if (culture == 4) {
                     game_pic_id = 0xCF13;
@@ -2385,7 +2385,7 @@ void TRIBE_Screen_Game::player_changed(int old_player_id, int new_player_id) {
                     (i < 0x0C) ? this->button_border1_pic : this->button_border2_pic;
             }
 
-            if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
+            if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
                 this->more_cancel_pic = this->button_cmd_pic;
             } else {
                 this->more_cancel_pic = this->button_other_pic;
@@ -3576,15 +3576,15 @@ void TRIBE_Screen_Game::draw() {
         }
         if (this->game_screen_pic) {
             if (this->render_area->Lock(s_scr_game_draw2, 1)) {
-                if (this->pnl_wid >= 0x400 && this->pnl_hgt >= 0x300) {
+                if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
                     this->game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, 0);
-                    this->game_screen_pic->shape_draw(this->render_area, 0, 0x282, 1, 0, 0);
-                } else if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
+                    this->game_screen_pic->shape_draw(this->render_area, 0, 642, 1, 0, 0);
+                } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
                     this->game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, 0);
-                    this->game_screen_pic->shape_draw(this->render_area, 0, 0x1da, 1, 0, 0);
+                    this->game_screen_pic->shape_draw(this->render_area, 0, 474, 1, 0, 0);
                 } else {
                     this->game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, 0);
-                    this->game_screen_pic->shape_draw(this->render_area, 0, 0x162, 1, 0, 0);
+                    this->game_screen_pic->shape_draw(this->render_area, 0, 354, 1, 0, 0);
                 }
                 this->render_area->Unlock(s_scr_game_draw2);
             }
@@ -3599,15 +3599,15 @@ void TRIBE_Screen_Game::draw() {
         this->draw_setup(flag);
         if (this->game_screen_pic) {
             if (this->render_area->Lock(s_scr_game_draw3, 1)) {
-                if (this->pnl_wid >= 0x400 && this->pnl_hgt >= 0x300) {
+                if (this->pnl_wid >= 1024 && this->pnl_hgt >= 768) {
                     this->game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, 0);
-                    this->game_screen_pic->shape_draw(this->render_area, 0, 0x282, 1, 0, 0);
-                } else if (this->pnl_wid >= 0x320 && this->pnl_hgt >= 0x258) {
+                    this->game_screen_pic->shape_draw(this->render_area, 0, 642, 1, 0, 0);
+                } else if (this->pnl_wid >= 800 && this->pnl_hgt >= 600) {
                     this->game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, 0);
-                    this->game_screen_pic->shape_draw(this->render_area, 0, 0x1da, 1, 0, 0);
+                    this->game_screen_pic->shape_draw(this->render_area, 0, 474, 1, 0, 0);
                 } else {
                     this->game_screen_pic->shape_draw(this->render_area, 0, 0, 0, 0, 0);
-                    this->game_screen_pic->shape_draw(this->render_area, 0, 0x162, 1, 0, 0);
+                    this->game_screen_pic->shape_draw(this->render_area, 0, 354, 1, 0, 0);
                 }
                 this->render_area->Unlock(s_scr_game_draw3);
             }
@@ -3643,7 +3643,7 @@ void TRIBE_Screen_Game::handle_anim_pal() {
             --this->last_anim_pal_index;
         }
 
-        this->render_area->DrawSystem->ModifyPalette(0xF8, 7, pal_entries);
+        this->render_area->DrawSystem->ModifyPalette(248, 7, pal_entries);
         this->last_anim_pal_time = time;
     }
 }

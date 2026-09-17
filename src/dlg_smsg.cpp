@@ -49,7 +49,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
     if ((backgroundPics = new TShape("dlg_plbn.shp", 0xC63A)) == 0)
         return;
     else {
-        if (!setup(parentPanel->renderArea(), parentPanel, 0x208, 0x1D1,
+        if (!setup(parentPanel->renderArea(), parentPanel, 520, 465,
                    parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(), 1))
             return;
 
@@ -59,7 +59,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
 
         humanity = 1;
         world = rge_base_game->world;
-        int y = 0x28;
+        int y = 40;
         int row = 0;
         do {
             id = rge_base_game->playerID(humanity);
@@ -112,14 +112,14 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
                 }
                 commPlayers[row] = humanity;
                 ++row;
-                y += 0x1E;
+                y += 30;
             }
             ++humanity;
         } while (humanity < 9);
 
         if (!create_text(this, &chatTitle, IDS_SEND_MESSAGE_CHAT, 10, 315, 120, 30, 4, 1, 1, 0))
             return;
-        if (!create_edit(this, &chatInput, "", 0x41, TEditPanel::FormatText, 130,
+        if (!create_edit(this, &chatInput, "", 65, TEditPanel::FormatText, 130,
                          315, 380, 23, RGE_FONT_STANDARD, 1, 0))
             return;
         chatInput->set_help_info(IDS_HELP_CHAT_INPUT, -1);
@@ -149,7 +149,7 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parentPanel)
         if (!create_button(this, &okButton, IDS_BUTTON_RETURN_TO_GAME, 0, 100, 425, 300, 30, 0, 0, 0))
             return;
         okButton->set_help_info(IDS_HELP_OK, -1);
-        okButton->hotkey = 0x1B;
+        okButton->hotkey = VK_ESCAPE;
         okButton->hotkey_shift = 0;
         set_curr_child(chatInput);
     }
@@ -336,12 +336,12 @@ void TribeSendMessageDialog::draw() {
             int id = rge_base_game->playerID(i);
             if (id != 0) {
                 if (world->players[id]->color_table != 0) {
-                    ASMSet_Color_Xform((world->players[id]->color_table->id + 1) * 0x10);
-                    this->backgroundPics->shape_draw(this->render_area, this->pnl_x + 0x32,
-                                                     this->pnl_y + y + 0x28, 0, 1,
+                    ASMSet_Color_Xform((world->players[id]->color_table->id + 1) * 16);
+                    this->backgroundPics->shape_draw(this->render_area, this->pnl_x + 50,
+                                                     this->pnl_y + y + 40, 0, 1,
                                                      world->players[id]->color_table->table);
                 }
-                y += 0x1E;
+                y += 30;
             }
             ++i;
         } while (i < 9);
@@ -353,7 +353,7 @@ void TribeSendMessageDialog::draw() {
 TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPanel,
                                                          Mode m)
     : TDialogPanel("Send Quick Message Dialog"), modeValue(m) {
-    if (!this->setup(parentPanel->renderArea(), parentPanel, 0x21C, 0x23,
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 540, 35,
                      parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
         return;
@@ -369,7 +369,7 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parentPan
         return;
     }
 
-    if (!this->create_edit(this, &this->chatInput, "", 0x41,
+    if (!this->create_edit(this, &this->chatInput, "", 65,
                            TEditPanel::FormatText,
                            130, 5, 405, 25, RGE_FONT_STANDARD, 1, 0)) {
         return;

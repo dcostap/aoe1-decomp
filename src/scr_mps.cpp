@@ -107,11 +107,11 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
     this->teamTitle->set_alignment(TTextPanel::AlignCenter,
                                     TTextPanel::AlignRight);
 
-    y = 0x55;
-    for (i = 0; y < 0x115; ++i, y += 0x18) {
+    y = 85;
+    for (i = 0; y < 277; ++i, y += 24) {
         if (!this->create_drop_down(
                 this, &this->playerNameDrop[i],
-                158, 100, 7, y - 1, 0x9E, 0x18, RGE_FONT_STANDARD)) {
+                158, 100, 7, y - 1, 158, 24, RGE_FONT_STANDARD)) {
             return;
         }
         this->playerNameDrop[i]->set_draw_style(
@@ -130,7 +130,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_drop_down(
                 this, &this->playerCivDrop[i],
-                128, 100, 170, y - 1, 0x80, 0x18, RGE_FONT_STANDARD)) {
+                128, 100, 170, y - 1, 128, 24, RGE_FONT_STANDARD)) {
             return;
         }
         this->playerCivDrop[i]->set_draw_style(
@@ -160,7 +160,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
 
         if (!this->create_drop_down(
                 this, &this->scenarioPlayerDrop[i],
-                40, 100, 324, y - 1, 0x28, 0x18, RGE_FONT_STANDARD)) {
+                40, 100, 324, y - 1, 40, 24, RGE_FONT_STANDARD)) {
             return;
         }
         this->scenarioPlayerDrop[i]->set_draw_style(
@@ -240,8 +240,8 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
                            RGE_FONT_STANDARD, 0, 0, 1)) {
         return;
     }
-    y = 0x53;
-    for (i = 0; y < 0x233; ++i, y += 0x18) {
+    y = 83;
+    for (i = 0; y < 563; ++i, y += 24) {
         if (!this->create_text(this, &this->settingText[i], "",
                                420, y, 220, 20,
                                RGE_FONT_STANDARD, 0, 0, 0)) {
@@ -265,7 +265,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
             return;
         }
         if (!this->create_edit(
-                this, &this->chatInput, "", 0xF7,
+                this, &this->chatInput, "", 247,
                 TEditPanel::FormatText, 10, 402, 400, 23,
                 10, 1, 0)) {
             return;
@@ -287,7 +287,7 @@ TribeMPSetupScreen::TribeMPSetupScreen() : TScreenPanel("MP Setup Screen") {
         }
         if (!this->create_drop_down(
                 this, &this->numberPlayersDrop,
-                70, 100, 31, 322, 0x46, 0x18, RGE_FONT_STANDARD)) {
+                70, 100, 31, 322, 70, 24, RGE_FONT_STANDARD)) {
             return;
         }
         this->numberPlayersDrop->set_help_info(IDS_HELP_MP_PLAYER_COUNT, -1);

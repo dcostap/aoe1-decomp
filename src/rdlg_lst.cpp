@@ -43,16 +43,16 @@ int RGE_Dialog_List::setup(TScreenPanel* parent_screen, char* info_file_in, long
                 return 0;
             strcpy(this->list_text[i], info->text + offset);
             ++i;
-            offset += 0x66;
+            offset += sizeof(rdlg_list_info);
         }
     }
 
     return this->TListDialog::setup(
         parent_screen, info_file_in, info_id_in,
-        0x136, 0x190, 0x0A, 0x0A, 0x122,
-        0x19, title_in, 0x0A, 0x2D, 0x122,
-        0x131, this->list_text, this->list_size, this->list_line,
-        0x0A, 0xA0, 0x168, 0x8C, 0x1E) != 0;
+        310, 400, 10, 10, 290,
+        25, title_in, 10, 45, 290,
+        305, this->list_text, this->list_size, this->list_line,
+        10, 160, 360, 140, 30) != 0;
 }
 
 RGE_Dialog_List::~RGE_Dialog_List() {
@@ -145,14 +145,17 @@ int RGE_Dialog_List::create_object_list() {
 }
 
 int __cdecl rdlg_list_compare(const void* arg1, const void* arg2) {
-    int result = CompareStringA(0x400, 1, (const char*)arg1, -1, (const char*)arg2, -1);
+    int result = CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+                                (const char*)arg1, -1,
+                                (const char*)arg2, -1);
     if (result == 1)
         return -1;
     return result == 3;
 }
 
 void RGE_Dialog_List::sort_list() {
-    qsort(this->list_info, (int)this->list_size, 0x66, rdlg_list_compare);
+    qsort(this->list_info, (int)this->list_size,
+          sizeof(rdlg_list_info), rdlg_list_compare);
 }
 
 void RGE_Dialog_List::calc_list_line() {

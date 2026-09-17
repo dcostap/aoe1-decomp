@@ -500,7 +500,6 @@ class _RGNDATA;
 class _RGNDATAHEADER;
 class _SYSTEMTIME;
 class _WIN32_FIND_DATAA;
-class __unnamed;
 class _finddata_t;
 class _iobuf;
 class _tag_wavheader;

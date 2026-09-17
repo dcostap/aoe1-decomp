@@ -370,7 +370,7 @@ void Time_Line_Panel::init_timeline() {
         } while (i < static_cast<int>(world->player_num) - 1);
     }
 
-    int usable_X = -0x31 + this->width();
+    int usable_X = -49 + this->width();
     if (this->num_history_entries == 0) {
         this->num_history_entries = 1;
         this->timeline_flag = 0;
@@ -394,9 +394,9 @@ void Time_Line_Panel::init_timeline() {
 
     this->X_axis_length = static_cast<long>(
         static_cast<float>(this->num_entries_page) * this->bar_thickness) + 4;
-    this->Y_axis_length = this->height() - this->axis_font_hgt * 4 - 0x1a;
-    this->X_start_line_pos = this->xPosition() + 0x1b;
-    int y = this->yPosition() + this->axis_font_hgt * 2 + 0x0f;
+    this->Y_axis_length = this->height() - this->axis_font_hgt * 4 - 26;
+    this->X_start_line_pos = this->xPosition() + 27;
+    int y = this->yPosition() + this->axis_font_hgt * 2 + 15;
     this->X_line_pos = this->X_start_line_pos;
     this->Y_start_line_pos = y;
     this->Y_line_pos = y;
@@ -686,41 +686,41 @@ void Time_Line_Panel::draw_axis() {
 
     if (this->render_area->Lock(s_tpnl_tml_draw_axis, 1) != 0) {
         this->render_area->FillRect(
-            this->xPosition() + 0x19,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0C
+            this->xPosition() + 25,
+            this->yPosition() + this->axis_font_hgt * 2 + 12
                 + this->Y_axis_length,
-            this->xPosition() + 0x18 + this->X_axis_length,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0D
-                + this->Y_axis_length,
-            white_color);
-
-        this->render_area->FillRect(
-            this->xPosition() + 0x19,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0D,
-            this->xPosition() + 0x18 + this->X_axis_length,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0E,
-            white_color);
-
-        this->render_area->FillRect(
-            this->xPosition() + 0x19,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0D,
-            this->xPosition() + 0x1A,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0D
+            this->xPosition() + 24 + this->X_axis_length,
+            this->yPosition() + this->axis_font_hgt * 2 + 13
                 + this->Y_axis_length,
             white_color);
 
         this->render_area->FillRect(
-            this->xPosition() + 0x17 + this->X_axis_length,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0D,
-            this->xPosition() + 0x18 + this->X_axis_length,
-            this->yPosition() + this->axis_font_hgt * 2 + 0x0D
+            this->xPosition() + 25,
+            this->yPosition() + this->axis_font_hgt * 2 + 13,
+            this->xPosition() + 24 + this->X_axis_length,
+            this->yPosition() + this->axis_font_hgt * 2 + 14,
+            white_color);
+
+        this->render_area->FillRect(
+            this->xPosition() + 25,
+            this->yPosition() + this->axis_font_hgt * 2 + 13,
+            this->xPosition() + 26,
+            this->yPosition() + this->axis_font_hgt * 2 + 13
+                + this->Y_axis_length,
+            white_color);
+
+        this->render_area->FillRect(
+            this->xPosition() + 23 + this->X_axis_length,
+            this->yPosition() + this->axis_font_hgt * 2 + 13,
+            this->xPosition() + 24 + this->X_axis_length,
+            this->yPosition() + this->axis_font_hgt * 2 + 13
                 + this->Y_axis_length,
             white_color);
     }
 
     this->render_area->Unlock(s_tpnl_tml_draw_axis);
     if (this->render_area->GetDc(s_tpnl_tml_draw_axis) != 0) {
-        SetBkMode(this->render_area->DrawDc, 1);
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         old_font = SelectObject(this->render_area->DrawDc, this->axis_font);
 
         if (this->get_string(IDS_WORLD_POPULATION, temp_str, 100) != 0) {
@@ -793,7 +793,7 @@ void Time_Line_Panel::draw_special_events() {
 
         this->render_area->Unlock("tpnl_tml::draw_special_events");
         if (this->render_area->GetDc("tpnl_tml::draw_special_events") != 0) {
-            SetBkMode(this->render_area->DrawDc, 1);
+            SetBkMode(this->render_area->DrawDc, TRANSPARENT);
             old_font = SelectObject(this->render_area->DrawDc,
                                     this->body_font);
 
@@ -952,7 +952,7 @@ void Time_Line_Panel::draw_civilization_names() {
     if (this->timeline_flag != 0) {
         SetTextColor(this->render_area->DrawDc, 0);
         if (this->render_area->GetDc("tpnl_tml::draw_civilization_names") != 0) {
-            SetBkMode(this->render_area->DrawDc, 1);
+            SetBkMode(this->render_area->DrawDc, TRANSPARENT);
             old_font = SelectObject(this->render_area->DrawDc, this->body_font);
             pop_total = 0.0f;
             int player_index = 0;

@@ -151,7 +151,7 @@ void TPicture::Load(char* FileName, long res_id, int UseTrans,
     }
 
     if (this->Dib == 0 && res_id != -1) {
-        if (RESFILE_Extract_to_File(0x62696e61, res_id,
+        if (RESFILE_Extract_to_File(RES_TYPE_BINARY, res_id,
             temp_file_name, temp_file) != 0) {
             fclose(temp_file);
             this->Dib = DibOpenFile(temp_file_name);

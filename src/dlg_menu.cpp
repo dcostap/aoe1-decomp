@@ -23,11 +23,11 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
 
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->get_player()->game_status == 0)
-            y = 0x14F;
+            y = 335;
     }
 
     if (rge_base_game->singlePlayerGame())
-        y += 0x69;
+        y += 105;
 
     if (!this->setup(parentPanel->renderArea(), parentPanel, 400, y,
                      parentPanel->get_popup_info_file(), parentPanel->get_popup_info_id(), 1))
@@ -37,7 +37,7 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
                              15, 360, 30, 0, 0, 4))
         return;
 
-    int by = 0x41;
+    int by = 65;
     if (rge_base_game->multiplayerGame()) {
         if (rge_base_game->get_player()->game_status == 0) {
             if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESIGN, 0,
@@ -50,43 +50,43 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
     if (!this->create_button(this, &this->button[bi++], IDS_MENU_ACHIEVEMENTS, 0, 20,
                              by, 360, 30, 0, 0, 7))
         return;
-    by += 0x23;
+    by += 35;
 
     if (!this->create_button(this, &this->button[bi++], IDS_MENU_SCENARIO_INSTRUCTIONS, 0, 20,
                              by, 360, 30, 0, 0, 9))
         return;
     int by2 = by;
-    by2 += 0x23;
+    by2 += 35;
 
     if (rge_base_game->singlePlayerGame()) {
         if (!this->create_button(this, &this->button[bi++], IDS_MENU_SAVE, 0,
                                  20, by2, 360, 30, 0, 0, 1))
             return;
-        by2 += 0x23;
+        by2 += 35;
         if (!this->create_button(this, &this->button[bi++], IDS_MENU_LOAD, 0,
                                  20, by2, 360, 30, 0, 0, 3))
             return;
-        by2 += 0x23;
+        by2 += 35;
         if (!this->create_button(this, &this->button[bi++], IDS_MENU_RESTART, 0,
                                  20, by2, 360, 30, 0, 0, 0x0B))
             return;
-        by2 += 0x23;
+        by2 += 35;
     }
 
     if (!this->create_button(this, &this->button[bi++], IDS_MENU_GAME_SETTINGS, 0, 20,
                              by2, 360, 30, 0, 0, 5))
         return;
-    by2 += 0x23;
+    by2 += 35;
 
     if (!this->create_button(this, &this->button[bi++], IDS_MENU_HELP, 0, 20,
                              by2, 360, 30, 0, 0, 8))
         return;
-    by2 += 0x23;
+    by2 += 35;
 
     if (!this->create_button(this, &this->button[bi++], IDS_MENU_ABOUT, 0, 20,
                              by2, 360, 30, 0, 0, 10))
         return;
-    by2 += 0x23;
+    by2 += 35;
 
     if (!this->create_button(this, &this->button[bi++], IDS_MENU_CANCEL, 0, 20,
                              by2 + 15, 360, 30, 0, 0, 6))
@@ -94,7 +94,7 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parentPanel)
 
     TButtonPanel* p = this->button[bi - 1];
     p->hotkey_shift = 0;
-    p->hotkey = 0x1B;
+    p->hotkey = VK_ESCAPE;
 
     this->set_curr_child(this->button[0]);
     this->set_tab_order(reinterpret_cast<TPanel**>(this->button), bi);

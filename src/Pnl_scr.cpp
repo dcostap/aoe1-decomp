@@ -52,7 +52,7 @@ void TScreenPanel::set_focus(int have_focus_in) {
             if (!this->palette) {
                 this->render_area->GetPalette(local.color_table);
             } else {
-                GetPaletteEntries(this->palette, 0, 0x100, local.color_table);
+                GetPaletteEntries(this->palette, 0, 256, local.color_table);
             }
 
             RGE_fade_palette(this->render_area, color, 0.13f, 1, 0, -1, -1);

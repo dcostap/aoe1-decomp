@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 
 extern "C" void __cdecl ds_stream_init(
     void* main_wnd, LPDIRECTSOUND direct_sound,
@@ -77,12 +78,12 @@ int TSound_Driver::init(void* wnd, char* path_in) {
     this->main_wnd = wnd;
     this->ready = 0;
 
-    this->dsrval = DirectSoundCreate(0, &this->direct_sound, 0);
+    this->dsrval = DirectSoundCreate(NULL, &this->direct_sound, NULL);
     if (this->dsrval != 0) {
         return 0;
     }
 
-    dscaps.dwSize = 0x60;
+    dscaps.dwSize = sizeof(dscaps);
     this->direct_sound->GetCaps(&dscaps);
 
     has_secondary = 0;
@@ -107,7 +108,7 @@ int TSound_Driver::init(void* wnd, char* path_in) {
     }
 
     memset(&dsBD, 0, sizeof(dsBD));
-    dsBD.dwSize = 0x14;
+    dsBD.dwSize = sizeof(dsBD);
     dsBD.dwFlags = DSBCAPS_PRIMARYBUFFER;
     this->dsrval = this->direct_sound->CreateSoundBuffer(
         &dsBD, &this->primary_buffer, 0);
@@ -120,10 +121,10 @@ int TSound_Driver::init(void* wnd, char* path_in) {
     if (has_secondary != 0) {
         fmt.wFormatTag = WAVE_FORMAT_PCM;
         fmt.nChannels = 1;
-        fmt.nSamplesPerSec = 0x5622;
-        fmt.nAvgBytesPerSec = 0xAC44;
+        fmt.nSamplesPerSec = 22050;
+        fmt.nAvgBytesPerSec = 44100;
         fmt.nBlockAlign = 2;
-        fmt.wBitsPerSample = 0x10;
+        fmt.wBitsPerSample = 16;
         fmt.cbSize = 0;
         this->dsrval = this->primary_buffer->SetFormat(&fmt);
     }
@@ -364,7 +365,7 @@ TDigital::TDigital(TSound_Driver* in_sound_system, char* file_name, long res_id)
     this->resource_id = res_id;
     if (file_name != 0) {
         strncpy(this->sound_file, file_name, 12);
-        this->sound_file[0x0C] = 0;
+        this->sound_file[12] = 0;
     }
 }
 
@@ -459,9 +460,9 @@ int TDigital::load(char* file_name, long res_id) {
     if (sound_file_first != 0 || res_id < 0) {
         sprintf(file_with_path, "%s%s", this->sound_system->path,
                 this->sound_file);
-        fd = _open(file_with_path, 0, 0);
+        fd = _open(file_with_path, _O_RDONLY, 0);
         if (fd != -1) {
-            result = read(fd, &wave_hdr.szRIFF, 44);
+            result = read(fd, &wave_hdr.szRIFF, sizeof(wave_hdr));
             if (result <= 0) {
                 this->failed = 1;
                 close(fd);
@@ -493,7 +494,7 @@ int TDigital::load(char* file_name, long res_id) {
             }
 
             close(fd);
-            this->wave_info = (WAVEFORMATEX*)malloc(18);
+            this->wave_info = (WAVEFORMATEX*)malloc(sizeof(WAVEFORMATEX));
             if (this->wave_info == 0) {
                 this->failed = 1;
                 free(this->wave_data);
@@ -509,7 +510,7 @@ int TDigital::load(char* file_name, long res_id) {
             this->wave_info->wBitsPerSample = wave_hdr.wBitsPerSample;
             this->wave_info->cbSize = 0;
 
-            buffer_desc.dwSize = 0x14;
+            buffer_desc.dwSize = sizeof(buffer_desc);
             buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLDEFAULT;
             buffer_desc.dwBufferBytes = this->data_size;
             buffer_desc.dwReserved = 0;
@@ -551,10 +552,10 @@ int TDigital::load(char* file_name, long res_id) {
     }
 
     if (res_id <= -1 || (resource_data = RESFILE_load(
-                            0x77617620, res_id, load_type, resDataSize)) == 0) {
+                            RES_TYPE_WAVE, res_id, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
-        memcpy(&wave_hdr.szRIFF, resource_data, 44);
+        memcpy(&wave_hdr.szRIFF, resource_data, sizeof(wave_hdr));
         this->data_size = wave_hdr.dwDataLength;
         this->wave_data = (uchar*)malloc(this->data_size);
         if (this->wave_data == 0) {
@@ -563,11 +564,12 @@ int TDigital::load(char* file_name, long res_id) {
                 free(resource_data);
             }
         } else {
-            memcpy(this->wave_data, resource_data + 0x2C, this->data_size);
+            memcpy(this->wave_data, resource_data + sizeof(wave_hdr),
+                   this->data_size);
             if (load_type == 1) {
                 free(resource_data);
             }
-            this->wave_info = (WAVEFORMATEX*)malloc(18);
+            this->wave_info = (WAVEFORMATEX*)malloc(sizeof(WAVEFORMATEX));
             if (this->wave_info == 0) {
                 this->failed = 1;
                 if (load_type != 1) {
@@ -588,7 +590,7 @@ wave_info_fail:
                 this->wave_info->cbSize = 0;
 
                 LPDIRECTSOUNDBUFFER* buffer_slot = &this->sound_buffer;
-                buffer_desc.dwSize = 0x14;
+                buffer_desc.dwSize = sizeof(buffer_desc);
                 buffer_desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLDEFAULT;
                 buffer_desc.dwBufferBytes = this->data_size;
                 buffer_desc.dwReserved = 0;

@@ -610,5 +610,5 @@ unsigned long __cdecl BUILDRES_get_files_resource_type(char* filename) {
         }
     }
 
-    return 0x62696e61;
+    return RES_TYPE_BINARY;
 }

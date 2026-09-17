@@ -43,7 +43,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
     this->help_page_id = in_help_page_id;
 
     rge_text_font = rge_base_game->get_font(RGE_FONT_STANDARD);
-    if (!this->setup(parentPanel->renderArea(), parentPanel, 0x154, 0x190,
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 340, 400,
                      parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
         return;
@@ -53,14 +53,14 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
                       RGE_FONT_STANDARD, 0, 0, 1);
 
     line_height = this->list->bot_line + 2;
-    panel_height = line_height * rge_text_font->font_hgt + 0x37;
+    panel_height = line_height * rge_text_font->font_hgt + 55;
 
-    if (parentPanel->width() + parentPanel->xPosition() >= mouse_x + 0x163) {
+    if (parentPanel->width() + parentPanel->xPosition() >= mouse_x + 355) {
         dialog_x = abs(parentPanel->xPosition() - mouse_x - 5);
-    } else if (parentPanel->xPosition() + 10 <= mouse_x - 0x159) {
-        dialog_x = abs(mouse_x - 0x159 - parentPanel->xPosition());
+    } else if (parentPanel->xPosition() + 10 <= mouse_x - 345) {
+        dialog_x = abs(mouse_x - 345 - parentPanel->xPosition());
     } else {
-        dialog_x = parentPanel->width() / 2 - 0xAA;
+        dialog_x = parentPanel->width() / 2 - 170;
     }
     if (dialog_x < 0) {
         dialog_x = 0;
@@ -103,7 +103,7 @@ void THelpDialog::setup_help(TEasy_Panel* parentPanel, char* in_parent_panel,
                             120, 25, RGE_FONT_STANDARD, 0, 0);
     }
     TButtonPanel* button = this->ok_button;
-    button->hotkey = 0x1B;
+    button->hotkey = VK_ESCAPE;
     button->hotkey_shift = 0;
     this->set_curr_child(this->ok_button);
 
@@ -132,7 +132,8 @@ long THelpDialog::action(TPanel* fromPanel, long actionIn, unsigned long a1, uns
 
             HWND prog_window = rge_base_game->prog_window;
             char* help_topic = this->get_string(help_page_id);
-            WinHelpA(prog_window, "empires.hlp", 0x101, (DWORD)help_topic);
+            WinHelpA(prog_window, "empires.hlp", HELP_KEY,
+                     (DWORD)help_topic);
             return 1;
         }
     }

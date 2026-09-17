@@ -66,6 +66,11 @@ public:
     char fName[260];              // +0x14
 };
 
+#define RES_TYPE_BINARY 0x62696E61
+#define RES_TYPE_WAVE   0x77617620
+#define RES_TYPE_SHAPE  0x73687020
+#define RES_TYPE_SLP    0x736C7020
+
 // The image table begins at 00585520. game_globals.cpp owns the shipped data.
 extern res_file_type_info res_extension_table[];
 

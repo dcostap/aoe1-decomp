@@ -42,12 +42,15 @@
 #include "../include/registry.h"
 #include "../include/Mouseptr.h"
 #include <io.h>
+#include <fcntl.h>
 #include <new.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
 #include <mbstring.h>
+
+#define TRIBE_OPEN_READ_PERMISSIONS 256
 
 void encrypt_codes(char* source, char* dest, int maxlen) {
     char c = *source;
@@ -370,14 +373,15 @@ int TRIBE_Game::setup() {
     PALETTEENTRY pal_entries[7] = {{0x17, 0x27, 0x7C, 0x00}, {0x27, 0x3F, 0x90, 0x00}, {0x3F, 0x5F, 0x9F, 0x00},
                                    {0x57, 0x7B, 0xB4, 0x00}, {0x3F, 0x5F, 0xA0, 0x00}, {0x27, 0x3F, 0x91, 0x00},
                                    {0x17, 0x27, 0x7B, 0x00}};
-    SetPaletteEntries(this->prog_palette, 0xF8, 7, pal_entries);
+    SetPaletteEntries(this->prog_palette, 248, 7, pal_entries);
 
     this->input_disabled_window =
         CreateWindowExA(0, "STATIC", "InputDisabledWindow", WS_CHILD, 0, 0, 1, 1, this->prog_window, 0,
                         reinterpret_cast<HINSTANCE>(this->prog_info->instance), 0);
 
     // These packed values are the video type "vidc" and the lowercase handler "iv41".
-    video_codec_available = ICInfo(0x63646976, 0x31347669, &ici);
+    video_codec_available = ICInfo(
+        MAKEFOURCC('v', 'i', 'd', 'c'), MAKEFOURCC('i', 'v', '4', '1'), &ici);
 
     if (this->check_prog_argument("LOBBY") != 0) {
         new TRIBE_Screen_Status_Message("Status Screen", IDS_STATUS_SETTING_UP_MULTIPLAYER, "scr1", 0xC383);
@@ -506,7 +510,7 @@ int TRIBE_Game::setup_cmd_options() {
     strncpy(cmd_line, this->prog_info->cmd_line, 255);
     cmd_line[255] = 0;
     CharUpperA(cmd_line);
-    encrypt_codes(cmd_line, encstr, 0x200);
+    encrypt_codes(cmd_line, encstr, 512);
 
     if (strstr(cmd_line, "NOTERRAINSOUND") != 0) {
         disable_terrain_sounds = 1;
@@ -614,7 +618,7 @@ int TRIBE_Game::setup_palette() {
                                        {0x57, 0x7B, 0xB4, 0x00}, {0x3F, 0x5F, 0xA0, 0x00}, {0x27, 0x3F, 0x91, 0x00},
                                        {0x17, 0x27, 0x7B, 0x00}};
 
-        SetPaletteEntries(prog_palette, 0xF8, 7, pal_entries);
+        SetPaletteEntries(prog_palette, 248, 7, pal_entries);
     }
     return 1;
 }
@@ -897,10 +901,9 @@ char* TRIBE_Game::get_string2(int string_type, long id, long id2, char* str, int
         case 0x1B:
             return this->get_string(IDS_COMMAND_TRADE_STONE_FOR_GOLD, str, max_len);
         case 0x20:
-            // These command slots are empty in the checked language DLL.
-            return this->get_string(0x1025, str, max_len);
+            return this->get_string(IDS_COMMAND_INCREMENT_QUEUE, str, max_len);
         case 0x21:
-            return this->get_string(0x1026, str, max_len);
+            return this->get_string(IDS_COMMAND_DECREMENT_QUEUE, str, max_len);
         }
         break;
     case RGE_STRING_TYPE_ERROR:
@@ -1082,16 +1085,26 @@ void TRIBE_Game::close_status_message() {
 #include <windows.h>
 
 extern "C" int __cdecl _open(const char* path, int flags, ...);
-extern "C" void* __cdecl MCIWndCreateA(void* parent, void* instance, unsigned long style, const char* file);
+extern "C" void* __cdecl MCIWndCreateA(void* parent, void* instance,
+                                        unsigned long style,
+                                        const char* file);
+
+// These MCIWnd values match the VC5 VFW.H definitions.
+#define TRIBE_MCIWNDM_GETMODEA (WM_USER + 106)
+#define TRIBE_MCIWNDM_REALIZE (WM_USER + 118)
+#define TRIBE_MCIWNDM_GETPALETTE (WM_USER + 126)
+#define TRIBE_MCIWND_STYLE                                                    \
+    (WS_CHILD | WS_VISIBLE | 0x1F00 | 0x0008 | 0x0002)
+
 static long __stdcall video_sub_wnd_proc(void* wnd, unsigned int msg, unsigned int wparam, long lparam);
 
 int TRIBE_Game::start_video(int video_num, char* video_file) {
     if (this->video_window != 0) {
         char str[100];
-        // These video-window messages are application-defined.
-        SendMessageA(this->video_window, 0x46A, 100, reinterpret_cast<long>(str));
+        SendMessageA(this->video_window, TRIBE_MCIWNDM_GETMODEA, sizeof(str),
+                     reinterpret_cast<long>(str));
         if (str[0] != 0 && strcmp(str, "stopped") != 0) {
-            SendMessageA(this->video_window, 0x808, 0, 0);
+            SendMessageA(this->video_window, MCI_STOP, 0, 0);
         }
             SendMessageA(this->video_window, WM_CLOSE, 0, 0);
         this->video_window = 0;
@@ -1101,12 +1114,14 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
     if (this->rge_game_options.multiplayerGameValue != 1 && video_file != 0 && *video_file != 0) {
         char temp_name[260];
         sprintf(temp_name, "%s%s.avi", this->prog_info->avi_dir, video_file);
-        int file_handle = _open(temp_name, _O_RDONLY, _S_IREAD);
+        int file_handle = _open(temp_name, _O_RDONLY,
+                                TRIBE_OPEN_READ_PERMISSIONS);
         if (file_handle == -1) {
             char* cd_path = this->registry->RegGetAscii(0, "CDPath");
             if (cd_path != 0) {
                 sprintf(temp_name, "%sgame\\avi\\%s.avi", cd_path, video_file);
-                file_handle = _open(temp_name, _O_RDONLY, _S_IREAD);
+                file_handle = _open(temp_name, _O_RDONLY,
+                                    TRIBE_OPEN_READ_PERMISSIONS);
             }
             if (file_handle == -1) {
                 this->stop_video(1);
@@ -1115,14 +1130,19 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
         }
 
         if (video_codec_available != 0 && (this->video_setup != 0 || this->setup_video_system() != 0)) {
-            this->video_window = MCIWndCreateA(this->prog_window, this->prog_info->instance, 0x50001F0A, temp_name);
+            this->video_window = MCIWndCreateA(
+                this->prog_window,
+                reinterpret_cast<HINSTANCE>(this->prog_info->instance),
+                TRIBE_MCIWND_STYLE,
+                temp_name);
             if (this->video_window != 0) {
                 RECT video_rect;
                 this->old_video_wnd_proc = reinterpret_cast<int(__stdcall*)()>(GetWindowLongA(this->video_window, GWL_WNDPROC));
                 SetWindowLongA(this->video_window, GWL_WNDPROC, reinterpret_cast<long>(::video_sub_wnd_proc));
 
                 if (this->video_hi_color == 0) {
-                    void* palette = reinterpret_cast<void*>(SendMessageA(this->video_window, 0x47E, 0, 0));
+                    void* palette = reinterpret_cast<void*>(
+                        SendMessageA(this->video_window, TRIBE_MCIWNDM_GETPALETTE, 0, 0));
                     this->draw_system->SetPalette(palette);
                 }
 
@@ -1136,14 +1156,14 @@ int TRIBE_Game::start_video(int video_num, char* video_file) {
                            this->prog_info->main_hgt / 2 - video_rect.bottom / 2, video_rect.right, video_rect.bottom,
                            0);
                 this->set_render_all();
-                InvalidateRect(this->prog_window, 0, 1);
+                InvalidateRect(this->prog_window, NULL, TRUE);
                 SendMessageA(this->prog_window, WM_PAINT, 0, 0);
                 this->draw_system->ClearPrimarySurface();
                 this->video_paused = 0;
                 this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 1432);
-                SendMessageA(this->video_window, 0x806, 0, 0);
+                SendMessageA(this->video_window, MCI_PLAY, 0, 0);
                 this->enable_input();
-                SetCursor(0);
+                SetCursor(NULL);
                 SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
                 return 1;
             }
@@ -1170,9 +1190,10 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
     if (this->video_window != 0) {
         SendMessageFn send_message = SendMessageA;
 
-        send_message(this->video_window, 0x46A, 100, reinterpret_cast<long>(str));
+        send_message(this->video_window, TRIBE_MCIWNDM_GETMODEA, sizeof(str),
+                     reinterpret_cast<long>(str));
         if (str[0] != 0 && strcmp(str, "stopped") != 0) {
-            send_message(this->video_window, 0x808, 0, 0);
+            send_message(this->video_window, MCI_STOP, 0, 0);
         }
 
         send_message(this->video_window, WM_CLOSE, 0, 0);
@@ -1180,7 +1201,7 @@ void TRIBE_Game::stop_video(unsigned char goto_next_video) {
         this->draw_system->ClearPrimarySurface();
         this->draw_system->SetPalette(this->prog_palette);
         this->set_render_all();
-        InvalidateRect(this->prog_window, 0, 1);
+        InvalidateRect(this->prog_window, NULL, TRUE);
         send_message(this->prog_window, WM_PAINT, 0, 0);
         this->draw_system->ClearPrimarySurface();
     }
@@ -3116,7 +3137,7 @@ int TRIBE_Game::processCheatCode(int playerID, char* text) {
 
     strcpy(str, text);
     _mbsupr(reinterpret_cast<unsigned char*>(str));
-    encrypt_codes(str, encstr, 0x200);
+    encrypt_codes(str, encstr, 512);
 
     if (this->allowCheatCodes() == 0) {
         return 0;
@@ -3594,22 +3615,22 @@ void TRIBE_Game::setMapSize(MapSize v) {
     this->tribe_game_options.mapSizeValue = v;
     switch (v) {
     case Tiny:
-        this->RGE_Base_Game::setMapSize(0x48, 0x48, 8);
+        this->RGE_Base_Game::setMapSize(72, 72, 8);
         break;
     case Small:
-        this->RGE_Base_Game::setMapSize(0x60, 0x60, 8);
+        this->RGE_Base_Game::setMapSize(96, 96, 8);
         break;
     case Medium:
-        this->RGE_Base_Game::setMapSize(0x78, 0x78, 8);
+        this->RGE_Base_Game::setMapSize(120, 120, 8);
         break;
     case Large:
-        this->RGE_Base_Game::setMapSize(0x90, 0x90, 8);
+        this->RGE_Base_Game::setMapSize(144, 144, 8);
         break;
     case Huge:
-        this->RGE_Base_Game::setMapSize(0xC8, 0xC8, 8);
+        this->RGE_Base_Game::setMapSize(200, 200, 8);
         break;
     case Humongous:
-        this->RGE_Base_Game::setMapSize(0xFA, 0xFA, 8);
+        this->RGE_Base_Game::setMapSize(250, 250, 8);
         break;
     }
 }
@@ -3781,9 +3802,9 @@ char* TRIBE_Game::gameSummary() {
 }
 
 long __stdcall TRIBE_Game::wnd_proc(void* wnd, unsigned int msg, unsigned int wparam, long lparam) {
-    if (msg <= 0x200) {
-        if (msg != 0x200) {
-            if (msg == 7) {
+    if (msg <= WM_MOUSEMOVE) {
+        if (msg != WM_MOUSEMOVE) {
+            if (msg == WM_SETFOCUS) {
                 if (this->input_enabled == 0) {
                     this->disable_input();
                 } else {
@@ -3792,13 +3813,13 @@ long __stdcall TRIBE_Game::wnd_proc(void* wnd, unsigned int msg, unsigned int wp
             }
         } else {
             if (this->prog_mode == 1) {
-                SetCursor(0);
+                SetCursor(NULL);
             }
         }
     } else {
         switch (msg) {
-        case 0x201:
-        case 0x204:
+        case WM_LBUTTONDOWN:
+        case WM_RBUTTONDOWN:
             if (this->prog_mode == 1) {
                 this->stop_video(1);
                 return 0;
@@ -3837,11 +3858,12 @@ int TRIBE_Game::handle_idle() {
     if (this->prog_mode == 1 && this->video_window != 0) {
         unsigned long now = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 4993);
         if (now - this->last_video_time >= 1000) {
-            SendMessageA(this->video_window, 0x46A, 100, reinterpret_cast<long>(str));
+            SendMessageA(this->video_window, TRIBE_MCIWNDM_GETMODEA, sizeof(str),
+                         reinterpret_cast<long>(str));
             if (str[0] == 0 || strcmp(str, "stopped") == 0) {
                 this->stop_video(1);
             } else if (this->video_paused == 0 && strcmp(str, "paused") == 0) {
-                SendMessageA(this->video_window, 0x855, 0, 0);
+                SendMessageA(this->video_window, MCI_RESUME, 0, 0);
             }
             this->last_video_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5005);
         }
@@ -3892,7 +3914,7 @@ int TRIBE_Game::handle_query_new_palette(void* wnd, unsigned int msg, unsigned i
     mode = this->prog_mode;
     if (mode == result) {
         if (this->video_window != 0 && this->video_hi_color == 0) {
-            SendMessageA(this->video_window, 0x476, 0, 0);
+            SendMessageA(this->video_window, TRIBE_MCIWNDM_REALIZE, 0, 0);
         }
     } else {
         result = RGE_Base_Game::handle_query_new_palette(wnd, msg, wparam, lparam);
@@ -3907,13 +3929,13 @@ int TRIBE_Game::handle_activate(void* wnd, unsigned int msg, unsigned int wparam
     if (this->prog_mode == 1 && this->video_window != 0) {
         if (wparam == 1) {
             if (this->video_paused != 0) {
-                SendMessageA(this->video_window, 0x855, 0, 0);
+                SendMessageA(this->video_window, MCI_RESUME, 0, 0);
                 this->video_paused = 0;
                 return 1;
             }
         } else {
             if (this->video_paused == 0) {
-                SendMessageA(this->video_window, 0x809, 0, 0);
+                SendMessageA(this->video_window, MCI_PAUSE, 0, 0);
                 this->video_paused = 1;
             }
         }
@@ -4161,11 +4183,11 @@ extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
 
 long TRIBE_Game::video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lParam) {
     switch (msg) {
-    case 0x200:
-        SetCursor(0);
+    case WM_MOUSEMOVE:
+        SetCursor(NULL);
         return 0;
-    case 0x201:
-    case 0x204:
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
         this->stop_video(1);
         return 0;
     }
@@ -4205,16 +4227,16 @@ int TRIBE_Game::setup_video_system() {
     this->video_save_palette = this->draw_system->Pal;
 
     if (this->draw_system->ScreenMode == 2) {
-        SetCursor(0);
+        SetCursor(NULL);
         SetClassLongA(this->prog_window, GCL_HCURSOR, 0);
         this->mouse_pointer->Shutdown_Mouse();
 
         this->video_save_res_wid = this->draw_system->ScreenWidth;
         this->video_save_res_hgt = this->draw_system->ScreenHeight;
         if (this->check_prog_argument("8BITVIDEO") == 0) {
-            if (this->draw_system->IsModeAvail(0x280, 0x1E0, 0x10) != 0) {
+            if (this->draw_system->IsModeAvail(640, 480, 16) != 0) {
                 L->Log("640x480 16bit");
-                this->video_changed_res = this->draw_system->SetDisplaySize(0x280, 0x1E0, 0x10);
+                this->video_changed_res = this->draw_system->SetDisplaySize(640, 480, 16);
                 if (this->video_changed_res != 0) {
                     this->video_double_size = 1;
                     this->video_hi_color = 1;
@@ -4222,10 +4244,10 @@ int TRIBE_Game::setup_video_system() {
                 }
             }
 
-            if (this->video_changed_res == 0 && this->draw_system->ScreenWidth != 0x280) {
-                if (this->draw_system->IsModeAvail(0x280, 0x1E0, 8) != 0) {
+            if (this->video_changed_res == 0 && this->draw_system->ScreenWidth != 640) {
+                if (this->draw_system->IsModeAvail(640, 480, 8) != 0) {
                     L->Log("640x480 8bit");
-                    this->video_changed_res = this->draw_system->SetDisplaySize(0x280, 0x1E0, 8);
+                    this->video_changed_res = this->draw_system->SetDisplaySize(640, 480, 8);
                     if (this->video_changed_res != 0) {
                         this->video_double_size = 1;
                         L->Log("640x480 8bit success");
@@ -4263,7 +4285,7 @@ void TRIBE_Game::shutdown_video_system() {
     draw_system->SetPalette(video_save_palette);
     set_render_all();
 
-    InvalidateRect(this->prog_window, 0, 1);
+    InvalidateRect(this->prog_window, NULL, TRUE);
 
     set_prog_mode(2);
     restart_sound_system();

@@ -124,8 +124,8 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
         }
     }
 
-    this->time_line->create_timeline(this, &this->time_line, 10, 0x55,
-                                     0x26C, 0x14A, 0x0B, 9, 0x280, 0x1E0);
+    this->time_line->create_timeline(this, &this->time_line, 10, 85,
+                                     620, 330, 11, 9, 640, 480);
     this->time_line->set_bevel_info(
         3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
         this->bevel_color4, this->bevel_color5, this->bevel_color6);
@@ -169,8 +169,8 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
     this->create_text(this, &this->achievement_choice[4], 0, 388, 111,
                       121, 289, RGE_FONT_STANDARD, 0, 0, 0);
 
-    int y = 0xAB;
-    for (i = 1; i < 9; ++i, y += 0x1E) {
+    int y = 171;
+    for (i = 1; i < 9; ++i, y += 30) {
         char* player_name;
         if (i < rge_base_game->world->player_num) {
             player_name = rge_base_game->world->players[i]->name;
@@ -245,35 +245,35 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* titleText, int end_flag)
                                 165, 441, 150, 30, 0, 0, 0);
             this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0,
                                 325, 441, 150, 30, 0, 0, 0);
-            button_width = 0x96;
-            ok_x = 0x1E5;
+            button_width = 150;
+            ok_x = 485;
         } else {
             this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0,
                                 20, 441, 180, 30, 0, 0, 0);
             this->create_button(this, &this->restartButton, IDS_ACHIEVEMENTS_RESTART, 0,
                                 230, 441, 180, 30, 0, 0, 0);
-            button_width = 0xB4;
-            ok_x = 0x1B8;
+            button_width = 180;
+            ok_x = 440;
         }
     } else {
         this->create_button(this, &this->timelineButton, IDS_ACHIEVEMENTS_TIMELINE, 0,
                             100, 441, 200, 30, 0, 0, 0);
-        button_width = 0xC8;
-        ok_x = 0x154;
+        button_width = 200;
+        ok_x = 340;
     }
     this->create_button(this, &this->okButton, IDS_ACHIEVEMENTS_CLOSE, 0, ok_x, 441,
                         button_width, 30, 0, 0, 0);
     this->create_button(this, &this->backButton, IDS_ACHIEVEMENTS_BACK, 0, 200, 441,
                         240, 30, 0, 0, 0);
     this->backButton->set_active(0);
-    this->backButton->hotkey = 0x1B;
+    this->backButton->hotkey = VK_ESCAPE;
     this->backButton->hotkey_shift = 0;
     this->create_button(this, &this->backButton2, IDS_ACHIEVEMENTS_CLOSE, 0, 200, 441,
                         240, 30, 0, 0, 0);
     this->backButton2->set_active(0);
-    this->backButton2->hotkey = 0x1B;
+    this->backButton2->hotkey = VK_ESCAPE;
     this->backButton2->hotkey_shift = 0;
-    this->okButton->hotkey = 0x1B;
+    this->okButton->hotkey = VK_ESCAPE;
     this->okButton->hotkey_shift = 0;
 
     if (rge_base_game->get_player()->game_status == 1) {
@@ -728,7 +728,7 @@ void TribeAchievementsScreen::draw() {
                     if (world->players[player_index + 1]->game_status == 1) {
                         this->win_decal->shape_draw(
                             this->render_area,
-                            this->player_names[player_index]->xPosition() - 0x14,
+                            this->player_names[player_index]->xPosition() - 20,
                             this->player_names[player_index]->yPosition(),
                             0, 0, 0);
                     }

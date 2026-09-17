@@ -81,7 +81,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
             string_id = IDS_GAME_SPEED_NORMAL;
             break;
         }
-        y = i * 0x23 + 0x55;
+        y = i * 35 + 85;
         if (!this->create_text(this, &this->speedTitle[i + 1], string_id,
                                55, y, 110, 30, RGE_FONT_STANDARD, 0, 1, 0))
             return;
@@ -119,7 +119,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
                            165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->musicSlider, 100, 10,
-                                  0x14, 0xAA, 0x55, 0x14, 100))
+                                  20, 170, 85, 20, 100))
         return;
 
     TMusic_System* music_system = rge_base_game->music_system;
@@ -140,7 +140,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
                            165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->soundSlider, 100, 10,
-                                  0x14, 0x136, 0x55, 0x14, 100))
+                                  20, 310, 85, 20, 100))
         return;
 
     TSound_Driver* sound_system = rge_base_game->sound_system;
@@ -161,7 +161,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
                            470, 165, 110, 20, RGE_FONT_STANDARD, 0, 1, 0))
         return;
     if (!this->create_vert_slider(this, &this->scrollSpeedSlider, 100, 10,
-                                  0x14, 0x1C2, 0x55, 0x14, 100))
+                                  20, 450, 85, 20, 100))
         return;
 
     this->scrollSpeed = rge_base_game->prog_info->mouse_scroll_interval;
@@ -182,7 +182,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
             string_id = IDS_SCREEN_SIZE_1024X768;
             break;
         }
-        y = i * 0x23 + 0xE1;
+        y = i * 35 + 225;
         if (!this->create_text(this, &this->sizeTitle[i + 1], string_id,
                                55, y, 100, 30, RGE_FONT_STANDARD, 0, 1, 0))
             return;
@@ -195,22 +195,22 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
 
     int screen_width = this->render_area->DrawSystem->ScreenWidth;
     switch (screen_width) {
-    case 0x280:
+    case 640:
         this->sizeButton[0]->set_radio_button();
         break;
-    case 0x320:
+    case 800:
         this->sizeButton[1]->set_radio_button();
         break;
-    case 0x400:
+    case 1024:
         this->sizeButton[2]->set_radio_button();
         break;
     }
 
-    if (!this->render_area->DrawSystem->IsModeAvail(0x280, 0, 8))
+    if (!this->render_area->DrawSystem->IsModeAvail(640, 0, 8))
         this->sizeButton[0]->set_disabled(1);
-    if (!this->render_area->DrawSystem->IsModeAvail(0x320, 0, 8))
+    if (!this->render_area->DrawSystem->IsModeAvail(800, 0, 8))
         this->sizeButton[1]->set_disabled(1);
-    if (!this->render_area->DrawSystem->IsModeAvail(0x400, 0, 8))
+    if (!this->render_area->DrawSystem->IsModeAvail(1024, 0, 8))
         this->sizeButton[2]->set_disabled(1);
 
     if (!this->create_text(this, this->mouseTitle, IDS_MOUSE_INTERFACE_TITLE, 170, 190,
@@ -301,7 +301,7 @@ TribeConfigDialog::TribeConfigDialog(Mode m, TScreenPanel* parentPanel)
         return;
 
     TButtonPanel* cancel_button = this->cancelButton;
-    cancel_button->hotkey = 0x1B;
+    cancel_button->hotkey = VK_ESCAPE;
     cancel_button->hotkey_shift = 0;
     this->set_curr_child(this->okButton);
     tabList[0] = this->okButton;

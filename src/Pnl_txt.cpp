@@ -785,7 +785,7 @@ void TTextPanel::draw() {
     if (dc != 0) {
         SelectClipRgn(dc, this->clip_rgn);
         void* old_font = SelectObject(dc, this->font);
-        SetBkMode(dc, 1);
+        SetBkMode(dc, TRANSPARENT);
 
         for (short line = this->top_line, line_index = 0;
              line <= this->bot_line; ++line, ++line_index) {
@@ -1269,7 +1269,8 @@ int TTextPanel::insert_line(long line_in, char* text_in, char* text2_in, long id
     } else if (this->sorted != 0) {
         TextNode* previous = 0;
         while (node != 0) {
-            if (CompareStringA(0x400, 1, new_node->text, -1,
+            if (CompareStringA(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+                               new_node->text, -1,
                                node->text, -1) == 1) {
                 new_node->next_node = node;
                 if (previous == 0) {

@@ -195,12 +195,12 @@ void TRIBE_Panel_Object::draw() {
 
             if (this->game_obj->owner->color_table != 0) {
                 ASMSet_Color_Xform(
-                    (this->game_obj->owner->color_table->id + 1) * 0x10);
+                    (this->game_obj->owner->color_table->id + 1) * 16);
 
                 picture->shape_draw(
                     this->render_area,
                     this->pnl_x + 3,
-                    this->pnl_y + 0x1e,
+                    this->pnl_y + 30,
                     shape,
                     1,
                     this->game_obj->owner->color_table->table);
@@ -208,7 +208,7 @@ void TRIBE_Panel_Object::draw() {
                 picture->shape_draw(
                     this->render_area,
                     this->pnl_x + 3,
-                    this->pnl_y + 0x1e,
+                    this->pnl_y + 30,
                     shape,
                     0,
                     0);
@@ -229,7 +229,7 @@ void TRIBE_Panel_Object::draw() {
             this->health_pic->shape_draw(
                 this->render_area,
                 this->pnl_x + 3,
-                this->pnl_y + 0x54,
+                this->pnl_y + 84,
                 frame,
                 0,
                 0);
@@ -239,7 +239,7 @@ void TRIBE_Panel_Object::draw() {
     }
 
     if (this->render_area->GetDc("tpnl_obj::draw") != 0) {
-        SetBkMode(this->render_area->DrawDc, 1);
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         SetTextColor(this->render_area->DrawDc, 0x00ffffff);
         SelectClipRgn(this->render_area->DrawDc, (HRGN)this->clip_rgn);
         HGDIOBJ old_font = SelectObject(
@@ -664,13 +664,13 @@ void TRIBE_Panel_Object::draw_score() {
     this->render_area->Clear(&this->clip_rect, 0);
 
     if (this->render_area->GetDc("tpnl_obj::draw_score") != 0) {
-        SetBkMode(this->render_area->DrawDc, 1);
+        SetBkMode(this->render_area->DrawDc, TRANSPARENT);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
         old_font = SelectObject(this->render_area->DrawDc,
                                 (HGDIOBJ)this->font);
 
         x = (short)this->pnl_x + 3;
-        x_val = (short)this->pnl_x + 0x5A;
+        x_val = (short)this->pnl_x + 90;
         y = (short)this->pnl_y - 1;
 
         i = 1;
@@ -705,10 +705,10 @@ void TRIBE_Panel_Object::draw_score() {
                         x_val,
                         y + y_pos,
                         this->pnl_x + this->pnl_wid - 3,
-                        y + y_pos + 0x0E);
+                        y + y_pos + 14);
                 DrawTextA(this->render_area->DrawDc,
-                          str, -1, &rect, 0x22);
-                y_pos += 0x0E;
+                          str, -1, &rect, DT_RIGHT | DT_SINGLELINE);
+                y_pos += 14;
             }
             ++i;
         } while (i < 9);
@@ -727,8 +727,8 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
         if (this->render_area->Lock("tpnl_obj.cpp", 1) != 0) {
             this->item_pic->shape_draw(
                 this->render_area,
-                this->pnl_x + 0x36,
-                this->pnl_y + row * 0x14 + 0x1E,
+                this->pnl_x + 54,
+                this->pnl_y + row * 20 + 30,
                 pic_index, 0, 0);
             this->render_area->Unlock("tpnl_obj.cpp");
         }
@@ -758,14 +758,14 @@ void TRIBE_Panel_Object::draw_item(int row, int pic_index, ValueType val_type, i
     if (val_str[0] != 0) {
         void* dc = this->render_area->GetDc("tpnl_obj.cpp");
         if (dc != 0) {
-            SetBkMode(this->render_area->DrawDc, 1);
+            SetBkMode(this->render_area->DrawDc, TRANSPARENT);
             SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
             HGDIOBJ old_font = SelectObject(this->render_area->DrawDc,
                                              (HGDIOBJ)this->font);
 
             TextOutA(this->render_area->DrawDc,
-                     this->pnl_x + 0x58,
-                     this->pnl_y + row * 0x14 + 0x21,
+                     this->pnl_x + 88,
+                     this->pnl_y + row * 20 + 33,
                      val_str, strlen(val_str));
 
             SelectObject(this->render_area->DrawDc, old_font);

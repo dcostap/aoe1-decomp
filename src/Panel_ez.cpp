@@ -149,7 +149,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
 
     if (info_data == 0) {
         if (this->info_id != -1) {
-            info_data = RESFILE_load(0x62696E61, this->info_id,
+            info_data = RESFILE_load(RES_TYPE_BINARY, this->info_id,
                                      own_mem, resDataSize);
         }
         if (info_data == 0) {
@@ -200,7 +200,7 @@ long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
                                   back_pic_id_a1);
             this->set_background2(background_pic_file_name_a2,
                                    back_pic_id_a2);
-        } else if (this->render_area->Width < 0x400) {
+        } else if (this->render_area->Width < 1024) {
             this->set_background(background_pic_file_name_b1,
                                   back_pic_id_b1);
             this->set_background2(background_pic_file_name_b2,
@@ -247,8 +247,8 @@ TEasy_Panel::TEasy_Panel()
 }
 
 void TEasy_Panel::init_vars() {
-    this->ideal_width = 0x280;
-    this->ideal_height = 0x1E0;
+    this->ideal_width = 640;
+    this->ideal_height = 480;
     this->info_file_name[0] = 0;
     this->info_id = -1;
     this->background_pic = 0;
@@ -630,7 +630,7 @@ int TEasy_Panel::set_palette(char* file_name, long resource_file_id) {
     }
 
     tagPALETTEENTRY palette_entries[256];
-    if (GetPaletteEntries(p, 0, 0x100, palette_entries) != 0) {
+    if (GetPaletteEntries(p, 0, 256, palette_entries) != 0) {
             this->shadow_color_table = new RGE_Color_Table(
             this->render_area,
             this->shadow_amount,
@@ -728,7 +728,7 @@ void TEasy_Panel::set_shadow_amount(long val) {
     }
 
     if (this->palette != 0 && this->shadow_amount > 0) {
-        if (GetPaletteEntries(this->palette, 0, 0x100, palette_entries)) {
+        if (GetPaletteEntries(this->palette, 0, 256, palette_entries)) {
             this->shadow_color_table = new RGE_Color_Table(this->render_area, this->shadow_amount, 0, palette_entries);
         }
     }
@@ -1429,7 +1429,7 @@ void TEasy_Panel::popupOKDialog(char* text, char* panel_title, int wid, int hgt)
     }
 
     TMessageDialog* dialog = new TMessageDialog(temp_title);
-    dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 0, text, 0x5A, 0x1E);
+    dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 0, text, 90, 30);
 }
 
 void TEasy_Panel::popupYesNoDialog(long text_id, char* panel_title, int wid, int hgt) {
@@ -1448,7 +1448,7 @@ void TEasy_Panel::popupYesNoDialog(char* text, char* panel_title, int wid, int h
         dialog = new TMessageDialog("YesNoDialog");
     }
 
-    dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 2, text, 0x5A, 0x1E);
+    dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 2, text, 90, 30);
 }
 
 void TEasy_Panel::popupYesNoCancelDialog(long text_id, char* panel_title, int wid, int hgt) {
@@ -1466,7 +1466,7 @@ void TEasy_Panel::popupYesNoCancelDialog(char* text, char* panel_title, int wid,
         dialog = new TMessageDialog("YesNoCancelDialog");
     }
 
-    dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 4, text, 0x78, 0x19);
+    dialog->setup(this, this->popup_info_file_name, this->popup_info_id, wid, hgt, 4, text, 120, 25);
 }
 
 void TEasy_Panel::command_help(char* in_parent_panel, long help_string,
@@ -1488,7 +1488,8 @@ void TEasy_Panel::command_help(char* in_parent_panel, char* help_string,
 
 void TEasy_Panel::setup_popup_help(void) {
     this->help_mode = 1;
-    rge_base_game->set_mouse_cursor(LoadCursorA(0, MAKEINTRESOURCEA(0x7F8B)));
+    rge_base_game->set_mouse_cursor(
+        LoadCursorA(NULL, MAKEINTRESOURCEA(TEASY_SCENARIO_EDITOR_CURSOR)));
     rge_base_game->set_mouse_facet(6);
     this->saved_mouse_mode = rge_base_game->mouse_pointer->get_game_enable();
     rge_base_game->mouse_pointer->set_game_enable(0);

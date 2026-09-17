@@ -55,7 +55,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     this->goldTotal = 0.0f;
     this->tribute_flag = 0;
 
-    if (!this->setup(parentPanel->renderArea(), parentPanel, 0x271, 0x195,
+    if (!this->setup(parentPanel->renderArea(), parentPanel, 625, 405,
                      parentPanel->get_popup_info_file(),
                      parentPanel->get_popup_info_id(), 1)) {
         return;
@@ -117,7 +117,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
     RGE_Game_World* world = rge_base_game->world;
     int player_id = 1;
     int row = 0;
-    int a = 0x50;
+    int a = 80;
     while (player_id < world->player_num) {
         GetPaletteEntries(this->palette,
                           world->players[player_id]->color_table->map_color,
@@ -261,7 +261,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
 
         ++player_id;
         ++row;
-        a += 0x1E;
+        a += 30;
     }
 
     if (!this->create_check_box(this, &this->allianceButton, 282, 327,
@@ -295,7 +295,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parentPanel)
         return;
     }
     this->cancelButton->set_help_info(IDS_HELP_CANCEL, -1);
-    this->cancelButton->hotkey = 0x1B;
+    this->cancelButton->hotkey = VK_ESCAPE;
     this->cancelButton->hotkey_shift = 0;
 
     if (!this->create_button(this, &this->help_button, IDS_BUTTON_HELP, 0, 500,
@@ -933,11 +933,11 @@ void TribeDiplomacyDialog::draw() {
                     ASMSet_Color_Xform((colors->id + 1) * 16);
                     this->backgroundPics->shape_draw(
                         this->render_area,
-                        this->pnl_x + 0x0A,
-                        this->pnl_y + y + 0x50,
+                        this->pnl_x + 10,
+                        this->pnl_y + y + 80,
                         0, 1, world->players[i + 1]->color_table->table);
                 }
-                y += 0x1E;
+                y += 30;
                 ++i;
             } while (i < world->player_num - 1);
         }

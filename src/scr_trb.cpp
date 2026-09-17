@@ -26,10 +26,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     }
 
     width = this->render_area->Width;
-    if (width < 0x320) {
+    if (width < 800) {
         strcpy(backgroundName, "bgA640");
     } else {
-        if (width < 0x400) {
+        if (width < 1024) {
             strcpy(backgroundName, "bgA800");
         } else {
             strcpy(backgroundName, "bgA1024");
@@ -48,8 +48,8 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     }
 
     backgroundPanel = this->background;
-    secondHeight = this->pnl_hgt * 0x1E0 / 0x1E0;
-    secondWidth = this->pnl_wid * 0x280 / 0x280;
+    secondHeight = this->pnl_hgt * 480 / 480;
+    secondWidth = this->pnl_wid * 640 / 640;
     backgroundPanel->set_positioning(
         TPanel::PositionCentered, 0, 0, 0, 0, secondWidth, secondWidth,
         secondHeight, secondHeight, 0, 0, 0, 0);
@@ -62,10 +62,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     }
     this->title->setup(
         this->render_area, this->background,
-        this->pnl_wid * 0x14 / 0x280,
-        this->pnl_hgt * 0x14 / 0x1E0,
-        this->pnl_wid * 600 / 0x280,
-        this->pnl_hgt * 0x1E / 0x1E0,
+        this->pnl_wid * 20 / 640,
+        this->pnl_hgt * 20 / 480,
+        this->pnl_wid * 600 / 640,
+        this->pnl_hgt * 30 / 480,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, "Civilization Selection");
 
@@ -85,11 +85,11 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
 
         (*button)->setup(
             this->render_area, this->background,
-            this->pnl_wid * 0x14 / 0x280 + secondWidth * this->pnl_wid / 0x280,
-            this->pnl_hgt * 0x32 / 0x1E0 +
-                secondHeight * this->pnl_hgt * 0x73 / 0x1E0,
-            this->pnl_wid * 200 / 0x280,
-            this->pnl_hgt * 0x6E / 0x1E0,
+            this->pnl_wid * 20 / 640 + secondWidth * this->pnl_wid / 640,
+            this->pnl_hgt * 50 / 480 +
+                secondHeight * this->pnl_hgt * 115 / 480,
+            this->pnl_wid * 200 / 640,
+            this->pnl_hgt * 110 / 480,
             TButtonPanel::DrawText, buttonSound,
             TButtonPanel::NotifyAction, 0);
         (*button)->set_text_info(this->tribeName(i), font->font,
@@ -112,10 +112,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     }
     this->tribeText->setup(
         this->render_area, this->background,
-        this->pnl_wid * 0x14 / 0x280,
-        this->pnl_hgt * 400 / 0x1E0,
-        this->pnl_wid * 0x1FE / 0x280,
-        this->pnl_hgt * 0x3C / 0x1E0,
+        this->pnl_wid * 20 / 640,
+        this->pnl_hgt * 400 / 480,
+        this->pnl_wid * 510 / 640,
+        this->pnl_hgt * 60 / 480,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, "");
     this->tribeText->set_alignment(TTextPanel::AlignTop,
@@ -128,10 +128,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     }
     this->okButton->setup(
         this->render_area, this->background,
-        this->pnl_wid * 500 / 0x280,
-        this->pnl_hgt * 400 / 0x1E0,
-        this->pnl_wid * 0x78 / 0x280,
-        this->pnl_hgt * 0x1E / 0x1E0,
+        this->pnl_wid * 500 / 640,
+        this->pnl_hgt * 400 / 480,
+        this->pnl_wid * 120 / 640,
+        this->pnl_hgt * 30 / 480,
         TButtonPanel::DrawText, buttonSound,
         TButtonPanel::NotifyAction, 0);
     this->okButton->set_text_info("Previous Screen", font->font,
@@ -144,10 +144,10 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     }
     this->cancelButton->setup(
         this->render_area, this->background,
-        this->pnl_wid * 500 / 0x280,
-        this->pnl_hgt * 0x1B8 / 0x1E0,
-        this->pnl_wid * 0x78 / 0x280,
-        this->pnl_hgt * 0x1E / 0x1E0,
+        this->pnl_wid * 500 / 640,
+        this->pnl_hgt * 440 / 480,
+        this->pnl_wid * 120 / 640,
+        this->pnl_hgt * 30 / 480,
         TButtonPanel::DrawText, buttonSound,
         TButtonPanel::NotifyAction, 0);
     this->cancelButton->set_text_info("Cancel", font->font,
