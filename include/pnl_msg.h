@@ -17,6 +17,13 @@ public:
         ColoredChatMessage = 4,
         RightInfoMessage = 5
     };
+    enum MessageColor {
+        NormalColor = 0x32,
+        ErrorColor = 0x55,
+        DebugColor = 0x56,
+        RolloverColor = 0x70,
+        WhiteColor = 0xFF
+    };
     enum JustType {
         TopJust = 0,
         BottomJust = 1,

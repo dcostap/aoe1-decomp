@@ -2597,7 +2597,7 @@ tile_off_screen:
                             char pText[128];
                             this->get_string(text_id, pText, 127);
                             this->message_panel->show_message(
-                                TMessagePanel::InfoMessage, pText, 0x70, 0,
+                                TMessagePanel::InfoMessage, pText, TMessagePanel::RolloverColor, 0,
                                 0, 0, 0);
                         }
                         goto no_mouse_process;

@@ -1727,7 +1727,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
     case 0x7D:
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, val2, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -1760,7 +1760,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
                               RGE_ATTRIBUTE_ERROR_NO_ROOM_FOR_UNIT,
                               val2, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -1770,7 +1770,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->play_sound(3);
             this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
                               RGE_ATTRIBUTE_ERROR_CANNOT_REPAIR, 0, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -1781,7 +1781,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
                               RGE_ATTRIBUTE_ERROR_NOT_CLOSE_ENOUGH_TO_LAND,
                               0, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -1792,7 +1792,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
                               RGE_ATTRIBUTE_ERROR_CANNOT_TRADE_WITH_ENEMY,
                               0, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -1803,7 +1803,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
             this->get_string2(RGE_STRING_TYPE_ATTRIBUTE,
                               RGE_ATTRIBUTE_ERROR_NOT_ENOUGH_UNLOAD_SPACE,
                               0, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -2084,7 +2084,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
             this->get_string(IDS_ERROR_CONVERSION_NO_FAITH, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -2093,7 +2093,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
             this->get_string(IDS_ERROR_CONVERSION_NO_MONOTHEISM_PRIESTS, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -2102,7 +2102,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
             this->get_string(IDS_ERROR_CONVERSION_NO_MONOTHEISM_BUILDINGS, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -2111,7 +2111,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
             this->get_string(IDS_ERROR_CONVERSION_TOWN_CENTER, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;
@@ -2120,7 +2120,7 @@ void TRIBE_Game::notification(int notify_type, long val1, long val2, long val3, 
         if (val1 == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(3);
             this->get_string(IDS_ERROR_CONVERSION_WONDER, msg, 256);
-            this->game_screen->show_message(TMessagePanel::BadMessage, msg, 0x55, 0);
+            this->game_screen->show_message(TMessagePanel::BadMessage, msg, TMessagePanel::ErrorColor, 0);
             return;
         }
         break;

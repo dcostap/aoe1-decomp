@@ -1485,7 +1485,7 @@ void TRIBE_Screen_Game::handleChatReceived(int line_no) {
     strcpy(chat_msg, chat->GetChatMsg(line_no));
     L->Log("$$$ RECEIVED CHAT @%u: %s", this->world->world_time, chat_msg);
     this->chat_panel[this->chat_line]->show_message(
-        TMessagePanel::ChatMessage, chat_msg, 0xff, 0, 0, 0, 0);
+        TMessagePanel::ChatMessage, chat_msg, TMessagePanel::WhiteColor, 0, 0, 0, 0);
 
     this->chat_line++;
     if (this->chat_line >= 8) {
@@ -1495,7 +1495,7 @@ void TRIBE_Screen_Game::handleChatReceived(int line_no) {
 
 void TRIBE_Screen_Game::display_system_message(char* msg) {
     this->chat_panel[this->chat_line]->show_message(
-        TMessagePanel::ChatMessage, msg, 0xFF, 0, 0, 0, 0);
+        TMessagePanel::ChatMessage, msg, TMessagePanel::WhiteColor, 0, 0, 0, 0);
     this->chat_line++;
     if (this->chat_line >= 8) {
         this->chat_line = 0;
@@ -2487,21 +2487,21 @@ void TRIBE_Screen_Game::show_timings(char* str1, char* str2) {
 }
 
 void TRIBE_Screen_Game::show_comm(char* str, char* str2, char* str3, char* str4, char* str5, char* str6) {
-    message_panel->show_message(TMessagePanel::DebugMessage, str, 0x56, 0, 0, 0, 0);
-    message_panel2->show_message(TMessagePanel::DebugMessage, str2, 0x56, 0, 0, 0, 0);
-    message_panel3->show_message(TMessagePanel::DebugMessage, str3, 0x56, 0, 0, 0, 0);
-    message_panel4->show_message(TMessagePanel::DebugMessage, str4, 0x56, 0, 0, 0, 0);
-    message_panel5->show_message(TMessagePanel::DebugMessage, str5, 0x56, 0, 0, 0, 0);
-    message_panel6->show_message(TMessagePanel::DebugMessage, str6, 0x56, 0, 0, 0, 0);
+    message_panel->show_message(TMessagePanel::DebugMessage, str, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    message_panel2->show_message(TMessagePanel::DebugMessage, str2, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    message_panel3->show_message(TMessagePanel::DebugMessage, str3, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    message_panel4->show_message(TMessagePanel::DebugMessage, str4, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    message_panel5->show_message(TMessagePanel::DebugMessage, str5, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    message_panel6->show_message(TMessagePanel::DebugMessage, str6, TMessagePanel::DebugColor, 0, 0, 0, 0);
 }
 
 void TRIBE_Screen_Game::show_ai(char* str, char* str2, char* str3, char* str4, char* str5, char* str6) {
-    this->message_panel->show_message(TMessagePanel::DebugMessage, str, 0x56, 0, 0, 0, 0);
-    this->message_panel2->show_message(TMessagePanel::DebugMessage, str2, 0x56, 0, 0, 0, 0);
-    this->message_panel3->show_message(TMessagePanel::DebugMessage, str3, 0x56, 0, 0, 0, 0);
-    this->message_panel4->show_message(TMessagePanel::DebugMessage, str4, 0x56, 0, 0, 0, 0);
-    this->message_panel5->show_message(TMessagePanel::DebugMessage, str5, 0x56, 0, 0, 0, 0);
-    this->message_panel6->show_message(TMessagePanel::DebugMessage, str6, 0x56, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::DebugMessage, str, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    this->message_panel2->show_message(TMessagePanel::DebugMessage, str2, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    this->message_panel3->show_message(TMessagePanel::DebugMessage, str3, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    this->message_panel4->show_message(TMessagePanel::DebugMessage, str4, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    this->message_panel5->show_message(TMessagePanel::DebugMessage, str5, TMessagePanel::DebugColor, 0, 0, 0, 0);
+    this->message_panel6->show_message(TMessagePanel::DebugMessage, str6, TMessagePanel::DebugColor, 0, 0, 0, 0);
 }
 
 void TRIBE_Screen_Game::show_message(TMessagePanel::MessageType message_type, char* str, unsigned char font_color_in, unsigned char back_color_in) {
@@ -3776,7 +3776,7 @@ void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     if (found != -1) {
         this->text_line_panel->show_message(
             TMessagePanel::InfoMessage, this->button_panel[found]->text_msg,
-            0xFF, 0, 0, 0, 0);
+            TMessagePanel::WhiteColor, 0, 0, 0, 0);
     }
 }
 
@@ -3819,7 +3819,7 @@ void TRIBE_Screen_Game::command_attack(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK), TMessagePanel::NormalColor, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x67, 0);
 }
@@ -3856,6 +3856,7 @@ void TRIBE_Screen_Game::command_building(int id) {
             return;
         } else {
             rge_base_game->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, static_cast<int>(attr), msg, 512);
+            // This palette index has no verified name for this error path.
             this->message_panel->show_message(TMessagePanel::BadMessage, msg, 0x56, 0, 0, 0, 0);
         }
     }
@@ -3896,7 +3897,7 @@ void TRIBE_Screen_Game::command_chat() {
     }
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         message_panel->show_message(
-            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), 0x32,
+            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), TMessagePanel::NormalColor,
             0, 0, 0, 0);
         return;
     }
@@ -3906,7 +3907,7 @@ void TRIBE_Screen_Game::command_chat() {
 void TRIBE_Screen_Game::command_quick_chat() {
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         message_panel->show_message(
-            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), 0x32,
+            TMessagePanel::BadMessage, get_string(IDS_ERROR_CHAT_AFTER_DEFEAT), TMessagePanel::NormalColor,
             0, 0, 0, 0);
         return;
     }
@@ -3941,7 +3942,7 @@ void TRIBE_Screen_Game::command_convert(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_CONVERT), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_CONVERT), TMessagePanel::NormalColor, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x65, 0);
 }
@@ -4065,7 +4066,7 @@ void TRIBE_Screen_Game::command_heal(void) {
         return;
     }
 
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_HEAL), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_HEAL), TMessagePanel::NormalColor, 0, 0, 0, 0);
         rge_base_game->set_game_mode(0x66, 0);
 }
 
@@ -4073,7 +4074,7 @@ void TRIBE_Screen_Game::command_repair(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_REPAIR), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_REPAIR), TMessagePanel::NormalColor, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x68, 0);
 }
@@ -4157,9 +4158,10 @@ void TRIBE_Screen_Game::command_move() {
         if (rge_base_game->get_player()->get_selected_objects_to_command(
                 &list, &list_num, -1, -1, -1, -1)) {
             free(list);
-            this->message_panel->show_message(
+                // This palette index has no verified name for this error path.
+                this->message_panel->show_message(
                 TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_MOVE),
-                0x32, 0, 0, 0, 0);
+                TMessagePanel::NormalColor, 0, 0, 0, 0);
             rge_base_game->set_game_mode(4, 0);
         }
     }
@@ -4248,6 +4250,7 @@ void TRIBE_Screen_Game::command_research(int id) {
             return;
         }
         rge_base_game->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, static_cast<int>(attr), msg, 512);
+        // This palette index has no verified name for this error path.
         this->message_panel->show_message(TMessagePanel::BadMessage, msg,
                                           0x56, 0, 0, 0, 0);
     }
@@ -4365,6 +4368,7 @@ void TRIBE_Screen_Game::command_train(int id, short train_count) {
             return;
         }
         rge_base_game->get_string2(RGE_STRING_TYPE_ATTRIBUTE, 1, static_cast<int>(attr), msg, 512);
+        // This palette index has no verified name for this error path.
         this->message_panel->show_message(TMessagePanel::BadMessage, msg, 0x56, 0, 0, 0, 0);
     }
 }
@@ -4380,7 +4384,7 @@ void TRIBE_Screen_Game::command_unload(void) {
     if (!rge_base_game->get_paused()) {
         this->message_panel->show_message(TMessagePanel::BadMessage,
                                           this->get_string(IDS_MESSAGE_UNLOAD),
-                                          0x32, 0, 0, 0, 0);
+                                          TMessagePanel::NormalColor, 0, 0, 0, 0);
         rge_base_game->set_game_mode(0x69, 0);
     }
 }
@@ -4442,7 +4446,7 @@ void TRIBE_Screen_Game::command_work() {
             free(list);
             this->message_panel->show_message(
                 TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_WORK),
-                0x32, 0, 0, 0, 0);
+                TMessagePanel::NormalColor, 0, 0, 0, 0);
             rge_base_game->set_game_mode(5, 0);
         }
     }
@@ -4464,7 +4468,7 @@ void TRIBE_Screen_Game::command_attack_ground(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
-    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK_GROUND), 0x32, 0, 0, 0, 0);
+    this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(IDS_MESSAGE_ATTACK_GROUND), TMessagePanel::NormalColor, 0, 0, 0, 0);
     // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x64, 0);
 }
