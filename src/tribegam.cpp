@@ -342,7 +342,7 @@ int TRIBE_Game::setup() {
     }
 
     strncpy(cmd_line, this->prog_info->cmd_line, 255);
-    cmd_line[0xFF] = 0;
+    cmd_line[255] = 0;
     CharUpperA(cmd_line);
 
     option = reinterpret_cast<char*>(
@@ -380,7 +380,7 @@ int TRIBE_Game::setup() {
     video_codec_available = ICInfo(0x63646976, 0x31347669, &ici);
 
     if (this->check_prog_argument("LOBBY") != 0) {
-        new TRIBE_Screen_Status_Message("Status Screen", 0x4BF, "scr1", 0xC383);
+        new TRIBE_Screen_Status_Message("Status Screen", IDS_STATUS_SETTING_UP_MULTIPLAYER, "scr1", 0xC383);
         panel_system.setCurrentPanel("Status Screen", 0);
 
         result = this->comm_handler->LaunchLobbyGame();
@@ -399,7 +399,7 @@ int TRIBE_Game::setup() {
             if (screen == 0 || screen->error_code != 0) {
                 return 0;
             }
-            screen->set_text(0x96A);
+            screen->set_text(IDS_ERROR_CONNECTION_TIMEOUT);
             panel_system.setCurrentPanel("Main Error Screen", 0);
             panel_system.destroyPanel("Status Screen");
         } else {
@@ -421,7 +421,7 @@ int TRIBE_Game::setup() {
                     }
                     TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.panel("Main Menu"));
                     if (panel != 0) {
-                        panel->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
+                        panel->popupOKDialog(IDS_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
             } else if (this->startup_game[0] != 0) {
@@ -431,7 +431,7 @@ int TRIBE_Game::setup() {
                     }
                     TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.panel("Main Menu"));
                     if (panel != 0) {
-                        panel->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
+                        panel->popupOKDialog(IDS_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
                     }
                 }
             } else if (this->prog_info->skip_startup == 0) {
@@ -1438,7 +1438,7 @@ void TRIBE_Game::restart_game() {
     _finddata_t fileInfo;
     int result;
 
-    this->show_status_message(0x451, 0, -1);
+    this->show_status_message(IDS_STATUS_STARTING_GAME, 0, -1);
     this->close_game_screens(0);
     this->game_screen = 0;
     panel_system.destroyPanel("Game Screen");
@@ -1477,14 +1477,14 @@ void TRIBE_Game::restart_game() {
 
         TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.panel("Main Menu"));
         if (panel != 0) {
-            static_cast<TEasy_Panel*>(panel)->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
+            static_cast<TEasy_Panel*>(panel)->popupOKDialog(IDS_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
         }
     }
 }
 
 int TRIBE_Game::load_db_files() {
     this->disable_input();
-    this->show_status_message(0x44d, 0, -1);
+    this->show_status_message(IDS_STATUS_LOADING_GAME_DATA, 0, -1);
 
     int result = 0;
     if (this->world != 0) {
@@ -1535,7 +1535,7 @@ int TRIBE_Game::save_game(char* fileName) {
     }
 
     this->disable_input();
-    this->show_status_message(0x453, 0, -1);
+    this->show_status_message(IDS_STATUS_SAVING_GAME, 0, -1);
 
     if (this->check_prog_argument("DEBUGSAVEGAME") != 0) {
         ENABLE_COMPRESSION = 0;
@@ -2139,7 +2139,7 @@ int TRIBE_Game::start_game(int skip_startup_screens) {
     this->disable_input();
 
     if (this->world == 0) {
-        this->show_status_message(0x44D, info_file, info_id);
+        this->show_status_message(IDS_STATUS_LOADING_GAME_DATA, info_file, info_id);
         if (this->load_game_data() == 0) {
             this->close_status_message();
             this->enable_input();
@@ -2147,7 +2147,7 @@ int TRIBE_Game::start_game(int skip_startup_screens) {
         }
     }
 
-    this->show_status_message(0x451, info_file, info_id);
+    this->show_status_message(IDS_STATUS_STARTING_GAME, info_file, info_id);
     if (this->create_game(0) == 0) {
         this->close_status_message();
         this->enable_input();
@@ -2300,7 +2300,7 @@ int TRIBE_Game::load_game(char* fileName) {
         panel_system.destroyPanel("Game Screen");
     }
 
-    this->show_status_message(0x44D, 0, -1);
+    this->show_status_message(IDS_STATUS_LOADING_GAME_DATA, 0, -1);
     if (this->load_game_data() == 0) {
         if (cur_panel == 0 || cur_panel->panelName() == 0)
             goto load_failed;
@@ -2314,7 +2314,7 @@ int TRIBE_Game::load_game(char* fileName) {
         goto load_failed;
     }
 
-    this->show_status_message(0x452, 0, -1);
+    this->show_status_message(IDS_STATUS_LOADING_SAVED_GAME, 0, -1);
     if (this->sound_system != 0)
         this->sound_system->mute = 1;
 
@@ -4279,7 +4279,7 @@ void TRIBE_Game::disconnect_multiplayer_game() {
 
     if (this->comm_handler->CountWaitingMessages() > 0) {
         this->disable_input();
-        this->show_status_message(0x4C0, 0, -1);
+        this->show_status_message(IDS_STATUS_DISCONNECTING_MULTIPLAYER, 0, -1);
 
         unsigned long start_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 5624);
         unsigned long last_time = start_time;

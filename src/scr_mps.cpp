@@ -1083,7 +1083,7 @@ int TribeMPSetupScreen::startGame() {
         rge_base_game->setPlayerHasCD(comm->WhoAmI() - 1, cd);
         int cd2 = rge_base_game->check_for_cd(i5h);
         if (cd2 == 0) {
-            this->popupOKDialog(0x7d9, 0, TEASY_POPUP_WIDTH, 100);
+            this->popupOKDialog(IDS_ERROR_CD_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
             return 0;
         }
     }
@@ -1176,7 +1176,7 @@ int TribeMPSetupScreen::startGame() {
     }
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
-        this->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
     return 1;
@@ -1314,7 +1314,7 @@ void TribeMPSetupScreen::cancelScreen(int lobbyTimeout) {
         if (lobbyTimeout != 0) {
             TRIBE_Screen_Main_Error* error = new TRIBE_Screen_Main_Error;
             if (error != 0 && error->error_code == 0) {
-                error->set_text(0x96A);
+                error->set_text(IDS_ERROR_CONNECTION_TIMEOUT);
                 panel_system.setCurrentPanel("Main Error Screen", 0);
             } else {
                 rge_base_game->close();
@@ -1812,7 +1812,7 @@ void TribeMPSetupScreen::fillPlayers() {
                 this->playerNameText[i]->set_text(this->playerNameDrop[i]->get_text());
             } else {
                 if (is_me == 1) {
-                    this->playerNameText[i]->set_text(0x25B3L);
+                    this->playerNameText[i]->set_text(IDS_PLAYER_NAME_YOU_SETUP);
                 } else {
                     this->playerNameText[i]->set_text(this->playerNameDrop[i]->get_text());
                 }

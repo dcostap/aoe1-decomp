@@ -33,7 +33,7 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
                 if (create_text(this, &campaignTitle, 0x2BCE,
                                 campaignListX - 5, campaignListY - 0x14,
                                 200, 0x14, 4, 0, 0, 0)) {
-                    campaignList->set_text(0x2B5D);
+                    campaignList->set_text(IDS_CAMPAIGN_LIST_LOADING);
                     scenarioListX = 0x14;
                     scenarioListY = campaignListY + campaignListHeight + 0x1E;
                     scenarioListWidth = 600;
@@ -285,7 +285,7 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     int first_color = 0;
     RGE_Scenario* scen = rge_base_game->get_scenario_info(0, 1);
     if (scen == 0) {
-        this->popupOKDialog(0x9ca, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_TRIAL_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return;
     }
 
@@ -338,6 +338,6 @@ void TRIBE_Screen_Campaign_Selection::startGame() {
     }
 
     if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
-        this->popupOKDialog(0x961, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_START_GAME, 0, TEASY_POPUP_WIDTH, 100);
     }
 }

@@ -286,7 +286,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
     this->scenarioList->set_second_column_pos(second_column_pos);
 
     if (rge_base_game->multiplayerGame() != 0) {
-        this->scenarioList->set_text(0x25FD);
+        this->scenarioList->set_text(IDS_SCENARIO_LIST_LOADING);
         this->scenarioList->set_help_info(0x7639, -1);
         if (!this->create_auto_scrollbar(&this->scenarioScrollbar,
                                          this->scenarioList, 0x14))
@@ -678,9 +678,9 @@ void TribeGameSettingsScreen::fillMissionText(void) {
     id = this->scenarioList->get_id();
 
     if (id == -2) {
-        this->missionText->set_text(0x25DC);
+        this->missionText->set_text(IDS_RANDOM_MAP_INSTRUCTIONS);
     } else if (id == -1) {
-        this->missionText->set_text(0x2618);
+        this->missionText->set_text(IDS_DEATH_MATCH_DESCRIPTION);
     } else {
         this->missionText->set_text(this->scenarioMission[this->scenario_line_offset + line]);
     }

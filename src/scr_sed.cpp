@@ -2496,7 +2496,7 @@ int TRIBE_Screen_Sed::command_menu() {
 
 void TRIBE_Screen_Sed::command_new(void) {
     if (this->need_to_save()) {
-        this->popupYesNoCancelDialog(0x2447, s_NewSaveDialog, TEASY_POPUP_WIDTH, 100);
+        this->popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_NewSaveDialog, TEASY_POPUP_WIDTH, 100);
         return;
     }
     static_cast<TRIBE_Game *>(rge_base_game)->start_scenario_editor(0, 0);
@@ -2513,7 +2513,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
     this->need_to_save_flag = 0;
     if (rge_base_game->world == 0) {
         if (display_in != 0) {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(0x44d, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_LOADING_GAME_DATA, 0, -1);
         }
         if (static_cast<TRIBE_Game *>(rge_base_game)->load_game_data() == 0) {
             if (display_in != 0) {
@@ -2526,9 +2526,9 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
     this->world = static_cast<TRIBE_World *>(rge_base_game->world);
     if (display_in != 0) {
         if (scenario_name_in == 0) {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(0x44e, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SETTING_UP_SCENARIO, 0, -1);
         } else {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(0x44f, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_LOADING_SCENARIO, 0, -1);
         }
     }
 
@@ -2585,7 +2585,7 @@ int TRIBE_Screen_Sed::command_new_map(char *scenario_name_in, int is_multi_playe
 
 void TRIBE_Screen_Sed::command_open(void) {
     if (this->need_to_save()) {
-        this->popupYesNoCancelDialog(0x2447, s_OpenSaveDialog, TEASY_POPUP_WIDTH, 100);
+        this->popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_OpenSaveDialog, TEASY_POPUP_WIDTH, 100);
         return;
     }
 
@@ -2616,7 +2616,7 @@ void TRIBE_Screen_Sed::command_player(int id) {
 
 void TRIBE_Screen_Sed::command_quit() {
     if (need_to_save()) {
-        popupYesNoCancelDialog(0x2447, s_QuitSaveDialog, TEASY_POPUP_WIDTH,
+        popupYesNoCancelDialog(IDS_CONFIRM_SAVE_SCENARIO_CHANGES, s_QuitSaveDialog, TEASY_POPUP_WIDTH,
                                TEASY_POPUP_HEIGHT);
         return;
     }
@@ -2634,22 +2634,22 @@ void TRIBE_Screen_Sed::command_save(unsigned char kill_menu, unsigned char quit_
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
-        this->popupOKDialog(0x2742, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
         panel_system.destroyPanel(s_Scenario_Menu_Dialog);
-        this->popupOKDialog(0x2743, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         char *name = this->world->scenario->Get_scenario_name();
         if (*name == 0) {
             this->command_save_as(quit_after_save);
         } else {
-            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(0x450, 0, -1);
+            static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
             if (kill_menu != 0) {
                 panel_system.destroyPanel(s_Scenario_Menu_Dialog);
             }
             if (this->world->save_scenario(name) == 0) {
                 static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
-                this->popupOKDialog(0x963, 0, TEASY_POPUP_WIDTH, 100);
+                this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
             } else {
                 static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
                 sprintf(temp_name, "default%d", rge_base_game->registry->RegGetInt(0, "Game File Number"));
@@ -2681,9 +2681,9 @@ void TRIBE_Screen_Sed::command_save_as(unsigned char quit_after_save) {
     this->set_scenario_mode(ScenarioModeSave);
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(0x2742, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
     } else if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(0x2743, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
     } else {
         scenario_name[0] = 0;
         new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenarioEdit,
@@ -2716,20 +2716,20 @@ char *TRIBE_Screen_Sed::scenario_save_defaulted() {
     this->set_scenario_mode(ScenarioModeSave);
     static_cast<T_Scenario *>(this->world->scenario)->Save_victory_conditions_into_players(1);
     if (this->world->scenario->active_player_count() < 1) {
-        this->popupOKDialog(0x2742, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_NO_ACTIVE_PLAYERS, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
     if (this->world->scenario->any_player_count() < 1) {
-        this->popupOKDialog(0x2743, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_CIVILIZATION_EITHER_REQUIRED, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 
-    static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(0x450, 0, -1);
+    static_cast<TRIBE_Game *>(rge_base_game)->show_status_message(IDS_STATUS_SAVING_SCENARIO, 0, -1);
     sprintf(scenario_default_file_name, "default%d.scx",
             rge_base_game->registry->RegGetInt(0, "Game File Number"));
     if (this->world->save_scenario(scenario_default_file_name) == 0) {
         static_cast<TRIBE_Game *>(rge_base_game)->close_status_message();
-        this->popupOKDialog(0x963, 0, TEASY_POPUP_WIDTH, 100);
+        this->popupOKDialog(IDS_ERROR_CANNOT_SAVE_SCENARIO, 0, TEASY_POPUP_WIDTH, 100);
         return 0;
     }
 

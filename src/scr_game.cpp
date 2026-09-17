@@ -258,11 +258,11 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[15]->setDrawType(TButtonPanel::DrawText);
     this->button_panel[15]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[15]->tribe_button_type = 3;
-    this->button_panel[15]->set_text(0, 0x0FA9L);
+    this->button_panel[15]->set_text(0, IDS_BUTTON_HELP);
     this->button_panel[16]->setDrawType(TButtonPanel::DrawText);
     this->button_panel[16]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[16]->tribe_button_type = 3;
-    this->button_panel[16]->set_text(0, 0x1023L);
+    this->button_panel[16]->set_text(0, IDS_SCORE_BUTTON_SHORTCUT);
     this->get_string(IDS_SCORE_BUTTON_MESSAGE, str, 512);
     this->button_panel[16]->set_text_msg(str);
 
@@ -1285,9 +1285,9 @@ void TRIBE_Screen_Game::handle_game_update() {
 
                     this->pause_text->set_active(1);
                     if (rge_base_game->get_player()->game_status == 1) {
-                        this->pause_text->set_text(0x232c);
+                        this->pause_text->set_text(IDS_VICTORY_MESSAGE);
                     } else {
-                        this->pause_text->set_text(0x232d);
+                        this->pause_text->set_text(IDS_DEFEAT_MESSAGE);
                     }
                     this->main_view->set_redraw(TPanel::RedrawNormal);
 
@@ -1435,7 +1435,7 @@ long TRIBE_Screen_Game::wnd_proc(void* hwnd, unsigned int msg, unsigned int wPar
             int mode = rge_base_game->prog_mode;
             if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
                 if (IsIconic(this->render_area->Wnd) == 0) {
-                    this->popupYesNoDialog(0xC1D, close_confirmation_text,
+                    this->popupYesNoDialog(IDS_CONFIRM_QUIT_GAME, close_confirmation_text,
                                            TEASY_POPUP_WIDTH, 100);
                     return 1;
                 }
